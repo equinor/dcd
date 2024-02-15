@@ -29,6 +29,10 @@ public class DrainageStrategyProfile : Profile
         CreateMap<UpdateFuelFlaringAndLossesOverrideDto, FuelFlaringAndLossesOverride>();
         CreateMap<UpdateNetSalesGasOverrideDto, NetSalesGasOverride>();
         CreateMap<UpdateCo2EmissionsOverrideDto, Co2EmissionsOverride>();
+        CreateMap<UpdateProductionProfileOilDto, ProductionProfileOil>();
+        CreateMap<UpdateProductionProfileGasDto, ProductionProfileGas>();
+        CreateMap<UpdateProductionProfileWaterDto, ProductionProfileWater>();
+        CreateMap<UpdateProductionProfileWaterInjectionDto, ProductionProfileWaterInjection>();
 
         CreateMap<CreateDrainageStrategyDto, DrainageStrategy>();
     }

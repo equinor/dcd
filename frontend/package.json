@@ -2,44 +2,19 @@
     "name": "conceptapp",
     "version": "1.0.0",
     "description": "",
-    "main": "src/index.tsx",
-    "author": "",
     "license": "ISC",
-    "manifest": {
-        "name": "Concept App",
-        "shortName": "conceptapp",
-        "description": "Concept App",
-        "owners": [
-            "eriei@equinor.com",
-            "eisande@equinor.com",
-            "ahmab@equinor.com",
-            "toaus@equinor.com",
-            "dboh@equinor.com"
-        ],
-        "admins": [
-            "eriei@equinor.com",
-            "eisande@equinor.com",
-            "ahmab@equinor.com",
-            "toaus@equinor.com",
-            "dboh@equinor.com"
-        ]
-    },
+    "author": "",
+    "main": "src/index.tsx",
     "scripts": {
-        "prestart": "node -p \"'export const APP_VERSION = ' + JSON.stringify(require('./package.json').version)\" > src/version.ts",
-        "prebuild": "node -p \"'export const APP_VERSION = ' + JSON.stringify(require('./package.json').version)\" > src/version.ts",
-        "start": "fusion start-app",
-        "build": "fusion build-app",
-        "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-        "dev": "jest",
-        "test:ci": "npm run test -- --watchAll=false --coverage src --coverageDirectory=coverage",
         "autogenerate-models": "dtsgen --out ./src/types.d.ts --url http://localhost:5000/swagger/v1/swagger.yaml",
-        "autogenerate-models-build": "dtsgen --out ./src/types-azuredevops.d.ts --url https://backend-dcd-dev.radix.equinor.com/swagger/v1/swagger.json"
-    },
-    "eslintConfig": {
-        "extends": [
-            "react-app",
-            "react-app/jest"
-        ]
+        "autogenerate-models-build": "dtsgen --out ./src/types-azuredevops.d.ts --url https://backend-dcd-dev.radix.equinor.com/swagger/v1/swagger.json",
+        "prebuild": "node -p \"'export const APP_VERSION = ' + JSON.stringify(require('./package.json').version)\" > src/version.ts",
+        "build": "fusion build-app",
+        "dev": "jest",
+        "prestart": "node -p \"'export const APP_VERSION = ' + JSON.stringify(require('./package.json').version)\" > src/version.ts",
+        "start": "fusion start-app",
+        "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+        "test:ci": "npm run test -- --watchAll=false --coverage src --coverageDirectory=coverage"
     },
     "browserslist": {
         "production": [
@@ -51,6 +26,12 @@
             "last 1 chrome version",
             "last 1 firefox version",
             "last 1 safari version"
+        ]
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
         ]
     },
     "dependencies": {
@@ -71,15 +52,15 @@
         "@equinor/eds-core-react": "^0.25.0",
         "@equinor/eds-icons": "^0.14.0",
         "@equinor/eds-tokens": "^0.7.1",
-        "@equinor/fusion": "^3.4.9",
+        "@equinor/fusion": "^3.4.15",
         "@equinor/fusion-framework-module-ag-grid": "~30.1.0",
-        "@equinor/fusion-framework-module-navigation": "^2.1.1",
-        "@equinor/fusion-framework-react-app": "^4.0.14",
+        "@equinor/fusion-framework-module-navigation": "^3.1.4",
+        "@equinor/fusion-framework-react-app": "^4.3.4",
         "@equinor/fusion-react-ag-grid-styles": "29.3.16",
-        "@equinor/fusion-react-textarea": "^0.5.15",
+        "@equinor/fusion-react-textarea": "^0.6.1",
         "@material-ui/core": "^4.12.3",
         "ag-charts-react": "^8.2.0",
-        "axios": "^0.24.0",
+        "axios": "^1.6.0",
         "file-saver": "^2.0.5",
         "history": "^4.9.0",
         "lodash": "^4.17.21",
@@ -89,7 +70,7 @@
         "styled-components": "^5.3.7"
     },
     "devDependencies": {
-        "@equinor/fusion-cli": "3.1.0",
+        "@equinor/fusion-cli": "3.1.4",
         "@testing-library/jest-dom": "^5.16.2",
         "@testing-library/react": "^12.1.2",
         "@testing-library/user-event": "^13.5.0",
@@ -115,5 +96,24 @@
         "react-hot-loader": "^4.13.0",
         "react-scripts": "^5.0.0",
         "typescript": "^4.9.3"
+    },
+    "manifest": {
+        "name": "Concept App",
+        "shortName": "conceptapp",
+        "description": "Concept App",
+        "owners": [
+            "eriei@equinor.com",
+            "eisande@equinor.com",
+            "ahmab@equinor.com",
+            "toaus@equinor.com",
+            "dboh@equinor.com"
+        ],
+        "admins": [
+            "eriei@equinor.com",
+            "eisande@equinor.com",
+            "ahmab@equinor.com",
+            "toaus@equinor.com",
+            "dboh@equinor.com"
+        ]
     }
 }

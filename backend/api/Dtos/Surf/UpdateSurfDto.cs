@@ -6,7 +6,7 @@ namespace api.Dtos;
 public class UpdateSurfDto
 {
     public string Name { get; set; } = string.Empty!;
-    public UpdateSurfCostProfileOverrideDto CostProfileOverride { get; set; } = new UpdateSurfCostProfileOverrideDto();
+    public UpdateSurfCostProfileOverrideDto? CostProfileOverride { get; set; }
     public double CessationCost { get; set; }
     public Maturity Maturity { get; set; }
     public double InfieldPipelineSystemLength { get; set; }

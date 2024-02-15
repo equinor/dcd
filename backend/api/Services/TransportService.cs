@@ -30,7 +30,11 @@ public class TransportService : ITransportService
     }
     public async Task<ProjectDto> CreateTransport(TransportDto transportDto, Guid sourceCaseId)
     {
-        var transport = TransportAdapter.Convert(transportDto);
+        var transport = _mapper.Map<Transport>(transportDto);
+        if (transport == null)
+        {
+            throw new ArgumentNullException(nameof(transport));
+        }
         var project = await _projectService.GetProject(transport.ProjectId);
         transport.Project = project;
         transport.ProspVersion = transportDto.ProspVersion;
@@ -62,7 +66,11 @@ public class TransportService : ITransportService
     public async Task<TransportDto> CopyTransport(Guid transportId, Guid sourceCaseId)
     {
         var source = await GetTransport(transportId);
-        var newTransportDto = TransportDtoAdapter.Convert(source);
+        var newTransportDto = _mapper.Map<TransportDto>(source);
+        if (newTransportDto == null)
+        {
+            throw new ArgumentNullException(nameof(newTransportDto));
+        }
         newTransportDto.Id = Guid.Empty;
         if (newTransportDto.CostProfile != null)
         {
@@ -113,7 +121,7 @@ public class TransportService : ITransportService
     {
         var existing = await GetTransport(updatedTransportDto.Id);
 
-        TransportAdapter.ConvertExisting(existing, updatedTransportDto);
+        _mapper.Map(updatedTransportDto, existing);
 
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Transports!.Update(existing);

@@ -5,6 +5,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 
 namespace api.Services;
 
@@ -15,14 +17,23 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
     private readonly ILogger<GenerateGAndGAdminCostProfile> _logger;
     private readonly IExplorationService _explorationService;
     private readonly DcdDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GenerateGAndGAdminCostProfile(DcdDbContext context, ILoggerFactory loggerFactory, IProjectService projectService, ICaseService caseService, IExplorationService explorationService)
+    public GenerateGAndGAdminCostProfile(
+        DcdDbContext context,
+        ILoggerFactory loggerFactory,
+        IProjectService projectService,
+        ICaseService caseService,
+        IExplorationService explorationService,
+        IMapper mapper
+        )
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<GenerateGAndGAdminCostProfile>();
         _caseService = caseService;
         _explorationService = explorationService;
+        _mapper = mapper;
     }
 
     public async Task<GAndGAdminCostDto> GenerateAsync(Guid caseId)
@@ -71,7 +82,9 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
 
                 await UpdateExplorationAndSaveAsync(exploration, gAndGAdminCost);
 
-                return ExplorationDtoAdapter.Convert(gAndGAdminCost);
+                var dto = _mapper.Map<GAndGAdminCostDto>(gAndGAdminCost);
+
+                return dto ?? new GAndGAdminCostDto();
             }
         }
         return new GAndGAdminCostDto();

@@ -3,6 +3,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
@@ -14,15 +16,22 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
     private readonly IExplorationService _explorationService;
     private readonly IWellProjectService _wellProjectService;
     private readonly DcdDbContext _context;
+    private readonly IMapper _mapper;
 
-    public CostProfileFromDrillingScheduleHelper(DcdDbContext context, ILoggerFactory loggerFactory,
-        ICaseService caseService, IExplorationService explorationService, IWellProjectService wellProjectService)
+    public CostProfileFromDrillingScheduleHelper(
+        DcdDbContext context,
+        ILoggerFactory loggerFactory,
+        ICaseService caseService,
+        IExplorationService explorationService,
+        IWellProjectService wellProjectService,
+        IMapper mapper)
     {
         _logger = loggerFactory.CreateLogger<ExplorationService>();
         _caseService = caseService;
         _explorationService = explorationService;
         _wellProjectService = wellProjectService;
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task UpdateCostProfilesForWells(List<Guid> wellIds)
@@ -109,7 +118,11 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         exploration.AppraisalWellCostProfile = appraisalCostProfile;
         exploration.SidetrackCostProfile = sidetrackCostProfile;
 
-        var explorationDto = ExplorationDtoAdapter.Convert(exploration);
+        var explorationDto = _mapper.Map<ExplorationDto>(exploration);
+        if (explorationDto == null)
+        {
+            throw new ArgumentNullException("ExplorationDto is null");
+        }
         return explorationDto;
     }
 
@@ -195,7 +208,11 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         wellProject.WaterInjectorCostProfile = waterInjectorCostProfile;
         wellProject.GasInjectorCostProfile = gasInjectorCostProfile;
 
-        var wellProjectDto = WellProjectDtoAdapter.Convert(wellProject);
+        var wellProjectDto = _mapper.Map<WellProjectDto>(wellProject);
+        if (wellProjectDto == null)
+        {
+            throw new ArgumentNullException("WellProjectDto is null");
+        }
         return wellProjectDto;
     }
 

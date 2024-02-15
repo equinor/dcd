@@ -4,6 +4,8 @@ using api.Dtos;
 using api.Helpers;
 using api.Models;
 
+using AutoMapper;
+
 namespace api.Services.GenerateCostProfiles;
 
 public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
@@ -14,9 +16,16 @@ public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
     private readonly ITopsideService _topsideService;
     private readonly IWellProjectService _wellProjectService;
     private readonly DcdDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GenerateCo2EmissionsProfile(DcdDbContext context, ICaseService caseService, IDrainageStrategyService drainageStrategyService, IProjectService projectService,
-        ITopsideService topsideService, IWellProjectService wellProjectService)
+    public GenerateCo2EmissionsProfile(
+        DcdDbContext context,
+        ICaseService caseService,
+        IDrainageStrategyService drainageStrategyService,
+        IProjectService projectService,
+        ITopsideService topsideService,
+        IWellProjectService wellProjectService,
+        IMapper mapper)
     {
         _context = context;
         _caseService = caseService;
@@ -24,6 +33,7 @@ public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
         _topsideService = topsideService;
         _drainageStrategyService = drainageStrategyService;
         _wellProjectService = wellProjectService;
+        _mapper = mapper;
     }
 
     public async Task<Co2EmissionsDto> GenerateAsync(Guid caseId)
@@ -59,7 +69,8 @@ public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
 
         await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, co2Emission);
 
-        var dto = DrainageStrategyDtoAdapter.Convert<Co2EmissionsDto, Co2Emissions>(co2Emission, project.PhysicalUnit);
+        var dto = _mapper.Map<Co2EmissionsDto>(co2Emission);
+
         return dto ?? new Co2EmissionsDto();
     }
 

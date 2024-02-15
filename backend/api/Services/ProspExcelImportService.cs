@@ -3,6 +3,8 @@ using api.Dtos;
 using api.Helpers;
 using api.Models;
 
+using AutoMapper;
+
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
@@ -21,12 +23,19 @@ public class ProspExcelImportService
     private readonly ISurfService _surfService;
     private readonly ITopsideService _topsideService;
     private readonly ITransportService _transportService;
+    private readonly IMapper _mapper;
 
 
-    public ProspExcelImportService(IProjectService projectService, ICaseService caseService, ILoggerFactory loggerFactory,
+    public ProspExcelImportService(
+        IProjectService projectService,
+        ICaseService caseService,
+        ILoggerFactory loggerFactory,
         ISurfService surfService,
-        ISubstructureService substructureService, ITopsideService topsideService, ITransportService transportService,
-        IConfiguration config)
+        ISubstructureService substructureService,
+        ITopsideService topsideService,
+        ITransportService transportService,
+        IConfiguration config,
+        IMapper mapper)
     {
         _projectService = projectService;
         loggerFactory.CreateLogger<ProspExcelImportService>();
@@ -36,6 +45,7 @@ public class ProspExcelImportService
         _transportService = transportService;
         _prospConfig = CreateConfig(config);
         _caseService = caseService;
+        _mapper = mapper;
     }
 
     private Prosp CreateConfig(IConfiguration config)
@@ -162,7 +172,12 @@ public class ProspExcelImportService
             CessationCost = cessationCost,
         };
 
-        var dto = SurfDtoAdapter.Convert(newSurf);
+        var dto = _mapper.Map<SurfDto>(newSurf);
+
+        if (dto == null)
+        {
+            throw new Exception();
+        }
 
         if (surfLink != Guid.Empty)
         {
@@ -254,7 +269,14 @@ public class ProspExcelImportService
             FacilityOpex = facilityOpex,
             PeakElectricityImported = peakElectricityImported,
         };
-        var dto = TopsideDtoAdapter.Convert(newTopside);
+
+        var dto = _mapper.Map<TopsideDto>(newTopside);
+
+        if (dto == null)
+        {
+            throw new Exception();
+        }
+
         if (topsideLink != Guid.Empty)
         {
             await _topsideService.UpdateTopside(dto);
@@ -315,7 +337,13 @@ public class ProspExcelImportService
 
         if (substructureLink != Guid.Empty)
         {
-            var dto = SubstructureDtoAdapter.Convert(newSubstructure);
+            var dto = _mapper.Map<SubstructureDto>(newSubstructure);
+
+            if (dto == null)
+            {
+                throw new Exception();
+            }
+
             await _substructureService.UpdateSubstructure(dto);
         }
         else
@@ -370,7 +398,14 @@ public class ProspExcelImportService
             GasExportPipelineLength = gasExportPipelineLength,
             Maturity = Maturity.A,
         };
-        var dto = TransportDtoAdapter.Convert(newTransport);
+
+        var dto = _mapper.Map<TransportDto>(newTransport);
+
+        if (dto == null)
+        {
+            throw new Exception();
+        }
+
         if (transportLink != Guid.Empty)
         {
             await _transportService.UpdateTransport(dto);
@@ -439,7 +474,13 @@ public class ProspExcelImportService
                 }
             }
 
-            var caseDto = CaseDtoAdapter.Convert(caseItem);
+            var caseDto = _mapper.Map<CaseDto>(caseItem);
+
+            if (caseDto == null)
+            {
+                throw new Exception();
+            }
+
             return await _caseService.UpdateCase(sourceCaseId, caseDto);
         }
 
@@ -458,7 +499,13 @@ public class ProspExcelImportService
         ClearImportedSubstructure(caseItem);
         ClearImportedTransport(caseItem);
 
-        var caseDto = CaseDtoAdapter.Convert(caseItem);
+        var caseDto = _mapper.Map<CaseDto>(caseItem);
+
+        if (caseDto == null)
+        {
+            throw new Exception();
+        }
+
         await _caseService.UpdateCase(sourceCaseId, caseDto);
     }
 
@@ -473,7 +520,12 @@ public class ProspExcelImportService
             Source = Source.ConceptApp,
         };
 
-        var dto = SurfDtoAdapter.Convert(surf);
+        var dto = _mapper.Map<SurfDto>(surf);
+
+        if (dto == null)
+        {
+            throw new Exception();
+        }
 
         if (surfLink != Guid.Empty)
         {
@@ -492,7 +544,12 @@ public class ProspExcelImportService
             Source = Source.ConceptApp,
         };
 
-        var dto = TopsideDtoAdapter.Convert(topside);
+        var dto = _mapper.Map<TopsideDto>(topside);
+
+        if (dto == null)
+        {
+            throw new Exception();
+        }
 
         if (topsideLink != Guid.Empty)
         {
@@ -511,7 +568,12 @@ public class ProspExcelImportService
             Source = Source.ConceptApp,
         };
 
-        var dto = SubstructureDtoAdapter.Convert(substructure);
+        var dto = _mapper.Map<SubstructureDto>(substructure);
+
+        if (dto == null)
+        {
+            throw new Exception();
+        }
 
         if (substructureLink != Guid.Empty)
         {
@@ -530,7 +592,12 @@ public class ProspExcelImportService
             Source = Source.ConceptApp,
         };
 
-        var dto = TransportDtoAdapter.Convert(transport);
+        var dto = _mapper.Map<TransportDto>(transport);
+
+        if (dto == null)
+        {
+            throw new Exception();
+        }
 
         if (transportLink != Guid.Empty)
         {
