@@ -22,15 +22,19 @@ const LockButton = styled(Button)`
 `
 
 type Props = {
+    isOpen: boolean
+    setIsOpen: Dispatch<SetStateAction<boolean>>
     profileName: string;
-    isOpen: boolean;
-    setIsOpen: Dispatch<SetStateAction<boolean>>;
-    setProfile: Dispatch<SetStateAction<any>> | undefined;
+    setProfile: Dispatch<SetStateAction<any>> | undefined
     profile: any
 }
 
 export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
-    isOpen, setIsOpen, profileName, children, setProfile, profile,
+    isOpen,
+    setIsOpen,
+    profileName,
+    setProfile,
+    profile,
 }) => {
     if (!isOpen) return null
     const toggleIsOpen = () => {
@@ -58,7 +62,6 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
             />
             <ModalDiv>
                 <Typography variant="h6">Warning</Typography>
-                <div>{children}</div>
                 <p>
                     Are you sure you want to
                     {profile.override ? " lock " : " unlock "}
