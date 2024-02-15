@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import styled from "styled-components"
-import { projectPath } from "../Utils/common"
+import { useNavigate } from "react-router-dom"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
 const Wrapper = styled.main`
     margin:20px;
