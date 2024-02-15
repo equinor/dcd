@@ -4,6 +4,7 @@ import {
 } from "@equinor/eds-icons"
 import { Icon, Tooltip, Typography } from "@equinor/eds-core-react"
 import { tokens } from "@equinor/eds-tokens"
+import { useAppContext } from "../../context/AppContext"
 
 const Wrapper = styled.div<{ padding?: string }>`
     display: flex;
@@ -33,13 +34,14 @@ interface Props {
     isOpen?: boolean
     onClick?: () => void
     padding?: string
-    project?: Components.Schemas.ProjectDto
     caseItem?: Components.Schemas.CaseDto
 }
 
 const MenuItem = ({
-    title, isSelected, icon, isOpen, onClick, padding, project, caseItem,
+    title, isSelected, icon, isOpen, onClick, padding, caseItem,
 }: Props) => {
+    const { project } = useAppContext()
+
     const selectedColor = tokens.colors.infographic.primary__moss_green_100.rgba
 
     return (

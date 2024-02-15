@@ -2,11 +2,10 @@ import { useState } from "react"
 import styled from "styled-components"
 import { Link } from "react-router-dom"
 import { file, folder, dashboard } from "@equinor/eds-icons"
-
 import { useCurrentContext } from "@equinor/fusion"
+import { useAppContext } from "../../context/AppContext"
 import MenuItem from "./MenuItem"
 import ProjectMenuItemComponent from "./ProjectMenuItemComponent"
-
 import { projectPath } from "../../Utils/common"
 
 const ExpandableDiv = styled.div`
@@ -46,13 +45,10 @@ const projectMenuItems = [
     { name: ProjectMenuItemType.CASES, icon: file },
 ]
 
-interface Props {
-    project?: Components.Schemas.ProjectDto
-}
-
-const ProjectMenu = ({ project }: Props) => {
-    const [isOpen, setIsOpen] = useState<boolean>(true)
+const ProjectMenu = () => {
     const currentProject = useCurrentContext()
+    const { project } = useAppContext()
+    const [isOpen, setIsOpen] = useState<boolean>(true)
 
     if (!project) {
         return null
@@ -78,21 +74,12 @@ const ProjectMenu = ({ project }: Props) => {
                             {projectMenuItem.name === ProjectMenuItemType.OVERVIEW && (
                                 <nav>
                                     <LinkWithoutStyle to={`/${currentProject?.id}`}>
-                                        <ProjectMenuItemComponent
-                                            project={project}
-                                            item={projectMenuItem}
-                                            projectId={project.id}
-                                        />
+                                        <ProjectMenuItemComponent item={projectMenuItem} />
                                     </LinkWithoutStyle>
                                 </nav>
                             )}
                             {projectMenuItem.name === ProjectMenuItemType.CASES && (
-                                <ProjectMenuItemComponent
-                                    project={project}
-                                    item={projectMenuItem}
-                                    projectId={project.id}
-                                    subItems={project.cases}
-                                />
+                                <ProjectMenuItemComponent item={projectMenuItem} />
                             )}
                         </Item>
                     ))}

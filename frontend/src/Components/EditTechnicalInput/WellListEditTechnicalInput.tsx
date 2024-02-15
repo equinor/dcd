@@ -7,6 +7,7 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
+import { useAppContext } from "../../context/AppContext"
 
 const ButtonWrapper = styled.div`
     margin-top: 20px;
@@ -14,7 +15,6 @@ const ButtonWrapper = styled.div`
 `
 
 interface Props {
-    project: Components.Schemas.ProjectDto
     wells: Components.Schemas.WellDto[] | undefined
     setWells: Dispatch<SetStateAction<Components.Schemas.WellDto[]>>
     explorationWells: boolean
@@ -31,15 +31,16 @@ interface TableWell {
 }
 
 const WellListEditTechnicalInput = ({
-    project, explorationWells, wells, setWells,
+    explorationWells,
+    wells,
+    setWells,
 }: Props) => {
+    const { project } = useAppContext()
+    const [rowData, setRowData] = useState<TableWell[]>()
+
     const gridRef = useRef(null)
     const styles = useStyles()
-    const onGridReady = (params: any) => {
-        gridRef.current = params.api
-    }
-
-    const [rowData, setRowData] = useState<TableWell[]>()
+    const onGridReady = (params: any) => { gridRef.current = params.api }
 
     const wellsToRowData = () => {
         if (wells) {
@@ -164,7 +165,7 @@ const WellListEditTechnicalInput = ({
         const newWell: any = {
             wellCategory: !explorationWells ? 0 : 4,
             name: "New well",
-            projectId: project.id,
+            projectId: project?.id,
         }
         if (wells) {
             const newWells = [...wells, newWell]

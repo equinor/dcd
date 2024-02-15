@@ -7,6 +7,7 @@ import { useCurrentContext } from "@equinor/fusion"
 import { ProjectMenuItemType } from "./ProjectMenu"
 import MenuItem from "./MenuItem"
 import { casePath } from "../../Utils/common"
+import { useAppContext } from "../../context/AppContext"
 
 const ExpandableDiv = styled.div`
     display: flex;
@@ -40,20 +41,18 @@ export type ProjectMenuItem = {
 }
 
 interface Props {
-    project: Components.Schemas.ProjectDto
     item: ProjectMenuItem
-    projectId: string
-    subItems?: Components.Schemas.CaseDto[]
 }
 
 const ProjectMenuItemComponent = ({
-    item, projectId, subItems, project,
+    item,
 }: Props) => {
     const { caseId } = useParams<Record<string, string | undefined>>()
+    const { project } = useAppContext()
     const currentProject = useCurrentContext()
 
     const isSelectedProjectMenuItem = (item.name === ProjectMenuItemType.OVERVIEW && caseId === undefined) || (item.name === ProjectMenuItemType.CASES && caseId !== undefined)
-    const isSelected = currentProject?.externalId === projectId && isSelectedProjectMenuItem
+    const isSelected = currentProject?.externalId === project?.id && isSelectedProjectMenuItem
     const [isOpen, setIsOpen] = useState<boolean>(isSelected)
 
     useEffect(() => {
@@ -67,11 +66,11 @@ const ProjectMenuItemComponent = ({
                 isSelected={isSelected}
                 icon={item.icon}
                 isOpen={isOpen}
-                onClick={subItems ? () => setIsOpen(!isOpen) : undefined}
+                onClick={project && project.cases ? () => setIsOpen(!isOpen) : undefined}
             />
-            {subItems && isOpen && (
+            {project && project.cases && isOpen && (
                 <SubItems>
-                    {subItems.map((subItem, index) => (
+                    {project.cases.map((subItem, index) => (
                         <SubItem key={`menu-sub-item-${index + 1}`}>
                             <nav>
                                 <LinkWithoutStyle to={casePath(
@@ -83,7 +82,6 @@ const ProjectMenuItemComponent = ({
                                         title={subItem.name ? subItem.name : "Untitled"}
                                         isSelected={isSelected && caseId === subItem.id}
                                         padding="0.25rem 2rem"
-                                        project={project}
                                         caseItem={subItem}
                                     />
                                 </LinkWithoutStyle>

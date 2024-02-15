@@ -65,11 +65,11 @@ const ProjectView = () => {
                 setIsLoading(true)
                 if (currentProject?.externalId) {
                     let res = await (await GetProjectService()).getProjectByID(currentProject?.externalId)
+
                     if (!res || res.id === "") {
                         setIsCreating(true)
                         res = await (await GetProjectService()).createProjectFromContextId(currentProject.id)
                     }
-
                     setProject(res)
                     setIsCreating(false)
                     setIsLoading(false)
@@ -146,8 +146,6 @@ const ProjectView = () => {
             <EditTechnicalInputModal
                 toggleEditTechnicalInputModal={toggleEditTechnicalInputModal}
                 isOpen={editTechnicalInputModalIsOpen ?? false}
-                project={project}
-                setProject={setProject}
             />
         </>
     )

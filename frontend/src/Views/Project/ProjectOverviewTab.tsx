@@ -138,9 +138,7 @@ const ProjectOverviewTab = () => {
                 </DataDiv>
             </RowWrapper>
             <EditCaseModal
-                setProject={setProject}
                 isOpen={createCaseModalIsOpen}
-                project={project}
                 toggleModal={toggleCreateCaseModal}
                 editMode={false}
                 navigate={false}
@@ -153,7 +151,7 @@ const ProjectOverviewTab = () => {
                 </StyledButton>
 
             </RowWrapper>
-            <CasesTable project={project} setProject={setProject} />
+            <CasesTable />
         </Wrapper>
     )
 }
