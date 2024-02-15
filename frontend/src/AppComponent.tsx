@@ -2,6 +2,10 @@ import { FC } from "react"
 import { APP_VERSION } from "./version"
 import AppRouter from "./Router"
 import { AppContextProvider } from "./context/AppContext"
+import { resolveConfiguration } from "./Utils/config"
+import { EnvironmentVariables } from "./environmentVariables"
+import { storeAppId, storeAppScope } from "./Utils/common"
+import { buildConfig } from "./Services/config"
 
 const AppComponent: FC = () => {
     // const runtimeConfig = useAppConfig()
@@ -21,7 +25,7 @@ const AppComponent: FC = () => {
         (m) => m.startsWith("*"),
     ])
 
-    // const config = resolveConfiguration(EnvironmentVariables.ENVIRONMENT)
+    const config = resolveConfiguration(EnvironmentVariables.ENVIRONMENT)
 
     // if (runtimeConfig.value !== undefined && runtimeConfig.value !== null) {
     //     if (runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL) {
@@ -34,21 +38,17 @@ const AppComponent: FC = () => {
     //         storeAppScope(values.BACKEND_APP_SCOPE)
     //     }
     // } else {
-    // buildConfig(config.REACT_APP_API_BASE_URL)
-    // storeAppId(config.APP_ID)
-    // storeAppScope(config.BACKEND_APP_SCOPE[0])
+    buildConfig(config.REACT_APP_API_BASE_URL)
+    storeAppId(config.APP_ID)
+    storeAppScope(config.BACKEND_APP_SCOPE[0])
     // }
 
     console.log("Concept App version: ", APP_VERSION)
 
     return (
-        <>
-            <h1>Concept App</h1>
-            <AppContextProvider>
-                <AppRouter />
-            </AppContextProvider>
-
-        </>
+        <AppContextProvider>
+            <AppRouter />
+        </AppContextProvider>
     )
 }
 

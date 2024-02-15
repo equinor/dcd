@@ -3,6 +3,7 @@ import {
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
 import {
     add,
@@ -110,7 +111,7 @@ const CaseView = () => {
     const [caseItem, setCase] = useState<Components.Schemas.CaseDto>()
     const [activeTab, setActiveTab] = useState<number>(0)
     const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
-    const currentProject = useCurrentContext()
+    const { currentContext } = useModuleCurrentContext()
 
     const [drainageStrategy, setDrainageStrategy] = useState<Components.Schemas.DrainageStrategyDto>()
     const [exploration, setExploration] = useState<Components.Schemas.ExplorationDto>()
@@ -170,14 +171,14 @@ const CaseView = () => {
                 // console.log("CaseView -> caseMapped", caseMapped)
                 setUpdateFromServer(true)
                 setIsLoading(true)
-                const projectId = unwrapProjectId(currentProject?.externalId)
+                const projectId = unwrapProjectId(currentContext?.externalId)
                 const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
+                console.error(`[CaseView] Error while fetching project ${currentContext?.externalId}`, error)
             }
         })()
-    }, [currentProject?.externalId, caseId, fusionContextId])
+    }, [currentContext?.externalId, caseId, fusionContextId])
 
     useEffect(() => {
         if (project && updateFromServer) {

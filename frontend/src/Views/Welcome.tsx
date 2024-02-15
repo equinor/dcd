@@ -1,5 +1,5 @@
-import { useModuleCurrentContext } from '@equinor/fusion-framework-react-module-context';
 import { useEffect } from "react"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useNavigate } from "react-router"
 import { projectPath } from "../Utils/common"
 
