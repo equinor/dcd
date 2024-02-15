@@ -51,7 +51,7 @@ stages:
                   shortName: .manifest.shortName, 
                   description: .description, 
                   type: .manifest.type, 
-                  main: .main, 
+                  entry: .main, 
                   version: {
                       major: .version | split(".")[0], 
                       minor: .version | split(".")[1], 
