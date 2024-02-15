@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import styled from "styled-components"
-import { useCurrentContext } from "@equinor/fusion"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import ProjectMenu from "./ProjectMenu"
 import { GetProjectService } from "../../Services/ProjectService"
 import { useAppContext } from "../../context/AppContext"
@@ -48,21 +48,21 @@ interface Props {
 }
 
 const SideMenu: React.FC<Props> = ({ children }) => {
-    const currentProject = useCurrentContext()
+    const { currentContext } = useModuleCurrentContext()
     const location = useLocation()
     const { setProject } = useAppContext()
 
     useEffect(() => {
-        if (currentProject?.externalId) {
+        if (currentContext?.externalId) {
             (async () => {
                 try {
-                    const fetchedProject = await (await GetProjectService()).getProjectByID(currentProject.externalId!)
+                    const fetchedProject = await (await GetProjectService()).getProjectByID(currentContext?.externalId!)
                     if (!fetchedProject || fetchedProject.id === "") {
                         // Workaround for retrieving project in sidemenu while project is created
                         // eslint-disable-next-line no-promise-executor-return
                         await new Promise((r) => setTimeout(r, 2000))
                         const secondAttempt = await (await GetProjectService())
-                            .getProjectByID(currentProject.externalId!)
+                            .getProjectByID(currentContext.externalId!)
 
                         setProject(secondAttempt)
                     } else {
@@ -73,9 +73,9 @@ const SideMenu: React.FC<Props> = ({ children }) => {
                 }
             })()
         }
-    }, [currentProject?.externalId, location.pathname])
+    }, [currentContext?.externalId, location.pathname])
 
-    if (currentProject) {
+    if (currentContext) {
         return (
             <Wrapper>
                 <Body>

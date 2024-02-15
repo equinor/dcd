@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from "react"
-import { useCurrentContext } from "@equinor/fusion"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
     Progress, Banner, Icon, Typography,
 } from "@equinor/eds-core-react"
@@ -20,26 +20,25 @@ const Wrapper = styled.div`
 
 const ProjectInitializer: FC = () => {
     const { project, setProject } = useAppContext()
-    const currentProject = useCurrentContext()
-
+    const { currentContext } = useModuleCurrentContext()
     const [isLoading, setIsLoading] = useState<boolean>()
     const [isCreating, setIsCreating] = useState<boolean>()
 
     useEffect(() => {
-        console.log("current project", currentProject)
+        console.log("current project", currentContext)
         const fetchAndSetProject = async () => {
-            if (!currentProject?.externalId) {
+            if (!currentContext?.externalId) {
                 return
             }
 
             try {
                 setIsLoading(true)
                 const projectService = await GetProjectService()
-                let fetchedProject = await projectService.getProjectByID(currentProject.externalId)
+                let fetchedProject = await projectService.getProjectByID(currentContext.externalId)
 
                 if (!fetchedProject || fetchedProject.id === "") {
                     setIsCreating(true)
-                    fetchedProject = await projectService.createProjectFromContextId(currentProject.id)
+                    fetchedProject = await projectService.createProjectFromContextId(currentContext.id)
                 }
 
                 if (fetchedProject) {
@@ -53,9 +52,9 @@ const ProjectInitializer: FC = () => {
         }
 
         fetchAndSetProject()
-    }, [currentProject, setProject]) // Re-run effect if currentProject changes
+    }, [currentContext, setProject]) // Re-run effect if currentProject changes
 
-    if (!currentProject) {
+    if (!currentContext) {
         return (
             <Banner>
                 <Banner.Icon variant="info">

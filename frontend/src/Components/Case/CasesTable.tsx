@@ -11,7 +11,7 @@ import {
     useMemo,
     useRef,
 } from "react"
-import { useParams, Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import {
