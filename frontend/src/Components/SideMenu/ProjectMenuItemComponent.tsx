@@ -2,8 +2,8 @@ import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { Link, useParams } from "react-router-dom"
 import { IconData } from "@equinor/eds-icons"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
-import { useCurrentContext } from "@equinor/fusion"
 import { ProjectMenuItemType } from "./ProjectMenu"
 import MenuItem from "./MenuItem"
 import { casePath } from "../../Utils/common"
@@ -50,10 +50,10 @@ const ProjectMenuItemComponent = ({
     item, projectId, subItems, project,
 }: Props) => {
     const { caseId } = useParams<Record<string, string | undefined>>()
-    const currentProject = useCurrentContext()
+    const { currentContext } = useModuleCurrentContext()
 
     const isSelectedProjectMenuItem = (item.name === ProjectMenuItemType.OVERVIEW && caseId === undefined) || (item.name === ProjectMenuItemType.CASES && caseId !== undefined)
-    const isSelected = currentProject?.externalId === projectId && isSelectedProjectMenuItem
+    const isSelected = currentContext?.externalId === projectId && isSelectedProjectMenuItem
     const [isOpen, setIsOpen] = useState<boolean>(isSelected)
 
     useEffect(() => {
@@ -75,7 +75,7 @@ const ProjectMenuItemComponent = ({
                         <SubItem key={`menu-sub-item-${index + 1}`}>
                             <nav>
                                 <LinkWithoutStyle to={casePath(
-                                    currentProject?.id!,
+                                    currentContext?.id!,
                                     subItem.id ? subItem.id : "",
                                 )}
                                 >

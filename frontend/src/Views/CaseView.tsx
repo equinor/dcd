@@ -2,7 +2,8 @@ import {
     Button, Icon, Menu, Progress, Tabs, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
-import { useHistory, useLocation, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
 import {
     add,
@@ -15,7 +16,7 @@ import {
 } from "@equinor/eds-icons"
 import { useCurrentContext } from "@equinor/fusion"
 import { tokens } from "@equinor/eds-tokens"
-import { Tooltip } from "@material-ui/core"
+import { Tooltip } from "@mui/material"
 import { GetProjectService } from "../Services/ProjectService"
 import { projectPath, unwrapProjectId } from "../Utils/common"
 import CaseDescriptionTab from "./Case/CaseDescriptionTab"
@@ -110,7 +111,7 @@ const CaseView = () => {
     const [caseItem, setCase] = useState<Components.Schemas.CaseDto>()
     const [activeTab, setActiveTab] = useState<number>(0)
     const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
-    const currentProject = useCurrentContext()
+    const { currentContext } = useModuleCurrentContext()
 
     const [drainageStrategy, setDrainageStrategy] = useState<Components.Schemas.DrainageStrategyDto>()
     const [exploration, setExploration] = useState<Components.Schemas.ExplorationDto>()
@@ -156,7 +157,7 @@ const CaseView = () => {
     const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
-    const history = useHistory()
+    const navigate = useNavigate()
     const location = useLocation()
 
     const [isLoading, setIsLoading] = useState<boolean>()
@@ -170,14 +171,14 @@ const CaseView = () => {
                 // console.log("CaseView -> caseMapped", caseMapped)
                 setUpdateFromServer(true)
                 setIsLoading(true)
-                const projectId = unwrapProjectId(currentProject?.externalId)
+                const projectId = unwrapProjectId(currentContext?.externalId)
                 const projectResult = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
+                console.error(`[CaseView] Error while fetching project ${currentContext?.externalId}`, error)
             }
         })()
-    }, [currentProject?.externalId, caseId, fusionContextId])
+    }, [currentContext?.externalId, caseId, fusionContextId])
 
     useEffect(() => {
         if (project && updateFromServer) {
@@ -185,7 +186,7 @@ const CaseView = () => {
             if (!caseResult) {
                 if (location.pathname.indexOf("/case") > -1) {
                     const projectUrl = location.pathname.split("/case")[0]
-                    history.push(projectUrl)
+                    navigate(projectUrl)
                 }
             }
             setCase(caseResult)
@@ -248,7 +249,7 @@ const CaseView = () => {
             if (caseItem?.id && project?.id) {
                 const newProject = await (await GetCaseService()).duplicateCase(project.id, caseItem?.id)
                 setProject(newProject)
-                history.push(projectPath(fusionContextId!))
+                navigate(fusionContextId!)
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -260,7 +261,7 @@ const CaseView = () => {
             if (caseItem?.id && project?.id) {
                 const newProject = await (await GetCaseService()).deleteCase(project.id, caseItem?.id)
                 setProject(newProject)
-                history.push(projectPath(fusionContextId!))
+                navigate(fusionContextId!)
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -619,7 +620,7 @@ const CaseView = () => {
                 isOpen={editCaseModalIsOpen}
                 toggleModal={toggleEditCaseModal}
                 editMode
-                navigate
+                shouldNavigate
             />
             <EditCaseModal
                 setProject={setProject}
@@ -628,7 +629,7 @@ const CaseView = () => {
                 isOpen={createCaseModalIsOpen}
                 toggleModal={toggleCreateCaseModal}
                 editMode={false}
-                navigate
+                shouldNavigate
             />
         </div>
     )

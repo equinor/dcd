@@ -143,7 +143,7 @@ const ProjectOverviewTab = () => {
                 project={project}
                 toggleModal={toggleCreateCaseModal}
                 editMode={false}
-                navigate={false}
+                shouldNavigate={false}
             />
             <RowWrapper>
                 <Typography variant="h2">Cases</Typography>
