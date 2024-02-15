@@ -2,7 +2,7 @@ import {
     Button, Checkbox, Icon, NativeSelect, Progress,
 } from "@equinor/eds-core-react"
 import {
-    ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState,
+    ChangeEvent, useCallback, useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
@@ -17,14 +17,13 @@ import SharePointImport from "./SharePointImport"
 import { DriveItem } from "../../models/sharepoint/DriveItem"
 import { ImportStatusEnum } from "./ImportStatusEnum"
 import { GetProspService } from "../../Services/ProspService"
+import { useAppContext } from "../../context/AppContext"
 
 const ApplyButtonWrapper = styled.div`
     display: flex;
     padding-top: 1em;
 `
 interface Props {
-    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
-    project: Components.Schemas.ProjectDto
     driveItems: DriveItem[] | undefined
     check: boolean
 }
@@ -47,18 +46,17 @@ interface RowData {
     sharePointFileChanged: boolean,
 }
 const PROSPCaseList = ({
-    setProject,
-    project,
     driveItems,
     check,
 }: Props) => {
+    const { project, setProject } = useAppContext()
     const gridRef = useRef<any>(null)
     const styles = useStyles()
     const [rowData, setRowData] = useState<RowData[]>()
     const [isApplying, setIsApplying] = useState<boolean>()
 
     const casesToRowData = () => {
-        if (project.cases) {
+        if (project && project.cases) {
             const tableCases: RowData[] = []
             project.cases.forEach((c) => {
                 const tableCase: RowData = {
@@ -121,7 +119,7 @@ const PROSPCaseList = ({
     }
 
     const handleAdvancedSettingsChange = (p: any, value: ImportStatusEnum) => {
-        if (project.cases && project.cases !== null && project.cases !== undefined) {
+        if (project && project.cases) {
             const caseItem = project.cases.find((el: any) => p.data.id && p.data.id === el.id)
             const rowNode = gridRef.current?.getRowNode(p.node?.data.id)
             if (caseItem) {
@@ -396,7 +394,7 @@ const PROSPCaseList = ({
                 </div>
             </div>
             <ApplyButtonWrapper>
-                {!isApplying ? (
+                {!isApplying && project ? (
                     <Button
                         onClick={() => save(project)}
                         color="secondary"

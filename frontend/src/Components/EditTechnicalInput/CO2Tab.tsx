@@ -8,14 +8,8 @@ const TopWrapper = styled.div`
     flex-direction: row;
     justify-content: space-between;
 `
-interface Props {
-    project: Components.Schemas.ProjectDto
-    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
-}
 
-const CO2Tab = ({
-    project, setProject,
-}: Props) => (
+const CO2Tab = () => (
     <>
         <TopWrapper color="danger">
             <Typography variant="h4">CO2 Emission</Typography>
@@ -25,7 +19,7 @@ const CO2Tab = ({
                 You can override these default assumption to customize the calculation made in CO2 emissions.
             </Typography>
         </TopWrapper>
-        <CO2ListTechnicalInput project={project} setProject={setProject} />
+        <CO2ListTechnicalInput />
     </>
 )
 

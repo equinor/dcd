@@ -1,7 +1,5 @@
 import { __BaseService } from "./__BaseService"
-
 import { config } from "./config"
-
 import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 class CaseService extends __BaseService {
@@ -9,7 +7,10 @@ class CaseService extends __BaseService {
         projectId: string,
         data: Components.Schemas.CreateCaseDto,
     ): Promise<Components.Schemas.ProjectDto> {
-        const res: Components.Schemas.ProjectDto = await this.post(`projects/${projectId}/cases`, { body: data })
+        const res: Components.Schemas.ProjectDto = await this.post(
+            `projects/${projectId}/cases`,
+            { body: data },
+        )
         return res
     }
 
@@ -18,7 +19,10 @@ class CaseService extends __BaseService {
         caseId: string,
         body: Components.Schemas.CaseDto,
     ): Promise<Components.Schemas.ProjectDto> {
-        const res: Components.Schemas.ProjectDto = await this.put(`projects/${projectId}/cases/${caseId}`, { body })
+        const res: Components.Schemas.ProjectDto = await this.put(
+            `projects/${projectId}/cases/${caseId}`,
+            { body },
+        )
         return res
     }
 
@@ -46,14 +50,14 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
     ): Promise<Components.Schemas.ProjectDto> {
-        const res: Components.Schemas.ProjectDto = await this.delete(`projects/${projectId}/cases/${caseId}`)
+        const res: Components.Schemas.ProjectDto = await this.delete(
+            `projects/${projectId}/cases/${caseId}`,
+        )
         return res
     }
 }
 
-export const GetCaseService = async () => {
-    return new CaseService({
-        ...config.CaseService,
-        accessToken: await getToken(loginAccessTokenKey)!,
-    })
-}
+export const GetCaseService = async () => new CaseService({
+    ...config.CaseService,
+    accessToken: await getToken(loginAccessTokenKey)!,
+})

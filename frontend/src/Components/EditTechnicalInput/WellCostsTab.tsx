@@ -29,7 +29,6 @@ const WellListWrapper = styled.div`
 `
 
 interface Props {
-    project: Components.Schemas.ProjectDto
     developmentOperationalWellCosts: Components.Schemas.DevelopmentOperationalWellCostsDto
     setDevelopmentOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsDto>>
 
@@ -44,7 +43,6 @@ interface Props {
 }
 
 const WellCostsTab = ({
-    project,
     developmentOperationalWellCosts, setDevelopmentOperationalWellCosts,
     explorationOperationalWellCosts, setExplorationOperationalWellCosts,
     wellProjectWells, setWellProjectWells,
@@ -64,7 +62,6 @@ const WellCostsTab = ({
             <ColumnWrapper>
                 <WellListWrapper>
                     <WellListEditTechnicalInput
-                        project={project}
                         explorationWells
                         setWells={setExplorationWells}
                         wells={explorationWells}
@@ -74,7 +71,6 @@ const WellCostsTab = ({
             <ColumnWrapper>
                 <OperationalWellCosts
                     title="Exploration costs"
-                    project={project}
                     explorationOperationalWellCosts={explorationOperationalWellCosts}
                     setExplorationOperationalWellCosts={setExplorationOperationalWellCosts}
                 />
@@ -84,7 +80,6 @@ const WellCostsTab = ({
             <ColumnWrapper>
                 <WellListWrapper>
                     <WellListEditTechnicalInput
-                        project={project}
                         explorationWells={false}
                         setWells={setWellProjectWells}
                         wells={wellProjectWells}
@@ -94,7 +89,6 @@ const WellCostsTab = ({
             <ColumnWrapper>
                 <OperationalWellCosts
                     title="Development costs"
-                    project={project}
                     developmentOperationalWellCosts={developmentOperationalWellCosts}
                     setDevelopmentOperationalWellCosts={setDevelopmentOperationalWellCosts}
                 />

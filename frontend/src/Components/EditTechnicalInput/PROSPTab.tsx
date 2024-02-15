@@ -8,6 +8,7 @@ import { GetProspService } from "../../Services/ProspService"
 import { GetProjectService } from "../../Services/ProjectService"
 import { DriveItem } from "../../models/sharepoint/DriveItem"
 import PROSPCaseList from "./PROSPCaseList"
+import { useAppContext } from "../../context/AppContext"
 
 const ProspFieldWrapper = styled.div`
     margin-bottom: 2.5rem;
@@ -39,15 +40,9 @@ const ErrorMessage = styled.div`
     margin-top: 10px;
 `
 
-interface Props {
-    setProject: React.Dispatch<React.SetStateAction<Components.Schemas.ProjectDto | undefined>>;
-    project: Components.Schemas.ProjectDto;
-}
+const PROSPTab = () => {
+    const { project, setProject } = useAppContext()
 
-const PROSPTab = ({
-    project,
-    setProject,
-}: Props) => {
     const [sharepointUrl, setSharepointUrl] = useState<string>()
     const [check, setCheck] = useState(false)
     const [driveItems, setDriveItems] = useState<DriveItem[]>()
@@ -55,21 +50,23 @@ const PROSPTab = ({
     const [errorMessage, setErrorMessage] = useState<string>("")
 
     useEffect(() => {
-        (async () => {
-            setSharepointUrl(project.sharepointSiteUrl ?? "")
-            if (project.sharepointSiteUrl && project.sharepointSiteUrl !== "") {
-                try {
-                    const result = await (await GetProspService())
-                        .getSharePointFileNamesAndId({ url: project.sharepointSiteUrl })
-                    setDriveItems(result)
-                    setErrorMessage("")
-                } catch (error) {
-                    console.error("[PROSPTab] error while fetching SharePoint files", error)
-                    setErrorMessage("Failed to fetch SharePoint files. Please check the URL and your permissions.")
+        if (project && project.sharepointSiteUrl) {
+            (async () => {
+                setSharepointUrl(project.sharepointSiteUrl ?? "")
+                if (project.sharepointSiteUrl && project.sharepointSiteUrl !== "") {
+                    try {
+                        const result = await (await GetProspService())
+                            .getSharePointFileNamesAndId({ url: project.sharepointSiteUrl })
+                        setDriveItems(result)
+                        setErrorMessage("")
+                    } catch (error) {
+                        console.error("[PROSPTab] error while fetching SharePoint files", error)
+                        setErrorMessage("Failed to fetch SharePoint files. Please check the URL and your permissions.")
+                    }
                 }
-            }
-        })()
-    }, [project.sharepointSiteUrl])
+            })()
+        }
+    }, [project?.sharepointSiteUrl])
 
     const saveUrl: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
         setIsRefreshing(true)
@@ -79,7 +76,7 @@ const PROSPTab = ({
             setDriveItems(result)
             setErrorMessage("")
 
-            if (sharepointUrl !== project.sharepointSiteUrl) {
+            if (project && sharepointUrl !== project.sharepointSiteUrl) {
                 const newProject: Components.Schemas.ProjectDto = { ...project }
                 newProject.sharepointSiteUrl = sharepointUrl
                 const projectResult = await (await GetProjectService()).updateProject(newProject)
@@ -128,8 +125,6 @@ const PROSPTab = ({
                 />
             </SwitchWrapper>
             <PROSPCaseList
-                project={project}
-                setProject={setProject}
                 driveItems={driveItems}
                 check={check}
             />
