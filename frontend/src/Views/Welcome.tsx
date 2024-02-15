@@ -7,14 +7,11 @@ const Welcome = (): JSX.Element => {
     const navigate = useNavigate()
     const { currentContext } = useModuleCurrentContext()
 
-    // useEffect(() => {
-    //     if (currentProject?.externalId) {
-    //         navigate(currentProject?.externalId)
-    //     }
-    // }, [currentProject?.externalId])
-
     useEffect(() => {
         console.log("currentContext", currentContext)
+        if (currentContext?.externalId) {
+            navigate(currentContext.id)
+        }
     }, [currentContext])
 
     return (

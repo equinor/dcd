@@ -118,7 +118,7 @@ const EditCaseModal = ({
     }, [isOpen, caseId])
 
     useEffect(() => {
-        const newCase = project.cases.find((c) => c.id === caseId)
+        const newCase = project.cases?.find((c) => c.id === caseId)
         setCaseItem(newCase)
     }, [project, caseId])
 

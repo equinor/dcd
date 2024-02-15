@@ -1,7 +1,7 @@
 import { FC } from "react"
-import { RouterProvider, createBrowserRouter } from "react-router-dom"
 import { APP_VERSION } from "./version"
-import Root from "./Root"
+import AppRouter from "./Router"
+import { AppContextProvider } from "./context/AppContext"
 
 const AppComponent: FC = () => {
     // const runtimeConfig = useAppConfig()
@@ -41,20 +41,14 @@ const AppComponent: FC = () => {
 
     console.log("Concept App version: ", APP_VERSION)
 
-    const router = createBrowserRouter(
-        [
-            {
-                path: "/",
-                element: <Root />,
-            },
-        ],
-        {
-            basename: "/apps/conceptapp",
-        },
-    )
-
     return (
-        <RouterProvider router={router} />
+        <>
+            <h1>Concept App</h1>
+            <AppContextProvider>
+                <AppRouter />
+            </AppContextProvider>
+
+        </>
     )
 }
 
