@@ -107,16 +107,15 @@
         "name": "Concept App",
         "shortName": "conceptapp",
         "description": "Concept App",
+        "type": "standalone",
         "owners": [
             "eriei@equinor.com",
-            "eisande@equinor.com",
             "ahmab@equinor.com",
             "toaus@equinor.com",
             "dboh@equinor.com"
         ],
         "admins": [
             "eriei@equinor.com",
-            "eisande@equinor.com",
             "ahmab@equinor.com",
             "toaus@equinor.com",
             "dboh@equinor.com"

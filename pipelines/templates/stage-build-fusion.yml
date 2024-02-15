@@ -48,7 +48,7 @@ stages:
                 echo "$(jq '{
                   key: .name,
                   name: .manifest.name, 
-                  shortName: .manifest.name, 
+                  shortName: .manifest.shortName, 
                   description: .description, 
                   type: .manifest.type, 
                   main: .main, 
@@ -59,7 +59,7 @@ stages:
                   }, 
                   admins: .manifest.admins, 
                   owners: .manifest.owners 
-                  }' package.json)" > ./dist/app-manifest.json
+                  }' package.json)" > frontend/dist/app-manifest.json
           - task: ArchiveFiles@2
             displayName: "Archive files"
             inputs:
