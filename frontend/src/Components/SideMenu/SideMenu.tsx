@@ -79,7 +79,7 @@ const SideMenu: React.FC<Props> = ({ children }) => {
             <Wrapper>
                 <Body>
                     <SidebarDiv>
-                        <ProjectMenu project={project} />
+                        <ProjectMenu />
                         <SideMenuFooter>
                             <a
                                 href="https://forms.office.com/Pages/ResponsePage.aspx?id=NaKkOuK21UiRlX_PBbRZsCjGTHQnxJxIkcdHZ_YqW4BUMTQyTVNLOEY0VUtSUjIwN1QxUVJIRjBaNC4u"

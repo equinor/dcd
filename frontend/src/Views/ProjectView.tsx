@@ -146,8 +146,6 @@ const ProjectView = () => {
             <EditTechnicalInputModal
                 toggleEditTechnicalInputModal={toggleEditTechnicalInputModal}
                 isOpen={editTechnicalInputModalIsOpen ?? false}
-                project={project}
-                setProject={setProject}
             />
         </>
     )
