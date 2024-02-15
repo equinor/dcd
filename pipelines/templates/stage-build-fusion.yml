@@ -40,6 +40,26 @@ stages:
                 command: "custom"
                 workingDir: "frontend"
                 customCommand: "run-script build"
+          - task: Bash@3
+            displayName: 'Extract manifest data from package.json'
+            inputs:
+              targetType: 'inline'
+              script: |
+                echo "$(jq '{
+                  key: .name,
+                  name: .manifest.name, 
+                  shortName: .manifest.name, 
+                  description: .description, 
+                  type: .manifest.type, 
+                  main: .main, 
+                  version: {
+                      major: .version | split(".")[0], 
+                      minor: .version | split(".")[1], 
+                      patch: .version | split(".")[2]
+                  }, 
+                  admins: .manifest.admins, 
+                  owners: .manifest.owners 
+                  }' package.json)" > ./dist/app-manifest.json
           - task: ArchiveFiles@2
             displayName: "Archive files"
             inputs:
