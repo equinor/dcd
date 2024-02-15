@@ -28,7 +28,7 @@ stages:
               targetFiles: '**/package.json'
           - task: NodeTool@0
             inputs:
-                versionSpec: "16.x"
+                versionSpec: "18.x"
           - task: Npm@1
             displayName: "NPM Install"
             inputs:
@@ -40,6 +40,14 @@ stages:
                 command: "custom"
                 workingDir: "frontend"
                 customCommand: "run-script build"
+          - task: ArchiveFiles@2
+            displayName: "Archive files"
+            inputs:
+              rootFolderOrFile: "frontend/dist"
+              includeRootFolder: false
+              archiveType: "zip"
+              archiveFile: "${{ parameters.workSpace }}/s/frontend/out/conceptapp.zip"
+              replaceExistingArchive: true
           - task: PublishPipelineArtifact@1
             inputs:
                 targetPath: "${{ parameters.workSpace }}/s/frontend/out/conceptapp.zip"
