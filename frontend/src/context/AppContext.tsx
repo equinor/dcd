@@ -7,68 +7,71 @@ import React, {
 } from "react";
 import { ITimeSeries } from "../models/ITimeSeries";
 
+
 // Assuming Components.Schemas.* are defined elsewhere
 // Replace Components.Schemas.* with the correct type or interface for your project
 
 interface AppContextType {
     project: Components.Schemas.ProjectDto | undefined;
     setProject: React.Dispatch<React.SetStateAction<Components.Schemas.ProjectDto | undefined>>;
+    caseItem: Components.Schemas.CaseDto | undefined;
+    setCase: React.Dispatch<React.SetStateAction<Components.Schemas.CaseDto | undefined>>;
+    activeTab: number | undefined;
+    setActiveTab: React.Dispatch<React.SetStateAction<number | undefined>>;
+
     // OPEX
     totalStudyCost: ITimeSeries | undefined;
     setTotalStudyCost: React.Dispatch<React.SetStateAction<ITimeSeries | undefined>>;
-    opexCost: Components.Schemas.OpexCostProfileDto | undefined;
-    setOpexCost: React.Dispatch<React.SetStateAction<Components.Schemas.OpexCostProfileDto | undefined>>;
+    opexSum: Components.Schemas.OpexCostProfileDto | undefined;
+    setOpexSum: React.Dispatch<React.SetStateAction<Components.Schemas.OpexCostProfileDto | undefined>>;
     cessationCost: Components.Schemas.SurfCessationCostProfileDto | undefined;
     setCessationCost: React.Dispatch<React.SetStateAction<Components.Schemas.SurfCessationCostProfileDto | undefined>>;
-    
+
     // CAPEX
+    topside: Components.Schemas.TopsideDto | undefined;
+    setTopside: React.Dispatch<React.SetStateAction<Components.Schemas.TopsideDto | undefined>>;
     topsideCost: Components.Schemas.TopsideCostProfileDto | undefined;
     setTopsideCost: React.Dispatch<React.SetStateAction<Components.Schemas.TopsideCostProfileDto | undefined>>;
+    surf: Components.Schemas.SurfDto | undefined;
+    setSurf: React.Dispatch<React.SetStateAction<Components.Schemas.SurfDto | undefined>>;
     surfCost: Components.Schemas.SurfCostProfileDto | undefined;
     setSurfCost: React.Dispatch<React.SetStateAction<Components.Schemas.SurfCostProfileDto | undefined>>;
+    substructure: Components.Schemas.SubstructureDto | undefined;
+    setSubstructure: React.Dispatch<React.SetStateAction<Components.Schemas.SubstructureDto | undefined>>;
     substructureCost: Components.Schemas.SubstructureCostProfileDto | undefined;
     setSubstructureCost: React.Dispatch<React.SetStateAction<Components.Schemas.SubstructureCostProfileDto | undefined>>;
+    transport: Components.Schemas.TransportDto | undefined;
+    setTransport: React.Dispatch<React.SetStateAction<Components.Schemas.TransportDto | undefined>>;
     transportCost: Components.Schemas.TransportCostProfileDto | undefined;
     setTransportCost: React.Dispatch<React.SetStateAction<Components.Schemas.TransportCostProfileDto | undefined>>;
-    startYear: number | undefined;
     setStartYear: React.Dispatch<React.SetStateAction<number | undefined>>;
-    endYear: number | undefined;
     setEndYear: React.Dispatch<React.SetStateAction<number | undefined>>;
     tableYears: [number, number];
     setTableYears: React.Dispatch<React.SetStateAction<[number, number]>>;
+    drillingCost: number | undefined;
+    setDrillingCost: React.Dispatch<React.SetStateAction<number | undefined>>;
+
+    explorationCost: Components.Schemas.ExplorationDto | undefined;
+    setExplorationCost: React.Dispatch<React.SetStateAction<Components.Schemas.ExplorationDto | undefined>>;
 
     feasibilityAndConceptStudies: ITimeSeries | undefined;
     setFeasibilityAndConceptStudies: React.Dispatch<React.SetStateAction<ITimeSeries | undefined>>;
     feedStudies: ITimeSeries | undefined;
     setFEEDStudies: React.Dispatch<React.SetStateAction<ITimeSeries | undefined>>;
-    otherStudies: any;
-    setOtherStudies: React.Dispatch<React.SetStateAction<any>>;
-    opexSum: any[];
-    setOpexSum: React.Dispatch<React.SetStateAction<any[]>>;
-    historicCost: any;
-    setHistoricCost: React.Dispatch<React.SetStateAction<any>>;
-    offshoreRelatedOpexInclWellIntervention: any;
-    setOffshoreRelatedOpexInclWellIntervention: React.Dispatch<React.SetStateAction<any>>;
-    onshoreRelatedOpex: any;
-    setOnshoreRelatedOpex: React.Dispatch<React.SetStateAction<any>>;
-    productionAndSalesVolume: any[];
-    setProductionAndSalesVolume: React.Dispatch<React.SetStateAction<any[]>>;
-    oilCondensateProduction: any;
-    setOilCondensateProduction: React.Dispatch<React.SetStateAction<any>>;
-    nglProduction: any;
-    setNGLProduction: React.Dispatch<React.SetStateAction<any>>;
-    salesGas: any;
-    setSalesGas: React.Dispatch<React.SetStateAction<any>>;
-    gasImport: any;
-    setGasImport: React.Dispatch<React.SetStateAction<any>>;
-    cO2Emissions: any;
-    setCO2Emissions: React.Dispatch<React.SetStateAction<any>>;
-    importedElectricity: any;
-    setImportedElectricity: React.Dispatch<React.SetStateAction<any>>;
-    defferedOilProfileMSm3: any;
-    setDefferedOilProfileMSm3: React.Dispatch<React.SetStateAction<any>>;
-    deferralGas: any;
-    setDeferralGas: React.Dispatch<React.SetStateAction<any>>;
+
+
+    productionAndSalesVolume: Components.Schemas.ProductionAndSalesVolumesDto | undefined;
+    setProductionAndSalesVolume: React.Dispatch<React.SetStateAction<Components.Schemas.ProductionAndSalesVolumesDto | undefined>>;
+    oilCondensateProduction: Components.Schemas.ProductionProfileOilDto | undefined;
+    setOilCondensateProduction: React.Dispatch<React.SetStateAction<Components.Schemas.ProductionProfileOilDto | undefined>>;
+    nglProduction: Components.Schemas.ProductionProfileNGLDto | undefined;
+    setNGLProduction: React.Dispatch<React.SetStateAction<Components.Schemas.ProductionProfileNGLDto | undefined>>;
+    salesGas: Components.Schemas.ProductionAndSalesVolumesDto | undefined;
+    setSalesGas: React.Dispatch<React.SetStateAction<Components.Schemas.ProductionAndSalesVolumesDto | undefined>>;
+    cO2Emissions: Components.Schemas.Co2EmissionsDto | undefined;
+    setCO2Emissions: React.Dispatch<React.SetStateAction<Components.Schemas.Co2EmissionsDto | undefined>>;
+    importedElectricity: Components.Schemas.ImportedElectricityDto | undefined;
+    setImportedElectricity: React.Dispatch<React.SetStateAction<Components.Schemas.ImportedElectricityDto | undefined>>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -77,94 +80,90 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [project, setProject] = useState<Components.Schemas.ProjectDto | undefined>();
     // Initialize the state for each property
     const [totalStudyCost, setTotalStudyCost] = useState<ITimeSeries | undefined>();
-    const [opexCost, setOpexCost] = useState<Components.Schemas.OpexCostProfileDto | undefined>();
+    const [opexSum, setOpexSum] = useState<Components.Schemas.OpexCostProfileDto | undefined>();
     const [cessationCost, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto | undefined>();
+    const [activeTab, setActiveTab] = useState<number>();
+    const [caseItem, setCase] = useState<Components.Schemas.CaseDto | undefined>(); 
 
+    const [topside, setTopside] = useState<Components.Schemas.TopsideDto | undefined>();
     const [topsideCost, setTopsideCost] = useState<Components.Schemas.TopsideCostProfileDto | undefined>();
+    const [surf, setSurf] = useState<Components.Schemas.SurfDto | undefined>();
     const [surfCost, setSurfCost] = useState<Components.Schemas.SurfCostProfileDto | undefined>();
+    const [substructure, setSubstructure] = useState<Components.Schemas.SubstructureDto | undefined>();
     const [substructureCost, setSubstructureCost] = useState<Components.Schemas.SubstructureCostProfileDto | undefined>();
+    const [transport, setTransport] = useState<Components.Schemas.TransportDto | undefined>();
     const [transportCost, setTransportCost] = useState<Components.Schemas.TransportCostProfileDto | undefined>();
 
-    const [startYear, setStartYear] = useState<number>();
-    const [endYear, setEndYear] = useState<number>();
-    const [tableYears, setTableYears] = useState<[number, number]>([0, 0]);
+    const [startYear, setStartYear] = useState<number | undefined>(); // Corrected
+    const [endYear, setEndYear] = useState<number | undefined>(); // Corrected
+    const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030]);
 
-    const [studyCostSum, setStudyCostSum] = useState<any[]>([]);
-    const [feasibilityAndConceptStudies, setFeasibilityAndConceptStudies] = useState<any>();
-    const [feedStudies, setFEEDStudies] = useState<any>();
-    const [otherStudies, setOtherStudies] = useState<any>();
-    const [opexSum, setOpexSum] = useState<any[]>([]);
-    const [historicCost, setHistoricCost] = useState<any>();
-    const [offshoreRelatedOpexInclWellIntervention, setOffshoreRelatedOpexInclWellIntervention] = useState<any>();
-    const [onshoreRelatedOpex, setOnshoreRelatedOpex] = useState<any>();
-    const [productionAndSalesVolume, setProductionAndSalesVolume] = useState<any[]>([]);
-    const [oilCondensateProduction, setOilCondensateProduction] = useState<any>();
-    const [nglProduction, setNGLProduction] = useState<any>();
-    const [salesGas, setSalesGas] = useState<any>();
-    const [gasImport, setGasImport] = useState<any>();
-    const [cO2Emissions, setCO2Emissions] = useState<any>();
-    const [importedElectricity, setImportedElectricity] = useState<any>();
-    const [defferedOilProfileMSm3, setDefferedOilProfileMSm3] = useState<any>();
-    const [deferralGas, setDeferralGas] = useState<any>();
+    const [feasibilityAndConceptStudies, setFeasibilityAndConceptStudies] = useState<ITimeSeries | undefined>();
+    const [feedStudies, setFEEDStudies] = useState<ITimeSeries | undefined>();
+
+    const [productionAndSalesVolume, setProductionAndSalesVolume] = useState<Components.Schemas.ProductionAndSalesVolumesDto | undefined>();
+    const [oilCondensateProduction, setOilCondensateProduction] = useState<Components.Schemas.ProductionProfileOilDto | undefined>();
+    const [nglProduction, setNGLProduction] = useState<Components.Schemas.ProductionProfileNGLDto | undefined>();
+    const [salesGas, setSalesGas] = useState<Components.Schemas.ProductionAndSalesVolumesDto | undefined>();
+    const [cO2Emissions, setCO2Emissions] = useState<Components.Schemas.Co2EmissionsDto | undefined>();
+    const [importedElectricity, setImportedElectricity] = useState<Components.Schemas.ImportedElectricityDto | undefined>();
+    const [drillingCost, setDrillingCost] = useState<number>();
+    const [explorationCost, setExplorationCost] = useState<Components.Schemas.ExplorationDto | undefined>();
 
     const value = useMemo(() => ({
         project, setProject,
+        activeTab, setActiveTab,
+        caseItem, setCase,
         totalStudyCost, setTotalStudyCost,
-        opexCost, setOpexCost,
+        opexSum, setOpexSum,
         cessationCost, setCessationCost,
+        topside, setTopside,
         topsideCost, setTopsideCost,
+        surf, setSurf,
         surfCost, setSurfCost,
+        substructure, setSubstructure,
         substructureCost, setSubstructureCost,
+        transport, setTransport,
         transportCost, setTransportCost,
         startYear, setStartYear,
         endYear, setEndYear,
         tableYears, setTableYears,
-        studyCostSum, setStudyCostSum,
         feasibilityAndConceptStudies, setFeasibilityAndConceptStudies,
         feedStudies, setFEEDStudies,
-        otherStudies, setOtherStudies,
-        opexSum, setOpexSum,
-        historicCost, setHistoricCost,
-        offshoreRelatedOpexInclWellIntervention, setOffshoreRelatedOpexInclWellIntervention,
-        onshoreRelatedOpex, setOnshoreRelatedOpex,
         productionAndSalesVolume, setProductionAndSalesVolume,
         oilCondensateProduction, setOilCondensateProduction,
         nglProduction, setNGLProduction,
         salesGas, setSalesGas,
-        gasImport, setGasImport,
         cO2Emissions, setCO2Emissions,
         importedElectricity, setImportedElectricity,
-        defferedOilProfileMSm3, setDefferedOilProfileMSm3,
-        deferralGas, setDeferralGas,
+        drillingCost, setDrillingCost,
+        explorationCost, setExplorationCost,
     }), [
         project,
+        activeTab,
+        caseItem,
         totalStudyCost,
-        opexCost,
+        opexSum,
         cessationCost,
+        topside, 
         topsideCost,
+        surf,
         surfCost,
+        substructure,
         substructureCost,
+        transport,
         transportCost,
-        startYear,
-        endYear,
         tableYears,
-        studyCostSum,
         feasibilityAndConceptStudies,
         feedStudies,
-        otherStudies,
-        opexSum,
-        historicCost,
-        offshoreRelatedOpexInclWellIntervention,
-        onshoreRelatedOpex,
         productionAndSalesVolume,
         oilCondensateProduction,
         nglProduction,
         salesGas,
-        gasImport,
         cO2Emissions,
         importedElectricity,
-        defferedOilProfileMSm3,
-        deferralGas,
+        drillingCost,
+        explorationCost,
     ]);
 
     return (
