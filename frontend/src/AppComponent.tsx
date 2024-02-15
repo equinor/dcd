@@ -8,8 +8,6 @@ import { storeAppId, storeAppScope } from "./Utils/common"
 import { buildConfig } from "./Services/config"
 
 const AppComponent: FC = () => {
-    // const runtimeConfig = useAppConfig()
-
     const suppressConsoleError = (shouldBeHidden: ((message: string) => boolean)[]) => {
         const err = console.error
         console.error = (message?: any, ...optionalParams: any[]) => {
@@ -27,21 +25,9 @@ const AppComponent: FC = () => {
 
     const config = resolveConfiguration(EnvironmentVariables.ENVIRONMENT)
 
-    // if (runtimeConfig.value !== undefined && runtimeConfig.value !== null) {
-    //     if (runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL) {
-    //         buildConfig(runtimeConfig.value!.endpoints.REACT_APP_API_BASE_URL)
-    //     }
-
-    //     if (runtimeConfig.value?.environment) {
-    //         const values: any = { ...runtimeConfig.value.environment }
-    //         storeAppId(values.APP_ID)
-    //         storeAppScope(values.BACKEND_APP_SCOPE)
-    //     }
-    // } else {
     buildConfig(config.REACT_APP_API_BASE_URL)
     storeAppId(config.APP_ID)
     storeAppScope(config.BACKEND_APP_SCOPE[0])
-    // }
 
     console.log("Concept App version: ", APP_VERSION)
 

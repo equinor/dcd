@@ -9,7 +9,7 @@
         "autogenerate-models": "dtsgen --out ./src/types.d.ts --url http://localhost:5000/swagger/v1/swagger.yaml",
         "autogenerate-models-build": "dtsgen --out ./src/types-azuredevops.d.ts --url https://backend-dcd-dev.radix.equinor.com/swagger/v1/swagger.json",
         "prebuild": "node -p \"'export const APP_VERSION = ' + JSON.stringify(require('./package.json').version)\" > src/version.ts",
-        "build": "fusion build-app",
+        "build": "fusion-framework-cli app build",
         "dev": "jest",
         "prestart": "node -p \"'export const APP_VERSION = ' + JSON.stringify(require('./package.json').version)\" > src/version.ts",
         "start": "fusion-framework-cli app dev",
