@@ -2,7 +2,7 @@ import {
     Button, Icon, Menu, Progress, Tabs, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
-import { useHistory, useLocation, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import styled from "styled-components"
 import {
     add,
@@ -156,7 +156,7 @@ const CaseView = () => {
     const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
-    const history = useHistory()
+    const navigate = useNavigate()
     const location = useLocation()
 
     const [isLoading, setIsLoading] = useState<boolean>()
@@ -185,7 +185,7 @@ const CaseView = () => {
             if (!caseResult) {
                 if (location.pathname.indexOf("/case") > -1) {
                     const projectUrl = location.pathname.split("/case")[0]
-                    history.push(projectUrl)
+                    navigate(projectUrl)
                 }
             }
             setCase(caseResult)
@@ -248,7 +248,7 @@ const CaseView = () => {
             if (caseItem?.id && project?.id) {
                 const newProject = await (await GetCaseService()).duplicateCase(project.id, caseItem?.id)
                 setProject(newProject)
-                history.push(projectPath(fusionContextId!))
+                navigate(fusionContextId!)
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -260,7 +260,7 @@ const CaseView = () => {
             if (caseItem?.id && project?.id) {
                 const newProject = await (await GetCaseService()).deleteCase(project.id, caseItem?.id)
                 setProject(newProject)
-                history.push(projectPath(fusionContextId!))
+                navigate(fusionContextId!)
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -619,7 +619,7 @@ const CaseView = () => {
                 isOpen={editCaseModalIsOpen}
                 toggleModal={toggleEditCaseModal}
                 editMode
-                navigate
+                shouldNavigate
             />
             <EditCaseModal
                 setProject={setProject}
@@ -628,7 +628,7 @@ const CaseView = () => {
                 isOpen={createCaseModalIsOpen}
                 toggleModal={toggleCreateCaseModal}
                 editMode={false}
-                navigate
+                shouldNavigate
             />
         </div>
     )

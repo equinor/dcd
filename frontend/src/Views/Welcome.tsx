@@ -1,16 +1,21 @@
-import { useCurrentContext, useHistory } from "@equinor/fusion"
+import { useModuleCurrentContext } from '@equinor/fusion-framework-react-module-context';
 import { useEffect } from "react"
+import { useNavigate } from "react-router"
 import { projectPath } from "../Utils/common"
 
 const Welcome = (): JSX.Element => {
-    const history = useHistory()
-    const currentProject = useCurrentContext()
+    const navigate = useNavigate()
+    const { currentContext } = useModuleCurrentContext()
+
+    // useEffect(() => {
+    //     if (currentProject?.externalId) {
+    //         navigate(currentProject?.externalId)
+    //     }
+    // }, [currentProject?.externalId])
 
     useEffect(() => {
-        if (currentProject?.externalId) {
-            history.push(projectPath(currentProject?.externalId))
-        }
-    }, [currentProject?.externalId])
+        console.log("currentContext", currentContext)
+    }, [currentContext])
 
     return (
         <main>

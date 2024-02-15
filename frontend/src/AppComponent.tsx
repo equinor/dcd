@@ -1,24 +1,7 @@
-import { useAppConfig } from "@equinor/fusion"
 import { FC } from "react"
-import { ModuleRegistry } from "@ag-grid-community/core"
-import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model"
-import { ColumnsToolPanelModule } from "@ag-grid-enterprise/column-tool-panel"
-import { FiltersToolPanelModule } from "@ag-grid-enterprise/filter-tool-panel"
-import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection"
-import { ClipboardModule } from "@ag-grid-enterprise/clipboard"
-import { MultiFilterModule } from "@ag-grid-enterprise/multi-filter"
-import { SetFilterModule } from "@ag-grid-enterprise/set-filter"
-import { MenuModule } from "@ag-grid-enterprise/menu"
-import { GridChartsModule } from "@ag-grid-enterprise/charts"
-import { AppRouter } from "./app/AppRouter"
-import { storeAppId, storeAppScope } from "./Utils/common"
-import { FusionRouterBootstrap } from "./app/FusionRouterBootstrap"
-import ConceptAppAuthProvider from "./context/ConceptAppAuthProvider"
-import { AppContextProvider } from "./context/AppContext"
+import { RouterProvider, createBrowserRouter } from "react-router-dom"
 import { APP_VERSION } from "./version"
-import { buildConfig } from "./Services/config"
-import { resolveConfiguration } from "./Utils/config"
-import { EnvironmentVariables } from "./environmentVariables"
+import Root from "./Root"
 
 const AppComponent: FC = () => {
     // const runtimeConfig = useAppConfig()
@@ -58,14 +41,20 @@ const AppComponent: FC = () => {
 
     console.log("Concept App version: ", APP_VERSION)
 
+    const router = createBrowserRouter(
+        [
+            {
+                path: "/",
+                element: <Root />,
+            },
+        ],
+        {
+            basename: "/apps/conceptapp",
+        },
+    )
+
     return (
-        <AppContextProvider>
-            <ConceptAppAuthProvider>
-                <FusionRouterBootstrap>
-                    <AppRouter />
-                </FusionRouterBootstrap>
-            </ConceptAppAuthProvider>
-        </AppContextProvider>
+        <RouterProvider router={router} />
     )
 }
 

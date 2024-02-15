@@ -15,7 +15,7 @@ import {
     useEffect,
     FormEventHandler,
 } from "react"
-import { useHistory, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import styled from "styled-components"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import { ModalNoFocus } from "../ModalNoFocus"
@@ -79,7 +79,7 @@ interface Props {
     isOpen: boolean
     toggleModal: () => void
     editMode: boolean
-    navigate: boolean
+    shouldNavigate: boolean
 }
 
 const EditCaseModal = ({
@@ -89,7 +89,7 @@ const EditCaseModal = ({
     isOpen,
     toggleModal,
     editMode,
-    navigate,
+    shouldNavigate,
 }: Props) => {
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const [caseName, setCaseName] = useState<string>("")
@@ -103,7 +103,7 @@ const EditCaseModal = ({
 
     const [caseItem, setCaseItem] = useState<Components.Schemas.CaseDto>()
 
-    const history = useHistory()
+    const navigate = useNavigate()
 
     useEffect(() => {
         const dG4DefaultDate = new Date(Date.UTC(2030, 0, 1))
@@ -190,14 +190,14 @@ const EditCaseModal = ({
                     },
                 )
                 setIsLoading(false)
-                history.push(`/${fusionContextId}/case/${projectResult.cases.find((o) => (
+                navigate(`/${projectResult.cases.find((o) => (
                     o.name === caseName
                 ))?.id}`)
             }
             setProject(projectResult)
             toggleModal()
-            if (navigate) {
-                history.push(projectPath(fusionContextId!))
+            if (shouldNavigate) {
+            navigate(fusionContextId!)
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
