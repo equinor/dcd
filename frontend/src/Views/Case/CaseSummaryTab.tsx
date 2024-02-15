@@ -8,7 +8,7 @@ import CaseNumberInput from "../../Components/Case/CaseNumberInput"
 import CaseTabTable from "./CaseTabTable"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileService"
-import { mergeTimeseries } from "../../Utils/common"
+import { MergeTimeseries } from "../../Utils/common"
 import { ITimeSeriesCost } from "../../models/ITimeSeriesCost"
 
 const ColumnWrapper = styled.div`
@@ -58,38 +58,38 @@ const CaseSummaryTab = ({
 }: Props) => {
      // Summary table
     // Expploration cost subtable
-    // const [explorationCostSum, setExplorationCostSum] = useState<Components.Schemas.explorationCostSum>()
+    const [explorationCostSum, setExplorationCostSum] = useState<Components.Schemas.explorationCostSum>()
 
-    // // CAPEX subtable
-    // const [capexSum, setCapexSum] = useState([])
-    // const [drilling, setDrilling] = useState<>()
-    // const [offshoreFacilities, setOffshoreFacilities] = useState<>()
-    // const [onshoreFacilities, setOnshoreFacilities] = useState<>()
-    // const [cessationOffshoreFacilities, setCessationOffshoreFacilities] = useState<>()
-    // const [cessationOnshoreFacilities, setCessationOnshoreFacilities] = useState<>()
+    // CAPEX subtable
+    const [capexSum, setCapexSum] = useState([])
+    const [drilling, setDrilling] = useState<>()
+    const [offshoreFacilities, setOffshoreFacilities] = useState<>()
+    const [onshoreFacilities, setOnshoreFacilities] = useState<>()
+    const [cessationOffshoreFacilities, setCessationOffshoreFacilities] = useState<>()
+    const [cessationOnshoreFacilities, setCessationOnshoreFacilities] = useState<>()
 
-    // // Study cost subtable
-    // const [studyCostSum, setStudyCostSum] = useState([])
-    // const [feasibilityAndConceptStudies, setFeasibilityAndConceptStudies] = useState<>()
-    // const [feedStudies, setFEEDStudies] = useState<>()
-    // const [otherStudies, setOtherStudies] = useState<>()
+    // Study cost subtable
+    const [studyCostSum, setStudyCostSum] = useState([])
+    const [feasibilityAndConceptStudies, setFeasibilityAndConceptStudies] = useState<>()
+    const [feedStudies, setFEEDStudies] = useState<>()
+    const [otherStudies, setOtherStudies] = useState<>()
 
-    // // OPEX subtable
-    // const [opexSum, setOpexSum] = useState([])
-    // const [historicCost, setHistoricCost] = useState<>()
-    // const [offshoreRelatedOpexInclWellIntervention, setOffshoreRelatedOpexInclWellIntervention] = useState<>() //INCL WHAT
-    // const [onshoreRelatedOpex, setOnshoreRelatedOpex] = useState<>()
+    // OPEX subtable
+    const [opexSum, setOpexSum] = useState([])
+    const [historicCost, setHistoricCost] = useState<>()
+    const [offshoreRelatedOpexInclWellIntervention, setOffshoreRelatedOpexInclWellIntervention] = useState<>() //INCL WHAT
+    const [onshoreRelatedOpex, setOnshoreRelatedOpex] = useState<>()
 
-    // //Production & sales volume table
-    // const [productionAndSalesVolume, setProductionAndSalesVolume] = useState([])
-    // const [oilCondensateProduction , setOilCondensateProduction] = useState<>()
-    // const [nglProduction, setNGLProduction] = useState<>()
-    // const [salesGas, setSalesGas] = useState<>()
-    // const [gasImport, setGasImport] = useState<>()
-    // const [cO2Emissions, setCO2Emissions] = useState<>()
-    // const [importedElectricity, setImportedElectricity] = useState<>()
-    // const [defferedOilProfileMSm3, setDefferedOilProfileMSm3] = useState<>()
-    // const [deferralGas, setDeferralGas] = useState<>()
+    //Production & sales volume table
+    const [productionAndSalesVolume, setProductionAndSalesVolume] = useState([])
+    const [oilCondensateProduction , setOilCondensateProduction] = useState<>()
+    const [nglProduction, setNGLProduction] = useState<>()
+    const [salesGas, setSalesGas] = useState<>()
+    const [gasImport, setGasImport] = useState<>()
+    const [cO2Emissions, setCO2Emissions] = useState<>()
+    const [importedElectricity, setImportedElectricity] = useState<>()
+    const [defferedOilProfileMSm3, setDefferedOilProfileMSm3] = useState<>()
+    const [deferralGas, setDeferralGas] = useState<>()
 
     // OPEX
     const [totalStudyCost, setTotalStudyCost] = useState<ITimeSeries>()
@@ -152,7 +152,7 @@ const CaseSummaryTab = ({
                         feed = caseItem.totalFEEDStudiesOverride
                     }
 
-                    const totalStudy = mergeTimeseries(feasibility, feed)
+                    const totalStudy = MergeTimeseries(feasibility, feed)
                     setTotalStudyCost(totalStudy)
 
                     setOpexCost(opex)

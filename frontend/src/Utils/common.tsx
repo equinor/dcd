@@ -173,7 +173,7 @@ const mergeCostProfileData = (t1: number[], t2: number[], offset: number): numbe
     return doubleList
 }
 
-export const mergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
+export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
     const t1Year = t1?.startYear ?? 0
     const t2Year = t2?.startYear ?? 0
     const t1Values = t1?.values
