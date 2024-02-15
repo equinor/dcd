@@ -1,4 +1,4 @@
-import { useAppConfig, useFusionEnvironment } from "@equinor/fusion"
+import { useAppConfig } from "@equinor/fusion"
 import { FC } from "react"
 import { ModuleRegistry } from "@ag-grid-community/core"
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model"
@@ -18,28 +18,10 @@ import { AppContextProvider } from "./context/AppContext"
 import { APP_VERSION } from "./version"
 import { buildConfig } from "./Services/config"
 import { resolveConfiguration } from "./Utils/config"
-
-ModuleRegistry.registerModules([
-    ClientSideRowModelModule,
-    ColumnsToolPanelModule,
-    FiltersToolPanelModule,
-    RangeSelectionModule,
-    ClipboardModule,
-    MultiFilterModule,
-    SetFilterModule,
-    MenuModule,
-    GridChartsModule,
-])
-
-const setEnvironment = (): void => {
-    const fusionEnv = useFusionEnvironment()
-    localStorage.setItem("FUSION_ENV_LOCAL_CACHE_KEY", fusionEnv.env)
-}
+import { EnvironmentVariables } from "./environmentVariables"
 
 const AppComponent: FC = () => {
-    setEnvironment()
-    const runtimeConfig = useAppConfig()
-    const fusionEnvironment = useFusionEnvironment()
+    // const runtimeConfig = useAppConfig()
 
     const suppressConsoleError = (shouldBeHidden: ((message: string) => boolean)[]) => {
         const err = console.error
@@ -56,23 +38,23 @@ const AppComponent: FC = () => {
         (m) => m.startsWith("*"),
     ])
 
-    const config = resolveConfiguration(fusionEnvironment.env)
+    // const config = resolveConfiguration(EnvironmentVariables.ENVIRONMENT)
 
-    if (runtimeConfig.value !== undefined && runtimeConfig.value !== null) {
-        if (runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL) {
-            buildConfig(runtimeConfig.value!.endpoints.REACT_APP_API_BASE_URL)
-        }
+    // if (runtimeConfig.value !== undefined && runtimeConfig.value !== null) {
+    //     if (runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL) {
+    //         buildConfig(runtimeConfig.value!.endpoints.REACT_APP_API_BASE_URL)
+    //     }
 
-        if (runtimeConfig.value?.environment) {
-            const values: any = { ...runtimeConfig.value.environment }
-            storeAppId(values.APP_ID)
-            storeAppScope(values.BACKEND_APP_SCOPE)
-        }
-    } else {
-        buildConfig(config.REACT_APP_API_BASE_URL)
-        storeAppId(config.APP_ID)
-        storeAppScope(config.BACKEND_APP_SCOPE[0])
-    }
+    //     if (runtimeConfig.value?.environment) {
+    //         const values: any = { ...runtimeConfig.value.environment }
+    //         storeAppId(values.APP_ID)
+    //         storeAppScope(values.BACKEND_APP_SCOPE)
+    //     }
+    // } else {
+    // buildConfig(config.REACT_APP_API_BASE_URL)
+    // storeAppId(config.APP_ID)
+    // storeAppScope(config.BACKEND_APP_SCOPE[0])
+    // }
 
     console.log("Concept App version: ", APP_VERSION)
 

@@ -15,7 +15,7 @@ import {
 } from "@equinor/eds-icons"
 import { useCurrentContext } from "@equinor/fusion"
 import { tokens } from "@equinor/eds-tokens"
-import { Tooltip } from "@material-ui/core"
+import { Tooltip } from "@mui/material"
 import { GetProjectService } from "../Services/ProjectService"
 import { projectPath, unwrapProjectId } from "../Utils/common"
 import CaseDescriptionTab from "./Case/CaseDescriptionTab"

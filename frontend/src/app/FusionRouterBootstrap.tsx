@@ -11,11 +11,11 @@ const appKey = "conceptapp"
 const fusionPrefix = `/apps/${appKey}`
 
 export const FusionRouterBootstrap = ({ children }: Props): JSX.Element => {
-    const { env } = useFusionEnvironment()
+    // const { env } = useFusionEnvironment()
     const history = useMemo(() => {
-        const basename = env ? fusionPrefix : "/"
+        const basename = "/"
         return createBrowserHistory({ basename })
-    }, [env])
+    }, [])
 
     return (
         // eslint-disable-next-line react/jsx-no-constructed-context-values
