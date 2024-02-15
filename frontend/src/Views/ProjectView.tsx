@@ -7,9 +7,9 @@ import React, {
     useEffect,
     useState,
 } from "react"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useParams } from "react-router-dom"
 import styled from "styled-components"
-import { useCurrentContext } from "@equinor/fusion"
 import { useAppContext } from "../context/AppContext"
 import { GetProjectService } from "../Services/ProjectService"
 import ProjectOverviewTab from "./Project/ProjectOverviewTab"
@@ -49,7 +49,7 @@ const Wrapper = styled.div`
 `
 
 const ProjectView = () => {
-    const currentProject = useCurrentContext()
+    const { currentContext } = useModuleCurrentContext()
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const { project, setProject } = useAppContext()
 
@@ -63,22 +63,22 @@ const ProjectView = () => {
         (async () => {
             try {
                 setIsLoading(true)
-                if (currentProject?.externalId) {
-                    let res = await (await GetProjectService()).getProjectByID(currentProject?.externalId)
-
+                if (currentContext?.externalId) {
+                    let res = await (await GetProjectService()).getProjectByID(currentContext?.externalId)
                     if (!res || res.id === "") {
                         setIsCreating(true)
-                        res = await (await GetProjectService()).createProjectFromContextId(currentProject.id)
+                        res = await (await GetProjectService()).createProjectFromContextId(currentContext.id)
                     }
+
                     setProject(res)
                     setIsCreating(false)
                     setIsLoading(false)
                 }
             } catch (error) {
-                console.error(`[ProjectView] Error while fetching project. Context: ${fusionContextId}, Project: ${currentProject?.externalId}`, error)
+                console.error(`[ProjectView] Error while fetching project. Context: ${fusionContextId}, Project: ${currentContext?.externalId}`, error)
             }
         })()
-    }, [currentProject?.externalId])
+    }, [currentContext?.externalId])
 
     const toggleEditTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
 
@@ -146,6 +146,8 @@ const ProjectView = () => {
             <EditTechnicalInputModal
                 toggleEditTechnicalInputModal={toggleEditTechnicalInputModal}
                 isOpen={editTechnicalInputModalIsOpen ?? false}
+                project={project}
+                setProject={setProject}
             />
         </>
     )

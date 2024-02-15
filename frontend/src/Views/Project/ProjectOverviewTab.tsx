@@ -135,13 +135,19 @@ const ProjectOverviewTab = () => {
                             {project.country ?? "Not defined in Common Library"}
                         </Typography>
                     </WrapperRow>
+                    <WrapperRow>
+                        <ProjectDataFieldLabel>Description:</ProjectDataFieldLabel>
+                        <Typography aria-label="Country">
+                            {project.description ?? "empty"}
+                        </Typography>
+                    </WrapperRow>
                 </DataDiv>
             </RowWrapper>
             <EditCaseModal
                 isOpen={createCaseModalIsOpen}
                 toggleModal={toggleCreateCaseModal}
                 editMode={false}
-                navigate={false}
+                shouldNavigate={false}
             />
             <RowWrapper>
                 <Typography variant="h2">Cases</Typography>

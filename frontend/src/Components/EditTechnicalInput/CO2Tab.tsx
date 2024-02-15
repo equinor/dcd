@@ -1,4 +1,4 @@
-import { Typography } from "@material-ui/core"
+import { Typography } from "@mui/material"
 import { Dispatch, SetStateAction } from "react"
 import styled from "styled-components"
 import CO2ListTechnicalInput from "./CO2ListTechnicalInput"

@@ -2,7 +2,8 @@ import {
     Button, Icon, Menu, Progress, Tabs, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
-import { useHistory, useLocation, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
 import {
     add,
@@ -13,10 +14,11 @@ import {
     library_add,
     more_vertical,
 } from "@equinor/eds-icons"
+import { useCurrentContext } from "@equinor/fusion"
 import { tokens } from "@equinor/eds-tokens"
-import { Tooltip } from "@material-ui/core"
+import { Tooltip } from "@mui/material"
 import { GetProjectService } from "../Services/ProjectService"
-import { projectPath } from "../Utils/common"
+import { projectPath, unwrapProjectId } from "../Utils/common"
 import CaseDescriptionTab from "./Case/CaseDescriptionTab"
 import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 import CaseCostTab from "./Case/CaseCostTab"
@@ -30,7 +32,6 @@ import CaseDrillingScheduleTab from "./Case/CaseDrillingScheduleTab"
 import CaseCO2Tab from "./Case/CaseCO2Tab"
 import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
 import { EMPTY_GUID } from "../Utils/constants"
-import { useAppContext } from "../context/AppContext"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -104,15 +105,14 @@ const MenuIcon = styled(Icon)`
 `
 
 const CaseView = () => {
-    const history = useHistory()
-    const location = useLocation()
-
-    const { project, setProject } = useAppContext()
-    const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
-
     const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(false)
+
+    const [project, setProject] = useState<Components.Schemas.ProjectDto>()
     const [caseItem, setCase] = useState<Components.Schemas.CaseDto>()
     const [activeTab, setActiveTab] = useState<number>(0)
+    const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
+    const { currentContext } = useModuleCurrentContext()
+
     const [drainageStrategy, setDrainageStrategy] = useState<Components.Schemas.DrainageStrategyDto>()
     const [exploration, setExploration] = useState<Components.Schemas.ExplorationDto>()
     const [wellProject, setWellProject] = useState<Components.Schemas.WellProjectDto>()
@@ -120,46 +120,75 @@ const CaseView = () => {
     const [topside, setTopside] = useState<Components.Schemas.TopsideDto>()
     const [substructure, setSubstructure] = useState<Components.Schemas.SubstructureDto>()
     const [transport, setTransport] = useState<Components.Schemas.TransportDto>()
+
     const [wells, setWells] = useState<Components.Schemas.WellDto[]>()
     const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellProjectWellDto[]>()
     const [explorationWells, setExplorationWells] = useState<Components.Schemas.ExplorationWellDto[]>()
+
     const [totalFeasibilityAndConceptStudies,
         setTotalFeasibilityAndConceptStudies] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesDto>()
+
     const [totalFEEDStudies, setTotalFEEDStudies] = useState<Components.Schemas.TotalFEEDStudiesDto>()
+
     const [offshoreFacilitiesOperationsCostProfile,
         setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto>()
+
     const [wellInterventionCostProfile, setWellInterventionCostProfile] = useState<Components.Schemas.WellInterventionCostProfileDto>()
+
     const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>()
     const [cessationOffshoreFacilitiesCost,
         setCessationOffshoreFacilitiesCost] = useState<Components.Schemas.CessationOffshoreFacilitiesCostDto>()
+
     const [gAndGAdminCost, setGAndGAdminCost] = useState<Components.Schemas.GAndGAdminCostDto>()
+
     const [co2Emissions, setCo2Emissions] = useState<Components.Schemas.Co2EmissionsDto>()
+
     const [netSalesGas, setNetSalesGas] = useState<Components.Schemas.NetSalesGasDto>()
     const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<Components.Schemas.FuelFlaringAndLossesDto>()
     const [importedElectricity, setImportedElectricity] = useState<Components.Schemas.ImportedElectricityDto>()
+
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
+
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
-    const [isLoading, setIsLoading] = useState<boolean>()
-    const [isSaving, setIsSaving] = useState<boolean>()
-    const [updateFromServer, setUpdateFromServer] = useState<boolean>(true)
 
     const toggleTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
     const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
+    const navigate = useNavigate()
+    const location = useLocation()
+
+    const [isLoading, setIsLoading] = useState<boolean>()
+    const [isSaving, setIsSaving] = useState<boolean>()
+    const [updateFromServer, setUpdateFromServer] = useState<boolean>(true)
+
+    useEffect(() => {
+        (async () => {
+            try {
+                // const caseMapped = await (await GetCaseService()).getCase(unwrapProjectId(currentProject?.externalId), caseId!)
+                // console.log("CaseView -> caseMapped", caseMapped)
+                setUpdateFromServer(true)
+                setIsLoading(true)
+                const projectId = unwrapProjectId(currentContext?.externalId)
+                const projectResult = await (await GetProjectService()).getProjectByID(projectId)
+                setProject(projectResult)
+            } catch (error) {
+                console.error(`[CaseView] Error while fetching project ${currentContext?.externalId}`, error)
+            }
+        })()
+    }, [currentContext?.externalId, caseId, fusionContextId])
+
     useEffect(() => {
         if (project && updateFromServer) {
             const caseResult = project.cases.find((o) => o.id === caseId)
-
             if (!caseResult) {
                 if (location.pathname.indexOf("/case") > -1) {
                     const projectUrl = location.pathname.split("/case")[0]
-                    history.push(projectUrl)
+                    navigate(projectUrl)
                 }
             }
-
             setCase(caseResult)
 
             const drainageStrategyResult = project?.drainageStrategies
@@ -220,7 +249,7 @@ const CaseView = () => {
             if (caseItem?.id && project?.id) {
                 const newProject = await (await GetCaseService()).duplicateCase(project.id, caseItem?.id)
                 setProject(newProject)
-                history.push(projectPath(fusionContextId!))
+                navigate(fusionContextId!)
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -232,7 +261,7 @@ const CaseView = () => {
             if (caseItem?.id && project?.id) {
                 const newProject = await (await GetCaseService()).deleteCase(project.id, caseItem?.id)
                 setProject(newProject)
-                history.push(projectPath(fusionContextId!))
+                navigate(fusionContextId!)
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -269,15 +298,25 @@ const CaseView = () => {
 
     const handleSave = async () => {
         const dto: Components.Schemas.CaseWithAssetsWrapperDto = {}
+
         dto.caseDto = caseItem
+
         dto.drainageStrategyDto = drainageStrategy
+
         dto.wellProjectDto = wellProject
+
         dto.explorationDto = exploration
+
         dto.surfDto = surf
+
         dto.substructureDto = substructure
+
         dto.transportDto = transport
+
         dto.topsideDto = topside
+
         dto.explorationWellDto = explorationWells
+
         dto.wellProjectWellDtos = wellProjectWells
 
         setIsSaving(true)
@@ -568,23 +607,29 @@ const CaseView = () => {
             <EditTechnicalInputModal
                 toggleEditTechnicalInputModal={toggleTechnicalInputModal}
                 isOpen={editTechnicalInputModalIsOpen}
+                project={project}
+                setProject={setProject}
                 caseId={caseItem.id}
                 setExploration={setExploration}
                 setWellProject={setWellProject}
             />
             <EditCaseModal
+                setProject={setProject}
+                project={project}
                 caseId={caseItem.id}
                 isOpen={editCaseModalIsOpen}
                 toggleModal={toggleEditCaseModal}
                 editMode
-                navigate
+                shouldNavigate
             />
             <EditCaseModal
+                setProject={setProject}
+                project={project}
                 caseId={caseItem.id}
                 isOpen={createCaseModalIsOpen}
                 toggleModal={toggleCreateCaseModal}
                 editMode={false}
-                navigate
+                shouldNavigate
             />
         </div>
     )

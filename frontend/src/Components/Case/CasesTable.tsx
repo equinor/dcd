@@ -11,7 +11,7 @@ import {
     useMemo,
     useRef,
 } from "react"
-import { useHistory, useParams, Link } from "react-router-dom"
+import { useParams, Link, useNavigate } from "react-router-dom"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import {
@@ -59,8 +59,7 @@ const CasesTable = () => {
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
     const [selectedCaseId, setSelectedCaseId] = useState<string>()
 
-    const history = useHistory()
-    const { fusionContextId } = useParams<Record<string, string | undefined>>()
+    const navigate = useNavigate()
 
     const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
 
@@ -176,7 +175,7 @@ const CasesTable = () => {
     const openCase = async () => {
         try {
             if (selectedCaseId) {
-                history.push(casePath(fusionContextId!, selectedCaseId))
+                navigate(selectedCaseId)
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -280,7 +279,7 @@ const CasesTable = () => {
                     isOpen={editCaseModalIsOpen}
                     toggleModal={toggleEditCaseModal}
                     editMode
-                    navigate={false}
+                    shouldNavigate={false}
                 />
             </div>
         </div>

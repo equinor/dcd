@@ -16,6 +16,7 @@ const ModalDiv = styled.div`
 type Props = {
     title: string;
     isOpen: boolean;
+    children: React.ReactNode;
 }
 
 export const ModalNoFocus: FunctionComponent<Props> = ({
