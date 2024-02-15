@@ -46,9 +46,7 @@ stages:
               workingDir: "frontend"
               targetType: 'inline'
               script: |
-                ls -la
-                mkdir -p ./dist
-                cat package.json
+                cd frontend
                 echo "$(jq '{
                   key: .name,
                   name: .manifest.name, 
