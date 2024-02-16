@@ -164,6 +164,12 @@ const CaseView = () => {
     const [updateFromServer, setUpdateFromServer] = useState<boolean>(true)
 
     useEffect(() => {
+        if (currentContext?.externalId && fusionContextId !== currentContext.id) {
+            navigate(`/${currentContext.id}`, { replace: true })
+        }
+    }, [currentContext, fusionContextId])
+
+    useEffect(() => {
         (async () => {
             try {
                 // const caseMapped = await (await GetCaseService()).getCase(unwrapProjectId(currentProject?.externalId), caseId!)

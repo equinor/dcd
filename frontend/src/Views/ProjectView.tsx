@@ -8,7 +8,7 @@ import React, {
     useState,
 } from "react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import styled from "styled-components"
 import { useAppContext } from "../context/AppContext"
 import { GetProjectService } from "../Services/ProjectService"
@@ -56,6 +56,14 @@ const ProjectView = () => {
     const [activeTab, setActiveTab] = React.useState(0)
     const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>()
     const [isSaving, setIsSaving] = useState<boolean>()
+
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (currentContext?.externalId && fusionContextId !== currentContext.id) {
+            navigate(`/${currentContext.id}`, { replace: true })
+        }
+    }, [currentContext, fusionContextId])
 
     useEffect(() => {
         (async () => {
