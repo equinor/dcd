@@ -16,8 +16,8 @@ interface AppContextType {
     setProject: React.Dispatch<React.SetStateAction<Components.Schemas.ProjectDto | undefined>>;
     caseItem: Components.Schemas.CaseDto | undefined;
     setCase: React.Dispatch<React.SetStateAction<Components.Schemas.CaseDto | undefined>>;
-    activeTab: number | undefined;
-    setActiveTab: React.Dispatch<React.SetStateAction<number | undefined>>;
+    activeTab: number;
+    setActiveTab: React.Dispatch<React.SetStateAction<number>>;
 
     // OPEX
     totalStudyCost: ITimeSeries | undefined;
@@ -74,7 +74,7 @@ interface AppContextType {
     setImportedElectricity: React.Dispatch<React.SetStateAction<Components.Schemas.ImportedElectricityDto | undefined>>;
 }
 
-const AppContext = createContext<AppContextType | undefined>(undefined);
+export const AppContext = createContext<AppContextType | undefined>(undefined);
 
 const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [project, setProject] = useState<Components.Schemas.ProjectDto | undefined>();
@@ -82,7 +82,7 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [totalStudyCost, setTotalStudyCost] = useState<ITimeSeries | undefined>();
     const [opexSum, setOpexSum] = useState<Components.Schemas.OpexCostProfileDto | undefined>();
     const [cessationCost, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto | undefined>();
-    const [activeTab, setActiveTab] = useState<number>();
+    const [activeTab, setActiveTab] = useState<number>(0);
     const [caseItem, setCase] = useState<Components.Schemas.CaseDto | undefined>(); 
 
     const [topside, setTopside] = useState<Components.Schemas.TopsideDto | undefined>();

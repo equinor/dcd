@@ -11,6 +11,10 @@ import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileSe
 import { MergeTimeseries } from "../../Utils/common"
 import { ITimeSeriesCost } from "../../models/ITimeSeriesCost"
 import { useAppContext } from "../../context/AppContext"
+import { createGrid } from 'ag-grid-community';
+import { AgGridReact } from "@ag-grid-community/react"
+import 'ag-grid-community/styles/ag-grid.css'; // Core grid CSS, required
+import 'ag-grid-community/styles/ag-theme-alpine.css'; // Theme CSS, choose a theme
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -44,31 +48,33 @@ const CaseSummaryTab = () => {
         caseItem, setCase,
         topside, setTopside,
         topsideCost, setTopsideCost,
-        surf, setSurf, 
-        surfCost, setSurfCost, 
-        substructure, setSubstructure, 
-        substructureCost, setSubstructureCost, 
+        surf, setSurf,
+        surfCost, setSurfCost,
+        substructure, setSubstructure,
+        substructureCost, setSubstructureCost,
         transport, setTransport,
         transportCost, setTransportCost,
         opexSum, setOpexSum,
         cessationCost, setCessationCost,
-        feasibilityAndConceptStudies,
-        feedStudies,
-        activeTab,
-        explorationCost,
-        drillingCost,
+        feasibilityAndConceptStudies, setFeasibilityAndConceptStudies,
+        feedStudies, setFEEDStudies,
+        activeTab, setActiveTab,
+        explorationCost, setExplorationCost,
+        drillingCost, setDrillingCost,
         totalStudyCost, setTotalStudyCost,
-        productionAndSalesVolume,
-        oilCondensateProduction,
-        nglProduction,
-        salesGas,
-        cO2Emissions,
-        importedElectricity,
+        productionAndSalesVolume, setProductionAndSalesVolume,
+        oilCondensateProduction, setOilCondensateProduction,
+        nglProduction, setNGLProduction,
+        salesGas, setSalesGas,
+        cO2Emissions, setCO2Emissions,
+        importedElectricity, setImportedElectricity,
         setStartYear,
         setEndYear,
         tableYears, setTableYears
     } = useAppContext();
 
+    const [summaryRowData, setSummaryRowData] = useState([]);
+    const [productionRowData, setProductionRowData] = useState([]);
     
     const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
         if (timeSeries && timeSeries.startYear && timeSeries.values) {
@@ -96,85 +102,54 @@ const CaseSummaryTab = () => {
     }
 
     useEffect(() => {
-        (async () => {
-            try {
-                if (activeTab === 7 && caseItem?.id) {
-                    
-                    if (project) {
-                        const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(project.id, caseItem.id)
-                        const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(project.id, caseItem.id)
-                        const cessationWrapper = (await GetGenerateProfileService()).generateCessationCost(project.id, caseItem.id)
-
-                        const opex = (await opexWrapper).opexCostProfileDto
-                        const cessation = (await cessationWrapper).cessationCostDto
-
-                        let feasibility = (await studyWrapper).totalFeasibilityAndConceptStudiesDto
-                        let feed = (await studyWrapper).totalFEEDStudiesDto
-
-                        if (caseItem.totalFeasibilityAndConceptStudiesOverride?.override === true) {
-                            feasibility = caseItem.totalFeasibilityAndConceptStudiesOverride
-                        }
-                        if (caseItem.totalFEEDStudiesOverride?.override === true) {
-                            feed = caseItem.totalFEEDStudiesOverride
-                        }
-
-                        const totalStudy = MergeTimeseries(feasibility, feed)
-                        setTotalStudyCost(totalStudy)
-
-                        setOpexSum(opex)
-                        setCessationCost(cessation)
-
-                        // CAPEX
-                        const topsideCostProfile = topside?.costProfileOverride?.override
-                            ? topside.costProfileOverride : topside?.costProfile
-                        setTopsideCost(topsideCostProfile)
-
-                        const surfCostProfile = surf?.costProfileOverride?.override
-                            ? surf.costProfileOverride : surf?.costProfile
-                        setSurfCost(surfCostProfile)
-
-                        const substructureCostProfile = substructure?.costProfileOverride?.override
-                            ? substructure.costProfileOverride : substructure?.costProfile
-                        setSubstructureCost(substructureCostProfile)
-
-                        const transportCostProfile = transport?.costProfileOverride?.override
-                            ? transport.costProfileOverride : transport?.costProfile
-                        setTransportCost(transportCostProfile)
-
-                        setTableYearsFromProfiles([
-                            totalStudy, opex, cessation,
-                            topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
-                        ])
-                        console.log(project);
-                        console.log(caseItem);
-                        console.log(topside);
-                        console.log(surf);
-                        console.log(substructure);
-                        console.log(transport);
-                        console.log(activeTab);
-                        
-
-                    }
-                    console.log(project);
-                    console.log(caseItem);
-                    console.log(topside);
-                    console.log(surf);
-                    console.log(substructure);
-                    console.log(transport);
-                    console.log(activeTab);
-                }
-            } catch (error) {
-                console.error("[CaseView] Error while generating cost profile", error)
-                console.log(project);
-                console.log(caseItem);
-                console.log(topside);
-                console.log(surf);
-                console.log(substructure);
-                console.log(transport);
-                console.log(activeTab);
+        const fetchData = async () => {
+            if (activeTab !== 7 || !caseItem?.id || !project) {
+                return;
             }
-        })()
-    }, [activeTab])
+    
+            try {
+                const studyWrapper = await (await GetGenerateProfileService()).generateStudyCost(project.id, caseItem.id);
+                const opexWrapper = await (await GetGenerateProfileService()).generateOpexCost(project.id, caseItem.id);
+                const cessationWrapper = await (await GetGenerateProfileService()).generateCessationCost(project.id, caseItem.id);
+    
+                let opex = await opexWrapper.opexCostProfileDto;
+                let cessation = await cessationWrapper.cessationCostDto;
+    
+                let feasibility = await studyWrapper.totalFeasibilityAndConceptStudiesDto;
+                let feed = await studyWrapper.totalFEEDStudiesDto;
+    
+                if (caseItem.totalFeasibilityAndConceptStudiesOverride?.override === true) {
+                    feasibility = caseItem.totalFeasibilityAndConceptStudiesOverride;
+                }
+                if (caseItem.totalFEEDStudiesOverride?.override === true) {
+                    feed = caseItem.totalFEEDStudiesOverride;
+                }
+    
+                const totalStudy = MergeTimeseries(feasibility, feed);
+    
+                // Assuming each profile can be directly mapped to a row in the grid
+                const summaryRowData = [
+                    { category: 'Total Study Cost', sum: totalStudy.sum },
+                    { category: 'OPEX', sum: opex?.sum },
+                    { category: 'Cessation', sum: cessation?.sum },
+                    // Add other categories as needed
+                ];
+
+                const productionRowData = [
+                    { category: 'Production & Sales volume', sum: totalStudy.sum },
+                    // Add other categories as needed
+                ];
+    
+                setRowData(rowData); // Update the grid's row data
+    
+            } catch (error) {
+                console.error("[CaseView] Error while fetching data", error);
+            }
+        };
+    
+        fetchData();
+    }, [activeTab, caseItem, project]);
+    
 
     const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...caseItem }
@@ -187,8 +162,22 @@ const CaseSummaryTab = () => {
         const newCase = { ...caseItem }
         newCase.breakEven = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
         setCase(newCase as Components.Schemas.CaseDto);
-
     }
+
+    const columnDefs = [
+        // Assuming 'groupingField' is the field you want to group by
+        { headerName: 'Grouping Field', field: 'groupingField', rowGroup: true, hide: true },
+        // Other column definitions as needed
+        { headerName: 'Sum', field: 'sum' },
+        // Add other fields/columns as necessary
+    ];
+
+    const autoGroupColumnDef = {
+        headerName: 'Group',
+        minWidth: 200,
+        // Customize the group column as needed
+    };
+    
 
     interface ITimeSeriesData {
         profileName: string
@@ -197,99 +186,132 @@ const CaseSummaryTab = () => {
         profile: ITimeSeries | undefined
     }
 
-    const opexTimeSeriesData: ITimeSeriesData[] = [
+    const summaryColumnDefs = [
         {
-            profileName: "Study cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalStudyCost,
-        },
-        {
-            profileName: "Offshore facliities operations + well intervention",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: opexSum,
-        },
-        {
-            profileName: "Cessation wells + Cessation offshore facilities",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationCost,
-        },
-    ]
+            headerName: 'Summary',
+            children: [
+                {
+                    headerName: 'Exploration Cost',
+                    marryChildren: true,
+                    children: [
+                        // Add columns relevant to Exploration Cost here
+                        // Example: { headerName: 'Exploration Detail', field: 'explorationDetail' }
+                    ]
+                },
+                {
+                    headerName: 'CAPEX',
+                    marryChildren: true,
+                    children: [
+                        { headerName: 'Drilling', field: 'drilling' },
+                        { headerName: 'Offshore facilities', field: 'offshoreFacilities' },
+                        { headerName: 'Onshore facilities', field: 'onshoreFacilities' },
+                        { headerName: 'Cessation - Offshore facilities', field: 'cessationOffshoreFacilities' },
+                        { headerName: 'Cessation - Onshore facilities', field: 'cessationOnshoreFacilities' },
+                    ]
+                },
+                {
+                    headerName: 'Study Cost',
+                    marryChildren: true,
+                    children: [
+                        { headerName: 'Feasibility & Conceptual studies', field: 'feasibilityConceptualStudies' },
+                        { headerName: 'FEED studies (DG2, DG3)', field: 'feedStudies' },
+                        { headerName: 'Other studies', field: 'otherStudies' },
+                    ]
+                },
+                {
+                    headerName: 'OPEX',
+                    marryChildren: true,
+                    children: [
+                        { headerName: 'Historic cost', field: 'historicCost' },
+                        { headerName: 'Offshore related OPEX incl. well intervention', field: 'offshoreRelatedOPEX' },
+                        { headerName: 'Onshore related OPEX', field: 'onshoreRelatedOPEX' },
+                    ]
+                }
+            ]
+        }
+    ];
 
-    const capexTimeSeriesData: ITimeSeriesData[] = [
-        {
-            profileName: "Topside cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: topsideCost,
-            set: setTopsideCost,
-        },
-        {
-            profileName: "SURF cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: surfCost,
-            set: setSurfCost,
-        },
-        {
-            profileName: "Substructure cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: substructureCost,
-            set: setSubstructureCost,
-        },
-        {
-            profileName: "Transport cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: transportCost,
-            set: setTransportCost,
-        },
-    ]
+    const productionSalesVolumeColumnDefs = [
+        { headerName: 'Oil / condensate pr MSm3', field: 'oilCondensatePrMSm3' },
+        { headerName: 'NGL production', field: 'nglProduction' },
+        { headerName: 'Sales gas', field: 'salesGas' },
+        { headerName: 'Gas import', field: 'gasImport' },
+        { headerName: 'CO2 emissions', field: 'co2Emissions' },
+        { headerName: 'Imported electricity', field: 'importedElectricity' },
+        { headerName: 'Deferred oil profile MSm3', field: 'deferredOilProfileMSm3' },
+        { headerName: 'Deferred gas (GSm3)', field: 'deferredGasGSm3' }
+    ];
 
-    if (activeTab !== 7) { return null }
 
-    return (
-        <>
-            <TopWrapper>
-                <PageTitle variant="h3">Summary</PageTitle>
-            </TopWrapper>
-            <ColumnWrapper>
-                <RowWrapper>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleCaseNPVChange}
-                            defaultValue={caseItem?.npv}
-                            integer={false}
-                            label="NPV before tax"
-                            allowNegative
-                        />
-                    </NumberInputField>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleCaseBreakEvenChange}
-                            defaultValue={caseItem?.breakEven}
-                            integer={false}
-                            label="B/E before tax"
-                        />
-                    </NumberInputField>
-                </RowWrapper>
-            </ColumnWrapper>
-            <TableWrapper>
-                <CaseTabTable
-                    timeSeriesData={opexTimeSeriesData}
-                    dg4Year={caseItem?.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
-                    tableYears={tableYears}
-                    tableName="OPEX"
-                    includeFooter={false}
-                />
-            </TableWrapper>
-            <TableWrapper>
-                <CaseTabTable
-                    timeSeriesData={capexTimeSeriesData}
-                    dg4Year={caseItem?.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
-                    tableYears={tableYears}
-                    tableName="CAPEX"
-                    includeFooter
-                />
-            </TableWrapper>
-        </>
-    )
-}
 
-export default CaseSummaryTab
+    const summaryTableData = [
+        {
+            profileName: "Exploration Cost",
+            unit: "MUSD", // Assuming currency for simplification; replace with dynamic currency if needed
+            profile: explorationCost,
+            set: setExplorationCost,
+        },
+        {
+            profileName: "CAPEX", 
+            subcategories: [
+                { profileName: "Drilling", unit: "MUSD", profile: drillingCost, set: setDrillingCost },
+                { profileName: "Offshore facilities", unit: "MUSD", profile: topsideCost, set: setTopsideCost },
+                { profileName: "Onshore facilities", unit: "MUSD", profile: undefined, set: undefined }, // Placeholder for onshore facilities cost and setter
+                { profileName: "Cessation - Offshore facilities", unit: "MUSD", profile: cessationCost, set: setCessationCost },
+                { profileName: "Cessation - Onshore facilities", unit: "MUSD", profile: undefined, set: undefined }, // Placeholder for cessation onshore facilities cost and setter
+            ],
+        },
+        {
+            profileName: "Study Cost",
+            subcategories: [
+                { profileName: "Feasibility & Conceptual studies", unit: "MUSD", profile: feasibilityAndConceptStudies, set: setFeasibilityAndConceptStudies },
+                { profileName: "FEED studies (DG2, DG3)", unit: "MUSD", profile: feedStudies, set: setFEEDStudies },
+                { profileName: "Other studies", unit: "MUSD", profile: undefined, set: undefined }, // Placeholder for other studies cost and setter
+            ],
+        },
+        {
+            profileName: "OPEX",
+            subcategories: [
+                { profileName: "Historic cost", unit: "MUSD", profile: undefined, set: undefined }, // Placeholder for historic cost and setter
+                { profileName: "Offshore related OPEX incl. well intervention", unit: "MUSD", profile: opexSum, set: setOpexSum },
+                { profileName: "Onshore related OPEX", unit: "MUSD", profile: undefined, set: undefined }, // Placeholder for onshore related OPEX cost and setter
+            ],
+        },
+    ];
+
+
+    const productionSalesVolumeData = [
+        { profileName: "Oil / condensate pr MSm3", unit: "MSm3", profile: oilCondensateProduction, set: setOilCondensateProduction },
+        { profileName: "NGL production", unit: "MSm3", profile: nglProduction, set: setNGLProduction },
+        { profileName: "Sales gas", unit: "GSm3", profile: salesGas, set: setSalesGas },
+        { profileName: "Gas import", unit: "GSm3", profile: undefined, set: undefined }, // Placeholder for gas import data and setter
+        { profileName: "CO2 emissions", unit: "Mt", profile: cO2Emissions, set: setCO2Emissions },
+        { profileName: "Imported electricity", unit: "GWh", profile: importedElectricity, set: setImportedElectricity },
+        { profileName: "Deferred oil profile MSm3", unit: "MSm3", profile: undefined, set: undefined }, // Placeholder for deferred oil profile data and setter
+        { profileName: "Deferred gas (GSm3)", unit: "GSm3", profile: undefined, set: undefined }, // Placeholder for deferred gas data and setter
+    ];
+
+
+     return (
+<>
+    <div className="ag-theme-alpine" style={{ height: 600, width: '100%', marginBottom: '20px' }}>
+        <AgGridReact
+            columnDefs={summaryColumnDefs}
+            rowData={summaryRowData}
+            autoGroupColumnDef={{ headerName: "Categories", minWidth: 200 }}
+            domLayout='autoHeight'
+            groupDisplayType='groupRows'
+        />
+    </div>
+    <div className="ag-theme-alpine" style={{ height: 600, width: '100%' }}>
+        <AgGridReact
+            columnDefs={productionSalesVolumeColumnDefs}
+            rowData={productionRowData}
+            domLayout='autoHeight'
+        />
+    </div>
+</>
+    );
+};
+
+export default CaseSummaryTab;

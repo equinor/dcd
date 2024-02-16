@@ -33,7 +33,7 @@ import CaseDrillingScheduleTab from "./Case/CaseDrillingScheduleTab"
 import CaseCO2Tab from "./Case/CaseCO2Tab"
 import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
 import { EMPTY_GUID } from "../Utils/constants"
-import { useAppContext } from "../context/AppContext"
+import { AppContextProvider, useAppContext } from "../context/AppContext"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -107,21 +107,43 @@ const MenuIcon = styled(Icon)`
 `
 
 const CaseView = () => {
+    const {
+        project, setProject,
+        caseItem, setCase,
+        topside, setTopside,
+        topsideCost, setTopsideCost,
+        surf, setSurf, 
+        surfCost, setSurfCost, 
+        substructure, setSubstructure, 
+        substructureCost, setSubstructureCost, 
+        transport, setTransport,
+        transportCost, setTransportCost,
+        opexSum, setOpexSum,
+        cessationCost, setCessationCost,
+        feasibilityAndConceptStudies,
+        feedStudies,
+        activeTab, setActiveTab, 
+        explorationCost,
+        drillingCost,
+        totalStudyCost, setTotalStudyCost,
+        productionAndSalesVolume,
+        oilCondensateProduction,
+        nglProduction,
+        salesGas,
+        cO2Emissions,
+        importedElectricity, setImportedElectricity, 
+        setStartYear,
+        setEndYear,
+        tableYears, setTableYears
+    } = useAppContext();
+
     const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(false)
 
-    const [project, setProject] = useState<Components.Schemas.ProjectDto>()
-    const [caseItem, setCase] = useState<Components.Schemas.CaseDto>()
-    const [activeTab, setActiveTab] = useState<number>(0)
     const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
     const { currentContext } = useModuleCurrentContext()
-
     const [drainageStrategy, setDrainageStrategy] = useState<Components.Schemas.DrainageStrategyDto>()
     const [exploration, setExploration] = useState<Components.Schemas.ExplorationDto>()
     const [wellProject, setWellProject] = useState<Components.Schemas.WellProjectDto>()
-    const [surf, setSurf] = useState<Components.Schemas.SurfDto>()
-    const [topside, setTopside] = useState<Components.Schemas.TopsideDto>()
-    const [substructure, setSubstructure] = useState<Components.Schemas.SubstructureDto>()
-    const [transport, setTransport] = useState<Components.Schemas.TransportDto>()
 
     const [wells, setWells] = useState<Components.Schemas.WellDto[]>()
     const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellProjectWellDto[]>()
@@ -147,7 +169,6 @@ const CaseView = () => {
 
     const [netSalesGas, setNetSalesGas] = useState<Components.Schemas.NetSalesGasDto>()
     const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<Components.Schemas.FuelFlaringAndLossesDto>()
-    const [importedElectricity, setImportedElectricity] = useState<Components.Schemas.ImportedElectricityDto>()
 
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
@@ -590,6 +611,7 @@ const CaseView = () => {
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
+                                
                                 <CaseSummaryTab
                                     // project={project}
                                     // caseItem={caseItem}
@@ -601,6 +623,7 @@ const CaseView = () => {
                                     // activeTab={activeTab}
                                 />
                             </StyledTabPanel>
+
                         </Panels>
                     </TabContentWrapper>
                 </Tabs>
