@@ -68,11 +68,6 @@ const RouteCoordinator = (): JSX.Element => {
         fetchAndSetProject()
     }, [currentContext, setProject])
 
-    console.log("isLoading", isLoading)
-    console.log("isCreating", isCreating)
-    console.log("project", project)
-    console.log("currentContext", currentContext)
-
     if ((isLoading || !project || project.id === "") && currentContext) {
         if (isCreating) {
             return (
