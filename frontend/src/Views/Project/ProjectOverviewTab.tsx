@@ -80,7 +80,7 @@ const ProjectOverviewTab = () => {
         if (project) {
             try {
                 const projectId = unwrapProjectId(project.id)
-                const projectResult = await (await GetProjectService()).getProjectByID(projectId)
+                const projectResult = await (await GetProjectService()).getProject(projectId)
                 await (await GetSTEAService()).excelToSTEA(projectResult)
             } catch (error) {
                 console.error("[ProjectView] error while submitting form data", error)

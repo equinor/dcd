@@ -34,11 +34,11 @@ const ProjectInitializer: FC = () => {
             try {
                 setIsLoading(true)
                 const projectService = await GetProjectService()
-                let fetchedProject = await projectService.getProjectByID(currentContext.externalId)
+                let fetchedProject = await projectService.getProject(currentContext.externalId)
 
                 if (!fetchedProject || fetchedProject.id === "") {
                     setIsCreating(true)
-                    fetchedProject = await projectService.createProjectFromContextId(currentContext.id)
+                    fetchedProject = await projectService.createProject(currentContext.id)
                 }
 
                 if (fetchedProject) {
