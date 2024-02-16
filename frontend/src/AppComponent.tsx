@@ -3,7 +3,6 @@ import { APP_VERSION } from "./version"
 import AppRouter from "./Router"
 import { AppContextProvider } from "./context/AppContext"
 import { resolveConfiguration } from "./Utils/config"
-import ProjectInitializer from "./Components/ProjectInitializer"
 import { EnvironmentVariables } from "./environmentVariables"
 import { storeAppId, storeAppScope } from "./Utils/common"
 import { buildConfig } from "./Services/config"
@@ -34,7 +33,6 @@ const AppComponent: FC = () => {
 
     return (
         <AppContextProvider>
-            <ProjectInitializer />
             <AppRouter />
         </AppContextProvider>
     )

@@ -1,10 +1,6 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom"
-import { useEffect } from "react"
+import { Outlet } from "react-router-dom"
 import styled from "styled-components"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import ProjectMenu from "./ProjectMenu"
-import { GetProjectService } from "../../Services/ProjectService"
-import { useAppContext } from "../../context/AppContext"
 
 const SidebarDiv = styled.div`
     width: 15rem;
@@ -26,7 +22,6 @@ const Wrapper = styled.div`
 const Body = styled.div`
     display: flex;
     flex-direction: row;
-    flex-row: 1;
     width: 100%;
     height: 100%;
 `
@@ -43,73 +38,26 @@ const SideMenuFooter = styled.div`
     position: fixed;
 `
 
-interface Props {
-    children: JSX.Element
-}
-
-const SideMenu: React.FC<Props> = ({ children }) => {
-    const { currentContext } = useModuleCurrentContext()
-    const location = useLocation()
-    const { setProject } = useAppContext()
-    const { fusionContextId } = useParams<Record<string, string | undefined>>()
-
-    useEffect(() => {
-        if (currentContext?.externalId) {
-            (async () => {
-                try {
-                    const fetchedProject = await (await GetProjectService()).getProject(currentContext?.externalId!)
-                    if (!fetchedProject || fetchedProject.id === "") {
-                        // Workaround for retrieving project in sidemenu while project is created
-                        // eslint-disable-next-line no-promise-executor-return
-                        await new Promise((r) => setTimeout(r, 2000))
-                        const secondAttempt = await (await GetProjectService())
-                            .getProject(currentContext.externalId!)
-
-                        setProject(secondAttempt)
-                    } else {
-                        setProject(fetchedProject)
-                    }
-                } catch (error) {
-                    console.error("Error fetching project", error)
-                }
-            })()
-        }
-    }, [currentContext?.externalId, location.pathname])
-
-    const navigate = useNavigate()
-
-    useEffect(() => {
-        if (currentContext?.externalId && fusionContextId !== currentContext.id) {
-            navigate(`/${currentContext.id}`, { replace: true })
-        } else if (!currentContext?.externalId) {
-            navigate("/", { replace: true })
-        }
-    }, [currentContext, fusionContextId])
-
-    if (currentContext) {
-        return (
-            <Wrapper>
-                <Body>
-                    <SidebarDiv>
-                        <ProjectMenu />
-                        <SideMenuFooter>
-                            <a
-                                href="https://forms.office.com/Pages/ResponsePage.aspx?id=NaKkOuK21UiRlX_PBbRZsCjGTHQnxJxIkcdHZ_YqW4BUMTQyTVNLOEY0VUtSUjIwN1QxUVJIRjBaNC4u"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                Send feedback
-                            </a>
-                        </SideMenuFooter>
-                    </SidebarDiv>
-                    <MainView>
-                        {children}
-                    </MainView>
-                </Body>
-            </Wrapper>
-        )
-    }
-    return null
-}
+const SideMenu: React.FC = () => (
+    <Wrapper>
+        <Body>
+            <SidebarDiv>
+                <ProjectMenu />
+                <SideMenuFooter>
+                    <a
+                        href="https://forms.office.com/Pages/ResponsePage.aspx?id=NaKkOuK21UiRlX_PBbRZsCjGTHQnxJxIkcdHZ_YqW4BUMTQyTVNLOEY0VUtSUjIwN1QxUVJIRjBaNC4u"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Send feedback
+                    </a>
+                </SideMenuFooter>
+            </SidebarDiv>
+            <MainView>
+                <Outlet />
+            </MainView>
+        </Body>
+    </Wrapper>
+)
 
 export default SideMenu
