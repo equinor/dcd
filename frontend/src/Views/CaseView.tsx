@@ -15,11 +15,10 @@ import {
     library_add,
     more_vertical,
 } from "@equinor/eds-icons"
-import { useCurrentContext } from "@equinor/fusion"
 import { tokens } from "@equinor/eds-tokens"
 import { Tooltip } from "@mui/material"
 import { GetProjectService } from "../Services/ProjectService"
-import { projectPath, unwrapProjectId } from "../Utils/common"
+import { unwrapProjectId } from "../Utils/common"
 import CaseDescriptionTab from "./Case/CaseDescriptionTab"
 import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 import CaseCostTab from "./Case/CaseCostTab"
@@ -190,12 +189,10 @@ const CaseView = () => {
     useEffect(() => {
         (async () => {
             try {
-                // const caseMapped = await (await GetCaseService()).getCase(unwrapProjectId(currentProject?.externalId), caseId!)
-                // console.log("CaseView -> caseMapped", caseMapped)
                 setUpdateFromServer(true)
                 setIsLoading(true)
                 const projectId = unwrapProjectId(currentContext?.externalId)
-                const projectResult = await (await GetProjectService()).getProjectByID(projectId)
+                const projectResult = await (await GetProjectService()).getProject(projectId)
                 setProject(projectResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${currentContext?.externalId}`, error)
@@ -632,15 +629,11 @@ const CaseView = () => {
             <EditTechnicalInputModal
                 toggleEditTechnicalInputModal={toggleTechnicalInputModal}
                 isOpen={editTechnicalInputModalIsOpen}
-                project={project}
-                setProject={setProject}
                 caseId={caseItem.id}
                 setExploration={setExploration}
                 setWellProject={setWellProject}
             />
             <EditCaseModal
-                setProject={setProject}
-                project={project}
                 caseId={caseItem.id}
                 isOpen={editCaseModalIsOpen}
                 toggleModal={toggleEditCaseModal}
@@ -648,8 +641,6 @@ const CaseView = () => {
                 shouldNavigate
             />
             <EditCaseModal
-                setProject={setProject}
-                project={project}
                 caseId={caseItem.id}
                 isOpen={createCaseModalIsOpen}
                 toggleModal={toggleCreateCaseModal}

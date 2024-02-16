@@ -3,12 +3,7 @@ import {
     Progress,
     Tabs, Typography,
 } from "@equinor/eds-core-react"
-import React, {
-    useEffect,
-    useState,
-} from "react"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useParams } from "react-router-dom"
+import React, { useState } from "react"
 import styled from "styled-components"
 import { useAppContext } from "../context/AppContext"
 import { GetProjectService } from "../Services/ProjectService"
@@ -28,7 +23,7 @@ const StyledTabPanel = styled(Panel)`
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
-    padding: 1.5rem 2rem;
+    padding: 20px 20px 0 20px;
 `
 
 const PageTitle = styled(Typography)`
@@ -43,63 +38,23 @@ const TransparentButton = styled(Button)`
 `
 
 const Wrapper = styled.div`
-    margin: 2rem;
+    margin: 0 20px;
     display: flex;
     flex-direction: column;
 `
 
 const ProjectView = () => {
-    const { currentContext } = useModuleCurrentContext()
-    const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const { project, setProject } = useAppContext()
 
     const [activeTab, setActiveTab] = React.useState(0)
     const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>()
     const [isSaving, setIsSaving] = useState<boolean>()
-    const [isLoading, setIsLoading] = useState<boolean>()
-    const [isCreating, setIsCreating] = useState<boolean>()
-
-    useEffect(() => {
-        (async () => {
-            try {
-                setIsLoading(true)
-                if (currentContext?.externalId) {
-                    let res = await (await GetProjectService()).getProjectByID(currentContext?.externalId)
-                    if (!res || res.id === "") {
-                        setIsCreating(true)
-                        res = await (await GetProjectService()).createProjectFromContextId(currentContext.id)
-                    }
-
-                    setProject(res)
-                    setIsCreating(false)
-                    setIsLoading(false)
-                }
-            } catch (error) {
-                console.error(`[ProjectView] Error while fetching project. Context: ${fusionContextId}, Project: ${currentContext?.externalId}`, error)
-            }
-        })()
-    }, [currentContext?.externalId])
 
     const toggleEditTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
 
-    if (isLoading || !project || project.id === "") {
-        if (isCreating) {
-            return (
-                <>
-                    <Progress.Circular size={16} color="primary" />
-                    <p>Creating project</p>
-                </>
-            )
-        }
-        return (
-            <>
-                <Progress.Circular size={16} color="primary" />
-                <p>Loading project</p>
-            </>
-        )
-    }
-
     const handleSave = async () => {
+        if (!project) return
+
         setIsSaving(true)
         const updatedProject = { ...project }
         const result = await (await GetProjectService()).updateProject(updatedProject)
@@ -110,7 +65,7 @@ const ProjectView = () => {
     return (
         <>
             <TopWrapper>
-                <PageTitle variant="h4">{project.name}</PageTitle>
+                <PageTitle variant="h4">{project?.name}</PageTitle>
                 {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
                     <Button>
                         <Progress.Dots />
@@ -146,8 +101,6 @@ const ProjectView = () => {
             <EditTechnicalInputModal
                 toggleEditTechnicalInputModal={toggleEditTechnicalInputModal}
                 isOpen={editTechnicalInputModalIsOpen ?? false}
-                project={project}
-                setProject={setProject}
             />
         </>
     )
