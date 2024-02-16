@@ -3,12 +3,7 @@ import {
     Progress,
     Tabs, Typography,
 } from "@equinor/eds-core-react"
-import React, {
-    useEffect,
-    useState,
-} from "react"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useParams } from "react-router-dom"
+import React, { useState } from "react"
 import styled from "styled-components"
 import { useAppContext } from "../context/AppContext"
 import { GetProjectService } from "../Services/ProjectService"
@@ -49,29 +44,11 @@ const Wrapper = styled.div`
 `
 
 const ProjectView = () => {
-    const { currentContext } = useModuleCurrentContext()
-    const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const { project, setProject } = useAppContext()
 
     const [activeTab, setActiveTab] = React.useState(0)
     const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>()
     const [isSaving, setIsSaving] = useState<boolean>()
-
-    useEffect(() => {
-        (async () => {
-            try {
-                if (currentContext?.externalId) {
-                    let res = await (await GetProjectService()).getProject(currentContext?.externalId)
-                    if (!res || res.id === "") {
-                        res = await (await GetProjectService()).createProject(currentContext.id)
-                    }
-                    setProject(res)
-                }
-            } catch (error) {
-                console.error(`[ProjectView] Error while fetching project. Context: ${fusionContextId}, Project: ${currentContext?.externalId}`, error)
-            }
-        })()
-    }, [currentContext?.externalId])
 
     const toggleEditTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
 

@@ -16,7 +16,7 @@ import { SetFilterModule } from "@ag-grid-enterprise/set-filter"
 export const configure: AppModuleInitiator = (configurator, args) => {
     const { basename } = args.env
     console.log("Configuring app with basename", basename)
-    
+
     ModuleRegistry.registerModules([
         ClientSideRowModelModule,
         ColumnsToolPanelModule,
