@@ -94,8 +94,8 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [transport, setTransport] = useState<Components.Schemas.TransportDto | undefined>();
     const [transportCost, setTransportCost] = useState<Components.Schemas.TransportCostProfileDto | undefined>();
 
-    const [startYear, setStartYear] = useState<number | undefined>(); // Corrected
-    const [endYear, setEndYear] = useState<number | undefined>(); // Corrected
+    const [startYear, setStartYear] = useState<number | undefined>();
+    const [endYear, setEndYear] = useState<number | undefined>(); 
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030]);
 
     const [feasibilityAndConceptStudies, setFeasibilityAndConceptStudies] = useState<ITimeSeries | undefined>();

@@ -69,6 +69,7 @@ const CaseSummaryTab = () => {
         tableYears, setTableYears
     } = useAppContext();
 
+    
     const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
         if (timeSeries && timeSeries.startYear && timeSeries.values) {
             return timeSeries.startYear + timeSeries.values.length - 1
@@ -98,6 +99,7 @@ const CaseSummaryTab = () => {
         (async () => {
             try {
                 if (activeTab === 7 && caseItem?.id) {
+                    
                     if (project) {
                         const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(project.id, caseItem.id)
                         const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(project.id, caseItem.id)
@@ -143,10 +145,33 @@ const CaseSummaryTab = () => {
                             totalStudy, opex, cessation,
                             topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
                         ])
+                        console.log(project);
+                        console.log(caseItem);
+                        console.log(topside);
+                        console.log(surf);
+                        console.log(substructure);
+                        console.log(transport);
+                        console.log(activeTab);
+                        
+
                     }
+                    console.log(project);
+                    console.log(caseItem);
+                    console.log(topside);
+                    console.log(surf);
+                    console.log(substructure);
+                    console.log(transport);
+                    console.log(activeTab);
                 }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
+                console.log(project);
+                console.log(caseItem);
+                console.log(topside);
+                console.log(surf);
+                console.log(substructure);
+                console.log(transport);
+                console.log(activeTab);
             }
         })()
     }, [activeTab])

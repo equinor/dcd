@@ -2,8 +2,9 @@ import {
     Button, Icon, Menu, Progress, Tabs, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
-import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { useLocation, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useNavigate } from 'react-router-dom'
 import styled from "styled-components"
 import {
     add,
@@ -32,6 +33,7 @@ import CaseDrillingScheduleTab from "./Case/CaseDrillingScheduleTab"
 import CaseCO2Tab from "./Case/CaseCO2Tab"
 import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
 import { EMPTY_GUID } from "../Utils/constants"
+import { useAppContext } from "../context/AppContext"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -589,14 +591,14 @@ const CaseView = () => {
                             </StyledTabPanel>
                             <StyledTabPanel>
                                 <CaseSummaryTab
-                                    project={project}
-                                    caseItem={caseItem}
-                                    setCase={setCase}
-                                    topside={topside}
-                                    surf={surf}
-                                    substructure={substructure}
-                                    transport={transport}
-                                    activeTab={activeTab}
+                                    // project={project}
+                                    // caseItem={caseItem}
+                                    // setCase={setCase}
+                                    // topside={topside}
+                                    // surf={surf}
+                                    // substructure={substructure}
+                                    // transport={transport}
+                                    // activeTab={activeTab}
                                 />
                             </StyledTabPanel>
                         </Panels>

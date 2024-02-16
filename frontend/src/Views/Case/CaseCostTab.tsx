@@ -12,7 +12,6 @@ import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { ITimeSeriesCostOverride } from "../../models/ITimeSeriesCostOverride"
 import { ITimeSeriesCost } from "../../models/ITimeSeriesCost"
-import { useAppContext } from "../../context/AppContext"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -98,49 +97,24 @@ interface Props {
     setGAndGAdminCost: Dispatch<SetStateAction<Components.Schemas.GAndGAdminCostDto | undefined>>,
 }
 
-const CaseCostTab = () => {
-    const {
-        project,
-        caseItem,
-        setCase,
-        topside,
-        setTopside,
-        topsideCost,
-        setTopsideCost,
-        surf,
-        setSurf,
-        surfCost,
-        setSurfCost,
-        substructure,
-        setSubstructure,
-        substructureCost,
-        setSubstructureCost,
-        transport,
-        setTransport,
-        transportCost,
-        setTransportCost,
-        activeTab,
-        totalFeasibilityAndConceptStudies,
-        setTotalFeasibilityAndConceptStudies,
-        totalFEEDStudies,
-        setTotalFEEDStudies,
-        offshoreFacilitiesOperationsCostProfile,
-        setOffshoreFacilitiesOperationsCostProfile,
-        wellInterventionCostProfile,
-        setWellInterventionCostProfile,
-        cessationWellsCost,
-        setCessationWellsCost,
-        cessationOffshoreFacilitiesCost,
-        setCessationOffshoreFacilitiesCost,
-        gAndGAdminCost,
-        setGAndGAdminCost,
-        tableYears,
-        setTableYears,
-        startYear,
-        setStartYear,
-        endYear,
-        setEndYear,
-    } = useAppContext();
+const CaseCostTab = ({
+    project,
+    caseItem, setCase,
+    exploration, setExploration,
+    wellProject, setWellProject,
+    topside, setTopside,
+    surf, setSurf,
+    substructure, setSubstructure,
+    transport, setTransport,
+    activeTab,
+    totalFeasibilityAndConceptStudies, setTotalFeasibilityAndConceptStudies,
+    totalFEEDStudies, setTotalFEEDStudies,
+    offshoreFacilitiesOperationsCostProfile, setOffshoreFacilitiesOperationsCostProfile,
+    wellInterventionCostProfile, setWellInterventionCostProfile,
+    cessationWellsCost, setCessationWellsCost,
+    cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost,
+    gAndGAdminCost, setGAndGAdminCost,
+}: Props) => {
     // OPEX
     const [totalFeasibilityAndConceptStudiesOverride,
         setTotalFeasibilityAndConceptStudiesOverride] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto>()
@@ -157,9 +131,13 @@ const CaseCostTab = () => {
         setCessationOffshoreFacilitiesCostOverride] = useState<Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto>()
 
     // CAPEX
+    const [topsideCost, setTopsideCost] = useState<Components.Schemas.TopsideCostProfileDto>()
     const [topsideCostOverride, setTopsideCostOverride] = useState<Components.Schemas.TopsideCostProfileOverrideDto>()
+    const [surfCost, setSurfCost] = useState<Components.Schemas.SurfCostProfileDto>()
     const [surfCostOverride, setSurfCostOverride] = useState<Components.Schemas.SurfCostProfileOverrideDto>()
+    const [substructureCost, setSubstructureCost] = useState<Components.Schemas.SubstructureCostProfileDto>()
     const [substructureCostOverride, setSubstructureCostOverride] = useState<Components.Schemas.SubstructureCostProfileOverrideDto>()
+    const [transportCost, setTransportCost] = useState<Components.Schemas.TransportCostProfileDto>()
     const [transportCostOverride, setTransportCostOverride] = useState<Components.Schemas.TransportCostProfileOverrideDto>()
 
     // Development
@@ -186,6 +164,9 @@ const CaseCostTab = () => {
     const [seismicAcqAndProcCost, setSeismicAcqAndProcCost] = useState<Components.Schemas.SeismicAcquisitionAndProcessingDto>()
     const [countryOfficeCost, setCountryOfficeCost] = useState<Components.Schemas.CountryOfficeCostDto>()
 
+    const [startYear, setStartYear] = useState<number>(2020)
+    const [endYear, setEndYear] = useState<number>(2030)
+    const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
     const studyGridRef = useRef<any>(null)
     const opexGridRef = useRef<any>(null)
@@ -288,6 +269,13 @@ const CaseCostTab = () => {
                         explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
                         seismicAcquisitionAndProcessing, countryOffice, exploration.gAndGAdminCost,
                     ], caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
+                    console.log(project);
+                    console.log(caseItem);
+                    console.log(topside);
+                    console.log(surf);
+                    console.log(substructure);
+                    console.log(transport);
+                    console.log(activeTab);
                 }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
