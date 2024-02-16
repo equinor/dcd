@@ -61,9 +61,9 @@ const ProjectView = () => {
         (async () => {
             try {
                 if (currentContext?.externalId) {
-                    let res = await (await GetProjectService()).getProjectByID(currentContext?.externalId)
+                    let res = await (await GetProjectService()).getProject(currentContext?.externalId)
                     if (!res || res.id === "") {
-                        res = await (await GetProjectService()).createProjectFromContextId(currentContext.id)
+                        res = await (await GetProjectService()).createProject(currentContext.id)
                     }
                     setProject(res)
                 }

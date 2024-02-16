@@ -4,18 +4,14 @@ import { __BaseService } from "./__BaseService"
 import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 export class __ProjectService extends __BaseService {
-    async getProjectByID(id: string) {
+    async getProject(id: string) {
         const project: Components.Schemas.ProjectDto = await this.get<Components.Schemas.ProjectDto>(`/${id}`)
         return project
     }
 
-    public async createProject(project: Components.Schemas.ProjectDto) {
-        return this.post("", { body: project })
-    }
-
-    public async createProjectFromContextId(contextId: string): Promise<Components.Schemas.ProjectDto> {
+    public async createProject(contextId: string): Promise<Components.Schemas.ProjectDto> {
         const res: Components.Schemas.ProjectDto = await this.postWithParams(
-            "/createFromFusion",
+            "",
             {},
             { params: { contextId } },
         )

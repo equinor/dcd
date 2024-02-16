@@ -171,7 +171,7 @@ const CaseView = () => {
                 setUpdateFromServer(true)
                 setIsLoading(true)
                 const projectId = unwrapProjectId(currentContext?.externalId)
-                const projectResult = await (await GetProjectService()).getProjectByID(projectId)
+                const projectResult = await (await GetProjectService()).getProject(projectId)
                 setProject(projectResult)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${currentContext?.externalId}`, error)

@@ -59,27 +59,13 @@ public class ProjectsController : ControllerBase
         }
     }
 
-    [HttpPost("createFromFusion", Name = "CreateProjectFromContextId")]
-    public async Task<ProjectDto> CreateProjectFromContextId([FromQuery] Guid contextId)
+    [HttpPost(Name = "CreateProject")]
+    public async Task<ProjectDto> CreateProject([FromQuery] Guid contextId)
     {
         var projectMaster = await _fusionService.ProjectMasterAsync(contextId);
         if (projectMaster != null)
         {
-            // var category = CommonLibraryProjectDtoAdapter.ConvertCategory(projectMaster.ProjectCategory ?? "");
-            // var phase = CommonLibraryProjectDtoAdapter.ConvertPhase(projectMaster.Phase ?? "");
-            CreateProjectDto projectDto = new()
-            {
-                Name = projectMaster.Description ?? "",
-                Description = projectMaster.Description ?? "",
-                CommonLibraryName = projectMaster.Description ?? "",
-                FusionProjectId = projectMaster.Identity,
-                Country = projectMaster.Country ?? "",
-                Currency = Currency.NOK,
-                PhysUnit = PhysUnit.SI,
-                // ProjectCategory = category,
-                // ProjectPhase = phase,
-            };
-            var project = _mapper.Map<Project>(projectDto);
+            var project = _mapper.Map<Project>(projectMaster);
 
             if (project == null)
             {
@@ -92,18 +78,6 @@ public class ProjectsController : ControllerBase
         }
 
         return new ProjectDto();
-    }
-
-    [HttpPost(Name = "CreateProject")]
-    public async Task<ProjectDto> CreateProject([FromBody] ProjectDto projectDto)
-    {
-        var project = _mapper.Map<Project>(projectDto);
-        if (project == null)
-        {
-            throw new ArgumentNullException(nameof(project));
-        }
-        project.CreateDate = DateTimeOffset.UtcNow;
-        return await _projectService.CreateProject(project);
     }
 
     [HttpPut(Name = "UpdateProject")]
