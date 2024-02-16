@@ -12,7 +12,6 @@ const Welcome = (): JSX.Element => {
     const { currentContext } = useModuleCurrentContext()
 
     useEffect(() => {
-        console.log("currentContext", currentContext)
         if (currentContext?.externalId) {
             navigate(currentContext.id)
         }

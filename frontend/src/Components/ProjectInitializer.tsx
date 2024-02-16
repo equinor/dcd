@@ -28,6 +28,7 @@ const ProjectInitializer: FC = () => {
         console.log("current project", currentContext)
         const fetchAndSetProject = async () => {
             if (!currentContext?.externalId) {
+                setProject(undefined)
                 return
             }
 
