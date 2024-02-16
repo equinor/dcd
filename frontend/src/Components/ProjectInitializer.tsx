@@ -53,7 +53,7 @@ const ProjectInitializer: FC = () => {
         }
 
         fetchAndSetProject()
-    }, [currentContext, setProject]) // Re-run effect if currentProject changes
+    }, [currentContext, setProject])
 
     if (!currentContext) {
         return (
