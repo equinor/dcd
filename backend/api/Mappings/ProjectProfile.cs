@@ -43,6 +43,10 @@ public class ProjectProfile : Profile
             .ForMember(
                 dest => dest.ProjectPhase,
                 opt => opt.MapFrom(src => GetProjectPhase(src.Phase))
+            )
+            .ForMember(
+                dest => dest.Country,
+                opt => opt.MapFrom(src => src.Country ?? "")
             );
     }
 
