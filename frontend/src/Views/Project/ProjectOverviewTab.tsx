@@ -4,7 +4,7 @@ import {
 } from "react"
 import styled from "styled-components"
 import {
-    Button, Icon, Label, Typography, Divider,
+    Button, Icon, Label, Typography,
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
@@ -13,8 +13,8 @@ import { WrapperColumn } from "../Asset/StyledAssetComponents"
 import { GetProjectService } from "../../Services/ProjectService"
 import { GetSTEAService } from "../../Services/STEAService"
 import EditCaseModal from "../../Components/Case/EditCaseModal"
-import CasesTable from "../../Components/Case/CasesTable"
 import { useAppContext } from "../../context/AppContext"
+import CasesTable from "../../Components/Case/CasesTable/CasesTable"
 
 const Wrapper = styled.div`
     margin: 20px 0;

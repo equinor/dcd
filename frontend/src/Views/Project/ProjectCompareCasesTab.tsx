@@ -45,7 +45,6 @@ width: 100%;
 display: flex;
 float: left;
 flex-direction: column;
-padding: 20px;
 `
 const WrapperRow = styled.div`
     display: flex;
