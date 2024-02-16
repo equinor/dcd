@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { useEffect } from "react"
 import styled from "styled-components"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
@@ -51,6 +51,7 @@ const SideMenu: React.FC<Props> = ({ children }) => {
     const { currentContext } = useModuleCurrentContext()
     const location = useLocation()
     const { setProject } = useAppContext()
+    const { fusionContextId } = useParams<Record<string, string | undefined>>()
 
     useEffect(() => {
         if (currentContext?.externalId) {
@@ -74,6 +75,16 @@ const SideMenu: React.FC<Props> = ({ children }) => {
             })()
         }
     }, [currentContext?.externalId, location.pathname])
+
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (currentContext?.externalId && fusionContextId !== currentContext.id) {
+            navigate(`/${currentContext.id}`, { replace: true })
+        } else if (!currentContext?.externalId) {
+            navigate("/", { replace: true })
+        }
+    }, [currentContext, fusionContextId])
 
     if (currentContext) {
         return (
