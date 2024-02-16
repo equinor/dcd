@@ -1,10 +1,11 @@
-import { FC, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
     Progress, Banner, Icon, Typography,
 } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
 import styled from "styled-components"
+import { Outlet, useNavigate } from "react-router-dom"
 import { useAppContext } from "../context/AppContext"
 import { GetProjectService } from "../Services/ProjectService"
 
@@ -18,16 +19,27 @@ const Wrapper = styled.div`
     width: 100%;
 `
 
-const ProjectInitializer: FC = () => {
+const RouteCoordinator = (): JSX.Element => {
     const { project, setProject } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
-    const [isLoading, setIsLoading] = useState<boolean>()
-    const [isCreating, setIsCreating] = useState<boolean>()
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isCreating, setIsCreating] = useState<boolean>(false)
+
+    const navigate = useNavigate()
 
     useEffect(() => {
-        console.log("current project", currentContext)
+        if (currentContext?.externalId) {
+            navigate(currentContext.id)
+        } else {
+            navigate("/")
+        }
+    }, [currentContext])
+
+    useEffect(() => {
+        console.log("getting project", currentContext)
         const fetchAndSetProject = async () => {
             if (!currentContext?.externalId) {
+                console.log("No externalId in context")
                 setProject(undefined)
                 return
             }
@@ -36,6 +48,7 @@ const ProjectInitializer: FC = () => {
                 setIsLoading(true)
                 const projectService = await GetProjectService()
                 let fetchedProject = await projectService.getProject(currentContext.externalId)
+                console.log("fetchedProject", fetchedProject)
 
                 if (!fetchedProject || fetchedProject.id === "") {
                     setIsCreating(true)
@@ -55,20 +68,7 @@ const ProjectInitializer: FC = () => {
         fetchAndSetProject()
     }, [currentContext, setProject])
 
-    if (!currentContext) {
-        return (
-            <Banner>
-                <Banner.Icon variant="info">
-                    <Icon data={info_circle} />
-                </Banner.Icon>
-                <Banner.Message>
-                    Select a project to view
-                </Banner.Message>
-            </Banner>
-        )
-    }
-
-    if (isLoading || !project || project.id === "") {
+    if ((isLoading || !project || project.id === "") && currentContext) {
         if (isCreating) {
             return (
                 <Wrapper>
@@ -84,7 +84,18 @@ const ProjectInitializer: FC = () => {
             </Wrapper>
         )
     }
-    return null
+    if (!currentContext) {
+        return (
+            <Banner>
+                <Banner.Icon variant="info">
+                    <Icon data={info_circle} />
+                </Banner.Icon>
+                <Banner.Message>
+                    Select a project to view
+                </Banner.Message>
+            </Banner>
+        )
+    } return <Outlet />
 }
 
-export default ProjectInitializer
+export default RouteCoordinator
