@@ -75,9 +75,7 @@ const ProjectMenu = () => {
                             {projectMenuItem.name === ProjectMenuItemType.OVERVIEW && (
                                 <nav>
                                     <LinkWithoutStyle to={`/${currentContext?.id}`}>
-                                        <ProjectMenuItemComponent
-                                            item={projectMenuItem}
-                                        />
+                                        <ProjectMenuItemComponent item={projectMenuItem} />
                                     </LinkWithoutStyle>
                                 </nav>
                             )}
