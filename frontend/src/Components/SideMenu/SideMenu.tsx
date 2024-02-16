@@ -1,9 +1,10 @@
 import { useLocation } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import styled from "styled-components"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import ProjectMenu from "./ProjectMenu"
 import { GetProjectService } from "../../Services/ProjectService"
+import { useAppContext } from "../../context/AppContext"
 
 const SidebarDiv = styled.div`
     width: 15rem;
@@ -47,15 +48,15 @@ interface Props {
 }
 
 const SideMenu: React.FC<Props> = ({ children }) => {
-    const [project, setProject] = useState<Components.Schemas.ProjectDto>()
     const { currentContext } = useModuleCurrentContext()
     const location = useLocation()
+    const { setProject } = useAppContext()
 
     useEffect(() => {
         if (currentContext?.externalId) {
             (async () => {
                 try {
-                    const fetchedProject = await (await GetProjectService()).getProjectByID(currentContext.externalId!)
+                    const fetchedProject = await (await GetProjectService()).getProjectByID(currentContext?.externalId!)
                     if (!fetchedProject || fetchedProject.id === "") {
                         // Workaround for retrieving project in sidemenu while project is created
                         // eslint-disable-next-line no-promise-executor-return
@@ -79,7 +80,7 @@ const SideMenu: React.FC<Props> = ({ children }) => {
             <Wrapper>
                 <Body>
                     <SidebarDiv>
-                        <ProjectMenu project={project} />
+                        <ProjectMenu />
                         <SideMenuFooter>
                             <a
                                 href="https://forms.office.com/Pages/ResponsePage.aspx?id=NaKkOuK21UiRlX_PBbRZsCjGTHQnxJxIkcdHZ_YqW4BUMTQyTVNLOEY0VUtSUjIwN1QxUVJIRjBaNC4u"

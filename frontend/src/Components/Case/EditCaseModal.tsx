@@ -8,8 +8,6 @@ import {
 } from "@equinor/eds-core-react"
 import {
     useState,
-    Dispatch,
-    SetStateAction,
     ChangeEventHandler,
     MouseEventHandler,
     useEffect,
@@ -23,6 +21,7 @@ import {
     defaultDate, isDefaultDate, projectPath, toMonthDate,
 } from "../../Utils/common"
 import { GetCaseService } from "../../Services/CaseService"
+import { useAppContext } from "../../context/AppContext"
 
 const CreateCaseForm = styled.form`
     width: 596px;
@@ -73,8 +72,6 @@ const ButtonsWrapper = styled.div`
 `
 
 interface Props {
-    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
-    project: Components.Schemas.ProjectDto
     caseId?: string,
     isOpen: boolean
     toggleModal: () => void
@@ -83,8 +80,6 @@ interface Props {
 }
 
 const EditCaseModal = ({
-    setProject,
-    project,
     caseId,
     isOpen,
     toggleModal,
@@ -92,6 +87,7 @@ const EditCaseModal = ({
     shouldNavigate,
 }: Props) => {
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
+    const { project, setProject } = useAppContext()
     const [caseName, setCaseName] = useState<string>("")
     const [dG4Date, setDG4Date] = useState<Date>(defaultDate())
     const [description, setDescription] = useState<string>("")
@@ -118,8 +114,10 @@ const EditCaseModal = ({
     }, [isOpen, caseId])
 
     useEffect(() => {
-        const newCase = project.cases?.find((c) => c.id === caseId)
-        setCaseItem(newCase)
+        if (project) {
+            const newCase = project.cases?.find((c) => c.id === caseId)
+            setCaseItem(newCase)
+        }
     }, [project, caseId])
 
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -159,6 +157,9 @@ const EditCaseModal = ({
 
         try {
             setIsLoading(true)
+            if (!project) {
+                throw new Error("No project found")
+            }
 
             let projectResult: Components.Schemas.ProjectDto
             if (editMode && caseItem && caseItem.id) {

@@ -12,6 +12,7 @@ import { EMPTY_GUID } from "../../Utils/constants"
 import { isExplorationWell } from "../../Utils/common"
 import CO2Tab from "./CO2Tab"
 import { GetTechnicalInputService } from "../../Services/TechnicalInputService"
+import { useAppContext } from "../../context/AppContext"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -59,8 +60,6 @@ const CancelButton = styled(Button)`
 type Props = {
     toggleEditTechnicalInputModal: () => void
     isOpen: boolean
-    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
-    project: Components.Schemas.ProjectDto,
     caseId?: string
     setExploration?: Dispatch<SetStateAction<Components.Schemas.ExplorationDto | undefined>>
     setWellProject?: Dispatch<SetStateAction<Components.Schemas.WellProjectDto | undefined>>
@@ -69,14 +68,15 @@ type Props = {
 const EditTechnicalInputModal = ({
     toggleEditTechnicalInputModal,
     isOpen,
-    setProject,
-    project,
     caseId,
     setExploration,
     setWellProject,
 }: Props) => {
-    const [activeTab, setActiveTab] = useState<number>(0)
+    const { project, setProject } = useAppContext()
 
+    if (!project) return null
+
+    const [activeTab, setActiveTab] = useState<number>(0)
     const [originalProject] = useState<Components.Schemas.ProjectDto>(project)
 
     const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto>(project.explorationOperationalWellCosts)
@@ -247,7 +247,6 @@ const EditTechnicalInputModal = ({
                     <Panels>
                         <StyledTabPanel>
                             <WellCostsTab
-                                project={project}
                                 developmentOperationalWellCosts={developmentOperationalWellCosts}
                                 setDevelopmentOperationalWellCosts={setDevelopmentOperationalWellCosts}
                                 explorationOperationalWellCosts={explorationOperationalWellCosts}
@@ -259,10 +258,10 @@ const EditTechnicalInputModal = ({
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <PROSPTab project={project} setProject={setProject} />
+                            <PROSPTab />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <CO2Tab project={project} setProject={setProject} />
+                            <CO2Tab />
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>

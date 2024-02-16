@@ -4,6 +4,7 @@ import {
 } from "react"
 import styled from "styled-components"
 import OperationalWellCost from "./OperationalWellCost"
+import { useAppContext } from "../../context/AppContext"
 
 const TableWrapper = styled(Table)`
     width: 100%;
@@ -11,7 +12,6 @@ const TableWrapper = styled(Table)`
 
 interface Props {
     title: string
-    project: Components.Schemas.ProjectDto
     developmentOperationalWellCosts?: Components.Schemas.DevelopmentOperationalWellCostsDto
     setDevelopmentOperationalWellCosts?: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsDto>>
 
@@ -22,21 +22,20 @@ interface Props {
 
 const OperationalWellCosts = ({
     title,
-    project,
     developmentOperationalWellCosts,
     explorationOperationalWellCosts,
     setDevelopmentOperationalWellCosts,
     setExplorationOperationalWellCosts,
 }: Props) => {
+    const { project } = useAppContext()
+
     const [developmentRigUpgrading, setDevelopmentRigUpgrading] = useState<number | undefined>(developmentOperationalWellCosts?.rigUpgrading)
     const [developmentRigMobDemob, setDevelopmentRigMobDemob] = useState<number | undefined>(developmentOperationalWellCosts?.rigMobDemob)
     const [developmentAnnualWellInterventionCost, setDevelopmentAnnualWellInterventionCost] = useState<number | undefined>(developmentOperationalWellCosts?.annualWellInterventionCostPerWell)
     const [developmentPluggingAndAbandonment, setDevelopmentPluggingAndAbandonment] = useState<number | undefined>(developmentOperationalWellCosts?.pluggingAndAbandonment)
-
     const [explorationRigUpgrading, setExplorationRigUpgrading] = useState<number | undefined>(explorationOperationalWellCosts?.rigUpgrading)
     const [explorationRigMobDemob, setExplorationRigMobDemob] = useState<number | undefined>(explorationOperationalWellCosts?.explorationRigMobDemob)
     const [explorationProjectDrillingCosts, setExplorationProjectDrillingCosts] = useState<number | undefined>(explorationOperationalWellCosts?.explorationProjectDrillingCosts)
-
     const [appraisalRigMobDemob, setAppraisalRigMobDemob] = useState<number | undefined>(explorationOperationalWellCosts?.appraisalRigMobDemob)
     const [appraisalProjectDrillingCosts, setAppraisalProjectDrillingCosts] = useState<number | undefined>(explorationOperationalWellCosts?.appraisalProjectDrillingCosts)
 

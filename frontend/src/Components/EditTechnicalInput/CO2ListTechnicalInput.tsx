@@ -1,7 +1,5 @@
 import {
     ChangeEvent,
-    Dispatch,
-    SetStateAction,
     useCallback,
     useEffect, useMemo, useRef, useState,
 } from "react"
@@ -10,6 +8,7 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { Switch } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
+import { useAppContext } from "../../context/AppContext"
 
 const SwitchWrapper = styled.div`
     align-items: flex-end;
@@ -25,19 +24,14 @@ const ColumnWrapper = styled.div`
     margin-bottom: 0.5rem;
 `
 
-interface Props {
-    project: Components.Schemas.ProjectDto
-    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
-}
-
-const CO2ListTechnicalInput = ({
-    project, setProject,
-}: Props) => {
+const CO2ListTechnicalInput = () => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
+    const { project, setProject } = useAppContext()
+
+    if (!project) return null
 
     const [check, setCheck] = useState(false)
-
     const [cO2RemovedFromGas, setCO2RemovedFromGas] = useState<number>(project.cO2RemovedFromGas ?? 0)
     const [cO2EmissionsFromFuelGas, setCO2EmissionsFromFuelGas] = useState<number>(project.cO2EmissionFromFuelGas ?? 0)
     const [flaredGasPerProducedVolume, setFlaredGasPerProducedVolume] = useState<number>(
@@ -74,12 +68,12 @@ const CO2ListTechnicalInput = ({
         (node: any): boolean => {
             if (node.data) {
                 switch (cO2VentedRow) {
-                    case true:
-                        return node.data.profile === "CO2 vented"
-                    case false:
-                        return node.data.profile !== "CO2 vented"
-                    default:
-                        return true
+                case true:
+                    return node.data.profile === "CO2 vented"
+                case false:
+                    return node.data.profile !== "CO2 vented"
+                default:
+                    return true
                 }
             }
             return true

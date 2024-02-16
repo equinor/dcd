@@ -1,7 +1,11 @@
 import { useEffect } from "react"
+import styled from "styled-components"
+import { useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useNavigate } from "react-router"
-import { projectPath } from "../Utils/common"
+
+const Wrapper = styled.main`
+    margin:20px;
+`
 
 const Welcome = (): JSX.Element => {
     const navigate = useNavigate()
@@ -15,12 +19,12 @@ const Welcome = (): JSX.Element => {
     }, [currentContext])
 
     return (
-        <main>
+        <Wrapper>
             <h1>Hello</h1>
             <p>
                 Welcome to ConceptApp. Please begin by searching for a project.
             </p>
-        </main>
+        </Wrapper>
     )
 }
 

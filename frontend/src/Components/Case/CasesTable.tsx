@@ -7,13 +7,11 @@ import {
 } from "@equinor/eds-core-react"
 import {
     useState,
-    Dispatch,
-    SetStateAction,
     useEffect,
     useMemo,
     useRef,
 } from "react"
-import { useParams, Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import {
@@ -29,17 +27,13 @@ import { GetCaseService } from "../../Services/CaseService"
 import EditCaseModal from "./EditCaseModal"
 import { EMPTY_GUID } from "../../Utils/constants"
 import { GetProjectService } from "../../Services/ProjectService"
+import { useAppContext } from "../../context/AppContext"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
     margin-right: 0.5rem;
     margin-bottom: -0.2rem;
 `
-
-interface Props {
-    project: Components.Schemas.ProjectDto
-    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>
-}
 
 interface TableCase {
     id: string,
@@ -53,9 +47,13 @@ interface TableCase {
     referenceCaseId?: string
 }
 
-const CasesTable = ({ project, setProject }: Props) => {
+const CasesTable = () => {
     const gridRef = useRef<AgGridReact>(null)
     const styles = useStyles()
+    const { project, setProject } = useAppContext()
+
+    if (!project) return null
+
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null)
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
@@ -277,8 +275,6 @@ const CasesTable = ({ project, setProject }: Props) => {
                         )}
                 </Menu>
                 <EditCaseModal
-                    setProject={setProject}
-                    project={project}
                     caseId={selectedCaseId}
                     isOpen={editCaseModalIsOpen}
                     toggleModal={toggleEditCaseModal}

@@ -14,11 +14,10 @@ import {
     library_add,
     more_vertical,
 } from "@equinor/eds-icons"
-import { useCurrentContext } from "@equinor/fusion"
 import { tokens } from "@equinor/eds-tokens"
 import { Tooltip } from "@mui/material"
 import { GetProjectService } from "../Services/ProjectService"
-import { projectPath, unwrapProjectId } from "../Utils/common"
+import { unwrapProjectId } from "../Utils/common"
 import CaseDescriptionTab from "./Case/CaseDescriptionTab"
 import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 import CaseCostTab from "./Case/CaseCostTab"
@@ -607,15 +606,11 @@ const CaseView = () => {
             <EditTechnicalInputModal
                 toggleEditTechnicalInputModal={toggleTechnicalInputModal}
                 isOpen={editTechnicalInputModalIsOpen}
-                project={project}
-                setProject={setProject}
                 caseId={caseItem.id}
                 setExploration={setExploration}
                 setWellProject={setWellProject}
             />
             <EditCaseModal
-                setProject={setProject}
-                project={project}
                 caseId={caseItem.id}
                 isOpen={editCaseModalIsOpen}
                 toggleModal={toggleEditCaseModal}
@@ -623,8 +618,6 @@ const CaseView = () => {
                 shouldNavigate
             />
             <EditCaseModal
-                setProject={setProject}
-                project={project}
                 caseId={caseItem.id}
                 isOpen={createCaseModalIsOpen}
                 toggleModal={toggleCreateCaseModal}
