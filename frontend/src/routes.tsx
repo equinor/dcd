@@ -1,5 +1,5 @@
 import { RouteObject } from "react-router-dom"
-import SideMenu from "./Components/SideMenu/SideMenu"
+import Overview from "./Components/Overview"
 import ProjectView from "./Views/ProjectView"
 import CaseView from "./Views/CaseView"
 import RouteCoordinator from "./Components/RouteCoordinator"
@@ -11,7 +11,7 @@ export const routes: RouteObject[] = [
         children: [
             {
                 path: ":fusionContextId",
-                element: <SideMenu />,
+                element: <Overview />,
                 children: [
                     { index: true, element: <ProjectView /> },
                     { path: "case/:caseId", element: <CaseView /> },

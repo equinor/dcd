@@ -96,7 +96,6 @@ const CaseDescriptionTab = ({
 
     const handleArtificialLiftChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1) {
-            // eslint-disable-next-line max-len
             const newArtificialLift: Components.Schemas.ArtificialLift = Number(e.currentTarget.value) as Components.Schemas.ArtificialLift
             const newCase = { ...caseItem }
             newCase.artificialLift = newArtificialLift

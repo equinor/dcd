@@ -118,7 +118,6 @@ const ProjectCompareCasesTab = () => {
                         totalExportedVolumes: Math.round(compareCasesTotals[i]?.totalExportedVolumes * 10) / 10,
                         studyCostsPlusOpex: Math.round(compareCasesTotals[i]?.totalStudyCostsPlusOpex * 1) / 1,
                         cessationCosts: Math.round(compareCasesTotals[i]?.totalCessationCosts * 1) / 1,
-                        // eslint-disable-next-line max-len
                         offshorePlusOnshoreFacilityCosts: Math.round(compareCasesTotals[i]?.offshorePlusOnshoreFacilityCosts * 1) / 1,
                         developmentCosts: Math.round(compareCasesTotals[i]?.developmentWellCosts * 1) / 1,
                         explorationWellCosts: Math.round(compareCasesTotals[i]?.explorationWellCosts * 1) / 1,

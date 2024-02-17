@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom"
 import styled from "styled-components"
-import ProjectMenu from "./ProjectMenu"
+import Sidebar from "./Sidebar/Sidebar"
 
 const SidebarDiv = styled.div`
     width: 15rem;
@@ -44,11 +44,11 @@ const Link = styled.a`
     font-size: 12px;
 `
 
-const SideMenu: React.FC = () => (
+const Overview: React.FC = () => (
     <Wrapper>
         <Body>
             <SidebarDiv>
-                <ProjectMenu />
+                <Sidebar />
                 <SideMenuFooter>
                     <Link
                         href="https://forms.office.com/Pages/ResponsePage.aspx?id=NaKkOuK21UiRlX_PBbRZsCjGTHQnxJxIkcdHZ_YqW4BUMTQyTVNLOEY0VUtSUjIwN1QxUVJIRjBaNC4u"
@@ -66,4 +66,4 @@ const SideMenu: React.FC = () => (
     </Wrapper>
 )
 
-export default SideMenu
+export default Overview

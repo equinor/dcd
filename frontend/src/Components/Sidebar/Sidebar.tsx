@@ -6,7 +6,7 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import { useAppContext } from "../../context/AppContext"
 
 import MenuItem from "./MenuItem"
-import ProjectMenuItemComponent from "./ProjectMenuItemComponent"
+import ProjectMenuItemComponent from "./ProjectMenuItem"
 import { projectPath } from "../../Utils/common"
 
 const ExpandableDiv = styled.div`
@@ -36,17 +36,17 @@ const MenuItems = styled.ul`
     width: 100%;
 `
 
-export enum ProjectMenuItemType {
+export enum SidebarItemType {
     OVERVIEW = "Overview",
     CASES = "Cases",
 }
 
-const projectMenuItems = [
-    { name: ProjectMenuItemType.OVERVIEW, icon: dashboard },
-    { name: ProjectMenuItemType.CASES, icon: file },
+const SidebarItems = [
+    { name: SidebarItemType.OVERVIEW, icon: dashboard },
+    { name: SidebarItemType.CASES, icon: file },
 ]
 
-const ProjectMenu = () => {
+const Sidebar = () => {
     const { project } = useAppContext()
     const [isOpen, setIsOpen] = useState<boolean>(true)
     const { currentContext } = useModuleCurrentContext()
@@ -70,16 +70,16 @@ const ProjectMenu = () => {
             </nav>
             {isOpen && (
                 <MenuItems>
-                    {projectMenuItems.map((projectMenuItem, index) => (
+                    {SidebarItems.map((projectMenuItem, index) => (
                         <Item key={`project-menu-item-${index + 1}`}>
-                            {projectMenuItem.name === ProjectMenuItemType.OVERVIEW && (
+                            {projectMenuItem.name === SidebarItemType.OVERVIEW && (
                                 <nav>
                                     <LinkWithoutStyle to={`/${currentContext?.id}`}>
                                         <ProjectMenuItemComponent item={projectMenuItem} />
                                     </LinkWithoutStyle>
                                 </nav>
                             )}
-                            {projectMenuItem.name === ProjectMenuItemType.CASES && (
+                            {projectMenuItem.name === SidebarItemType.CASES && (
                                 <ProjectMenuItemComponent item={projectMenuItem} />
                             )}
                         </Item>
@@ -90,4 +90,4 @@ const ProjectMenu = () => {
     )
 }
 
-export default ProjectMenu
+export default Sidebar

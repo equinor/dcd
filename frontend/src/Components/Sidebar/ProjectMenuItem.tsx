@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom"
 import { IconData } from "@equinor/eds-icons"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
-import { ProjectMenuItemType } from "./ProjectMenu"
+import { SidebarItemType } from "./Sidebar"
 import MenuItem from "./MenuItem"
 import { casePath } from "../../Utils/common"
 import { useAppContext } from "../../context/AppContext"
@@ -35,23 +35,23 @@ const LinkWithoutStyle = styled(Link)`
     text-decoration: none;
 `
 
-export type ProjectMenuItem = {
+export type ProjectMenuItemType = {
     name: string
     icon: IconData
 }
 
 interface Props {
-    item: ProjectMenuItem
+    item: ProjectMenuItemType
 }
 
-const ProjectMenuItemComponent = ({
+const ProjectMenuItem = ({
     item,
 }: Props) => {
     const { caseId } = useParams<Record<string, string | undefined>>()
     const { project } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
 
-    const isSelectedProjectMenuItem = (item.name === ProjectMenuItemType.OVERVIEW && caseId === undefined) || (item.name === ProjectMenuItemType.CASES && caseId !== undefined)
+    const isSelectedProjectMenuItem = (item.name === SidebarItemType.OVERVIEW && caseId === undefined) || (item.name === SidebarItemType.CASES && caseId !== undefined)
     const isSelected = currentContext?.externalId === project?.id && isSelectedProjectMenuItem
     const [isOpen, setIsOpen] = useState<boolean>(isSelected)
 
@@ -94,4 +94,4 @@ const ProjectMenuItemComponent = ({
     )
 }
 
-export default ProjectMenuItemComponent
+export default ProjectMenuItem
