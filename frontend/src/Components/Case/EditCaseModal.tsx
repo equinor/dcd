@@ -72,9 +72,9 @@ const ButtonsWrapper = styled.div`
 `
 
 interface Props {
-    caseId?: string,
+    caseId?: string
     isOpen: boolean
-    toggleModal: () => void
+    setIsOpen: (isOpen: boolean) => void
     editMode: boolean
     shouldNavigate: boolean
 }
@@ -82,9 +82,10 @@ interface Props {
 const EditCaseModal = ({
     caseId,
     isOpen,
-    toggleModal,
     editMode,
     shouldNavigate,
+    setIsOpen,
+
 }: Props) => {
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const { project, setProject } = useAppContext()
@@ -196,9 +197,9 @@ const EditCaseModal = ({
                 ))?.id}`)
             }
             setProject(projectResult)
-            toggleModal()
+            setIsOpen(false)
             if (shouldNavigate) {
-            navigate(fusionContextId!)
+                navigate(fusionContextId!)
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -313,7 +314,7 @@ const EditCaseModal = ({
                     <Button
                         type="button"
                         variant="outlined"
-                        onClick={toggleModal}
+                        onClick={() => setIsOpen(false)}
                     >
                         Cancel
                     </Button>

@@ -11,11 +11,11 @@ import styled from "styled-components"
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import CaseNumberInput from "../../Components/Case/CaseNumberInput"
+import CaseNumberInput from "./CaseNumberInput"
 import CaseTabTable from "./CaseTabTable"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
-import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
+import { AgChartsTimeseries, setValueToCorrespondingYear } from "../AgGrid/AgChartsTimeseries"
 import { ITimeSeriesOverride } from "../../models/ITimeSeriesOverride"
 
 const ColumnWrapper = styled.div`

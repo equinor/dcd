@@ -7,9 +7,9 @@ import React, { useState } from "react"
 import styled from "styled-components"
 import { useAppContext } from "../context/AppContext"
 import { GetProjectService } from "../Services/ProjectService"
-import ProjectOverviewTab from "./Project/ProjectOverviewTab"
-import ProjectCompareCasesTab from "./Project/ProjectCompareCasesTab"
-import ProjectSettingsTab from "./Project/ProjectSettingsTab"
+import ProjectOverviewTab from "../Components/Project/ProjectOverviewTab"
+import ProjectCompareCasesTab from "../Components/Project/ProjectCompareCasesTab"
+import ProjectSettingsTab from "../Components/Project/ProjectSettingsTab"
 import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 
 const { Panel } = Tabs

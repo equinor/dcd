@@ -9,12 +9,16 @@ import {
 import { add, archive } from "@equinor/eds-icons"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import { getProjectPhaseName, getProjectCategoryName, unwrapProjectId } from "../../Utils/common"
-import { WrapperColumn } from "../Asset/StyledAssetComponents"
 import { GetProjectService } from "../../Services/ProjectService"
 import { GetSTEAService } from "../../Services/STEAService"
-import EditCaseModal from "../../Components/Case/EditCaseModal"
+import EditCaseModal from "../Case/EditCaseModal"
 import { useAppContext } from "../../context/AppContext"
-import CasesTable from "../../Components/Case/CasesTable/CasesTable"
+import CasesTable from "../Case/CasesTable/CasesTable"
+
+export const WrapperColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+`
 
 const Wrapper = styled.div`
     margin: 20px 0;
@@ -83,7 +87,7 @@ const ProjectOverviewTab = () => {
         <Wrapper>
             <EditCaseModal
                 isOpen={createCaseModalIsOpen}
-                toggleModal={toggleCreateCaseModal}
+                setIsOpen={toggleCreateCaseModal}
                 editMode={false}
                 shouldNavigate={false}
             />

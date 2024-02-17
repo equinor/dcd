@@ -4,7 +4,7 @@ import {
 import styled from "styled-components"
 
 import { Typography } from "@equinor/eds-core-react"
-import CaseNumberInput from "../../Components/Case/CaseNumberInput"
+import CaseNumberInput from "./CaseNumberInput"
 import CaseTabTable from "./CaseTabTable"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileService"

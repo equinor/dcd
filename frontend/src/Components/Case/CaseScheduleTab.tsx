@@ -8,7 +8,7 @@ import styled from "styled-components"
 import {
     Typography,
 } from "@equinor/eds-core-react"
-import CaseDateField from "../../Components/Case/CaseDateField"
+import CaseDateField from "./CaseDateField"
 import {
     dateFromString,
     defaultDate,

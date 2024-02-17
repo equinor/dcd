@@ -12,7 +12,7 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { bookmark_filled } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
-import { AgChartsCompareCases } from "../../Components/AgGrid/AgChartsCompareCases"
+import { AgChartsCompareCases } from "../AgGrid/AgChartsCompareCases"
 import { GetProjectService } from "../../Services/ProjectService"
 import { useAppContext } from "../../context/AppContext"
 

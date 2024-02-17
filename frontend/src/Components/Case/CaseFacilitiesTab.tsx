@@ -8,7 +8,7 @@ import styled from "styled-components"
 import {
     NativeSelect, Typography, Input, Label,
 } from "@equinor/eds-core-react"
-import CaseNumberInput from "../../Components/Case/CaseNumberInput"
+import CaseNumberInput from "./CaseNumberInput"
 
 const ColumnWrapper = styled.div`
     display: flex;
