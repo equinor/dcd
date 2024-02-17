@@ -38,19 +38,25 @@ const SideMenuFooter = styled.div`
     position: fixed;
 `
 
+const Link = styled.a`
+    color: black;
+    text-decoration: none;
+    font-size: 12px;
+`
+
 const SideMenu: React.FC = () => (
     <Wrapper>
         <Body>
             <SidebarDiv>
                 <ProjectMenu />
                 <SideMenuFooter>
-                    <a
+                    <Link
                         href="https://forms.office.com/Pages/ResponsePage.aspx?id=NaKkOuK21UiRlX_PBbRZsCjGTHQnxJxIkcdHZ_YqW4BUMTQyTVNLOEY0VUtSUjIwN1QxUVJIRjBaNC4u"
                         target="_blank"
                         rel="noopener noreferrer"
                     >
                         Send feedback
-                    </a>
+                    </Link>
                 </SideMenuFooter>
             </SidebarDiv>
             <MainView>
