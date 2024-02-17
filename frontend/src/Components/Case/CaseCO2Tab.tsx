@@ -75,6 +75,12 @@ const NumberInputField = styled.div`
     padding-left: 50px;
 `
 
+const ChartContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 40px;
+`
+
 interface Props {
     project: Components.Schemas.ProjectDto,
     caseItem: Components.Schemas.CaseDto,
@@ -301,15 +307,15 @@ const CaseCO2Tab = ({
                     </NumberInputField>
                 </RowWrapper>
             </ColumnWrapper>
-            <RowWrapper>
+            <ChartContainer>
                 <AgChartsTimeseries
                     data={co2EmissionsChartData()}
                     chartTitle="Annual CO2 emissions"
                     barColors={["#E24973", "#FF92A8"]}
                     barProfiles={["co2Emissions"]}
                     barNames={["Annual CO2 emissions (million tonnes)"]}
-                    width="70%"
-                    height="600"
+                    width="100%"
+                    height="600px"
                     lineChart={co2IntensityLine}
                     axesData={chartAxes}
                 />
@@ -350,7 +356,7 @@ const CaseCO2Tab = ({
                         unit="million tonnes"
                     />
                 </WrapperColumn>
-            </RowWrapper>
+            </ChartContainer>
             <ColumnWrapper>
                 <TableYearWrapper>
                     <NativeSelectField
