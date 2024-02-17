@@ -14,7 +14,7 @@ import { tokens } from "@equinor/eds-tokens"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
 import { AgChartsCompareCases } from "../AgGrid/AgChartsCompareCases"
 import { GetProjectService } from "../../Services/ProjectService"
-import { useAppContext } from "../../context/AppContext"
+import { useAppContext } from "../../Context/AppContext"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};

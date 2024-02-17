@@ -7,7 +7,7 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import { SidebarItemType } from "./Sidebar"
 import MenuItem from "./MenuItem"
 import { casePath } from "../../Utils/common"
-import { useAppContext } from "../../context/AppContext"
+import { useAppContext } from "../../Context/AppContext"
 
 const ExpandableDiv = styled.div`
     display: flex;

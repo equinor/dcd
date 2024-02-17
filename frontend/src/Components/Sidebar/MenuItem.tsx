@@ -4,7 +4,7 @@ import {
 } from "@equinor/eds-icons"
 import { Icon, Tooltip, Typography } from "@equinor/eds-core-react"
 import { tokens } from "@equinor/eds-tokens"
-import { useAppContext } from "../../context/AppContext"
+import { useAppContext } from "../../Context/AppContext"
 
 const Wrapper = styled.div<{ padding?: string }>`
     display: flex;

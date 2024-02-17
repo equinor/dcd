@@ -1,7 +1,7 @@
 import { NativeSelect } from "@equinor/eds-core-react"
 import { ChangeEventHandler } from "react"
 import styled from "styled-components"
-import { useAppContext } from "../../context/AppContext"
+import { useAppContext } from "../../Context/AppContext"
 
 const Wrapper = styled.div`
     margin: 1rem;

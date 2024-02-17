@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 import {
     bookmark_filled, bookmark_outlined, delete_to_trash, edit, folder, library_add,
 } from "@equinor/eds-icons"
-import { useAppContext } from "../../../context/AppContext"
+import { useAppContext } from "../../../Context/AppContext"
 import { GetCaseService } from "../../../Services/CaseService"
 import EditCaseModal from "../EditCaseModal"
 import { EMPTY_GUID } from "../../../Utils/constants"
