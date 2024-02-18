@@ -13,22 +13,24 @@ import {
     edit,
     library_add,
     more_vertical,
+    arrow_back,
 } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { Tooltip } from "@mui/material"
+import { projectPath, unwrapProjectId } from "../Utils/common"
+
 import { GetProjectService } from "../Services/ProjectService"
-import { unwrapProjectId } from "../Utils/common"
-import CaseDescriptionTab from "./Case/CaseDescriptionTab"
+import CaseDescriptionTab from "../Components/Case/CaseDescriptionTab"
 import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
-import CaseCostTab from "./Case/CaseCostTab"
-import CaseFacilitiesTab from "./Case/CaseFacilitiesTab"
-import CaseProductionProfilesTab from "./Case/CaseProductionProfilesTab"
+import CaseCostTab from "../Components/Case/CaseCostTab"
+import CaseFacilitiesTab from "../Components/Case/CaseFacilitiesTab"
+import CaseProductionProfilesTab from "../Components/Case/CaseProductionProfilesTab"
 import { GetCaseService } from "../Services/CaseService"
 import EditCaseModal from "../Components/Case/EditCaseModal"
-import CaseScheduleTab from "./Case/CaseScheduleTab"
-import CaseSummaryTab from "./Case/CaseSummaryTab"
-import CaseDrillingScheduleTab from "./Case/CaseDrillingScheduleTab"
-import CaseCO2Tab from "./Case/CaseCO2Tab"
+import CaseScheduleTab from "../Components/Case/CaseScheduleTab"
+import CaseSummaryTab from "../Components/Case/CaseSummaryTab"
+import CaseDrillingScheduleTab from "../Components/Case/CaseDrillingScheduleTab"
+import CaseCO2Tab from "../Components/Case/CaseCO2Tab"
 import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
 import { EMPTY_GUID } from "../Utils/constants"
 
@@ -42,7 +44,7 @@ const CaseViewDiv = styled.div`
 
 const PageTitle = styled(Typography)`
     flex-grow: 1;
-    padding-left: 30px;
+    padding-left: 10px;
 `
 
 const TransparentButton = styled(Button)`
@@ -54,15 +56,13 @@ const TransparentButton = styled(Button)`
 
 const DividerLine = styled.div`
 `
-
 const StyledTabPanel = styled(Panel)`
-    margin-left: 40px;
-    margin-right: 40px;
-    padding-top: 0px;
+    padding-top: 5px;
+    margin: 20px;
 `
 const HeaderWrapper = styled.div`
     background-color: white;
-    width: calc(100% - 16rem);
+    width: calc(100% - 270px);
     position: fixed;
     z-index: 100;
     padding-top: 30px;
@@ -95,7 +95,8 @@ const ColumnWrapper = styled.div`
 const RowWrapper = styled.div`
     display: flex;
     flex-direction: row;
-    margin-bottom: 78px;
+    margin: 0 20px 78px 20px;
+    align-items: center;
 `
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
@@ -367,6 +368,12 @@ const CaseView = () => {
         <div>
             <HeaderWrapper>
                 <RowWrapper>
+                    <Button
+                        onClick={() => navigate(projectPath(currentContext?.externalId!))}
+                        variant="ghost_icon"
+                    >
+                        <Icon data={arrow_back} />
+                    </Button>
                     <PageTitle variant="h4">
                         {project.referenceCaseId === caseItem.id && (
                             <Tooltip title="Reference case">
@@ -611,15 +618,8 @@ const CaseView = () => {
             <EditCaseModal
                 caseId={caseItem.id}
                 isOpen={editCaseModalIsOpen}
-                toggleModal={toggleEditCaseModal}
+                setIsOpen={setEditCaseModalIsOpen}
                 editMode
-                shouldNavigate
-            />
-            <EditCaseModal
-                caseId={caseItem.id}
-                isOpen={createCaseModalIsOpen}
-                toggleModal={toggleCreateCaseModal}
-                editMode={false}
                 shouldNavigate
             />
         </div>

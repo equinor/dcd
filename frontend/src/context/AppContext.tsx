@@ -6,23 +6,30 @@ import React, {
     useMemo,
 } from "react"
 
-// Assuming Components.Schemas.ProjectDto is defined elsewhere
-// Replace Components.Schemas.ProjectDto with the correct type or interface for your project
-
 interface AppContextType {
     project: Components.Schemas.ProjectDto | undefined;
     setProject: React.Dispatch<React.SetStateAction<Components.Schemas.ProjectDto | undefined>>;
+    createCaseModalIsOpen: boolean;
+    setCreateCaseModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
 
 const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [project, setProject] = useState<Components.Schemas.ProjectDto | undefined>()
+    const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
 
     const value = useMemo(() => ({
         project,
         setProject,
-    }), [project])
+        createCaseModalIsOpen,
+        setCreateCaseModalIsOpen,
+    }), [
+        project,
+        setProject,
+        createCaseModalIsOpen,
+        setCreateCaseModalIsOpen,
+    ])
 
     return (
         <AppContext.Provider value={value}>

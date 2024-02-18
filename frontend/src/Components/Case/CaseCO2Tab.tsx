@@ -11,16 +11,20 @@ import styled from "styled-components"
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import CaseNumberInput from "../../Components/Case/CaseNumberInput"
+import CaseNumberInput from "./CaseNumberInput"
 import CaseTabTable from "./CaseTabTable"
-import { ITimeSeries } from "../../models/ITimeSeries"
+import { ITimeSeries } from "../../Models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileService"
 import CaseCO2DistributionTable from "./CaseCO2DistributionTable"
-import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../Components/AgGrid/AgChartsTimeseries"
-import { AgChartsPie } from "../../Components/AgGrid/AgChartsPie"
-import { WrapperColumn } from "../Asset/StyledAssetComponents"
-import { ITimeSeriesOverride } from "../../models/ITimeSeriesOverride"
+import { AgChartsTimeseries, setValueToCorrespondingYear } from "../AgGrid/AgChartsTimeseries"
+import { AgChartsPie } from "../AgGrid/AgChartsPie"
+import { ITimeSeriesOverride } from "../../Models/ITimeSeriesOverride"
+
+export const WrapperColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+`
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -71,6 +75,12 @@ const NumberInputField = styled.div`
     padding-left: 50px;
 `
 
+const ChartContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 40px;
+`
+
 interface Props {
     project: Components.Schemas.ProjectDto,
     caseItem: Components.Schemas.CaseDto,
@@ -94,9 +104,7 @@ const CaseCO2Tab = ({
     const [co2Intensity, setCo2Intensity] = useState<Components.Schemas.Co2IntensityDto>()
     const [co2IntensityTotal, setCo2IntensityTotal] = useState<number>(0)
     const [co2DrillingFlaringFuelTotals, setCo2DrillingFlaringFuelTotals] = useState<Components.Schemas.Co2DrillingFlaringFuelTotalsDto>()
-
     const [co2EmissionsOverride, setCo2EmissionsOverride] = useState<Components.Schemas.Co2EmissionsOverrideDto>()
-
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
@@ -200,9 +208,19 @@ const CaseCO2Tab = ({
             dataArray.push({
                 year: i,
                 co2Emissions:
-                    setValueToCorrespondingYear(useOverride ? co2EmissionsOverride : co2Emissions, i, startYear, caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030),
+                    setValueToCorrespondingYear(
+                        useOverride ? co2EmissionsOverride : co2Emissions,
+                        i,
+                        startYear,
+                        caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030,
+                    ),
                 co2Intensity:
-                    setValueToCorrespondingYear(co2Intensity, i, startYear, caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030),
+                    setValueToCorrespondingYear(
+                        co2Intensity,
+                        i,
+                        startYear,
+                        caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030,
+                    ),
             })
         }
         return dataArray
@@ -289,15 +307,15 @@ const CaseCO2Tab = ({
                     </NumberInputField>
                 </RowWrapper>
             </ColumnWrapper>
-            <RowWrapper>
+            <ChartContainer>
                 <AgChartsTimeseries
                     data={co2EmissionsChartData()}
                     chartTitle="Annual CO2 emissions"
                     barColors={["#E24973", "#FF92A8"]}
                     barProfiles={["co2Emissions"]}
                     barNames={["Annual CO2 emissions (million tonnes)"]}
-                    width="70%"
-                    height="600"
+                    width="100%"
+                    height="600px"
                     lineChart={co2IntensityLine}
                     axesData={chartAxes}
                 />
@@ -338,7 +356,7 @@ const CaseCO2Tab = ({
                         unit="million tonnes"
                     />
                 </WrapperColumn>
-            </RowWrapper>
+            </ChartContainer>
             <ColumnWrapper>
                 <TableYearWrapper>
                     <NativeSelectField

@@ -1,6 +1,11 @@
 import { Input, Label } from "@equinor/eds-core-react"
 import { ChangeEventHandler } from "react"
-import { WrapperColumn } from "../../Views/Asset/StyledAssetComponents"
+import styled from "styled-components"
+
+export const WrapperColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+`
 
 interface Props {
     onChange: ChangeEventHandler<HTMLInputElement>

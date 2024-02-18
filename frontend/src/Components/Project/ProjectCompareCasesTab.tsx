@@ -12,9 +12,9 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { bookmark_filled } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
-import { AgChartsCompareCases } from "../../Components/AgGrid/AgChartsCompareCases"
+import { AgChartsCompareCases } from "../AgGrid/AgChartsCompareCases"
 import { GetProjectService } from "../../Services/ProjectService"
-import { useAppContext } from "../../context/AppContext"
+import { useAppContext } from "../../Context/AppContext"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
@@ -45,7 +45,6 @@ width: 100%;
 display: flex;
 float: left;
 flex-direction: column;
-padding: 20px;
 `
 const WrapperRow = styled.div`
     display: flex;
@@ -119,7 +118,6 @@ const ProjectCompareCasesTab = () => {
                         totalExportedVolumes: Math.round(compareCasesTotals[i]?.totalExportedVolumes * 10) / 10,
                         studyCostsPlusOpex: Math.round(compareCasesTotals[i]?.totalStudyCostsPlusOpex * 1) / 1,
                         cessationCosts: Math.round(compareCasesTotals[i]?.totalCessationCosts * 1) / 1,
-                        // eslint-disable-next-line max-len
                         offshorePlusOnshoreFacilityCosts: Math.round(compareCasesTotals[i]?.offshorePlusOnshoreFacilityCosts * 1) / 1,
                         developmentCosts: Math.round(compareCasesTotals[i]?.developmentWellCosts * 1) / 1,
                         explorationWellCosts: Math.round(compareCasesTotals[i]?.explorationWellCosts * 1) / 1,

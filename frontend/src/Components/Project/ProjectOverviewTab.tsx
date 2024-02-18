@@ -4,17 +4,21 @@ import {
 } from "react"
 import styled from "styled-components"
 import {
-    Button, Icon, Label, Typography, Divider,
+    Button, Icon, Label, Typography,
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import { getProjectPhaseName, getProjectCategoryName, unwrapProjectId } from "../../Utils/common"
-import { WrapperColumn } from "../Asset/StyledAssetComponents"
 import { GetProjectService } from "../../Services/ProjectService"
 import { GetSTEAService } from "../../Services/STEAService"
-import EditCaseModal from "../../Components/Case/EditCaseModal"
-import CasesTable from "../../Components/Case/CasesTable"
-import { useAppContext } from "../../context/AppContext"
+import EditCaseModal from "../Case/EditCaseModal"
+import { useAppContext } from "../../Context/AppContext"
+import CasesTable from "../Case/CasesTable/CasesTable"
+
+export const WrapperColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+`
 
 const Wrapper = styled.div`
     margin: 20px 0;
@@ -47,9 +51,12 @@ const DescriptionField = styled(TextArea)`
 `
 
 const ProjectOverviewTab = () => {
-    const { project, setProject } = useAppContext()
-    const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
-    const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
+    const {
+        project,
+        setProject,
+        createCaseModalIsOpen,
+        setCreateCaseModalIsOpen,
+    } = useAppContext()
 
     const handleDescriptionChange: FormEventHandler = (e) => {
         const target = e.target as typeof e.target & {
@@ -83,7 +90,7 @@ const ProjectOverviewTab = () => {
         <Wrapper>
             <EditCaseModal
                 isOpen={createCaseModalIsOpen}
-                toggleModal={toggleCreateCaseModal}
+                setIsOpen={setCreateCaseModalIsOpen}
                 editMode={false}
                 shouldNavigate={false}
             />
@@ -131,7 +138,7 @@ const ProjectOverviewTab = () => {
             </Wrapper>
             <HeaderContainer>
                 <Typography variant="h3">Cases</Typography>
-                <Button onClick={toggleCreateCaseModal}>
+                <Button onClick={() => setCreateCaseModalIsOpen(true)}>
                     <Icon data={add} size={24} />
                     Add new Case
                 </Button>
