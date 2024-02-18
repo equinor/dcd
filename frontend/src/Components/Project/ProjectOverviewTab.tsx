@@ -51,9 +51,12 @@ const DescriptionField = styled(TextArea)`
 `
 
 const ProjectOverviewTab = () => {
-    const { project, setProject } = useAppContext()
-    const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
-    const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
+    const {
+        project,
+        setProject,
+        createCaseModalIsOpen,
+        setCreateCaseModalIsOpen,
+    } = useAppContext()
 
     const handleDescriptionChange: FormEventHandler = (e) => {
         const target = e.target as typeof e.target & {
@@ -87,7 +90,7 @@ const ProjectOverviewTab = () => {
         <Wrapper>
             <EditCaseModal
                 isOpen={createCaseModalIsOpen}
-                setIsOpen={toggleCreateCaseModal}
+                setIsOpen={setCreateCaseModalIsOpen}
                 editMode={false}
                 shouldNavigate={false}
             />
@@ -135,7 +138,7 @@ const ProjectOverviewTab = () => {
             </Wrapper>
             <HeaderContainer>
                 <Typography variant="h3">Cases</Typography>
-                <Button onClick={toggleCreateCaseModal}>
+                <Button onClick={() => setCreateCaseModalIsOpen(true)}>
                     <Icon data={add} size={24} />
                     Add new Case
                 </Button>

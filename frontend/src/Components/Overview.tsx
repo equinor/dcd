@@ -1,16 +1,6 @@
 import { Outlet } from "react-router-dom"
 import styled from "styled-components"
-import Sidebar from "./Sidebar/Sidebar"
-
-const SidebarDiv = styled.div`
-    width: 15rem;
-    display: flex;
-    border-right: 1px solid lightgrey;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    overflow-x: hidden;
-`
+import Sidebar from "./Sidebar"
 
 const Wrapper = styled.div`
     display: flex;
@@ -31,34 +21,11 @@ const MainView = styled.div`
     overflow: auto;
     overflow-x: hidden;
 `
-const SideMenuFooter = styled.div`
-    bottom: 10px;
-    left: 70px;
-    text-align: center;
-    position: fixed;
-`
-
-const Link = styled.a`
-    color: black;
-    text-decoration: none;
-    font-size: 12px;
-`
 
 const Overview: React.FC = () => (
     <Wrapper>
         <Body>
-            <SidebarDiv>
-                <Sidebar />
-                <SideMenuFooter>
-                    <Link
-                        href="https://forms.office.com/Pages/ResponsePage.aspx?id=NaKkOuK21UiRlX_PBbRZsCjGTHQnxJxIkcdHZ_YqW4BUMTQyTVNLOEY0VUtSUjIwN1QxUVJIRjBaNC4u"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Send feedback
-                    </Link>
-                </SideMenuFooter>
-            </SidebarDiv>
+            <Sidebar />
             <MainView>
                 <Outlet />
             </MainView>
