@@ -88,6 +88,7 @@ const CaseSummaryTab = () => {
                 lastYear = profileLastYear
             }
         })
+        
         if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER && caseItem.dG4Date) {
             setStartYear(firstYear + new Date(caseItem.dG4Date).getFullYear())
             setEndYear(lastYear + new Date(caseItem.dG4Date).getFullYear())
@@ -116,10 +117,10 @@ const CaseSummaryTab = () => {
                         feed = caseItem.totalFEEDStudiesOverride
                     }
 
-                    const totalStudy = mergeTimeseries(feasibility, feed)
+                    const totalStudy = MergeTimeseries(feasibility, feed)
                     setTotalStudyCost(totalStudy)
 
-                    setOpexCost(opex)
+                    setOpexSum(opex)
                     setCessationCost(cessation)
 
                     // CAPEX
