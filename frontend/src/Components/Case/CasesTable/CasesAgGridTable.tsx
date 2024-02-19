@@ -2,6 +2,7 @@ import {
     Button,
     Icon,
     Tooltip,
+    Typography,
 } from "@equinor/eds-core-react"
 import {
     useState,
@@ -17,6 +18,7 @@ import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
 import { casePath, productionStrategyOverviewToString } from "../../../Utils/common"
 import { useAppContext } from "../../../Context/AppContext"
+import typography from "@equinor/fusion-web-theme/dist/styles/typography"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
@@ -89,7 +91,7 @@ const CasesAgGridTable = ({
     )
 
     const nameWithReferenceCase = (p: any) => {
-        const caseDetailPath = casePath(project.id, p.node.data.id)
+        const caseDetailPath = casePath("fusionContextId", p.node.data.id)
 
         return (
             <span>
@@ -98,9 +100,7 @@ const CasesAgGridTable = ({
                         <MenuIcon data={bookmark_filled} size={16} />
                     </Tooltip>
                 )}
-                <Link to={caseDetailPath} style={{ textDecoration: "none", color: "inherit" }}>
-                    {p.value}
-                </Link>
+                <Typography as={Link} to={caseDetailPath} link>{p.value}</Typography>
             </span>
         )
     }
