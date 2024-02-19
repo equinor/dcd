@@ -18,7 +18,6 @@ import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
 import { casePath, productionStrategyOverviewToString } from "../../../Utils/common"
 import { useAppContext } from "../../../Context/AppContext"
-import typography from "@equinor/fusion-web-theme/dist/styles/typography"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
