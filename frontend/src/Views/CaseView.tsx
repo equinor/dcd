@@ -34,7 +34,7 @@ import CaseDrillingScheduleTab from "../Components/Case/CaseDrillingScheduleTab"
 import CaseCO2Tab from "../Components/Case/CaseCO2Tab"
 import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
 import { EMPTY_GUID } from "../Utils/constants"
-import { AppContextProvider, useAppContext } from "../context/AppContext"
+import { AppContextProvider, useAppContext } from "../Context/AppContext"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs

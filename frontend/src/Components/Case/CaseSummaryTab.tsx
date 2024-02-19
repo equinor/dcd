@@ -10,6 +10,7 @@ import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileSe
 import { MergeTimeseries } from "../../Utils/common"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { useAppContext } from "../../Context/AppContext"
+import { ITimeSeriesCost } from "../../Models/ITimeSeriesCost"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -87,7 +88,7 @@ const CaseSummaryTab = () => {
                 lastYear = profileLastYear
             }
         })
-        
+        if (caseItem) 
         if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER && caseItem.dG4Date) {
             setStartYear(firstYear + new Date(caseItem.dG4Date).getFullYear())
             setEndYear(lastYear + new Date(caseItem.dG4Date).getFullYear())
@@ -98,6 +99,7 @@ const CaseSummaryTab = () => {
     useEffect(() => {
         (async () => {
             try {
+                if (caseItem && project && topside && surf && substructure && transport) //test if this work, if not break into smaller ifs
                 if (activeTab === 7 && caseItem.id) {
                     const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(project.id, caseItem.id)
                     const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(project.id, caseItem.id)
@@ -149,17 +151,17 @@ const CaseSummaryTab = () => {
             }
         })()
     }, [activeTab])
-
+    
     const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...caseItem }
         newCase.npv = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
-        setCase(newCase)
+        setCase(newCase as Components.Schemas.CaseDto)
     }
 
     const handleCaseBreakEvenChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...caseItem }
         newCase.breakEven = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setCase(newCase)
+        setCase(newCase as Components.Schemas.CaseDto);
     }
 
     interface ITimeSeriesData {
@@ -178,7 +180,7 @@ const CaseSummaryTab = () => {
         {
             profileName: "Offshore facliities operations + well intervention",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: opexCost,
+            profile: opexSum,
         },
         {
             profileName: "Cessation wells + Cessation offshore facilities",
@@ -214,8 +216,8 @@ const CaseSummaryTab = () => {
         },
     ]
 
-    if (activeTab !== 7) { return null }
-
+    if (activeTab !== 7 || !caseItem) { return null }
+    if (caseItem)
     return (
         <>
             <TopWrapper>
