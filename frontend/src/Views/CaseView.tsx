@@ -119,18 +119,18 @@ const CaseView = () => {
         transport, setTransport,
         transportCost, setTransportCost,
         opexSum, setOpexSum,
-        cessationCost, setCessationCost,
-        feasibilityAndConceptStudies,
-        feedStudies,
+        cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost,
+        feasibilityAndConceptStudiesCost, setFeasibilityAndConceptStudiesCost,
+        feedStudiesCost, setFEEDStudiesCost, 
         activeTab, setActiveTab, 
-        explorationCost,
-        drillingCost,
+        explorationCost, setExplorationCost, 
+        drillingCost, setDrillingCost,
         totalStudyCost, setTotalStudyCost,
-        productionAndSalesVolume,
-        oilCondensateProduction,
-        nglProduction,
-        salesGas,
-        cO2Emissions,
+        productionAndSalesVolume,setProductionAndSalesVolume,
+        oilCondensateProduction, setOilCondensateProduction, 
+        nglProduction, setNGLProduction, 
+        NetSalesGas, setNetSalesGas,
+        cO2Emissions, setCO2Emissions, 
         importedElectricity, setImportedElectricity, 
         setStartYear,
         setEndYear,
@@ -149,25 +149,16 @@ const CaseView = () => {
     const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellProjectWellDto[]>()
     const [explorationWells, setExplorationWells] = useState<Components.Schemas.ExplorationWellDto[]>()
 
-    const [totalFeasibilityAndConceptStudies,
-        setTotalFeasibilityAndConceptStudies] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesDto>()
-
-    const [totalFEEDStudies, setTotalFEEDStudies] = useState<Components.Schemas.TotalFEEDStudiesDto>()
-
     const [offshoreFacilitiesOperationsCostProfile,
         setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto>()
 
     const [wellInterventionCostProfile, setWellInterventionCostProfile] = useState<Components.Schemas.WellInterventionCostProfileDto>()
 
     const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>()
-    const [cessationOffshoreFacilitiesCost,
-        setCessationOffshoreFacilitiesCost] = useState<Components.Schemas.CessationOffshoreFacilitiesCostDto>()
 
     const [gAndGAdminCost, setGAndGAdminCost] = useState<Components.Schemas.GAndGAdminCostDto>()
 
-    const [co2Emissions, setCo2Emissions] = useState<Components.Schemas.Co2EmissionsDto>()
 
-    const [netSalesGas, setNetSalesGas] = useState<Components.Schemas.NetSalesGasDto>()
     const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<Components.Schemas.FuelFlaringAndLossesDto>()
 
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
@@ -347,8 +338,8 @@ const CaseView = () => {
             const projectResult = { ...result.projectDto }
             setProject(projectResult)
             if (result.generatedProfilesDto?.studyCostProfileWrapperDto !== null && result.generatedProfilesDto?.studyCostProfileWrapperDto !== undefined) {
-                setTotalFeasibilityAndConceptStudies(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFeasibilityAndConceptStudiesDto)
-                setTotalFEEDStudies(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFEEDStudiesDto)
+                setFeasibilityAndConceptStudiesCost(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFeasibilityAndConceptStudiesDto)
+                setFEEDStudiesCost(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFEEDStudiesDto)
             }
             if (result.generatedProfilesDto?.opexCostProfileWrapperDto !== null && result.generatedProfilesDto?.opexCostProfileWrapperDto !== undefined) {
                 setOffshoreFacilitiesOperationsCostProfile(result.generatedProfilesDto.opexCostProfileWrapperDto?.offshoreFacilitiesOperationsCostProfileDto)
@@ -362,7 +353,7 @@ const CaseView = () => {
                 setGAndGAdminCost(result.generatedProfilesDto.gAndGAdminCostDto)
             }
             if (result.generatedProfilesDto?.co2EmissionsDto !== null && result.generatedProfilesDto?.co2EmissionsDto !== undefined) {
-                setCo2Emissions(result.generatedProfilesDto.co2EmissionsDto)
+                setCO2Emissions(result.generatedProfilesDto.co2EmissionsDto)
             }
             if (result.generatedProfilesDto?.fuelFlaringAndLossesDto !== null && result.generatedProfilesDto?.fuelFlaringAndLossesDto !== undefined) {
                 setFuelFlaringAndLosses(result.generatedProfilesDto.fuelFlaringAndLossesDto)
@@ -524,7 +515,7 @@ const CaseView = () => {
                                     activeTab={activeTab}
                                     fuelFlaringAndLosses={fuelFlaringAndLosses}
                                     setFuelFlaringAndLosses={setFuelFlaringAndLosses}
-                                    netSalesGas={netSalesGas}
+                                    netSalesGas={NetSalesGas}
                                     setNetSalesGas={setNetSalesGas}
                                     importedElectricity={importedElectricity}
                                     setImportedElectricity={setImportedElectricity}
@@ -585,10 +576,10 @@ const CaseView = () => {
                                     transport={transport}
                                     setTransport={setTransport}
                                     activeTab={activeTab}
-                                    totalFeasibilityAndConceptStudies={totalFeasibilityAndConceptStudies}
-                                    setTotalFeasibilityAndConceptStudies={setTotalFeasibilityAndConceptStudies}
-                                    totalFEEDStudies={totalFEEDStudies}
-                                    setTotalFEEDStudies={setTotalFEEDStudies}
+                                    totalFeasibilityAndConceptStudies={feasibilityAndConceptStudiesCost}
+                                    setTotalFeasibilityAndConceptStudies={setFeasibilityAndConceptStudiesCost}
+                                    totalFEEDStudies={feedStudiesCost}
+                                    setTotalFEEDStudies={setFEEDStudiesCost}
                                     offshoreFacilitiesOperationsCostProfile={offshoreFacilitiesOperationsCostProfile}
                                     setOffshoreFacilitiesOperationsCostProfile={setOffshoreFacilitiesOperationsCostProfile}
                                     wellInterventionCostProfile={wellInterventionCostProfile}
@@ -610,8 +601,8 @@ const CaseView = () => {
                                     setTopside={setTopside}
                                     drainageStrategy={drainageStrategy}
                                     setDrainageStrategy={setDrainageStrategy}
-                                    co2Emissions={co2Emissions}
-                                    setCo2Emissions={setCo2Emissions}
+                                    co2Emissions={cO2Emissions}
+                                    setCo2Emissions={setCO2Emissions}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>

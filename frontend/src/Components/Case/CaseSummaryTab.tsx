@@ -38,7 +38,7 @@ const TableWrapper = styled.div`
 `
 
 
-const CaseSummaryTab = () => {
+const CaseSummaryTab = (): React.ReactElement | null => {
     const {
         project,
         caseItem, setCase,
@@ -51,9 +51,9 @@ const CaseSummaryTab = () => {
         transport, setTransport,
         transportCost, setTransportCost,
         opexSum, setOpexSum,
-        cessationCost, setCessationCost,
-        feasibilityAndConceptStudies, setFeasibilityAndConceptStudies,
-        feedStudies, setFEEDStudies,
+        cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost,
+        feasibilityAndConceptStudiesCost, setFeasibilityAndConceptStudiesCost,
+        feedStudiesCost, setFEEDStudiesCost,
         activeTab, setActiveTab,
         explorationCost, setExplorationCost,
         drillingCost, setDrillingCost,
@@ -61,13 +61,15 @@ const CaseSummaryTab = () => {
         productionAndSalesVolume, setProductionAndSalesVolume,
         oilCondensateProduction, setOilCondensateProduction,
         nglProduction,setNGLProduction,
-        salesGas,setSalesGas,
+        NetSalesGas,setNetSalesGas,
         cO2Emissions,setCO2Emissions,
         importedElectricity,setImportedElectricity, 
         setStartYear,
         setEndYear,
         tableYears, setTableYears
     } = useAppContext();
+
+    const [cessationCost, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto>()
 
 
     const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
@@ -171,6 +173,53 @@ const CaseSummaryTab = () => {
         profile: ITimeSeries | undefined
     }
 
+    const explorationTimeSeriesData: ITimeSeriesData[] = [
+        {
+            profileName: "Exploration cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: explorationCost,
+        },
+
+    ]
+
+    const capexTimeSeriesData: ITimeSeriesData[] = [
+        {
+            profileName: "Drilling",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: drillingCost,
+        },
+        // {
+        //     profileName: "Offshore facliities",
+        //     unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+        //     profile: cessation,
+        // },
+        // {
+        //     profileName: "Cessation",
+        //     unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+        //     profile: cessation,
+        // },
+
+    ]
+
+    const studycostTimeSeriesData: ITimeSeriesData[] = [
+        {
+            profileName: "Feasibility & Conceptual studies",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: feasibilityAndConceptStudiesCost,
+        },
+        {
+            profileName: "FEED studies (DG2-DG3",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: feedStudiesCost,
+        },
+        // {
+        //     profileName: "Other studies",
+        //     unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+        //     profile: otherStudiesCost,
+        // },
+
+    ]
+
     const opexTimeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Study cost",
@@ -189,35 +238,50 @@ const CaseSummaryTab = () => {
         },
     ]
 
-    const capexTimeSeriesData: ITimeSeriesData[] = [
+    const prodAndSalesTimeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "Topside cost",
+            profileName: "Oil / condensate production",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: topsideCost,
-            set: setTopsideCost,
+            profile: totalStudyCost,
         },
         {
-            profileName: "SURF cost",
+            profileName: "NGL production",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: surfCost,
-            set: setSurfCost,
+            profile: opexSum,
         },
         {
-            profileName: "Substructure cost",
+            profileName: "Sales gas",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: substructureCost,
-            set: setSubstructureCost,
+            profile: cessationCost,
         },
         {
-            profileName: "Transport cost",
+            profileName: "Gas import",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: transportCost,
-            set: setTransportCost,
+            profile: cessationCost,
+        },
+        {
+            profileName: "CO2 emissions",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: cessationCost,
+        },
+        {
+            profileName: "Imported electricity",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: cessationCost,
+        },
+        {
+            profileName: "Deferred oil profile (MSm3/yr)",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: cessationCost,
+        },
+        {
+            profileName: "Deferreal gas (GSm3/yr)",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: cessationCost,
         },
     ]
 
     if (activeTab !== 7 || !caseItem) { return null }
-    if (caseItem)
     return (
         <>
             <TopWrapper>
@@ -246,10 +310,10 @@ const CaseSummaryTab = () => {
             </ColumnWrapper>
             <TableWrapper>
                 <CaseTabTable
-                    timeSeriesData={opexTimeSeriesData}
+                    timeSeriesData={explorationTimeSeriesData}
                     dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
-                    tableName="OPEX"
+                    tableName="Exploration"
                     includeFooter={false}
                 />
             </TableWrapper>
@@ -259,6 +323,33 @@ const CaseSummaryTab = () => {
                     dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
                     tableName="CAPEX"
+                    includeFooter
+                />
+            </TableWrapper>
+            <TableWrapper>
+                <CaseTabTable
+                    timeSeriesData={studycostTimeSeriesData}
+                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
+                    tableYears={tableYears}
+                    tableName="Study cost"
+                    includeFooter
+                />
+            </TableWrapper>
+            <TableWrapper>
+                <CaseTabTable
+                    timeSeriesData={opexTimeSeriesData}
+                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
+                    tableYears={tableYears}
+                    tableName="OPEX"
+                    includeFooter
+                />
+            </TableWrapper>
+            <TableWrapper>
+                <CaseTabTable
+                    timeSeriesData={prodAndSalesTimeSeriesData}
+                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
+                    tableYears={tableYears}
+                    tableName="Production & sales volume"
                     includeFooter
                 />
             </TableWrapper>

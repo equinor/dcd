@@ -26,8 +26,8 @@ interface AppContextType {
     setTotalStudyCost: React.Dispatch<React.SetStateAction<ITimeSeries | undefined>>;
     opexSum: Components.Schemas.OpexCostProfileDto | undefined;
     setOpexSum: React.Dispatch<React.SetStateAction<Components.Schemas.OpexCostProfileDto | undefined>>;
-    cessationCost: Components.Schemas.SurfCessationCostProfileDto | undefined;
-    setCessationCost: React.Dispatch<React.SetStateAction<Components.Schemas.SurfCessationCostProfileDto | undefined>>;
+    // cessationCost: Components.Schemas.SurfCessationCostProfileDto | undefined;
+    // setCessationCost: React.Dispatch<React.SetStateAction<Components.Schemas.SurfCessationCostProfileDto | undefined>>;
 
     // CAPEX
     topside: Components.Schemas.TopsideDto | undefined;
@@ -50,16 +50,18 @@ interface AppContextType {
     setEndYear: React.Dispatch<React.SetStateAction<number | undefined>>;
     tableYears: [number, number];
     setTableYears: React.Dispatch<React.SetStateAction<[number, number]>>;
-    drillingCost: number | undefined;
-    setDrillingCost: React.Dispatch<React.SetStateAction<number | undefined>>;
+    drillingCost: Components.Schemas.drillingCostDto | undefined;
+    setDrillingCost: React.Dispatch<React.SetStateAction<Components.Schemas.drillingCostDto | undefined>>;
+    cessationOffshoreFacilitiesCost: Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined;
+    setCessationOffshoreFacilitiesCost: React.Dispatch<React.SetStateAction<Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined>>;
 
-    explorationCost: Components.Schemas.ExplorationDto | undefined;
-    setExplorationCost: React.Dispatch<React.SetStateAction<Components.Schemas.ExplorationDto | undefined>>;
+    explorationCost: Components.Schemas.ExplorationWellCostProfileDto | undefined;
+    setExplorationCost: React.Dispatch<React.SetStateAction<Components.Schemas.ExplorationWellCostProfileDto | undefined>>;
 
-    feasibilityAndConceptStudies: ITimeSeries | undefined;
-    setFeasibilityAndConceptStudies: React.Dispatch<React.SetStateAction<ITimeSeries | undefined>>;
-    feedStudies: ITimeSeries | undefined;
-    setFEEDStudies: React.Dispatch<React.SetStateAction<ITimeSeries | undefined>>;
+    feasibilityAndConceptStudiesCost: Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined;
+    setFeasibilityAndConceptStudiesCost: React.Dispatch<React.SetStateAction<Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined>>;
+    feedStudiesCost: Components.Schemas.TotalFEEDStudiesDto | undefined;
+    setFEEDStudiesCost: React.Dispatch<React.SetStateAction<Components.Schemas.TotalFEEDStudiesDto | undefined>>;
 
 
     productionAndSalesVolume: Components.Schemas.ProductionAndSalesVolumesDto | undefined;
@@ -68,8 +70,8 @@ interface AppContextType {
     setOilCondensateProduction: React.Dispatch<React.SetStateAction<Components.Schemas.ProductionProfileOilDto | undefined>>;
     nglProduction: Components.Schemas.ProductionProfileNGLDto | undefined;
     setNGLProduction: React.Dispatch<React.SetStateAction<Components.Schemas.ProductionProfileNGLDto | undefined>>;
-    salesGas: Components.Schemas.ProductionAndSalesVolumesDto | undefined;
-    setSalesGas: React.Dispatch<React.SetStateAction<Components.Schemas.ProductionAndSalesVolumesDto | undefined>>;
+    NetSalesGas: Components.Schemas.NetSalesGasDto | undefined;
+    setNetSalesGas: React.Dispatch<React.SetStateAction<Components.Schemas.NetSalesGasDto | undefined>>;
     cO2Emissions: Components.Schemas.Co2EmissionsDto | undefined;
     setCO2Emissions: React.Dispatch<React.SetStateAction<Components.Schemas.Co2EmissionsDto | undefined>>;
     importedElectricity: Components.Schemas.ImportedElectricityDto | undefined;
@@ -83,9 +85,8 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     // Initialize the state for each property
     const [totalStudyCost, setTotalStudyCost] = useState<ITimeSeries | undefined>();
     const [opexSum, setOpexSum] = useState<Components.Schemas.OpexCostProfileDto | undefined>();
-    const [cessationCost, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto | undefined>();
     const [activeTab, setActiveTab] = useState<number>(0);
-    const [caseItem, setCase] = useState<Components.Schemas.CaseDto | undefined>(); 
+    const [caseItem, setCase] = useState<Components.Schemas.CaseDto | undefined>();
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
 
     const [topside, setTopside] = useState<Components.Schemas.TopsideDto | undefined>();
@@ -98,20 +99,22 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [transportCost, setTransportCost] = useState<Components.Schemas.TransportCostProfileDto | undefined>();
 
     const [startYear, setStartYear] = useState<number | undefined>();
-    const [endYear, setEndYear] = useState<number | undefined>(); 
+    const [endYear, setEndYear] = useState<number | undefined>();
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030]);
 
-    const [feasibilityAndConceptStudies, setFeasibilityAndConceptStudies] = useState<ITimeSeries | undefined>();
-    const [feedStudies, setFEEDStudies] = useState<ITimeSeries | undefined>();
+    const [feasibilityAndConceptStudiesCost, setFeasibilityAndConceptStudiesCost] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined>();
+    const [feedStudiesCost, setFEEDStudiesCost] = useState<Components.Schemas.TotalFEEDStudiesDto | undefined>();
 
     const [productionAndSalesVolume, setProductionAndSalesVolume] = useState<Components.Schemas.ProductionAndSalesVolumesDto | undefined>();
     const [oilCondensateProduction, setOilCondensateProduction] = useState<Components.Schemas.ProductionProfileOilDto | undefined>();
     const [nglProduction, setNGLProduction] = useState<Components.Schemas.ProductionProfileNGLDto | undefined>();
-    const [salesGas, setSalesGas] = useState<Components.Schemas.ProductionAndSalesVolumesDto | undefined>();
+    const [NetSalesGas, setNetSalesGas] = useState<Components.Schemas.NetSalesGasDto | undefined>();
     const [cO2Emissions, setCO2Emissions] = useState<Components.Schemas.Co2EmissionsDto | undefined>();
     const [importedElectricity, setImportedElectricity] = useState<Components.Schemas.ImportedElectricityDto | undefined>();
-    const [drillingCost, setDrillingCost] = useState<number>();
-    const [explorationCost, setExplorationCost] = useState<Components.Schemas.ExplorationDto | undefined>();
+    const [drillingCost, setDrillingCost] = useState<Components.Schemas.drillingCostDto>();
+    const [explorationCost, setExplorationCost] = useState<Components.Schemas.ExplorationWellCostProfileDto | undefined>();
+    const [cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost] = useState<Components.Schemas.CessationOffshoreFacilitiesCostDto>();
+
 
     const value = useMemo(() => ({
         project, setProject,
@@ -120,7 +123,7 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         caseItem, setCase,
         totalStudyCost, setTotalStudyCost,
         opexSum, setOpexSum,
-        cessationCost, setCessationCost,
+        cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost,
         topside, setTopside,
         topsideCost, setTopsideCost,
         surf, setSurf,
@@ -132,12 +135,12 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         startYear, setStartYear,
         endYear, setEndYear,
         tableYears, setTableYears,
-        feasibilityAndConceptStudies, setFeasibilityAndConceptStudies,
-        feedStudies, setFEEDStudies,
+        feasibilityAndConceptStudiesCost, setFeasibilityAndConceptStudiesCost,
+        feedStudiesCost, setFEEDStudiesCost,
         productionAndSalesVolume, setProductionAndSalesVolume,
         oilCondensateProduction, setOilCondensateProduction,
         nglProduction, setNGLProduction,
-        salesGas, setSalesGas,
+        NetSalesGas, setNetSalesGas,
         cO2Emissions, setCO2Emissions,
         importedElectricity, setImportedElectricity,
         drillingCost, setDrillingCost,
@@ -146,11 +149,11 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         project, setProject,
         createCaseModalIsOpen, setCreateCaseModalIsOpen,
         activeTab,
-        caseItem, 
+        caseItem,
         totalStudyCost,
         opexSum,
-        cessationCost,
-        topside, 
+        cessationOffshoreFacilitiesCost,
+        topside,
         topsideCost,
         surf,
         surfCost,
@@ -159,12 +162,12 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         transport,
         transportCost,
         tableYears,
-        feasibilityAndConceptStudies,
-        feedStudies,
+        feasibilityAndConceptStudiesCost,
+        feedStudiesCost,
         productionAndSalesVolume,
         oilCondensateProduction,
         nglProduction,
-        salesGas,
+        NetSalesGas,
         cO2Emissions,
         importedElectricity,
         drillingCost,

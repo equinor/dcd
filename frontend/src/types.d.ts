@@ -285,6 +285,14 @@ declare namespace Components {
             wellId: string; // uuid
             hasChanges?: boolean;
         }
+
+        export interface drillingCostDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+        }
+
         export interface FuelFlaringAndLossesDto {
             id: string; // uuid
             startYear: number; // int32
