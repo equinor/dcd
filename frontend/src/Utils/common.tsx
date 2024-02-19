@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { ITimeSeries } from "../models/ITimeSeries"
+import { ITimeSeries } from "../Models/ITimeSeries"
 
 export const loginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"

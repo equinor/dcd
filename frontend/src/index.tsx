@@ -17,4 +17,3 @@ export const renderApp = (el: HTMLElement, args: ComponentRenderArgs) => {
 }
 
 export default renderApp
-

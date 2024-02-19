@@ -1,4 +1,3 @@
-// eslint-disable-next-line max-len
 export const customUnitHeaderTemplate = (title: string, unit?: string): string => "<div class=\"ag-cell-label-container custom-ag-header\" role=\"presentation\">"
         + "  <span ref=\"eMenu\" class=\"ag-header-icon ag-header-cell-menu-button\"></span>"
         + "  <div ref=\"eLabel\" class=\"ag-header-cell-label\" role=\"presentation\">"

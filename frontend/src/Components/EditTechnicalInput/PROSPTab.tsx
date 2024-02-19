@@ -6,9 +6,9 @@ import {
 } from "@equinor/eds-core-react"
 import { GetProspService } from "../../Services/ProspService"
 import { GetProjectService } from "../../Services/ProjectService"
-import { DriveItem } from "../../models/sharepoint/DriveItem"
+import { DriveItem } from "../../Models/sharepoint/DriveItem"
 import PROSPCaseList from "./PROSPCaseList"
-import { useAppContext } from "../../context/AppContext"
+import { useAppContext } from "../../Context/AppContext"
 
 const ProspFieldWrapper = styled.div`
     margin-bottom: 2.5rem;

@@ -11,7 +11,7 @@ import styled from "styled-components"
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import CaseNumberInput from "../../Components/Case/CaseNumberInput"
+import CaseNumberInput from "./CaseNumberInput"
 import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleTabTable"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 

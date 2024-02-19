@@ -6,12 +6,12 @@ import styled from "styled-components"
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import CaseNumberInput from "../../Components/Case/CaseNumberInput"
+import CaseNumberInput from "./CaseNumberInput"
 import CaseTabTable from "./CaseTabTable"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
-import { ITimeSeries } from "../../models/ITimeSeries"
-import { ITimeSeriesCostOverride } from "../../models/ITimeSeriesCostOverride"
-import { ITimeSeriesCost } from "../../models/ITimeSeriesCost"
+import { ITimeSeries } from "../../Models/ITimeSeries"
+import { ITimeSeriesCostOverride } from "../../Models/ITimeSeriesCostOverride"
+import { ITimeSeriesCost } from "../../Models/ITimeSeriesCost"
 
 const ColumnWrapper = styled.div`
     display: flex;

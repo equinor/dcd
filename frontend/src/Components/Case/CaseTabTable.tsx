@@ -13,7 +13,7 @@ import { lock, lock_open } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
 import { isInteger } from "../../Utils/common"
-import { OverrideTimeSeriesPrompt } from "../../Components/OverrideTimeSeriesPrompt"
+import { OverrideTimeSeriesPrompt } from "../OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../Utils/constants"
 
 interface Props {

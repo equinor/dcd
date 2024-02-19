@@ -8,7 +8,7 @@ import styled from "styled-components"
 import {
     NativeSelect, Typography, Input, Label,
 } from "@equinor/eds-core-react"
-import CaseNumberInput from "../../Components/Case/CaseNumberInput"
+import CaseNumberInput from "./CaseNumberInput"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -184,7 +184,6 @@ const CaseFacilitiesTab = ({
 
     const handleSubstructureConceptChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].indexOf(Number(e.currentTarget.value)) !== -1) {
-            // eslint-disable-next-line max-len
             const newConcept: Components.Schemas.Concept = Number(e.currentTarget.value) as Components.Schemas.Concept
             const newSubstructure = { ...substructure }
             newSubstructure.concept = newConcept

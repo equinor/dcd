@@ -1,7 +1,7 @@
 import { NativeSelect } from "@equinor/eds-core-react"
 import { ChangeEventHandler } from "react"
 import styled from "styled-components"
-import { useAppContext } from "../../context/AppContext"
+import { useAppContext } from "../../Context/AppContext"
 
 const Wrapper = styled.div`
     margin: 1rem;
@@ -27,7 +27,6 @@ const ProjectSettingsTab = () => {
 
     const handlePhysicalUnitChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
-            // eslint-disable-next-line max-len
             const newPhysicalUnit: Components.Schemas.PhysUnit = Number(e.currentTarget.value) as Components.Schemas.PhysUnit
             const newProject: Components.Schemas.ProjectDto = { ...project }
             newProject.physUnit = newPhysicalUnit
@@ -37,7 +36,6 @@ const ProjectSettingsTab = () => {
 
     const handleCurrencyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([1, 2].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
-            // eslint-disable-next-line max-len
             const newCurrency: Components.Schemas.Currency = Number(e.currentTarget.value) as Components.Schemas.Currency
             const newProject: Components.Schemas.ProjectDto = { ...project }
             newProject.currency = newCurrency

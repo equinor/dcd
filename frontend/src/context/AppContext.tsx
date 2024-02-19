@@ -18,6 +18,8 @@ interface AppContextType {
     setCase: React.Dispatch<React.SetStateAction<Components.Schemas.CaseDto | undefined>>;
     activeTab: number;
     setActiveTab: React.Dispatch<React.SetStateAction<number>>;
+    createCaseModalIsOpen: boolean;
+    setCreateCaseModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 
     // OPEX
     totalStudyCost: ITimeSeries | undefined;
@@ -84,6 +86,7 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [cessationCost, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto | undefined>();
     const [activeTab, setActiveTab] = useState<number>(0);
     const [caseItem, setCase] = useState<Components.Schemas.CaseDto | undefined>(); 
+    const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
 
     const [topside, setTopside] = useState<Components.Schemas.TopsideDto | undefined>();
     const [topsideCost, setTopsideCost] = useState<Components.Schemas.TopsideCostProfileDto | undefined>();
@@ -113,6 +116,7 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const value = useMemo(() => ({
         project, setProject,
         activeTab, setActiveTab,
+        createCaseModalIsOpen, setCreateCaseModalIsOpen,
         caseItem, setCase,
         totalStudyCost, setTotalStudyCost,
         opexSum, setOpexSum,
@@ -139,9 +143,10 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         drillingCost, setDrillingCost,
         explorationCost, setExplorationCost,
     }), [
-        project,
+        project, setProject,
+        createCaseModalIsOpen, setCreateCaseModalIsOpen,
         activeTab,
-        caseItem,
+        caseItem, 
         totalStudyCost,
         opexSum,
         cessationCost,

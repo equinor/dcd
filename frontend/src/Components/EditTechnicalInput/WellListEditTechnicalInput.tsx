@@ -7,7 +7,7 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
-import { useAppContext } from "../../context/AppContext"
+import { useAppContext } from "../../Context/AppContext"
 
 const ButtonWrapper = styled.div`
     margin-top: 20px;
