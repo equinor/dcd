@@ -78,7 +78,6 @@ const ProjectCompareCasesTab = () => {
         suppressMenu: true,
     }), [])
 
-    const [dataReady, setDataReady] = useState(false)
     const [rowData, setRowData] = useState<TableCompareCase[]>()
     const [compareCasesTotals, setCompareCasesTotals] = useState<any>()
     const [npvChartData, setNpvChartData] = useState<object>()
@@ -176,7 +175,6 @@ const ProjectCompareCasesTab = () => {
         setInvestmentProfilesChartData(investmentProfilesObject)
         setTotalCo2EmissionsChartData(totalCo2EmissionsObject)
         setCo2IntensityChartData(co2IntensityObject)
-        setDataReady(true)
     }
 
     useEffect(() => {
