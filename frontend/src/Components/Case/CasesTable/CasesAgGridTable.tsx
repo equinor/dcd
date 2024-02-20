@@ -16,9 +16,9 @@ import { bookmark_filled, more_vertical } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { casePath, productionStrategyOverviewToString } from "../../../Utils/common"
 import { useAppContext } from "../../../Context/AppContext"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
