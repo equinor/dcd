@@ -11,11 +11,25 @@ import {
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { bookmark_filled } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
-import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
-import { AgChartsCompareCases } from "../AgGrid/AgChartsCompareCases"
-import { GetProjectService } from "../../Services/ProjectService"
-import { useAppContext } from "../../Context/AppContext"
+import { customUnitHeaderTemplate } from "../../../AgGridUnitInHeader"
+import { GetProjectService } from "../../../Services/ProjectService"
+import { useAppContext } from "../../../Context/AppContext"
+import Kpis from "./Tabs/Kpis"
+import ProductionProfiles from "./Tabs/ProductionProfiles"
+import InvestmentProfiles from "./Tabs/InvestmentProfiles"
+import Co2Emissions from "./Tabs/Co2Emissions"
 
+const {
+    List, Tab, Panels, Panel,
+} = Tabs
+
+const StyledTabPanel = styled(Panel)`
+    padding-top: 0px;
+`
+
+const StyledList = styled(List)`
+    border-bottom: 1px solid ${tokens.colors.ui.background__medium.rgba};
+`
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
     margin-right: 0.5rem;
@@ -46,20 +60,6 @@ display: flex;
 float: left;
 flex-direction: column;
 `
-const WrapperRow = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-content: center;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
-    `
-const { Panel } = Tabs
-const { List, Tab, Panels } = Tabs
-
-const StyledTabPanel = styled(Panel)`
-    padding-top: 0px;
-    border-top: 1px solid LightGray;
-`
 
 const ProjectCompareCasesTab = () => {
     const gridRef = useRef(null)
@@ -80,7 +80,6 @@ const ProjectCompareCasesTab = () => {
 
     const [rowData, setRowData] = useState<TableCompareCase[]>()
     const [compareCasesTotals, setCompareCasesTotals] = useState<any>()
-
     const [npvChartData, setNpvChartData] = useState<object>()
     const [breakEvenChartData, setBreakEvenChartData] = useState<object>()
     const [productionProfilesChartData, setProductionProfilesChartData] = useState<object>()
@@ -367,94 +366,34 @@ const ProjectCompareCasesTab = () => {
         <>
             <WrapperTabs>
                 <Tabs activeTab={activeTab} onChange={setActiveTab}>
-                    <List>
+                    <StyledList>
                         <Tab>KPIs</Tab>
                         <Tab>Production profiles</Tab>
                         <Tab>Investment profiles</Tab>
                         <Tab>CO2 emissions</Tab>
-                    </List>
+                    </StyledList>
                     <Panels>
                         <StyledTabPanel>
-                            <WrapperRow>
-                                <AgChartsCompareCases
-                                    data={npvChartData}
-                                    chartTitle="NPV before tax"
-                                    barColors={["#005F57"]}
-                                    barProfiles={["npv"]}
-                                    barNames={["NPV"]}
-                                    unit="mill USD"
-                                    width="50%"
-                                    height={400}
-                                    enableLegend={false}
-                                />
-                                <AgChartsCompareCases
-                                    data={breakEvenChartData}
-                                    chartTitle="Break even before tax"
-                                    barColors={["#00977B"]}
-                                    barProfiles={["breakEven"]}
-                                    barNames={["Break even"]}
-                                    unit="USD/bbl"
-                                    width="50%"
-                                    height={400}
-                                    enableLegend={false}
-                                />
-                            </WrapperRow>
-                        </StyledTabPanel>
-                        <StyledTabPanel>
-                            <AgChartsCompareCases
-                                data={productionProfilesChartData}
-                                chartTitle="Production profiles"
-                                barColors={["#243746", "#EB0037", "#8C1159"]}
-                                barProfiles={["oilProduction", "gasProduction", "totalExportedVolumes"]}
-                                barNames={[
-                                    "Oil production (MSm3)",
-                                    "Gas production (GSm3)",
-                                    "Total exported volumes (MSm3)",
-                                ]}
-                                height={432}
+                            <Kpis
+                                npvChartData={npvChartData}
+                                breakEvenChartData={breakEvenChartData}
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <AgChartsCompareCases
-                                data={investmentProfilesChartData}
-                                chartTitle="Investment profiles"
-                                barColors={["#005F57", "#00977B", "#40D38F"]}
-                                barProfiles={["offshorePlusOnshoreFacilityCosts",
-                                    "developmentCosts", "explorationWellCosts"]}
-                                barNames={[
-                                    "Offshore + Onshore facility costs",
-                                    "Development well costs",
-                                    "Exploration well costs",
-                                ]}
-                                unit={`${project?.currency === 1 ? "mill NOK" : "mill USD"}`}
-                                height={432}
+                            <ProductionProfiles
+                                productionProfilesChartData={productionProfilesChartData}
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <WrapperRow>
-                                <AgChartsCompareCases
-                                    data={totalCo2EmissionsChartData}
-                                    chartTitle="Total CO2 emissions"
-                                    barColors={["#E24973"]}
-                                    barProfiles={["totalCO2Emissions"]}
-                                    barNames={["Total CO2 emissions"]}
-                                    unit="mill tonnes"
-                                    width="50%"
-                                    height={400}
-                                    enableLegend={false}
-                                />
-                                <AgChartsCompareCases
-                                    data={co2IntensityChartData}
-                                    chartTitle="CO2 intensity"
-                                    barColors={["#FF92A8"]}
-                                    barProfiles={["cO2Intensity"]}
-                                    barNames={["CO2 intensity"]}
-                                    unit="kg CO2/boe"
-                                    width="50%"
-                                    height={400}
-                                    enableLegend={false}
-                                />
-                            </WrapperRow>
+                            <InvestmentProfiles
+                                investmentProfilesChartData={investmentProfilesChartData}
+                            />
+                        </StyledTabPanel>
+                        <StyledTabPanel>
+                            <Co2Emissions
+                                totalCo2EmissionsChartData={totalCo2EmissionsChartData}
+                                co2IntensityChartData={co2IntensityChartData}
+                            />
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>
