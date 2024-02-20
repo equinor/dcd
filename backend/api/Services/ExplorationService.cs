@@ -3,6 +3,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
@@ -13,19 +15,30 @@ public class ExplorationService : IExplorationService
     private readonly IProjectService _projectService;
 
     private readonly ILogger<ExplorationService> _logger;
+    private readonly IMapper _mapper;
 
-    public ExplorationService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
+    public ExplorationService(
+        DcdDbContext context,
+        IProjectService projectService,
+        ILoggerFactory loggerFactory,
+        IMapper mapper
+        )
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<ExplorationService>();
+        _mapper = mapper;
     }
 
 
     public async Task<ExplorationDto> CopyExploration(Guid explorationId, Guid sourceCaseId)
     {
         var source = await GetExploration(explorationId);
-        var newExplorationDto = ExplorationDtoAdapter.Convert(source);
+        var newExplorationDto = _mapper.Map<ExplorationDto>(source);
+        if (newExplorationDto == null)
+        {
+            throw new ArgumentNullException(nameof(newExplorationDto));
+        }
         newExplorationDto.Id = Guid.Empty;
 
         if (newExplorationDto.ExplorationWellCostProfile != null)
@@ -53,15 +66,20 @@ public class ExplorationService : IExplorationService
             newExplorationDto.GAndGAdminCost.Id = Guid.Empty;
         }
 
-        var wellProject = await NewCreateExploration(newExplorationDto, sourceCaseId);
-        var dto = ExplorationDtoAdapter.Convert(wellProject);
-        return dto;
+        // var wellProject = await NewCreateExploration(newExplorationDto, sourceCaseId);
+        // var dto = ExplorationDtoAdapter.Convert(wellProject);
+        // return dto;
+        return newExplorationDto;
     }
 
-    public async Task<Exploration> NewCreateExploration(ExplorationDto explorationDto, Guid sourceCaseId)
+    public async Task<Exploration> NewCreateExploration(Guid projectId, Guid sourceCaseId, CreateExplorationDto explorationDto)
     {
-        var exploration = ExplorationAdapter.Convert(explorationDto);
-        var project = await _projectService.GetProject(exploration.ProjectId);
+        var exploration = _mapper.Map<Exploration>(explorationDto);
+        if (exploration == null)
+        {
+            throw new ArgumentNullException(nameof(exploration));
+        }
+        var project = await _projectService.GetProject(projectId);
         exploration.Project = project;
         var createdExploration = _context.Explorations!.Add(exploration);
         await _context.SaveChangesAsync();
@@ -83,11 +101,16 @@ public class ExplorationService : IExplorationService
     public async Task<ExplorationDto> NewUpdateExploration(ExplorationDto updatedExplorationDto)
     {
         var existing = await GetExploration(updatedExplorationDto.Id);
-        ExplorationAdapter.ConvertExisting(existing, updatedExplorationDto);
+        _mapper.Map(updatedExplorationDto, existing);
 
         var updatedExploration = _context.Explorations!.Update(existing);
         await _context.SaveChangesAsync();
-        return ExplorationDtoAdapter.Convert(updatedExploration.Entity);
+        var explorationDto = _mapper.Map<ExplorationDto>(updatedExploration.Entity);
+        if (explorationDto == null)
+        {
+            throw new ArgumentNullException(nameof(explorationDto));
+        }
+        return explorationDto;
     }
 
     public async Task<ExplorationDto[]> UpdateMultiple(ExplorationDto[] updatedExplorationDtos)
@@ -106,10 +129,17 @@ public class ExplorationService : IExplorationService
     public async Task<ExplorationDto> UpdateSingleExploration(ExplorationDto updatedExplorationDto)
     {
         var existing = await GetExploration(updatedExplorationDto.Id);
-        ExplorationAdapter.ConvertExisting(existing, updatedExplorationDto);
+
+        _mapper.Map(updatedExplorationDto, existing);
+
         var exploration = _context.Explorations!.Update(existing);
         await _context.SaveChangesAsync();
-        return ExplorationDtoAdapter.Convert(exploration.Entity);
+        var explorationDto = _mapper.Map<ExplorationDto>(exploration.Entity);
+        if (explorationDto == null)
+        {
+            throw new ArgumentNullException(nameof(explorationDto));
+        }
+        return explorationDto;
     }
 
     public async Task<Exploration> GetExploration(Guid explorationId)

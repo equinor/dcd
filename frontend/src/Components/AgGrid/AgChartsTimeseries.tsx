@@ -2,7 +2,7 @@ import { AgChartsReact } from "ag-charts-react"
 import { insertIf, separateProfileObjects } from "./AgChartHelperFunctions"
 
 interface Props {
-    data: any
+    data: object
     chartTitle: string
     barColors: string[]
     barProfiles: string[]
@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const setValueToCorrespondingYear = (profile: any, i: number, startYear: number, dg4Year: number) => {
-    if (profile !== undefined && startYear !== undefined) {
+    if (profile && startYear !== undefined && profile.values) {
         const profileStartYear: number = Number(profile.startYear) + dg4Year
         const profileYears: number[] = Array.from(
             { length: profile.values.length },
@@ -44,7 +44,7 @@ export const AgChartsTimeseries = ({
         },
     }
 
-    const defaultOptions: any = {
+    const defaultOptions: object = {
         data,
         title: { text: chartTitle ?? "" },
         subtitle: { text: unit ?? "" },

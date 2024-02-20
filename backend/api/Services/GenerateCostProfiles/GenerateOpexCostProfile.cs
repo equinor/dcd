@@ -3,6 +3,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 namespace api.Services;
 
 public class GenerateOpexCostProfile : IGenerateOpexCostProfile
@@ -14,9 +16,17 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
     private readonly IWellProjectService _wellProjectService;
     private readonly ITopsideService _topsideService;
     private readonly DcdDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GenerateOpexCostProfile(DcdDbContext context, ILoggerFactory loggerFactory, ICaseService caseService, IProjectService projectService, IDrainageStrategyService drainageStrategyService,
-        IWellProjectService wellProjectService, ITopsideService topsideService)
+    public GenerateOpexCostProfile(
+        DcdDbContext context,
+        ILoggerFactory loggerFactory,
+        ICaseService caseService,
+        IProjectService projectService,
+        IDrainageStrategyService drainageStrategyService,
+        IWellProjectService wellProjectService,
+        ITopsideService topsideService,
+        IMapper mapper)
     {
         _context = context;
         _logger = loggerFactory.CreateLogger<GenerateOpexCostProfile>();
@@ -25,6 +35,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         _caseService = caseService;
         _wellProjectService = wellProjectService;
         _topsideService = topsideService;
+        _mapper = mapper;
     }
 
     public async Task<OpexCostProfileWrapperDto> GenerateAsync(Guid caseId)
@@ -63,10 +74,10 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
 
         var saveResult = await UpdateCaseAndSaveAsync(caseItem, wellInterventionCost, offshoreFacilitiesOperationsCost, historicCost, additionalOPEXCost);
 
-        var wellInterventionCostDto = CaseDtoAdapter.Convert<WellInterventionCostProfileDto, WellInterventionCostProfile>(wellInterventionCost);
-        var offshoreFacilitiesOperationsCostDto = CaseDtoAdapter.Convert<OffshoreFacilitiesOperationsCostProfileDto, OffshoreFacilitiesOperationsCostProfile>(offshoreFacilitiesOperationsCost);
-        var historicCostCostProfileDto = CaseDtoAdapter.Convert<HistoricCostCostProfileDto, HistoricCostCostProfile>(historicCost);
-        var additionalOPEXCostProfileDto = CaseDtoAdapter.Convert<AdditionalOPEXCostProfileDto, AdditionalOPEXCostProfile>(additionalOPEXCost);
+        var wellInterventionCostDto = _mapper.Map<WellInterventionCostProfileDto>(wellInterventionCost);
+        var offshoreFacilitiesOperationsCostDto = _mapper.Map<OffshoreFacilitiesOperationsCostProfileDto>(offshoreFacilitiesOperationsCost); 
+        var historicCostCostProfileDto = _mapper.Map<HistoricCostCostProfileDto>(historicCost);
+        var additionalOPEXCostProfileDto = _mapper.Map<AdditionalOPEXCostProfileDto>(additionalOPEXCost);
 
         result.WellInterventionCostProfileDto = wellInterventionCostDto;
         result.OffshoreFacilitiesOperationsCostProfileDto = offshoreFacilitiesOperationsCostDto;
@@ -79,7 +90,8 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
             StartYear = OPEX.StartYear,
             Values = OPEX.Values
         };
-        var opexDto = CaseDtoAdapter.Convert<OpexCostProfileDto, OpexCostProfile>(opexCostProfile);
+        var opexDto = _mapper.Map<OpexCostProfileDto>(opexCostProfile);
+
         result.OpexCostProfileDto = opexDto;
         return result;
     }

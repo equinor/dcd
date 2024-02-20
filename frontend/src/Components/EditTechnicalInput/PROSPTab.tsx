@@ -1,14 +1,14 @@
-import { Typography } from "@material-ui/core"
+import { Typography } from "@mui/material"
 import React, { ChangeEvent, useEffect, useState } from "react"
 import styled from "styled-components"
 import {
     Button, Input, Label, Progress, Switch,
 } from "@equinor/eds-core-react"
-import { Project } from "../../models/Project"
 import { GetProspService } from "../../Services/ProspService"
 import { GetProjectService } from "../../Services/ProjectService"
-import { DriveItem } from "../../models/sharepoint/DriveItem"
+import { DriveItem } from "../../Models/sharepoint/DriveItem"
 import PROSPCaseList from "./PROSPCaseList"
+import { useAppContext } from "../../Context/AppContext"
 
 const ProspFieldWrapper = styled.div`
     margin-bottom: 2.5rem;
@@ -40,15 +40,9 @@ const ErrorMessage = styled.div`
     margin-top: 10px;
 `
 
-interface Props {
-    setProject: React.Dispatch<React.SetStateAction<Project | undefined>>;
-    project: Project;
-}
+const PROSPTab = () => {
+    const { project, setProject } = useAppContext()
 
-function PROSPTab({
-    project,
-    setProject,
-}: Props) {
     const [sharepointUrl, setSharepointUrl] = useState<string>()
     const [check, setCheck] = useState(false)
     const [driveItems, setDriveItems] = useState<DriveItem[]>()
@@ -56,21 +50,23 @@ function PROSPTab({
     const [errorMessage, setErrorMessage] = useState<string>("")
 
     useEffect(() => {
-        (async () => {
-            setSharepointUrl(project.sharepointSiteUrl ?? "")
-            if (project.sharepointSiteUrl && project.sharepointSiteUrl !== "") {
-                try {
-                    const result = await (await GetProspService())
-                        .getSharePointFileNamesAndId({ url: project.sharepointSiteUrl })
-                    setDriveItems(result)
-                    setErrorMessage("") // Clear any existing error messages
-                } catch (error) {
-                    console.error("[PROSPTab] error while fetching SharePoint files", error)
-                    setErrorMessage("Failed to fetch SharePoint files. Please check the URL and your permissions.")
+        if (project && project.sharepointSiteUrl) {
+            (async () => {
+                setSharepointUrl(project.sharepointSiteUrl ?? "")
+                if (project.sharepointSiteUrl && project.sharepointSiteUrl !== "") {
+                    try {
+                        const result = await (await GetProspService())
+                            .getSharePointFileNamesAndId({ url: project.sharepointSiteUrl })
+                        setDriveItems(result)
+                        setErrorMessage("")
+                    } catch (error) {
+                        console.error("[PROSPTab] error while fetching SharePoint files", error)
+                        setErrorMessage("Failed to fetch SharePoint files. Please check the URL and your permissions.")
+                    }
                 }
-            }
-        })()
-    }, [project.sharepointSiteUrl])
+            })()
+        }
+    }, [project?.sharepointSiteUrl])
 
     const saveUrl: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
         setIsRefreshing(true)
@@ -78,10 +74,10 @@ function PROSPTab({
         try {
             const result = await (await GetProspService()).getSharePointFileNamesAndId({ url: sharepointUrl })
             setDriveItems(result)
-            setErrorMessage("") // Clear any existing error messages
+            setErrorMessage("")
 
-            if (sharepointUrl !== project.sharepointSiteUrl) {
-                const newProject: Project = { ...project }
+            if (project && sharepointUrl !== project.sharepointSiteUrl) {
+                const newProject: Components.Schemas.ProjectDto = { ...project }
                 newProject.sharepointSiteUrl = sharepointUrl
                 const projectResult = await (await GetProjectService()).updateProject(newProject)
                 setProject(projectResult)
@@ -129,8 +125,6 @@ function PROSPTab({
                 />
             </SwitchWrapper>
             <PROSPCaseList
-                project={project}
-                setProject={setProject}
                 driveItems={driveItems}
                 check={check}
             />

@@ -8,23 +8,20 @@ import {
 } from "@equinor/eds-core-react"
 import {
     useState,
-    Dispatch,
-    SetStateAction,
     ChangeEventHandler,
     MouseEventHandler,
     useEffect,
     FormEventHandler,
 } from "react"
-import { useHistory, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import styled from "styled-components"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
-import { Project } from "../../models/Project"
-import { Case } from "../../models/case/Case"
 import { ModalNoFocus } from "../ModalNoFocus"
 import {
-    DefaultDate, IsDefaultDate, ProjectPath, ToMonthDate,
+    defaultDate, isDefaultDate, projectPath, toMonthDate,
 } from "../../Utils/common"
 import { GetCaseService } from "../../Services/CaseService"
+import { useAppContext } from "../../Context/AppContext"
 
 const CreateCaseForm = styled.form`
     width: 596px;
@@ -75,43 +72,41 @@ const ButtonsWrapper = styled.div`
 `
 
 interface Props {
-    setProject: Dispatch<SetStateAction<Project | undefined>>
-    project: Project
-    caseId?: string,
+    caseId?: string
     isOpen: boolean
-    toggleModal: () => void
+    setIsOpen: (isOpen: boolean) => void
     editMode: boolean
-    navigate: boolean
+    shouldNavigate: boolean
 }
 
 const EditCaseModal = ({
-    setProject,
-    project,
     caseId,
     isOpen,
-    toggleModal,
     editMode,
-    navigate,
+    shouldNavigate,
+    setIsOpen,
+
 }: Props) => {
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
-    const [caseName, setCaseName] = useState<string | undefined>()
-    const [dG4Date, setDG4Date] = useState<Date>(DefaultDate())
+    const { project, setProject } = useAppContext()
+    const [caseName, setCaseName] = useState<string>("")
+    const [dG4Date, setDG4Date] = useState<Date>(defaultDate())
     const [description, setDescription] = useState<string>("")
-    const [productionStrategy, setProductionStrategy] = useState<Components.Schemas.ProductionStrategyOverview>()
-    const [producerCount, setProducerWells] = useState<number>()
-    const [gasInjectorCount, setGasInjectorWells] = useState<number>()
-    const [waterInjectorCount, setWaterInjectorWells] = useState<number>()
+    const [productionStrategy, setProductionStrategy] = useState<Components.Schemas.ProductionStrategyOverview>(0)
+    const [producerCount, setProducerWells] = useState<number>(0)
+    const [gasInjectorCount, setGasInjectorWells] = useState<number>(0)
+    const [waterInjectorCount, setWaterInjectorWells] = useState<number>(0)
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
-    const [caseItem, setCaseItem] = useState<Case>()
+    const [caseItem, setCaseItem] = useState<Components.Schemas.CaseDto>()
 
-    const history = useHistory()
+    const navigate = useNavigate()
 
     useEffect(() => {
         const dG4DefaultDate = new Date(Date.UTC(2030, 0, 1))
 
-        setCaseName(caseItem?.name)
-        setDG4Date(caseItem?.DG4Date ?? dG4DefaultDate)
+        setCaseName(caseItem?.name ?? "")
+        setDG4Date(caseItem?.dG4Date ? new Date(caseItem?.dG4Date) : dG4DefaultDate)
         setDescription(caseItem?.description ?? "")
         setProductionStrategy(caseItem?.productionStrategyOverview ?? 0)
         setProducerWells(caseItem?.producerCount ?? 0)
@@ -120,8 +115,10 @@ const EditCaseModal = ({
     }, [isOpen, caseId])
 
     useEffect(() => {
-        const newCase = project.cases.find((c) => c.id === caseId)
-        setCaseItem(newCase)
+        if (project) {
+            const newCase = project.cases?.find((c) => c.id === caseId)
+            setCaseItem(newCase)
+        }
     }, [project, caseId])
 
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -134,7 +131,6 @@ const EditCaseModal = ({
 
     const handleProductionStrategyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1, 2, 3, 4].indexOf(Number(e.currentTarget.value)) !== -1) {
-            // eslint-disable-next-line max-len
             const newProductionStrategy: Components.Schemas.ProductionStrategyOverview = Number(e.currentTarget.value) as Components.Schemas.ProductionStrategyOverview
             setProductionStrategy(newProductionStrategy)
         }
@@ -143,7 +139,7 @@ const EditCaseModal = ({
     const handleDG4Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
         let newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
-            newDate = DefaultDate()
+            newDate = defaultDate()
         } else {
             newDate = new Date(e.target.value)
         }
@@ -151,10 +147,10 @@ const EditCaseModal = ({
     }
 
     const getDG4Value = () => {
-        if (!IsDefaultDate(dG4Date)) {
-            return ToMonthDate(dG4Date)
+        if (!isDefaultDate(dG4Date)) {
+            return toMonthDate(dG4Date)
         }
-        return !IsDefaultDate(caseItem?.DG4Date) ? ToMonthDate(caseItem?.DG4Date) : undefined
+        return !isDefaultDate(caseItem?.dG4Date ? new Date(caseItem?.dG4Date) : new Date()) ? toMonthDate(caseItem?.dG4Date ? new Date(caseItem?.dG4Date) : new Date()) : undefined
     }
 
     const submitCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
@@ -162,13 +158,16 @@ const EditCaseModal = ({
 
         try {
             setIsLoading(true)
+            if (!project) {
+                throw new Error("No project found")
+            }
 
-            let projectResult: Project
-            if (editMode && caseItem) {
-                const newCase = Case.Copy(caseItem)
+            let projectResult: Components.Schemas.ProjectDto
+            if (editMode && caseItem && caseItem.id) {
+                const newCase = { ...caseItem }
                 newCase.name = caseName
                 newCase.description = description
-                newCase.DG4Date = dG4Date
+                newCase.dG4Date = dG4Date.toISOString()
                 newCase.producerCount = producerCount
                 newCase.gasInjectorCount = gasInjectorCount
                 newCase.waterInjectorCount = waterInjectorCount
@@ -183,7 +182,6 @@ const EditCaseModal = ({
                 projectResult = await (await GetCaseService()).create(
                     project.id,
                     {
-                        id: project.id,
                         name: caseName,
                         description,
                         dG4Date: dG4Date.toJSON(),
@@ -194,14 +192,14 @@ const EditCaseModal = ({
                     },
                 )
                 setIsLoading(false)
-                history.push(`/${fusionContextId}/case/${projectResult.cases.find((o) => (
+                navigate(`/${projectResult.cases.find((o) => (
                     o.name === caseName
                 ))?.id}`)
             }
             setProject(projectResult)
-            toggleModal()
-            if (navigate) {
-                history.push(ProjectPath(fusionContextId!))
+            setIsOpen(false)
+            if (shouldNavigate) {
+                navigate(fusionContextId!)
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -270,8 +268,8 @@ const EditCaseModal = ({
                                 type="number"
                                 value={producerCount}
                                 disabled={false}
-                                onChange={(e: any) => setProducerWells(Number(e.currentTarget.value))}
-                                onKeyPress={(e: any) => {
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProducerWells(Number(e.currentTarget.value))}
+                                onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
                                     if (!/\d/.test(e.key)) {
                                         e.preventDefault()
                                     }
@@ -316,7 +314,7 @@ const EditCaseModal = ({
                     <Button
                         type="button"
                         variant="outlined"
-                        onClick={toggleModal}
+                        onClick={() => setIsOpen(false)}
                     >
                         Cancel
                     </Button>

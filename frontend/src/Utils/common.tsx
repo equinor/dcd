@@ -1,42 +1,40 @@
 import _ from "lodash"
-import { Case } from "../models/case/Case"
-import { ITimeSeries } from "../models/ITimeSeries"
-import { Well } from "../models/Well"
+import { ITimeSeries } from "../Models/ITimeSeries"
 
-export const LoginAccessTokenKey = "loginAccessToken"
+export const loginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
 
-export const GetDrainageStrategy = (
+export const getDrainageStrategy = (
     project: Components.Schemas.ProjectDto,
     drainageStrategyId?: string,
 ) => project.drainageStrategies?.find((o) => o.id === drainageStrategyId)
 
-export function ProjectPath(projectId: string) {
-    return `/${projectId}`
+export const projectPath = (projectId: string) => {
+    return `/${projectId}`;
 }
 
-export function CasePath(projectId: string, caseId: string) {
-    return `${ProjectPath(projectId)}/case/${caseId}`
+export const casePath = (projectId: string, caseId: string) => {
+    return `${projectPath(projectId)}/case/${caseId}`
 }
 
-export function StoreToken(keyName: string, token: string) {
+export const storeToken = (keyName: string, token: string) => {
     window.sessionStorage.setItem(keyName, token)
 }
 
-export function StoreAppId(appId: string) {
+export const storeAppId = (appId: string) => {
     window.sessionStorage.setItem("appId", appId)
 }
 
-export function StoreAppScope(appScope: string) {
+export const storeAppScope = (appScope: string) => {
     window.sessionStorage.setItem("appScope", appScope)
 }
 
-export function GetToken(keyName: string) {
+export const getToken = (keyName: string) => {
     const scopes = [[window.sessionStorage.getItem("appScope") || ""][0]]
     return window.Fusion.modules.auth.acquireAccessToken({ scopes })
 }
 
-export const unwrapCase = (_case?: Case | undefined): Case => {
+export const unwrapCase = (_case?: Components.Schemas.CaseDto | undefined): Components.Schemas.CaseDto => {
     if (_case === undefined || _case === null) {
         throw new Error("Attempted to Create a case from which has not been created")
     }
@@ -57,7 +55,7 @@ export const unwrapCaseId = (caseId?: string | undefined): string => {
     return caseId
 }
 
-export function GetProjectCategoryName(key?: Components.Schemas.ProjectCategory): string {
+export const getProjectCategoryName = (key?: Components.Schemas.ProjectCategory): string => {
     if (key === undefined) {
         return ""
     }
@@ -87,7 +85,7 @@ export function GetProjectCategoryName(key?: Components.Schemas.ProjectCategory)
     }[key]
 }
 
-export function GetProjectPhaseName(key?: Components.Schemas.ProjectPhase): string {
+export const getProjectPhaseName = (key?: Components.Schemas.ProjectPhase): string => {
     if (key === undefined) {
         return ""
     }
@@ -105,7 +103,7 @@ export function GetProjectPhaseName(key?: Components.Schemas.ProjectPhase): stri
     }[key]
 }
 
-export const ToMonthDate = (date?: Date | null): string | undefined => {
+export const toMonthDate = (date?: Date | null): string | undefined => {
     if (Number.isNaN(date?.getTime())) {
         return undefined
     }
@@ -113,18 +111,28 @@ export const ToMonthDate = (date?: Date | null): string | undefined => {
     return date?.toISOString().substring(0, 7)
 }
 
-export const IsDefaultDate = (date?: Date | null): boolean => {
-    if (date && (ToMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
+export const isDefaultDate = (date?: Date | null): boolean => {
+    if (date && (toMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
         return true
     }
     return false
 }
 
-export const DefaultDate = () => new Date("0001-01-01")
+export const isDefaultDateString = (dateString?: string | null): boolean => {
+    const date = new Date(dateString ?? "")
+    if (date && (toMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
+        return true
+    }
+    return false
+}
+
+export const dateFromString = (dateString?: string | null): Date => new Date(dateString ?? "")
+
+export const defaultDate = () => new Date("0001-01-01")
 
 export const isInteger = (value: string) => /^-?\d+$/.test(value)
 
-export const ProductionStrategyOverviewToString = (value?: Components.Schemas.ProductionStrategyOverview): string => {
+export const productionStrategyOverviewToString = (value?: Components.Schemas.ProductionStrategyOverview): string => {
     if (value === undefined) { return "" }
     return {
         0: "Depletion",
@@ -135,7 +143,7 @@ export const ProductionStrategyOverviewToString = (value?: Components.Schemas.Pr
     }[value]
 }
 
-export const IsExplorationWell = (well: Well | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
+export const isExplorationWell = (well: Components.Schemas.WellDto | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
 
 const zip = (arrays: number[][]) => {
     const maxLength = Math.max(...arrays.map(arr => arr.length));
@@ -169,6 +177,7 @@ export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | u
     let values: number[] = MergeCostProfileData(arrays, offsets);
 
     const timeSeries = {
+        id: t1?.id ?? t2?.id ?? t3?.id ?? "",
         startYear: minYear,
         values,
     }

@@ -7,6 +7,8 @@ using api.Models;
 
 using Api.Services.FusionIntegration;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 using Newtonsoft.Json;
@@ -18,19 +20,27 @@ public class ProjectService : IProjectService
     private readonly DcdDbContext _context;
     private readonly IFusionService? _fusionService;
     private readonly ILogger<ProjectService> _logger;
+    private readonly IMapper _mapper;
 
-    public ProjectService(DcdDbContext context, ILoggerFactory loggerFactory,
-        FusionService? fusionService = null)
+    public ProjectService(
+        DcdDbContext context,
+        ILoggerFactory loggerFactory,
+        IMapper mapper,
+        FusionService? fusionService = null
+        )
     {
         _context = context;
         _logger = loggerFactory.CreateLogger<ProjectService>();
         _fusionService = fusionService;
+        _mapper = mapper;
     }
 
     public async Task<ProjectDto> UpdateProject(ProjectDto projectDto)
     {
         var existingProject = await GetProject(projectDto.Id);
-        ProjectAdapter.ConvertExisting(existingProject, projectDto);
+
+        _mapper.Map(projectDto, existingProject);
+
         _context.Projects!.Update(existingProject);
         await _context.SaveChangesAsync();
         return await GetProjectDto(existingProject.Id);
@@ -39,7 +49,9 @@ public class ProjectService : IProjectService
     public async Task<ProjectDto> UpdateProjectFromProjectMaster(ProjectDto projectDto)
     {
         var existingProject = await GetProject(projectDto.Id);
-        ProjectAdapter.ConvertExistingFromProjectMaster(existingProject, projectDto);
+
+        _mapper.Map(projectDto, existingProject);
+
         _context.Projects!.Update(existingProject);
         await _context.SaveChangesAsync();
         return await GetProjectDto(existingProject.Id);
@@ -125,8 +137,11 @@ public class ProjectService : IProjectService
             var projectDtos = new List<ProjectDto>();
             foreach (var project in projects)
             {
-                var projectDto = ProjectDtoAdapter.Convert(project);
-                projectDtos.Add(projectDto);
+                var projectDto = _mapper.Map<ProjectDto>(project);
+                if (projectDto != null)
+                {
+                    projectDtos.Add(projectDto);
+                }
             }
 
             Activity.Current?.AddBaggage(nameof(projectDtos), JsonConvert.SerializeObject(projectDtos, Formatting.None,
@@ -299,7 +314,13 @@ public class ProjectService : IProjectService
     public async Task<ProjectDto> GetProjectDto(Guid projectId)
     {
         var project = await GetProject(projectId);
-        var projectDto = ProjectDtoAdapter.Convert(project);
+
+        var projectDto = _mapper.Map<ProjectDto>(project);
+
+        if (projectDto == null)
+        {
+            throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
+        }
 
         Activity.Current?.AddBaggage(nameof(projectDto), JsonConvert.SerializeObject(projectDto, Formatting.None,
             new JsonSerializerSettings
@@ -340,8 +361,8 @@ public class ProjectService : IProjectService
         if (_fusionService != null)
         {
             var projectMaster = await _fusionService.ProjectMasterAsync(projectGuid);
-            var category = CommonLibraryProjectDtoAdapter.ConvertCategory(projectMaster.ProjectCategory ?? "");
-            var phase = CommonLibraryProjectDtoAdapter.ConvertPhase(projectMaster.Phase ?? "");
+            // var category = CommonLibraryProjectDtoAdapter.ConvertCategory(projectMaster.ProjectCategory ?? "");
+            // var phase = CommonLibraryProjectDtoAdapter.ConvertPhase(projectMaster.Phase ?? "");
             ProjectDto projectDto = new()
             {
                 Name = projectMaster.Description ?? "",
@@ -351,8 +372,8 @@ public class ProjectService : IProjectService
                 Currency = Currency.NOK,
                 PhysUnit = PhysUnit.SI,
                 Id = projectMaster.Identity,
-                ProjectCategory = category,
-                ProjectPhase = phase,
+                // ProjectCategory = category,
+                // ProjectPhase = phase,
             };
             return projectDto;
         }

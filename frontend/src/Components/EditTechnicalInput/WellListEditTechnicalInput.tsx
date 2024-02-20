@@ -1,16 +1,13 @@
-import { Button, NativeSelect, Icon } from "@equinor/eds-core-react"
+import { Button, NativeSelect } from "@equinor/eds-core-react"
 import {
     ChangeEvent, Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
 } from "react"
-import { delete_to_trash } from "@equinor/eds-icons"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
-import { Project } from "../../models/Project"
-import { Well } from "../../models/Well"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
-import { GetWellService } from "../../Services/WellService"
+import { useAppContext } from "../../Context/AppContext"
 
 const ButtonWrapper = styled.div`
     margin-top: 20px;
@@ -18,9 +15,8 @@ const ButtonWrapper = styled.div`
 `
 
 interface Props {
-    project: Project
-    wells: Well[] | undefined
-    setWells: Dispatch<SetStateAction<Well[]>>
+    wells: Components.Schemas.WellDto[] | undefined
+    setWells: Dispatch<SetStateAction<Components.Schemas.WellDto[]>>
     explorationWells: boolean
 }
 
@@ -30,31 +26,21 @@ interface TableWell {
     wellCategory: Components.Schemas.WellCategory,
     drillingDays: number,
     wellCost: number,
-    well: Well
-    wells: Well[]
+    well: Components.Schemas.WellDto
+    wells: Components.Schemas.WellDto[]
 }
 
-interface DeleteButtonProps {
-    wellId: string;
-    onDelete: (wellId: string) => void;
-}
+const WellListEditTechnicalInput = ({
+    explorationWells,
+    wells,
+    setWells,
+}: Props) => {
+    const { project } = useAppContext()
+    const [rowData, setRowData] = useState<TableWell[]>()
 
-const DeleteButton: React.FC<DeleteButtonProps> = ({ wellId, onDelete }) => (
-    <Button type="button" className="delete-button" onClick={() => onDelete(wellId)}>
-        <Icon data={delete_to_trash} size={16} />
-    </Button>
-)
-
-function WellListEditTechnicalInput({
-    project, explorationWells, wells, setWells,
-}: Props) {
     const gridRef = useRef(null)
     const styles = useStyles()
-    const onGridReady = (params: any) => {
-        gridRef.current = params.api
-    }
-
-    const [rowData, setRowData] = useState<TableWell[]>()
+    const onGridReady = (params: any) => { gridRef.current = params.api }
 
     const wellsToRowData = () => {
         if (wells) {
@@ -81,7 +67,7 @@ function WellListEditTechnicalInput({
     }, [wells])
 
     const updateWells = (p: any) => {
-        const rowWells: Well[] = p.data.wells
+        const rowWells: any[] = p.data.wells
         if (rowWells) {
             const { field } = p.colDef
             const index = rowWells.findIndex((w) => w === p.data.well)
@@ -176,10 +162,11 @@ function WellListEditTechnicalInput({
     ])
 
     const CreateWell = async () => {
-        const newWell = new Well()
-        newWell.wellCategory = !explorationWells ? 0 : 4
-        newWell.name = "New well"
-        newWell.projectId = project.id
+        const newWell: any = {
+            wellCategory: !explorationWells ? 0 : 4,
+            name: "New well",
+            projectId: project?.id,
+        }
         if (wells) {
             const newWells = [...wells, newWell]
             setWells(newWells)

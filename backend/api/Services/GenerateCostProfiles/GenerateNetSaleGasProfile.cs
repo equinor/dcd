@@ -4,6 +4,8 @@ using api.Dtos;
 using api.Helpers;
 using api.Models;
 
+using AutoMapper;
+
 namespace api.Services.GenerateCostProfiles;
 
 public class GenerateNetSaleGasProfile : IGenerateNetSaleGasProfile
@@ -13,15 +15,23 @@ public class GenerateNetSaleGasProfile : IGenerateNetSaleGasProfile
     private readonly IProjectService _projectService;
     private readonly ITopsideService _topsideService;
     private readonly DcdDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GenerateNetSaleGasProfile(DcdDbContext context, ICaseService caseService, IProjectService projectService, ITopsideService topsideService,
-        IDrainageStrategyService drainageStrategyService)
+    public GenerateNetSaleGasProfile(
+        DcdDbContext context,
+        ICaseService caseService,
+        IProjectService projectService,
+        ITopsideService topsideService,
+        IDrainageStrategyService drainageStrategyService,
+        IMapper mapper
+        )
     {
         _context = context;
         _caseService = caseService;
         _projectService = projectService;
         _topsideService = topsideService;
         _drainageStrategyService = drainageStrategyService;
+        _mapper = mapper;
     }
 
     public async Task<NetSalesGasDto> GenerateAsync(Guid caseId)
@@ -43,7 +53,8 @@ public class GenerateNetSaleGasProfile : IGenerateNetSaleGasProfile
 
         await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, netSaleGas);
 
-        var dto = DrainageStrategyDtoAdapter.Convert<NetSalesGasDto, NetSalesGas>(netSaleGas, project.PhysicalUnit);
+        var dto = _mapper.Map<NetSalesGasDto>(netSaleGas);
+
         return dto ?? new NetSalesGasDto();
     }
 

@@ -3,6 +3,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
@@ -12,16 +14,27 @@ public class TransportService : ITransportService
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
     private readonly ILogger<TransportService> _logger;
+    private readonly IMapper _mapper;
 
-    public TransportService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
+    public TransportService(
+        DcdDbContext context,
+        IProjectService projectService,
+        ILoggerFactory loggerFactory,
+        IMapper mapper
+        )
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<TransportService>();
+        _mapper = mapper;
     }
     public async Task<ProjectDto> CreateTransport(TransportDto transportDto, Guid sourceCaseId)
     {
-        var transport = TransportAdapter.Convert(transportDto);
+        var transport = _mapper.Map<Transport>(transportDto);
+        if (transport == null)
+        {
+            throw new ArgumentNullException(nameof(transport));
+        }
         var project = await _projectService.GetProject(transport.ProjectId);
         transport.Project = project;
         transport.ProspVersion = transportDto.ProspVersion;
@@ -34,10 +47,14 @@ public class TransportService : ITransportService
         return await _projectService.GetProjectDto(transport.ProjectId);
     }
 
-    public async Task<Transport> NewCreateTransport(TransportDto transportDto, Guid sourceCaseId)
+    public async Task<Transport> NewCreateTransport(Guid projectId, Guid sourceCaseId, CreateTransportDto transportDto)
     {
-        var transport = TransportAdapter.Convert(transportDto);
-        var project = await _projectService.GetProject(transport.ProjectId);
+        var transport = _mapper.Map<Transport>(transportDto);
+        if (transport == null)
+        {
+            throw new ArgumentNullException(nameof(transport));
+        }
+        var project = await _projectService.GetProject(projectId);
         transport.Project = project;
         transport.LastChangedDate = DateTimeOffset.UtcNow;
         var createdTransport = _context.Transports!.Add(transport);
@@ -49,7 +66,11 @@ public class TransportService : ITransportService
     public async Task<TransportDto> CopyTransport(Guid transportId, Guid sourceCaseId)
     {
         var source = await GetTransport(transportId);
-        var newTransportDto = TransportDtoAdapter.Convert(source);
+        var newTransportDto = _mapper.Map<TransportDto>(source);
+        if (newTransportDto == null)
+        {
+            throw new ArgumentNullException(nameof(newTransportDto));
+        }
         newTransportDto.Id = Guid.Empty;
         if (newTransportDto.CostProfile != null)
         {
@@ -64,10 +85,11 @@ public class TransportService : ITransportService
             newTransportDto.CessationCostProfile.Id = Guid.Empty;
         }
 
-        var topside = await NewCreateTransport(newTransportDto, sourceCaseId);
-        var dto = TransportDtoAdapter.Convert(topside);
+        // var topside = await NewCreateTransport(newTransportDto, sourceCaseId);
+        // var dto = TransportDtoAdapter.Convert(topside);
 
-        return dto;
+        // return dto;
+        return newTransportDto;
     }
 
     private async Task SetCaseLink(Transport transport, Guid sourceCaseId, Project project)
@@ -99,7 +121,7 @@ public class TransportService : ITransportService
     {
         var existing = await GetTransport(updatedTransportDto.Id);
 
-        TransportAdapter.ConvertExisting(existing, updatedTransportDto);
+        _mapper.Map(updatedTransportDto, existing);
 
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Transports!.Update(existing);

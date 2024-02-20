@@ -2,7 +2,8 @@ import {
     Button, Icon, Menu, Progress, Tabs, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
-import { useHistory, useLocation, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
 import {
     add,
@@ -12,51 +13,40 @@ import {
     edit,
     library_add,
     more_vertical,
+    arrow_back,
 } from "@equinor/eds-icons"
-import { useCurrentContext } from "@equinor/fusion"
 import { tokens } from "@equinor/eds-tokens"
-import { Tooltip } from "@material-ui/core"
-import { Project } from "../models/Project"
-import { Case } from "../models/case/Case"
+import { Tooltip } from "@mui/material"
+import { projectPath, unwrapProjectId } from "../Utils/common"
+
 import { GetProjectService } from "../Services/ProjectService"
-import { ProjectPath, unwrapProjectId } from "../Utils/common"
-import CaseDescriptionTab from "./Case/CaseDescriptionTab"
-import { DrainageStrategy } from "../models/assets/drainagestrategy/DrainageStrategy"
-import { WellProject } from "../models/assets/wellproject/WellProject"
-import { Surf } from "../models/assets/surf/Surf"
-import { Topside } from "../models/assets/topside/Topside"
-import { Substructure } from "../models/assets/substructure/Substructure"
-import { Exploration } from "../models/assets/exploration/Exploration"
-import { Transport } from "../models/assets/transport/Transport"
+import CaseDescriptionTab from "../Components/Case/CaseDescriptionTab"
 import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
-import CaseCostTab from "./Case/CaseCostTab"
-import CaseFacilitiesTab from "./Case/CaseFacilitiesTab"
-import CaseProductionProfilesTab from "./Case/CaseProductionProfilesTab"
+import CaseCostTab from "../Components/Case/CaseCostTab"
+import CaseFacilitiesTab from "../Components/Case/CaseFacilitiesTab"
+import CaseProductionProfilesTab from "../Components/Case/CaseProductionProfilesTab"
 import { GetCaseService } from "../Services/CaseService"
 import EditCaseModal from "../Components/Case/EditCaseModal"
-import CaseScheduleTab from "./Case/CaseScheduleTab"
-import CaseSummaryTab from "./Case/CaseSummaryTab"
-import CaseDrillingScheduleTab from "./Case/CaseDrillingScheduleTab"
-import { Well } from "../models/Well"
-import { WellProjectWell } from "../models/WellProjectWell"
-import { ExplorationWell } from "../models/ExplorationWell"
-import CaseCO2Tab from "./Case/CaseCO2Tab"
+import CaseScheduleTab from "../Components/Case/CaseScheduleTab"
+import CaseSummaryTab from "../Components/Case/CaseSummaryTab"
+import CaseDrillingScheduleTab from "../Components/Case/CaseDrillingScheduleTab"
+import CaseCO2Tab from "../Components/Case/CaseCO2Tab"
 import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
 import { EMPTY_GUID } from "../Utils/constants"
-import { CessationOffshoreFacilitiesCost } from "../models/case/CessationOffshoreFacilitiesCost"
-import { CessationWellsCost } from "../models/case/CessationWellsCost"
-import { OffshoreFacilitiesOperationsCostProfile } from "../models/case/OffshoreFacilitiesOperationsCostProfile"
-import { TotalFeasibilityAndConceptStudies } from "../models/case/TotalFeasibilityAndConceptStudies"
-import { TotalFEEDStudies } from "../models/case/TotalFEEDStudies"
-import { TotalOtherStudies } from "../models/case/TotalOtherStudies"
-import { WellInterventionCostProfile } from "../models/case/WellInterventionCostProfile"
-import { GAndGAdminCost } from "../models/assets/exploration/GAndGAdminCost"
-import { Co2Emissions } from "../models/assets/drainagestrategy/Co2Emissions"
-import { FuelFlaringAndLosses } from "../models/assets/drainagestrategy/FuelFlaringAndLosses"
-import { NetSalesGas } from "../models/assets/drainagestrategy/NetSalesGas"
-import { ImportedElectricity } from "../models/assets/drainagestrategy/ImportedElectricity"
-import { HistoricCostCostProfile } from "../models/case/HistoricCostCostProfile"
-import { AdditionalOPEXCostProfile } from "../models/case/AdditionalOPEXCostProfile"
+import { CessationOffshoreFacilitiesCost } from "../Models/case/CessationOffshoreFacilitiesCost"
+import { CessationWellsCost } from "../Models/case/CessationWellsCost"
+import { OffshoreFacilitiesOperationsCostProfile } from "../Models/case/OffshoreFacilitiesOperationsCostProfile"
+import { TotalFeasibilityAndConceptStudies } from "../Models/case/TotalFeasibilityAndConceptStudies"
+import { TotalFEEDStudies } from "../Models/case/TotalFEEDStudies"
+import { TotalOtherStudies } from "../Models/case/TotalOtherStudies"
+import { WellInterventionCostProfile } from "../Models/case/WellInterventionCostProfile"
+import { GAndGAdminCost } from "../Models/assets/exploration/GAndGAdminCost"
+import { Co2Emissions } from "../Models/assets/drainagestrategy/Co2Emissions"
+import { FuelFlaringAndLosses } from "../Models/assets/drainagestrategy/FuelFlaringAndLosses"
+import { NetSalesGas } from "../Models/assets/drainagestrategy/NetSalesGas"
+import { ImportedElectricity } from "../Models/assets/drainagestrategy/ImportedElectricity"
+import { HistoricCostCostProfile } from "../Models/case/HistoricCostCostProfile"
+import { AdditionalOPEXCostProfile } from "../Models/case/AdditionalOPEXCostProfile"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -68,7 +58,7 @@ const CaseViewDiv = styled.div`
 
 const PageTitle = styled(Typography)`
     flex-grow: 1;
-    padding-left: 30px;
+    padding-left: 10px;
 `
 
 const TransparentButton = styled(Button)`
@@ -80,15 +70,13 @@ const TransparentButton = styled(Button)`
 
 const DividerLine = styled.div`
 `
-
 const StyledTabPanel = styled(Panel)`
-    margin-left: 40px;
-    margin-right: 40px;
-    padding-top: 0px;
+    padding-top: 5px;
+    margin: 20px;
 `
 const HeaderWrapper = styled.div`
     background-color: white;
-    width: calc(100% - 16rem);
+    width: calc(100% - 270px);
     position: fixed;
     z-index: 100;
     padding-top: 30px;
@@ -121,7 +109,8 @@ const ColumnWrapper = styled.div`
 const RowWrapper = styled.div`
     display: flex;
     flex-direction: row;
-    margin-bottom: 78px;
+    margin: 0 20px 78px 20px;
+    align-items: center;
 `
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
@@ -132,65 +121,53 @@ const MenuIcon = styled(Icon)`
 const CaseView = () => {
     const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(false)
 
-    const [project, setProject] = useState<Project>()
-    const [caseItem, setCase] = useState<Case>()
+    const [project, setProject] = useState<Components.Schemas.ProjectDto>()
+    const [caseItem, setCase] = useState<Components.Schemas.CaseDto>()
     const [activeTab, setActiveTab] = useState<number>(0)
     const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
-    const currentProject = useCurrentContext()
+    const { currentContext } = useModuleCurrentContext()
 
-    const [drainageStrategy, setDrainageStrategy] = useState<DrainageStrategy>()
-    const [exploration, setExploration] = useState<Exploration>()
-    const [wellProject, setWellProject] = useState<WellProject>()
-    const [surf, setSurf] = useState<Surf>()
-    const [topside, setTopside] = useState<Topside>()
-    const [substructure, setSubstructure] = useState<Substructure>()
-    const [transport, setTransport] = useState<Transport>()
+    const [drainageStrategy, setDrainageStrategy] = useState<Components.Schemas.DrainageStrategyDto>()
+    const [exploration, setExploration] = useState<Components.Schemas.ExplorationDto>()
+    const [wellProject, setWellProject] = useState<Components.Schemas.WellProjectDto>()
+    const [surf, setSurf] = useState<Components.Schemas.SurfDto>()
+    const [topside, setTopside] = useState<Components.Schemas.TopsideDto>()
+    const [substructure, setSubstructure] = useState<Components.Schemas.SubstructureDto>()
+    const [transport, setTransport] = useState<Components.Schemas.TransportDto>()
 
-    const [originalCase, setOriginalCase] = useState<Case>()
-    const [originalDrainageStrategy, setOriginalDrainageStrategy] = useState<DrainageStrategy>()
-    const [originalWellProject, setOriginalWellProject] = useState<WellProject>()
-    const [originalExploration, setOriginalExploration] = useState<Exploration>()
-    const [originalSurf, setOriginalSurf] = useState<Surf>()
-    const [originalSubstructure, setOriginalSubstructure] = useState<Substructure>()
-    const [originalTopside, setOriginalTopside] = useState<Topside>()
-    const [originalTransport, setOriginalTransport] = useState<Transport>()
-
-    const [wells, setWells] = useState<Well[]>()
-    const [wellProjectWells, setWellProjectWells] = useState<WellProjectWell[]>()
-    const [explorationWells, setExplorationWells] = useState<ExplorationWell[]>()
-
-    const [originalWellProjectWells, setOriginalWellProjectWells] = useState<WellProjectWell[]>()
-    const [originalExplorationWells, setOriginalExplorationWells] = useState<ExplorationWell[]>()
+    const [wells, setWells] = useState<Components.Schemas.WellDto[]>()
+    const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellProjectWellDto[]>()
+    const [explorationWells, setExplorationWells] = useState<Components.Schemas.ExplorationWellDto[]>()
 
     const [totalFeasibilityAndConceptStudies,
-        setTotalFeasibilityAndConceptStudies] = useState<TotalFeasibilityAndConceptStudies>()
+        setTotalFeasibilityAndConceptStudies] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesDto>()
 
-    const [totalFEEDStudies, setTotalFEEDStudies] = useState<TotalFEEDStudies>()
+    const [totalFEEDStudies, setTotalFEEDStudies] = useState<Components.Schemas.TotalFEEDStudiesDto>()
 
     const [totalOtherStudies, setTotalOtherStudies] = useState<TotalOtherStudies>()
 
     const [offshoreFacilitiesOperationsCostProfile,
-        setOffshoreFacilitiesOperationsCostProfile] = useState<OffshoreFacilitiesOperationsCostProfile>()
+        setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto>()
 
-    const [wellInterventionCostProfile, setWellInterventionCostProfile] = useState<WellInterventionCostProfile>()
+    const [wellInterventionCostProfile, setWellInterventionCostProfile] = useState<Components.Schemas.WellInterventionCostProfileDto>()
 
     const [historicCostCostProfile,
-        setHistoricCostCostProfile] = useState<HistoricCostCostProfile>()
+        setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto>()
         
     const [additionalOPEXCostProfile,
-        setAdditionalOPEXCostProfile] = useState<AdditionalOPEXCostProfile>()
+        setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto>()
 
-    const [cessationWellsCost, setCessationWellsCost] = useState<CessationWellsCost>()
-    const [cessationOffshoreFacilitiesCost,
-        setCessationOffshoreFacilitiesCost] = useState<CessationOffshoreFacilitiesCost>()
+        const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>()
+        const [cessationOffshoreFacilitiesCost,
+        setCessationOffshoreFacilitiesCost] = useState<Components.Schemas.CessationOffshoreFacilitiesCostDto>()
 
-    const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
+    const [gAndGAdminCost, setGAndGAdminCost] = useState<Components.Schemas.GAndGAdminCostDto>()
 
-    const [co2Emissions, setCo2Emissions] = useState<Co2Emissions>()
+    const [co2Emissions, setCo2Emissions] = useState<Components.Schemas.Co2EmissionsDto>()
 
-    const [netSalesGas, setNetSalesGas] = useState<NetSalesGas>()
-    const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<FuelFlaringAndLosses>()
-    const [importedElectricity, setImportedElectricity] = useState<ImportedElectricity>()
+    const [netSalesGas, setNetSalesGas] = useState<Components.Schemas.NetSalesGasDto>()
+    const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<Components.Schemas.FuelFlaringAndLossesDto>()
+    const [importedElectricity, setImportedElectricity] = useState<Components.Schemas.ImportedElectricityDto>()
 
     const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
@@ -202,7 +179,7 @@ const CaseView = () => {
     const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
-    const history = useHistory()
+    const navigate = useNavigate()
     const location = useLocation()
 
     const [isLoading, setIsLoading] = useState<boolean>()
@@ -214,14 +191,14 @@ const CaseView = () => {
             try {
                 setUpdateFromServer(true)
                 setIsLoading(true)
-                const projectId = unwrapProjectId(currentProject?.externalId)
-                const projectResult = await (await GetProjectService()).getProjectByID(projectId)
+                const projectId = unwrapProjectId(currentContext?.externalId)
+                const projectResult = await (await GetProjectService()).getProject(projectId)
                 setProject(projectResult)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
+                console.error(`[CaseView] Error while fetching project ${currentContext?.externalId}`, error)
             }
         })()
-    }, [currentProject?.externalId, caseId, fusionContextId])
+    }, [currentContext?.externalId, caseId, fusionContextId])
 
     useEffect(() => {
         if (project && updateFromServer) {
@@ -229,54 +206,42 @@ const CaseView = () => {
             if (!caseResult) {
                 if (location.pathname.indexOf("/case") > -1) {
                     const projectUrl = location.pathname.split("/case")[0]
-                    history.push(projectUrl)
+                    navigate(projectUrl)
                 }
             }
-            setOriginalCase(caseResult)
             setCase(caseResult)
 
             const drainageStrategyResult = project?.drainageStrategies
                 .find((drain) => drain.id === caseResult?.drainageStrategyLink)
-            setOriginalDrainageStrategy(drainageStrategyResult)
             setDrainageStrategy(
                 drainageStrategyResult,
             )
 
             const explorationResult = project
                 ?.explorations.find((exp) => exp.id === caseResult?.explorationLink)
-            setOriginalExploration(explorationResult)
             setExploration(explorationResult)
 
             const wellProjectResult = project
                 ?.wellProjects.find((wp) => wp.id === caseResult?.wellProjectLink)
-            setOriginalWellProject(wellProjectResult)
             setWellProject(wellProjectResult)
 
             const surfResult = project?.surfs.find((sur) => sur.id === caseResult?.surfLink)
-            setOriginalSurf(surfResult)
             setSurf(surfResult)
 
             const topsideResult = project?.topsides.find((top) => top.id === caseResult?.topsideLink)
-            setOriginalTopside(topsideResult)
             setTopside(topsideResult)
 
             const substructureResult = project?.substructures.find((sub) => sub.id === caseResult?.substructureLink)
-            setOriginalSubstructure(substructureResult)
             setSubstructure(substructureResult)
 
             const transportResult = project?.transports.find((tran) => tran.id === caseResult?.transportLink)
-            setOriginalTransport(transportResult)
             setTransport(transportResult)
 
             setWells(project.wells)
 
-            const wellProjectWellsResult = structuredClone(wellProjectResult?.wellProjectWells)
             setWellProjectWells(wellProjectResult?.wellProjectWells ?? [])
-            setOriginalWellProjectWells(wellProjectWellsResult ?? [])
 
-            const explorationWellsResult = structuredClone(explorationResult?.explorationWells)
             setExplorationWells(explorationResult?.explorationWells ?? [])
-            setOriginalExplorationWells(explorationWellsResult ?? [])
 
             setUpdateFromServer(false)
             setIsLoading(false)
@@ -284,19 +249,15 @@ const CaseView = () => {
             const caseResult = project.cases.find((o) => o.id === caseId)
 
             const surfResult = project.surfs.find((sur) => sur.id === caseResult?.surfLink)
-            setOriginalSurf(surfResult)
             setSurf(surfResult)
 
             const topsideResult = project.topsides.find((top) => top.id === caseResult?.topsideLink)
-            setOriginalTopside(topsideResult)
             setTopside(topsideResult)
 
             const substructureResult = project.substructures.find((sub) => sub.id === caseResult?.substructureLink)
-            setOriginalSubstructure(substructureResult)
             setSubstructure(substructureResult)
 
             const transportResult = project.transports.find((tran) => tran.id === caseResult?.transportLink)
-            setOriginalTransport(transportResult)
             setTransport(transportResult)
 
             setWells(project.wells)
@@ -306,9 +267,9 @@ const CaseView = () => {
     const duplicateCase = async () => {
         try {
             if (caseItem?.id && project?.id) {
-                const newProject = await (await GetCaseService()).duplicateCase(project.id, caseItem?.id, {})
+                const newProject = await (await GetCaseService()).duplicateCase(project.id, caseItem?.id)
                 setProject(newProject)
-                history.push(ProjectPath(fusionContextId!))
+                navigate(fusionContextId!)
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -320,7 +281,7 @@ const CaseView = () => {
             if (caseItem?.id && project?.id) {
                 const newProject = await (await GetCaseService()).deleteCase(project.id, caseItem?.id)
                 setProject(newProject)
-                history.push(ProjectPath(fusionContextId!))
+                navigate(fusionContextId!)
             }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
@@ -342,7 +303,7 @@ const CaseView = () => {
 
     const setCaseAsReference = async () => {
         try {
-            const projectDto = Project.Copy(project)
+            const projectDto = { ...project }
             if (projectDto.referenceCaseId === caseItem.id) {
                 projectDto.referenceCaseId = EMPTY_GUID
             } else {
@@ -359,111 +320,61 @@ const CaseView = () => {
         const dto: Components.Schemas.CaseWithAssetsWrapperDto = {}
 
         dto.caseDto = caseItem
-        if (!(JSON.stringify(caseItem) === JSON.stringify(originalCase))) {
-            dto.caseDto.hasChanges = true
-        }
 
         dto.drainageStrategyDto = drainageStrategy
-        if (!(JSON.stringify(drainageStrategy) === JSON.stringify(originalDrainageStrategy))) {
-            dto.drainageStrategyDto.hasChanges = true
-        }
 
         dto.wellProjectDto = wellProject
-        if (!(JSON.stringify(wellProject) === JSON.stringify(originalWellProject))) {
-            dto.wellProjectDto.hasChanges = true
-        }
 
         dto.explorationDto = exploration
-        if (!(JSON.stringify(exploration) === JSON.stringify(originalExploration))) {
-            dto.explorationDto.hasChanges = true
-        }
 
         dto.surfDto = surf
-        if (!(JSON.stringify(surf) === JSON.stringify(originalSurf))) {
-            dto.surfDto.hasChanges = true
-        }
 
         dto.substructureDto = substructure
-        if (!(JSON.stringify(substructure) === JSON.stringify(originalSubstructure))) {
-            dto.substructureDto.hasChanges = true
-        }
 
         dto.transportDto = transport
-        if (!(JSON.stringify(transport) === JSON.stringify(originalTransport))) {
-            dto.transportDto.hasChanges = true
-        }
 
         dto.topsideDto = topside
-        if (!(JSON.stringify(topside) === JSON.stringify(originalTopside))) {
-            dto.topsideDto.hasChanges = true
-        }
 
         dto.explorationWellDto = explorationWells
-        if (dto.explorationWellDto?.length > 0) {
-            dto.explorationWellDto.forEach((expWellDto, index) => {
-                if (expWellDto.drillingSchedule?.id !== EMPTY_GUID) {
-                    const originalExpWell = originalExplorationWells
-                        ?.find((oew) => oew.explorationId === expWellDto.explorationId
-                            && oew.wellId === expWellDto.wellId)
-
-                    if (!(JSON.stringify(expWellDto) === JSON.stringify(originalExpWell))) {
-                        dto.explorationWellDto![index].hasChanges = true
-                    }
-                }
-            })
-        }
 
         dto.wellProjectWellDtos = wellProjectWells
-        if (dto.wellProjectWellDtos?.length > 0) {
-            dto.wellProjectWellDtos.forEach((wpWellDto, index: number) => {
-                if (wpWellDto.drillingSchedule?.id !== EMPTY_GUID) {
-                    const originalWpWell = originalWellProjectWells
-                        ?.find((owpw) => owpw.wellProjectId === wpWellDto.wellProjectId
-                            && owpw.wellId === wpWellDto.wellId)
-
-                    if (!(JSON.stringify(wpWellDto) === JSON.stringify(originalWpWell))) {
-                        dto.wellProjectWellDtos![index].hasChanges = true
-                    }
-                }
-            })
-        }
 
         setIsSaving(true)
         setUpdateFromServer(true)
         try {
-            const result = await (await GetCaseWithAssetsService()).update(dto)
-            const projectResult = Project.fromJSON(result.projectDto!)
+            const result = await (await GetCaseWithAssetsService()).update(project.id, caseId!, dto)
+            const projectResult = { ...result.projectDto }
             setProject(projectResult)
             if (result.generatedProfilesDto?.studyCostProfileWrapperDto !== null && result.generatedProfilesDto?.studyCostProfileWrapperDto !== undefined) {
-                setTotalFeasibilityAndConceptStudies(TotalFeasibilityAndConceptStudies.fromJSON(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFeasibilityAndConceptStudiesDto))
-                setTotalFEEDStudies(TotalFEEDStudies.fromJSON(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFEEDStudiesDto))
-                setTotalOtherStudies(TotalOtherStudies.fromJSON(result.generatedProfilesDto.studyCostProfileWrapperDto.totalOtherStudiesDto))
+                setTotalFeasibilityAndConceptStudies(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFeasibilityAndConceptStudiesDto)
+                setTotalFEEDStudies(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFEEDStudiesDto)
+                setTotalOtherStudies(result.generatedProfilesDto.studyCostProfileWrapperDto.totalOtherStudiesDto)
 
             }
             if (result.generatedProfilesDto?.opexCostProfileWrapperDto !== null && result.generatedProfilesDto?.opexCostProfileWrapperDto !== undefined) {
-                setOffshoreFacilitiesOperationsCostProfile(OffshoreFacilitiesOperationsCostProfile.fromJSON(result.generatedProfilesDto.opexCostProfileWrapperDto?.offshoreFacilitiesOperationsCostProfileDto))
-                setWellInterventionCostProfile(WellInterventionCostProfile.fromJSON(result.generatedProfilesDto.opexCostProfileWrapperDto?.wellInterventionCostProfileDto))
-                setHistoricCostCostProfile(HistoricCostCostProfile.fromJSON(result.generatedProfilesDto.opexCostProfileWrapperDto?.historicCostCostProfileDto))
-                setAdditionalOPEXCostProfile(AdditionalOPEXCostProfile.fromJSON(result.generatedProfilesDto.opexCostProfileWrapperDto?.additionalOPEXCostProfileDto))
+                setOffshoreFacilitiesOperationsCostProfile(result.generatedProfilesDto.opexCostProfileWrapperDto?.offshoreFacilitiesOperationsCostProfileDto)
+                setWellInterventionCostProfile(result.generatedProfilesDto.opexCostProfileWrapperDto?.wellInterventionCostProfileDto)
+                setHistoricCostCostProfile(result.generatedProfilesDto.opexCostProfileWrapperDto?.historicCostCostProfileDto)
+                setAdditionalOPEXCostProfile(result.generatedProfilesDto.opexCostProfileWrapperDto?.additionalOPEXCostProfileDto)
             }
             if (result.generatedProfilesDto?.cessationCostWrapperDto !== null && result.generatedProfilesDto?.cessationCostWrapperDto !== undefined) {
-                setCessationWellsCost(CessationWellsCost.fromJSON(result.generatedProfilesDto.cessationCostWrapperDto.cessationWellsCostDto))
-                setCessationOffshoreFacilitiesCost(CessationOffshoreFacilitiesCost.fromJSON(result.generatedProfilesDto.cessationCostWrapperDto.cessationOffshoreFacilitiesCostDto))
+                setCessationWellsCost(result.generatedProfilesDto.cessationCostWrapperDto.cessationWellsCostDto)
+                setCessationOffshoreFacilitiesCost(result.generatedProfilesDto.cessationCostWrapperDto.cessationOffshoreFacilitiesCostDto)
             }
             if (result.generatedProfilesDto?.gAndGAdminCostDto !== null && result.generatedProfilesDto?.gAndGAdminCostDto !== undefined) {
-                setGAndGAdminCost(GAndGAdminCost.fromJSON(result.generatedProfilesDto.gAndGAdminCostDto))
+                setGAndGAdminCost(result.generatedProfilesDto.gAndGAdminCostDto)
             }
             if (result.generatedProfilesDto?.co2EmissionsDto !== null && result.generatedProfilesDto?.co2EmissionsDto !== undefined) {
-                setCo2Emissions(Co2Emissions.fromJson(result.generatedProfilesDto.co2EmissionsDto))
+                setCo2Emissions(result.generatedProfilesDto.co2EmissionsDto)
             }
             if (result.generatedProfilesDto?.fuelFlaringAndLossesDto !== null && result.generatedProfilesDto?.fuelFlaringAndLossesDto !== undefined) {
-                setFuelFlaringAndLosses(FuelFlaringAndLosses.fromJson(result.generatedProfilesDto.fuelFlaringAndLossesDto))
+                setFuelFlaringAndLosses(result.generatedProfilesDto.fuelFlaringAndLossesDto)
             }
             if (result.generatedProfilesDto?.netSalesGasDto !== null && result.generatedProfilesDto?.netSalesGasDto !== undefined) {
-                setNetSalesGas(NetSalesGas.fromJson(result.generatedProfilesDto.netSalesGasDto))
+                setNetSalesGas(result.generatedProfilesDto.netSalesGasDto)
             }
             if (result.generatedProfilesDto?.importedElectricityDto !== null && result.generatedProfilesDto?.importedElectricityDto !== undefined) {
-                setImportedElectricity(ImportedElectricity.fromJson(result.generatedProfilesDto.importedElectricityDto))
+                setImportedElectricity(result.generatedProfilesDto.importedElectricityDto)
             }
             setIsSaving(false)
         } catch (e) {
@@ -483,6 +394,12 @@ const CaseView = () => {
         <div>
             <HeaderWrapper>
                 <RowWrapper>
+                    <Button
+                        onClick={() => navigate(projectPath(currentContext?.externalId!))}
+                        variant="ghost_icon"
+                    >
+                        <Icon data={arrow_back} />
+                    </Button>
                     <PageTitle variant="h4">
                         {project.referenceCaseId === caseItem.id && (
                             <Tooltip title="Reference case">
@@ -595,8 +512,6 @@ const CaseView = () => {
                         <Panels>
                             <StyledTabPanel>
                                 <CaseDescriptionTab
-                                    project={project}
-                                    setProject={setProject}
                                     caseItem={caseItem}
                                     setCase={setCase}
                                     activeTab={activeTab}
@@ -620,9 +535,7 @@ const CaseView = () => {
                             </StyledTabPanel>
                             <StyledTabPanel>
                                 <CaseScheduleTab
-                                    project={project}
-                                    setProject={setProject}
-                                    caseItem={caseItem}
+                                    caseItem={{ ...caseItem }}
                                     setCase={setCase}
                                     activeTab={activeTab}
                                 />
@@ -630,13 +543,9 @@ const CaseView = () => {
                             <StyledTabPanel>
                                 <CaseDrillingScheduleTab
                                     project={project}
-                                    setProject={setProject}
                                     caseItem={caseItem}
-                                    setCase={setCase}
                                     exploration={exploration}
-                                    setExploration={setExploration}
                                     wellProject={wellProject}
-                                    setWellProject={setWellProject}
                                     explorationWells={explorationWells}
                                     setExplorationWells={setExplorationWells}
                                     wellProjectWells={wellProjectWells}
@@ -648,7 +557,6 @@ const CaseView = () => {
                             <StyledTabPanel>
                                 <CaseFacilitiesTab
                                     project={project}
-                                    setProject={setProject}
                                     caseItem={caseItem}
                                     setCase={setCase}
                                     topside={topside}
@@ -735,30 +643,16 @@ const CaseView = () => {
             <EditTechnicalInputModal
                 toggleEditTechnicalInputModal={toggleTechnicalInputModal}
                 isOpen={editTechnicalInputModalIsOpen}
-                project={project}
-                setProject={setProject}
-                setWells={setWells}
                 caseId={caseItem.id}
                 setExploration={setExploration}
                 setWellProject={setWellProject}
             />
             <EditCaseModal
-                setProject={setProject}
-                project={project}
                 caseId={caseItem.id}
                 isOpen={editCaseModalIsOpen}
-                toggleModal={toggleEditCaseModal}
+                setIsOpen={setEditCaseModalIsOpen}
                 editMode
-                navigate
-            />
-            <EditCaseModal
-                setProject={setProject}
-                project={project}
-                caseId={caseItem.id}
-                isOpen={createCaseModalIsOpen}
-                toggleModal={toggleCreateCaseModal}
-                editMode={false}
-                navigate
+                shouldNavigate
             />
         </div>
     )

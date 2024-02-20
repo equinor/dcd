@@ -6,7 +6,7 @@ import {
     ChangeEventHandler,
 } from "react"
 import styled from "styled-components"
-import { IsDefaultDate, ToMonthDate } from "../../Utils/common"
+import { isDefaultDate, toMonthDate } from "../../Utils/common"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -34,7 +34,7 @@ const CaseDateField = ({
             type="month"
             id="dgDate"
             name="dgDate"
-            value={IsDefaultDate(value) ? undefined : ToMonthDate(value)}
+            value={isDefaultDate(value) ? undefined : toMonthDate(value)}
             onChange={onChange}
             max={max}
             min={min}

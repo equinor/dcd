@@ -3,6 +3,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
@@ -12,18 +14,30 @@ public class WellProjectService : IWellProjectService
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
     private readonly ILogger<WellProjectService> _logger;
+    private readonly IMapper _mapper;
 
-    public WellProjectService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
+    public WellProjectService(
+        DcdDbContext context,
+        IProjectService projectService,
+        ILoggerFactory loggerFactory,
+        IMapper mapper
+        )
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<WellProjectService>();
+        _mapper = mapper;
     }
 
     public async Task<WellProjectDto> CopyWellProject(Guid wellProjectId, Guid sourceCaseId)
     {
         var source = await GetWellProject(wellProjectId);
-        var newWellProjectDto = WellProjectDtoAdapter.Convert(source);
+        var newWellProjectDto = _mapper.Map<WellProjectDto>(source);
+        if (newWellProjectDto == null)
+        {
+            _logger.LogError("Failed to map well project to dto");
+            throw new Exception("Failed to map well project to dto");
+        }
         newWellProjectDto.Id = Guid.Empty;
 
         if (newWellProjectDto.OilProducerCostProfile != null)
@@ -62,15 +76,20 @@ public class WellProjectService : IWellProjectService
             newWellProjectDto.GasInjectorCostProfileOverride.Id = Guid.Empty;
         }
 
-        var wellProject = await NewCreateWellProject(newWellProjectDto, sourceCaseId);
-        var dto = WellProjectDtoAdapter.Convert(wellProject);
-        return dto;
+        // var wellProject = await NewCreateWellProject(newWellProjectDto, sourceCaseId);
+        // var dto = WellProjectDtoAdapter.Convert(wellProject);
+        // return dto;
+        return newWellProjectDto;
     }
 
-    public async Task<WellProject> NewCreateWellProject(WellProjectDto wellProjectDto, Guid sourceCaseId)
+    public async Task<WellProject> NewCreateWellProject(Guid projectId, Guid sourceCaseId, CreateWellProjectDto wellProjectDto)
     {
-        var wellProject = WellProjectAdapter.Convert(wellProjectDto);
-        var project = await _projectService.GetProject(wellProject.ProjectId);
+        var wellProject = _mapper.Map<WellProject>(wellProjectDto);
+        if (wellProject == null)
+        {
+            throw new ArgumentNullException(nameof(wellProject));
+        }
+        var project = await _projectService.GetProject(projectId);
         wellProject.Project = project;
         var createdWellProject = _context.WellProjects!.Add(wellProject);
         await _context.SaveChangesAsync();
@@ -92,11 +111,17 @@ public class WellProjectService : IWellProjectService
     public async Task<WellProjectDto> NewUpdateWellProject(WellProjectDto updatedWellProjectDto)
     {
         var existing = await GetWellProject(updatedWellProjectDto.Id);
-        WellProjectAdapter.ConvertExisting(existing, updatedWellProjectDto);
+        _mapper.Map(updatedWellProjectDto, existing);
 
         var updatedWellProject = _context.WellProjects!.Update(existing);
         await _context.SaveChangesAsync();
-        return WellProjectDtoAdapter.Convert(updatedWellProject.Entity);
+        var dto = _mapper.Map<WellProjectDto>(updatedWellProject);
+        if (dto == null)
+        {
+            _logger.LogError("Failed to map well project to dto");
+            throw new Exception("Failed to map well project to dto");
+        }
+        return dto;
     }
 
     public async Task<WellProjectDto[]> UpdateMultiple(WellProjectDto[] updatedWellProjectDtos)
@@ -115,10 +140,16 @@ public class WellProjectService : IWellProjectService
     public async Task<WellProjectDto> UpdateSingleWellProject(WellProjectDto updatedWellProjectDto)
     {
         var existing = await GetWellProject(updatedWellProjectDto.Id);
-        WellProjectAdapter.ConvertExisting(existing, updatedWellProjectDto);
+        _mapper.Map(updatedWellProjectDto, existing);
         var wellProject = _context.WellProjects!.Update(existing);
         await _context.SaveChangesAsync();
-        return WellProjectDtoAdapter.Convert(wellProject.Entity);
+        var dto = _mapper.Map<WellProjectDto>(wellProject);
+        if (dto == null)
+        {
+            _logger.LogError("Failed to map well project to dto");
+            throw new Exception("Failed to map well project to dto");
+        }
+        return dto;
     }
 
     public async Task<WellProject> GetWellProject(Guid wellProjectId)

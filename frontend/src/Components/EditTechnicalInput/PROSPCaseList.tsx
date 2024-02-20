@@ -1,9 +1,8 @@
-/* eslint-disable camelcase */
 import {
     Button, Checkbox, Icon, NativeSelect, Progress,
 } from "@equinor/eds-core-react"
 import {
-    ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState,
+    ChangeEvent, useCallback, useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
@@ -14,19 +13,17 @@ import {
 } from "@ag-grid-community/core"
 import styled from "styled-components"
 import { external_link } from "@equinor/eds-icons"
-import { Project } from "../../models/Project"
 import SharePointImport from "./SharePointImport"
-import { DriveItem } from "../../models/sharepoint/DriveItem"
+import { DriveItem } from "../../Models/sharepoint/DriveItem"
 import { ImportStatusEnum } from "./ImportStatusEnum"
 import { GetProspService } from "../../Services/ProspService"
+import { useAppContext } from "../../Context/AppContext"
 
 const ApplyButtonWrapper = styled.div`
     display: flex;
     padding-top: 1em;
 `
 interface Props {
-    setProject: Dispatch<SetStateAction<Project | undefined>>
-    project: Project
     driveItems: DriveItem[] | undefined
     check: boolean
 }
@@ -48,19 +45,18 @@ interface RowData {
     transportStateChanged: boolean
     sharePointFileChanged: boolean,
 }
-function PROSPCaseList({
-    setProject,
-    project,
+const PROSPCaseList = ({
     driveItems,
     check,
-}: Props) {
+}: Props) => {
+    const { project, setProject } = useAppContext()
     const gridRef = useRef<any>(null)
     const styles = useStyles()
     const [rowData, setRowData] = useState<RowData[]>()
     const [isApplying, setIsApplying] = useState<boolean>()
 
     const casesToRowData = () => {
-        if (project.cases) {
+        if (project && project.cases) {
             const tableCases: RowData[] = []
             project.cases.forEach((c) => {
                 const tableCase: RowData = {
@@ -123,26 +119,26 @@ function PROSPCaseList({
     }
 
     const handleAdvancedSettingsChange = (p: any, value: ImportStatusEnum) => {
-        if (project.cases && project.cases !== null && project.cases !== undefined) {
+        if (project && project.cases) {
             const caseItem = project.cases.find((el: any) => p.data.id && p.data.id === el.id)
             const rowNode = gridRef.current?.getRowNode(p.node?.data.id)
             if (caseItem) {
                 switch (p.column.colId) {
-                case "surfState":
-                    rowNode.data.surfStateChanged = (SharePointImport.surfStatus(caseItem, project) !== value)
-                    break
-                case "substructureState":
-                    rowNode.data.substructureStateChanged = (
-                        SharePointImport.substructureStatus(caseItem, project) !== value)
-                    break
-                case "topsideState":
-                    rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(caseItem, project) !== value)
-                    break
-                case "transportState":
-                    rowNode.data.transportStateChanged = (SharePointImport.transportStatus(caseItem, project) !== value)
-                    break
-                default:
-                    break
+                    case "surfState":
+                        rowNode.data.surfStateChanged = (SharePointImport.surfStatus(caseItem, project) !== value)
+                        break
+                    case "substructureState":
+                        rowNode.data.substructureStateChanged = (
+                            SharePointImport.substructureStatus(caseItem, project) !== value)
+                        break
+                    case "topsideState":
+                        rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(caseItem, project) !== value)
+                        break
+                    case "transportState":
+                        rowNode.data.transportStateChanged = (SharePointImport.transportStatus(caseItem, project) !== value)
+                        break
+                    default:
+                        break
                 }
             }
         }
@@ -205,14 +201,14 @@ function PROSPCaseList({
             const link = getFileLink(rowNode, selectedFileId)
             rowNode.setDataValue(
                 "fileLink", (
-                    <a
-                        href={link}
-                        aria-label="SharePoint File link"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <Icon data={external_link} />
-                    </a>),
+                <a
+                    href={link}
+                    aria-label="SharePoint File link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    <Icon data={external_link} />
+                </a>),
             )
         } else {
             rowNode.setDataValue("fileLink", null)
@@ -339,7 +335,7 @@ function PROSPCaseList({
         gridRef.current = params.api
     }
 
-    const gridDataToDtos = (p: Project) => {
+    const gridDataToDtos = (p: Components.Schemas.ProjectDto) => {
         const dtos: any[] = []
         gridRef.current.forEachNode((node: RowNode<RowData>) => {
             const dto: any = {}
@@ -363,7 +359,7 @@ function PROSPCaseList({
         return dtos
     }
 
-    const save = useCallback(async (p: Project) => {
+    const save = useCallback(async (p: Components.Schemas.ProjectDto) => {
         const dtos = gridDataToDtos(p)
         if (dtos.length > 0) {
             setIsApplying(true)
@@ -398,7 +394,7 @@ function PROSPCaseList({
                 </div>
             </div>
             <ApplyButtonWrapper>
-                {!isApplying ? (
+                {!isApplying && project ? (
                     <Button
                         onClick={() => save(project)}
                         color="secondary"

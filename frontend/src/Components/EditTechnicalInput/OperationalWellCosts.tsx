@@ -1,13 +1,10 @@
-/* eslint-disable max-len */
-import { Table, Typography } from "@equinor/eds-core-react"
+import { Table } from "@equinor/eds-core-react"
 import {
     Dispatch, SetStateAction, useEffect, useState,
 } from "react"
 import styled from "styled-components"
-import { DevelopmentOperationalWellCosts } from "../../models/DevelopmentOperationalWellCosts"
-import { ExplorationOperationalWellCosts } from "../../models/ExplorationOperationalWellCosts"
-import { Project } from "../../models/Project"
 import OperationalWellCost from "./OperationalWellCost"
+import { useAppContext } from "../../Context/AppContext"
 
 const TableWrapper = styled(Table)`
     width: 100%;
@@ -15,38 +12,42 @@ const TableWrapper = styled(Table)`
 
 interface Props {
     title: string
-    project: Project
-    developmentOperationalWellCosts?: DevelopmentOperationalWellCosts
-    setDevelopmentOperationalWellCosts?: Dispatch<SetStateAction<DevelopmentOperationalWellCosts | undefined>>
+    developmentOperationalWellCosts?: Components.Schemas.DevelopmentOperationalWellCostsDto
+    setDevelopmentOperationalWellCosts?: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsDto>>
 
-    explorationOperationalWellCosts?: ExplorationOperationalWellCosts
-    setExplorationOperationalWellCosts?: Dispatch<SetStateAction<ExplorationOperationalWellCosts | undefined>>
+    explorationOperationalWellCosts?: Components.Schemas.ExplorationOperationalWellCostsDto
+    setExplorationOperationalWellCosts?: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsDto>>
 
 }
 
-function OperationalWellCosts({
+const OperationalWellCosts = ({
     title,
-    project,
     developmentOperationalWellCosts,
     explorationOperationalWellCosts,
     setDevelopmentOperationalWellCosts,
     setExplorationOperationalWellCosts,
-}: Props) {
+}: Props) => {
+    const { project } = useAppContext()
+
     const [developmentRigUpgrading, setDevelopmentRigUpgrading] = useState<number | undefined>(developmentOperationalWellCosts?.rigUpgrading)
     const [developmentRigMobDemob, setDevelopmentRigMobDemob] = useState<number | undefined>(developmentOperationalWellCosts?.rigMobDemob)
     const [developmentAnnualWellInterventionCost, setDevelopmentAnnualWellInterventionCost] = useState<number | undefined>(developmentOperationalWellCosts?.annualWellInterventionCostPerWell)
     const [developmentPluggingAndAbandonment, setDevelopmentPluggingAndAbandonment] = useState<number | undefined>(developmentOperationalWellCosts?.pluggingAndAbandonment)
-
     const [explorationRigUpgrading, setExplorationRigUpgrading] = useState<number | undefined>(explorationOperationalWellCosts?.rigUpgrading)
     const [explorationRigMobDemob, setExplorationRigMobDemob] = useState<number | undefined>(explorationOperationalWellCosts?.explorationRigMobDemob)
     const [explorationProjectDrillingCosts, setExplorationProjectDrillingCosts] = useState<number | undefined>(explorationOperationalWellCosts?.explorationProjectDrillingCosts)
-
     const [appraisalRigMobDemob, setAppraisalRigMobDemob] = useState<number | undefined>(explorationOperationalWellCosts?.appraisalRigMobDemob)
     const [appraisalProjectDrillingCosts, setAppraisalProjectDrillingCosts] = useState<number | undefined>(explorationOperationalWellCosts?.appraisalProjectDrillingCosts)
 
     useEffect(() => {
+        if (developmentRigUpgrading === undefined
+            || developmentRigMobDemob === undefined
+            || developmentAnnualWellInterventionCost === undefined
+            || developmentPluggingAndAbandonment === undefined) {
+            return
+        }
         if (developmentOperationalWellCosts && setDevelopmentOperationalWellCosts) {
-            const newDevelopmentOperationalWellCosts: DevelopmentOperationalWellCosts = { ...developmentOperationalWellCosts }
+            const newDevelopmentOperationalWellCosts: Components.Schemas.DevelopmentOperationalWellCostsDto = { ...developmentOperationalWellCosts }
             newDevelopmentOperationalWellCosts.rigUpgrading = developmentRigUpgrading
             newDevelopmentOperationalWellCosts.rigMobDemob = developmentRigMobDemob
             newDevelopmentOperationalWellCosts.annualWellInterventionCostPerWell = developmentAnnualWellInterventionCost
@@ -57,8 +58,15 @@ function OperationalWellCosts({
         developmentAnnualWellInterventionCost, developmentPluggingAndAbandonment])
 
     useEffect(() => {
+        if (explorationRigUpgrading === undefined
+            || explorationRigMobDemob === undefined
+            || explorationProjectDrillingCosts === undefined
+            || appraisalRigMobDemob === undefined
+            || appraisalProjectDrillingCosts === undefined) {
+            return
+        }
         if (explorationOperationalWellCosts && setExplorationOperationalWellCosts) {
-            const newExplorationOperationalWellCosts: ExplorationOperationalWellCosts = { ...explorationOperationalWellCosts }
+            const newExplorationOperationalWellCosts: Components.Schemas.ExplorationOperationalWellCostsDto = { ...explorationOperationalWellCosts }
             newExplorationOperationalWellCosts.rigUpgrading = explorationRigUpgrading
             newExplorationOperationalWellCosts.explorationRigMobDemob = explorationRigMobDemob
             newExplorationOperationalWellCosts.explorationProjectDrillingCosts = explorationProjectDrillingCosts

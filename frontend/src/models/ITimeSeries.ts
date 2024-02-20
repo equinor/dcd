@@ -1,7 +1,7 @@
 export interface ITimeSeries {
-    id?: string
-    startYear?: number
+    id: string
+    startYear: number
     name?: string
-    values?: number[]
+    values?: number[] | null
     sum?: number | undefined
 }

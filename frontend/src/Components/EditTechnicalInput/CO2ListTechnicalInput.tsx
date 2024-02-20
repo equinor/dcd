@@ -1,7 +1,5 @@
 import {
     ChangeEvent,
-    Dispatch,
-    SetStateAction,
     useCallback,
     useEffect, useMemo, useRef, useState,
 } from "react"
@@ -10,7 +8,7 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { Switch } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
-import { Project } from "../../models/Project"
+import { useAppContext } from "../../Context/AppContext"
 
 const SwitchWrapper = styled.div`
     align-items: flex-end;
@@ -26,19 +24,14 @@ const ColumnWrapper = styled.div`
     margin-bottom: 0.5rem;
 `
 
-interface Props {
-    project: Project
-    setProject: Dispatch<SetStateAction<Project | undefined>>
-}
-
-function CO2ListTechnicalInput({
-    project, setProject,
-}: Props) {
+const CO2ListTechnicalInput = () => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
+    const { project, setProject } = useAppContext()
+
+    if (!project) return null
 
     const [check, setCheck] = useState(false)
-
     const [cO2RemovedFromGas, setCO2RemovedFromGas] = useState<number>(project.cO2RemovedFromGas ?? 0)
     const [cO2EmissionsFromFuelGas, setCO2EmissionsFromFuelGas] = useState<number>(project.cO2EmissionFromFuelGas ?? 0)
     const [flaredGasPerProducedVolume, setFlaredGasPerProducedVolume] = useState<number>(
@@ -75,12 +68,12 @@ function CO2ListTechnicalInput({
         (node: any): boolean => {
             if (node.data) {
                 switch (cO2VentedRow) {
-                case true:
-                    return node.data.profile === "CO2 vented"
-                case false:
-                    return node.data.profile !== "CO2 vented"
-                default:
-                    return true
+                    case true:
+                        return node.data.profile === "CO2 vented"
+                    case false:
+                        return node.data.profile !== "CO2 vented"
+                    default:
+                        return true
                 }
             }
             return true
@@ -147,7 +140,7 @@ function CO2ListTechnicalInput({
 
     useEffect(() => {
         if (project) {
-            const newProject: Project = { ...project }
+            const newProject: Components.Schemas.ProjectDto = { ...project }
             newProject.cO2RemovedFromGas = cO2RemovedFromGas
             newProject.cO2EmissionFromFuelGas = cO2EmissionsFromFuelGas
             newProject.flaredGasPerProducedVolume = flaredGasPerProducedVolume

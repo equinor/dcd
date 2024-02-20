@@ -4,6 +4,8 @@ using api.Dtos;
 using api.Helpers;
 using api.Models;
 
+using AutoMapper;
+
 namespace api.Services.GenerateCostProfiles;
 
 public class GenerateFuelFlaringLossesProfile : IGenerateFuelFlaringLossesProfile
@@ -13,15 +15,22 @@ public class GenerateFuelFlaringLossesProfile : IGenerateFuelFlaringLossesProfil
     private readonly IProjectService _projectService;
     private readonly ITopsideService _topsideService;
     private readonly DcdDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GenerateFuelFlaringLossesProfile(DcdDbContext context, ICaseService caseService, IProjectService projectService, ITopsideService topsideService,
-        IDrainageStrategyService drainageStrategyService)
+    public GenerateFuelFlaringLossesProfile(
+        DcdDbContext context,
+        ICaseService caseService,
+        IProjectService projectService,
+        ITopsideService topsideService,
+        IDrainageStrategyService drainageStrategyService,
+        IMapper mapper)
     {
         _context = context;
         _caseService = caseService;
         _projectService = projectService;
         _topsideService = topsideService;
         _drainageStrategyService = drainageStrategyService;
+        _mapper = mapper;
     }
 
     public async Task<FuelFlaringAndLossesDto> GenerateAsync(Guid caseId)
@@ -44,7 +53,7 @@ public class GenerateFuelFlaringLossesProfile : IGenerateFuelFlaringLossesProfil
 
         await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, fuelFlaringLosses);
 
-        var dto = DrainageStrategyDtoAdapter.Convert<FuelFlaringAndLossesDto, FuelFlaringAndLosses>(fuelFlaringLosses, project.PhysicalUnit);
+        var dto = _mapper.Map<FuelFlaringAndLossesDto>(fuelFlaringLosses);
         return dto ?? new FuelFlaringAndLossesDto();
     }
 

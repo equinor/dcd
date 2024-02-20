@@ -3,18 +3,13 @@ import {
     Progress,
     Tabs, Typography,
 } from "@equinor/eds-core-react"
-import React, {
-    useEffect,
-    useState,
-} from "react"
-import { useParams } from "react-router-dom"
+import React, { useState } from "react"
 import styled from "styled-components"
-import { useCurrentContext } from "@equinor/fusion"
-import { Project } from "../models/Project"
+import { useAppContext } from "../Context/AppContext"
 import { GetProjectService } from "../Services/ProjectService"
-import ProjectOverviewTab from "./Project/ProjectOverviewTab"
-import ProjectCompareCasesTab from "./Project/ProjectCompareCasesTab"
-import ProjectSettingsTab from "./Project/ProjectSettingsTab"
+import ProjectOverviewTab from "../Components/Project/ProjectOverviewTab"
+import ProjectCompareCasesTab from "../Components/Project/ProjectCompareCasesTab"
+import ProjectSettingsTab from "../Components/Project/ProjectSettingsTab"
 import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 
 const { Panel } = Tabs
@@ -28,7 +23,7 @@ const StyledTabPanel = styled(Panel)`
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
-    padding: 1.5rem 2rem;
+    padding: 20px 20px 0 20px;
 `
 
 const PageTitle = styled(Typography)`
@@ -43,73 +38,25 @@ const TransparentButton = styled(Button)`
 `
 
 const Wrapper = styled.div`
-    margin: 2rem;
+    margin: 0 20px;
     display: flex;
     flex-direction: column;
 `
 
 const ProjectView = () => {
+    const { project, setProject } = useAppContext()
+
     const [activeTab, setActiveTab] = React.useState(0)
-
-    const currentProject = useCurrentContext()
-
-    const { fusionContextId } = useParams<Record<string, string | undefined>>()
-    const [project, setProject] = useState<Project>()
-    const [, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
-    const [, setCurrency] = useState<Components.Schemas.Currency>(1)
-
     const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>()
-
     const [isSaving, setIsSaving] = useState<boolean>()
-    const [isLoading, setIsLoading] = useState<boolean>()
-    const [isCreating, setIsCreating] = useState<boolean>()
-
-    useEffect(() => {
-        (async () => {
-            try {
-                setIsLoading(true)
-                if (currentProject?.externalId) {
-                    let res = await (await GetProjectService()).getProjectByID(currentProject?.externalId)
-                    if (!res || res.id === "") {
-                        setIsCreating(true)
-                        res = await (await GetProjectService()).createProjectFromContextId(currentProject.id)
-                    }
-                    if (res !== undefined) {
-                        setPhysicalUnit(res?.physUnit)
-                        setCurrency(res?.currency)
-                    }
-                    setProject(res)
-                    setIsCreating(false)
-                    setIsLoading(false)
-                }
-            } catch (error) {
-                console.error(`[ProjectView] Error while fetching project. Context: ${fusionContextId}, Project: ${currentProject?.externalId}`, error)
-            }
-        })()
-    }, [currentProject?.externalId])
 
     const toggleEditTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
 
-    if (isLoading || !project || project.id === "") {
-        if (isCreating) {
-            return (
-                <>
-                    <Progress.Circular size={16} color="primary" />
-                    <p>Creating project</p>
-                </>
-            )
-        }
-        return (
-            <>
-                <Progress.Circular size={16} color="primary" />
-                <p>Loading project</p>
-            </>
-        )
-    }
-
     const handleSave = async () => {
+        if (!project) return
+
         setIsSaving(true)
-        const updatedProject = Project.Copy(project)
+        const updatedProject = { ...project }
         const result = await (await GetProjectService()).updateProject(updatedProject)
         setIsSaving(false)
         setProject(result)
@@ -118,7 +65,7 @@ const ProjectView = () => {
     return (
         <>
             <TopWrapper>
-                <PageTitle variant="h4">{project.name}</PageTitle>
+                <PageTitle variant="h4">{project?.name}</PageTitle>
                 {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
                     <Button>
                         <Progress.Dots />
@@ -140,21 +87,13 @@ const ProjectView = () => {
                     </List>
                     <Panels>
                         <StyledTabPanel>
-                            <ProjectOverviewTab
-                                project={project}
-                                setProject={setProject}
-                            />
+                            <ProjectOverviewTab />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <ProjectCompareCasesTab
-                                project={project}
-                            />
+                            <ProjectCompareCasesTab />
                         </StyledTabPanel>
                         <StyledTabPanel>
-                            <ProjectSettingsTab
-                                project={project}
-                                setProject={setProject}
-                            />
+                            <ProjectSettingsTab />
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>
@@ -162,8 +101,6 @@ const ProjectView = () => {
             <EditTechnicalInputModal
                 toggleEditTechnicalInputModal={toggleEditTechnicalInputModal}
                 isOpen={editTechnicalInputModalIsOpen ?? false}
-                project={project}
-                setProject={setProject}
             />
         </>
     )
