@@ -12,7 +12,7 @@ import { getProjectPhaseName, getProjectCategoryName, unwrapProjectId } from "..
 import { GetProjectService } from "../../Services/ProjectService"
 import { GetSTEAService } from "../../Services/STEAService"
 import EditCaseModal from "../Case/EditCaseModal"
-import { useAppContext } from "../../Context/AppContext"
+import { useAppContext } from "../../context/AppContext"
 import CasesTable from "../Case/CasesTable/CasesTable"
 
 export const WrapperColumn = styled.div`
@@ -47,7 +47,7 @@ const ProjectDataFieldLabel = styled(Typography)`
     white-space: pre-wrap;
 `
 const DescriptionField = styled(TextArea)`
-  
+
 `
 
 const ProjectOverviewTab = () => {

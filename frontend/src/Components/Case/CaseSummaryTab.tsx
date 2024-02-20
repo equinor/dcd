@@ -6,10 +6,10 @@ import styled from "styled-components"
 import { Typography } from "@equinor/eds-core-react"
 import CaseNumberInput from "./CaseNumberInput"
 import CaseTabTable from "./CaseTabTable"
-import { ITimeSeries } from "../../Models/ITimeSeries"
+import { ITimeSeries } from "../../models/ITimeSeries"
 import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileService"
 import { mergeTimeseries } from "../../Utils/common"
-import { ITimeSeriesCost } from "../../Models/ITimeSeriesCost"
+import { ITimeSeriesCost } from "../../models/ITimeSeriesCost"
 
 const ColumnWrapper = styled.div`
     display: flex;

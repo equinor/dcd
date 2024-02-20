@@ -6,7 +6,7 @@ import {
 import { info_circle } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { Outlet, useNavigate } from "react-router-dom"
-import { useAppContext } from "../Context/AppContext"
+import { useAppContext } from "../context/AppContext"
 import { GetProjectService } from "../Services/ProjectService"
 
 const Wrapper = styled.div`

@@ -9,9 +9,9 @@ import {
 import CaseNumberInput from "./CaseNumberInput"
 import CaseTabTable from "./CaseTabTable"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
-import { ITimeSeries } from "../../Models/ITimeSeries"
-import { ITimeSeriesCostOverride } from "../../Models/ITimeSeriesCostOverride"
-import { ITimeSeriesCost } from "../../Models/ITimeSeriesCost"
+import { ITimeSeries } from "../../models/ITimeSeries"
+import { ITimeSeriesCostOverride } from "../../models/ITimeSeriesCostOverride"
+import { ITimeSeriesCost } from "../../models/ITimeSeriesCost"
 
 const ColumnWrapper = styled.div`
     display: flex;

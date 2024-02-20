@@ -21,7 +21,7 @@ import {
     defaultDate, isDefaultDate, projectPath, toMonthDate,
 } from "../../Utils/common"
 import { GetCaseService } from "../../Services/CaseService"
-import { useAppContext } from "../../Context/AppContext"
+import { useAppContext } from "../../context/AppContext"
 
 const CreateCaseForm = styled.form`
     width: 596px;

@@ -1,7 +1,7 @@
 import { FC } from "react"
 import { APP_VERSION } from "./version"
 import AppRouter from "./Router"
-import { AppContextProvider } from "./Context/AppContext"
+import { AppContextProvider } from "./context/AppContext"
 import { resolveConfiguration } from "./Utils/config"
 import { EnvironmentVariables } from "./environmentVariables"
 import { storeAppId, storeAppScope } from "./Utils/common"

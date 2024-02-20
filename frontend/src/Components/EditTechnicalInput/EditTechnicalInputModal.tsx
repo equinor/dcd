@@ -12,7 +12,7 @@ import { EMPTY_GUID } from "../../Utils/constants"
 import { isExplorationWell } from "../../Utils/common"
 import CO2Tab from "./CO2Tab"
 import { GetTechnicalInputService } from "../../Services/TechnicalInputService"
-import { useAppContext } from "../../Context/AppContext"
+import { useAppContext } from "../../context/AppContext"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs

@@ -4,7 +4,7 @@ import {
 } from "react"
 import styled from "styled-components"
 import OperationalWellCost from "./OperationalWellCost"
-import { useAppContext } from "../../Context/AppContext"
+import { useAppContext } from "../../context/AppContext"
 
 const TableWrapper = styled(Table)`
     width: 100%;

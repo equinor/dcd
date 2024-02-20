@@ -5,7 +5,7 @@ import {
 } from "@equinor/eds-core-react"
 import React, { useState } from "react"
 import styled from "styled-components"
-import { useAppContext } from "../Context/AppContext"
+import { useAppContext } from "../context/AppContext"
 import { GetProjectService } from "../Services/ProjectService"
 import ProjectOverviewTab from "../Components/Project/ProjectOverviewTab"
 import ProjectCompareCasesTab from "../Components/Project/ProjectCompareCasesTab"
