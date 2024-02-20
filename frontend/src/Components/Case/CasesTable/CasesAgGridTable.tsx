@@ -18,6 +18,7 @@ import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
 import { casePath, productionStrategyOverviewToString } from "../../../Utils/common"
 import { useAppContext } from "../../../Context/AppContext"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
@@ -57,6 +58,7 @@ const CasesAgGridTable = ({
     const gridRef = useRef<AgGridReact>(null)
     const { project } = useAppContext()
     const [rowData, setRowData] = useState<TableCase[]>()
+    const { currentContext } = useModuleCurrentContext()
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
@@ -90,7 +92,7 @@ const CasesAgGridTable = ({
     )
 
     const nameWithReferenceCase = (p: any) => {
-        const caseDetailPath = casePath("fusionContextId", p.node.data.id)
+        const caseDetailPath = casePath(currentContext?.externalId!, p.node.data.id)
 
         return (
             <span>
