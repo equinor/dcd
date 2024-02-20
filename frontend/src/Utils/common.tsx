@@ -1,6 +1,5 @@
 import _ from "lodash"
 import { ITimeSeries } from "../Models/ITimeSeries"
-
 export const loginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
 
@@ -145,12 +144,6 @@ export const productionStrategyOverviewToString = (value?: Components.Schemas.Pr
 
 export const isExplorationWell = (well: Components.Schemas.WellDto | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
 
-const zip = (arrays: number[][]) => {
-    const maxLength = Math.max(...arrays.map(arr => arr.length));
-    return Array.from({ length: maxLength }).map((_, index) => 
-        arrays.reduce((acc, curr) => acc + (curr[index] ?? 0), 0)
-    );
-}
 
 const MergeCostProfileData = (arrays: number[][], offsets: number[]): number[] => {
     let maxLength = Math.max(...arrays.map(arr => arr.length + offsets[arrays.indexOf(arr)]));

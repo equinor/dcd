@@ -72,7 +72,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         additionalOPEXCost.StartYear = newAdditionalOPEXCost.StartYear;
         additionalOPEXCost.Values = newAdditionalOPEXCost.Values;
 
-        var saveResult = await UpdateCaseAndSaveAsync(caseItem, wellInterventionCost, offshoreFacilitiesOperationsCost, historicCost, additionalOPEXCost);
+        await UpdateCaseAndSaveAsync(caseItem, wellInterventionCost, offshoreFacilitiesOperationsCost, historicCost, additionalOPEXCost);
 
         var wellInterventionCostDto = _mapper.Map<WellInterventionCostProfileDto>(wellInterventionCost);
         var offshoreFacilitiesOperationsCostDto = _mapper.Map<OffshoreFacilitiesOperationsCostProfileDto>(offshoreFacilitiesOperationsCost); 
