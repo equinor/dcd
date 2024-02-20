@@ -146,11 +146,11 @@ export const isExplorationWell = (well: Components.Schemas.WellDto | undefined) 
 
 
 const MergeCostProfileData = (arrays: number[][], offsets: number[]): number[] => {
-    let maxLength = Math.max(...arrays.map(arr => arr.length + offsets[arrays.indexOf(arr)]));
-    let result = new Array(maxLength).fill(0);
+    const maxLength = Math.max(...arrays.map(arr => arr.length + offsets[arrays.indexOf(arr)]));
+    const result = new Array(maxLength).fill(0);
 
     arrays.forEach((arr, idx) => {
-        let offset = offsets[idx];
+        const offset = offsets[idx];
         for (let i = 0; i < arr.length; i++) {
             if (i + offset < maxLength) {
                 result[i + offset] += arr[i];
@@ -167,7 +167,7 @@ export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | u
     const arrays = [t1, t2, t3].map(t => t?.values ?? []);
     const offsets = startYears.map(year => Math.abs(year - minYear));
 
-    let values: number[] = MergeCostProfileData(arrays, offsets);
+    const values: number[] = MergeCostProfileData(arrays, offsets);
 
     const timeSeries = {
         id: t1?.id ?? t2?.id ?? t3?.id ?? "",
