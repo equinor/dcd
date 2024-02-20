@@ -124,21 +124,21 @@ const PROSPCaseList = ({
             const rowNode = gridRef.current?.getRowNode(p.node?.data.id)
             if (caseItem) {
                 switch (p.column.colId) {
-                    case "surfState":
-                        rowNode.data.surfStateChanged = (SharePointImport.surfStatus(caseItem, project) !== value)
-                        break
-                    case "substructureState":
-                        rowNode.data.substructureStateChanged = (
-                            SharePointImport.substructureStatus(caseItem, project) !== value)
-                        break
-                    case "topsideState":
-                        rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(caseItem, project) !== value)
-                        break
-                    case "transportState":
-                        rowNode.data.transportStateChanged = (SharePointImport.transportStatus(caseItem, project) !== value)
-                        break
-                    default:
-                        break
+                case "surfState":
+                    rowNode.data.surfStateChanged = (SharePointImport.surfStatus(caseItem, project) !== value)
+                    break
+                case "substructureState":
+                    rowNode.data.substructureStateChanged = (
+                        SharePointImport.substructureStatus(caseItem, project) !== value)
+                    break
+                case "topsideState":
+                    rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(caseItem, project) !== value)
+                    break
+                case "transportState":
+                    rowNode.data.transportStateChanged = (SharePointImport.transportStatus(caseItem, project) !== value)
+                    break
+                default:
+                    break
                 }
             }
         }
@@ -201,14 +201,14 @@ const PROSPCaseList = ({
             const link = getFileLink(rowNode, selectedFileId)
             rowNode.setDataValue(
                 "fileLink", (
-                <a
-                    href={link}
-                    aria-label="SharePoint File link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <Icon data={external_link} />
-                </a>),
+                    <a
+                        href={link}
+                        aria-label="SharePoint File link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <Icon data={external_link} />
+                    </a>),
             )
         } else {
             rowNode.setDataValue("fileLink", null)
