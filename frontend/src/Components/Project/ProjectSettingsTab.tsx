@@ -1,6 +1,5 @@
 import { NativeSelect } from "@equinor/eds-core-react"
 import { ChangeEventHandler } from "react"
-import styled from "styled-components"
 import { useAppContext } from "../../Context/AppContext"
 import InputContainer from "../Input/InputContainer"
 

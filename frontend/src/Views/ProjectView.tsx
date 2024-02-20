@@ -8,7 +8,7 @@ import styled from "styled-components"
 import { useAppContext } from "../Context/AppContext"
 import { GetProjectService } from "../Services/ProjectService"
 import ProjectOverviewTab from "../Components/Project/ProjectOverviewTab"
-import ProjectCompareCasesTab from "../Components/Project/CompareCases/CompareCasesTabOverview"
+import ProjectCompareCasesTab from "../Components/Project/CompareCasesTab/CompareCasesTabOverview"
 import ProjectSettingsTab from "../Components/Project/ProjectSettingsTab"
 import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 
