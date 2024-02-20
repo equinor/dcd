@@ -13,13 +13,13 @@ import {
 } from "@equinor/eds-core-react"
 import CaseNumberInput from "./CaseNumberInput"
 import CaseTabTable from "./CaseTabTable"
-import { ITimeSeries } from "../../models/ITimeSeries"
+import { ITimeSeries } from "../../Models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileService"
 import CaseCO2DistributionTable from "./CaseCO2DistributionTable"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../AgGrid/AgChartsTimeseries"
 import { AgChartsPie } from "../AgGrid/AgChartsPie"
-import { ITimeSeriesOverride } from "../../models/ITimeSeriesOverride"
+import { ITimeSeriesOverride } from "../../Models/ITimeSeriesOverride"
 
 export const WrapperColumn = styled.div`
     display: flex;
