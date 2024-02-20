@@ -75,7 +75,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         await UpdateCaseAndSaveAsync(caseItem, wellInterventionCost, offshoreFacilitiesOperationsCost, historicCost, additionalOPEXCost);
 
         var wellInterventionCostDto = _mapper.Map<WellInterventionCostProfileDto>(wellInterventionCost);
-        var offshoreFacilitiesOperationsCostDto = _mapper.Map<OffshoreFacilitiesOperationsCostProfileDto>(offshoreFacilitiesOperationsCost); 
+        var offshoreFacilitiesOperationsCostDto = _mapper.Map<OffshoreFacilitiesOperationsCostProfileDto>(offshoreFacilitiesOperationsCost);
         var historicCostCostProfileDto = _mapper.Map<HistoricCostCostProfileDto>(historicCost);
         var additionalOPEXCostProfileDto = _mapper.Map<AdditionalOPEXCostProfileDto>(additionalOPEXCost);
 
@@ -84,7 +84,15 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         result.HistoricCostCostProfileDto = historicCostCostProfileDto;
         result.AdditionalOPEXCostProfileDto = additionalOPEXCostProfileDto;
 
-        var OPEX = TimeSeriesCost.MergeCostProfilesList([wellInterventionCost, offshoreFacilitiesOperationsCost, historicCostCostProfileDto, additionalOPEXCostProfileDto]);
+        List<TimeSeriesCostDto> timeSeriesList = new List<TimeSeriesCostDto>
+        {
+            wellInterventionCost,
+            offshoreFacilitiesOperationsCost,
+            historicCostCostProfileDto,
+            additionalOPEXCostProfileDto
+        };
+
+        var OPEX = TimeSeriesCost.MergeCostProfilesList(timeSeriesList);
         var opexCostProfile = new OpexCostProfile
         {
             StartYear = OPEX.StartYear,
