@@ -10,8 +10,9 @@ import CaseNumberInput from "./CaseNumberInput"
 import CaseTabTable from "./CaseTabTable"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { ITimeSeries } from "../../Models/ITimeSeries"
-import { ITimeSeriesCost } from "../../models/ITimeSeriesCost"
-import { ITimeSeriesCostOverride } from "../../models/ITimeSeriesCostOverride"
+import { ITimeSeriesCost } from "../../Models/ITimeSeriesCost"
+import { ITimeSeriesCostOverride } from "../../Models/ITimeSeriesCostOverride"
+
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -198,27 +199,27 @@ const CaseCostTab = ({
                 if (activeTab === 5) {
                     const totalFeasibility = caseItem.totalFeasibilityAndConceptStudies
                     const totalFEED = caseItem.totalFEEDStudies
-                    let totalOtherStudies = caseItem.totalOtherStudies
+                    const totalOtherStudiesLocal = caseItem.totalOtherStudies
 
                     setTotalFeasibilityAndConceptStudies(totalFeasibility)
                     setTotalFeasibilityAndConceptStudiesOverride(caseItem.totalFeasibilityAndConceptStudiesOverride)
                     setTotalFEEDStudies(totalFEED)
                     setTotalFEEDStudiesOverride(caseItem.totalFEEDStudiesOverride)
-                    setTotalOtherStudies(totalOtherStudies)
+                    setTotalOtherStudies(totalOtherStudiesLocal)
                     setTotalOtherStudiesOverride(caseItem.totalOtherStudiesOverride)
 
                     const wellIntervention = wellInterventionCostProfile
                     const offshoreFacilitiesOperations = caseItem.offshoreFacilitiesOperationsCostProfile
-                    let historicCostCostProfile = caseItem.historicCostCostProfile
-                    let additionalOPEXCostProfile = caseItem.additionalOPEXCostProfile
+                    const historicCostCost = caseItem.historicCostCostProfile
+                    const additionalOPEXCost = caseItem.additionalOPEXCostProfile
 
                     setWellInterventionCostProfile(wellIntervention)
                     setWellInterventionCostProfileOverride(caseItem.wellInterventionCostProfileOverride)
                     setOffshoreFacilitiesOperationsCostProfile(offshoreFacilitiesOperations)
                     setOffshoreFacilitiesOperationsCostProfileOverride(caseItem.offshoreFacilitiesOperationsCostProfileOverride)
-                    setHistoricCostCostProfile(historicCostCostProfile)
+                    setHistoricCostCostProfile(historicCostCost)
                     setHistoricCostCostProfileOverride(caseItem.historicCostCostProfileOverride)
-                    setAdditionalOPEXCostProfile(additionalOPEXCostProfile)
+                    setAdditionalOPEXCostProfile(additionalOPEXCost)
                     setAdditionalOPEXCostProfileOverride(caseItem.additionalOPEXCostProfileOverride)
 
                     const cessationWells = caseItem.cessationWellsCost
