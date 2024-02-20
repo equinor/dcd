@@ -12,49 +12,6 @@ import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { ITimeSeries } from "../../Models/ITimeSeries"
 import { ITimeSeriesCost } from "../../models/ITimeSeriesCost"
 import { ITimeSeriesCostOverride } from "../../models/ITimeSeriesCostOverride"
-import { AdditionalOPEXCostProfile } from "../../models/case/AdditionalOPEXCostProfile"
-import { Case } from "../../models/case/Case"
-import { HistoricCostCostProfile } from "../../models/case/HistoricCostCostProfile"
-// import { SeismicAcquisitionAndProcessing } from "../../Models/assets/exploration/SeismicAcquisitionAndProcessing"
-// import { CountryOfficeCost } from "../../Models/assets/exploration/CountryOfficeCost"
-// import { GAndGAdminCost } from "../../Models/assets/exploration/GAndGAdminCost"
-// import { Exploration } from "../../Models/assets/exploration/Exploration"
-// import { Surf } from "../../Models/assets/surf/Surf"
-// import { WellProject } from "../../Models/assets/wellproject/WellProject"
-// import { Substructure } from "../../Models/assets/substructure/Substructure"
-// import { Topside } from "../../Models/assets/topside/Topside"
-// import { Transport } from "../../Models/assets/transport/Transport"
-// import { TopsideCostProfile } from "../../Models/assets/topside/TopsideCostProfile"
-// import { SurfCostProfile } from "../../Models/assets/surf/SurfCostProfile"
-// import { SubstructureCostProfile } from "../../Models/assets/substructure/SubstructureCostProfile"
-// import { TransportCostProfile } from "../../Models/assets/transport/TransportCostProfile"
-// import { GasProducerCostProfile } from "../../Models/assets/wellproject/GasProducerCostProfile"
-// import { OilProducerCostProfile } from "../../Models/assets/wellproject/OilProducerCostProfile"
-// import { GasInjectorCostProfile } from "../../Models/assets/wellproject/GasInjectorCostProfile"
-// import { WaterInjectorCostProfile } from "../../Models/assets/wellproject/WaterInjectorCostProfile"
-// import { ExplorationWellCostProfile } from "../../Models/assets/exploration/ExplorationWellCostProfile"
-// import { AppraisalWellCostProfile } from "../../Models/assets/exploration/AppraisalWellCostProfile"
-// import { SidetrackCostProfile } from "../../Models/assets/exploration/SidetrackCostProfile"
-// import { OffshoreFacilitiesOperationsCostProfile } from "../../Models/case/OffshoreFacilitiesOperationsCostProfile"
-// import { WellInterventionCostProfile } from "../../Models/case/WellInterventionCostProfile"
-// import { TotalFeasibilityAndConceptStudies } from "../../Models/case/TotalFeasibilityAndConceptStudies"
-// import { TotalFEEDStudies } from "../../Models/case/TotalFEEDStudies"
-// import { CessationWellsCost } from "../../Models/case/CessationWellsCost"
-// import { CessationOffshoreFacilitiesCost } from "../../Models/case/CessationOffshoreFacilitiesCost"
-// import { TopsideCostProfileOverride } from "../../Models/assets/topside/TopsideCostProfileOverride"
-// import { SurfCostProfileOverride } from "../../Models/assets/surf/SurfCostProfileOverride"
-// import { SubstructureCostProfileOverride } from "../../Models/assets/substructure/SubstructureCostProfileOverride"
-// import { TransportCostProfileOverride } from "../../Models/assets/transport/TransportCostProfileOverride"
-// import { OilProducerCostProfileOverride } from "../../Models/assets/wellproject/OilProducerCostProfileOverride"
-// import { GasProducerCostProfileOverride } from "../../Models/assets/wellproject/GasProducerCostProfileOverride"
-// import { WaterInjectorCostProfileOverride } from "../../Models/assets/wellproject/WaterInjectorCostProfileOverride"
-// import { GasInjectorCostProfileOverride } from "../../Models/assets/wellproject/GasInjectorCostProfileOverride"
-// import { TotalFeasibilityAndConceptStudiesOverride } from "../../Models/case/TotalFeasibilityAndConceptStudiesOverride"
-// import { TotalFEEDStudiesOverride } from "../../Models/case/TotalFEEDStudiesOverride"
-// import { OffshoreFacilitiesOperationsCostProfileOverride } from "../../Models/case/OffshoreFacilitiesOperationsCostProfileOverride"
-// import { WellInterventionCostProfileOverride } from "../../Models/case/WellInterventionCostProfileOverride"
-// import { CessationWellsCostOverride } from "../../Models/case/CessationWellsCostOverride"
-// import { CessationOffshoreFacilitiesCostOverride } from "../../Models/case/CessationOffshoreFacilitiesCostOverride"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -658,14 +615,14 @@ const CaseCostTab = ({
 
     useEffect(() => {
         const newCase: Components.Schemas.CaseDto = { ...caseItem }
-        if (!wellInterventionCostProfileOverride) { return }
+        if (!totalOtherStudiesOverride) { return }
         newCase.totalOtherStudiesOverride = totalOtherStudiesOverride
         setCase(newCase)
     }, [totalOtherStudiesOverride])
 
     useEffect(() => {
         const newCase: Components.Schemas.CaseDto = { ...caseItem }
-        if (newCase.wellInterventionCostProfileOverride && !wellInterventionCostProfileOverride) { return }
+        if (!wellInterventionCostProfileOverride) { return }
         newCase.wellInterventionCostProfileOverride = wellInterventionCostProfileOverride
         setCase(newCase)
     }, [wellInterventionCostProfileOverride])

@@ -9,7 +9,6 @@ import CaseTabTable from "./CaseTabTable"
 import { ITimeSeries } from "../../Models/ITimeSeries"
 import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileService"
 import { MergeTimeseries } from "../../Utils/common"
-import { TotalOtherStudies } from "../../models/case/TotalOtherStudies"
 import { ITimeSeriesCost } from "../../models/ITimeSeriesCost"
 
 

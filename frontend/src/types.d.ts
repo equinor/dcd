@@ -41,44 +41,44 @@ declare namespace Components {
             npv: number; // double
             breakEven: number; // double
             host?: string | null;
-            dgaDate?: string; // date-time
-            dgbDate?: string; // date-time
-            dgcDate?: string; // date-time
-            apxDate?: string; // date-time
-            apzDate?: string; // date-time
-            dG0Date?: string; // date-time
-            dG1Date?: string; // date-time
-            dG2Date?: string; // date-time
-            dG3Date?: string; // date-time
-            dG4Date?: string; // date-time
-            createTime?: string; // date-time
-            modifyTime?: string; // date-time
-            cessationWellsCost?: CessationWellsCostDto;
-            cessationWellsCostOverride?: CessationWellsCostOverrideDto;
-            cessationOffshoreFacilitiesCost?: CessationOffshoreFacilitiesCostDto;
-            cessationOffshoreFacilitiesCostOverride?: CessationOffshoreFacilitiesCostOverrideDto;
-            totalFeasibilityAndConceptStudies?: TotalFeasibilityAndConceptStudiesDto;
-            totalFeasibilityAndConceptStudiesOverride?: TotalFeasibilityAndConceptStudiesOverrideDto;
-            totalFEEDStudies?: TotalFEEDStudiesDto;
-            totalFEEDStudiesOverride?: TotalFEEDStudiesOverrideDto;
-            totalOtherStudies?: TotalOtherStudiesDto;
-            totalOtherStudiesOverride?: TotalOtherStudiesOverrideDto;
-            wellInterventionCostProfile?: WellInterventionCostProfileDto;
-            wellInterventionCostProfileOverride?: WellInterventionCostProfileOverrideDto;
-            offshoreFacilitiesOperationsCostProfile?: OffshoreFacilitiesOperationsCostProfileDto;
-            offshoreFacilitiesOperationsCostProfileOverride?: OffshoreFacilitiesOperationsCostProfileOverrideDto;
-            historicCostCostProfile?: HistoricCostCostProfileDto;
-            historicCostCostProfileOverride?: HistoricCostCostProfileOverrideDto;
-            additionalOPEXCostProfile?: AdditionalOPEXCostProfileDto;
-            additionalOPEXCostProfileOverride?: AdditionalOPEXCostProfileOverrideDto;
-            drainageStrategyLink?: string; // uuid
-            wellProjectLink?: string; // uuid
-            surfLink?: string; // uuid
-            substructureLink?: string; // uuid
-            topsideLink?: string; // uuid
-            transportLink?: string; // uuid
-            explorationLink?: string; // uuid
-            capex?: number; // double
+            dgaDate: string; // date-time
+            dgbDate: string; // date-time
+            dgcDate: string; // date-time
+            apxDate: string; // date-time
+            apzDate: string; // date-time
+            dG0Date: string; // date-time
+            dG1Date: string; // date-time
+            dG2Date: string; // date-time
+            dG3Date: string; // date-time
+            dG4Date: string; // date-time
+            createTime: string; // date-time
+            modifyTime: string; // date-time
+            cessationWellsCost: CessationWellsCostDto;
+            cessationWellsCostOverride: CessationWellsCostOverrideDto;
+            cessationOffshoreFacilitiesCost: CessationOffshoreFacilitiesCostDto;
+            cessationOffshoreFacilitiesCostOverride: CessationOffshoreFacilitiesCostOverrideDto;
+            totalFeasibilityAndConceptStudies: TotalFeasibilityAndConceptStudiesDto;
+            totalFeasibilityAndConceptStudiesOverride: TotalFeasibilityAndConceptStudiesOverrideDto;
+            totalFEEDStudies: TotalFEEDStudiesDto;
+            totalFEEDStudiesOverride: TotalFEEDStudiesOverrideDto;
+            totalOtherStudies: TotalOtherStudiesDto;
+            totalOtherStudiesOverride: TotalOtherStudiesOverrideDto;
+            wellInterventionCostProfile: WellInterventionCostProfileDto;
+            wellInterventionCostProfileOverride: WellInterventionCostProfileOverrideDto;
+            offshoreFacilitiesOperationsCostProfile: OffshoreFacilitiesOperationsCostProfileDto;
+            offshoreFacilitiesOperationsCostProfileOverride: OffshoreFacilitiesOperationsCostProfileOverrideDto;
+            historicCostCostProfile: HistoricCostCostProfileDto;
+            historicCostCostProfileOverride: HistoricCostCostProfileOverrideDto;
+            additionalOPEXCostProfile: AdditionalOPEXCostProfileDto;
+            additionalOPEXCostProfileOverride: AdditionalOPEXCostProfileOverrideDto;
+            drainageStrategyLink: string; // uuid
+            wellProjectLink: string; // uuid
+            surfLink: string; // uuid
+            substructureLink: string; // uuid
+            topsideLink: string; // uuid
+            transportLink: string; // uuid
+            explorationLink: string; // uuid
+            capex: number; // double
             capexYear?: CapexYear;
             sharepointFileId?: string | null;
             sharepointFileName?: string | null;

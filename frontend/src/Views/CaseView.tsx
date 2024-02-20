@@ -33,20 +33,7 @@ import CaseDrillingScheduleTab from "../Components/Case/CaseDrillingScheduleTab"
 import CaseCO2Tab from "../Components/Case/CaseCO2Tab"
 import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
 import { EMPTY_GUID } from "../Utils/constants"
-import { CessationOffshoreFacilitiesCost } from "../Models/case/CessationOffshoreFacilitiesCost"
-import { CessationWellsCost } from "../Models/case/CessationWellsCost"
-import { OffshoreFacilitiesOperationsCostProfile } from "../Models/case/OffshoreFacilitiesOperationsCostProfile"
-import { TotalFeasibilityAndConceptStudies } from "../Models/case/TotalFeasibilityAndConceptStudies"
-import { TotalFEEDStudies } from "../Models/case/TotalFEEDStudies"
-import { TotalOtherStudies } from "../Models/case/TotalOtherStudies"
-import { WellInterventionCostProfile } from "../Models/case/WellInterventionCostProfile"
-import { GAndGAdminCost } from "../Models/assets/exploration/GAndGAdminCost"
-import { Co2Emissions } from "../Models/assets/drainagestrategy/Co2Emissions"
-import { FuelFlaringAndLosses } from "../Models/assets/drainagestrategy/FuelFlaringAndLosses"
-import { NetSalesGas } from "../Models/assets/drainagestrategy/NetSalesGas"
-import { ImportedElectricity } from "../Models/assets/drainagestrategy/ImportedElectricity"
-import { HistoricCostCostProfile } from "../Models/case/HistoricCostCostProfile"
-import { AdditionalOPEXCostProfile } from "../Models/case/AdditionalOPEXCostProfile"
+
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -144,7 +131,7 @@ const CaseView = () => {
 
     const [totalFEEDStudies, setTotalFEEDStudies] = useState<Components.Schemas.TotalFEEDStudiesDto>()
 
-    const [totalOtherStudies, setTotalOtherStudies] = useState<TotalOtherStudies>()
+    const [totalOtherStudies, setTotalOtherStudies] = useState<Components.Schemas.TotalOtherStudiesDto>()
 
     const [offshoreFacilitiesOperationsCostProfile,
         setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto>()

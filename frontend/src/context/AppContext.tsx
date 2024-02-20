@@ -13,9 +13,9 @@ interface AppContextType {
     setCreateCaseModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AppContext = createContext<AppContextType | undefined>(undefined)
+export const AppContext = createContext<AppContextType | undefined>(undefined)
 
-const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [project, setProject] = useState<Components.Schemas.ProjectDto | undefined>()
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
 
@@ -46,4 +46,3 @@ export const useAppContext = (): AppContextType => {
     return context
 }
 
-export { AppContextProvider }
