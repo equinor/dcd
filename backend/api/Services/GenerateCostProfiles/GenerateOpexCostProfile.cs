@@ -86,10 +86,10 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
 
         List<TimeSeriesCostDto> timeSeriesList = new List<TimeSeriesCostDto>
         {
-            wellInterventionCost,
-            offshoreFacilitiesOperationsCost,
-            historicCostCostProfileDto,
-            additionalOPEXCostProfileDto
+            _mapper.Map<TimeSeriesCostDto>(wellInterventionCost),
+            _mapper.Map<TimeSeriesCostDto>(offshoreFacilitiesOperationsCost),
+            _mapper.Map<TimeSeriesCostDto>(historicCostCostProfileDto),
+            _mapper.Map<TimeSeriesCostDto>(additionalOPEXCostProfileDto)
         };
 
         var OPEX = TimeSeriesCost.MergeCostProfilesList(timeSeriesList);
