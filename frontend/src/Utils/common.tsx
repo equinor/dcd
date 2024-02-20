@@ -151,7 +151,7 @@ const MergeCostProfileData = (arrays: number[][], offsets: number[]): number[] =
 
     arrays.forEach((arr, idx) => {
         const offset = offsets[idx];
-        for (let i = 0; i < arr.length; i++) {
+        for (let i = 0; i < arr.length; i+= 1) {
             if (i + offset < maxLength) {
                 result[i + offset] += arr[i];
             }

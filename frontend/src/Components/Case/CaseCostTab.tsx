@@ -198,7 +198,7 @@ const CaseCostTab = ({
                 if (activeTab === 5) {
                     const totalFeasibility = caseItem.totalFeasibilityAndConceptStudies
                     const totalFEED = caseItem.totalFEEDStudies
-                    totalOtherStudies = caseItem.totalOtherStudies
+                    let totalOtherStudies = caseItem.totalOtherStudies
 
                     setTotalFeasibilityAndConceptStudies(totalFeasibility)
                     setTotalFeasibilityAndConceptStudiesOverride(caseItem.totalFeasibilityAndConceptStudiesOverride)
@@ -209,8 +209,8 @@ const CaseCostTab = ({
 
                     const wellIntervention = wellInterventionCostProfile
                     const offshoreFacilitiesOperations = caseItem.offshoreFacilitiesOperationsCostProfile
-                    historicCostCostProfile = caseItem.historicCostCostProfile
-                    additionalOPEXCostProfile = caseItem.additionalOPEXCostProfile
+                    let historicCostCostProfile = caseItem.historicCostCostProfile
+                    let additionalOPEXCostProfile = caseItem.additionalOPEXCostProfile
 
                     setWellInterventionCostProfile(wellIntervention)
                     setWellInterventionCostProfileOverride(caseItem.wellInterventionCostProfileOverride)
