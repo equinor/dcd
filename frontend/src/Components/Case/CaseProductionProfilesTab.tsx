@@ -7,26 +7,18 @@ import {
     useRef,
 } from "react"
 import styled from "styled-components"
-
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
+import InputContainer from "../Input/InputContainer"
 import CaseNumberInput from "./CaseNumberInput"
+import FilterContainer from "../Input/FilterContainer"
 import CaseTabTable from "./CaseTabTable"
 import { ITimeSeries } from "../../Models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../AgGrid/AgChartsTimeseries"
 import { ITimeSeriesOverride } from "../../Models/ITimeSeriesOverride"
 
-const ColumnWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-const RowWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 78px;
-`
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
@@ -36,33 +28,12 @@ const TopWrapper = styled.div`
 const PageTitle = styled(Typography)`
     flex-grow: 1;
 `
-const NativeSelectField = styled(NativeSelect)`
-    width: 200px;
-    padding-right: 20px;
-`
-const NumberInputField = styled.div`
-    padding-right: 20px;
-`
-
-const TableYearWrapper = styled.div`
-    align-items: flex-end;
+const ApplyButtonWrapper = styled.div`
     display: flex;
-    flex-direction: row;
-    align-content: right;
-    margin-left: auto;
-    margin-bottom: 20px;
+    width: 100%;
+    justify-content: center;
+    align-items: flex-end;
 `
-const YearInputWrapper = styled.div`
-    width: 80px;
-    padding-right: 10px;
-`
-const YearDashWrapper = styled.div`
-    padding-right: 5px;
-`
-const InputWrapper = styled.div`
-    margin-right: 20px;
-`
-
 interface Props {
     project: Components.Schemas.ProjectDto,
     caseItem: Components.Schemas.CaseDto,
@@ -357,123 +328,98 @@ const CaseProductionProfilesTab = ({
             <TopWrapper>
                 <PageTitle variant="h3">Production profiles</PageTitle>
             </TopWrapper>
-            <ColumnWrapper>
-                <RowWrapper>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleCaseFacilitiesAvailabilityChange}
-                            defaultValue={caseItem.facilitiesAvailability
-                                !== undefined ? caseItem.facilitiesAvailability * 100 : undefined}
-                            integer={false}
-                            label="Facilities availability"
-                            unit="%"
-                        />
-                    </NumberInputField>
-                    <NativeSelectField
-                        id="gasSolution"
-                        label="Gas solution"
-                        onChange={handleDrainageStrategyGasSolutionChange}
-                        value={drainageStrategy?.gasSolution}
-                    >
-                        <option key={0} value={0}>Export</option>
-                        <option key={1} value={1}>Injection</option>
-                    </NativeSelectField>
-                    <InputWrapper>
-                        <NativeSelectField
-                            id="productionStrategy"
-                            label="Production strategy overview"
-                            onChange={() => { }}
-                            disabled
-                            value={caseItem.productionStrategyOverview}
-                        >
-                            <option key={0} value={0}>Depletion</option>
-                            <option key={1} value={1}>Water injection</option>
-                            <option key={2} value={2}>Gas injection</option>
-                            <option key={3} value={3}>WAG</option>
-                            <option key={4} value={4}>Mixed</option>
-                        </NativeSelectField>
-                    </InputWrapper>
-                    <InputWrapper>
-                        <NativeSelectField
-                            id="artificialLift"
-                            label="Artificial lift"
-                            onChange={() => { }}
-                            disabled
-                            value={caseItem.artificialLift}
-                        >
-                            <option key="0" value={0}>No lift</option>
-                            <option key="1" value={1}>Gas lift</option>
-                            <option key="2" value={2}>Electrical submerged pumps</option>
-                            <option key="3" value={3}>Subsea booster pumps</option>
-                        </NativeSelectField>
-                    </InputWrapper>
-                </RowWrapper>
-                <RowWrapper>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={() => { }}
-                            defaultValue={caseItem.producerCount}
-                            integer
-                            disabled
-                            label="Oil producer wells"
-                        />
-                    </NumberInputField>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={() => { }}
-                            defaultValue={caseItem.waterInjectorCount}
-                            integer
-                            disabled
-                            label="Water injector count"
-                        />
-                    </NumberInputField>
-                    <CaseNumberInput
-                        onChange={() => { }}
-                        defaultValue={caseItem.gasInjectorCount}
-                        integer
-                        disabled
-                        label="Gas injector count"
-                    />
-                </RowWrapper>
-            </ColumnWrapper>
-            <ColumnWrapper>
-                <TableYearWrapper>
-                    <NativeSelectField
-                        id="unit"
-                        label="Units"
-                        onChange={() => { }}
-                        value={project.physUnit}
-                        disabled
-                    >
-                        <option key={0} value={0}>SI</option>
-                        <option key={1} value={1}>Oil field</option>
-                    </NativeSelectField>
-                    <YearInputWrapper>
-                        <CaseNumberInput
-                            onChange={handleStartYearChange}
-                            defaultValue={startYear}
-                            integer
-                            label="Start year"
-                        />
-                    </YearInputWrapper>
-                    <YearDashWrapper>
-                        <Typography variant="h2">-</Typography>
-                    </YearDashWrapper>
-                    <YearInputWrapper>
-                        <CaseNumberInput
-                            onChange={handleEndYearChange}
-                            defaultValue={endYear}
-                            integer
-                            label="End year"
-                        />
-                    </YearInputWrapper>
-                    <Button
-                        onClick={handleTableYearsClick}
-                    >
-                        Apply
-                    </Button>
-                </TableYearWrapper>
-            </ColumnWrapper>
+            <InputContainer mobileColumns={1} desktopColumns={2} breakPoint={850}>
+                <CaseNumberInput
+                    onChange={handleCaseFacilitiesAvailabilityChange}
+                    defaultValue={caseItem.facilitiesAvailability
+                        !== undefined ? caseItem.facilitiesAvailability * 100 : undefined}
+                    integer={false}
+                    label="Facilities availability"
+                    unit="%"
+                />
+                <NativeSelect
+                    id="gasSolution"
+                    label="Gas solution"
+                    onChange={handleDrainageStrategyGasSolutionChange}
+                    value={drainageStrategy?.gasSolution}
+                >
+                    <option key={0} value={0}>Export</option>
+                    <option key={1} value={1}>Injection</option>
+                </NativeSelect>
+                <NativeSelect
+                    id="productionStrategy"
+                    label="Production strategy overview"
+                    onChange={() => { }}
+                    disabled
+                    value={caseItem.productionStrategyOverview}
+                >
+                    <option key={0} value={0}>Depletion</option>
+                    <option key={1} value={1}>Water injection</option>
+                    <option key={2} value={2}>Gas injection</option>
+                    <option key={3} value={3}>WAG</option>
+                    <option key={4} value={4}>Mixed</option>
+                </NativeSelect>
+                <NativeSelect
+                    id="artificialLift"
+                    label="Artificial lift"
+                    onChange={() => { }}
+                    disabled
+                    value={caseItem.artificialLift}
+                >
+                    <option key="0" value={0}>No lift</option>
+                    <option key="1" value={1}>Gas lift</option>
+                    <option key="2" value={2}>Electrical submerged pumps</option>
+                    <option key="3" value={3}>Subsea booster pumps</option>
+                </NativeSelect>
+                <CaseNumberInput
+                    onChange={() => { }}
+                    defaultValue={caseItem.producerCount}
+                    integer
+                    disabled
+                    label="Oil producer wells"
+                />
+                <CaseNumberInput
+                    onChange={() => { }}
+                    defaultValue={caseItem.waterInjectorCount}
+                    integer
+                    disabled
+                    label="Water injector count"
+                />
+                <CaseNumberInput
+                    onChange={() => { }}
+                    defaultValue={caseItem.gasInjectorCount}
+                    integer
+                    disabled
+                    label="Gas injector count"
+                />
+
+            </InputContainer>
+            <FilterContainer>
+                <NativeSelect
+                    id="unit"
+                    label="Units"
+                    onChange={() => { }}
+                    value={project.physUnit}
+                    disabled
+                >
+                    <option key={0} value={0}>SI</option>
+                    <option key={1} value={1}>Oil field</option>
+                </NativeSelect>
+
+                <CaseNumberInput
+                    onChange={handleStartYearChange}
+                    defaultValue={startYear}
+                    integer
+                    label="Start year"
+                />
+                <CaseNumberInput
+                    onChange={handleEndYearChange}
+                    defaultValue={endYear}
+                    integer
+                    label="End year"
+                />
+                <Button onClick={handleTableYearsClick}>  Apply </Button>
+            </FilterContainer>
             <AgChartsTimeseries
                 data={productionProfilesChartData()}
                 chartTitle="Production profiles"
@@ -485,7 +431,8 @@ const CaseProductionProfilesTab = ({
                     "Water production (MSm3)",
                 ]}
             />
-            {(waterInjection?.values && waterInjection.values?.length > 0)
+            {
+                (waterInjection?.values && waterInjection.values?.length > 0)
                 && (
                     <AgChartsTimeseries
                         data={injectionProfilesChartData()}
@@ -495,7 +442,8 @@ const CaseProductionProfilesTab = ({
                         barNames={["Water injection"]}
                         unit="MSm3"
                     />
-                )}
+                )
+            }
             <CaseTabTable
                 timeSeriesData={timeSeriesData}
                 dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}

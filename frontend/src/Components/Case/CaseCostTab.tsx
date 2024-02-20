@@ -12,16 +12,9 @@ import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
 import { ITimeSeries } from "../../Models/ITimeSeries"
 import { ITimeSeriesCostOverride } from "../../Models/ITimeSeriesCostOverride"
 import { ITimeSeriesCost } from "../../Models/ITimeSeriesCost"
+import FilterContainer from "../Input/FilterContainer"
+import InputContainer from "../Input/InputContainer"
 
-const ColumnWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-const RowWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 78px;
-`
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
@@ -31,29 +24,7 @@ const TopWrapper = styled.div`
 const PageTitle = styled(Typography)`
     flex-grow: 1;
 `
-const NativeSelectField = styled(NativeSelect)`
-    width: 200px;
-    padding-right: 20px;
-`
-const NumberInputField = styled.div`
-    padding-right: 20px;
-`
 
-const TableYearWrapper = styled.div`
-    align-items: flex-end;
-    display: flex;
-    flex-direction: row;
-    align-content: right;
-    margin-left: auto;
-    margin-bottom: 20px;
-`
-const YearInputWrapper = styled.div`
-    width: 80px;
-    padding-right: 10px;
-`
-const YearDashWrapper = styled.div`
-    padding-right: 5px;
-`
 const TableWrapper = styled.div`
     margin-bottom: 50px;
 `
@@ -743,79 +714,64 @@ const CaseCostTab = ({
             <TopWrapper>
                 <PageTitle variant="h3">Cost</PageTitle>
             </TopWrapper>
-            <ColumnWrapper>
-                <RowWrapper>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleCaseFeasibilityChange}
-                            defaultValue={caseItem.capexFactorFeasibilityStudies
-                                !== undefined ? caseItem.capexFactorFeasibilityStudies * 100 : undefined}
-                            integer={false}
-                            label="CAPEX factor feasibility studies"
-                            unit="%"
-                        />
-                    </NumberInputField>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleCaseFEEDChange}
-                            defaultValue={caseItem.capexFactorFEEDStudies
-                                !== undefined ? caseItem.capexFactorFEEDStudies * 100 : undefined}
-                            integer={false}
-                            label="CAPEX factor FEED studies"
-                            unit="%"
-                        />
-                    </NumberInputField>
-                    <NativeSelectField
-                        id="maturity"
-                        label="Maturity"
-                        onChange={handleSurfMaturityChange}
-                        value={surf.maturity}
-                    >
-                        <option key="0" value={0}>A</option>
-                        <option key="1" value={1}>B</option>
-                        <option key="2" value={2}>C</option>
-                        <option key="3" value={3}>D</option>
-                    </NativeSelectField>
-                </RowWrapper>
-            </ColumnWrapper>
-            <ColumnWrapper>
-                <TableYearWrapper>
-                    <NativeSelectField
-                        id="currency"
-                        label="Currency"
-                        onChange={() => { }}
-                        value={project.currency}
-                        disabled
-                    >
-                        <option key="1" value={1}>MNOK</option>
-                        <option key="2" value={2}>MUSD</option>
-                    </NativeSelectField>
-                    <YearInputWrapper>
-                        <CaseNumberInput
-                            onChange={handleStartYearChange}
-                            defaultValue={startYear}
-                            integer
-                            label="Start year"
-                        />
-                    </YearInputWrapper>
-                    <YearDashWrapper>
-                        <Typography variant="h2">-</Typography>
-                    </YearDashWrapper>
-                    <YearInputWrapper>
-                        <CaseNumberInput
-                            onChange={handleEndYearChange}
-                            defaultValue={endYear}
-                            integer
-                            label="End year"
-                        />
-                    </YearInputWrapper>
-                    <Button
-                        onClick={handleTableYearsClick}
-                    >
-                        Apply
-                    </Button>
-                </TableYearWrapper>
-            </ColumnWrapper>
+            <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
+                <CaseNumberInput
+                    onChange={handleCaseFeasibilityChange}
+                    defaultValue={caseItem.capexFactorFeasibilityStudies
+                        !== undefined ? caseItem.capexFactorFeasibilityStudies * 100 : undefined}
+                    integer={false}
+                    label="CAPEX factor feasibility studies"
+                    unit="%"
+                />
+                <CaseNumberInput
+                    onChange={handleCaseFEEDChange}
+                    defaultValue={caseItem.capexFactorFEEDStudies
+                        !== undefined ? caseItem.capexFactorFEEDStudies * 100 : undefined}
+                    integer={false}
+                    label="CAPEX factor FEED studies"
+                    unit="%"
+                />
+                <NativeSelect
+                    id="maturity"
+                    label="Maturity"
+                    onChange={handleSurfMaturityChange}
+                    value={surf.maturity}
+                >
+                    <option key="0" value={0}>A</option>
+                    <option key="1" value={1}>B</option>
+                    <option key="2" value={2}>C</option>
+                    <option key="3" value={3}>D</option>
+                </NativeSelect>
+
+            </InputContainer>
+            <FilterContainer>
+                <NativeSelect
+                    id="currency"
+                    label="Currency"
+                    onChange={() => { }}
+                    value={project.currency}
+                    disabled
+                >
+                    <option key="1" value={1}>MNOK</option>
+                    <option key="2" value={2}>MUSD</option>
+                </NativeSelect>
+                <CaseNumberInput
+                    onChange={handleStartYearChange}
+                    defaultValue={startYear}
+                    integer
+                    label="Start year"
+                />
+
+                <CaseNumberInput
+                    onChange={handleEndYearChange}
+                    defaultValue={endYear}
+                    integer
+                    label="End year"
+                />
+                <Button onClick={handleTableYearsClick}>
+                    Apply
+                </Button>
+            </FilterContainer>
             <TableWrapper>
                 <CaseTabTable
                     timeSeriesData={studyTimeSeriesData}
