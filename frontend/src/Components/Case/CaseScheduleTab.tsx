@@ -16,17 +16,8 @@ import {
     isDefaultDateString,
     toMonthDate,
 } from "../../Utils/common"
+import InputContainer from "../Input/InputContainer"
 
-const ColumnWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-const RowWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: 78px;
-`
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
@@ -36,6 +27,7 @@ const TopWrapper = styled.div`
 const PageTitle = styled(Typography)`
     flex-grow: 1;
 `
+
 interface Props {
     caseItem: Components.Schemas.CaseDto,
     setCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
@@ -212,72 +204,70 @@ const CaseScheduleTab = ({
             <TopWrapper>
                 <PageTitle variant="h3">Schedule</PageTitle>
             </TopWrapper>
-            <ColumnWrapper>
-                <RowWrapper>
-                    <CaseDateField
-                        onChange={handleDGAChange}
-                        value={dateFromString(caseItem.dgaDate)}
-                        label="DGA"
-                    />
-                    <CaseDateField
-                        onChange={handleDGBChange}
-                        value={dateFromString(caseItem.dgbDate)}
-                        label="DGB"
-                    />
-                    <CaseDateField
-                        onChange={handleDGCChange}
-                        value={dateFromString(caseItem.dgcDate)}
-                        label="DGC"
-                    />
-                    <CaseDateField
-                        onChange={handleAPXChange}
-                        value={dateFromString(caseItem.apxDate)}
-                        label="APX"
-                    />
-                    <CaseDateField
-                        onChange={handleAPZChange}
-                        value={dateFromString(caseItem.apzDate)}
-                        label="APZ"
-                    />
-                </RowWrapper>
-                <RowWrapper>
-                    <CaseDateField
-                        onChange={handleDG0Change}
-                        value={dateFromString(caseItem.dG0Date)}
-                        label="DG0"
-                        max={findMaxDate(getDatesFromStrings([caseItem.dG1Date, caseItem.dG2Date, caseItem.dG3Date, caseItem.dG4Date]))}
-                        min={undefined}
-                    />
-                    <CaseDateField
-                        onChange={handleDG1Change}
-                        value={dateFromString(caseItem.dG1Date)}
-                        label="DG1"
-                        max={findMaxDate(getDatesFromStrings([caseItem.dG2Date, caseItem.dG3Date, caseItem.dG4Date]))}
-                        min={findMinDate(getDatesFromStrings([caseItem.dG0Date]))}
-                    />
-                    <CaseDateField
-                        onChange={handleDG2Change}
-                        value={dateFromString(caseItem.dG2Date)}
-                        label="DG2"
-                        max={findMaxDate(getDatesFromStrings([caseItem.dG3Date, caseItem.dG4Date]))}
-                        min={findMinDate(getDatesFromStrings([caseItem.dG0Date, caseItem.dG1Date]))}
-                    />
-                    <CaseDateField
-                        onChange={handleDG3Change}
-                        value={dateFromString(caseItem.dG3Date)}
-                        label="DG3"
-                        max={findMaxDate(getDatesFromStrings([caseItem.dG4Date]))}
-                        min={findMinDate(getDatesFromStrings([caseItem.dG0Date, caseItem.dG1Date, caseItem.dG2Date]))}
-                    />
-                    <CaseDateField
-                        onChange={handleDG4Change}
-                        value={dateFromString(caseItem.dG4Date)}
-                        label="DG4"
-                        max={undefined}
-                        min={findMinDate(getDatesFromStrings([caseItem.dG0Date, caseItem.dG1Date, caseItem.dG2Date, caseItem.dG3Date]))}
-                    />
-                </RowWrapper>
-            </ColumnWrapper>
+            <InputContainer mobileColumns={1} desktopColumns={2} breakPoint={850}>
+
+                <CaseDateField
+                    onChange={handleDGAChange}
+                    value={dateFromString(caseItem.dgaDate)}
+                    label="DGA"
+                />
+                <CaseDateField
+                    onChange={handleDGBChange}
+                    value={dateFromString(caseItem.dgbDate)}
+                    label="DGB"
+                />
+                <CaseDateField
+                    onChange={handleDGCChange}
+                    value={dateFromString(caseItem.dgcDate)}
+                    label="DGC"
+                />
+                <CaseDateField
+                    onChange={handleAPXChange}
+                    value={dateFromString(caseItem.apxDate)}
+                    label="APX"
+                />
+                <CaseDateField
+                    onChange={handleAPZChange}
+                    value={dateFromString(caseItem.apzDate)}
+                    label="APZ"
+                />
+
+                <CaseDateField
+                    onChange={handleDG0Change}
+                    value={dateFromString(caseItem.dG0Date)}
+                    label="DG0"
+                    max={findMaxDate(getDatesFromStrings([caseItem.dG1Date, caseItem.dG2Date, caseItem.dG3Date, caseItem.dG4Date]))}
+                    min={undefined}
+                />
+                <CaseDateField
+                    onChange={handleDG1Change}
+                    value={dateFromString(caseItem.dG1Date)}
+                    label="DG1"
+                    max={findMaxDate(getDatesFromStrings([caseItem.dG2Date, caseItem.dG3Date, caseItem.dG4Date]))}
+                    min={findMinDate(getDatesFromStrings([caseItem.dG0Date]))}
+                />
+                <CaseDateField
+                    onChange={handleDG2Change}
+                    value={dateFromString(caseItem.dG2Date)}
+                    label="DG2"
+                    max={findMaxDate(getDatesFromStrings([caseItem.dG3Date, caseItem.dG4Date]))}
+                    min={findMinDate(getDatesFromStrings([caseItem.dG0Date, caseItem.dG1Date]))}
+                />
+                <CaseDateField
+                    onChange={handleDG3Change}
+                    value={dateFromString(caseItem.dG3Date)}
+                    label="DG3"
+                    max={findMaxDate(getDatesFromStrings([caseItem.dG4Date]))}
+                    min={findMinDate(getDatesFromStrings([caseItem.dG0Date, caseItem.dG1Date, caseItem.dG2Date]))}
+                />
+                <CaseDateField
+                    onChange={handleDG4Change}
+                    value={dateFromString(caseItem.dG4Date)}
+                    label="DG4"
+                    max={undefined}
+                    min={findMinDate(getDatesFromStrings([caseItem.dG0Date, caseItem.dG1Date, caseItem.dG2Date, caseItem.dG3Date]))}
+                />
+            </InputContainer>
         </>
     )
 }

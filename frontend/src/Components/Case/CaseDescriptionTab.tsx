@@ -11,16 +11,8 @@ import {
 } from "@equinor/eds-core-react"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import CaseNumberInput from "./CaseNumberInput"
+import InputContainer from "../Input/InputContainer"
 
-const ColumnWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-const RowWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 78px;
-`
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
@@ -32,12 +24,7 @@ const PageTitle = styled(Typography)`
 `
 const DescriptionField = styled(TextArea)`
     margin-bottom: 50px;
-`
-const NativeSelectField = styled(NativeSelect)`
-    width: 250px;
-`
-const InputWrapper = styled.div`
-    margin-right: 20px;
+    width: 100%;
 `
 
 interface Props {
@@ -109,80 +96,69 @@ const CaseDescriptionTab = ({
             <TopWrapper>
                 <PageTitle variant="h3">Description</PageTitle>
             </TopWrapper>
-            <ColumnWrapper>
-
-                <Label htmlFor="description" label="Case description" />
-                <DescriptionField
-                    id="description"
-                    placeholder="Enter a description"
-                    onInput={handleDescriptionChange}
-                    value={caseItem.description ?? ""}
-                    cols={110}
-                    rows={8}
+            <Label htmlFor="description" label="Case description" />
+            <DescriptionField
+                id="description"
+                placeholder="Enter a description"
+                onInput={handleDescriptionChange}
+                value={caseItem.description ?? ""}
+                cols={110}
+                rows={8}
+            />
+            <InputContainer desktopColumns={3} mobileColumns={1} breakPoint={850}>
+                <CaseNumberInput
+                    onChange={handleProducerCountChange}
+                    defaultValue={caseItem.producerCount}
+                    integer
+                    label="Production wells"
                 />
-                <RowWrapper>
-                    <InputWrapper>
-                        <CaseNumberInput
-                            onChange={handleProducerCountChange}
-                            defaultValue={caseItem.producerCount}
-                            integer
-                            label="Production wells"
-                        />
-                    </InputWrapper>
-                    <InputWrapper>
-                        <CaseNumberInput
-                            onChange={handletWaterInjectorCountChange}
-                            defaultValue={caseItem.waterInjectorCount}
-                            integer
-                            disabled={false}
-                            label="Water injector wells"
-                        />
-                    </InputWrapper>
-                    <CaseNumberInput
-                        onChange={handleGasInjectorCountChange}
-                        defaultValue={caseItem.gasInjectorCount}
-                        integer
-                        label="Gas injector wells"
-                    />
-                </RowWrapper>
-                <RowWrapper>
-                    <InputWrapper>
-                        <NativeSelectField
-                            id="productionStrategy"
-                            label="Production strategy overview"
-                            onChange={handleProductionStrategyChange}
-                            value={caseItem.productionStrategyOverview}
-                        >
-                            <option key={0} value={0}>Depletion</option>
-                            <option key={1} value={1}>Water injection</option>
-                            <option key={2} value={2}>Gas injection</option>
-                            <option key={3} value={3}>WAG</option>
-                            <option key={4} value={4}>Mixed</option>
-                        </NativeSelectField>
-                    </InputWrapper>
-                    <InputWrapper>
-                        <NativeSelectField
-                            id="artificialLift"
-                            label="Artificial lift"
-                            onChange={handleArtificialLiftChange}
-                            value={caseItem.artificialLift}
-                        >
-                            <option key="0" value={0}>No lift</option>
-                            <option key="1" value={1}>Gas lift</option>
-                            <option key="2" value={2}>Electrical submerged pumps</option>
-                            <option key="3" value={3}>Subsea booster pumps</option>
-                        </NativeSelectField>
-                    </InputWrapper>
-                    <CaseNumberInput
-                        onChange={handleFacilitiesAvailabilityChange}
-                        defaultValue={caseItem.facilitiesAvailability
-                            !== undefined ? caseItem.facilitiesAvailability * 100 : undefined}
-                        integer={false}
-                        label="Facilities availability"
-                        unit="%"
-                    />
-                </RowWrapper>
-            </ColumnWrapper>
+                <CaseNumberInput
+                    onChange={handletWaterInjectorCountChange}
+                    defaultValue={caseItem.waterInjectorCount}
+                    integer
+                    disabled={false}
+                    label="Water injector wells"
+                />
+                <CaseNumberInput
+                    onChange={handleGasInjectorCountChange}
+                    defaultValue={caseItem.gasInjectorCount}
+                    integer
+                    label="Gas injector wells"
+                />
+            </InputContainer>
+            <InputContainer desktopColumns={3} mobileColumns={1} breakPoint={850}>
+                <NativeSelect
+                    id="productionStrategy"
+                    label="Production strategy overview"
+                    onChange={handleProductionStrategyChange}
+                    value={caseItem.productionStrategyOverview}
+                >
+                    <option key={0} value={0}>Depletion</option>
+                    <option key={1} value={1}>Water injection</option>
+                    <option key={2} value={2}>Gas injection</option>
+                    <option key={3} value={3}>WAG</option>
+                    <option key={4} value={4}>Mixed</option>
+                </NativeSelect>
+                <NativeSelect
+                    id="artificialLift"
+                    label="Artificial lift"
+                    onChange={handleArtificialLiftChange}
+                    value={caseItem.artificialLift}
+                >
+                    <option key="0" value={0}>No lift</option>
+                    <option key="1" value={1}>Gas lift</option>
+                    <option key="2" value={2}>Electrical submerged pumps</option>
+                    <option key="3" value={3}>Subsea booster pumps</option>
+                </NativeSelect>
+                <CaseNumberInput
+                    onChange={handleFacilitiesAvailabilityChange}
+                    defaultValue={caseItem.facilitiesAvailability
+                        !== undefined ? caseItem.facilitiesAvailability * 100 : undefined}
+                    integer={false}
+                    label="Ffacilities availability"
+                    unit="%"
+                />
+            </InputContainer>
         </>
     )
 }

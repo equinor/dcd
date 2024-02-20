@@ -85,7 +85,7 @@ const CaseCO2DistributionTable = ({
     return (
         <div
             style={{
-                display: "flex", flexDirection: "column", width: "50%",
+                display: "flex", flexDirection: "column", width: "100%",
             }}
             className="ag-theme-alpine-fusion"
         >

@@ -14,16 +14,9 @@ import {
 import CaseNumberInput from "./CaseNumberInput"
 import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleTabTable"
 import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
+import InputContainer from "../Input/InputContainer"
+import FilterContainer from "../Input/FilterContainer"
 
-const ColumnWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-const RowWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 78px;
-`
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
@@ -33,30 +26,14 @@ const TopWrapper = styled.div`
 const PageTitle = styled(Typography)`
     flex-grow: 1;
 `
-const NativeSelectField = styled(NativeSelect)`
-    width: 200px;
-    padding-right: 20px;
-`
-const TableYearWrapper = styled.div`
-    align-items: flex-end;
-    display: flex;
-    flex-direction: row;
-    align-content: right;
-    margin-left: auto;
-    margin-bottom: 20px;
-`
+
 const YearInputWrapper = styled.div`
     width: 80px;
     padding-right: 10px;
 `
-const YearDashWrapper = styled.div`
-    padding-right: 5px;
-`
+
 const TableWrapper = styled.div`
     margin-bottom: 50px;
-`
-const InputWrapper = styled.div`
-    margin-right: 20px;
 `
 
 interface Props {
@@ -186,102 +163,83 @@ const CaseDrillingScheduleTab = ({
                 <PageTitle variant="h3">Drilling schedule</PageTitle>
             </TopWrapper>
             <p>Create wells in technical input in order to see them in the list below.</p>
-            <ColumnWrapper>
-                <RowWrapper>
-                    <InputWrapper>
-                        <CaseNumberInput
-                            onChange={() => { }}
-                            defaultValue={explorationWellCount}
-                            integer
-                            disabled
-                            label="Exploration wells"
-                        />
-                    </InputWrapper>
-                    <InputWrapper>
-                        <CaseNumberInput
-                            onChange={() => { }}
-                            defaultValue={appraisalWellCount}
-                            integer
-                            disabled
-                            label="Appraisal wells"
-                        />
-                    </InputWrapper>
-                    <InputWrapper>
-                        <CaseNumberInput
-                            onChange={() => { }}
-                            defaultValue={oilProducerCount}
-                            integer
-                            disabled
-                            label="Oil producer wells"
-                        />
-                    </InputWrapper>
-                    <InputWrapper>
-                        <CaseNumberInput
-                            onChange={() => { }}
-                            defaultValue={gasProducerCount}
-                            integer
-                            disabled
-                            label="Gas producer wells"
-                        />
-                    </InputWrapper>
-                    <InputWrapper>
-                        <CaseNumberInput
-                            onChange={() => { }}
-                            defaultValue={waterInjectorCount}
-                            integer
-                            disabled
-                            label="Water injector wells"
-                        />
-                    </InputWrapper>
-                    <InputWrapper>
-                        <CaseNumberInput
-                            onChange={() => { }}
-                            defaultValue={gasInjectorCount}
-                            integer
-                            disabled
-                            label="Gas injector wells"
-                        />
-                    </InputWrapper>
-                </RowWrapper>
-            </ColumnWrapper>
-            <ColumnWrapper>
-                <TableYearWrapper>
-                    <NativeSelectField
-                        id="currency"
-                        label="Currency"
-                        onChange={() => { }}
-                        value={project.currency}
-                        disabled
-                    >
-                        <option key="1" value={1}>MNOK</option>
-                        <option key="2" value={2}>MUSD</option>
-                    </NativeSelectField>
-                    <YearInputWrapper>
-                        <CaseNumberInput
-                            onChange={handleStartYearChange}
-                            defaultValue={startYear}
-                            integer
-                            label="Start year"
-                        />
-                    </YearInputWrapper>
-                    <YearDashWrapper>
-                        <Typography variant="h2">-</Typography>
-                    </YearDashWrapper>
-                    <YearInputWrapper>
-                        <CaseNumberInput
-                            onChange={handleEndYearChange}
-                            defaultValue={endYear}
-                            integer
-                            label="End year"
-                        />
-                    </YearInputWrapper>
-                    <Button
-                        onClick={handleTableYearsClick}
-                    >
-                        Apply
-                    </Button>
-                </TableYearWrapper>
-            </ColumnWrapper>
+
+            <InputContainer mobileColumns={1} desktopColumns={2} breakPoint={850}>
+                <CaseNumberInput
+                    onChange={() => { }}
+                    defaultValue={explorationWellCount}
+                    integer
+                    disabled
+                    label="Exploration wells"
+                />
+                <CaseNumberInput
+                    onChange={() => { }}
+                    defaultValue={appraisalWellCount}
+                    integer
+                    disabled
+                    label="Appraisal wells"
+                />
+                <CaseNumberInput
+                    onChange={() => { }}
+                    defaultValue={oilProducerCount}
+                    integer
+                    disabled
+                    label="Oil producer wells"
+                />
+                <CaseNumberInput
+                    onChange={() => { }}
+                    defaultValue={gasProducerCount}
+                    integer
+                    disabled
+                    label="Gas producer wells"
+                />
+                <CaseNumberInput
+                    onChange={() => { }}
+                    defaultValue={waterInjectorCount}
+                    integer
+                    disabled
+                    label="Water injector wells"
+                />
+                <CaseNumberInput
+                    onChange={() => { }}
+                    defaultValue={gasInjectorCount}
+                    integer
+                    disabled
+                    label="Gas injector wells"
+                />
+            </InputContainer>
+            <FilterContainer>
+                <NativeSelect
+                    id="currency"
+                    label="Currency"
+                    onChange={() => { }}
+                    value={project.currency}
+                    disabled
+                >
+                    <option key="1" value={1}>MNOK</option>
+                    <option key="2" value={2}>MUSD</option>
+                </NativeSelect>
+                <CaseNumberInput
+                    onChange={handleStartYearChange}
+                    defaultValue={startYear}
+                    integer
+                    label="Start year"
+                />
+
+                <YearInputWrapper>
+                    <CaseNumberInput
+                        onChange={handleEndYearChange}
+                        defaultValue={endYear}
+                        integer
+                        label="End year"
+                    />
+                </YearInputWrapper>
+                <Button
+                    onClick={handleTableYearsClick}
+                >
+                    Apply
+                </Button>
+            </FilterContainer>
             <TableWrapper>
                 <CaseDrillingScheduleTabTable
                     assetWells={explorationWells}

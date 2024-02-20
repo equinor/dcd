@@ -47,13 +47,6 @@ const PageTitle = styled(Typography)`
     padding-left: 10px;
 `
 
-const TransparentButton = styled(Button)`
-    color: #007079;
-    background-color: white;
-    border: 1px solid #007079;
-    margin-left: 1rem;
-`
-
 const DividerLine = styled.div`
 `
 const StyledTabPanel = styled(Panel)`
@@ -85,17 +78,19 @@ const CaseButtonsWrapper = styled.div`
     flex-direction: row;
     margin-left: auto;
     z-index: 110;
+    gap: 10px;
 `
 
 const ColumnWrapper = styled.div`
     display: flex;
     flex-direction: column;
 `
-
+const MoreButton = styled(Button)`
+`
 const RowWrapper = styled.div`
     display: flex;
     flex-direction: row;
-    margin: 0 20px 78px 20px;
+    margin: 0 0 78px 20px;
     align-items: center;
 `
 const MenuIcon = styled(Icon)`
@@ -389,20 +384,20 @@ const CaseView = () => {
                                     <Progress.Dots />
                                 </Button>
                             )}
-                            <TransparentButton
+                            <Button
                                 onClick={() => toggleTechnicalInputModal()}
                                 variant="outlined"
                             >
                                 Edit technical input
-                            </TransparentButton>
-                            <Button
-                                variant="ghost"
+                            </Button>
+                            <MoreButton
+                                variant="ghost_icon"
                                 aria-label="case menu"
                                 ref={setMenuAnchorEl}
                                 onClick={() => (isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true))}
                             >
                                 <Icon data={more_vertical} />
-                            </Button>
+                            </MoreButton>
                         </CaseButtonsWrapper>
                     </ColumnWrapper>
                 </RowWrapper>
