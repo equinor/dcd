@@ -84,9 +84,6 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
             return new StudyCostProfileWrapperDto();
         }
 
-        var feasibilityDto = _mapper.Map<TimeSeriesCostDto>(feasibility);
-        var feedDto = _mapper.Map<TimeSeriesCostDto>(feed);
-        var otherStudiesDto = _mapper.Map<TimeSeriesCostDto>(otherStudies);
 
         List<TimeSeriesCostDto> timeSeriesList = new List<TimeSeriesCostDto>
             {
