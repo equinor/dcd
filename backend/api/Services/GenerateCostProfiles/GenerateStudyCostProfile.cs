@@ -87,13 +87,13 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
 
         List<TimeSeriesCostDto> timeSeriesList = new List<TimeSeriesCostDto>
             {
-                feasibilityDto, // Now correctly mapped to TimeSeriesCostDto
-                feedDto,         // Now correctly mapped to TimeSeriesCostDto
-                otherStudiesDto  // Now correctly mapped to TimeSeriesCostDto
+                feasibility, // Now correctly mapped to TimeSeriesCostDto
+                feed,         // Now correctly mapped to TimeSeriesCostDto
+                otherStudies  // Now correctly mapped to TimeSeriesCostDto
             };
 
-
         var cost = TimeSeriesCost.MergeCostProfilesList(timeSeriesList);
+
         var studyCost = new StudyCostProfile
         {
             StartYear = cost.StartYear,
