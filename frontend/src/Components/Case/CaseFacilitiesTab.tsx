@@ -9,17 +9,8 @@ import {
     NativeSelect, Typography, Input, Label,
 } from "@equinor/eds-core-react"
 import CaseNumberInput from "./CaseNumberInput"
+import InputContainer from "../Input/InputContainer"
 
-const ColumnWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-const RowWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 50px;
-    margin-top: 20px;
-`
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
@@ -29,16 +20,14 @@ const TopWrapper = styled.div`
 const PageTitle = styled(Typography)`
     flex-grow: 1;
 `
-const NumberInputField = styled.div`
-    padding-right: 20px;
-`
-const NativeSelectField = styled(NativeSelect)`
-    width: 320px;
-`
+
 const HostWrapper = styled.div`
     margin-left: 20px;
     display: flex;
     flex-direction: column;
+`
+const InputSection = styled.div`
+    margin-bottom: 40px;
 `
 
 interface Props {
@@ -221,9 +210,10 @@ const CaseFacilitiesTab = ({
             <TopWrapper>
                 <PageTitle variant="h2">Facilities</PageTitle>
             </TopWrapper>
-            <ColumnWrapper>
-                <RowWrapper>
-                    <NativeSelectField
+
+            <InputSection>
+                <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
+                    <NativeSelect
                         id="platformConcept"
                         label="Platform concept"
                         onChange={handleSubstructureConceptChange}
@@ -242,7 +232,7 @@ const CaseFacilitiesTab = ({
                         <option key="10" value={10}>TANKER - converted tanker FPSO - Turret Moored</option>
                         <option key="11" value={11}>JACK-UP Platform</option>
                         <option key="12" value={12}>Subsea to shore</option>
-                    </NativeSelectField>
+                    </NativeSelect>
                     {substructure.concept === 1 && (
                         <HostWrapper>
                             <Label htmlFor="NumberInput" label="Host" />
@@ -254,17 +244,13 @@ const CaseFacilitiesTab = ({
                             />
                         </HostWrapper>
                     )}
-                </RowWrapper>
-                <RowWrapper>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleFacilityOpexChange}
-                            defaultValue={Math.round(Number(topside?.facilityOpex) * 10) / 10}
-                            integer={false}
-                            label="Facility opex"
-                            unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
-                        />
-                    </NumberInputField>
+                    <CaseNumberInput
+                        onChange={handleFacilityOpexChange}
+                        defaultValue={Math.round(Number(topside?.facilityOpex) * 10) / 10}
+                        integer={false}
+                        label="Facility opex"
+                        unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
+                    />
                     <CaseNumberInput
                         onChange={handleSurfCessationCostChange}
                         defaultValue={Math.round(Number(surf?.cessationCost) * 10) / 10}
@@ -272,30 +258,27 @@ const CaseFacilitiesTab = ({
                         label="Cessation cost"
                         unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
                     />
-                </RowWrapper>
-            </ColumnWrapper>
-            <ColumnWrapper>
+                </InputContainer>
+            </InputSection>
+            <InputSection>
                 <Typography variant="h4">Topside</Typography>
-                <RowWrapper>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleTopsideDryWeightChange}
-                            defaultValue={Math.round(Number(topside?.dryWeight) * 1) / 1}
-                            integer
-                            label="Topside dry weight"
-                            unit="tonnes"
-                        />
-                    </NumberInputField>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={() => { }}
-                            defaultValue={caseItem.facilitiesAvailability ?? 0 * 100}
-                            integer
-                            disabled
-                            label="Facilities availability"
-                            unit="%"
-                        />
-                    </NumberInputField>
+                <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
+
+                    <CaseNumberInput
+                        onChange={handleTopsideDryWeightChange}
+                        defaultValue={Math.round(Number(topside?.dryWeight) * 1) / 1}
+                        integer
+                        label="Topside dry weight"
+                        unit="tonnes"
+                    />
+                    <CaseNumberInput
+                        onChange={() => { }}
+                        defaultValue={caseItem.facilitiesAvailability ?? 0 * 100}
+                        integer
+                        disabled
+                        label="Facilities availability"
+                        unit="%"
+                    />
                     <CaseNumberInput
                         onChange={handleTopsidePeakElectricityImportedChange}
                         defaultValue={Math.round(Number(topside?.peakElectricityImported) * 10) / 10}
@@ -303,102 +286,83 @@ const CaseFacilitiesTab = ({
                         label="Peak electricity imported"
                         unit="MW"
                     />
-                </RowWrapper>
-                <RowWrapper>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleTopsideOilCapacityChange}
-                            defaultValue={Math.round(Number(topside?.oilCapacity) * 1) / 1}
-                            integer
-                            label="Oil capacity"
-                            unit="Sm³/sd"
-                        />
-                    </NumberInputField>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleTopsideGasCapacityChange}
-                            defaultValue={Math.round(Number(topside?.gasCapacity) * 10) / 10}
-                            integer={false}
-                            label="Gas capacity"
-                            unit="MSm³/sd"
+                    <CaseNumberInput
+                        onChange={handleTopsideOilCapacityChange}
+                        defaultValue={Math.round(Number(topside?.oilCapacity) * 1) / 1}
+                        integer
+                        label="Oil capacity"
+                        unit="Sm³/sd"
+                    />
+                    <CaseNumberInput
+                        onChange={handleTopsideGasCapacityChange}
+                        defaultValue={Math.round(Number(topside?.gasCapacity) * 10) / 10}
+                        integer={false}
+                        label="Gas capacity"
+                        unit="MSm³/sd"
+                    />
+                    <CaseNumberInput
+                        onChange={handleTopsideWaterInjectionCapacityChange}
+                        defaultValue={Math.round(Number(topside?.waterInjectionCapacity) * 1) / 1}
+                        integer
+                        label="Water injection capacity"
+                        unit="MSm³/sd"
+                    />
+                </InputContainer>
+            </InputSection>
+            <InputSection>
+                <Typography variant="h4">Platform wells</Typography>
+                <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
 
-                        />
-                    </NumberInputField>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleTopsideWaterInjectionCapacityChange}
-                            defaultValue={Math.round(Number(topside?.waterInjectionCapacity) * 1) / 1}
-                            integer
-                            label="Water injection capacity"
-                            unit="MSm³/sd"
-                        />
-                    </NumberInputField>
-                </RowWrapper>
-                <Typography variant="h5">Platform wells</Typography>
-                <RowWrapper>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleTopsideProducerCountChange}
-                            defaultValue={topside?.producerCount}
-                            integer
-                            label="Producer count"
-                        />
-                    </NumberInputField>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleTopsideGasInjectorCountChange}
-                            defaultValue={topside?.gasInjectorCount}
-                            integer
-                            label="Gas injector count"
-                        />
-                    </NumberInputField>
+                    <CaseNumberInput
+                        onChange={handleTopsideProducerCountChange}
+                        defaultValue={topside?.producerCount}
+                        integer
+                        label="Producer count"
+                    />
+                    <CaseNumberInput
+                        onChange={handleTopsideGasInjectorCountChange}
+                        defaultValue={topside?.gasInjectorCount}
+                        integer
+                        label="Gas injector count"
+                    />
                     <CaseNumberInput
                         onChange={handleTopsideWaterInjectorCountChange}
                         defaultValue={topside?.waterInjectorCount}
                         integer
                         label="Water injector count"
                     />
-                </RowWrapper>
-            </ColumnWrapper>
-
-            <ColumnWrapper>
+                </InputContainer>
+            </InputSection>
+            <InputSection>
                 <Typography variant="h4">SURF</Typography>
-                <RowWrapper>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleSurfTemplateCountChange}
-                            defaultValue={surf?.templateCount}
-                            integer
-                            label="Templates"
-                        />
-                    </NumberInputField>
+                <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
+                    <CaseNumberInput
+                        onChange={handleSurfTemplateCountChange}
+                        defaultValue={surf?.templateCount}
+                        integer
+                        label="Templates"
+                    />
                     <CaseNumberInput
                         onChange={handleSurfRiserCountChange}
                         defaultValue={surf?.riserCount}
                         integer
                         label="Risers"
                     />
-                </RowWrapper>
-                <RowWrapper>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleSurfInfieldPipelineSystemLengthChange}
-                            defaultValue={Math.round(Number(surf?.infieldPipelineSystemLength) * 10) / 10}
-                            integer={false}
-                            label="Production lines length"
-                            unit="km"
-                        />
-                    </NumberInputField>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleSurfUmbilicalSystemLengthChange}
-                            defaultValue={Math.round(Number(surf?.umbilicalSystemLength) * 10) / 10}
-                            integer={false}
-                            label="Umbilical system length"
-                            unit="km"
-                        />
-                    </NumberInputField>
-                    <NativeSelectField
+                    <CaseNumberInput
+                        onChange={handleSurfInfieldPipelineSystemLengthChange}
+                        defaultValue={Math.round(Number(surf?.infieldPipelineSystemLength) * 10) / 10}
+                        integer={false}
+                        label="Production lines length"
+                        unit="km"
+                    />
+                    <CaseNumberInput
+                        onChange={handleSurfUmbilicalSystemLengthChange}
+                        defaultValue={Math.round(Number(surf?.umbilicalSystemLength) * 10) / 10}
+                        integer={false}
+                        label="Umbilical system length"
+                        unit="km"
+                    />
+                    <NativeSelect
                         id="productionFlowline"
                         label="Production flowline"
                         onChange={handleProductionFlowlineChange}
@@ -418,72 +382,67 @@ const CaseFacilitiesTab = ({
                         <option key="11" value={11}>SS Clad + PIP</option>
                         <option key="12" value={12}>Cr13 + PIP</option>
                         <option key="13" value={13}>HDPE lined CS (Water injection only)</option>
-                    </NativeSelectField>
-                </RowWrapper>
-                <Typography variant="h5">Subsea wells</Typography>
-                <RowWrapper>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleSurfProducerCountChange}
-                            defaultValue={surf?.producerCount}
-                            integer
-                            label="Producer count"
-                        />
-                    </NumberInputField>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleSurfGasInjectorCountChange}
-                            defaultValue={surf?.gasInjectorCount}
-                            integer
-                            label="Gas injector count"
-                        />
-                    </NumberInputField>
+                    </NativeSelect>
+                </InputContainer>
+            </InputSection>
+            <InputSection>
+                <Typography variant="h4">Subsea wells</Typography>
+                <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
+
+                    <CaseNumberInput
+                        onChange={handleSurfProducerCountChange}
+                        defaultValue={surf?.producerCount}
+                        integer
+                        label="Producer count"
+                    />
+                    <CaseNumberInput
+                        onChange={handleSurfGasInjectorCountChange}
+                        defaultValue={surf?.gasInjectorCount}
+                        integer
+                        label="Gas injector count"
+                    />
                     <CaseNumberInput
                         onChange={handleSurfWaterInjectorCountChange}
                         defaultValue={surf?.waterInjectorCount}
                         integer
                         label="Water injector count"
                     />
-                </RowWrapper>
-            </ColumnWrapper>
-            <ColumnWrapper>
-                <Typography variant="h4">Substructure</Typography>
-                <RowWrapper>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleSubstructureDryweightChange}
-                            defaultValue={Math.round(Number(substructure?.dryWeight) * 1) / 1}
-                            integer
-                            label="Substructure dry weight"
-                            unit="tonnes"
-                        />
-                    </NumberInputField>
-
-                </RowWrapper>
-            </ColumnWrapper>
-            <ColumnWrapper>
+                </InputContainer>
+            </InputSection>
+            <InputSection>
                 <Typography variant="h4">Transport</Typography>
-                <RowWrapper>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleTransportOilExportPipelineLengthChange}
-                            defaultValue={Math.round(Number(transport?.oilExportPipelineLength) * 10) / 10}
-                            integer={false}
-                            label="Oil export pipeline length"
-                            unit="km"
-                        />
-                    </NumberInputField>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleTransportGasExportPipelineLengthChange}
-                            defaultValue={Math.round(Number(transport?.gasExportPipelineLength) * 10) / 10}
-                            integer={false}
-                            label="Gas export pipeline length"
-                            unit="km"
-                        />
-                    </NumberInputField>
-                </RowWrapper>
-            </ColumnWrapper>
+                <InputContainer mobileColumns={1} desktopColumns={2} breakPoint={850}>
+
+                    <CaseNumberInput
+                        onChange={handleTransportOilExportPipelineLengthChange}
+                        defaultValue={Math.round(Number(transport?.oilExportPipelineLength) * 10) / 10}
+                        integer={false}
+                        label="Oil export pipeline length"
+                        unit="km"
+                    />
+                    <CaseNumberInput
+                        onChange={handleTransportGasExportPipelineLengthChange}
+                        defaultValue={Math.round(Number(transport?.gasExportPipelineLength) * 10) / 10}
+                        integer={false}
+                        label="Gas export pipeline length"
+                        unit="km"
+                    />
+                </InputContainer>
+            </InputSection>
+            <InputSection>
+                <Typography variant="h4">Substructure</Typography>
+                <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
+
+                    <CaseNumberInput
+                        onChange={handleSubstructureDryweightChange}
+                        defaultValue={Math.round(Number(substructure?.dryWeight) * 1) / 1}
+                        integer
+                        label="Substructure dry weight"
+                        unit="tonnes"
+                    />
+                </InputContainer>
+            </InputSection>
+
         </>
     )
 }

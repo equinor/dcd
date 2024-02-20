@@ -8,13 +8,9 @@ export const getDrainageStrategy = (
     drainageStrategyId?: string,
 ) => project.drainageStrategies?.find((o) => o.id === drainageStrategyId)
 
-export const projectPath = (projectId: string) => {
-    return `/${projectId}`;
-}
+export const projectPath = (projectId: string) => `/${projectId}`
 
-export const casePath = (projectId: string, caseId: string) => {
-    return `${projectPath(projectId)}/case/${caseId}`
-}
+export const casePath = (projectId: string, caseId: string) => `${projectPath(projectId)}/case/${caseId}`
 
 export const storeToken = (keyName: string, token: string) => {
     window.sessionStorage.setItem(keyName, token)
