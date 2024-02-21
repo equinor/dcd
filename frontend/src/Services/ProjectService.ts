@@ -18,8 +18,8 @@ export class __ProjectService extends __BaseService {
         return res
     }
 
-    public async updateProject(body: Components.Schemas.ProjectDto): Promise<Components.Schemas.ProjectDto> {
-        const res = await this.put("", { body })
+    public async updateProject(projectId: string, body: Components.Schemas.UpdateProjectDto): Promise<Components.Schemas.ProjectDto> {
+        const res = await this.put(`${projectId}`, { body })
         return res
     }
 
@@ -29,9 +29,7 @@ export class __ProjectService extends __BaseService {
     }
 }
 
-export const GetProjectService = async () => {
-    return new __ProjectService({
-        ...config.ProjectService,
-        accessToken: await getToken(loginAccessTokenKey)!,
-    })
-}
+export const GetProjectService = async () => new __ProjectService({
+    ...config.ProjectService,
+    accessToken: await getToken(loginAccessTokenKey)!,
+})

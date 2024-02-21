@@ -23,7 +23,7 @@ public class CreateProjectDto
     [Required]
     public Currency Currency { get; set; }
     [Required]
-    public PhysUnit PhysUnit { get; set; }
+    public PhysUnit PhysicalUnit { get; set; }
     [Required]
     public DateTimeOffset CreateDate { get; set; }
     [Required]

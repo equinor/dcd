@@ -80,7 +80,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerComponentParams: {
                             template: customUnitHeaderTemplate(
                                 "Oil production",
-                                `${project?.physUnit === 0 ? "MSm3" : "mill bbl"}`,
+                                `${project?.physicalUnit === 0 ? "MSm3" : "mill bbl"}`,
                             ),
                         },
                     },
@@ -91,7 +91,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerComponentParams: {
                             template: customUnitHeaderTemplate(
                                 "Gas production",
-                                `${project?.physUnit === 0 ? "GSm3" : "Bscf"}`,
+                                `${project?.physicalUnit === 0 ? "GSm3" : "Bscf"}`,
                             ),
                         },
                     },
@@ -102,7 +102,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerComponentParams: {
                             template: customUnitHeaderTemplate(
                                 "Total exported volumes",
-                                `${project?.physUnit === 0 ? "mill Sm3" : "mill boe"}`,
+                                `${project?.physicalUnit === 0 ? "mill Sm3" : "mill boe"}`,
                             ),
                         },
                     },

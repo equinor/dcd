@@ -12,7 +12,7 @@ public class UpdateProjectDto
     public string Description { get; set; } = null!;
     public string Country { get; set; } = null!;
     public Currency Currency { get; set; }
-    public PhysUnit PhysUnit { get; set; }
+    public PhysUnit PhysicalUnit { get; set; }
     public ProjectPhase ProjectPhase { get; set; }
     public ProjectCategory ProjectCategory { get; set; }
     public UpdateExplorationOperationalWellCostsDto ExplorationOperationalWellCosts { get; set; } = new UpdateExplorationOperationalWellCostsDto();

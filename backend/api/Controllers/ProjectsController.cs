@@ -46,7 +46,7 @@ public class ProjectsController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet("{projectId}", Name = "GetProject")]
+    [HttpGet("{projectId}")]
     public async Task<ProjectDto?> Get(Guid projectId)
     {
         try
@@ -59,7 +59,7 @@ public class ProjectsController : ControllerBase
         }
     }
 
-    [HttpPost(Name = "CreateProject")]
+    [HttpPost]
     public async Task<ProjectDto> CreateProject([FromQuery] Guid contextId)
     {
         var projectMaster = await _fusionService.ProjectMasterAsync(contextId);
@@ -80,10 +80,10 @@ public class ProjectsController : ControllerBase
         return new ProjectDto();
     }
 
-    [HttpPut(Name = "UpdateProject")]
-    public async Task<ProjectDto> UpdateProject([FromBody] ProjectDto projectDto)
+    [HttpPut("{projectId}")]
+    public async Task<ProjectDto> UpdateProject([FromRoute] Guid projectId, [FromBody] UpdateProjectDto projectDto)
     {
-        return await _projectService.UpdateProject(projectDto);
+        return await _projectService.UpdateProject(projectId, projectDto);
     }
 
     [HttpGet("{projectId}/case-comparison")]

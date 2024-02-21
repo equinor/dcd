@@ -159,10 +159,6 @@ const EditTechnicalInputModal = ({
                 })
             }
 
-            if (caseId && caseId !== "") {
-                dto.caseId = caseId
-            }
-
             const result = await (await GetTechnicalInputService()).update(project.id, dto)
 
             if (result.projectDto) {
