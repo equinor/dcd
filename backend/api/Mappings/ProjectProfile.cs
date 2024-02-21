@@ -12,7 +12,6 @@ public class ProjectProfile : Profile
     public ProjectProfile()
     {
         CreateMap<Project, ProjectDto>();
-        CreateMap<CreateProjectDto, Project>();
         CreateMap<UpdateProjectDto, Project>();
 
         CreateMap<FusionProjectMaster, Project>()

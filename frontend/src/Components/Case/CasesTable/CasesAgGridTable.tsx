@@ -89,7 +89,7 @@ const CasesAgGridTable = ({
     )
 
     const nameWithReferenceCase = (p: any) => {
-        const caseDetailPath = casePath(project.id, p.node.data.id)
+        const caseDetailPath = casePath(project.fusionProjectId, p.node.data.id)
 
         return (
             <span>
