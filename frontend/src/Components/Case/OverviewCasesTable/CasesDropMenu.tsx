@@ -9,7 +9,7 @@ import {
     library_add,
 } from "@equinor/eds-icons"
 import { useAppContext } from "../../../Context/AppContext"
-import { deleteCase, duplicateCase, setCaseAsReference } from "../../../Utils/common"
+import { deleteCase, duplicateCase, setCaseAsReference } from "../../../Utils/CaseController"
 
 interface CasesDropMenuProps {
     isMenuOpen: boolean

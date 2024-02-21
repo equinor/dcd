@@ -10,7 +10,7 @@ import {
 } from "@equinor/eds-icons"
 import { useNavigate } from "react-router-dom"
 import { useAppContext } from "../../../Context/AppContext"
-import { deleteCase, duplicateCase, setCaseAsReference } from "../../../Utils/common"
+import { deleteCase, duplicateCase, setCaseAsReference } from "../../../Utils/CaseController"
 
 interface CaseDropMenuProps {
     isMenuOpen: boolean
