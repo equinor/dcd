@@ -12,6 +12,8 @@ import { ITimeSeries } from "../../Models/ITimeSeries"
 import { useAppContext } from "../../Context/AppContext"
 import { ITimeSeriesCost } from "../../Models/ITimeSeriesCost"
 import InputContainer from "../Input/InputContainer"
+import { AgGridReact } from 'ag-grid-react';
+import { ColDef, ColGroupDef } from "ag-grid-community"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -45,10 +47,10 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         caseItem, setCase,
         topside, setTopside,
         topsideCost, setTopsideCost,
-        surf, setSurf, 
-        surfCost, setSurfCost, 
-        substructure, setSubstructure, 
-        substructureCost, setSubstructureCost, 
+        surf, setSurf,
+        surfCost, setSurfCost,
+        substructure, setSubstructure,
+        substructureCost, setSubstructureCost,
         transport, setTransport,
         transportCost, setTransportCost,
         opexSum, setOpexSum,
@@ -61,10 +63,10 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         totalStudyCost, setTotalStudyCost,
         productionAndSalesVolume, setProductionAndSalesVolume,
         oilCondensateProduction, setOilCondensateProduction,
-        nglProduction,setNGLProduction,
-        NetSalesGas,setNetSalesGas,
-        cO2Emissions,setCO2Emissions,
-        importedElectricity,setImportedElectricity, 
+        nglProduction, setNGLProduction,
+        NetSalesGas, setNetSalesGas,
+        cO2Emissions, setCO2Emissions,
+        importedElectricity, setImportedElectricity,
         setStartYear,
         setEndYear,
         tableYears, setTableYears
@@ -91,70 +93,70 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                 lastYear = profileLastYear
             }
         })
-        if (caseItem) 
-        if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER && caseItem.dG4Date) {
-            setStartYear(firstYear + new Date(caseItem.dG4Date).getFullYear())
-            setEndYear(lastYear + new Date(caseItem.dG4Date).getFullYear())
-            setTableYears([firstYear + new Date(caseItem.dG4Date).getFullYear(), lastYear + new Date(caseItem.dG4Date).getFullYear()])
-        }
+        if (caseItem)
+            if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER && caseItem.dG4Date) {
+                setStartYear(firstYear + new Date(caseItem.dG4Date).getFullYear())
+                setEndYear(lastYear + new Date(caseItem.dG4Date).getFullYear())
+                setTableYears([firstYear + new Date(caseItem.dG4Date).getFullYear(), lastYear + new Date(caseItem.dG4Date).getFullYear()])
+            }
     }
 
     useEffect(() => {
         (async () => {
             try {
                 if (caseItem && project && topside && surf && substructure && transport) //test if this work, if not break into smaller ifs
-                if (activeTab === 7 && caseItem.id) {
-                    const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(project.id, caseItem.id)
-                    const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(project.id, caseItem.id)
-                    const cessationWrapper = (await GetGenerateProfileService()).generateCessationCost(project.id, caseItem.id)
+                    if (activeTab === 7 && caseItem.id) {
+                        const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(project.id, caseItem.id)
+                        const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(project.id, caseItem.id)
+                        const cessationWrapper = (await GetGenerateProfileService()).generateCessationCost(project.id, caseItem.id)
 
-                    const opex = (await opexWrapper).opexCostProfileDto
-                    const cessation = (await cessationWrapper).cessationCostDto
+                        const opex = (await opexWrapper).opexCostProfileDto
+                        const cessation = (await cessationWrapper).cessationCostDto
 
-                    let feasibility = (await studyWrapper).totalFeasibilityAndConceptStudiesDto
-                    let feed = (await studyWrapper).totalFEEDStudiesDto
+                        let feasibility = (await studyWrapper).totalFeasibilityAndConceptStudiesDto
+                        let feed = (await studyWrapper).totalFEEDStudiesDto
 
-                    if (caseItem.totalFeasibilityAndConceptStudiesOverride?.override === true) {
-                        feasibility = caseItem.totalFeasibilityAndConceptStudiesOverride
+                        if (caseItem.totalFeasibilityAndConceptStudiesOverride?.override === true) {
+                            feasibility = caseItem.totalFeasibilityAndConceptStudiesOverride
+                        }
+                        if (caseItem.totalFEEDStudiesOverride?.override === true) {
+                            feed = caseItem.totalFEEDStudiesOverride
+                        }
+
+                        const totalStudy = MergeTimeseries(feasibility, feed)
+                        setTotalStudyCost(totalStudy)
+
+                        setOpexSum(opex)
+                        setCessationCost(cessation)
+
+                        // CAPEX
+                        const topsideCostProfile = topside.costProfileOverride?.override
+                            ? topside.costProfileOverride : topside.costProfile
+                        setTopsideCost(topsideCostProfile)
+
+                        const surfCostProfile = surf.costProfileOverride?.override
+                            ? surf.costProfileOverride : surf.costProfile
+                        setSurfCost(surfCostProfile)
+
+                        const substructureCostProfile = substructure.costProfileOverride?.override
+                            ? substructure.costProfileOverride : substructure.costProfile
+                        setSubstructureCost(substructureCostProfile)
+
+                        const transportCostProfile = transport.costProfileOverride?.override
+                            ? transport.costProfileOverride : transport.costProfile
+                        setTransportCost(transportCostProfile)
+
+                        setTableYearsFromProfiles([
+                            totalStudy, opex, cessation,
+                            topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
+                        ])
                     }
-                    if (caseItem.totalFEEDStudiesOverride?.override === true) {
-                        feed = caseItem.totalFEEDStudiesOverride
-                    }
-
-                    const totalStudy = MergeTimeseries(feasibility, feed)
-                    setTotalStudyCost(totalStudy)
-
-                    setOpexSum(opex)
-                    setCessationCost(cessation)
-
-                    // CAPEX
-                    const topsideCostProfile = topside.costProfileOverride?.override
-                        ? topside.costProfileOverride : topside.costProfile
-                    setTopsideCost(topsideCostProfile)
-
-                    const surfCostProfile = surf.costProfileOverride?.override
-                        ? surf.costProfileOverride : surf.costProfile
-                    setSurfCost(surfCostProfile)
-
-                    const substructureCostProfile = substructure.costProfileOverride?.override
-                        ? substructure.costProfileOverride : substructure.costProfile
-                    setSubstructureCost(substructureCostProfile)
-
-                    const transportCostProfile = transport.costProfileOverride?.override
-                        ? transport.costProfileOverride : transport.costProfile
-                    setTransportCost(transportCostProfile)
-
-                    setTableYearsFromProfiles([
-                        totalStudy, opex, cessation,
-                        topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
-                    ])
-                }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
     }, [activeTab])
-    
+
     const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...caseItem }
         newCase.npv = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
@@ -173,6 +175,73 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         set?: Dispatch<SetStateAction<ITimeSeriesCost | undefined>>,
         profile: ITimeSeries | undefined
     }
+
+    const AgGridColumns: (
+        | ColDef<any>
+        | ColGroupDef<any>
+    )[] = [
+        {
+            field: "year",
+            hide: true,
+        },
+        {
+            field: "month",
+            type: "readOnly",
+            maxWidth: 100,
+            pinned: true,
+            valueFormatter: (params) =>
+                params.data?.month === null ? "All" : params.value,
+        },
+        {
+            headerName: "Oil",
+            children: [
+                {
+                    headerName: "Base",
+                    field: "saleableOilBase",
+                    cellDataType: "number",
+                    aggFunc: "sum",
+                    editable: (params) => params.data?.month !== null,
+                },
+                {
+                    headerName: "Low",
+                    field: "saleableOilLow",
+                    cellDataType: "number",
+                    editable: (params) => params.data?.month === null,
+                },
+                {
+                    headerName: "High",
+                    field: "saleableOilHigh",
+                    cellDataType: "number",
+                    editable: (params) => params.data?.month === null,
+                },
+            ],
+        },
+        {
+            headerName: "Condensate",
+            children: [
+                {
+                    headerName: "Base",
+                    field: "saleableCondensateBase",
+                    cellDataType: "number",
+                    aggFunc: "sum",
+                    editable: (params) => params.data?.month !== null,
+                },
+                {
+                    headerName: "Low",
+                    field: "saleableCondensateLow",
+                    cellDataType: "number",
+                    editable: (params) => params.data?.month === null,
+                },
+                {
+                    headerName: "High",
+                    field: "saleableCondensateHigh",
+                    cellDataType: "number",
+                    editable: (params) => params.data?.month === null,
+                },
+            ],
+        },
+
+    ];
 
     const explorationTimeSeriesData: ITimeSeriesData[] = [
         {
@@ -304,8 +373,11 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                     label="B/E before tax"
                 />
             </InputContainer>
-
             <TableWrapper>
+
+            </TableWrapper>
+            <TableWrapper>
+                
                 <CaseTabTable
                     timeSeriesData={explorationTimeSeriesData}
                     dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
