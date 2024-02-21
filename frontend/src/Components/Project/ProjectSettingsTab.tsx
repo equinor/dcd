@@ -1,26 +1,7 @@
 import { NativeSelect } from "@equinor/eds-core-react"
 import { ChangeEventHandler } from "react"
-import styled from "styled-components"
 import { useAppContext } from "../../Context/AppContext"
-
-const Wrapper = styled.div`
-    margin: 1rem;
-    display: flex;
-    flex-direction: row;
-`
-
-const RowWrapper = styled.div`
-    margin: 1rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-`
-
-const InputField = styled(NativeSelect)`
-    margin-right: 2rem;
-    width: 20rem;
-    padding-bottom: 2em;
- `
+import InputContainer from "../Input/InputContainer"
 
 const ProjectSettingsTab = () => {
     const { project, setProject } = useAppContext()
@@ -48,28 +29,26 @@ const ProjectSettingsTab = () => {
     }
 
     return (
-        <Wrapper>
-            <RowWrapper>
-                <InputField
-                    id="physicalUnit"
-                    label="Physical unit"
-                    onChange={handlePhysicalUnitChange}
-                    value={project.physUnit}
-                >
-                    <option key={0} value={0}>SI</option>
-                    <option key={1} value={1}>Oil field</option>
-                </InputField>
-                <InputField
-                    id="currency"
-                    label="Currency"
-                    onChange={handleCurrencyChange}
-                    value={project.currency}
-                >
-                    <option key={1} value={1}>NOK</option>
-                    <option key={2} value={2}>USD</option>
-                </InputField>
-            </RowWrapper>
-        </Wrapper>
+        <InputContainer mobileColumns={2} desktopColumns={2} breakPoint={850}>
+            <NativeSelect
+                id="physicalUnit"
+                label="Physical unit"
+                onChange={handlePhysicalUnitChange}
+                value={project.physUnit}
+            >
+                <option key={0} value={0}>SI</option>
+                <option key={1} value={1}>Oil field</option>
+            </NativeSelect>
+            <NativeSelect
+                id="currency"
+                label="Currency"
+                onChange={handleCurrencyChange}
+                value={project.currency}
+            >
+                <option key={1} value={1}>NOK</option>
+                <option key={2} value={2}>USD</option>
+            </NativeSelect>
+        </InputContainer>
     )
 }
 

@@ -11,6 +11,7 @@ import { MergeTimeseries } from "../../Utils/common"
 import { ITimeSeries } from "../../models/ITimeSeries"
 import { useAppContext } from "../../Context/AppContext"
 import { ITimeSeriesCost } from "../../Models/ITimeSeriesCost"
+import InputContainer from "../Input/InputContainer"
 
 const ColumnWrapper = styled.div`
     display: flex;
@@ -287,27 +288,23 @@ const CaseSummaryTab = (): React.ReactElement | null => {
             <TopWrapper>
                 <PageTitle variant="h3">Summary</PageTitle>
             </TopWrapper>
-            <ColumnWrapper>
-                <RowWrapper>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleCaseNPVChange}
-                            defaultValue={caseItem.npv}
-                            integer={false}
-                            label="NPV before tax"
-                            allowNegative
-                        />
-                    </NumberInputField>
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleCaseBreakEvenChange}
-                            defaultValue={caseItem.breakEven}
-                            integer={false}
-                            label="B/E before tax"
-                        />
-                    </NumberInputField>
-                </RowWrapper>
-            </ColumnWrapper>
+
+            <InputContainer mobileColumns={1} desktopColumns={2} breakPoint={850}>
+                <CaseNumberInput
+                    onChange={handleCaseNPVChange}
+                    defaultValue={caseItem.npv}
+                    integer={false}
+                    label="NPV before tax"
+                    allowNegative
+                />
+                <CaseNumberInput
+                    onChange={handleCaseBreakEvenChange}
+                    defaultValue={caseItem.breakEven}
+                    integer={false}
+                    label="B/E before tax"
+                />
+            </InputContainer>
+
             <TableWrapper>
                 <CaseTabTable
                     timeSeriesData={explorationTimeSeriesData}

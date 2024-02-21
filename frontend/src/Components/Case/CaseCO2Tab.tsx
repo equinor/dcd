@@ -20,6 +20,8 @@ import CaseCO2DistributionTable from "./CaseCO2DistributionTable"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../AgGrid/AgChartsTimeseries"
 import { AgChartsPie } from "../AgGrid/AgChartsPie"
 import { ITimeSeriesOverride } from "../../Models/ITimeSeriesOverride"
+import InputContainer from "../Input/InputContainer"
+import FilterContainer from "../Input/FilterContainer"
 
 export const WrapperColumn = styled.div`
     display: flex;
@@ -293,20 +295,18 @@ const CaseCO2Tab = ({
                 <PageTitle variant="h3">CO2 Emissions</PageTitle>
             </TopWrapper>
             <p>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</p>
-            <ColumnWrapper>
-                <RowWrapper>
-                    <CaseCO2DistributionTable topside={topside} />
-                    <NumberInputField>
-                        <CaseNumberInput
-                            onChange={handleTopsideFuelConsumptionChange}
-                            defaultValue={topside?.fuelConsumption}
-                            integer={false}
-                            label="Fuel consumption"
-                            unit="million Sm³ gas/sd"
-                        />
-                    </NumberInputField>
-                </RowWrapper>
-            </ColumnWrapper>
+
+            <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
+                <CaseNumberInput
+                    onChange={handleTopsideFuelConsumptionChange}
+                    defaultValue={topside?.fuelConsumption}
+                    integer={false}
+                    label="Fuel consumption"
+                    unit="million Sm³ gas/sd"
+                />
+            </InputContainer>
+            <CaseCO2DistributionTable topside={topside} />
+
             <ChartContainer>
                 <AgChartsTimeseries
                     data={co2EmissionsChartData()}
@@ -357,44 +357,37 @@ const CaseCO2Tab = ({
                     />
                 </WrapperColumn>
             </ChartContainer>
-            <ColumnWrapper>
-                <TableYearWrapper>
-                    <NativeSelectField
-                        id="unit"
-                        label="Units"
-                        onChange={() => { }}
-                        value={project.physUnit}
-                        disabled
-                    >
-                        <option key={0} value={0}>SI</option>
-                        <option key={1} value={1}>Oil field</option>
-                    </NativeSelectField>
-                    <YearInputWrapper>
-                        <CaseNumberInput
-                            onChange={handleStartYearChange}
-                            defaultValue={startYear}
-                            integer
-                            label="Start year"
-                        />
-                    </YearInputWrapper>
-                    <YearDashWrapper>
-                        <Typography variant="h2">-</Typography>
-                    </YearDashWrapper>
-                    <YearInputWrapper>
-                        <CaseNumberInput
-                            onChange={handleEndYearChange}
-                            defaultValue={endYear}
-                            integer
-                            label="End year"
-                        />
-                    </YearInputWrapper>
-                    <Button
-                        onClick={handleTableYearsClick}
-                    >
-                        Apply
-                    </Button>
-                </TableYearWrapper>
-            </ColumnWrapper>
+            <FilterContainer>
+                <NativeSelect
+                    id="unit"
+                    label="Units"
+                    onChange={() => { }}
+                    value={project.physUnit}
+                    disabled
+                >
+                    <option key={0} value={0}>SI</option>
+                    <option key={1} value={1}>Oil field</option>
+                </NativeSelect>
+
+                <CaseNumberInput
+                    onChange={handleStartYearChange}
+                    defaultValue={startYear}
+                    integer
+                    label="Start year"
+                />
+
+                <CaseNumberInput
+                    onChange={handleEndYearChange}
+                    defaultValue={endYear}
+                    integer
+                    label="End year"
+                />
+                <Button
+                    onClick={handleTableYearsClick}
+                >
+                    Apply
+                </Button>
+            </FilterContainer>
             <CaseTabTable
                 timeSeriesData={timeSeriesData}
                 dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
