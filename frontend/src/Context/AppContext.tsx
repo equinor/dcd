@@ -5,7 +5,7 @@ import React, {
     useContext,
     useMemo,
 } from "react";
-import { ITimeSeries } from "../models/ITimeSeries";
+import { ITimeSeries } from "../Models/ITimeSeries";
 
 
 // Assuming Components.Schemas.* are defined elsewhere
