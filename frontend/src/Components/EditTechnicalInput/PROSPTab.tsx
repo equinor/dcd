@@ -1,9 +1,13 @@
-import { Typography } from "@mui/material"
+import {
+    Typography,
+    Button,
+    Input,
+    Label,
+    Progress,
+    Switch,
+} from "@equinor/eds-core-react"
 import React, { ChangeEvent, useEffect, useState } from "react"
 import styled from "styled-components"
-import {
-    Button, Input, Label, Progress, Switch,
-} from "@equinor/eds-core-react"
 import { GetProspService } from "../../Services/ProspService"
 import { GetProjectService } from "../../Services/ProjectService"
 import { DriveItem } from "../../Models/sharepoint/DriveItem"

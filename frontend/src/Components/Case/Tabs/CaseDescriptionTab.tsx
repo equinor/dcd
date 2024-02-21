@@ -10,8 +10,8 @@ import {
     Label, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
-import CaseNumberInput from "./CaseNumberInput"
-import InputContainer from "../Input/InputContainer"
+import CaseNumberInput from "../../Input/CaseNumberInput"
+import InputContainer from "../../Input/Containers/InputContainer"
 
 const TopWrapper = styled.div`
     display: flex;

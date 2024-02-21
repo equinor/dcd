@@ -1,7 +1,7 @@
 import { NativeSelect } from "@equinor/eds-core-react"
 import { ChangeEventHandler } from "react"
 import { useAppContext } from "../../Context/AppContext"
-import InputContainer from "../Input/InputContainer"
+import InputContainer from "../Input/Containers/InputContainer"
 
 const ProjectSettingsTab = () => {
     const { project, setProject } = useAppContext()

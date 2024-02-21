@@ -6,33 +6,28 @@ import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
 import {
-    add,
     bookmark_filled,
-    bookmark_outlined,
-    delete_to_trash,
-    edit,
-    library_add,
+
     more_vertical,
     arrow_back,
 } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { Tooltip } from "@mui/material"
 import { projectPath, unwrapProjectId } from "../Utils/common"
-
+import CaseDropMenu from "../Components/Case/Components/CaseDropMenu"
 import { GetProjectService } from "../Services/ProjectService"
-import CaseDescriptionTab from "../Components/Case/CaseDescriptionTab"
+import CaseDescriptionTab from "../Components/Case/Tabs/CaseDescriptionTab"
 import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
-import CaseCostTab from "../Components/Case/CaseCostTab"
-import CaseFacilitiesTab from "../Components/Case/CaseFacilitiesTab"
-import CaseProductionProfilesTab from "../Components/Case/CaseProductionProfilesTab"
-import { GetCaseService } from "../Services/CaseService"
-import EditCaseModal from "../Components/Case/EditCaseModal"
-import CaseScheduleTab from "../Components/Case/CaseScheduleTab"
-import CaseSummaryTab from "../Components/Case/CaseSummaryTab"
-import CaseDrillingScheduleTab from "../Components/Case/CaseDrillingScheduleTab"
-import CaseCO2Tab from "../Components/Case/CaseCO2Tab"
+import CaseCostTab from "../Components/Case/Tabs/CaseCostTab"
+import CaseFacilitiesTab from "../Components/Case/Tabs/CaseFacilitiesTab"
+import CaseProductionProfilesTab from "../Components/Case/Tabs/CaseProductionProfilesTab"
+import CreateCaseModal from "../Components/CreateCaseModal"
+import CaseScheduleTab from "../Components/Case/Tabs/CaseScheduleTab"
+import CaseSummaryTab from "../Components/Case/Tabs/CaseSummaryTab"
+import CaseDrillingScheduleTab from "../Components/Case/Tabs/CaseDrillingSchedule/CaseDrillingScheduleTab"
+import CaseCO2Tab from "../Components/Case/Tabs/Co2Emissions/CaseCO2Tab"
 import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
-import { EMPTY_GUID } from "../Utils/constants"
+import { useAppContext } from "../Context/AppContext"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -100,9 +95,12 @@ const MenuIcon = styled(Icon)`
 `
 
 const CaseView = () => {
-    const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(false)
+    const {
+        project,
+        setProject,
+    } = useAppContext()
 
-    const [project, setProject] = useState<Components.Schemas.ProjectDto>()
+    const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(false)
     const [caseItem, setCase] = useState<Components.Schemas.CaseDto>()
     const [activeTab, setActiveTab] = useState<number>(0)
     const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
@@ -142,15 +140,10 @@ const CaseView = () => {
     const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<Components.Schemas.FuelFlaringAndLossesDto>()
     const [importedElectricity, setImportedElectricity] = useState<Components.Schemas.ImportedElectricityDto>()
 
-    const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
-    const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
-
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
 
     const toggleTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
-    const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
-    const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
     const navigate = useNavigate()
     const location = useLocation()
@@ -166,7 +159,7 @@ const CaseView = () => {
                 setIsLoading(true)
                 const projectId = unwrapProjectId(currentContext?.externalId)
                 const projectResult = await (await GetProjectService()).getProject(projectId)
-                setProject(projectResult)
+                setProject(projectResult) // should we be setting project here?
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${currentContext?.externalId}`, error)
             }
@@ -237,30 +230,6 @@ const CaseView = () => {
         }
     }, [project])
 
-    const duplicateCase = async () => {
-        try {
-            if (caseItem?.id && project?.id) {
-                const newProject = await (await GetCaseService()).duplicateCase(project.id, caseItem?.id)
-                setProject(newProject)
-                navigate(fusionContextId!)
-            }
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
-        }
-    }
-
-    const deleteCase = async () => {
-        try {
-            if (caseItem?.id && project?.id) {
-                const newProject = await (await GetCaseService()).deleteCase(project.id, caseItem?.id)
-                setProject(newProject)
-                navigate(fusionContextId!)
-            }
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
-        }
-    }
-
     if (isLoading || !project || !caseItem
         || !drainageStrategy || !exploration
         || !wellProject || !surf || !topside
@@ -274,77 +243,44 @@ const CaseView = () => {
         )
     }
 
-    const setCaseAsReference = async () => {
-        try {
-            const projectDto = { ...project }
-            if (projectDto.referenceCaseId === caseItem.id) {
-                projectDto.referenceCaseId = EMPTY_GUID
-            } else {
-                projectDto.referenceCaseId = caseItem.id
-            }
-            const newProject = await (await GetProjectService()).updateProject(project.id, projectDto)
-            setProject(newProject)
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
-        }
-    }
-
     const handleSave = async () => {
-        const dto: Components.Schemas.CaseWithAssetsWrapperDto = {}
-
-        dto.caseDto = caseItem
-
-        dto.drainageStrategyDto = drainageStrategy
-
-        dto.wellProjectDto = wellProject
-
-        dto.explorationDto = exploration
-
-        dto.surfDto = surf
-
-        dto.substructureDto = substructure
-
-        dto.transportDto = transport
-
-        dto.topsideDto = topside
-
-        dto.explorationWellDto = explorationWells
-
-        dto.wellProjectWellDtos = wellProjectWells
+        const dto: Components.Schemas.CaseWithAssetsWrapperDto = {
+            caseDto: caseItem,
+            drainageStrategyDto: drainageStrategy,
+            wellProjectDto: wellProject,
+            explorationDto: exploration,
+            surfDto: surf,
+            substructureDto: substructure,
+            transportDto: transport,
+            topsideDto: topside,
+            explorationWellDto: explorationWells,
+            wellProjectWellDtos: wellProjectWells,
+        }
 
         setIsSaving(true)
         setUpdateFromServer(true)
+
         try {
             const result = await (await GetCaseWithAssetsService()).update(project.id, caseId!, dto)
             const projectResult = { ...result.projectDto }
             setProject(projectResult)
-            if (result.generatedProfilesDto?.studyCostProfileWrapperDto !== null && result.generatedProfilesDto?.studyCostProfileWrapperDto !== undefined) {
-                setTotalFeasibilityAndConceptStudies(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFeasibilityAndConceptStudiesDto)
-                setTotalFEEDStudies(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFEEDStudiesDto)
+
+            const setIfNotNull = (data: any, setState: any) => {
+                if (data !== null && data !== undefined) { setState(data) }
             }
-            if (result.generatedProfilesDto?.opexCostProfileWrapperDto !== null && result.generatedProfilesDto?.opexCostProfileWrapperDto !== undefined) {
-                setOffshoreFacilitiesOperationsCostProfile(result.generatedProfilesDto.opexCostProfileWrapperDto?.offshoreFacilitiesOperationsCostProfileDto)
-                setWellInterventionCostProfile(result.generatedProfilesDto.opexCostProfileWrapperDto?.wellInterventionCostProfileDto)
-            }
-            if (result.generatedProfilesDto?.cessationCostWrapperDto !== null && result.generatedProfilesDto?.cessationCostWrapperDto !== undefined) {
-                setCessationWellsCost(result.generatedProfilesDto.cessationCostWrapperDto.cessationWellsCostDto)
-                setCessationOffshoreFacilitiesCost(result.generatedProfilesDto.cessationCostWrapperDto.cessationOffshoreFacilitiesCostDto)
-            }
-            if (result.generatedProfilesDto?.gAndGAdminCostDto !== null && result.generatedProfilesDto?.gAndGAdminCostDto !== undefined) {
-                setGAndGAdminCost(result.generatedProfilesDto.gAndGAdminCostDto)
-            }
-            if (result.generatedProfilesDto?.co2EmissionsDto !== null && result.generatedProfilesDto?.co2EmissionsDto !== undefined) {
-                setCo2Emissions(result.generatedProfilesDto.co2EmissionsDto)
-            }
-            if (result.generatedProfilesDto?.fuelFlaringAndLossesDto !== null && result.generatedProfilesDto?.fuelFlaringAndLossesDto !== undefined) {
-                setFuelFlaringAndLosses(result.generatedProfilesDto.fuelFlaringAndLossesDto)
-            }
-            if (result.generatedProfilesDto?.netSalesGasDto !== null && result.generatedProfilesDto?.netSalesGasDto !== undefined) {
-                setNetSalesGas(result.generatedProfilesDto.netSalesGasDto)
-            }
-            if (result.generatedProfilesDto?.importedElectricityDto !== null && result.generatedProfilesDto?.importedElectricityDto !== undefined) {
-                setImportedElectricity(result.generatedProfilesDto.importedElectricityDto)
-            }
+
+            setIfNotNull(result.generatedProfilesDto?.studyCostProfileWrapperDto?.totalFeasibilityAndConceptStudiesDto, setTotalFeasibilityAndConceptStudies)
+            setIfNotNull(result.generatedProfilesDto?.studyCostProfileWrapperDto?.totalFEEDStudiesDto, setTotalFEEDStudies)
+            setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.offshoreFacilitiesOperationsCostProfileDto, setOffshoreFacilitiesOperationsCostProfile)
+            setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.wellInterventionCostProfileDto, setWellInterventionCostProfile)
+            setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationWellsCostDto, setCessationWellsCost)
+            setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationOffshoreFacilitiesCostDto, setCessationOffshoreFacilitiesCost)
+            setIfNotNull(result.generatedProfilesDto?.gAndGAdminCostDto, setGAndGAdminCost)
+            setIfNotNull(result.generatedProfilesDto?.co2EmissionsDto, setCo2Emissions)
+            setIfNotNull(result.generatedProfilesDto?.fuelFlaringAndLossesDto, setFuelFlaringAndLosses)
+            setIfNotNull(result.generatedProfilesDto?.netSalesGasDto, setNetSalesGas)
+            setIfNotNull(result.generatedProfilesDto?.importedElectricityDto, setImportedElectricity)
+
             setIsSaving(false)
         } catch (e) {
             setIsSaving(false)
@@ -353,9 +289,8 @@ const CaseView = () => {
     }
 
     const withReferenceCase = () => {
-        if (project.referenceCaseId === caseItem.id) {
-            return bookmark_filled
-        }
+        if (project.referenceCaseId === caseItem.id) return bookmark_filled
+
         return undefined
     }
 
@@ -401,67 +336,12 @@ const CaseView = () => {
                         </CaseButtonsWrapper>
                     </ColumnWrapper>
                 </RowWrapper>
-                <Menu
-                    id="menu-complex"
-                    open={isMenuOpen}
-                    anchorEl={menuAnchorEl}
-                    onClose={() => setIsMenuOpen(false)}
-                    placement="bottom"
-                >
-                    <Menu.Item
-                        onClick={toggleCreateCaseModal}
-                    >
-                        <Icon data={add} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Add New Case
-                        </Typography>
-                    </Menu.Item>
-                    <Menu.Item
-                        onClick={duplicateCase}
-                    >
-                        <Icon data={library_add} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Duplicate
-                        </Typography>
-                    </Menu.Item>
-                    <Menu.Item
-                        onClick={toggleEditCaseModal}
-                    >
-                        <Icon data={edit} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Rename
-                        </Typography>
-                    </Menu.Item>
-                    <Menu.Item
-                        onClick={deleteCase}
-                    >
-                        <Icon data={delete_to_trash} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Delete
-                        </Typography>
-                    </Menu.Item>
-                    {project.referenceCaseId === caseItem.id
-                        ? (
-                            <Menu.Item
-                                onClick={setCaseAsReference}
-                            >
-                                <Icon data={bookmark_outlined} size={16} />
-                                <Typography group="navigation" variant="menu_title" as="span">
-                                    Remove as reference case
-                                </Typography>
-                            </Menu.Item>
-                        )
-                        : (
-                            <Menu.Item
-                                onClick={setCaseAsReference}
-                            >
-                                <Icon data={bookmark_filled} size={16} />
-                                <Typography group="navigation" variant="menu_title" as="span">
-                                    Set as reference case
-                                </Typography>
-                            </Menu.Item>
-                        )}
-                </Menu>
+                <CaseDropMenu
+                    isMenuOpen={isMenuOpen}
+                    setIsMenuOpen={setIsMenuOpen}
+                    menuAnchorEl={menuAnchorEl}
+                    caseItem={caseItem}
+                />
             </HeaderWrapper>
             <CaseViewDiv>
                 <Tabs activeTab={activeTab} onChange={setActiveTab}>
@@ -609,13 +489,6 @@ const CaseView = () => {
                 caseId={caseItem.id}
                 setExploration={setExploration}
                 setWellProject={setWellProject}
-            />
-            <EditCaseModal
-                caseId={caseItem.id}
-                isOpen={editCaseModalIsOpen}
-                setIsOpen={setEditCaseModalIsOpen}
-                editMode
-                shouldNavigate
             />
         </div>
     )
