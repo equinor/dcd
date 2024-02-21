@@ -13,9 +13,9 @@ const Wrapper = styled.div`
     flex-direction: column;
     width: 250px;
     align-items: stretch;
-    box-shadow: 
+    box-shadow:
         10px 0 5px -5px rgba(0, 0, 0, 0.03),
-        15px 0 15px -5px rgba(0, 0, 0, 0.03); 
+        15px 0 15px -5px rgba(0, 0, 0, 0.03);
 `
 
 const Body = styled.div`
@@ -35,7 +35,7 @@ const ProjectRow = styled.div`
     background-color: ${tokens.colors.interactive.primary__resting.rgba};
     color: white;
     transition: background-color 0.3s ease;
-    
+
     :hover {
         background-color: ${tokens.colors.interactive.primary__hover.rgba};
     }
@@ -64,7 +64,7 @@ const Link = styled.a`
     font-size: 12px;
     cursor: pointer;
     padding: 10px;
-    text-align: center;    
+    text-align: center;
 
     :hover {
         color: ${tokens.colors.interactive.primary__hover.rgba};
@@ -127,7 +127,7 @@ const Sidebar = () => {
 
     return (
         <Wrapper>
-            <ProjectNavLink to={projectPath(currentContext?.externalId!)}>
+            <ProjectNavLink to={projectPath(currentContext?.id!)}>
                 <ProjectRow>
                     <Icon data={folder} size={18} />
                     {project!.name}
