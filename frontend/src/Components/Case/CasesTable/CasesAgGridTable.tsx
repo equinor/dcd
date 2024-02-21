@@ -16,7 +16,6 @@ import { bookmark_filled, more_vertical } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { casePath, productionStrategyOverviewToString } from "../../../Utils/common"
 import { useAppContext } from "../../../Context/AppContext"
 
@@ -58,7 +57,6 @@ const CasesAgGridTable = ({
     const gridRef = useRef<AgGridReact>(null)
     const { project } = useAppContext()
     const [rowData, setRowData] = useState<TableCase[]>()
-    const { currentContext } = useModuleCurrentContext()
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
