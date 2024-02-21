@@ -57,7 +57,7 @@ const ProjectView = () => {
 
         setIsSaving(true)
         const updatedProject = { ...project }
-        const result = await (await GetProjectService()).updateProject(updatedProject)
+        const result = await (await GetProjectService()).updateProject(project.id, updatedProject)
         setIsSaving(false)
         setProject(result)
     }

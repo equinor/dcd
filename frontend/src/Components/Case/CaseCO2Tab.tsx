@@ -185,7 +185,7 @@ const CaseCO2Tab = ({
     const timeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Annual CO2 emissions",
-            unit: `${project?.physUnit === 0 ? "MTPA" : "MTPA"}`,
+            unit: `${project?.physicalUnit === 0 ? "MTPA" : "MTPA"}`,
             profile: co2Emissions,
             overridable: true,
             overrideProfile: co2EmissionsOverride,
@@ -193,7 +193,7 @@ const CaseCO2Tab = ({
         },
         {
             profileName: "Year-by-year CO2 intensity",
-            unit: `${project?.physUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
+            unit: `${project?.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
             profile: co2Intensity,
             total: co2IntensityTotal?.toString(),
         },
@@ -362,7 +362,7 @@ const CaseCO2Tab = ({
                     id="unit"
                     label="Units"
                     onChange={() => { }}
-                    value={project.physUnit}
+                    value={project.physicalUnit}
                     disabled
                 >
                     <option key={0} value={0}>SI</option>
