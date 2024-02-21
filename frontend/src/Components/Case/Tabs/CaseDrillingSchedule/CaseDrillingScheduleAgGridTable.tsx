@@ -7,8 +7,8 @@ import {
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
-import { isExplorationWell, isInteger } from "../../Utils/common"
-import { EMPTY_GUID } from "../../Utils/constants"
+import { isExplorationWell, isInteger } from "../../../../Utils/common"
+import { EMPTY_GUID } from "../../../../Utils/constants"
 
 interface Props {
     dg4Year: number

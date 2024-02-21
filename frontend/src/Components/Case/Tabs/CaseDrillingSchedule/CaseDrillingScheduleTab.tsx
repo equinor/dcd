@@ -11,11 +11,11 @@ import styled from "styled-components"
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import CaseNumberInput from "./CaseNumberInput"
-import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleTabTable"
-import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
-import InputContainer from "../Input/InputContainer"
-import FilterContainer from "../Input/FilterContainer"
+import CaseNumberInput from "../../../Input/CaseNumberInput"
+import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleAgGridTable"
+import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
+import InputContainer from "../../../Input/Containers/InputContainer"
+import FilterContainer from "../../../Input/Containers/TableFilterContainer"
 
 const TopWrapper = styled.div`
     display: flex;

@@ -1,5 +1,4 @@
-import { Typography } from "@mui/material"
-import { Dispatch, SetStateAction } from "react"
+import { Typography } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import CO2ListTechnicalInput from "./CO2ListTechnicalInput"
 

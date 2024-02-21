@@ -16,12 +16,12 @@ import {
 import { useNavigate, useParams } from "react-router-dom"
 import styled from "styled-components"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
-import { ModalNoFocus } from "../ModalNoFocus"
+import { ModalNoFocus } from "./ModalNoFocus"
 import {
-    defaultDate, isDefaultDate, projectPath, toMonthDate,
-} from "../../Utils/common"
-import { GetCaseService } from "../../Services/CaseService"
-import { useAppContext } from "../../Context/AppContext"
+    defaultDate, isDefaultDate, toMonthDate,
+} from "../Utils/common"
+import { GetCaseService } from "../Services/CaseService"
+import { useAppContext } from "../Context/AppContext"
 
 const CreateCaseForm = styled.form`
     width: 596px;
@@ -71,24 +71,18 @@ const ButtonsWrapper = styled.div`
     margin-left: 350px;
 `
 
-interface Props {
-    caseId?: string
-    isOpen: boolean
-    setIsOpen: (isOpen: boolean) => void
-    editMode: boolean
-    shouldNavigate: boolean
-}
+const CreateCaseModal = () => {
+    const {
+        project,
+        setProject,
+        createCaseModalIsOpen,
+        setCreateCaseModalIsOpen,
+        modalEditMode,
+        modalShouldNavigate,
+        modalCaseId,
+    } = useAppContext()
 
-const EditCaseModal = ({
-    caseId,
-    isOpen,
-    editMode,
-    shouldNavigate,
-    setIsOpen,
-
-}: Props) => {
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
-    const { project, setProject } = useAppContext()
     const [caseName, setCaseName] = useState<string>("")
     const [dG4Date, setDG4Date] = useState<Date>(defaultDate())
     const [description, setDescription] = useState<string>("")
@@ -97,29 +91,38 @@ const EditCaseModal = ({
     const [gasInjectorCount, setGasInjectorWells] = useState<number>(0)
     const [waterInjectorCount, setWaterInjectorWells] = useState<number>(0)
     const [isLoading, setIsLoading] = useState<boolean>(false)
-
     const [caseItem, setCaseItem] = useState<Components.Schemas.CaseDto>()
 
     const navigate = useNavigate()
 
-    useEffect(() => {
-        const dG4DefaultDate = new Date(Date.UTC(2030, 0, 1))
-
-        setCaseName(caseItem?.name ?? "")
-        setDG4Date(caseItem?.dG4Date ? new Date(caseItem?.dG4Date) : dG4DefaultDate)
-        setDescription(caseItem?.description ?? "")
-        setProductionStrategy(caseItem?.productionStrategyOverview ?? 0)
-        setProducerWells(caseItem?.producerCount ?? 0)
-        setGasInjectorWells(caseItem?.gasInjectorCount ?? 0)
-        setWaterInjectorWells(caseItem?.waterInjectorCount ?? 0)
-    }, [isOpen, caseId])
+    const resetForm = () => {
+        setCaseName("")
+        setDG4Date(defaultDate())
+        setDescription("")
+        setProductionStrategy(0)
+        setProducerWells(0)
+        setGasInjectorWells(0)
+        setWaterInjectorWells(0)
+    }
 
     useEffect(() => {
         if (project) {
-            const newCase = project.cases?.find((c) => c.id === caseId)
-            setCaseItem(newCase)
+            const selectedCase = project.cases?.find((c) => c.id === modalCaseId)
+
+            if (selectedCase) {
+                setCaseItem(selectedCase)
+                setCaseName(selectedCase.name)
+                setDG4Date(selectedCase.dG4Date ? new Date(selectedCase.dG4Date) : defaultDate())
+                setDescription(selectedCase.description)
+                setProductionStrategy(selectedCase.productionStrategyOverview ?? 0)
+                setProducerWells(selectedCase.producerCount ?? 0)
+                setGasInjectorWells(selectedCase.gasInjectorCount ?? 0)
+                setWaterInjectorWells(selectedCase.waterInjectorCount ?? 0)
+            } else {
+                resetForm()
+            }
         }
-    }, [project, caseId])
+    }, [project, modalCaseId])
 
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setCaseName(e.currentTarget.value)
@@ -163,7 +166,7 @@ const EditCaseModal = ({
             }
 
             let projectResult: Components.Schemas.ProjectDto
-            if (editMode && caseItem && caseItem.id) {
+            if (modalEditMode && caseItem && caseItem.id) {
                 const newCase = { ...caseItem }
                 newCase.name = caseName
                 newCase.description = description
@@ -172,6 +175,7 @@ const EditCaseModal = ({
                 newCase.gasInjectorCount = gasInjectorCount
                 newCase.waterInjectorCount = waterInjectorCount
                 newCase.productionStrategyOverview = productionStrategy ?? 0
+                console.log("submitting for edit: ", newCase)
                 projectResult = await (await GetCaseService()).updateCase(
                     project.id,
                     caseItem.id,
@@ -197,8 +201,8 @@ const EditCaseModal = ({
                 ))?.id}`)
             }
             setProject(projectResult)
-            setIsOpen(false)
-            if (shouldNavigate) {
+            setCreateCaseModalIsOpen(false)
+            if (modalShouldNavigate) {
                 navigate(fusionContextId!)
             }
         } catch (error) {
@@ -210,7 +214,7 @@ const EditCaseModal = ({
     const disableCreateButton = () => caseName && caseName !== ""
 
     return (
-        <ModalNoFocus isOpen={isOpen} title={editMode ? "Edit case" : "Add new case"}>
+        <ModalNoFocus isOpen={createCaseModalIsOpen} title={modalEditMode ? "Edit case" : "Add new case"}>
             <CreateCaseForm>
                 <RowWrapper>
                     <NameField>
@@ -314,7 +318,7 @@ const EditCaseModal = ({
                     <Button
                         type="button"
                         variant="outlined"
-                        onClick={() => setIsOpen(false)}
+                        onClick={() => setCreateCaseModalIsOpen(false)}
                     >
                         Cancel
                     </Button>
@@ -329,7 +333,7 @@ const EditCaseModal = ({
                                 onClick={submitCaseForm}
                                 disabled={!disableCreateButton()}
                             >
-                                {editMode ? "Save changes" : "Create case"}
+                                {modalEditMode ? "Save changes" : "Create case"}
                             </CreateButton>
                         )}
 
@@ -340,4 +344,4 @@ const EditCaseModal = ({
     )
 }
 
-export default EditCaseModal
+export default CreateCaseModal

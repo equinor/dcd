@@ -8,8 +8,8 @@ import styled from "styled-components"
 import {
     NativeSelect, Typography, Input, Label,
 } from "@equinor/eds-core-react"
-import CaseNumberInput from "./CaseNumberInput"
-import InputContainer from "../Input/InputContainer"
+import CaseNumberInput from "../../Input/CaseNumberInput"
+import InputContainer from "../../Input/Containers/InputContainer"
 
 const TopWrapper = styled.div`
     display: flex;
