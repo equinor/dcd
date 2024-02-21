@@ -10,7 +10,7 @@ const ProjectSettingsTab = () => {
         if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
             const newPhysicalUnit: Components.Schemas.PhysUnit = Number(e.currentTarget.value) as Components.Schemas.PhysUnit
             const newProject: Components.Schemas.ProjectDto = { ...project }
-            newProject.physUnit = newPhysicalUnit
+            newProject.physicalUnit = newPhysicalUnit
             setProject(newProject)
         }
     }
@@ -34,7 +34,7 @@ const ProjectSettingsTab = () => {
                 id="physicalUnit"
                 label="Physical unit"
                 onChange={handlePhysicalUnitChange}
-                value={project.physUnit}
+                value={project.physicalUnit}
             >
                 <option key={0} value={0}>SI</option>
                 <option key={1} value={1}>Oil field</option>

@@ -27,12 +27,12 @@ public class CaseWithAssetsController : ControllerBase
         _caseWithAssetsService = caseWithAssetsService;
     }
 
-    [HttpPut(Name = "UpdateCaseWithAssets")]
+    [HttpPost(Name = "UpdateCaseWithAssets")]
     public async Task<ActionResult<ProjectWithGeneratedProfilesDto>> UpdateCaseWithAssetsAsync(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromBody] CaseWithAssetsWrapperDto caseWrapperDto
-        )
+    )
     {
         var dto = await _caseWithAssetsService.UpdateCaseWithAssetsAsync(projectId, caseId, caseWrapperDto);
         return Ok(dto);

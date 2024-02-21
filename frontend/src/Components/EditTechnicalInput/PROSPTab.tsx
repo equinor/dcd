@@ -79,7 +79,7 @@ const PROSPTab = () => {
             if (project && sharepointUrl !== project.sharepointSiteUrl) {
                 const newProject: Components.Schemas.ProjectDto = { ...project }
                 newProject.sharepointSiteUrl = sharepointUrl
-                const projectResult = await (await GetProjectService()).updateProject(newProject)
+                const projectResult = await (await GetProjectService()).updateProject(project.id, newProject)
                 setProject(projectResult)
                 setSharepointUrl(projectResult.sharepointSiteUrl ?? "")
             }
