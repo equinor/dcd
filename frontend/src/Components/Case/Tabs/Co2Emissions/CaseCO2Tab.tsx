@@ -22,6 +22,7 @@ import { AgChartsPie } from "../../../AgGrid/AgChartsPie"
 import { ITimeSeriesOverride } from "../../../../Models/ITimeSeriesOverride"
 import InputContainer from "../../../Input/Containers/InputContainer"
 import FilterContainer from "../../../Input/Containers/TableFilterContainer"
+import InputSwitcher from "../../../Input/InputSwitcher"
 
 export const WrapperColumn = styled.div`
     display: flex;
@@ -293,13 +294,15 @@ const CaseCO2Tab = ({
             <p>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</p>
 
             <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
-                <CaseNumberInput
-                    onChange={handleTopsideFuelConsumptionChange}
-                    defaultValue={topside?.fuelConsumption}
-                    integer={false}
-                    label="Fuel consumption"
-                    unit="million Sm³ gas/sd"
-                />
+                <InputSwitcher value={`${topside?.fuelConsumption} million Sm³ gas/sd`} label="Fuel consumption">
+                    <CaseNumberInput
+                        onChange={handleTopsideFuelConsumptionChange}
+                        defaultValue={topside?.fuelConsumption}
+                        integer={false}
+                        label="Fuel consumption"
+                        unit="million Sm³ gas/sd"
+                    />
+                </InputSwitcher>
             </InputContainer>
             <CaseCO2DistributionTable topside={topside} />
 

@@ -2,6 +2,7 @@ import { NativeSelect } from "@equinor/eds-core-react"
 import { ChangeEventHandler } from "react"
 import { useAppContext } from "../../Context/AppContext"
 import InputContainer from "../Input/Containers/InputContainer"
+import InputSwitcher from "../Input/InputSwitcher"
 
 const ProjectSettingsTab = () => {
     const { project, setProject } = useAppContext()
@@ -30,24 +31,35 @@ const ProjectSettingsTab = () => {
 
     return (
         <InputContainer mobileColumns={2} desktopColumns={2} breakPoint={850}>
-            <NativeSelect
-                id="physicalUnit"
+
+            <InputSwitcher
+                value={project.physicalUnit === 0 ? "SI" : "Oil field"}
                 label="Physical unit"
-                onChange={handlePhysicalUnitChange}
-                value={project.physicalUnit}
             >
-                <option key={0} value={0}>SI</option>
-                <option key={1} value={1}>Oil field</option>
-            </NativeSelect>
-            <NativeSelect
-                id="currency"
+                <NativeSelect
+                    id="physicalUnit"
+                    label="Physical unit"
+                    onChange={handlePhysicalUnitChange}
+                    value={project.physicalUnit}
+                >
+                    <option key={0} value={0}>SI</option>
+                    <option key={1} value={1}>Oil field</option>
+                </NativeSelect>
+            </InputSwitcher>
+            <InputSwitcher
+                value={project.currency === 1 ? "NOK" : "USD"}
                 label="Currency"
-                onChange={handleCurrencyChange}
-                value={project.currency}
             >
-                <option key={1} value={1}>NOK</option>
-                <option key={2} value={2}>USD</option>
-            </NativeSelect>
+                <NativeSelect
+                    id="currency"
+                    label="Currency"
+                    onChange={handleCurrencyChange}
+                    value={project.currency}
+                >
+                    <option key={1} value={1}>NOK</option>
+                    <option key={2} value={2}>USD</option>
+                </NativeSelect>
+            </InputSwitcher>
         </InputContainer>
     )
 }
