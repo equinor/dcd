@@ -72,8 +72,9 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         tableYears, setTableYears
     } = useAppContext();
 
-    const [cessationCost, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto>()
 
+    
+    const [cessationCost, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto>()
 
     const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
         if (timeSeries && timeSeries.startYear && timeSeries.values) {
@@ -175,73 +176,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         set?: Dispatch<SetStateAction<ITimeSeriesCost | undefined>>,
         profile: ITimeSeries | undefined
     }
-
-    const AgGridColumns: (
-        | ColDef<any>
-        | ColGroupDef<any>
-    )[] = [
-        {
-            field: "year",
-            hide: true,
-        },
-        {
-            field: "month",
-            type: "readOnly",
-            maxWidth: 100,
-            pinned: true,
-            valueFormatter: (params) =>
-                params.data?.month === null ? "All" : params.value,
-        },
-        {
-            headerName: "Oil",
-            children: [
-                {
-                    headerName: "Base",
-                    field: "saleableOilBase",
-                    cellDataType: "number",
-                    aggFunc: "sum",
-                    editable: (params) => params.data?.month !== null,
-                },
-                {
-                    headerName: "Low",
-                    field: "saleableOilLow",
-                    cellDataType: "number",
-                    editable: (params) => params.data?.month === null,
-                },
-                {
-                    headerName: "High",
-                    field: "saleableOilHigh",
-                    cellDataType: "number",
-                    editable: (params) => params.data?.month === null,
-                },
-            ],
-        },
-        {
-            headerName: "Condensate",
-            children: [
-                {
-                    headerName: "Base",
-                    field: "saleableCondensateBase",
-                    cellDataType: "number",
-                    aggFunc: "sum",
-                    editable: (params) => params.data?.month !== null,
-                },
-                {
-                    headerName: "Low",
-                    field: "saleableCondensateLow",
-                    cellDataType: "number",
-                    editable: (params) => params.data?.month === null,
-                },
-                {
-                    headerName: "High",
-                    field: "saleableCondensateHigh",
-                    cellDataType: "number",
-                    editable: (params) => params.data?.month === null,
-                },
-            ],
-        },
-
-    ];
 
     const explorationTimeSeriesData: ITimeSeriesData[] = [
         {
