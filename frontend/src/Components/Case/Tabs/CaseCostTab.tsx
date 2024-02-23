@@ -161,25 +161,22 @@ const CaseCostTab = ({
                 if (activeTab === 5) {
                     const totalFeasibility = caseItem.totalFeasibilityAndConceptStudies
                     const totalFEED = caseItem.totalFEEDStudies
-                    const totalOtherStudiesLocal = caseItem.totalOtherStudies
 
                     setTotalFeasibilityAndConceptStudies(totalFeasibility)
                     setTotalFeasibilityAndConceptStudiesOverride(caseItem.totalFeasibilityAndConceptStudiesOverride)
                     setTotalFEEDStudies(totalFEED)
                     setTotalFEEDStudiesOverride(caseItem.totalFEEDStudiesOverride)
-                    setTotalOtherStudies(totalOtherStudiesLocal)
+                    setTotalOtherStudies(totalOtherStudies)
 
                     const wellIntervention = wellInterventionCostProfile
                     const offshoreFacilitiesOperations = caseItem.offshoreFacilitiesOperationsCostProfile
-                    const historicCostCost = caseItem.historicCostCostProfile
-                    const additionalOPEXCost = caseItem.additionalOPEXCostProfile
 
                     setWellInterventionCostProfile(wellIntervention)
                     setWellInterventionCostProfileOverride(caseItem.wellInterventionCostProfileOverride)
                     setOffshoreFacilitiesOperationsCostProfile(offshoreFacilitiesOperations)
                     setOffshoreFacilitiesOperationsCostProfileOverride(caseItem.offshoreFacilitiesOperationsCostProfileOverride)
-                    setHistoricCostCostProfile(historicCostCost)
-                    setAdditionalOPEXCostProfile(additionalOPEXCost)
+                    setHistoricCostCostProfile(historicCostCostProfile)
+                    setAdditionalOPEXCostProfile(additionalOPEXCostProfile)
 
                     const cessationWells = caseItem.cessationWellsCost
                     const cessationOffshoreFacilities = caseItem.cessationOffshoreFacilitiesCost
@@ -281,13 +278,6 @@ const CaseCostTab = ({
             studyGridRef.current.api.refreshCells()
         }
     }, [totalFeasibilityAndConceptStudies, totalFEEDStudies, totalOtherStudies])
-
-    useEffect(() => {
-        const {
-            totalOtherStudies
-        } = caseItem
-        setTotalOtherStudies(totalOtherStudies)
-    }, [caseItem])
 
     useEffect(() => {
         if (opexGridRef.current && opexGridRef.current.api && opexGridRef.current.api.refreshCells) {
