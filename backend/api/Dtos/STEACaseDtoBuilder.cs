@@ -84,9 +84,9 @@ public static class STEACaseDtoBuilder
         {
             costProfileDtos.Add(caseDto.TotalFEEDStudies);
         }
-        if (caseDto.totalOtherStudies != null)
+        if (caseDto.TotalOtherStudies != null)
         {
-            costProfileDtos.Add(caseDto.totalOtherStudies);
+            costProfileDtos.Add(caseDto.TotalOtherStudies);
         }
 
         var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);
