@@ -1,73 +1,41 @@
 import { Menu, Typography, Icon } from "@equinor/eds-core-react"
-import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import {
-    bookmark_filled, bookmark_outlined, delete_to_trash, edit, folder, library_add,
+    bookmark_filled,
+    bookmark_outlined,
+    delete_to_trash,
+    edit,
+    folder,
+    library_add,
 } from "@equinor/eds-icons"
 import { useAppContext } from "../../../Context/AppContext"
-import { GetCaseService } from "../../../Services/CaseService"
-import EditCaseModal from "../EditCaseModal"
-import { EMPTY_GUID } from "../../../Utils/constants"
-import { GetProjectService } from "../../../Services/ProjectService"
+import { deleteCase, duplicateCase, setCaseAsReference } from "../../../Utils/CaseController"
 
 interface CasesDropMenuProps {
     isMenuOpen: boolean
     setIsMenuOpen: (isMenuOpen: boolean) => void
     menuAnchorEl: HTMLElement | null
     selectedCaseId: string | undefined
-    setEditCaseModalIsOpen: (editCaseModalIsOpen: boolean) => void
+    editCase: () => void
 }
 
 const CasesDropMenu = ({
-    isMenuOpen, setIsMenuOpen, menuAnchorEl, selectedCaseId, setEditCaseModalIsOpen,
+    isMenuOpen,
+    setIsMenuOpen,
+    menuAnchorEl,
+    selectedCaseId,
+    editCase,
 }: CasesDropMenuProps): JSX.Element => {
     const { project, setProject } = useAppContext()
     if (!project) return <p>project not found</p>
 
     const navigate = useNavigate()
 
-    const duplicateCase = async () => {
-        try {
-            if (selectedCaseId) {
-                const newProject = await (await GetCaseService()).duplicateCase(project.id, selectedCaseId)
-                setProject(newProject)
-            }
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
-        }
-    }
-
-    const deleteCase = async () => {
-        try {
-            if (selectedCaseId) {
-                const newProject = await (await GetCaseService()).deleteCase(project.id, selectedCaseId)
-                setProject(newProject)
-            }
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
-        }
-    }
-
     const openCase = async () => {
         try {
             if (selectedCaseId) {
                 navigate(`case/${selectedCaseId}`)
             }
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
-        }
-    }
-
-    const setCaseAsReference = async () => {
-        try {
-            const projectDto = { ...project }
-            if (projectDto.referenceCaseId === selectedCaseId) {
-                projectDto.referenceCaseId = EMPTY_GUID
-            } else {
-                projectDto.referenceCaseId = selectedCaseId ?? ""
-            }
-            const newProject = await (await GetProjectService()).updateProject(projectDto)
-            setProject(newProject)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }
@@ -90,7 +58,8 @@ const CasesDropMenu = ({
                 </Typography>
             </Menu.Item>
             <Menu.Item
-                onClick={duplicateCase}
+                onClick={() => (project && selectedCaseId) && duplicateCase(selectedCaseId, project, setProject)}
+
             >
                 <Icon data={library_add} size={16} />
                 <Typography group="navigation" variant="menu_title" as="span">
@@ -98,7 +67,7 @@ const CasesDropMenu = ({
                 </Typography>
             </Menu.Item>
             <Menu.Item
-                onClick={() => setEditCaseModalIsOpen(true)}
+                onClick={() => editCase()}
             >
                 <Icon data={edit} size={16} />
                 <Typography group="navigation" variant="menu_title" as="span">
@@ -106,7 +75,7 @@ const CasesDropMenu = ({
                 </Typography>
             </Menu.Item>
             <Menu.Item
-                onClick={deleteCase}
+                onClick={() => selectedCaseId && deleteCase(selectedCaseId, project, setProject)}
             >
                 <Icon data={delete_to_trash} size={16} />
                 <Typography group="navigation" variant="menu_title" as="span">
@@ -116,7 +85,7 @@ const CasesDropMenu = ({
             {project.referenceCaseId === selectedCaseId
                 ? (
                     <Menu.Item
-                        onClick={setCaseAsReference}
+                        onClick={() => project && setCaseAsReference(selectedCaseId, project, setProject)}
                     >
                         <Icon data={bookmark_outlined} size={16} />
                         <Typography group="navigation" variant="menu_title" as="span">
@@ -126,7 +95,7 @@ const CasesDropMenu = ({
                 )
                 : (
                     <Menu.Item
-                        onClick={setCaseAsReference}
+                        onClick={() => project && setCaseAsReference(selectedCaseId, project, setProject)}
                     >
                         <Icon data={bookmark_filled} size={16} />
                         <Typography group="navigation" variant="menu_title" as="span">

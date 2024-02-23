@@ -1,9 +1,13 @@
-import { Typography } from "@mui/material"
+import {
+    Typography,
+    Button,
+    Input,
+    Label,
+    Progress,
+    Switch,
+} from "@equinor/eds-core-react"
 import React, { ChangeEvent, useEffect, useState } from "react"
 import styled from "styled-components"
-import {
-    Button, Input, Label, Progress, Switch,
-} from "@equinor/eds-core-react"
 import { GetProspService } from "../../Services/ProspService"
 import { GetProjectService } from "../../Services/ProjectService"
 import { DriveItem } from "../../Models/sharepoint/DriveItem"
@@ -79,7 +83,7 @@ const PROSPTab = () => {
             if (project && sharepointUrl !== project.sharepointSiteUrl) {
                 const newProject: Components.Schemas.ProjectDto = { ...project }
                 newProject.sharepointSiteUrl = sharepointUrl
-                const projectResult = await (await GetProjectService()).updateProject(newProject)
+                const projectResult = await (await GetProjectService()).updateProject(project.id, newProject)
                 setProject(projectResult)
                 setSharepointUrl(projectResult.sharepointSiteUrl ?? "")
             }

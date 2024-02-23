@@ -6,14 +6,14 @@ import styled from "styled-components"
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import CaseNumberInput from "./CaseNumberInput"
-import CaseTabTable from "./CaseTabTable"
-import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
-import { ITimeSeries } from "../../Models/ITimeSeries"
-import { ITimeSeriesCost } from "../../Models/ITimeSeriesCost"
-import { ITimeSeriesCostOverride } from "../../Models/ITimeSeriesCostOverride"
-import FilterContainer from "../Input/FilterContainer"
-import InputContainer from "../Input/InputContainer"
+import CaseNumberInput from "../../Input/CaseNumberInput"
+import CaseTabTable from "../Components/CaseTabTable"
+import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
+import { ITimeSeries } from "../../../Models/ITimeSeries"
+import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
+import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
+import FilterContainer from "../../Input/Containers/TableFilterContainer"
+import InputContainer from "../../Input/Containers/InputContainer"
 
 const TopWrapper = styled.div`
     display: flex;

@@ -510,7 +510,7 @@ declare namespace Components {
             description: string;
             country: string;
             currency: Currency /* int32 */;
-            physUnit: PhysUnit /* int32 */;
+            physicalUnit: PhysUnit /* int32 */;
             createDate: string; // date-time
             projectPhase: ProjectPhase /* int32 */;
             projectCategory: ProjectCategory /* int32 */;
@@ -723,7 +723,6 @@ declare namespace Components {
             projectDto?: ProjectDto;
             explorationDto?: ExplorationDto;
             wellProjectDto?: WellProjectDto;
-            caseId?: string | null; // uuid
         }
         export interface TimeSeriesCostDto {
             id: string; // uuid
@@ -927,6 +926,12 @@ declare namespace Components {
             values?: number /* double */[] | null;
             override?: boolean;
         }
+        export interface UpdateDevelopmentOperationalWellCostsDto {
+            rigUpgrading?: number; // double
+            rigMobDemob?: number; // double
+            annualWellInterventionCostPerWell?: number; // double
+            pluggingAndAbandonment?: number; // double
+        }
         export interface UpdateDrainageStrategyDto {
             name?: string | null;
             description?: string | null;
@@ -936,6 +941,10 @@ declare namespace Components {
             waterInjectorCount?: number; // int32
             artificialLift?: ArtificialLift /* int32 */;
             gasSolution?: GasSolution /* int32 */;
+            productionProfileOil?: UpdateProductionProfileOilDto;
+            productionProfileGas?: UpdateProductionProfileGasDto;
+            productionProfileWater?: UpdateProductionProfileWaterDto;
+            productionProfileWaterInjection?: UpdateProductionProfileWaterInjectionDto;
             fuelFlaringAndLossesOverride?: UpdateFuelFlaringAndLossesOverrideDto;
             netSalesGasOverride?: UpdateNetSalesGasOverrideDto;
             co2EmissionsOverride?: UpdateCo2EmissionsOverrideDto;
@@ -945,6 +954,13 @@ declare namespace Components {
             rigMobDemob?: number; // double
             currency?: Currency /* int32 */;
             explorationWells?: ExplorationWellDto[] | null;
+        }
+        export interface UpdateExplorationOperationalWellCostsDto {
+            rigUpgrading?: number; // double
+            explorationRigMobDemob?: number; // double
+            explorationProjectDrillingCosts?: number; // double
+            appraisalRigMobDemob?: number; // double
+            appraisalProjectDrillingCosts?: number; // double
         }
         export interface UpdateExplorationWellDto {
             drillingSchedule?: DrillingScheduleDto;
@@ -984,6 +1000,44 @@ declare namespace Components {
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
             override?: boolean;
+        }
+        export interface UpdateProductionProfileGasDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+        }
+        export interface UpdateProductionProfileOilDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+        }
+        export interface UpdateProductionProfileWaterDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+        }
+        export interface UpdateProductionProfileWaterInjectionDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+        }
+        export interface UpdateProjectDto {
+            name?: string | null;
+            referenceCaseId?: string; // uuid
+            commonLibraryName?: string | null;
+            description?: string | null;
+            country?: string | null;
+            currency?: Currency /* int32 */;
+            physicalUnit?: PhysUnit /* int32 */;
+            projectPhase?: ProjectPhase /* int32 */;
+            projectCategory?: ProjectCategory /* int32 */;
+            explorationOperationalWellCosts?: UpdateExplorationOperationalWellCostsDto;
+            developmentOperationalWellCosts?: UpdateDevelopmentOperationalWellCostsDto;
+            wells?: WellDto[] | null;
+            sharepointSiteUrl?: string | null;
+            cO2RemovedFromGas?: number; // double
+            cO2EmissionFromFuelGas?: number; // double
+            flaredGasPerProducedVolume?: number; // double
+            cO2EmissionsFromFlaredGas?: number; // double
+            cO2Vented?: number; // double
+            dailyEmissionFromDrillingRig?: number; // double
+            averageDevelopmentDrillingDays?: number; // double
         }
         export interface UpdateSubstructureCostProfileOverrideDto {
             startYear?: number; // int32
@@ -1032,6 +1086,14 @@ declare namespace Components {
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
             hasChanges?: boolean;
+        }
+        export interface UpdateTechnicalInputDto {
+            developmentOperationalWellCostsDto?: UpdateDevelopmentOperationalWellCostsDto;
+            explorationOperationalWellCostsDto?: UpdateExplorationOperationalWellCostsDto;
+            wellDtos?: WellDto[] | null;
+            projectDto?: UpdateProjectDto;
+            explorationDto?: UpdateExplorationDto;
+            wellProjectDto?: UpdateWellProjectDto;
         }
         export interface UpdateTopsideCostProfileOverrideDto {
             startYear?: number; // int32
@@ -1218,23 +1280,6 @@ declare namespace Components {
     }
 }
 declare namespace Paths {
-    namespace CreateProject {
-        export type RequestBody = Components.Schemas.ProjectDto;
-        namespace Responses {
-            export type $200 = Components.Schemas.ProjectDto;
-        }
-    }
-    namespace CreateProjectFromContextId {
-        namespace Parameters {
-            export type ContextId = string; // uuid
-        }
-        export interface QueryParameters {
-            contextId?: Parameters.ContextId /* uuid */;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.ProjectDto;
-        }
-    }
     namespace DeleteWell {
         namespace Parameters {
             export type ProjectId = string;
@@ -1286,17 +1331,6 @@ declare namespace Paths {
             export type $200 = Components.Schemas.STEAProjectDto;
         }
     }
-    namespace GetProject {
-        namespace Parameters {
-            export type ProjectId = string; // uuid
-        }
-        export interface PathParameters {
-            projectId: Parameters.ProjectId /* uuid */;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.ProjectDto;
-        }
-    }
     namespace GetSharePointFileNamesAndId {
         export type RequestBody = Components.Schemas.UrlDto;
         namespace Responses {
@@ -1316,6 +1350,44 @@ declare namespace Paths {
         export type RequestBody = Components.Schemas.SharePointImportDto[];
         namespace Responses {
             export type $200 = Components.Schemas.ProjectDto;
+        }
+    }
+    namespace Projects {
+        namespace Post {
+            namespace Parameters {
+                export type ContextId = string; // uuid
+            }
+            export interface QueryParameters {
+                contextId?: Parameters.ContextId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.ProjectDto;
+            }
+        }
+    }
+    namespace Projects$ProjectId {
+        namespace Get {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.ProjectDto;
+            }
+        }
+        namespace Put {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateProjectDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.ProjectDto;
+            }
         }
     }
     namespace Projects$ProjectIdCaseComparison {
@@ -1472,7 +1544,7 @@ declare namespace Paths {
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.TechnicalInputDto;
+            export type RequestBody = Components.Schemas.UpdateTechnicalInputDto;
             namespace Responses {
                 export type $200 = Components.Schemas.TechnicalInputDto;
             }
@@ -1490,12 +1562,6 @@ declare namespace Paths {
         export type RequestBody = Components.Schemas.CaseWithAssetsWrapperDto;
         namespace Responses {
             export type $200 = Components.Schemas.ProjectWithGeneratedProfilesDto;
-        }
-    }
-    namespace UpdateProject {
-        export type RequestBody = Components.Schemas.ProjectDto;
-        namespace Responses {
-            export type $200 = Components.Schemas.ProjectDto;
         }
     }
 }

@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import { NavLink } from "react-router-dom"
-import { Icon, Button } from "@equinor/eds-core-react"
+import { Icon } from "@equinor/eds-core-react"
 import { file, folder } from "@equinor/eds-icons"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { tokens } from "@equinor/eds-tokens"
@@ -8,6 +8,9 @@ import { useAppContext } from "../Context/AppContext"
 import { casePath, projectPath } from "../Utils/common"
 
 const Wrapper = styled.div`
+    position: sticky;
+    top: 0;
+    height: calc(100vh - 60px);
     z-index: 1000;
     display: flex;
     flex-direction: column;
@@ -122,7 +125,10 @@ const CaseNavLink = styled(NavLink)`
 `
 
 const Sidebar = () => {
-    const { project, setCreateCaseModalIsOpen } = useAppContext()
+    const {
+        project,
+        addNewCase,
+    } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
 
     return (
@@ -140,7 +146,7 @@ const Sidebar = () => {
                         <input
                             type="button"
                             value="+"
-                            onClick={() => { setCreateCaseModalIsOpen(true) }}
+                            onClick={() => addNewCase()}
                         />
                     </CasesHeader>
                     <Cases>

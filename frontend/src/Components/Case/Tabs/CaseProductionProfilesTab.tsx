@@ -10,14 +10,14 @@ import styled from "styled-components"
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import InputContainer from "../Input/InputContainer"
-import CaseNumberInput from "./CaseNumberInput"
-import FilterContainer from "../Input/FilterContainer"
-import CaseTabTable from "./CaseTabTable"
-import { ITimeSeries } from "../../Models/ITimeSeries"
-import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
-import { AgChartsTimeseries, setValueToCorrespondingYear } from "../AgGrid/AgChartsTimeseries"
-import { ITimeSeriesOverride } from "../../Models/ITimeSeriesOverride"
+import InputContainer from "../../Input/Containers/InputContainer"
+import CaseNumberInput from "../../Input/CaseNumberInput"
+import FilterContainer from "../../Input/Containers/TableFilterContainer"
+import CaseTabTable from "../Components/CaseTabTable"
+import { ITimeSeries } from "../../../Models/ITimeSeries"
+import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
+import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../AgGrid/AgChartsTimeseries"
+import { ITimeSeriesOverride } from "../../../Models/ITimeSeriesOverride"
 
 const TopWrapper = styled.div`
     display: flex;
@@ -156,31 +156,31 @@ const CaseProductionProfilesTab = ({
     const timeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Oil production",
-            unit: `${project?.physUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
+            unit: `${project?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
             set: setOil,
             profile: oil,
         },
         {
             profileName: "Gas production",
-            unit: `${project?.physUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
+            unit: `${project?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
             set: setGas,
             profile: gas,
         },
         {
             profileName: "Water production",
-            unit: `${project?.physUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
+            unit: `${project?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
             set: setWater,
             profile: water,
         },
         {
             profileName: "Water injection",
-            unit: `${project?.physUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
+            unit: `${project?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
             set: setWaterInjection,
             profile: waterInjection,
         },
         {
             profileName: "Fuel, flaring and losses",
-            unit: `${project?.physUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
+            unit: `${project?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
             profile: fuelFlaringAndLosses,
             overridable: true,
             overrideProfile: fuelFlaringAndLossesOverride,
@@ -188,7 +188,7 @@ const CaseProductionProfilesTab = ({
         },
         {
             profileName: "Net sales gas",
-            unit: `${project?.physUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
+            unit: `${project?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
             profile: netSalesGas,
             overridable: true,
             overrideProfile: netSalesGasOverride,
@@ -244,11 +244,11 @@ const CaseProductionProfilesTab = ({
                     setImportedElectricity(drainageStrategy.importedElectricity)
 
                     SetTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
-                    drainageStrategy.netSalesGasOverride, drainageStrategy.fuelFlaringAndLossesOverride,
-                    drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
-                    drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
-                    drainageStrategy.productionProfileWaterInjection, drainageStrategy.importedElectricityOverride,
-                    drainageStrategy.co2EmissionsOverride,
+                        drainageStrategy.netSalesGasOverride, drainageStrategy.fuelFlaringAndLossesOverride,
+                        drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
+                        drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
+                        drainageStrategy.productionProfileWaterInjection, drainageStrategy.importedElectricityOverride,
+                        drainageStrategy.co2EmissionsOverride,
                     ], new Date(caseItem.dG4Date).getFullYear(), setStartYear, setEndYear, setTableYears)
                     setGas(drainageStrategy.productionProfileGas)
                     setOil(drainageStrategy.productionProfileOil)
@@ -399,7 +399,7 @@ const CaseProductionProfilesTab = ({
                     id="unit"
                     label="Units"
                     onChange={() => { }}
-                    value={project.physUnit}
+                    value={project.physicalUnit}
                     disabled
                 >
                     <option key={0} value={0}>SI</option>

@@ -35,9 +35,9 @@ public class ProjectService : IProjectService
         _mapper = mapper;
     }
 
-    public async Task<ProjectDto> UpdateProject(ProjectDto projectDto)
+    public async Task<ProjectDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto)
     {
-        var existingProject = await GetProject(projectDto.Id);
+        var existingProject = await GetProject(projectId);
 
         _mapper.Map(projectDto, existingProject);
 
@@ -364,7 +364,7 @@ public class ProjectService : IProjectService
                 FusionProjectId = projectMaster.Identity,
                 Country = projectMaster.Country ?? "",
                 Currency = Currency.NOK,
-                PhysUnit = PhysUnit.SI,
+                PhysicalUnit = PhysUnit.SI,
                 Id = projectMaster.Identity,
                 // ProjectCategory = category,
                 // ProjectPhase = phase,

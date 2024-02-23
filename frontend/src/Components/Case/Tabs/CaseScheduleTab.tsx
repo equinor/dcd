@@ -8,15 +8,15 @@ import styled from "styled-components"
 import {
     Typography,
 } from "@equinor/eds-core-react"
-import CaseDateField from "./CaseDateField"
+import CaseDateField from "../../Input/CaseDateInput"
 import {
     dateFromString,
     defaultDate,
     isDefaultDate,
     isDefaultDateString,
     toMonthDate,
-} from "../../Utils/common"
-import InputContainer from "../Input/InputContainer"
+} from "../../../Utils/common"
+import InputContainer from "../../Input/Containers/InputContainer"
 
 const TopWrapper = styled.div`
     display: flex;

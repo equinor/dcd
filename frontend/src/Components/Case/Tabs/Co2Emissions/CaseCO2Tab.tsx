@@ -11,27 +11,23 @@ import styled from "styled-components"
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import CaseNumberInput from "./CaseNumberInput"
-import CaseTabTable from "./CaseTabTable"
-import { ITimeSeries } from "../../Models/ITimeSeries"
-import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
-import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileService"
-import CaseCO2DistributionTable from "./CaseCO2DistributionTable"
-import { AgChartsTimeseries, setValueToCorrespondingYear } from "../AgGrid/AgChartsTimeseries"
-import { AgChartsPie } from "../AgGrid/AgChartsPie"
-import { ITimeSeriesOverride } from "../../Models/ITimeSeriesOverride"
-import InputContainer from "../Input/InputContainer"
-import FilterContainer from "../Input/FilterContainer"
+import CaseNumberInput from "../../../Input/CaseNumberInput"
+import CaseTabTable from "../../Components/CaseTabTable"
+import { ITimeSeries } from "../../../../Models/ITimeSeries"
+import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
+import { GetGenerateProfileService } from "../../../../Services/CaseGeneratedProfileService"
+import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
+import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../../AgGrid/AgChartsTimeseries"
+import { AgChartsPie } from "../../../AgGrid/AgChartsPie"
+import { ITimeSeriesOverride } from "../../../../Models/ITimeSeriesOverride"
+import InputContainer from "../../../Input/Containers/InputContainer"
+import FilterContainer from "../../../Input/Containers/TableFilterContainer"
 
 export const WrapperColumn = styled.div`
     display: flex;
     flex-direction: column;
 `
 
-const ColumnWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`
 const GraphWrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -185,7 +181,7 @@ const CaseCO2Tab = ({
     const timeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Annual CO2 emissions",
-            unit: `${project?.physUnit === 0 ? "MTPA" : "MTPA"}`,
+            unit: `${project?.physicalUnit === 0 ? "MTPA" : "MTPA"}`,
             profile: co2Emissions,
             overridable: true,
             overrideProfile: co2EmissionsOverride,
@@ -193,7 +189,7 @@ const CaseCO2Tab = ({
         },
         {
             profileName: "Year-by-year CO2 intensity",
-            unit: `${project?.physUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
+            unit: `${project?.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
             profile: co2Intensity,
             total: co2IntensityTotal?.toString(),
         },
@@ -362,7 +358,7 @@ const CaseCO2Tab = ({
                     id="unit"
                     label="Units"
                     onChange={() => { }}
-                    value={project.physUnit}
+                    value={project.physicalUnit}
                     disabled
                 >
                     <option key={0} value={0}>SI</option>
