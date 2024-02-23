@@ -46,15 +46,12 @@ public class Case
     public TotalFEEDStudies? TotalFEEDStudies { get; set; }
     public TotalFEEDStudiesOverride? TotalFEEDStudiesOverride { get; set; }
     public TotalOtherStudies? TotalOtherStudies { get; set; }
-    public TotalOtherStudiesOverride? TotalOtherStudiesOverride { get; set; }
     public HistoricCostCostProfile? HistoricCostCostProfile { get; set; }
-    public HistoricCostCostProfileOverride? HistoricCostCostProfileOverride { get; set; }
     public WellInterventionCostProfile? WellInterventionCostProfile { get; set; }
     public WellInterventionCostProfileOverride? WellInterventionCostProfileOverride { get; set; }
     public OffshoreFacilitiesOperationsCostProfile? OffshoreFacilitiesOperationsCostProfile { get; set; }
     public OffshoreFacilitiesOperationsCostProfileOverride? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
     public AdditionalOPEXCostProfile? AdditionalOPEXCostProfile { get; set; }
-    public AdditionalOPEXCostProfileOverride? AdditionalOPEXCostProfileOverride { get; set; }
 
     public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
     public Guid WellProjectLink { get; set; } = Guid.Empty;
@@ -121,12 +118,6 @@ public class HistoricCostCostProfile : TimeSeriesCost, ICaseTimeSeries
     [ForeignKey("Case.Id")]
     public Case Case { get; set; } = null!;
 }
-public class HistoricCostCostProfileOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
-{
-    [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
-    public bool Override { get; set; }
-}
 public class WellInterventionCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
@@ -154,12 +145,6 @@ public class AdditionalOPEXCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
     public Case Case { get; set; } = null!;
-}
-public class AdditionalOPEXCostProfileOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
-{
-    [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
-    public bool Override { get; set; }
 }
 
 public class StudyCostProfile : TimeSeriesCost
@@ -196,14 +181,6 @@ public class TotalOtherStudies : TimeSeriesCost, ICaseTimeSeries
     [ForeignKey("Case.Id")]
     public Case Case { get; set; } = null!;
 }
-public class TotalOtherStudiesOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
-{
-    [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
-    public bool Override { get; set; }
-
-}
-
 public interface ICaseTimeSeries
 {
     Case Case { get; set; }

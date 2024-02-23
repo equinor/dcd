@@ -52,7 +52,6 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
 
         var newFeasibility = CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
         var newFeed = CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
-        var newOtherStudies = CalculateTotalOtherStudies(caseItem, sumFacilityCost, sumWellCost);
 
 
         var feasibility = caseItem.TotalFeasibilityAndConceptStudies ?? newFeasibility;
@@ -63,9 +62,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         feed.StartYear = newFeed.StartYear;
         feed.Values = newFeed.Values;
 
-        var otherStudies = caseItem.TotalOtherStudies ?? newOtherStudies;
-        otherStudies.StartYear = newOtherStudies.StartYear;
-        otherStudies.Values = newOtherStudies.Values;
+        var otherStudies = caseItem.TotalOtherStudies ?? 0;
 
         await UpdateCaseAndSaveAsync(caseItem, feasibility, feed, otherStudies);
 
@@ -83,8 +80,8 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         {
             return new StudyCostProfileWrapperDto();
         }
-        
-        var cost = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> {feasibility,feed,otherStudies});
+
+        var cost = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { feasibility, feed, otherStudies });
 
         var studyCost = new StudyCostProfile
         {
@@ -178,47 +175,6 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         var valuesList = percentageOfYearList.ConvertAll(x => x * totalFeasibilityAndConceptStudies);
 
         var feasibilityAndConceptStudiesCost = new TotalFEEDStudies
-        {
-            StartYear = dg2.Year - caseItem.DG4Date.Year,
-            Values = valuesList.ToArray()
-        };
-
-        return feasibilityAndConceptStudiesCost;
-    }
-
-    public TotalOtherStudies CalculateTotalOtherStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
-    {
-        var totalFeasibilityAndConceptStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFEEDStudies;
-
-        var dg2 = caseItem.DG2Date;
-        var dg3 = caseItem.DG3Date;
-
-        if (dg2.Year == 1 || dg3.Year == 1) { return new TotalOtherStudies(); }
-        if (dg3.DayOfYear == 1) { dg3 = dg3.AddDays(-1); } // Treat the 1st of January as the 31st of December
-
-        var totalDays = (dg3 - dg2).Days + 1;
-
-        var firstYearDays = (new DateTimeOffset(dg2.Year, 12, 31, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero) - dg2).Days + 1;
-        var firstYearPercentage = firstYearDays / (double)totalDays;
-
-        var lastYearDays = dg3.DayOfYear;
-        var lastYearPercentage = lastYearDays / (double)totalDays;
-
-        var percentageOfYearList = new List<double>
-        {
-            firstYearPercentage
-        };
-        for (int i = dg2.Year + 1; i < dg3.Year; i++)
-        {
-            var days = DateTime.IsLeapYear(i) ? 366 : 365;
-            var percentage = days / (double)totalDays;
-            percentageOfYearList.Add(percentage);
-        }
-        percentageOfYearList.Add(lastYearPercentage);
-
-        var valuesList = percentageOfYearList.ConvertAll(x => x * totalFeasibilityAndConceptStudies);
-
-        var feasibilityAndConceptStudiesCost = new TotalOtherStudies
         {
             StartYear = dg2.Year - caseItem.DG4Date.Year,
             Values = valuesList.ToArray()

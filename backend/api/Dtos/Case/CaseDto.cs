@@ -77,15 +77,12 @@ public class CaseDto
     public TotalFEEDStudiesDto? TotalFEEDStudies { get; set; }
     public TotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
     public TotalOtherStudiesDto? TotalOtherStudies { get; set; }
-    public TotalOtherStudiesOverrideDto? TotalOtherStudiesOverride { get; set; }
     public HistoricCostCostProfileDto? HistoricCostCostProfile { get; set; }
-    public HistoricCostCostProfileOverrideDto? HistoricCostCostProfileOverride { get; set; }
     public WellInterventionCostProfileDto? WellInterventionCostProfile { get; set; }
     public WellInterventionCostProfileOverrideDto? WellInterventionCostProfileOverride { get; set; }
     public OffshoreFacilitiesOperationsCostProfileDto? OffshoreFacilitiesOperationsCostProfile { get; set; }
     public OffshoreFacilitiesOperationsCostProfileOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
     public AdditionalOPEXCostProfileDto? AdditionalOPEXCostProfile { get; set; }
-    public AdditionalOPEXCostProfileOverrideDto? AdditionalOPEXCostProfileOverride { get; set; }
 
     [Required]
     public Guid DrainageStrategyLink { get; set; }
@@ -138,11 +135,6 @@ public class HistoricCostCostProfileDto : TimeSeriesCostDto
 {
 }
 
-public class HistoricCostCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    public bool Override { get; set; }
-}
-
 public class WellInterventionCostProfileDto : TimeSeriesCostDto
 {
 }
@@ -167,11 +159,6 @@ public class AdditionalOPEXCostProfileDto : TimeSeriesCostDto
 {
 }
 
-public class AdditionalOPEXCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    public bool Override { get; set; }
-}
-
 public class StudyCostProfileDto : TimeSeriesCostDto
 {
 }
@@ -193,10 +180,6 @@ public class TotalFEEDStudiesOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrid
 }
 public class TotalOtherStudiesDto : TimeSeriesCostDto
 {
-}
-public class TotalOtherStudiesOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    public bool Override { get; set; }
 }
 
 public class CessationCostWrapperDto

@@ -88,9 +88,6 @@ const CaseCostTab = ({
     activeTab,
     totalFeasibilityAndConceptStudies, setTotalFeasibilityAndConceptStudies,
     totalFEEDStudies, setTotalFEEDStudies,
-    totalOtherStudies, setTotalOtherStudies,
-    additionalOPEXCostProfile, setAdditionalOPEXCostProfile,
-    historicCostCostProfile, setHistoricCostCostProfile,
     offshoreFacilitiesOperationsCostProfile, setOffshoreFacilitiesOperationsCostProfile,
     wellInterventionCostProfile, setWellInterventionCostProfile,
     cessationWellsCost, setCessationWellsCost,
@@ -100,19 +97,14 @@ const CaseCostTab = ({
     // OPEX
     const [totalFeasibilityAndConceptStudiesOverride,
         setTotalFeasibilityAndConceptStudiesOverride] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto>()
-
     const [totalFEEDStudiesOverride, setTotalFEEDStudiesOverride] = useState<Components.Schemas.TotalFEEDStudiesOverrideDto>()
-
-    const [totalOtherStudiesOverride, setTotalOtherStudiesOverride] = useState<Components.Schemas.TotalOtherStudiesOverrideDto>()
+    const [totalOtherStudies, setTotalOtherStudies] = useState<Components.Schemas.TotalOtherStudiesDto>()
 
     const [offshoreFacilitiesOperationsCostProfileOverride,
         setOffshoreFacilitiesOperationsCostProfileOverride] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto>()
-
     const [wellInterventionCostProfileOverride, setWellInterventionCostProfileOverride] = useState<Components.Schemas.WellInterventionCostProfileOverrideDto>()
-
-    const [historicCostCostProfileOverride, setHistoricCostCostProfileOverride] = useState<Components.Schemas.HistoricCostCostProfileOverrideDto>()
-
-    const [additionalOPEXCostProfileOverride, setAdditionalOPEXCostProfileOverride] = useState<Components.Schemas.AdditionalOPEXCostProfileOverrideDto>()
+    const [additionalOPEXCostProfile, setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto>()
+    const [historicCostCostProfile, setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto>()
 
     const [cessationWellsCostOverride, setCessationWellsCostOverride] = useState<Components.Schemas.CessationWellsCostOverrideDto>()
     const [cessationOffshoreFacilitiesCostOverride,
@@ -176,7 +168,6 @@ const CaseCostTab = ({
                     setTotalFEEDStudies(totalFEED)
                     setTotalFEEDStudiesOverride(caseItem.totalFEEDStudiesOverride)
                     setTotalOtherStudies(totalOtherStudiesLocal)
-                    setTotalOtherStudiesOverride(caseItem.totalOtherStudiesOverride)
 
                     const wellIntervention = wellInterventionCostProfile
                     const offshoreFacilitiesOperations = caseItem.offshoreFacilitiesOperationsCostProfile
@@ -188,9 +179,7 @@ const CaseCostTab = ({
                     setOffshoreFacilitiesOperationsCostProfile(offshoreFacilitiesOperations)
                     setOffshoreFacilitiesOperationsCostProfileOverride(caseItem.offshoreFacilitiesOperationsCostProfileOverride)
                     setHistoricCostCostProfile(historicCostCost)
-                    setHistoricCostCostProfileOverride(caseItem.historicCostCostProfileOverride)
                     setAdditionalOPEXCostProfile(additionalOPEXCost)
-                    setAdditionalOPEXCostProfileOverride(caseItem.additionalOPEXCostProfileOverride)
 
                     const cessationWells = caseItem.cessationWellsCost
                     const cessationOffshoreFacilities = caseItem.cessationOffshoreFacilitiesCost
@@ -254,10 +243,9 @@ const CaseCostTab = ({
                     SetTableYearsFromProfiles([caseItem.totalFeasibilityAndConceptStudies, caseItem.totalFEEDStudies, caseItem.totalOtherStudies,
                     caseItem.wellInterventionCostProfile, caseItem.offshoreFacilitiesOperationsCostProfile,
                     caseItem.cessationWellsCost, caseItem.cessationOffshoreFacilitiesCost,
-                    caseItem.totalFeasibilityAndConceptStudiesOverride, caseItem.totalFEEDStudiesOverride, caseItem.totalOtherStudiesOverride,
+                    caseItem.totalFeasibilityAndConceptStudiesOverride, caseItem.totalFEEDStudiesOverride,
                     caseItem.wellInterventionCostProfileOverride, caseItem.offshoreFacilitiesOperationsCostProfileOverride,
                     caseItem.historicCostCostProfile, caseItem.additionalOPEXCostProfile,
-                    caseItem.historicCostCostProfileOverride, caseItem.additionalOPEXCostProfileOverride,
                     caseItem.cessationWellsCostOverride, caseItem.cessationOffshoreFacilitiesCostOverride,
                         surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
                         surfCostOverride, topsideCostOverride, substructureCostOverride, transportCostOverride,
@@ -293,6 +281,13 @@ const CaseCostTab = ({
             studyGridRef.current.api.refreshCells()
         }
     }, [totalFeasibilityAndConceptStudies, totalFEEDStudies, totalOtherStudies])
+
+    useEffect(() => {
+        const {
+            totalOtherStudies
+        } = caseItem
+        setTotalOtherStudies(totalOtherStudies)
+    }, [caseItem])
 
     useEffect(() => {
         if (opexGridRef.current && opexGridRef.current.api && opexGridRef.current.api.refreshCells) {
@@ -398,9 +393,7 @@ const CaseCostTab = ({
             profileName: "Other studies",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: totalOtherStudies,
-            overridable: true,
-            overrideProfile: totalOtherStudiesOverride,
-            overrideProfileSet: setTotalOtherStudiesOverride,
+            set: setTotalOtherStudies,
         },
     ]
 
@@ -409,9 +402,7 @@ const CaseCostTab = ({
             profileName: "Historic Cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: historicCostCostProfile,
-            overridable: true,
-            overrideProfile: historicCostCostProfileOverride,
-            overrideProfileSet: setHistoricCostCostProfileOverride,
+            set: setHistoricCostCostProfile,
         },
         {
             profileName: "Well intervention",
@@ -433,9 +424,7 @@ const CaseCostTab = ({
             profileName: "Additional OPEX (input req.)",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: additionalOPEXCostProfile,
-            overridable: true,
-            overrideProfile: additionalOPEXCostProfileOverride,
-            overrideProfileSet: setAdditionalOPEXCostProfileOverride,
+            set: setAdditionalOPEXCostProfile,
         },
     ]
 
@@ -586,13 +575,6 @@ const CaseCostTab = ({
 
     useEffect(() => {
         const newCase: Components.Schemas.CaseDto = { ...caseItem }
-        if (!totalOtherStudiesOverride) { return }
-        newCase.totalOtherStudiesOverride = totalOtherStudiesOverride
-        setCase(newCase)
-    }, [totalOtherStudiesOverride])
-
-    useEffect(() => {
-        const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (!wellInterventionCostProfileOverride) { return }
         newCase.wellInterventionCostProfileOverride = wellInterventionCostProfileOverride
         setCase(newCase)
@@ -604,20 +586,6 @@ const CaseCostTab = ({
         newCase.offshoreFacilitiesOperationsCostProfileOverride = offshoreFacilitiesOperationsCostProfileOverride
         setCase(newCase)
     }, [offshoreFacilitiesOperationsCostProfileOverride])
-
-    useEffect(() => {
-        const newCase: Components.Schemas.CaseDto = { ...caseItem }
-        if (!historicCostCostProfileOverride) { return }
-        newCase.historicCostCostProfileOverride = historicCostCostProfileOverride
-        setCase(newCase)
-    }, [historicCostCostProfileOverride])
-
-    useEffect(() => {
-        const newCase: Components.Schemas.CaseDto = { ...caseItem }
-        if (!additionalOPEXCostProfileOverride) { return }
-        newCase.additionalOPEXCostProfileOverride = additionalOPEXCostProfileOverride
-        setCase(newCase)
-    }, [additionalOPEXCostProfileOverride])
 
     useEffect(() => {
         const newCase: Components.Schemas.CaseDto = { ...caseItem }

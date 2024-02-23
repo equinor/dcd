@@ -19,15 +19,12 @@ public class CaseProfile : Profile
         CreateMap<TotalFEEDStudies, TotalFEEDStudiesDto>();
         CreateMap<TotalFEEDStudiesOverride, TotalFEEDStudiesOverrideDto>();
         CreateMap<TotalOtherStudies, TotalOtherStudiesDto>();
-        CreateMap<TotalOtherStudiesOverride, TotalOtherStudiesOverrideDto>();
         CreateMap<WellInterventionCostProfile, WellInterventionCostProfileDto>();
         CreateMap<WellInterventionCostProfileOverride, WellInterventionCostProfileOverrideDto>();
         CreateMap<OffshoreFacilitiesOperationsCostProfile, OffshoreFacilitiesOperationsCostProfileDto>();
         CreateMap<OffshoreFacilitiesOperationsCostProfileOverride, OffshoreFacilitiesOperationsCostProfileOverrideDto>();
         CreateMap<HistoricCostCostProfile, HistoricCostCostProfileDto>();
-        CreateMap<HistoricCostCostProfileOverride, HistoricCostCostProfileOverrideDto>();
         CreateMap<AdditionalOPEXCostProfile, AdditionalOPEXCostProfileDto>();
-        CreateMap<AdditionalOPEXCostProfileOverride, AdditionalOPEXCostProfileOverrideDto>();
 
         CreateMap<UpdateCaseDto, Case>();
         CreateMap<UpdateCessationWellsCostOverrideDto, CessationWellsCostOverride>();

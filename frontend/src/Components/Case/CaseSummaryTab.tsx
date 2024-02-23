@@ -64,6 +64,8 @@ const CaseSummaryTab = ({
     const [cessationCost, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto>()
 
     // CAPEX
+    const [historicCost, setHistoricCost] = useState<Components.Schemas.HistoricCostCostProfileDto>()
+
     const [topsideCost, setTopsideCost] = useState<Components.Schemas.TopsideCostProfileDto>()
     const [surfCost, setSurfCost] = useState<Components.Schemas.SurfCostProfileDto>()
     const [substructureCost, setSubstructureCost] = useState<Components.Schemas.SubstructureCostProfileDto>()
@@ -118,9 +120,6 @@ const CaseSummaryTab = ({
                     }
                     if (caseItem.totalFEEDStudiesOverride?.override === true) {
                         feed = caseItem.totalFEEDStudiesOverride
-                    }
-                    if (caseItem.totalOtherStudiesOverride?.override === true) {
-                        totalOtherStudies = caseItem.totalOtherStudiesOverride
                     }
 
                     const totalStudy = MergeTimeseries(feasibility, feed, totalOtherStudies)
@@ -195,6 +194,12 @@ const CaseSummaryTab = ({
     ]
 
     const capexTimeSeriesData: ITimeSeriesData[] = [
+        {
+            profileName: "Historic cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: historicCost,
+            set: setTopsideCost,
+        },
         {
             profileName: "Topside cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,

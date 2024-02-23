@@ -53,8 +53,6 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
 
         var newWellInterventionCost = await CalculateWellInterventionCostProfile(caseItem, project, drainageStrategy);
         var newOffshoreFacilitiesOperationsCost = await CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, drainageStrategy);
-        var newHistoricCost = await CalculateHistoricCostCostProfile(caseItem, drainageStrategy);
-        var newAdditionalOPEXCost = await CalculateAdditionalOPEXCostProfile(caseItem, drainageStrategy);
 
         var wellInterventionCost = caseItem.WellInterventionCostProfile ?? new WellInterventionCostProfile();
         wellInterventionCost.StartYear = newWellInterventionCost.StartYear;
@@ -65,12 +63,8 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         offshoreFacilitiesOperationsCost.Values = newOffshoreFacilitiesOperationsCost.Values;
 
         var historicCost = caseItem.HistoricCostCostProfile ?? new HistoricCostCostProfile();
-        historicCost.StartYear = newHistoricCost.StartYear;
-        historicCost.Values = newHistoricCost.Values;
 
         var additionalOPEXCost = caseItem.AdditionalOPEXCostProfile ?? new AdditionalOPEXCostProfile();
-        additionalOPEXCost.StartYear = newAdditionalOPEXCost.StartYear;
-        additionalOPEXCost.Values = newAdditionalOPEXCost.Values;
 
         await UpdateCaseAndSaveAsync(caseItem, wellInterventionCost, offshoreFacilitiesOperationsCost, historicCost, additionalOPEXCost);
 
@@ -224,88 +218,6 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
             Values = values.ToArray()
         };
         return offshoreFacilitiesOperationsCost;
-    }
-
-    public async Task<HistoricCostCostProfile> CalculateHistoricCostCostProfile(Case caseItem, DrainageStrategy drainageStrategy)
-    {
-        if (drainageStrategy.ProductionProfileOil == null || drainageStrategy.ProductionProfileOil.Values.Length == 0)
-        {
-            return new HistoricCostCostProfile { Values = [] };
-        }
-        var firstYear = drainageStrategy.ProductionProfileOil.StartYear;
-        var lastYear = drainageStrategy.ProductionProfileOil.StartYear + drainageStrategy.ProductionProfileOil.Values.Length;
-
-        Topside topside;
-        try
-        {
-            topside = await _topsideService.GetTopside(caseItem.TopsideLink);
-        }
-        catch (ArgumentException)
-        {
-            _logger.LogInformation("Topside {0} not found.", caseItem.TopsideLink);
-            return new HistoricCostCostProfile { Values = [] };
-        }
-        var facilityOpex = topside.FacilityOpex;
-        var values = new List<double>
-        {
-            (facilityOpex - 1) / 8,
-            (facilityOpex - 1) / 4,
-            (facilityOpex - 1) / 2
-        };
-
-        for (int i = firstYear; i < lastYear; i++)
-        {
-            values.Add(facilityOpex);
-        }
-        const int preOpexCostYearOffset = 3;
-
-        var historicCostCost = new HistoricCostCostProfile
-        {
-            StartYear = firstYear - preOpexCostYearOffset,
-            Values = values.ToArray()
-        };
-        return historicCostCost;
-    }
-
-    public async Task<AdditionalOPEXCostProfile> CalculateAdditionalOPEXCostProfile(Case caseItem, DrainageStrategy drainageStrategy)
-    {
-        if (drainageStrategy.ProductionProfileOil == null || drainageStrategy.ProductionProfileOil.Values.Length == 0)
-        {
-            return new AdditionalOPEXCostProfile { Values = [] };
-        }
-        var firstYear = drainageStrategy.ProductionProfileOil.StartYear;
-        var lastYear = drainageStrategy.ProductionProfileOil.StartYear + drainageStrategy.ProductionProfileOil.Values.Length;
-
-        Topside topside;
-        try
-        {
-            topside = await _topsideService.GetTopside(caseItem.TopsideLink);
-        }
-        catch (ArgumentException)
-        {
-            _logger.LogInformation("Topside {0} not found.", caseItem.TopsideLink);
-            return new AdditionalOPEXCostProfile { Values = [] };
-        }
-        var facilityOpex = topside.FacilityOpex;
-        var values = new List<double>
-        {
-            (facilityOpex - 1) / 8,
-            (facilityOpex - 1) / 4,
-            (facilityOpex - 1) / 2
-        };
-
-        for (int i = firstYear; i < lastYear; i++)
-        {
-            values.Add(facilityOpex);
-        }
-        const int preOpexCostYearOffset = 3;
-
-        var additionalOPEXCost = new AdditionalOPEXCostProfile
-        {
-            StartYear = firstYear - preOpexCostYearOffset,
-            Values = values.ToArray()
-        };
-        return additionalOPEXCost;
     }
 
     private static TimeSeries<double> GetCumulativeDrillingSchedule(TimeSeries<int> drillingSchedule)
