@@ -163,8 +163,6 @@ public class WellProjectService : IWellProjectService
             .Include(c => c.WaterInjectorCostProfileOverride)
             .Include(c => c.GasInjectorCostProfile)
             .Include(c => c.GasInjectorCostProfileOverride)
-            .Include(c => c.WellProjectWells!).ThenInclude(wpw => wpw.DrillingSchedule)
-            .Include(c => c.WellProjectWells!).ThenInclude(wpw => wpw.Well)
             .FirstOrDefaultAsync(o => o.Id == wellProjectId);
         if (wellProject == null)
         {

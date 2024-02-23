@@ -192,6 +192,10 @@ declare namespace Components {
             waterInjectorCount?: number; // int32
             dG4Date?: string; // date-time
         }
+        export interface CreateWellDto {
+            name: string;
+            wellCategory: WellCategory /* int32 */;
+        }
         export type Currency = 1 | 2; // int32
         export interface DevelopmentOperationalWellCostsDto {
             id: string; // uuid
@@ -934,6 +938,10 @@ declare namespace Components {
             netSalesGasOverride?: UpdateNetSalesGasOverrideDto;
             co2EmissionsOverride?: UpdateCo2EmissionsOverrideDto;
         }
+        export interface UpdateDrillingScheduleDto {
+            startYear?: number; // int32
+            values?: number /* int32 */[] | null;
+        }
         export interface UpdateExplorationDto {
             name?: string | null;
             rigMobDemob?: number; // double
@@ -948,7 +956,7 @@ declare namespace Components {
             appraisalProjectDrillingCosts?: number; // double
         }
         export interface UpdateExplorationWellDto {
-            drillingSchedule?: DrillingScheduleDto;
+            drillingSchedule?: UpdateDrillingScheduleDto;
             explorationId: string; // uuid
             wellId: string; // uuid
         }
@@ -1075,7 +1083,8 @@ declare namespace Components {
         export interface UpdateTechnicalInputDto {
             developmentOperationalWellCostsDto?: UpdateDevelopmentOperationalWellCostsDto;
             explorationOperationalWellCostsDto?: UpdateExplorationOperationalWellCostsDto;
-            wellDtos?: WellDto[] | null;
+            updateWellDtos?: UpdateWellDto[] | null;
+            createWellDtos?: CreateWellDto[] | null;
             projectDto?: UpdateProjectDto;
             explorationDto?: UpdateExplorationDto;
             wellProjectDto?: UpdateWellProjectDto;
@@ -1150,6 +1159,15 @@ declare namespace Components {
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
             override?: boolean;
+        }
+        export interface UpdateWellDto {
+            id: string; // uuid
+            name?: string | null;
+            wellInterventionCost?: number; // double
+            plugingAndAbandonmentCost?: number; // double
+            wellCategory?: WellCategory /* int32 */;
+            wellCost?: number; // double
+            drillingDays?: number; // double
         }
         export interface UpdateWellInterventionCostProfileOverrideDto {
             startYear?: number; // int32
@@ -1408,7 +1426,7 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
                 projectId: Parameters.ProjectId;
             }
-            export type RequestBody = Components.Schemas.CaseDto;
+            export type RequestBody = Components.Schemas.UpdateCaseDto;
             namespace Responses {
                 export type $200 = Components.Schemas.ProjectDto;
             }

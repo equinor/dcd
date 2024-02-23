@@ -67,9 +67,9 @@ public class TechnicalInputService : ITechnicalInputService
 
         var returnDto = new TechnicalInputDto();
 
-        if (technicalInputDto.WellDtos?.Length > 0)
+        if (technicalInputDto.UpdateWellDtos?.Length > 0 || technicalInputDto.CreateWellDtos?.Length > 0)
         {
-            var wellResult = await CreateAndUpdateWells(technicalInputDto.WellDtos);
+            var wellResult = await CreateAndUpdateWells(technicalInputDto.CreateWellDtos, technicalInputDto.UpdateWellDtos);
             if (wellResult != null)
             {
                 returnDto.ExplorationDto = wellResult.Value.explorationDto;
@@ -89,14 +89,15 @@ public class TechnicalInputService : ITechnicalInputService
     }
 
     private async Task<(ExplorationDto explorationDto, WellProjectDto wellProjectDto)?> CreateAndUpdateWells(
-        WellDto[] wellDtos)
+        CreateWellDto[]? createWellDtos, UpdateWellDto[]? updateWellDtos)
     {
         var runCostProfileCalculation = false;
         var runSaveChanges = false;
         var updatedWells = new List<Guid>();
-        foreach (var wellDto in wellDtos)
+        
+        if (createWellDtos != null)
         {
-            if (wellDto.Id == Guid.Empty)
+            foreach (var wellDto in createWellDtos)
             {
                 var well = _mapper.Map<Well>(wellDto);
                 if (well == null)
@@ -104,24 +105,24 @@ public class TechnicalInputService : ITechnicalInputService
                     throw new ArgumentNullException(nameof(well));
                 }
                 var updatedWell = _context.Wells!.Add(well);
-                wellDto.Id = updatedWell.Entity.Id;
 
                 runSaveChanges = true;
             }
-            else
-            {
-                if (wellDto.HasChanges)
-                {
-                    var existing = await _wellService.GetWell(wellDto.Id);
-                    if (wellDto.WellCost != existing.WellCost || wellDto.WellCategory != existing.WellCategory)
-                    {
-                        runCostProfileCalculation = true;
-                        updatedWells.Add(wellDto.Id);
-                    }
-                    _mapper.Map(wellDto, existing);
+        }
 
-                    _context.Wells!.Update(existing);
+        if (updateWellDtos != null)
+        {
+            foreach (var wellDto in updateWellDtos)
+            {
+                var existing = await _wellService.GetWell(wellDto.Id);
+                if (wellDto.WellCost != existing.WellCost || wellDto.WellCategory != existing.WellCategory)
+                {
+                    runCostProfileCalculation = true;
+                    updatedWells.Add(wellDto.Id);
                 }
+                _mapper.Map(wellDto, existing);
+
+                _context.Wells!.Update(existing);
             }
         }
 

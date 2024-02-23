@@ -73,6 +73,7 @@ public class GenerateCo2DrillingFlaringFuelTotals : IGenerateCo2DrillingFlaringF
 
     private static double CalculateDrillingEmissionsTotal(Project project, WellProject wellProject)
     {
+        // TODO Use wellprojectwellservice
         var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory))
             .ToList();
         if (linkedWells == null)

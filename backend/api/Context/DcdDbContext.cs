@@ -64,4 +64,10 @@ public class DcdDbContext : DbContext
         modelBuilder.Entity<ExplorationWell>().HasKey(ew => new { ew.ExplorationId, ew.WellId });
         modelBuilder.Entity<ExplorationWell>().HasOne(w => w.Well).WithMany(w => w.ExplorationWells).OnDelete(DeleteBehavior.NoAction);
     }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+        optionsBuilder.EnableSensitiveDataLogging();
+    }
 }
