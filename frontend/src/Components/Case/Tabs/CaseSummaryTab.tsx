@@ -113,7 +113,7 @@ const CaseSummaryTab = ({
                     let feasibility = (await studyWrapper).totalFeasibilityAndConceptStudiesDto
                     let feed = (await studyWrapper).totalFEEDStudiesDto
 
-                    let totalOtherStudies = (await studyWrapper).totalOtherStudiesDto
+                    const totalOtherStudies = (await studyWrapper).totalOtherStudiesDto
                     if (caseItem.totalFeasibilityAndConceptStudiesOverride?.override === true) {
                         feasibility = caseItem.totalFeasibilityAndConceptStudiesOverride
                     }
