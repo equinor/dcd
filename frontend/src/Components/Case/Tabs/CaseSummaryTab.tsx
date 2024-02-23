@@ -4,13 +4,13 @@ import {
 import styled from "styled-components"
 
 import { Typography } from "@equinor/eds-core-react"
-import CaseNumberInput from "./CaseNumberInput"
-import CaseTabTable from "./CaseTabTable"
-import { ITimeSeries } from "../../Models/ITimeSeries"
-import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileService"
-import { mergeTimeseries } from "../../Utils/common"
-import { ITimeSeriesCost } from "../../Models/ITimeSeriesCost"
-import InputContainer from "../Input/InputContainer"
+import CaseNumberInput from "../../Input/CaseNumberInput"
+import CaseTabTable from "../Components/CaseTabTable"
+import { ITimeSeries } from "../../../Models/ITimeSeries"
+import { GetGenerateProfileService } from "../../../Services/CaseGeneratedProfileService"
+import { mergeTimeseries } from "../../../Utils/common"
+import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
+import InputContainer from "../../Input/Containers/InputContainer"
 
 const ColumnWrapper = styled.div`
     display: flex;

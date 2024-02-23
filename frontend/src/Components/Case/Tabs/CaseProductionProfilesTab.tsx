@@ -10,14 +10,14 @@ import styled from "styled-components"
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import InputContainer from "../Input/InputContainer"
-import CaseNumberInput from "./CaseNumberInput"
-import FilterContainer from "../Input/FilterContainer"
-import CaseTabTable from "./CaseTabTable"
-import { ITimeSeries } from "../../Models/ITimeSeries"
-import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
-import { AgChartsTimeseries, setValueToCorrespondingYear } from "../AgGrid/AgChartsTimeseries"
-import { ITimeSeriesOverride } from "../../Models/ITimeSeriesOverride"
+import InputContainer from "../../Input/Containers/InputContainer"
+import CaseNumberInput from "../../Input/CaseNumberInput"
+import FilterContainer from "../../Input/Containers/TableFilterContainer"
+import CaseTabTable from "../Components/CaseTabTable"
+import { ITimeSeries } from "../../../Models/ITimeSeries"
+import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
+import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../AgGrid/AgChartsTimeseries"
+import { ITimeSeriesOverride } from "../../../Models/ITimeSeriesOverride"
 
 const TopWrapper = styled.div`
     display: flex;
