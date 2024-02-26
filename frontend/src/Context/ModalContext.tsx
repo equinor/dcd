@@ -17,11 +17,19 @@ interface ModalContextType {
     setModalCaseId: React.Dispatch<React.SetStateAction<string | undefined>>;
     addNewCase: () => void;
     editCase: (caseId: string) => void;
+
+    technicalModalIsOpen: boolean;
+    setTechnicalModalIsOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+    technicalWellProject: Components.Schemas.WellProjectDto | undefined;
+    setTechnicalWellProject: React.Dispatch<React.SetStateAction<Components.Schemas.WellProjectDto | undefined>>;
+    technicalExploration: Components.Schemas.ExplorationDto | undefined;
+    setTechnicalExploration: React.Dispatch<React.SetStateAction<Components.Schemas.ExplorationDto | undefined>>;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined)
 
 const ModalContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+    // Case modal
     const [caseModalIsOpen, setCaseModalIsOpen] = useState<boolean>(false)
     const [caseModalEditMode, setCaseModalEditMode] = useState<boolean>(false)
     const [caseModalShouldNavigate, setCaseModalShouldNavigate] = useState<boolean>(false)
@@ -41,6 +49,11 @@ const ModalContextProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         setCaseModalIsOpen(true)
     }
 
+    // Technical input modal
+    const [technicalModalIsOpen, setTechnicalModalIsOpen] = useState<boolean>(false)
+    const [technicalWellProject, setTechnicalWellProject] = useState<Components.Schemas.WellProjectDto | undefined>(undefined)
+    const [technicalExploration, setTechnicalExploration] = useState<Components.Schemas.ExplorationDto | undefined>(undefined)
+
     const value = useMemo(() => ({
         caseModalIsOpen,
         setCaseModalIsOpen,
@@ -52,6 +65,13 @@ const ModalContextProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         setModalCaseId,
         editCase,
         addNewCase,
+
+        technicalModalIsOpen,
+        setTechnicalModalIsOpen,
+        technicalWellProject,
+        setTechnicalWellProject,
+        technicalExploration,
+        setTechnicalExploration,
     }), [
         caseModalIsOpen,
         setCaseModalIsOpen,
@@ -63,10 +83,17 @@ const ModalContextProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         setModalCaseId,
         editCase,
         addNewCase,
+
+        technicalModalIsOpen,
+        setTechnicalModalIsOpen,
+        technicalWellProject,
+        setTechnicalWellProject,
+        technicalExploration,
+        setTechnicalExploration,
     ])
 
     return (
-        <ModalContext.Provider value={value}>
+        <ModalContext.Provider value={value as ModalContextType}>
             {children}
         </ModalContext.Provider>
     )

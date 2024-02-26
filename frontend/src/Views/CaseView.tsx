@@ -1,5 +1,5 @@
 import {
-    Button, Icon, Menu, Progress, Tabs, Typography,
+    Button, Icon, Progress, Tabs, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
@@ -17,7 +17,6 @@ import { projectPath, unwrapProjectId } from "../Utils/common"
 import CaseDropMenu from "../Components/Case/Components/CaseDropMenu"
 import { GetProjectService } from "../Services/ProjectService"
 import CaseDescriptionTab from "../Components/Case/Tabs/CaseDescriptionTab"
-import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 import CaseCostTab from "../Components/Case/Tabs/CaseCostTab"
 import CaseFacilitiesTab from "../Components/Case/Tabs/CaseFacilitiesTab"
 import CaseProductionProfilesTab from "../Components/Case/Tabs/CaseProductionProfilesTab"
@@ -27,6 +26,7 @@ import CaseDrillingScheduleTab from "../Components/Case/Tabs/CaseDrillingSchedul
 import CaseCO2Tab from "../Components/Case/Tabs/Co2Emissions/CaseCO2Tab"
 import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
 import { useAppContext } from "../Context/AppContext"
+import { useModalContext } from "../Context/ModalContext"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -99,15 +99,20 @@ const CaseView = () => {
         setProject,
     } = useAppContext()
 
-    const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(false)
-    const [caseItem, setCase] = useState<Components.Schemas.CaseDto>()
-    const [activeTab, setActiveTab] = useState<number>(0)
+    const {
+        technicalWellProject,
+        setTechnicalWellProject,
+        technicalExploration,
+        setTechnicalExploration,
+        setTechnicalModalIsOpen,
+    } = useModalContext()
     const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
     const { currentContext } = useModuleCurrentContext()
 
+    const [caseItem, setCase] = useState<Components.Schemas.CaseDto>()
+    const [activeTab, setActiveTab] = useState<number>(0)
+
     const [drainageStrategy, setDrainageStrategy] = useState<Components.Schemas.DrainageStrategyDto>()
-    const [exploration, setExploration] = useState<Components.Schemas.ExplorationDto>()
-    const [wellProject, setWellProject] = useState<Components.Schemas.WellProjectDto>()
     const [surf, setSurf] = useState<Components.Schemas.SurfDto>()
     const [topside, setTopside] = useState<Components.Schemas.TopsideDto>()
     const [substructure, setSubstructure] = useState<Components.Schemas.SubstructureDto>()
@@ -141,8 +146,6 @@ const CaseView = () => {
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
-
-    const toggleTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
 
     const navigate = useNavigate()
     const location = useLocation()
@@ -184,11 +187,11 @@ const CaseView = () => {
 
             const explorationResult = project
                 ?.explorations.find((exp) => exp.id === caseResult?.explorationLink)
-            setExploration(explorationResult)
+            setTechnicalExploration(explorationResult)
 
             const wellProjectResult = project
                 ?.wellProjects.find((wp) => wp.id === caseResult?.wellProjectLink)
-            setWellProject(wellProjectResult)
+            setTechnicalWellProject(wellProjectResult)
 
             const surfResult = project?.surfs.find((sur) => sur.id === caseResult?.surfLink)
             setSurf(surfResult)
@@ -230,8 +233,8 @@ const CaseView = () => {
     }, [project])
 
     if (isLoading || !project || !caseItem
-        || !drainageStrategy || !exploration
-        || !wellProject || !surf || !topside
+        || !drainageStrategy || !technicalExploration
+        || !technicalWellProject || !surf || !topside
         || !substructure || !transport
         || !explorationWells || !wellProjectWells) {
         return (
@@ -246,8 +249,8 @@ const CaseView = () => {
         const dto: Components.Schemas.CaseWithAssetsWrapperDto = {
             caseDto: caseItem,
             drainageStrategyDto: drainageStrategy,
-            wellProjectDto: wellProject,
-            explorationDto: exploration,
+            wellProjectDto: technicalWellProject,
+            explorationDto: technicalExploration,
             surfDto: surf,
             substructureDto: substructure,
             transportDto: transport,
@@ -319,7 +322,7 @@ const CaseView = () => {
                                 </Button>
                             )}
                             <Button
-                                onClick={() => toggleTechnicalInputModal()}
+                                onClick={() => setTechnicalModalIsOpen(true)}
                                 variant="outlined"
                             >
                                 Edit technical input
@@ -392,8 +395,6 @@ const CaseView = () => {
                                 <CaseDrillingScheduleTab
                                     project={project}
                                     caseItem={caseItem}
-                                    exploration={exploration}
-                                    wellProject={wellProject}
                                     explorationWells={explorationWells}
                                     setExplorationWells={setExplorationWells}
                                     wellProjectWells={wellProjectWells}
@@ -423,10 +424,6 @@ const CaseView = () => {
                                     project={project}
                                     caseItem={caseItem}
                                     setCase={setCase}
-                                    exploration={exploration}
-                                    setExploration={setExploration}
-                                    wellProject={wellProject}
-                                    setWellProject={setWellProject}
                                     topside={topside}
                                     setTopside={setTopside}
                                     surf={surf}
@@ -482,12 +479,6 @@ const CaseView = () => {
                 </Tabs>
                 <DividerLine />
             </CaseViewDiv>
-            <EditTechnicalInputModal
-                toggleEditTechnicalInputModal={toggleTechnicalInputModal}
-                isOpen={editTechnicalInputModalIsOpen}
-                setExploration={setExploration}
-                setWellProject={setWellProject}
-            />
         </div>
     )
 }
