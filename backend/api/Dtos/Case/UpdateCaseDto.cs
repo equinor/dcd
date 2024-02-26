@@ -37,10 +37,10 @@ public class UpdateCaseDto
     public UpdateTotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
     public UpdateTotalOtherStudies? TotalOtherStudies { get; set; }
 
-    public UpdateHistoricCostCostProfile? HistoricCostCostProfile {get; set; }
+    public UpdateHistoricCostCostProfile? HistoricCostCostProfile { get; set; }
     public UpdateWellInterventionCostProfileOverrideDto? WellInterventionCostProfileOverride { get; set; }
     public UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
-    public UpdateAdditionalOPEXCostProfile? AdditionalOPEXCostProfile {get; set; }
+    public UpdateAdditionalOPEXCostProfile? AdditionalOPEXCostProfile { get; set; }
 
     public double Capex { get; set; }
     public CapexYear? CapexYear { get; set; }

@@ -82,7 +82,7 @@ public class CaseDto
     [Required]
     public TotalOtherStudiesDto? TotalOtherStudies { get; set; } = new TotalOtherStudiesDto();
     [Required]
-    public HistoricCostCostProfileDto? HistoricCostCostProfile { get; set; } =  new HistoricCostCostProfileDto();
+    public HistoricCostCostProfileDto? HistoricCostCostProfile { get; set; } = new HistoricCostCostProfileDto();
     [Required]
     public WellInterventionCostProfileDto? WellInterventionCostProfile { get; set; }
     [Required]
