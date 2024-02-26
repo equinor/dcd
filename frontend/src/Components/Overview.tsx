@@ -1,13 +1,7 @@
 import { Outlet } from "react-router-dom"
 import styled from "styled-components"
 import Sidebar from "./Sidebar"
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100vw;
-`
+import ProjectControls from "./ProjectControls"
 
 const Body = styled.div`
     display: flex;
@@ -23,14 +17,13 @@ const MainView = styled.div`
 `
 
 const Overview: React.FC = () => (
-    <Wrapper>
-        <Body>
-            <Sidebar />
-            <MainView>
-                <Outlet />
-            </MainView>
-        </Body>
-    </Wrapper>
+    <Body>
+        <Sidebar />
+        <MainView>
+            <ProjectControls />
+            <Outlet />
+        </MainView>
+    </Body>
 )
 
 export default Overview

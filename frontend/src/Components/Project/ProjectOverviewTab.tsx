@@ -13,6 +13,7 @@ import { GetProjectService } from "../../Services/ProjectService"
 import { GetSTEAService } from "../../Services/STEAService"
 import { useAppContext } from "../../Context/AppContext"
 import CasesTable from "../Case/OverviewCasesTable/CasesTable"
+import InputSwitcher from "../Input/InputSwitcher"
 
 export const WrapperColumn = styled.div`
     display: flex;
@@ -126,15 +127,22 @@ const ProjectOverviewTab = () => {
                 </DataDiv>
                 <DescriptionDiv>
                     <WrapperColumn>
-                        <Label htmlFor="description" label="Project description" />
-                        <DescriptionField
-                            id="description"
-                            placeholder="Enter a description"
-                            onInput={handleDescriptionChange}
-                            value={project.description ?? undefined}
-                            cols={100}
-                            rows={8}
-                        />
+                        <InputSwitcher
+                            label="Description"
+                            value={project.description ?? "_"}
+                        >
+                            <>
+                                <Label htmlFor="description" label="Project description" />
+                                <DescriptionField
+                                    id="description"
+                                    placeholder="Enter a description"
+                                    onInput={handleDescriptionChange}
+                                    value={project.description ?? undefined}
+                                    cols={100}
+                                    rows={8}
+                                />
+                            </>
+                        </InputSwitcher>
                     </WrapperColumn>
                 </DescriptionDiv>
             </Wrapper>
