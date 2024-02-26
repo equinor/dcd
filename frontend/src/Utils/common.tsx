@@ -173,3 +173,14 @@ export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | u
     return timeSeries;
 }
 
+export function formatDate(isoDateString: string): string {
+    if (isoDateString === "0001-01-01T00:00:00+00:00" || isoDateString === "0001-01-01T00:00:00.000Z") {
+        return "_"
+    }
+    const date = new Date(isoDateString)
+    const options: Intl.DateTimeFormatOptions = {
+        month: "long",
+        year: "numeric",
+    }
+    return new Intl.DateTimeFormat("no-NO", options).format(date)
+}

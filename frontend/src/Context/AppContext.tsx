@@ -19,6 +19,8 @@ interface AppContextType {
     setModalCaseId: React.Dispatch<React.SetStateAction<string | undefined>>;
     addNewCase: () => void;
     editCase: (caseId: string) => void;
+    editMode: boolean;
+    setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
@@ -30,6 +32,7 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [modalEditMode, setModalEditMode] = useState<boolean>(false)
     const [modalShouldNavigate, setModalShouldNavigate] = useState<boolean>(false)
     const [modalCaseId, setModalCaseId] = useState<string | undefined>(undefined)
+    const [editMode, setEditMode] = useState<boolean>(false)
 
     const editCase = (caseId: string) => {
         setModalShouldNavigate(true)
@@ -58,6 +61,8 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setModalShouldNavigate,
         modalCaseId,
         setModalCaseId,
+        editMode,
+        setEditMode,
         editCase,
         addNewCase,
     }), [
@@ -73,6 +78,8 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setModalShouldNavigate,
         modalCaseId,
         setModalCaseId,
+        editMode,
+        setEditMode,
         editCase,
         addNewCase,
     ])

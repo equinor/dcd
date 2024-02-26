@@ -3,7 +3,7 @@ import { useRouter } from "@equinor/fusion-framework-react-app/navigation"
 import Overview from "./Components/Overview"
 import ProjectView from "./Views/ProjectView"
 import CaseView from "./Views/CaseView"
-import Header from "./Header"
+import Header from "./Components/Header"
 
 const routes: RouteObject[] = [
     {

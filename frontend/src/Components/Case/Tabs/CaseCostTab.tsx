@@ -14,6 +14,7 @@ import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride
 import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
 import FilterContainer from "../../Input/Containers/TableFilterContainer"
 import InputContainer from "../../Input/Containers/InputContainer"
+import InputSwitcher from "../../Input/InputSwitcher"
 
 const TopWrapper = styled.div`
     display: flex;
@@ -757,39 +758,56 @@ const CaseCostTab = ({
 
     if (activeTab !== 5) { return null }
 
+    const maturityOptions: { [key: string]: string } = {
+        0: "A",
+        1: "B",
+        2: "C",
+        3: "D",
+    }
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Cost</PageTitle>
             </TopWrapper>
             <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
-                <CaseNumberInput
-                    onChange={handleCaseFeasibilityChange}
-                    defaultValue={caseItem.capexFactorFeasibilityStudies
-                        !== undefined ? caseItem.capexFactorFeasibilityStudies * 100 : undefined}
-                    integer={false}
+                <InputSwitcher
+                    value={`${caseItem.capexFactorFeasibilityStudies !== undefined ? (caseItem.capexFactorFeasibilityStudies * 100).toFixed(2) : ""}%`}
                     label="CAPEX factor feasibility studies"
-                    unit="%"
-                />
-                <CaseNumberInput
-                    onChange={handleCaseFEEDChange}
-                    defaultValue={caseItem.capexFactorFEEDStudies
-                        !== undefined ? caseItem.capexFactorFEEDStudies * 100 : undefined}
-                    integer={false}
-                    label="CAPEX factor FEED studies"
-                    unit="%"
-                />
-                <NativeSelect
-                    id="maturity"
-                    label="Maturity"
-                    onChange={handleSurfMaturityChange}
-                    value={surf.maturity}
                 >
-                    <option key="0" value={0}>A</option>
-                    <option key="1" value={1}>B</option>
-                    <option key="2" value={2}>C</option>
-                    <option key="3" value={3}>D</option>
-                </NativeSelect>
+                    <CaseNumberInput
+                        onChange={handleCaseFeasibilityChange}
+                        defaultValue={caseItem.capexFactorFeasibilityStudies !== undefined ? caseItem.capexFactorFeasibilityStudies * 100 : undefined}
+                        integer={false}
+                        label="CAPEX factor feasibility studies"
+                        unit="%"
+                    />
+                </InputSwitcher>
+
+                <InputSwitcher
+                    value={`${caseItem.capexFactorFEEDStudies !== undefined ? (caseItem.capexFactorFEEDStudies * 100).toFixed(2) : ""}%`}
+                    label="CAPEX factor FEED studies"
+                >
+                    <CaseNumberInput
+                        onChange={handleCaseFEEDChange}
+                        defaultValue={caseItem.capexFactorFEEDStudies !== undefined ? caseItem.capexFactorFEEDStudies * 100 : undefined}
+                        integer={false}
+                        label="CAPEX factor FEED studies"
+                        unit="%"
+                    />
+                </InputSwitcher>
+
+                <InputSwitcher value={maturityOptions[surf.maturity]} label="Maturity">
+                    <NativeSelect
+                        id="maturity"
+                        label="Maturity"
+                        onChange={handleSurfMaturityChange}
+                        value={surf.maturity}
+                    >
+                        {Object.keys(maturityOptions).map((key) => (
+                            <option key={key} value={key}>{maturityOptions[key]}</option>
+                        ))}
+                    </NativeSelect>
+                </InputSwitcher>
 
             </InputContainer>
             <FilterContainer>

@@ -12,6 +12,7 @@ import {
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import CaseNumberInput from "../../Input/CaseNumberInput"
 import InputContainer from "../../Input/Containers/InputContainer"
+import InputSwitcher from "../../Input/InputSwitcher"
 
 const TopWrapper = styled.div`
     display: flex;
@@ -91,73 +92,120 @@ const CaseDescriptionTab = ({
     }
     if (activeTab !== 0) { return null }
 
+    const productionStrategyOptions = {
+        0: "Depletion",
+        1: "Water injection",
+        2: "Gas injection",
+        3: "WAG",
+        4: "Mixed",
+    }
+
+    const artificialLiftOptions = {
+        0: "No lift",
+        1: "Gas lift",
+        2: "Electrical submerged pumps",
+        3: "Subsea booster pumps",
+    }
+
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Description</PageTitle>
             </TopWrapper>
-            <Label htmlFor="description" label="Case description" />
-            <DescriptionField
-                id="description"
-                placeholder="Enter a description"
-                onInput={handleDescriptionChange}
-                value={caseItem.description ?? ""}
-                cols={110}
-                rows={8}
-            />
+            <InputSwitcher label="Description" value={caseItem.description ?? ""}>
+                <>
+                    <Label htmlFor="description" label="Case description" />
+                    <DescriptionField
+                        id="description"
+                        placeholder="Enter a description"
+                        onInput={handleDescriptionChange}
+                        value={caseItem.description ?? ""}
+                        cols={110}
+                        rows={8}
+                    />
+                </>
+            </InputSwitcher>
             <InputContainer desktopColumns={3} mobileColumns={1} breakPoint={850}>
-                <CaseNumberInput
-                    onChange={handleProducerCountChange}
-                    defaultValue={caseItem.producerCount}
-                    integer
+                <InputSwitcher
                     label="Production wells"
-                />
-                <CaseNumberInput
-                    onChange={handletWaterInjectorCountChange}
-                    defaultValue={caseItem.waterInjectorCount}
-                    integer
-                    disabled={false}
+                    value={caseItem.producerCount.toString()}
+                >
+                    <CaseNumberInput
+                        onChange={handleProducerCountChange}
+                        defaultValue={caseItem.producerCount}
+                        integer
+                        label="Production wells"
+                    />
+                </InputSwitcher>
+                <InputSwitcher
                     label="Water injector wells"
-                />
-                <CaseNumberInput
-                    onChange={handleGasInjectorCountChange}
-                    defaultValue={caseItem.gasInjectorCount}
-                    integer
+                    value={caseItem.waterInjectorCount.toString()}
+                >
+                    <CaseNumberInput
+                        onChange={handletWaterInjectorCountChange}
+                        defaultValue={caseItem.waterInjectorCount}
+                        integer
+                        disabled={false}
+                        label="Water injector wells"
+                    />
+                </InputSwitcher>
+                <InputSwitcher
                     label="Gas injector wells"
-                />
+                    value={caseItem.gasInjectorCount.toString()}
+                >
+                    <CaseNumberInput
+                        onChange={handleGasInjectorCountChange}
+                        defaultValue={caseItem.gasInjectorCount}
+                        integer
+                        label="Gas injector wells"
+                    />
+                </InputSwitcher>
             </InputContainer>
             <InputContainer desktopColumns={3} mobileColumns={1} breakPoint={850}>
-                <NativeSelect
-                    id="productionStrategy"
+                <InputSwitcher
                     label="Production strategy overview"
-                    onChange={handleProductionStrategyChange}
-                    value={caseItem.productionStrategyOverview}
+                    value={productionStrategyOptions[caseItem.productionStrategyOverview]}
+
                 >
-                    <option key={0} value={0}>Depletion</option>
-                    <option key={1} value={1}>Water injection</option>
-                    <option key={2} value={2}>Gas injection</option>
-                    <option key={3} value={3}>WAG</option>
-                    <option key={4} value={4}>Mixed</option>
-                </NativeSelect>
-                <NativeSelect
-                    id="artificialLift"
+                    <NativeSelect
+                        id="productionStrategy"
+                        label="Production strategy overview"
+                        onChange={handleProductionStrategyChange}
+                        value={caseItem.productionStrategyOverview}
+                    >
+                        {Object.entries(productionStrategyOptions).map(([value, label]) => (
+                            <option key={value} value={value}>{label}</option>
+                        ))}
+                    </NativeSelect>
+                </InputSwitcher>
+                <InputSwitcher
                     label="Artificial lift"
-                    onChange={handleArtificialLiftChange}
-                    value={caseItem.artificialLift}
+                    value={artificialLiftOptions[caseItem.artificialLift]}
                 >
-                    <option key="0" value={0}>No lift</option>
-                    <option key="1" value={1}>Gas lift</option>
-                    <option key="2" value={2}>Electrical submerged pumps</option>
-                    <option key="3" value={3}>Subsea booster pumps</option>
-                </NativeSelect>
-                <CaseNumberInput
-                    onChange={handleFacilitiesAvailabilityChange}
-                    defaultValue={caseItem.facilitiesAvailability
-                        !== undefined ? caseItem.facilitiesAvailability * 100 : undefined}
-                    integer={false}
-                    label="Ffacilities availability"
-                    unit="%"
-                />
+                    <NativeSelect
+                        id="artificialLift"
+                        label="Artificial lift"
+                        onChange={handleArtificialLiftChange}
+                        value={caseItem.artificialLift}
+                    >
+                        {Object.entries(artificialLiftOptions).map(([value, label]) => (
+                            <option key={value} value={value}>{label}</option>
+                        ))}
+                    </NativeSelect>
+                </InputSwitcher>
+                <InputSwitcher
+                    label="Facilities availability"
+                    value={`${caseItem.facilitiesAvailability !== undefined ? (caseItem.facilitiesAvailability * 100).toFixed(2) : ""}%`}
+                >
+                    <CaseNumberInput
+                        onChange={handleFacilitiesAvailabilityChange}
+                        defaultValue={caseItem.facilitiesAvailability
+                            !== undefined ? caseItem.facilitiesAvailability * 100 : undefined}
+                        integer={false}
+                        label="Facilities availability"
+                        unit="%"
+                    />
+                </InputSwitcher>
             </InputContainer>
         </>
     )

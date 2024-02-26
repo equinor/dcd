@@ -8,6 +8,7 @@ import styled from "styled-components"
 import { Outlet, useNavigate } from "react-router-dom"
 import { useAppContext } from "../Context/AppContext"
 import { GetProjectService } from "../Services/ProjectService"
+import CreateCaseModal from "./CreateCaseModal"
 
 const Wrapper = styled.div`
     display: flex;
@@ -95,7 +96,12 @@ const RouteCoordinator = (): JSX.Element => {
                 </Banner.Message>
             </Banner>
         )
-    } return <Outlet />
+    } return (
+        <>
+            <CreateCaseModal />
+            <Outlet />
+        </>
+    )
 }
 
 export default RouteCoordinator
