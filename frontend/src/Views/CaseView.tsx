@@ -454,15 +454,12 @@ const CaseView = () => {
                                     totalFEEDStudies={totalFEEDStudies}
                                     setTotalFEEDStudies={setTotalFEEDStudies}
                                     totalOtherStudies={totalOtherStudies}
-                                    setTotalOtherStudies={setTotalOtherStudies}
                                     offshoreFacilitiesOperationsCostProfile={offshoreFacilitiesOperationsCostProfile}
                                     setOffshoreFacilitiesOperationsCostProfile={setOffshoreFacilitiesOperationsCostProfile}
                                     wellInterventionCostProfile={wellInterventionCostProfile}
                                     setWellInterventionCostProfile={setWellInterventionCostProfile}
                                     historicCostCostProfile={historicCostCostProfile}
-                                    setHistoricCostCostProfile={setHistoricCostCostProfile}
                                     additionalOPEXCostProfile={additionalOPEXCostProfile}
-                                    setAdditionalOPEXCostProfile={setAdditionalOPEXCostProfile}
                                     cessationWellsCost={cessationWellsCost}
                                     setCessationWellsCost={setCessationWellsCost}
                                     cessationOffshoreFacilitiesCost={cessationOffshoreFacilitiesCost}
