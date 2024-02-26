@@ -52,8 +52,10 @@ interface Props {
     totalFEEDStudies: Components.Schemas.TotalFEEDStudiesDto | undefined,
     setTotalFEEDStudies: Dispatch<SetStateAction<Components.Schemas.TotalFEEDStudiesDto | undefined>>,
     totalOtherStudies: Components.Schemas.TotalOtherStudiesDto | undefined,
+    setTotalOtherStudies: Dispatch<SetStateAction<Components.Schemas.TotalOtherStudiesDto | undefined>>,
 
     historicCostCostProfile: Components.Schemas.HistoricCostCostProfileDto | undefined,
+    setHistoricCostCostProfile: Dispatch<SetStateAction<Components.Schemas.HistoricCostCostProfileDto | undefined>>,
 
     offshoreFacilitiesOperationsCostProfile: Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined,
     setOffshoreFacilitiesOperationsCostProfile: Dispatch<SetStateAction<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined>>,
@@ -62,6 +64,7 @@ interface Props {
     setWellInterventionCostProfile: Dispatch<SetStateAction<Components.Schemas.WellInterventionCostProfileDto | undefined>>,
 
     additionalOPEXCostProfile: Components.Schemas.AdditionalOPEXCostProfileDto | undefined,
+    setAdditionalOPEXCostProfile: Dispatch<SetStateAction<Components.Schemas.AdditionalOPEXCostProfileDto | undefined>>,
 
     cessationWellsCost: Components.Schemas.TotalFEEDStudiesDto | undefined,
     setCessationWellsCost: Dispatch<SetStateAction<Components.Schemas.CessationWellsCostDto | undefined>>,
