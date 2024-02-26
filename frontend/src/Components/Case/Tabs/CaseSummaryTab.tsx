@@ -45,6 +45,9 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost,
         feasibilityAndConceptStudiesCost, setFeasibilityAndConceptStudiesCost,
         feedStudiesCost, setFEEDStudiesCost,
+        totalOtherStudies,
+        historicCostCostProfile,
+        additionalOPEXCostProfile,
         activeTab, setActiveTab,
         explorationCost, setExplorationCost,
         drillingCost, setDrillingCost,
@@ -60,7 +63,8 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         tableYears, setTableYears
     } = useAppContext();
 
-
+    const [columnDefs, setColumnDefs] = useState([]);
+    const [rowData, setRowData] = useState([]);
     
     const [cessationCost, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto>()
 
@@ -113,7 +117,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             feed = caseItem.totalFEEDStudiesOverride
                         }
 
-                        const totalStudy = MergeTimeseries(feasibility, feed)
+                        const totalStudy = MergeTimeseries(feasibility, feed, totalOtherStudies)
                         setTotalStudyCost(totalStudy)
 
                         setOpexSum(opex)
@@ -205,27 +209,27 @@ const CaseSummaryTab = (): React.ReactElement | null => {
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: feedStudiesCost,
         },
-        // {
-        //     profileName: "Other studies",
-        //     unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-        //     profile: otherStudiesCost,
-        // },
+        {
+            profileName: "Other studies",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: totalOtherStudies,
+        },
 
     ]
 
     const opexTimeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "Study cost",
+            profileName: "Historic cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalStudyCost,
+            profile: historicCostCostProfile,
         },
         {
-            profileName: "Offshore facliities operations + well intervention",
+            profileName: "Offshore related OPEX, incl. well intervention",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: opexSum,
         },
         {
-            profileName: "Cessation wells + Cessation offshore facilities",
+            profileName: "Onshore related OPEX",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: cessationCost,
         },

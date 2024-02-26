@@ -73,7 +73,9 @@ interface AppContextType {
     setFeasibilityAndConceptStudiesCost: React.Dispatch<React.SetStateAction<Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined>>;
     feedStudiesCost: Components.Schemas.TotalFEEDStudiesDto | undefined;
     setFEEDStudiesCost: React.Dispatch<React.SetStateAction<Components.Schemas.TotalFEEDStudiesDto | undefined>>;
-
+    totalOtherStudies: Components.Schemas.TotalOtherStudiesDto | undefined,
+    historicCostCostProfile: Components.Schemas.HistoricCostCostProfileDto | undefined,
+    additionalOPEXCostProfile: Components.Schemas.AdditionalOPEXCostProfileDto | undefined,
 
     productionAndSalesVolume: Components.Schemas.ProductionAndSalesVolumesDto | undefined;
     setProductionAndSalesVolume: React.Dispatch<React.SetStateAction<Components.Schemas.ProductionAndSalesVolumesDto | undefined>>;
@@ -134,6 +136,11 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
     const [feasibilityAndConceptStudiesCost, setFeasibilityAndConceptStudiesCost] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined>();
     const [feedStudiesCost, setFEEDStudiesCost] = useState<Components.Schemas.TotalFEEDStudiesDto | undefined>();
+    const [totalOtherStudies, setTotalOtherStudies] = useState<Components.Schemas.TotalOtherStudiesDto | undefined>();
+    const [historicCostCostProfile, setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto | undefined>();
+    const [additionalOPEXCostProfile, setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto | undefined>();
+
+
 
     const [productionAndSalesVolume, setProductionAndSalesVolume] = useState<Components.Schemas.ProductionAndSalesVolumesDto | undefined>();
     const [oilCondensateProduction, setOilCondensateProduction] = useState<Components.Schemas.ProductionProfileOilDto | undefined>();
@@ -167,6 +174,9 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         tableYears, setTableYears,
         feasibilityAndConceptStudiesCost, setFeasibilityAndConceptStudiesCost,
         feedStudiesCost, setFEEDStudiesCost,
+        totalOtherStudies, setTotalOtherStudies,
+        historicCostCostProfile, setHistoricCostCostProfile,
+        additionalOPEXCostProfile, setAdditionalOPEXCostProfile,
         productionAndSalesVolume, setProductionAndSalesVolume,
         oilCondensateProduction, setOilCondensateProduction,
         nglProduction, setNGLProduction,
@@ -222,6 +232,9 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         tableYears,
         feasibilityAndConceptStudiesCost,
         feedStudiesCost,
+        totalOtherStudies,
+        additionalOPEXCostProfile,
+        historicCostCostProfile,
         productionAndSalesVolume,
         oilCondensateProduction,
         nglProduction,
