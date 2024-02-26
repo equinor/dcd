@@ -8,7 +8,7 @@ import CaseNumberInput from "../../Input/CaseNumberInput"
 import CaseTabTable from "../Components/CaseTabTable"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { GetGenerateProfileService } from "../../../Services/CaseGeneratedProfileService"
-import { mergeTimeseries } from "../../../Utils/common"
+import { MergeTimeseries } from "../../../Utils/common"
 import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
 import InputContainer from "../../Input/Containers/InputContainer"
 import InputSwitcher from "../../Input/InputSwitcher"
@@ -53,6 +53,8 @@ const CaseSummaryTab = ({
     const [cessationCost, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto>()
 
     // CAPEX
+    const [historicCost] = useState<Components.Schemas.HistoricCostCostProfileDto>()
+
     const [topsideCost, setTopsideCost] = useState<Components.Schemas.TopsideCostProfileDto>()
     const [surfCost, setSurfCost] = useState<Components.Schemas.SurfCostProfileDto>()
     const [substructureCost, setSubstructureCost] = useState<Components.Schemas.SubstructureCostProfileDto>()
@@ -101,6 +103,7 @@ const CaseSummaryTab = ({
                     let feasibility = (await studyWrapper).totalFeasibilityAndConceptStudiesDto
                     let feed = (await studyWrapper).totalFEEDStudiesDto
 
+                    const totalOtherStudies = (await studyWrapper).totalOtherStudiesDto
                     if (caseItem.totalFeasibilityAndConceptStudiesOverride?.override === true) {
                         feasibility = caseItem.totalFeasibilityAndConceptStudiesOverride
                     }
@@ -108,7 +111,7 @@ const CaseSummaryTab = ({
                         feed = caseItem.totalFEEDStudiesOverride
                     }
 
-                    const totalStudy = mergeTimeseries(feasibility, feed)
+                    const totalStudy = MergeTimeseries(feasibility, feed, totalOtherStudies)
                     setTotalStudyCost(totalStudy)
 
                     setOpexCost(opex)
@@ -180,6 +183,12 @@ const CaseSummaryTab = ({
     ]
 
     const capexTimeSeriesData: ITimeSeriesData[] = [
+        {
+            profileName: "Historic cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: historicCost,
+            set: setTopsideCost,
+        },
         {
             profileName: "Topside cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,

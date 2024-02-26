@@ -18,18 +18,24 @@ public class CaseProfile : Profile
         CreateMap<TotalFeasibilityAndConceptStudiesOverride, TotalFeasibilityAndConceptStudiesOverrideDto>();
         CreateMap<TotalFEEDStudies, TotalFEEDStudiesDto>();
         CreateMap<TotalFEEDStudiesOverride, TotalFEEDStudiesOverrideDto>();
+        CreateMap<TotalOtherStudies, TotalOtherStudiesDto>();
         CreateMap<WellInterventionCostProfile, WellInterventionCostProfileDto>();
         CreateMap<WellInterventionCostProfileOverride, WellInterventionCostProfileOverrideDto>();
         CreateMap<OffshoreFacilitiesOperationsCostProfile, OffshoreFacilitiesOperationsCostProfileDto>();
         CreateMap<OffshoreFacilitiesOperationsCostProfileOverride, OffshoreFacilitiesOperationsCostProfileOverrideDto>();
+        CreateMap<HistoricCostCostProfile, HistoricCostCostProfileDto>();
+        CreateMap<AdditionalOPEXCostProfile, AdditionalOPEXCostProfileDto>();
 
         CreateMap<UpdateCaseDto, Case>();
         CreateMap<UpdateCessationWellsCostOverrideDto, CessationWellsCostOverride>();
         CreateMap<UpdateCessationOffshoreFacilitiesCostOverrideDto, CessationOffshoreFacilitiesCostOverride>();
         CreateMap<UpdateTotalFeasibilityAndConceptStudiesOverrideDto, TotalFeasibilityAndConceptStudiesOverride>();
         CreateMap<UpdateTotalFEEDStudiesOverrideDto, TotalFEEDStudiesOverride>();
+        CreateMap<UpdateTotalOtherStudies, TotalOtherStudies>();
         CreateMap<UpdateWellInterventionCostProfileOverrideDto, WellInterventionCostProfileOverride>();
         CreateMap<UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto, OffshoreFacilitiesOperationsCostProfileOverride>();
+        CreateMap<UpdateHistoricCostCostProfile, HistoricCostCostProfile>();
+        CreateMap<UpdateAdditionalOPEXCostProfile, AdditionalOPEXCostProfile>();
 
         CreateMap<CreateCaseDto, Case>();
 

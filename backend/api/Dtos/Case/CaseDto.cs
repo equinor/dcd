@@ -71,24 +71,29 @@ public class CaseDto
     public CessationOffshoreFacilitiesCostDto CessationOffshoreFacilitiesCost { get; set; } = null!;
     [Required]
     public CessationOffshoreFacilitiesCostOverrideDto CessationOffshoreFacilitiesCostOverride { get; set; } = null!;
+    [Required]
+    public TotalFeasibilityAndConceptStudiesDto? TotalFeasibilityAndConceptStudies { get; set; }
+    [Required]
+    public TotalFeasibilityAndConceptStudiesOverrideDto? TotalFeasibilityAndConceptStudiesOverride { get; set; }
+    [Required]
+    public TotalFEEDStudiesDto? TotalFEEDStudies { get; set; }
+    [Required]
+    public TotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
+    [Required]
+    public TotalOtherStudiesDto? TotalOtherStudies { get; set; } = new TotalOtherStudiesDto();
+    [Required]
+    public HistoricCostCostProfileDto? HistoricCostCostProfile { get; set; } = new HistoricCostCostProfileDto();
+    [Required]
+    public WellInterventionCostProfileDto? WellInterventionCostProfile { get; set; }
+    [Required]
+    public WellInterventionCostProfileOverrideDto? WellInterventionCostProfileOverride { get; set; }
+    [Required]
+    public OffshoreFacilitiesOperationsCostProfileDto? OffshoreFacilitiesOperationsCostProfile { get; set; }
+    [Required]
+    public OffshoreFacilitiesOperationsCostProfileOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
+    [Required]
+    public AdditionalOPEXCostProfileDto? AdditionalOPEXCostProfile { get; set; } = new AdditionalOPEXCostProfileDto();
 
-    [Required]
-    public TotalFeasibilityAndConceptStudiesDto TotalFeasibilityAndConceptStudies { get; set; } = null!;
-    [Required]
-    public TotalFeasibilityAndConceptStudiesOverrideDto TotalFeasibilityAndConceptStudiesOverride { get; set; } = null!;
-    [Required]
-    public TotalFEEDStudiesDto TotalFEEDStudies { get; set; } = null!;
-    [Required]
-    public TotalFEEDStudiesOverrideDto TotalFEEDStudiesOverride { get; set; } = null!;
-
-    [Required]
-    public WellInterventionCostProfileDto WellInterventionCostProfile { get; set; } = null!;
-    [Required]
-    public WellInterventionCostProfileOverrideDto WellInterventionCostProfileOverride { get; set; } = null!;
-    [Required]
-    public OffshoreFacilitiesOperationsCostProfileDto OffshoreFacilitiesOperationsCostProfile { get; set; } = null!;
-    [Required]
-    public OffshoreFacilitiesOperationsCostProfileOverrideDto OffshoreFacilitiesOperationsCostProfileOverride { get; set; } = null!;
 
     [Required]
     public Guid DrainageStrategyLink { get; set; }
@@ -137,6 +142,10 @@ public class OpexCostProfileDto : TimeSeriesCostDto
 {
 }
 
+public class HistoricCostCostProfileDto : TimeSeriesCostDto
+{
+}
+
 public class WellInterventionCostProfileDto : TimeSeriesCostDto
 {
 }
@@ -155,6 +164,10 @@ public class OffshoreFacilitiesOperationsCostProfileOverrideDto : TimeSeriesCost
 {
     [Required]
     public bool Override { get; set; }
+}
+
+public class AdditionalOPEXCostProfileDto : TimeSeriesCostDto
+{
 }
 
 public class StudyCostProfileDto : TimeSeriesCostDto
@@ -176,6 +189,9 @@ public class TotalFEEDStudiesOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrid
     [Required]
     public bool Override { get; set; }
 }
+public class TotalOtherStudiesDto : TimeSeriesCostDto
+{
+}
 
 public class CessationCostWrapperDto
 {
@@ -187,8 +203,12 @@ public class CessationCostWrapperDto
 public class OpexCostProfileWrapperDto
 {
     public OpexCostProfileDto? OpexCostProfileDto { get; set; }
+    public HistoricCostCostProfileDto? HistoricCostCostProfileDto { get; set; }
+
     public WellInterventionCostProfileDto? WellInterventionCostProfileDto { get; set; }
     public OffshoreFacilitiesOperationsCostProfileDto? OffshoreFacilitiesOperationsCostProfileDto { get; set; }
+    public AdditionalOPEXCostProfileDto? AdditionalOPEXCostProfileDto { get; set; }
+
 }
 
 public class StudyCostProfileWrapperDto
@@ -196,6 +216,7 @@ public class StudyCostProfileWrapperDto
     public StudyCostProfileDto? StudyCostProfileDto { get; set; }
     public TotalFeasibilityAndConceptStudiesDto? TotalFeasibilityAndConceptStudiesDto { get; set; }
     public TotalFEEDStudiesDto? TotalFEEDStudiesDto { get; set; }
+    public TotalOtherStudiesDto? TotalOtherStudiesDto { get; set; }
 }
 
 public class CapexYear
