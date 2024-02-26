@@ -6,14 +6,15 @@ import styled from "styled-components"
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import CaseNumberInput from "./CaseNumberInput"
-import CaseTabTable from "./CaseTabTable"
-import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
-import { ITimeSeries } from "../../Models/ITimeSeries"
-import { ITimeSeriesCostOverride } from "../../Models/ITimeSeriesCostOverride"
-import { ITimeSeriesCost } from "../../Models/ITimeSeriesCost"
-import FilterContainer from "../Input/FilterContainer"
-import InputContainer from "../Input/InputContainer"
+import CaseNumberInput from "../../Input/CaseNumberInput"
+import CaseTabTable from "../Components/CaseTabTable"
+import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
+import { ITimeSeries } from "../../../Models/ITimeSeries"
+import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
+import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
+import FilterContainer from "../../Input/Containers/TableFilterContainer"
+import InputContainer from "../../Input/Containers/InputContainer"
+import InputSwitcher from "../../Input/InputSwitcher"
 
 const TopWrapper = styled.div`
     display: flex;
@@ -51,13 +52,15 @@ interface Props {
     setTotalFeasibilityAndConceptStudies: Dispatch<SetStateAction<Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined>>,
     totalFEEDStudies: Components.Schemas.TotalFEEDStudiesDto | undefined,
     setTotalFEEDStudies: Dispatch<SetStateAction<Components.Schemas.TotalFEEDStudiesDto | undefined>>,
-
+    totalOtherStudies: Components.Schemas.TotalOtherStudiesDto | undefined,
+    historicCostCostProfile: Components.Schemas.HistoricCostCostProfileDto | undefined,
     offshoreFacilitiesOperationsCostProfile: Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined,
     setOffshoreFacilitiesOperationsCostProfile: Dispatch<SetStateAction<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined>>,
 
     wellInterventionCostProfile: Components.Schemas.WellInterventionCostProfileDto | undefined,
     setWellInterventionCostProfile: Dispatch<SetStateAction<Components.Schemas.WellInterventionCostProfileDto | undefined>>,
 
+    additionalOPEXCostProfile: Components.Schemas.AdditionalOPEXCostProfileDto | undefined,
     cessationWellsCost: Components.Schemas.TotalFEEDStudiesDto | undefined,
     setCessationWellsCost: Dispatch<SetStateAction<Components.Schemas.CessationWellsCostDto | undefined>>,
 
@@ -89,13 +92,14 @@ const CaseCostTab = ({
     // OPEX
     const [totalFeasibilityAndConceptStudiesOverride,
         setTotalFeasibilityAndConceptStudiesOverride] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto>()
-
     const [totalFEEDStudiesOverride, setTotalFEEDStudiesOverride] = useState<Components.Schemas.TotalFEEDStudiesOverrideDto>()
+    const [totalOtherStudies, setTotalOtherStudies] = useState<Components.Schemas.TotalOtherStudiesDto>()
 
     const [offshoreFacilitiesOperationsCostProfileOverride,
         setOffshoreFacilitiesOperationsCostProfileOverride] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto>()
-
     const [wellInterventionCostProfileOverride, setWellInterventionCostProfileOverride] = useState<Components.Schemas.WellInterventionCostProfileOverrideDto>()
+    const [additionalOPEXCostProfile, setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto>()
+    const [historicCostCostProfile, setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto>()
 
     const [cessationWellsCostOverride, setCessationWellsCostOverride] = useState<Components.Schemas.CessationWellsCostOverrideDto>()
     const [cessationOffshoreFacilitiesCostOverride,
@@ -152,19 +156,25 @@ const CaseCostTab = ({
                 if (activeTab === 5) {
                     const totalFeasibility = caseItem.totalFeasibilityAndConceptStudies
                     const totalFEED = caseItem.totalFEEDStudies
+                    const totalOtherStudiesLocal = caseItem.totalOtherStudies
 
                     setTotalFeasibilityAndConceptStudies(totalFeasibility)
                     setTotalFeasibilityAndConceptStudiesOverride(caseItem.totalFeasibilityAndConceptStudiesOverride)
                     setTotalFEEDStudies(totalFEED)
                     setTotalFEEDStudiesOverride(caseItem.totalFEEDStudiesOverride)
+                    setTotalOtherStudies(totalOtherStudiesLocal)
 
                     const wellIntervention = wellInterventionCostProfile
                     const offshoreFacilitiesOperations = caseItem.offshoreFacilitiesOperationsCostProfile
+                    const historicCostCostProfileLocal = caseItem.historicCostCostProfile
+                    const additionalOPEXCostProfileLocal = caseItem.additionalOPEXCostProfile
 
                     setWellInterventionCostProfile(wellIntervention)
                     setWellInterventionCostProfileOverride(caseItem.wellInterventionCostProfileOverride)
                     setOffshoreFacilitiesOperationsCostProfile(offshoreFacilitiesOperations)
                     setOffshoreFacilitiesOperationsCostProfileOverride(caseItem.offshoreFacilitiesOperationsCostProfileOverride)
+                    setHistoricCostCostProfile(historicCostCostProfileLocal)
+                    setAdditionalOPEXCostProfile(additionalOPEXCostProfileLocal)
 
                     const cessationWells = caseItem.cessationWellsCost
                     const cessationOffshoreFacilities = caseItem.cessationOffshoreFacilitiesCost
@@ -226,11 +236,11 @@ const CaseCostTab = ({
                     setGAndGAdminCost(exploration.gAndGAdminCost)
 
                     SetTableYearsFromProfiles([caseItem.totalFeasibilityAndConceptStudies, caseItem.totalFEEDStudies,
-                    caseItem.wellInterventionCostProfile, caseItem.offshoreFacilitiesOperationsCostProfile,
-                    caseItem.cessationWellsCost, caseItem.cessationOffshoreFacilitiesCost,
-                    caseItem.totalFeasibilityAndConceptStudiesOverride, caseItem.totalFEEDStudiesOverride,
-                    caseItem.wellInterventionCostProfileOverride, caseItem.offshoreFacilitiesOperationsCostProfileOverride,
-                    caseItem.cessationWellsCostOverride, caseItem.cessationOffshoreFacilitiesCostOverride,
+                        caseItem.wellInterventionCostProfile, caseItem.offshoreFacilitiesOperationsCostProfile,
+                        caseItem.cessationWellsCost, caseItem.cessationOffshoreFacilitiesCost,
+                        caseItem.totalFeasibilityAndConceptStudiesOverride, caseItem.totalFEEDStudiesOverride,
+                        caseItem.wellInterventionCostProfileOverride, caseItem.offshoreFacilitiesOperationsCostProfileOverride,
+                        caseItem.cessationWellsCostOverride, caseItem.cessationOffshoreFacilitiesCostOverride,
                         surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
                         surfCostOverride, topsideCostOverride, substructureCostOverride, transportCostOverride,
                         oilProducerCostProfile, gasProducerCostProfile,
@@ -271,13 +281,13 @@ const CaseCostTab = ({
         if (studyGridRef.current && studyGridRef.current.api && studyGridRef.current.api.refreshCells) {
             studyGridRef.current.api.refreshCells()
         }
-    }, [totalFeasibilityAndConceptStudies, totalFEEDStudies])
+    }, [totalFeasibilityAndConceptStudies, totalFEEDStudies, totalOtherStudies])
 
     useEffect(() => {
         if (opexGridRef.current && opexGridRef.current.api && opexGridRef.current.api.refreshCells) {
             opexGridRef.current.api.refreshCells()
         }
-    }, [offshoreFacilitiesOperationsCostProfile, wellInterventionCostProfile])
+    }, [offshoreFacilitiesOperationsCostProfile, wellInterventionCostProfile, historicCostCostProfile, additionalOPEXCostProfile])
 
     useEffect(() => {
         if (cessationGridRef.current && cessationGridRef.current.api && cessationGridRef.current.api.refreshCells) {
@@ -373,9 +383,21 @@ const CaseCostTab = ({
             overrideProfile: totalFEEDStudiesOverride,
             overrideProfileSet: setTotalFEEDStudiesOverride,
         },
+        {
+            profileName: "Other studies",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: totalOtherStudies,
+            set: setTotalOtherStudies,
+        },
     ]
 
     const opexTimeSeriesData: ITimeSeriesData[] = [
+        {
+            profileName: "Historic Cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: historicCostCostProfile,
+            set: setHistoricCostCostProfile,
+        },
         {
             profileName: "Well intervention",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
@@ -391,6 +413,12 @@ const CaseCostTab = ({
             overridable: true,
             overrideProfile: offshoreFacilitiesOperationsCostProfileOverride,
             overrideProfileSet: setOffshoreFacilitiesOperationsCostProfileOverride,
+        },
+        {
+            profileName: "Additional OPEX (input req.)",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: additionalOPEXCostProfile,
+            set: setAdditionalOPEXCostProfile,
         },
     ]
 
@@ -541,6 +569,13 @@ const CaseCostTab = ({
 
     useEffect(() => {
         const newCase: Components.Schemas.CaseDto = { ...caseItem }
+        if (!totalOtherStudies) { return }
+        newCase.totalOtherStudies = totalOtherStudies
+        setCase(newCase)
+    }, [totalOtherStudies])
+
+    useEffect(() => {
+        const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (!wellInterventionCostProfileOverride) { return }
         newCase.wellInterventionCostProfileOverride = wellInterventionCostProfileOverride
         setCase(newCase)
@@ -552,6 +587,20 @@ const CaseCostTab = ({
         newCase.offshoreFacilitiesOperationsCostProfileOverride = offshoreFacilitiesOperationsCostProfileOverride
         setCase(newCase)
     }, [offshoreFacilitiesOperationsCostProfileOverride])
+
+    useEffect(() => {
+        const newCase: Components.Schemas.CaseDto = { ...caseItem }
+        if (!historicCostCostProfile) { return }
+        newCase.historicCostCostProfile = historicCostCostProfile
+        setCase(newCase)
+    }, [historicCostCostProfile])
+
+    useEffect(() => {
+        const newCase: Components.Schemas.CaseDto = { ...caseItem }
+        if (!additionalOPEXCostProfile) { return }
+        newCase.additionalOPEXCostProfile = additionalOPEXCostProfile
+        setCase(newCase)
+    }, [additionalOPEXCostProfile])
 
     useEffect(() => {
         const newCase: Components.Schemas.CaseDto = { ...caseItem }
@@ -716,39 +765,56 @@ const CaseCostTab = ({
 
     if (activeTab !== 5) { return null }
 
+    const maturityOptions: { [key: string]: string } = {
+        0: "A",
+        1: "B",
+        2: "C",
+        3: "D",
+    }
     return (
         <>
             <TopWrapper>
                 <PageTitle variant="h3">Cost</PageTitle>
             </TopWrapper>
             <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
-                <CaseNumberInput
-                    onChange={handleCaseFeasibilityChange}
-                    defaultValue={caseItem.capexFactorFeasibilityStudies
-                        !== undefined ? caseItem.capexFactorFeasibilityStudies * 100 : undefined}
-                    integer={false}
+                <InputSwitcher
+                    value={`${caseItem.capexFactorFeasibilityStudies !== undefined ? (caseItem.capexFactorFeasibilityStudies * 100).toFixed(2) : ""}%`}
                     label="CAPEX factor feasibility studies"
-                    unit="%"
-                />
-                <CaseNumberInput
-                    onChange={handleCaseFEEDChange}
-                    defaultValue={caseItem.capexFactorFEEDStudies
-                        !== undefined ? caseItem.capexFactorFEEDStudies * 100 : undefined}
-                    integer={false}
-                    label="CAPEX factor FEED studies"
-                    unit="%"
-                />
-                <NativeSelect
-                    id="maturity"
-                    label="Maturity"
-                    onChange={handleSurfMaturityChange}
-                    value={surf.maturity}
                 >
-                    <option key="0" value={0}>A</option>
-                    <option key="1" value={1}>B</option>
-                    <option key="2" value={2}>C</option>
-                    <option key="3" value={3}>D</option>
-                </NativeSelect>
+                    <CaseNumberInput
+                        onChange={handleCaseFeasibilityChange}
+                        defaultValue={caseItem.capexFactorFeasibilityStudies !== undefined ? caseItem.capexFactorFeasibilityStudies * 100 : undefined}
+                        integer={false}
+                        label="CAPEX factor feasibility studies"
+                        unit="%"
+                    />
+                </InputSwitcher>
+
+                <InputSwitcher
+                    value={`${caseItem.capexFactorFEEDStudies !== undefined ? (caseItem.capexFactorFEEDStudies * 100).toFixed(2) : ""}%`}
+                    label="CAPEX factor FEED studies"
+                >
+                    <CaseNumberInput
+                        onChange={handleCaseFEEDChange}
+                        defaultValue={caseItem.capexFactorFEEDStudies !== undefined ? caseItem.capexFactorFEEDStudies * 100 : undefined}
+                        integer={false}
+                        label="CAPEX factor FEED studies"
+                        unit="%"
+                    />
+                </InputSwitcher>
+
+                <InputSwitcher value={maturityOptions[surf.maturity]} label="Maturity">
+                    <NativeSelect
+                        id="maturity"
+                        label="Maturity"
+                        onChange={handleSurfMaturityChange}
+                        value={surf.maturity}
+                    >
+                        {Object.keys(maturityOptions).map((key) => (
+                            <option key={key} value={key}>{maturityOptions[key]}</option>
+                        ))}
+                    </NativeSelect>
+                </InputSwitcher>
 
             </InputContainer>
             <FilterContainer>
@@ -784,12 +850,12 @@ const CaseCostTab = ({
                     timeSeriesData={studyTimeSeriesData}
                     dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
-                    tableName="Study costs"
+                    tableName="Total study costs"
                     gridRef={studyGridRef}
                     alignedGridsRef={[opexGridRef, cessationGridRef, capexGridRef,
                         developmentWellsGridRef, explorationWellsGridRef]}
                     includeFooter
-                    totalRowName="Study cost"
+                    totalRowName="Total study costs"
                 />
             </TableWrapper>
             <TableWrapper>

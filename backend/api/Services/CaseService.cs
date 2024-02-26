@@ -114,7 +114,7 @@ public class CaseService : ICaseService
         return await _projectService.GetProjectDto(project.Id);
     }
 
-    public async Task<ProjectDto> UpdateCase(Guid caseId, CaseDto updatedCaseDto)
+    public async Task<ProjectDto> UpdateCase(Guid caseId, UpdateCaseDto updatedCaseDto)
     {
         var caseItem = await GetCase(caseId);
 
@@ -140,10 +140,13 @@ public class CaseService : ICaseService
             .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)
             .Include(c => c.TotalFEEDStudiesOverride)
+            .Include(c => c.TotalOtherStudies)
+            .Include(c => c.HistoricCostCostProfile)
             .Include(c => c.WellInterventionCostProfile)
             .Include(c => c.WellInterventionCostProfileOverride)
             .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
             .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+            .Include(c => c.AdditionalOPEXCostProfile)
             .Include(c => c.CessationWellsCost)
             .Include(c => c.CessationWellsCostOverride)
             .Include(c => c.CessationOffshoreFacilitiesCost)
@@ -165,10 +168,13 @@ public class CaseService : ICaseService
                     .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
                     .Include(c => c.TotalFEEDStudies)
                     .Include(c => c.TotalFEEDStudiesOverride)
+                    .Include(c => c.TotalOtherStudies)
+                    .Include(c => c.HistoricCostCostProfile)
                     .Include(c => c.WellInterventionCostProfile)
                     .Include(c => c.WellInterventionCostProfileOverride)
                     .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
                     .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+                    .Include(c => c.AdditionalOPEXCostProfile)
                     .Include(c => c.CessationWellsCost)
                     .Include(c => c.CessationWellsCostOverride)
                     .Include(c => c.CessationOffshoreFacilitiesCost)

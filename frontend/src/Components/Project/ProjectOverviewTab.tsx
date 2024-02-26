@@ -11,9 +11,9 @@ import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import { getProjectPhaseName, getProjectCategoryName, unwrapProjectId } from "../../Utils/common"
 import { GetProjectService } from "../../Services/ProjectService"
 import { GetSTEAService } from "../../Services/STEAService"
-import EditCaseModal from "../Case/EditCaseModal"
 import { useAppContext } from "../../Context/AppContext"
-import CasesTable from "../Case/CasesTable/CasesTable"
+import CasesTable from "../Case/OverviewCasesTable/CasesTable"
+import InputSwitcher from "../Input/InputSwitcher"
 
 export const WrapperColumn = styled.div`
     display: flex;
@@ -54,8 +54,10 @@ const ProjectOverviewTab = () => {
     const {
         project,
         setProject,
-        createCaseModalIsOpen,
         setCreateCaseModalIsOpen,
+        setModalShouldNavigate,
+        setModalEditMode,
+        setModalCaseId,
     } = useAppContext()
 
     const handleDescriptionChange: FormEventHandler = (e) => {
@@ -82,18 +84,19 @@ const ProjectOverviewTab = () => {
         }
     }
 
+    const addNewCase = () => {
+        setModalShouldNavigate(false)
+        setModalEditMode(false)
+        setCreateCaseModalIsOpen(true)
+        setModalCaseId(undefined)
+    }
+
     if (!project) {
         return <div>Loading project data...</div>
     }
 
     return (
         <Wrapper>
-            <EditCaseModal
-                isOpen={createCaseModalIsOpen}
-                setIsOpen={setCreateCaseModalIsOpen}
-                editMode={false}
-                shouldNavigate={false}
-            />
             <HeaderContainer>
                 <Typography variant="h3">Project Overview</Typography>
                 <Button onClick={submitToSTEA}>
@@ -124,21 +127,28 @@ const ProjectOverviewTab = () => {
                 </DataDiv>
                 <DescriptionDiv>
                     <WrapperColumn>
-                        <Label htmlFor="description" label="Project description" />
-                        <DescriptionField
-                            id="description"
-                            placeholder="Enter a description"
-                            onInput={handleDescriptionChange}
-                            value={project.description ?? undefined}
-                            cols={100}
-                            rows={8}
-                        />
+                        <InputSwitcher
+                            label="Description"
+                            value={project.description ?? "_"}
+                        >
+                            <>
+                                <Label htmlFor="description" label="Project description" />
+                                <DescriptionField
+                                    id="description"
+                                    placeholder="Enter a description"
+                                    onInput={handleDescriptionChange}
+                                    value={project.description ?? undefined}
+                                    cols={100}
+                                    rows={8}
+                                />
+                            </>
+                        </InputSwitcher>
                     </WrapperColumn>
                 </DescriptionDiv>
             </Wrapper>
             <HeaderContainer>
                 <Typography variant="h3">Cases</Typography>
-                <Button onClick={() => setCreateCaseModalIsOpen(true)}>
+                <Button onClick={() => addNewCase()}>
                     <Icon data={add} size={24} />
                     Add new Case
                 </Button>

@@ -11,11 +11,12 @@ import styled from "styled-components"
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import CaseNumberInput from "./CaseNumberInput"
-import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleTabTable"
-import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
-import InputContainer from "../Input/InputContainer"
-import FilterContainer from "../Input/FilterContainer"
+import CaseNumberInput from "../../../Input/CaseNumberInput"
+import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleAgGridTable"
+import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
+import InputContainer from "../../../Input/Containers/InputContainer"
+import FilterContainer from "../../../Input/Containers/TableFilterContainer"
+import InputSwitcher from "../../../Input/InputSwitcher"
 
 const TopWrapper = styled.div`
     display: flex;
@@ -165,48 +166,78 @@ const CaseDrillingScheduleTab = ({
             <p>Create wells in technical input in order to see them in the list below.</p>
 
             <InputContainer mobileColumns={1} desktopColumns={2} breakPoint={850}>
-                <CaseNumberInput
-                    onChange={() => { }}
-                    defaultValue={explorationWellCount}
-                    integer
-                    disabled
+                <InputSwitcher
+                    value={explorationWellCount.toString()}
                     label="Exploration wells"
-                />
-                <CaseNumberInput
-                    onChange={() => { }}
-                    defaultValue={appraisalWellCount}
-                    integer
-                    disabled
+                >
+                    <CaseNumberInput
+                        onChange={() => { }}
+                        defaultValue={explorationWellCount}
+                        integer
+                        disabled
+                        label="Exploration wells"
+                    />
+                </InputSwitcher>
+                <InputSwitcher
+                    value={appraisalWellCount.toString()}
                     label="Appraisal wells"
-                />
-                <CaseNumberInput
-                    onChange={() => { }}
-                    defaultValue={oilProducerCount}
-                    integer
-                    disabled
+                >
+                    <CaseNumberInput
+                        onChange={() => { }}
+                        defaultValue={appraisalWellCount}
+                        integer
+                        disabled
+                        label="Appraisal wells"
+                    />
+                </InputSwitcher>
+                <InputSwitcher
+                    value={oilProducerCount.toString()}
                     label="Oil producer wells"
-                />
-                <CaseNumberInput
-                    onChange={() => { }}
-                    defaultValue={gasProducerCount}
-                    integer
-                    disabled
+                >
+                    <CaseNumberInput
+                        onChange={() => { }}
+                        defaultValue={oilProducerCount}
+                        integer
+                        disabled
+                        label="Oil producer wells"
+                    />
+                </InputSwitcher>
+                <InputSwitcher
+                    value={gasProducerCount.toString()}
                     label="Gas producer wells"
-                />
-                <CaseNumberInput
-                    onChange={() => { }}
-                    defaultValue={waterInjectorCount}
-                    integer
-                    disabled
+                >
+                    <CaseNumberInput
+                        onChange={() => { }}
+                        defaultValue={gasProducerCount}
+                        integer
+                        disabled
+                        label="Gas producer wells"
+                    />
+                </InputSwitcher>
+                <InputSwitcher
+                    value={waterInjectorCount.toString()}
                     label="Water injector wells"
-                />
-                <CaseNumberInput
-                    onChange={() => { }}
-                    defaultValue={gasInjectorCount}
-                    integer
-                    disabled
+                >
+                    <CaseNumberInput
+                        onChange={() => { }}
+                        defaultValue={waterInjectorCount}
+                        integer
+                        disabled
+                        label="Water injector wells"
+                    />
+                </InputSwitcher>
+                <InputSwitcher
+                    value={gasInjectorCount.toString()}
                     label="Gas injector wells"
-                />
+                >
+                    <CaseNumberInput
+                        onChange={() => { }}
+                        defaultValue={gasInjectorCount}
+                        integer
+                        disabled
+                        label="Gas injector wells"
+                    />
+                </InputSwitcher>
             </InputContainer>
             <FilterContainer>
                 <NativeSelect

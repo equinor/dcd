@@ -11,27 +11,24 @@ import styled from "styled-components"
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
-import CaseNumberInput from "./CaseNumberInput"
-import CaseTabTable from "./CaseTabTable"
-import { ITimeSeries } from "../../Models/ITimeSeries"
-import { SetTableYearsFromProfiles } from "./CaseTabTableHelper"
-import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileService"
-import CaseCO2DistributionTable from "./CaseCO2DistributionTable"
-import { AgChartsTimeseries, setValueToCorrespondingYear } from "../AgGrid/AgChartsTimeseries"
-import { AgChartsPie } from "../AgGrid/AgChartsPie"
-import { ITimeSeriesOverride } from "../../Models/ITimeSeriesOverride"
-import InputContainer from "../Input/InputContainer"
-import FilterContainer from "../Input/FilterContainer"
+import CaseNumberInput from "../../../Input/CaseNumberInput"
+import CaseTabTable from "../../Components/CaseTabTable"
+import { ITimeSeries } from "../../../../Models/ITimeSeries"
+import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
+import { GetGenerateProfileService } from "../../../../Services/CaseGeneratedProfileService"
+import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
+import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../../AgGrid/AgChartsTimeseries"
+import { AgChartsPie } from "../../../AgGrid/AgChartsPie"
+import { ITimeSeriesOverride } from "../../../../Models/ITimeSeriesOverride"
+import InputContainer from "../../../Input/Containers/InputContainer"
+import FilterContainer from "../../../Input/Containers/TableFilterContainer"
+import InputSwitcher from "../../../Input/InputSwitcher"
 
 export const WrapperColumn = styled.div`
     display: flex;
     flex-direction: column;
 `
 
-const ColumnWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`
 const GraphWrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -297,13 +294,15 @@ const CaseCO2Tab = ({
             <p>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</p>
 
             <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
-                <CaseNumberInput
-                    onChange={handleTopsideFuelConsumptionChange}
-                    defaultValue={topside?.fuelConsumption}
-                    integer={false}
-                    label="Fuel consumption"
-                    unit="million Sm³ gas/sd"
-                />
+                <InputSwitcher value={`${topside?.fuelConsumption} million Sm³ gas/sd`} label="Fuel consumption">
+                    <CaseNumberInput
+                        onChange={handleTopsideFuelConsumptionChange}
+                        defaultValue={topside?.fuelConsumption}
+                        integer={false}
+                        label="Fuel consumption"
+                        unit="million Sm³ gas/sd"
+                    />
+                </InputSwitcher>
             </InputContainer>
             <CaseCO2DistributionTable topside={topside} />
 

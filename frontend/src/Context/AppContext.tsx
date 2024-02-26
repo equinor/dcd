@@ -12,6 +12,17 @@ import { ITimeSeries } from "../Models/ITimeSeries";
 // Replace Components.Schemas.* with the correct type or interface for your project
 
 interface AppContextType {
+    modalEditMode: boolean;
+    setModalEditMode: React.Dispatch<React.SetStateAction<boolean>>;
+    modalShouldNavigate: boolean;
+    setModalShouldNavigate: React.Dispatch<React.SetStateAction<boolean>>;
+    modalCaseId: string | undefined;
+    setModalCaseId: React.Dispatch<React.SetStateAction<string | undefined>>;
+    addNewCase: () => void;
+    editCase: (caseId: string) => void;
+    editMode: boolean;
+    setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
+
     project: Components.Schemas.ProjectDto | undefined;
     setProject: React.Dispatch<React.SetStateAction<Components.Schemas.ProjectDto | undefined>>;
     caseItem: Components.Schemas.CaseDto | undefined;
@@ -88,6 +99,25 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [activeTab, setActiveTab] = useState<number>(0);
     const [caseItem, setCase] = useState<Components.Schemas.CaseDto | undefined>();
     const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
+    const [editModalIsOpen, setEditModalIsOpen] = useState<boolean>(false)
+    const [modalEditMode, setModalEditMode] = useState<boolean>(false)
+    const [modalShouldNavigate, setModalShouldNavigate] = useState<boolean>(false)
+    const [modalCaseId, setModalCaseId] = useState<string | undefined>(undefined)
+    const [editMode, setEditMode] = useState<boolean>(false)
+
+    const editCase = (caseId: string) => {
+        setModalShouldNavigate(true)
+        setModalEditMode(true)
+        setModalCaseId(caseId)
+        setCreateCaseModalIsOpen(true)
+    }
+
+    const addNewCase = () => {
+        setModalCaseId(undefined)
+        setModalShouldNavigate(false)
+        setModalEditMode(false)
+        setCreateCaseModalIsOpen(true)
+    }
 
     const [topside, setTopside] = useState<Components.Schemas.TopsideDto | undefined>();
     const [topsideCost, setTopsideCost] = useState<Components.Schemas.TopsideCostProfileDto | undefined>();
@@ -145,7 +175,35 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         importedElectricity, setImportedElectricity,
         drillingCost, setDrillingCost,
         explorationCost, setExplorationCost,
+        editModalIsOpen,
+        setEditModalIsOpen,
+        modalEditMode,
+        setModalEditMode,
+        modalShouldNavigate,
+        setModalShouldNavigate,
+        modalCaseId,
+        setModalCaseId,
+        editMode,
+        setEditMode,
+        editCase,
+        addNewCase,
     }), [
+        project,
+        setProject,
+        createCaseModalIsOpen,
+        setCreateCaseModalIsOpen,
+        editModalIsOpen,
+        setEditModalIsOpen,
+        modalEditMode,
+        setModalEditMode,
+        modalShouldNavigate,
+        setModalShouldNavigate,
+        modalCaseId,
+        setModalCaseId,
+        editMode,
+        setEditMode,
+        editCase,
+        addNewCase,
         project, setProject,
         createCaseModalIsOpen, setCreateCaseModalIsOpen,
         activeTab,

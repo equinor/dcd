@@ -4,26 +4,16 @@ import {
 import styled from "styled-components"
 
 import { Typography } from "@equinor/eds-core-react"
-import CaseNumberInput from "./CaseNumberInput"
-import CaseTabTable from "./CaseTabTable"
-import { GetGenerateProfileService } from "../../Services/CaseGeneratedProfileService"
-import { MergeTimeseries } from "../../Utils/common"
-import { ITimeSeries } from "../../Models/ITimeSeries"
-import { useAppContext } from "../../Context/AppContext"
-import { ITimeSeriesCost } from "../../Models/ITimeSeriesCost"
-import InputContainer from "../Input/InputContainer"
-import { AgGridReact } from 'ag-grid-react';
+import CaseNumberInput from "../../Input/CaseNumberInput"
+import CaseTabTable from "../Components/CaseTabTable"
+import { ITimeSeries } from "../../../Models/ITimeSeries"
+import { GetGenerateProfileService } from "../../../Services/CaseGeneratedProfileService"
+import { MergeTimeseries } from "../../../Utils/common"
+import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
+import InputContainer from "../../Input/Containers/InputContainer"
+import InputSwitcher from "../../Input/InputSwitcher"
 import { ColDef, ColGroupDef } from "ag-grid-community"
-
-const ColumnWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-const RowWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 78px;
-`
+import { useAppContext } from "../../../Context/AppContext"
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
@@ -33,9 +23,7 @@ const TopWrapper = styled.div`
 const PageTitle = styled(Typography)`
     flex-grow: 1;
 `
-const NumberInputField = styled.div`
-    padding-right: 20px;
-`
+
 const TableWrapper = styled.div`
     margin-bottom: 50px;
 `
@@ -116,6 +104,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
                         let feasibility = (await studyWrapper).totalFeasibilityAndConceptStudiesDto
                         let feed = (await studyWrapper).totalFEEDStudiesDto
+                        const totalOtherStudies = (await studyWrapper).totalOtherStudiesDto
 
                         if (caseItem.totalFeasibilityAndConceptStudiesOverride?.override === true) {
                             feasibility = caseItem.totalFeasibilityAndConceptStudiesOverride
@@ -293,19 +282,24 @@ const CaseSummaryTab = (): React.ReactElement | null => {
             </TopWrapper>
 
             <InputContainer mobileColumns={1} desktopColumns={2} breakPoint={850}>
-                <CaseNumberInput
-                    onChange={handleCaseNPVChange}
-                    defaultValue={caseItem.npv}
-                    integer={false}
-                    label="NPV before tax"
-                    allowNegative
-                />
-                <CaseNumberInput
-                    onChange={handleCaseBreakEvenChange}
-                    defaultValue={caseItem.breakEven}
-                    integer={false}
-                    label="B/E before tax"
-                />
+                <InputSwitcher value={`${caseItem.npv}`} label="NPV before tax">
+                    <CaseNumberInput
+                        onChange={handleCaseNPVChange}
+                        defaultValue={caseItem.npv}
+                        integer={false}
+                        label="NPV before tax"
+                        allowNegative
+                    />
+                </InputSwitcher>
+
+                <InputSwitcher value={`${caseItem.breakEven}`} label="B/E before tax">
+                    <CaseNumberInput
+                        onChange={handleCaseBreakEvenChange}
+                        defaultValue={caseItem.breakEven}
+                        integer={false}
+                        label="B/E before tax"
+                    />
+                </InputSwitcher>
             </InputContainer>
             <TableWrapper>
 

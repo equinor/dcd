@@ -474,7 +474,7 @@ public class ProspExcelImportService
                 }
             }
 
-            var caseDto = _mapper.Map<CaseDto>(caseItem);
+            var caseDto = _mapper.Map<UpdateCaseDto>(caseItem);
 
             if (caseDto == null)
             {
@@ -499,7 +499,7 @@ public class ProspExcelImportService
         ClearImportedSubstructure(caseItem);
         ClearImportedTransport(caseItem);
 
-        var caseDto = _mapper.Map<CaseDto>(caseItem);
+        var caseDto = _mapper.Map<UpdateCaseDto>(caseItem);
 
         if (caseDto == null)
         {

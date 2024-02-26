@@ -53,6 +53,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         var newFeasibility = CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
         var newFeed = CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
 
+
         var feasibility = caseItem.TotalFeasibilityAndConceptStudies ?? newFeasibility;
         feasibility.StartYear = newFeasibility.StartYear;
         feasibility.Values = newFeasibility.Values;
@@ -61,20 +62,27 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         feed.StartYear = newFeed.StartYear;
         feed.Values = newFeed.Values;
 
-        await UpdateCaseAndSaveAsync(caseItem, feasibility, feed);
+        var otherStudies = caseItem.TotalOtherStudies ?? new TotalOtherStudies();
+
+        await UpdateCaseAndSaveAsync(caseItem, feasibility, feed, otherStudies);
 
         var result = new StudyCostProfileWrapperDto();
         var feasibilityDto = _mapper.Map<TotalFeasibilityAndConceptStudiesDto>(feasibility);
         var feedDto = _mapper.Map<TotalFEEDStudiesDto>(feed);
+        var otherStudiesDto = _mapper.Map<TotalOtherStudiesDto>(otherStudies);
+
 
         result.TotalFeasibilityAndConceptStudiesDto = feasibilityDto;
         result.TotalFEEDStudiesDto = feedDto;
+        result.TotalOtherStudiesDto = otherStudiesDto;
 
-        if (feasibility.Values.Length == 0 && feed.Values.Length == 0)
+        if (feasibility.Values.Length == 0 && feed.Values.Length == 0 && otherStudies.Values.Length == 0)
         {
             return new StudyCostProfileWrapperDto();
         }
-        var cost = TimeSeriesCost.MergeCostProfiles(feasibility, feed);
+
+        var cost = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { feasibility, feed, otherStudies });
+
         var studyCost = new StudyCostProfile
         {
             StartYear = cost.StartYear,
@@ -85,10 +93,11 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         return result;
     }
 
-    private async Task<int> UpdateCaseAndSaveAsync(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies)
+    private async Task<int> UpdateCaseAndSaveAsync(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies, TotalOtherStudies totalOtherStudies)
     {
         caseItem.TotalFeasibilityAndConceptStudies = totalFeasibilityAndConceptStudies;
         caseItem.TotalFEEDStudies = totalFEEDStudies;
+        caseItem.TotalOtherStudies = totalOtherStudies;
         return await _context.SaveChangesAsync();
     }
 
