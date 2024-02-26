@@ -4,6 +4,7 @@ import {
     Switch, Typography,
 } from "@equinor/eds-core-react"
 import { useAppContext } from "../Context/AppContext"
+import { useModalContext } from "../Context/ModalContext"
 
 const Wrapper = styled.div`
     position: sticky;
@@ -28,9 +29,8 @@ const Controls = styled.div`
 `
 
 const ProjectControls = () => {
-    const {
-        project, editMode, setEditMode,
-    } = useAppContext()
+    const { project } = useAppContext()
+    const { editMode, setEditMode } = useModalContext()
 
     return (
         <Wrapper>

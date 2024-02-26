@@ -35,7 +35,7 @@ const ModalDiv = styled.div`
     top: 80px;
     left: 3%;
     padding: 20px;
-    z-index: 2;
+    z-index: 1000;
     background-color: white;
     border: 2px solid gray;
     overflow-y: auto;
@@ -60,7 +60,6 @@ const CancelButton = styled(Button)`
 type Props = {
     toggleEditTechnicalInputModal: () => void
     isOpen: boolean
-    caseId?: string
     setExploration?: Dispatch<SetStateAction<Components.Schemas.ExplorationDto | undefined>>
     setWellProject?: Dispatch<SetStateAction<Components.Schemas.WellProjectDto | undefined>>
 }
@@ -68,7 +67,6 @@ type Props = {
 const EditTechnicalInputModal = ({
     toggleEditTechnicalInputModal,
     isOpen,
-    caseId,
     setExploration,
     setWellProject,
 }: Props) => {

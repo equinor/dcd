@@ -11,6 +11,7 @@ import {
 import { useNavigate } from "react-router-dom"
 import { useAppContext } from "../../../Context/AppContext"
 import { deleteCase, duplicateCase, setCaseAsReference } from "../../../Utils/CaseController"
+import { useModalContext } from "../../../Context/ModalContext"
 
 interface CaseDropMenuProps {
     isMenuOpen: boolean
@@ -30,9 +31,12 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     const {
         project,
         setProject,
+    } = useAppContext()
+
+    const {
         editCase,
         addNewCase,
-    } = useAppContext()
+    } = useModalContext()
 
     const deleteAndGoToProject = async () => {
         if (!caseItem.id || !project) return

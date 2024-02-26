@@ -6,6 +6,7 @@ import { resolveConfiguration } from "./Utils/config"
 import { EnvironmentVariables } from "./environmentVariables"
 import { storeAppId, storeAppScope } from "./Utils/common"
 import { buildConfig } from "./Services/config"
+import { ModalContextProvider } from "./Context/ModalContext"
 
 const AppComponent: FC = () => {
     const suppressConsoleError = (shouldBeHidden: ((message: string) => boolean)[]) => {
@@ -33,7 +34,9 @@ const AppComponent: FC = () => {
 
     return (
         <AppContextProvider>
-            <AppRouter />
+            <ModalContextProvider>
+                <AppRouter />
+            </ModalContextProvider>
         </AppContextProvider>
     )
 }

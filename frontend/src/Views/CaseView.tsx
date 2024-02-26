@@ -485,7 +485,6 @@ const CaseView = () => {
             <EditTechnicalInputModal
                 toggleEditTechnicalInputModal={toggleTechnicalInputModal}
                 isOpen={editTechnicalInputModalIsOpen}
-                caseId={caseItem.id}
                 setExploration={setExploration}
                 setWellProject={setWellProject}
             />

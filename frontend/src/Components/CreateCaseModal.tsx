@@ -22,6 +22,7 @@ import {
 } from "../Utils/common"
 import { GetCaseService } from "../Services/CaseService"
 import { useAppContext } from "../Context/AppContext"
+import { useModalContext } from "../Context/ModalContext"
 
 const CreateCaseForm = styled.form`
     width: 596px;
@@ -75,12 +76,15 @@ const CreateCaseModal = () => {
     const {
         project,
         setProject,
+    } = useAppContext()
+
+    const {
         createCaseModalIsOpen,
         setCreateCaseModalIsOpen,
         modalEditMode,
         modalShouldNavigate,
         modalCaseId,
-    } = useAppContext()
+    } = useModalContext()
 
     const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const [caseName, setCaseName] = useState<string>("")
