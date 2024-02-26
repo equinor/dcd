@@ -15,7 +15,7 @@ const SwitchWrapper = styled.div`
     display: flex;
     flex-direction: row;
     margin-left: auto;
-    z-index: 110;
+    z-index: 3;
 `
 const ColumnWrapper = styled.div`
     margin-top: 1rem;

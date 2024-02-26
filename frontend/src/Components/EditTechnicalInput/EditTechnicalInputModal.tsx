@@ -35,7 +35,7 @@ const ModalDiv = styled.div`
     top: 80px;
     left: 3%;
     padding: 20px;
-    z-index: 1000;
+    z-index: 2;
     background-color: white;
     border: 2px solid gray;
     overflow-y: auto;

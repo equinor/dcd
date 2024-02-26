@@ -51,12 +51,12 @@ const HeaderWrapper = styled.div`
     background-color: white;
     width: calc(100% - 270px);
     position: fixed;
-    z-index: 100;
+    z-index: 2;
     padding-top: 30px;
 `
 const TabMenuWrapper = styled.div`
     position: fixed;
-    z-index: 1000;
+    z-index: 2;
     width: calc(100% - 16rem);
     border-bottom: 1px solid LightGray;
     margin-top: 95px;
@@ -71,7 +71,7 @@ const CaseButtonsWrapper = styled.div`
     display: flex;
     flex-direction: row;
     margin-left: auto;
-    z-index: 110;
+    z-index: 2;
     gap: 10px;
 `
 

@@ -11,7 +11,7 @@ const Wrapper = styled.div`
     position: sticky;
     top: 0;
     height: calc(100vh - 60px);
-    z-index: 1000;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     width: 250px;
