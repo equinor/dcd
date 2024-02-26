@@ -71,18 +71,29 @@ public class CaseDto
     public CessationOffshoreFacilitiesCostDto CessationOffshoreFacilitiesCost { get; set; } = null!;
     [Required]
     public CessationOffshoreFacilitiesCostOverrideDto CessationOffshoreFacilitiesCostOverride { get; set; } = null!;
-
+    [Required]
     public TotalFeasibilityAndConceptStudiesDto? TotalFeasibilityAndConceptStudies { get; set; }
+    [Required]
     public TotalFeasibilityAndConceptStudiesOverrideDto? TotalFeasibilityAndConceptStudiesOverride { get; set; }
+    [Required]
     public TotalFEEDStudiesDto? TotalFEEDStudies { get; set; }
+    [Required]
     public TotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
+    [Required]
     public TotalOtherStudiesDto? TotalOtherStudies { get; set; }
+    [Required]
     public HistoricCostCostProfileDto? HistoricCostCostProfile { get; set; }
+    [Required]
     public WellInterventionCostProfileDto? WellInterventionCostProfile { get; set; }
+    [Required]
     public WellInterventionCostProfileOverrideDto? WellInterventionCostProfileOverride { get; set; }
+    [Required]
     public OffshoreFacilitiesOperationsCostProfileDto? OffshoreFacilitiesOperationsCostProfile { get; set; }
+    [Required]
     public OffshoreFacilitiesOperationsCostProfileOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
+    [Required]
     public AdditionalOPEXCostProfileDto? AdditionalOPEXCostProfile { get; set; }
+
 
     [Required]
     public Guid DrainageStrategyLink { get; set; }
