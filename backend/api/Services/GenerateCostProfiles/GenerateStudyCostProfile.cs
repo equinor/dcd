@@ -62,7 +62,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         feed.StartYear = newFeed.StartYear;
         feed.Values = newFeed.Values;
 
-        var otherStudies = caseItem.TotalOtherStudies;
+        var otherStudies = caseItem.TotalOtherStudies ?? new TotalOtherStudies();
 
         await UpdateCaseAndSaveAsync(caseItem, feasibility, feed, otherStudies);
 
