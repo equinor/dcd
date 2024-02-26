@@ -79,10 +79,10 @@ const CreateCaseModal = () => {
     } = useAppContext()
 
     const {
-        createCaseModalIsOpen,
-        setCreateCaseModalIsOpen,
-        modalEditMode,
-        modalShouldNavigate,
+        caseModalIsOpen,
+        setCaseModalIsOpen,
+        caseModalEditMode,
+        caseModalShouldNavigate,
         modalCaseId,
     } = useModalContext()
 
@@ -170,7 +170,7 @@ const CreateCaseModal = () => {
             }
 
             let projectResult: Components.Schemas.ProjectDto
-            if (modalEditMode && caseItem && caseItem.id) {
+            if (caseModalEditMode && caseItem && caseItem.id) {
                 const newCase = { ...caseItem }
                 newCase.name = caseName
                 newCase.description = description
@@ -205,8 +205,8 @@ const CreateCaseModal = () => {
                 ))?.id}`)
             }
             setProject(projectResult)
-            setCreateCaseModalIsOpen(false)
-            if (modalShouldNavigate) {
+            setCaseModalIsOpen(false)
+            if (caseModalShouldNavigate) {
                 navigate(fusionContextId!)
             }
         } catch (error) {
@@ -218,7 +218,7 @@ const CreateCaseModal = () => {
     const disableCreateButton = () => caseName && caseName !== ""
 
     return (
-        <ModalNoFocus isOpen={createCaseModalIsOpen} title={modalEditMode ? "Edit case" : "Add new case"}>
+        <ModalNoFocus isOpen={caseModalIsOpen} title={caseModalEditMode ? "Edit case" : "Add new case"}>
             <CreateCaseForm>
                 <RowWrapper>
                     <NameField>
@@ -322,7 +322,7 @@ const CreateCaseModal = () => {
                     <Button
                         type="button"
                         variant="outlined"
-                        onClick={() => setCreateCaseModalIsOpen(false)}
+                        onClick={() => setCaseModalIsOpen(false)}
                     >
                         Cancel
                     </Button>
@@ -337,7 +337,7 @@ const CreateCaseModal = () => {
                                 onClick={submitCaseForm}
                                 disabled={!disableCreateButton()}
                             >
-                                {modalEditMode ? "Save changes" : "Create case"}
+                                {caseModalEditMode ? "Save changes" : "Create case"}
                             </CreateButton>
                         )}
 
