@@ -41,7 +41,7 @@ export const SetTableYearsFromProfiles = (
     let firstYear = Number.MAX_SAFE_INTEGER
     let lastYear = Number.MIN_SAFE_INTEGER
     profiles.forEach((p) => {
-        if (p && p.startYear !== undefined && p.startYear < firstYear) {
+        if (p && p.startYear !== undefined && p.startYear < firstYear && p.startYear > 0) {
             firstYear = p.startYear
         }
         const profileLastYear = GetTimeSeriesLastYear(p)
