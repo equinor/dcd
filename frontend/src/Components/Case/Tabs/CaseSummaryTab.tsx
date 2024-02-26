@@ -11,16 +11,8 @@ import { GetGenerateProfileService } from "../../../Services/CaseGeneratedProfil
 import { mergeTimeseries } from "../../../Utils/common"
 import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
 import InputContainer from "../../Input/Containers/InputContainer"
+import InputSwitcher from "../../Input/InputSwitcher"
 
-const ColumnWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-const RowWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 78px;
-`
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
@@ -30,9 +22,7 @@ const TopWrapper = styled.div`
 const PageTitle = styled(Typography)`
     flex-grow: 1;
 `
-const NumberInputField = styled.div`
-    padding-right: 20px;
-`
+
 const TableWrapper = styled.div`
     margin-bottom: 50px;
 `
@@ -225,19 +215,24 @@ const CaseSummaryTab = ({
             </TopWrapper>
 
             <InputContainer mobileColumns={1} desktopColumns={2} breakPoint={850}>
-                <CaseNumberInput
-                    onChange={handleCaseNPVChange}
-                    defaultValue={caseItem.npv}
-                    integer={false}
-                    label="NPV before tax"
-                    allowNegative
-                />
-                <CaseNumberInput
-                    onChange={handleCaseBreakEvenChange}
-                    defaultValue={caseItem.breakEven}
-                    integer={false}
-                    label="B/E before tax"
-                />
+                <InputSwitcher value={`${caseItem.npv}`} label="NPV before tax">
+                    <CaseNumberInput
+                        onChange={handleCaseNPVChange}
+                        defaultValue={caseItem.npv}
+                        integer={false}
+                        label="NPV before tax"
+                        allowNegative
+                    />
+                </InputSwitcher>
+
+                <InputSwitcher value={`${caseItem.breakEven}`} label="B/E before tax">
+                    <CaseNumberInput
+                        onChange={handleCaseBreakEvenChange}
+                        defaultValue={caseItem.breakEven}
+                        integer={false}
+                        label="B/E before tax"
+                    />
+                </InputSwitcher>
             </InputContainer>
 
             <TableWrapper>

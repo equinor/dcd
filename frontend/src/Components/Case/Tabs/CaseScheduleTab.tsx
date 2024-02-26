@@ -15,8 +15,10 @@ import {
     isDefaultDate,
     isDefaultDateString,
     toMonthDate,
+    formatDate,
 } from "../../../Utils/common"
 import InputContainer from "../../Input/Containers/InputContainer"
+import InputSwitcher from "../../Input/InputSwitcher"
 
 const TopWrapper = styled.div`
     display: flex;
@@ -206,67 +208,118 @@ const CaseScheduleTab = ({
             </TopWrapper>
             <InputContainer mobileColumns={1} desktopColumns={2} breakPoint={850}>
 
-                <CaseDateField
-                    onChange={handleDGAChange}
-                    value={dateFromString(caseItem.dgaDate)}
+                <InputSwitcher
+                    value={formatDate(caseItem.dgaDate)}
                     label="DGA"
-                />
-                <CaseDateField
-                    onChange={handleDGBChange}
-                    value={dateFromString(caseItem.dgbDate)}
+                >
+                    <CaseDateField
+                        onChange={handleDGAChange}
+                        value={dateFromString(caseItem.dgaDate)}
+                        label="DGA"
+                    />
+                </InputSwitcher>
+                <InputSwitcher
+                    value={formatDate(caseItem.dgbDate)}
                     label="DGB"
-                />
-                <CaseDateField
-                    onChange={handleDGCChange}
-                    value={dateFromString(caseItem.dgcDate)}
+                >
+                    <CaseDateField
+                        onChange={handleDGBChange}
+                        value={dateFromString(caseItem.dgbDate)}
+                        label="DGB"
+                    />
+                </InputSwitcher>
+                <InputSwitcher
+                    value={formatDate(caseItem.dG2Date)}
                     label="DGC"
-                />
-                <CaseDateField
-                    onChange={handleAPXChange}
-                    value={dateFromString(caseItem.apxDate)}
+                >
+                    <CaseDateField
+                        onChange={handleDGCChange}
+                        value={dateFromString(caseItem.dgcDate)}
+                        label="DGC"
+                    />
+                </InputSwitcher>
+                <InputSwitcher
+                    value={formatDate(caseItem.apxDate)}
                     label="APX"
-                />
-                <CaseDateField
-                    onChange={handleAPZChange}
-                    value={dateFromString(caseItem.apzDate)}
+                >
+                    <CaseDateField
+                        onChange={handleAPXChange}
+                        value={dateFromString(caseItem.apxDate)}
+                        label="APX"
+                    />
+                </InputSwitcher>
+                <InputSwitcher
+                    value={formatDate(caseItem.apzDate)}
                     label="APZ"
-                />
-
-                <CaseDateField
-                    onChange={handleDG0Change}
-                    value={dateFromString(caseItem.dG0Date)}
+                >
+                    <CaseDateField
+                        onChange={handleAPZChange}
+                        value={dateFromString(caseItem.apzDate)}
+                        label="APZ"
+                    />
+                </InputSwitcher>
+                <InputSwitcher
+                    value={formatDate(caseItem.dG0Date)}
                     label="DG0"
-                    max={findMaxDate(getDatesFromStrings([caseItem.dG1Date, caseItem.dG2Date, caseItem.dG3Date, caseItem.dG4Date]))}
-                    min={undefined}
-                />
-                <CaseDateField
-                    onChange={handleDG1Change}
-                    value={dateFromString(caseItem.dG1Date)}
+                >
+
+                    <CaseDateField
+                        onChange={handleDG0Change}
+                        value={dateFromString(caseItem.dG0Date)}
+                        label="DG0"
+                        max={findMaxDate(getDatesFromStrings([caseItem.dG1Date, caseItem.dG2Date, caseItem.dG3Date, caseItem.dG4Date]))}
+                        min={undefined}
+                    />
+                </InputSwitcher>
+                <InputSwitcher
+                    value={formatDate(caseItem.dG1Date)}
                     label="DG1"
-                    max={findMaxDate(getDatesFromStrings([caseItem.dG2Date, caseItem.dG3Date, caseItem.dG4Date]))}
-                    min={findMinDate(getDatesFromStrings([caseItem.dG0Date]))}
-                />
-                <CaseDateField
-                    onChange={handleDG2Change}
-                    value={dateFromString(caseItem.dG2Date)}
+                >
+
+                    <CaseDateField
+                        onChange={handleDG1Change}
+                        value={dateFromString(caseItem.dG1Date)}
+                        label="DG1"
+                        max={findMaxDate(getDatesFromStrings([caseItem.dG2Date, caseItem.dG3Date, caseItem.dG4Date]))}
+                        min={findMinDate(getDatesFromStrings([caseItem.dG0Date]))}
+                    />
+                </InputSwitcher>
+                <InputSwitcher
+                    value={formatDate(caseItem.dG2Date)}
                     label="DG2"
-                    max={findMaxDate(getDatesFromStrings([caseItem.dG3Date, caseItem.dG4Date]))}
-                    min={findMinDate(getDatesFromStrings([caseItem.dG0Date, caseItem.dG1Date]))}
-                />
-                <CaseDateField
-                    onChange={handleDG3Change}
-                    value={dateFromString(caseItem.dG3Date)}
+                >
+                    <CaseDateField
+                        onChange={handleDG2Change}
+                        value={dateFromString(caseItem.dG2Date)}
+                        label="DG2"
+                        max={findMaxDate(getDatesFromStrings([caseItem.dG3Date, caseItem.dG4Date]))}
+                        min={findMinDate(getDatesFromStrings([caseItem.dG0Date, caseItem.dG1Date]))}
+                    />
+                </InputSwitcher>
+                <InputSwitcher
+                    value={formatDate(caseItem.dG3Date)}
                     label="DG3"
-                    max={findMaxDate(getDatesFromStrings([caseItem.dG4Date]))}
-                    min={findMinDate(getDatesFromStrings([caseItem.dG0Date, caseItem.dG1Date, caseItem.dG2Date]))}
-                />
-                <CaseDateField
-                    onChange={handleDG4Change}
-                    value={dateFromString(caseItem.dG4Date)}
+                >
+                    <CaseDateField
+                        onChange={handleDG3Change}
+                        value={dateFromString(caseItem.dG3Date)}
+                        label="DG3"
+                        max={findMaxDate(getDatesFromStrings([caseItem.dG4Date]))}
+                        min={findMinDate(getDatesFromStrings([caseItem.dG0Date, caseItem.dG1Date, caseItem.dG2Date]))}
+                    />
+                </InputSwitcher>
+                <InputSwitcher
+                    value={formatDate(caseItem.dG4Date)}
                     label="DG4"
-                    max={undefined}
-                    min={findMinDate(getDatesFromStrings([caseItem.dG0Date, caseItem.dG1Date, caseItem.dG2Date, caseItem.dG3Date]))}
-                />
+                >
+                    <CaseDateField
+                        onChange={handleDG4Change}
+                        value={dateFromString(caseItem.dG4Date)}
+                        label="DG4"
+                        max={undefined}
+                        min={findMinDate(getDatesFromStrings([caseItem.dG0Date, caseItem.dG1Date, caseItem.dG2Date, caseItem.dG3Date]))}
+                    />
+                </InputSwitcher>
             </InputContainer>
         </>
     )

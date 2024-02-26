@@ -1,7 +1,7 @@
 import {
     Button,
     Progress,
-    Tabs, Typography,
+    Tabs,
 } from "@equinor/eds-core-react"
 import React, { useState } from "react"
 import styled from "styled-components"
@@ -20,14 +20,12 @@ const StyledTabPanel = styled(Panel)`
     border-top: 1px solid LightGray;
 `
 
-const TopWrapper = styled.div`
+const ControlsWrapper = styled.div`
     display: flex;
     flex-direction: row;
     padding: 20px 20px 0 20px;
-`
-
-const PageTitle = styled(Typography)`
-    flex-grow: 1;
+    justify-content: flex-end;
+    
 `
 
 const TransparentButton = styled(Button)`
@@ -37,7 +35,7 @@ const TransparentButton = styled(Button)`
     margin-left: 1rem;
 `
 
-const Wrapper = styled.div`
+const TabsWrapper = styled.div`
     margin: 0 20px;
     display: flex;
     flex-direction: column;
@@ -64,9 +62,8 @@ const ProjectView = () => {
 
     return (
         <>
-            <TopWrapper>
-                <PageTitle variant="h4">{project?.name}</PageTitle>
-                {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
+            <ControlsWrapper>
+                {!isSaving ? <Button onClick={handleSave}>Save project</Button> : (
                     <Button>
                         <Progress.Dots />
                     </Button>
@@ -77,8 +74,8 @@ const ProjectView = () => {
                 >
                     Edit technical input
                 </TransparentButton>
-            </TopWrapper>
-            <Wrapper>
+            </ControlsWrapper>
+            <TabsWrapper>
                 <Tabs activeTab={activeTab} onChange={setActiveTab}>
                     <List>
                         <Tab>Overview </Tab>
@@ -97,7 +94,7 @@ const ProjectView = () => {
                         </StyledTabPanel>
                     </Panels>
                 </Tabs>
-            </Wrapper>
+            </TabsWrapper>
             <EditTechnicalInputModal
                 toggleEditTechnicalInputModal={toggleEditTechnicalInputModal}
                 isOpen={editTechnicalInputModalIsOpen ?? false}

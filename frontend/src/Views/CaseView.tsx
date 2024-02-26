@@ -21,7 +21,6 @@ import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechni
 import CaseCostTab from "../Components/Case/Tabs/CaseCostTab"
 import CaseFacilitiesTab from "../Components/Case/Tabs/CaseFacilitiesTab"
 import CaseProductionProfilesTab from "../Components/Case/Tabs/CaseProductionProfilesTab"
-import CreateCaseModal from "../Components/CreateCaseModal"
 import CaseScheduleTab from "../Components/Case/Tabs/CaseScheduleTab"
 import CaseSummaryTab from "../Components/Case/Tabs/CaseSummaryTab"
 import CaseDrillingScheduleTab from "../Components/Case/Tabs/CaseDrillingSchedule/CaseDrillingScheduleTab"
@@ -314,7 +313,7 @@ const CaseView = () => {
                     </PageTitle>
                     <ColumnWrapper>
                         <CaseButtonsWrapper>
-                            {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
+                            {!isSaving ? <Button onClick={handleSave}>Save case</Button> : (
                                 <Button>
                                     <Progress.Dots />
                                 </Button>
