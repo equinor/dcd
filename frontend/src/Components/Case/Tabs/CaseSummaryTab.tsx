@@ -63,7 +63,7 @@ const CaseSummaryTab = ({
     const [cessationCost, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto>()
 
     // CAPEX
-    const [historicCost, setHistoricCost] = useState<Components.Schemas.HistoricCostCostProfileDto>()
+    const historicCost = useState<Components.Schemas.HistoricCostCostProfileDto>()
 
     const [topsideCost, setTopsideCost] = useState<Components.Schemas.TopsideCostProfileDto>()
     const [surfCost, setSurfCost] = useState<Components.Schemas.SurfCostProfileDto>()

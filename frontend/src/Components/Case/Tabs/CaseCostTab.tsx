@@ -53,10 +53,8 @@ interface Props {
     setTotalFEEDStudies: Dispatch<SetStateAction<Components.Schemas.TotalFEEDStudiesDto | undefined>>,
     totalOtherStudies: Components.Schemas.TotalOtherStudiesDto | undefined,
     setTotalOtherStudies: Dispatch<SetStateAction<Components.Schemas.TotalOtherStudiesDto | undefined>>,
-
     historicCostCostProfile: Components.Schemas.HistoricCostCostProfileDto | undefined,
     setHistoricCostCostProfile: Dispatch<SetStateAction<Components.Schemas.HistoricCostCostProfileDto | undefined>>,
-
     offshoreFacilitiesOperationsCostProfile: Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined,
     setOffshoreFacilitiesOperationsCostProfile: Dispatch<SetStateAction<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined>>,
 
@@ -64,8 +62,7 @@ interface Props {
     setWellInterventionCostProfile: Dispatch<SetStateAction<Components.Schemas.WellInterventionCostProfileDto | undefined>>,
 
     additionalOPEXCostProfile: Components.Schemas.AdditionalOPEXCostProfileDto | undefined,
-    setAdditionalOPEXCostProfile: Dispatch<SetStateAction<Components.Schemas.AdditionalOPEXCostProfileDto | undefined>>,
-
+    setAdditionOPEXCostProfile: Dispatch<SetStateAction<Components.Schemas.AdditionalOPEXCostProfileDto | undefined>>,
     cessationWellsCost: Components.Schemas.TotalFEEDStudiesDto | undefined,
     setCessationWellsCost: Dispatch<SetStateAction<Components.Schemas.CessationWellsCostDto | undefined>>,
 
@@ -161,25 +158,25 @@ const CaseCostTab = ({
                 if (activeTab === 5) {
                     const totalFeasibility = caseItem.totalFeasibilityAndConceptStudies
                     const totalFEED = caseItem.totalFEEDStudies
-                    const totalOtherStudies = caseItem.totalOtherStudies
+                    const totalOtherStudiesLocal = caseItem.totalOtherStudies
 
                     setTotalFeasibilityAndConceptStudies(totalFeasibility)
                     setTotalFeasibilityAndConceptStudiesOverride(caseItem.totalFeasibilityAndConceptStudiesOverride)
                     setTotalFEEDStudies(totalFEED)
                     setTotalFEEDStudiesOverride(caseItem.totalFEEDStudiesOverride)
-                    setTotalOtherStudies(totalOtherStudies)
+                    setTotalOtherStudies(totalOtherStudiesLocal)
 
                     const wellIntervention = wellInterventionCostProfile
                     const offshoreFacilitiesOperations = caseItem.offshoreFacilitiesOperationsCostProfile
-                    const historicCostCostProfile = caseItem.historicCostCostProfile
-                    const additionalOPEXCostProfile = caseItem.additionalOPEXCostProfile
+                    const historicCostCostProfileLocal = caseItem.historicCostCostProfile
+                    const additionalOPEXCostProfileLocal = caseItem.additionalOPEXCostProfile
 
                     setWellInterventionCostProfile(wellIntervention)
                     setWellInterventionCostProfileOverride(caseItem.wellInterventionCostProfileOverride)
                     setOffshoreFacilitiesOperationsCostProfile(offshoreFacilitiesOperations)
                     setOffshoreFacilitiesOperationsCostProfileOverride(caseItem.offshoreFacilitiesOperationsCostProfileOverride)
-                    setHistoricCostCostProfile(historicCostCostProfile)
-                    setAdditionalOPEXCostProfile(additionalOPEXCostProfile)
+                    setHistoricCostCostProfile(historicCostCostProfileLocal)
+                    setAdditionalOPEXCostProfile(additionalOPEXCostProfileLocal)
 
                     const cessationWells = caseItem.cessationWellsCost
                     const cessationOffshoreFacilities = caseItem.cessationOffshoreFacilitiesCost
