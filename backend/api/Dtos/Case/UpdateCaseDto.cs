@@ -35,9 +35,12 @@ public class UpdateCaseDto
 
     public UpdateTotalFeasibilityAndConceptStudiesOverrideDto? TotalFeasibilityAndConceptStudiesOverride { get; set; }
     public UpdateTotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
+    public UpdateTotalOtherStudies? TotalOtherStudies { get; set; }
 
+    public UpdateHistoricCostCostProfile? HistoricCostCostProfile {get; set; }
     public UpdateWellInterventionCostProfileOverrideDto? WellInterventionCostProfileOverride { get; set; }
     public UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
+    public UpdateAdditionalOPEXCostProfile? AdditionalOPEXCostProfile {get; set; }
 
     public double Capex { get; set; }
     public CapexYear? CapexYear { get; set; }
@@ -75,4 +78,16 @@ public class UpdateTotalFeasibilityAndConceptStudiesOverrideDto : UpdateTimeSeri
 public class UpdateTotalFEEDStudiesOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
 {
     public bool Override { get; set; }
+}
+
+public class UpdateTotalOtherStudies : UpdateTimeSeriesCostDto
+{
+}
+
+public class UpdateHistoricCostCostProfile : UpdateTimeSeriesCostDto
+{
+}
+
+public class UpdateAdditionalOPEXCostProfile : UpdateTimeSeriesCostDto
+{
 }

@@ -3144,15 +3144,15 @@ namespace api.Migrations
                 });
 
             modelBuilder.Entity("api.Models.TotalOtherStudies", b =>
-{
-    b.HasOne("api.Models.Case", "Case")
-        .WithOne("TotalOtherStudies")
-        .HasForeignKey("api.Models.TotalOtherStudies", "Case.Id")
-        .OnDelete(DeleteBehavior.Cascade)
-        .IsRequired();
+                {
+                    b.HasOne("api.Models.Case", "Case")
+                        .WithOne("TotalOtherStudies")
+                        .HasForeignKey("api.Models.TotalOtherStudies", "Case.Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-    b.Navigation("Case");
-});
+                    b.Navigation("Case");
+                });
 
             modelBuilder.Entity("api.Models.TotalOtherStudiesOverride", b =>
                 {

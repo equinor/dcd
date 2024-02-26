@@ -75,7 +75,6 @@ public static class STEACaseDtoBuilder
         {
             costProfileDtos.Add(caseDto.TotalFeasibilityAndConceptStudies);
         }
-
         if (caseDto.TotalFEEDStudiesOverride?.Override == true)
         {
             costProfileDtos.Add(caseDto.TotalFEEDStudiesOverride);
@@ -84,7 +83,7 @@ public static class STEACaseDtoBuilder
         {
             costProfileDtos.Add(caseDto.TotalFEEDStudies);
         }
-        if (caseDto.TotalOtherStudies != null)
+        if (caseDto.TotalOtherStudies?.Values.Length > 0)
         {
             costProfileDtos.Add(caseDto.TotalOtherStudies);
         }

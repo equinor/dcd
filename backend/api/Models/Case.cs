@@ -180,7 +180,7 @@ public class TotalOtherStudies : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
     public Case Case { get; set; } = null!;
-}
+    }
 public interface ICaseTimeSeries
 {
     Case Case { get; set; }

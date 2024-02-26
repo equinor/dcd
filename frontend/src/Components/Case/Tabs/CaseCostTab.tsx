@@ -161,6 +161,7 @@ const CaseCostTab = ({
                 if (activeTab === 5) {
                     const totalFeasibility = caseItem.totalFeasibilityAndConceptStudies
                     const totalFEED = caseItem.totalFEEDStudies
+                    const totalOtherStudies = caseItem.totalOtherStudies
 
                     setTotalFeasibilityAndConceptStudies(totalFeasibility)
                     setTotalFeasibilityAndConceptStudiesOverride(caseItem.totalFeasibilityAndConceptStudiesOverride)
@@ -170,6 +171,8 @@ const CaseCostTab = ({
 
                     const wellIntervention = wellInterventionCostProfile
                     const offshoreFacilitiesOperations = caseItem.offshoreFacilitiesOperationsCostProfile
+                    const historicCostCostProfile = caseItem.historicCostCostProfile
+                    const additionalOPEXCostProfile = caseItem.additionalOPEXCostProfile
 
                     setWellInterventionCostProfile(wellIntervention)
                     setWellInterventionCostProfileOverride(caseItem.wellInterventionCostProfileOverride)
@@ -564,6 +567,13 @@ const CaseCostTab = ({
 
     useEffect(() => {
         const newCase: Components.Schemas.CaseDto = { ...caseItem }
+        if (!totalOtherStudies) { return }
+        newCase.totalOtherStudies = totalOtherStudies
+        setCase(newCase)
+    }, [totalOtherStudies])
+
+    useEffect(() => {
+        const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (!wellInterventionCostProfileOverride) { return }
         newCase.wellInterventionCostProfileOverride = wellInterventionCostProfileOverride
         setCase(newCase)
@@ -575,6 +585,20 @@ const CaseCostTab = ({
         newCase.offshoreFacilitiesOperationsCostProfileOverride = offshoreFacilitiesOperationsCostProfileOverride
         setCase(newCase)
     }, [offshoreFacilitiesOperationsCostProfileOverride])
+
+    useEffect(() => {
+        const newCase: Components.Schemas.CaseDto = { ...caseItem }
+        if (!historicCostCostProfile) { return }
+        newCase.historicCostCostProfile = historicCostCostProfile
+        setCase(newCase)
+    }, [historicCostCostProfile])
+
+    useEffect(() => {
+        const newCase: Components.Schemas.CaseDto = { ...caseItem }
+        if (!additionalOPEXCostProfile) { return }
+        newCase.additionalOPEXCostProfile = additionalOPEXCostProfile
+        setCase(newCase)
+    }, [additionalOPEXCostProfile])
 
     useEffect(() => {
         const newCase: Components.Schemas.CaseDto = { ...caseItem }

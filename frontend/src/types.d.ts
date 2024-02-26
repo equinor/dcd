@@ -900,7 +900,7 @@ declare namespace Components {
             cessationOffshoreFacilitiesCostOverride?: UpdateCessationOffshoreFacilitiesCostOverrideDto;
             totalFeasibilityAndConceptStudiesOverride?: UpdateTotalFeasibilityAndConceptStudiesOverrideDto;
             totalFEEDStudiesOverride?: UpdateTotalFEEDStudiesOverrideDto;
-            totalOtherStudies?:TotalOtherStudiesDto; 
+            TotalOtherStudies?: UpdateTotalOtherStudiesDto; 
             wellInterventionCostProfileOverride?: UpdateWellInterventionCostProfileOverrideDto;
             offshoreFacilitiesOperationsCostProfileOverride?: UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto;
             capex?: number; // double
@@ -1131,6 +1131,12 @@ declare namespace Components {
             peakElectricityImported?: number; // double
         }
         export interface UpdateTotalFEEDStudiesOverrideDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            currency?: Currency /* int32 */;
+            override?: boolean;
+        }
+        export interface UpdateTotalOtherStudiesDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;

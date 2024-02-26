@@ -80,9 +80,9 @@ public class CaseDto
     [Required]
     public TotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
     [Required]
-    public TotalOtherStudiesDto? TotalOtherStudies { get; set; }
+    public TotalOtherStudiesDto? TotalOtherStudies { get; set; } = new TotalOtherStudiesDto();
     [Required]
-    public HistoricCostCostProfileDto? HistoricCostCostProfile { get; set; }
+    public HistoricCostCostProfileDto? HistoricCostCostProfile { get; set; } =  new HistoricCostCostProfileDto();
     [Required]
     public WellInterventionCostProfileDto? WellInterventionCostProfile { get; set; }
     [Required]
@@ -92,7 +92,7 @@ public class CaseDto
     [Required]
     public OffshoreFacilitiesOperationsCostProfileOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
     [Required]
-    public AdditionalOPEXCostProfileDto? AdditionalOPEXCostProfile { get; set; }
+    public AdditionalOPEXCostProfileDto? AdditionalOPEXCostProfile { get; set; } = new AdditionalOPEXCostProfileDto();
 
 
     [Required]
