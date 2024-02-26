@@ -62,15 +62,27 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         offshoreFacilitiesOperationsCost.StartYear = newOffshoreFacilitiesOperationsCost.StartYear;
         offshoreFacilitiesOperationsCost.Values = newOffshoreFacilitiesOperationsCost.Values;
 
-        var saveResult = await UpdateCaseAndSaveAsync(caseItem, wellInterventionCost, offshoreFacilitiesOperationsCost);
+        var historicCost = caseItem.HistoricCostCostProfile ?? new HistoricCostCostProfile();
+
+        var additionalOPEXCost = caseItem.AdditionalOPEXCostProfile ?? new AdditionalOPEXCostProfile();
+
+        await UpdateCaseAndSaveAsync(caseItem, wellInterventionCost, offshoreFacilitiesOperationsCost, historicCost, additionalOPEXCost);
 
         var wellInterventionCostDto = _mapper.Map<WellInterventionCostProfileDto>(wellInterventionCost);
         var offshoreFacilitiesOperationsCostDto = _mapper.Map<OffshoreFacilitiesOperationsCostProfileDto>(offshoreFacilitiesOperationsCost);
+        var historicCostCostProfileDto = _mapper.Map<HistoricCostCostProfileDto>(historicCost);
+        var additionalOPEXCostProfileDto = _mapper.Map<AdditionalOPEXCostProfileDto>(additionalOPEXCost);
 
         result.WellInterventionCostProfileDto = wellInterventionCostDto;
         result.OffshoreFacilitiesOperationsCostProfileDto = offshoreFacilitiesOperationsCostDto;
+        result.HistoricCostCostProfileDto = historicCostCostProfileDto;
+        result.AdditionalOPEXCostProfileDto = additionalOPEXCostProfileDto;
 
-        var OPEX = TimeSeriesCost.MergeCostProfiles(wellInterventionCost, offshoreFacilitiesOperationsCost);
+        var OPEX = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> {wellInterventionCost,
+            offshoreFacilitiesOperationsCost,
+            historicCost,
+            additionalOPEXCost});
+
         var opexCostProfile = new OpexCostProfile
         {
             StartYear = OPEX.StartYear,
@@ -82,10 +94,17 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         return result;
     }
 
-    private async Task<int> UpdateCaseAndSaveAsync(Case caseItem, WellInterventionCostProfile wellInterventionCostProfile, OffshoreFacilitiesOperationsCostProfile offshoreFacilitiesOperationsCostProfile)
+    private async Task<int> UpdateCaseAndSaveAsync(
+        Case caseItem,
+        WellInterventionCostProfile wellInterventionCostProfile,
+        OffshoreFacilitiesOperationsCostProfile offshoreFacilitiesOperationsCostProfile,
+        HistoricCostCostProfile historicCostCostProfile,
+        AdditionalOPEXCostProfile additionalOPEXCostProfile)
     {
         caseItem.WellInterventionCostProfile = wellInterventionCostProfile;
         caseItem.OffshoreFacilitiesOperationsCostProfile = offshoreFacilitiesOperationsCostProfile;
+        caseItem.HistoricCostCostProfile = historicCostCostProfile;
+        caseItem.AdditionalOPEXCostProfile = additionalOPEXCostProfile;
         return await _context.SaveChangesAsync();
     }
 
