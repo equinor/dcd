@@ -11,105 +11,102 @@ namespace api.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "AdditionalOPEXCostProfileOverride");
+            migrationBuilder.CreateTable(
+                name: "AdditionalOPEXCostProfile",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
+                    StartYear = table.Column<int>(type: "int", nullable: false),
+                    InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Currency = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdditionalOPEXCostProfile", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AdditionalOPEXCostProfile_Cases_Case.Id",
+                        column: x => x.CaseId,
+                        principalTable: "Cases",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
-            migrationBuilder.DropTable(
-                name: "HistoricCostCostProfileOverride");
+            migrationBuilder.CreateTable(
+                name: "HistoricCostCostProfile",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
+                    StartYear = table.Column<int>(type: "int", nullable: false),
+                    InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Currency = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HistoricCostCostProfile", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_HistoricCostCostProfile_Cases_Case.Id",
+                        column: x => x.CaseId,
+                        principalTable: "Cases",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
-            migrationBuilder.DropTable(
-                name: "TotalOtherStudiesOverride");
+            migrationBuilder.CreateTable(
+                name: "TotalOtherStudies",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
+                    StartYear = table.Column<int>(type: "int", nullable: false),
+                    InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Currency = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TotalOtherStudies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TotalOtherStudies_Cases_Case.Id",
+                        column: x => x.CaseId,
+                        principalTable: "Cases",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AdditionalOPEXCostProfile_Case.Id",
+                table: "AdditionalOPEXCostProfile",
+                column: "Case.Id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HistoricCostCostProfile_Case.Id",
+                table: "HistoricCostCostProfile",
+                column: "Case.Id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TotalOtherStudies_Case.Id",
+                table: "TotalOtherStudies",
+                column: "Case.Id",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "AdditionalOPEXCostProfileOverride",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
-                    Currency = table.Column<int>(type: "int", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Override = table.Column<bool>(type: "bit", nullable: false),
-                    StartYear = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AdditionalOPEXCostProfileOverride", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AdditionalOPEXCostProfileOverride_Cases_Case.Id",
-                        column: x => x.CaseId,
-                        principalTable: "Cases",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+            migrationBuilder.DropTable(
+                name: "AdditionalOPEXCostProfile");
 
-            migrationBuilder.CreateTable(
-                name: "HistoricCostCostProfileOverride",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
-                    Currency = table.Column<int>(type: "int", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Override = table.Column<bool>(type: "bit", nullable: false),
-                    StartYear = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HistoricCostCostProfileOverride", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_HistoricCostCostProfileOverride_Cases_Case.Id",
-                        column: x => x.CaseId,
-                        principalTable: "Cases",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+            migrationBuilder.DropTable(
+                name: "HistoricCostCostProfile");
 
-            migrationBuilder.CreateTable(
-                name: "TotalOtherStudiesOverride",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CaseId = table.Column<Guid>(name: "Case.Id", type: "uniqueidentifier", nullable: false),
-                    Currency = table.Column<int>(type: "int", nullable: false),
-                    EPAVersion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    InternalData = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Override = table.Column<bool>(type: "bit", nullable: false),
-                    StartYear = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TotalOtherStudiesOverride", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TotalOtherStudiesOverride_Cases_Case.Id",
-                        column: x => x.CaseId,
-                        principalTable: "Cases",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AdditionalOPEXCostProfileOverride_Case.Id",
-                table: "AdditionalOPEXCostProfileOverride",
-                column: "Case.Id",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_HistoricCostCostProfileOverride_Case.Id",
-                table: "HistoricCostCostProfileOverride",
-                column: "Case.Id",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TotalOtherStudiesOverride_Case.Id",
-                table: "TotalOtherStudiesOverride",
-                column: "Case.Id",
-                unique: true);
+            migrationBuilder.DropTable(
+                name: "TotalOtherStudies");
         }
     }
 }

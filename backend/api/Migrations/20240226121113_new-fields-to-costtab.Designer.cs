@@ -12,7 +12,7 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20240226115250_new-fields-to-costtab")]
+    [Migration("20240226121113_new-fields-to-costtab")]
     partial class newfieldstocosttab
     {
         /// <inheritdoc />
