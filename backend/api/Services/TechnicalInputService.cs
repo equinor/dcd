@@ -69,7 +69,7 @@ public class TechnicalInputService : ITechnicalInputService
 
         if (technicalInputDto.UpdateWellDtos?.Length > 0 || technicalInputDto.CreateWellDtos?.Length > 0)
         {
-            var wellResult = await CreateAndUpdateWells(technicalInputDto.CreateWellDtos, technicalInputDto.UpdateWellDtos);
+            var wellResult = await CreateAndUpdateWells(projectId, technicalInputDto.CreateWellDtos, technicalInputDto.UpdateWellDtos);
             if (wellResult != null)
             {
                 returnDto.ExplorationDto = wellResult.Value.explorationDto;
@@ -89,7 +89,10 @@ public class TechnicalInputService : ITechnicalInputService
     }
 
     private async Task<(ExplorationDto explorationDto, WellProjectDto wellProjectDto)?> CreateAndUpdateWells(
-        CreateWellDto[]? createWellDtos, UpdateWellDto[]? updateWellDtos)
+        Guid projectId,
+        CreateWellDto[]? createWellDtos, 
+        UpdateWellDto[]? updateWellDtos
+        )
     {
         var runCostProfileCalculation = false;
         var runSaveChanges = false;
@@ -104,6 +107,7 @@ public class TechnicalInputService : ITechnicalInputService
                 {
                     throw new ArgumentNullException(nameof(well));
                 }
+                well.ProjectId = projectId;
                 var updatedWell = _context.Wells!.Add(well);
 
                 runSaveChanges = true;
@@ -132,13 +136,12 @@ public class TechnicalInputService : ITechnicalInputService
         }
         if (runCostProfileCalculation)
         {
-            await _costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWells);
+            // await _costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWells);
         }
         return null;
     }
     private async Task<ProjectDto> UpdateProject(Project project, UpdateProjectDto updatedDto)
     {
-        ;
         _mapper.Map(updatedDto, project);
         var updatedItem = _context.Projects!.Update(project);
         await _context.SaveChangesAsync();

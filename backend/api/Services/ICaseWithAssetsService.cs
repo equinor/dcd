@@ -7,8 +7,8 @@ namespace api.Services;
 
 public interface ICaseWithAssetsService
 {
-    Task CreateAndUpdateExplorationWellsAsync(UpdateExplorationWellDto[] explorationWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate);
-    Task CreateAndUpdateWellProjectWellsAsync(UpdateWellProjectWellDto[] wellProjectWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate);
+    Task CreateAndUpdateExplorationWells(UpdateExplorationWellDto[] explorationWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate);
+    Task CreateAndUpdateWellProjectWells(UpdateWellProjectWellDto[] wellProjectWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate);
     Task<CaseDto> UpdateCase(Guid caseId, UpdateCaseDto updatedDto, ProfilesToGenerate profilesToGenerate);
-    Task<ProjectWithGeneratedProfilesDto> UpdateCaseWithAssetsAsync(Guid projectId, Guid caseId, CaseWithAssetsWrapperDto wrapper);
+    Task<ProjectWithGeneratedProfilesDto> UpdateCaseWithAssets(Guid projectId, Guid caseId, CaseWithAssetsWrapperDto wrapper);
 }

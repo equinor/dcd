@@ -13,7 +13,6 @@ public class UpdateWellProjectDto
     public UpdateGasInjectorCostProfileOverrideDto? GasInjectorCostProfileOverride { get; set; }
     public ArtificialLift ArtificialLift { get; set; }
     public Currency Currency { get; set; }
-    public List<WellProjectWellDto> WellProjectWells { get; set; } = [];
 }
 
 public class UpdateOilProducerCostProfileOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
