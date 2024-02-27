@@ -17,6 +17,7 @@ import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
 import InputContainer from "../../../Input/Containers/InputContainer"
 import FilterContainer from "../../../Input/Containers/TableFilterContainer"
 import InputSwitcher from "../../../Input/InputSwitcher"
+import { useModalContext } from "../../../../Context/ModalContext"
 
 const TopWrapper = styled.div`
     display: flex;
@@ -40,24 +41,27 @@ const TableWrapper = styled.div`
 interface Props {
     project: Components.Schemas.ProjectDto,
     caseItem: Components.Schemas.CaseDto,
-    exploration: Components.Schemas.ExplorationDto,
-    wellProject: Components.Schemas.WellProjectDto,
     explorationWells: Components.Schemas.ExplorationWellDto[],
     setExplorationWells: Dispatch<SetStateAction<Components.Schemas.ExplorationWellDto[] | undefined>>,
     wellProjectWells: Components.Schemas.WellProjectWellDto[],
     setWellProjectWells: Dispatch<SetStateAction<Components.Schemas.WellProjectWellDto[] | undefined>>,
     wells: Components.Schemas.WellDto[] | undefined
     activeTab: number
+    exploration: Components.Schemas.ExplorationDto,
+    wellProject: Components.Schemas.WellProjectDto,
 }
 
 const CaseDrillingScheduleTab = ({
     project,
     caseItem,
+    explorationWells,
+    setExplorationWells,
+    wellProjectWells,
+    setWellProjectWells,
+    wells,
+    activeTab,
     exploration,
     wellProject,
-    explorationWells, setExplorationWells,
-    wellProjectWells, setWellProjectWells,
-    wells, activeTab,
 }: Props) => {
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -278,7 +282,7 @@ const CaseDrillingScheduleTab = ({
                     setAssetWells={setExplorationWells}
                     tableName="Exploration wells"
                     tableYears={tableYears}
-                    assetId={exploration.id!}
+                    assetId={exploration.id}
                     wells={wells}
                     isExplorationTable
                     gridRef={explorationWellsGridRef}
@@ -292,7 +296,7 @@ const CaseDrillingScheduleTab = ({
                     setAssetWells={setWellProjectWells}
                     tableName="Development wells"
                     tableYears={tableYears}
-                    assetId={wellProject.id!}
+                    assetId={wellProject.id}
                     wells={wells}
                     isExplorationTable={false}
                     gridRef={wellProjectWellsGridRef}

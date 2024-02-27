@@ -6,12 +6,13 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import { tokens } from "@equinor/eds-tokens"
 import { useAppContext } from "../Context/AppContext"
 import { casePath, projectPath } from "../Utils/common"
+import { useModalContext } from "../Context/ModalContext"
 
 const Wrapper = styled.div`
     position: sticky;
     top: 0;
     height: calc(100vh - 60px);
-    z-index: 1000;
+    z-index: 10;
     display: flex;
     flex-direction: column;
     width: 250px;
@@ -125,10 +126,8 @@ const CaseNavLink = styled(NavLink)`
 `
 
 const Sidebar = () => {
-    const {
-        project,
-        addNewCase,
-    } = useAppContext()
+    const { project } = useAppContext()
+    const { addNewCase } = useModalContext()
     const { currentContext } = useModuleCurrentContext()
 
     return (

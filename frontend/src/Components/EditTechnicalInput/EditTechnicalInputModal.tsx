@@ -1,6 +1,4 @@
-import {
-    Dispatch, SetStateAction, useEffect, useState,
-} from "react"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 import {
     Button, Icon, Progress, Tabs, Typography,
@@ -13,6 +11,7 @@ import { isExplorationWell } from "../../Utils/common"
 import CO2Tab from "./CO2Tab"
 import { GetTechnicalInputService } from "../../Services/TechnicalInputService"
 import { useAppContext } from "../../Context/AppContext"
+import { useModalContext } from "../../Context/ModalContext"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -57,33 +56,29 @@ const CancelButton = styled(Button)`
     margin-right: 1rem;
 `
 
-type Props = {
-    toggleEditTechnicalInputModal: () => void
-    isOpen: boolean
-    caseId?: string
-    setExploration?: Dispatch<SetStateAction<Components.Schemas.ExplorationDto | undefined>>
-    setWellProject?: Dispatch<SetStateAction<Components.Schemas.WellProjectDto | undefined>>
-}
-
-const EditTechnicalInputModal = ({
-    toggleEditTechnicalInputModal,
-    isOpen,
-    caseId,
-    setExploration,
-    setWellProject,
-}: Props) => {
+const EditTechnicalInputModal = () => {
     const { project, setProject } = useAppContext()
+    const {
+        technicalModalIsOpen,
+        setTechnicalModalIsOpen,
+        setWellProject,
+        setExploration,
+    } = useModalContext()
 
     if (!project) return null
 
     const [activeTab, setActiveTab] = useState<number>(0)
     const [originalProject] = useState<Components.Schemas.ProjectDto>(project)
 
-    const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto>(project.explorationOperationalWellCosts)
-    const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto>(project.developmentOperationalWellCosts)
+    const [explorationOperationalWellCosts,
+        setExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto>(project.explorationOperationalWellCosts)
+    const [developmentOperationalWellCosts,
+        setDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto>(project.developmentOperationalWellCosts)
 
-    const [originalExplorationOperationalWellCosts, setOriginalExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto>(project.explorationOperationalWellCosts)
-    const [originalDevelopmentOperationalWellCosts, setOriginalDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto>(project.developmentOperationalWellCosts)
+    const [originalExplorationOperationalWellCosts,
+        setOriginalExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto>(project.explorationOperationalWellCosts)
+    const [originalDevelopmentOperationalWellCosts,
+        setOriginalDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto>(project.developmentOperationalWellCosts)
 
     const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => !isExplorationWell(w)) ?? [])
     const [explorationWells, setExplorationWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => isExplorationWell(w)) ?? [])
@@ -108,20 +103,20 @@ const EditTechnicalInputModal = ({
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === "Escape") {
-                toggleEditTechnicalInputModal()
+                setTechnicalModalIsOpen(false)
             }
         }
 
-        if (isOpen) {
+        if (technicalModalIsOpen) {
             window.addEventListener("keydown", handleKeyDown)
         }
 
         return () => {
             window.removeEventListener("keydown", handleKeyDown)
         }
-    }, [isOpen, toggleEditTechnicalInputModal])
+    }, [technicalModalIsOpen, setTechnicalModalIsOpen])
 
-    if (!isOpen) return null
+    if (!technicalModalIsOpen) return null
 
     if (!developmentOperationalWellCosts || !explorationOperationalWellCosts) {
         return null
@@ -190,7 +185,7 @@ const EditTechnicalInputModal = ({
     const handleSaveAndClose = async () => {
         try {
             await handleSave()
-            toggleEditTechnicalInputModal()
+            setTechnicalModalIsOpen(false)
         } catch (e) {
             console.error("Error during save operation: ", e)
         }
@@ -206,7 +201,7 @@ const EditTechnicalInputModal = ({
         setExplorationWells([...originalExplorationWells])
 
         // Close the modal in all cases
-        toggleEditTechnicalInputModal()
+        setTechnicalModalIsOpen(false)
     }
 
     return (
@@ -225,7 +220,7 @@ const EditTechnicalInputModal = ({
                 <TopWrapper>
                     <Typography variant="h2">Edit Technical Input</Typography>
                     <Button
-                        onClick={toggleEditTechnicalInputModal}
+                        onClick={() => setTechnicalModalIsOpen(false)}
                         variant="ghost"
                     >
                         <Icon

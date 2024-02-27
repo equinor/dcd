@@ -4,11 +4,12 @@ import {
     Switch, Typography,
 } from "@equinor/eds-core-react"
 import { useAppContext } from "../Context/AppContext"
+import { useModalContext } from "../Context/ModalContext"
 
 const Wrapper = styled.div`
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 2;
     background-color: white;
     padding: 20px;
     display: flex;
@@ -28,9 +29,8 @@ const Controls = styled.div`
 `
 
 const ProjectControls = () => {
-    const {
-        project, editMode, setEditMode,
-    } = useAppContext()
+    const { project } = useAppContext()
+    const { caseModalEditMode, setCaseModalEditMode } = useModalContext()
 
     return (
         <Wrapper>
@@ -40,8 +40,8 @@ const ProjectControls = () => {
             <Controls>
                 <Switch
                     label="Edit mode"
-                    checked={editMode}
-                    onChange={() => setEditMode(!editMode)}
+                    checked={caseModalEditMode}
+                    onChange={() => setCaseModalEditMode(!caseModalEditMode)}
                 />
             </Controls>
         </Wrapper>

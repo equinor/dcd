@@ -1,5 +1,5 @@
 import {
-    Button, Icon, Menu, Progress, Tabs, Typography,
+    Button, Icon, Progress, Tabs, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
@@ -17,7 +17,6 @@ import { projectPath, unwrapProjectId } from "../Utils/common"
 import CaseDropMenu from "../Components/Case/Components/CaseDropMenu"
 import { GetProjectService } from "../Services/ProjectService"
 import CaseDescriptionTab from "../Components/Case/Tabs/CaseDescriptionTab"
-import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
 import CaseCostTab from "../Components/Case/Tabs/CaseCostTab"
 import CaseFacilitiesTab from "../Components/Case/Tabs/CaseFacilitiesTab"
 import CaseProductionProfilesTab from "../Components/Case/Tabs/CaseProductionProfilesTab"
@@ -27,7 +26,7 @@ import CaseDrillingScheduleTab from "../Components/Case/Tabs/CaseDrillingSchedul
 import CaseCO2Tab from "../Components/Case/Tabs/Co2Emissions/CaseCO2Tab"
 import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
 import { useAppContext } from "../Context/AppContext"
-
+import { useModalContext } from "../Context/ModalContext"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -52,12 +51,12 @@ const HeaderWrapper = styled.div`
     background-color: white;
     width: calc(100% - 270px);
     position: fixed;
-    z-index: 100;
+    z-index: 2;
     padding-top: 30px;
 `
 const TabMenuWrapper = styled.div`
     position: fixed;
-    z-index: 1000;
+    z-index: 2;
     width: calc(100% - 16rem);
     border-bottom: 1px solid LightGray;
     margin-top: 95px;
@@ -72,7 +71,7 @@ const CaseButtonsWrapper = styled.div`
     display: flex;
     flex-direction: row;
     margin-left: auto;
-    z-index: 110;
+    z-index: 2;
     gap: 10px;
 `
 
@@ -100,15 +99,20 @@ const CaseView = () => {
         setProject,
     } = useAppContext()
 
-    const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(false)
-    const [caseItem, setCase] = useState<Components.Schemas.CaseDto>()
-    const [activeTab, setActiveTab] = useState<number>(0)
+    const {
+        wellProject,
+        setWellProject,
+        exploration,
+        setExploration,
+        setTechnicalModalIsOpen,
+    } = useModalContext()
     const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
     const { currentContext } = useModuleCurrentContext()
 
+    const [caseItem, setCase] = useState<Components.Schemas.CaseDto>()
+    const [activeTab, setActiveTab] = useState<number>(0)
+
     const [drainageStrategy, setDrainageStrategy] = useState<Components.Schemas.DrainageStrategyDto>()
-    const [exploration, setExploration] = useState<Components.Schemas.ExplorationDto>()
-    const [wellProject, setWellProject] = useState<Components.Schemas.WellProjectDto>()
     const [surf, setSurf] = useState<Components.Schemas.SurfDto>()
     const [topside, setTopside] = useState<Components.Schemas.TopsideDto>()
     const [substructure, setSubstructure] = useState<Components.Schemas.SubstructureDto>()
@@ -132,12 +136,12 @@ const CaseView = () => {
 
     const [historicCostCostProfile,
         setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto>()
-        
+
     const [additionalOPEXCostProfile,
         setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto>()
 
-        const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>()
-        const [cessationOffshoreFacilitiesCost,
+    const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>()
+    const [cessationOffshoreFacilitiesCost,
         setCessationOffshoreFacilitiesCost] = useState<Components.Schemas.CessationOffshoreFacilitiesCostDto>()
 
     const [gAndGAdminCost, setGAndGAdminCost] = useState<Components.Schemas.GAndGAdminCostDto>()
@@ -150,8 +154,6 @@ const CaseView = () => {
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
-
-    const toggleTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
 
     const navigate = useNavigate()
     const location = useLocation()
@@ -331,7 +333,7 @@ const CaseView = () => {
                                 </Button>
                             )}
                             <Button
-                                onClick={() => toggleTechnicalInputModal()}
+                                onClick={() => setTechnicalModalIsOpen(true)}
                                 variant="outlined"
                             >
                                 Edit technical input
@@ -404,14 +406,14 @@ const CaseView = () => {
                                 <CaseDrillingScheduleTab
                                     project={project}
                                     caseItem={caseItem}
-                                    exploration={exploration}
-                                    wellProject={wellProject}
                                     explorationWells={explorationWells}
                                     setExplorationWells={setExplorationWells}
                                     wellProjectWells={wellProjectWells}
                                     setWellProjectWells={setWellProjectWells}
                                     wells={wells}
                                     activeTab={activeTab}
+                                    exploration={exploration}
+                                    wellProject={wellProject}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
@@ -433,12 +435,12 @@ const CaseView = () => {
                             <StyledTabPanel>
                                 <CaseCostTab
                                     project={project}
-                                    caseItem={caseItem}
-                                    setCase={setCase}
                                     exploration={exploration}
                                     setExploration={setExploration}
                                     wellProject={wellProject}
                                     setWellProject={setWellProject}
+                                    caseItem={caseItem}
+                                    setCase={setCase}
                                     topside={topside}
                                     setTopside={setTopside}
                                     surf={surf}
@@ -497,13 +499,6 @@ const CaseView = () => {
                 </Tabs>
                 <DividerLine />
             </CaseViewDiv>
-            <EditTechnicalInputModal
-                toggleEditTechnicalInputModal={toggleTechnicalInputModal}
-                isOpen={editTechnicalInputModalIsOpen}
-                caseId={caseItem.id}
-                setExploration={setExploration}
-                setWellProject={setWellProject}
-            />
         </div>
     )
 }
