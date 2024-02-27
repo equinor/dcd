@@ -14,6 +14,7 @@ import { GetSTEAService } from "../../Services/STEAService"
 import { useAppContext } from "../../Context/AppContext"
 import CasesTable from "../Case/OverviewCasesTable/CasesTable"
 import InputSwitcher from "../Input/InputSwitcher"
+import { useModalContext } from "../../Context/ModalContext"
 
 export const WrapperColumn = styled.div`
     display: flex;
@@ -54,11 +55,11 @@ const ProjectOverviewTab = () => {
     const {
         project,
         setProject,
-        setCreateCaseModalIsOpen,
-        setModalShouldNavigate,
-        setModalEditMode,
-        setModalCaseId,
     } = useAppContext()
+
+    const {
+        addNewCase,
+    } = useModalContext()
 
     const handleDescriptionChange: FormEventHandler = (e) => {
         const target = e.target as typeof e.target & {
@@ -82,13 +83,6 @@ const ProjectOverviewTab = () => {
                 console.error("[ProjectView] error while submitting form data", error)
             }
         }
-    }
-
-    const addNewCase = () => {
-        setModalShouldNavigate(false)
-        setModalEditMode(false)
-        setCreateCaseModalIsOpen(true)
-        setModalCaseId(undefined)
     }
 
     if (!project) {
