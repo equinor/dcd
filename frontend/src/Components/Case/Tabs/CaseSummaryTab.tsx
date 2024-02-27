@@ -43,13 +43,13 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         transportCost, setTransportCost,
         opexSum, setOpexSum,
         cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost,
-        feasibilityAndConceptStudiesCost, setFeasibilityAndConceptStudiesCost,
-        feedStudiesCost, setFEEDStudiesCost,
+        totalFeasibilityAndConceptStudies, setTotalFeasibilityAndConceptStudies,
+        totalFEEDStudies, setTotalFEEDStudies,
         totalOtherStudies,
         historicCostCostProfile,
         additionalOPEXCostProfile,
         activeTab, setActiveTab,
-        explorationCost, setExplorationCost,
+        explorationWellCost, setExplorationWellCost,
         drillingCost, setDrillingCost,
         totalStudyCost, setTotalStudyCost,
         productionAndSalesVolume, setProductionAndSalesVolume,
@@ -174,7 +174,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         {
             profileName: "Exploration cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: explorationCost,
+            profile: explorationWellCost,
         },
 
     ]
@@ -202,12 +202,12 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         {
             profileName: "Feasibility & Conceptual studies",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: feasibilityAndConceptStudiesCost,
+            profile: totalFeasibilityAndConceptStudies,
         },
         {
             profileName: "FEED studies (DG2-DG3",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: feedStudiesCost,
+            profile: totalFEEDStudies,
         },
         {
             profileName: "Other studies",

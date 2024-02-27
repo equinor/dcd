@@ -109,10 +109,11 @@ const CaseView = () => {
         transportCost, setTransportCost,
         opexSum, setOpexSum,
         cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost,
-        feasibilityAndConceptStudiesCost, setFeasibilityAndConceptStudiesCost,
-        feedStudiesCost, setFEEDStudiesCost, 
+        totalFeasibilityAndConceptStudies, setTotalFeasibilityAndConceptStudies,
+        totalFEEDStudies, setTotalFEEDStudies, 
+        totalOtherStudies, setTotalOtherStudies,
         activeTab, setActiveTab, 
-        explorationCost, setExplorationCost, 
+        explorationWellCost, setExplorationWellCost,
         drillingCost, setDrillingCost,
         totalStudyCost, setTotalStudyCost,
         productionAndSalesVolume,setProductionAndSalesVolume,
@@ -137,13 +138,6 @@ const CaseView = () => {
     const [wells, setWells] = useState<Components.Schemas.WellDto[]>()
     const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellProjectWellDto[]>()
     const [explorationWells, setExplorationWells] = useState<Components.Schemas.ExplorationWellDto[]>()
-
-    const [totalFeasibilityAndConceptStudies,
-        setTotalFeasibilityAndConceptStudies] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesDto>()
-
-    const [totalFEEDStudies, setTotalFEEDStudies] = useState<Components.Schemas.TotalFEEDStudiesDto>()
-
-    const [totalOtherStudies, setTotalOtherStudies] = useState<Components.Schemas.TotalOtherStudiesDto>()
 
     const [offshoreFacilitiesOperationsCostProfile,
         setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto>()
@@ -288,8 +282,8 @@ const CaseView = () => {
             const projectResult = { ...result.projectDto }
             setProject(projectResult)
             if (result.generatedProfilesDto?.studyCostProfileWrapperDto !== null && result.generatedProfilesDto?.studyCostProfileWrapperDto !== undefined) {
-                setFeasibilityAndConceptStudiesCost(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFeasibilityAndConceptStudiesDto)
-                setFEEDStudiesCost(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFEEDStudiesDto)
+                setTotalFeasibilityAndConceptStudies(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFeasibilityAndConceptStudiesDto)
+                setTotalFEEDStudies(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFEEDStudiesDto)
             }
             if (result.generatedProfilesDto?.opexCostProfileWrapperDto !== null && result.generatedProfilesDto?.opexCostProfileWrapperDto !== undefined) {
                 setOffshoreFacilitiesOperationsCostProfile(result.generatedProfilesDto.opexCostProfileWrapperDto?.offshoreFacilitiesOperationsCostProfileDto)
@@ -472,39 +466,39 @@ const CaseView = () => {
                             </StyledTabPanel>
                             <StyledTabPanel>
                                 <CaseCostTab
-                                    project={project}
-                                    caseItem={caseItem}
-                                    setCase={setCase}
-                                    exploration={exploration}
-                                    setExploration={setExploration}
-                                    wellProject={wellProject}
-                                    setWellProject={setWellProject}
-                                    topside={topside}
-                                    setTopside={setTopside}
-                                    surf={surf}
-                                    setSurf={setSurf}
-                                    substructure={substructure}
-                                    setSubstructure={setSubstructure}
-                                    transport={transport}
-                                    setTransport={setTransport}
-                                    activeTab={activeTab}
-                                    totalFeasibilityAndConceptStudies={feasibilityAndConceptStudiesCost}
-                                    setTotalFeasibilityAndConceptStudies={setFeasibilityAndConceptStudiesCost}
-                                    totalFEEDStudies={feedStudiesCost}
-                                    setTotalFEEDStudies={setFEEDStudiesCost}
-                                    totalOtherStudies={totalOtherStudies}
-                                    offshoreFacilitiesOperationsCostProfile={offshoreFacilitiesOperationsCostProfile}
-                                    setOffshoreFacilitiesOperationsCostProfile={setOffshoreFacilitiesOperationsCostProfile}
-                                    wellInterventionCostProfile={wellInterventionCostProfile}
-                                    setWellInterventionCostProfile={setWellInterventionCostProfile}
-                                    historicCostCostProfile={historicCostCostProfile}
-                                    additionalOPEXCostProfile={additionalOPEXCostProfile}
-                                    cessationWellsCost={cessationWellsCost}
-                                    setCessationWellsCost={setCessationWellsCost}
-                                    cessationOffshoreFacilitiesCost={cessationOffshoreFacilitiesCost}
-                                    setCessationOffshoreFacilitiesCost={setCessationOffshoreFacilitiesCost}
-                                    gAndGAdminCost={gAndGAdminCost}
-                                    setGAndGAdminCost={setGAndGAdminCost}
+                                    // project={project}
+                                    // caseItem={caseItem}
+                                    // setCase={setCase}
+                                    // exploration={exploration}
+                                    // setExploration={setExploration}
+                                    // wellProject={wellProject}
+                                    // setWellProject={setWellProject}
+                                    // topside={topside}
+                                    // setTopside={setTopside}
+                                    // surf={surf}
+                                    // setSurf={setSurf}
+                                    // substructure={substructure}
+                                    // setSubstructure={setSubstructure}
+                                    // transport={transport}
+                                    // setTransport={setTransport}
+                                    // activeTab={activeTab}
+                                    // totalFeasibilityAndConceptStudies={totalFeasibilityAndConceptStudies}
+                                    // setTotalFeasibilityAndConceptStudies={setTotalFeasibilityAndConceptStudies}
+                                    // totalFEEDStudies={totalFEEDStudies}
+                                    // setTotalFEEDStudies={setTotalFEEDStudies}
+                                    // totalOtherStudies={totalOtherStudies}
+                                    // offshoreFacilitiesOperationsCostProfile={offshoreFacilitiesOperationsCostProfile}
+                                    // setOffshoreFacilitiesOperationsCostProfile={setOffshoreFacilitiesOperationsCostProfile}
+                                    // wellInterventionCostProfile={wellInterventionCostProfile}
+                                    // setWellInterventionCostProfile={setWellInterventionCostProfile}
+                                    // historicCostCostProfile={historicCostCostProfile}
+                                    // additionalOPEXCostProfile={additionalOPEXCostProfile}
+                                    // cessationWellsCost={cessationWellsCost}
+                                    // setCessationWellsCost={setCessationWellsCost}
+                                    // cessationOffshoreFacilitiesCost={cessationOffshoreFacilitiesCost}
+                                    // setCessationOffshoreFacilitiesCost={setCessationOffshoreFacilitiesCost}
+                                    // gAndGAdminCost={gAndGAdminCost}
+                                    // setGAndGAdminCost={setGAndGAdminCost}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
