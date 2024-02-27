@@ -56,7 +56,7 @@ const CaseDrillingScheduleTab = ({
     wellProjectWells, setWellProjectWells,
     wells, activeTab,
 }: Props) => {
-    const { technicalExploration, technicalWellProject } = useModalContext()
+    const { exploration, wellProject } = useModalContext()
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
@@ -113,7 +113,7 @@ const CaseDrillingScheduleTab = ({
     const sumWellsForWellCategory = (category: Components.Schemas.WellCategory): number => {
         if (wells && wells.length > 0) {
             if (category >= 4) {
-                const filteredExplorationWells = explorationWells.filter((ew) => ew.explorationId === technicalExploration!.id)
+                const filteredExplorationWells = explorationWells.filter((ew) => ew.explorationId === exploration!.id)
                 const filteredWells = wells.filter((w) => w.wellCategory === category)
                 let sum = 0
                 filteredWells.forEach((fw) => {
@@ -127,7 +127,7 @@ const CaseDrillingScheduleTab = ({
                 })
                 return sum
             }
-            const filteredWellProjectWells = wellProjectWells.filter((wpw) => wpw.wellProjectId === technicalWellProject!.id)
+            const filteredWellProjectWells = wellProjectWells.filter((wpw) => wpw.wellProjectId === wellProject!.id)
             const filteredWells = wells.filter((w) => w.wellCategory === category)
             let sum = 0
             filteredWells.forEach((fw) => {
@@ -276,7 +276,7 @@ const CaseDrillingScheduleTab = ({
                     setAssetWells={setExplorationWells}
                     tableName="Exploration wells"
                     tableYears={tableYears}
-                    assetId={technicalExploration!.id!}
+                    assetId={exploration!.id!}
                     wells={wells}
                     isExplorationTable
                     gridRef={explorationWellsGridRef}
@@ -290,7 +290,7 @@ const CaseDrillingScheduleTab = ({
                     setAssetWells={setWellProjectWells}
                     tableName="Development wells"
                     tableYears={tableYears}
-                    assetId={technicalWellProject!.id!}
+                    assetId={wellProject!.id!}
                     wells={wells}
                     isExplorationTable={false}
                     gridRef={wellProjectWellsGridRef}

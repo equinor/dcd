@@ -20,10 +20,10 @@ interface ModalContextType {
 
     technicalModalIsOpen: boolean;
     setTechnicalModalIsOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>;
-    technicalWellProject: Components.Schemas.WellProjectDto | undefined;
-    setTechnicalWellProject: React.Dispatch<React.SetStateAction<Components.Schemas.WellProjectDto | undefined>>;
-    technicalExploration: Components.Schemas.ExplorationDto | undefined;
-    setTechnicalExploration: React.Dispatch<React.SetStateAction<Components.Schemas.ExplorationDto | undefined>>;
+    wellProject: Components.Schemas.WellProjectDto | undefined;
+    setWellProject: React.Dispatch<React.SetStateAction<Components.Schemas.WellProjectDto | undefined>>;
+    exploration: Components.Schemas.ExplorationDto | undefined;
+    setExploration: React.Dispatch<React.SetStateAction<Components.Schemas.ExplorationDto | undefined>>;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined)

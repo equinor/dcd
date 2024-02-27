@@ -61,8 +61,8 @@ const EditTechnicalInputModal = () => {
     const {
         technicalModalIsOpen,
         setTechnicalModalIsOpen,
-        setTechnicalWellProject,
-        setTechnicalExploration,
+        setWellProject,
+        setExploration,
     } = useModalContext()
 
     if (!project) return null
@@ -160,11 +160,11 @@ const EditTechnicalInputModal = () => {
                 setProject({ ...result.projectDto })
             }
 
-            if (result.explorationDto && setTechnicalExploration) {
-                setTechnicalExploration(result.explorationDto)
+            if (result.explorationDto && setExploration) {
+                setExploration(result.explorationDto)
             }
-            if (result.wellProjectDto && setTechnicalWellProject) {
-                setTechnicalWellProject(result.wellProjectDto)
+            if (result.wellProjectDto && setWellProject) {
+                setWellProject(result.wellProjectDto)
             }
 
             setOriginalExplorationOperationalWellCosts(explorationOperationalWellCosts)

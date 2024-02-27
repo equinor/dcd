@@ -100,10 +100,10 @@ const CaseView = () => {
     } = useAppContext()
 
     const {
-        technicalWellProject,
-        setTechnicalWellProject,
-        technicalExploration,
-        setTechnicalExploration,
+        wellProject,
+        setWellProject,
+        exploration,
+        setExploration,
         setTechnicalModalIsOpen,
     } = useModalContext()
     const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
@@ -195,11 +195,11 @@ const CaseView = () => {
 
             const explorationResult = project
                 ?.explorations.find((exp) => exp.id === caseResult?.explorationLink)
-            setTechnicalExploration(explorationResult)
+            setExploration(explorationResult)
 
             const wellProjectResult = project
                 ?.wellProjects.find((wp) => wp.id === caseResult?.wellProjectLink)
-            setTechnicalWellProject(wellProjectResult)
+            setWellProject(wellProjectResult)
 
             const surfResult = project?.surfs.find((sur) => sur.id === caseResult?.surfLink)
             setSurf(surfResult)
@@ -241,8 +241,8 @@ const CaseView = () => {
     }, [project])
 
     if (isLoading || !project || !caseItem
-        || !drainageStrategy || !technicalExploration
-        || !technicalWellProject || !surf || !topside
+        || !drainageStrategy || !exploration
+        || !wellProject || !surf || !topside
         || !substructure || !transport
         || !explorationWells || !wellProjectWells) {
         return (
@@ -257,8 +257,8 @@ const CaseView = () => {
         const dto: Components.Schemas.CaseWithAssetsWrapperDto = {
             caseDto: caseItem,
             drainageStrategyDto: drainageStrategy,
-            wellProjectDto: technicalWellProject,
-            explorationDto: technicalExploration,
+            wellProjectDto: wellProject,
+            explorationDto: exploration,
             surfDto: surf,
             substructureDto: substructure,
             transportDto: transport,
