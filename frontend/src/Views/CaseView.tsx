@@ -412,6 +412,8 @@ const CaseView = () => {
                                     setWellProjectWells={setWellProjectWells}
                                     wells={wells}
                                     activeTab={activeTab}
+                                    exploration={exploration}
+                                    wellProject={wellProject}
                                 />
                             </StyledTabPanel>
                             <StyledTabPanel>
@@ -433,6 +435,10 @@ const CaseView = () => {
                             <StyledTabPanel>
                                 <CaseCostTab
                                     project={project}
+                                    exploration={exploration}
+                                    setExploration={setExploration}
+                                    wellProject={wellProject}
+                                    setWellProject={setWellProject}
                                     caseItem={caseItem}
                                     setCase={setCase}
                                     topside={topside}

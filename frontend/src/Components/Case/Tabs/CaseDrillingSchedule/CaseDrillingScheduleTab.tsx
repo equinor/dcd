@@ -47,16 +47,22 @@ interface Props {
     setWellProjectWells: Dispatch<SetStateAction<Components.Schemas.WellProjectWellDto[] | undefined>>,
     wells: Components.Schemas.WellDto[] | undefined
     activeTab: number
+    exploration: Components.Schemas.ExplorationDto,
+    wellProject: Components.Schemas.WellProjectDto,
 }
 
 const CaseDrillingScheduleTab = ({
     project,
     caseItem,
-    explorationWells, setExplorationWells,
-    wellProjectWells, setWellProjectWells,
-    wells, activeTab,
+    explorationWells,
+    setExplorationWells,
+    wellProjectWells,
+    setWellProjectWells,
+    wells,
+    activeTab,
+    exploration,
+    wellProject,
 }: Props) => {
-    const { exploration, wellProject } = useModalContext()
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
@@ -113,7 +119,7 @@ const CaseDrillingScheduleTab = ({
     const sumWellsForWellCategory = (category: Components.Schemas.WellCategory): number => {
         if (wells && wells.length > 0) {
             if (category >= 4) {
-                const filteredExplorationWells = explorationWells.filter((ew) => ew.explorationId === exploration!.id)
+                const filteredExplorationWells = explorationWells.filter((ew) => ew.explorationId === exploration.id)
                 const filteredWells = wells.filter((w) => w.wellCategory === category)
                 let sum = 0
                 filteredWells.forEach((fw) => {
@@ -127,7 +133,7 @@ const CaseDrillingScheduleTab = ({
                 })
                 return sum
             }
-            const filteredWellProjectWells = wellProjectWells.filter((wpw) => wpw.wellProjectId === wellProject!.id)
+            const filteredWellProjectWells = wellProjectWells.filter((wpw) => wpw.wellProjectId === wellProject.id)
             const filteredWells = wells.filter((w) => w.wellCategory === category)
             let sum = 0
             filteredWells.forEach((fw) => {
@@ -276,7 +282,7 @@ const CaseDrillingScheduleTab = ({
                     setAssetWells={setExplorationWells}
                     tableName="Exploration wells"
                     tableYears={tableYears}
-                    assetId={exploration!.id!}
+                    assetId={exploration.id}
                     wells={wells}
                     isExplorationTable
                     gridRef={explorationWellsGridRef}
@@ -290,7 +296,7 @@ const CaseDrillingScheduleTab = ({
                     setAssetWells={setWellProjectWells}
                     tableName="Development wells"
                     tableYears={tableYears}
-                    assetId={wellProject!.id!}
+                    assetId={wellProject.id}
                     wells={wells}
                     isExplorationTable={false}
                     gridRef={wellProjectWellsGridRef}
