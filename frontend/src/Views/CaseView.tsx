@@ -28,7 +28,6 @@ import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
 import { useAppContext } from "../Context/AppContext"
 import { useModalContext } from "../Context/ModalContext"
 
-
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
 
@@ -137,12 +136,12 @@ const CaseView = () => {
 
     const [historicCostCostProfile,
         setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto>()
-        
+
     const [additionalOPEXCostProfile,
         setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto>()
 
-        const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>()
-        const [cessationOffshoreFacilitiesCost,
+    const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>()
+    const [cessationOffshoreFacilitiesCost,
         setCessationOffshoreFacilitiesCost] = useState<Components.Schemas.CessationOffshoreFacilitiesCostDto>()
 
     const [gAndGAdminCost, setGAndGAdminCost] = useState<Components.Schemas.GAndGAdminCostDto>()

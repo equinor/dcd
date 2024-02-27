@@ -8,7 +8,6 @@ import { buildConfig } from "./Services/config"
 import { ModalContextProvider } from "./Context/ModalContext"
 import { AppContextProvider } from "./Context/AppContext"
 
-
 const AppComponent: FC = () => {
     const suppressConsoleError = (shouldBeHidden: ((message: string) => boolean)[]) => {
         const err = console.error
