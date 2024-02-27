@@ -51,8 +51,8 @@ const ModalContextProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     // Technical input modal
     const [technicalModalIsOpen, setTechnicalModalIsOpen] = useState<boolean>(false)
-    const [technicalWellProject, setTechnicalWellProject] = useState<Components.Schemas.WellProjectDto | undefined>(undefined)
-    const [technicalExploration, setTechnicalExploration] = useState<Components.Schemas.ExplorationDto | undefined>(undefined)
+    const [wellProject, setWellProject] = useState<Components.Schemas.WellProjectDto | undefined>(undefined)
+    const [exploration, setExploration] = useState<Components.Schemas.ExplorationDto | undefined>(undefined)
 
     const value = useMemo(() => ({
         caseModalIsOpen,
@@ -68,10 +68,10 @@ const ModalContextProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
         technicalModalIsOpen,
         setTechnicalModalIsOpen,
-        technicalWellProject,
-        setTechnicalWellProject,
-        technicalExploration,
-        setTechnicalExploration,
+        wellProject,
+        setWellProject,
+        exploration,
+        setExploration,
     }), [
         caseModalIsOpen,
         setCaseModalIsOpen,
@@ -86,10 +86,10 @@ const ModalContextProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
         technicalModalIsOpen,
         setTechnicalModalIsOpen,
-        technicalWellProject,
-        setTechnicalWellProject,
-        technicalExploration,
-        setTechnicalExploration,
+        wellProject,
+        setWellProject,
+        exploration,
+        setExploration,
     ])
 
     return (
