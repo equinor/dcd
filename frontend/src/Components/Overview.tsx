@@ -11,9 +11,11 @@ const Body = styled.div`
 `
 
 const MainView = styled.div`
-    width: calc(100% - 15rem);
-    overflow: auto;
+    width: calc(100% - 250px);
+    overflow-y: auto;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
 `
 
 const Overview: React.FC = () => (
