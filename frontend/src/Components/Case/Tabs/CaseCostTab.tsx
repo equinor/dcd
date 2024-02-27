@@ -52,13 +52,15 @@ interface Props {
     setTotalFeasibilityAndConceptStudies: Dispatch<SetStateAction<Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined>>,
     totalFEEDStudies: Components.Schemas.TotalFEEDStudiesDto | undefined,
     setTotalFEEDStudies: Dispatch<SetStateAction<Components.Schemas.TotalFEEDStudiesDto | undefined>>,
-
+    totalOtherStudies: Components.Schemas.TotalOtherStudiesDto | undefined,
+    historicCostCostProfile: Components.Schemas.HistoricCostCostProfileDto | undefined,
     offshoreFacilitiesOperationsCostProfile: Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined,
     setOffshoreFacilitiesOperationsCostProfile: Dispatch<SetStateAction<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined>>,
 
     wellInterventionCostProfile: Components.Schemas.WellInterventionCostProfileDto | undefined,
     setWellInterventionCostProfile: Dispatch<SetStateAction<Components.Schemas.WellInterventionCostProfileDto | undefined>>,
 
+    additionalOPEXCostProfile: Components.Schemas.AdditionalOPEXCostProfileDto | undefined,
     cessationWellsCost: Components.Schemas.TotalFEEDStudiesDto | undefined,
     setCessationWellsCost: Dispatch<SetStateAction<Components.Schemas.CessationWellsCostDto | undefined>>,
 
@@ -90,13 +92,14 @@ const CaseCostTab = ({
     // OPEX
     const [totalFeasibilityAndConceptStudiesOverride,
         setTotalFeasibilityAndConceptStudiesOverride] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto>()
-
     const [totalFEEDStudiesOverride, setTotalFEEDStudiesOverride] = useState<Components.Schemas.TotalFEEDStudiesOverrideDto>()
+    const [totalOtherStudies, setTotalOtherStudies] = useState<Components.Schemas.TotalOtherStudiesDto>()
 
     const [offshoreFacilitiesOperationsCostProfileOverride,
         setOffshoreFacilitiesOperationsCostProfileOverride] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto>()
-
     const [wellInterventionCostProfileOverride, setWellInterventionCostProfileOverride] = useState<Components.Schemas.WellInterventionCostProfileOverrideDto>()
+    const [additionalOPEXCostProfile, setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto>()
+    const [historicCostCostProfile, setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto>()
 
     const [cessationWellsCostOverride, setCessationWellsCostOverride] = useState<Components.Schemas.CessationWellsCostOverrideDto>()
     const [cessationOffshoreFacilitiesCostOverride,
@@ -153,19 +156,25 @@ const CaseCostTab = ({
                 if (activeTab === 5) {
                     const totalFeasibility = caseItem.totalFeasibilityAndConceptStudies
                     const totalFEED = caseItem.totalFEEDStudies
+                    const totalOtherStudiesLocal = caseItem.totalOtherStudies
 
                     setTotalFeasibilityAndConceptStudies(totalFeasibility)
                     setTotalFeasibilityAndConceptStudiesOverride(caseItem.totalFeasibilityAndConceptStudiesOverride)
                     setTotalFEEDStudies(totalFEED)
                     setTotalFEEDStudiesOverride(caseItem.totalFEEDStudiesOverride)
+                    setTotalOtherStudies(totalOtherStudiesLocal)
 
                     const wellIntervention = wellInterventionCostProfile
                     const offshoreFacilitiesOperations = caseItem.offshoreFacilitiesOperationsCostProfile
+                    const historicCostCostProfileLocal = caseItem.historicCostCostProfile
+                    const additionalOPEXCostProfileLocal = caseItem.additionalOPEXCostProfile
 
                     setWellInterventionCostProfile(wellIntervention)
                     setWellInterventionCostProfileOverride(caseItem.wellInterventionCostProfileOverride)
                     setOffshoreFacilitiesOperationsCostProfile(offshoreFacilitiesOperations)
                     setOffshoreFacilitiesOperationsCostProfileOverride(caseItem.offshoreFacilitiesOperationsCostProfileOverride)
+                    setHistoricCostCostProfile(historicCostCostProfileLocal)
+                    setAdditionalOPEXCostProfile(additionalOPEXCostProfileLocal)
 
                     const cessationWells = caseItem.cessationWellsCost
                     const cessationOffshoreFacilities = caseItem.cessationOffshoreFacilitiesCost
@@ -265,13 +274,13 @@ const CaseCostTab = ({
         if (studyGridRef.current && studyGridRef.current.api && studyGridRef.current.api.refreshCells) {
             studyGridRef.current.api.refreshCells()
         }
-    }, [totalFeasibilityAndConceptStudies, totalFEEDStudies])
+    }, [totalFeasibilityAndConceptStudies, totalFEEDStudies, totalOtherStudies])
 
     useEffect(() => {
         if (opexGridRef.current && opexGridRef.current.api && opexGridRef.current.api.refreshCells) {
             opexGridRef.current.api.refreshCells()
         }
-    }, [offshoreFacilitiesOperationsCostProfile, wellInterventionCostProfile])
+    }, [offshoreFacilitiesOperationsCostProfile, wellInterventionCostProfile, historicCostCostProfile, additionalOPEXCostProfile])
 
     useEffect(() => {
         if (cessationGridRef.current && cessationGridRef.current.api && cessationGridRef.current.api.refreshCells) {
@@ -367,9 +376,21 @@ const CaseCostTab = ({
             overrideProfile: totalFEEDStudiesOverride,
             overrideProfileSet: setTotalFEEDStudiesOverride,
         },
+        {
+            profileName: "Other studies",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: totalOtherStudies,
+            set: setTotalOtherStudies,
+        },
     ]
 
     const opexTimeSeriesData: ITimeSeriesData[] = [
+        {
+            profileName: "Historic Cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: historicCostCostProfile,
+            set: setHistoricCostCostProfile,
+        },
         {
             profileName: "Well intervention",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
@@ -385,6 +406,12 @@ const CaseCostTab = ({
             overridable: true,
             overrideProfile: offshoreFacilitiesOperationsCostProfileOverride,
             overrideProfileSet: setOffshoreFacilitiesOperationsCostProfileOverride,
+        },
+        {
+            profileName: "Additional OPEX (input req.)",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: additionalOPEXCostProfile,
+            set: setAdditionalOPEXCostProfile,
         },
     ]
 
@@ -535,6 +562,13 @@ const CaseCostTab = ({
 
     useEffect(() => {
         const newCase: Components.Schemas.CaseDto = { ...caseItem }
+        if (!totalOtherStudies) { return }
+        newCase.totalOtherStudies = totalOtherStudies
+        setCase(newCase)
+    }, [totalOtherStudies])
+
+    useEffect(() => {
+        const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (!wellInterventionCostProfileOverride) { return }
         newCase.wellInterventionCostProfileOverride = wellInterventionCostProfileOverride
         setCase(newCase)
@@ -546,6 +580,20 @@ const CaseCostTab = ({
         newCase.offshoreFacilitiesOperationsCostProfileOverride = offshoreFacilitiesOperationsCostProfileOverride
         setCase(newCase)
     }, [offshoreFacilitiesOperationsCostProfileOverride])
+
+    useEffect(() => {
+        const newCase: Components.Schemas.CaseDto = { ...caseItem }
+        if (!historicCostCostProfile) { return }
+        newCase.historicCostCostProfile = historicCostCostProfile
+        setCase(newCase)
+    }, [historicCostCostProfile])
+
+    useEffect(() => {
+        const newCase: Components.Schemas.CaseDto = { ...caseItem }
+        if (!additionalOPEXCostProfile) { return }
+        newCase.additionalOPEXCostProfile = additionalOPEXCostProfile
+        setCase(newCase)
+    }, [additionalOPEXCostProfile])
 
     useEffect(() => {
         const newCase: Components.Schemas.CaseDto = { ...caseItem }
@@ -795,12 +843,12 @@ const CaseCostTab = ({
                     timeSeriesData={studyTimeSeriesData}
                     dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
-                    tableName="Study costs"
+                    tableName="Total study costs"
                     gridRef={studyGridRef}
                     alignedGridsRef={[opexGridRef, cessationGridRef, capexGridRef,
                         developmentWellsGridRef, explorationWellsGridRef]}
                     includeFooter
-                    totalRowName="Study cost"
+                    totalRowName="Total study costs"
                 />
             </TableWrapper>
             <TableWrapper>
