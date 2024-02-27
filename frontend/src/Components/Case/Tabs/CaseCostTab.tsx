@@ -605,214 +605,315 @@ const CaseCostTab = ({
         setTableYears([startYear, endYear])
     }
 
+    function updateObject<T>(object: T | undefined, setObject: Dispatch<SetStateAction<T | undefined>>, key: keyof T, value: any): void {
+        if (!object || !value) {
+            console.error("Object or value is undefined")
+            return
+        }
+        console.log("Updating object", object, key, value)
+        const newObject: T = { ...object }
+        newObject[key] = value
+        setObject(newObject)
+    }
+
     useEffect(() => {
+        /*
         const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (!totalFeasibilityAndConceptStudiesOverride) { return }
         newCase.totalFeasibilityAndConceptStudiesOverride = totalFeasibilityAndConceptStudiesOverride
         setCase(newCase)
+        */
+        updateObject(caseItem, setCase, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
     }, [totalFeasibilityAndConceptStudiesOverride])
 
     useEffect(() => {
+        /*
         const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (!totalFEEDStudiesOverride) { return }
         newCase.totalFEEDStudiesOverride = totalFEEDStudiesOverride
         setCase(newCase)
+        */
+        updateObject(caseItem, setCase, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
     }, [totalFEEDStudiesOverride])
 
     useEffect(() => {
+        /*
         const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (!totalOtherStudies) { return }
         newCase.totalOtherStudies = totalOtherStudies
         setCase(newCase)
+        */
+        updateObject(caseItem, setCase, "totalOtherStudies", totalOtherStudies)
     }, [totalOtherStudies])
 
     useEffect(() => {
+        /*
         const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (!wellInterventionCostProfileOverride) { return }
         newCase.wellInterventionCostProfileOverride = wellInterventionCostProfileOverride
         setCase(newCase)
+        */
+        updateObject(caseItem, setCase, "wellInterventionCostProfileOverride", wellInterventionCostProfileOverride)
     }, [wellInterventionCostProfileOverride])
 
     useEffect(() => {
+        /*
         const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (!offshoreFacilitiesOperationsCostProfileOverride) { return }
         newCase.offshoreFacilitiesOperationsCostProfileOverride = offshoreFacilitiesOperationsCostProfileOverride
         setCase(newCase)
+        */
+        updateObject(caseItem, setCase, "offshoreFacilitiesOperationsCostProfileOverride", offshoreFacilitiesOperationsCostProfileOverride)
     }, [offshoreFacilitiesOperationsCostProfileOverride])
 
     useEffect(() => {
+        /*
         const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (!historicCostCostProfile) { return }
         newCase.historicCostCostProfile = historicCostCostProfile
         setCase(newCase)
+        */
+        updateObject(caseItem, setCase, "historicCostCostProfile", historicCostCostProfile)
     }, [historicCostCostProfile])
 
     useEffect(() => {
+        /*
         const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (!additionalOPEXCostProfile) { return }
         newCase.additionalOPEXCostProfile = additionalOPEXCostProfile
         setCase(newCase)
+        */
+        updateObject(caseItem, setCase, "additionalOPEXCostProfile", additionalOPEXCostProfile)
     }, [additionalOPEXCostProfile])
 
     useEffect(() => {
+        /*
         const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (!cessationWellsCostOverride) { return }
         newCase.cessationWellsCostOverride = cessationWellsCostOverride
         setCase(newCase)
+        */
+        updateObject(caseItem, setCase, "cessationWellsCostOverride", cessationWellsCostOverride)
     }, [cessationWellsCostOverride])
 
     useEffect(() => {
+        /*
         const newCase: Components.Schemas.CaseDto = { ...caseItem }
         if (!cessationOffshoreFacilitiesCostOverride) { return }
         newCase.cessationOffshoreFacilitiesCostOverride = cessationOffshoreFacilitiesCostOverride
         setCase(newCase)
+        */
+        updateObject(caseItem, setCase, "cessationOffshoreFacilitiesCostOverride", cessationOffshoreFacilitiesCostOverride)
     }, [cessationOffshoreFacilitiesCostOverride])
 
     useEffect(() => {
+        /*
         const newSurf: Components.Schemas.SurfDto = { ...surf }
         if (!surfCost) { return }
         newSurf.costProfile = surfCost
         setSurf(newSurf)
+        */
+        updateObject(surf, setSurf, "costProfile", surfCost)
     }, [surfCost])
 
     useEffect(() => {
+        /*
         const newTopside: Components.Schemas.TopsideDto = { ...topside }
         if (!topsideCost) { return }
         newTopside.costProfile = topsideCost
         setTopside(newTopside)
+        */
+        updateObject(topside, setTopside, "costProfile", topsideCost)
     }, [topsideCost])
 
     useEffect(() => {
+        /*
         const newSubstructure: Components.Schemas.SubstructureDto = { ...substructure }
         if (!substructureCost) { return }
         newSubstructure.costProfile = substructureCost
         setSubstructure(newSubstructure)
+        */
+        updateObject(substructure, setSubstructure, "costProfile", substructureCost)
     }, [substructureCost])
 
     useEffect(() => {
+        /*
         const newTransport: Components.Schemas.TransportDto = { ...transport }
         if (!transportCost) { return }
         newTransport.costProfile = transportCost
         setTransport(newTransport)
+        */
+        updateObject(transport, setTransport, "costProfile", transportCost)
     }, [transportCost])
 
     useEffect(() => {
+        /*
         const newSurf: Components.Schemas.SurfDto = { ...surf }
         if (!surfCostOverride) { return }
         newSurf.costProfileOverride = surfCostOverride
         setSurf(newSurf)
+        */
+        updateObject(surf, setSurf, "costProfileOverride", surfCostOverride)
     }, [surfCostOverride])
 
     useEffect(() => {
+        /*
         const newTopside: Components.Schemas.TopsideDto = { ...topside }
         if (!topsideCostOverride) { return }
         newTopside.costProfileOverride = topsideCostOverride
         setTopside(newTopside)
+        */
+        updateObject(topside, setTopside, "costProfileOverride", topsideCostOverride)
     }, [topsideCostOverride])
 
     useEffect(() => {
+        /*
         const newSubstructure: Components.Schemas.SubstructureDto = { ...substructure }
         if (!substructureCostOverride) { return }
         newSubstructure.costProfileOverride = substructureCostOverride
         setSubstructure(newSubstructure)
+        */
+        updateObject(substructure, setSubstructure, "costProfileOverride", substructureCostOverride)
     }, [substructureCostOverride])
 
     useEffect(() => {
+        /*
         const newTransport: Components.Schemas.TransportDto = { ...transport }
         if (!transportCostOverride) { return }
         newTransport.costProfileOverride = transportCostOverride
         setTransport(newTransport)
+        */
+        updateObject(transport, setTransport, "costProfileOverride", transportCostOverride)
     }, [transportCostOverride])
 
     useEffect(() => {
+        /*
         const newWellProject: Components.Schemas.WellProjectDto = { ...wellProject }
         if (!wellProjectOilProducerCost) { return }
         newWellProject.oilProducerCostProfile = wellProjectOilProducerCost
         setWellProject(newWellProject)
+        */
+        updateObject(wellProject, setWellProject, "oilProducerCostProfile", wellProjectOilProducerCost)
     }, [wellProjectOilProducerCost])
 
     useEffect(() => {
+        /*
         const newWellProject: Components.Schemas.WellProjectDto = { ...wellProject }
         if (!wellProjectOilProducerCostOverride) { return }
         newWellProject.oilProducerCostProfileOverride = wellProjectOilProducerCostOverride
         setWellProject(newWellProject)
+        */
+        updateObject(wellProject, setWellProject, "oilProducerCostProfileOverride", wellProjectOilProducerCostOverride)
     }, [wellProjectOilProducerCostOverride])
 
     useEffect(() => {
+        /*
         const newWellProject: Components.Schemas.WellProjectDto = { ...wellProject }
         if (!wellProjectGasProducerCost) { return }
         newWellProject.gasProducerCostProfile = wellProjectGasProducerCost
         setWellProject(newWellProject)
+        */
+        updateObject(wellProject, setWellProject, "gasProducerCostProfile", wellProjectGasProducerCost)
     }, [wellProjectGasProducerCost])
 
     useEffect(() => {
+        /*
         const newWellProject: Components.Schemas.WellProjectDto = { ...wellProject }
         if (!wellProjectGasProducerCostOverride) { return }
         newWellProject.gasProducerCostProfileOverride = wellProjectGasProducerCostOverride
         setWellProject(newWellProject)
+        */
+        updateObject(wellProject, setWellProject, "gasProducerCostProfileOverride", wellProjectGasProducerCostOverride)
     }, [wellProjectGasProducerCostOverride])
 
     useEffect(() => {
+        /*
         const newWellProject: Components.Schemas.WellProjectDto = { ...wellProject }
         if (!wellProjectWaterInjectorCost) { return }
         newWellProject.waterInjectorCostProfile = wellProjectWaterInjectorCost
         setWellProject(newWellProject)
+        */
+        updateObject(wellProject, setWellProject, "waterInjectorCostProfile", wellProjectWaterInjectorCost)
     }, [wellProjectWaterInjectorCost])
 
     useEffect(() => {
+        /*
         const newWellProject: Components.Schemas.WellProjectDto = { ...wellProject }
         if (!wellProjectWaterInjectorCostOverride) { return }
         newWellProject.waterInjectorCostProfileOverride = wellProjectWaterInjectorCostOverride
         setWellProject(newWellProject)
+        */
+        updateObject(wellProject, setWellProject, "waterInjectorCostProfileOverride", wellProjectWaterInjectorCostOverride)
     }, [wellProjectWaterInjectorCostOverride])
 
     useEffect(() => {
+        /*
         const newWellProject: Components.Schemas.WellProjectDto = { ...wellProject }
         if (!wellProjectGasInjectorCost) { return }
         newWellProject.gasInjectorCostProfile = wellProjectGasInjectorCost
         setWellProject(newWellProject)
+        */
+        updateObject(wellProject, setWellProject, "gasInjectorCostProfile", wellProjectGasInjectorCost)
     }, [wellProjectGasInjectorCost])
 
     useEffect(() => {
+        /*
         const newWellProject: Components.Schemas.WellProjectDto = { ...wellProject }
         if (!wellProjectGasInjectorCostOverride) { return }
         newWellProject.gasInjectorCostProfileOverride = wellProjectGasInjectorCostOverride
         setWellProject(newWellProject)
+        */
+        updateObject(wellProject, setWellProject, "gasInjectorCostProfileOverride", wellProjectGasInjectorCostOverride)
     }, [wellProjectGasInjectorCostOverride])
 
     useEffect(() => {
+        /*
         const newExploration: Components.Schemas.ExplorationDto = { ...exploration }
         if (!explorationWellCost) { return }
         newExploration.explorationWellCostProfile = explorationWellCost
         setExploration(newExploration)
+        */
+        updateObject(exploration, setExploration, "explorationWellCostProfile", explorationWellCost)
     }, [explorationWellCost])
 
     useEffect(() => {
+        /*
         const newExploration: Components.Schemas.ExplorationDto = { ...exploration }
         if (!explorationAppraisalWellCost) { return }
         newExploration.appraisalWellCostProfile = explorationAppraisalWellCost
         setExploration(newExploration)
+        */
+        updateObject(exploration, setExploration, "appraisalWellCostProfile", explorationAppraisalWellCost)
     }, [explorationAppraisalWellCost])
 
     useEffect(() => {
+        /*
         const newExploration: Components.Schemas.ExplorationDto = { ...exploration }
         if (!explorationSidetrackCost) { return }
         newExploration.sidetrackCostProfile = explorationSidetrackCost
         setExploration(newExploration)
+        */
+        updateObject(exploration, setExploration, "sidetrackCostProfile", explorationSidetrackCost)
     }, [explorationSidetrackCost])
 
     useEffect(() => {
+        /*
         const newExploration: Components.Schemas.ExplorationDto = { ...exploration }
         if (!seismicAcqAndProcCost) { return }
         newExploration.seismicAcquisitionAndProcessing = seismicAcqAndProcCost
         setExploration(newExploration)
+        */
+        updateObject(exploration, setExploration, "seismicAcquisitionAndProcessing", seismicAcqAndProcCost)
     }, [seismicAcqAndProcCost])
 
     useEffect(() => {
+        /*
         const newExploration: Components.Schemas.ExplorationDto = { ...exploration }
         if (!countryOfficeCost) { return }
         newExploration.countryOfficeCost = countryOfficeCost
         setExploration(newExploration)
+        */
+        updateObject(exploration, setExploration, "countryOfficeCost", countryOfficeCost)
     }, [countryOfficeCost])
 
     if (activeTab !== 5) { return null }
