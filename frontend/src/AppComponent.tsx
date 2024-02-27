@@ -5,6 +5,7 @@ import { resolveConfiguration } from "./Utils/config"
 import { EnvironmentVariables } from "./environmentVariables"
 import { storeAppId, storeAppScope } from "./Utils/common"
 import { buildConfig } from "./Services/config"
+import { ModalContextProvider } from "./Context/ModalContext"
 import { AppContextProvider } from "./Context/AppContext"
 
 const AppComponent: FC = () => {
@@ -33,7 +34,9 @@ const AppComponent: FC = () => {
 
     return (
         <AppContextProvider>
-            <AppRouter />
+            <ModalContextProvider>
+                <AppRouter />
+            </ModalContextProvider>
         </AppContextProvider>
     )
 }

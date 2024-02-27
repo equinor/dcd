@@ -229,7 +229,7 @@ const CaseScheduleTab = ({
                     />
                 </InputSwitcher>
                 <InputSwitcher
-                    value={formatDate(caseItem.dG2Date)}
+                    value={formatDate(caseItem.dgcDate)}
                     label="DGC"
                 >
                     <CaseDateField
