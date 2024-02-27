@@ -84,20 +84,38 @@ public class TechnicalInputService : ITechnicalInputService
             returnDto.ProjectDto = projectDto;
         }
 
+        if (technicalInputDto.DeleteWellDtos?.Length > 0)
+        {
+            await DeleteWells(technicalInputDto.DeleteWellDtos);
+        }
+
         await _context.SaveChangesAsync();
         return returnDto;
     }
 
+    private async Task DeleteWells(DeleteWellDto[] deleteWellDtos)
+    {
+        foreach (var wellDto in deleteWellDtos)
+        {
+            var well = await _context.Wells!.FindAsync(wellDto.Id);
+            if (well != null)
+            {
+                _context.Wells.Remove(well);
+            }
+        }
+        await _context.SaveChangesAsync();
+    }
+
     private async Task<(ExplorationDto explorationDto, WellProjectDto wellProjectDto)?> CreateAndUpdateWells(
         Guid projectId,
-        CreateWellDto[]? createWellDtos, 
+        CreateWellDto[]? createWellDtos,
         UpdateWellDto[]? updateWellDtos
         )
     {
         var runCostProfileCalculation = false;
         var runSaveChanges = false;
         var updatedWells = new List<Guid>();
-        
+
         if (createWellDtos != null)
         {
             foreach (var wellDto in createWellDtos)

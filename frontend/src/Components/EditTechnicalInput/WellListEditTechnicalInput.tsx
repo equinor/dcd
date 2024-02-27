@@ -1,4 +1,4 @@
-import { Button, NativeSelect } from "@equinor/eds-core-react"
+import { Button, Icon, NativeSelect } from "@equinor/eds-core-react"
 import {
     ChangeEvent, Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
 } from "react"
@@ -6,6 +6,7 @@ import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
+import { delete_to_trash } from "@equinor/eds-icons"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
 import { useAppContext } from "../../Context/AppContext"
 
@@ -124,6 +125,11 @@ const WellListEditTechnicalInput = ({
         )
     }
 
+    const deleteWellRenderer = (p: any) => {
+        console.log("p", p)
+        return <Icon data={delete_to_trash} />
+    }
+
     type SortOrder = "desc" | "asc" | null
     const order: SortOrder = "asc"
 
@@ -158,6 +164,11 @@ const WellListEditTechnicalInput = ({
             headerComponentParams: {
                 template: customUnitHeaderTemplate("Cost", `${project?.currency === 1 ? "mill NOK" : "mill USD"}`),
             },
+        },
+        {
+            field: "delete",
+            headerName: "",
+            cellRenderer: deleteWellRenderer,
         },
     ])
 
