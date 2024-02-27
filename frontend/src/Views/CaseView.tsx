@@ -28,6 +28,7 @@ import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
 import { useAppContext } from "../Context/AppContext"
 import { useModalContext } from "../Context/ModalContext"
 
+
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
 
@@ -127,13 +128,21 @@ const CaseView = () => {
 
     const [totalFEEDStudies, setTotalFEEDStudies] = useState<Components.Schemas.TotalFEEDStudiesDto>()
 
+    const [totalOtherStudies, setTotalOtherStudies] = useState<Components.Schemas.TotalOtherStudiesDto>()
+
     const [offshoreFacilitiesOperationsCostProfile,
         setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto>()
 
     const [wellInterventionCostProfile, setWellInterventionCostProfile] = useState<Components.Schemas.WellInterventionCostProfileDto>()
 
-    const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>()
-    const [cessationOffshoreFacilitiesCost,
+    const [historicCostCostProfile,
+        setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto>()
+        
+    const [additionalOPEXCostProfile,
+        setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto>()
+
+        const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>()
+        const [cessationOffshoreFacilitiesCost,
         setCessationOffshoreFacilitiesCost] = useState<Components.Schemas.CessationOffshoreFacilitiesCostDto>()
 
     const [gAndGAdminCost, setGAndGAdminCost] = useState<Components.Schemas.GAndGAdminCostDto>()
@@ -273,8 +282,11 @@ const CaseView = () => {
 
             setIfNotNull(result.generatedProfilesDto?.studyCostProfileWrapperDto?.totalFeasibilityAndConceptStudiesDto, setTotalFeasibilityAndConceptStudies)
             setIfNotNull(result.generatedProfilesDto?.studyCostProfileWrapperDto?.totalFEEDStudiesDto, setTotalFEEDStudies)
+            setIfNotNull(result.generatedProfilesDto?.studyCostProfileWrapperDto?.totalOtherStudiesDto, setTotalOtherStudies)
             setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.offshoreFacilitiesOperationsCostProfileDto, setOffshoreFacilitiesOperationsCostProfile)
             setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.wellInterventionCostProfileDto, setWellInterventionCostProfile)
+            setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.historicCostCostProfileDto, setHistoricCostCostProfile)
+            setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.additionalOPEXCostProfileDto, setAdditionalOPEXCostProfile)
             setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationWellsCostDto, setCessationWellsCost)
             setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationOffshoreFacilitiesCostDto, setCessationOffshoreFacilitiesCost)
             setIfNotNull(result.generatedProfilesDto?.gAndGAdminCostDto, setGAndGAdminCost)
@@ -437,10 +449,13 @@ const CaseView = () => {
                                     setTotalFeasibilityAndConceptStudies={setTotalFeasibilityAndConceptStudies}
                                     totalFEEDStudies={totalFEEDStudies}
                                     setTotalFEEDStudies={setTotalFEEDStudies}
+                                    totalOtherStudies={totalOtherStudies}
                                     offshoreFacilitiesOperationsCostProfile={offshoreFacilitiesOperationsCostProfile}
                                     setOffshoreFacilitiesOperationsCostProfile={setOffshoreFacilitiesOperationsCostProfile}
                                     wellInterventionCostProfile={wellInterventionCostProfile}
                                     setWellInterventionCostProfile={setWellInterventionCostProfile}
+                                    historicCostCostProfile={historicCostCostProfile}
+                                    additionalOPEXCostProfile={additionalOPEXCostProfile}
                                     cessationWellsCost={cessationWellsCost}
                                     setCessationWellsCost={setCessationWellsCost}
                                     cessationOffshoreFacilitiesCost={cessationOffshoreFacilitiesCost}

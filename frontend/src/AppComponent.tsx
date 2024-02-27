@@ -1,12 +1,13 @@
 import { FC } from "react"
 import { APP_VERSION } from "./version"
 import AppRouter from "./Router"
-import { AppContextProvider } from "./Context/AppContext"
 import { resolveConfiguration } from "./Utils/config"
 import { EnvironmentVariables } from "./environmentVariables"
 import { storeAppId, storeAppScope } from "./Utils/common"
 import { buildConfig } from "./Services/config"
 import { ModalContextProvider } from "./Context/ModalContext"
+import { AppContextProvider } from "./Context/AppContext"
+
 
 const AppComponent: FC = () => {
     const suppressConsoleError = (shouldBeHidden: ((message: string) => boolean)[]) => {

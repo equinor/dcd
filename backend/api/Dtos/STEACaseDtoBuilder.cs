@@ -27,6 +27,10 @@ public static class STEACaseDtoBuilder
     private static void AddOpexCost(STEACaseDto sTEACaseDto, CaseDto caseDto)
     {
         var costProfileDtos = new List<TimeSeriesCostDto>();
+        if (caseDto.HistoricCostCostProfile != null)
+        {
+            costProfileDtos.Add(caseDto.HistoricCostCostProfile);
+        }
         if (caseDto.WellInterventionCostProfileOverride?.Override == true)
         {
             costProfileDtos.Add(caseDto.WellInterventionCostProfileOverride);
@@ -44,8 +48,13 @@ public static class STEACaseDtoBuilder
         {
             costProfileDtos.Add(caseDto.OffshoreFacilitiesOperationsCostProfile);
         }
+        if (caseDto.AdditionalOPEXCostProfile != null)
+        {
+            costProfileDtos.Add(caseDto.AdditionalOPEXCostProfile);
+        }
 
         var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);
+
         var opexCost = new OpexCostProfileDto
         {
             StartYear = costProfile.StartYear,
@@ -66,7 +75,6 @@ public static class STEACaseDtoBuilder
         {
             costProfileDtos.Add(caseDto.TotalFeasibilityAndConceptStudies);
         }
-
         if (caseDto.TotalFEEDStudiesOverride?.Override == true)
         {
             costProfileDtos.Add(caseDto.TotalFEEDStudiesOverride);
@@ -74,6 +82,10 @@ public static class STEACaseDtoBuilder
         else if (caseDto.TotalFEEDStudies != null)
         {
             costProfileDtos.Add(caseDto.TotalFEEDStudies);
+        }
+        if (caseDto.TotalOtherStudies?.Values.Length > 0)
+        {
+            costProfileDtos.Add(caseDto.TotalOtherStudies);
         }
 
         var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);
