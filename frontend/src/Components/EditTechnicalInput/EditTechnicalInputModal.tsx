@@ -68,7 +68,7 @@ const EditTechnicalInputModal = () => {
     if (!project) return null
 
     const [activeTab, setActiveTab] = useState<number>(0)
-    const [originalProject] = useState<Components.Schemas.ProjectDto>(project)
+    const [deletedWells, setDeletedWells] = useState<string[]>([])
 
     const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto>(project.explorationOperationalWellCosts)
     const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto>(project.developmentOperationalWellCosts)
