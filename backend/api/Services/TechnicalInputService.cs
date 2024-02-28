@@ -75,13 +75,6 @@ public class TechnicalInputService : ITechnicalInputService
                 returnDto.ExplorationDto = wellResult.Value.explorationDto;
                 returnDto.WellProjectDto = wellResult.Value.wellProjectDto;
             }
-            var projectDto = _mapper.Map<ProjectDto>(project);
-            if (projectDto == null)
-            {
-                _logger.LogError("Failed to map project to dto");
-                throw new Exception("Failed to map project to dto");
-            }
-            returnDto.ProjectDto = projectDto;
         }
 
         if (technicalInputDto.DeleteWellDtos?.Length > 0)
@@ -90,6 +83,18 @@ public class TechnicalInputService : ITechnicalInputService
         }
 
         await _context.SaveChangesAsync();
+
+        var returnProject = await _projectService.GetProject(projectId);
+        var returnProjectDto = _mapper.Map<ProjectDto>(returnProject);
+
+        if (returnProjectDto == null)
+        {
+            _logger.LogError("Failed to map project to dto");
+            throw new Exception("Failed to map project to dto");
+        }
+
+        returnDto.ProjectDto = returnProjectDto;
+
         return returnDto;
     }
 
@@ -103,7 +108,6 @@ public class TechnicalInputService : ITechnicalInputService
                 _context.Wells.Remove(well);
             }
         }
-        await _context.SaveChangesAsync();
     }
 
     private async Task<(ExplorationDto explorationDto, WellProjectDto wellProjectDto)?> CreateAndUpdateWells(
