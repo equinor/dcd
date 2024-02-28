@@ -6,8 +6,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
 import {
-    bookmark_filled,
-
     more_vertical,
     arrow_back,
 } from "@equinor/eds-icons"
@@ -41,9 +39,13 @@ const StyledList = styled(List)`
     border-bottom: 1px solid LightGray;
    
 `
-const PageTitle = styled(Typography)`
+const PageTitle = styled.div`
     flex-grow: 1;
     padding-left: 10px;
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 10px;
 `
 const StyledTabs = styled(Tabs)`
     flex: 1;
@@ -155,6 +157,8 @@ const CaseView = () => {
     const [isLoading, setIsLoading] = useState<boolean>()
     const [isSaving, setIsSaving] = useState<boolean>()
     const [updateFromServer, setUpdateFromServer] = useState<boolean>(true)
+    const [nameEditMode, setNameEditMode] = useState<boolean>(false)
+    const [updatedCaseName, setUpdatedCaseName] = useState<string>("")
 
     useEffect(() => {
         (async () => {
@@ -169,6 +173,14 @@ const CaseView = () => {
             }
         })()
     }, [currentContext?.externalId, caseId, fusionContextId])
+
+    useEffect(() => {
+        if (caseItem && nameEditMode && updatedCaseName !== caseItem.name) {
+            const updatedCase = { ...caseItem }
+            updatedCase.name = updatedCaseName
+            setCase(updatedCase)
+        }
+    }, [updatedCaseName])
 
     useEffect(() => {
         if (project && updateFromServer) {
@@ -289,16 +301,12 @@ const CaseView = () => {
             setIfNotNull(result.generatedProfilesDto?.importedElectricityDto, setImportedElectricity)
 
             setIsSaving(false)
+            setNameEditMode(false)
         } catch (e) {
             setIsSaving(false)
+            setNameEditMode(false)
             console.error("Error when saving case and assets: ", e)
         }
-    }
-
-    const withReferenceCase = () => {
-        if (project.referenceCaseId === caseItem.id) return bookmark_filled
-
-        return undefined
     }
 
     return (
@@ -311,14 +319,27 @@ const CaseView = () => {
                     >
                         <Icon data={arrow_back} />
                     </Button>
-                    <PageTitle variant="h4">
-                        {project.referenceCaseId === caseItem.id && (
-                            <Tooltip title="Reference case">
-                                <MenuIcon data={withReferenceCase()} size={18} />
-                            </Tooltip>
-                        )}
-                        {caseItem.name}
-                    </PageTitle>
+                    {
+                        nameEditMode
+                            ? (
+
+                                <PageTitle>
+                                    <input
+                                        type="text"
+                                        defaultValue={caseItem.name}
+                                        onChange={(e) => setUpdatedCaseName(e.target.value)}
+                                    />
+                                </PageTitle>
+
+                            )
+                            : (
+                                <PageTitle>
+                                    <Typography variant="h4">
+                                        {caseItem.name}
+                                    </Typography>
+                                </PageTitle>
+                            )
+                    }
                     <ColumnWrapper>
                         <CaseButtonsWrapper>
                             {!isSaving ? <Button onClick={handleSave}>Save case</Button> : (
@@ -344,6 +365,7 @@ const CaseView = () => {
                     </ColumnWrapper>
                 </RowWrapper>
                 <CaseDropMenu
+                    setNameEditMode={setNameEditMode}
                     isMenuOpen={isMenuOpen}
                     setIsMenuOpen={setIsMenuOpen}
                     menuAnchorEl={menuAnchorEl}
