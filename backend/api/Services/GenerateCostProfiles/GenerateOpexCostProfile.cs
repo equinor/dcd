@@ -122,6 +122,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
             _logger.LogInformation("WellProject {0} not found.", caseItem.WellProjectLink);
             return new WellInterventionCostProfile();
         }
+        // TODO use wellprojectwellservice
         var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory)).ToList();
         if (linkedWells == null) { return new WellInterventionCostProfile(); }
 

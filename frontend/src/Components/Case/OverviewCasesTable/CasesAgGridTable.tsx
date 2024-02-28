@@ -11,6 +11,7 @@ import {
     useRef,
 } from "react"
 import { Link } from "react-router-dom"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { AgGridReact } from "@ag-grid-community/react"
 import { bookmark_filled, more_vertical } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
@@ -57,6 +58,7 @@ const CasesAgGridTable = ({
     const gridRef = useRef<AgGridReact>(null)
     const { project } = useAppContext()
     const [rowData, setRowData] = useState<TableCase[]>()
+    const { currentContext } = useModuleCurrentContext()
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
@@ -90,7 +92,8 @@ const CasesAgGridTable = ({
     )
 
     const nameWithReferenceCase = (p: any) => {
-        const caseDetailPath = casePath(project.fusionProjectId, p.node.data.id)
+        if (!currentContext || !p.node.data) { return null }
+        const caseDetailPath = casePath(currentContext.id, p.node.data.id)
 
         return (
             <span>

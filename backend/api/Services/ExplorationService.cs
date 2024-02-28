@@ -151,8 +151,6 @@ public class ExplorationService : IExplorationService
             .Include(c => c.GAndGAdminCost)
             .Include(c => c.SeismicAcquisitionAndProcessing)
             .Include(c => c.CountryOfficeCost)
-            .Include(c => c.ExplorationWells!).ThenInclude(ew => ew.DrillingSchedule)
-            .Include(ew => ew.ExplorationWells!).ThenInclude(ew => ew.Well)
             .FirstOrDefaultAsync(o => o.Id == explorationId);
         if (exploration == null)
         {

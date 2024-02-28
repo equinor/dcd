@@ -5,7 +5,7 @@ namespace api.Dtos;
 
 public class UpdateExplorationWellDto
 {
-    public DrillingScheduleDto? DrillingSchedule { get; set; }
+    public UpdateDrillingScheduleDto? DrillingSchedule { get; set; }
     [Required]
     public Guid ExplorationId { get; set; } = Guid.Empty!;
     [Required]

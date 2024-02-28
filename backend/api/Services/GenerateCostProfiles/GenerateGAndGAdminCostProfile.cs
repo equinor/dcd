@@ -50,6 +50,7 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
             _logger.LogInformation("Exploration {0} not found.", caseItem.ExplorationLink);
             return new GAndGAdminCostDto();
         }
+        // TODO Use wellprojectwellservice
         var linkedWells = exploration.ExplorationWells?.Where(ew => ew.Well.WellCategory == WellCategory.Exploration_Well).ToList();
         if (exploration != null && linkedWells?.Count > 0)
         {

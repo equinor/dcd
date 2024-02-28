@@ -40,4 +40,3 @@ public class UpdateTopsideCostProfileOverrideDto : UpdateTimeSeriesCostDto, ITim
 {
     public bool Override { get; set; }
 }
-

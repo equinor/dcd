@@ -17,7 +17,6 @@ public class UpdateProjectDto
     public ProjectCategory ProjectCategory { get; set; }
     public UpdateExplorationOperationalWellCostsDto ExplorationOperationalWellCosts { get; set; } = new UpdateExplorationOperationalWellCostsDto();
     public UpdateDevelopmentOperationalWellCostsDto DevelopmentOperationalWellCosts { get; set; } = new UpdateDevelopmentOperationalWellCostsDto();
-    public ICollection<WellDto> Wells { get; set; } = [];
     public string? SharepointSiteUrl { get; set; }
     public double CO2RemovedFromGas { get; set; }
     public double CO2EmissionFromFuelGas { get; set; }

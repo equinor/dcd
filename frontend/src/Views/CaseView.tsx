@@ -306,7 +306,7 @@ const CaseView = () => {
             <HeaderWrapper>
                 <RowWrapper>
                     <Button
-                        onClick={() => navigate(projectPath(currentContext?.externalId!))}
+                        onClick={() => navigate(projectPath(currentContext?.id!))}
                         variant="ghost_icon"
                     >
                         <Icon data={arrow_back} />

@@ -58,10 +58,26 @@ public class DcdDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<WellProjectWell>().HasKey(wc => new { wc.WellProjectId, wc.WellId });
-        modelBuilder.Entity<WellProjectWell>().HasOne(w => w.Well).WithMany(w => w.WellProjectWells).OnDelete(DeleteBehavior.NoAction);
+        modelBuilder.Entity<WellProjectWell>()
+            .HasKey(wc => new { wc.WellProjectId, wc.WellId });
 
-        modelBuilder.Entity<ExplorationWell>().HasKey(ew => new { ew.ExplorationId, ew.WellId });
-        modelBuilder.Entity<ExplorationWell>().HasOne(w => w.Well).WithMany(w => w.ExplorationWells).OnDelete(DeleteBehavior.NoAction);
+        modelBuilder.Entity<WellProjectWell>()
+            .HasOne(w => w.Well)
+            .WithMany(w => w.WellProjectWells)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ExplorationWell>()
+            .HasKey(ew => new { ew.ExplorationId, ew.WellId });
+
+        modelBuilder.Entity<ExplorationWell>()
+            .HasOne(w => w.Well)
+            .WithMany(w => w.ExplorationWells)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+        optionsBuilder.EnableSensitiveDataLogging();
     }
 }
