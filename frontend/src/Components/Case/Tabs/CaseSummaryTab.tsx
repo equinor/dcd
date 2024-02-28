@@ -26,6 +26,12 @@ const PageTitle = styled(Typography)`
 const TableWrapper = styled.div`
     margin-bottom: 50px;
 `
+interface ITimeSeriesData {
+    profileName: string
+    unit: string,
+    set?: Dispatch<SetStateAction<ITimeSeriesCost | undefined>>,
+    profile: ITimeSeries | undefined
+}
 
 interface Props {
     project: Components.Schemas.ProjectDto,
@@ -54,7 +60,6 @@ const CaseSummaryTab = ({
 
     // CAPEX
     const [historicCost] = useState<Components.Schemas.HistoricCostCostProfileDto>()
-
     const [topsideCost, setTopsideCost] = useState<Components.Schemas.TopsideCostProfileDto>()
     const [surfCost, setSurfCost] = useState<Components.Schemas.SurfCostProfileDto>()
     const [substructureCost, setSubstructureCost] = useState<Components.Schemas.SubstructureCostProfileDto>()
@@ -63,6 +68,57 @@ const CaseSummaryTab = ({
     const [, setStartYear] = useState<number>(2020)
     const [, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+
+    const opexTimeSeriesData: ITimeSeriesData[] = [
+        {
+            profileName: "Study cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: totalStudyCost,
+        },
+        {
+            profileName: "Offshore facliities operations + well intervention",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: opexCost,
+        },
+        {
+            profileName: "Cessation wells + Cessation offshore facilities",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: cessationCost,
+        },
+    ]
+
+    const capexTimeSeriesData: ITimeSeriesData[] = [
+        {
+            profileName: "Historic cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: historicCost,
+            set: setTopsideCost,
+        },
+        {
+            profileName: "Topside cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: topsideCost,
+            set: setTopsideCost,
+        },
+        {
+            profileName: "SURF cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: surfCost,
+            set: setSurfCost,
+        },
+        {
+            profileName: "Substructure cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: substructureCost,
+            set: setSubstructureCost,
+        },
+        {
+            profileName: "Transport cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: transportCost,
+            set: setTransportCost,
+        },
+    ]
 
     const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
         if (timeSeries && timeSeries.startYear && timeSeries.values) {
@@ -87,6 +143,18 @@ const CaseSummaryTab = ({
             setEndYear(lastYear + new Date(caseItem.dG4Date).getFullYear())
             setTableYears([firstYear + new Date(caseItem.dG4Date).getFullYear(), lastYear + new Date(caseItem.dG4Date).getFullYear()])
         }
+    }
+
+    const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newCase = { ...caseItem }
+        newCase.npv = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
+        setCase(newCase)
+    }
+
+    const handleCaseBreakEvenChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const newCase = { ...caseItem }
+        newCase.breakEven = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
+        setCase(newCase)
     }
 
     useEffect(() => {
@@ -144,76 +212,6 @@ const CaseSummaryTab = ({
             }
         })()
     }, [activeTab])
-
-    const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
-        newCase.npv = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
-        setCase(newCase)
-    }
-
-    const handleCaseBreakEvenChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
-        newCase.breakEven = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setCase(newCase)
-    }
-
-    interface ITimeSeriesData {
-        profileName: string
-        unit: string,
-        set?: Dispatch<SetStateAction<ITimeSeriesCost | undefined>>,
-        profile: ITimeSeries | undefined
-    }
-
-    const opexTimeSeriesData: ITimeSeriesData[] = [
-        {
-            profileName: "Study cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalStudyCost,
-        },
-        {
-            profileName: "Offshore facliities operations + well intervention",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: opexCost,
-        },
-        {
-            profileName: "Cessation wells + Cessation offshore facilities",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationCost,
-        },
-    ]
-
-    const capexTimeSeriesData: ITimeSeriesData[] = [
-        {
-            profileName: "Historic cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: historicCost,
-            set: setTopsideCost,
-        },
-        {
-            profileName: "Topside cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: topsideCost,
-            set: setTopsideCost,
-        },
-        {
-            profileName: "SURF cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: surfCost,
-            set: setSurfCost,
-        },
-        {
-            profileName: "Substructure cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: substructureCost,
-            set: setSubstructureCost,
-        },
-        {
-            profileName: "Transport cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: transportCost,
-            set: setTransportCost,
-        },
-    ]
 
     if (activeTab !== 7) { return null }
 

@@ -27,6 +27,7 @@ const CasesDropMenu = ({
     editCase,
 }: CasesDropMenuProps): JSX.Element => {
     const { project, setProject } = useAppContext()
+
     if (!project) return <p>project not found</p>
 
     const navigate = useNavigate()

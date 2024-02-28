@@ -45,7 +45,6 @@ interface CasesAgGridTableProps {
     setMenuAnchorEl: (el: HTMLElement | null) => void
     setIsMenuOpen: (isMenuOpen: boolean) => void
     isMenuOpen: boolean
-
 }
 
 const CasesAgGridTable = ({

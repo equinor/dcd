@@ -82,12 +82,6 @@ const PROSPCaseList = ({
             setRowData(tableCases)
         }
     }
-    useEffect(() => {
-        casesToRowData()
-        if (gridRef.current.redrawRows) {
-            gridRef.current.redrawRows()
-        }
-    }, [project, driveItems])
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
@@ -200,13 +194,9 @@ const PROSPCaseList = ({
         if (selectedFileId !== "") {
             const link = getFileLink(rowNode, selectedFileId)
             rowNode.setDataValue(
-                "fileLink", (
-                    <a
-                        href={link}
-                        aria-label="SharePoint File link"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
+                "fileLink",
+                (
+                    <a href={link} aria-label="SharePoint File link" target="_blank" rel="noopener noreferrer">
                         <Icon data={external_link} />
                     </a>),
             )
@@ -313,24 +303,6 @@ const PROSPCaseList = ({
         },
     ])
 
-    useEffect(() => {
-        const assetFields = ["surfState", "substructureState", "topsideState", "transportState"]
-        const newColumnDefs = [...columnDefs]
-        const columnData: any = []
-        newColumnDefs.forEach((cd) => {
-            if (assetFields.indexOf(cd.field) > -1) {
-                const colDef = { ...cd }
-                colDef.hide = !check
-                columnData.push(colDef)
-            } else {
-                columnData.push(cd)
-            }
-        })
-        if (columnData.length > 0) {
-            setColumnDefs(columnData)
-        }
-    }, [check])
-
     const onGridReady = (params: any) => {
         gridRef.current = params.api
     }
@@ -368,6 +340,31 @@ const PROSPCaseList = ({
             setIsApplying(false)
         }
     }, [])
+
+    useEffect(() => {
+        const assetFields = ["surfState", "substructureState", "topsideState", "transportState"]
+        const newColumnDefs = [...columnDefs]
+        const columnData: any = []
+        newColumnDefs.forEach((cd) => {
+            if (assetFields.indexOf(cd.field) > -1) {
+                const colDef = { ...cd }
+                colDef.hide = !check
+                columnData.push(colDef)
+            } else {
+                columnData.push(cd)
+            }
+        })
+        if (columnData.length > 0) {
+            setColumnDefs(columnData)
+        }
+    }, [check])
+
+    useEffect(() => {
+        casesToRowData()
+        if (gridRef.current.redrawRows) {
+            gridRef.current.redrawRows()
+        }
+    }, [project, driveItems])
 
     return (
         <>

@@ -70,15 +70,11 @@ const EditTechnicalInputModal = () => {
     const [activeTab, setActiveTab] = useState<number>(0)
     const [originalProject] = useState<Components.Schemas.ProjectDto>(project)
 
-    const [explorationOperationalWellCosts,
-        setExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto>(project.explorationOperationalWellCosts)
-    const [developmentOperationalWellCosts,
-        setDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto>(project.developmentOperationalWellCosts)
+    const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto>(project.explorationOperationalWellCosts)
+    const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto>(project.developmentOperationalWellCosts)
 
-    const [originalExplorationOperationalWellCosts,
-        setOriginalExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto>(project.explorationOperationalWellCosts)
-    const [originalDevelopmentOperationalWellCosts,
-        setOriginalDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto>(project.developmentOperationalWellCosts)
+    const [originalExplorationOperationalWellCosts, setOriginalExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto>(project.explorationOperationalWellCosts)
+    const [originalDevelopmentOperationalWellCosts, setOriginalDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto>(project.developmentOperationalWellCosts)
 
     const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => !isExplorationWell(w)) ?? [])
     const [explorationWells, setExplorationWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => isExplorationWell(w)) ?? [])
@@ -87,40 +83,6 @@ const EditTechnicalInputModal = () => {
     const [originalExplorationWells, setOriginalExplorationWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => isExplorationWell(w)) ?? [])
 
     const [isSaving, setIsSaving] = useState<boolean>()
-
-    useEffect(() => {
-        if (project.wells) {
-            setWellProjectWells(project.wells.filter((w) => !isExplorationWell(w)))
-            setExplorationWells(project.wells.filter((w) => isExplorationWell(w)))
-
-            const originalWellProjectWellsResult = structuredClone(project.wells.filter((w) => !isExplorationWell(w)))
-            setOriginalWellProjectWells(originalWellProjectWellsResult)
-            const originalExplorationWellsResult = structuredClone(project.wells.filter((w) => isExplorationWell(w)))
-            setOriginalExplorationWells(originalExplorationWellsResult)
-        }
-    }, [project])
-
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === "Escape") {
-                setTechnicalModalIsOpen(false)
-            }
-        }
-
-        if (technicalModalIsOpen) {
-            window.addEventListener("keydown", handleKeyDown)
-        }
-
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown)
-        }
-    }, [technicalModalIsOpen, setTechnicalModalIsOpen])
-
-    if (!technicalModalIsOpen) return null
-
-    if (!developmentOperationalWellCosts || !explorationOperationalWellCosts) {
-        return null
-    }
 
     const handleSave = async () => {
         try {
@@ -202,6 +164,40 @@ const EditTechnicalInputModal = () => {
 
         // Close the modal in all cases
         setTechnicalModalIsOpen(false)
+    }
+
+    useEffect(() => {
+        if (project.wells) {
+            setWellProjectWells(project.wells.filter((w) => !isExplorationWell(w)))
+            setExplorationWells(project.wells.filter((w) => isExplorationWell(w)))
+
+            const originalWellProjectWellsResult = structuredClone(project.wells.filter((w) => !isExplorationWell(w)))
+            setOriginalWellProjectWells(originalWellProjectWellsResult)
+            const originalExplorationWellsResult = structuredClone(project.wells.filter((w) => isExplorationWell(w)))
+            setOriginalExplorationWells(originalExplorationWellsResult)
+        }
+    }, [project])
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                setTechnicalModalIsOpen(false)
+            }
+        }
+
+        if (technicalModalIsOpen) {
+            window.addEventListener("keydown", handleKeyDown)
+        }
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown)
+        }
+    }, [technicalModalIsOpen, setTechnicalModalIsOpen])
+
+    if (!technicalModalIsOpen) return null
+
+    if (!developmentOperationalWellCosts || !explorationOperationalWellCosts) {
+        return null
     }
 
     return (
