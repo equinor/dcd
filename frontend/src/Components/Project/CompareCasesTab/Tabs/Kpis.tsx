@@ -11,7 +11,6 @@ const ChartContainer = styled.div`
 interface KpisProps {
     npvChartData?: object
     breakEvenChartData?: object
-
 }
 
 const Kpis: React.FC<KpisProps> = ({ npvChartData, breakEvenChartData }) => {

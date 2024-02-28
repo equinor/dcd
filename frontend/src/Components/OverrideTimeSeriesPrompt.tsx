@@ -1,10 +1,6 @@
-import {
-    Dispatch, SetStateAction, FunctionComponent,
-} from "react"
+import { Dispatch, SetStateAction, FunctionComponent } from "react"
 import styled from "styled-components"
-import {
-    Button, Typography,
-} from "@equinor/eds-core-react"
+import { Button, Typography } from "@equinor/eds-core-react"
 
 const ModalDiv = styled.div`
     position: fixed;

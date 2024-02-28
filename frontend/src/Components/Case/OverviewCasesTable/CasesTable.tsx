@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import CasesAgGridTable from "./CasesAgGridTable"
 import CasesDropMenu from "./CasesDropMenu"
 import { useModalContext } from "../../../Context/ModalContext"

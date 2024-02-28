@@ -52,8 +52,6 @@ const ProjectRow = styled.div`
 const ProjectNavLink = styled(NavLink)`
     text-decoration: none;
 `
-const CasesWrapper = styled.div`
-`
 
 const Cases = styled.div`
     display: flex;
@@ -139,7 +137,7 @@ const Sidebar = () => {
                 </ProjectRow>
             </ProjectNavLink>
             <Body>
-                <CasesWrapper>
+                <div>
                     <CasesHeader>
                         <CasesHeaderText>Cases</CasesHeaderText>
                         <input
@@ -163,7 +161,7 @@ const Sidebar = () => {
                         }
 
                     </Cases>
-                </CasesWrapper>
+                </div>
                 <Link
                     href="https://forms.office.com/Pages/ResponsePage.aspx?id=NaKkOuK21UiRlX_PBbRZsCjGTHQnxJxIkcdHZ_YqW4BUMTQyTVNLOEY0VUtSUjIwN1QxUVJIRjBaNC4u"
                     target="_blank"

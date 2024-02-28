@@ -55,6 +55,38 @@ const CaseFacilitiesTab = ({
     transport, setTransport,
     activeTab,
 }: Props) => {
+    const platformConceptValues: { [key: number]: string } = {
+        0: "No Concept",
+        1: "Tie-back to existing offshore platform",
+        2: "JACKET - Fixed Steel Jacket",
+        3: "GBS - Fixed Concrete Platform - Gravity Based Structure",
+        4: "TLP - Tension Leg Platform - Steel",
+        5: "SPAR Platform - Steel",
+        6: "SEMI - Semi Submersible - Steel",
+        7: "CIRCULAR BARGE - Sevan type FPSO",
+        8: "BARGE - Barge shaped - Spread Moored FPSO",
+        9: "FPSO - Ship shaped - TUrret Moored",
+        10: "TANKER - converted tanker FPSO - Turret Moored",
+        11: "JACK-UP Platform",
+        12: "Subsea to shore",
+    }
+    const productionFlowlineValues: { [key: number]: string } = {
+        0: "No production flowline",
+        1: "Carbon",
+        2: "SS Clad",
+        3: "Cr13",
+        4: "Carbon + insulation",
+        5: "SS Clad + insulation",
+        6: "Cr13 + insulation",
+        7: "Carbon + insulation + DEH",
+        8: "SS Clad + insulation + DEH",
+        9: "Cr13 + insulation + DEH",
+        10: "Carbon + PIP",
+        11: "SS Clad + PIP",
+        12: "Cr13 + PIP",
+        13: "HDPE lined CS (Water injection only)",
+    }
+
     const handleFacilityOpexChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newTopside = { ...topside }
         newTopside.facilityOpex = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
@@ -205,38 +237,6 @@ const CaseFacilitiesTab = ({
     }
 
     if (activeTab !== 4) { return null }
-
-    const platformConceptValues: { [key: number]: string } = {
-        0: "No Concept",
-        1: "Tie-back to existing offshore platform",
-        2: "JACKET - Fixed Steel Jacket",
-        3: "GBS - Fixed Concrete Platform - Gravity Based Structure",
-        4: "TLP - Tension Leg Platform - Steel",
-        5: "SPAR Platform - Steel",
-        6: "SEMI - Semi Submersible - Steel",
-        7: "CIRCULAR BARGE - Sevan type FPSO",
-        8: "BARGE - Barge shaped - Spread Moored FPSO",
-        9: "FPSO - Ship shaped - TUrret Moored",
-        10: "TANKER - converted tanker FPSO - Turret Moored",
-        11: "JACK-UP Platform",
-        12: "Subsea to shore",
-    }
-    const productionFlowlineValues: { [key: number]: string } = {
-        0: "No production flowline",
-        1: "Carbon",
-        2: "SS Clad",
-        3: "Cr13",
-        4: "Carbon + insulation",
-        5: "SS Clad + insulation",
-        6: "Cr13 + insulation",
-        7: "Carbon + insulation + DEH",
-        8: "SS Clad + insulation + DEH",
-        9: "Cr13 + insulation + DEH",
-        10: "Carbon + PIP",
-        11: "SS Clad + PIP",
-        12: "Cr13 + PIP",
-        13: "HDPE lined CS (Water injection only)",
-    }
 
     return (
         <>

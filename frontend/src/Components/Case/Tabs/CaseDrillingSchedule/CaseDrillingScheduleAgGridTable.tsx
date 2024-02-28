@@ -123,12 +123,6 @@ const CaseDrillingScheduleTabTable = ({
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
-    useEffect(() => {
-        wellsToRowData()
-        const newColDefs = generateTableYearColDefs()
-        setColumnDefs(newColDefs)
-    }, [assetWells, tableYears, wells])
-
     const handleCellValueChange = (p: any) => {
         const properties = Object.keys(p.data)
         const tableTimeSeriesValues: any[] = []
@@ -199,6 +193,12 @@ const CaseDrillingScheduleTabTable = ({
         }
         return undefined
     }
+
+    useEffect(() => {
+        wellsToRowData()
+        const newColDefs = generateTableYearColDefs()
+        setColumnDefs(newColDefs)
+    }, [assetWells, tableYears, wells])
 
     return (
         <div className={styles.root}>

@@ -41,12 +41,7 @@ const CaseNumberInput = ({
                     event.preventDefault()
                 }
             }}
-            rightAdornments={(
-                // eslint-disable-next-line react/jsx-no-useless-fragment
-                <>
-                    {unit}
-                </>
-            )}
+            rightAdornments={unit}
         />
     </WrapperColumn>
 )

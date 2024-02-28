@@ -17,7 +17,6 @@ import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
 import InputContainer from "../../../Input/Containers/InputContainer"
 import FilterContainer from "../../../Input/Containers/TableFilterContainer"
 import InputSwitcher from "../../../Input/InputSwitcher"
-import { useModalContext } from "../../../../Context/ModalContext"
 
 const TopWrapper = styled.div`
     display: flex;
@@ -102,20 +101,6 @@ const CaseDrillingScheduleTab = ({
         setTableYears([startYear, endYear])
     }
 
-    useEffect(() => {
-        if (activeTab === 3 && caseItem.dG4Date !== undefined) {
-            const explorationDrillingSchedule = explorationWells?.map((ew) => ew.drillingSchedule) ?? []
-            const wellProjectDrillingSchedule = wellProjectWells?.map((ew) => ew.drillingSchedule) ?? []
-            SetTableYearsFromProfiles(
-                [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
-                new Date(caseItem.dG4Date).getFullYear(),
-                setStartYear,
-                setEndYear,
-                setTableYears,
-            )
-        }
-    }, [activeTab])
-
     const sumWellsForWellCategory = (category: Components.Schemas.WellCategory): number => {
         if (wells && wells.length > 0) {
             if (category >= 4) {
@@ -147,6 +132,20 @@ const CaseDrillingScheduleTab = ({
         }
         return 0
     }
+
+    useEffect(() => {
+        if (activeTab === 3 && caseItem.dG4Date !== undefined) {
+            const explorationDrillingSchedule = explorationWells?.map((ew) => ew.drillingSchedule) ?? []
+            const wellProjectDrillingSchedule = wellProjectWells?.map((ew) => ew.drillingSchedule) ?? []
+            SetTableYearsFromProfiles(
+                [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
+                new Date(caseItem.dG4Date).getFullYear(),
+                setStartYear,
+                setEndYear,
+                setTableYears,
+            )
+        }
+    }, [activeTab])
 
     useEffect(() => {
         if (activeTab === 3) {

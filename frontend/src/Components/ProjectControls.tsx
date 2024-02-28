@@ -1,8 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import {
-    Switch, Typography,
-} from "@equinor/eds-core-react"
+import { Switch, Typography } from "@equinor/eds-core-react"
 import { useAppContext } from "../Context/AppContext"
 import { useModalContext } from "../Context/ModalContext"
 

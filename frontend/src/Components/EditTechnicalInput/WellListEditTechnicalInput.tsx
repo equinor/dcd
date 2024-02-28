@@ -65,10 +65,6 @@ const WellListEditTechnicalInput = ({
         }
     }
 
-    useEffect(() => {
-        wellsToRowData()
-    }, [wells])
-
     const updateWells = (p: any) => {
         const rowWells: any[] = p.data.wells
         if (rowWells) {
@@ -208,6 +204,10 @@ const WellListEditTechnicalInput = ({
             setWells([newWell])
         }
     }
+
+    useEffect(() => {
+        wellsToRowData()
+    }, [wells])
 
     return (
         <>

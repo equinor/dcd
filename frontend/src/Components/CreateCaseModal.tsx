@@ -340,7 +340,6 @@ const CreateCaseModal = () => {
                                 {caseModalEditMode ? "Save changes" : "Create case"}
                             </CreateButton>
                         )}
-
                     </CreateButtonWrapper>
                 </ButtonsWrapper>
             </CreateCaseForm>
