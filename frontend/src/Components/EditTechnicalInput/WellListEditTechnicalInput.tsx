@@ -147,13 +147,11 @@ const WellListEditTechnicalInput = ({
         }
     }
 
-    const deleteWellRenderer = (p: any) => {
-        return (
-            <Button variant="ghost_icon" onClick={() => handleDeleteWell(p)}>
-                <Icon data={delete_to_trash} />
-            </Button>
-        )
-    }
+    const deleteWellRenderer = (p: any) => (
+        <Button variant="ghost_icon" onClick={() => handleDeleteWell(p)}>
+            <Icon data={delete_to_trash} />
+        </Button>
+    )
 
     type SortOrder = "desc" | "asc" | null
     const order: SortOrder = "asc"
