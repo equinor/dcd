@@ -70,8 +70,21 @@ interface AppContextType {
 
     exploration: Components.Schemas.ExplorationDto | undefined,
     setExploration: Dispatch<SetStateAction<Components.Schemas.ExplorationDto | undefined>>,
-    explorationWellCost: Components.Schemas.ExplorationWellCostProfileDto| undefined;
-    setExplorationWellCost: Dispatch<SetStateAction<Components.Schemas.ExplorationWellCostProfileDto | undefined>>;
+    totalExplorationCost: ITimeSeries | undefined,
+    setTotalExplorationCost: Dispatch<SetStateAction<ITimeSeries | undefined>>,
+    gAndGAdminCost: Components.Schemas.GAndGAdminCostDto| undefined;
+    setGAndGAdminCost: Dispatch<SetStateAction<Components.Schemas.GAndGAdminCostDto | undefined>>;
+    seismicAcqAndProcCost: Components.Schemas.SeismicAcquisitionAndProcessingDto| undefined;
+    setSeismicAcqAndProcCost: Dispatch<SetStateAction<Components.Schemas.SeismicAcquisitionAndProcessingDto | undefined>>;
+    countryOfficeCost: Components.Schemas.CountryOfficeCostDto| undefined;
+    setCountryOfficeCost: Dispatch<SetStateAction<Components.Schemas.CountryOfficeCostDto | undefined>>;
+    explorationWellCostProfile: Components.Schemas.ExplorationWellCostProfileDto| undefined;
+    setExplorationWellCostProfile: Dispatch<SetStateAction<Components.Schemas.ExplorationWellCostProfileDto | undefined>>;
+    explorationAppraisalWellCost: Components.Schemas.AppraisalWellCostProfileDto| undefined;
+    setExplorationAppraisalWellCost: Dispatch<SetStateAction<Components.Schemas.AppraisalWellCostProfileDto | undefined>>;
+    explorationSidetrackCost: Components.Schemas.SidetrackCostProfileDto| undefined;
+    setExplorationSidetrackCost: Dispatch<SetStateAction<Components.Schemas.SidetrackCostProfileDto | undefined>>;
+
 
     totalFeasibilityAndConceptStudies: Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined;
     setTotalFeasibilityAndConceptStudies: Dispatch<SetStateAction<Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined>>;
@@ -147,8 +160,6 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [historicCostCostProfile, setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto | undefined>();
     const [additionalOPEXCostProfile, setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto | undefined>();
 
-
-
     const [productionAndSalesVolume, setProductionAndSalesVolume] = useState<Components.Schemas.ProductionAndSalesVolumesDto | undefined>();
     const [oilCondensateProduction, setOilCondensateProduction] = useState<Components.Schemas.ProductionProfileOilDto | undefined>();
     const [nglProduction, setNGLProduction] = useState<Components.Schemas.ProductionProfileNGLDto | undefined>();
@@ -156,10 +167,15 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [cO2Emissions, setCO2Emissions] = useState<Components.Schemas.Co2EmissionsDto | undefined>();
     const [importedElectricity, setImportedElectricity] = useState<Components.Schemas.ImportedElectricityDto | undefined>();
     const [drillingCost, setDrillingCost] = useState<Components.Schemas.drillingCostDto>();
-    const [exploration, setExploration] = useState<Components.Schemas.ExplorationDto | undefined>();
-    const [explorationWellCost, setExplorationWellCost] = useState<Components.Schemas.ExplorationWellCostProfileDto>();
     const [cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost] = useState<Components.Schemas.CessationOffshoreFacilitiesCostDto>();
-
+    const [exploration, setExploration] = useState<Components.Schemas.ExplorationDto | undefined>();
+    const [totalExplorationCost, setTotalExplorationCost] = useState<ITimeSeries | undefined>()
+    const [explorationWellCostProfile, setExplorationWellCostProfile] = useState<Components.Schemas.ExplorationWellCostProfileDto>();
+    const [gAndGAdminCost, setGAndGAdminCost] = useState<Components.Schemas.GAndGAdminCostDto>();
+    const [countryOfficeCost, setCountryOfficeCost] = useState<Components.Schemas.CountryOfficeCostDto>()
+    const [explorationAppraisalWellCost, setExplorationAppraisalWellCost] = useState<Components.Schemas.AppraisalWellCostProfileDto>()
+    const [explorationSidetrackCost, setExplorationSidetrackCost] = useState<Components.Schemas.SidetrackCostProfileDto>()
+    const [seismicAcqAndProcCost, setSeismicAcqAndProcCost] = useState<Components.Schemas.SeismicAcquisitionAndProcessingDto>()
 
     const value = useMemo(() => ({
         project, setProject,
@@ -193,7 +209,13 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         importedElectricity, setImportedElectricity,
         drillingCost, setDrillingCost,
         exploration, setExploration,
-        explorationWellCost, setExplorationWellCost,
+        totalExplorationCost, setTotalExplorationCost,
+        explorationWellCostProfile, setExplorationWellCostProfile,
+        gAndGAdminCost, setGAndGAdminCost,
+        seismicAcqAndProcCost, setSeismicAcqAndProcCost,
+        explorationSidetrackCost, setExplorationSidetrackCost,
+        explorationAppraisalWellCost, setExplorationAppraisalWellCost,
+        countryOfficeCost, setCountryOfficeCost,
         editModalIsOpen,
         setEditModalIsOpen,
         modalEditMode,
@@ -252,7 +274,13 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         importedElectricity,
         drillingCost,
         exploration,
-        explorationWellCost,
+        totalExplorationCost,
+        explorationWellCostProfile,
+        gAndGAdminCost,
+        countryOfficeCost,
+        explorationAppraisalWellCost,
+        explorationSidetrackCost,
+        seismicAcqAndProcCost
     ]);
 
     return (

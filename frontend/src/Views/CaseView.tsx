@@ -113,7 +113,7 @@ const CaseView = () => {
         totalFEEDStudies, setTotalFEEDStudies, 
         totalOtherStudies, setTotalOtherStudies,
         activeTab, setActiveTab, 
-        explorationWellCost, setExplorationWellCost,
+        explorationWellCostProfile, setExplorationWellCostProfile,
         drillingCost, setDrillingCost,
         totalStudyCost, setTotalStudyCost,
         productionAndSalesVolume,setProductionAndSalesVolume,

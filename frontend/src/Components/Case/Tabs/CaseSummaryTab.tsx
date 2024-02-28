@@ -8,12 +8,15 @@ import CaseNumberInput from "../../Input/CaseNumberInput"
 import CaseTabTable from "../Components/CaseTabTable"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { GetGenerateProfileService } from "../../../Services/CaseGeneratedProfileService"
-import { MergeTimeseries } from "../../../Utils/common"
+import { MergeTimeseries, MergeTimeseriesList } from "../../../Utils/common"
 import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
 import InputContainer from "../../Input/Containers/InputContainer"
 import InputSwitcher from "../../Input/InputSwitcher"
-import { ColDef, ColGroupDef } from "ag-grid-community"
 import { useAppContext } from "../../../Context/AppContext"
+import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
+import { AgGridReact } from "@ag-grid-community/react"
+import { ColDef } from '@ag-grid-community/core';
+
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
@@ -49,7 +52,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         historicCostCostProfile,
         additionalOPEXCostProfile,
         activeTab, setActiveTab,
-        explorationWellCost, setExplorationWellCost,
         drillingCost, setDrillingCost,
         totalStudyCost, setTotalStudyCost,
         productionAndSalesVolume, setProductionAndSalesVolume,
@@ -60,12 +62,23 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         importedElectricity, setImportedElectricity,
         setStartYear,
         setEndYear,
-        tableYears, setTableYears
+        tableYears, setTableYears,
+        totalExplorationCost, setTotalExplorationCost,
+        explorationWellCostProfile, setExplorationWellCostProfile,
+        gAndGAdminCost, setGAndGAdminCost,
+        seismicAcqAndProcCost, setSeismicAcqAndProcCost,
+        explorationSidetrackCost, setExplorationSidetrackCost,
+        explorationAppraisalWellCost, setExplorationAppraisalWellCost,
+        countryOfficeCost, setCountryOfficeCost,
     } = useAppContext();
 
-    const [columnDefs, setColumnDefs] = useState([]);
-    const [rowData, setRowData] = useState([]);
-    
+    const [columnDefs, setColumnDefs] = useState<ColDef[]>([
+        { field: 'profileName', headerName: 'Profile Name', pinned: 'left', minWidth: 200 },
+        // Initialize with a set of year columns based on expected range if possible
+    ]);
+
+    const [rowData, setRowData] = useState<any[]>([]);
+
     const [cessationCost, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto>()
 
     const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
@@ -108,7 +121,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
                         let feasibility = (await studyWrapper).totalFeasibilityAndConceptStudiesDto
                         let feed = (await studyWrapper).totalFEEDStudiesDto
-                        const totalOtherStudies = (await studyWrapper).totalOtherStudiesDto
+                        let totalOtherStudies = (await studyWrapper).totalOtherStudiesDto
 
                         if (caseItem.totalFeasibilityAndConceptStudiesOverride?.override === true) {
                             feasibility = caseItem.totalFeasibilityAndConceptStudiesOverride
@@ -117,9 +130,8 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             feed = caseItem.totalFEEDStudiesOverride
                         }
 
-                        const totalStudy = MergeTimeseries(feasibility, feed, totalOtherStudies)
+                        const totalStudy = MergeTimeseriesList([feasibility, feed, totalOtherStudies])
                         setTotalStudyCost(totalStudy)
-
                         setOpexSum(opex)
                         setCessationCost(cessation)
 
@@ -140,10 +152,26 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             ? transport.costProfileOverride : transport.costProfile
                         setTransportCost(transportCostProfile)
 
+                        //ADD ALL
                         setTableYearsFromProfiles([
                             totalStudy, opex, cessation,
-                            topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
+                            topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile, explorationWellCostProfile,
+                            explorationAppraisalWellCost,
+                            explorationSidetrackCost,
+                            seismicAcqAndProcCost,
+                            countryOfficeCost,
+                            gAndGAdminCost,
                         ])
+
+                        //Exploration costs                
+                        setTotalExplorationCost(MergeTimeseriesList([
+                            explorationWellCostProfile,
+                            explorationAppraisalWellCost,
+                            explorationSidetrackCost,|
+                            seismicAcqAndProcCost,
+                            countryOfficeCost,
+                            gAndGAdminCost]))
+
                     }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
@@ -167,14 +195,17 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         profileName: string
         unit: string,
         set?: Dispatch<SetStateAction<ITimeSeriesCost | undefined>>,
+        overrideProfileSet?: Dispatch<SetStateAction<ITimeSeriesCostOverride | undefined>>,
         profile: ITimeSeries | undefined
+        overrideProfile?: ITimeSeries | undefined
+        overridable?: boolean
     }
 
     const explorationTimeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Exploration cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: explorationWellCost,
+            profile: totalExplorationCost,
         },
 
     ]
@@ -185,16 +216,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: drillingCost,
         },
-        // {
-        //     profileName: "Offshore facliities",
-        //     unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-        //     profile: cessation,
-        // },
-        // {
-        //     profileName: "Cessation",
-        //     unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-        //     profile: cessation,
-        // },
 
     ]
 
@@ -277,6 +298,95 @@ const CaseSummaryTab = (): React.ReactElement | null => {
             profile: cessationCost,
         },
     ]
+    const allTimeSeriesData = [
+        explorationTimeSeriesData,
+        capexTimeSeriesData,
+        studycostTimeSeriesData,
+        opexTimeSeriesData,
+        prodAndSalesTimeSeriesData
+    ];
+
+    function transformToRowData(
+        categories: ITimeSeriesData[][],
+        rowDataTableYears = tableYears
+    ): any[] {
+        const rowData: any[] = [];
+
+        categories.forEach(categoryData => {
+            categoryData.forEach(dataItem => {
+                const { profileName, unit, profile, overrideProfile } = dataItem;
+
+                // Initialize base row structure
+                const baseRow: any = { profileName, unit };
+
+                // Function to add profile values to row
+                const addProfileValues = (profile: ITimeSeries | undefined, prefix: string = '') => {
+                    if (!profile || !profile.values) return;
+
+                    profile.values.forEach((value, index) => {
+                        const year = profile.startYear + index;
+                        if (year >= tableYears[0] && year <= tableYears[1]) {
+                            const yearKey = `${prefix}${year}`;
+                            baseRow[yearKey] = value;
+                        }
+                    });
+                };
+
+                // Add original profile values
+                addProfileValues(profile);
+
+                // Optionally, add override profile values
+                if (overrideProfile) {
+                    addProfileValues(overrideProfile, 'override_');
+                }
+
+                rowData.push(baseRow);
+            });
+        });
+
+        return rowData;
+    }
+
+    const generateColumnDefsForYears = (allTimeSeriesData: ITimeSeriesData[][]): any[] => {
+        let minYear = Infinity;
+        let maxYear = -Infinity;
+
+        allTimeSeriesData.forEach(category => {
+            category.forEach(item => {
+                // Check the startYear and length of values for both profile and overrideProfile
+                [item.profile, item.overrideProfile].forEach(profile => {
+                    if (profile && profile.startYear && profile.values) {
+                        const endYear = profile.startYear + profile.values.length - 1;
+                        minYear = Math.min(minYear, profile.startYear);
+                        maxYear = Math.max(maxYear, endYear);
+                    }
+                });
+            });
+        });
+
+        // Generate columnDefs for each year in the range
+        const columnDefs: ColDef[] = [
+            { field: 'profileName', headerName: 'Profile Name', pinned: 'left', minWidth: 200 }, // Ensure adequate minimum width
+        ];
+
+        for (let year = minYear; year <= maxYear; year++) {
+            columnDefs.push({
+                field: year.toString(),
+                headerName: year.toString(),
+                minWidth: 120,
+                flex: 1,
+            });
+        }
+
+        return columnDefs;
+    };
+
+
+
+    useEffect(() => {
+        setRowData(transformToRowData(allTimeSeriesData, tableYears))
+        setColumnDefs(generateColumnDefsForYears(allTimeSeriesData))
+    }, [allTimeSeriesData, tableYears])
 
     if (activeTab !== 7 || !caseItem) { return null }
     return (
@@ -306,10 +416,19 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                 </InputSwitcher>
             </InputContainer>
             <TableWrapper>
-
+                <AgGridReact
+                    className="ag-theme-alpine-fusion"
+                    rowData={rowData}
+                    columnDefs={columnDefs}
+                    defaultColDef={{ flex: 1, minWidth: 120, sortable: true, filter: true }} // Adjust minWidth as needed
+                    autoGroupColumnDef={{ headerName: "Category", minWidth: 200 }}
+                    domLayout="autoHeight"
+                    animateRows={true}
+                    groupDisplayType={'groupRows'}
+                />
             </TableWrapper>
             <TableWrapper>
-                
+
                 <CaseTabTable
                     timeSeriesData={explorationTimeSeriesData}
                     dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}

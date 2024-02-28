@@ -274,6 +274,14 @@ declare namespace Components {
             appraisalProjectDrillingCosts: number; // double
             hasChanges: boolean;
         }
+        export interface TotalExplorationCostDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion: string;
+            currency: Currency /* int32 */;
+        }
         export interface ExplorationWellCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
@@ -624,7 +632,7 @@ declare namespace Components {
             studyCostProfileDto?: StudyCostProfileDto;
             totalFeasibilityAndConceptStudiesDto?: TotalFeasibilityAndConceptStudiesDto;
             totalFEEDStudiesDto?: TotalFEEDStudiesDto;
-            totalOtherStudiesDto?: totalOtherStudiesDto;
+            totalOtherStudiesDto?: TotalOtherStudiesDto;
         }
         export interface SubstructureCessationCostProfileDto {
             id: string; // uuid

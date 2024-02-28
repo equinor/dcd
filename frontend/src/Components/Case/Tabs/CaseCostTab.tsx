@@ -16,6 +16,7 @@ import FilterContainer from "../../Input/Containers/TableFilterContainer"
 import InputContainer from "../../Input/Containers/InputContainer"
 import InputSwitcher from "../../Input/InputSwitcher"
 import { useAppContext } from "../../../Context/AppContext"
+import { MergeTimeseries, MergeTimeseriesList } from "../../../Utils/common"
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
@@ -61,7 +62,13 @@ const CaseCostTab = (): React.ReactElement | null => {
         setStartYear,
         setEndYear,
         tableYears, setTableYears,
-        explorationWellCost, setExplorationWellCost
+        totalExplorationCost, setTotalExplorationCost,
+        explorationWellCostProfile, setExplorationWellCostProfile,
+        gAndGAdminCost, setGAndGAdminCost,
+        seismicAcqAndProcCost, setSeismicAcqAndProcCost,
+        explorationSidetrackCost, setExplorationSidetrackCost,
+        explorationAppraisalWellCost, setExplorationAppraisalWellCost,
+        countryOfficeCost, setCountryOfficeCost,
     } = useAppContext();
 
 
@@ -72,8 +79,6 @@ const CaseCostTab = (): React.ReactElement | null => {
     const [wellInterventionCostProfile, setWellInterventionCostProfile] = useState<Components.Schemas.WellInterventionCostProfileDto>();
 
     const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>();
-
-    const [gAndGAdminCost, setGAndGAdminCost] = useState<Components.Schemas.GAndGAdminCostDto>();
 
 
     // OPEX
@@ -111,12 +116,6 @@ const CaseCostTab = (): React.ReactElement | null => {
     const [wellProjectGasInjectorCost, setWellProjectGasInjectorCost] = useState<Components.Schemas.GasInjectorCostProfileDto>()
     const [wellProjectGasInjectorCostOverride,
         setWellProjectGasInjectorCostOverride] = useState<Components.Schemas.GasInjectorCostProfileOverrideDto>()
-
-    // Exploration
-    const [explorationAppraisalWellCost, setExplorationAppraisalWellCost] = useState<Components.Schemas.AppraisalWellCostProfileDto>()
-    const [explorationSidetrackCost, setExplorationSidetrackCost] = useState<Components.Schemas.SidetrackCostProfileDto>()
-    const [seismicAcqAndProcCost, setSeismicAcqAndProcCost] = useState<Components.Schemas.SeismicAcquisitionAndProcessingDto>()
-    const [countryOfficeCost, setCountryOfficeCost] = useState<Components.Schemas.CountryOfficeCostDto>()
 
     const [startYear] = useState<number>(2020)
     const [endYear] = useState<number>(2030)
@@ -205,17 +204,18 @@ const CaseCostTab = (): React.ReactElement | null => {
                             if (exploration) {
                                 const {
                                     explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
-                                    seismicAcquisitionAndProcessing,
+                                    seismicAcquisitionAndProcessing, countryOfficeCost
                                 } = exploration;
-                                setExplorationWellCost(explorationWellCostProfile)
+                                setExplorationWellCostProfile(explorationWellCostProfile)
                                 setExplorationAppraisalWellCost(appraisalWellCostProfile)
                                 setExplorationSidetrackCost(sidetrackCostProfile)
                                 setSeismicAcqAndProcCost(seismicAcquisitionAndProcessing)
                                 const countryOffice = exploration.countryOfficeCost
-                                setCountryOfficeCost(countryOffice)
-
+                                setCountryOfficeCost(countryOfficeCost)
                                 setGAndGAdminCost(exploration.gAndGAdminCost)
                                 
+                                
+
                                 SetTableYearsFromProfiles([caseItem.totalFeasibilityAndConceptStudies, caseItem.totalFEEDStudies,
                                 caseItem.wellInterventionCostProfile, caseItem.offshoreFacilitiesOperationsCostProfile,
                                 caseItem.cessationWellsCost, caseItem.cessationOffshoreFacilitiesCost,
@@ -246,7 +246,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                 explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
                 seismicAcquisitionAndProcessing,
             } = exploration;
-            setExplorationWellCost(explorationWellCostProfile)
+            setExplorationWellCostProfile(explorationWellCostProfile)
             setExplorationAppraisalWellCost(appraisalWellCostProfile)
             setExplorationSidetrackCost(sidetrackCostProfile)
             setSeismicAcqAndProcCost(seismicAcquisitionAndProcessing)
@@ -510,8 +510,8 @@ const CaseCostTab = (): React.ReactElement | null => {
         {
             profileName: "Exploration well cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: explorationWellCost,
-            set: setExplorationWellCost,
+            profile: explorationWellCostProfile,
+            set: setExplorationWellCostProfile,
         },
         {
             profileName: "Appraisal well cost",
@@ -651,7 +651,7 @@ const CaseCostTab = (): React.ReactElement | null => {
     }, [transportCostOverride])
 
     useEffect(() => {
-        const newWellProject= { ...wellProject }
+        const newWellProject = { ...wellProject }
         if (!wellProjectOilProducerCost) { return }
         newWellProject.oilProducerCostProfile = wellProjectOilProducerCost
         setWellProject(newWellProject as Components.Schemas.WellProjectDto)
@@ -700,7 +700,7 @@ const CaseCostTab = (): React.ReactElement | null => {
     }, [wellProjectGasInjectorCost])
 
     useEffect(() => {
-        const newWellProject= { ...wellProject }
+        const newWellProject = { ...wellProject }
         if (!wellProjectGasInjectorCostOverride) { return }
         newWellProject.gasInjectorCostProfileOverride = wellProjectGasInjectorCostOverride
         setWellProject(newWellProject as Components.Schemas.WellProjectDto)
@@ -708,10 +708,10 @@ const CaseCostTab = (): React.ReactElement | null => {
 
     useEffect(() => {
         const newExploration = { ...exploration }
-        if (!explorationWellCost) { return }
-        newExploration.explorationWellCostProfile = explorationWellCost
+        if (!explorationWellCostProfile) { return }
+        newExploration.explorationWellCostProfile = explorationWellCostProfile
         setExploration(newExploration as Components.Schemas.ExplorationDto)
-    }, [explorationWellCost])
+    }, [explorationWellCostProfile])
 
     useEffect(() => {
         const newExploration = { ...exploration }
