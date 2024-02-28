@@ -31,47 +31,42 @@ import { useModalContext } from "../Context/ModalContext"
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
 
-const CaseViewDiv = styled.div`
+const Wrapper = styled.div`
+    flex: 1;
     display: flex;
     flex-direction: column;
 `
 
+const StyledList = styled(List)`
+    border-bottom: 1px solid LightGray;
+   
+`
 const PageTitle = styled(Typography)`
     flex-grow: 1;
     padding-left: 10px;
 `
-
-const DividerLine = styled.div`
+const StyledTabs = styled(Tabs)`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 `
 const StyledTabPanel = styled(Panel)`
-    padding-top: 5px;
     margin: 20px;
 `
 const HeaderWrapper = styled.div`
-    background-color: white;
-    width: calc(100% - 270px);
-    position: fixed;
-    z-index: 2;
-    padding-top: 30px;
-`
-const TabMenuWrapper = styled.div`
-    position: fixed;
-    z-index: 2;
-    width: calc(100% - 16rem);
-    border-bottom: 1px solid LightGray;
-    margin-top: 95px;
+    padding-top: 0px;
+    border-top: 1px solid LightGray;
 `
 
-const TabContentWrapper = styled.div`
-    margin-top: 145px;
+const TabContentWrapper = styled(Panels)`
+    flex: 1;
+    overflow: hidden;
 `
-
 const CaseButtonsWrapper = styled.div`
     align-items: flex-end;
     display: flex;
     flex-direction: row;
     margin-left: auto;
-    z-index: 2;
     gap: 10px;
 `
 
@@ -84,13 +79,12 @@ const MoreButton = styled(Button)`
 const RowWrapper = styled.div`
     display: flex;
     flex-direction: row;
-    margin: 0 0 78px 20px;
-    align-items: center;
+    margin: 20px;
+    
 `
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
-    margin-right: 0.5rem;
-    margin-bottom: -0.2rem;
+
 `
 
 const CaseView = () => {
@@ -308,7 +302,7 @@ const CaseView = () => {
     }
 
     return (
-        <div>
+        <Wrapper>
             <HeaderWrapper>
                 <RowWrapper>
                     <Button
@@ -356,150 +350,143 @@ const CaseView = () => {
                     caseItem={caseItem}
                 />
             </HeaderWrapper>
-            <CaseViewDiv>
-                <Tabs activeTab={activeTab} onChange={setActiveTab}>
-                    <TabMenuWrapper>
-                        <List>
-                            <Tab>Description</Tab>
-                            <Tab>Production Profiles</Tab>
-                            <Tab>Schedule</Tab>
-                            <Tab>Drilling Schedule</Tab>
-                            <Tab>Facilities</Tab>
-                            <Tab>Cost</Tab>
-                            <Tab>CO2 Emissions</Tab>
-                            <Tab>Summary</Tab>
-                        </List>
-                    </TabMenuWrapper>
-                    <TabContentWrapper>
-                        <Panels>
-                            <StyledTabPanel>
-                                <CaseDescriptionTab
-                                    caseItem={caseItem}
-                                    setCase={setCase}
-                                    activeTab={activeTab}
-                                />
-                            </StyledTabPanel>
-                            <StyledTabPanel>
-                                <CaseProductionProfilesTab
-                                    project={project}
-                                    caseItem={caseItem}
-                                    setCase={setCase}
-                                    drainageStrategy={drainageStrategy}
-                                    setDrainageStrategy={setDrainageStrategy}
-                                    activeTab={activeTab}
-                                    fuelFlaringAndLosses={fuelFlaringAndLosses}
-                                    setFuelFlaringAndLosses={setFuelFlaringAndLosses}
-                                    netSalesGas={netSalesGas}
-                                    setNetSalesGas={setNetSalesGas}
-                                    importedElectricity={importedElectricity}
-                                    setImportedElectricity={setImportedElectricity}
-                                />
-                            </StyledTabPanel>
-                            <StyledTabPanel>
-                                <CaseScheduleTab
-                                    caseItem={{ ...caseItem }}
-                                    setCase={setCase}
-                                    activeTab={activeTab}
-                                />
-                            </StyledTabPanel>
-                            <StyledTabPanel>
-                                <CaseDrillingScheduleTab
-                                    project={project}
-                                    caseItem={caseItem}
-                                    explorationWells={explorationWells}
-                                    setExplorationWells={setExplorationWells}
-                                    wellProjectWells={wellProjectWells}
-                                    setWellProjectWells={setWellProjectWells}
-                                    wells={wells}
-                                    activeTab={activeTab}
-                                    exploration={exploration}
-                                    wellProject={wellProject}
-                                />
-                            </StyledTabPanel>
-                            <StyledTabPanel>
-                                <CaseFacilitiesTab
-                                    project={project}
-                                    caseItem={caseItem}
-                                    setCase={setCase}
-                                    topside={topside}
-                                    setTopside={setTopside}
-                                    surf={surf}
-                                    setSurf={setSurf}
-                                    substructure={substructure}
-                                    setSubstrucutre={setSubstructure}
-                                    transport={transport}
-                                    setTransport={setTransport}
-                                    activeTab={activeTab}
-                                />
-                            </StyledTabPanel>
-                            <StyledTabPanel>
-                                <CaseCostTab
-                                    project={project}
-                                    exploration={exploration}
-                                    setExploration={setExploration}
-                                    wellProject={wellProject}
-                                    setWellProject={setWellProject}
-                                    caseItem={caseItem}
-                                    setCase={setCase}
-                                    topside={topside}
-                                    setTopside={setTopside}
-                                    surf={surf}
-                                    setSurf={setSurf}
-                                    substructure={substructure}
-                                    setSubstructure={setSubstructure}
-                                    transport={transport}
-                                    setTransport={setTransport}
-                                    activeTab={activeTab}
-                                    totalFeasibilityAndConceptStudies={totalFeasibilityAndConceptStudies}
-                                    setTotalFeasibilityAndConceptStudies={setTotalFeasibilityAndConceptStudies}
-                                    totalFEEDStudies={totalFEEDStudies}
-                                    setTotalFEEDStudies={setTotalFEEDStudies}
-                                    totalOtherStudies={totalOtherStudies}
-                                    offshoreFacilitiesOperationsCostProfile={offshoreFacilitiesOperationsCostProfile}
-                                    setOffshoreFacilitiesOperationsCostProfile={setOffshoreFacilitiesOperationsCostProfile}
-                                    wellInterventionCostProfile={wellInterventionCostProfile}
-                                    setWellInterventionCostProfile={setWellInterventionCostProfile}
-                                    historicCostCostProfile={historicCostCostProfile}
-                                    additionalOPEXCostProfile={additionalOPEXCostProfile}
-                                    cessationWellsCost={cessationWellsCost}
-                                    setCessationWellsCost={setCessationWellsCost}
-                                    cessationOffshoreFacilitiesCost={cessationOffshoreFacilitiesCost}
-                                    setCessationOffshoreFacilitiesCost={setCessationOffshoreFacilitiesCost}
-                                    gAndGAdminCost={gAndGAdminCost}
-                                    setGAndGAdminCost={setGAndGAdminCost}
-                                />
-                            </StyledTabPanel>
-                            <StyledTabPanel>
-                                <CaseCO2Tab
-                                    project={project}
-                                    caseItem={caseItem}
-                                    activeTab={activeTab}
-                                    topside={topside}
-                                    setTopside={setTopside}
-                                    drainageStrategy={drainageStrategy}
-                                    setDrainageStrategy={setDrainageStrategy}
-                                    co2Emissions={co2Emissions}
-                                    setCo2Emissions={setCo2Emissions}
-                                />
-                            </StyledTabPanel>
-                            <StyledTabPanel>
-                                <CaseSummaryTab
-                                    project={project}
-                                    caseItem={caseItem}
-                                    setCase={setCase}
-                                    topside={topside}
-                                    surf={surf}
-                                    substructure={substructure}
-                                    transport={transport}
-                                    activeTab={activeTab}
-                                />
-                            </StyledTabPanel>
-                        </Panels>
-                    </TabContentWrapper>
-                </Tabs>
-                <DividerLine />
-            </CaseViewDiv>
-        </div>
+            <StyledTabs activeTab={activeTab} onChange={setActiveTab} scrollable>
+                <StyledList>
+                    <Tab>Description</Tab>
+                    <Tab>Production Profiles</Tab>
+                    <Tab>Schedule</Tab>
+                    <Tab>Drilling Schedule</Tab>
+                    <Tab>Facilities</Tab>
+                    <Tab>Cost</Tab>
+                    <Tab>CO2 Emissions</Tab>
+                    <Tab>Summary</Tab>
+                </StyledList>
+                <TabContentWrapper>
+                    <StyledTabPanel>
+                        <CaseDescriptionTab
+                            caseItem={caseItem}
+                            setCase={setCase}
+                            activeTab={activeTab}
+                        />
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <CaseProductionProfilesTab
+                            project={project}
+                            caseItem={caseItem}
+                            setCase={setCase}
+                            drainageStrategy={drainageStrategy}
+                            setDrainageStrategy={setDrainageStrategy}
+                            activeTab={activeTab}
+                            fuelFlaringAndLosses={fuelFlaringAndLosses}
+                            setFuelFlaringAndLosses={setFuelFlaringAndLosses}
+                            netSalesGas={netSalesGas}
+                            setNetSalesGas={setNetSalesGas}
+                            importedElectricity={importedElectricity}
+                            setImportedElectricity={setImportedElectricity}
+                        />
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <CaseScheduleTab
+                            caseItem={{ ...caseItem }}
+                            setCase={setCase}
+                            activeTab={activeTab}
+                        />
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <CaseDrillingScheduleTab
+                            project={project}
+                            caseItem={caseItem}
+                            explorationWells={explorationWells}
+                            setExplorationWells={setExplorationWells}
+                            wellProjectWells={wellProjectWells}
+                            setWellProjectWells={setWellProjectWells}
+                            wells={wells}
+                            activeTab={activeTab}
+                            exploration={exploration}
+                            wellProject={wellProject}
+                        />
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <CaseFacilitiesTab
+                            project={project}
+                            caseItem={caseItem}
+                            setCase={setCase}
+                            topside={topside}
+                            setTopside={setTopside}
+                            surf={surf}
+                            setSurf={setSurf}
+                            substructure={substructure}
+                            setSubstrucutre={setSubstructure}
+                            transport={transport}
+                            setTransport={setTransport}
+                            activeTab={activeTab}
+                        />
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <CaseCostTab
+                            project={project}
+                            exploration={exploration}
+                            setExploration={setExploration}
+                            wellProject={wellProject}
+                            setWellProject={setWellProject}
+                            caseItem={caseItem}
+                            setCase={setCase}
+                            topside={topside}
+                            setTopside={setTopside}
+                            surf={surf}
+                            setSurf={setSurf}
+                            substructure={substructure}
+                            setSubstructure={setSubstructure}
+                            transport={transport}
+                            setTransport={setTransport}
+                            activeTab={activeTab}
+                            totalFeasibilityAndConceptStudies={totalFeasibilityAndConceptStudies}
+                            setTotalFeasibilityAndConceptStudies={setTotalFeasibilityAndConceptStudies}
+                            totalFEEDStudies={totalFEEDStudies}
+                            setTotalFEEDStudies={setTotalFEEDStudies}
+                            totalOtherStudies={totalOtherStudies}
+                            offshoreFacilitiesOperationsCostProfile={offshoreFacilitiesOperationsCostProfile}
+                            setOffshoreFacilitiesOperationsCostProfile={setOffshoreFacilitiesOperationsCostProfile}
+                            wellInterventionCostProfile={wellInterventionCostProfile}
+                            setWellInterventionCostProfile={setWellInterventionCostProfile}
+                            historicCostCostProfile={historicCostCostProfile}
+                            additionalOPEXCostProfile={additionalOPEXCostProfile}
+                            cessationWellsCost={cessationWellsCost}
+                            setCessationWellsCost={setCessationWellsCost}
+                            cessationOffshoreFacilitiesCost={cessationOffshoreFacilitiesCost}
+                            setCessationOffshoreFacilitiesCost={setCessationOffshoreFacilitiesCost}
+                            gAndGAdminCost={gAndGAdminCost}
+                            setGAndGAdminCost={setGAndGAdminCost}
+                        />
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <CaseCO2Tab
+                            project={project}
+                            caseItem={caseItem}
+                            activeTab={activeTab}
+                            topside={topside}
+                            setTopside={setTopside}
+                            drainageStrategy={drainageStrategy}
+                            setDrainageStrategy={setDrainageStrategy}
+                            co2Emissions={co2Emissions}
+                            setCo2Emissions={setCo2Emissions}
+                        />
+                    </StyledTabPanel>
+                    <StyledTabPanel>
+                        <CaseSummaryTab
+                            project={project}
+                            caseItem={caseItem}
+                            setCase={setCase}
+                            topside={topside}
+                            surf={surf}
+                            substructure={substructure}
+                            transport={transport}
+                            activeTab={activeTab}
+                        />
+                    </StyledTabPanel>
+                </TabContentWrapper>
+            </StyledTabs>
+        </Wrapper>
     )
 }
 

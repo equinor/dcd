@@ -7,9 +7,6 @@ import { useAppContext } from "../Context/AppContext"
 import { useModalContext } from "../Context/ModalContext"
 
 const Wrapper = styled.div`
-    position: sticky;
-    top: 0;
-    z-index: 2;
     background-color: white;
     padding: 20px;
     display: flex;
