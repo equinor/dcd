@@ -86,35 +86,30 @@ const EditTechnicalInputModal = () => {
 
     const handleSave = async () => {
         try {
-            const dto: Components.Schemas.TechnicalInputDto = {}
+            const dto: Components.Schemas.UpdateTechnicalInputDto = {}
             setIsSaving(true)
             dto.projectDto = { ...project }
-            if (!(JSON.stringify(project) === JSON.stringify(originalProject))) {
-                // dto.projectDto.hasChanges = true
-            }
 
             dto.explorationOperationalWellCostsDto = explorationOperationalWellCosts
-            if (!(JSON.stringify(explorationOperationalWellCosts) === JSON.stringify(originalExplorationOperationalWellCosts))) {
-                dto.explorationOperationalWellCostsDto.hasChanges = true
-            }
 
             dto.developmentOperationalWellCostsDto = developmentOperationalWellCosts
-            if (!(JSON.stringify(developmentOperationalWellCosts) === JSON.stringify(originalDevelopmentOperationalWellCosts))) {
-                dto.developmentOperationalWellCostsDto.hasChanges = true
-            }
 
-            dto.wellDtos = [...explorationWells, ...wellProjectWells]
+            const wellDtos = [...explorationWells, ...wellProjectWells]
             const originalWells = [...originalExplorationWells, ...originalWellProjectWells]
-            if (dto.wellDtos?.length > 0) {
-                dto.wellDtos.forEach((wellDto, index) => {
+            if (wellDtos?.length > 0) {
+                wellDtos.forEach((wellDto, index) => {
                     if (wellDto.id !== EMPTY_GUID) {
                         const originalWell = originalWells.find((ow) => ow.id === wellDto.id)
                         if (!(JSON.stringify(wellDto) === JSON.stringify(originalWell))) {
-                            dto.wellDtos![index].hasChanges = true
+                            wellDtos![index].hasChanges = true
                         }
                     }
                 })
             }
+
+            dto.createWellDtos = wellDtos.filter((w) => w.id === EMPTY_GUID || w.id === undefined || w.id === null || w.id === "")
+            dto.updateWellDtos = wellDtos.filter((w) => w.id !== EMPTY_GUID && w.id !== undefined && w.id !== null && w.id !== "")
+            dto.deleteWellDtos = deletedWells.map((id) => ({ id }))
 
             const result = await (await GetTechnicalInputService()).update(project.id, dto)
 
@@ -242,6 +237,7 @@ const EditTechnicalInputModal = () => {
                                 setExplorationWells={setExplorationWells}
                                 wellProjectWells={wellProjectWells}
                                 setWellProjectWells={setWellProjectWells}
+                                setDeletedWells={setDeletedWells}
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>

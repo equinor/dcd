@@ -120,6 +120,7 @@ public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
 
     private static TimeSeriesVolume CalculateDrillingEmissions(Project project, WellProject wellProject)
     {
+        // TODO Use wellprojectwellservice
         var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory))
             .ToList();
         if (linkedWells == null)

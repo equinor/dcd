@@ -67,61 +67,88 @@ public class TechnicalInputService : ITechnicalInputService
 
         var returnDto = new TechnicalInputDto();
 
-        if (technicalInputDto.WellDtos?.Length > 0)
+        if (technicalInputDto.UpdateWellDtos?.Length > 0 || technicalInputDto.CreateWellDtos?.Length > 0)
         {
-            var wellResult = await CreateAndUpdateWells(technicalInputDto.WellDtos);
+            var wellResult = await CreateAndUpdateWells(projectId, technicalInputDto.CreateWellDtos, technicalInputDto.UpdateWellDtos);
             if (wellResult != null)
             {
                 returnDto.ExplorationDto = wellResult.Value.explorationDto;
                 returnDto.WellProjectDto = wellResult.Value.wellProjectDto;
             }
-            var projectDto = _mapper.Map<ProjectDto>(project);
-            if (projectDto == null)
-            {
-                _logger.LogError("Failed to map project to dto");
-                throw new Exception("Failed to map project to dto");
-            }
-            returnDto.ProjectDto = projectDto;
+        }
+
+        if (technicalInputDto.DeleteWellDtos?.Length > 0)
+        {
+            await DeleteWells(technicalInputDto.DeleteWellDtos);
         }
 
         await _context.SaveChangesAsync();
+
+        var returnProject = await _projectService.GetProject(projectId);
+        var returnProjectDto = _mapper.Map<ProjectDto>(returnProject);
+
+        if (returnProjectDto == null)
+        {
+            _logger.LogError("Failed to map project to dto");
+            throw new Exception("Failed to map project to dto");
+        }
+
+        returnDto.ProjectDto = returnProjectDto;
+
         return returnDto;
     }
 
+    private async Task DeleteWells(DeleteWellDto[] deleteWellDtos)
+    {
+        foreach (var wellDto in deleteWellDtos)
+        {
+            var well = await _context.Wells!.FindAsync(wellDto.Id);
+            if (well != null)
+            {
+                _context.Wells.Remove(well);
+            }
+        }
+    }
+
     private async Task<(ExplorationDto explorationDto, WellProjectDto wellProjectDto)?> CreateAndUpdateWells(
-        WellDto[] wellDtos)
+        Guid projectId,
+        CreateWellDto[]? createWellDtos,
+        UpdateWellDto[]? updateWellDtos
+        )
     {
         var runCostProfileCalculation = false;
         var runSaveChanges = false;
         var updatedWells = new List<Guid>();
-        foreach (var wellDto in wellDtos)
+
+        if (createWellDtos != null)
         {
-            if (wellDto.Id == Guid.Empty)
+            foreach (var wellDto in createWellDtos)
             {
                 var well = _mapper.Map<Well>(wellDto);
                 if (well == null)
                 {
                     throw new ArgumentNullException(nameof(well));
                 }
+                well.ProjectId = projectId;
                 var updatedWell = _context.Wells!.Add(well);
-                wellDto.Id = updatedWell.Entity.Id;
 
                 runSaveChanges = true;
             }
-            else
-            {
-                if (wellDto.HasChanges)
-                {
-                    var existing = await _wellService.GetWell(wellDto.Id);
-                    if (wellDto.WellCost != existing.WellCost || wellDto.WellCategory != existing.WellCategory)
-                    {
-                        runCostProfileCalculation = true;
-                        updatedWells.Add(wellDto.Id);
-                    }
-                    _mapper.Map(wellDto, existing);
+        }
 
-                    _context.Wells!.Update(existing);
+        if (updateWellDtos != null)
+        {
+            foreach (var wellDto in updateWellDtos)
+            {
+                var existing = await _wellService.GetWell(wellDto.Id);
+                if (wellDto.WellCost != existing.WellCost || wellDto.WellCategory != existing.WellCategory)
+                {
+                    runCostProfileCalculation = true;
+                    updatedWells.Add(wellDto.Id);
                 }
+                _mapper.Map(wellDto, existing);
+
+                _context.Wells!.Update(existing);
             }
         }
 
@@ -131,13 +158,12 @@ public class TechnicalInputService : ITechnicalInputService
         }
         if (runCostProfileCalculation)
         {
-            await _costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWells);
+            // await _costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWells);
         }
         return null;
     }
     private async Task<ProjectDto> UpdateProject(Project project, UpdateProjectDto updatedDto)
     {
-        ;
         _mapper.Map(updatedDto, project);
         var updatedItem = _context.Projects!.Update(project);
         await _context.SaveChangesAsync();

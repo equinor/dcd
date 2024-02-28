@@ -21,4 +21,3 @@ public class ExplorationOperationalWellCostsDto
     [Required]
     public bool HasChanges { get; set; }
 }
-

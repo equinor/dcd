@@ -34,7 +34,7 @@ public class CaseWithAssetsController : ControllerBase
         [FromBody] CaseWithAssetsWrapperDto caseWrapperDto
     )
     {
-        var dto = await _caseWithAssetsService.UpdateCaseWithAssetsAsync(projectId, caseId, caseWrapperDto);
+        var dto = await _caseWithAssetsService.UpdateCaseWithAssets(projectId, caseId, caseWrapperDto);
         return Ok(dto);
     }
 }
