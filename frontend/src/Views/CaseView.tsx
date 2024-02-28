@@ -6,8 +6,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
 import {
-    bookmark_filled,
-
     more_vertical,
     arrow_back,
 } from "@equinor/eds-icons"
@@ -44,6 +42,10 @@ const StyledList = styled(List)`
 const PageTitle = styled.div`
     flex-grow: 1;
     padding-left: 10px;
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 10px;
 `
 const StyledTabs = styled(Tabs)`
     flex: 1;
@@ -173,6 +175,14 @@ const CaseView = () => {
     }, [currentContext?.externalId, caseId, fusionContextId])
 
     useEffect(() => {
+        if (caseItem && nameEditMode && updatedCaseName !== caseItem.name) {
+            const updatedCase = { ...caseItem }
+            updatedCase.name = updatedCaseName
+            setCase(updatedCase)
+        }
+    }, [updatedCaseName])
+
+    useEffect(() => {
         if (project && updateFromServer) {
             const caseResult = project.cases.find((o) => o.id === caseId)
             if (!caseResult) {
@@ -269,7 +279,6 @@ const CaseView = () => {
         try {
             const result = await (await GetCaseWithAssetsService()).update(project.id, caseId!, dto)
             const projectResult = { ...result.projectDto }
-            console.log("projectResult: ", projectResult)
             setProject(projectResult)
 
             const setIfNotNull = (data: any, setState: any) => {
@@ -292,26 +301,12 @@ const CaseView = () => {
             setIfNotNull(result.generatedProfilesDto?.importedElectricityDto, setImportedElectricity)
 
             setIsSaving(false)
+            setNameEditMode(false)
         } catch (e) {
             setIsSaving(false)
+            setNameEditMode(false)
             console.error("Error when saving case and assets: ", e)
         }
-    }
-
-    const changeCaseName = async () => {
-        const updatedCase = { ...caseItem }
-        console.log("updated name: ", updatedCaseName)
-        updatedCase.name = updatedCaseName
-        console.log("updated case: ", updatedCase)
-        setNameEditMode(false)
-        await handleSave()
-            .then(() => {
-                console.log("Case name updated with the name ", updatedCaseName)
-                setCase(updatedCase)
-            })
-            .catch((e) => {
-                console.error("Error when updating case name: ", e)
-            })
     }
 
     return (
@@ -334,9 +329,6 @@ const CaseView = () => {
                                         defaultValue={caseItem.name}
                                         onChange={(e) => setUpdatedCaseName(e.target.value)}
                                     />
-                                    <Button onClick={() => changeCaseName()}>
-                                        Save
-                                    </Button>
                                 </PageTitle>
 
                             )
