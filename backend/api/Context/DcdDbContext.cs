@@ -60,7 +60,7 @@ public class DcdDbContext : DbContext
     {
         modelBuilder.Entity<WellProjectWell>()
             .HasKey(wc => new { wc.WellProjectId, wc.WellId });
-            
+
         modelBuilder.Entity<WellProjectWell>()
             .HasOne(w => w.Well)
             .WithMany(w => w.WellProjectWells)

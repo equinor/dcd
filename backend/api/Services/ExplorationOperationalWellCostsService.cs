@@ -27,4 +27,3 @@ public class ExplorationOperationalWellCostsService : IExplorationOperationalWel
         return operationalWellCosts;
     }
 }
-

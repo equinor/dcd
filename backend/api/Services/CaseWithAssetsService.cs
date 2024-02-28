@@ -121,7 +121,8 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         {
             await CreateAndUpdateExplorationWells(wrapper.ExplorationWellDto, updatedCaseDto.Id, profilesToGenerate);
         }
-        if (wrapper.WellProjectWellDtos?.Length > 0) {
+        if (wrapper.WellProjectWellDtos?.Length > 0)
+        {
             await CreateAndUpdateWellProjectWells(wrapper.WellProjectWellDtos, updatedCaseDto.Id, profilesToGenerate);
         }
 

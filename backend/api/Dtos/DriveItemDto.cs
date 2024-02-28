@@ -17,4 +17,3 @@ public class DriveItemDto
     public IdentitySet? LastModifiedBy { get; set; }
     public DateTimeOffset? LastModifiedDateTime { get; set; }
 }
-

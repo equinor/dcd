@@ -27,4 +27,3 @@ public class DevelopmentOperationalWellCostsService : IDevelopmentOperationalWel
         return operationalWellCosts;
     }
 }
-
