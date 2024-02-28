@@ -19,6 +19,7 @@ interface Props {
     wells: Components.Schemas.WellDto[] | undefined
     setWells: Dispatch<SetStateAction<Components.Schemas.WellDto[]>>
     explorationWells: boolean
+    setDeletedWells: Dispatch<SetStateAction<string[]>>
 }
 
 interface TableWell {
@@ -35,6 +36,7 @@ const WellListEditTechnicalInput = ({
     explorationWells,
     wells,
     setWells,
+    setDeletedWells,
 }: Props) => {
     const { project } = useAppContext()
     const [rowData, setRowData] = useState<TableWell[]>()
@@ -125,9 +127,32 @@ const WellListEditTechnicalInput = ({
         )
     }
 
+    const handleDeleteWell = (p: any) => {
+        const rowWells: any[] = p.data.wells
+        if (rowWells) {
+            const index = rowWells.findIndex((w) => w === p.data.well)
+            if (index > -1) {
+                const updatedWells = [...rowWells]
+                updatedWells.splice(index, 1)
+                setWells(updatedWells)
+                setDeletedWells((prev) => {
+                    if (!prev.includes(p.data.well.id)) {
+                        const deletedWells = [...prev]
+                        deletedWells.push(p.data.well.id)
+                        return deletedWells
+                    }
+                    return prev
+                })
+            }
+        }
+    }
+
     const deleteWellRenderer = (p: any) => {
-        console.log("p", p)
-        return <Icon data={delete_to_trash} />
+        return (
+            <Button variant="ghost_icon" onClick={() => handleDeleteWell(p)}>
+                <Icon data={delete_to_trash} />
+            </Button>
+        )
     }
 
     type SortOrder = "desc" | "asc" | null

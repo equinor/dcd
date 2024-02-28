@@ -70,6 +70,8 @@ const EditTechnicalInputModal = () => {
     const [activeTab, setActiveTab] = useState<number>(0)
     const [originalProject] = useState<Components.Schemas.ProjectDto>(project)
 
+    const [deletedWells, setDeletedWells] = useState<string[]>([])
+
     const [explorationOperationalWellCosts,
         setExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto>(project.explorationOperationalWellCosts)
     const [developmentOperationalWellCosts,
@@ -147,6 +149,7 @@ const EditTechnicalInputModal = () => {
 
             dto.createWellDtos = wellDtos.filter((w) => w.id === EMPTY_GUID || w.id === undefined || w.id === null || w.id === "")
             dto.updateWellDtos = wellDtos.filter((w) => w.id !== EMPTY_GUID && w.id !== undefined && w.id !== null && w.id !== "")
+            dto.deleteWellDtos = deletedWells.map((id) => ({ id }))
 
             const result = await (await GetTechnicalInputService()).update(project.id, dto)
 
@@ -240,6 +243,7 @@ const EditTechnicalInputModal = () => {
                                 setExplorationWells={setExplorationWells}
                                 wellProjectWells={wellProjectWells}
                                 setWellProjectWells={setWellProjectWells}
+                                setDeletedWells={setDeletedWells}
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>

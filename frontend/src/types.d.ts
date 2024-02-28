@@ -209,7 +209,7 @@ declare namespace Components {
         }
         export type Currency = 1 | 2; // int32
         export interface DeleteWellDto {
-            wellId: string; // uuid
+            id: string; // uuid
         }
         export interface DevelopmentOperationalWellCostsDto {
             id: string; // uuid
