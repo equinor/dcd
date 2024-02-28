@@ -18,14 +18,15 @@ interface CaseDropMenuProps {
     setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
     menuAnchorEl: HTMLElement | null
     caseItem: any
+    setNameEditMode: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     isMenuOpen,
     setIsMenuOpen,
     menuAnchorEl,
-
     caseItem,
+    setNameEditMode,
 }) => {
     const navigate = useNavigate()
     const {
@@ -33,10 +34,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
         setProject,
     } = useAppContext()
 
-    const {
-        editCase,
-        addNewCase,
-    } = useModalContext()
+    const { addNewCase } = useModalContext()
 
     const deleteAndGoToProject = async () => {
         if (!caseItem.id || !project) return
@@ -71,7 +69,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                 </Typography>
             </Menu.Item>
             <Menu.Item
-                onClick={() => editCase(caseItem.id)}
+                onClick={() => setNameEditMode(true)}
             >
                 <Icon data={edit} size={16} />
                 <Typography group="navigation" variant="menu_title" as="span">

@@ -41,7 +41,7 @@ const StyledList = styled(List)`
     border-bottom: 1px solid LightGray;
    
 `
-const PageTitle = styled(Typography)`
+const PageTitle = styled.div`
     flex-grow: 1;
     padding-left: 10px;
 `
@@ -155,6 +155,8 @@ const CaseView = () => {
     const [isLoading, setIsLoading] = useState<boolean>()
     const [isSaving, setIsSaving] = useState<boolean>()
     const [updateFromServer, setUpdateFromServer] = useState<boolean>(true)
+    const [nameEditMode, setNameEditMode] = useState<boolean>(false)
+    const [updatedCaseName, setUpdatedCaseName] = useState<string>("")
 
     useEffect(() => {
         (async () => {
@@ -267,6 +269,7 @@ const CaseView = () => {
         try {
             const result = await (await GetCaseWithAssetsService()).update(project.id, caseId!, dto)
             const projectResult = { ...result.projectDto }
+            console.log("projectResult: ", projectResult)
             setProject(projectResult)
 
             const setIfNotNull = (data: any, setState: any) => {
@@ -295,10 +298,20 @@ const CaseView = () => {
         }
     }
 
-    const withReferenceCase = () => {
-        if (project.referenceCaseId === caseItem.id) return bookmark_filled
-
-        return undefined
+    const changeCaseName = async () => {
+        const updatedCase = { ...caseItem }
+        console.log("updated name: ", updatedCaseName)
+        updatedCase.name = updatedCaseName
+        console.log("updated case: ", updatedCase)
+        setNameEditMode(false)
+        await handleSave()
+            .then(() => {
+                console.log("Case name updated with the name ", updatedCaseName)
+                setCase(updatedCase)
+            })
+            .catch((e) => {
+                console.error("Error when updating case name: ", e)
+            })
     }
 
     return (
@@ -311,14 +324,30 @@ const CaseView = () => {
                     >
                         <Icon data={arrow_back} />
                     </Button>
-                    <PageTitle variant="h4">
-                        {project.referenceCaseId === caseItem.id && (
-                            <Tooltip title="Reference case">
-                                <MenuIcon data={withReferenceCase()} size={18} />
-                            </Tooltip>
-                        )}
-                        {caseItem.name}
-                    </PageTitle>
+                    {
+                        nameEditMode
+                            ? (
+
+                                <PageTitle>
+                                    <input
+                                        type="text"
+                                        defaultValue={caseItem.name}
+                                        onChange={(e) => setUpdatedCaseName(e.target.value)}
+                                    />
+                                    <Button onClick={() => changeCaseName()}>
+                                        Save
+                                    </Button>
+                                </PageTitle>
+
+                            )
+                            : (
+                                <PageTitle>
+                                    <Typography variant="h4">
+                                        {caseItem.name}
+                                    </Typography>
+                                </PageTitle>
+                            )
+                    }
                     <ColumnWrapper>
                         <CaseButtonsWrapper>
                             {!isSaving ? <Button onClick={handleSave}>Save case</Button> : (
@@ -344,6 +373,7 @@ const CaseView = () => {
                     </ColumnWrapper>
                 </RowWrapper>
                 <CaseDropMenu
+                    setNameEditMode={setNameEditMode}
                     isMenuOpen={isMenuOpen}
                     setIsMenuOpen={setIsMenuOpen}
                     menuAnchorEl={menuAnchorEl}
