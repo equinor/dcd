@@ -16,6 +16,7 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
     private readonly ICaseService _caseService;
     private readonly ILogger<GenerateGAndGAdminCostProfile> _logger;
     private readonly IExplorationService _explorationService;
+    private readonly IExplorationWellService _explorationWellService;
     private readonly DcdDbContext _context;
     private readonly IMapper _mapper;
 
@@ -25,6 +26,7 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
         IProjectService projectService,
         ICaseService caseService,
         IExplorationService explorationService,
+        IExplorationWellService explorationWellService,
         IMapper mapper
         )
     {
@@ -33,6 +35,7 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
         _logger = loggerFactory.CreateLogger<GenerateGAndGAdminCostProfile>();
         _caseService = caseService;
         _explorationService = explorationService;
+        _explorationWellService = explorationWellService;
         _mapper = mapper;
     }
 
@@ -50,8 +53,7 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
             _logger.LogInformation("Exploration {0} not found.", caseItem.ExplorationLink);
             return new GAndGAdminCostDto();
         }
-        // TODO Use wellprojectwellservice
-        var linkedWells = exploration.ExplorationWells?.Where(ew => ew.Well.WellCategory == WellCategory.Exploration_Well).ToList();
+        var linkedWells = await _explorationWellService.GetExplorationWellsForExploration(exploration.Id);
         if (exploration != null && linkedWells?.Count > 0)
         {
             var drillingSchedules = linkedWells.Select(lw => lw.DrillingSchedule);

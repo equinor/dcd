@@ -78,6 +78,18 @@ public class ExplorationWellService : IExplorationWellService
         return explorationWell;
     }
 
+        public async Task<List<ExplorationWell>> GetExplorationWellsForExploration(Guid explorationId)
+    {
+        var explorationWells = await _context.ExplorationWell!
+            .Include(wpw => wpw.DrillingSchedule)
+            .Where(w => w.ExplorationId == explorationId).ToListAsync();
+        if (explorationWells == null)
+        {
+            throw new ArgumentException(string.Format("ExplorationWell for Exploration {0} not found.", explorationId));
+        }
+        return explorationWells;
+    }
+
     public async Task<ExplorationWellDto[]?> CopyExplorationWell(Guid sourceExplorationId, Guid targetExplorationId)
     {
         var sourceExplorationWells = (await GetAll()).Where(ew => ew.ExplorationId == sourceExplorationId).ToList();
