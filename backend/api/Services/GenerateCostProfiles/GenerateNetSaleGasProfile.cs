@@ -34,7 +34,7 @@ public class GenerateNetSaleGasProfile : IGenerateNetSaleGasProfile
         _mapper = mapper;
     }
 
-    public async Task<NetSalesGasDto> GenerateAsync(Guid caseId)
+    public async Task<NetSalesGasDto> Generate(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
         var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
@@ -51,14 +51,14 @@ public class GenerateNetSaleGasProfile : IGenerateNetSaleGasProfile
         netSaleGas.StartYear = calculateNetSaleGas.StartYear;
         netSaleGas.Values = calculateNetSaleGas.Values;
 
-        await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, netSaleGas);
+        await UpdateDrainageStrategyAndSave(drainageStrategy, netSaleGas);
 
         var dto = _mapper.Map<NetSalesGasDto>(netSaleGas);
 
         return dto ?? new NetSalesGasDto();
     }
 
-    private async Task<int> UpdateDrainageStrategyAndSaveAsync(DrainageStrategy drainageStrategy, NetSalesGas netSalesGas)
+    private async Task<int> UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, NetSalesGas netSalesGas)
     {
         drainageStrategy.NetSalesGas = netSalesGas;
         return await _context.SaveChangesAsync();

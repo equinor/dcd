@@ -43,7 +43,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         _mapper = mapper;
     }
 
-    public async Task<StudyCostProfileWrapperDto> GenerateAsync(Guid caseId)
+    public async Task<StudyCostProfileWrapperDto> Generate(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
 
@@ -64,7 +64,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
 
         var otherStudies = caseItem.TotalOtherStudies ?? new TotalOtherStudies();
 
-        await UpdateCaseAndSaveAsync(caseItem, feasibility, feed, otherStudies);
+        await UpdateCaseAndSave(caseItem, feasibility, feed, otherStudies);
 
         var result = new StudyCostProfileWrapperDto();
         var feasibilityDto = _mapper.Map<TotalFeasibilityAndConceptStudiesDto>(feasibility);
@@ -93,7 +93,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         return result;
     }
 
-    private async Task<int> UpdateCaseAndSaveAsync(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies, TotalOtherStudies totalOtherStudies)
+    private async Task<int> UpdateCaseAndSave(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies, TotalOtherStudies totalOtherStudies)
     {
         caseItem.TotalFeasibilityAndConceptStudies = totalFeasibilityAndConceptStudies;
         caseItem.TotalFEEDStudies = totalFEEDStudies;

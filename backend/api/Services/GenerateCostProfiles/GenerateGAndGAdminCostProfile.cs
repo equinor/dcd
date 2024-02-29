@@ -39,7 +39,7 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
         _mapper = mapper;
     }
 
-    public async Task<GAndGAdminCostDto> GenerateAsync(Guid caseId)
+    public async Task<GAndGAdminCostDto> Generate(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
 
@@ -83,7 +83,7 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
                 values.Add(countryCost * percentageOfLastYear);
                 gAndGAdminCost.Values = values.ToArray();
 
-                await UpdateExplorationAndSaveAsync(exploration, gAndGAdminCost);
+                await UpdateExplorationAndSave(exploration, gAndGAdminCost);
 
                 var dto = _mapper.Map<GAndGAdminCostDto>(gAndGAdminCost);
 
@@ -93,7 +93,7 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
         return new GAndGAdminCostDto();
     }
 
-    private async Task<int> UpdateExplorationAndSaveAsync(Exploration exploration, GAndGAdminCost gAndGAdminCost)
+    private async Task<int> UpdateExplorationAndSave(Exploration exploration, GAndGAdminCost gAndGAdminCost)
     {
         exploration.GAndGAdminCost = gAndGAdminCost;
         return await _context.SaveChangesAsync();

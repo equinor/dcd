@@ -34,7 +34,7 @@ public class GenerateImportedElectricityProfile : IGenerateImportedElectricityPr
         _mapper = mapper;
     }
 
-    public async Task<ImportedElectricityDto> GenerateAsync(Guid caseId)
+    public async Task<ImportedElectricityDto> Generate(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
         var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
@@ -53,14 +53,14 @@ public class GenerateImportedElectricityProfile : IGenerateImportedElectricityPr
         importedElectricity.StartYear = calculateImportedElectricity.StartYear;
         importedElectricity.Values = calculateImportedElectricity.Values;
 
-        await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, importedElectricity);
+        await UpdateDrainageStrategyAndSave(drainageStrategy, importedElectricity);
 
         var dto = _mapper.Map<ImportedElectricityDto>(importedElectricity);
 
         return dto ?? new ImportedElectricityDto();
     }
 
-    private async Task<int> UpdateDrainageStrategyAndSaveAsync(DrainageStrategy drainageStrategy, ImportedElectricity importedElectricity)
+    private async Task<int> UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, ImportedElectricity importedElectricity)
     {
         drainageStrategy.ImportedElectricity = importedElectricity;
         return await _context.SaveChangesAsync();

@@ -34,7 +34,7 @@ public class GenerateCo2IntensityTotal : IGenerateCo2IntensityTotal
         var project = await _projectService.GetProject(caseItem.ProjectId);
         var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
-        var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
+        var generateCo2EmissionsProfile = await _generateCo2EmissionsProfile.Generate(caseItem.Id);
         double co2Intensity = CalculateCO2Intensity(caseItem, project, drainageStrategy, generateCo2EmissionsProfile);
         return co2Intensity;
     }

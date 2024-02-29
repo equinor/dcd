@@ -78,7 +78,7 @@ public class ExplorationWellService : IExplorationWellService
         return explorationWell;
     }
 
-        public async Task<List<ExplorationWell>> GetExplorationWellsForExploration(Guid explorationId)
+    public async Task<List<ExplorationWell>> GetExplorationWellsForExploration(Guid explorationId)
     {
         var explorationWells = await _context.ExplorationWell!
             .Include(wpw => wpw.DrillingSchedule)

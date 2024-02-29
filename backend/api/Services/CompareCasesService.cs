@@ -50,16 +50,16 @@ public class CompareCasesService : ICompareCasesService
             {
                 drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
                 exploration = await _explorationService.GetExploration(caseItem.ExplorationLink);
-                var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
+                var generateCo2EmissionsProfile = await _generateCo2EmissionsProfile.Generate(caseItem.Id);
 
                 var totalOilProduction = CalculateTotalOilProduction(caseItem, project, drainageStrategy, false);
                 var totalGasProduction = CalculateTotalGasProduction(caseItem, project, drainageStrategy, false);
                 var totalExportedVolumes = CalculateTotalExportedVolumes(caseItem, project, drainageStrategy, false);
-                var totalStudyCostsPlusOpex = CalculateTotalStudyCostsPlusOpex(caseItem);
-                var totalCessationCosts = CalculateTotalCessationCosts(caseItem);
+                var totalStudyCostsPlusOpex = await CalculateTotalStudyCostsPlusOpex(caseItem);
+                var totalCessationCosts = await CalculateTotalCessationCosts(caseItem);
                 var offshorePlusOnshoreFacilityCosts = await CalculateOffshorePlusOnshoreFacilityCosts(caseItem);
                 var developmentCosts = await CalculateDevelopmentWellCosts(caseItem);
-                var explorationCosts = CalculateExplorationWellCosts(caseItem, exploration);
+                var explorationCosts = await CalculateExplorationWellCosts(caseItem, exploration);
                 var totalCo2Emissions = CalculateTotalCO2Emissions(generateCo2EmissionsProfile);
                 var co2Intensity = CalculateCO2Intensity(caseItem, project, drainageStrategy, generateCo2EmissionsProfile);
 
@@ -143,19 +143,19 @@ public class CompareCasesService : ICompareCasesService
         return CalculateTotalOilProduction(caseItem, project, drainageStrategy, true) + CalculateTotalGasProduction(caseItem, project, drainageStrategy, true);
     }
 
-    private double CalculateTotalStudyCostsPlusOpex(Case caseItem)
+    private async Task<double> CalculateTotalStudyCostsPlusOpex(Case caseItem)
     {
-        var generateStudyProfile = _generateStudyCostProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
-        var generateOpexProfile = _generateOpexCostProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
+        var generateStudyProfile = await _generateStudyCostProfile.Generate(caseItem.Id);
+        var generateOpexProfile = await _generateOpexCostProfile.Generate(caseItem.Id);
         var sumStudyValues = generateStudyProfile?.StudyCostProfileDto?.Sum ?? 0;
         var sumOpexValues = generateOpexProfile?.OpexCostProfileDto?.Sum ?? 0;
 
         return sumStudyValues + sumOpexValues;
     }
 
-    private double CalculateTotalCessationCosts(Case caseItem)
+    private async Task<double> CalculateTotalCessationCosts(Case caseItem)
     {
-        var generateCessationProfile = _generateCessationCostProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
+        var generateCessationProfile = await _generateCessationCostProfile.Generate(caseItem.Id);
         return generateCessationProfile?.CessationCostDto?.Sum ?? 0;
     }
 
@@ -169,10 +169,10 @@ public class CompareCasesService : ICompareCasesService
         return await _generateStudyCostProfile.SumWellCost(caseItem);
     }
 
-    private double CalculateExplorationWellCosts(Case caseItem, Exploration exploration)
+    private async Task<double> CalculateExplorationWellCosts(Case caseItem, Exploration exploration)
     {
         var sumExplorationWellCost = 0.0;
-        var generateGAndGAdminProfile = _generateGAndGAdminCostProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
+        var generateGAndGAdminProfile = await _generateGAndGAdminCostProfile.Generate(caseItem.Id);
         sumExplorationWellCost += generateGAndGAdminProfile.Sum;
 
         try

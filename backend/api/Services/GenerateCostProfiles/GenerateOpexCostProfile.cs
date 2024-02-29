@@ -41,7 +41,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         _mapper = mapper;
     }
 
-    public async Task<OpexCostProfileWrapperDto> GenerateAsync(Guid caseId)
+    public async Task<OpexCostProfileWrapperDto> Generate(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
         var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
@@ -69,7 +69,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
 
         var additionalOPEXCost = caseItem.AdditionalOPEXCostProfile ?? new AdditionalOPEXCostProfile();
 
-        await UpdateCaseAndSaveAsync(caseItem, wellInterventionCost, offshoreFacilitiesOperationsCost, historicCost, additionalOPEXCost);
+        await UpdateCaseAndSave(caseItem, wellInterventionCost, offshoreFacilitiesOperationsCost, historicCost, additionalOPEXCost);
 
         var wellInterventionCostDto = _mapper.Map<WellInterventionCostProfileDto>(wellInterventionCost);
         var offshoreFacilitiesOperationsCostDto = _mapper.Map<OffshoreFacilitiesOperationsCostProfileDto>(offshoreFacilitiesOperationsCost);
@@ -97,7 +97,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         return result;
     }
 
-    private async Task<int> UpdateCaseAndSaveAsync(
+    private async Task<int> UpdateCaseAndSave(
         Case caseItem,
         WellInterventionCostProfile wellInterventionCostProfile,
         OffshoreFacilitiesOperationsCostProfile offshoreFacilitiesOperationsCostProfile,

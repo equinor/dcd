@@ -40,7 +40,7 @@ public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
         _mapper = mapper;
     }
 
-    public async Task<Co2EmissionsDto> GenerateAsync(Guid caseId)
+    public async Task<Co2EmissionsDto> Generate(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
         var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
@@ -71,14 +71,14 @@ public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
         co2Emission.StartYear = totalProfile.StartYear;
         co2Emission.Values = totalProfile.Values;
 
-        await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, co2Emission);
+        await UpdateDrainageStrategyAndSave(drainageStrategy, co2Emission);
 
         var dto = _mapper.Map<Co2EmissionsDto>(co2Emission);
 
         return dto ?? new Co2EmissionsDto();
     }
 
-    private async Task<int> UpdateDrainageStrategyAndSaveAsync(DrainageStrategy drainageStrategy, Co2Emissions co2Emissions)
+    private async Task<int> UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, Co2Emissions co2Emissions)
     {
         drainageStrategy.Co2Emissions = co2Emissions;
         return await _context.SaveChangesAsync();
