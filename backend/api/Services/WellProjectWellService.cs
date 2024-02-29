@@ -66,16 +66,28 @@ public class WellProjectWellService : IWellProjectWellService
         return null;
     }
 
-    public async Task<WellProjectWell> GetWellProjectWell(Guid wellId, Guid caseId)
+    public async Task<WellProjectWell> GetWellProjectWell(Guid wellId, Guid wellProjectId)
     {
         var wellProjectWell = await _context.WellProjectWell!
             .Include(wpw => wpw.DrillingSchedule)
-            .FirstOrDefaultAsync(w => w.WellId == wellId && w.WellProjectId == caseId);
+            .FirstOrDefaultAsync(w => w.WellId == wellId && w.WellProjectId == wellProjectId);
         if (wellProjectWell == null)
         {
             throw new ArgumentException(string.Format("WellProjectWell {0} not found.", wellId));
         }
         return wellProjectWell;
+    }
+
+    public async Task<List<WellProjectWell>> GetWellProjectWellsForWellProject(Guid wellProjectId)
+    {
+        var wellProjectWells = await _context.WellProjectWell!
+            .Include(wpw => wpw.DrillingSchedule)
+            .Where(w => w.WellProjectId == wellProjectId && Well.IsWellProjectWell(w.Well.WellCategory)).ToListAsync();
+        if (wellProjectWells == null)
+        {
+            throw new ArgumentException(string.Format("WellProjectWells for WellProject {0} not found.", wellProjectId));
+        }
+        return wellProjectWells;
     }
 
     public async Task<WellProjectWellDto[]?> CopyWellProjectWell(Guid sourceWellProjectId, Guid targetWellProjectId)
