@@ -41,37 +41,9 @@ const TopWrapper = styled.div`
     margin-top: 20px;
     margin-bottom: 20px;
 `
-const RowWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 50px;
-    margin-top: 20px;
-`
+
 const PageTitle = styled(Typography)`
     flex-grow: 1;
-`
-const NativeSelectField = styled(NativeSelect)`
-    width: 200px;
-    padding-right: 20px;
-`
-const TableYearWrapper = styled.div`
-    align-items: flex-end;
-    display: flex;
-    flex-direction: row;
-    align-content: right;
-    margin-left: auto;
-    margin-bottom: 20px;
-`
-const YearInputWrapper = styled.div`
-    width: 80px;
-    padding-right: 10px;
-`
-const YearDashWrapper = styled.div`
-    padding-right: 5px;
-`
-const NumberInputField = styled.div`
-    padding-right: 20px;
-    padding-left: 50px;
 `
 
 const ChartContainer = styled.div`
@@ -88,7 +60,6 @@ interface Props {
     drainageStrategy: Components.Schemas.DrainageStrategyDto,
     setDrainageStrategy: Dispatch<SetStateAction<Components.Schemas.DrainageStrategyDto | undefined>>,
     activeTab: number
-
     co2Emissions: Components.Schemas.Co2EmissionsDto | undefined,
     setCo2Emissions: Dispatch<SetStateAction<Components.Schemas.Co2EmissionsDto | undefined>>,
 }
@@ -109,6 +80,42 @@ const CaseCO2Tab = ({
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
     const co2GridRef = useRef<any>(null)
+
+    const co2IntensityLine = {
+        type: "line",
+        xKey: "year",
+        yKey: "co2Intensity",
+        yName: "Year-by-year CO2 intensity (kg CO2/boe)",
+    }
+
+    const chartAxes = [
+        {
+            type: "category",
+            position: "bottom",
+        },
+        {
+            type: "number",
+            position: "left",
+            keys: ["co2Emissions"],
+            title: {
+                text: "CO2 emissions",
+            },
+            label: {
+                formatter: (params: any) => `${params.value}`, // emission values
+            },
+        },
+        {
+            type: "number",
+            position: "right",
+            keys: ["co2Intensity"],
+            title: {
+                text: "Year-by-year CO2 intensity",
+            },
+            label: {
+                formatter: (params: any) => `${params.value}`, // intensity values
+            },
+        },
+    ]
 
     useEffect(() => {
         (async () => {
@@ -137,12 +144,6 @@ const CaseCO2Tab = ({
             }
         })()
     }, [activeTab])
-
-    useEffect(() => {
-        if (co2GridRef.current && co2GridRef.current.api && co2GridRef.current.api.refreshCells) {
-            co2GridRef.current.api.refreshCells()
-        }
-    }, [co2Emissions])
 
     const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newStartYear = Number(e.currentTarget.value)
@@ -225,42 +226,6 @@ const CaseCO2Tab = ({
         return dataArray
     }
 
-    const co2IntensityLine = {
-        type: "line",
-        xKey: "year",
-        yKey: "co2Intensity",
-        yName: "Year-by-year CO2 intensity (kg CO2/boe)",
-    }
-
-    const chartAxes = [
-        {
-            type: "category",
-            position: "bottom",
-        },
-        {
-            type: "number",
-            position: "left",
-            keys: ["co2Emissions"],
-            title: {
-                text: "CO2 emissions",
-            },
-            label: {
-                formatter: (params: any) => `${params.value}`, // emission values
-            },
-        },
-        {
-            type: "number",
-            position: "right",
-            keys: ["co2Intensity"],
-            title: {
-                text: "Year-by-year CO2 intensity",
-            },
-            label: {
-                formatter: (params: any) => `${params.value}`, // intensity values
-            },
-        },
-    ]
-
     const co2EmissionsTotalString = () => {
         if (co2Emissions) {
             return (Math.round(co2Emissions.sum! * 10) / 10).toString()
@@ -283,6 +248,12 @@ const CaseCO2Tab = ({
         newDrainageStrategy.co2EmissionsOverride = co2EmissionsOverride
         setDrainageStrategy(newDrainageStrategy)
     }, [co2EmissionsOverride])
+
+    useEffect(() => {
+        if (co2GridRef.current && co2GridRef.current.api && co2GridRef.current.api.refreshCells) {
+            co2GridRef.current.api.refreshCells()
+        }
+    }, [co2Emissions])
 
     if (activeTab !== 6) { return null }
 

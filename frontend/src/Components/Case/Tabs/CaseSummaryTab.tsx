@@ -32,6 +32,12 @@ const PageTitle = styled(Typography)`
 const TableWrapper = styled.div`
     margin-bottom: 50px;
 `
+interface ITimeSeriesData {
+    profileName: string
+    unit: string,
+    set?: Dispatch<SetStateAction<ITimeSeriesCost | undefined>>,
+    profile: ITimeSeries | undefined
+}
 
 
 const CaseSummaryTab = (): React.ReactElement | null => {

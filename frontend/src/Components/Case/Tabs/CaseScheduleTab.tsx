@@ -4,10 +4,7 @@ import {
     ChangeEventHandler,
 } from "react"
 import styled from "styled-components"
-
-import {
-    Typography,
-} from "@equinor/eds-core-react"
+import { Typography } from "@equinor/eds-core-react"
 import CaseDateField from "../../Input/CaseDateInput"
 import {
     dateFromString,
@@ -229,7 +226,7 @@ const CaseScheduleTab = ({
                     />
                 </InputSwitcher>
                 <InputSwitcher
-                    value={formatDate(caseItem.dG2Date)}
+                    value={formatDate(caseItem.dgcDate)}
                     label="DGC"
                 >
                     <CaseDateField

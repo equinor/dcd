@@ -1,10 +1,5 @@
-import {
-    Input,
-    Label,
-} from "@equinor/eds-core-react"
-import {
-    ChangeEventHandler,
-} from "react"
+import { Input, Label } from "@equinor/eds-core-react"
+import { ChangeEventHandler } from "react"
 import styled from "styled-components"
 import { isDefaultDate, toMonthDate } from "../../Utils/common"
 

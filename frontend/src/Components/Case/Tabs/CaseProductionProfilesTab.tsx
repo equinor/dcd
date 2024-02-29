@@ -29,12 +29,16 @@ const TopWrapper = styled.div`
 const PageTitle = styled(Typography)`
     flex-grow: 1;
 `
-const ApplyButtonWrapper = styled.div`
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    align-items: flex-end;
-`
+
+interface ITimeSeriesData {
+    profileName: string
+    unit: string,
+    set?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
+    overrideProfileSet?: Dispatch<SetStateAction<ITimeSeriesOverride | undefined>>,
+    profile: ITimeSeries | undefined
+    overrideProfile?: ITimeSeries | undefined
+    overridable?: boolean
+}
 interface Props {
     project: Components.Schemas.ProjectDto,
     caseItem: Components.Schemas.CaseDto,
@@ -75,6 +79,21 @@ const CaseProductionProfilesTab = ({
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+
+    const productionStrategyOptions = {
+        0: "Depletion",
+        1: "Water injection",
+        2: "Gas injection",
+        3: "WAG",
+        4: "Mixed",
+    }
+
+    const artificialLiftOptions = {
+        0: "No lift",
+        1: "Gas lift",
+        2: "Electrical submerged pumps",
+        3: "Subsea booster pumps",
+    }
 
     const gridRef = useRef<any>(null)
 
@@ -142,16 +161,6 @@ const CaseProductionProfilesTab = ({
             return
         }
         setEndYear(newEndYear)
-    }
-
-    interface ITimeSeriesData {
-        profileName: string
-        unit: string,
-        set?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
-        overrideProfileSet?: Dispatch<SetStateAction<ITimeSeriesOverride | undefined>>,
-        profile: ITimeSeries | undefined
-        overrideProfile?: ITimeSeries | undefined
-        overridable?: boolean
     }
 
     const timeSeriesData: ITimeSeriesData[] = [
@@ -245,11 +254,11 @@ const CaseProductionProfilesTab = ({
                     setImportedElectricity(drainageStrategy.importedElectricity)
 
                     SetTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
-                        drainageStrategy.netSalesGasOverride, drainageStrategy.fuelFlaringAndLossesOverride,
-                        drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
-                        drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
-                        drainageStrategy.productionProfileWaterInjection, drainageStrategy.importedElectricityOverride,
-                        drainageStrategy.co2EmissionsOverride,
+                    drainageStrategy.netSalesGasOverride, drainageStrategy.fuelFlaringAndLossesOverride,
+                    drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
+                    drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
+                    drainageStrategy.productionProfileWaterInjection, drainageStrategy.importedElectricityOverride,
+                    drainageStrategy.co2EmissionsOverride,
                     ], new Date(caseItem.dG4Date).getFullYear(), setStartYear, setEndYear, setTableYears)
                     setGas(drainageStrategy.productionProfileGas)
                     setOil(drainageStrategy.productionProfileOil)
@@ -323,21 +332,6 @@ const CaseProductionProfilesTab = ({
     }, [fuelFlaringAndLosses, netSalesGas, importedElectricity])
 
     if (activeTab !== 1) { return null }
-
-    const productionStrategyOptions = {
-        0: "Depletion",
-        1: "Water injection",
-        2: "Gas injection",
-        3: "WAG",
-        4: "Mixed",
-    }
-
-    const artificialLiftOptions = {
-        0: "No lift",
-        1: "Gas lift",
-        2: "Electrical submerged pumps",
-        3: "Subsea booster pumps",
-    }
 
     return (
         <>

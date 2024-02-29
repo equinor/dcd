@@ -40,6 +40,8 @@ interface Props {
 
     explorationWells: Components.Schemas.WellDto[]
     setExplorationWells: Dispatch<SetStateAction<Components.Schemas.WellDto[]>>
+
+    setDeletedWells: Dispatch<SetStateAction<string[]>>
 }
 
 const WellCostsTab = ({
@@ -47,6 +49,7 @@ const WellCostsTab = ({
     explorationOperationalWellCosts, setExplorationOperationalWellCosts,
     wellProjectWells, setWellProjectWells,
     explorationWells, setExplorationWells,
+    setDeletedWells,
 }: Props) => (
     <>
         <TopWrapper color="danger">
@@ -65,6 +68,7 @@ const WellCostsTab = ({
                         explorationWells
                         setWells={setExplorationWells}
                         wells={explorationWells}
+                        setDeletedWells={setDeletedWells}
                     />
                 </WellListWrapper>
             </ColumnWrapper>
@@ -83,6 +87,7 @@ const WellCostsTab = ({
                         explorationWells={false}
                         setWells={setWellProjectWells}
                         wells={wellProjectWells}
+                        setDeletedWells={setDeletedWells}
                     />
                 </WellListWrapper>
             </ColumnWrapper>

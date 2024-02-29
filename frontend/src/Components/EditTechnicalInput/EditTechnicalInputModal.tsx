@@ -1,6 +1,4 @@
-import {
-    Dispatch, SetStateAction, useEffect, useState,
-} from "react"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 import {
     Button, Icon, Progress, Tabs, Typography,
@@ -13,6 +11,7 @@ import { isExplorationWell } from "../../Utils/common"
 import CO2Tab from "./CO2Tab"
 import { GetTechnicalInputService } from "../../Services/TechnicalInputService"
 import { useAppContext } from "../../Context/AppContext"
+import { useModalContext } from "../../Context/ModalContext"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -57,27 +56,19 @@ const CancelButton = styled(Button)`
     margin-right: 1rem;
 `
 
-type Props = {
-    toggleEditTechnicalInputModal: () => void
-    isOpen: boolean
-    caseId?: string
-    setExploration?: Dispatch<SetStateAction<Components.Schemas.ExplorationDto | undefined>>
-    setWellProject?: Dispatch<SetStateAction<Components.Schemas.WellProjectDto | undefined>>
-}
-
-const EditTechnicalInputModal = ({
-    toggleEditTechnicalInputModal,
-    isOpen,
-    caseId,
-    setExploration,
-    setWellProject,
-}: Props) => {
+const EditTechnicalInputModal = () => {
     const { project, setProject } = useAppContext()
+    const {
+        technicalModalIsOpen,
+        setTechnicalModalIsOpen,
+        setWellProject,
+        setExploration,
+    } = useModalContext()
 
     if (!project) return null
 
     const [activeTab, setActiveTab] = useState<number>(0)
-    const [originalProject] = useState<Components.Schemas.ProjectDto>(project)
+    const [deletedWells, setDeletedWells] = useState<string[]>([])
 
     const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto>(project.explorationOperationalWellCosts)
     const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto>(project.developmentOperationalWellCosts)
@@ -93,71 +84,32 @@ const EditTechnicalInputModal = ({
 
     const [isSaving, setIsSaving] = useState<boolean>()
 
-    useEffect(() => {
-        if (project.wells) {
-            setWellProjectWells(project.wells.filter((w) => !isExplorationWell(w)))
-            setExplorationWells(project.wells.filter((w) => isExplorationWell(w)))
-
-            const originalWellProjectWellsResult = structuredClone(project.wells.filter((w) => !isExplorationWell(w)))
-            setOriginalWellProjectWells(originalWellProjectWellsResult)
-            const originalExplorationWellsResult = structuredClone(project.wells.filter((w) => isExplorationWell(w)))
-            setOriginalExplorationWells(originalExplorationWellsResult)
-        }
-    }, [project])
-
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === "Escape") {
-                toggleEditTechnicalInputModal()
-            }
-        }
-
-        if (isOpen) {
-            window.addEventListener("keydown", handleKeyDown)
-        }
-
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown)
-        }
-    }, [isOpen, toggleEditTechnicalInputModal])
-
-    if (!isOpen) return null
-
-    if (!developmentOperationalWellCosts || !explorationOperationalWellCosts) {
-        return null
-    }
-
     const handleSave = async () => {
         try {
-            const dto: Components.Schemas.TechnicalInputDto = {}
+            const dto: Components.Schemas.UpdateTechnicalInputDto = {}
             setIsSaving(true)
             dto.projectDto = { ...project }
-            if (!(JSON.stringify(project) === JSON.stringify(originalProject))) {
-                // dto.projectDto.hasChanges = true
-            }
 
             dto.explorationOperationalWellCostsDto = explorationOperationalWellCosts
-            if (!(JSON.stringify(explorationOperationalWellCosts) === JSON.stringify(originalExplorationOperationalWellCosts))) {
-                dto.explorationOperationalWellCostsDto.hasChanges = true
-            }
 
             dto.developmentOperationalWellCostsDto = developmentOperationalWellCosts
-            if (!(JSON.stringify(developmentOperationalWellCosts) === JSON.stringify(originalDevelopmentOperationalWellCosts))) {
-                dto.developmentOperationalWellCostsDto.hasChanges = true
-            }
 
-            dto.wellDtos = [...explorationWells, ...wellProjectWells]
+            const wellDtos = [...explorationWells, ...wellProjectWells]
             const originalWells = [...originalExplorationWells, ...originalWellProjectWells]
-            if (dto.wellDtos?.length > 0) {
-                dto.wellDtos.forEach((wellDto, index) => {
+            if (wellDtos?.length > 0) {
+                wellDtos.forEach((wellDto, index) => {
                     if (wellDto.id !== EMPTY_GUID) {
                         const originalWell = originalWells.find((ow) => ow.id === wellDto.id)
                         if (!(JSON.stringify(wellDto) === JSON.stringify(originalWell))) {
-                            dto.wellDtos![index].hasChanges = true
+                            wellDtos![index].hasChanges = true
                         }
                     }
                 })
             }
+
+            dto.createWellDtos = wellDtos.filter((w) => w.id === EMPTY_GUID || w.id === undefined || w.id === null || w.id === "")
+            dto.updateWellDtos = wellDtos.filter((w) => w.id !== EMPTY_GUID && w.id !== undefined && w.id !== null && w.id !== "")
+            dto.deleteWellDtos = deletedWells.map((id) => ({ id }))
 
             const result = await (await GetTechnicalInputService()).update(project.id, dto)
 
@@ -190,7 +142,7 @@ const EditTechnicalInputModal = ({
     const handleSaveAndClose = async () => {
         try {
             await handleSave()
-            toggleEditTechnicalInputModal()
+            setTechnicalModalIsOpen(false)
         } catch (e) {
             console.error("Error during save operation: ", e)
         }
@@ -206,7 +158,41 @@ const EditTechnicalInputModal = ({
         setExplorationWells([...originalExplorationWells])
 
         // Close the modal in all cases
-        toggleEditTechnicalInputModal()
+        setTechnicalModalIsOpen(false)
+    }
+
+    useEffect(() => {
+        if (project.wells) {
+            setWellProjectWells(project.wells.filter((w) => !isExplorationWell(w)))
+            setExplorationWells(project.wells.filter((w) => isExplorationWell(w)))
+
+            const originalWellProjectWellsResult = structuredClone(project.wells.filter((w) => !isExplorationWell(w)))
+            setOriginalWellProjectWells(originalWellProjectWellsResult)
+            const originalExplorationWellsResult = structuredClone(project.wells.filter((w) => isExplorationWell(w)))
+            setOriginalExplorationWells(originalExplorationWellsResult)
+        }
+    }, [project])
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                setTechnicalModalIsOpen(false)
+            }
+        }
+
+        if (technicalModalIsOpen) {
+            window.addEventListener("keydown", handleKeyDown)
+        }
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown)
+        }
+    }, [technicalModalIsOpen, setTechnicalModalIsOpen])
+
+    if (!technicalModalIsOpen) return null
+
+    if (!developmentOperationalWellCosts || !explorationOperationalWellCosts) {
+        return null
     }
 
     return (
@@ -225,7 +211,7 @@ const EditTechnicalInputModal = ({
                 <TopWrapper>
                     <Typography variant="h2">Edit Technical Input</Typography>
                     <Button
-                        onClick={toggleEditTechnicalInputModal}
+                        onClick={() => setTechnicalModalIsOpen(false)}
                         variant="ghost"
                     >
                         <Icon
@@ -251,6 +237,7 @@ const EditTechnicalInputModal = ({
                                 setExplorationWells={setExplorationWells}
                                 wellProjectWells={wellProjectWells}
                                 setWellProjectWells={setWellProjectWells}
+                                setDeletedWells={setDeletedWells}
                             />
                         </StyledTabPanel>
                         <StyledTabPanel>

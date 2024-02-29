@@ -9,6 +9,8 @@ using api.Services.GenerateCostProfiles;
 
 using AutoMapper;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Services;
 
 public class CaseWithAssetsService : ICaseWithAssetsService
@@ -23,8 +25,6 @@ public class CaseWithAssetsService : ICaseWithAssetsService
     private readonly ISubstructureService _substructureService;
     private readonly ITransportService _transportService;
     private readonly ITopsideService _topsideService;
-    private readonly IExplorationWellService _explorationWellService;
-    private readonly IWellProjectWellService _wellProjectWellService;
     private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
     private readonly ILogger<CaseWithAssetsService> _logger;
     private readonly IGenerateStudyCostProfile _generateStudyCostProfile;
@@ -48,8 +48,6 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         ISubstructureService substructureService,
         ITransportService transportService,
         ITopsideService topsideService,
-        IExplorationWellService explorationWellService,
-        IWellProjectWellService wellProjectWellService,
         ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
         ILoggerFactory loggerFactory,
         IGenerateStudyCostProfile generateStudyCostProfile,
@@ -75,9 +73,6 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         _substructureService = substructureService;
         _transportService = transportService;
         _topsideService = topsideService;
-
-        _explorationWellService = explorationWellService;
-        _wellProjectWellService = wellProjectWellService;
 
         _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
 
@@ -106,7 +101,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         public bool NetSalesGas { get; set; }
     }
 
-    public async Task<ProjectWithGeneratedProfilesDto> UpdateCaseWithAssetsAsync(Guid projectId, Guid caseId, CaseWithAssetsWrapperDto wrapper)
+    public async Task<ProjectWithGeneratedProfilesDto> UpdateCaseWithAssets(Guid projectId, Guid caseId, CaseWithAssetsWrapperDto wrapper)
     {
         var project = await _projectService.GetProjectWithoutAssets(projectId);
 
@@ -124,17 +119,16 @@ public class CaseWithAssetsService : ICaseWithAssetsService
 
         if (wrapper.ExplorationWellDto?.Length > 0)
         {
-            await CreateAndUpdateExplorationWellsAsync(wrapper.ExplorationWellDto, updatedCaseDto.Id, profilesToGenerate);
+            await CreateAndUpdateExplorationWells(wrapper.ExplorationWellDto, updatedCaseDto.Id, profilesToGenerate);
         }
-
         if (wrapper.WellProjectWellDtos?.Length > 0)
         {
-            await CreateAndUpdateWellProjectWellsAsync(wrapper.WellProjectWellDtos, updatedCaseDto.Id, profilesToGenerate);
+            await CreateAndUpdateWellProjectWells(wrapper.WellProjectWellDtos, updatedCaseDto.Id, profilesToGenerate);
         }
 
         await _context.SaveChangesAsync();
 
-        var generatedProfiles = await GenerateProfilesAsync(profilesToGenerate, caseId);
+        var generatedProfiles = await GenerateProfiles(profilesToGenerate, caseId);
 
         var projectDto = await _projectService.GetProjectDto(updatedCaseDto.ProjectId);
 
@@ -159,7 +153,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         public NetSalesGasDto? NetSalesGasDto { get; set; }
     }
 
-    private async Task<GeneratedProfilesDto> GenerateProfilesAsync(ProfilesToGenerate profilesToGenerate, Guid caseId)
+    private async Task<GeneratedProfilesDto> GenerateProfiles(ProfilesToGenerate profilesToGenerate, Guid caseId)
     {
         var generatedProfiles = new GeneratedProfilesDto();
 
@@ -248,102 +242,57 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         generatedProfiles.NetSalesGasDto = dtoWrapper;
     }
 
-    public async Task CreateAndUpdateExplorationWellsAsync(UpdateExplorationWellDto[] explorationWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate)
+    public async Task CreateAndUpdateExplorationWells(UpdateExplorationWellDto[] explorationWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate)
     {
-        var changes = false;
-        var runSaveChanges = false;
         foreach (var explorationWellDto in explorationWellDtos)
         {
-            if (explorationWellDto.DrillingSchedule?.Values?.Length > 0)
+            var existingExplorationWell = await _context.ExplorationWell!
+                .Include(wpw => wpw.DrillingSchedule)
+                .FirstOrDefaultAsync(w => w.WellId == explorationWellDto.WellId && w.ExplorationId == explorationWellDto.ExplorationId);
+            if (existingExplorationWell != null)
             {
-                if (explorationWellDto.DrillingSchedule.Id == Guid.Empty)
+                _mapper.Map(explorationWellDto, existingExplorationWell);
+                if (explorationWellDto.DrillingSchedule == null && existingExplorationWell.DrillingSchedule != null)
                 {
-                    var explorationWell = _mapper.Map<ExplorationWell>(explorationWellDto);
-                    if (explorationWell == null)
-                    {
-                        throw new Exception("Failed to map exploration well");
-                    }
-                    _context.ExplorationWell!.Add(explorationWell);
-                    changes = true;
-                    runSaveChanges = true;
-                }
-                else
-                {
-                    var existingExplorationWell = await _explorationWellService.GetExplorationWell(explorationWellDto.WellId, explorationWellDto.ExplorationId);
-                    _mapper.Map(explorationWellDto, existingExplorationWell);
-                    if (explorationWellDto.DrillingSchedule == null && existingExplorationWell.DrillingSchedule != null)
-                    {
-                        _context.DrillingSchedule!.Remove(existingExplorationWell.DrillingSchedule);
-                    }
-
-                    _context.ExplorationWell!.Update(existingExplorationWell);
-                    changes = true;
+                    _context.DrillingSchedule!.Remove(existingExplorationWell.DrillingSchedule);
                 }
             }
-        }
-
-        if (changes)
-        {
-            if (runSaveChanges)
+            else
             {
-                await _context.SaveChangesAsync();
+                var explorationWell = _mapper.Map<ExplorationWell>(explorationWellDto);
+                if (explorationWell == null)
+                {
+                    throw new Exception("Failed to map exploration well");
+                }
+                _context.ExplorationWell!.Add(explorationWell);
             }
-            var explorationDto = await _costProfileFromDrillingScheduleHelper.UpdateExplorationCostProfilesForCase(caseId);
-            var updateDto = _mapper.Map<UpdateExplorationDto>(explorationDto);
-            if (updateDto == null)
-            {
-                throw new Exception("Failed to update exploration cost profiles");
-            }
-            await UpdateExploration(explorationDto.Id, updateDto, profilesToGenerate);
         }
     }
 
-    public async Task CreateAndUpdateWellProjectWellsAsync(UpdateWellProjectWellDto[] wellProjectWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate)
+    public async Task CreateAndUpdateWellProjectWells(UpdateWellProjectWellDto[] wellProjectWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate)
     {
-        var changes = false;
-        var runSaveChanges = false;
         foreach (var wellProjectWellDto in wellProjectWellDtos)
         {
-            if (wellProjectWellDto.DrillingSchedule?.Values?.Length > 0)
-            {
-                if (wellProjectWellDto.DrillingSchedule.Id == Guid.Empty)
-                {
-                    var wellProjectWell = _mapper.Map<WellProjectWell>(wellProjectWellDto);
-                    if (wellProjectWell == null)
-                    {
-                        throw new Exception("Failed to map well project well");
-                    }
-                    _context.WellProjectWell!.Add(wellProjectWell);
-                    changes = true;
-                    runSaveChanges = true;
-                }
-                else
-                {
-                    var existingWellProjectWell = await _wellProjectWellService.GetWellProjectWell(wellProjectWellDto.WellId, wellProjectWellDto.WellProjectId);
-                    _mapper.Map(wellProjectWellDto, existingWellProjectWell);
-                    if (wellProjectWellDto.DrillingSchedule == null && existingWellProjectWell.DrillingSchedule != null)
-                    {
-                        _context.DrillingSchedule!.Remove(existingWellProjectWell.DrillingSchedule);
-                    }
+            var existingWellProjectWell = await _context.WellProjectWell!
+                .Include(wpw => wpw.DrillingSchedule)
+                .FirstOrDefaultAsync(w => w.WellId == wellProjectWellDto.WellId && w.WellProjectId == wellProjectWellDto.WellProjectId);
 
-                    _context.WellProjectWell!.Update(existingWellProjectWell);
-                    changes = true;
+            if (existingWellProjectWell != null)
+            {
+                _mapper.Map(wellProjectWellDto, existingWellProjectWell);
+                if (wellProjectWellDto.DrillingSchedule == null && existingWellProjectWell.DrillingSchedule != null)
+                {
+                    _context.DrillingSchedule!.Remove(existingWellProjectWell.DrillingSchedule);
                 }
             }
-
-            if (changes)
+            else
             {
-                if (runSaveChanges)
+                var wellProjectWell = _mapper.Map<WellProjectWell>(wellProjectWellDto);
+                if (wellProjectWell == null)
                 {
-                    await _context.SaveChangesAsync();
+                    throw new Exception("Failed to map WellProjectWell");
                 }
-                var wellProjectDto = await _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
-                var updateDto = _mapper.Map<UpdateWellProjectDto>(wellProjectDto);
-                if (updateDto == null)
-                {
-                    throw new Exception("Failed to update well project cost profiles");
-                }
-                await UpdateWellProject(wellProjectDto.Id, updateDto, profilesToGenerate);
+                _context.WellProjectWell!.Add(wellProjectWell);
             }
         }
     }

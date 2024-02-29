@@ -1,11 +1,13 @@
+import { useState, ChangeEventHandler } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
-import { ChangeEventHandler } from "react"
 import { useAppContext } from "../../Context/AppContext"
 import InputContainer from "../Input/Containers/InputContainer"
 import InputSwitcher from "../Input/InputSwitcher"
 
 const ProjectSettingsTab = () => {
     const { project, setProject } = useAppContext()
+    const [classification, setClassification] = useState(0) // TODO: Get classification from project
+    const [dummyRole, setDummyRole] = useState(0) // TODO: Get role from user
 
     const handlePhysicalUnitChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
@@ -23,6 +25,13 @@ const ProjectSettingsTab = () => {
             newProject.currency = newCurrency
             setProject(newProject)
         }
+    }
+
+    const classificationOptions: { [key: number]: string } = {
+        0: "Internal",
+        1: "Open",
+        2: "Restricted",
+        3: "Confidential",
     }
 
     if (!project) {
@@ -60,6 +69,23 @@ const ProjectSettingsTab = () => {
                     <option key={2} value={2}>USD</option>
                 </NativeSelect>
             </InputSwitcher>
+            {dummyRole === 0 && (
+                <InputSwitcher
+                    value={classificationOptions[classification]}
+                    label="Classification"
+                >
+                    <NativeSelect
+                        id="classification"
+                        label="Classification"
+                        onChange={(e) => setClassification(Number(e.currentTarget.value))}
+                        value={classification}
+                    >
+                        {Object.entries(classificationOptions).map(([key, value]) => (
+                            <option key={key} value={key}>{value}</option>
+                        ))}
+                    </NativeSelect>
+                </InputSwitcher>
+            )}
         </InputContainer>
     )
 }

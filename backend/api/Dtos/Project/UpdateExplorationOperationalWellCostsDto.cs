@@ -10,4 +10,3 @@ public class UpdateExplorationOperationalWellCostsDto
     public double AppraisalRigMobDemob { get; set; }
     public double AppraisalProjectDrillingCosts { get; set; }
 }
-

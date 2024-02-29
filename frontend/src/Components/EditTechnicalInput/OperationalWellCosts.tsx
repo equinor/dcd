@@ -1,6 +1,9 @@
 import { Table } from "@equinor/eds-core-react"
 import {
-    Dispatch, SetStateAction, useEffect, useState,
+    Dispatch,
+    SetStateAction,
+    useEffect,
+    useState,
 } from "react"
 import styled from "styled-components"
 import OperationalWellCost from "./OperationalWellCost"
@@ -17,7 +20,6 @@ interface Props {
 
     explorationOperationalWellCosts?: Components.Schemas.ExplorationOperationalWellCostsDto
     setExplorationOperationalWellCosts?: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsDto>>
-
 }
 
 const OperationalWellCosts = ({

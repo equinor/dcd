@@ -13,19 +13,6 @@ interface Props {
 const CaseCO2DistributionTable = ({
     topside,
 }: Props) => {
-    const gridRef = useRef(null)
-
-    const onGridReady = (params: any) => {
-        gridRef.current = params.api
-    }
-
-    const lockIcon = (params: any) => {
-        if (!params.data.set) {
-            return <Icon data={lock} color="#007079" />
-        }
-        return null
-    }
-
     // Show data as percentages
     const co2Data = [
         {
@@ -46,6 +33,14 @@ const CaseCO2DistributionTable = ({
     ]
 
     const [rowData] = useState(co2Data)
+    const gridRef = useRef(null)
+
+    const lockIcon = (params: any) => {
+        if (!params.data.set) {
+            return <Icon data={lock} color="#007079" />
+        }
+        return null
+    }
 
     const [columnDefs] = useState<ColDef[]>([
         {
@@ -81,6 +76,10 @@ const CaseCO2DistributionTable = ({
         editable: false,
         suppressMenu: true,
     }), [])
+
+    const onGridReady = (params: any) => {
+        gridRef.current = params.api
+    }
 
     return (
         <div

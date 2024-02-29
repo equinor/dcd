@@ -1,14 +1,14 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import CasesAgGridTable from "./CasesAgGridTable"
 import CasesDropMenu from "./CasesDropMenu"
-import { useAppContext } from "../../../Context/AppContext"
+import { useModalContext } from "../../../Context/ModalContext"
 
 const CasesTable = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null)
     const [selectedCaseId, setSelectedCaseId] = useState<string | undefined>(undefined)
 
-    const { editCase } = useAppContext()
+    const { editCase } = useModalContext()
 
     return (
         <div>

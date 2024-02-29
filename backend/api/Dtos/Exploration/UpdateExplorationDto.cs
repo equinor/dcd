@@ -9,7 +9,6 @@ public class UpdateExplorationDto
     public string Name { get; set; } = string.Empty;
     public double RigMobDemob { get; set; }
     public Currency Currency { get; set; }
-    public List<ExplorationWellDto>? ExplorationWells { get; set; } = [];
 
     public UpdateSeismicAcquisitionAndProcessing? SeismicAcquisitionAndProcessing { get; set; }
     public UpdateCountryOfficeCost? CountryOfficeCost { get; set; }

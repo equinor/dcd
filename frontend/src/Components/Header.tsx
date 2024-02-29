@@ -9,6 +9,7 @@ import { Outlet, useNavigate } from "react-router-dom"
 import { useAppContext } from "../Context/AppContext"
 import { GetProjectService } from "../Services/ProjectService"
 import CreateCaseModal from "./CreateCaseModal"
+import EditTechnicalInputModal from "./EditTechnicalInput/EditTechnicalInputModal"
 
 const Wrapper = styled.div`
     display: flex;
@@ -99,6 +100,7 @@ const RouteCoordinator = (): JSX.Element => {
     } return (
         <>
             <CreateCaseModal />
+            <EditTechnicalInputModal />
             <Outlet />
         </>
     )

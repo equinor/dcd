@@ -39,6 +39,21 @@ const CaseDescriptionTab = ({
     setCase,
     activeTab,
 }: Props) => {
+    const productionStrategyOptions = {
+        0: "Depletion",
+        1: "Water injection",
+        2: "Gas injection",
+        3: "WAG",
+        4: "Mixed",
+    }
+
+    const artificialLiftOptions = {
+        0: "No lift",
+        1: "Gas lift",
+        2: "Electrical submerged pumps",
+        3: "Subsea booster pumps",
+    }
+
     const handleDescriptionChange: FormEventHandler<any> = async (e) => {
         const newCase = { ...caseItem }
         newCase.description = e.currentTarget.value
@@ -91,21 +106,6 @@ const CaseDescriptionTab = ({
         }
     }
     if (activeTab !== 0) { return null }
-
-    const productionStrategyOptions = {
-        0: "Depletion",
-        1: "Water injection",
-        2: "Gas injection",
-        3: "WAG",
-        4: "Mixed",
-    }
-
-    const artificialLiftOptions = {
-        0: "No lift",
-        1: "Gas lift",
-        2: "Electrical submerged pumps",
-        3: "Subsea booster pumps",
-    }
 
     return (
         <>

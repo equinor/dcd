@@ -159,4 +159,3 @@ public class DuplicateCaseService : IDuplicateCaseService
         return await _projectService.GetProjectDto(project.Id);
     }
 }
-

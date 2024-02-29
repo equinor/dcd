@@ -10,7 +10,7 @@ import { GetProjectService } from "../Services/ProjectService"
 import ProjectOverviewTab from "../Components/Project/ProjectOverviewTab"
 import ProjectCompareCasesTab from "../Components/Project/CompareCasesTab/CompareCasesTabOverview"
 import ProjectSettingsTab from "../Components/Project/ProjectSettingsTab"
-import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
+import { useModalContext } from "../Context/ModalContext"
 
 const { Panel } = Tabs
 const { List, Tab, Panels } = Tabs
@@ -43,12 +43,10 @@ const TabsWrapper = styled.div`
 
 const ProjectView = () => {
     const { project, setProject } = useAppContext()
+    const { setTechnicalModalIsOpen } = useModalContext()
 
     const [activeTab, setActiveTab] = React.useState(0)
-    const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>()
-    const [isSaving, setIsSaving] = useState<boolean>()
-
-    const toggleEditTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
+    const [isSaving, setIsSaving] = useState<boolean>(false)
 
     const handleSave = async () => {
         if (!project) return
@@ -69,7 +67,7 @@ const ProjectView = () => {
                     </Button>
                 )}
                 <TransparentButton
-                    onClick={toggleEditTechnicalInputModal}
+                    onClick={() => setTechnicalModalIsOpen(true)}
                     variant="outlined"
                 >
                     Edit technical input
@@ -95,10 +93,6 @@ const ProjectView = () => {
                     </Panels>
                 </Tabs>
             </TabsWrapper>
-            <EditTechnicalInputModal
-                toggleEditTechnicalInputModal={toggleEditTechnicalInputModal}
-                isOpen={editTechnicalInputModalIsOpen ?? false}
-            />
         </>
     )
 }

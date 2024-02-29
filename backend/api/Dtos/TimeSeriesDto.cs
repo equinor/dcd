@@ -197,3 +197,9 @@ public class UpdateTimeSeriesCostDto
     public double[]? Values { get; set; } = [];
     public Currency Currency { get; set; }
 }
+
+public class UpdateTimeSeriesScheduleDto
+{
+    public int StartYear { get; set; }
+    public int[]? Values { get; set; } = [];
+}

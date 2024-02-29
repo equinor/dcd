@@ -40,24 +40,27 @@ const TableWrapper = styled.div`
 interface Props {
     project: Components.Schemas.ProjectDto,
     caseItem: Components.Schemas.CaseDto,
-    exploration: Components.Schemas.ExplorationDto,
-    wellProject: Components.Schemas.WellProjectDto,
     explorationWells: Components.Schemas.ExplorationWellDto[],
     setExplorationWells: Dispatch<SetStateAction<Components.Schemas.ExplorationWellDto[] | undefined>>,
     wellProjectWells: Components.Schemas.WellProjectWellDto[],
     setWellProjectWells: Dispatch<SetStateAction<Components.Schemas.WellProjectWellDto[] | undefined>>,
     wells: Components.Schemas.WellDto[] | undefined
     activeTab: number
+    exploration: Components.Schemas.ExplorationDto,
+    wellProject: Components.Schemas.WellProjectDto,
 }
 
 const CaseDrillingScheduleTab = ({
     project,
     caseItem,
+    explorationWells,
+    setExplorationWells,
+    wellProjectWells,
+    setWellProjectWells,
+    wells,
+    activeTab,
     exploration,
     wellProject,
-    explorationWells, setExplorationWells,
-    wellProjectWells, setWellProjectWells,
-    wells, activeTab,
 }: Props) => {
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -98,20 +101,6 @@ const CaseDrillingScheduleTab = ({
         setTableYears([startYear, endYear])
     }
 
-    useEffect(() => {
-        if (activeTab === 3 && caseItem.dG4Date !== undefined) {
-            const explorationDrillingSchedule = explorationWells?.map((ew) => ew.drillingSchedule) ?? []
-            const wellProjectDrillingSchedule = wellProjectWells?.map((ew) => ew.drillingSchedule) ?? []
-            SetTableYearsFromProfiles(
-                [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
-                new Date(caseItem.dG4Date).getFullYear(),
-                setStartYear,
-                setEndYear,
-                setTableYears,
-            )
-        }
-    }, [activeTab])
-
     const sumWellsForWellCategory = (category: Components.Schemas.WellCategory): number => {
         if (wells && wells.length > 0) {
             if (category >= 4) {
@@ -143,6 +132,20 @@ const CaseDrillingScheduleTab = ({
         }
         return 0
     }
+
+    useEffect(() => {
+        if (activeTab === 3 && caseItem.dG4Date !== undefined) {
+            const explorationDrillingSchedule = explorationWells?.map((ew) => ew.drillingSchedule) ?? []
+            const wellProjectDrillingSchedule = wellProjectWells?.map((ew) => ew.drillingSchedule) ?? []
+            SetTableYearsFromProfiles(
+                [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
+                new Date(caseItem.dG4Date).getFullYear(),
+                setStartYear,
+                setEndYear,
+                setTableYears,
+            )
+        }
+    }, [activeTab])
 
     useEffect(() => {
         if (activeTab === 3) {
@@ -278,7 +281,7 @@ const CaseDrillingScheduleTab = ({
                     setAssetWells={setExplorationWells}
                     tableName="Exploration wells"
                     tableYears={tableYears}
-                    assetId={exploration.id!}
+                    assetId={exploration.id}
                     wells={wells}
                     isExplorationTable
                     gridRef={explorationWellsGridRef}
@@ -292,7 +295,7 @@ const CaseDrillingScheduleTab = ({
                     setAssetWells={setWellProjectWells}
                     tableName="Development wells"
                     tableYears={tableYears}
-                    assetId={wellProject.id!}
+                    assetId={wellProject.id}
                     wells={wells}
                     isExplorationTable={false}
                     gridRef={wellProjectWellsGridRef}

@@ -6,19 +6,20 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import { tokens } from "@equinor/eds-tokens"
 import { useAppContext } from "../Context/AppContext"
 import { casePath, projectPath } from "../Utils/common"
+import { useModalContext } from "../Context/ModalContext"
 
 const Wrapper = styled.div`
     position: sticky;
     top: 0;
     height: calc(100vh - 60px);
-    z-index: 1000;
+    z-index: 10;
     display: flex;
     flex-direction: column;
     width: 250px;
     align-items: stretch;
-    box-shadow: 
+    box-shadow:
         10px 0 5px -5px rgba(0, 0, 0, 0.03),
-        15px 0 15px -5px rgba(0, 0, 0, 0.03); 
+        15px 0 15px -5px rgba(0, 0, 0, 0.03);
 `
 
 const Body = styled.div`
@@ -38,7 +39,7 @@ const ProjectRow = styled.div`
     background-color: ${tokens.colors.interactive.primary__resting.rgba};
     color: white;
     transition: background-color 0.3s ease;
-    
+
     :hover {
         background-color: ${tokens.colors.interactive.primary__hover.rgba};
     }
@@ -50,8 +51,6 @@ const ProjectRow = styled.div`
 
 const ProjectNavLink = styled(NavLink)`
     text-decoration: none;
-`
-const CasesWrapper = styled.div`
 `
 
 const Cases = styled.div`
@@ -67,7 +66,7 @@ const Link = styled.a`
     font-size: 12px;
     cursor: pointer;
     padding: 10px;
-    text-align: center;    
+    text-align: center;
 
     :hover {
         color: ${tokens.colors.interactive.primary__hover.rgba};
@@ -125,22 +124,20 @@ const CaseNavLink = styled(NavLink)`
 `
 
 const Sidebar = () => {
-    const {
-        project,
-        addNewCase,
-    } = useAppContext()
+    const { project } = useAppContext()
+    const { addNewCase } = useModalContext()
     const { currentContext } = useModuleCurrentContext()
 
     return (
         <Wrapper>
-            <ProjectNavLink to={projectPath(currentContext?.externalId!)}>
+            <ProjectNavLink to={projectPath(currentContext?.id!)}>
                 <ProjectRow>
                     <Icon data={folder} size={18} />
                     {project!.name}
                 </ProjectRow>
             </ProjectNavLink>
             <Body>
-                <CasesWrapper>
+                <div>
                     <CasesHeader>
                         <CasesHeaderText>Cases</CasesHeaderText>
                         <input
@@ -164,7 +161,7 @@ const Sidebar = () => {
                         }
 
                     </Cases>
-                </CasesWrapper>
+                </div>
                 <Link
                     href="https://forms.office.com/Pages/ResponsePage.aspx?id=NaKkOuK21UiRlX_PBbRZsCjGTHQnxJxIkcdHZ_YqW4BUMTQyTVNLOEY0VUtSUjIwN1QxUVJIRjBaNC4u"
                     target="_blank"

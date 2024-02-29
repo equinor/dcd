@@ -110,6 +110,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
 
     private static CessationWellsCost GenerateCessationWellsCost(WellProject wellProject, Project project, int lastYear, CessationWellsCost cessationWells)
     {
+        // TODO Use wellprojectwellservice
         var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory)).ToList();
         if (linkedWells != null)
         {

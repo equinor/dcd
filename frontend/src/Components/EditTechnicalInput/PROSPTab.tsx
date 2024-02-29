@@ -53,25 +53,6 @@ const PROSPTab = () => {
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string>("")
 
-    useEffect(() => {
-        if (project && project.sharepointSiteUrl) {
-            (async () => {
-                setSharepointUrl(project.sharepointSiteUrl ?? "")
-                if (project.sharepointSiteUrl && project.sharepointSiteUrl !== "") {
-                    try {
-                        const result = await (await GetProspService())
-                            .getSharePointFileNamesAndId({ url: project.sharepointSiteUrl })
-                        setDriveItems(result)
-                        setErrorMessage("")
-                    } catch (error) {
-                        console.error("[PROSPTab] error while fetching SharePoint files", error)
-                        setErrorMessage("Failed to fetch SharePoint files. Please check the URL and your permissions.")
-                    }
-                }
-            })()
-        }
-    }, [project?.sharepointSiteUrl])
-
     const saveUrl: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
         setIsRefreshing(true)
         e.preventDefault()
@@ -97,6 +78,25 @@ const PROSPTab = () => {
     const handleSharePointUrl: React.ChangeEventHandler<HTMLInputElement> = (e) => {
         setSharepointUrl(e.currentTarget.value)
     }
+
+    useEffect(() => {
+        if (project && project.sharepointSiteUrl) {
+            (async () => {
+                setSharepointUrl(project.sharepointSiteUrl ?? "")
+                if (project.sharepointSiteUrl && project.sharepointSiteUrl !== "") {
+                    try {
+                        const result = await (await GetProspService())
+                            .getSharePointFileNamesAndId({ url: project.sharepointSiteUrl })
+                        setDriveItems(result)
+                        setErrorMessage("")
+                    } catch (error) {
+                        console.error("[PROSPTab] error while fetching SharePoint files", error)
+                        setErrorMessage("Failed to fetch SharePoint files. Please check the URL and your permissions.")
+                    }
+                }
+            })()
+        }
+    }, [project?.sharepointSiteUrl])
 
     return (
         <div>

@@ -103,7 +103,7 @@ interface AppContextType {
     setOilCondensateProduction: Dispatch<SetStateAction<Components.Schemas.ProductionProfileOilDto | undefined>>;
     nglProduction: Components.Schemas.ProductionProfileNGLDto | undefined;
     setNGLProduction: Dispatch<SetStateAction<Components.Schemas.ProductionProfileNGLDto | undefined>>;
-    NetSalesGas: Components.Schemas.NetSalesGasDto | undefined;
+    netSalesGas: Components.Schemas.NetSalesGasDto | undefined;
     setNetSalesGas: Dispatch<SetStateAction<Components.Schemas.NetSalesGasDto | undefined>>;
     cO2Emissions: Components.Schemas.Co2EmissionsDto | undefined;
     setCO2Emissions: Dispatch<SetStateAction<Components.Schemas.Co2EmissionsDto | undefined>>;
@@ -163,7 +163,7 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [productionAndSalesVolume, setProductionAndSalesVolume] = useState<Components.Schemas.ProductionAndSalesVolumesDto | undefined>();
     const [oilCondensateProduction, setOilCondensateProduction] = useState<Components.Schemas.ProductionProfileOilDto | undefined>();
     const [nglProduction, setNGLProduction] = useState<Components.Schemas.ProductionProfileNGLDto | undefined>();
-    const [NetSalesGas, setNetSalesGas] = useState<Components.Schemas.NetSalesGasDto | undefined>();
+    const [netSalesGas, setNetSalesGas] = useState<Components.Schemas.NetSalesGasDto | undefined>();
     const [cO2Emissions, setCO2Emissions] = useState<Components.Schemas.Co2EmissionsDto | undefined>();
     const [importedElectricity, setImportedElectricity] = useState<Components.Schemas.ImportedElectricityDto | undefined>();
     const [drillingCost, setDrillingCost] = useState<Components.Schemas.drillingCostDto>();
@@ -204,7 +204,7 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         productionAndSalesVolume, setProductionAndSalesVolume,
         oilCondensateProduction, setOilCondensateProduction,
         nglProduction, setNGLProduction,
-        NetSalesGas, setNetSalesGas,
+        netSalesGas, setNetSalesGas,
         cO2Emissions, setCO2Emissions,
         importedElectricity, setImportedElectricity,
         drillingCost, setDrillingCost,
@@ -269,7 +269,7 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         productionAndSalesVolume,
         oilCondensateProduction,
         nglProduction,
-        NetSalesGas,
+        netSalesGas,
         cO2Emissions,
         importedElectricity,
         drillingCost,
