@@ -1,5 +1,5 @@
 import {
-    ChangeEventHandler, Dispatch, SetStateAction, useEffect, useState,
+    ChangeEventHandler, Dispatch, SetStateAction, useEffect, useState, useMemo
 } from "react"
 import styled from "styled-components"
 
@@ -16,6 +16,8 @@ import { useAppContext } from "../../../Context/AppContext"
 import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
 import { AgGridReact } from "@ag-grid-community/react"
 import { ColDef } from '@ag-grid-community/core';
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
+import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
 
 const TopWrapper = styled.div`
     display: flex;
@@ -72,10 +74,14 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         countryOfficeCost, setCountryOfficeCost,
     } = useAppContext();
 
-    const [columnDefs, setColumnDefs] = useState<ColDef[]>([
-        { field: 'profileName', headerName: 'Profile Name', pinned: 'left', minWidth: 200 },
-        // Initialize with a set of year columns based on expected range if possible
-    ]);
+    // const [columnDefs, setColumnDefs] = useState<ColDef[]>([
+    //     { field: 'profileName', headerName: 'Profile Name', minWidth: 200 },
+    //     // Initialize with a set of year columns based on expected range if possible
+    // ]);
+    const styles = useStyles()
+
+    const [tableName, setTableName] = useState<string>("");
+    const [totalRowName, setTotalRowName] = useState<string>("");
 
     const [rowData, setRowData] = useState<any[]>([]);
 
@@ -167,7 +173,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         setTotalExplorationCost(MergeTimeseriesList([
                             explorationWellCostProfile,
                             explorationAppraisalWellCost,
-                            explorationSidetrackCost,|
+                            explorationSidetrackCost,
                             seismicAcqAndProcCost,
                             countryOfficeCost,
                             gAndGAdminCost]))
@@ -192,6 +198,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     }
 
     interface ITimeSeriesData {
+        group?: string
         profileName: string
         unit: string,
         set?: Dispatch<SetStateAction<ITimeSeriesCost | undefined>>,
@@ -203,6 +210,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
     const explorationTimeSeriesData: ITimeSeriesData[] = [
         {
+            group: "Exploration",
             profileName: "Exploration cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: totalExplorationCost,
@@ -212,6 +220,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
     const capexTimeSeriesData: ITimeSeriesData[] = [
         {
+            group: "CAPEX",
             profileName: "Drilling",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: drillingCost,
@@ -221,16 +230,19 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
     const studycostTimeSeriesData: ITimeSeriesData[] = [
         {
+            group: "Study cost",
             profileName: "Feasibility & Conceptual studies",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: totalFeasibilityAndConceptStudies,
         },
         {
+            group: "Study cost",
             profileName: "FEED studies (DG2-DG3",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: totalFEEDStudies,
         },
         {
+            group: "Study cost",
             profileName: "Other studies",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: totalOtherStudies,
@@ -240,16 +252,19 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
     const opexTimeSeriesData: ITimeSeriesData[] = [
         {
+            group: "OPEX",
             profileName: "Historic cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: historicCostCostProfile,
         },
         {
+            group: "OPEX",
             profileName: "Offshore related OPEX, incl. well intervention",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: opexSum,
         },
         {
+            group: "OPEX",
             profileName: "Onshore related OPEX",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: cessationCost,
@@ -298,95 +313,33 @@ const CaseSummaryTab = (): React.ReactElement | null => {
             profile: cessationCost,
         },
     ]
+    
     const allTimeSeriesData = [
         explorationTimeSeriesData,
         capexTimeSeriesData,
         studycostTimeSeriesData,
         opexTimeSeriesData,
-        prodAndSalesTimeSeriesData
+        //prodAndSalesTimeSeriesData
     ];
 
-    function transformToRowData(
-        categories: ITimeSeriesData[][],
-        rowDataTableYears = tableYears
-    ): any[] {
-        const rowData: any[] = [];
 
-        categories.forEach(categoryData => {
-            categoryData.forEach(dataItem => {
-                const { profileName, unit, profile, overrideProfile } = dataItem;
-
-                // Initialize base row structure
-                const baseRow: any = { profileName, unit };
-
-                // Function to add profile values to row
-                const addProfileValues = (profile: ITimeSeries | undefined, prefix: string = '') => {
-                    if (!profile || !profile.values) return;
-
-                    profile.values.forEach((value, index) => {
-                        const year = profile.startYear + index;
-                        if (year >= tableYears[0] && year <= tableYears[1]) {
-                            const yearKey = `${prefix}${year}`;
-                            baseRow[yearKey] = value;
-                        }
-                    });
-                };
-
-                // Add original profile values
-                addProfileValues(profile);
-
-                // Optionally, add override profile values
-                if (overrideProfile) {
-                    addProfileValues(overrideProfile, 'override_');
-                }
-
-                rowData.push(baseRow);
-            });
-        });
-
-        return rowData;
-    }
-
-    const generateColumnDefsForYears = (allTimeSeriesData: ITimeSeriesData[][]): any[] => {
-        let minYear = Infinity;
-        let maxYear = -Infinity;
-
-        allTimeSeriesData.forEach(category => {
-            category.forEach(item => {
-                // Check the startYear and length of values for both profile and overrideProfile
-                [item.profile, item.overrideProfile].forEach(profile => {
-                    if (profile && profile.startYear && profile.values) {
-                        const endYear = profile.startYear + profile.values.length - 1;
-                        minYear = Math.min(minYear, profile.startYear);
-                        maxYear = Math.max(maxYear, endYear);
-                    }
-                });
-            });
-        });
-
-        // Generate columnDefs for each year in the range
-        const columnDefs: ColDef[] = [
-            { field: 'profileName', headerName: 'Profile Name', pinned: 'left', minWidth: 200 }, // Ensure adequate minimum width
-        ];
-
-        for (let year = minYear; year <= maxYear; year++) {
-            columnDefs.push({
-                field: year.toString(),
-                headerName: year.toString(),
-                minWidth: 120,
-                flex: 1,
-            });
-        }
-
-        return columnDefs;
-    };
+    const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
+    const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
+    const defaultColDef = useMemo<ColDef>(() => {
+        return {
+            flex: 1,
+            minWidth: 100,
+        };
+    }, []);
 
 
-
-    useEffect(() => {
-        setRowData(transformToRowData(allTimeSeriesData, tableYears))
-        setColumnDefs(generateColumnDefsForYears(allTimeSeriesData))
-    }, [allTimeSeriesData, tableYears])
+    // const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefsGrouping())
+    // useEffect(() => {
+    //     const rowData = profilesToRowDataGrouping();
+    //     setRowData(rowData);
+    //     const newColDefs = generateTableYearColDefsGrouping();
+    //     setColumnDefs(newColDefs);
+    // }, [allTimeSeriesData, tableYears]);
 
     if (activeTab !== 7 || !caseItem) { return null }
     return (
@@ -416,63 +369,17 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                 </InputSwitcher>
             </InputContainer>
             <TableWrapper>
-                <AgGridReact
-                    className="ag-theme-alpine-fusion"
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    defaultColDef={{ flex: 1, minWidth: 120, sortable: true, filter: true }} // Adjust minWidth as needed
-                    autoGroupColumnDef={{ headerName: "Category", minWidth: 200 }}
-                    domLayout="autoHeight"
-                    animateRows={true}
-                    groupDisplayType={'groupRows'}
-                />
-            </TableWrapper>
-            <TableWrapper>
 
-                <CaseTabTable
-                    timeSeriesData={explorationTimeSeriesData}
+                <CaseTabTableWithGrouping
+                    allTimeSeriesData={allTimeSeriesData}
+                    //timeSeriesData={explorationTimeSeriesData}
                     dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
-                    tableName="Exploration"
+                    tableName="Summary"
                     includeFooter={false}
                 />
             </TableWrapper>
-            <TableWrapper>
-                <CaseTabTable
-                    timeSeriesData={capexTimeSeriesData}
-                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
-                    tableYears={tableYears}
-                    tableName="CAPEX"
-                    includeFooter
-                />
-            </TableWrapper>
-            <TableWrapper>
-                <CaseTabTable
-                    timeSeriesData={studycostTimeSeriesData}
-                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
-                    tableYears={tableYears}
-                    tableName="Study cost"
-                    includeFooter
-                />
-            </TableWrapper>
-            <TableWrapper>
-                <CaseTabTable
-                    timeSeriesData={opexTimeSeriesData}
-                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
-                    tableYears={tableYears}
-                    tableName="OPEX"
-                    includeFooter
-                />
-            </TableWrapper>
-            <TableWrapper>
-                <CaseTabTable
-                    timeSeriesData={prodAndSalesTimeSeriesData}
-                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
-                    tableYears={tableYears}
-                    tableName="Production & sales volume"
-                    includeFooter
-                />
-            </TableWrapper>
+            
         </>
     )
 }
