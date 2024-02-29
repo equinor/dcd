@@ -157,7 +157,7 @@ const CreateCaseModal = () => {
         if (!isDefaultDate(dG4Date)) {
             return toMonthDate(dG4Date)
         }
-        return !isDefaultDate(caseItem?.dG4Date ? new Date(caseItem?.dG4Date) : new Date()) ? toMonthDate(caseItem?.dG4Date ? new Date(caseItem?.dG4Date) : new Date()) : undefined
+        return toMonthDate(new Date("2030-01-01"))
     }
 
     const submitCaseForm: MouseEventHandler<HTMLButtonElement> = async (e) => {
