@@ -12,15 +12,23 @@ public class GenerateCo2DrillingFlaringFuelTotals : IGenerateCo2DrillingFlaringF
     private readonly IProjectService _projectService;
     private readonly ITopsideService _topsideService;
     private readonly IWellProjectService _wellProjectService;
+    private readonly IWellProjectWellService _wellProjectWellService;
 
-    public GenerateCo2DrillingFlaringFuelTotals(ICaseService caseService, IProjectService projectService, ITopsideService topsideService, IDrainageStrategyService drainageStrategyService,
-        IWellProjectService wellProjectService)
+    public GenerateCo2DrillingFlaringFuelTotals(
+        ICaseService caseService,
+        IProjectService projectService,
+        ITopsideService topsideService,
+        IDrainageStrategyService drainageStrategyService,
+        IWellProjectService wellProjectService,
+        IWellProjectWellService wellProjectWellService
+        )
     {
         _caseService = caseService;
         _projectService = projectService;
         _topsideService = topsideService;
         _drainageStrategyService = drainageStrategyService;
         _wellProjectService = wellProjectService;
+        _wellProjectWellService = wellProjectWellService;
     }
 
     public async Task<Co2DrillingFlaringFuelTotalsDto> Generate(Guid caseId)
@@ -33,7 +41,7 @@ public class GenerateCo2DrillingFlaringFuelTotals : IGenerateCo2DrillingFlaringF
 
         var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(project, caseItem, topside, drainageStrategy);
         var flaringsTotal = GetFlaringsProfileTotal(project, drainageStrategy);
-        var drillingEmissionsTotal = CalculateDrillingEmissionsTotal(project, wellProject);
+        var drillingEmissionsTotal = await CalculateDrillingEmissionsTotal(project, wellProject);
 
         var co2DrillingFlaringFuelTotals = new Co2DrillingFlaringFuelTotalsDto
         {
@@ -71,11 +79,9 @@ public class GenerateCo2DrillingFlaringFuelTotals : IGenerateCo2DrillingFlaringF
         return fuelConsumptionsProfile.Values.Sum() / 1000;
     }
 
-    private static double CalculateDrillingEmissionsTotal(Project project, WellProject wellProject)
+    private async Task<double> CalculateDrillingEmissionsTotal(Project project, WellProject wellProject)
     {
-        // TODO Use wellprojectwellservice
-        var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory))
-            .ToList();
+        var linkedWells = await _wellProjectWellService.GetWellProjectWellsForWellProject(wellProject.Id);
         if (linkedWells == null)
         {
             return 0.0;

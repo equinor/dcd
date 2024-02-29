@@ -15,6 +15,7 @@ public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
     private readonly IProjectService _projectService;
     private readonly ITopsideService _topsideService;
     private readonly IWellProjectService _wellProjectService;
+    private readonly IWellProjectWellService _wellProjectWellService;
     private readonly DcdDbContext _context;
     private readonly IMapper _mapper;
 
@@ -25,7 +26,9 @@ public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
         IProjectService projectService,
         ITopsideService topsideService,
         IWellProjectService wellProjectService,
-        IMapper mapper)
+        IWellProjectWellService wellProjectWellService,
+        IMapper mapper
+        )
     {
         _context = context;
         _caseService = caseService;
@@ -33,6 +36,7 @@ public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
         _topsideService = topsideService;
         _drainageStrategyService = drainageStrategyService;
         _wellProjectService = wellProjectService;
+        _wellProjectWellService = wellProjectWellService;
         _mapper = mapper;
     }
 
@@ -58,7 +62,7 @@ public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
             Values = convertedValues.ToArray(),
         };
 
-        var drillingEmissionsProfile = CalculateDrillingEmissions(project, wellProject);
+        var drillingEmissionsProfile = await CalculateDrillingEmissions(project, wellProject);
 
         var totalProfile =
             TimeSeriesCost.MergeCostProfiles(newProfile, drillingEmissionsProfile);
@@ -118,11 +122,9 @@ public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
         return fuelConsumptionsProfile;
     }
 
-    private static TimeSeriesVolume CalculateDrillingEmissions(Project project, WellProject wellProject)
+    private async Task<TimeSeriesVolume> CalculateDrillingEmissions(Project project, WellProject wellProject)
     {
-        // TODO Use wellprojectwellservice
-        var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory))
-            .ToList();
+        var linkedWells = await _wellProjectWellService.GetWellProjectWellsForWellProject(wellProject.Id);
         if (linkedWells == null)
         {
             return new TimeSeriesVolume();

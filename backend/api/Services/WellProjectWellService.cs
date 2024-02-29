@@ -82,7 +82,7 @@ public class WellProjectWellService : IWellProjectWellService
     {
         var wellProjectWells = await _context.WellProjectWell!
             .Include(wpw => wpw.DrillingSchedule)
-            .Where(w => w.WellProjectId == wellProjectId && Well.IsWellProjectWell(w.Well.WellCategory)).ToListAsync();
+            .Where(w => w.WellProjectId == wellProjectId).ToListAsync();
         if (wellProjectWells == null)
         {
             throw new ArgumentException(string.Format("WellProjectWells for WellProject {0} not found.", wellProjectId));
