@@ -159,86 +159,86 @@ public class CaseWithAssetsService : ICaseWithAssetsService
 
         if (profilesToGenerate.StudyCost)
         {
-            await AddStudyCostAsync(caseId, generatedProfiles);
+            await AddStudyCost(caseId, generatedProfiles);
         }
         if (profilesToGenerate.OpexCost)
         {
-            await AddOpexCostAsync(caseId, generatedProfiles);
+            await AddOpexCost(caseId, generatedProfiles);
         }
         if (profilesToGenerate.CessationCost)
         {
-            await AddCessationCostAsync(caseId, generatedProfiles);
+            await AddCessationCost(caseId, generatedProfiles);
         }
         if (profilesToGenerate.Co2Emissions)
         {
-            await AddCo2EmissionsCostAsync(caseId, generatedProfiles);
+            await AddCo2EmissionsCost(caseId, generatedProfiles);
         }
         if (profilesToGenerate.GAndGAdminCost)
         {
-            await AddGAndGAdminCostAsync(caseId, generatedProfiles);
+            await AddGAndGAdminCost(caseId, generatedProfiles);
         }
         if (profilesToGenerate.ImportedElectricity)
         {
-            await AddImportedElectricityAsync(caseId, generatedProfiles);
+            await AddImportedElectricity(caseId, generatedProfiles);
         }
         if (profilesToGenerate.FuelFlaringAndLosses)
         {
-            await AddFuelFlaringAndLossesAsync(caseId, generatedProfiles);
+            await AddFuelFlaringAndLosses(caseId, generatedProfiles);
             profilesToGenerate.NetSalesGas = true;
         }
         if (profilesToGenerate.NetSalesGas)
         {
-            await AddNetSalesGasAsync(caseId, generatedProfiles);
+            await AddNetSalesGas(caseId, generatedProfiles);
         }
 
         return generatedProfiles;
     }
 
-    private async Task AddStudyCostAsync(Guid caseId, GeneratedProfilesDto generatedProfiles)
+    private async Task AddStudyCost(Guid caseId, GeneratedProfilesDto generatedProfiles)
     {
-        var dtoWrapper = await _generateStudyCostProfile.GenerateAsync(caseId);
+        var dtoWrapper = await _generateStudyCostProfile.Generate(caseId);
         generatedProfiles.StudyCostProfileWrapperDto = dtoWrapper;
     }
 
-    private async Task AddOpexCostAsync(Guid caseId, GeneratedProfilesDto generatedProfiles)
+    private async Task AddOpexCost(Guid caseId, GeneratedProfilesDto generatedProfiles)
     {
-        var dtoWrapper = await _generateOpexCostProfile.GenerateAsync(caseId);
+        var dtoWrapper = await _generateOpexCostProfile.Generate(caseId);
         generatedProfiles.OpexCostProfileWrapperDto = dtoWrapper;
     }
 
-    private async Task AddCessationCostAsync(Guid caseId, GeneratedProfilesDto generatedProfiles)
+    private async Task AddCessationCost(Guid caseId, GeneratedProfilesDto generatedProfiles)
     {
-        var dtoWrapper = await _generateCessationCostProfile.GenerateAsync(caseId);
+        var dtoWrapper = await _generateCessationCostProfile.Generate(caseId);
         generatedProfiles.CessationCostWrapperDto = dtoWrapper;
     }
 
-    private async Task AddCo2EmissionsCostAsync(Guid caseId, GeneratedProfilesDto generatedProfiles)
+    private async Task AddCo2EmissionsCost(Guid caseId, GeneratedProfilesDto generatedProfiles)
     {
-        var dtoWrapper = await _generateCo2EmissionsProfile.GenerateAsync(caseId);
+        var dtoWrapper = await _generateCo2EmissionsProfile.Generate(caseId);
         generatedProfiles.Co2EmissionsDto = dtoWrapper;
     }
 
-    private async Task AddGAndGAdminCostAsync(Guid caseId, GeneratedProfilesDto generatedProfiles)
+    private async Task AddGAndGAdminCost(Guid caseId, GeneratedProfilesDto generatedProfiles)
     {
-        var dtoWrapper = await _generateGAndGAdminCostProfile.GenerateAsync(caseId);
+        var dtoWrapper = await _generateGAndGAdminCostProfile.Generate(caseId);
         generatedProfiles.GAndGAdminCostDto = dtoWrapper;
     }
 
-    private async Task AddImportedElectricityAsync(Guid caseId, GeneratedProfilesDto generatedProfiles)
+    private async Task AddImportedElectricity(Guid caseId, GeneratedProfilesDto generatedProfiles)
     {
-        var dtoWrapper = await _generateImportedElectricityProfile.GenerateAsync(caseId);
+        var dtoWrapper = await _generateImportedElectricityProfile.Generate(caseId);
         generatedProfiles.ImportedElectricityDto = dtoWrapper;
     }
 
-    private async Task AddFuelFlaringAndLossesAsync(Guid caseId, GeneratedProfilesDto generatedProfiles)
+    private async Task AddFuelFlaringAndLosses(Guid caseId, GeneratedProfilesDto generatedProfiles)
     {
-        var dtoWrapper = await _generateFuelFlaringLossesProfile.GenerateAsync(caseId);
+        var dtoWrapper = await _generateFuelFlaringLossesProfile.Generate(caseId);
         generatedProfiles.FuelFlaringAndLossesDto = dtoWrapper;
     }
 
-    private async Task AddNetSalesGasAsync(Guid caseId, GeneratedProfilesDto generatedProfiles)
+    private async Task AddNetSalesGas(Guid caseId, GeneratedProfilesDto generatedProfiles)
     {
-        var dtoWrapper = await _generateNetSaleGasProfile.GenerateAsync(caseId);
+        var dtoWrapper = await _generateNetSaleGasProfile.Generate(caseId);
         generatedProfiles.NetSalesGasDto = dtoWrapper;
     }
 

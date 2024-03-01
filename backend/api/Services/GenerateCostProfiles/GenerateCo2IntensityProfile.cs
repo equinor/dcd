@@ -46,7 +46,7 @@ public class GenerateCo2IntensityProfile : IGenerateCo2IntensityProfile
         }
         else
         {
-            var generatedCo2 = _generateCo2EmissionsProfile.GenerateAsync(caseId).GetAwaiter().GetResult();
+            var generatedCo2 = await _generateCo2EmissionsProfile.Generate(caseId);
             generateCo2EmissionsProfile.StartYear = generatedCo2.StartYear;
             generateCo2EmissionsProfile.Values = generatedCo2.Values;
         }

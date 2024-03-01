@@ -15,6 +15,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
     private readonly ILogger<GenerateCessationCostProfile> _logger;
     private readonly IDrainageStrategyService _drainageStrategyService;
     private readonly IWellProjectService _wellProjectService;
+    private readonly IWellProjectWellService _wellProjectWellService;
     private readonly ISurfService _surfService;
     private readonly IProjectService _projectService;
     private readonly DcdDbContext _context;
@@ -26,6 +27,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         ICaseService caseService,
         IDrainageStrategyService drainageStrategyService,
         IWellProjectService wellProjectService,
+        IWellProjectWellService wellProjectWellService,
         ISurfService surfService,
         IProjectService projectService,
         IMapper mapper)
@@ -35,12 +37,13 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         _caseService = caseService;
         _drainageStrategyService = drainageStrategyService;
         _wellProjectService = wellProjectService;
+        _wellProjectWellService = wellProjectWellService;
         _surfService = surfService;
         _projectService = projectService;
         _mapper = mapper;
     }
 
-    public async Task<CessationCostWrapperDto> GenerateAsync(Guid caseId)
+    public async Task<CessationCostWrapperDto> Generate(Guid caseId)
     {
         var result = new CessationCostWrapperDto();
         var caseItem = await _caseService.GetCase(caseId);
@@ -52,7 +55,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         var lastYear = await GetRelativeLastYearOfProduction(caseItem);
         if (lastYear == null)
         {
-            await UpdateCaseAndSaveAsync(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost);
+            await UpdateCaseAndSave(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost);
             return new CessationCostWrapperDto();
         }
 
@@ -60,7 +63,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         try
         {
             wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
-            cessationWellsCost = GenerateCessationWellsCost(wellProject, project, (int)lastYear, cessationWellsCost);
+            cessationWellsCost = await GenerateCessationWellsCost(wellProject, project, (int)lastYear, cessationWellsCost);
 
             var cessationWellsDto = _mapper.Map<CessationWellsCostDto>(cessationWellsCost);
 
@@ -86,7 +89,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
             _logger.LogInformation("Surf {0} not found.", caseItem.SurfLink);
         }
 
-        await UpdateCaseAndSaveAsync(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost);
+        await UpdateCaseAndSave(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost);
 
         var cessationTimeSeries = TimeSeriesCost.MergeCostProfiles(cessationWellsCost, cessationOffshoreFacilitiesCost);
         var cessation = new CessationCost
@@ -101,17 +104,16 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         return result;
     }
 
-    private async Task<int> UpdateCaseAndSaveAsync(Case caseItem, CessationWellsCost cessationWellsCost, CessationOffshoreFacilitiesCost cessationOffshoreFacilitiesCost)
+    private async Task<int> UpdateCaseAndSave(Case caseItem, CessationWellsCost cessationWellsCost, CessationOffshoreFacilitiesCost cessationOffshoreFacilitiesCost)
     {
         caseItem.CessationWellsCost = cessationWellsCost;
         caseItem.CessationOffshoreFacilitiesCost = cessationOffshoreFacilitiesCost;
         return await _context.SaveChangesAsync();
     }
 
-    private static CessationWellsCost GenerateCessationWellsCost(WellProject wellProject, Project project, int lastYear, CessationWellsCost cessationWells)
+    private async Task<CessationWellsCost> GenerateCessationWellsCost(WellProject wellProject, Project project, int lastYear, CessationWellsCost cessationWells)
     {
-        // TODO Use wellprojectwellservice
-        var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory)).ToList();
+        var linkedWells = await _wellProjectWellService.GetWellProjectWellsForWellProject(wellProject.Id);
         if (linkedWells != null)
         {
             var pluggingAndAbandonment = project.DevelopmentOperationalWellCosts?.PluggingAndAbandonment ?? 0;
