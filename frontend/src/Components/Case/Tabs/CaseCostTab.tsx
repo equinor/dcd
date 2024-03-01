@@ -763,6 +763,8 @@ const CaseCostTab = ({
                         integer={false}
                         label="CAPEX factor feasibility studies"
                         unit="%"
+                        min={0}
+                        max={100}
                     />
                 </InputSwitcher>
 
@@ -776,6 +778,8 @@ const CaseCostTab = ({
                         integer={false}
                         label="CAPEX factor FEED studies"
                         unit="%"
+                        min={0}
+                        max={100}
                     />
                 </InputSwitcher>
 
@@ -809,6 +813,8 @@ const CaseCostTab = ({
                     defaultValue={startYear}
                     integer
                     label="Start year"
+                    min={2010}
+                    max={2110}
                 />
 
                 <CaseNumberInput
@@ -816,6 +822,8 @@ const CaseCostTab = ({
                     defaultValue={endYear}
                     integer
                     label="End year"
+                    min={2010}
+                    max={2110}
                 />
                 <Button onClick={handleTableYearsClick}>
                     Apply

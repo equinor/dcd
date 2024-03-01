@@ -291,6 +291,8 @@ const CaseFacilitiesTab = ({
                             integer={false}
                             label="Facility opex"
                             unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
 
@@ -304,6 +306,8 @@ const CaseFacilitiesTab = ({
                             integer={false}
                             label="Cessation cost"
                             unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
 
@@ -322,6 +326,8 @@ const CaseFacilitiesTab = ({
                             integer
                             label="Topside dry weight"
                             unit="tonnes"
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
 
@@ -349,6 +355,8 @@ const CaseFacilitiesTab = ({
                             integer={false}
                             label="Peak electricity imported"
                             unit="MW"
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
 
@@ -362,6 +370,8 @@ const CaseFacilitiesTab = ({
                             integer
                             label="Oil capacity"
                             unit="Sm³/sd"
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
 
@@ -375,6 +385,8 @@ const CaseFacilitiesTab = ({
                             integer={false}
                             label="Gas capacity"
                             unit="MSm³/sd"
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
 
@@ -405,6 +417,8 @@ const CaseFacilitiesTab = ({
                             defaultValue={topside?.producerCount}
                             integer
                             label="Producer count"
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
 
@@ -417,6 +431,8 @@ const CaseFacilitiesTab = ({
                             defaultValue={topside?.gasInjectorCount}
                             integer
                             label="Gas injector count"
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
 
@@ -429,6 +445,8 @@ const CaseFacilitiesTab = ({
                             defaultValue={topside?.waterInjectorCount}
                             integer
                             label="Water injector count"
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
 
@@ -443,6 +461,8 @@ const CaseFacilitiesTab = ({
                             defaultValue={surf?.templateCount}
                             integer
                             label="Templates"
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
 
@@ -452,6 +472,8 @@ const CaseFacilitiesTab = ({
                             defaultValue={surf?.riserCount}
                             integer
                             label="Risers"
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
 
@@ -462,6 +484,8 @@ const CaseFacilitiesTab = ({
                             integer={false}
                             label="Production lines length"
                             unit="km"
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
 
@@ -472,6 +496,8 @@ const CaseFacilitiesTab = ({
                             integer={false}
                             label="Umbilical system length"
                             unit="km"
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
                     <InputSwitcher
@@ -512,6 +538,8 @@ const CaseFacilitiesTab = ({
                             defaultValue={surf?.gasInjectorCount}
                             integer
                             label="Gas injector count"
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
 
@@ -521,6 +549,8 @@ const CaseFacilitiesTab = ({
                             defaultValue={surf?.waterInjectorCount}
                             integer
                             label="Water injector count"
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
 
@@ -537,6 +567,8 @@ const CaseFacilitiesTab = ({
                             integer={false}
                             label="Oil export pipeline length"
                             unit="km"
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
 
@@ -547,6 +579,8 @@ const CaseFacilitiesTab = ({
                             integer={false}
                             label="Gas export pipeline length"
                             unit="km"
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
                 </InputContainer>
@@ -562,6 +596,8 @@ const CaseFacilitiesTab = ({
                             integer
                             label="Substructure dry weight"
                             unit="tonnes"
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
                 </InputContainer>

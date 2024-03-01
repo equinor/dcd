@@ -229,6 +229,8 @@ const CaseSummaryTab = ({
                         integer={false}
                         label="NPV before tax"
                         allowNegative
+                        min={0}
+                        max={1000000}
                     />
                 </InputSwitcher>
 
@@ -238,6 +240,8 @@ const CaseSummaryTab = ({
                         defaultValue={caseItem.breakEven}
                         integer={false}
                         label="B/E before tax"
+                        min={0}
+                        max={1000000}
                     />
                 </InputSwitcher>
             </InputContainer>

@@ -344,6 +344,8 @@ const CaseCO2Tab = ({
                     defaultValue={startYear}
                     integer
                     label="Start year"
+                    min={2010}
+                    max={2100}
                 />
 
                 <CaseNumberInput
@@ -351,6 +353,8 @@ const CaseCO2Tab = ({
                     defaultValue={endYear}
                     integer
                     label="End year"
+                    min={2010}
+                    max={2100}
                 />
                 <Button
                     onClick={handleTableYearsClick}
