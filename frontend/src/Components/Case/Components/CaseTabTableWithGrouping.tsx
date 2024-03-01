@@ -153,14 +153,14 @@ const CaseTabTableWithGrouping = ({
                 field: "unit",
                 width: 100,
                 editable: false,
-                cellRenderer: (params: { node: { group: any }; value: any }) => {
-                    // Display "Sum" for group headers or footers
-                    if (params.node.group) {
-                        return "Sum";
-                    }
-                    // Otherwise, display the actual unit value
-                    return params.value;
-                }
+                // cellRenderer: (params: { node: { group: any }; value: any }) => {
+                //     // Display "Sum" for group headers or footers
+                //     if (params.node.group) {
+                //         return "Sum";
+                //     }
+                //     // Otherwise, display the actual unit value
+                //     return params.value;
+                // }
                 
             },
             {
@@ -303,7 +303,7 @@ const CaseTabTableWithGrouping = ({
                         getRowStyle={getRowStyle}
                         suppressLastEmptyLineOnPaste
                         groupDefaultExpanded={groupDefaultExpanded}
-                        groupDisplayType={'groupRows'}
+                        //groupDisplayType={'groupRows'}
 
                     />
                 </div>

@@ -62,7 +62,7 @@ const CaseCostTab = (): React.ReactElement | null => {
         productionAndSalesVolume, setProductionAndSalesVolume,
         oilCondensateProduction, setOilCondensateProduction,
         nglProduction, setNGLProduction,
-        NetSalesGas, setNetSalesGas,
+        netSalesGas, setNetSalesGas,
         cO2Emissions, setCO2Emissions,
         importedElectricity, setImportedElectricity,
         setStartYear,
