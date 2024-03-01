@@ -74,8 +74,8 @@ interface AppContextType {
     setTotalExplorationCost: Dispatch<SetStateAction<ITimeSeries | undefined>>,
     gAndGAdminCost: Components.Schemas.GAndGAdminCostDto| undefined;
     setGAndGAdminCost: Dispatch<SetStateAction<Components.Schemas.GAndGAdminCostDto | undefined>>;
-    seismicAcqAndProcCost: Components.Schemas.SeismicAcquisitionAndProcessingDto| undefined;
-    setSeismicAcqAndProcCost: Dispatch<SetStateAction<Components.Schemas.SeismicAcquisitionAndProcessingDto | undefined>>;
+    seismicAcquisitionAndProcessing: Components.Schemas.SeismicAcquisitionAndProcessingDto| undefined;
+    setSeismicAcquisitionAndProcessing: Dispatch<SetStateAction<Components.Schemas.SeismicAcquisitionAndProcessingDto | undefined>>;
     countryOfficeCost: Components.Schemas.CountryOfficeCostDto| undefined;
     setCountryOfficeCost: Dispatch<SetStateAction<Components.Schemas.CountryOfficeCostDto | undefined>>;
     explorationWellCostProfile: Components.Schemas.ExplorationWellCostProfileDto| undefined;
@@ -175,7 +175,7 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [countryOfficeCost, setCountryOfficeCost] = useState<Components.Schemas.CountryOfficeCostDto>()
     const [explorationAppraisalWellCost, setExplorationAppraisalWellCost] = useState<Components.Schemas.AppraisalWellCostProfileDto>()
     const [explorationSidetrackCost, setExplorationSidetrackCost] = useState<Components.Schemas.SidetrackCostProfileDto>()
-    const [seismicAcqAndProcCost, setSeismicAcqAndProcCost] = useState<Components.Schemas.SeismicAcquisitionAndProcessingDto>()
+    const [seismicAcquisitionAndProcessing, setSeismicAcquisitionAndProcessing] = useState<Components.Schemas.SeismicAcquisitionAndProcessingDto>()
 
     const value = useMemo(() => ({
         project, setProject,
@@ -212,7 +212,7 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         totalExplorationCost, setTotalExplorationCost,
         explorationWellCostProfile, setExplorationWellCostProfile,
         gAndGAdminCost, setGAndGAdminCost,
-        seismicAcqAndProcCost, setSeismicAcqAndProcCost,
+        seismicAcquisitionAndProcessing, setSeismicAcquisitionAndProcessing,
         explorationSidetrackCost, setExplorationSidetrackCost,
         explorationAppraisalWellCost, setExplorationAppraisalWellCost,
         countryOfficeCost, setCountryOfficeCost,
@@ -280,7 +280,7 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         countryOfficeCost,
         explorationAppraisalWellCost,
         explorationSidetrackCost,
-        seismicAcqAndProcCost
+        seismicAcquisitionAndProcessing
     ]);
 
     return (

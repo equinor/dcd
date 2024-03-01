@@ -117,9 +117,11 @@ const CaseView = () => {
         netSalesGas, setNetSalesGas,
         cO2Emissions, setCO2Emissions, 
         importedElectricity, setImportedElectricity, 
+        gAndGAdminCost, setGAndGAdminCost, 
         setStartYear,
         setEndYear,
-        tableYears, setTableYears
+        tableYears, setTableYears,
+        seismicAcquisitionAndProcessing, setSeismicAcquisitionAndProcessing,
     } = useAppContext();
 
     const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(false)
@@ -147,7 +149,6 @@ const CaseView = () => {
 
         const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>()
 
-    const [gAndGAdminCost, setGAndGAdminCost] = useState<Components.Schemas.GAndGAdminCostDto>()
 
 
     const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<Components.Schemas.FuelFlaringAndLossesDto>()

@@ -74,7 +74,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         totalExplorationCost, setTotalExplorationCost,
         explorationWellCostProfile, setExplorationWellCostProfile,
         gAndGAdminCost, setGAndGAdminCost,
-        seismicAcqAndProcCost, setSeismicAcqAndProcCost,
+        seismicAcquisitionAndProcessing, setSeismicAcquisitionAndProcessing,
         explorationSidetrackCost, setExplorationSidetrackCost,
         explorationAppraisalWellCost, setExplorationAppraisalWellCost,
         countryOfficeCost, setCountryOfficeCost,
@@ -170,7 +170,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile, explorationWellCostProfile,
                             explorationAppraisalWellCost,
                             explorationSidetrackCost,
-                            seismicAcqAndProcCost,
+                            seismicAcquisitionAndProcessing,
                             countryOfficeCost,
                             gAndGAdminCost,
                         ])
@@ -180,7 +180,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             explorationWellCostProfile,
                             explorationAppraisalWellCost,
                             explorationSidetrackCost,
-                            seismicAcqAndProcCost,
+                            seismicAcquisitionAndProcessing,
                             countryOfficeCost,
                             gAndGAdminCost]))
 

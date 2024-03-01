@@ -71,7 +71,7 @@ const CaseCostTab = (): React.ReactElement | null => {
         totalExplorationCost, setTotalExplorationCost,
         explorationWellCostProfile, setExplorationWellCostProfile,
         gAndGAdminCost, setGAndGAdminCost,
-        seismicAcqAndProcCost, setSeismicAcqAndProcCost,
+        seismicAcquisitionAndProcessing, setSeismicAcquisitionAndProcessing,
         explorationSidetrackCost, setExplorationSidetrackCost,
         explorationAppraisalWellCost, setExplorationAppraisalWellCost,
         countryOfficeCost, setCountryOfficeCost,
@@ -211,7 +211,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                                 setExplorationWellCostProfile(explorationWellCostProfile)
                                 setExplorationAppraisalWellCost(appraisalWellCostProfile)
                                 setExplorationSidetrackCost(sidetrackCostProfile)
-                                setSeismicAcqAndProcCost(seismicAcquisitionAndProcessing)
+                                setSeismicAcquisitionAndProcessing(seismicAcquisitionAndProcessing)
                                 const countryOffice = exploration.countryOfficeCost
                                 setCountryOfficeCost(countryOfficeCost)
                                 setGAndGAdminCost(exploration.gAndGAdminCost)
@@ -251,7 +251,7 @@ const CaseCostTab = (): React.ReactElement | null => {
             setExplorationWellCostProfile(explorationWellCostProfile)
             setExplorationAppraisalWellCost(appraisalWellCostProfile)
             setExplorationSidetrackCost(sidetrackCostProfile)
-            setSeismicAcqAndProcCost(seismicAcquisitionAndProcessing)
+            setSeismicAcquisitionAndProcessing(seismicAcquisitionAndProcessing)
             const countryOffice = exploration.countryOfficeCost
             setCountryOfficeCost(countryOffice)
         }
@@ -509,12 +509,13 @@ const CaseCostTab = (): React.ReactElement | null => {
             profileName: "G&G and admin costs",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: gAndGAdminCost,
+            set: setGAndGAdminCost,
         },
         {
             profileName: "Seismic acquisition and processing",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: seismicAcqAndProcCost,
-            set: setSeismicAcqAndProcCost,
+            profile: seismicAcquisitionAndProcessing,
+            set: setSeismicAcquisitionAndProcessing,
         },
         {
             profileName: "Country office cost",
@@ -673,8 +674,8 @@ const CaseCostTab = (): React.ReactElement | null => {
     }, [explorationSidetrackCost])
 
     useEffect(() => {
-        updateObject(exploration, setExploration, "seismicAcquisitionAndProcessing", seismicAcqAndProcCost)
-    }, [seismicAcqAndProcCost])
+        updateObject(exploration, setExploration, "seismicAcquisitionAndProcessing", seismicAcquisitionAndProcessing)
+    }, [seismicAcquisitionAndProcessing])
 
     useEffect(() => {
         updateObject(exploration, setExploration, "countryOfficeCost", countryOfficeCost)
