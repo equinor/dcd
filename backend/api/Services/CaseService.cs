@@ -54,6 +54,8 @@ public class CaseService : ICaseService
         caseItem.CapexFactorFeasibilityStudies = 0.015;
         caseItem.CapexFactorFEEDStudies = 0.015;
 
+        caseItem.CreateTime = DateTimeOffset.UtcNow;
+
         var createdCase = _context.Cases!.Add(caseItem);
         await _context.SaveChangesAsync();
 

@@ -4,6 +4,6 @@ namespace api.Services.GenerateCostProfiles
 {
     public interface IGenerateFuelFlaringLossesProfile
     {
-        Task<FuelFlaringAndLossesDto> GenerateAsync(Guid caseId);
+        Task<FuelFlaringAndLossesDto> Generate(Guid caseId);
     }
 }

@@ -33,7 +33,7 @@ public class GenerateFuelFlaringLossesProfile : IGenerateFuelFlaringLossesProfil
         _mapper = mapper;
     }
 
-    public async Task<FuelFlaringAndLossesDto> GenerateAsync(Guid caseId)
+    public async Task<FuelFlaringAndLossesDto> Generate(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
         var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
@@ -51,13 +51,13 @@ public class GenerateFuelFlaringLossesProfile : IGenerateFuelFlaringLossesProfil
         fuelFlaringLosses.StartYear = total.StartYear;
         fuelFlaringLosses.Values = total.Values;
 
-        await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, fuelFlaringLosses);
+        await UpdateDrainageStrategyAndSave(drainageStrategy, fuelFlaringLosses);
 
         var dto = _mapper.Map<FuelFlaringAndLossesDto>(fuelFlaringLosses);
         return dto ?? new FuelFlaringAndLossesDto();
     }
 
-    private async Task<int> UpdateDrainageStrategyAndSaveAsync(DrainageStrategy drainageStrategy, FuelFlaringAndLosses fuelFlaringAndLosses)
+    private async Task<int> UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, FuelFlaringAndLosses fuelFlaringAndLosses)
     {
         drainageStrategy.FuelFlaringAndLosses = fuelFlaringAndLosses;
         return await _context.SaveChangesAsync();

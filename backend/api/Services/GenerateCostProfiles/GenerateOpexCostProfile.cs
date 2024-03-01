@@ -14,6 +14,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
     private readonly ILogger<GenerateOpexCostProfile> _logger;
     private readonly IDrainageStrategyService _drainageStrategyService;
     private readonly IWellProjectService _wellProjectService;
+    private readonly IWellProjectWellService _wellProjectWellService;
     private readonly ITopsideService _topsideService;
     private readonly DcdDbContext _context;
     private readonly IMapper _mapper;
@@ -25,6 +26,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         IProjectService projectService,
         IDrainageStrategyService drainageStrategyService,
         IWellProjectService wellProjectService,
+        IWellProjectWellService wellProjectWellService,
         ITopsideService topsideService,
         IMapper mapper)
     {
@@ -34,11 +36,12 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         _drainageStrategyService = drainageStrategyService;
         _caseService = caseService;
         _wellProjectService = wellProjectService;
+        _wellProjectWellService = wellProjectWellService;
         _topsideService = topsideService;
         _mapper = mapper;
     }
 
-    public async Task<OpexCostProfileWrapperDto> GenerateAsync(Guid caseId)
+    public async Task<OpexCostProfileWrapperDto> Generate(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
         var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
@@ -66,7 +69,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
 
         var additionalOPEXCost = caseItem.AdditionalOPEXCostProfile ?? new AdditionalOPEXCostProfile();
 
-        await UpdateCaseAndSaveAsync(caseItem, wellInterventionCost, offshoreFacilitiesOperationsCost, historicCost, additionalOPEXCost);
+        await UpdateCaseAndSave(caseItem, wellInterventionCost, offshoreFacilitiesOperationsCost, historicCost, additionalOPEXCost);
 
         var wellInterventionCostDto = _mapper.Map<WellInterventionCostProfileDto>(wellInterventionCost);
         var offshoreFacilitiesOperationsCostDto = _mapper.Map<OffshoreFacilitiesOperationsCostProfileDto>(offshoreFacilitiesOperationsCost);
@@ -94,7 +97,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         return result;
     }
 
-    private async Task<int> UpdateCaseAndSaveAsync(
+    private async Task<int> UpdateCaseAndSave(
         Case caseItem,
         WellInterventionCostProfile wellInterventionCostProfile,
         OffshoreFacilitiesOperationsCostProfile offshoreFacilitiesOperationsCostProfile,
@@ -122,8 +125,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
             _logger.LogInformation("WellProject {0} not found.", caseItem.WellProjectLink);
             return new WellInterventionCostProfile();
         }
-        // TODO use wellprojectwellservice
-        var linkedWells = wellProject.WellProjectWells?.Where(ew => Well.IsWellProjectWell(ew.Well.WellCategory)).ToList();
+        var linkedWells = await _wellProjectWellService.GetWellProjectWellsForWellProject(wellProject.Id);
         if (linkedWells == null) { return new WellInterventionCostProfile(); }
 
         var wellInterventionCostsFromDrillingSchedule = new TimeSeries<double>();

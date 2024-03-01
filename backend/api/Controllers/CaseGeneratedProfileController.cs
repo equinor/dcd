@@ -45,11 +45,11 @@ public class CaseGeneratedProfileController : ControllerBase
 
     [HttpGet("opex")]
     [ProducesResponseType(typeof(OpexCostProfileWrapperDto), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<OpexCostProfileWrapperDto>> GenerateOPEXAsync(Guid caseId)
+    public async Task<ActionResult<OpexCostProfileWrapperDto>> GenerateOPEX(Guid caseId)
     {
         try
         {
-            var dto = await _generateOpexCostProfile.GenerateAsync(caseId);
+            var dto = await _generateOpexCostProfile.Generate(caseId);
             return Ok(dto);
         }
         catch (NotFoundInDBException)
@@ -60,11 +60,11 @@ public class CaseGeneratedProfileController : ControllerBase
 
     [HttpGet("study")]
     [ProducesResponseType(typeof(StudyCostProfileWrapperDto), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<StudyCostProfileWrapperDto>> GenerateStudyAsync(Guid caseId)
+    public async Task<ActionResult<StudyCostProfileWrapperDto>> GenerateStudy(Guid caseId)
     {
         try
         {
-            var dto = await _generateStudyCostProfile.GenerateAsync(caseId);
+            var dto = await _generateStudyCostProfile.Generate(caseId);
             return Ok(dto);
         }
         catch (NotFoundInDBException)
@@ -75,11 +75,11 @@ public class CaseGeneratedProfileController : ControllerBase
 
     [HttpGet("cessation")]
     [ProducesResponseType(typeof(CessationCostWrapperDto), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<CessationCostWrapperDto>> GenerateCessationAsync(Guid caseId)
+    public async Task<ActionResult<CessationCostWrapperDto>> GenerateCessation(Guid caseId)
     {
         try
         {
-            var dto = await _generateCessationCostProfile.GenerateAsync(caseId);
+            var dto = await _generateCessationCostProfile.Generate(caseId);
             return Ok(dto);
         }
         catch (NotFoundInDBException)
