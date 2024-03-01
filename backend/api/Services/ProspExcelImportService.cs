@@ -583,7 +583,7 @@ public class ProspExcelImportService
 
     private void ClearImportedTransport(Case caseItem)
     {
-        var transportLink = caseItem.TransportLink;
+            var transportLink = caseItem.TransportLink;
         var transport = new Models.Transport
         {
             Id = transportLink,

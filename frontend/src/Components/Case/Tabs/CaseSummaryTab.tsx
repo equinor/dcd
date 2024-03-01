@@ -216,64 +216,64 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
     const explorationTimeSeriesData: ITimeSeriesData[] = [
         {
-            group: "Exploration",
             profileName: "Exploration cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: totalExplorationCost,
+            group: "Exploration",
         },
 
     ]
 
     const capexTimeSeriesData: ITimeSeriesData[] = [
         {
-            group: "CAPEX",
             profileName: "Drilling",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: drillingCost,
+            group: "CAPEX",
         },
 
     ]
 
     const studycostTimeSeriesData: ITimeSeriesData[] = [
         {
-            group: "Study cost",
             profileName: "Feasibility & Conceptual studies",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: totalFeasibilityAndConceptStudies,
+            group: "Study cost",
         },
         {
-            group: "Study cost",
             profileName: "FEED studies (DG2-DG3",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: totalFEEDStudies,
+            group: "Study cost",
         },
         {
-            group: "Study cost",
             profileName: "Other studies",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: totalOtherStudies,
+            group: "Study cost",
         },
 
     ]
 
     const opexTimeSeriesData: ITimeSeriesData[] = [
         {
-            group: "OPEX",
             profileName: "Historic cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: historicCostCostProfile,
+            group: "OPEX",
         },
         {
-            group: "OPEX",
             profileName: "Offshore related OPEX, incl. well intervention",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: opexSum,
+            group: "OPEX",
         },
         {
-            group: "OPEX",
             profileName: "Onshore related OPEX",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationCost,
+            profile: undefined,
+            group: "OPEX",
         },
     ]
 
@@ -281,42 +281,42 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         {
             profileName: "Oil / condensate production",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalStudyCost,
+            profile: undefined,
         },
         {
             profileName: "NGL production",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: opexSum,
+            profile: undefined,
         },
         {
             profileName: "Sales gas",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationCost,
+            profile: undefined,
         },
         {
             profileName: "Gas import",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationCost,
+            profile: undefined,
         },
         {
             profileName: "CO2 emissions",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationCost,
+            profile: undefined,
         },
         {
             profileName: "Imported electricity",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationCost,
+            profile: undefined,
         },
         {
             profileName: "Deferred oil profile (MSm3/yr)",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationCost,
+            profile: undefined,
         },
         {
             profileName: "Deferreal gas (GSm3/yr)",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationCost,
+            profile: undefined,
         },
     ]
     
@@ -386,6 +386,15 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                 />
             </TableWrapper>
             
+            <TableWrapper>
+                <CaseTabTable
+                    timeSeriesData={prodAndSalesTimeSeriesData}
+                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
+                    tableYears={tableYears}
+                    tableName="Production & Sales Volume"
+                    includeFooter
+                />
+            </TableWrapper>
         </>
     )
 }
