@@ -384,6 +384,7 @@ declare namespace Components {
             importedElectricityDto?: ImportedElectricityDto;
             fuelFlaringAndLossesDto?: FuelFlaringAndLossesDto;
             netSalesGasDto?: NetSalesGasDto;
+            seismicAcquisitionAndProcessingDto?: SeismicAcquisitionAndProcessingDto
         }
         export interface HistoricCostCostProfileDto {
             id: string; // uuid

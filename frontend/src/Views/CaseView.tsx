@@ -2,9 +2,8 @@ import {
     Button, Icon, Progress, Tabs, Typography,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
-import { useLocation, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useNavigate } from 'react-router-dom'
 import styled from "styled-components"
 import {
     more_vertical,
@@ -96,28 +95,28 @@ const CaseView = () => {
         caseItem, setCase,
         topside, setTopside,
         topsideCost, setTopsideCost,
-        surf, setSurf, 
-        surfCost, setSurfCost, 
-        substructure, setSubstructure, 
-        substructureCost, setSubstructureCost, 
+        surf, setSurf,
+        surfCost, setSurfCost,
+        substructure, setSubstructure,
+        substructureCost, setSubstructureCost,
         transport, setTransport,
         transportCost, setTransportCost,
         opexSum, setOpexSum,
         cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost,
         totalFeasibilityAndConceptStudies, setTotalFeasibilityAndConceptStudies,
-        totalFEEDStudies, setTotalFEEDStudies, 
+        totalFEEDStudies, setTotalFEEDStudies,
         totalOtherStudies, setTotalOtherStudies,
-        activeTab, setActiveTab, 
+        activeTab, setActiveTab,
         explorationWellCostProfile, setExplorationWellCostProfile,
         drillingCost, setDrillingCost,
         totalStudyCost, setTotalStudyCost,
-        productionAndSalesVolume,setProductionAndSalesVolume,
-        oilCondensateProduction, setOilCondensateProduction, 
-        nglProduction, setNGLProduction, 
+        productionAndSalesVolume, setProductionAndSalesVolume,
+        oilCondensateProduction, setOilCondensateProduction,
+        nglProduction, setNGLProduction,
         netSalesGas, setNetSalesGas,
-        cO2Emissions, setCO2Emissions, 
-        importedElectricity, setImportedElectricity, 
-        gAndGAdminCost, setGAndGAdminCost, 
+        cO2Emissions, setCO2Emissions,
+        importedElectricity, setImportedElectricity,
+        gAndGAdminCost, setGAndGAdminCost,
         setStartYear,
         setEndYear,
         tableYears, setTableYears,
@@ -147,7 +146,7 @@ const CaseView = () => {
     const [additionalOPEXCostProfile,
         setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto>()
 
-        const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>()
+    const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>()
 
 
 
@@ -300,6 +299,9 @@ const CaseView = () => {
             if (result.generatedProfilesDto?.gAndGAdminCostDto !== null && result.generatedProfilesDto?.gAndGAdminCostDto !== undefined) {
                 setGAndGAdminCost(result.generatedProfilesDto.gAndGAdminCostDto)
             }
+            if (result.generatedProfilesDto?.seismicAcquisitionAndProcessingDto !== null && result.generatedProfilesDto?.seismicAcquisitionAndProcessingDto !== undefined) {
+                setSeismicAcquisitionAndProcessing(result.generatedProfilesDto.seismicAcquisitionAndProcessingDto)
+            }
             if (result.generatedProfilesDto?.co2EmissionsDto !== null && result.generatedProfilesDto?.co2EmissionsDto !== undefined) {
                 setCO2Emissions(result.generatedProfilesDto.co2EmissionsDto)
             }
@@ -329,6 +331,7 @@ const CaseView = () => {
             setIfNotNull(result.generatedProfilesDto?.fuelFlaringAndLossesDto, setFuelFlaringAndLosses)
             setIfNotNull(result.generatedProfilesDto?.netSalesGasDto, setNetSalesGas)
             setIfNotNull(result.generatedProfilesDto?.importedElectricityDto, setImportedElectricity)
+            setIfNotNull(result.generatedProfilesDto?.seismicAcquisitionAndProcessingDto, setSeismicAcquisitionAndProcessing)
 
             setIsSaving(false)
             setNameEditMode(false)
@@ -476,7 +479,6 @@ const CaseView = () => {
                     </StyledTabPanel>
                     <StyledTabPanel>
                         <CaseCostTab
-                            
                         />
                     </StyledTabPanel>
                     <StyledTabPanel>
@@ -494,7 +496,7 @@ const CaseView = () => {
                     </StyledTabPanel>
                     <StyledTabPanel>
                         <CaseSummaryTab
-                            
+
                         />
                     </StyledTabPanel>
                 </TabContentWrapper>
