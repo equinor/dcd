@@ -109,6 +109,9 @@ interface AppContextType {
     setCO2Emissions: Dispatch<SetStateAction<Components.Schemas.Co2EmissionsDto | undefined>>;
     importedElectricity: Components.Schemas.ImportedElectricityDto | undefined;
     setImportedElectricity: Dispatch<SetStateAction<Components.Schemas.ImportedElectricityDto | undefined>>;
+
+    wellProjectOilProducerCost: Components.Schemas.OilProducerCostProfileDto | undefined;
+    setWellProjectOilProducerCost: Dispatch<SetStateAction<Components.Schemas.OilProducerCostProfileDto | undefined>>;
 }
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -176,6 +179,7 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [explorationAppraisalWellCost, setExplorationAppraisalWellCost] = useState<Components.Schemas.AppraisalWellCostProfileDto>()
     const [explorationSidetrackCost, setExplorationSidetrackCost] = useState<Components.Schemas.SidetrackCostProfileDto>()
     const [seismicAcquisitionAndProcessing, setSeismicAcquisitionAndProcessing] = useState<Components.Schemas.SeismicAcquisitionAndProcessingDto>()
+    const [wellProjectOilProducerCost, setWellProjectOilProducerCost] = useState<Components.Schemas.OilProducerCostProfileDto | undefined>();
 
     const value = useMemo(() => ({
         project, setProject,
@@ -228,6 +232,7 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setEditMode,
         editCase,
         addNewCase,
+        wellProjectOilProducerCost, setWellProjectOilProducerCost,
     }), [
         project,
         setProject,
@@ -280,7 +285,8 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         countryOfficeCost,
         explorationAppraisalWellCost,
         explorationSidetrackCost,
-        seismicAcquisitionAndProcessing
+        seismicAcquisitionAndProcessing,
+        wellProjectOilProducerCost,
     ]);
 
     return (

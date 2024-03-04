@@ -75,6 +75,7 @@ const CaseCostTab = (): React.ReactElement | null => {
         explorationSidetrackCost, setExplorationSidetrackCost,
         explorationAppraisalWellCost, setExplorationAppraisalWellCost,
         countryOfficeCost, setCountryOfficeCost,
+        wellProjectOilProducerCost, setWellProjectOilProducerCost,
     } = useAppContext();
 
 
@@ -103,7 +104,6 @@ const CaseCostTab = (): React.ReactElement | null => {
     const [transportCostOverride, setTransportCostOverride] = useState<Components.Schemas.TransportCostProfileOverrideDto>()
 
     // Development
-    const [wellProjectOilProducerCost, setWellProjectOilProducerCost] = useState<Components.Schemas.OilProducerCostProfileDto>()
     const [wellProjectOilProducerCostOverride,
         setWellProjectOilProducerCostOverride] = useState<Components.Schemas.OilProducerCostProfileOverrideDto>()
 
@@ -185,16 +185,22 @@ const CaseCostTab = (): React.ReactElement | null => {
                         const transportCostProfileOverride = transport.costProfileOverride
                         setTransportCostOverride(transportCostProfileOverride)
 
+                        const oilProducerCostProfile = wellProject?.oilProducerCostProfile
+                        setWellProjectOilProducerCost(oilProducerCostProfile)
+                        const oilProducerCostProfileOverride = wellProject?.oilProducerCostProfileOverride
+                        setWellProjectOilProducerCostOverride(oilProducerCostProfileOverride)
+
                         // Development
                         if (wellProject) {
                             const {
-                                oilProducerCostProfile, gasProducerCostProfile,
+                                gasProducerCostProfile,
                                 waterInjectorCostProfile, gasInjectorCostProfile,
-                                oilProducerCostProfileOverride, gasProducerCostProfileOverride,
+                                gasProducerCostProfileOverride,
                                 waterInjectorCostProfileOverride, gasInjectorCostProfileOverride,
+                                //oilProducerCostProfileOverride,oilProducerCostProfile,
                             } = wellProject
-                            setWellProjectOilProducerCost(oilProducerCostProfile)
-                            setWellProjectOilProducerCostOverride(oilProducerCostProfileOverride)
+                            // setWellProjectOilProducerCost(oilProducerCostProfile)
+                            // setWellProjectOilProducerCostOverride(oilProducerCostProfileOverride)
                             setWellProjectGasProducerCost(gasProducerCostProfile)
                             setWellProjectGasProducerCostOverride(gasProducerCostProfileOverride)
                             setWellProjectWaterInjectorCost(waterInjectorCostProfile)
@@ -215,8 +221,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                                 const countryOffice = exploration.countryOfficeCost
                                 setCountryOfficeCost(countryOfficeCost)
                                 setGAndGAdminCost(exploration.gAndGAdminCost)
-                                
-                                
+
+
 
                                 SetTableYearsFromProfiles([caseItem.totalFeasibilityAndConceptStudies, caseItem.totalFEEDStudies,
                                 caseItem.wellInterventionCostProfile, caseItem.offshoreFacilitiesOperationsCostProfile,
@@ -231,7 +237,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                                     oilProducerCostProfileOverride, gasProducerCostProfileOverride,
                                     waterInjectorCostProfileOverride, gasInjectorCostProfileOverride,
                                     explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
-                                    seismicAcquisitionAndProcessing, countryOffice, exploration.gAndGAdminCost,
+                                    seismicAcquisitionAndProcessing, countryOffice, exploration.gAndGAdminCost, oilProducerCostProfile, oilProducerCostProfileOverride,
                                 ], caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
                             }
                         }
