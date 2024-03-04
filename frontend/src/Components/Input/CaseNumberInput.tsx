@@ -40,7 +40,9 @@ const CaseNumberInput = ({
     const [inputValue, setInputValue] = useState(defaultValue)
 
     const checkInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (integer) preventNonDigitInput(event)
+        if (integer) {
+            preventNonDigitInput(event)
+        }
 
         setInputValue(Number(event.currentTarget.value))
     }
