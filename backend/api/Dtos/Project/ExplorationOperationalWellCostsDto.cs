@@ -9,7 +9,7 @@ public class ExplorationOperationalWellCostsDto
     [Required]
     public Guid ProjectId { get; set; }
     [Required]
-    public double RigUpgrading { get; set; }
+    public double ExplorationRigUpgrading { get; set; }
     [Required]
     public double ExplorationRigMobDemob { get; set; }
     [Required]

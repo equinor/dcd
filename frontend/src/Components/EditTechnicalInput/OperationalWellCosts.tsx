@@ -35,7 +35,7 @@ const OperationalWellCosts = ({
     const [developmentRigMobDemob, setDevelopmentRigMobDemob] = useState<number | undefined>(developmentOperationalWellCosts?.rigMobDemob)
     const [developmentAnnualWellInterventionCost, setDevelopmentAnnualWellInterventionCost] = useState<number | undefined>(developmentOperationalWellCosts?.annualWellInterventionCostPerWell)
     const [developmentPluggingAndAbandonment, setDevelopmentPluggingAndAbandonment] = useState<number | undefined>(developmentOperationalWellCosts?.pluggingAndAbandonment)
-    const [explorationRigUpgrading, setExplorationRigUpgrading] = useState<number | undefined>(explorationOperationalWellCosts?.rigUpgrading)
+    const [explorationRigUpgrading, setExplorationRigUpgrading] = useState<number | undefined>(explorationOperationalWellCosts?.explorationRigUpgrading)
     const [explorationRigMobDemob, setExplorationRigMobDemob] = useState<number | undefined>(explorationOperationalWellCosts?.explorationRigMobDemob)
     const [explorationProjectDrillingCosts, setExplorationProjectDrillingCosts] = useState<number | undefined>(explorationOperationalWellCosts?.explorationProjectDrillingCosts)
     const [appraisalRigMobDemob, setAppraisalRigMobDemob] = useState<number | undefined>(explorationOperationalWellCosts?.appraisalRigMobDemob)
@@ -69,7 +69,7 @@ const OperationalWellCosts = ({
         }
         if (explorationOperationalWellCosts && setExplorationOperationalWellCosts) {
             const newExplorationOperationalWellCosts: Components.Schemas.ExplorationOperationalWellCostsDto = { ...explorationOperationalWellCosts }
-            newExplorationOperationalWellCosts.rigUpgrading = explorationRigUpgrading
+            newExplorationOperationalWellCosts.explorationRigUpgrading = explorationRigUpgrading
             newExplorationOperationalWellCosts.explorationRigMobDemob = explorationRigMobDemob
             newExplorationOperationalWellCosts.explorationProjectDrillingCosts = explorationProjectDrillingCosts
             newExplorationOperationalWellCosts.appraisalRigMobDemob = appraisalRigMobDemob

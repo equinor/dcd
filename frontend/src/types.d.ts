@@ -282,7 +282,7 @@ declare namespace Components {
         export interface ExplorationOperationalWellCostsDto {
             id: string; // uuid
             projectId: string; // uuid
-            rigUpgrading: number; // double
+            explorationRigUpgrading: number; // double
             explorationRigMobDemob: number; // double
             explorationProjectDrillingCosts: number; // double
             appraisalRigMobDemob: number; // double
@@ -1004,7 +1004,7 @@ declare namespace Components {
             sidetrackCostProfile?: UpdateSidetrackCostProfile;
         }
         export interface UpdateExplorationOperationalWellCostsDto {
-            rigUpgrading?: number; // double
+            explorationRigUpgrading?: number; // double
             explorationRigMobDemob?: number; // double
             explorationProjectDrillingCosts?: number; // double
             appraisalRigMobDemob?: number; // double
