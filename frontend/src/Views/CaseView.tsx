@@ -1,5 +1,6 @@
 import {
     Button, Icon, Progress, Tabs, Typography,
+    Input,
 } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
@@ -10,7 +11,6 @@ import {
     arrow_back,
 } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
-import { Tooltip } from "@mui/material"
 import { projectPath, unwrapProjectId } from "../Utils/common"
 import CaseDropMenu from "../Components/Case/Components/CaseDropMenu"
 import { GetProjectService } from "../Services/ProjectService"
@@ -41,7 +41,7 @@ const StyledList = styled(List)`
 `
 const PageTitle = styled.div`
     flex-grow: 1;
-    padding-left: 10px;
+    margin: 0 10px;
     display: flex;
     align-items: stretch;
     justify-content: flex-start;
@@ -324,10 +324,11 @@ const CaseView = () => {
                             ? (
 
                                 <PageTitle>
-                                    <input
+                                    <Input
+                                        label="Case name"
                                         type="text"
                                         defaultValue={caseItem.name}
-                                        onChange={(e) => setUpdatedCaseName(e.target.value)}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUpdatedCaseName(e.target.value)}
                                     />
                                 </PageTitle>
 

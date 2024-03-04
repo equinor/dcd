@@ -1,5 +1,6 @@
 import _ from "lodash"
 import { ITimeSeries } from "../Models/ITimeSeries"
+
 export const loginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
 
@@ -140,37 +141,36 @@ export const productionStrategyOverviewToString = (value?: Components.Schemas.Pr
 
 export const isExplorationWell = (well: Components.Schemas.WellDto | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
 
-
 const MergeCostProfileData = (arrays: number[][], offsets: number[]): number[] => {
-    const maxLength = Math.max(...arrays.map(arr => arr.length + offsets[arrays.indexOf(arr)]));
-    const result = new Array(maxLength).fill(0);
+    const maxLength = Math.max(...arrays.map((arr) => arr.length + offsets[arrays.indexOf(arr)]))
+    const result = new Array(maxLength).fill(0)
 
     arrays.forEach((arr, idx) => {
-        const offset = offsets[idx];
-        for (let i = 0; i < arr.length; i+= 1) {
+        const offset = offsets[idx]
+        for (let i = 0; i < arr.length; i += 1) {
             if (i + offset < maxLength) {
-                result[i + offset] += arr[i];
+                result[i + offset] += arr[i]
             }
         }
-    });
+    })
 
-    return result;
+    return result
 }
 
 export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined, t3: ITimeSeries | undefined): ITimeSeries => {
-    const startYears = [t1, t2, t3].map(t => t?.startYear ?? 0);
-    const minYear = Math.min(...startYears);
-    const arrays = [t1, t2, t3].map(t => t?.values ?? []);
-    const offsets = startYears.map(year => Math.abs(year - minYear));
+    const startYears = [t1, t2, t3].map((t) => t?.startYear ?? 0)
+    const minYear = Math.min(...startYears)
+    const arrays = [t1, t2, t3].map((t) => t?.values ?? [])
+    const offsets = startYears.map((year) => Math.abs(year - minYear))
 
-    const values: number[] = MergeCostProfileData(arrays, offsets);
+    const values: number[] = MergeCostProfileData(arrays, offsets)
 
     const timeSeries = {
         id: t1?.id ?? t2?.id ?? t3?.id ?? "",
         startYear: minYear,
         values,
     }
-    return timeSeries;
+    return timeSeries
 }
 
 export function formatDate(isoDateString: string): string {
@@ -183,4 +183,15 @@ export function formatDate(isoDateString: string): string {
         year: "numeric",
     }
     return new Intl.DateTimeFormat("no-NO", options).format(date)
+}
+
+export const isWithinRange = (number: number, max: number, min: number) => {
+    console.log(" checking if ", number, " is within ", min, " and ", max)
+    console.log("result: ", number >= max)
+    console.log("result: ", number <= min)
+    return number >= max && number <= min
+}
+
+export const preventNonDigitInput = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (!/\d/.test(e.key)) e.preventDefault()
 }

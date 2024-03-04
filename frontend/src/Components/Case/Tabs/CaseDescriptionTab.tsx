@@ -135,6 +135,8 @@ const CaseDescriptionTab = ({
                         defaultValue={caseItem.producerCount}
                         integer
                         label="Production wells"
+                        min={0}
+                        max={100000}
                     />
                 </InputSwitcher>
                 <InputSwitcher
@@ -147,6 +149,8 @@ const CaseDescriptionTab = ({
                         integer
                         disabled={false}
                         label="Water injector wells"
+                        min={0}
+                        max={100000}
                     />
                 </InputSwitcher>
                 <InputSwitcher
@@ -158,6 +162,8 @@ const CaseDescriptionTab = ({
                         defaultValue={caseItem.gasInjectorCount}
                         integer
                         label="Gas injector wells"
+                        min={0}
+                        max={100000}
                     />
                 </InputSwitcher>
             </InputContainer>
@@ -204,6 +210,8 @@ const CaseDescriptionTab = ({
                         integer={false}
                         label="Facilities availability"
                         unit="%"
+                        min={0}
+                        max={100}
                     />
                 </InputSwitcher>
             </InputContainer>
