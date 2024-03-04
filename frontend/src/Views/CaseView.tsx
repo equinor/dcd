@@ -121,6 +121,8 @@ const CaseView = () => {
         setEndYear,
         tableYears, setTableYears,
         seismicAcquisitionAndProcessing, setSeismicAcquisitionAndProcessing,
+        exploration, setExploration,
+        wellProjects, setWellProject,
     } = useAppContext();
 
     const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(false)
@@ -128,8 +130,6 @@ const CaseView = () => {
     const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
     const { currentContext } = useModuleCurrentContext()
     const [drainageStrategy, setDrainageStrategy] = useState<Components.Schemas.DrainageStrategyDto>()
-    const [exploration, setExploration] = useState<Components.Schemas.ExplorationDto>()
-    const [wellProject, setWellProject] = useState<Components.Schemas.WellProjectDto>()
 
     const [wells, setWells] = useState<Components.Schemas.WellDto[]>()
     const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellProjectWellDto[]>()
@@ -252,7 +252,7 @@ const CaseView = () => {
 
     if (isLoading || !project || !caseItem
         || !drainageStrategy || !exploration
-        || !wellProject || !surf || !topside
+        || !wellProjects || !surf || !topside
         || !substructure || !transport
         || !explorationWells || !wellProjectWells) {
         return (
@@ -267,7 +267,7 @@ const CaseView = () => {
         const dto: Components.Schemas.CaseWithAssetsWrapperDto = {
             caseDto: caseItem,
             drainageStrategyDto: drainageStrategy,
-            wellProjectDto: wellProject,
+            wellProjectDto: wellProjects,
             explorationDto: exploration,
             surfDto: surf,
             substructureDto: substructure,
@@ -458,7 +458,7 @@ const CaseView = () => {
                             wells={wells}
                             activeTab={activeTab}
                             exploration={exploration}
-                            wellProject={wellProject}
+                            wellProject={wellProjects}
                         />
                     </StyledTabPanel>
                     <StyledTabPanel>

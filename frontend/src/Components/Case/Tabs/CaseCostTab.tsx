@@ -75,11 +75,11 @@ const CaseCostTab = (): React.ReactElement | null => {
         explorationSidetrackCost, setExplorationSidetrackCost,
         explorationAppraisalWellCost, setExplorationAppraisalWellCost,
         countryOfficeCost, setCountryOfficeCost,
+        wellProjects, setWellProject,
         wellProjectOilProducerCost, setWellProjectOilProducerCost,
     } = useAppContext();
 
 
-    const [wellProject, setWellProject] = useState<Components.Schemas.WellProjectDto>();
 
     const [offshoreFacilitiesOperationsCostProfile, setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto>();
 
@@ -185,20 +185,20 @@ const CaseCostTab = (): React.ReactElement | null => {
                         const transportCostProfileOverride = transport.costProfileOverride
                         setTransportCostOverride(transportCostProfileOverride)
 
-                        const oilProducerCostProfile = wellProject?.oilProducerCostProfile
+                        const oilProducerCostProfile = wellProjects?.oilProducerCostProfile
                         setWellProjectOilProducerCost(oilProducerCostProfile)
-                        const oilProducerCostProfileOverride = wellProject?.oilProducerCostProfileOverride
+                        const oilProducerCostProfileOverride = wellProjects?.oilProducerCostProfileOverride
                         setWellProjectOilProducerCostOverride(oilProducerCostProfileOverride)
 
                         // Development
-                        if (wellProject) {
+                        if (wellProjects) {
                             const {
                                 gasProducerCostProfile,
                                 waterInjectorCostProfile, gasInjectorCostProfile,
                                 gasProducerCostProfileOverride,
                                 waterInjectorCostProfileOverride, gasInjectorCostProfileOverride,
                                 //oilProducerCostProfileOverride,oilProducerCostProfile,
-                            } = wellProject
+                            } = wellProjects
                             // setWellProjectOilProducerCost(oilProducerCostProfile)
                             // setWellProjectOilProducerCostOverride(oilProducerCostProfileOverride)
                             setWellProjectGasProducerCost(gasProducerCostProfile)
@@ -217,7 +217,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                                 setExplorationWellCostProfile(explorationWellCostProfile)
                                 setExplorationAppraisalWellCost(appraisalWellCostProfile)
                                 setExplorationSidetrackCost(sidetrackCostProfile)
-                                setSeismicAcquisitionAndProcessing(seismicAcquisitionAndProcessing)
+                                setSeismicAcquisitionAndProcessing(exploration.seismicAcquisitionAndProcessing)
                                 const countryOffice = exploration.countryOfficeCost
                                 setCountryOfficeCost(countryOfficeCost)
                                 setGAndGAdminCost(exploration.gAndGAdminCost)
@@ -576,6 +576,7 @@ const CaseCostTab = (): React.ReactElement | null => {
     }, [totalFEEDStudiesOverride])
 
     useEffect(() => {
+        console.log(6, caseItem)
         updateObject(caseItem, setCase, "totalOtherStudies", totalOtherStudies)
     }, [totalOtherStudies])
 
@@ -636,35 +637,35 @@ const CaseCostTab = (): React.ReactElement | null => {
     }, [transportCostOverride])
 
     useEffect(() => {
-        updateObject(wellProject, setWellProject, "oilProducerCostProfile", wellProjectOilProducerCost)
+        updateObject(wellProjects, setWellProject, "oilProducerCostProfile", wellProjectOilProducerCost)
     }, [wellProjectOilProducerCost])
 
     useEffect(() => {
-        updateObject(wellProject, setWellProject, "oilProducerCostProfileOverride", wellProjectOilProducerCostOverride)
+        updateObject(wellProjects, setWellProject, "oilProducerCostProfileOverride", wellProjectOilProducerCostOverride)
     }, [wellProjectOilProducerCostOverride])
 
     useEffect(() => {
-        updateObject(wellProject, setWellProject, "gasProducerCostProfile", wellProjectGasProducerCost)
+        updateObject(wellProjects, setWellProject, "gasProducerCostProfile", wellProjectGasProducerCost)
     }, [wellProjectGasProducerCost])
 
     useEffect(() => {
-        updateObject(wellProject, setWellProject, "gasProducerCostProfileOverride", wellProjectGasProducerCostOverride)
+        updateObject(wellProjects, setWellProject, "gasProducerCostProfileOverride", wellProjectGasProducerCostOverride)
     }, [wellProjectGasProducerCostOverride])
 
     useEffect(() => {
-        updateObject(wellProject, setWellProject, "waterInjectorCostProfile", wellProjectWaterInjectorCost)
+        updateObject(wellProjects, setWellProject, "waterInjectorCostProfile", wellProjectWaterInjectorCost)
     }, [wellProjectWaterInjectorCost])
 
     useEffect(() => {
-        updateObject(wellProject, setWellProject, "waterInjectorCostProfileOverride", wellProjectWaterInjectorCostOverride)
+        updateObject(wellProjects, setWellProject, "waterInjectorCostProfileOverride", wellProjectWaterInjectorCostOverride)
     }, [wellProjectWaterInjectorCostOverride])
 
     useEffect(() => {
-        updateObject(wellProject, setWellProject, "gasInjectorCostProfile", wellProjectGasInjectorCost)
+        updateObject(wellProjects, setWellProject, "gasInjectorCostProfile", wellProjectGasInjectorCost)
     }, [wellProjectGasInjectorCost])
 
     useEffect(() => {
-        updateObject(wellProject, setWellProject, "gasInjectorCostProfileOverride", wellProjectGasInjectorCostOverride)
+        updateObject(wellProjects, setWellProject, "gasInjectorCostProfileOverride", wellProjectGasInjectorCostOverride)
     }, [wellProjectGasInjectorCostOverride])
 
     useEffect(() => {

@@ -110,6 +110,8 @@ interface AppContextType {
     importedElectricity: Components.Schemas.ImportedElectricityDto | undefined;
     setImportedElectricity: Dispatch<SetStateAction<Components.Schemas.ImportedElectricityDto | undefined>>;
 
+    wellProjects: Components.Schemas.WellProjectDto | undefined;
+    setWellProject: Dispatch<SetStateAction<Components.Schemas.WellProjectDto | undefined>>;
     wellProjectOilProducerCost: Components.Schemas.OilProducerCostProfileDto | undefined;
     setWellProjectOilProducerCost: Dispatch<SetStateAction<Components.Schemas.OilProducerCostProfileDto | undefined>>;
 }
@@ -129,6 +131,9 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [modalShouldNavigate, setModalShouldNavigate] = useState<boolean>(false)
     const [modalCaseId, setModalCaseId] = useState<string | undefined>(undefined)
     const [editMode, setEditMode] = useState<boolean>(false)
+    const [exploration, setExploration] = useState<Components.Schemas.ExplorationDto | undefined>();
+    const [wellProjects, setWellProject] = useState<Components.Schemas.WellProjectDto | undefined>();
+
 
     const editCase = (caseId: string) => {
         setModalShouldNavigate(true)
@@ -171,7 +176,6 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [importedElectricity, setImportedElectricity] = useState<Components.Schemas.ImportedElectricityDto | undefined>();
     const [drillingCost, setDrillingCost] = useState<Components.Schemas.drillingCostDto>();
     const [cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost] = useState<Components.Schemas.CessationOffshoreFacilitiesCostDto>();
-    const [exploration, setExploration] = useState<Components.Schemas.ExplorationDto | undefined>();
     const [totalExplorationCost, setTotalExplorationCost] = useState<ITimeSeries | undefined>()
     const [explorationWellCostProfile, setExplorationWellCostProfile] = useState<Components.Schemas.ExplorationWellCostProfileDto>();
     const [gAndGAdminCost, setGAndGAdminCost] = useState<Components.Schemas.GAndGAdminCostDto>();
@@ -232,6 +236,7 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setEditMode,
         editCase,
         addNewCase,
+        wellProjects, setWellProject,
         wellProjectOilProducerCost, setWellProjectOilProducerCost,
     }), [
         project,
@@ -286,6 +291,7 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         explorationAppraisalWellCost,
         explorationSidetrackCost,
         seismicAcquisitionAndProcessing,
+        wellProjects,
         wellProjectOilProducerCost,
     ]);
 
