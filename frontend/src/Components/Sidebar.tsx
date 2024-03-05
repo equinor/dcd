@@ -1,176 +1,132 @@
 import styled from "styled-components"
-import { NavLink } from "react-router-dom"
-import { Icon } from "@equinor/eds-core-react"
-import { file, folder } from "@equinor/eds-icons"
+import { NavLink, useNavigate, useParams } from "react-router-dom"
+import { Icon, SideBar, Button, Typography, Tooltip, Divider } from "@equinor/eds-core-react"
+import { file, add, go_to } from "@equinor/eds-icons"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { tokens } from "@equinor/eds-tokens"
-import { useAppContext } from "../Context/AppContext"
-import { casePath, projectPath } from "../Utils/common"
+import { useProjectContext } from "../Context/ProjectContext"
+import { projectPath } from "../Utils/common"
 import { useModalContext } from "../Context/ModalContext"
+import Grid from "@mui/material/Grid"
+import { useCaseContext } from "../Context/CaseContext"
+import { casePath } from "../Utils/common"
 
-const Wrapper = styled.div`
-    position: sticky;
-    top: 0;
+const { Content, Footer } = SideBar
+
+const ProjectTitle = styled(Typography)`
+    line-break: anywhere;
+    padding-top: 1rem;
+`
+
+const StyledSidebar = styled(SideBar)`
+    position: fixed;
     height: calc(100vh - 60px);
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    width: 250px;
-    align-items: stretch;
-    box-shadow:
-        10px 0 5px -5px rgba(0, 0, 0, 0.03),
-        15px 0 15px -5px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 2rem;
 `
 
-const Body = styled.div`
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    justify-content: space-between;
-    flex: 1;
+const StyledSidebarContent = styled(Content)`
+    display: grid;
+    grid-template-rows: auto 1fr;
+    width: 100%;
+    overflow: hidden;
 `
-const ProjectRow = styled.div`
-    display: flex;
-    align-items: center;
-    padding: 20px 10px;
-    cursor: pointer;
-    font-weight: 600;
-    background-color: ${tokens.colors.interactive.primary__resting.rgba};
-    color: white;
-    transition: background-color 0.3s ease;
-
-    :hover {
-        background-color: ${tokens.colors.interactive.primary__hover.rgba};
-    }
-
-    svg {
-        margin-right: 10px;
-    }
-`
-
-const ProjectNavLink = styled(NavLink)`
-    text-decoration: none;
-`
-
-const Cases = styled.div`
-    display: flex;
-    flex-direction: column;
-    padding: 0 5px;
-    gap: 5px;
-`
-
-const Link = styled.a`
-    color: black;
-    text-decoration: none;
-    font-size: 12px;
-    cursor: pointer;
-    padding: 10px;
-    text-align: center;
-
-    :hover {
-        color: ${tokens.colors.interactive.primary__hover.rgba};
-    }
-`
-
-const CasesHeader = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 20px 10px 5px 10px;
-
-    input[type="button"] {
-        color: ${tokens.colors.interactive.primary__resting.rgba};
-        border: none;
-        background-color: transparent;
-        cursor: pointer;
-        border-radius: 50%;
-        transition: transform 0.3s ease;
-
-        :hover {
-            transform: scale(1.3);
-        }
-    }
-`
-
-const CasesHeaderText = styled.div`
-    font-size: 10px;
-    opacity: 0.5;
-    text-transform: uppercase;
-    letter-spacing: 1.5;
-    font-weight: 600;
-`
-const CaseNavLink = styled(NavLink)`
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    border-radius: 5px;
-    color: black;
-    transition: background-color 0.3s ease;
-    background-color: white;
-
-    :hover {
-        background-color: ${tokens.colors.interactive.primary__hover_alt.rgba};
-    }
-
-    svg {
-        margin-right: 10px;
-    }
-
-    &.active {
-        background-color: ${tokens.colors.interactive.primary__hover_alt.rgba};
-    }
+const SidebarCases = styled.div`
+    width: 100%;
+    max-height: 100%;
+    overflow: auto;
 `
 
 const Sidebar = () => {
-    const { project } = useAppContext()
+    const { project } = useProjectContext()
+    const { projectCase, setProjectCase } = useCaseContext()
     const { addNewCase } = useModalContext()
     const { currentContext } = useModuleCurrentContext()
+    const navigate = useNavigate()
+
+    if (!project) return (<></>)
+
+    const selectCase = (caseId: string) => {
+        if (!currentContext || !caseId) { return null }
+        const caseResult = project.cases.find((o) => o.id === caseId)
+        setProjectCase(caseResult)
+        navigate(casePath(currentContext.id, caseId))
+    }
 
     return (
-        <Wrapper>
-            <ProjectNavLink to={projectPath(currentContext?.id!)}>
-                <ProjectRow>
-                    <Icon data={folder} size={18} />
-                    {project!.name}
-                </ProjectRow>
-            </ProjectNavLink>
-            <Body>
-                <div>
-                    <CasesHeader>
-                        <CasesHeaderText>Cases</CasesHeaderText>
-                        <input
-                            type="button"
-                            value="+"
-                            onClick={() => addNewCase()}
-                        />
-                    </CasesHeader>
-                    <Cases>
-                        {
-                            project!.cases.map((subItem, index) => (
-                                <CaseNavLink
-                                    key={`menu - item - ${index + 1} `}
-                                    to={casePath(currentContext?.id!, subItem.id ? subItem.id : "")}
-                                    className={({ isActive }) => (isActive ? "active" : "")}
-                                >
-                                    <Icon data={file} size={16} />
+        <StyledSidebar open>
+            <StyledSidebarContent>
+                <Grid container>
+                    {projectCase 
+                    &&    <>
+                            <Grid item container alignItems="center" justifyContent="space-between" display="grid" gridTemplateColumns="0.5rem 1fr auto">
+                                <Grid item></Grid>
+                                <Grid item>
+                                    <ProjectTitle variant="overline">{project?.name}</ProjectTitle>
+                                </Grid>
+                            </Grid>
+                            
+                            <Grid item xs={12}>
+                                <Button variant="ghost" className="GhostButton" onClick={() => navigate(projectPath(currentContext?.id!), {state: {activeTabProject: 0}})}>
+                                    Overview
+                                </Button>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button variant="ghost" className="GhostButton" onClick={() => navigate(projectPath(currentContext?.id!), {state: {activeTabProject: 1}})}>
+                                    Compare Cases
+                                </Button>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button variant="ghost" className="GhostButton" onClick={() => navigate(projectPath(currentContext?.id!), {state: {activeTabProject: 2}})}>
+                                    Settings
+                                </Button>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Divider />
+                            </Grid>
+                        </>
+                    }
+                    <Grid item container alignItems="center" justifyContent="space-between" display="grid" gridTemplateColumns="0.5rem 1fr auto">
+                        <Grid item></Grid>
+                        <Grid item>
+                            <Typography variant="overline">Cases</Typography>
+                        </Grid>
+                        <Grid item>
+                            <Tooltip title="Add new case">
+                                <Button variant="ghost_icon" className="GhostButton" onClick={() => addNewCase()}><Icon data={add} /></Button>
+                            </Tooltip>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <SidebarCases>
+                    {
+                        project?.cases.sort((a,b) => {
+                            return new Date(a.createTime).getDate() - 
+                                new Date(b.createTime).getDate()
+                        }).map((subItem, index) => (
+                            <Grid item xs={12} key={`menu - item - ${index + 1} `}>
+                                <Button variant="ghost" className="GhostButton" onClick={() => selectCase(subItem.id)}>
+                                    <Icon data={file} />
                                     {subItem.name ? subItem.name : "Untitled"}
-                                </CaseNavLink>
-                            ))
-                        }
-
-                    </Cases>
-                </div>
-                <Link
-                    href="https://forms.office.com/Pages/ResponsePage.aspx?id=NaKkOuK21UiRlX_PBbRZsCjGTHQnxJxIkcdHZ_YqW4BUMTQyTVNLOEY0VUtSUjIwN1QxUVJIRjBaNC4u"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Send feedback
-                </Link>
-            </Body>
-        </Wrapper>
+                                </Button>
+                            </Grid>
+                        ))
+                    }
+                </SidebarCases>
+            </StyledSidebarContent>
+            <Footer>
+                <Grid container justifyContent="center">
+                    <Typography
+                        as="a"
+                        href="https://forms.office.com/Pages/ResponsePage.aspx?id=NaKkOuK21UiRlX_PBbRZsCjGTHQnxJxIkcdHZ_YqW4BUMTQyTVNLOEY0VUtSUjIwN1QxUVJIRjBaNC4u"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Send feedback
+                    </Typography>
+                </Grid>
+            </Footer>
+        </StyledSidebar>
     )
 }
 

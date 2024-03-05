@@ -2,9 +2,9 @@ import {
     Button,
     TextField,
     Input,
-    Label,
     NativeSelect,
     Progress,
+    InputWrapper
 } from "@equinor/eds-core-react"
 import {
     useState,
@@ -13,81 +13,31 @@ import {
     useEffect,
     FormEventHandler,
 } from "react"
-import { useNavigate, useParams } from "react-router-dom"
-import styled from "styled-components"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
-import { ModalNoFocus } from "./ModalNoFocus"
-import {
-    defaultDate, isDefaultDate, toMonthDate,
-} from "../Utils/common"
+import Modal from "./Modal/Modal"
+import { defaultDate, isDefaultDate, toMonthDate } from "../Utils/common"
 import { GetCaseService } from "../Services/CaseService"
-import { useAppContext } from "../Context/AppContext"
+import { useProjectContext } from "../Context/ProjectContext"
 import { useModalContext } from "../Context/ModalContext"
 import CaseNumberInput from "./Input/CaseNumberInput"
+import { useAppContext } from "../Context/AppContext"
+import Grid from "@mui/material/Grid"
 
-const CreateCaseForm = styled.form`
-    width: 596px;
-`
-
-const NameField = styled.div`
-    width: 412px;
-    margin-bottom: 21px;
-    margin-right: 20px;
-`
-
-const DateField = styled.div`
-    width: 120;
-`
-
-const RowWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-`
-
-const ColumnWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-
-const ProductionStrategyOverviewField = styled.div`
-    margin-top: 27px;
-    margin-bottom: 34px;
-`
-
-const WellCountField = styled.div`
-    margin-right: 25px;
-    margin-bottom: 45px;
-`
-
-const CreateButton = styled(Button)`
-    width: 150px;
-`
-
-const CreateButtonWrapper = styled.div`
-    margin-left: 20px;
-`
-
-const ButtonsWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-left: 350px;
-`
 
 const CreateCaseModal = () => {
+    const { isLoading, setIsLoading } = useAppContext()
     const {
         project,
         setProject,
-    } = useAppContext()
+    } = useProjectContext()
 
     const {
         caseModalIsOpen,
         setCaseModalIsOpen,
         caseModalEditMode,
-        caseModalShouldNavigate,
         modalCaseId,
     } = useModalContext()
 
-    const { fusionContextId } = useParams<Record<string, string | undefined>>()
     const [caseName, setCaseName] = useState<string>("")
     const [dG4Date, setDG4Date] = useState<Date>(defaultDate())
     const [description, setDescription] = useState<string>("")
@@ -95,10 +45,7 @@ const CreateCaseModal = () => {
     const [producerCount, setProducerWells] = useState<number>(0)
     const [gasInjectorCount, setGasInjectorWells] = useState<number>(0)
     const [waterInjectorCount, setWaterInjectorWells] = useState<number>(0)
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [caseItem, setCaseItem] = useState<Components.Schemas.CaseDto>()
-
-    const navigate = useNavigate()
+    const [projectCase, setCaseItem] = useState<Components.Schemas.CaseDto>()
 
     const resetForm = () => {
         setCaseName("")
@@ -171,8 +118,8 @@ const CreateCaseModal = () => {
             }
 
             let projectResult: Components.Schemas.ProjectDto
-            if (caseModalEditMode && caseItem && caseItem.id) {
-                const newCase = { ...caseItem }
+            if (caseModalEditMode && projectCase && projectCase.id) {
+                const newCase = { ...projectCase }
                 newCase.name = caseName
                 newCase.description = description
                 newCase.dG4Date = dG4Date.toISOString()
@@ -183,7 +130,7 @@ const CreateCaseModal = () => {
                 console.log("submitting for edit: ", newCase)
                 projectResult = await (await GetCaseService()).updateCase(
                     project.id,
-                    caseItem.id,
+                    projectCase.id,
                     newCase,
                 )
                 setIsLoading(false)
@@ -201,15 +148,9 @@ const CreateCaseModal = () => {
                     },
                 )
                 setIsLoading(false)
-                navigate(`/${projectResult.cases.find((o) => (
-                    o.name === caseName
-                ))?.id}`)
             }
             setProject(projectResult)
             setCaseModalIsOpen(false)
-            if (caseModalShouldNavigate) {
-                navigate(fusionContextId!)
-            }
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
             setIsLoading(false)
@@ -219,22 +160,22 @@ const CreateCaseModal = () => {
     const disableCreateButton = () => caseName && caseName !== ""
 
     return (
-        <ModalNoFocus isOpen={caseModalIsOpen} title={caseModalEditMode ? "Edit case" : "Add new case"}>
-            <CreateCaseForm>
-                <RowWrapper>
-                    <NameField>
+        <Modal isOpen={caseModalIsOpen} title={caseModalEditMode ? "Edit case" : "Add new case"}>
+            {/* ModalContent */}
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={8}>
+                    <InputWrapper labelProps={{label: "Name"}}>
                         <TextField
-                            label="Name"
                             id="name"
                             name="name"
                             placeholder="Enter a name"
                             onChange={handleNameChange}
                             value={caseName}
                         />
-                    </NameField>
-                    <DateField>
-                        <Label htmlFor="dgDate" label="DG4" />
-
+                    </InputWrapper>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <InputWrapper labelProps={{label: "DG4"}}>
                         <Input
                             type="month"
                             id="dgDate"
@@ -242,18 +183,21 @@ const CreateCaseModal = () => {
                             value={getDG4Value()}
                             onChange={handleDG4Change}
                         />
-                    </DateField>
-                </RowWrapper>
-                <Label htmlFor="description" label="Description" />
-                <TextArea
-                    id="description"
-                    placeholder="Enter a description"
-                    onInput={handleDescriptionChange}
-                    value={description ?? ""}
-                    cols={110}
-                    rows={4}
-                />
-                <ProductionStrategyOverviewField>
+                    </InputWrapper>
+                </Grid>
+                <Grid item xs={12}>
+                    <InputWrapper labelProps={{label: "Description"}}>
+                        <TextArea
+                            id="description"
+                            placeholder="Enter a description"
+                            onInput={handleDescriptionChange}
+                            value={description ?? ""}
+                            cols={10000}
+                            rows={4}
+                        />
+                    </InputWrapper>
+                </Grid>
+                <Grid item xs={12}>
                     <NativeSelect
                         id="productionStrategy"
                         label="Production strategy overview"
@@ -267,44 +211,59 @@ const CreateCaseModal = () => {
                         <option key={3} value={3}>WAG</option>
                         <option key={4} value={4}>Mixed</option>
                     </NativeSelect>
-                </ProductionStrategyOverviewField>
-                <RowWrapper>
-                    <WellCountField>
-                        <ColumnWrapper>
-                            <CaseNumberInput
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProducerWells(Number(e.currentTarget.value))}
-                                defaultValue={producerCount}
-                                integer
-                                label="Producer wells"
-                                min={0}
-                                max={100000}
-                            />
-                        </ColumnWrapper>
-                    </WellCountField>
-                    <WellCountField>
-                        <ColumnWrapper>
-                            <CaseNumberInput
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setGasInjectorWells(Number(e.currentTarget.value))}
-                                defaultValue={gasInjectorCount}
-                                integer
-                                label="Gas injector wells"
-                                min={0}
-                                max={100000}
-                            />
-                        </ColumnWrapper>
-                    </WellCountField>
-                    <ColumnWrapper>
-                        <CaseNumberInput
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWaterInjectorWells(Number(e.currentTarget.value))}
-                            defaultValue={waterInjectorCount}
-                            integer
-                            label="Water injector wells"
-                            min={0}
-                            max={100000}
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <InputWrapper labelProps={{label: "Producer wells"}}>
+                        <Input
+                            id="producerWells"
+                            type="number"
+                            value={producerCount}
+                            disabled={false}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProducerWells(Number(e.currentTarget.value))}
+                            onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                if (!/\d/.test(e.key)) {
+                                    e.preventDefault()
+                                }
+                            }}
                         />
-                    </ColumnWrapper>
-                </RowWrapper>
-                <ButtonsWrapper>
+                    </InputWrapper>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <InputWrapper labelProps={{label: "Gas injector wells"}}>
+                        <Input
+                            id="gasInjector"
+                            type="number"
+                            value={gasInjectorCount}
+                            disabled={false}
+                            onChange={(e: any) => setGasInjectorWells(Number(e.currentTarget.value))}
+                            onKeyPress={(e: any) => {
+                                if (!/\d/.test(e.key)) {
+                                    e.preventDefault()
+                                }
+                            }}
+                        />
+                    </InputWrapper>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <InputWrapper labelProps={{label: "Water injector wells"}}>
+                        <Input
+                            id="waterInjector"
+                            type="number"
+                            value={waterInjectorCount}
+                            disabled={false}
+                            onChange={(e: any) => setWaterInjectorWells(Number(e.currentTarget.value))}
+                            onKeyPress={(e: any) => {
+                                if (!/\d/.test(e.key)) {
+                                    e.preventDefault()
+                                }
+                            }}
+                        />
+                    </InputWrapper>
+                </Grid>
+            </Grid>
+            {/* ModalActions */}
+            <Grid container spacing={1} justifyContent="flex-end">
+                <Grid item>
                     <Button
                         type="button"
                         variant="outlined"
@@ -312,24 +271,24 @@ const CreateCaseModal = () => {
                     >
                         Cancel
                     </Button>
-                    <CreateButtonWrapper>
-                        {isLoading ? (
-                            <CreateButton>
-                                <Progress.Dots />
-                            </CreateButton>
-                        ) : (
-                            <CreateButton
-                                type="submit"
-                                onClick={submitCaseForm}
-                                disabled={!disableCreateButton()}
-                            >
-                                {caseModalEditMode ? "Save changes" : "Create case"}
-                            </CreateButton>
-                        )}
-                    </CreateButtonWrapper>
-                </ButtonsWrapper>
-            </CreateCaseForm>
-        </ModalNoFocus>
+                </Grid>
+                <Grid item>
+                    {isLoading ? (
+                        <Button>
+                            <Progress.Dots />
+                        </Button>
+                    ) : (
+                        <Button
+                            type="submit"
+                            onClick={submitCaseForm}
+                            disabled={!disableCreateButton()}
+                        >
+                            {caseModalEditMode ? "Save changes" : "Create case"}
+                        </Button>
+                    )}
+                </Grid>
+            </Grid>
+        </Modal>
     )
 }
 

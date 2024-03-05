@@ -6,7 +6,6 @@ import {
     useEffect,
     useRef,
 } from "react"
-import styled from "styled-components"
 
 import {
     Button, NativeSelect, Typography,
@@ -14,54 +13,33 @@ import {
 import CaseNumberInput from "../../../Input/CaseNumberInput"
 import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleAgGridTable"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
-import InputContainer from "../../../Input/Containers/InputContainer"
-import FilterContainer from "../../../Input/Containers/TableFilterContainer"
 import InputSwitcher from "../../../Input/InputSwitcher"
-
-const TopWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-top: 20px;
-    margin-bottom: 20px;
-`
-const PageTitle = styled(Typography)`
-    flex-grow: 1;
-`
-
-const YearInputWrapper = styled.div`
-    width: 80px;
-    padding-right: 10px;
-`
-
-const TableWrapper = styled.div`
-    margin-bottom: 50px;
-`
+import Grid from "@mui/material/Grid"
+import { useProjectContext } from "../../../../Context/ProjectContext"
+import { useCaseContext } from "../../../../Context/CaseContext"
 
 interface Props {
-    project: Components.Schemas.ProjectDto,
-    caseItem: Components.Schemas.CaseDto,
     explorationWells: Components.Schemas.ExplorationWellDto[],
     setExplorationWells: Dispatch<SetStateAction<Components.Schemas.ExplorationWellDto[] | undefined>>,
     wellProjectWells: Components.Schemas.WellProjectWellDto[],
     setWellProjectWells: Dispatch<SetStateAction<Components.Schemas.WellProjectWellDto[] | undefined>>,
     wells: Components.Schemas.WellDto[] | undefined
-    activeTab: number
     exploration: Components.Schemas.ExplorationDto,
     wellProject: Components.Schemas.WellProjectDto,
 }
 
 const CaseDrillingScheduleTab = ({
-    project,
-    caseItem,
     explorationWells,
     setExplorationWells,
     wellProjectWells,
     setWellProjectWells,
     wells,
-    activeTab,
     exploration,
     wellProject,
 }: Props) => {
+    const { project } = useProjectContext()
+    const { projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase } = useCaseContext()
+    if (!projectCase) return (<></>)
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
@@ -134,21 +112,21 @@ const CaseDrillingScheduleTab = ({
     }
 
     useEffect(() => {
-        if (activeTab === 3 && caseItem.dG4Date !== undefined) {
+        if (activeTabCase === 3 && projectCase.dG4Date !== undefined) {
             const explorationDrillingSchedule = explorationWells?.map((ew) => ew.drillingSchedule) ?? []
             const wellProjectDrillingSchedule = wellProjectWells?.map((ew) => ew.drillingSchedule) ?? []
             SetTableYearsFromProfiles(
                 [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
-                new Date(caseItem.dG4Date).getFullYear(),
+                new Date(projectCase.dG4Date).getFullYear(),
                 setStartYear,
                 setEndYear,
                 setTableYears,
             )
         }
-    }, [activeTab])
+    }, [activeTabCase])
 
     useEffect(() => {
-        if (activeTab === 3) {
+        if (activeTabCase === 3) {
             setOilProducerCount(sumWellsForWellCategory(0))
             setGasProducerCount(sumWellsForWellCategory(1))
             setWaterInjectorCount(sumWellsForWellCategory(2))
@@ -157,18 +135,16 @@ const CaseDrillingScheduleTab = ({
             setAppraisalWellCount(sumWellsForWellCategory(5))
             setSidetrackCount(sumWellsForWellCategory(6))
         }
-    }, [wells, explorationWells, wellProjectWells, activeTab])
+    }, [wells, explorationWells, wellProjectWells, activeTabCase])
 
-    if (activeTab !== 3) { return null }
+    if (activeTabCase !== 3) { return null }
 
     return (
-        <>
-            <TopWrapper>
-                <PageTitle variant="h3">Drilling schedule</PageTitle>
-            </TopWrapper>
-            <p>Create wells in technical input in order to see them in the list below.</p>
-
-            <InputContainer mobileColumns={1} desktopColumns={2} breakPoint={850}>
+        <Grid container spacing={2}>
+            <Grid item xs={12}>
+                <Typography>Create wells in technical input in order to see them in the list below.</Typography>
+            </Grid>
+            <Grid item xs={12} md={4}>
                 <InputSwitcher
                     value={explorationWellCount.toString()}
                     label="Exploration wells"
@@ -178,9 +154,10 @@ const CaseDrillingScheduleTab = ({
                         defaultValue={explorationWellCount}
                         integer
                         disabled
-                        label="Exploration wells"
                     />
                 </InputSwitcher>
+            </Grid>
+            <Grid item xs={12} md={4}>
                 <InputSwitcher
                     value={appraisalWellCount.toString()}
                     label="Appraisal wells"
@@ -190,9 +167,10 @@ const CaseDrillingScheduleTab = ({
                         defaultValue={appraisalWellCount}
                         integer
                         disabled
-                        label="Appraisal wells"
                     />
                 </InputSwitcher>
+            </Grid>
+            <Grid item xs={12} md={4}>
                 <InputSwitcher
                     value={oilProducerCount.toString()}
                     label="Oil producer wells"
@@ -202,9 +180,10 @@ const CaseDrillingScheduleTab = ({
                         defaultValue={oilProducerCount}
                         integer
                         disabled
-                        label="Oil producer wells"
                     />
                 </InputSwitcher>
+            </Grid>
+            <Grid item xs={12} md={4}>
                 <InputSwitcher
                     value={gasProducerCount.toString()}
                     label="Gas producer wells"
@@ -214,9 +193,10 @@ const CaseDrillingScheduleTab = ({
                         defaultValue={gasProducerCount}
                         integer
                         disabled
-                        label="Gas producer wells"
                     />
                 </InputSwitcher>
+            </Grid>
+            <Grid item xs={12} md={4}>
                 <InputSwitcher
                     value={waterInjectorCount.toString()}
                     label="Water injector wells"
@@ -226,9 +206,10 @@ const CaseDrillingScheduleTab = ({
                         defaultValue={waterInjectorCount}
                         integer
                         disabled
-                        label="Water injector wells"
                     />
                 </InputSwitcher>
+            </Grid>
+            <Grid item xs={12} md={4}>
                 <InputSwitcher
                     value={gasInjectorCount.toString()}
                     label="Gas injector wells"
@@ -238,31 +219,31 @@ const CaseDrillingScheduleTab = ({
                         defaultValue={gasInjectorCount}
                         integer
                         disabled
-                        label="Gas injector wells"
                     />
                 </InputSwitcher>
-            </InputContainer>
-            <FilterContainer>
-                <NativeSelect
-                    id="currency"
-                    label="Currency"
-                    onChange={() => { }}
-                    value={project.currency}
-                    disabled
-                >
-                    <option key="1" value={1}>MNOK</option>
-                    <option key="2" value={2}>MUSD</option>
-                </NativeSelect>
-                <CaseNumberInput
-                    onChange={handleStartYearChange}
-                    defaultValue={startYear}
-                    integer
-                    label="Start year"
-                    min={2010}
-                    max={2100}
-                />
-
-                <YearInputWrapper>
+            </Grid>
+            <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="flex-end">
+                <Grid item>
+                    <NativeSelect
+                        id="currency"
+                        label="Currency"
+                        onChange={() => { }}
+                        value={project?.currency}
+                        disabled
+                    >
+                        <option key="1" value={1}>MNOK</option>
+                        <option key="2" value={2}>MUSD</option>
+                    </NativeSelect>
+                </Grid>
+                <Grid item>
+                    <CaseNumberInput
+                        onChange={handleStartYearChange}
+                        defaultValue={startYear}
+                        integer
+                        label="Start year"
+                    />
+                </Grid>
+                <Grid item>
                     <CaseNumberInput
                         onChange={handleEndYearChange}
                         defaultValue={endYear}
@@ -271,17 +252,17 @@ const CaseDrillingScheduleTab = ({
                         min={2010}
                         max={2100}
                     />
-                </YearInputWrapper>
-                <Button
-                    onClick={handleTableYearsClick}
-                >
-                    Apply
-                </Button>
-            </FilterContainer>
-            <TableWrapper>
+                </Grid>
+                <Grid item>
+                    <Button onClick={handleTableYearsClick}>
+                        Apply
+                    </Button>
+                </Grid>
+            </Grid>
+            <Grid item xs={12}>
                 <CaseDrillingScheduleTabTable
                     assetWells={explorationWells}
-                    dg4Year={caseItem.dG4Date !== undefined ? new Date(caseItem.dG4Date).getFullYear() : 2030}
+                    dg4Year={projectCase.dG4Date !== undefined ? new Date(projectCase.dG4Date).getFullYear() : 2030}
                     setAssetWells={setExplorationWells}
                     tableName="Exploration wells"
                     tableYears={tableYears}
@@ -291,11 +272,11 @@ const CaseDrillingScheduleTab = ({
                     gridRef={explorationWellsGridRef}
                     alignedGridsRef={[wellProjectWellsGridRef]}
                 />
-            </TableWrapper>
-            <TableWrapper>
+            </Grid>
+            <Grid item xs={12}>
                 <CaseDrillingScheduleTabTable
                     assetWells={wellProjectWells}
-                    dg4Year={caseItem.dG4Date !== undefined ? new Date(caseItem.dG4Date).getFullYear() : 2030}
+                    dg4Year={projectCase.dG4Date !== undefined ? new Date(projectCase.dG4Date).getFullYear() : 2030}
                     setAssetWells={setWellProjectWells}
                     tableName="Development wells"
                     tableYears={tableYears}
@@ -305,8 +286,8 @@ const CaseDrillingScheduleTab = ({
                     gridRef={wellProjectWellsGridRef}
                     alignedGridsRef={[explorationWellsGridRef]}
                 />
-            </TableWrapper>
-        </>
+            </Grid>
+        </Grid>
     )
 }
 

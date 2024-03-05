@@ -17,7 +17,7 @@ interface Props {
     defaultValue: number | undefined
     integer: boolean
     disabled?: boolean
-    label: string
+    label?: string
     unit?: string
     allowNegative?: boolean
     min?: number
