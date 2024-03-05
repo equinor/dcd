@@ -5,7 +5,7 @@ import { Tooltip, Icon } from "@equinor/eds-core-react"
 import { bookmark_filled } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { tokens } from "@equinor/eds-tokens"
-import { useProjectContext } from "../../../Context/ProjectContext"
+import { useAppContext } from "../../../Context/AppContext"
 import { customUnitHeaderTemplate } from "../../../AgGridUnitInHeader"
 
 const MenuIcon = styled(Icon)`
@@ -22,7 +22,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
     const styles = useStyles()
     const gridRef = useRef(null)
 
-    const { project } = useProjectContext()
+    const { project } = useAppContext()
 
     const nameWithReferenceCase = (p: any) => (
         <span>
@@ -218,6 +218,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                 style={{
                     display: "flex", flexDirection: "column", width: "100%",
                 }}
+                className="ag-theme-alpine-fusion"
             >
                 <AgGridReact
                     ref={gridRef}

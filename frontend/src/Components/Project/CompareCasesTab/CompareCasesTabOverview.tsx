@@ -1,17 +1,32 @@
+import styled from "styled-components"
 import { useState } from "react"
 import { Tabs } from "@equinor/eds-core-react"
+import { tokens } from "@equinor/eds-tokens"
 import Kpis from "./Tabs/Kpis"
 import ProductionProfiles from "./Tabs/ProductionProfiles"
 import InvestmentProfiles from "./Tabs/InvestmentProfiles"
 import Co2Emissions from "./Tabs/Co2Emissions"
 import { useProjectChartData } from "../../../Hooks/useProjectChartData"
 import ProjectAgGridTable from "./ProjectAgGridTable"
-import Grid from "@mui/material/Grid"
-import styled from "styled-components"
 
 const {
     List, Tab, Panels, Panel,
 } = Tabs
+
+const StyledTabPanel = styled(Panel)`
+    padding-top: 0px;
+`
+
+const StyledList = styled(List)`
+    border-bottom: 1px solid ${tokens.colors.ui.background__medium.rgba};
+`
+
+const WrapperTabs = styled.div`
+width: 100%;
+display: flex;
+float: left;
+flex-direction: column;
+`
 
 const ProjectCompareCasesTab = () => {
     const {
@@ -27,45 +42,43 @@ const ProjectCompareCasesTab = () => {
     const [activeTab, setActiveTab] = useState(0)
 
     return (
-        <Grid container spacing={2}>
-            <Grid item xs={12}>
+        <>
+            <WrapperTabs>
                 <Tabs activeTab={activeTab} onChange={setActiveTab}>
-                    <List>
+                    <StyledList>
                         <Tab>KPIs</Tab>
                         <Tab>Production profiles</Tab>
                         <Tab>Investment profiles</Tab>
                         <Tab>CO2 emissions</Tab>
-                    </List>
+                    </StyledList>
                     <Panels>
-                        <Panel>
+                        <StyledTabPanel>
                             <Kpis
                                 npvChartData={npvChartData}
                                 breakEvenChartData={breakEvenChartData}
                             />
-                        </Panel>
-                        <Panel>
+                        </StyledTabPanel>
+                        <StyledTabPanel>
                             <ProductionProfiles
                                 productionProfilesChartData={productionProfilesChartData}
                             />
-                        </Panel>
-                        <Panel>
+                        </StyledTabPanel>
+                        <StyledTabPanel>
                             <InvestmentProfiles
                                 investmentProfilesChartData={investmentProfilesChartData}
                             />
-                        </Panel>
-                        <Panel>
+                        </StyledTabPanel>
+                        <StyledTabPanel>
                             <Co2Emissions
                                 totalCo2EmissionsChartData={totalCo2EmissionsChartData}
                                 co2IntensityChartData={co2IntensityChartData}
                             />
-                        </Panel>
+                        </StyledTabPanel>
                     </Panels>
                 </Tabs>
-            </Grid>
-            <Grid item xs={12}>
-                <ProjectAgGridTable rowData={rowData} />
-            </Grid>
-        </Grid>
+            </WrapperTabs>
+            <ProjectAgGridTable rowData={rowData} />
+        </>
     )
 }
 

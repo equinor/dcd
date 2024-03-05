@@ -8,7 +8,7 @@ import {
     folder,
     library_add,
 } from "@equinor/eds-icons"
-import { useProjectContext } from "../../../Context/ProjectContext"
+import { useAppContext } from "../../../Context/AppContext"
 import { deleteCase, duplicateCase, setCaseAsReference } from "../../../Utils/CaseController"
 
 interface CasesDropMenuProps {
@@ -26,7 +26,7 @@ const CasesDropMenu = ({
     selectedCaseId,
     editCase,
 }: CasesDropMenuProps): JSX.Element => {
-    const { project, setProject } = useProjectContext()
+    const { project, setProject } = useAppContext()
 
     if (!project) return <p>project not found</p>
 

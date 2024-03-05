@@ -10,7 +10,7 @@ import {
     useMemo,
     useRef,
 } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { AgGridReact } from "@ag-grid-community/react"
 import { bookmark_filled, more_vertical } from "@equinor/eds-icons"
@@ -18,12 +18,11 @@ import { tokens } from "@equinor/eds-tokens"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
 import { casePath, productionStrategyOverviewToString } from "../../../Utils/common"
-import { useProjectContext } from "../../../Context/ProjectContext"
-import { useCaseContext } from "../../../Context/CaseContext"
+import { useAppContext } from "../../../Context/AppContext"
 
-const StyledIcon = styled(Icon)`
+const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
-    margin-left: 0.5rem;
+    margin-right: 0.5rem;
     margin-bottom: -0.2rem;
 `
 const AgTableContainer = styled.div`
@@ -56,11 +55,9 @@ const CasesAgGridTable = ({
     isMenuOpen,
 }: CasesAgGridTableProps): JSX.Element => {
     const gridRef = useRef<AgGridReact>(null)
-    const { project } = useProjectContext()
-    const { setProjectCase } = useCaseContext();
+    const { project } = useAppContext()
     const [rowData, setRowData] = useState<TableCase[]>()
     const { currentContext } = useModuleCurrentContext()
-    const navigate = useNavigate()
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
@@ -93,39 +90,36 @@ const CasesAgGridTable = ({
         </Button>
     )
 
-    const selectCase = (p: any) => {
-        if (!currentContext || !p.node.data) { return null }
-        const caseResult = project.cases.find((o) => o.id === p.node.data.id)
-        setProjectCase(caseResult)
-        navigate(casePath(currentContext.id, p.node.data.id))
-    }
-
     const nameWithReferenceCase = (p: any) => {
+        if (!currentContext || !p.node.data) { return null }
+        const caseDetailPath = casePath(currentContext.id, p.node.data.id)
 
         return (
-            <>
-                <Button as="span" variant="ghost" className="GhostButton" onClick={() => selectCase(p)}>{p.value}</Button>
+            <span>
                 {p.node.data.referenceCaseId === p.node.data.id && (
                     <Tooltip title="Reference case">
-                        <StyledIcon data={bookmark_filled} size={16} />
+                        <MenuIcon data={bookmark_filled} size={16} />
                     </Tooltip>
                 )}
-            </>
+                <Typography as={Link} to={caseDetailPath} link>{p.value}</Typography>
+            </span>
         )
     }
 
     const [columnDefs] = useState<ColDef[]>([
-        { field: "name", cellRenderer: nameWithReferenceCase, flex: 1 },
+        { field: "name", cellRenderer: nameWithReferenceCase },
         {
             field: "productionStrategyOverview",
-            headerName: "Production Strategy Overview",
             cellRenderer: productionStrategyToString,
+            autoHeight: true,
+            wrapText: true,
+            width: 205,
         },
-        { field: "producerCount", headerName: "Producers" },
-        { field: "gasInjectorCount", headerName: "Gas injectors" },
-        { field: "waterInjectorCount", headerName: "Water injectors" },
-        { field: "createdAt", headerName: "Created" },
-        { field: "Options", cellRenderer: menuButton, width: 100 },
+        { field: "producerCount", headerName: "Producers", width: 90 },
+        { field: "gasInjectorCount", headerName: "Gas injectors", width: 110 },
+        { field: "waterInjectorCount", headerName: "Water injectors", width: 120 },
+        { field: "createdAt", headerName: "Created", width: 130 },
+        { field: "Options", cellRenderer: menuButton, width: 95 },
     ])
 
     const casesToRowData = () => {
@@ -155,7 +149,7 @@ const CasesAgGridTable = ({
 
     return (
         <div>
-            <AgTableContainer>
+            <AgTableContainer className="ag-theme-alpine-fusion">
                 <AgGridReact
                     ref={gridRef}
                     rowData={rowData}

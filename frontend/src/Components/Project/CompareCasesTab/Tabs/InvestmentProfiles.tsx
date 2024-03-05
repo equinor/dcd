@@ -1,13 +1,13 @@
 import React from "react"
 import { AgChartsCompareCases } from "../../../AgGrid/AgChartsCompareCases"
-import { useProjectContext } from "../../../../Context/ProjectContext"
+import { useAppContext } from "../../../../Context/AppContext"
 
 interface InvestmentProfilesProps {
     investmentProfilesChartData?: object
 }
 
 const InvestmentProfiles: React.FC<InvestmentProfilesProps> = ({ investmentProfilesChartData }) => {
-    const { project } = useProjectContext()
+    const { project } = useAppContext()
 
     if (!investmentProfilesChartData) return <div>No data available</div>
 

@@ -4,18 +4,28 @@ import {
     Progress, Banner, Icon, Typography,
 } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
+import styled from "styled-components"
 import { Outlet, useNavigate } from "react-router-dom"
-import { useProjectContext } from "../Context/ProjectContext"
+import { useAppContext } from "../Context/AppContext"
 import { GetProjectService } from "../Services/ProjectService"
 import CreateCaseModal from "./CreateCaseModal"
 import EditTechnicalInputModal from "./EditTechnicalInput/EditTechnicalInputModal"
-import Grid from "@mui/material/Grid"
-import { useAppContext } from "../Context/AppContext"
+
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+`
 
 const RouteCoordinator = (): JSX.Element => {
-    const { isCreating, setIsCreating, isLoading, setIsLoading } = useAppContext()
-    const { project, setProject } = useProjectContext()
+    const { project, setProject } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [isCreating, setIsCreating] = useState<boolean>(false)
 
     const navigate = useNavigate()
 
@@ -60,6 +70,22 @@ const RouteCoordinator = (): JSX.Element => {
         fetchAndSetProject()
     }, [currentContext, setProject])
 
+    if ((isLoading || !project || project.id === "") && currentContext) {
+        if (isCreating) {
+            return (
+                <Wrapper>
+                    <Progress.Circular size={24} color="primary" />
+                    <Typography variant="h4">Creating project</Typography>
+                </Wrapper>
+            )
+        }
+        return (
+            <Wrapper>
+                <Progress.Circular size={24} color="primary" />
+                <Typography variant="h4">Loading project</Typography>
+            </Wrapper>
+        )
+    }
     if (!currentContext) {
         return (
             <Banner>

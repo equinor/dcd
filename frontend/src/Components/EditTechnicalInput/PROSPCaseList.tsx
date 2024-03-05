@@ -11,14 +11,18 @@ import {
     GetRowIdParams,
     RowNode,
 } from "@ag-grid-community/core"
+import styled from "styled-components"
 import { external_link } from "@equinor/eds-icons"
 import SharePointImport from "./SharePointImport"
 import { DriveItem } from "../../Models/sharepoint/DriveItem"
 import { ImportStatusEnum } from "./ImportStatusEnum"
 import { GetProspService } from "../../Services/ProspService"
-import { useProjectContext } from "../../Context/ProjectContext"
-import Grid from "@mui/material/Grid"
+import { useAppContext } from "../../Context/AppContext"
 
+const ApplyButtonWrapper = styled.div`
+    display: flex;
+    padding-top: 1em;
+`
 interface Props {
     driveItems: DriveItem[] | undefined
     check: boolean
@@ -45,7 +49,7 @@ const PROSPCaseList = ({
     driveItems,
     check,
 }: Props) => {
-    const { project, setProject } = useProjectContext()
+    const { project, setProject } = useAppContext()
     const gridRef = useRef<any>(null)
     const styles = useStyles()
     const [rowData, setRowData] = useState<RowData[]>()
@@ -110,22 +114,22 @@ const PROSPCaseList = ({
 
     const handleAdvancedSettingsChange = (p: any, value: ImportStatusEnum) => {
         if (project && project.cases) {
-            const projectCase = project.cases.find((el: any) => p.data.id && p.data.id === el.id)
+            const caseItem = project.cases.find((el: any) => p.data.id && p.data.id === el.id)
             const rowNode = gridRef.current?.getRowNode(p.node?.data.id)
-            if (projectCase) {
+            if (caseItem) {
                 switch (p.column.colId) {
                 case "surfState":
-                    rowNode.data.surfStateChanged = (SharePointImport.surfStatus(projectCase, project) !== value)
+                    rowNode.data.surfStateChanged = (SharePointImport.surfStatus(caseItem, project) !== value)
                     break
                 case "substructureState":
                     rowNode.data.substructureStateChanged = (
-                        SharePointImport.substructureStatus(projectCase, project) !== value)
+                        SharePointImport.substructureStatus(caseItem, project) !== value)
                     break
                 case "topsideState":
-                    rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(projectCase, project) !== value)
+                    rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(caseItem, project) !== value)
                     break
                 case "transportState":
-                    rowNode.data.transportStateChanged = (SharePointImport.transportStatus(projectCase, project) !== value)
+                    rowNode.data.transportStateChanged = (SharePointImport.transportStatus(caseItem, project) !== value)
                     break
                 default:
                     break
@@ -363,12 +367,13 @@ const PROSPCaseList = ({
     }, [project, driveItems])
 
     return (
-        <Grid container spacing={1}>
-            <Grid item xs={12} className={styles.root}>
+        <>
+            <div className={styles.root}>
                 <div
                     style={{
                         display: "flex", flexDirection: "column", width: "100%",
                     }}
+                    className="ag-theme-alpine-fusion"
                 >
                     <AgGridReact
                         ref={gridRef}
@@ -384,8 +389,8 @@ const PROSPCaseList = ({
                         getRowId={getRowId}
                     />
                 </div>
-            </Grid>
-            <Grid item>
+            </div>
+            <ApplyButtonWrapper>
                 {!isApplying && project ? (
                     <Button
                         onClick={() => save(project)}
@@ -398,8 +403,8 @@ const PROSPCaseList = ({
                         <Progress.Dots color="primary" />
                     </Button>
                 )}
-            </Grid>
-        </Grid>
+            </ApplyButtonWrapper>
+        </>
     )
 }
 
