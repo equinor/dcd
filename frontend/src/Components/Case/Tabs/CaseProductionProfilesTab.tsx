@@ -351,6 +351,8 @@ const CaseProductionProfilesTab = ({
                         integer={false}
                         label="Facilities availability"
                         unit="%"
+                        min={0}
+                        max={100}
                     />
                 </InputSwitcher>
                 <InputSwitcher
@@ -454,12 +456,16 @@ const CaseProductionProfilesTab = ({
                     defaultValue={startYear}
                     integer
                     label="Start year"
+                    min={2010}
+                    max={2110}
                 />
                 <CaseNumberInput
                     onChange={handleEndYearChange}
                     defaultValue={endYear}
                     integer
                     label="End year"
+                    min={2010}
+                    max={2110}
                 />
                 <Button onClick={handleTableYearsClick}>  Apply </Button>
             </FilterContainer>

@@ -23,6 +23,7 @@ import {
 import { GetCaseService } from "../Services/CaseService"
 import { useAppContext } from "../Context/AppContext"
 import { useModalContext } from "../Context/ModalContext"
+import CaseNumberInput from "./Input/CaseNumberInput"
 
 const CreateCaseForm = styled.form`
     width: 596px;
@@ -270,51 +271,36 @@ const CreateCaseModal = () => {
                 <RowWrapper>
                     <WellCountField>
                         <ColumnWrapper>
-                            <Label htmlFor="producerWells" label="Producer wells" />
-                            <Input
-                                id="producerWells"
-                                type="number"
-                                value={producerCount}
-                                disabled={false}
+                            <CaseNumberInput
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProducerWells(Number(e.currentTarget.value))}
-                                onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                    if (!/\d/.test(e.key)) {
-                                        e.preventDefault()
-                                    }
-                                }}
+                                defaultValue={producerCount}
+                                integer
+                                label="Producer wells"
+                                min={0}
+                                max={100000}
                             />
                         </ColumnWrapper>
                     </WellCountField>
                     <WellCountField>
                         <ColumnWrapper>
-                            <Label htmlFor="gasInjector" label="Gas injector wells" />
-                            <Input
-                                id="gasInjector"
-                                type="number"
-                                value={gasInjectorCount}
-                                disabled={false}
-                                onChange={(e: any) => setGasInjectorWells(Number(e.currentTarget.value))}
-                                onKeyPress={(e: any) => {
-                                    if (!/\d/.test(e.key)) {
-                                        e.preventDefault()
-                                    }
-                                }}
+                            <CaseNumberInput
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setGasInjectorWells(Number(e.currentTarget.value))}
+                                defaultValue={gasInjectorCount}
+                                integer
+                                label="Gas injector wells"
+                                min={0}
+                                max={100000}
                             />
                         </ColumnWrapper>
                     </WellCountField>
                     <ColumnWrapper>
-                        <Label htmlFor="waterInjector" label="Water injector wells" />
-                        <Input
-                            id="waterInjector"
-                            type="number"
-                            value={waterInjectorCount}
-                            disabled={false}
-                            onChange={(e: any) => setWaterInjectorWells(Number(e.currentTarget.value))}
-                            onKeyPress={(e: any) => {
-                                if (!/\d/.test(e.key)) {
-                                    e.preventDefault()
-                                }
-                            }}
+                        <CaseNumberInput
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWaterInjectorWells(Number(e.currentTarget.value))}
+                            defaultValue={waterInjectorCount}
+                            integer
+                            label="Water injector wells"
+                            min={0}
+                            max={100000}
                         />
                     </ColumnWrapper>
                 </RowWrapper>

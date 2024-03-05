@@ -734,6 +734,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                         integer={false}
                         label="CAPEX factor feasibility studies"
                         unit="%"
+                        min={0}
+                        max={100}
                     />
                 </InputSwitcher>
 
@@ -747,6 +749,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                         integer={false}
                         label="CAPEX factor FEED studies"
                         unit="%"
+                        min={0}
+                        max={100}
                     />
                 </InputSwitcher>
                 <InputSwitcher value={maturityOptions[surf?.maturity ?? 'defaultKey']} label="Maturity">
@@ -780,6 +784,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                     defaultValue={startYear}
                     integer
                     label="Start year"
+                    min={2010}
+                    max={2110}
                 />
 
                 <CaseNumberInput
@@ -787,6 +793,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                     defaultValue={endYear}
                     integer
                     label="End year"
+                    min={2010}
+                    max={2110}
                 />
                 <Button onClick={handleTableYearsClick}>
                     Apply

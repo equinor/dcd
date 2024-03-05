@@ -258,6 +258,8 @@ const CaseDrillingScheduleTab = ({
                     defaultValue={startYear}
                     integer
                     label="Start year"
+                    min={2010}
+                    max={2100}
                 />
 
                 <YearInputWrapper>
@@ -266,6 +268,8 @@ const CaseDrillingScheduleTab = ({
                         defaultValue={endYear}
                         integer
                         label="End year"
+                        min={2010}
+                        max={2100}
                     />
                 </YearInputWrapper>
                 <Button
