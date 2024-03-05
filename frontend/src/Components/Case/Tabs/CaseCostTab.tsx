@@ -135,7 +135,7 @@ const CaseCostTab = (): React.ReactElement | null => {
     useEffect(() => {
         (async () => {
             try {
-                if (caseItem && project && topside && surf && substructure && transport && exploration) //test if this work, if not break into smaller ifs
+                if (caseItem && project && topside && surf && substructure && transport && exploration && wellProjects) //test if this work, if not break into smaller ifs
                     if (activeTab === 5) {
                         const totalFeasibility = caseItem.totalFeasibilityAndConceptStudies
                         const totalFEED = caseItem.totalFEEDStudies
@@ -192,60 +192,60 @@ const CaseCostTab = (): React.ReactElement | null => {
                         setWellProjectOilProducerCost(oilProducerCostProfile)
                         const oilProducerCostProfileOverride = wellProjects?.oilProducerCostProfileOverride
                         setWellProjectOilProducerCostOverride(oilProducerCostProfileOverride)
-
+                        
                         // Development
-                        if (wellProjects) {
-                            const {
-                                gasProducerCostProfile,
-                                waterInjectorCostProfile, gasInjectorCostProfile,
-                                gasProducerCostProfileOverride,
-                                waterInjectorCostProfileOverride, gasInjectorCostProfileOverride,
-                                //oilProducerCostProfileOverride,oilProducerCostProfile,
-                            } = wellProjects
-                            // setWellProjectOilProducerCost(oilProducerCostProfile)
-                            // setWellProjectOilProducerCostOverride(oilProducerCostProfileOverride)
-                            setWellProjectGasProducerCost(gasProducerCostProfile)
-                            setWellProjectGasProducerCostOverride(gasProducerCostProfileOverride)
-                            setWellProjectWaterInjectorCost(waterInjectorCostProfile)
-                            setWellProjectWaterInjectorCostOverride(waterInjectorCostProfileOverride)
-                            setWellProjectGasInjectorCost(gasInjectorCostProfile)
-                            setWellProjectGasInjectorCostOverride(gasInjectorCostProfileOverride)
+                        const {
+                            gasProducerCostProfile,
+                            waterInjectorCostProfile, gasInjectorCostProfile,
+                            gasProducerCostProfileOverride,
+                            waterInjectorCostProfileOverride, gasInjectorCostProfileOverride,
+                            //oilProducerCostProfileOverride,oilProducerCostProfile,
+                        } = wellProjects ?? {}
+                        // setWellProjectOilProducerCost(oilProducerCostProfile)
+                        // setWellProjectOilProducerCostOverride(oilProducerCostProfileOverride)
+                        setWellProjectGasProducerCost(gasProducerCostProfile)
+                        setWellProjectGasProducerCostOverride(gasProducerCostProfileOverride)
+                        setWellProjectWaterInjectorCost(waterInjectorCostProfile)
+                        setWellProjectWaterInjectorCostOverride(waterInjectorCostProfileOverride)
+                        setWellProjectGasInjectorCost(gasInjectorCostProfile)
+                        setWellProjectGasInjectorCostOverride(gasInjectorCostProfileOverride)
 
-                            // Exploration
-                            if (exploration) {
-                                const {
-                                    explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
-                                    seismicAcquisitionAndProcessing, countryOfficeCost
-                                } = exploration;
-                                setExplorationWellCostProfile(explorationWellCostProfile)
-                                setExplorationAppraisalWellCost(appraisalWellCostProfile)
-                                setExplorationSidetrackCost(sidetrackCostProfile)
-                                setSeismicAcquisitionAndProcessing(exploration.seismicAcquisitionAndProcessing)
-                                const countryOffice = exploration.countryOfficeCost
-                                setCountryOfficeCost(countryOfficeCost)
-                                setGAndGAdminCost(exploration.gAndGAdminCost)
-                                setGAndGAdminCostOverride(exploration.gAndGAdminCostOverride)
-
+                        // Exploration
+                        console.log("ex", exploration)
+                        const {
+                            explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
+                            seismicAcquisitionAndProcessing, countryOfficeCost, gAndGAdminCost, gAndGAdminCostOverride,
+                        } = exploration;
+                        setExplorationWellCostProfile(explorationWellCostProfile)
+                        setExplorationAppraisalWellCost(appraisalWellCostProfile)
+                        setExplorationSidetrackCost(sidetrackCostProfile)
+                        setSeismicAcquisitionAndProcessing(exploration.seismicAcquisitionAndProcessing)
+                        const countryOffice = exploration.countryOfficeCost
+                        setCountryOfficeCost(countryOfficeCost)
+                        setGAndGAdminCost(gAndGAdminCost)
+                        setGAndGAdminCostOverride(exploration.gAndGAdminCostOverride)
 
 
-                                SetTableYearsFromProfiles([caseItem.totalFeasibilityAndConceptStudies, caseItem.totalFEEDStudies,
-                                caseItem.wellInterventionCostProfile, caseItem.offshoreFacilitiesOperationsCostProfile,
-                                caseItem.cessationWellsCost, caseItem.cessationOffshoreFacilitiesCost,
-                                caseItem.totalFeasibilityAndConceptStudiesOverride, caseItem.totalFEEDStudiesOverride,
-                                caseItem.wellInterventionCostProfileOverride, caseItem.offshoreFacilitiesOperationsCostProfileOverride,
-                                caseItem.cessationWellsCostOverride, caseItem.cessationOffshoreFacilitiesCostOverride,
-                                    surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
-                                    surfCostOverride, topsideCostOverride, substructureCostOverride, transportCostOverride,
-                                    oilProducerCostProfile, gasProducerCostProfile,
-                                    waterInjectorCostProfile, gasInjectorCostProfile,
-                                    oilProducerCostProfileOverride, gasProducerCostProfileOverride,
-                                    waterInjectorCostProfileOverride, gasInjectorCostProfileOverride,
-                                    explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
-                                    seismicAcquisitionAndProcessing, countryOffice, exploration.gAndGAdminCost, oilProducerCostProfile, oilProducerCostProfileOverride,
-                                    exploration.gAndGAdminCostOverride, 
-                                ], caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
-                            }
-                        }
+
+
+                        SetTableYearsFromProfiles([caseItem.totalFeasibilityAndConceptStudies, caseItem.totalFEEDStudies,
+                        caseItem.wellInterventionCostProfile, caseItem.offshoreFacilitiesOperationsCostProfile,
+                        caseItem.cessationWellsCost, caseItem.cessationOffshoreFacilitiesCost,
+                        caseItem.totalFeasibilityAndConceptStudiesOverride, caseItem.totalFEEDStudiesOverride,
+                        caseItem.wellInterventionCostProfileOverride, caseItem.offshoreFacilitiesOperationsCostProfileOverride,
+                        caseItem.cessationWellsCostOverride, caseItem.cessationOffshoreFacilitiesCostOverride,
+                            surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
+                            surfCostOverride, topsideCostOverride, substructureCostOverride, transportCostOverride,
+                            oilProducerCostProfile, gasProducerCostProfile,
+                            waterInjectorCostProfile, gasInjectorCostProfile,
+                            oilProducerCostProfileOverride, gasProducerCostProfileOverride,
+                            waterInjectorCostProfileOverride, gasInjectorCostProfileOverride,
+                            explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
+                            seismicAcquisitionAndProcessing, countryOffice, exploration.gAndGAdminCost, oilProducerCostProfile, oilProducerCostProfileOverride,
+                        exploration.gAndGAdminCostOverride,
+                        ], caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
+
+
                     }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
@@ -253,20 +253,20 @@ const CaseCostTab = (): React.ReactElement | null => {
         })()
     }, [activeTab])
 
-    useEffect(() => {
-        if (exploration) {
-            const {
-                explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
-                seismicAcquisitionAndProcessing,
-            } = exploration;
-            setExplorationWellCostProfile(explorationWellCostProfile)
-            setExplorationAppraisalWellCost(appraisalWellCostProfile)
-            setExplorationSidetrackCost(sidetrackCostProfile)
-            setSeismicAcquisitionAndProcessing(seismicAcquisitionAndProcessing)
-            const countryOffice = exploration.countryOfficeCost
-            setCountryOfficeCost(countryOffice)
-        }
-    }, [exploration])
+    // useEffect(() => {
+    //     if (exploration) {
+    //         const {
+    //             explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
+    //             seismicAcquisitionAndProcessing,
+    //         } = exploration;
+    //         setExplorationWellCostProfile(explorationWellCostProfile)
+    //         setExplorationAppraisalWellCost(appraisalWellCostProfile)
+    //         setExplorationSidetrackCost(sidetrackCostProfile)
+    //         setSeismicAcquisitionAndProcessing(seismicAcquisitionAndProcessing)
+    //         const countryOffice = exploration.countryOfficeCost
+    //         setCountryOfficeCost(countryOffice)
+    //     }
+    // }, [exploration])
 
     useEffect(() => {
         if (studyGridRef.current
@@ -303,7 +303,7 @@ const CaseCostTab = (): React.ReactElement | null => {
             && explorationWellsGridRef.current.api.refreshCells) {
             explorationWellsGridRef.current.api.refreshCells()
         }
-    }, [gAndGAdminCost  , seismicAcquisitionAndProcessing, countryOfficeCost, explorationWellCostProfile, explorationAppraisalWellCost, explorationSidetrackCost])
+    }, [gAndGAdminCostOverride, seismicAcquisitionAndProcessing, countryOfficeCost, explorationWellCostProfile, explorationAppraisalWellCost, explorationSidetrackCost, gAndGAdminCost])
 
     const updatedAndSetSurf = (surfItem: Components.Schemas.SurfDto) => {
         const newSurf: Components.Schemas.SurfDto = { ...surfItem }
@@ -579,11 +579,17 @@ const CaseCostTab = (): React.ReactElement | null => {
     }, [totalFeasibilityAndConceptStudiesOverride])
 
     useEffect(() => {
+        console.log(1, totalFEEDStudiesOverride)
         updateObject(caseItem, setCase, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
+        console.log(2, totalFEEDStudiesOverride)
+
     }, [totalFEEDStudiesOverride])
 
     useEffect(() => {
+        console.log(1, totalOtherStudies)
         updateObject(caseItem, setCase, "totalOtherStudies", totalOtherStudies)
+        console.log(1, totalOtherStudies)
+
     }, [totalOtherStudies])
 
     useEffect(() => {
