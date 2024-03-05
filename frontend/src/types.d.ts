@@ -272,6 +272,7 @@ declare namespace Components {
             appraisalWellCostProfile: AppraisalWellCostProfileDto;
             sidetrackCostProfile: SidetrackCostProfileDto;
             gAndGAdminCost: GAndGAdminCostDto;
+            gAndGAdminCostOverride?: GAndGAdminCostOverrideDto;
             seismicAcquisitionAndProcessing: SeismicAcquisitionAndProcessingDto;
             countryOfficeCost: CountryOfficeCostDto;
             rigMobDemob: number; // double
@@ -289,14 +290,6 @@ declare namespace Components {
             appraisalProjectDrillingCosts: number; // double
             hasChanges: boolean;
         }
-        export interface TotalExplorationCostDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
-        }
         export interface ExplorationWellCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
@@ -311,15 +304,13 @@ declare namespace Components {
             wellId: string; // uuid
             hasChanges?: boolean;
         }
-
-        export interface drillingCostDto {
+        export interface FuelFlaringAndLossesDto {
             id: string; // uuid
             startYear: number; // int32
             values?: number /* double */[] | null;
             sum?: number; // double
         }
-
-        export interface FuelFlaringAndLossesDto {
+        export interface drillingCostDto {
             id: string; // uuid
             startYear: number; // int32
             values?: number /* double */[] | null;
@@ -384,7 +375,6 @@ declare namespace Components {
             importedElectricityDto?: ImportedElectricityDto;
             fuelFlaringAndLossesDto?: FuelFlaringAndLossesDto;
             netSalesGasDto?: NetSalesGasDto;
-            seismicAcquisitionAndProcessingDto?: SeismicAcquisitionAndProcessingDto
         }
         export interface HistoricCostCostProfileDto {
             id: string; // uuid
@@ -1019,6 +1009,7 @@ declare namespace Components {
             explorationWellCostProfile?: UpdateExplorationWellCostProfile;
             appraisalWellCostProfile?: UpdateAppraisalWellCostProfile;
             sidetrackCostProfile?: UpdateSidetrackCostProfile;
+            gAndGAdminCost?: UpdateGAndGAdminCostOverrideDto;
         }
         export interface UpdateExplorationOperationalWellCostsDto {
             rigUpgrading?: number; // double
@@ -1112,7 +1103,9 @@ declare namespace Components {
             cO2Vented?: number; // double
             dailyEmissionFromDrillingRig?: number; // double
             averageDevelopmentDrillingDays?: number; // double
+
         }
+
         export interface UpdateSeismicAcquisitionAndProcessing {
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -1217,6 +1210,12 @@ declare namespace Components {
             peakElectricityImported?: number; // double
         }
         export interface UpdateTotalFEEDStudiesOverrideDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            currency?: Currency /* int32 */;
+            override?: boolean;
+        }
+        export interface UpdateGAndGAdminCostOverrideDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
@@ -1358,6 +1357,15 @@ declare namespace Components {
             wellProjectId: string; // uuid
             wellId: string; // uuid
             hasChanges?: boolean;
+        }
+        export interface GAndGAdminCostOverrideDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
         }
     }
 }

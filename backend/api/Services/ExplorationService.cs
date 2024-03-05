@@ -149,6 +149,7 @@ public class ExplorationService : IExplorationService
             .Include(c => c.AppraisalWellCostProfile)
             .Include(c => c.SidetrackCostProfile)
             .Include(c => c.GAndGAdminCost)
+            .Include(c => c.gAndGAdminCostOverride)
             .Include(c => c.SeismicAcquisitionAndProcessing)
             .Include(c => c.CountryOfficeCost)
             .FirstOrDefaultAsync(o => o.Id == explorationId);

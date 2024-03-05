@@ -299,9 +299,6 @@ const CaseView = () => {
             if (result.generatedProfilesDto?.gAndGAdminCostDto !== null && result.generatedProfilesDto?.gAndGAdminCostDto !== undefined) {
                 setGAndGAdminCost(result.generatedProfilesDto.gAndGAdminCostDto)
             }
-            if (result.generatedProfilesDto?.seismicAcquisitionAndProcessingDto !== null && result.generatedProfilesDto?.seismicAcquisitionAndProcessingDto !== undefined) {
-                setSeismicAcquisitionAndProcessing(result.generatedProfilesDto.seismicAcquisitionAndProcessingDto)
-            }
             if (result.generatedProfilesDto?.co2EmissionsDto !== null && result.generatedProfilesDto?.co2EmissionsDto !== undefined) {
                 setCO2Emissions(result.generatedProfilesDto.co2EmissionsDto)
             }
@@ -331,7 +328,6 @@ const CaseView = () => {
             setIfNotNull(result.generatedProfilesDto?.fuelFlaringAndLossesDto, setFuelFlaringAndLosses)
             setIfNotNull(result.generatedProfilesDto?.netSalesGasDto, setNetSalesGas)
             setIfNotNull(result.generatedProfilesDto?.importedElectricityDto, setImportedElectricity)
-            setIfNotNull(result.generatedProfilesDto?.seismicAcquisitionAndProcessingDto, setSeismicAcquisitionAndProcessing)
 
             setIsSaving(false)
             setNameEditMode(false)

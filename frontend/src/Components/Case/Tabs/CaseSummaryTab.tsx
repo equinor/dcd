@@ -18,6 +18,7 @@ import { AgGridReact } from "@ag-grid-community/react"
 import { ColDef } from '@ag-grid-community/core';
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
+import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 
 const TopWrapper = styled.div`
     display: flex;
@@ -99,25 +100,25 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         } return undefined
     }
 
-    const setTableYearsFromProfiles = (profiles: (ITimeSeries | undefined)[]) => {
-        let firstYear = Number.MAX_SAFE_INTEGER
-        let lastYear = Number.MIN_SAFE_INTEGER
-        profiles.forEach((p) => {
-            if (p && p.startYear !== undefined && p.startYear < firstYear) {
-                firstYear = p.startYear
-            }
-            const profileLastYear = getTimeSeriesLastYear(p)
-            if (profileLastYear !== undefined && profileLastYear > lastYear) {
-                lastYear = profileLastYear
-            }
-        })
-        if (caseItem)
-            if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER && caseItem.dG4Date) {
-                setStartYear(firstYear + new Date(caseItem.dG4Date).getFullYear())
-                setEndYear(lastYear + new Date(caseItem.dG4Date).getFullYear())
-                setTableYears([firstYear + new Date(caseItem.dG4Date).getFullYear(), lastYear + new Date(caseItem.dG4Date).getFullYear()])
-            }
-    }
+    // const setTableYearsFromProfiles = (profiles: (ITimeSeries | undefined)[]) => {
+    //     let firstYear = Number.MAX_SAFE_INTEGER
+    //     let lastYear = Number.MIN_SAFE_INTEGER
+    //     profiles.forEach((p) => {
+    //         if (p && p.startYear !== undefined && p.startYear < firstYear) {
+    //             firstYear = p.startYear
+    //         }
+    //         const profileLastYear = getTimeSeriesLastYear(p)
+    //         if (profileLastYear !== undefined && profileLastYear > lastYear) {
+    //             lastYear = profileLastYear
+    //         }
+    //     })
+    //     if (caseItem)
+    //         if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER && caseItem.dG4Date) {
+    //             setStartYear(firstYear + new Date(caseItem.dG4Date).getFullYear())
+    //             setEndYear(lastYear + new Date(caseItem.dG4Date).getFullYear())
+    //             setTableYears([firstYear + new Date(caseItem.dG4Date).getFullYear(), lastYear + new Date(caseItem.dG4Date).getFullYear()])
+    //         }
+    // }
 
     useEffect(() => {
         (async () => {
@@ -165,15 +166,26 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         setTransportCost(transportCostProfile)
 
                         //ADD ALL
-                        setTableYearsFromProfiles([
-                            totalStudy, opex, cessation,
-                            topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile, explorationWellCostProfile,
-                            explorationAppraisalWellCost,
-                            explorationSidetrackCost,
-                            seismicAcquisitionAndProcessing,
-                            countryOfficeCost,
-                            gAndGAdminCost,
-                        ])
+                        // SetTableYearsFromProfiles([
+                        //     totalStudy, opex, cessation,
+                        //     topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile, explorationWellCostProfile,
+                        //     explorationAppraisalWellCost,
+                        //     explorationSidetrackCost,
+                        //     seismicAcquisitionAndProcessing,
+                        //     countryOfficeCost,
+                        //     gAndGAdminCost,
+                        // ])
+
+                        SetTableYearsFromProfiles([caseItem.totalFeasibilityAndConceptStudies, caseItem.totalFEEDStudies,
+                            caseItem.wellInterventionCostProfile, caseItem.offshoreFacilitiesOperationsCostProfile,
+                            caseItem.cessationWellsCost, caseItem.cessationOffshoreFacilitiesCost,
+                            caseItem.totalFeasibilityAndConceptStudiesOverride, caseItem.totalFEEDStudiesOverride,
+                            caseItem.wellInterventionCostProfileOverride, caseItem.offshoreFacilitiesOperationsCostProfileOverride,
+                            caseItem.cessationWellsCostOverride, caseItem.cessationOffshoreFacilitiesCostOverride,
+                                surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
+                                explorationWellCostProfile, 
+                                seismicAcquisitionAndProcessing,
+                            ], caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
 
                         //Exploration costs                
                         setTotalExplorationCost(MergeTimeseriesList([

@@ -356,10 +356,16 @@ public static class STEACaseDtoBuilder
                 {
                     costProfileDtos.Add(exploration.SidetrackCostProfile);
                 }
-                if (exploration.GAndGAdminCost?.Values.Length > 0)
+
+                if (exploration.gAndGAdminCostOverride?.Override == true)
+                {
+                    costProfileDtos.Add(exploration.gAndGAdminCostOverride);
+                }
+                else if (exploration.GAndGAdminCost?.Values.Length > 0)
                 {
                     costProfileDtos.Add(exploration.GAndGAdminCost);
                 }
+                
                 if (exploration.SeismicAcquisitionAndProcessing?.Values.Length > 0)
                 {
                     costProfileDtos.Add(exploration.SeismicAcquisitionAndProcessing);

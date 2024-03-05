@@ -119,6 +119,9 @@ const CaseCostTab = (): React.ReactElement | null => {
     const [wellProjectGasInjectorCostOverride,
         setWellProjectGasInjectorCostOverride] = useState<Components.Schemas.GasInjectorCostProfileOverrideDto>()
 
+    const [gAndGAdminCostOverride, setGAndGAdminCostOverride] = useState<Components.Schemas.GAndGAdminCostOverrideDto>()
+
+
     const [startYear] = useState<number>(2020)
     const [endYear] = useState<number>(2030)
 
@@ -132,7 +135,7 @@ const CaseCostTab = (): React.ReactElement | null => {
     useEffect(() => {
         (async () => {
             try {
-                if (caseItem && project && topside && surf && substructure && transport) //test if this work, if not break into smaller ifs
+                if (caseItem && project && topside && surf && substructure && transport && exploration) //test if this work, if not break into smaller ifs
                     if (activeTab === 5) {
                         const totalFeasibility = caseItem.totalFeasibilityAndConceptStudies
                         const totalFEED = caseItem.totalFEEDStudies
@@ -221,6 +224,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                                 const countryOffice = exploration.countryOfficeCost
                                 setCountryOfficeCost(countryOfficeCost)
                                 setGAndGAdminCost(exploration.gAndGAdminCost)
+                                setGAndGAdminCostOverride(exploration.gAndGAdminCostOverride)
 
 
 
@@ -238,6 +242,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                                     waterInjectorCostProfileOverride, gasInjectorCostProfileOverride,
                                     explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
                                     seismicAcquisitionAndProcessing, countryOffice, exploration.gAndGAdminCost, oilProducerCostProfile, oilProducerCostProfileOverride,
+                                    exploration.gAndGAdminCostOverride, 
                                 ], caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
                             }
                         }
@@ -298,7 +303,7 @@ const CaseCostTab = (): React.ReactElement | null => {
             && explorationWellsGridRef.current.api.refreshCells) {
             explorationWellsGridRef.current.api.refreshCells()
         }
-    }, [gAndGAdminCost])
+    }, [gAndGAdminCost  , seismicAcquisitionAndProcessing, countryOfficeCost, explorationWellCostProfile, explorationAppraisalWellCost, explorationSidetrackCost])
 
     const updatedAndSetSurf = (surfItem: Components.Schemas.SurfDto) => {
         const newSurf: Components.Schemas.SurfDto = { ...surfItem }
@@ -515,7 +520,9 @@ const CaseCostTab = (): React.ReactElement | null => {
             profileName: "G&G and admin costs",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: gAndGAdminCost,
-            set: setGAndGAdminCost,
+            overridable: true,
+            overrideProfile: gAndGAdminCostOverride,
+            overrideProfileSet: setGAndGAdminCostOverride,
         },
         {
             profileName: "Seismic acquisition and processing",
@@ -576,7 +583,6 @@ const CaseCostTab = (): React.ReactElement | null => {
     }, [totalFEEDStudiesOverride])
 
     useEffect(() => {
-        console.log(6, caseItem)
         updateObject(caseItem, setCase, "totalOtherStudies", totalOtherStudies)
     }, [totalOtherStudies])
 
@@ -669,6 +675,22 @@ const CaseCostTab = (): React.ReactElement | null => {
     }, [wellProjectGasInjectorCostOverride])
 
     useEffect(() => {
+        console.log(1, exploration)
+        console.log(2, gAndGAdminCostOverride)
+        updateObject(exploration, setExploration, "gAndGAdminCost", gAndGAdminCostOverride)
+        console.log(3, exploration)
+        console.log(4, gAndGAdminCostOverride)
+        console.log(5, gAndGAdminCost)
+    }, [gAndGAdminCostOverride])
+
+    useEffect(() => {
+        updateObject(exploration, setExploration, "seismicAcquisitionAndProcessing", seismicAcquisitionAndProcessing)
+    }, [seismicAcquisitionAndProcessing])
+
+    useEffect(() => {
+        updateObject(exploration, setExploration, "countryOfficeCost", countryOfficeCost)
+    }, [countryOfficeCost])
+    useEffect(() => {
         updateObject(exploration, setExploration, "explorationWellCostProfile", explorationWellCostProfile)
     }, [explorationWellCostProfile])
 
@@ -680,13 +702,7 @@ const CaseCostTab = (): React.ReactElement | null => {
         updateObject(exploration, setExploration, "sidetrackCostProfile", explorationSidetrackCost)
     }, [explorationSidetrackCost])
 
-    useEffect(() => {
-        updateObject(exploration, setExploration, "seismicAcquisitionAndProcessing", seismicAcquisitionAndProcessing)
-    }, [seismicAcquisitionAndProcessing])
 
-    useEffect(() => {
-        updateObject(exploration, setExploration, "countryOfficeCost", countryOfficeCost)
-    }, [countryOfficeCost])
 
     if (activeTab !== 5) { return null }
 

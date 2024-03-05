@@ -45,7 +45,6 @@ const CaseTabTableWithGrouping = ({
     const profilesToRowData = (allTimeSeriesData: any[]) => {
         const tableRows: any[] = []
         const timeSeriesData = allTimeSeriesData?.flat();
-        console.log(1, timeSeriesData)
         timeSeriesData?.forEach((ts: { overrideProfile?: any; total?: any; overrideProfileSet?: any; set?: any; profile?: any; group?: any; profileName?: any; unit?: any }) => {
             const isOverridden = ts.overrideProfile?.override === true
             const rowObject: any = {}
