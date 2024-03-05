@@ -6,17 +6,29 @@ import {
     useEffect,
     useRef,
 } from "react"
-import { Button, NativeSelect } from "@equinor/eds-core-react"
+import styled from "styled-components"
+import {
+    Button, NativeSelect, Typography,
+} from "@equinor/eds-core-react"
+import InputContainer from "../../Input/Containers/InputContainer"
 import CaseNumberInput from "../../Input/CaseNumberInput"
+import FilterContainer from "../../Input/Containers/TableFilterContainer"
 import CaseTabTable from "../Components/CaseTabTable"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../AgGrid/AgChartsTimeseries"
 import { ITimeSeriesOverride } from "../../../Models/ITimeSeriesOverride"
 import InputSwitcher from "../../Input/InputSwitcher"
-import Grid from "@mui/material/Grid"
-import { useProjectContext } from "../../../Context/ProjectContext"
-import { useCaseContext } from "../../../Context/CaseContext"
+
+const TopWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+    margin-bottom: 20px;
+`
+const PageTitle = styled(Typography)`
+    flex-grow: 1;
+`
 
 interface ITimeSeriesData {
     profileName: string
@@ -28,8 +40,12 @@ interface ITimeSeriesData {
     overridable?: boolean
 }
 interface Props {
+    project: Components.Schemas.ProjectDto,
+    caseItem: Components.Schemas.CaseDto,
+    setCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
     drainageStrategy: Components.Schemas.DrainageStrategyDto,
     setDrainageStrategy: Dispatch<SetStateAction<Components.Schemas.DrainageStrategyDto | undefined>>,
+    activeTab: number
 
     netSalesGas: Components.Schemas.NetSalesGasDto | undefined,
     setNetSalesGas: Dispatch<SetStateAction<Components.Schemas.NetSalesGasDto | undefined>>,
@@ -42,14 +58,14 @@ interface Props {
 }
 
 const CaseProductionProfilesTab = ({
+    project,
+    caseItem, setCase,
     drainageStrategy, setDrainageStrategy,
+    activeTab,
     netSalesGas, setNetSalesGas,
     fuelFlaringAndLosses, setFuelFlaringAndLosses,
     importedElectricity, setImportedElectricity,
 }: Props) => {
-    const { project } = useProjectContext()
-    const { projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase } = useCaseContext()
-    if (!projectCase) return (<></>)
     const [gas, setGas] = useState<Components.Schemas.ProductionProfileGasDto>()
     const [oil, setOil] = useState<Components.Schemas.ProductionProfileOilDto>()
     const [water, setWater] = useState<Components.Schemas.ProductionProfileWaterDto>()
@@ -111,13 +127,13 @@ const CaseProductionProfilesTab = ({
     }
 
     const handleCaseFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...projectCaseEdited }
+        const newCase = { ...caseItem }
         const newfacilitiesAvailability = e.currentTarget.value.length > 0
             ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
         if (newfacilitiesAvailability !== undefined) {
             newCase.facilitiesAvailability = newfacilitiesAvailability / 100
         } else { newCase.facilitiesAvailability = 0 }
-        newCase ?? setProjectCaseEdited(newCase)
+        setCase(newCase)
     }
 
     const handleDrainageStrategyGasSolutionChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
@@ -204,13 +220,13 @@ const CaseProductionProfilesTab = ({
 
     const productionProfilesChartData = () => {
         const dataArray: object[] = []
-        if (projectCase?.dG4Date === undefined) { return dataArray }
+        if (caseItem.dG4Date === undefined) { return dataArray }
         for (let i = startYear; i <= endYear; i += 1) {
             dataArray.push({
                 year: i,
-                oilProduction: setValueToCorrespondingYear(oil, i, startYear, new Date(projectCase?.dG4Date).getFullYear()),
-                gasProduction: setValueToCorrespondingYear(gas, i, startYear, new Date(projectCase?.dG4Date).getFullYear()),
-                waterProduction: setValueToCorrespondingYear(water, i, startYear, new Date(projectCase?.dG4Date).getFullYear()),
+                oilProduction: setValueToCorrespondingYear(oil, i, startYear, new Date(caseItem.dG4Date).getFullYear()),
+                gasProduction: setValueToCorrespondingYear(gas, i, startYear, new Date(caseItem.dG4Date).getFullYear()),
+                waterProduction: setValueToCorrespondingYear(water, i, startYear, new Date(caseItem.dG4Date).getFullYear()),
             })
         }
         return dataArray
@@ -218,12 +234,12 @@ const CaseProductionProfilesTab = ({
 
     const injectionProfilesChartData = () => {
         const dataArray: object[] = []
-        if (projectCase?.dG4Date === undefined) { return dataArray }
+        if (caseItem.dG4Date === undefined) { return dataArray }
         for (let i = startYear; i <= endYear; i += 1) {
             dataArray.push({
                 year: i,
                 waterInjection:
-                    setValueToCorrespondingYear(waterInjection, i, startYear, new Date(projectCase?.dG4Date).getFullYear()),
+                    setValueToCorrespondingYear(waterInjection, i, startYear, new Date(caseItem.dG4Date).getFullYear()),
             })
         }
         return dataArray
@@ -232,7 +248,7 @@ const CaseProductionProfilesTab = ({
     useEffect(() => {
         (async () => {
             try {
-                if (activeTabCase === 1 && projectCase?.dG4Date !== undefined) {
+                if (activeTab === 1 && caseItem.dG4Date !== undefined) {
                     setFuelFlaringAndLosses(drainageStrategy.fuelFlaringAndLosses)
                     setNetSalesGas(drainageStrategy.netSalesGas)
                     setImportedElectricity(drainageStrategy.importedElectricity)
@@ -243,7 +259,7 @@ const CaseProductionProfilesTab = ({
                     drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
                     drainageStrategy.productionProfileWaterInjection, drainageStrategy.importedElectricityOverride,
                     drainageStrategy.co2EmissionsOverride,
-                    ], new Date(projectCase?.dG4Date).getFullYear(), setStartYear, setEndYear, setTableYears)
+                    ], new Date(caseItem.dG4Date).getFullYear(), setStartYear, setEndYear, setTableYears)
                     setGas(drainageStrategy.productionProfileGas)
                     setOil(drainageStrategy.productionProfileOil)
                     setWater(drainageStrategy.productionProfileWater)
@@ -258,7 +274,7 @@ const CaseProductionProfilesTab = ({
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-    }, [activeTabCase])
+    }, [activeTab])
 
     useEffect(() => {
         const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
@@ -315,35 +331,37 @@ const CaseProductionProfilesTab = ({
         }
     }, [fuelFlaringAndLosses, netSalesGas, importedElectricity])
 
-    if (activeTabCase !== 1) { return null }
+    if (activeTab !== 1) { return null }
 
     return (
-        <Grid container spacing={2}>
-            <Grid item xs={12} md={6} lg={3}>
+        <>
+            <TopWrapper>
+                <PageTitle variant="h3">Production profiles</PageTitle>
+            </TopWrapper>
+            <InputContainer mobileColumns={1} desktopColumns={2} breakPoint={850}>
                 <InputSwitcher
-                    value={projectCase?.facilitiesAvailability !== undefined
-                        ? `${projectCase?.facilitiesAvailability * 100}%` : ""}
+                    value={caseItem.facilitiesAvailability !== undefined
+                        ? `${caseItem.facilitiesAvailability * 100}%` : ""}
                     label="Facilities availability"
                 >
                     <CaseNumberInput
                         onChange={handleCaseFacilitiesAvailabilityChange}
-                        defaultValue={projectCase?.facilitiesAvailability
-                            !== undefined ? projectCase?.facilitiesAvailability * 100 : undefined}
+                        defaultValue={caseItem.facilitiesAvailability
+                            !== undefined ? caseItem.facilitiesAvailability * 100 : undefined}
                         integer={false}
+                        label="Facilities availability"
                         unit="%"
                         min={0}
                         max={100}
                     />
                 </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
                 <InputSwitcher
                     value={drainageStrategy?.gasSolution === 0 ? "Export" : "Injection"}
                     label="Gas solution"
                 >
                     <NativeSelect
                         id="gasSolution"
-                        label=""
+                        label="Gas solution"
                         onChange={handleDrainageStrategyGasSolutionChange}
                         value={drainageStrategy?.gasSolution}
                     >
@@ -351,121 +369,106 @@ const CaseProductionProfilesTab = ({
                         <option key={1} value={1}>Injection</option>
                     </NativeSelect>
                 </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
                 <InputSwitcher
-                    value={productionStrategyOptions[projectCase?.productionStrategyOverview]}
+                    value={productionStrategyOptions[caseItem.productionStrategyOverview]}
                     label="Production strategy overview"
                 >
                     <NativeSelect
                         id="productionStrategy"
-                        label=""
+                        label="Production strategy overview"
                         onChange={() => { }}
                         disabled
-                        value={projectCase?.productionStrategyOverview}
+                        value={caseItem.productionStrategyOverview}
                     >
                         {Object.entries(productionStrategyOptions).map(([value, label]) => (
                             <option key={value} value={value}>{label}</option>
                         ))}
                     </NativeSelect>
                 </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
                 <InputSwitcher
-                    value={artificialLiftOptions[projectCase?.artificialLift]}
+                    value={artificialLiftOptions[caseItem.artificialLift]}
                     label="Artificial lift"
                 >
                     <NativeSelect
                         id="artificialLift"
-                        label=""
+                        label="Artificial lift"
                         onChange={() => { }}
                         disabled
-                        value={projectCase?.artificialLift}
+                        value={caseItem.artificialLift}
                     >
                         {Object.entries(artificialLiftOptions).map(([value, label]) => (
                             <option key={value} value={value}>{label}</option>
                         ))}
                     </NativeSelect>
                 </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
                 <InputSwitcher
                     label="Oil producer wells"
-                    value={projectCase?.producerCount.toString()}
+                    value={caseItem.producerCount.toString()}
                 >
                     <CaseNumberInput
                         onChange={() => { }}
-                        defaultValue={projectCase?.producerCount}
+                        defaultValue={caseItem.producerCount}
                         integer
                         disabled
+                        label="Oil producer wells"
                     />
                 </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
                 <InputSwitcher
                     label="Water injector wells"
-                    value={projectCase?.waterInjectorCount.toString()}
+                    value={caseItem.waterInjectorCount.toString()}
                 >
                     <CaseNumberInput
                         onChange={() => { }}
-                        defaultValue={projectCase?.waterInjectorCount}
+                        defaultValue={caseItem.waterInjectorCount}
                         integer
                         disabled
+                        label="Water injector count"
                     />
                 </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={6} lg={3}>
                 <InputSwitcher
                     label="Gas injector wells"
-                    value={projectCase?.gasInjectorCount.toString()}
+                    value={caseItem.gasInjectorCount.toString()}
                 >
                     <CaseNumberInput
                         onChange={() => { }}
-                        defaultValue={projectCase?.gasInjectorCount}
+                        defaultValue={caseItem.gasInjectorCount}
                         integer
                         disabled
+                        label="Gas injector count"
                     />
                 </InputSwitcher>
 
-            </Grid>
-            <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="flex-end">
-                <Grid item>
-                    <NativeSelect
-                        id="unit"
-                        label="Units"
-                        onChange={() => { }}
-                        value={project?.physicalUnit}
-                        disabled
-                    >
-                        <option key={0} value={0}>SI</option>
-                        <option key={1} value={1}>Oil field</option>
-                    </NativeSelect>
-                </Grid>
-                <Grid item>
-                    <CaseNumberInput
-                        onChange={handleStartYearChange}
-                        defaultValue={startYear}
-                        integer
-                        label="Start year"
-                        min={2010}
+            </InputContainer>
+            <FilterContainer>
+                <NativeSelect
+                    id="unit"
+                    label="Units"
+                    onChange={() => { }}
+                    value={project.physicalUnit}
+                    disabled
+                >
+                    <option key={0} value={0}>SI</option>
+                    <option key={1} value={1}>Oil field</option>
+                </NativeSelect>
+
+                <CaseNumberInput
+                    onChange={handleStartYearChange}
+                    defaultValue={startYear}
+                    integer
+                    label="Start year"
+                    min={2010}
                     max={2110}
                 />
-                </Grid>
-                <Grid item>
-                    <CaseNumberInput
-                        onChange={handleEndYearChange}
-                        defaultValue={endYear}
-                        integer
-                        label="End year"
-                        min={2010}
+                <CaseNumberInput
+                    onChange={handleEndYearChange}
+                    defaultValue={endYear}
+                    integer
+                    label="End year"
+                    min={2010}
                     max={2110}
                 />
-                </Grid>
-                <Grid item>
-                    <Button onClick={handleTableYearsClick}>  Apply </Button>
-                </Grid>
-            </Grid>
-            <Grid item xs={12}>
+                <Button onClick={handleTableYearsClick}>  Apply </Button>
+            </FilterContainer>
             <AgChartsTimeseries
                 data={productionProfilesChartData()}
                 chartTitle="Production profiles"
@@ -477,10 +480,9 @@ const CaseProductionProfilesTab = ({
                     "Water production (MSm3)",
                 ]}
             />
-            </Grid>
             {
                 (waterInjection?.values && waterInjection.values?.length > 0)
-                && (<Grid item xs={12}>
+                && (
                     <AgChartsTimeseries
                         data={injectionProfilesChartData()}
                         chartTitle="Injection profiles"
@@ -489,20 +491,17 @@ const CaseProductionProfilesTab = ({
                         barNames={["Water injection"]}
                         unit="MSm3"
                     />
-                    </Grid>
                 )
             }
-            <Grid item xs={12}>
             <CaseTabTable
                 timeSeriesData={timeSeriesData}
-                dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
+                dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
                 tableYears={tableYears}
                 tableName="Production profiles"
                 includeFooter={false}
                 gridRef={gridRef}
             />
-            </Grid>
-        </Grid>
+        </>
     )
 }
 

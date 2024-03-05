@@ -2,6 +2,7 @@ import {
     MouseEventHandler,
     FormEventHandler,
 } from "react"
+import styled from "styled-components"
 import {
     Button, Icon, Label, Typography,
 } from "@equinor/eds-core-react"
@@ -10,19 +11,51 @@ import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import { getProjectPhaseName, getProjectCategoryName, unwrapProjectId } from "../../Utils/common"
 import { GetProjectService } from "../../Services/ProjectService"
 import { GetSTEAService } from "../../Services/STEAService"
-import { useProjectContext } from "../../Context/ProjectContext"
-import CasesTable from "../Case/OverviewCasesTable/CasesTable"
-import { useModalContext } from "../../Context/ModalContext"
-import Grid from "@mui/material/Grid"
 import { useAppContext } from "../../Context/AppContext"
+import CasesTable from "../Case/OverviewCasesTable/CasesTable"
+import InputSwitcher from "../Input/InputSwitcher"
+import { useModalContext } from "../../Context/ModalContext"
+
+export const WrapperColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
+const Wrapper = styled.div`
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+`
+const HeaderContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+`
+
+const DataDiv = styled.div`
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+ `
+const DescriptionDiv = styled.div`
+
+`
+const ProjectDataFieldLabel = styled(Typography)`
+    margin-right: 0.5rem;
+    font-weight: bold;
+    white-space: pre-wrap;
+`
+const DescriptionField = styled(TextArea)`
+  
+`
 
 const ProjectOverviewTab = () => {
-    const { editMode } = useAppContext()
     const {
         project,
-        projectEdited,
-        setProjectEdited,
-    } = useProjectContext()
+        setProject,
+    } = useAppContext()
 
     const {
         addNewCase,
@@ -32,9 +65,9 @@ const ProjectOverviewTab = () => {
         const target = e.target as typeof e.target & {
             value: string
         }
-        if (projectEdited) {
-            const updatedProject = { ...projectEdited, description: target.value }
-            setProjectEdited(updatedProject)
+        if (project) {
+            const updatedProject = { ...project, description: target.value }
+            setProject(updatedProject)
         }
     }
 
@@ -57,61 +90,65 @@ const ProjectOverviewTab = () => {
     }
 
     return (
-        <Grid container columnSpacing={2} rowSpacing={3}>
-            <Grid item xs={12} container spacing={1} justifyContent="space-between">
-                <Grid item>
-                    <Typography group="input" variant="label">Project Phase:</Typography>
-                    <Typography aria-label="Project phase">
-                        {getProjectPhaseName(project.projectPhase)}
-                    </Typography>
-                </Grid>
-                <Grid item>
-                    <Typography group="input" variant="label">Project Category:</Typography>
-                    <Typography aria-label="Project category">
-                        {getProjectCategoryName(project.projectCategory)}
-                    </Typography>
-                </Grid>
-                <Grid item>
-                    <Typography group="input" variant="label">Country:</Typography>
-                    <Typography aria-label="Country">
-                        {project.country ?? "Not defined in Common Library"}
-                    </Typography>
-                </Grid>
-                <Grid item>
-                    <Button onClick={submitToSTEA}>
-                        <Icon data={archive} size={18} />
-                        Export to STEA
-                    </Button>
-                </Grid>
-            </Grid>
-            <Grid item xs={12}>
-                <Typography group="input" variant="label" htmlFor="description">Project description</Typography>
-                {editMode 
-                ? <TextArea
-                    id="description"
-                    placeholder="Enter a description"
-                    onInput={handleDescriptionChange}
-                    value={projectEdited ? projectEdited.description : project?.description}
-                    cols={10000}
-                    rows={8}
-                />
-                : <Typography>{project.description ?? undefined}</Typography>}
-            </Grid>
-            <Grid item xs={12} container spacing={1} justifyContent="space-between">
-                <Grid item>
-                    <Typography variant="h3">Cases</Typography>
-                </Grid>
-                <Grid item>
-                    <Button onClick={() => addNewCase()}>
-                        <Icon data={add} size={24} />
-                        Add new Case
-                    </Button>
-                </Grid>
-                <Grid item xs={12}>
-                    <CasesTable />
-                </Grid>
-            </Grid>
-        </Grid>
+        <Wrapper>
+            <HeaderContainer>
+                <Typography variant="h3">Project Overview</Typography>
+                <Button onClick={submitToSTEA}>
+                    <Icon data={archive} size={18} />
+                    Export to STEA
+                </Button>
+            </HeaderContainer>
+            <Wrapper>
+                <DataDiv>
+                    <div>
+                        <ProjectDataFieldLabel>Project Phase:</ProjectDataFieldLabel>
+                        <Typography aria-label="Project phase">
+                            {getProjectPhaseName(project.projectPhase)}
+                        </Typography>
+                    </div>
+                    <div>
+                        <ProjectDataFieldLabel>Project Category:</ProjectDataFieldLabel>
+                        <Typography aria-label="Project category">
+                            {getProjectCategoryName(project.projectCategory)}
+                        </Typography>
+                    </div>
+                    <div>
+                        <ProjectDataFieldLabel>Country:</ProjectDataFieldLabel>
+                        <Typography aria-label="Country">
+                            {project.country ?? "Not defined in Common Library"}
+                        </Typography>
+                    </div>
+                </DataDiv>
+                <DescriptionDiv>
+                    <WrapperColumn>
+                        <InputSwitcher
+                            label="Description"
+                            value={project.description ?? "_"}
+                        >
+                            <>
+                                <Label htmlFor="description" label="Project description" />
+                                <DescriptionField
+                                    id="description"
+                                    placeholder="Enter a description"
+                                    onInput={handleDescriptionChange}
+                                    value={project.description ?? undefined}
+                                    cols={100}
+                                    rows={8}
+                                />
+                            </>
+                        </InputSwitcher>
+                    </WrapperColumn>
+                </DescriptionDiv>
+            </Wrapper>
+            <HeaderContainer>
+                <Typography variant="h3">Cases</Typography>
+                <Button onClick={() => addNewCase()}>
+                    <Icon data={add} size={24} />
+                    Add new Case
+                </Button>
+            </HeaderContainer>
+            <CasesTable />
+        </Wrapper>
     )
 }
 

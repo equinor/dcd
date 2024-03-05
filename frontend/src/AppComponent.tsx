@@ -6,8 +6,6 @@ import { EnvironmentVariables } from "./environmentVariables"
 import { storeAppId, storeAppScope } from "./Utils/common"
 import { buildConfig } from "./Services/config"
 import { ModalContextProvider } from "./Context/ModalContext"
-import { ProjectContextProvider } from "./Context/ProjectContext"
-import { CaseContextProvider } from "./Context/CaseContext"
 import { AppContextProvider } from "./Context/AppContext"
 
 const AppComponent: FC = () => {
@@ -36,13 +34,9 @@ const AppComponent: FC = () => {
 
     return (
         <AppContextProvider>
-            <ProjectContextProvider>
-                <CaseContextProvider>
-                    <ModalContextProvider>
-                        <AppRouter />
-                    </ModalContextProvider>
-                </CaseContextProvider>
-            </ProjectContextProvider>
+            <ModalContextProvider>
+                <AppRouter />
+            </ModalContextProvider>
         </AppContextProvider>
     )
 }

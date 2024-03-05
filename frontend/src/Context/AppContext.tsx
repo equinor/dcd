@@ -1,7 +1,4 @@
-import {
-    FC,
-    Dispatch,
-    SetStateAction,
+import React, {
     createContext,
     useState,
     ReactNode,
@@ -10,49 +7,21 @@ import {
 } from "react"
 
 interface AppContextType {
-    isCreating: boolean,
-    setIsCreating: Dispatch<SetStateAction<boolean>>,
-    isLoading: boolean,
-    setIsLoading: Dispatch<SetStateAction<boolean>>,
-    isSaving: boolean,
-    setIsSaving: Dispatch<SetStateAction<boolean>>,
-    editMode: boolean,
-    setEditMode: Dispatch<SetStateAction<boolean>>,
-    updateFromServer: boolean,
-    setUpdateFromServer: Dispatch<SetStateAction<boolean>>,
+    project: Components.Schemas.ProjectDto | undefined;
+    setProject: React.Dispatch<React.SetStateAction<Components.Schemas.ProjectDto | undefined>>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
 
-const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [isCreating, setIsCreating] = useState<boolean>(false)
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [isSaving, setIsSaving] = useState<boolean>(false)
-    const [editMode, setEditMode] = useState<boolean>(false)
-    const [updateFromServer, setUpdateFromServer] = useState<boolean>(true)
+const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+    const [project, setProject] = useState<Components.Schemas.ProjectDto | undefined>()
 
     const value = useMemo(() => ({
-        isCreating,
-        setIsCreating,
-        isLoading,
-        setIsLoading,
-        isSaving,
-        setIsSaving,
-        editMode,
-        setEditMode,
-        updateFromServer,
-        setUpdateFromServer,
+        project,
+        setProject,
     }), [
-        isCreating,
-        setIsCreating,
-        isLoading,
-        setIsLoading,
-        isSaving,
-        setIsSaving,
-        editMode,
-        setEditMode,
-        updateFromServer,
-        setUpdateFromServer,
+        project,
+        setProject,
     ])
 
     return (

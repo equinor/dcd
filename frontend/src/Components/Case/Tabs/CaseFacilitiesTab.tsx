@@ -3,17 +3,38 @@ import {
     SetStateAction,
     ChangeEventHandler,
 } from "react"
+import styled from "styled-components"
+
 import {
     NativeSelect, Typography, Input, Label,
 } from "@equinor/eds-core-react"
 import CaseNumberInput from "../../Input/CaseNumberInput"
+import InputContainer from "../../Input/Containers/InputContainer"
 import InputSwitcher from "../../Input/InputSwitcher"
-import Grid from "@mui/material/Grid"
-import { useProjectContext } from "../../../Context/ProjectContext"
-import { useCaseContext } from "../../../Context/CaseContext"
 
+const TopWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+    margin-bottom: 20px;
+`
+const PageTitle = styled(Typography)`
+    flex-grow: 1;
+`
+
+const HostWrapper = styled.div`
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+`
+const InputSection = styled.div`
+    margin-bottom: 40px;
+`
 
 interface Props {
+    project: Components.Schemas.ProjectDto,
+    caseItem: Components.Schemas.CaseDto,
+    setCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
     topside: Components.Schemas.TopsideDto,
     setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideDto | undefined>>,
     surf: Components.Schemas.SurfDto,
@@ -22,19 +43,18 @@ interface Props {
     setSubstrucutre: Dispatch<SetStateAction<Components.Schemas.SubstructureDto | undefined>>,
     transport: Components.Schemas.TransportDto,
     setTransport: Dispatch<SetStateAction<Components.Schemas.TransportDto | undefined>>,
+    activeTab: number
 }
 
 const CaseFacilitiesTab = ({
+    project,
+    caseItem, setCase,
     topside, setTopside,
     surf, setSurf,
     substructure, setSubstrucutre,
     transport, setTransport,
+    activeTab,
 }: Props) => {
-
-    const { project } = useProjectContext()
-    const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
-    if (!projectCase) return (<></>)
-
     const platformConceptValues: { [key: number]: string } = {
         0: "No Concept",
         1: "Tie-back to existing offshore platform",
@@ -190,18 +210,18 @@ const CaseFacilitiesTab = ({
             const newSubstructure = { ...substructure }
             newSubstructure.concept = newConcept
             if (newConcept !== 1) {
-                const newCase = { ...projectCase }
+                const newCase = { ...caseItem }
                 newCase.host = ""
-                setProjectCaseEdited(newCase)
+                setCase(newCase)
             }
             setSubstrucutre(newSubstructure)
         }
     }
 
     const handleHostChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...projectCase }
+        const newCase = { ...caseItem }
         newCase.host = e.currentTarget.value
-        setProjectCaseEdited(newCase)
+        setCase(newCase)
     }
 
     const handleTransportOilExportPipelineLengthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -216,348 +236,374 @@ const CaseFacilitiesTab = ({
         setTransport(newTransport)
     }
 
+    if (activeTab !== 4) { return null }
+
     return (
-        <Grid container spacing={2}>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={platformConceptValues[substructure?.concept]}
-                    label="Platform concept"
-                >
-                    <NativeSelect
-                        id="platformConcept"
-                        label=""
-                        onChange={handleSubstructureConceptChange}
-                        value={substructure?.concept}
-                    >
-                        {
-                            Object.keys(platformConceptValues).map((key) => (
-                                <option key={key} value={key}>{platformConceptValues[Number(key)]}</option>
-                            ))
-                        }
-                    </NativeSelect>
-                </InputSwitcher>
-            </Grid>
-            {substructure.concept === 1 && (
-                <Grid item xs={12} md={4}>
+        <>
+            <TopWrapper>
+                <PageTitle variant="h2">Facilities</PageTitle>
+            </TopWrapper>
+
+            <InputSection>
+                <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
                     <InputSwitcher
-                        value={projectCase.host ?? ""}
-                        label="Host"
+                        value={platformConceptValues[substructure?.concept]}
+                        label="Platform concept"
                     >
-                        <Input
-                            id="NumberInput"
-                            value={projectCase.host ?? ""}
-                            disabled={false}
-                            onChange={handleHostChange}
+                        <NativeSelect
+                            id="platformConcept"
+                            label="Platform concept"
+                            onChange={handleSubstructureConceptChange}
+                            value={substructure?.concept}
+                        >
+                            {
+                                Object.keys(platformConceptValues).map((key) => (
+                                    <option key={key} value={key}>{platformConceptValues[Number(key)]}</option>
+                                ))
+                            }
+                        </NativeSelect>
+                    </InputSwitcher>
+                    {substructure.concept === 1 && (
+                        <HostWrapper>
+                            <InputSwitcher
+                                value={caseItem.host ?? ""}
+                                label="Host"
+                            >
+                                <>
+                                    <Label htmlFor="NumberInput" label="Host" />
+                                    <Input
+                                        id="NumberInput"
+                                        value={caseItem.host ?? ""}
+                                        disabled={false}
+                                        onChange={handleHostChange}
+                                    />
+                                </>
+                            </InputSwitcher>
+                        </HostWrapper>
+                    )}
+                    <InputSwitcher
+                        value={`${Math.round(Number(topside?.facilityOpex) * 10) / 10} ${project?.currency === 1 ? "MNOK" : "MUSD"}`}
+                        label="Facility opex"
+                    >
+                        <CaseNumberInput
+                            onChange={handleFacilityOpexChange}
+                            defaultValue={Math.round(Number(topside?.facilityOpex) * 10) / 10}
+                            integer={false}
+                            label="Facility opex"
+                            unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
+                            min={0}
+                            max={1000000}
                         />
                     </InputSwitcher>
-                </Grid>
-            )}
-            <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${Math.round(Number(topside?.facilityOpex) * 10) / 10} ${project?.currency === 1 ? "MNOK" : "MUSD"}`}
-                    label="Facility opex"
-                >
-                    <CaseNumberInput
-                        onChange={handleFacilityOpexChange}
-                        defaultValue={Math.round(Number(topside?.facilityOpex) * 10) / 10}
-                        integer={false}
-                        unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${Math.round(Number(surf?.cessationCost) * 10) / 10} ${project?.currency === 1 ? "MNOK" : "MUSD"}`}
-                    label="Cessation cost"
-                >
-                    <CaseNumberInput
-                        onChange={handleSurfCessationCostChange}
-                        defaultValue={Math.round(Number(surf?.cessationCost) * 10) / 10}
-                        integer={false}
-                        unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12}>
-                <Typography variant="h4">Topside</Typography>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${Math.round(Number(topside?.dryWeight) * 1) / 1} tonnes`}
-                    label="Topside dry weight"
-                >
-                    <CaseNumberInput
-                        onChange={handleTopsideDryWeightChange}
-                        defaultValue={Math.round(Number(topside?.dryWeight) * 1) / 1}
-                        integer
-                        unit="tonnes"
-                            min={0}
-                            max={1000000}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${projectCase.facilitiesAvailability ?? 0 * 100}%`}
-                    label="Facilities availability"
-                >
-                    <CaseNumberInput
-                        onChange={() => { }}
-                        defaultValue={projectCase.facilitiesAvailability ?? 0 * 100}
-                        integer
-                        disabled
-                        unit="%"
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${Math.round(Number(topside?.peakElectricityImported) * 10) / 10} MW`}
-                    label="Peak electricity imported"
-                >
-                    <CaseNumberInput
-                        onChange={handleTopsidePeakElectricityImportedChange}
-                        defaultValue={Math.round(Number(topside?.peakElectricityImported) * 10) / 10}
-                        integer={false}
-                        unit="MW"
-                            min={0}
-                            max={1000000}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${Math.round(Number(topside?.oilCapacity) * 1) / 1} Sm³/sd`}
-                    label="Oil capacity"
-                >
-                    <CaseNumberInput
-                        onChange={handleTopsideOilCapacityChange}
-                        defaultValue={Math.round(Number(topside?.oilCapacity) * 1) / 1}
-                        integer
-                        unit="Sm³/sd"
-                            min={0}
-                            max={1000000}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${Math.round(Number(topside?.gasCapacity) * 10) / 10} MSm³/sd`}
-                    label="Gas capacity"
-                >
-                    <CaseNumberInput
-                        onChange={handleTopsideGasCapacityChange}
-                        defaultValue={Math.round(Number(topside?.gasCapacity) * 10) / 10}
-                        integer={false}
-                        unit="MSm³/sd"
-                            min={0}
-                            max={1000000}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${Math.round(Number(topside?.waterInjectionCapacity) * 1) / 1} MSm³/sd`}
-                    label="Water injection capacity"
-                >
-                    <CaseNumberInput
-                        onChange={handleTopsideWaterInjectionCapacityChange}
-                        defaultValue={Math.round(Number(topside?.waterInjectionCapacity) * 1) / 1}
-                        integer
-                        unit="MSm³/sd"
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12}>
-                <Typography variant="h4">Platform wells</Typography>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${topside?.producerCount}`}
-                    label="Producer count"
-                >
-                    <CaseNumberInput
-                        onChange={handleTopsideProducerCountChange}
-                        defaultValue={topside?.producerCount}
-                        integer
-                            min={0}
-                            max={1000000}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${topside?.gasInjectorCount}`}
-                    label="Gas injector count"
-                >
-                    <CaseNumberInput
-                        onChange={handleTopsideGasInjectorCountChange}
-                        defaultValue={topside?.gasInjectorCount}
-                        integer
-                            min={0}
-                            max={1000000}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${topside?.waterInjectorCount}`}
-                    label="Water injector count"
-                >
-                    <CaseNumberInput
-                        onChange={handleTopsideWaterInjectorCountChange}
-                        defaultValue={topside?.waterInjectorCount}
-                        integer
-                            min={0}
-                            max={1000000}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12}>
-                <Typography variant="h4">SURF</Typography>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${surf?.templateCount}`} label="Templates">
-                    <CaseNumberInput
-                        onChange={handleSurfTemplateCountChange}
-                        defaultValue={surf?.templateCount}
-                        integer
-                            min={0}
-                            max={1000000}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${surf?.riserCount}`} label="Risers">
-                    <CaseNumberInput
-                        onChange={handleSurfRiserCountChange}
-                        defaultValue={surf?.riserCount}
-                        integer
-                            min={0}
-                            max={1000000}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${Math.round(Number(surf?.infieldPipelineSystemLength) * 10) / 10} km`} label="Production lines length">
-                    <CaseNumberInput
-                        onChange={handleSurfInfieldPipelineSystemLengthChange}
-                        defaultValue={Math.round(Number(surf?.infieldPipelineSystemLength) * 10) / 10}
-                        integer={false}
-                        unit="km"
-                            min={0}
-                            max={1000000}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${Math.round(Number(surf?.umbilicalSystemLength) * 10) / 10} km`} label="Umbilical system length">
-                    <CaseNumberInput
-                        onChange={handleSurfUmbilicalSystemLengthChange}
-                        defaultValue={Math.round(Number(surf?.umbilicalSystemLength) * 10) / 10}
-                        integer={false}
-                        unit="km"
-                            min={0}
-                            max={1000000}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={productionFlowlineValues[surf?.productionFlowline]}
-                    label="Production flowline"
-                >
-                    <NativeSelect
-                        id="productionFlowline"
-                        label=""
-                        onChange={handleProductionFlowlineChange}
-                        value={surf?.productionFlowline}
+
+                    <InputSwitcher
+                        value={`${Math.round(Number(surf?.cessationCost) * 10) / 10} ${project?.currency === 1 ? "MNOK" : "MUSD"}`}
+                        label="Cessation cost"
                     >
-                        {
-                            Object.keys(productionFlowlineValues).map((key) => (
-                                <option key={key} value={key}>{productionFlowlineValues[Number(key)]}</option>
-                            ))
-                        }
-                    </NativeSelect>
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12}>
+                        <CaseNumberInput
+                            onChange={handleSurfCessationCostChange}
+                            defaultValue={Math.round(Number(surf?.cessationCost) * 10) / 10}
+                            integer={false}
+                            label="Cessation cost"
+                            unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
+                            min={0}
+                            max={1000000}
+                        />
+                    </InputSwitcher>
+
+                </InputContainer>
+            </InputSection>
+            <InputSection>
+                <Typography variant="h4">Topside</Typography>
+                <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
+                    <InputSwitcher
+                        value={`${Math.round(Number(topside?.dryWeight) * 1) / 1} tonnes`}
+                        label="Topside dry weight"
+                    >
+                        <CaseNumberInput
+                            onChange={handleTopsideDryWeightChange}
+                            defaultValue={Math.round(Number(topside?.dryWeight) * 1) / 1}
+                            integer
+                            label="Topside dry weight"
+                            unit="tonnes"
+                            min={0}
+                            max={1000000}
+                        />
+                    </InputSwitcher>
+
+                    <InputSwitcher
+                        value={`${caseItem.facilitiesAvailability ?? 0 * 100}%`}
+                        label="Facilities availability"
+                    >
+                        <CaseNumberInput
+                            onChange={() => { }}
+                            defaultValue={caseItem.facilitiesAvailability ?? 0 * 100}
+                            integer
+                            disabled
+                            label="Facilities availability"
+                            unit="%"
+                        />
+                    </InputSwitcher>
+
+                    <InputSwitcher
+                        value={`${Math.round(Number(topside?.peakElectricityImported) * 10) / 10} MW`}
+                        label="Peak electricity imported"
+                    >
+                        <CaseNumberInput
+                            onChange={handleTopsidePeakElectricityImportedChange}
+                            defaultValue={Math.round(Number(topside?.peakElectricityImported) * 10) / 10}
+                            integer={false}
+                            label="Peak electricity imported"
+                            unit="MW"
+                            min={0}
+                            max={1000000}
+                        />
+                    </InputSwitcher>
+
+                    <InputSwitcher
+                        value={`${Math.round(Number(topside?.oilCapacity) * 1) / 1} Sm³/sd`}
+                        label="Oil capacity"
+                    >
+                        <CaseNumberInput
+                            onChange={handleTopsideOilCapacityChange}
+                            defaultValue={Math.round(Number(topside?.oilCapacity) * 1) / 1}
+                            integer
+                            label="Oil capacity"
+                            unit="Sm³/sd"
+                            min={0}
+                            max={1000000}
+                        />
+                    </InputSwitcher>
+
+                    <InputSwitcher
+                        value={`${Math.round(Number(topside?.gasCapacity) * 10) / 10} MSm³/sd`}
+                        label="Gas capacity"
+                    >
+                        <CaseNumberInput
+                            onChange={handleTopsideGasCapacityChange}
+                            defaultValue={Math.round(Number(topside?.gasCapacity) * 10) / 10}
+                            integer={false}
+                            label="Gas capacity"
+                            unit="MSm³/sd"
+                            min={0}
+                            max={1000000}
+                        />
+                    </InputSwitcher>
+
+                    <InputSwitcher
+                        value={`${Math.round(Number(topside?.waterInjectionCapacity) * 1) / 1} MSm³/sd`}
+                        label="Water injection capacity"
+                    >
+                        <CaseNumberInput
+                            onChange={handleTopsideWaterInjectionCapacityChange}
+                            defaultValue={Math.round(Number(topside?.waterInjectionCapacity) * 1) / 1}
+                            integer
+                            label="Water injection capacity"
+                            unit="MSm³/sd"
+                        />
+                    </InputSwitcher>
+                </InputContainer>
+            </InputSection>
+            <InputSection>
+                <Typography variant="h4">Platform wells</Typography>
+                <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
+
+                    <InputSwitcher
+                        value={`${topside?.producerCount}`}
+                        label="Producer count"
+                    >
+                        <CaseNumberInput
+                            onChange={handleTopsideProducerCountChange}
+                            defaultValue={topside?.producerCount}
+                            integer
+                            label="Producer count"
+                            min={0}
+                            max={1000000}
+                        />
+                    </InputSwitcher>
+
+                    <InputSwitcher
+                        value={`${topside?.gasInjectorCount}`}
+                        label="Gas injector count"
+                    >
+                        <CaseNumberInput
+                            onChange={handleTopsideGasInjectorCountChange}
+                            defaultValue={topside?.gasInjectorCount}
+                            integer
+                            label="Gas injector count"
+                            min={0}
+                            max={1000000}
+                        />
+                    </InputSwitcher>
+
+                    <InputSwitcher
+                        value={`${topside?.waterInjectorCount}`}
+                        label="Water injector count"
+                    >
+                        <CaseNumberInput
+                            onChange={handleTopsideWaterInjectorCountChange}
+                            defaultValue={topside?.waterInjectorCount}
+                            integer
+                            label="Water injector count"
+                            min={0}
+                            max={1000000}
+                        />
+                    </InputSwitcher>
+
+                </InputContainer>
+            </InputSection>
+            <InputSection>
+                <Typography variant="h4">SURF</Typography>
+                <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
+                    <InputSwitcher value={`${surf?.templateCount}`} label="Templates">
+                        <CaseNumberInput
+                            onChange={handleSurfTemplateCountChange}
+                            defaultValue={surf?.templateCount}
+                            integer
+                            label="Templates"
+                            min={0}
+                            max={1000000}
+                        />
+                    </InputSwitcher>
+
+                    <InputSwitcher value={`${surf?.riserCount}`} label="Risers">
+                        <CaseNumberInput
+                            onChange={handleSurfRiserCountChange}
+                            defaultValue={surf?.riserCount}
+                            integer
+                            label="Risers"
+                            min={0}
+                            max={1000000}
+                        />
+                    </InputSwitcher>
+
+                    <InputSwitcher value={`${Math.round(Number(surf?.infieldPipelineSystemLength) * 10) / 10} km`} label="Production lines length">
+                        <CaseNumberInput
+                            onChange={handleSurfInfieldPipelineSystemLengthChange}
+                            defaultValue={Math.round(Number(surf?.infieldPipelineSystemLength) * 10) / 10}
+                            integer={false}
+                            label="Production lines length"
+                            unit="km"
+                            min={0}
+                            max={1000000}
+                        />
+                    </InputSwitcher>
+
+                    <InputSwitcher value={`${Math.round(Number(surf?.umbilicalSystemLength) * 10) / 10} km`} label="Umbilical system length">
+                        <CaseNumberInput
+                            onChange={handleSurfUmbilicalSystemLengthChange}
+                            defaultValue={Math.round(Number(surf?.umbilicalSystemLength) * 10) / 10}
+                            integer={false}
+                            label="Umbilical system length"
+                            unit="km"
+                            min={0}
+                            max={1000000}
+                        />
+                    </InputSwitcher>
+                    <InputSwitcher
+                        value={productionFlowlineValues[surf?.productionFlowline]}
+                        label="Production flowline"
+                    >
+                        <NativeSelect
+                            id="productionFlowline"
+                            label="Production flowline"
+                            onChange={handleProductionFlowlineChange}
+                            value={surf?.productionFlowline}
+                        >
+                            {
+                                Object.keys(productionFlowlineValues).map((key) => (
+                                    <option key={key} value={key}>{productionFlowlineValues[Number(key)]}</option>
+                                ))
+                            }
+                        </NativeSelect>
+                    </InputSwitcher>
+                </InputContainer>
+            </InputSection>
+            <InputSection>
                 <Typography variant="h4">Subsea wells</Typography>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${surf?.producerCount}`} label="Producer count">
-                    <CaseNumberInput
-                        onChange={handleSurfProducerCountChange}
-                        defaultValue={surf?.producerCount}
-                        integer
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${surf?.gasInjectorCount}`} label="Gas injector count">
-                    <CaseNumberInput
-                        onChange={handleSurfGasInjectorCountChange}
-                        defaultValue={surf?.gasInjectorCount}
-                        integer
+                <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
+
+                    <InputSwitcher value={`${surf?.producerCount}`} label="Producer count">
+                        <CaseNumberInput
+                            onChange={handleSurfProducerCountChange}
+                            defaultValue={surf?.producerCount}
+                            integer
+                            label="Producer count"
+                        />
+                    </InputSwitcher>
+
+                    <InputSwitcher value={`${surf?.gasInjectorCount}`} label="Gas injector count">
+                        <CaseNumberInput
+                            onChange={handleSurfGasInjectorCountChange}
+                            defaultValue={surf?.gasInjectorCount}
+                            integer
+                            label="Gas injector count"
                             min={0}
                             max={1000000}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${surf?.waterInjectorCount}`} label="Water injector count">
-                    <CaseNumberInput
-                        onChange={handleSurfWaterInjectorCountChange}
-                        defaultValue={surf?.waterInjectorCount}
-                        integer
+                        />
+                    </InputSwitcher>
+
+                    <InputSwitcher value={`${surf?.waterInjectorCount}`} label="Water injector count">
+                        <CaseNumberInput
+                            onChange={handleSurfWaterInjectorCountChange}
+                            defaultValue={surf?.waterInjectorCount}
+                            integer
+                            label="Water injector count"
                             min={0}
                             max={1000000}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12}>
+                        />
+                    </InputSwitcher>
+
+                </InputContainer>
+            </InputSection>
+            <InputSection>
                 <Typography variant="h4">Transport</Typography>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${Math.round(Number(transport?.oilExportPipelineLength) * 10) / 10} km`} label="Oil export pipeline length">
-                    <CaseNumberInput
-                        onChange={handleTransportOilExportPipelineLengthChange}
-                        defaultValue={Math.round(Number(transport?.oilExportPipelineLength) * 10) / 10}
-                        integer={false}
-                        unit="km"
+                <InputContainer mobileColumns={1} desktopColumns={2} breakPoint={850}>
+
+                    <InputSwitcher value={`${Math.round(Number(transport?.oilExportPipelineLength) * 10) / 10} km`} label="Oil export pipeline length">
+                        <CaseNumberInput
+                            onChange={handleTransportOilExportPipelineLengthChange}
+                            defaultValue={Math.round(Number(transport?.oilExportPipelineLength) * 10) / 10}
+                            integer={false}
+                            label="Oil export pipeline length"
+                            unit="km"
                             min={0}
                             max={1000000}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${Math.round(Number(transport?.gasExportPipelineLength) * 10) / 10} km`} label="Gas export pipeline length">
-                    <CaseNumberInput
-                        onChange={handleTransportGasExportPipelineLengthChange}
-                        defaultValue={Math.round(Number(transport?.gasExportPipelineLength) * 10) / 10}
-                        integer={false}
-                        unit="km"
+                        />
+                    </InputSwitcher>
+
+                    <InputSwitcher value={`${Math.round(Number(transport?.gasExportPipelineLength) * 10) / 10} km`} label="Gas export pipeline length">
+                        <CaseNumberInput
+                            onChange={handleTransportGasExportPipelineLengthChange}
+                            defaultValue={Math.round(Number(transport?.gasExportPipelineLength) * 10) / 10}
+                            integer={false}
+                            label="Gas export pipeline length"
+                            unit="km"
                             min={0}
                             max={1000000}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12}>
+                        />
+                    </InputSwitcher>
+                </InputContainer>
+            </InputSection>
+            <InputSection>
                 <Typography variant="h4">Substructure</Typography>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${Math.round(Number(substructure?.dryWeight) * 1) / 1} tonnes`} label="Substructure dry weight">
-                    <CaseNumberInput
-                        onChange={handleSubstructureDryweightChange}
-                        defaultValue={Math.round(Number(substructure?.dryWeight) * 1) / 1}
-                        integer
-                        unit="tonnes"
+                <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
+
+                    <InputSwitcher value={`${Math.round(Number(substructure?.dryWeight) * 1) / 1} tonnes`} label="Substructure dry weight">
+                        <CaseNumberInput
+                            onChange={handleSubstructureDryweightChange}
+                            defaultValue={Math.round(Number(substructure?.dryWeight) * 1) / 1}
+                            integer
+                            label="Substructure dry weight"
+                            unit="tonnes"
                             min={0}
                             max={1000000}
-                    />
-                </InputSwitcher>
-            </Grid>
-        </Grid>
+                        />
+                    </InputSwitcher>
+                </InputContainer>
+            </InputSection>
+
+        </>
     )
 }
 

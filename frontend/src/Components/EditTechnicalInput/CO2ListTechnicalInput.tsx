@@ -7,14 +7,28 @@ import {
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { Switch } from "@equinor/eds-core-react"
+import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
-import { useProjectContext } from "../../Context/ProjectContext"
-import Grid from "@mui/material/Grid"
+import { useAppContext } from "../../Context/AppContext"
+
+const SwitchWrapper = styled.div`
+    align-items: flex-end;
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+    z-index: 3;
+`
+const ColumnWrapper = styled.div`
+    margin-top: 1rem;
+    margin-left: 45rem;
+    flex-direction: column;
+    margin-bottom: 0.5rem;
+`
 
 const CO2ListTechnicalInput = () => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
-    const { project, setProject } = useProjectContext()
+    const { project, setProject } = useAppContext()
 
     if (!project) return null
 
@@ -178,22 +192,25 @@ const CO2ListTechnicalInput = () => {
     ])
 
     return (
-        <Grid container spacing={1} justifyContent="flex-end">
-            <Grid item>
-                <Switch
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                        setCheck(e.target.checked)
-                    }}
-                    onClick={switchRow}
-                    checked={check}
-                    label={switchLabel()}
-                />
-            </Grid>
-            <Grid item xs={12} className={styles.root}>
+        <>
+            <ColumnWrapper>
+                <SwitchWrapper>
+                    <Switch
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                            setCheck(e.target.checked)
+                        }}
+                        onClick={switchRow}
+                        checked={check}
+                        label={switchLabel()}
+                    />
+                </SwitchWrapper>
+            </ColumnWrapper>
+            <div className={styles.root}>
                 <div
                     style={{
-                        display: "flex", flexDirection: "column", width: "100%",
+                        display: "flex", flexDirection: "column", width: "54rem",
                     }}
+                    className="ag-theme-alpine-fusion"
                 >
                     <AgGridReact
                         ref={gridRef}
@@ -207,8 +224,8 @@ const CO2ListTechnicalInput = () => {
                         doesExternalFilterPass={doesExternalFilterPass}
                     />
                 </div>
-            </Grid>
-        </Grid>
+            </div>
+        </>
     )
 }
 

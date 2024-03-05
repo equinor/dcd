@@ -1,7 +1,7 @@
 /* eslint-disable no-unsafe-optional-chaining */
 
 import { useEffect, useState } from "react"
-import { useProjectContext } from "../Context/ProjectContext"
+import { useAppContext } from "../Context/AppContext"
 import { GetProjectService } from "../Services/ProjectService"
 
 interface TableCompareCase {
@@ -23,7 +23,7 @@ interface TableCompareCase {
 }
 
 export const useProjectChartData = () => {
-    const { project } = useProjectContext()
+    const { project } = useAppContext()
 
     const [rowData, setRowData] = useState<TableCompareCase[]>()
     const [compareCasesTotals, setCompareCasesTotals] = useState<any>()
