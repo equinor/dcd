@@ -1,25 +1,19 @@
 import { Typography } from "@equinor/eds-core-react"
-import styled from "styled-components"
 import CO2ListTechnicalInput from "./CO2ListTechnicalInput"
+import Grid from "@mui/material/Grid"
 
-const TopWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-`
 
 const CO2Tab = () => (
-    <>
-        <TopWrapper color="danger">
-            <Typography variant="h4">CO2 Emission</Typography>
-        </TopWrapper>
-        <TopWrapper>
+    <Grid container spacing={2}>
+        <Grid item xs={12}>
             <Typography>
                 You can override these default assumption to customize the calculation made in CO2 emissions.
             </Typography>
-        </TopWrapper>
-        <CO2ListTechnicalInput />
-    </>
+        </Grid>
+        <Grid item xs={12}>
+            <CO2ListTechnicalInput />
+        </Grid>
+    </Grid>
 )
 
 export default CO2Tab

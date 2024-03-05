@@ -1,31 +1,26 @@
-import { Typography } from "@equinor/eds-core-react"
-import styled from "styled-components"
-import { useModalContext } from "../../Context/ModalContext"
-
-const Wrapper = styled.div`
-    margin-bottom: 8px;
-`
+import { Typography, InputWrapper } from "@equinor/eds-core-react"
+import { useAppContext } from "../../Context/AppContext";
 
 interface InputSwitcherProps {
-    label: string;
+    label?: string;
     value: string;
     children: React.ReactElement
 }
 
 const InputSwitcher = ({ value, label, children }: InputSwitcherProps): JSX.Element => {
-    const { caseModalEditMode } = useModalContext()
+    const { editMode } = useAppContext()
 
-    if (caseModalEditMode) {
-        return children
-    }
     return (
-        <Wrapper>
-            <Typography variant="meta">
-                {label}
-                :
-            </Typography>
-            <Typography>{value}</Typography>
-        </Wrapper>
+        <InputWrapper
+            labelProps={{
+                label: label
+            }}
+        >
+            {editMode
+            ? children
+            : <Typography>{value}</Typography>
+            }
+        </InputWrapper>
     )
 }
 
