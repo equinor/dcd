@@ -62,7 +62,7 @@ const Sidebar = () => {
                             <Grid item container alignItems="center" justifyContent="space-between" display="grid" gridTemplateColumns="0.5rem 1fr auto">
                                 <Grid item></Grid>
                                 <Grid item>
-                                    <ProjectTitle variant="overline">{project?.name}</ProjectTitle>
+                                    <ProjectTitle variant="overline">{currentContext?.title}</ProjectTitle>
                                 </Grid>
                             </Grid>
                             

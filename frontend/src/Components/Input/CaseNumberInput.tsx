@@ -59,7 +59,7 @@ const CaseNumberInput = ({
                 setVisibleLabel(label)
                 setHasError(false)
             } else {
-                setVisibleLabel(`${label} (min: ${min}, max: ${max})`)
+                setVisibleLabel(`(min: ${min}, max: ${max})`)
                 setHasError(true)
             }
         }
@@ -67,11 +67,6 @@ const CaseNumberInput = ({
 
     return (
         <WrapperColumn>
-            <StyledLabel
-                $variant={hasError ? "error" : undefined}
-                htmlFor="numberInput"
-                label={visibleLabel}
-            />
             <Input
                 id="numberInput"
                 type="number"
@@ -82,6 +77,11 @@ const CaseNumberInput = ({
                 onInput={(event: React.FormEvent<HTMLInputElement>) => checkInput(event as unknown as React.KeyboardEvent<HTMLInputElement>)}
                 rightAdornments={unit}
                 variant={hasError ? "error" : undefined}
+            />
+            <StyledLabel
+                $variant={hasError ? "error" : undefined}
+                htmlFor="numberInput"
+                label={visibleLabel}
             />
         </WrapperColumn>
     )
