@@ -93,6 +93,7 @@ const CaseView = () => {
     const {
         project,
         setProject,
+        isEditing,
     } = useAppContext()
 
     const {
@@ -157,7 +158,6 @@ const CaseView = () => {
     const [isLoading, setIsLoading] = useState<boolean>()
     const [isSaving, setIsSaving] = useState<boolean>()
     const [updateFromServer, setUpdateFromServer] = useState<boolean>(true)
-    const [nameEditMode, setNameEditMode] = useState<boolean>(false)
     const [updatedCaseName, setUpdatedCaseName] = useState<string>("")
 
     useEffect(() => {
@@ -175,7 +175,7 @@ const CaseView = () => {
     }, [currentContext?.externalId, caseId, fusionContextId])
 
     useEffect(() => {
-        if (caseItem && nameEditMode && updatedCaseName !== caseItem.name) {
+        if (caseItem && isEditing && updatedCaseName !== caseItem.name) {
             const updatedCase = { ...caseItem }
             updatedCase.name = updatedCaseName
             setCase(updatedCase)
@@ -301,10 +301,8 @@ const CaseView = () => {
             setIfNotNull(result.generatedProfilesDto?.importedElectricityDto, setImportedElectricity)
 
             setIsSaving(false)
-            setNameEditMode(false)
         } catch (e) {
             setIsSaving(false)
-            setNameEditMode(false)
             console.error("Error when saving case and assets: ", e)
         }
     }
@@ -320,7 +318,7 @@ const CaseView = () => {
                         <Icon data={arrow_back} />
                     </Button>
                     {
-                        nameEditMode
+                        isEditing
                             ? (
 
                                 <PageTitle>
@@ -366,7 +364,6 @@ const CaseView = () => {
                     </ColumnWrapper>
                 </RowWrapper>
                 <CaseDropMenu
-                    setNameEditMode={setNameEditMode}
                     isMenuOpen={isMenuOpen}
                     setIsMenuOpen={setIsMenuOpen}
                     menuAnchorEl={menuAnchorEl}
