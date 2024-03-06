@@ -24,8 +24,7 @@ const Controls = styled.div`
 `
 
 const ProjectControls = () => {
-    const { project } = useAppContext()
-    const { caseModalEditMode, setCaseModalEditMode } = useModalContext()
+    const { project, isEditing, setIsEditing } = useAppContext()
 
     return (
         <Wrapper>
@@ -35,8 +34,8 @@ const ProjectControls = () => {
             <Controls>
                 <Switch
                     label="Edit mode"
-                    checked={caseModalEditMode}
-                    onChange={() => setCaseModalEditMode(!caseModalEditMode)}
+                    checked={isEditing}
+                    onChange={() => setIsEditing(!isEditing)}
                 />
             </Controls>
         </Wrapper>

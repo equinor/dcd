@@ -13,6 +13,7 @@ import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
 import CaseNumberInput from "../../Input/CaseNumberInput"
 import InputContainer from "../../Input/Containers/InputContainer"
 import InputSwitcher from "../../Input/InputSwitcher"
+import Gallery from "../../Gallery/Gallery"
 
 const TopWrapper = styled.div`
     display: flex;
@@ -112,6 +113,7 @@ const CaseDescriptionTab = ({
             <TopWrapper>
                 <PageTitle variant="h3">Description</PageTitle>
             </TopWrapper>
+            <Gallery />
             <InputSwitcher label="Description" value={caseItem.description ?? ""}>
                 <>
                     <Label htmlFor="description" label="Case description" />
