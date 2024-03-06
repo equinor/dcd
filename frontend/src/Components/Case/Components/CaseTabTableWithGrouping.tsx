@@ -18,7 +18,6 @@ import { EMPTY_GUID } from "../../../Utils/constants"
 
 interface Props {
     allTimeSeriesData: any[]
-    //timeSeriesData: any[]
     dg4Year: number
     tableYears: [number, number]
     tableName: string
@@ -29,7 +28,7 @@ interface Props {
 }
 
 const CaseTabTableWithGrouping = ({
-    allTimeSeriesData, //timeSeriesData,
+    allTimeSeriesData,
     dg4Year,
     tableYears, tableName,
     alignedGridsRef, gridRef,
@@ -65,18 +64,18 @@ const CaseTabTableWithGrouping = ({
             if (rowObject.profile && rowObject.profile.values?.length > 0) {
                 let j = 0
                 for (let i = rowObject.profile.startYear; i < rowObject.profile.startYear + rowObject.profile.values.length; i += 1) {
-                    const yearKey = (dg4Year + i).toString();
-                    const value = rowObject.profile.values[j];
-                    const roundedValue = Math.round((value + Number.EPSILON) * 100) / 100; // Adjust rounding logic as needed
-                    rowObject[yearKey] = roundedValue;
+                    const yearKey = (dg4Year + i).toString()
+                    const value = rowObject.profile.values[j]
+                    const roundedValue = Math.round((value + Number.EPSILON) * 100) / 100 // Adjust rounding logic as needed
+                    rowObject[yearKey] = roundedValue
 
-                    j += 1;
+                    j += 1
                 }
 
-                const totalValue = rowObject.profile.values.reduce((acc: any, value: any) => acc + value, 0);
-                rowObject.total = Math.round((totalValue + Number.EPSILON) * 100) / 100; // Adjust rounding logic as needed
+                const totalValue = rowObject.profile.values.reduce((acc: any, value: any) => acc + value, 0)
+                rowObject.total = Math.round((totalValue + Number.EPSILON) * 100) / 100 // Adjust rounding logic as needed
                 if (ts.total !== undefined) {
-                    rowObject.total = Math.round(ts.total * 100) / 100;
+                    rowObject.total = Math.round(ts.total * 100) / 100
                 }
             }
             tableRows.push(rowObject)
@@ -136,17 +135,15 @@ const CaseTabTableWithGrouping = ({
                 pinned: "left",
                 hide: true, // Hide this column but use it for grouping
                 aggFunc: () => totalRowName ?? "Total",
-                
             },
             {
                 field: "profileName",
                 headerName: "Field",
                 width: 350,
                 editable: false,
-                cellStyle: { fontWeight: 'normal' },
+                cellStyle: { fontWeight: "normal" },
                 //pinned: "left",
                 //aggFunc: () => totalRowName,
-                
             },
             {
                 field: "unit",
@@ -160,7 +157,6 @@ const CaseTabTableWithGrouping = ({
                 //     // Otherwise, display the actual unit value
                 //     return params.value;
                 // }
-                
             },
             {
                 field: "total",
@@ -191,14 +187,12 @@ const CaseTabTableWithGrouping = ({
                 editable: (params: any) => isEditable(params),
                 minWidth: 100,
                 aggFunc: "sum",
-                
                 cellStyle: { fontWeight: "bold" },
             })
         }
         return columnPinned.concat([...yearDefs])
     }
-    
-    const groupDefaultExpanded = 1;
+    const groupDefaultExpanded = 1
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
@@ -302,7 +296,7 @@ const CaseTabTableWithGrouping = ({
                         getRowStyle={getRowStyle}
                         suppressLastEmptyLineOnPaste
                         groupDefaultExpanded={groupDefaultExpanded}
-                        //groupDisplayType={'groupRows'}
+                        // groupDisplayType={'groupRows'}
 
                     />
                 </div>

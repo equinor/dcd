@@ -4,19 +4,18 @@ import {
 import styled from "styled-components"
 
 import { Typography } from "@equinor/eds-core-react"
+import { ColDef } from "@ag-grid-community/core"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import CaseNumberInput from "../../Input/CaseNumberInput"
 import CaseTabTable from "../Components/CaseTabTable"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { GetGenerateProfileService } from "../../../Services/CaseGeneratedProfileService"
-import { MergeTimeseries, MergeTimeseriesList } from "../../../Utils/common"
+import { MergeTimeseriesList } from "../../../Utils/common"
 import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
 import InputContainer from "../../Input/Containers/InputContainer"
 import InputSwitcher from "../../Input/InputSwitcher"
 import { useAppContext } from "../../../Context/AppContext"
 import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
-import { AgGridReact } from "@ag-grid-community/react"
-import { ColDef } from '@ag-grid-community/core';
-import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 
@@ -33,13 +32,6 @@ const PageTitle = styled(Typography)`
 const TableWrapper = styled.div`
     margin-bottom: 50px;
 `
-interface ITimeSeriesData {
-    profileName: string
-    unit: string,
-    set?: Dispatch<SetStateAction<ITimeSeriesCost | undefined>>,
-    profile: ITimeSeries | undefined
-}
-
 
 const CaseSummaryTab = (): React.ReactElement | null => {
     const {
@@ -79,51 +71,14 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         explorationSidetrackCost, setExplorationSidetrackCost,
         explorationAppraisalWellCost, setExplorationAppraisalWellCost,
         countryOfficeCost, setCountryOfficeCost,
-    } = useAppContext();
-
-    // const [columnDefs, setColumnDefs] = useState<ColDef[]>([
-    //     { field: 'profileName', headerName: 'Profile Name', minWidth: 200 },
-    //     // Initialize with a set of year columns based on expected range if possible
-    // ]);
-    const styles = useStyles()
-
-    const [tableName, setTableName] = useState<string>("");
-    const [totalRowName, setTotalRowName] = useState<string>("");
-
-    const [rowData, setRowData] = useState<any[]>([]);
+    } = useAppContext()
 
     const [cessationCost, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto>()
-
-    const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
-        if (timeSeries && timeSeries.startYear && timeSeries.values) {
-            return timeSeries.startYear + timeSeries.values.length - 1
-        } return undefined
-    }
-
-    // const setTableYearsFromProfiles = (profiles: (ITimeSeries | undefined)[]) => {
-    //     let firstYear = Number.MAX_SAFE_INTEGER
-    //     let lastYear = Number.MIN_SAFE_INTEGER
-    //     profiles.forEach((p) => {
-    //         if (p && p.startYear !== undefined && p.startYear < firstYear) {
-    //             firstYear = p.startYear
-    //         }
-    //         const profileLastYear = getTimeSeriesLastYear(p)
-    //         if (profileLastYear !== undefined && profileLastYear > lastYear) {
-    //             lastYear = profileLastYear
-    //         }
-    //     })
-    //     if (caseItem)
-    //         if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER && caseItem.dG4Date) {
-    //             setStartYear(firstYear + new Date(caseItem.dG4Date).getFullYear())
-    //             setEndYear(lastYear + new Date(caseItem.dG4Date).getFullYear())
-    //             setTableYears([firstYear + new Date(caseItem.dG4Date).getFullYear(), lastYear + new Date(caseItem.dG4Date).getFullYear()])
-    //         }
-    // }
 
     useEffect(() => {
         (async () => {
             try {
-                if (caseItem && project && topside && surf && substructure && transport) //test if this work, if not break into smaller ifs
+                if (caseItem && project && topside && surf && substructure && transport) {
                     if (activeTab === 7 && caseItem.id) {
                         const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(project.id, caseItem.id)
                         const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(project.id, caseItem.id)
@@ -134,7 +89,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
                         let feasibility = (await studyWrapper).totalFeasibilityAndConceptStudiesDto
                         let feed = (await studyWrapper).totalFEEDStudiesDto
-                        let totalOtherStudies = (await studyWrapper).totalOtherStudiesDto
+                        const totalOtherStudiesLocal = (await studyWrapper).totalOtherStudiesDto
 
                         if (caseItem.totalFeasibilityAndConceptStudiesOverride?.override === true) {
                             feasibility = caseItem.totalFeasibilityAndConceptStudiesOverride
@@ -143,7 +98,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             feed = caseItem.totalFEEDStudiesOverride
                         }
 
-                        const totalStudy = MergeTimeseriesList([feasibility, feed, totalOtherStudies])
+                        const totalStudy = MergeTimeseriesList([feasibility, feed, totalOtherStudiesLocal])
                         setTotalStudyCost(totalStudy)
                         setOpexSum(opex)
                         setCessationCost(cessation)
@@ -165,29 +120,18 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             ? transport.costProfileOverride : transport.costProfile
                         setTransportCost(transportCostProfile)
 
-                        //ADD ALL
-                        // SetTableYearsFromProfiles([
-                        //     totalStudy, opex, cessation,
-                        //     topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile, explorationWellCostProfile,
-                        //     explorationAppraisalWellCost,
-                        //     explorationSidetrackCost,
-                        //     seismicAcquisitionAndProcessing,
-                        //     countryOfficeCost,
-                        //     gAndGAdminCost,
-                        // ])
-
                         SetTableYearsFromProfiles([caseItem.totalFeasibilityAndConceptStudies, caseItem.totalFEEDStudies,
                             caseItem.wellInterventionCostProfile, caseItem.offshoreFacilitiesOperationsCostProfile,
                             caseItem.cessationWellsCost, caseItem.cessationOffshoreFacilitiesCost,
                             caseItem.totalFeasibilityAndConceptStudiesOverride, caseItem.totalFEEDStudiesOverride,
                             caseItem.wellInterventionCostProfileOverride, caseItem.offshoreFacilitiesOperationsCostProfileOverride,
                             caseItem.cessationWellsCostOverride, caseItem.cessationOffshoreFacilitiesCostOverride,
-                                surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
-                                explorationWellCostProfile, 
-                                seismicAcquisitionAndProcessing,
-                            ], caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
+                            surfCostProfile, topsideCostProfile, substructureCostProfile, transportCostProfile,
+                            explorationWellCostProfile,
+                            seismicAcquisitionAndProcessing,
+                        ], caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
 
-                        //Exploration costs                
+                        // Exploration costs
                         setTotalExplorationCost(MergeTimeseriesList([
                             explorationWellCostProfile,
                             explorationAppraisalWellCost,
@@ -195,8 +139,8 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             seismicAcquisitionAndProcessing,
                             countryOfficeCost,
                             gAndGAdminCost]))
-
                     }
+                }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
@@ -212,7 +156,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     const handleCaseBreakEvenChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...caseItem }
         newCase.breakEven = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setCase(newCase as Components.Schemas.CaseDto);
+        setCase(newCase as Components.Schemas.CaseDto)
     }
 
     interface ITimeSeriesData {
@@ -331,33 +275,13 @@ const CaseSummaryTab = (): React.ReactElement | null => {
             profile: undefined,
         },
     ]
-    
+
     const allTimeSeriesData = [
         explorationTimeSeriesData,
         capexTimeSeriesData,
         studycostTimeSeriesData,
         opexTimeSeriesData,
-        //prodAndSalesTimeSeriesData
-    ];
-
-
-    const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
-    const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
-    const defaultColDef = useMemo<ColDef>(() => {
-        return {
-            flex: 1,
-            minWidth: 100,
-        };
-    }, []);
-
-
-    // const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefsGrouping())
-    // useEffect(() => {
-    //     const rowData = profilesToRowDataGrouping();
-    //     setRowData(rowData);
-    //     const newColDefs = generateTableYearColDefsGrouping();
-    //     setColumnDefs(newColDefs);
-    // }, [allTimeSeriesData, tableYears]);
+    ]
 
     if (activeTab !== 7 || !caseItem) { return null }
     return (
@@ -394,14 +318,13 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
                 <CaseTabTableWithGrouping
                     allTimeSeriesData={allTimeSeriesData}
-                    //timeSeriesData={explorationTimeSeriesData}
                     dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
                     tableName="Summary"
                     includeFooter={false}
                 />
             </TableWrapper>
-            
+
             <TableWrapper>
                 <CaseTabTable
                     timeSeriesData={prodAndSalesTimeSeriesData}
