@@ -9,19 +9,26 @@ import React, {
 interface AppContextType {
     project: Components.Schemas.ProjectDto | undefined;
     setProject: React.Dispatch<React.SetStateAction<Components.Schemas.ProjectDto | undefined>>;
+    isEditing: boolean;
+    setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
 
 const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [project, setProject] = useState<Components.Schemas.ProjectDto | undefined>()
+    const [isEditing, setIsEditing] = useState(false)
 
     const value = useMemo(() => ({
         project,
         setProject,
+        isEditing,
+        setIsEditing,
     }), [
         project,
         setProject,
+        isEditing,
+        setIsEditing,
     ])
 
     return (

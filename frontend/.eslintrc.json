@@ -35,7 +35,8 @@
         "max-len": ["warn", 180],
         "linebreak-style": 0,
         "camelcase": 0,
-        "no-unused-vars": "warn"
+        "no-unused-vars": "warn",
+        "react/jsx-props-no-spreading": "off"
     },
     "overrides": [
         {
