@@ -22,7 +22,7 @@ import FilterContainer from "../../Input/Containers/TableFilterContainer"
 import InputContainer from "../../Input/Containers/InputContainer"
 import InputSwitcher from "../../Input/InputSwitcher"
 import { useAppContext } from "../../../Context/AppContext"
-import { MergeTimeseries, MergeTimeseriesList } from "../../../Utils/common"
+
 const TopWrapper = styled.div`
     display: flex;
     flex-direction: row;
@@ -77,15 +77,13 @@ const CaseCostTab = (): React.ReactElement | null => {
         countryOfficeCost, setCountryOfficeCost,
         wellProjects, setWellProject,
         wellProjectOilProducerCost, setWellProjectOilProducerCost,
-    } = useAppContext();
+    } = useAppContext()
 
+    const [offshoreFacilitiesOperationsCostProfile, setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto>()
 
+    const [wellInterventionCostProfile, setWellInterventionCostProfile] = useState<Components.Schemas.WellInterventionCostProfileDto>()
 
-    const [offshoreFacilitiesOperationsCostProfile, setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto>();
-
-    const [wellInterventionCostProfile, setWellInterventionCostProfile] = useState<Components.Schemas.WellInterventionCostProfileDto>();
-
-    const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>();
+    const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>()
 
     // OPEX
     const [totalFeasibilityAndConceptStudiesOverride, setTotalFeasibilityAndConceptStudiesOverride] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto>()
@@ -121,7 +119,6 @@ const CaseCostTab = (): React.ReactElement | null => {
 
     const [gAndGAdminCostOverride, setGAndGAdminCostOverride] = useState<Components.Schemas.GAndGAdminCostOverrideDto>()
 
-
     const [startYear] = useState<number>(2020)
     const [endYear] = useState<number>(2030)
 
@@ -135,7 +132,7 @@ const CaseCostTab = (): React.ReactElement | null => {
     useEffect(() => {
         (async () => {
             try {
-                if (caseItem && project && topside && surf && substructure && transport && exploration && wellProjects) //test if this work, if not break into smaller ifs
+                if (caseItem && project && topside && surf && substructure && transport && exploration && wellProjects) { // test if this work, if not break into smaller ifs
                     if (activeTab === 5) {
                         const totalFeasibility = caseItem.totalFeasibilityAndConceptStudies
                         const totalFEED = caseItem.totalFEEDStudies
@@ -192,14 +189,14 @@ const CaseCostTab = (): React.ReactElement | null => {
                         setWellProjectOilProducerCost(oilProducerCostProfile)
                         const oilProducerCostProfileOverride = wellProjects?.oilProducerCostProfileOverride
                         setWellProjectOilProducerCostOverride(oilProducerCostProfileOverride)
-                        
+
                         // Development
                         const {
                             gasProducerCostProfile,
                             waterInjectorCostProfile, gasInjectorCostProfile,
                             gasProducerCostProfileOverride,
                             waterInjectorCostProfileOverride, gasInjectorCostProfileOverride,
-                            //oilProducerCostProfileOverride,oilProducerCostProfile,
+                            // oilProducerCostProfileOverride,oilProducerCostProfile,
                         } = wellProjects ?? {}
                         // setWellProjectOilProducerCost(oilProducerCostProfile)
                         // setWellProjectOilProducerCostOverride(oilProducerCostProfileOverride)
@@ -211,22 +208,18 @@ const CaseCostTab = (): React.ReactElement | null => {
                         setWellProjectGasInjectorCostOverride(gasInjectorCostProfileOverride)
 
                         // Exploration
-                        console.log("ex", exploration)
                         const {
-                            explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
-                            seismicAcquisitionAndProcessing, countryOfficeCost, gAndGAdminCost, gAndGAdminCostOverride,
-                        } = exploration;
+                            appraisalWellCostProfile, sidetrackCostProfile,
+                        } = exploration
                         setExplorationWellCostProfile(explorationWellCostProfile)
                         setExplorationAppraisalWellCost(appraisalWellCostProfile)
                         setExplorationSidetrackCost(sidetrackCostProfile)
-                        setSeismicAcquisitionAndProcessing(exploration.seismicAcquisitionAndProcessing)
+                        setSeismicAcquisitionAndProcessing(seismicAcquisitionAndProcessing)
                         const countryOffice = exploration.countryOfficeCost
-                        setCountryOfficeCost(countryOfficeCost)
-                        setGAndGAdminCost(gAndGAdminCost)
+                        setCountryOfficeCost(countryOffice)
+
+                        setGAndGAdminCost(exploration.gAndGAdminCost)
                         setGAndGAdminCostOverride(exploration.gAndGAdminCostOverride)
-
-
-
 
                         SetTableYearsFromProfiles([caseItem.totalFeasibilityAndConceptStudies, caseItem.totalFEEDStudies,
                         caseItem.wellInterventionCostProfile, caseItem.offshoreFacilitiesOperationsCostProfile,
@@ -244,9 +237,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                             seismicAcquisitionAndProcessing, countryOffice, exploration.gAndGAdminCost, oilProducerCostProfile, oilProducerCostProfileOverride,
                         exploration.gAndGAdminCostOverride,
                         ], caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
-
-
                     }
+                }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
@@ -579,17 +571,15 @@ const CaseCostTab = (): React.ReactElement | null => {
     }, [totalFeasibilityAndConceptStudiesOverride])
 
     useEffect(() => {
-        console.log(1, totalFEEDStudiesOverride)
-        updateObject(caseItem, setCase, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
+        console.log(1, exploration)
         console.log(2, totalFEEDStudiesOverride)
-
+        updateObject(caseItem, setCase, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
+        console.log(1, exploration)
+        console.log(2, totalFEEDStudiesOverride)
     }, [totalFEEDStudiesOverride])
 
     useEffect(() => {
-        console.log(1, totalOtherStudies)
         updateObject(caseItem, setCase, "totalOtherStudies", totalOtherStudies)
-        console.log(1, totalOtherStudies)
-
     }, [totalOtherStudies])
 
     useEffect(() => {
@@ -683,7 +673,7 @@ const CaseCostTab = (): React.ReactElement | null => {
     useEffect(() => {
         console.log(1, exploration)
         console.log(2, gAndGAdminCostOverride)
-        updateObject(exploration, setExploration, "gAndGAdminCost", gAndGAdminCostOverride)
+        updateObject(exploration, setExploration, "gAndGAdminCostOverride", gAndGAdminCostOverride)
         console.log(3, exploration)
         console.log(4, gAndGAdminCostOverride)
         console.log(5, gAndGAdminCost)
@@ -707,8 +697,6 @@ const CaseCostTab = (): React.ReactElement | null => {
     useEffect(() => {
         updateObject(exploration, setExploration, "sidetrackCostProfile", explorationSidetrackCost)
     }, [explorationSidetrackCost])
-
-
 
     if (activeTab !== 5) { return null }
 
@@ -753,19 +741,18 @@ const CaseCostTab = (): React.ReactElement | null => {
                         max={100}
                     />
                 </InputSwitcher>
-                <InputSwitcher value={maturityOptions[surf?.maturity ?? 'defaultKey']} label="Maturity">
+                <InputSwitcher value={maturityOptions[surf?.maturity ?? "defaultKey"]} label="Maturity">
                     <NativeSelect
                         id="maturity"
                         label="Maturity"
                         onChange={handleSurfMaturityChange}
-                        value={surf?.maturity ?? ''}
+                        value={surf?.maturity ?? ""}
                     >
                         {Object.keys(maturityOptions).map((key) => (
                             <option key={key} value={key}>{maturityOptions[key]}</option>
                         ))}
                     </NativeSelect>
                 </InputSwitcher>
-
 
             </InputContainer>
             <FilterContainer>

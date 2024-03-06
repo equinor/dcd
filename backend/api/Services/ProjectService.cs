@@ -254,6 +254,8 @@ public class ProjectService : IProjectService
                 .Include(p => p.Wells)
                 .Include(p => p.ExplorationOperationalWellCosts)
                 .Include(p => p.DevelopmentOperationalWellCosts)
+                .Include(p => p.Cases)!.ThenInclude(c => c.gAndGAdminCost)
+                .Include(p => p.Cases)!.ThenInclude(c => c.gAndGAdminCostOverride)
                 .FirstOrDefaultAsync(p => p.Id.Equals(projectId));
 
             if (project?.Cases?.Count > 0)
@@ -412,6 +414,7 @@ public class ProjectService : IProjectService
                 .Include(c => c.AppraisalWellCostProfile)
                 .Include(c => c.SidetrackCostProfile)
                 .Include(c => c.GAndGAdminCost)
+                .Include(c => c.GAndGAdminCostOverride)
                 .Include(c => c.SeismicAcquisitionAndProcessing)
                 .Include(c => c.CountryOfficeCost)
                 .Include(c => c.ExplorationWells!).ThenInclude(ew => ew.DrillingSchedule)
