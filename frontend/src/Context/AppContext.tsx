@@ -37,6 +37,10 @@ interface AppContextType {
     setOpexSum: Dispatch<SetStateAction<Components.Schemas.OpexCostProfileDto | undefined>>
     // cessationCost: Components.Schemas.SurfCessationCostProfileDto | undefined
     // setCessationCost: Dispatch<SetStateAction<Components.Schemas.SurfCessationCostProfileDto | undefined>>
+    offshoreFacilitiesOperationsCostProfile: Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined
+    setOffshoreFacilitiesOperationsCostProfile: Dispatch<SetStateAction<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined>>
+    wellInterventionCostProfile: Components.Schemas.WellInterventionCostProfileDto | undefined
+    setWellInterventionCostProfile: Dispatch<SetStateAction<Components.Schemas.WellInterventionCostProfileDto | undefined>>
 
     // CAPEX
     topside: Components.Schemas.TopsideDto | undefined
@@ -47,11 +51,11 @@ interface AppContextType {
     setSurf: Dispatch<SetStateAction<Components.Schemas.SurfDto | undefined>>
     surfCost: Components.Schemas.SurfCostProfileDto | undefined
     setSurfCost: Dispatch<SetStateAction<Components.Schemas.SurfCostProfileDto | undefined>>
-    substructure: Components.Schemas.SubstructureDto| undefined
+    substructure: Components.Schemas.SubstructureDto | undefined
     setSubstructure: Dispatch<SetStateAction<Components.Schemas.SubstructureDto | undefined>>
     substructureCost: Components.Schemas.SubstructureCostProfileDto | undefined
     setSubstructureCost: Dispatch<SetStateAction<Components.Schemas.SubstructureCostProfileDto | undefined>>
-    transport: Components.Schemas.TransportDto| undefined
+    transport: Components.Schemas.TransportDto | undefined
     setTransport: Dispatch<SetStateAction<Components.Schemas.TransportDto | undefined>>
     transportCost: Components.Schemas.TransportCostProfileDto | undefined
     setTransportCost: Dispatch<SetStateAction<Components.Schemas.TransportCostProfileDto | undefined>>
@@ -68,23 +72,29 @@ interface AppContextType {
     setExploration: Dispatch<SetStateAction<Components.Schemas.ExplorationDto | undefined>>,
     totalExplorationCost: ITimeSeries | undefined,
     setTotalExplorationCost: Dispatch<SetStateAction<ITimeSeries | undefined>>,
-    gAndGAdminCost: Components.Schemas.GAndGAdminCostDto| undefined
+    gAndGAdminCost: Components.Schemas.GAndGAdminCostDto | undefined
     setGAndGAdminCost: Dispatch<SetStateAction<Components.Schemas.GAndGAdminCostDto | undefined>>
-    seismicAcquisitionAndProcessing: Components.Schemas.SeismicAcquisitionAndProcessingDto| undefined
+    seismicAcquisitionAndProcessing: Components.Schemas.SeismicAcquisitionAndProcessingDto | undefined
     setSeismicAcquisitionAndProcessing: Dispatch<SetStateAction<Components.Schemas.SeismicAcquisitionAndProcessingDto | undefined>>
-    countryOfficeCost: Components.Schemas.CountryOfficeCostDto| undefined
+    countryOfficeCost: Components.Schemas.CountryOfficeCostDto | undefined
     setCountryOfficeCost: Dispatch<SetStateAction<Components.Schemas.CountryOfficeCostDto | undefined>>
-    explorationWellCostProfile: Components.Schemas.ExplorationWellCostProfileDto| undefined
+    explorationWellCostProfile: Components.Schemas.ExplorationWellCostProfileDto | undefined
     setExplorationWellCostProfile: Dispatch<SetStateAction<Components.Schemas.ExplorationWellCostProfileDto | undefined>>
-    explorationAppraisalWellCost: Components.Schemas.AppraisalWellCostProfileDto| undefined
+    explorationAppraisalWellCost: Components.Schemas.AppraisalWellCostProfileDto | undefined
     setExplorationAppraisalWellCost: Dispatch<SetStateAction<Components.Schemas.AppraisalWellCostProfileDto | undefined>>
-    explorationSidetrackCost: Components.Schemas.SidetrackCostProfileDto| undefined
+    explorationSidetrackCost: Components.Schemas.SidetrackCostProfileDto | undefined
     setExplorationSidetrackCost: Dispatch<SetStateAction<Components.Schemas.SidetrackCostProfileDto | undefined>>
 
     totalFeasibilityAndConceptStudies: Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined
     setTotalFeasibilityAndConceptStudies: Dispatch<SetStateAction<Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined>>
+    totalFeasibilityAndConceptStudiesOverride: Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto | undefined
+    setTotalFeasibilityAndConceptStudiesOverride: Dispatch<SetStateAction<Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto | undefined>>
+
     totalFEEDStudies: Components.Schemas.TotalFEEDStudiesDto | undefined
     setTotalFEEDStudies: Dispatch<SetStateAction<Components.Schemas.TotalFEEDStudiesDto | undefined>>
+    totalFEEDStudiesOverride: Components.Schemas.TotalFEEDStudiesOverrideDto | undefined
+    setTotalFEEDStudiesOverride: Dispatch<SetStateAction<Components.Schemas.TotalFEEDStudiesOverrideDto | undefined>>
+
     totalOtherStudies: Components.Schemas.TotalOtherStudiesDto | undefined,
     setTotalOtherStudies: Dispatch<SetStateAction<Components.Schemas.TotalOtherStudiesDto | undefined>>
     historicCostCostProfile: Components.Schemas.HistoricCostCostProfileDto | undefined,
@@ -92,6 +102,8 @@ interface AppContextType {
     additionalOPEXCostProfile: Components.Schemas.AdditionalOPEXCostProfileDto | undefined,
     setAdditionalOPEXCostProfile: Dispatch<SetStateAction<Components.Schemas.AdditionalOPEXCostProfileDto | undefined>>
 
+    gAndGAdminCostOverride: Components.Schemas.GAndGAdminCostOverrideDto | undefined
+    setGAndGAdminCostOverride: Dispatch<SetStateAction<Components.Schemas.GAndGAdminCostOverrideDto | undefined>>
     productionAndSalesVolume: Components.Schemas.ProductionAndSalesVolumesDto | undefined
     setProductionAndSalesVolume: Dispatch<SetStateAction<Components.Schemas.ProductionAndSalesVolumesDto | undefined>>
     oilCondensateProduction: Components.Schemas.ProductionProfileOilDto | undefined
@@ -157,10 +169,17 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
     const [totalFeasibilityAndConceptStudies, setTotalFeasibilityAndConceptStudies] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined>()
+    const [totalFeasibilityAndConceptStudiesOverride, setTotalFeasibilityAndConceptStudiesOverride] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto | undefined>()
+
     const [totalFEEDStudies, setTotalFEEDStudies] = useState<Components.Schemas.TotalFEEDStudiesDto | undefined>()
+    const [totalFEEDStudiesOverride, setTotalFEEDStudiesOverride] = useState<Components.Schemas.TotalFEEDStudiesOverrideDto | undefined>()
     const [totalOtherStudies, setTotalOtherStudies] = useState<Components.Schemas.TotalOtherStudiesDto | undefined>()
     const [historicCostCostProfile, setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto | undefined>()
     const [additionalOPEXCostProfile, setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto | undefined>()
+    const [offshoreFacilitiesOperationsCostProfile, setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined>()
+    const [wellInterventionCostProfile, setWellInterventionCostProfile] = useState<Components.Schemas.WellInterventionCostProfileDto | undefined>()
+
+    const [gAndGAdminCostOverride, setGAndGAdminCostOverride] = useState<Components.Schemas.GAndGAdminCostOverrideDto>()
 
     const [productionAndSalesVolume, setProductionAndSalesVolume] = useState<Components.Schemas.ProductionAndSalesVolumesDto | undefined>()
     const [oilCondensateProduction, setOilCondensateProduction] = useState<Components.Schemas.ProductionProfileOilDto | undefined>()
@@ -180,44 +199,92 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const [wellProjectOilProducerCost, setWellProjectOilProducerCost] = useState<Components.Schemas.OilProducerCostProfileDto | undefined>()
 
     const value = useMemo(() => ({
-        project, setProject,
-        activeTab, setActiveTab,
-        createCaseModalIsOpen, setCreateCaseModalIsOpen,
-        caseItem, setCase,
-        totalStudyCost, setTotalStudyCost,
-        opexSum, setOpexSum,
-        cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost,
-        topside, setTopside,
-        topsideCost, setTopsideCost,
-        surf, setSurf,
-        surfCost, setSurfCost,
-        substructure, setSubstructure,
-        substructureCost, setSubstructureCost,
-        transport, setTransport,
-        transportCost, setTransportCost,
-        startYear, setStartYear,
-        endYear, setEndYear,
-        tableYears, setTableYears,
-        totalFeasibilityAndConceptStudies, setTotalFeasibilityAndConceptStudies,
-        totalFEEDStudies, setTotalFEEDStudies,
-        totalOtherStudies, setTotalOtherStudies,
-        historicCostCostProfile, setHistoricCostCostProfile,
-        additionalOPEXCostProfile, setAdditionalOPEXCostProfile,
-        productionAndSalesVolume, setProductionAndSalesVolume,
-        oilCondensateProduction, setOilCondensateProduction,
-        nglProduction, setNGLProduction,
-        netSalesGas, setNetSalesGas,
-        cO2Emissions, setCO2Emissions,
-        importedElectricity, setImportedElectricity,
-        drillingCost, setDrillingCost,
-        exploration, setExploration,
-        totalExplorationCost, setTotalExplorationCost,
-        explorationWellCostProfile, setExplorationWellCostProfile,
-        gAndGAdminCost, setGAndGAdminCost,
-        seismicAcquisitionAndProcessing, setSeismicAcquisitionAndProcessing,
-        explorationSidetrackCost, setExplorationSidetrackCost,
-        explorationAppraisalWellCost, setExplorationAppraisalWellCost,
-        countryOfficeCost, setCountryOfficeCost,
+        project,
+        setProject,
+        activeTab,
+        setActiveTab,
+        createCaseModalIsOpen,
+        setCreateCaseModalIsOpen,
+        caseItem,
+        setCase,
+        totalStudyCost,
+        setTotalStudyCost,
+        opexSum,
+        setOpexSum,
+        cessationOffshoreFacilitiesCost,
+        setCessationOffshoreFacilitiesCost,
+        topside,
+        setTopside,
+        topsideCost,
+        setTopsideCost,
+        surf,
+        setSurf,
+        surfCost,
+        setSurfCost,
+        substructure,
+        setSubstructure,
+        substructureCost,
+        setSubstructureCost,
+        transport,
+        setTransport,
+        transportCost,
+        setTransportCost,
+        startYear,
+        setStartYear,
+        endYear,
+        setEndYear,
+        tableYears,
+        setTableYears,
+        totalFeasibilityAndConceptStudies,
+        setTotalFeasibilityAndConceptStudies,
+        totalFeasibilityAndConceptStudiesOverride,
+        setTotalFeasibilityAndConceptStudiesOverride,
+        totalFEEDStudies,
+        setTotalFEEDStudies,
+        totalFEEDStudiesOverride,
+        setTotalFEEDStudiesOverride,
+        totalOtherStudies,
+        setTotalOtherStudies,
+        historicCostCostProfile,
+        setHistoricCostCostProfile,
+        additionalOPEXCostProfile,
+        setAdditionalOPEXCostProfile,
+        offshoreFacilitiesOperationsCostProfile,
+        setOffshoreFacilitiesOperationsCostProfile,
+        wellInterventionCostProfile,
+        setWellInterventionCostProfile,
+        productionAndSalesVolume,
+        setProductionAndSalesVolume,
+        oilCondensateProduction,
+        setOilCondensateProduction,
+        nglProduction,
+        setNGLProduction,
+        netSalesGas,
+        setNetSalesGas,
+        cO2Emissions,
+        setCO2Emissions,
+        importedElectricity,
+        setImportedElectricity,
+        drillingCost,
+        setDrillingCost,
+        exploration,
+        setExploration,
+        totalExplorationCost,
+        setTotalExplorationCost,
+        explorationWellCostProfile,
+        setExplorationWellCostProfile,
+        gAndGAdminCost,
+        setGAndGAdminCost,
+        gAndGAdminCostOverride,
+        setGAndGAdminCostOverride,
+        seismicAcquisitionAndProcessing,
+        setSeismicAcquisitionAndProcessing,
+        explorationSidetrackCost,
+        setExplorationSidetrackCost,
+        explorationAppraisalWellCost,
+        setExplorationAppraisalWellCost,
+        countryOfficeCost,
+        setCountryOfficeCost,
         editModalIsOpen,
         setEditModalIsOpen,
         modalEditMode,
@@ -230,8 +297,10 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setEditMode,
         editCase,
         addNewCase,
-        wellProjects, setWellProject,
-        wellProjectOilProducerCost, setWellProjectOilProducerCost,
+        wellProjects,
+        setWellProject,
+        wellProjectOilProducerCost,
+        setWellProjectOilProducerCost,
     }), [
         project,
         setProject,
@@ -266,9 +335,13 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         transportCost,
         tableYears,
         totalFeasibilityAndConceptStudies,
+        totalFeasibilityAndConceptStudiesOverride,
         totalFEEDStudies,
+        totalFEEDStudiesOverride,
         totalOtherStudies,
         additionalOPEXCostProfile,
+        offshoreFacilitiesOperationsCostProfile,
+        wellInterventionCostProfile,
         historicCostCostProfile,
         productionAndSalesVolume,
         oilCondensateProduction,
@@ -281,6 +354,7 @@ const AppContextProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         totalExplorationCost,
         explorationWellCostProfile,
         gAndGAdminCost,
+        gAndGAdminCostOverride,
         countryOfficeCost,
         explorationAppraisalWellCost,
         explorationSidetrackCost,
