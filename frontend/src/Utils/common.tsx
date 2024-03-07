@@ -157,21 +157,37 @@ const MergeCostProfileData = (arrays: number[][], offsets: number[]): number[] =
     return result
 }
 
-export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined, t3: ITimeSeries | undefined): ITimeSeries => {
-    const startYears = [t1, t2, t3].map((t) => t?.startYear ?? 0)
+export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
+    const startYears = [t1, t2].map(t => t?.startYear ?? 0)
     const minYear = Math.min(...startYears)
-    const arrays = [t1, t2, t3].map((t) => t?.values ?? [])
-    const offsets = startYears.map((year) => Math.abs(year - minYear))
+    const arrays = [t1, t2].map(t => t?.values ?? [])
+    const offsets = startYears.map(year => Math.abs(year - minYear))
 
     const values: number[] = MergeCostProfileData(arrays, offsets)
 
     const timeSeries = {
-        id: t1?.id ?? t2?.id ?? t3?.id ?? "",
+        id: t1?.id ?? t2?.id ?? "",
         startYear: minYear,
         values,
     }
     return timeSeries
 }
+
+export const MergeTimeseriesList = (timeSeriesList: (ITimeSeries | undefined)[]): ITimeSeries => {
+    let mergedTimeSeries: ITimeSeries = { id: "", startYear: 0, values: [] }
+
+    // Iterate through the list and merge consecutively
+    timeSeriesList.forEach((currentSeries, index) => {
+        if (index === 0) {
+            mergedTimeSeries = currentSeries ?? mergedTimeSeries
+        } else {
+            mergedTimeSeries = MergeTimeseries(mergedTimeSeries, currentSeries)
+        }
+    });
+
+    return mergedTimeSeries
+}
+
 
 export function formatDate(isoDateString: string): string {
     if (isoDateString === "0001-01-01T00:00:00+00:00" || isoDateString === "0001-01-01T00:00:00.000Z") {

@@ -272,6 +272,7 @@ declare namespace Components {
             appraisalWellCostProfile: AppraisalWellCostProfileDto;
             sidetrackCostProfile: SidetrackCostProfileDto;
             gAndGAdminCost: GAndGAdminCostDto;
+            gAndGAdminCostOverride?: GAndGAdminCostOverrideDto;
             seismicAcquisitionAndProcessing: SeismicAcquisitionAndProcessingDto;
             countryOfficeCost: CountryOfficeCostDto;
             rigMobDemob: number; // double
