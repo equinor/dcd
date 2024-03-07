@@ -6,11 +6,10 @@ import {
     useEffect,
     useRef,
 } from "react"
-import styled from "styled-components"
-
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid"
 import CaseNumberInput from "../../../Input/CaseNumberInput"
 import CaseTabTable from "../../Components/CaseTabTable"
 import { ITimeSeries } from "../../../../Models/ITimeSeries"
@@ -20,57 +19,30 @@ import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../../AgGrid/AgChartsTimeseries"
 import { AgChartsPie } from "../../../AgGrid/AgChartsPie"
 import { ITimeSeriesOverride } from "../../../../Models/ITimeSeriesOverride"
-import InputContainer from "../../../Input/Containers/InputContainer"
-import FilterContainer from "../../../Input/Containers/TableFilterContainer"
 import InputSwitcher from "../../../Input/InputSwitcher"
-
-export const WrapperColumn = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-
-const GraphWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    margin-bottom: 40px;
-`
-const TopWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-top: 20px;
-    margin-bottom: 20px;
-`
-
-const PageTitle = styled(Typography)`
-    flex-grow: 1;
-`
-
-const ChartContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 40px;
-`
+import { useProjectContext } from "../../../../Context/ProjectContext"
+import { useCaseContext } from "../../../../Context/CaseContext"
 
 interface Props {
-    project: Components.Schemas.ProjectDto,
-    caseItem: Components.Schemas.CaseDto,
     topside: Components.Schemas.TopsideDto,
     setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideDto | undefined>>,
     drainageStrategy: Components.Schemas.DrainageStrategyDto,
     setDrainageStrategy: Dispatch<SetStateAction<Components.Schemas.DrainageStrategyDto | undefined>>,
-    activeTab: number
     co2Emissions: Components.Schemas.Co2EmissionsDto | undefined,
     setCo2Emissions: Dispatch<SetStateAction<Components.Schemas.Co2EmissionsDto | undefined>>,
 }
 
 const CaseCO2Tab = ({
-    project,
-    caseItem,
     topside, setTopside,
-    activeTab, drainageStrategy, setDrainageStrategy,
+    drainageStrategy, setDrainageStrategy,
     co2Emissions, setCo2Emissions,
 }: Props) => {
+    const { project } = useProjectContext()
+    const {
+        projectCase, activeTabCase,
+    } = useCaseContext()
+    if (!projectCase) return null
+
     const [co2Intensity, setCo2Intensity] = useState<Components.Schemas.Co2IntensityDto>()
     const [co2IntensityTotal, setCo2IntensityTotal] = useState<number>(0)
     const [co2DrillingFlaringFuelTotals, setCo2DrillingFlaringFuelTotals] = useState<Components.Schemas.Co2DrillingFlaringFuelTotalsDto>()
@@ -120,10 +92,10 @@ const CaseCO2Tab = ({
     useEffect(() => {
         (async () => {
             try {
-                if (activeTab === 6 && caseItem.id) {
-                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(project.id, caseItem.id)
-                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(project.id, caseItem.id)
-                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(project.id, caseItem.id)
+                if (project && activeTabCase === 6 && projectCase.id) {
+                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(project.id, projectCase.id)
+                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(project.id, projectCase.id)
+                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(project.id, projectCase.id)
 
                     setCo2Emissions(drainageStrategy.co2Emissions)
                     setCo2Intensity(await co2I)
@@ -132,7 +104,7 @@ const CaseCO2Tab = ({
 
                     SetTableYearsFromProfiles(
                         [drainageStrategy.co2Emissions, await co2I, drainageStrategy.co2EmissionsOverride?.override ? drainageStrategy.co2EmissionsOverride : undefined],
-                        caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030,
+                        projectCase.dG4Date ? new Date(projectCase.dG4Date).getFullYear() : 2030,
                         setStartYear,
                         setEndYear,
                         setTableYears,
@@ -143,7 +115,7 @@ const CaseCO2Tab = ({
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-    }, [activeTab])
+    }, [activeTabCase])
 
     const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newStartYear = Number(e.currentTarget.value)
@@ -212,14 +184,14 @@ const CaseCO2Tab = ({
                         useOverride ? co2EmissionsOverride : co2Emissions,
                         i,
                         startYear,
-                        caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030,
+                        projectCase.dG4Date ? new Date(projectCase.dG4Date).getFullYear() : 2030,
                     ),
                 co2Intensity:
                     setValueToCorrespondingYear(
                         co2Intensity,
                         i,
                         startYear,
-                        caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030,
+                        projectCase.dG4Date ? new Date(projectCase.dG4Date).getFullYear() : 2030,
                     ),
             })
         }
@@ -255,29 +227,27 @@ const CaseCO2Tab = ({
         }
     }, [co2Emissions])
 
-    if (activeTab !== 6) { return null }
+    if (activeTabCase !== 6) { return null }
 
     return (
-        <>
-            <TopWrapper>
-                <PageTitle variant="h3">CO2 Emissions</PageTitle>
-            </TopWrapper>
-            <p>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</p>
-
-            <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
+        <Grid container spacing={2}>
+            <Grid item xs={12}>
+                <Typography>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</Typography>
+            </Grid>
+            <Grid item xs={12}>
                 <InputSwitcher value={`${topside?.fuelConsumption} million Sm³ gas/sd`} label="Fuel consumption">
                     <CaseNumberInput
                         onChange={handleTopsideFuelConsumptionChange}
                         defaultValue={topside?.fuelConsumption}
                         integer={false}
-                        label="Fuel consumption"
                         unit="million Sm³ gas/sd"
                     />
                 </InputSwitcher>
-            </InputContainer>
-            <CaseCO2DistributionTable topside={topside} />
-
-            <ChartContainer>
+            </Grid>
+            <Grid item xs={12}>
+                <CaseCO2DistributionTable topside={topside} />
+            </Grid>
+            <Grid item xs={12} md={8}>
                 <AgChartsTimeseries
                     data={co2EmissionsChartData()}
                     chartTitle="Annual CO2 emissions"
@@ -289,33 +259,18 @@ const CaseCO2Tab = ({
                     lineChart={co2IntensityLine}
                     axesData={chartAxes}
                 />
-                <WrapperColumn>
-                    <GraphWrapper>
-                        <Typography
-                            style={{
-                                display: "flex", flexDirection: "column", textAlign: "center", fontWeight: "500", fontSize: "18px", marginBottom: "30px",
-                            }}
-                        >
-                            Average lifetime CO2 intensity
-
-                        </Typography>
-                        <Typography
-                            style={{
-                                display: "flex", flexDirection: "column", textAlign: "center", fontWeight: "500", fontSize: "31px",
-                            }}
-                        >
-                            {Math.round(co2IntensityTotal * 10) / 10}
-
-                        </Typography>
-                        <Typography
-                            style={{
-                                display: "flex", flexDirection: "column", textAlign: "center", fontWeight: "400", fontSize: "18px", color: "#B4B4B4",
-                            }}
-                        >
-                            kg CO2/boe
-
-                        </Typography>
-                    </GraphWrapper>
+            </Grid>
+            <Grid item xs={12} md={4} container direction="column" spacing={1} justifyContent="center" alignItems="center">
+                <Grid item>
+                    <Typography variant="h4">Average lifetime CO2 intensity</Typography>
+                </Grid>
+                <Grid item>
+                    <Typography variant="h1_bold">{Math.round(co2IntensityTotal * 10) / 10}</Typography>
+                </Grid>
+                <Grid item>
+                    <Typography color="disabled">kg CO2/boe</Typography>
+                </Grid>
+                <Grid item>
                     <AgChartsPie
                         data={co2DistributionChartData}
                         chartTitle="CO2 distribution"
@@ -325,52 +280,56 @@ const CaseCO2Tab = ({
                         totalCo2Emission={co2EmissionsTotalString()}
                         unit="million tonnes"
                     />
-                </WrapperColumn>
-            </ChartContainer>
-            <FilterContainer>
-                <NativeSelect
-                    id="unit"
-                    label="Units"
-                    onChange={() => { }}
-                    value={project.physicalUnit}
-                    disabled
-                >
-                    <option key={0} value={0}>SI</option>
-                    <option key={1} value={1}>Oil field</option>
-                </NativeSelect>
-
-                <CaseNumberInput
-                    onChange={handleStartYearChange}
-                    defaultValue={startYear}
-                    integer
-                    label="Start year"
-                    min={2010}
-                    max={2100}
+                </Grid>
+            </Grid>
+            <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="flex-end">
+                <Grid item>
+                    <NativeSelect
+                        id="unit"
+                        label="Units"
+                        onChange={() => { }}
+                        value={project?.physicalUnit}
+                        disabled
+                    >
+                        <option key={0} value={0}>SI</option>
+                        <option key={1} value={1}>Oil field</option>
+                    </NativeSelect>
+                </Grid>
+                <Grid item>
+                    <CaseNumberInput
+                        onChange={handleStartYearChange}
+                        defaultValue={startYear}
+                        integer
+                        label="Start year"
+                    />
+                </Grid>
+                <Grid item>
+                    <CaseNumberInput
+                        onChange={handleEndYearChange}
+                        defaultValue={endYear}
+                        integer
+                        label="End year"
+                    />
+                </Grid>
+                <Grid item>
+                    <Button
+                        onClick={handleTableYearsClick}
+                    >
+                        Apply
+                    </Button>
+                </Grid>
+            </Grid>
+            <Grid item xs={12}>
+                <CaseTabTable
+                    timeSeriesData={timeSeriesData}
+                    dg4Year={projectCase.dG4Date ? new Date(projectCase.dG4Date).getFullYear() : 2030}
+                    tableYears={tableYears}
+                    tableName="CO2 emissions"
+                    includeFooter={false}
+                    gridRef={co2GridRef}
                 />
-
-                <CaseNumberInput
-                    onChange={handleEndYearChange}
-                    defaultValue={endYear}
-                    integer
-                    label="End year"
-                    min={2010}
-                    max={2100}
-                />
-                <Button
-                    onClick={handleTableYearsClick}
-                >
-                    Apply
-                </Button>
-            </FilterContainer>
-            <CaseTabTable
-                timeSeriesData={timeSeriesData}
-                dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
-                tableYears={tableYears}
-                tableName="CO2 emissions"
-                includeFooter={false}
-                gridRef={co2GridRef}
-            />
-        </>
+            </Grid>
+        </Grid>
     )
 }
 

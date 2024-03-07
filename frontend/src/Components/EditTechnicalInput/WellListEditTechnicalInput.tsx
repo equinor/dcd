@@ -1,19 +1,16 @@
 import { Button, Icon, NativeSelect } from "@equinor/eds-core-react"
+import { add, delete_to_trash } from "@equinor/eds-icons"
 import {
     ChangeEvent, Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
-import { delete_to_trash } from "@equinor/eds-icons"
+import Grid from "@mui/material/Grid"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
+import { useProjectContext } from "../../Context/ProjectContext"
+import { useModalContext } from "../../Context/ModalContext"
 import { useAppContext } from "../../Context/AppContext"
-
-const ButtonWrapper = styled.div`
-    margin-top: 20px;
-    margin-bottom: 40px;
-`
 
 interface Props {
     wells: Components.Schemas.WellDto[] | undefined
@@ -38,7 +35,9 @@ const WellListEditTechnicalInput = ({
     setWells,
     setDeletedWells,
 }: Props) => {
-    const { project } = useAppContext()
+    const { editMode } = useAppContext()
+    const { project } = useProjectContext()
+    const { editTechnicalInput } = useModalContext()
     const [rowData, setRowData] = useState<TableWell[]>()
 
     const gridRef = useRef(null)
@@ -210,13 +209,12 @@ const WellListEditTechnicalInput = ({
     }, [wells])
 
     return (
-        <>
-            <div className={styles.root}>
+        <Grid container spacing={1}>
+            <Grid item xs={12} className={styles.root}>
                 <div
                     style={{
                         display: "flex", flexDirection: "column", width: "100%",
                     }}
-                    className="ag-theme-alpine-fusion"
                 >
                     {/* Hardcoded title and description using Typography */}
                     {/* <Title variant="h1">Well Costs</Title>
@@ -235,14 +233,18 @@ const WellListEditTechnicalInput = ({
                         stopEditingWhenCellsLoseFocus
                     />
                 </div>
-            </div>
-            <ButtonWrapper>
-                <Button onClick={CreateWell} variant="outlined">
-                    {explorationWells
-                        ? "+   Add new exploration well type" : "+   Add new development/drilling well type"}
-                </Button>
-            </ButtonWrapper>
-        </>
+            </Grid>
+            {(editMode || editTechnicalInput) && (
+                <Grid item>
+                    <Button onClick={CreateWell} variant="outlined">
+                        <Icon data={add} />
+                        {explorationWells
+                            ? "Add new exploration well type"
+                            : "Add new development/drilling well type"}
+                    </Button>
+                </Grid>
+            )}
+        </Grid>
     )
 }
 export default WellListEditTechnicalInput

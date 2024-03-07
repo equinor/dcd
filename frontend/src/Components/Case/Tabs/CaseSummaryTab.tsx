@@ -1,31 +1,17 @@
 import {
     ChangeEventHandler, Dispatch, SetStateAction, useEffect, useState,
 } from "react"
-import styled from "styled-components"
-
-import { Typography } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid"
 import CaseNumberInput from "../../Input/CaseNumberInput"
 import CaseTabTable from "../Components/CaseTabTable"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { GetGenerateProfileService } from "../../../Services/CaseGeneratedProfileService"
 import { MergeTimeseries } from "../../../Utils/common"
 import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
-import InputContainer from "../../Input/Containers/InputContainer"
 import InputSwitcher from "../../Input/InputSwitcher"
+import { useProjectContext } from "../../../Context/ProjectContext"
+import { useCaseContext } from "../../../Context/CaseContext"
 
-const TopWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-top: 20px;
-    margin-bottom: 20px;
-`
-const PageTitle = styled(Typography)`
-    flex-grow: 1;
-`
-
-const TableWrapper = styled.div`
-    margin-bottom: 50px;
-`
 interface ITimeSeriesData {
     profileName: string
     unit: string,
@@ -34,25 +20,22 @@ interface ITimeSeriesData {
 }
 
 interface Props {
-    project: Components.Schemas.ProjectDto,
-    caseItem: Components.Schemas.CaseDto,
-    setCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
     topside: Components.Schemas.TopsideDto,
     surf: Components.Schemas.SurfDto,
     substructure: Components.Schemas.SubstructureDto,
     transport: Components.Schemas.TransportDto,
-    activeTab: number
 }
 
 const CaseSummaryTab = ({
-    project,
-    caseItem, setCase,
     topside,
     surf,
     substructure,
     transport,
-    activeTab,
 }: Props) => {
+    const { project } = useProjectContext()
+    const {
+        projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase,
+    } = useCaseContext()
     // OPEX
     const [totalStudyCost, setTotalStudyCost] = useState<ITimeSeries>()
     const [opexCost, setOpexCost] = useState<Components.Schemas.OpexCostProfileDto>()
@@ -138,32 +121,32 @@ const CaseSummaryTab = ({
                 lastYear = profileLastYear
             }
         })
-        if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER && caseItem.dG4Date) {
-            setStartYear(firstYear + new Date(caseItem.dG4Date).getFullYear())
-            setEndYear(lastYear + new Date(caseItem.dG4Date).getFullYear())
-            setTableYears([firstYear + new Date(caseItem.dG4Date).getFullYear(), lastYear + new Date(caseItem.dG4Date).getFullYear()])
+        if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER && projectCase?.dG4Date) {
+            setStartYear(firstYear + new Date(projectCase?.dG4Date).getFullYear())
+            setEndYear(lastYear + new Date(projectCase?.dG4Date).getFullYear())
+            setTableYears([firstYear + new Date(projectCase?.dG4Date).getFullYear(), lastYear + new Date(projectCase?.dG4Date).getFullYear()])
         }
     }
 
     const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
+        const newCase = { ...projectCase }
         newCase.npv = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
-        setCase(newCase)
+        newCase ?? setProjectCaseEdited(newCase)
     }
 
     const handleCaseBreakEvenChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
+        const newCase = { ...projectCase }
         newCase.breakEven = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setCase(newCase)
+        newCase ?? setProjectCaseEdited(newCase)
     }
 
     useEffect(() => {
         (async () => {
             try {
-                if (activeTab === 7 && caseItem.id) {
-                    const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(project.id, caseItem.id)
-                    const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(project.id, caseItem.id)
-                    const cessationWrapper = (await GetGenerateProfileService()).generateCessationCost(project.id, caseItem.id)
+                if (project && activeTabCase === 7 && projectCase?.id) {
+                    const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(project.id, projectCase?.id)
+                    const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(project.id, projectCase?.id)
+                    const cessationWrapper = (await GetGenerateProfileService()).generateCessationCost(project.id, projectCase?.id)
 
                     const opex = (await opexWrapper).opexCostProfileDto
                     const cessation = (await cessationWrapper).cessationCostDto
@@ -172,11 +155,11 @@ const CaseSummaryTab = ({
                     let feed = (await studyWrapper).totalFEEDStudiesDto
 
                     const totalOtherStudies = (await studyWrapper).totalOtherStudiesDto
-                    if (caseItem.totalFeasibilityAndConceptStudiesOverride?.override === true) {
-                        feasibility = caseItem.totalFeasibilityAndConceptStudiesOverride
+                    if (projectCase?.totalFeasibilityAndConceptStudiesOverride?.override === true) {
+                        feasibility = projectCase?.totalFeasibilityAndConceptStudiesOverride
                     }
-                    if (caseItem.totalFEEDStudiesOverride?.override === true) {
-                        feed = caseItem.totalFEEDStudiesOverride
+                    if (projectCase?.totalFEEDStudiesOverride?.override === true) {
+                        feed = projectCase?.totalFEEDStudiesOverride
                     }
 
                     const totalStudy = MergeTimeseries(feasibility, feed, totalOtherStudies)
@@ -211,60 +194,54 @@ const CaseSummaryTab = ({
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-    }, [activeTab])
+    }, [activeTabCase])
 
-    if (activeTab !== 7) { return null }
+    if (activeTabCase !== 7) { return null }
 
     return (
-        <>
-            <TopWrapper>
-                <PageTitle variant="h3">Summary</PageTitle>
-            </TopWrapper>
-
-            <InputContainer mobileColumns={1} desktopColumns={2} breakPoint={850}>
-                <InputSwitcher value={`${caseItem.npv}`} label="NPV before tax">
+        <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
+                <InputSwitcher value={`${projectCase?.npv}`} label="NPV before tax">
                     <CaseNumberInput
                         onChange={handleCaseNPVChange}
-                        defaultValue={caseItem.npv}
+                        defaultValue={projectCase?.npv}
                         integer={false}
-                        label="NPV before tax"
                         allowNegative
                         min={0}
                         max={1000000}
                     />
                 </InputSwitcher>
-
-                <InputSwitcher value={`${caseItem.breakEven}`} label="B/E before tax">
+            </Grid>
+            <Grid item xs={12} md={6}>
+                <InputSwitcher value={`${projectCase?.breakEven}`} label="B/E before tax">
                     <CaseNumberInput
                         onChange={handleCaseBreakEvenChange}
-                        defaultValue={caseItem.breakEven}
+                        defaultValue={projectCase?.breakEven}
                         integer={false}
-                        label="B/E before tax"
                         min={0}
                         max={1000000}
                     />
                 </InputSwitcher>
-            </InputContainer>
-
-            <TableWrapper>
+            </Grid>
+            <Grid item xs={12}>
                 <CaseTabTable
                     timeSeriesData={opexTimeSeriesData}
-                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
+                    dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
                     tableName="OPEX"
                     includeFooter={false}
                 />
-            </TableWrapper>
-            <TableWrapper>
+            </Grid>
+            <Grid item xs={12}>
                 <CaseTabTable
                     timeSeriesData={capexTimeSeriesData}
-                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
+                    dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
                     tableName="CAPEX"
                     includeFooter
                 />
-            </TableWrapper>
-        </>
+            </Grid>
+        </Grid>
     )
 }
 
