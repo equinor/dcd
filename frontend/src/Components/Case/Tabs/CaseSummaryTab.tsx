@@ -6,7 +6,7 @@ import CaseNumberInput from "../../Input/CaseNumberInput"
 import CaseTabTable from "../Components/CaseTabTable"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { GetGenerateProfileService } from "../../../Services/CaseGeneratedProfileService"
-import { MergeTimeseries, MergeTimeseriesList } from "../../../Utils/common"
+import { MergeTimeseriesList } from "../../../Utils/common"
 import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
 import InputSwitcher from "../../Input/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
@@ -269,7 +269,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         let feasibility = (await studyWrapper).totalFeasibilityAndConceptStudiesDto
                         let feed = (await studyWrapper).totalFEEDStudiesDto
                         const totalOtherStudiesLocal = (await studyWrapper).totalOtherStudiesDto
-                        const totalOtherStudies = (await studyWrapper).totalOtherStudiesDto
 
                         if (projectCase?.totalFeasibilityAndConceptStudiesOverride?.override === true) {
                             feasibility = projectCase?.totalFeasibilityAndConceptStudiesOverride
@@ -285,7 +284,8 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         setCessationCost(cessation)
 
                         setOffshoreOpexPlussWellIntervention(MergeTimeseriesList(
-                            [projectCase.wellInterventionCostProfileOverride, projectCase.offshoreFacilitiesOperationsCostProfileOverride]))
+                            [projectCase.wellInterventionCostProfileOverride, projectCase.offshoreFacilitiesOperationsCostProfileOverride],
+                        ))
 
                         // CAPEX
 
@@ -309,7 +309,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             totalStudy, opex, cessation,
                             topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
                         ])
-
 
                         // Exploration costs
                         setTotalExplorationCost(MergeTimeseriesList([
@@ -359,7 +358,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                     allTimeSeriesData={allTimeSeriesData}
                     dg4Year={projectCase?.dG4Date ? new Date(projectCase.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
-                    tableName="Summary"
                     includeFooter={false}
                 />
             </Grid>

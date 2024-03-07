@@ -20,7 +20,6 @@ interface Props {
     allTimeSeriesData: any[]
     dg4Year: number
     tableYears: [number, number]
-    tableName: string
     alignedGridsRef?: any[]
     gridRef?: any
     includeFooter: boolean
@@ -30,7 +29,7 @@ interface Props {
 const CaseTabTableWithGrouping = ({
     allTimeSeriesData,
     dg4Year,
-    tableYears, tableName,
+    tableYears,
     alignedGridsRef, gridRef,
     includeFooter, totalRowName,
 }: Props) => {
@@ -41,9 +40,9 @@ const CaseTabTableWithGrouping = ({
     const [overrideProfile, setOverrideProfile] = useState<any>()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
 
-    const profilesToRowData = (allTimeSeriesData: any[]) => {
+    const profilesToRowData = () => {
         const tableRows: any[] = []
-        const timeSeriesData = allTimeSeriesData?.flat();
+        const timeSeriesData = allTimeSeriesData?.flat()
         timeSeriesData?.forEach((ts: { overrideProfile?: any; total?: any; overrideProfileSet?: any; set?: any; profile?: any; group?: any; profileName?: any; unit?: any }) => {
             const isOverridden = ts.overrideProfile?.override === true
             const rowObject: any = {}
@@ -142,8 +141,8 @@ const CaseTabTableWithGrouping = ({
                 width: 350,
                 editable: false,
                 cellStyle: { fontWeight: "normal" },
-                //pinned: "left",
-                //aggFunc: () => totalRowName,
+                // pinned: "left",
+                // aggFunc: () => totalRowName,
             },
             {
                 field: "unit",
@@ -197,7 +196,7 @@ const CaseTabTableWithGrouping = ({
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
     useEffect(() => {
-        setRowData(profilesToRowData(allTimeSeriesData))
+        setRowData(profilesToRowData())
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
     }, [])
@@ -296,7 +295,7 @@ const CaseTabTableWithGrouping = ({
                         getRowStyle={getRowStyle}
                         suppressLastEmptyLineOnPaste
                         groupDefaultExpanded={groupDefaultExpanded}
-                        // groupDisplayType={'groupRows'}
+                    // groupDisplayType={'groupRows'}
 
                     />
                 </div>

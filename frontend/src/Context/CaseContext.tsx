@@ -10,7 +10,7 @@ import {
     useEffect,
 } from "react"
 import { useAppContext } from "./AppContext"
-import { ITimeSeries } from "../Models/ITimeSeries";
+import { ITimeSeries } from "../Models/ITimeSeries"
 
 interface CaseContextType {
     projectCase: Components.Schemas.CaseDto | undefined;

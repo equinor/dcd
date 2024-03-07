@@ -594,6 +594,8 @@ const CaseCostTab = ({
         setObject(newObject)
     }
 
+    // TODO: remove ?? from all these useEffects. this is not what the nullish coalescing operator is for. assigning values to variables
+    // eslint no unused expressions gets triggered here
     useEffect(() => {
         projectCase ?? updateObject(projectCase, setProjectCase, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
     }, [totalFeasibilityAndConceptStudiesOverride])
