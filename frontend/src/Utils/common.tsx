@@ -158,10 +158,10 @@ const MergeCostProfileData = (arrays: number[][], offsets: number[]): number[] =
 }
 
 export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
-    const startYears = [t1, t2].map(t => t?.startYear ?? 0)
+    const startYears = [t1, t2].map((t) => t?.startYear ?? 0)
     const minYear = Math.min(...startYears)
-    const arrays = [t1, t2].map(t => t?.values ?? [])
-    const offsets = startYears.map(year => Math.abs(year - minYear))
+    const arrays = [t1, t2].map((t) => t?.values ?? [])
+    const offsets = startYears.map((year) => Math.abs(year - minYear))
 
     const values: number[] = MergeCostProfileData(arrays, offsets)
 
@@ -183,11 +183,10 @@ export const MergeTimeseriesList = (timeSeriesList: (ITimeSeries | undefined)[])
         } else {
             mergedTimeSeries = MergeTimeseries(mergedTimeSeries, currentSeries)
         }
-    });
+    })
 
     return mergedTimeSeries
 }
-
 
 export function formatDate(isoDateString: string): string {
     if (isoDateString === "0001-01-01T00:00:00+00:00" || isoDateString === "0001-01-01T00:00:00.000Z") {
@@ -201,12 +200,7 @@ export function formatDate(isoDateString: string): string {
     return new Intl.DateTimeFormat("no-NO", options).format(date)
 }
 
-export const isWithinRange = (number: number, max: number, min: number) => {
-    console.log(" checking if ", number, " is within ", min, " and ", max)
-    console.log("result: ", number >= max)
-    console.log("result: ", number <= min)
-    return number >= max && number <= min
-}
+export const isWithinRange = (number: number, max: number, min: number) => number >= max && number <= min
 
 export const preventNonDigitInput = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (!/\d/.test(e.key)) e.preventDefault()
