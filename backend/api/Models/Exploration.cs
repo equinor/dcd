@@ -46,7 +46,7 @@ public class GAndGAdminCost : TimeSeriesCost, IExplorationTimeSeries
     public Exploration Exploration { get; set; } = null!;
 }
 
-public class GAndGAdminCostOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
+public class GAndGAdminCostOverride : TimeSeriesCost, ITimeSeriesOverride
 {
     [ForeignKey("Exploration.Id")]
     public Exploration Exploration { get; set; } = null!;

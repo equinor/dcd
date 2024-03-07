@@ -357,9 +357,9 @@ public static class STEACaseDtoBuilder
                     costProfileDtos.Add(exploration.SidetrackCostProfile);
                 }
 
-                if (exploration.gAndGAdminCostOverride?.Override == true)
+                if (exploration.GAndGAdminCostOverride?.Override == true)
                 {
-                    costProfileDtos.Add(exploration.gAndGAdminCostOverride);
+                    costProfileDtos.Add(exploration.GAndGAdminCostOverride);
                 }
                 else if (exploration.GAndGAdminCost?.Values.Length > 0)
                 {

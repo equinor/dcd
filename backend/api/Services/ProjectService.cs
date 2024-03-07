@@ -254,8 +254,6 @@ public class ProjectService : IProjectService
                 .Include(p => p.Wells)
                 .Include(p => p.ExplorationOperationalWellCosts)
                 .Include(p => p.DevelopmentOperationalWellCosts)
-                .Include(p => p.Cases)!.ThenInclude(c => c.gAndGAdminCost)
-                .Include(p => p.Cases)!.ThenInclude(c => c.gAndGAdminCostOverride)
                 .FirstOrDefaultAsync(p => p.Id.Equals(projectId));
 
             if (project?.Cases?.Count > 0)

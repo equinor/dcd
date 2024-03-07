@@ -1,5 +1,5 @@
 import {
-    ChangeEventHandler, Dispatch, SetStateAction, useEffect, useState, useMemo
+    ChangeEventHandler, Dispatch, SetStateAction, useEffect, useState,
 } from "react"
 import styled from "styled-components"
 
@@ -81,7 +81,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     const [offshoreOpexPlussWellIntervention, setOffshoreOpexPlussWellIntervention] = useState<ITimeSeries | undefined>()
     const [wellInterventionCostProfileOverride, setWellInterventionCostProfileOverride] = useState<Components.Schemas.WellInterventionCostProfileOverrideDto>()
     const [offshoreFacilitiesOperationsCostProfileOverride] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto>()
-
 
     useEffect(() => {
         (async () => {

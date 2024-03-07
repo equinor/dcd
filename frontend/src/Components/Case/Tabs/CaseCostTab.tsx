@@ -218,7 +218,6 @@ const CaseCostTab = (): React.ReactElement | null => {
                         setGAndGAdminCost(exploration.gAndGAdminCost)
                         setGAndGAdminCostOverride(exploration.gAndGAdminCostOverride)
 
-
                         SetTableYearsFromProfiles([caseItem.totalFeasibilityAndConceptStudies, caseItem.totalFEEDStudies,
                         caseItem.wellInterventionCostProfile, caseItem.offshoreFacilitiesOperationsCostProfile,
                         caseItem.cessationWellsCost, caseItem.cessationOffshoreFacilitiesCost,
