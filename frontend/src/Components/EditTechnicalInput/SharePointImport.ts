@@ -14,20 +14,20 @@ implements Components.Schemas.SharePointImportDto {
     sharePointSiteUrl?: string | undefined
 
     constructor(
-        caseItem: Components.Schemas.CaseDto,
+        projectCase: Components.Schemas.CaseDto,
         project: Components.Schemas.ProjectDto,
         data: Components.Schemas.SharePointImportDto | undefined,
     ) {
-        this.id = caseItem.id!
+        this.id = projectCase.id!
         this.selected = false
-        this.surfState = SharePointImport.surfStatus(caseItem, project)
+        this.surfState = SharePointImport.surfStatus(projectCase, project)
         this.substructureState = SharePointImport.substructureStatus(
-            caseItem,
+            projectCase,
             project,
         )
-        this.topsideState = SharePointImport.topsideStatus(caseItem, project)
+        this.topsideState = SharePointImport.topsideStatus(projectCase, project)
         this.transportState = SharePointImport.transportStatus(
-            caseItem,
+            projectCase,
             project,
         )
         this.sharePointFileName = data?.sharePointFileName ?? ""
@@ -39,17 +39,17 @@ implements Components.Schemas.SharePointImportDto {
     static mapSource = (source: Components.Schemas.Source | undefined) => (source === 0 ? "ConceptApp" : "PROSP")
 
     static surfStatus = (
-        caseItem: Components.Schemas.CaseDto,
+        projectCase: Components.Schemas.CaseDto,
         project: Components.Schemas.ProjectDto,
     ): ImportStatusEnum => {
-        const surfId = caseItem.surfLink
+        const surfId = projectCase.surfLink
         const surf = project.surfs.find((s) => s.id === surfId)
         if (!surf) {
             return ImportStatusEnum.NotSelected
         }
         if (
             SharePointImport.mapSource(surf.source) === "ConceptApp"
-            && caseItem.sharepointFileName !== ""
+            && projectCase.sharepointFileName !== ""
         ) {
             return ImportStatusEnum.NotSelected
         }
@@ -58,10 +58,10 @@ implements Components.Schemas.SharePointImportDto {
     }
 
     static substructureStatus = (
-        caseItem: Components.Schemas.CaseDto,
+        projectCase: Components.Schemas.CaseDto,
         project: Components.Schemas.ProjectDto,
     ): ImportStatusEnum => {
-        const substructureId = caseItem.substructureLink
+        const substructureId = projectCase.substructureLink
         const substructure = project.substructures.find(
             (s) => s.id === substructureId,
         )
@@ -70,7 +70,7 @@ implements Components.Schemas.SharePointImportDto {
         }
         if (
             SharePointImport.mapSource(substructure.source) === "ConceptApp"
-            && caseItem.sharepointFileName !== ""
+            && projectCase.sharepointFileName !== ""
         ) {
             return ImportStatusEnum.NotSelected
         }
@@ -79,17 +79,17 @@ implements Components.Schemas.SharePointImportDto {
     }
 
     static topsideStatus = (
-        caseItem: Components.Schemas.CaseDto,
+        projectCase: Components.Schemas.CaseDto,
         project: Components.Schemas.ProjectDto,
     ): ImportStatusEnum => {
-        const topsideId = caseItem.topsideLink
+        const topsideId = projectCase.topsideLink
         const topside = project.topsides.find((s) => s.id === topsideId)
         if (!topside) {
             return ImportStatusEnum.NotSelected
         }
         if (
             SharePointImport.mapSource(topside.source) === "ConceptApp"
-            && caseItem.sharepointFileName !== ""
+            && projectCase.sharepointFileName !== ""
         ) {
             return ImportStatusEnum.NotSelected
         }
@@ -98,17 +98,17 @@ implements Components.Schemas.SharePointImportDto {
     }
 
     static transportStatus = (
-        caseItem: Components.Schemas.CaseDto,
+        projectCase: Components.Schemas.CaseDto,
         project: Components.Schemas.ProjectDto,
     ): ImportStatusEnum => {
-        const transportId = caseItem.transportLink
+        const transportId = projectCase.transportLink
         const transport = project.transports.find((s) => s.id === transportId)
         if (!transport) {
             return ImportStatusEnum.NotSelected
         }
         if (
             SharePointImport.mapSource(transport.source) === "ConceptApp"
-            && caseItem.sharepointFileName !== ""
+            && projectCase.sharepointFileName !== ""
         ) {
             return ImportStatusEnum.NotSelected
         }

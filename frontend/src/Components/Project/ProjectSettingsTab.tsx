@@ -1,11 +1,13 @@
 import { useState, ChangeEventHandler } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
-import { useAppContext } from "../../Context/AppContext"
-import InputContainer from "../Input/Containers/InputContainer"
+import { useProjectContext } from "../../Context/ProjectContext"
 import InputSwitcher from "../Input/InputSwitcher"
+import Grid from "@mui/material/Grid"
+import { useAppContext } from "../../Context/AppContext"
 
 const ProjectSettingsTab = () => {
-    const { project, setProject } = useAppContext()
+    const { editMode } = useAppContext()
+    const { project, projectEdited, setProjectEdited } = useProjectContext()
     const [classification, setClassification] = useState(0) // TODO: Get classification from project
     const [dummyRole, setDummyRole] = useState(0) // TODO: Get role from user
 
@@ -14,7 +16,7 @@ const ProjectSettingsTab = () => {
             const newPhysicalUnit: Components.Schemas.PhysUnit = Number(e.currentTarget.value) as Components.Schemas.PhysUnit
             const newProject: Components.Schemas.ProjectDto = { ...project }
             newProject.physicalUnit = newPhysicalUnit
-            setProject(newProject)
+            setProjectEdited(newProject)
         }
     }
 
@@ -23,7 +25,7 @@ const ProjectSettingsTab = () => {
             const newCurrency: Components.Schemas.Currency = Number(e.currentTarget.value) as Components.Schemas.Currency
             const newProject: Components.Schemas.ProjectDto = { ...project }
             newProject.currency = newCurrency
-            setProject(newProject)
+            setProjectEdited(newProject)
         }
     }
 
@@ -39,54 +41,59 @@ const ProjectSettingsTab = () => {
     }
 
     return (
-        <InputContainer mobileColumns={2} desktopColumns={2} breakPoint={850}>
-
-            <InputSwitcher
-                value={project.physicalUnit === 0 ? "SI" : "Oil field"}
-                label="Physical unit"
-            >
-                <NativeSelect
-                    id="physicalUnit"
-                    label="Physical unit"
-                    onChange={handlePhysicalUnitChange}
-                    value={project.physicalUnit}
-                >
-                    <option key={0} value={0}>SI</option>
-                    <option key={1} value={1}>Oil field</option>
-                </NativeSelect>
-            </InputSwitcher>
-            <InputSwitcher
-                value={project.currency === 1 ? "NOK" : "USD"}
-                label="Currency"
-            >
-                <NativeSelect
-                    id="currency"
-                    label="Currency"
-                    onChange={handleCurrencyChange}
-                    value={project.currency}
-                >
-                    <option key={1} value={1}>NOK</option>
-                    <option key={2} value={2}>USD</option>
-                </NativeSelect>
-            </InputSwitcher>
-            {dummyRole === 0 && (
+        <Grid container direction="column" spacing={2}>
+            <Grid item>
                 <InputSwitcher
-                    value={classificationOptions[classification]}
-                    label="Classification"
+                    value={project.physicalUnit === 0 ? "SI" : "Oil field"}
+                    label="Physical unit"
                 >
                     <NativeSelect
-                        id="classification"
-                        label="Classification"
-                        onChange={(e) => setClassification(Number(e.currentTarget.value))}
-                        value={classification}
+                        id="physicalUnit"
+                        label=""
+                        onChange={handlePhysicalUnitChange}
+                        value={projectEdited ? projectEdited.physicalUnit : project.physicalUnit}
                     >
-                        {Object.entries(classificationOptions).map(([key, value]) => (
-                            <option key={key} value={key}>{value}</option>
-                        ))}
+                        <option key={0} value={0}>SI</option>
+                        <option key={1} value={1}>Oil field</option>
                     </NativeSelect>
                 </InputSwitcher>
-            )}
-        </InputContainer>
+            </Grid>
+            <Grid item>
+                <InputSwitcher
+                    value={project.currency === 1 ? "NOK" : "USD"}
+                    label="Currency"
+                >
+                    <NativeSelect
+                        id="currency"
+                        label=""
+                        onChange={handleCurrencyChange}
+                        value={projectEdited ? projectEdited.currency : project.currency}
+                    >
+                        <option key={1} value={1}>NOK</option>
+                        <option key={2} value={2}>USD</option>
+                    </NativeSelect>
+                </InputSwitcher>
+            </Grid>
+            <Grid item>
+                {dummyRole === 0 && (
+                    <InputSwitcher
+                        value={classificationOptions[classification]}
+                        label="Classification"
+                    >
+                        <NativeSelect
+                            id="classification"
+                            label=""
+                            onChange={(e) => setClassification(Number(e.currentTarget.value))}
+                            value={classification}
+                        >
+                            {Object.entries(classificationOptions).map(([key, value]) => (
+                                <option key={key} value={key}>{value}</option>
+                            ))}
+                        </NativeSelect>
+                    </InputSwitcher>
+                )}
+            </Grid>
+        </Grid>
     )
 }
 

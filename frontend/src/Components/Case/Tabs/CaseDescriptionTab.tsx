@@ -1,45 +1,21 @@
 import {
-    Dispatch,
-    SetStateAction,
     ChangeEventHandler,
     FormEventHandler,
+    useEffect,
 } from "react"
-import styled from "styled-components"
-
-import {
-    Label, NativeSelect, Typography,
-} from "@equinor/eds-core-react"
+import { NativeSelect } from "@equinor/eds-core-react"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
+import Grid from "@mui/material/Grid"
 import CaseNumberInput from "../../Input/CaseNumberInput"
-import InputContainer from "../../Input/Containers/InputContainer"
 import InputSwitcher from "../../Input/InputSwitcher"
 import Gallery from "../../Gallery/Gallery"
+import { useCaseContext } from "../../../Context/CaseContext"
 
-const TopWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-top: 20px;
-    margin-bottom: 20px;
-`
-const PageTitle = styled(Typography)`
-    flex-grow: 1;
-`
-const DescriptionField = styled(TextArea)`
-    margin-bottom: 50px;
-    width: 100%;
-`
+const CaseDescriptionTab = () => {
+    const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
 
-interface Props {
-    caseItem: Components.Schemas.CaseDto,
-    setCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
-    activeTab: number
-}
+    if (!projectCase) return (<></>)
 
-const CaseDescriptionTab = ({
-    caseItem,
-    setCase,
-    activeTab,
-}: Props) => {
     const productionStrategyOptions = {
         0: "Depletion",
         1: "Water injection",
@@ -56,168 +32,173 @@ const CaseDescriptionTab = ({
     }
 
     const handleDescriptionChange: FormEventHandler<any> = async (e) => {
-        const newCase = { ...caseItem }
+        const newCase = { ...projectCase }
         newCase.description = e.currentTarget.value
-        setCase(newCase)
+        setProjectCaseEdited(newCase)
     }
 
     const handleFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
+        const newCase = { ...projectCase }
         const newfacilitiesAvailability = e.currentTarget.value.length > 0
             ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
         if (newfacilitiesAvailability !== undefined) {
             newCase.facilitiesAvailability = newfacilitiesAvailability / 100
         } else { newCase.facilitiesAvailability = 0 }
-        setCase(newCase)
+        setProjectCaseEdited(newCase)
     }
 
     const handleProducerCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
+        const newCase = { ...projectCase }
         newCase.producerCount = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setCase(newCase)
+        setProjectCaseEdited(newCase)
     }
 
     const handleGasInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
+        const newCase = { ...projectCase }
         newCase.gasInjectorCount = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setCase(newCase)
+        setProjectCaseEdited(newCase)
     }
 
     const handletWaterInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
+        const newCase = { ...projectCase }
         newCase.waterInjectorCount = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setCase(newCase)
+        setProjectCaseEdited(newCase)
     }
 
     const handleProductionStrategyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1, 2, 3, 4].indexOf(Number(e.currentTarget.value)) !== -1) {
             const newProductionStrategy: Components.Schemas.ProductionStrategyOverview = Number(e.currentTarget.value) as Components.Schemas.ProductionStrategyOverview
-            const newCase = { ...caseItem }
+            const newCase = { ...projectCase }
             newCase.productionStrategyOverview = newProductionStrategy
-            setCase(newCase)
+            setProjectCaseEdited(newCase)
         }
     }
 
     const handleArtificialLiftChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1) {
             const newArtificialLift: Components.Schemas.ArtificialLift = Number(e.currentTarget.value) as Components.Schemas.ArtificialLift
-            const newCase = { ...caseItem }
+            const newCase = { ...projectCase }
             newCase.artificialLift = newArtificialLift
-            setCase(newCase)
+            setProjectCaseEdited(newCase)
         }
     }
-    if (activeTab !== 0) { return null }
 
     return (
-        <>
-            <TopWrapper>
-                <PageTitle variant="h3">Description</PageTitle>
-            </TopWrapper>
-            <Gallery />
-            <InputSwitcher label="Description" value={caseItem.description ?? ""}>
-                <>
-                    <Label htmlFor="description" label="Case description" />
-                    <DescriptionField
+        <Grid container spacing={2}>
+            <Grid item xs={12}>
+                <Gallery />
+                <InputSwitcher label="Description" value={projectCaseEdited ? projectCaseEdited.description : projectCase?.description ?? ""}>
+                    <TextArea
                         id="description"
                         placeholder="Enter a description"
                         onInput={handleDescriptionChange}
-                        value={caseItem.description ?? ""}
-                        cols={110}
+                        value={projectCaseEdited ? projectCaseEdited.description : projectCase?.description ?? ""}
+                        cols={10000}
                         rows={8}
                     />
-                </>
-            </InputSwitcher>
-            <InputContainer desktopColumns={3} mobileColumns={1} breakPoint={850}>
+                </InputSwitcher>
+            </Grid>
+            <Grid item xs={12} md={4}>
                 <InputSwitcher
                     label="Production wells"
-                    value={caseItem.producerCount.toString()}
+                    value={projectCaseEdited ? projectCaseEdited.producerCount.toString() : projectCase.producerCount.toString()}
                 >
                     <CaseNumberInput
                         onChange={handleProducerCountChange}
-                        defaultValue={caseItem.producerCount}
+                        defaultValue={projectCaseEdited ? projectCaseEdited.producerCount : projectCase?.producerCount}
                         integer
-                        label="Production wells"
                         min={0}
                         max={100000}
                     />
                 </InputSwitcher>
+            </Grid>
+            <Grid item xs={12} md={4}>
                 <InputSwitcher
                     label="Water injector wells"
-                    value={caseItem.waterInjectorCount.toString()}
+                    value={projectCaseEdited ? projectCaseEdited.producerCount.toString() : projectCase.waterInjectorCount.toString()}
                 >
                     <CaseNumberInput
                         onChange={handletWaterInjectorCountChange}
-                        defaultValue={caseItem.waterInjectorCount}
+                        defaultValue={projectCaseEdited ? projectCaseEdited.waterInjectorCount : projectCase?.waterInjectorCount}
                         integer
                         disabled={false}
-                        label="Water injector wells"
                         min={0}
                         max={100000}
                     />
                 </InputSwitcher>
+            </Grid>
+            <Grid item xs={12} md={4}>
                 <InputSwitcher
                     label="Gas injector wells"
-                    value={caseItem.gasInjectorCount.toString()}
+                    value={projectCaseEdited ? projectCaseEdited.gasInjectorCount.toString() : projectCase.gasInjectorCount.toString()}
                 >
                     <CaseNumberInput
                         onChange={handleGasInjectorCountChange}
-                        defaultValue={caseItem.gasInjectorCount}
+                        defaultValue={projectCaseEdited ? projectCaseEdited.gasInjectorCount : projectCase?.gasInjectorCount}
                         integer
-                        label="Gas injector wells"
                         min={0}
                         max={100000}
                     />
                 </InputSwitcher>
-            </InputContainer>
-            <InputContainer desktopColumns={3} mobileColumns={1} breakPoint={850}>
+            </Grid>
+            <Grid item xs={12} md={4}>
                 <InputSwitcher
+                    value={productionStrategyOptions[projectCase?.productionStrategyOverview]}
                     label="Production strategy overview"
-                    value={productionStrategyOptions[caseItem.productionStrategyOverview]}
-
                 >
                     <NativeSelect
                         id="productionStrategy"
-                        label="Production strategy overview"
+                        label=""
                         onChange={handleProductionStrategyChange}
-                        value={caseItem.productionStrategyOverview}
+                        value={projectCaseEdited ? projectCaseEdited.productionStrategyOverview : projectCase.productionStrategyOverview}
                     >
                         {Object.entries(productionStrategyOptions).map(([value, label]) => (
                             <option key={value} value={value}>{label}</option>
                         ))}
                     </NativeSelect>
                 </InputSwitcher>
+            </Grid>
+            <Grid item xs={12} md={4}>
                 <InputSwitcher
+                    value={artificialLiftOptions[projectCase?.artificialLift]}
                     label="Artificial lift"
-                    value={artificialLiftOptions[caseItem.artificialLift]}
                 >
                     <NativeSelect
                         id="artificialLift"
-                        label="Artificial lift"
+                        label=""
                         onChange={handleArtificialLiftChange}
-                        value={caseItem.artificialLift}
+                        value={projectCaseEdited ? projectCaseEdited.artificialLift : projectCase.artificialLift}
                     >
                         {Object.entries(artificialLiftOptions).map(([value, label]) => (
                             <option key={value} value={value}>{label}</option>
                         ))}
                     </NativeSelect>
                 </InputSwitcher>
+            </Grid>
+            <Grid item xs={12} md={4}>
                 <InputSwitcher
                     label="Facilities availability"
-                    value={`${caseItem.facilitiesAvailability !== undefined ? (caseItem.facilitiesAvailability * 100).toFixed(2) : ""}%`}
+                    value={`${projectCase?.facilitiesAvailability !== undefined ? (projectCase?.facilitiesAvailability * 100).toFixed(2) : ""}%`}
                 >
                     <CaseNumberInput
                         onChange={handleFacilitiesAvailabilityChange}
-                        defaultValue={caseItem.facilitiesAvailability
-                            !== undefined ? caseItem.facilitiesAvailability * 100 : undefined}
+                        defaultValue={
+                            projectCaseEdited
+                                ? projectCaseEdited.facilitiesAvailability !== undefined
+                                    ? projectCaseEdited.facilitiesAvailability * 100
+                                    : undefined
+                                : projectCase.facilitiesAvailability !== undefined
+                                    ? projectCase?.facilitiesAvailability * 100
+                                    : undefined
+                        }
                         integer={false}
-                        label="Facilities availability"
                         unit="%"
                         min={0}
                         max={100}
                     />
                 </InputSwitcher>
-            </InputContainer>
-        </>
+            </Grid>
+        </Grid>
     )
 }
 

@@ -7,19 +7,21 @@ import {
 } from "react"
 import styled from "styled-components"
 import OperationalWellCost from "./OperationalWellCost"
-import { useAppContext } from "../../Context/AppContext"
+import { useProjectContext } from "../../Context/ProjectContext"
 
-const TableWrapper = styled(Table)`
+const { Head, Body, Row, Cell } = Table
+
+const FullwidthTable = styled(Table)`
     width: 100%;
 `
 
 interface Props {
     title: string
-    developmentOperationalWellCosts?: Components.Schemas.DevelopmentOperationalWellCostsDto
-    setDevelopmentOperationalWellCosts?: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsDto>>
+    developmentOperationalWellCosts?: Components.Schemas.DevelopmentOperationalWellCostsDto | undefined
+    setDevelopmentOperationalWellCosts?: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>>
 
-    explorationOperationalWellCosts?: Components.Schemas.ExplorationOperationalWellCostsDto
-    setExplorationOperationalWellCosts?: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsDto>>
+    explorationOperationalWellCosts?: Components.Schemas.ExplorationOperationalWellCostsDto | undefined
+    setExplorationOperationalWellCosts?: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>>
 }
 
 const OperationalWellCosts = ({
@@ -29,8 +31,7 @@ const OperationalWellCosts = ({
     setDevelopmentOperationalWellCosts,
     setExplorationOperationalWellCosts,
 }: Props) => {
-    const { project } = useAppContext()
-
+    const { project } = useProjectContext()
     const [developmentRigUpgrading, setDevelopmentRigUpgrading] = useState<number | undefined>(developmentOperationalWellCosts?.rigUpgrading)
     const [developmentRigMobDemob, setDevelopmentRigMobDemob] = useState<number | undefined>(developmentOperationalWellCosts?.rigMobDemob)
     const [developmentAnnualWellInterventionCost, setDevelopmentAnnualWellInterventionCost] = useState<number | undefined>(developmentOperationalWellCosts?.annualWellInterventionCostPerWell)
@@ -80,13 +81,13 @@ const OperationalWellCosts = ({
         explorationProjectDrillingCosts, appraisalRigMobDemob, appraisalProjectDrillingCosts])
 
     return (
-        <TableWrapper>
-            <Table.Head>
-                <Table.Row>
-                    <Table.Cell>
+        <FullwidthTable>
+            <Head>
+                <Row>
+                    <Cell>
                         {title}
-                    </Table.Cell>
-                    <Table.Cell>
+                    </Cell>
+                    <Cell>
                         <div>
                             Cost
                             <div style={{
@@ -96,10 +97,10 @@ const OperationalWellCosts = ({
                                 {`${project?.currency === 1 ? "mill NOK" : "mill USD"}`}
                             </div>
                         </div>
-                    </Table.Cell>
-                </Table.Row>
-            </Table.Head>
-            <Table.Body>
+                    </Cell>
+                </Row>
+            </Head>
+            <Body>
                 {developmentOperationalWellCosts ? (
                     <>
                         <OperationalWellCost
@@ -154,8 +155,8 @@ const OperationalWellCosts = ({
                     </>
                 )}
 
-            </Table.Body>
-        </TableWrapper>
+            </Body>
+        </FullwidthTable>
     )
 }
 
