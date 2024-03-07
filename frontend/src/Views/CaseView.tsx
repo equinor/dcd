@@ -16,11 +16,14 @@ import { useModalContext } from "../Context/ModalContext"
 import { useCaseContext } from "../Context/CaseContext"
 import { useAppContext } from "../Context/AppContext"
 
-const { List, Tab, Panels, Panel } = Tabs
-
+const {
+    List, Tab, Panels, Panel,
+} = Tabs
 
 const CaseView = () => {
-    const { setIsSaving, isLoading, setIsLoading, updateFromServer, setUpdateFromServer } = useAppContext()
+    const {
+        setIsSaving, isLoading, setIsLoading, updateFromServer, setUpdateFromServer,
+    } = useAppContext()
 
     const {
         project,
@@ -35,6 +38,7 @@ const CaseView = () => {
         activeTabCase,
         setActiveTabCase,
 
+        // Study cost
         totalFeasibilityAndConceptStudies,
         setTotalFeasibilityAndConceptStudies,
         totalFeasibilityAndConceptStudiesOverride,
@@ -45,6 +49,7 @@ const CaseView = () => {
         setTotalFEEDStudiesOverride,
         totalOtherStudies,
         setTotalOtherStudies,
+
         topside, setTopside,
         topsideCost, setTopsideCost,
         surf, setSurf,
@@ -53,6 +58,22 @@ const CaseView = () => {
         substructureCost, setSubstructureCost,
         transport, setTransport,
         transportCost, setTransportCost,
+
+        // Exploration
+        totalExplorationCost,
+        setTotalExplorationCost,
+        explorationWellCostProfile,
+        setExplorationWellCostProfile,
+        gAndGAdminCost,
+        setGAndGAdminCost,
+        seismicAcquisitionAndProcessing,
+        setSeismicAcquisitionAndProcessing,
+        explorationSidetrackCost,
+        setExplorationSidetrackCost,
+        explorationAppraisalWellCost,
+        setExplorationAppraisalWellCost,
+        countryOfficeCost,
+        setCountryOfficeCost,
     } = useCaseContext()
 
     if (!projectCase) return (null)
@@ -84,8 +105,6 @@ const CaseView = () => {
     const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>()
     const [cessationOffshoreFacilitiesCost,
         setCessationOffshoreFacilitiesCost] = useState<Components.Schemas.CessationOffshoreFacilitiesCostDto>()
-
-    const [gAndGAdminCost, setGAndGAdminCost] = useState<Components.Schemas.GAndGAdminCostDto>()
 
     const [co2Emissions, setCo2Emissions] = useState<Components.Schemas.Co2EmissionsDto>()
 
@@ -286,8 +305,6 @@ const CaseView = () => {
                         </Panel>
                         <Panel>
                             <CaseCostTab
-                                exploration={exploration}
-                                setExploration={setExploration}
                                 wellProject={wellProject}
                                 setWellProject={setWellProject}
                                 offshoreFacilitiesOperationsCostProfile={offshoreFacilitiesOperationsCostProfile}
@@ -299,8 +316,6 @@ const CaseView = () => {
                                 setCessationWellsCost={setCessationWellsCost}
                                 cessationOffshoreFacilitiesCost={cessationOffshoreFacilitiesCost}
                                 setCessationOffshoreFacilitiesCost={setCessationOffshoreFacilitiesCost}
-                                gAndGAdminCost={gAndGAdminCost}
-                                setGAndGAdminCost={setGAndGAdminCost}
                             />
                         </Panel>
                         <Panel>

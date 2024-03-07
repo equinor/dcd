@@ -10,6 +10,7 @@ import {
     useEffect,
 } from "react"
 import { useAppContext } from "./AppContext"
+import { ITimeSeries } from "../Models/ITimeSeries";
 
 interface CaseContextType {
     projectCase: Components.Schemas.CaseDto | undefined;
@@ -55,6 +56,22 @@ interface CaseContextType {
 
     totalOtherStudies: Components.Schemas.TotalOtherStudiesDto | undefined,
     setTotalOtherStudies: Dispatch<SetStateAction<Components.Schemas.TotalOtherStudiesDto | undefined>>
+
+    // Exploration
+    totalExplorationCost: ITimeSeries | undefined,
+    setTotalExplorationCost: Dispatch<SetStateAction<ITimeSeries | undefined>>,
+    gAndGAdminCost: Components.Schemas.GAndGAdminCostDto | undefined
+    setGAndGAdminCost: Dispatch<SetStateAction<Components.Schemas.GAndGAdminCostDto | undefined>>
+    seismicAcquisitionAndProcessing: Components.Schemas.SeismicAcquisitionAndProcessingDto | undefined
+    setSeismicAcquisitionAndProcessing: Dispatch<SetStateAction<Components.Schemas.SeismicAcquisitionAndProcessingDto | undefined>>
+    countryOfficeCost: Components.Schemas.CountryOfficeCostDto | undefined
+    setCountryOfficeCost: Dispatch<SetStateAction<Components.Schemas.CountryOfficeCostDto | undefined>>
+    explorationWellCostProfile: Components.Schemas.ExplorationWellCostProfileDto | undefined
+    setExplorationWellCostProfile: Dispatch<SetStateAction<Components.Schemas.ExplorationWellCostProfileDto | undefined>>
+    explorationAppraisalWellCost: Components.Schemas.AppraisalWellCostProfileDto | undefined
+    setExplorationAppraisalWellCost: Dispatch<SetStateAction<Components.Schemas.AppraisalWellCostProfileDto | undefined>>
+    explorationSidetrackCost: Components.Schemas.SidetrackCostProfileDto | undefined
+    setExplorationSidetrackCost: Dispatch<SetStateAction<Components.Schemas.SidetrackCostProfileDto | undefined>>
 }
 
 const CaseContext = createContext<CaseContextType | undefined>(undefined)
@@ -84,6 +101,15 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [totalFEEDStudies, setTotalFEEDStudies] = useState<Components.Schemas.TotalFEEDStudiesDto | undefined>()
     const [totalFEEDStudiesOverride, setTotalFEEDStudiesOverride] = useState<Components.Schemas.TotalFEEDStudiesOverrideDto | undefined>()
     const [totalOtherStudies, setTotalOtherStudies] = useState<Components.Schemas.TotalOtherStudiesDto | undefined>()
+
+        // Exploration
+        const [totalExplorationCost, setTotalExplorationCost] = useState<ITimeSeries | undefined>()
+        const [explorationWellCostProfile, setExplorationWellCostProfile] = useState<Components.Schemas.ExplorationWellCostProfileDto>()
+        const [explorationAppraisalWellCost, setExplorationAppraisalWellCost] = useState<Components.Schemas.AppraisalWellCostProfileDto>()
+        const [explorationSidetrackCost, setExplorationSidetrackCost] = useState<Components.Schemas.SidetrackCostProfileDto>()
+        const [seismicAcquisitionAndProcessing, setSeismicAcquisitionAndProcessing] = useState<Components.Schemas.SeismicAcquisitionAndProcessingDto>()
+        const [countryOfficeCost, setCountryOfficeCost] = useState<Components.Schemas.CountryOfficeCostDto>()
+        const [gAndGAdminCost, setGAndGAdminCost] = useState<Components.Schemas.GAndGAdminCostDto>()
 
     const value = useMemo(() => ({
         projectCase,
@@ -127,6 +153,22 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setTotalFEEDStudiesOverride,
         totalOtherStudies,
         setTotalOtherStudies,
+
+        // Exploration
+        totalExplorationCost,
+        setTotalExplorationCost,
+        explorationWellCostProfile,
+        setExplorationWellCostProfile,
+        gAndGAdminCost,
+        setGAndGAdminCost,
+        seismicAcquisitionAndProcessing,
+        setSeismicAcquisitionAndProcessing,
+        explorationSidetrackCost,
+        setExplorationSidetrackCost,
+        explorationAppraisalWellCost,
+        setExplorationAppraisalWellCost,
+        countryOfficeCost,
+        setCountryOfficeCost,
     }), [
         projectCase,
         setProjectCase,
@@ -156,6 +198,15 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         totalFEEDStudies,
         totalFEEDStudiesOverride,
         totalOtherStudies,
+
+        // Exploration
+        totalExplorationCost,
+        explorationWellCostProfile,
+        gAndGAdminCost,
+        countryOfficeCost,
+        explorationAppraisalWellCost,
+        explorationSidetrackCost,
+        seismicAcquisitionAndProcessing,
     ])
 
     useEffect(() => {

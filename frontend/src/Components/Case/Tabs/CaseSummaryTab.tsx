@@ -6,13 +6,14 @@ import CaseNumberInput from "../../Input/CaseNumberInput"
 import CaseTabTable from "../Components/CaseTabTable"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { GetGenerateProfileService } from "../../../Services/CaseGeneratedProfileService"
-import { MergeTimeseries } from "../../../Utils/common"
+import { MergeTimeseries, MergeTimeseriesList } from "../../../Utils/common"
 import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
 import InputSwitcher from "../../Input/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
 import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
+import { useModalContext } from "../../../Context/ModalContext"
 
 interface Props {
     topside: Components.Schemas.TopsideDto,
@@ -41,8 +42,28 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         substructureCost, setSubstructureCost,
         transport, setTransport,
         transportCost, setTransportCost,
+
+        // Exploration
+        totalExplorationCost,
+        setTotalExplorationCost,
+        explorationWellCostProfile,
+        setExplorationWellCostProfile,
+        gAndGAdminCost,
+        setGAndGAdminCost,
+        seismicAcquisitionAndProcessing,
+        setSeismicAcquisitionAndProcessing,
+        explorationSidetrackCost,
+        setExplorationSidetrackCost,
+        explorationAppraisalWellCost,
+        setExplorationAppraisalWellCost,
+        countryOfficeCost,
+        setCountryOfficeCost,
     } = useCaseContext()
 
+    const {
+        exploration,
+        setExploration,
+    } = useModalContext()
 
     const { project } = useProjectContext()
     const {
@@ -60,15 +81,11 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     const [, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
-    const [totalExplorationCost, setTotalExplorationCost] = useState<ITimeSeries | undefined>()
-
-
     const [historicCostCostProfile, setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto | undefined>()
     const [offshoreFacilitiesOperationsCostProfile, setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined>()
 
     const [offshoreOpexPlussWellIntervention, setOffshoreOpexPlussWellIntervention] = useState<ITimeSeries | undefined>()
     const [additionalOPEXCostProfile, setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto | undefined>()
-
 
     interface ITimeSeriesData {
         group?: string
@@ -251,8 +268,9 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
                         let feasibility = (await studyWrapper).totalFeasibilityAndConceptStudiesDto
                         let feed = (await studyWrapper).totalFEEDStudiesDto
-
+                        const totalOtherStudiesLocal = (await studyWrapper).totalOtherStudiesDto
                         const totalOtherStudies = (await studyWrapper).totalOtherStudiesDto
+
                         if (projectCase?.totalFeasibilityAndConceptStudiesOverride?.override === true) {
                             feasibility = projectCase?.totalFeasibilityAndConceptStudiesOverride
                         }
@@ -260,11 +278,14 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             feed = projectCase?.totalFEEDStudiesOverride
                         }
 
-                        const totalStudy = MergeTimeseries(feasibility, feed, totalOtherStudies)
+                        const totalStudy = MergeTimeseriesList([feasibility, feed, totalOtherStudiesLocal])
                         setTotalStudyCost(totalStudy)
 
                         setOpexCost(opex)
                         setCessationCost(cessation)
+
+                        setOffshoreOpexPlussWellIntervention(MergeTimeseriesList(
+                            [projectCase.wellInterventionCostProfileOverride, projectCase.offshoreFacilitiesOperationsCostProfileOverride]))
 
                         // CAPEX
 
@@ -288,6 +309,16 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             totalStudy, opex, cessation,
                             topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
                         ])
+
+
+                        // Exploration costs
+                        setTotalExplorationCost(MergeTimeseriesList([
+                            explorationWellCostProfile,
+                            explorationAppraisalWellCost,
+                            explorationSidetrackCost,
+                            seismicAcquisitionAndProcessing,
+                            countryOfficeCost,
+                            gAndGAdminCost]))
                     }
                 }
             } catch (error) {
