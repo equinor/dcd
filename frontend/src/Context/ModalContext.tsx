@@ -4,9 +4,9 @@ import React, {
     ReactNode,
     useContext,
     useMemo,
-    useEffect
+    useEffect,
 } from "react"
-import { useAppContext } from "./AppContext";
+import { useAppContext } from "./AppContext"
 
 interface ModalContextType {
     caseModalIsOpen: boolean;
@@ -103,7 +103,7 @@ const ModalContextProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     ])
 
     useEffect(() => {
-        (editTechnicalInput === undefined && editMode) && setEditTechnicalInput(true)
+        if (editTechnicalInput === undefined && editMode) { setEditTechnicalInput(true) }
     }, [editMode])
 
     return (

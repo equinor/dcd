@@ -4,7 +4,7 @@ import {
     Input,
     NativeSelect,
     Progress,
-    InputWrapper
+    InputWrapper,
 } from "@equinor/eds-core-react"
 import {
     useState,
@@ -14,6 +14,7 @@ import {
     FormEventHandler,
 } from "react"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
+import Grid from "@mui/material/Grid"
 import Modal from "./Modal/Modal"
 import { defaultDate, isDefaultDate, toMonthDate } from "../Utils/common"
 import { GetCaseService } from "../Services/CaseService"
@@ -21,8 +22,6 @@ import { useProjectContext } from "../Context/ProjectContext"
 import { useModalContext } from "../Context/ModalContext"
 import CaseNumberInput from "./Input/CaseNumberInput"
 import { useAppContext } from "../Context/AppContext"
-import Grid from "@mui/material/Grid"
-
 
 const CreateCaseModal = () => {
     const { isLoading, setIsLoading } = useAppContext()
@@ -164,7 +163,7 @@ const CreateCaseModal = () => {
             {/* ModalContent */}
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>
-                    <InputWrapper labelProps={{label: "Name"}}>
+                    <InputWrapper labelProps={{ label: "Name" }}>
                         <TextField
                             id="name"
                             name="name"
@@ -175,7 +174,7 @@ const CreateCaseModal = () => {
                     </InputWrapper>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                    <InputWrapper labelProps={{label: "DG4"}}>
+                    <InputWrapper labelProps={{ label: "DG4" }}>
                         <Input
                             type="month"
                             id="dgDate"
@@ -186,7 +185,7 @@ const CreateCaseModal = () => {
                     </InputWrapper>
                 </Grid>
                 <Grid item xs={12}>
-                    <InputWrapper labelProps={{label: "Description"}}>
+                    <InputWrapper labelProps={{ label: "Description" }}>
                         <TextArea
                             id="description"
                             placeholder="Enter a description"
@@ -213,7 +212,7 @@ const CreateCaseModal = () => {
                     </NativeSelect>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                    <InputWrapper labelProps={{label: "Producer wells"}}>
+                    <InputWrapper labelProps={{ label: "Producer wells" }}>
                         <Input
                             id="producerWells"
                             type="number"
@@ -229,7 +228,7 @@ const CreateCaseModal = () => {
                     </InputWrapper>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                    <InputWrapper labelProps={{label: "Gas injector wells"}}>
+                    <InputWrapper labelProps={{ label: "Gas injector wells" }}>
                         <Input
                             id="gasInjector"
                             type="number"
@@ -245,7 +244,7 @@ const CreateCaseModal = () => {
                     </InputWrapper>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                    <InputWrapper labelProps={{label: "Water injector wells"}}>
+                    <InputWrapper labelProps={{ label: "Water injector wells" }}>
                         <Input
                             id="waterInjector"
                             type="number"

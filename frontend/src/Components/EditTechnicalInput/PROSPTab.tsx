@@ -2,20 +2,18 @@ import {
     Typography,
     Button,
     Input,
-    Label,
     Progress,
     Switch,
     InputWrapper,
-    Card
+    Card,
 } from "@equinor/eds-core-react"
 import React, { ChangeEvent, useEffect, useState } from "react"
+import Grid from "@mui/material/Grid"
 import { GetProspService } from "../../Services/ProspService"
 import { GetProjectService } from "../../Services/ProjectService"
 import { DriveItem } from "../../Models/sharepoint/DriveItem"
 import PROSPCaseList from "./PROSPCaseList"
 import { useProjectContext } from "../../Context/ProjectContext"
-import Grid from "@mui/material/Grid"
-
 
 const PROSPTab = () => {
     const { project, setProject } = useProjectContext()
@@ -93,15 +91,16 @@ const PROSPTab = () => {
                             </Button>
                         )}
                 </Grid>
-                {errorMessage &&
-                    <Grid item xs={12}>
-                        <Card variant="danger">
-                            <Card.Header>
-                                <Typography>{errorMessage}</Typography>
-                            </Card.Header>
-                        </Card>
-                    </Grid>
-                }
+                {errorMessage
+                    && (
+                        <Grid item xs={12}>
+                            <Card variant="danger">
+                                <Card.Header>
+                                    <Typography>{errorMessage}</Typography>
+                                </Card.Header>
+                            </Card>
+                        </Grid>
+                    )}
             </Grid>
             <Grid item xs={12} container justifyContent="flex-end">
                 <Grid item>

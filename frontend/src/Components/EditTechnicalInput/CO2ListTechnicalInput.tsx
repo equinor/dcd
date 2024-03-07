@@ -8,8 +8,8 @@ import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { Switch } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
-import { useProjectContext } from "../../Context/ProjectContext"
 import Grid from "@mui/material/Grid"
+import { useProjectContext } from "../../Context/ProjectContext"
 
 const CO2ListTechnicalInput = () => {
     const gridRef = useRef<any>(null)

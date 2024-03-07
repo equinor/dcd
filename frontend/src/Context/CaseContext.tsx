@@ -7,9 +7,9 @@ import {
     ReactNode,
     useContext,
     useMemo,
-    useEffect
+    useEffect,
 } from "react"
-import { useAppContext } from "./AppContext";
+import { useAppContext } from "./AppContext"
 
 interface CaseContextType {
     projectCase: Components.Schemas.CaseDto | undefined;

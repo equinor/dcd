@@ -12,16 +12,16 @@ type Props = {
 }
 
 const Modal: FunctionComponent<Props> = ({
-    isOpen, title, children
+    isOpen, title, children,
 }) => {
     if (!isOpen) return null
     return (
         <Dialog open={isOpen} fullWidth maxWidth="lg" className="ConceptApp ag-theme-alpine-fusion">
             {title && <DialogTitle><Typography variant="h2" as="p">{title}</Typography></DialogTitle>}
-            {Children.map(children, (child, index) => (index === 0 && <DialogContent>{child}</DialogContent>))} 
+            {Children.map(children, (child, index) => (index === 0 && <DialogContent>{child}</DialogContent>))}
             {Children.map(children, (child, index) => (index === 1 && <DialogActions>{child}</DialogActions>))}
         </Dialog>
     )
 }
 
-export default Modal;
+export default Modal

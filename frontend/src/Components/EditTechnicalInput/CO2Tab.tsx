@@ -1,7 +1,6 @@
 import { Typography } from "@equinor/eds-core-react"
-import CO2ListTechnicalInput from "./CO2ListTechnicalInput"
 import Grid from "@mui/material/Grid"
-
+import CO2ListTechnicalInput from "./CO2ListTechnicalInput"
 
 const CO2Tab = () => (
     <Grid container spacing={2}>

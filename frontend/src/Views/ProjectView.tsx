@@ -1,24 +1,25 @@
 import { useEffect } from "react"
 import { Tabs } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid"
+import { useLocation } from "react-router-dom"
+import styled from "styled-components"
 import ProjectOverviewTab from "../Components/Project/ProjectOverviewTab"
 import ProjectCompareCasesTab from "../Components/Project/CompareCasesTab/CompareCasesTabOverview"
 import ProjectSettingsTab from "../Components/Project/ProjectSettingsTab"
-import Grid from "@mui/material/Grid"
 import { useProjectContext } from "../Context/ProjectContext"
-import { useLocation } from "react-router-dom";
-import styled from "styled-components"
 
-const { List, Tab, Panels, Panel } = Tabs
+const {
+    List, Tab, Panels, Panel,
+} = Tabs
 
 const ProjectView = () => {
     const { activeTabProject, setActiveTabProject } = useProjectContext()
-    const location = useLocation();
-    let activeTabProjectParam = location?.state?.activeTabProject
+    const location = useLocation()
+    const activeTabProjectParam = location?.state?.activeTabProject
 
     useEffect(() => {
-        activeTabProjectParam && setActiveTabProject(activeTabProjectParam)
+        if (activeTabProjectParam) { setActiveTabProject(activeTabProjectParam) }
     }, [activeTabProjectParam])
-    
 
     return (
         <Grid container spacing={1} alignSelf="flex-start">

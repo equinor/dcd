@@ -1,6 +1,7 @@
 import {
     ChangeEventHandler, Dispatch, SetStateAction, useEffect, useState,
 } from "react"
+import Grid from "@mui/material/Grid"
 import CaseNumberInput from "../../Input/CaseNumberInput"
 import CaseTabTable from "../Components/CaseTabTable"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
@@ -8,7 +9,6 @@ import { GetGenerateProfileService } from "../../../Services/CaseGeneratedProfil
 import { MergeTimeseries } from "../../../Utils/common"
 import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
 import InputSwitcher from "../../Input/InputSwitcher"
-import Grid from "@mui/material/Grid"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 
@@ -32,9 +32,10 @@ const CaseSummaryTab = ({
     substructure,
     transport,
 }: Props) => {
-
     const { project } = useProjectContext()
-    const { projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase } = useCaseContext()
+    const {
+        projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase,
+    } = useCaseContext()
     // OPEX
     const [totalStudyCost, setTotalStudyCost] = useState<ITimeSeries>()
     const [opexCost, setOpexCost] = useState<Components.Schemas.OpexCostProfileDto>()

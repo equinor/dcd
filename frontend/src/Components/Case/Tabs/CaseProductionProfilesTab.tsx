@@ -7,6 +7,7 @@ import {
     useRef,
 } from "react"
 import { Button, NativeSelect } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid"
 import CaseNumberInput from "../../Input/CaseNumberInput"
 import CaseTabTable from "../Components/CaseTabTable"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
@@ -14,7 +15,6 @@ import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../AgGrid/AgChartsTimeseries"
 import { ITimeSeriesOverride } from "../../../Models/ITimeSeriesOverride"
 import InputSwitcher from "../../Input/InputSwitcher"
-import Grid from "@mui/material/Grid"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 
@@ -48,8 +48,10 @@ const CaseProductionProfilesTab = ({
     importedElectricity, setImportedElectricity,
 }: Props) => {
     const { project } = useProjectContext()
-    const { projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase } = useCaseContext()
-    if (!projectCase) return (<></>)
+    const {
+        projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase,
+    } = useCaseContext()
+    if (!projectCase) return null
     const [gas, setGas] = useState<Components.Schemas.ProductionProfileGasDto>()
     const [oil, setOil] = useState<Components.Schemas.ProductionProfileOilDto>()
     const [water, setWater] = useState<Components.Schemas.ProductionProfileWaterDto>()
@@ -448,8 +450,8 @@ const CaseProductionProfilesTab = ({
                         integer
                         label="Start year"
                         min={2010}
-                    max={2110}
-                />
+                        max={2110}
+                    />
                 </Grid>
                 <Grid item>
                     <CaseNumberInput
@@ -458,49 +460,50 @@ const CaseProductionProfilesTab = ({
                         integer
                         label="End year"
                         min={2010}
-                    max={2110}
-                />
+                        max={2110}
+                    />
                 </Grid>
                 <Grid item>
                     <Button onClick={handleTableYearsClick}>  Apply </Button>
                 </Grid>
             </Grid>
             <Grid item xs={12}>
-            <AgChartsTimeseries
-                data={productionProfilesChartData()}
-                chartTitle="Production profiles"
-                barColors={["#243746", "#EB0037", "#A8CED1"]}
-                barProfiles={["oilProduction", "gasProduction", "waterProduction"]}
-                barNames={[
-                    "Oil production (MSm3)",
-                    "Gas production (GSm3)",
-                    "Water production (MSm3)",
-                ]}
-            />
+                <AgChartsTimeseries
+                    data={productionProfilesChartData()}
+                    chartTitle="Production profiles"
+                    barColors={["#243746", "#EB0037", "#A8CED1"]}
+                    barProfiles={["oilProduction", "gasProduction", "waterProduction"]}
+                    barNames={[
+                        "Oil production (MSm3)",
+                        "Gas production (GSm3)",
+                        "Water production (MSm3)",
+                    ]}
+                />
             </Grid>
             {
                 (waterInjection?.values && waterInjection.values?.length > 0)
-                && (<Grid item xs={12}>
-                    <AgChartsTimeseries
-                        data={injectionProfilesChartData()}
-                        chartTitle="Injection profiles"
-                        barColors={["#A8CED1"]}
-                        barProfiles={["waterInjection"]}
-                        barNames={["Water injection"]}
-                        unit="MSm3"
-                    />
+                && (
+                    <Grid item xs={12}>
+                        <AgChartsTimeseries
+                            data={injectionProfilesChartData()}
+                            chartTitle="Injection profiles"
+                            barColors={["#A8CED1"]}
+                            barProfiles={["waterInjection"]}
+                            barNames={["Water injection"]}
+                            unit="MSm3"
+                        />
                     </Grid>
                 )
             }
             <Grid item xs={12}>
-            <CaseTabTable
-                timeSeriesData={timeSeriesData}
-                dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
-                tableYears={tableYears}
-                tableName="Production profiles"
-                includeFooter={false}
-                gridRef={gridRef}
-            />
+                <CaseTabTable
+                    timeSeriesData={timeSeriesData}
+                    dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
+                    tableYears={tableYears}
+                    tableName="Production profiles"
+                    includeFooter={false}
+                    gridRef={gridRef}
+                />
             </Grid>
         </Grid>
     )

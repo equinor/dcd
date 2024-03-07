@@ -1,6 +1,6 @@
 import React from "react"
-import { AgChartsCompareCases } from "../../../AgGrid/AgChartsCompareCases"
 import Grid from "@mui/material/Grid"
+import { AgChartsCompareCases } from "../../../AgGrid/AgChartsCompareCases"
 
 interface KpisProps {
     npvChartData?: object

@@ -9,6 +9,7 @@ import {
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid"
 import CaseNumberInput from "../../../Input/CaseNumberInput"
 import CaseTabTable from "../../Components/CaseTabTable"
 import { ITimeSeries } from "../../../../Models/ITimeSeries"
@@ -19,7 +20,6 @@ import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../../AgGrid
 import { AgChartsPie } from "../../../AgGrid/AgChartsPie"
 import { ITimeSeriesOverride } from "../../../../Models/ITimeSeriesOverride"
 import InputSwitcher from "../../../Input/InputSwitcher"
-import Grid from "@mui/material/Grid"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 
@@ -37,10 +37,11 @@ const CaseCO2Tab = ({
     drainageStrategy, setDrainageStrategy,
     co2Emissions, setCo2Emissions,
 }: Props) => {
-
     const { project } = useProjectContext()
-    const { projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase } = useCaseContext()
-    if (!projectCase) return (<></>)
+    const {
+        projectCase, activeTabCase,
+    } = useCaseContext()
+    if (!projectCase) return null
 
     const [co2Intensity, setCo2Intensity] = useState<Components.Schemas.Co2IntensityDto>()
     const [co2IntensityTotal, setCo2IntensityTotal] = useState<number>(0)

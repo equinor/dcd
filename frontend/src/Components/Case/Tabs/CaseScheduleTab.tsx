@@ -2,6 +2,7 @@ import {
     ChangeEventHandler,
 } from "react"
 import { Input } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid"
 import {
     dateFromString,
     defaultDate,
@@ -11,7 +12,6 @@ import {
     formatDate,
 } from "../../../Utils/common"
 import InputSwitcher from "../../Input/InputSwitcher"
-import Grid from "@mui/material/Grid"
 import { useCaseContext } from "../../../Context/CaseContext"
 
 const CaseScheduleTab = () => {

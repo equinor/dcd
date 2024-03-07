@@ -1,20 +1,17 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import {
-    Progress, Banner, Icon, Typography,
-} from "@equinor/eds-core-react"
+import { Banner, Icon } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
 import { Outlet, useNavigate } from "react-router-dom"
 import { useProjectContext } from "../Context/ProjectContext"
 import { GetProjectService } from "../Services/ProjectService"
 import CreateCaseModal from "./CreateCaseModal"
 import EditTechnicalInputModal from "./EditTechnicalInput/EditTechnicalInputModal"
-import Grid from "@mui/material/Grid"
 import { useAppContext } from "../Context/AppContext"
 
 const RouteCoordinator = (): JSX.Element => {
-    const { isCreating, setIsCreating, isLoading, setIsLoading } = useAppContext()
-    const { project, setProject } = useProjectContext()
+    const { setIsCreating, setIsLoading } = useAppContext()
+    const { setProject } = useProjectContext()
     const { currentContext } = useModuleCurrentContext()
 
     const navigate = useNavigate()
@@ -28,7 +25,6 @@ const RouteCoordinator = (): JSX.Element => {
     }, [currentContext])
 
     useEffect(() => {
-        console.log("getting project", currentContext)
         const fetchAndSetProject = async () => {
             if (!currentContext?.externalId) {
                 console.log("No externalId in context")

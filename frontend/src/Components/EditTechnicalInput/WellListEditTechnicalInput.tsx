@@ -1,15 +1,14 @@
 import { Button, Icon, NativeSelect } from "@equinor/eds-core-react"
-import { add } from "@equinor/eds-icons"
+import { add, delete_to_trash } from "@equinor/eds-icons"
 import {
     ChangeEvent, Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
-import { delete_to_trash } from "@equinor/eds-icons"
+import Grid from "@mui/material/Grid"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
 import { useProjectContext } from "../../Context/ProjectContext"
-import Grid from "@mui/material/Grid"
 import { useModalContext } from "../../Context/ModalContext"
 import { useAppContext } from "../../Context/AppContext"
 
@@ -235,14 +234,16 @@ const WellListEditTechnicalInput = ({
                     />
                 </div>
             </Grid>
-            {(editMode || editTechnicalInput) && <Grid item>
-                <Button onClick={CreateWell} variant="outlined">
-                    <Icon data={add} />
-                    {explorationWells
-                        ? "Add new exploration well type" 
-                        : "Add new development/drilling well type"}
-                </Button>
-            </Grid>}
+            {(editMode || editTechnicalInput) && (
+                <Grid item>
+                    <Button onClick={CreateWell} variant="outlined">
+                        <Icon data={add} />
+                        {explorationWells
+                            ? "Add new exploration well type"
+                            : "Add new development/drilling well type"}
+                    </Button>
+                </Grid>
+            )}
         </Grid>
     )
 }

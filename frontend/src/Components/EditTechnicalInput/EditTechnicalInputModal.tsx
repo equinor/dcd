@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import {
-    Button, Progress, Tabs
+    Button, Progress, Tabs,
 } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid"
 import WellCostsTab from "./WellCostsTab"
 import PROSPTab from "./PROSPTab"
 import { EMPTY_GUID } from "../../Utils/constants"
@@ -11,10 +12,11 @@ import { GetTechnicalInputService } from "../../Services/TechnicalInputService"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { useModalContext } from "../../Context/ModalContext"
 import Modal from "../Modal/Modal"
-import Grid from "@mui/material/Grid"
 import { useAppContext } from "../../Context/AppContext"
 
-const { List, Tab, Panels, Panel } = Tabs
+const {
+    List, Tab, Panels, Panel,
+} = Tabs
 
 const EditTechnicalInputModal = () => {
     const { isSaving, setIsSaving, editMode } = useAppContext()
@@ -196,38 +198,39 @@ const EditTechnicalInputModal = () => {
             </Grid>
             <Grid container spacing={1} justifyContent="flex-end">
                 <Grid item>
-                <Button
-                    type="button"
-                    variant="outlined"
-                    onClick={handleCancel}
-                >
-                    {(editMode || editTechnicalInput) ? "Cancel" : "Close"}
-                </Button>
+                    <Button
+                        type="button"
+                        variant="outlined"
+                        onClick={handleCancel}
+                    >
+                        {(editMode || editTechnicalInput) ? "Cancel" : "Close"}
+                    </Button>
                 </Grid>
-                {(editMode || editTechnicalInput)
-                ? (
-                    !isSaving ? (
-                        <>
-                            <Grid item>
-                                <Button onClick={handleSave}>Save</Button>
-                            </Grid>
-                            <Grid item>
-                                <Button onClick={handleSaveAndClose}>Save and Close</Button>
-                            </Grid>
-                        </>
-                    ) : (
+                {(editMode || editTechnicalInput) && !isSaving && (
+                    <>
                         <Grid item>
-                            <Button>
-                                <Progress.Dots />
-                            </Button>
+                            <Button onClick={handleSave}>Save</Button>
                         </Grid>
-                    )
-                )
-                : <Grid item>
-                    <Button onClick={() => setEditTechnicalInput(true)}>Edit</Button>
-                </Grid>}
+                        <Grid item>
+                            <Button onClick={handleSaveAndClose}>Save and Close</Button>
+                        </Grid>
+                    </>
+                )}
+                {(editMode || editTechnicalInput) && isSaving && (
+                    <Grid item>
+                        <Button>
+                            <Progress.Dots />
+                        </Button>
+                    </Grid>
+                )}
+                {!(editMode || editTechnicalInput) && (
+                    <Grid item>
+                        <Button onClick={() => setEditTechnicalInput(true)}>Edit</Button>
+                    </Grid>
+                )}
             </Grid>
-    </Modal>
+
+        </Modal>
     )
 }
 

@@ -1,12 +1,10 @@
 import { useState, ChangeEventHandler } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid"
 import { useProjectContext } from "../../Context/ProjectContext"
 import InputSwitcher from "../Input/InputSwitcher"
-import Grid from "@mui/material/Grid"
-import { useAppContext } from "../../Context/AppContext"
 
 const ProjectSettingsTab = () => {
-    const { editMode } = useAppContext()
     const { project, projectEdited, setProjectEdited } = useProjectContext()
     const [classification, setClassification] = useState(0) // TODO: Get classification from project
     const [dummyRole, setDummyRole] = useState(0) // TODO: Get role from user

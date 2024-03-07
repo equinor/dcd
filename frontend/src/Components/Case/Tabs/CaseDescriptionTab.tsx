@@ -1,7 +1,6 @@
 import {
     ChangeEventHandler,
     FormEventHandler,
-    useEffect,
 } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
@@ -14,7 +13,7 @@ import { useCaseContext } from "../../../Context/CaseContext"
 const CaseDescriptionTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
 
-    if (!projectCase) return (<></>)
+    if (!projectCase) return null
 
     const productionStrategyOptions = {
         0: "Depletion",
@@ -82,6 +81,19 @@ const CaseDescriptionTab = () => {
             setProjectCaseEdited(newCase)
         }
     }
+
+    const getFacilitiesAvailabilityDefaultValue = () => {
+        if (projectCaseEdited) {
+            return projectCaseEdited.facilitiesAvailability !== undefined
+                ? projectCaseEdited.facilitiesAvailability * 100
+                : undefined
+        }
+        return projectCase?.facilitiesAvailability !== undefined
+            ? projectCase.facilitiesAvailability * 100
+            : undefined
+    }
+
+    const defaultValue = getFacilitiesAvailabilityDefaultValue()
 
     return (
         <Grid container spacing={2}>
@@ -182,15 +194,7 @@ const CaseDescriptionTab = () => {
                 >
                     <CaseNumberInput
                         onChange={handleFacilitiesAvailabilityChange}
-                        defaultValue={
-                            projectCaseEdited
-                                ? projectCaseEdited.facilitiesAvailability !== undefined
-                                    ? projectCaseEdited.facilitiesAvailability * 100
-                                    : undefined
-                                : projectCase.facilitiesAvailability !== undefined
-                                    ? projectCase?.facilitiesAvailability * 100
-                                    : undefined
-                        }
+                        defaultValue={defaultValue}
                         integer={false}
                         unit="%"
                         min={0}

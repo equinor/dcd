@@ -1,14 +1,15 @@
 import styled from "styled-components"
-import { NavLink, useNavigate, useParams } from "react-router-dom"
-import { Icon, SideBar, Button, Typography, Tooltip, Divider } from "@equinor/eds-core-react"
-import { file, add, go_to } from "@equinor/eds-icons"
+import { useNavigate } from "react-router-dom"
+import {
+    Icon, SideBar, Button, Typography, Tooltip, Divider,
+} from "@equinor/eds-core-react"
+import { file, add } from "@equinor/eds-icons"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useProjectContext } from "../Context/ProjectContext"
-import { projectPath } from "../Utils/common"
-import { useModalContext } from "../Context/ModalContext"
 import Grid from "@mui/material/Grid"
+import { useProjectContext } from "../Context/ProjectContext"
+import { projectPath, casePath } from "../Utils/common"
+import { useModalContext } from "../Context/ModalContext"
 import { useCaseContext } from "../Context/CaseContext"
-import { casePath } from "../Utils/common"
 
 const { Content, Footer } = SideBar
 
@@ -44,50 +45,52 @@ const Sidebar = () => {
     const { currentContext } = useModuleCurrentContext()
     const navigate = useNavigate()
 
-    if (!project) return (<></>)
+    if (!project) return null
 
     const selectCase = (caseId: string) => {
         if (!currentContext || !caseId) { return null }
         const caseResult = project.cases.find((o) => o.id === caseId)
         setProjectCase(caseResult)
         navigate(casePath(currentContext.id, caseId))
+        return null
     }
 
     return (
         <StyledSidebar open>
             <StyledSidebarContent>
                 <Grid container>
-                    {projectCase 
-                    &&    <>
-                            <Grid item container alignItems="center" justifyContent="space-between" display="grid" gridTemplateColumns="0.5rem 1fr auto">
-                                <Grid item></Grid>
-                                <Grid item>
-                                    <ProjectTitle variant="overline">{currentContext?.title}</ProjectTitle>
+                    {projectCase
+                        && (
+                            <>
+                                <Grid item container alignItems="center" justifyContent="space-between" display="grid" gridTemplateColumns="0.5rem 1fr auto">
+                                    <Grid item />
+                                    <Grid item>
+                                        <ProjectTitle variant="overline">{currentContext?.title}</ProjectTitle>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                            
-                            <Grid item xs={12}>
-                                <Button variant="ghost" className="GhostButton" onClick={() => navigate(projectPath(currentContext?.id!), {state: {activeTabProject: 0}})}>
-                                    Overview
-                                </Button>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Button variant="ghost" className="GhostButton" onClick={() => navigate(projectPath(currentContext?.id!), {state: {activeTabProject: 1}})}>
-                                    Compare Cases
-                                </Button>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Button variant="ghost" className="GhostButton" onClick={() => navigate(projectPath(currentContext?.id!), {state: {activeTabProject: 2}})}>
-                                    Settings
-                                </Button>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Divider />
-                            </Grid>
-                        </>
-                    }
+
+                                <Grid item xs={12}>
+                                    <Button variant="ghost" className="GhostButton" onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 0 } })}>
+                                        Overview
+                                    </Button>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Button variant="ghost" className="GhostButton" onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 1 } })}>
+                                        Compare Cases
+                                    </Button>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Button variant="ghost" className="GhostButton" onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 2 } })}>
+                                        Settings
+                                    </Button>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Divider />
+                                </Grid>
+                            </>
+                        )}
                     <Grid item container alignItems="center" justifyContent="space-between" display="grid" gridTemplateColumns="0.5rem 1fr auto">
-                        <Grid item></Grid>
+                        <Grid item />
                         <Grid item>
                             <Typography variant="overline">Cases</Typography>
                         </Grid>
@@ -100,17 +103,15 @@ const Sidebar = () => {
                 </Grid>
                 <SidebarCases>
                     {
-                        project?.cases.sort((a,b) => {
-                            return new Date(a.createTime).getDate() - 
-                                new Date(b.createTime).getDate()
-                        }).map((subItem, index) => (
-                            <Grid item xs={12} key={`menu - item - ${index + 1} `}>
-                                <Button variant="ghost" className="GhostButton" onClick={() => selectCase(subItem.id)}>
-                                    <Icon data={file} />
-                                    {subItem.name ? subItem.name : "Untitled"}
-                                </Button>
-                            </Grid>
-                        ))
+                        project?.cases.sort((a, b) => new Date(a.createTime).getDate()
+                            - new Date(b.createTime).getDate()).map((subItem, index) => (
+                                <Grid item xs={12} key={`menu - item - ${index + 1} `}>
+                                    <Button variant="ghost" className="GhostButton" onClick={() => selectCase(subItem.id)}>
+                                        <Icon data={file} />
+                                        {subItem.name ? subItem.name : "Untitled"}
+                                    </Button>
+                                </Grid>
+                            ))
                     }
                 </SidebarCases>
             </StyledSidebarContent>

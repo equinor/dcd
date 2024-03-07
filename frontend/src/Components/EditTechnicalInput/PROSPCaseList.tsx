@@ -12,12 +12,12 @@ import {
     RowNode,
 } from "@ag-grid-community/core"
 import { external_link } from "@equinor/eds-icons"
+import Grid from "@mui/material/Grid"
 import SharePointImport from "./SharePointImport"
 import { DriveItem } from "../../Models/sharepoint/DriveItem"
 import { ImportStatusEnum } from "./ImportStatusEnum"
 import { GetProspService } from "../../Services/ProspService"
 import { useProjectContext } from "../../Context/ProjectContext"
-import Grid from "@mui/material/Grid"
 
 interface Props {
     driveItems: DriveItem[] | undefined

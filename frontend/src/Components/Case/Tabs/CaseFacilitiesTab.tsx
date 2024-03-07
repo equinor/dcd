@@ -4,14 +4,13 @@ import {
     ChangeEventHandler,
 } from "react"
 import {
-    NativeSelect, Typography, Input, Label,
+    NativeSelect, Typography, Input,
 } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid"
 import CaseNumberInput from "../../Input/CaseNumberInput"
 import InputSwitcher from "../../Input/InputSwitcher"
-import Grid from "@mui/material/Grid"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
-
 
 interface Props {
     topside: Components.Schemas.TopsideDto,
@@ -30,10 +29,9 @@ const CaseFacilitiesTab = ({
     substructure, setSubstrucutre,
     transport, setTransport,
 }: Props) => {
-
     const { project } = useProjectContext()
-    const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
-    if (!projectCase) return (<></>)
+    const { projectCase, setProjectCaseEdited } = useCaseContext()
+    if (!projectCase) return null
 
     const platformConceptValues: { [key: number]: string } = {
         0: "No Concept",
@@ -291,8 +289,8 @@ const CaseFacilitiesTab = ({
                         defaultValue={Math.round(Number(topside?.dryWeight) * 1) / 1}
                         integer
                         unit="tonnes"
-                            min={0}
-                            max={1000000}
+                        min={0}
+                        max={1000000}
                     />
                 </InputSwitcher>
             </Grid>
@@ -320,8 +318,8 @@ const CaseFacilitiesTab = ({
                         defaultValue={Math.round(Number(topside?.peakElectricityImported) * 10) / 10}
                         integer={false}
                         unit="MW"
-                            min={0}
-                            max={1000000}
+                        min={0}
+                        max={1000000}
                     />
                 </InputSwitcher>
             </Grid>
@@ -335,8 +333,8 @@ const CaseFacilitiesTab = ({
                         defaultValue={Math.round(Number(topside?.oilCapacity) * 1) / 1}
                         integer
                         unit="Sm³/sd"
-                            min={0}
-                            max={1000000}
+                        min={0}
+                        max={1000000}
                     />
                 </InputSwitcher>
             </Grid>
@@ -350,8 +348,8 @@ const CaseFacilitiesTab = ({
                         defaultValue={Math.round(Number(topside?.gasCapacity) * 10) / 10}
                         integer={false}
                         unit="MSm³/sd"
-                            min={0}
-                            max={1000000}
+                        min={0}
+                        max={1000000}
                     />
                 </InputSwitcher>
             </Grid>
@@ -380,8 +378,8 @@ const CaseFacilitiesTab = ({
                         onChange={handleTopsideProducerCountChange}
                         defaultValue={topside?.producerCount}
                         integer
-                            min={0}
-                            max={1000000}
+                        min={0}
+                        max={1000000}
                     />
                 </InputSwitcher>
             </Grid>
@@ -394,8 +392,8 @@ const CaseFacilitiesTab = ({
                         onChange={handleTopsideGasInjectorCountChange}
                         defaultValue={topside?.gasInjectorCount}
                         integer
-                            min={0}
-                            max={1000000}
+                        min={0}
+                        max={1000000}
                     />
                 </InputSwitcher>
             </Grid>
@@ -408,8 +406,8 @@ const CaseFacilitiesTab = ({
                         onChange={handleTopsideWaterInjectorCountChange}
                         defaultValue={topside?.waterInjectorCount}
                         integer
-                            min={0}
-                            max={1000000}
+                        min={0}
+                        max={1000000}
                     />
                 </InputSwitcher>
             </Grid>
@@ -422,8 +420,8 @@ const CaseFacilitiesTab = ({
                         onChange={handleSurfTemplateCountChange}
                         defaultValue={surf?.templateCount}
                         integer
-                            min={0}
-                            max={1000000}
+                        min={0}
+                        max={1000000}
                     />
                 </InputSwitcher>
             </Grid>
@@ -433,8 +431,8 @@ const CaseFacilitiesTab = ({
                         onChange={handleSurfRiserCountChange}
                         defaultValue={surf?.riserCount}
                         integer
-                            min={0}
-                            max={1000000}
+                        min={0}
+                        max={1000000}
                     />
                 </InputSwitcher>
             </Grid>
@@ -445,8 +443,8 @@ const CaseFacilitiesTab = ({
                         defaultValue={Math.round(Number(surf?.infieldPipelineSystemLength) * 10) / 10}
                         integer={false}
                         unit="km"
-                            min={0}
-                            max={1000000}
+                        min={0}
+                        max={1000000}
                     />
                 </InputSwitcher>
             </Grid>
@@ -457,8 +455,8 @@ const CaseFacilitiesTab = ({
                         defaultValue={Math.round(Number(surf?.umbilicalSystemLength) * 10) / 10}
                         integer={false}
                         unit="km"
-                            min={0}
-                            max={1000000}
+                        min={0}
+                        max={1000000}
                     />
                 </InputSwitcher>
             </Grid>
@@ -499,8 +497,8 @@ const CaseFacilitiesTab = ({
                         onChange={handleSurfGasInjectorCountChange}
                         defaultValue={surf?.gasInjectorCount}
                         integer
-                            min={0}
-                            max={1000000}
+                        min={0}
+                        max={1000000}
                     />
                 </InputSwitcher>
             </Grid>
@@ -510,8 +508,8 @@ const CaseFacilitiesTab = ({
                         onChange={handleSurfWaterInjectorCountChange}
                         defaultValue={surf?.waterInjectorCount}
                         integer
-                            min={0}
-                            max={1000000}
+                        min={0}
+                        max={1000000}
                     />
                 </InputSwitcher>
             </Grid>
@@ -525,8 +523,8 @@ const CaseFacilitiesTab = ({
                         defaultValue={Math.round(Number(transport?.oilExportPipelineLength) * 10) / 10}
                         integer={false}
                         unit="km"
-                            min={0}
-                            max={1000000}
+                        min={0}
+                        max={1000000}
                     />
                 </InputSwitcher>
             </Grid>
@@ -537,8 +535,8 @@ const CaseFacilitiesTab = ({
                         defaultValue={Math.round(Number(transport?.gasExportPipelineLength) * 10) / 10}
                         integer={false}
                         unit="km"
-                            min={0}
-                            max={1000000}
+                        min={0}
+                        max={1000000}
                     />
                 </InputSwitcher>
             </Grid>
@@ -552,8 +550,8 @@ const CaseFacilitiesTab = ({
                         defaultValue={Math.round(Number(substructure?.dryWeight) * 1) / 1}
                         integer
                         unit="tonnes"
-                            min={0}
-                            max={1000000}
+                        min={0}
+                        max={1000000}
                     />
                 </InputSwitcher>
             </Grid>

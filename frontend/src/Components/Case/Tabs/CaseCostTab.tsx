@@ -10,6 +10,7 @@ import {
     Button,
     NativeSelect,
 } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid"
 import CaseNumberInput from "../../Input/CaseNumberInput"
 import CaseTabTable from "../Components/CaseTabTable"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
@@ -19,7 +20,6 @@ import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
 import InputSwitcher from "../../Input/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
-import Grid from "@mui/material/Grid"
 
 interface Props {
     topside: Components.Schemas.TopsideDto,
@@ -88,8 +88,10 @@ const CaseCostTab = ({
     wellProject,
     setWellProject,
 }: Props) => {
-    const { project } = useProjectContext();
-    const { projectCase, setProjectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase } = useCaseContext();
+    const { project } = useProjectContext()
+    const {
+        projectCase, setProjectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase,
+    } = useCaseContext()
     // OPEX
     const [totalFeasibilityAndConceptStudiesOverride, setTotalFeasibilityAndConceptStudiesOverride] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto>()
     const [totalFEEDStudiesOverride, setTotalFEEDStudiesOverride] = useState<Components.Schemas.TotalFEEDStudiesOverrideDto>()
@@ -347,7 +349,7 @@ const CaseCostTab = ({
         if (newCapexFactorFeasibilityStudies !== undefined) {
             newCase.capexFactorFeasibilityStudies = newCapexFactorFeasibilityStudies / 100
         } else { newCase.capexFactorFeasibilityStudies = 0 }
-        newCase ?? setProjectCaseEdited(newCase)
+        if (newCase) { setProjectCaseEdited(newCase) }
     }
 
     const handleCaseFEEDChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -599,43 +601,43 @@ const CaseCostTab = ({
     }
 
     useEffect(() => {
-       projectCase ?? updateObject(projectCase, setProjectCase, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
+        projectCase ?? updateObject(projectCase, setProjectCase, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
     }, [totalFeasibilityAndConceptStudiesOverride])
 
     useEffect(() => {
-       projectCase ?? updateObject(projectCase, setProjectCase, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
+        projectCase ?? updateObject(projectCase, setProjectCase, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
     }, [totalFEEDStudiesOverride])
 
     useEffect(() => {
-       projectCase ?? updateObject(projectCase, setProjectCase, "totalOtherStudies", totalOtherStudies)
+        projectCase ?? updateObject(projectCase, setProjectCase, "totalOtherStudies", totalOtherStudies)
     }, [totalOtherStudies])
 
     useEffect(() => {
-       projectCase ?? updateObject(projectCase, setProjectCase, "wellInterventionCostProfileOverride", wellInterventionCostProfileOverride)
+        projectCase ?? updateObject(projectCase, setProjectCase, "wellInterventionCostProfileOverride", wellInterventionCostProfileOverride)
     }, [wellInterventionCostProfileOverride])
 
     useEffect(() => {
-       projectCase ?? updateObject(projectCase, setProjectCase, "offshoreFacilitiesOperationsCostProfileOverride", offshoreFacilitiesOperationsCostProfileOverride)
+        projectCase ?? updateObject(projectCase, setProjectCase, "offshoreFacilitiesOperationsCostProfileOverride", offshoreFacilitiesOperationsCostProfileOverride)
     }, [offshoreFacilitiesOperationsCostProfileOverride])
 
     useEffect(() => {
-       projectCase ?? updateObject(projectCase, setProjectCase, "historicCostCostProfile", historicCostCostProfile)
+        projectCase ?? updateObject(projectCase, setProjectCase, "historicCostCostProfile", historicCostCostProfile)
     }, [historicCostCostProfile])
 
     useEffect(() => {
-       projectCase ?? updateObject(projectCase, setProjectCase, "additionalOPEXCostProfile", additionalOPEXCostProfile)
+        projectCase ?? updateObject(projectCase, setProjectCase, "additionalOPEXCostProfile", additionalOPEXCostProfile)
     }, [additionalOPEXCostProfile])
 
     useEffect(() => {
-       projectCase ?? updateObject(projectCase, setProjectCase, "cessationWellsCostOverride", cessationWellsCostOverride)
+        projectCase ?? updateObject(projectCase, setProjectCase, "cessationWellsCostOverride", cessationWellsCostOverride)
     }, [cessationWellsCostOverride])
 
     useEffect(() => {
-       projectCase ?? updateObject(projectCase, setProjectCase, "cessationOffshoreFacilitiesCostOverride", cessationOffshoreFacilitiesCostOverride)
+        projectCase ?? updateObject(projectCase, setProjectCase, "cessationOffshoreFacilitiesCostOverride", cessationOffshoreFacilitiesCostOverride)
     }, [cessationOffshoreFacilitiesCostOverride])
 
     useEffect(() => {
-       surf ?? updateObject(surf, setSurf, "costProfile", surfCost)
+        surf ?? updateObject(surf, setSurf, "costProfile", surfCost)
     }, [surfCost])
 
     useEffect(() => {

@@ -2,7 +2,6 @@ import {
     Button,
     Icon,
     Tooltip,
-    Typography,
 } from "@equinor/eds-core-react"
 import {
     useState,
@@ -10,7 +9,7 @@ import {
     useMemo,
     useRef,
 } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { AgGridReact } from "@ag-grid-community/react"
 import { bookmark_filled, more_vertical } from "@equinor/eds-icons"
@@ -57,7 +56,7 @@ const CasesAgGridTable = ({
 }: CasesAgGridTableProps): JSX.Element => {
     const gridRef = useRef<AgGridReact>(null)
     const { project } = useProjectContext()
-    const { setProjectCase } = useCaseContext();
+    const { setProjectCase } = useCaseContext()
     const [rowData, setRowData] = useState<TableCase[]>()
     const { currentContext } = useModuleCurrentContext()
     const navigate = useNavigate()
@@ -98,21 +97,19 @@ const CasesAgGridTable = ({
         const caseResult = project.cases.find((o) => o.id === p.node.data.id)
         setProjectCase(caseResult)
         navigate(casePath(currentContext.id, p.node.data.id))
+        return null
     }
 
-    const nameWithReferenceCase = (p: any) => {
-
-        return (
-            <>
-                <Button as="span" variant="ghost" className="GhostButton" onClick={() => selectCase(p)}>{p.value}</Button>
-                {p.node.data.referenceCaseId === p.node.data.id && (
-                    <Tooltip title="Reference case">
-                        <StyledIcon data={bookmark_filled} size={16} />
-                    </Tooltip>
-                )}
-            </>
-        )
-    }
+    const nameWithReferenceCase = (p: any) => (
+        <>
+            <Button as="span" variant="ghost" className="GhostButton" onClick={() => selectCase(p)}>{p.value}</Button>
+            {p.node.data.referenceCaseId === p.node.data.id && (
+                <Tooltip title="Reference case">
+                    <StyledIcon data={bookmark_filled} size={16} />
+                </Tooltip>
+            )}
+        </>
+    )
 
     const [columnDefs] = useState<ColDef[]>([
         { field: "name", cellRenderer: nameWithReferenceCase, flex: 1 },

@@ -7,7 +7,6 @@ import {
     ReactNode,
     useContext,
     useMemo,
-    useEffect
 } from "react"
 
 interface ProjectContextType {

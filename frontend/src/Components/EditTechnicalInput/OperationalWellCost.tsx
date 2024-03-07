@@ -27,14 +27,15 @@ const OperationalWellCost = ({
             </Table.Cell>
             <Table.Cell>
                 {editMode || editTechnicalInput
-                    ? <Input
-                        id="WellCost"
-                        type="number"
-                        value={value}
-                        onChange={onValueChange}
-                    />
-                : <Typography>{value}</Typography>
-                }
+                    ? (
+                        <Input
+                            id="WellCost"
+                            type="number"
+                            value={value}
+                            onChange={onValueChange}
+                        />
+                    )
+                    : <Typography>{value}</Typography>}
             </Table.Cell>
         </Table.Row>
     )

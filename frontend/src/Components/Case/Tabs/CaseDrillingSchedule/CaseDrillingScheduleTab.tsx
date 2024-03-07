@@ -10,11 +10,11 @@ import {
 import {
     Button, NativeSelect, Typography,
 } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid"
 import CaseNumberInput from "../../../Input/CaseNumberInput"
 import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleAgGridTable"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
 import InputSwitcher from "../../../Input/InputSwitcher"
-import Grid from "@mui/material/Grid"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 
@@ -38,8 +38,10 @@ const CaseDrillingScheduleTab = ({
     wellProject,
 }: Props) => {
     const { project } = useProjectContext()
-    const { projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase } = useCaseContext()
-    if (!projectCase) return (<></>)
+    const {
+        projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase,
+    } = useCaseContext()
+    if (!projectCase) return null
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])

@@ -1,13 +1,12 @@
 import { useState } from "react"
 import { Tabs } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid"
 import Kpis from "./Tabs/Kpis"
 import ProductionProfiles from "./Tabs/ProductionProfiles"
 import InvestmentProfiles from "./Tabs/InvestmentProfiles"
 import Co2Emissions from "./Tabs/Co2Emissions"
 import { useProjectChartData } from "../../../Hooks/useProjectChartData"
 import ProjectAgGridTable from "./ProjectAgGridTable"
-import Grid from "@mui/material/Grid"
-import styled from "styled-components"
 
 const {
     List, Tab, Panels, Panel,

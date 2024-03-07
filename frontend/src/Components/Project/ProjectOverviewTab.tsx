@@ -7,13 +7,13 @@ import {
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
 import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
+import Grid from "@mui/material/Grid"
 import { getProjectPhaseName, getProjectCategoryName, unwrapProjectId } from "../../Utils/common"
 import { GetProjectService } from "../../Services/ProjectService"
 import { GetSTEAService } from "../../Services/STEAService"
 import { useProjectContext } from "../../Context/ProjectContext"
 import CasesTable from "../Case/OverviewCasesTable/CasesTable"
 import { useModalContext } from "../../Context/ModalContext"
-import Grid from "@mui/material/Grid"
 import { useAppContext } from "../../Context/AppContext"
 
 const ProjectOverviewTab = () => {
@@ -86,16 +86,18 @@ const ProjectOverviewTab = () => {
             </Grid>
             <Grid item xs={12}>
                 <Typography group="input" variant="label" htmlFor="description">Project description</Typography>
-                {editMode 
-                ? <TextArea
-                    id="description"
-                    placeholder="Enter a description"
-                    onInput={handleDescriptionChange}
-                    value={projectEdited ? projectEdited.description : project?.description}
-                    cols={10000}
-                    rows={8}
-                />
-                : <Typography>{project.description ?? undefined}</Typography>}
+                {editMode
+                    ? (
+                        <TextArea
+                            id="description"
+                            placeholder="Enter a description"
+                            onInput={handleDescriptionChange}
+                            value={projectEdited ? projectEdited.description : project?.description}
+                            cols={10000}
+                            rows={8}
+                        />
+                    )
+                    : <Typography>{project.description ?? undefined}</Typography>}
             </Grid>
             <Grid item xs={12} container spacing={1} justifyContent="space-between">
                 <Grid item>
