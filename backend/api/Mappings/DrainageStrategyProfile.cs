@@ -36,4 +36,101 @@ public class DrainageStrategyProfile : Profile
 
         CreateMap<CreateDrainageStrategyDto, DrainageStrategy>();
     }
+
+    private static TModel? Convert<TDto, TModel>(TDto? dto, DrainageStrategy drainageStrategy,
+        TimeSeries<double>? existingProfile, PhysUnit unit, bool initialCreate)
+            where TDto : TimeSeriesDto<double>
+            where TModel : TimeSeries<double>, IDrainageStrategyTimeSeries, new()
+    {
+        var needToConvertValues = existingProfile?.Values == null;
+        if (dto != null && existingProfile?.Values != null &&
+            !existingProfile.Values.SequenceEqual(dto.Values))
+        {
+            needToConvertValues = true;
+        }
+
+        var convertedTimeSeries = dto == null || drainageStrategy == null
+            ? new TModel()
+            : new TModel
+            {
+                Id = dto.Id,
+                StartYear = dto.StartYear,
+                DrainageStrategy = drainageStrategy,
+            };
+
+        if (convertedTimeSeries == null || dto == null) { return null; }
+
+        convertedTimeSeries.Values = needToConvertValues || initialCreate
+                ? ConvertUnitValues(dto.Values, unit, convertedTimeSeries.GetType().Name)
+                : dto.Values;
+
+        return convertedTimeSeries;
+    }
+
+        private static TModel? ConvertOverride<TDto, TModel>(TDto? dto, DrainageStrategy drainageStrategy,
+        TimeSeries<double>? existingProfile, PhysUnit unit, bool initialCreate)
+            where TDto : TimeSeriesDto<double>, ITimeSeriesOverrideDto
+            where TModel : TimeSeries<double>, ITimeSeriesOverride, IDrainageStrategyTimeSeries, new()
+    {
+        var needToConvertValues = existingProfile?.Values == null;
+        if (dto != null && existingProfile?.Values != null &&
+            !existingProfile.Values.SequenceEqual(dto.Values))
+        {
+            needToConvertValues = true;
+        }
+
+        var convertedTimeSeries = dto == null || drainageStrategy == null
+            ? new TModel()
+            : new TModel
+            {
+                Id = dto.Id,
+                Override = dto.Override,
+                StartYear = dto.StartYear,
+                DrainageStrategy = drainageStrategy,
+            };
+
+        if (convertedTimeSeries == null || dto == null) { return null; }
+
+        convertedTimeSeries.Values = needToConvertValues || initialCreate
+                ? ConvertUnitValues(dto.Values, unit, convertedTimeSeries.GetType().Name)
+                : dto.Values;
+
+        return convertedTimeSeries;
+    }
+
+    private static double[] ConvertUnitValues(double[] values, PhysUnit unit, string type)
+    {
+        string[] MTPA_Units = [nameof(Co2Emissions), nameof(Co2EmissionsOverride), nameof(ProductionProfileNGL)];
+        string[] BBL_Units = [nameof(ProductionProfileOil), nameof(ProductionProfileWater), nameof(ProductionProfileWaterInjection)];
+        string[] SCF_Units = [nameof(ProductionProfileGas), nameof(FuelFlaringAndLosses), nameof(FuelFlaringAndLossesOverride), nameof(NetSalesGas), nameof(NetSalesGasOverride)];
+
+        // Per now - the timeseriestypes which use millions are the same in both SI and Oilfield
+        if (SCF_Units.Contains(type))
+        {
+            // These types should be saved in billions
+            values = Array.ConvertAll(values, x => x * 1_000_000_000);
+        }
+        else if (MTPA_Units.Contains(type) || BBL_Units.Contains(type))
+        {
+            // These types should be saved in millions
+            values = Array.ConvertAll(values, x => x * 1_000_000);
+        }
+
+        // If values were inserted in Oilfield, convert to baseunit
+        if (unit == PhysUnit.OilField && !MTPA_Units.Contains(type))
+        {
+            if (BBL_Units.Contains(type))
+            {
+                // Unit: From BBL to baseunit Sm3
+                values = Array.ConvertAll(values, x => x / 6.290);
+            }
+            else if (SCF_Units.Contains(type))
+            {
+                // Unit: From SCF to baseunit Sm3
+                values = Array.ConvertAll(values, x => x / 35.315);
+            }
+        }
+
+        return values;
+    }
 }
