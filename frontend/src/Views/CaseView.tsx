@@ -58,6 +58,10 @@ const CaseView = () => {
         substructureCost, setSubstructureCost,
         transport, setTransport,
         transportCost, setTransportCost,
+        drainageStrategy, setDrainageStrategy,
+
+        wellProjectWells, setWellProjectWells,
+        explorationWells, setExplorationWells,
 
         // Exploration
         totalExplorationCost,
@@ -85,11 +89,7 @@ const CaseView = () => {
         setExploration,
     } = useModalContext()
 
-    const [drainageStrategy, setDrainageStrategy] = useState<Components.Schemas.DrainageStrategyDto>()
-
     const [wells, setWells] = useState<Components.Schemas.WellDto[]>()
-    const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellProjectWellDto[]>()
-    const [explorationWells, setExplorationWells] = useState<Components.Schemas.ExplorationWellDto[]>()
 
     const [offshoreFacilitiesOperationsCostProfile,
         setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto>()
@@ -230,7 +230,6 @@ const CaseView = () => {
     useEffect(() => {
         saveProjectCase && handleCaseSave()
     }, [saveProjectCase])
-
 
     if (isLoading
         || !project

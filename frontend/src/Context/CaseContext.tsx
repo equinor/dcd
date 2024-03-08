@@ -42,6 +42,13 @@ interface CaseContextType {
     setTransport: Dispatch<SetStateAction<Components.Schemas.TransportDto | undefined>>
     transportCost: Components.Schemas.TransportCostProfileDto | undefined
     setTransportCost: Dispatch<SetStateAction<Components.Schemas.TransportCostProfileDto | undefined>>
+    drainageStrategy: Components.Schemas.DrainageStrategyDto | undefined
+    setDrainageStrategy: Dispatch<SetStateAction<Components.Schemas.DrainageStrategyDto | undefined>>
+
+    wellProjectWells: Components.Schemas.WellProjectWellDto[] | undefined
+    setWellProjectWells: Dispatch<SetStateAction<Components.Schemas.WellProjectWellDto[] | undefined>>
+    explorationWells: Components.Schemas.ExplorationWellDto[] | undefined
+    setExplorationWells: Dispatch<SetStateAction<Components.Schemas.ExplorationWellDto[] | undefined>>
 
     // Study
     totalFeasibilityAndConceptStudies: Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined
@@ -93,6 +100,10 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [substructureCost, setSubstructureCost] = useState<Components.Schemas.SubstructureCostProfileDto | undefined>()
     const [transport, setTransport] = useState<Components.Schemas.TransportDto>()
     const [transportCost, setTransportCost] = useState<Components.Schemas.TransportCostProfileDto | undefined>()
+    const [drainageStrategy, setDrainageStrategy] = useState<Components.Schemas.DrainageStrategyDto>()
+
+    const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellProjectWellDto[] | undefined>()
+    const [explorationWells, setExplorationWells] = useState<Components.Schemas.ExplorationWellDto[] | undefined>()
 
     // Study
     const [totalFeasibilityAndConceptStudies, setTotalFeasibilityAndConceptStudies] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined>()
@@ -102,14 +113,14 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [totalFEEDStudiesOverride, setTotalFEEDStudiesOverride] = useState<Components.Schemas.TotalFEEDStudiesOverrideDto | undefined>()
     const [totalOtherStudies, setTotalOtherStudies] = useState<Components.Schemas.TotalOtherStudiesDto | undefined>()
 
-        // Exploration
-        const [totalExplorationCost, setTotalExplorationCost] = useState<ITimeSeries | undefined>()
-        const [explorationWellCostProfile, setExplorationWellCostProfile] = useState<Components.Schemas.ExplorationWellCostProfileDto>()
-        const [explorationAppraisalWellCost, setExplorationAppraisalWellCost] = useState<Components.Schemas.AppraisalWellCostProfileDto>()
-        const [explorationSidetrackCost, setExplorationSidetrackCost] = useState<Components.Schemas.SidetrackCostProfileDto>()
-        const [seismicAcquisitionAndProcessing, setSeismicAcquisitionAndProcessing] = useState<Components.Schemas.SeismicAcquisitionAndProcessingDto>()
-        const [countryOfficeCost, setCountryOfficeCost] = useState<Components.Schemas.CountryOfficeCostDto>()
-        const [gAndGAdminCost, setGAndGAdminCost] = useState<Components.Schemas.GAndGAdminCostDto>()
+    // Exploration
+    const [totalExplorationCost, setTotalExplorationCost] = useState<ITimeSeries | undefined>()
+    const [explorationWellCostProfile, setExplorationWellCostProfile] = useState<Components.Schemas.ExplorationWellCostProfileDto>()
+    const [explorationAppraisalWellCost, setExplorationAppraisalWellCost] = useState<Components.Schemas.AppraisalWellCostProfileDto>()
+    const [explorationSidetrackCost, setExplorationSidetrackCost] = useState<Components.Schemas.SidetrackCostProfileDto>()
+    const [seismicAcquisitionAndProcessing, setSeismicAcquisitionAndProcessing] = useState<Components.Schemas.SeismicAcquisitionAndProcessingDto>()
+    const [countryOfficeCost, setCountryOfficeCost] = useState<Components.Schemas.CountryOfficeCostDto>()
+    const [gAndGAdminCost, setGAndGAdminCost] = useState<Components.Schemas.GAndGAdminCostDto>()
 
     const value = useMemo(() => ({
         projectCase,
@@ -141,6 +152,13 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setTransport,
         transportCost,
         setTransportCost,
+        drainageStrategy,
+        setDrainageStrategy,
+
+        wellProjectWells,
+        setWellProjectWells,
+        explorationWells,
+        setExplorationWells,
 
         // Study
         totalFeasibilityAndConceptStudies,
@@ -191,6 +209,10 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         substructureCost,
         transport,
         transportCost,
+        drainageStrategy,
+
+        wellProjectWells,
+        explorationWells,
 
         // Study
         totalFeasibilityAndConceptStudies,
