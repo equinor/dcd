@@ -223,7 +223,7 @@ const CaseCostTab = ({
                         setWellProjectGasInjectorCostOverride(gasInjectorCostProfileOverride)
 
                         // Exploration
-                        
+
                         setSeismicAcquisitionAndProcessing(exploration.seismicAcquisitionAndProcessing)
                         setExplorationWellCostProfile(exploration.explorationWellCostProfile)
                         setExplorationAppraisalWellCost(exploration.appraisalWellCostProfile)
@@ -342,8 +342,8 @@ const CaseCostTab = ({
         if (newCapexFactorFeasibilityStudies !== undefined) {
             newCase.capexFactorFeasibilityStudies = newCapexFactorFeasibilityStudies / 100
         } else { newCase.capexFactorFeasibilityStudies = 0 }
-        newCase ?? setProjectCaseEdited(newCase)
-        // setProjectCase(newCase as Components.Schemas.CaseDto)
+        console.log("handling case feasibility change", newCase.capexFactorFeasibilityStudies)
+        setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
     }
 
     const handleCaseFEEDChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -353,7 +353,8 @@ const CaseCostTab = ({
         if (newCapexFactorFEEDStudies !== undefined) {
             newCase.capexFactorFEEDStudies = newCapexFactorFEEDStudies / 100
         } else { newCase.capexFactorFEEDStudies = 0 }
-        newCase ?? setProjectCaseEdited(newCase)
+        console.log("handling case FEED change", newCase.capexFactorFEEDStudies)
+        setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
     }
 
     const handleSurfMaturityChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
@@ -594,126 +595,184 @@ const CaseCostTab = ({
         setObject(newObject)
     }
 
-    // TODO: remove ?? from all these useEffects. this is not what the nullish coalescing operator is for. assigning values to variables
-    // eslint no unused expressions gets triggered here
     useEffect(() => {
-        projectCase ?? updateObject(projectCase, setProjectCase, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
+        if (projectCase) {
+            updateObject(projectCase, setProjectCase, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
+        }
     }, [totalFeasibilityAndConceptStudiesOverride])
 
     useEffect(() => {
-        projectCase ?? updateObject(projectCase, setProjectCase, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
+        if (projectCase) {
+            updateObject(projectCase, setProjectCase, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
+        }
     }, [totalFEEDStudiesOverride])
 
     useEffect(() => {
-        projectCase ?? updateObject(projectCase, setProjectCase, "totalOtherStudies", totalOtherStudies)
+        if (projectCase) {
+            updateObject(projectCase, setProjectCase, "totalOtherStudies", totalOtherStudies)
+        }
     }, [totalOtherStudies])
 
     useEffect(() => {
-        projectCase ?? updateObject(projectCase, setProjectCase, "wellInterventionCostProfileOverride", wellInterventionCostProfileOverride)
+        if (projectCase) {
+            updateObject(projectCase, setProjectCase, "wellInterventionCostProfileOverride", wellInterventionCostProfileOverride)
+        }
     }, [wellInterventionCostProfileOverride])
 
     useEffect(() => {
-        projectCase ?? updateObject(projectCase, setProjectCase, "offshoreFacilitiesOperationsCostProfileOverride", offshoreFacilitiesOperationsCostProfileOverride)
+        if (projectCase) {
+            updateObject(projectCase, setProjectCase, "offshoreFacilitiesOperationsCostProfileOverride", offshoreFacilitiesOperationsCostProfileOverride)
+        }
     }, [offshoreFacilitiesOperationsCostProfileOverride])
 
     useEffect(() => {
-        projectCase ?? updateObject(projectCase, setProjectCase, "historicCostCostProfile", historicCostCostProfile)
+        if (projectCase) {
+            updateObject(projectCase, setProjectCase, "historicCostCostProfile", historicCostCostProfile)
+        }
     }, [historicCostCostProfile])
 
     useEffect(() => {
-        projectCase ?? updateObject(projectCase, setProjectCase, "additionalOPEXCostProfile", additionalOPEXCostProfile)
+        if (projectCase) {
+            updateObject(projectCase, setProjectCase, "additionalOPEXCostProfile", additionalOPEXCostProfile)
+        }
     }, [additionalOPEXCostProfile])
 
     useEffect(() => {
-        projectCase ?? updateObject(projectCase, setProjectCase, "cessationWellsCostOverride", cessationWellsCostOverride)
+        if (projectCase) {
+            updateObject(projectCase, setProjectCase, "cessationWellsCostOverride", cessationWellsCostOverride)
+        }
     }, [cessationWellsCostOverride])
 
     useEffect(() => {
-        projectCase ?? updateObject(projectCase, setProjectCase, "cessationOffshoreFacilitiesCostOverride", cessationOffshoreFacilitiesCostOverride)
+        if (projectCase) {
+            updateObject(projectCase, setProjectCase, "cessationOffshoreFacilitiesCostOverride", cessationOffshoreFacilitiesCostOverride)
+        }
     }, [cessationOffshoreFacilitiesCostOverride])
 
     useEffect(() => {
-        surf ?? updateObject(surf, setSurf, "costProfile", surfCost)
+        if (surf) {
+            updateObject(surf, setSurf, "costProfile", surfCost)
+        }
     }, [surfCost])
 
     useEffect(() => {
-        topside ?? updateObject(topside, setTopside, "costProfile", topsideCost)
+        if (topside) {
+            updateObject(topside, setTopside, "costProfile", topsideCost)
+        }
     }, [topsideCost])
 
     useEffect(() => {
-        substructure ?? updateObject(substructure, setSubstructure, "costProfile", substructureCost)
+        if (substructure) {
+            updateObject(substructure, setSubstructure, "costProfile", substructureCost)
+        }
     }, [substructureCost])
 
     useEffect(() => {
-        transport ?? updateObject(transport, setTransport, "costProfile", transportCost)
+        if (transport) {
+            updateObject(transport, setTransport, "costProfile", transportCost)
+        }
     }, [transportCost])
 
     useEffect(() => {
-        surf ?? updateObject(surf, setSurf, "costProfileOverride", surfCostOverride)
+        if (surf) {
+            updateObject(surf, setSurf, "costProfileOverride", surfCostOverride)
+        }
     }, [surfCostOverride])
 
     useEffect(() => {
-        topside ?? updateObject(topside, setTopside, "costProfileOverride", topsideCostOverride)
+        if (topside) {
+            updateObject(topside, setTopside, "costProfileOverride", topsideCostOverride)
+        }
     }, [topsideCostOverride])
 
     useEffect(() => {
-        substructure ?? updateObject(substructure, setSubstructure, "costProfileOverride", substructureCostOverride)
+        if (substructure) {
+            updateObject(substructure, setSubstructure, "costProfileOverride", substructureCostOverride)
+        }
     }, [substructureCostOverride])
 
     useEffect(() => {
-        transport ?? updateObject(transport, setTransport, "costProfileOverride", transportCostOverride)
+        if (transport) {
+            updateObject(transport, setTransport, "costProfileOverride", transportCostOverride)
+        }
     }, [transportCostOverride])
 
     useEffect(() => {
-        wellProject ?? updateObject(wellProject, setWellProject, "oilProducerCostProfile", wellProjectOilProducerCost)
+        if (wellProject) {
+            updateObject(wellProject, setWellProject, "oilProducerCostProfile", wellProjectOilProducerCost)
+        }
     }, [wellProjectOilProducerCost])
 
     useEffect(() => {
-        wellProject ?? updateObject(wellProject, setWellProject, "oilProducerCostProfileOverride", wellProjectOilProducerCostOverride)
+        if (wellProject) {
+            updateObject(wellProject, setWellProject, "oilProducerCostProfileOverride", wellProjectOilProducerCostOverride)
+        }
     }, [wellProjectOilProducerCostOverride])
 
     useEffect(() => {
-        wellProject ?? updateObject(wellProject, setWellProject, "gasProducerCostProfile", wellProjectGasProducerCost)
+        if (wellProject) {
+            updateObject(wellProject, setWellProject, "gasProducerCostProfile", wellProjectGasProducerCost)
+        }
     }, [wellProjectGasProducerCost])
 
     useEffect(() => {
-        wellProject ?? updateObject(wellProject, setWellProject, "gasProducerCostProfileOverride", wellProjectGasProducerCostOverride)
+        if (wellProject) {
+            updateObject(wellProject, setWellProject, "gasProducerCostProfileOverride", wellProjectGasProducerCostOverride)
+        }
     }, [wellProjectGasProducerCostOverride])
 
     useEffect(() => {
-        wellProject ?? updateObject(wellProject, setWellProject, "waterInjectorCostProfile", wellProjectWaterInjectorCost)
+        if (wellProject) {
+            updateObject(wellProject, setWellProject, "waterInjectorCostProfile", wellProjectWaterInjectorCost)
+        }
     }, [wellProjectWaterInjectorCost])
 
     useEffect(() => {
-        wellProject ?? updateObject(wellProject, setWellProject, "waterInjectorCostProfileOverride", wellProjectWaterInjectorCostOverride)
+        if (wellProject) {
+            updateObject(wellProject, setWellProject, "waterInjectorCostProfileOverride", wellProjectWaterInjectorCostOverride)
+        }
     }, [wellProjectWaterInjectorCostOverride])
 
     useEffect(() => {
-        wellProject ?? updateObject(wellProject, setWellProject, "gasInjectorCostProfile", wellProjectGasInjectorCost)
+        if (wellProject) {
+            updateObject(wellProject, setWellProject, "gasInjectorCostProfile", wellProjectGasInjectorCost)
+        }
     }, [wellProjectGasInjectorCost])
 
     useEffect(() => {
-        wellProject ?? updateObject(wellProject, setWellProject, "gasInjectorCostProfileOverride", wellProjectGasInjectorCostOverride)
+        if (wellProject) {
+            updateObject(wellProject, setWellProject, "gasInjectorCostProfileOverride", wellProjectGasInjectorCostOverride)
+        }
     }, [wellProjectGasInjectorCostOverride])
 
     useEffect(() => {
-        exploration ?? updateObject(exploration, setExploration, "explorationWellCostProfile", explorationWellCostProfile)
+        if (exploration) {
+            updateObject(exploration, setExploration, "explorationWellCostProfile", explorationWellCostProfile)
+        }
     }, [explorationWellCostProfile])
 
     useEffect(() => {
-        exploration ?? updateObject(exploration, setExploration, "appraisalWellCostProfile", explorationAppraisalWellCost)
+        if (exploration) {
+            updateObject(exploration, setExploration, "appraisalWellCostProfile", explorationAppraisalWellCost)
+        }
     }, [explorationAppraisalWellCost])
 
     useEffect(() => {
-        exploration ?? updateObject(exploration, setExploration, "sidetrackCostProfile", explorationSidetrackCost)
+        if (exploration) {
+            updateObject(exploration, setExploration, "sidetrackCostProfile", explorationSidetrackCost)
+        }
     }, [explorationSidetrackCost])
 
     useEffect(() => {
-        exploration ?? updateObject(exploration, setExploration, "seismicAcquisitionAndProcessing", seismicAcquisitionAndProcessing)
+        if (exploration) {
+            updateObject(exploration, setExploration, "seismicAcquisitionAndProcessing", seismicAcquisitionAndProcessing)
+        }
     }, [seismicAcquisitionAndProcessing])
 
     useEffect(() => {
-        exploration ?? updateObject(exploration, setExploration, "countryOfficeCost", countryOfficeCost)
+        if (exploration) {
+            updateObject(exploration, setExploration, "countryOfficeCost", countryOfficeCost)
+        }
     }, [countryOfficeCost])
 
     if (activeTabCase !== 5) { return null }
@@ -728,12 +787,12 @@ const CaseCostTab = ({
         <Grid container spacing={3}>
             <Grid item xs={12} md={4}>
                 <InputSwitcher
-                    value={`${projectCase?.capexFactorFeasibilityStudies !== undefined ? (projectCase?.capexFactorFeasibilityStudies * 100).toFixed(2) : ""}%`}
+                    value={`${projectCase?.capexFactorFeasibilityStudies !== undefined ? ((projectCase.capexFactorFeasibilityStudies ?? 0) * 100).toFixed(2) : ""}%`}
                     label="CAPEX factor feasibility studies"
                 >
                     <CaseNumberInput
                         onChange={handleCaseFeasibilityChange}
-                        defaultValue={projectCase?.capexFactorFeasibilityStudies !== undefined ? projectCase?.capexFactorFeasibilityStudies * 100 : undefined}
+                        defaultValue={projectCase?.capexFactorFeasibilityStudies !== undefined ? (projectCase.capexFactorFeasibilityStudies ?? 0) * 100 : undefined}
                         integer={false}
                         unit="%"
                         min={0}
@@ -743,12 +802,12 @@ const CaseCostTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <InputSwitcher
-                    value={`${projectCase?.capexFactorFEEDStudies !== undefined ? (projectCase?.capexFactorFEEDStudies * 100).toFixed(2) : ""}%`}
+                    value={`${projectCase?.capexFactorFEEDStudies !== undefined ? ((projectCase.capexFactorFEEDStudies ?? 0) * 100).toFixed(2) : ""}%`}
                     label="CAPEX factor FEED studies"
                 >
                     <CaseNumberInput
                         onChange={handleCaseFEEDChange}
-                        defaultValue={projectCase?.capexFactorFEEDStudies !== undefined ? projectCase?.capexFactorFEEDStudies * 100 : undefined}
+                        defaultValue={projectCase?.capexFactorFEEDStudies !== undefined ? (projectCase.capexFactorFEEDStudies ?? 0) * 100 : undefined}
                         integer={false}
                         unit="%"
                         min={0}
