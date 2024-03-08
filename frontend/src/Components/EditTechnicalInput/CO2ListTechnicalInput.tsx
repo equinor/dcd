@@ -1,4 +1,3 @@
-/* eslint-disable indent */
 import {
     ChangeEvent,
     useCallback,
@@ -115,12 +114,12 @@ const CO2ListTechnicalInput = () => {
         (node: any): boolean => {
             if (node.data) {
                 switch (cO2VentedRow) {
-                    case true:
-                        return node.data.profile === "CO2 vented"
-                    case false:
-                        return node.data.profile !== "CO2 vented"
-                    default:
-                        return true
+                case true:
+                    return node.data.profile === "CO2 vented"
+                case false:
+                    return node.data.profile !== "CO2 vented"
+                default:
+                    return true
                 }
             }
             return true

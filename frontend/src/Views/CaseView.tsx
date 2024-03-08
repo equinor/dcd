@@ -1,6 +1,6 @@
 import { Tabs } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import Grid from "@mui/material/Grid"
 import CaseDescriptionTab from "../Components/Case/Tabs/CaseDescriptionTab"
 import CaseCostTab from "../Components/Case/Tabs/CaseCostTab"
@@ -22,7 +22,7 @@ const {
 
 const CaseView = () => {
     const {
-        setIsSaving, isLoading, setIsLoading, updateFromServer, setUpdateFromServer, editMode,
+        setIsSaving, isLoading, setIsLoading, updateFromServer, setUpdateFromServer,
     } = useAppContext()
 
     const {
@@ -37,6 +37,47 @@ const CaseView = () => {
         setSaveProjectCase,
         activeTabCase,
         setActiveTabCase,
+
+        // Study cost
+        totalFeasibilityAndConceptStudies,
+        setTotalFeasibilityAndConceptStudies,
+        totalFeasibilityAndConceptStudiesOverride,
+        setTotalFeasibilityAndConceptStudiesOverride,
+        totalFEEDStudies,
+        setTotalFEEDStudies,
+        totalFEEDStudiesOverride,
+        setTotalFEEDStudiesOverride,
+        totalOtherStudies,
+        setTotalOtherStudies,
+
+        topside, setTopside,
+        topsideCost, setTopsideCost,
+        surf, setSurf,
+        surfCost, setSurfCost,
+        substructure, setSubstructure,
+        substructureCost, setSubstructureCost,
+        transport, setTransport,
+        transportCost, setTransportCost,
+        drainageStrategy, setDrainageStrategy,
+
+        wellProjectWells, setWellProjectWells,
+        explorationWells, setExplorationWells,
+
+        // Exploration
+        totalExplorationCost,
+        setTotalExplorationCost,
+        explorationWellCostProfile,
+        setExplorationWellCostProfile,
+        gAndGAdminCost,
+        setGAndGAdminCost,
+        seismicAcquisitionAndProcessing,
+        setSeismicAcquisitionAndProcessing,
+        explorationSidetrackCost,
+        setExplorationSidetrackCost,
+        explorationAppraisalWellCost,
+        setExplorationAppraisalWellCost,
+        countryOfficeCost,
+        setCountryOfficeCost,
     } = useCaseContext()
 
     if (!projectCase) return (null)
@@ -48,22 +89,7 @@ const CaseView = () => {
         setExploration,
     } = useModalContext()
 
-    const [drainageStrategy, setDrainageStrategy] = useState<Components.Schemas.DrainageStrategyDto>()
-    const [surf, setSurf] = useState<Components.Schemas.SurfDto>()
-    const [topside, setTopside] = useState<Components.Schemas.TopsideDto>()
-    const [substructure, setSubstructure] = useState<Components.Schemas.SubstructureDto>()
-    const [transport, setTransport] = useState<Components.Schemas.TransportDto>()
-
     const [wells, setWells] = useState<Components.Schemas.WellDto[]>()
-    const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellProjectWellDto[]>()
-    const [explorationWells, setExplorationWells] = useState<Components.Schemas.ExplorationWellDto[]>()
-
-    const [totalFeasibilityAndConceptStudies,
-        setTotalFeasibilityAndConceptStudies] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesDto>()
-
-    const [totalFEEDStudies, setTotalFEEDStudies] = useState<Components.Schemas.TotalFEEDStudiesDto>()
-
-    const [totalOtherStudies, setTotalOtherStudies] = useState<Components.Schemas.TotalOtherStudiesDto>()
 
     const [offshoreFacilitiesOperationsCostProfile,
         setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto>()
@@ -79,8 +105,6 @@ const CaseView = () => {
     const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>()
     const [cessationOffshoreFacilitiesCost,
         setCessationOffshoreFacilitiesCost] = useState<Components.Schemas.CessationOffshoreFacilitiesCostDto>()
-
-    const [gAndGAdminCost, setGAndGAdminCost] = useState<Components.Schemas.GAndGAdminCostDto>()
 
     const [co2Emissions, setCo2Emissions] = useState<Components.Schemas.Co2EmissionsDto>()
 
@@ -204,7 +228,7 @@ const CaseView = () => {
     }
 
     useEffect(() => {
-        if (saveProjectCase) { handleCaseSave() }
+        saveProjectCase && handleCaseSave()
     }, [saveProjectCase])
 
     if (isLoading
@@ -219,7 +243,7 @@ const CaseView = () => {
         || !transport
         || !explorationWells
         || !wellProjectWells) {
-        return <p>Loading...</p>
+        return (<></>)
     }
 
     return (
@@ -280,35 +304,17 @@ const CaseView = () => {
                         </Panel>
                         <Panel>
                             <CaseCostTab
-                                exploration={exploration}
-                                setExploration={setExploration}
                                 wellProject={wellProject}
                                 setWellProject={setWellProject}
-                                topside={topside}
-                                setTopside={setTopside}
-                                surf={surf}
-                                setSurf={setSurf}
-                                substructure={substructure}
-                                setSubstructure={setSubstructure}
-                                transport={transport}
-                                setTransport={setTransport}
-                                totalFeasibilityAndConceptStudies={totalFeasibilityAndConceptStudies}
-                                setTotalFeasibilityAndConceptStudies={setTotalFeasibilityAndConceptStudies}
-                                totalFEEDStudies={totalFEEDStudies}
-                                setTotalFEEDStudies={setTotalFEEDStudies}
-                                totalOtherStudies={totalOtherStudies}
                                 offshoreFacilitiesOperationsCostProfile={offshoreFacilitiesOperationsCostProfile}
                                 setOffshoreFacilitiesOperationsCostProfile={setOffshoreFacilitiesOperationsCostProfile}
                                 wellInterventionCostProfile={wellInterventionCostProfile}
                                 setWellInterventionCostProfile={setWellInterventionCostProfile}
-                                historicCostCostProfile={historicCostCostProfile}
                                 additionalOPEXCostProfile={additionalOPEXCostProfile}
                                 cessationWellsCost={cessationWellsCost}
                                 setCessationWellsCost={setCessationWellsCost}
                                 cessationOffshoreFacilitiesCost={cessationOffshoreFacilitiesCost}
                                 setCessationOffshoreFacilitiesCost={setCessationOffshoreFacilitiesCost}
-                                gAndGAdminCost={gAndGAdminCost}
-                                setGAndGAdminCost={setGAndGAdminCost}
                             />
                         </Panel>
                         <Panel>
@@ -322,12 +328,7 @@ const CaseView = () => {
                             />
                         </Panel>
                         <Panel>
-                            <CaseSummaryTab
-                                topside={topside}
-                                surf={surf}
-                                substructure={substructure}
-                                transport={transport}
-                            />
+                            <CaseSummaryTab />
                         </Panel>
                     </Panels>
                 </Tabs>

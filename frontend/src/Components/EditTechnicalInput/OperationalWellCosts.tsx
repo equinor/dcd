@@ -9,7 +9,9 @@ import styled from "styled-components"
 import OperationalWellCost from "./OperationalWellCost"
 import { useProjectContext } from "../../Context/ProjectContext"
 
-const { Head, Body, Row, Cell } = Table
+const {
+    Head, Body, Row, Cell,
+} = Table
 
 const FullwidthTable = styled(Table)`
     width: 100%;
@@ -56,6 +58,12 @@ const OperationalWellCosts = ({
             newDevelopmentOperationalWellCosts.annualWellInterventionCostPerWell = developmentAnnualWellInterventionCost
             newDevelopmentOperationalWellCosts.pluggingAndAbandonment = developmentPluggingAndAbandonment
             setDevelopmentOperationalWellCosts(newDevelopmentOperationalWellCosts)
+
+            /*
+            technicalInput is not opening because it depends on developmentOperationalWellCosts to not be undefined.
+            but the setter is here, inside a component that does not render unless technical input does.
+            so it is always undefined
+            */
         }
     }, [developmentRigUpgrading, developmentRigMobDemob,
         developmentAnnualWellInterventionCost, developmentPluggingAndAbandonment])
@@ -76,6 +84,10 @@ const OperationalWellCosts = ({
             newExplorationOperationalWellCosts.appraisalRigMobDemob = appraisalRigMobDemob
             newExplorationOperationalWellCosts.appraisalProjectDrillingCosts = appraisalProjectDrillingCosts
             setExplorationOperationalWellCosts(newExplorationOperationalWellCosts)
+            /*
+            same here. technical input is set to only render if explorationOperationalWellCosts is not undefined.
+            but it is defined here, in a component nested inside technical input
+            */
         }
     }, [explorationRigUpgrading, explorationRigMobDemob,
         explorationProjectDrillingCosts, appraisalRigMobDemob, appraisalProjectDrillingCosts])

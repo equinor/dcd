@@ -16,7 +16,7 @@ import { useCaseContext } from "../../../Context/CaseContext"
 
 const CaseScheduleTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
-    if (!projectCase) return (<></>)
+    if (!projectCase) return null
     const handleDG0Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
         if (!projectCaseEdited) return
         const newCase = { ...projectCaseEdited }

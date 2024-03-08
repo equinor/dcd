@@ -45,6 +45,19 @@ const EditTechnicalInputModal = () => {
     const [originalWellProjectWells, setOriginalWellProjectWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => !isExplorationWell(w)) ?? [])
     const [originalExplorationWells, setOriginalExplorationWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => isExplorationWell(w)) ?? [])
 
+    useEffect(() => {
+        console.log("project", project)
+        console.log("technicalModalIsOpen", technicalModalIsOpen)
+        console.log("developmentOperationalWellCosts", developmentOperationalWellCosts)
+        console.log("explorationOperationalWellCosts", explorationOperationalWellCosts)
+    }, [project, technicalModalIsOpen, developmentOperationalWellCosts, explorationOperationalWellCosts])
+
+    if (!project || !technicalModalIsOpen || !developmentOperationalWellCosts || !explorationOperationalWellCosts) {
+        return null
+    }
+
+    console.log("Technical input modal")
+
     const handleSave = async () => {
         try {
             const dto: Components.Schemas.UpdateTechnicalInputDto = {}
@@ -153,14 +166,6 @@ const EditTechnicalInputModal = () => {
             window.removeEventListener("keydown", handleKeyDown)
         }
     }, [technicalModalIsOpen, setTechnicalModalIsOpen])
-
-    if (!technicalModalIsOpen) return null
-
-    if (!developmentOperationalWellCosts || !explorationOperationalWellCosts) {
-        return null
-    }
-
-    if (!project) return null
 
     return (
         <Modal isOpen={technicalModalIsOpen} title="Technical Input">

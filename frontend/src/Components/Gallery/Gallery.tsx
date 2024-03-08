@@ -58,7 +58,7 @@ const GalleryLabel = styled(Typography) <{ $warning: boolean }>`
     color: ${({ $warning }) => ($warning ? "red" : "rgba(111, 111, 111, 1)")};
 `
 const Gallery = () => {
-    const { isEditing } = useAppContext()
+    const { editMode } = useAppContext()
     const [gallery, setGallery] = useState<string[]>([])
     const [modalOpen, setModalOpen] = useState(false)
     const [expandedImage, setExpandedImage] = useState("")
@@ -82,15 +82,15 @@ const Gallery = () => {
                 setModalOpen={setModalOpen}
             />
             <GalleryLabel $warning={exeededLimit}>
-                {gallery.length > 0 && !isEditing && "Gallery"}
-                {isEditing && `Gallery (${gallery.length} / 4)`}
+                {gallery.length > 0 && !editMode && "Gallery"}
+                {editMode && `Gallery (${gallery.length} / 4)`}
             </GalleryLabel>
             <Wrapper>
                 {gallery.map((image, index) => (
                     <ImageWithHover key={`menu - item - ${index + 1} `}>
                         <img src={image} alt={`upload #${index + 1} `} />
                         <Controls>
-                            {isEditing && (
+                            {editMode && (
                                 <Button variant="contained_icon" color="danger" onClick={() => handleDelete(image)}>
                                     <Icon size={18} data={delete_to_trash} />
                                 </Button>
@@ -102,7 +102,7 @@ const Gallery = () => {
                     </ImageWithHover>
                 ))}
                 {
-                    isEditing && gallery.length < 4
+                    editMode && gallery.length < 4
                     && (
                         <ImageUpload
                             gallery={gallery}
