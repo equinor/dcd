@@ -3,6 +3,7 @@ using System.Diagnostics;
 using api.Adapters;
 using api.Context;
 using api.Dtos;
+using api.Mappings;
 using api.Models;
 
 using Api.Services.FusionIntegration;
@@ -309,7 +310,9 @@ public class ProjectService : IProjectService
     {
         var project = await GetProject(projectId);
 
-        var projectDto = _mapper.Map<ProjectDto>(project);
+        var destination = _mapper.Map<Project, ProjectDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+
+        var projectDto = destination;
 
         if (projectDto == null)
         {
