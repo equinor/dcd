@@ -339,7 +339,6 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         var destination = _mapper.Map<DrainageStrategy, DrainageStrategyDto>(updatedItem.Entity, opts => opts.Items["ConversionUnit"] = unit.ToString());
 
         return destination;
-        // return _mapper.Map<DrainageStrategyDto>(updatedItem.Entity, opts => opts.Items["ConversionUnit"] = unit.ToString());
     }
 
     public async Task<WellProjectDto?> UpdateWellProject(Guid wellProjectLink, UpdateWellProjectDto updatedDto, ProfilesToGenerate profilesToGenerate)
