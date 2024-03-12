@@ -332,7 +332,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
 
         var item = await _drainageStrategyService.GetDrainageStrategy(drainageStrategyId);
 
-        _mapper.Map(updatedDto, item);
+        _mapper.Map(updatedDto, item, opts => opts.Items["ConversionUnit"] = unit.ToString());
 
         var updatedItem = _context.DrainageStrategies!.Update(item);
 

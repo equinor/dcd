@@ -73,7 +73,7 @@ public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
 
         await UpdateDrainageStrategyAndSave(drainageStrategy, co2Emission);
 
-        var dto = _mapper.Map<Co2EmissionsDto>(co2Emission);
+        var dto = _mapper.Map<Co2EmissionsDto>(co2Emission, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 
         return dto ?? new Co2EmissionsDto();
     }

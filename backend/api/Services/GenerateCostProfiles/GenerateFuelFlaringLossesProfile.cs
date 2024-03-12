@@ -53,7 +53,7 @@ public class GenerateFuelFlaringLossesProfile : IGenerateFuelFlaringLossesProfil
 
         await UpdateDrainageStrategyAndSave(drainageStrategy, fuelFlaringLosses);
 
-        var dto = _mapper.Map<FuelFlaringAndLossesDto>(fuelFlaringLosses);
+        var dto = _mapper.Map<FuelFlaringAndLossesDto>(fuelFlaringLosses, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
         return dto ?? new FuelFlaringAndLossesDto();
     }
 
