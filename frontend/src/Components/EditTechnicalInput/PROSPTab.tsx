@@ -2,50 +2,21 @@ import {
     Typography,
     Button,
     Input,
-    Label,
     Progress,
     Switch,
+    InputWrapper,
+    Card,
 } from "@equinor/eds-core-react"
 import React, { ChangeEvent, useEffect, useState } from "react"
-import styled from "styled-components"
+import Grid from "@mui/material/Grid"
 import { GetProspService } from "../../Services/ProspService"
 import { GetProjectService } from "../../Services/ProjectService"
 import { DriveItem } from "../../Models/sharepoint/DriveItem"
 import PROSPCaseList from "./PROSPCaseList"
-import { useAppContext } from "../../Context/AppContext"
-
-const ProspFieldWrapper = styled.div`
-    margin-bottom: 2.5rem;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-`
-
-const ProspURLInputField = styled(Input)`
-    margin-right: 20px;
-`
-
-const TopWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-`
-
-const SwitchWrapper = styled.div`
-    margin-left: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-`
-
-const ErrorMessage = styled.div`
-    color: red;
-    margin-top: 10px;
-`
+import { useProjectContext } from "../../Context/ProjectContext"
 
 const PROSPTab = () => {
-    const { project, setProject } = useAppContext()
+    const { project, setProject } = useProjectContext()
 
     const [sharepointUrl, setSharepointUrl] = useState<string>()
     const [check, setCheck] = useState(false)
@@ -99,41 +70,56 @@ const PROSPTab = () => {
     }, [project?.sharepointSiteUrl])
 
     return (
-        <div>
-            <TopWrapper>
-                <Typography variant="h4">PROSP</Typography>
-            </TopWrapper>
-            <Label htmlFor="textfield-normal" label="Sharepoint Site address" />
-            <ProspFieldWrapper>
-                <ProspURLInputField
-                    id="textfield-normal"
-                    placeholder="Paste Uri here"
-                    onChange={handleSharePointUrl}
-                    value={sharepointUrl}
-                />
-                {!isRefreshing ? <Button variant="outlined" onClick={saveUrl}>Refresh</Button>
-                    : (
-                        <Button variant="outlined">
-                            <Progress.Dots color="primary" />
-                        </Button>
+        <Grid container rowSpacing={3} columnSpacing={2}>
+            <Grid item xs={12} container spacing={2} alignItems="flex-end">
+                <Grid item flex={1}>
+                    <InputWrapper labelProps={{ label: "Sharepoint Site address" }}>
+                        <Input
+                            id="textfield-normal"
+                            placeholder="Paste Uri here"
+                            onChange={handleSharePointUrl}
+                            value={sharepointUrl}
+                        />
+                    </InputWrapper>
+                </Grid>
+                <Grid item>
+                    {!isRefreshing
+                        ? <Button variant="outlined" onClick={saveUrl}>Refresh</Button>
+                        : (
+                            <Button variant="outlined">
+                                <Progress.Dots color="primary" />
+                            </Button>
+                        )}
+                </Grid>
+                {errorMessage
+                    && (
+                        <Grid item xs={12}>
+                            <Card variant="danger">
+                                <Card.Header>
+                                    <Typography>{errorMessage}</Typography>
+                                </Card.Header>
+                            </Card>
+                        </Grid>
                     )}
-            </ProspFieldWrapper>
-            {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-            <SwitchWrapper>
-                <Switch
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                        setCheck(e.target.checked)
-                    }}
-                    checked={check}
-                    label="Advance settings"
-                />
-            </SwitchWrapper>
-            <PROSPCaseList
-                driveItems={driveItems}
-                check={check}
-            />
-
-        </div>
+            </Grid>
+            <Grid item xs={12} container justifyContent="flex-end">
+                <Grid item>
+                    <Switch
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                            setCheck(e.target.checked)
+                        }}
+                        checked={check}
+                        label="Advance settings"
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <PROSPCaseList
+                        driveItems={driveItems}
+                        check={check}
+                    />
+                </Grid>
+            </Grid>
+        </Grid>
     )
 }
 

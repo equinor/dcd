@@ -1,58 +1,74 @@
 import {
     ChangeEventHandler, Dispatch, SetStateAction, useEffect, useState,
 } from "react"
-import styled from "styled-components"
-
-import { Typography } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid"
 import CaseNumberInput from "../../Input/CaseNumberInput"
 import CaseTabTable from "../Components/CaseTabTable"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { GetGenerateProfileService } from "../../../Services/CaseGeneratedProfileService"
-import { MergeTimeseries } from "../../../Utils/common"
+import { MergeTimeseriesList } from "../../../Utils/common"
 import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
-import InputContainer from "../../Input/Containers/InputContainer"
 import InputSwitcher from "../../Input/InputSwitcher"
-
-const TopWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-top: 20px;
-    margin-bottom: 20px;
-`
-const PageTitle = styled(Typography)`
-    flex-grow: 1;
-`
-
-const TableWrapper = styled.div`
-    margin-bottom: 50px;
-`
-interface ITimeSeriesData {
-    profileName: string
-    unit: string,
-    set?: Dispatch<SetStateAction<ITimeSeriesCost | undefined>>,
-    profile: ITimeSeries | undefined
-}
+import { useProjectContext } from "../../../Context/ProjectContext"
+import { useCaseContext } from "../../../Context/CaseContext"
+import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
+import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
+import { useModalContext } from "../../../Context/ModalContext"
 
 interface Props {
-    project: Components.Schemas.ProjectDto,
-    caseItem: Components.Schemas.CaseDto,
-    setCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
     topside: Components.Schemas.TopsideDto,
     surf: Components.Schemas.SurfDto,
     substructure: Components.Schemas.SubstructureDto,
     transport: Components.Schemas.TransportDto,
-    activeTab: number
 }
 
-const CaseSummaryTab = ({
-    project,
-    caseItem, setCase,
-    topside,
-    surf,
-    substructure,
-    transport,
-    activeTab,
-}: Props) => {
+const CaseSummaryTab = (): React.ReactElement | null => {
+    const {
+        totalFeasibilityAndConceptStudies,
+        setTotalFeasibilityAndConceptStudies,
+        totalFeasibilityAndConceptStudiesOverride,
+        setTotalFeasibilityAndConceptStudiesOverride,
+        totalFEEDStudies,
+        setTotalFEEDStudies,
+        totalFEEDStudiesOverride,
+        setTotalFEEDStudiesOverride,
+        totalOtherStudies,
+        setTotalOtherStudies,
+        topside, setTopside,
+        topsideCost, setTopsideCost,
+        surf, setSurf,
+        surfCost, setSurfCost,
+        substructure, setSubstructure,
+        substructureCost, setSubstructureCost,
+        transport, setTransport,
+        transportCost, setTransportCost,
+
+        // Exploration
+        totalExplorationCost,
+        setTotalExplorationCost,
+        explorationWellCostProfile,
+        setExplorationWellCostProfile,
+        gAndGAdminCost,
+        setGAndGAdminCost,
+        seismicAcquisitionAndProcessing,
+        setSeismicAcquisitionAndProcessing,
+        explorationSidetrackCost,
+        setExplorationSidetrackCost,
+        explorationAppraisalWellCost,
+        setExplorationAppraisalWellCost,
+        countryOfficeCost,
+        setCountryOfficeCost,
+    } = useCaseContext()
+
+    const {
+        exploration,
+        setExploration,
+    } = useModalContext()
+
+    const { project } = useProjectContext()
+    const {
+        projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase,
+    } = useCaseContext()
     // OPEX
     const [totalStudyCost, setTotalStudyCost] = useState<ITimeSeries>()
     const [opexCost, setOpexCost] = useState<Components.Schemas.OpexCostProfileDto>()
@@ -60,64 +76,145 @@ const CaseSummaryTab = ({
 
     // CAPEX
     const [historicCost] = useState<Components.Schemas.HistoricCostCostProfileDto>()
-    const [topsideCost, setTopsideCost] = useState<Components.Schemas.TopsideCostProfileDto>()
-    const [surfCost, setSurfCost] = useState<Components.Schemas.SurfCostProfileDto>()
-    const [substructureCost, setSubstructureCost] = useState<Components.Schemas.SubstructureCostProfileDto>()
-    const [transportCost, setTransportCost] = useState<Components.Schemas.TransportCostProfileDto>()
 
     const [, setStartYear] = useState<number>(2020)
     const [, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
-    const opexTimeSeriesData: ITimeSeriesData[] = [
+    const [historicCostCostProfile, setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto | undefined>()
+    const [offshoreFacilitiesOperationsCostProfile, setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined>()
+
+    const [offshoreOpexPlussWellIntervention, setOffshoreOpexPlussWellIntervention] = useState<ITimeSeries | undefined>()
+    const [additionalOPEXCostProfile, setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto | undefined>()
+
+    interface ITimeSeriesData {
+        group?: string
+        profileName: string
+        unit: string,
+        set?: Dispatch<SetStateAction<ITimeSeriesCost | undefined>>,
+        overrideProfileSet?: Dispatch<SetStateAction<ITimeSeriesCostOverride | undefined>>,
+        profile: ITimeSeries | undefined
+        overrideProfile?: ITimeSeries | undefined
+        overridable?: boolean
+    }
+
+    const explorationTimeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "Study cost",
+            profileName: "Exploration cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalStudyCost,
+            profile: totalExplorationCost,
+            group: "Exploration",
         },
-        {
-            profileName: "Offshore facliities operations + well intervention",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: opexCost,
-        },
-        {
-            profileName: "Cessation wells + Cessation offshore facilities",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationCost,
-        },
+
     ]
 
     const capexTimeSeriesData: ITimeSeriesData[] = [
         {
+            profileName: "Drilling",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: undefined,
+            group: "CAPEX",
+        },
+
+    ]
+
+    const studycostTimeSeriesData: ITimeSeriesData[] = [
+        {
+            profileName: "Feasibility & Conceptual studies",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: totalFeasibilityAndConceptStudiesOverride?.override ? totalFeasibilityAndConceptStudiesOverride : totalFeasibilityAndConceptStudies,
+            group: "Study cost",
+        },
+        {
+            profileName: "FEED studies (DG2-DG3",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: totalFEEDStudiesOverride?.override ? totalFEEDStudiesOverride : totalFEEDStudies,
+            group: "Study cost",
+        },
+        {
+            profileName: "Other studies",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: totalOtherStudies,
+            group: "Study cost",
+        },
+
+    ]
+
+    const opexTimeSeriesData: ITimeSeriesData[] = [
+        {
             profileName: "Historic cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: historicCost,
-            set: setTopsideCost,
+            profile: historicCostCostProfile,
+            group: "OPEX",
         },
         {
-            profileName: "Topside cost",
+            profileName: "Offshore related OPEX, incl. well intervention",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: topsideCost,
-            set: setTopsideCost,
+            profile: offshoreOpexPlussWellIntervention,
+            group: "OPEX",
         },
         {
-            profileName: "SURF cost",
+            profileName: "Onshore related OPEX",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: surfCost,
-            set: setSurfCost,
+            profile: undefined,
+            group: "OPEX",
         },
         {
-            profileName: "Substructure cost",
+            profileName: "Additional OPEX",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: substructureCost,
-            set: setSubstructureCost,
+            profile: additionalOPEXCostProfile,
+            group: "OPEX",
+        },
+    ]
+
+    const prodAndSalesTimeSeriesData: ITimeSeriesData[] = [
+        {
+            profileName: "Oil / condensate production",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: undefined,
         },
         {
-            profileName: "Transport cost",
+            profileName: "NGL production",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: transportCost,
-            set: setTransportCost,
+            profile: undefined,
         },
+        {
+            profileName: "Sales gas",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: undefined,
+        },
+        {
+            profileName: "Gas import",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: undefined,
+        },
+        {
+            profileName: "CO2 emissions",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: undefined,
+        },
+        {
+            profileName: "Imported electricity",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: undefined,
+        },
+        {
+            profileName: "Deferred oil profile (MSm3/yr)",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: undefined,
+        },
+        {
+            profileName: "Deferreal gas (GSm3/yr)",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: undefined,
+        },
+    ]
+
+    const allTimeSeriesData = [
+        explorationTimeSeriesData,
+        capexTimeSeriesData,
+        studycostTimeSeriesData,
+        opexTimeSeriesData,
     ]
 
     const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
@@ -138,133 +235,142 @@ const CaseSummaryTab = ({
                 lastYear = profileLastYear
             }
         })
-        if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER && caseItem.dG4Date) {
-            setStartYear(firstYear + new Date(caseItem.dG4Date).getFullYear())
-            setEndYear(lastYear + new Date(caseItem.dG4Date).getFullYear())
-            setTableYears([firstYear + new Date(caseItem.dG4Date).getFullYear(), lastYear + new Date(caseItem.dG4Date).getFullYear()])
+        if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER && projectCase?.dG4Date) {
+            setStartYear(firstYear + new Date(projectCase?.dG4Date).getFullYear())
+            setEndYear(lastYear + new Date(projectCase?.dG4Date).getFullYear())
+            setTableYears([firstYear + new Date(projectCase?.dG4Date).getFullYear(), lastYear + new Date(projectCase?.dG4Date).getFullYear()])
         }
     }
 
     const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
+        const newCase = { ...projectCase }
         newCase.npv = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
-        setCase(newCase)
+        newCase ?? setProjectCaseEdited(newCase)
     }
 
     const handleCaseBreakEvenChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
+        const newCase = { ...projectCase }
         newCase.breakEven = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setCase(newCase)
+        newCase ?? setProjectCaseEdited(newCase)
     }
 
     useEffect(() => {
         (async () => {
             try {
-                if (activeTab === 7 && caseItem.id) {
-                    const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(project.id, caseItem.id)
-                    const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(project.id, caseItem.id)
-                    const cessationWrapper = (await GetGenerateProfileService()).generateCessationCost(project.id, caseItem.id)
+                if (projectCase && project && topside && surf && substructure && transport) {
+                    if (project && activeTabCase === 7 && projectCase?.id) {
+                        const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(project.id, projectCase?.id)
+                        const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(project.id, projectCase?.id)
+                        const cessationWrapper = (await GetGenerateProfileService()).generateCessationCost(project.id, projectCase?.id)
 
-                    const opex = (await opexWrapper).opexCostProfileDto
-                    const cessation = (await cessationWrapper).cessationCostDto
+                        const opex = (await opexWrapper).opexCostProfileDto
+                        const cessation = (await cessationWrapper).cessationCostDto
 
-                    let feasibility = (await studyWrapper).totalFeasibilityAndConceptStudiesDto
-                    let feed = (await studyWrapper).totalFEEDStudiesDto
+                        let feasibility = (await studyWrapper).totalFeasibilityAndConceptStudiesDto
+                        let feed = (await studyWrapper).totalFEEDStudiesDto
+                        const totalOtherStudiesLocal = (await studyWrapper).totalOtherStudiesDto
 
-                    const totalOtherStudies = (await studyWrapper).totalOtherStudiesDto
-                    if (caseItem.totalFeasibilityAndConceptStudiesOverride?.override === true) {
-                        feasibility = caseItem.totalFeasibilityAndConceptStudiesOverride
+                        if (projectCase?.totalFeasibilityAndConceptStudiesOverride?.override === true) {
+                            feasibility = projectCase?.totalFeasibilityAndConceptStudiesOverride
+                        }
+                        if (projectCase?.totalFEEDStudiesOverride?.override === true) {
+                            feed = projectCase?.totalFEEDStudiesOverride
+                        }
+
+                        const totalStudy = MergeTimeseriesList([feasibility, feed, totalOtherStudiesLocal])
+                        setTotalStudyCost(totalStudy)
+
+                        setOpexCost(opex)
+                        setCessationCost(cessation)
+
+                        setOffshoreOpexPlussWellIntervention(MergeTimeseriesList(
+                            [projectCase.wellInterventionCostProfileOverride, projectCase.offshoreFacilitiesOperationsCostProfileOverride],
+                        ))
+
+                        // CAPEX
+
+                        const topsideCostProfile = topside.costProfileOverride?.override
+                            ? topside.costProfileOverride : topside.costProfile
+                        setTopsideCost(topsideCostProfile)
+
+                        const surfCostProfile = surf.costProfileOverride?.override
+                            ? surf.costProfileOverride : surf.costProfile
+                        setSurfCost(surfCostProfile)
+
+                        const substructureCostProfile = substructure.costProfileOverride?.override
+                            ? substructure.costProfileOverride : substructure.costProfile
+                        setSubstructureCost(substructureCostProfile)
+
+                        const transportCostProfile = transport.costProfileOverride?.override
+                            ? transport.costProfileOverride : transport.costProfile
+                        setTransportCost(transportCostProfile)
+
+                        setTableYearsFromProfiles([
+                            totalStudy, opex, cessation,
+                            topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
+                        ])
+
+                        // Exploration costs
+                        setTotalExplorationCost(MergeTimeseriesList([
+                            explorationWellCostProfile,
+                            explorationAppraisalWellCost,
+                            explorationSidetrackCost,
+                            seismicAcquisitionAndProcessing,
+                            countryOfficeCost,
+                            gAndGAdminCost]))
                     }
-                    if (caseItem.totalFEEDStudiesOverride?.override === true) {
-                        feed = caseItem.totalFEEDStudiesOverride
-                    }
-
-                    const totalStudy = MergeTimeseries(feasibility, feed, totalOtherStudies)
-                    setTotalStudyCost(totalStudy)
-
-                    setOpexCost(opex)
-                    setCessationCost(cessation)
-
-                    // CAPEX
-                    const topsideCostProfile = topside.costProfileOverride?.override
-                        ? topside.costProfileOverride : topside.costProfile
-                    setTopsideCost(topsideCostProfile)
-
-                    const surfCostProfile = surf.costProfileOverride?.override
-                        ? surf.costProfileOverride : surf.costProfile
-                    setSurfCost(surfCostProfile)
-
-                    const substructureCostProfile = substructure.costProfileOverride?.override
-                        ? substructure.costProfileOverride : substructure.costProfile
-                    setSubstructureCost(substructureCostProfile)
-
-                    const transportCostProfile = transport.costProfileOverride?.override
-                        ? transport.costProfileOverride : transport.costProfile
-                    setTransportCost(transportCostProfile)
-
-                    setTableYearsFromProfiles([
-                        totalStudy, opex, cessation,
-                        topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
-                    ])
                 }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-    }, [activeTab])
+    }, [activeTabCase])
 
-    if (activeTab !== 7) { return null }
+    if (activeTabCase !== 7) { return null }
 
     return (
-        <>
-            <TopWrapper>
-                <PageTitle variant="h3">Summary</PageTitle>
-            </TopWrapper>
-
-            <InputContainer mobileColumns={1} desktopColumns={2} breakPoint={850}>
-                <InputSwitcher value={`${caseItem.npv}`} label="NPV before tax">
+        <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
+                <InputSwitcher value={`${projectCase?.npv}`} label="NPV before tax">
                     <CaseNumberInput
                         onChange={handleCaseNPVChange}
-                        defaultValue={caseItem.npv}
+                        defaultValue={projectCase?.npv}
                         integer={false}
-                        label="NPV before tax"
                         allowNegative
                         min={0}
                         max={1000000}
                     />
                 </InputSwitcher>
-
-                <InputSwitcher value={`${caseItem.breakEven}`} label="B/E before tax">
+            </Grid>
+            <Grid item xs={12} md={6}>
+                <InputSwitcher value={`${projectCase?.breakEven}`} label="B/E before tax">
                     <CaseNumberInput
                         onChange={handleCaseBreakEvenChange}
-                        defaultValue={caseItem.breakEven}
+                        defaultValue={projectCase?.breakEven}
                         integer={false}
-                        label="B/E before tax"
                         min={0}
                         max={1000000}
                     />
                 </InputSwitcher>
-            </InputContainer>
-
-            <TableWrapper>
-                <CaseTabTable
-                    timeSeriesData={opexTimeSeriesData}
-                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
+            </Grid>
+            <Grid item xs={12}>
+                <CaseTabTableWithGrouping
+                    allTimeSeriesData={allTimeSeriesData}
+                    dg4Year={projectCase?.dG4Date ? new Date(projectCase.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
-                    tableName="OPEX"
                     includeFooter={false}
                 />
-            </TableWrapper>
-            <TableWrapper>
+            </Grid>
+            <Grid item xs={12}>
                 <CaseTabTable
-                    timeSeriesData={capexTimeSeriesData}
-                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
+                    timeSeriesData={prodAndSalesTimeSeriesData}
+                    dg4Year={projectCase?.dG4Date ? new Date(projectCase.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
-                    tableName="CAPEX"
+                    tableName="Production & Sales Volume"
                     includeFooter
                 />
-            </TableWrapper>
-        </>
+            </Grid>
+        </Grid>
     )
 }
 

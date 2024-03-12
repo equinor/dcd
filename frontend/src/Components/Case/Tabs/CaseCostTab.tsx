@@ -6,56 +6,24 @@ import {
     useRef,
     useState,
 } from "react"
-import styled from "styled-components"
 import {
     Button,
     NativeSelect,
-    Typography,
 } from "@equinor/eds-core-react"
+import Grid from "@mui/material/Grid"
 import CaseNumberInput from "../../Input/CaseNumberInput"
 import CaseTabTable from "../Components/CaseTabTable"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
 import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
-import FilterContainer from "../../Input/Containers/TableFilterContainer"
-import InputContainer from "../../Input/Containers/InputContainer"
 import InputSwitcher from "../../Input/InputSwitcher"
-
-const TopWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-top: 20px;
-    margin-bottom: 20px;
-`
-const PageTitle = styled(Typography)`
-    flex-grow: 1;
-`
-
-const TableWrapper = styled.div`
-    margin-bottom: 50px;
-`
+import { useProjectContext } from "../../../Context/ProjectContext"
+import { useCaseContext } from "../../../Context/CaseContext"
+import { useModalContext } from "../../../Context/ModalContext"
 
 interface Props {
-    project: Components.Schemas.ProjectDto,
-    caseItem: Components.Schemas.CaseDto,
-    setCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
-    topside: Components.Schemas.TopsideDto,
-    setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideDto | undefined>>,
-    surf: Components.Schemas.SurfDto,
-    setSurf: Dispatch<SetStateAction<Components.Schemas.SurfDto | undefined>>,
-    substructure: Components.Schemas.SubstructureDto,
-    setSubstructure: Dispatch<SetStateAction<Components.Schemas.SubstructureDto | undefined>>,
-    transport: Components.Schemas.TransportDto,
-    setTransport: Dispatch<SetStateAction<Components.Schemas.TransportDto | undefined>>,
-    activeTab: number
 
-    totalFeasibilityAndConceptStudies: Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined,
-    setTotalFeasibilityAndConceptStudies: Dispatch<SetStateAction<Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined>>,
-    totalFEEDStudies: Components.Schemas.TotalFEEDStudiesDto | undefined,
-    setTotalFEEDStudies: Dispatch<SetStateAction<Components.Schemas.TotalFEEDStudiesDto | undefined>>,
-    totalOtherStudies: Components.Schemas.TotalOtherStudiesDto | undefined,
-    historicCostCostProfile: Components.Schemas.HistoricCostCostProfileDto | undefined,
     offshoreFacilitiesOperationsCostProfile: Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined,
     setOffshoreFacilitiesOperationsCostProfile: Dispatch<SetStateAction<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined>>,
 
@@ -69,33 +37,12 @@ interface Props {
     cessationOffshoreFacilitiesCost: Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined,
     setCessationOffshoreFacilitiesCost: Dispatch<SetStateAction<Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined>>,
 
-    gAndGAdminCost: Components.Schemas.GAndGAdminCostDto | undefined,
-    setGAndGAdminCost: Dispatch<SetStateAction<Components.Schemas.GAndGAdminCostDto | undefined>>,
-
-    exploration: Components.Schemas.ExplorationDto,
-    setExploration: Dispatch<SetStateAction<Components.Schemas.ExplorationDto | undefined>>,
     wellProject: Components.Schemas.WellProjectDto,
     setWellProject: Dispatch<SetStateAction<Components.Schemas.WellProjectDto | undefined>>,
 
 }
 
 const CaseCostTab = ({
-    project,
-    caseItem,
-    setCase,
-    topside,
-    setTopside,
-    surf,
-    setSurf,
-    substructure,
-    setSubstructure,
-    transport,
-    setTransport,
-    activeTab,
-    totalFeasibilityAndConceptStudies,
-    setTotalFeasibilityAndConceptStudies,
-    totalFEEDStudies,
-    setTotalFEEDStudies,
     offshoreFacilitiesOperationsCostProfile,
     setOffshoreFacilitiesOperationsCostProfile,
     wellInterventionCostProfile,
@@ -104,17 +51,53 @@ const CaseCostTab = ({
     setCessationWellsCost,
     cessationOffshoreFacilitiesCost,
     setCessationOffshoreFacilitiesCost,
-    gAndGAdminCost,
-    setGAndGAdminCost,
-    exploration,
-    setExploration,
     wellProject,
     setWellProject,
 }: Props) => {
+    const {
+        projectCase, setProjectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase,
+        totalFeasibilityAndConceptStudies,
+        setTotalFeasibilityAndConceptStudies,
+        totalFeasibilityAndConceptStudiesOverride,
+        setTotalFeasibilityAndConceptStudiesOverride,
+        totalFEEDStudies,
+        setTotalFEEDStudies,
+        totalFEEDStudiesOverride,
+        setTotalFEEDStudiesOverride,
+        totalOtherStudies,
+        setTotalOtherStudies,
+        topside, setTopside,
+        topsideCost, setTopsideCost,
+        surf, setSurf,
+        surfCost, setSurfCost,
+        substructure, setSubstructure,
+        substructureCost, setSubstructureCost,
+        transport, setTransport,
+        transportCost, setTransportCost,
+
+        // Exploration
+        totalExplorationCost,
+        setTotalExplorationCost,
+        explorationWellCostProfile,
+        setExplorationWellCostProfile,
+        gAndGAdminCost,
+        setGAndGAdminCost,
+        seismicAcquisitionAndProcessing,
+        setSeismicAcquisitionAndProcessing,
+        explorationSidetrackCost,
+        setExplorationSidetrackCost,
+        explorationAppraisalWellCost,
+        setExplorationAppraisalWellCost,
+        countryOfficeCost,
+        setCountryOfficeCost,
+    } = useCaseContext()
+
+    const {
+        exploration,
+        setExploration,
+    } = useModalContext()
+    const { project } = useProjectContext()
     // OPEX
-    const [totalFeasibilityAndConceptStudiesOverride, setTotalFeasibilityAndConceptStudiesOverride] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto>()
-    const [totalFEEDStudiesOverride, setTotalFEEDStudiesOverride] = useState<Components.Schemas.TotalFEEDStudiesOverrideDto>()
-    const [totalOtherStudies, setTotalOtherStudies] = useState<Components.Schemas.TotalOtherStudiesDto>()
 
     const [offshoreFacilitiesOperationsCostProfileOverride, setOffshoreFacilitiesOperationsCostProfileOverride] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto>()
     const [wellInterventionCostProfileOverride, setWellInterventionCostProfileOverride] = useState<Components.Schemas.WellInterventionCostProfileOverrideDto>()
@@ -125,13 +108,9 @@ const CaseCostTab = ({
     const [cessationOffshoreFacilitiesCostOverride, setCessationOffshoreFacilitiesCostOverride] = useState<Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto>()
 
     // CAPEX
-    const [topsideCost, setTopsideCost] = useState<Components.Schemas.TopsideCostProfileDto>()
     const [topsideCostOverride, setTopsideCostOverride] = useState<Components.Schemas.TopsideCostProfileOverrideDto>()
-    const [surfCost, setSurfCost] = useState<Components.Schemas.SurfCostProfileDto>()
     const [surfCostOverride, setSurfCostOverride] = useState<Components.Schemas.SurfCostProfileOverrideDto>()
-    const [substructureCost, setSubstructureCost] = useState<Components.Schemas.SubstructureCostProfileDto>()
     const [substructureCostOverride, setSubstructureCostOverride] = useState<Components.Schemas.SubstructureCostProfileOverrideDto>()
-    const [transportCost, setTransportCost] = useState<Components.Schemas.TransportCostProfileDto>()
     const [transportCostOverride, setTransportCostOverride] = useState<Components.Schemas.TransportCostProfileOverrideDto>()
 
     // Development
@@ -152,11 +131,6 @@ const CaseCostTab = ({
         setWellProjectGasInjectorCostOverride] = useState<Components.Schemas.GasInjectorCostProfileOverrideDto>()
 
     // Exploration
-    const [explorationWellCost, setExplorationWellCost] = useState<Components.Schemas.ExplorationWellCostProfileDto>()
-    const [explorationAppraisalWellCost, setExplorationAppraisalWellCost] = useState<Components.Schemas.AppraisalWellCostProfileDto>()
-    const [explorationSidetrackCost, setExplorationSidetrackCost] = useState<Components.Schemas.SidetrackCostProfileDto>()
-    const [seismicAcqAndProcCost, setSeismicAcqAndProcCost] = useState<Components.Schemas.SeismicAcquisitionAndProcessingDto>()
-    const [countryOfficeCost, setCountryOfficeCost] = useState<Components.Schemas.CountryOfficeCostDto>()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -172,149 +146,149 @@ const CaseCostTab = ({
     useEffect(() => {
         (async () => {
             try {
-                if (activeTab === 5) {
-                    const totalFeasibility = caseItem.totalFeasibilityAndConceptStudies
-                    const totalFEED = caseItem.totalFEEDStudies
-                    const totalOtherStudiesLocal = caseItem.totalOtherStudies
+                if (projectCase && project && topside && surf && substructure && transport && exploration) {
+                    if (activeTabCase === 5) {
+                        const totalFeasibility = projectCase?.totalFeasibilityAndConceptStudies
+                        const totalFEED = projectCase?.totalFEEDStudies
+                        const totalOtherStudiesLocal = projectCase.totalOtherStudies
 
-                    setTotalFeasibilityAndConceptStudies(totalFeasibility)
-                    setTotalFeasibilityAndConceptStudiesOverride(caseItem.totalFeasibilityAndConceptStudiesOverride)
-                    setTotalFEEDStudies(totalFEED)
-                    setTotalFEEDStudiesOverride(caseItem.totalFEEDStudiesOverride)
-                    setTotalOtherStudies(totalOtherStudiesLocal)
+                        setTotalFeasibilityAndConceptStudies(totalFeasibility)
+                        setTotalFeasibilityAndConceptStudiesOverride(projectCase?.totalFeasibilityAndConceptStudiesOverride)
+                        setTotalFEEDStudies(totalFEED)
+                        setTotalFEEDStudiesOverride(projectCase?.totalFEEDStudiesOverride)
+                        console.log(1, totalOtherStudies)
+                        console.log(1, projectCase.totalOtherStudies)
 
-                    const wellIntervention = wellInterventionCostProfile
-                    const offshoreFacilitiesOperations = caseItem.offshoreFacilitiesOperationsCostProfile
-                    const historicCostCostProfileLocal = caseItem.historicCostCostProfile
-                    const additionalOPEXCostProfileLocal = caseItem.additionalOPEXCostProfile
+                        setTotalOtherStudies(totalOtherStudiesLocal)
 
-                    setWellInterventionCostProfile(wellIntervention)
-                    setWellInterventionCostProfileOverride(caseItem.wellInterventionCostProfileOverride)
-                    setOffshoreFacilitiesOperationsCostProfile(offshoreFacilitiesOperations)
-                    setOffshoreFacilitiesOperationsCostProfileOverride(caseItem.offshoreFacilitiesOperationsCostProfileOverride)
-                    setHistoricCostCostProfile(historicCostCostProfileLocal)
-                    setAdditionalOPEXCostProfile(additionalOPEXCostProfileLocal)
+                        const wellIntervention = wellInterventionCostProfile
+                        const offshoreFacilitiesOperations = projectCase?.offshoreFacilitiesOperationsCostProfile
+                        const historicCostCostProfileLocal = projectCase?.historicCostCostProfile
+                        const additionalOPEXCostProfileLocal = projectCase?.additionalOPEXCostProfile
 
-                    const cessationWells = caseItem.cessationWellsCost
-                    const cessationOffshoreFacilities = caseItem.cessationOffshoreFacilitiesCost
+                        setWellInterventionCostProfile(wellIntervention)
+                        setWellInterventionCostProfileOverride(projectCase?.wellInterventionCostProfileOverride)
+                        setOffshoreFacilitiesOperationsCostProfile(offshoreFacilitiesOperations)
+                        setOffshoreFacilitiesOperationsCostProfileOverride(projectCase?.offshoreFacilitiesOperationsCostProfileOverride)
+                        setHistoricCostCostProfile(historicCostCostProfileLocal)
+                        setAdditionalOPEXCostProfile(additionalOPEXCostProfileLocal)
 
-                    setCessationWellsCost(cessationWells)
-                    setCessationWellsCostOverride(caseItem.cessationWellsCostOverride)
-                    setCessationOffshoreFacilitiesCost(cessationOffshoreFacilities)
-                    setCessationOffshoreFacilitiesCostOverride(caseItem.cessationOffshoreFacilitiesCostOverride)
+                        const cessationWells = projectCase?.cessationWellsCost
+                        const cessationOffshoreFacilities = projectCase?.cessationOffshoreFacilitiesCost
 
-                    // CAPEX
-                    const topsideCostProfile = topside.costProfile
-                    setTopsideCost(topsideCostProfile)
-                    const topsideCostProfileOverride = topside.costProfileOverride
-                    setTopsideCostOverride(topsideCostProfileOverride)
+                        setCessationWellsCost(cessationWells)
+                        setCessationWellsCostOverride(projectCase?.cessationWellsCostOverride)
+                        setCessationOffshoreFacilitiesCost(cessationOffshoreFacilities)
+                        setCessationOffshoreFacilitiesCostOverride(projectCase?.cessationOffshoreFacilitiesCostOverride)
 
-                    const surfCostProfile = surf.costProfile
-                    setSurfCost(surfCostProfile)
-                    const surfCostProfileOverride = surf.costProfileOverride
-                    setSurfCostOverride(surfCostProfileOverride)
+                        // CAPEX
+                        const topsideCostProfile = topside.costProfile
+                        setTopsideCost(topsideCostProfile)
+                        const topsideCostProfileOverride = topside.costProfileOverride
+                        setTopsideCostOverride(topsideCostProfileOverride)
 
-                    const substructureCostProfile = substructure.costProfile
-                    setSubstructureCost(substructureCostProfile)
-                    const substructureCostProfileOverride = substructure.costProfileOverride
-                    setSubstructureCostOverride(substructureCostProfileOverride)
+                        const surfCostProfile = surf.costProfile
+                        setSurfCost(surfCostProfile)
+                        const surfCostProfileOverride = surf.costProfileOverride
+                        setSurfCostOverride(surfCostProfileOverride)
 
-                    const transportCostProfile = transport.costProfile
-                    setTransportCost(transportCostProfile)
-                    const transportCostProfileOverride = transport.costProfileOverride
-                    setTransportCostOverride(transportCostProfileOverride)
+                        const substructureCostProfile = substructure.costProfile
+                        setSubstructureCost(substructureCostProfile)
+                        const substructureCostProfileOverride = substructure.costProfileOverride
+                        setSubstructureCostOverride(substructureCostProfileOverride)
 
-                    // Development
-                    const {
-                        oilProducerCostProfile,
-                        gasProducerCostProfile,
-                        waterInjectorCostProfile,
-                        gasInjectorCostProfile,
-                        oilProducerCostProfileOverride,
-                        gasProducerCostProfileOverride,
-                        waterInjectorCostProfileOverride,
-                        gasInjectorCostProfileOverride,
-                    } = wellProject
-                    setWellProjectOilProducerCost(oilProducerCostProfile)
-                    setWellProjectOilProducerCostOverride(oilProducerCostProfileOverride)
-                    setWellProjectGasProducerCost(gasProducerCostProfile)
-                    setWellProjectGasProducerCostOverride(gasProducerCostProfileOverride)
-                    setWellProjectWaterInjectorCost(waterInjectorCostProfile)
-                    setWellProjectWaterInjectorCostOverride(waterInjectorCostProfileOverride)
-                    setWellProjectGasInjectorCost(gasInjectorCostProfile)
-                    setWellProjectGasInjectorCostOverride(gasInjectorCostProfileOverride)
+                        const transportCostProfile = transport.costProfile
+                        setTransportCost(transportCostProfile)
+                        const transportCostProfileOverride = transport.costProfileOverride
+                        setTransportCostOverride(transportCostProfileOverride)
 
-                    // Exploration
-                    const {
-                        explorationWellCostProfile, appraisalWellCostProfile, sidetrackCostProfile,
-                        seismicAcquisitionAndProcessing,
-                    } = exploration
-                    setExplorationWellCost(explorationWellCostProfile)
-                    setExplorationAppraisalWellCost(appraisalWellCostProfile)
-                    setExplorationSidetrackCost(sidetrackCostProfile)
-                    setSeismicAcqAndProcCost(seismicAcquisitionAndProcessing)
-                    const countryOffice = exploration.countryOfficeCost
-                    setCountryOfficeCost(countryOffice)
+                        // Development
+                        const {
+                            oilProducerCostProfile,
+                            gasProducerCostProfile,
+                            waterInjectorCostProfile,
+                            gasInjectorCostProfile,
+                            oilProducerCostProfileOverride,
+                            gasProducerCostProfileOverride,
+                            waterInjectorCostProfileOverride,
+                            gasInjectorCostProfileOverride,
+                        } = wellProject
+                        setWellProjectOilProducerCost(oilProducerCostProfile)
+                        setWellProjectOilProducerCostOverride(oilProducerCostProfileOverride)
+                        setWellProjectGasProducerCost(gasProducerCostProfile)
+                        setWellProjectGasProducerCostOverride(gasProducerCostProfileOverride)
+                        setWellProjectWaterInjectorCost(waterInjectorCostProfile)
+                        setWellProjectWaterInjectorCostOverride(waterInjectorCostProfileOverride)
+                        setWellProjectGasInjectorCost(gasInjectorCostProfile)
+                        setWellProjectGasInjectorCostOverride(gasInjectorCostProfileOverride)
 
-                    setGAndGAdminCost(exploration.gAndGAdminCost)
+                        // Exploration
+                        
+                        setSeismicAcquisitionAndProcessing(exploration.seismicAcquisitionAndProcessing)
+                        setExplorationWellCostProfile(exploration.explorationWellCostProfile)
+                        setExplorationAppraisalWellCost(exploration.appraisalWellCostProfile)
+                        setExplorationSidetrackCost(exploration.sidetrackCostProfile)
+                        const countryOffice = exploration.countryOfficeCost
+                        setCountryOfficeCost(countryOffice)
 
-                    SetTableYearsFromProfiles([
-                        caseItem.totalFeasibilityAndConceptStudies,
-                        caseItem.totalFEEDStudies,
-                        caseItem.wellInterventionCostProfile,
-                        caseItem.offshoreFacilitiesOperationsCostProfile,
-                        caseItem.cessationWellsCost,
-                        caseItem.cessationOffshoreFacilitiesCost,
-                        caseItem.totalFeasibilityAndConceptStudiesOverride,
-                        caseItem.totalFEEDStudiesOverride,
-                        caseItem.wellInterventionCostProfileOverride,
-                        caseItem.offshoreFacilitiesOperationsCostProfileOverride,
-                        caseItem.cessationWellsCostOverride,
-                        caseItem.cessationOffshoreFacilitiesCostOverride,
-                        surfCostProfile,
-                        topsideCostProfile,
-                        substructureCostProfile,
-                        transportCostProfile,
-                        surfCostOverride,
-                        topsideCostOverride,
-                        substructureCostOverride,
-                        transportCostOverride,
-                        oilProducerCostProfile,
-                        gasProducerCostProfile,
-                        waterInjectorCostProfile,
-                        gasInjectorCostProfile,
-                        oilProducerCostProfileOverride,
-                        gasProducerCostProfileOverride,
-                        waterInjectorCostProfileOverride,
-                        gasInjectorCostProfileOverride,
-                        explorationWellCostProfile,
-                        appraisalWellCostProfile,
-                        sidetrackCostProfile,
-                        seismicAcquisitionAndProcessing,
-                        countryOffice,
-                        exploration.gAndGAdminCost,
-                    ], caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
+                        setGAndGAdminCost(exploration.gAndGAdminCost)
+
+                        SetTableYearsFromProfiles([
+                            projectCase?.totalFeasibilityAndConceptStudies,
+                            projectCase?.totalFEEDStudies,
+                            projectCase?.wellInterventionCostProfile,
+                            projectCase?.offshoreFacilitiesOperationsCostProfile,
+                            projectCase?.cessationWellsCost,
+                            projectCase?.cessationOffshoreFacilitiesCost,
+                            projectCase?.totalFeasibilityAndConceptStudiesOverride,
+                            projectCase?.totalFEEDStudiesOverride,
+                            projectCase?.wellInterventionCostProfileOverride,
+                            projectCase?.offshoreFacilitiesOperationsCostProfileOverride,
+                            projectCase?.cessationWellsCostOverride,
+                            projectCase?.cessationOffshoreFacilitiesCostOverride,
+                            surfCostProfile,
+                            topsideCostProfile,
+                            substructureCostProfile,
+                            transportCostProfile,
+                            surfCostOverride,
+                            topsideCostOverride,
+                            substructureCostOverride,
+                            transportCostOverride,
+                            oilProducerCostProfile,
+                            gasProducerCostProfile,
+                            waterInjectorCostProfile,
+                            gasInjectorCostProfile,
+                            oilProducerCostProfileOverride,
+                            gasProducerCostProfileOverride,
+                            waterInjectorCostProfileOverride,
+                            gasInjectorCostProfileOverride,
+                            explorationWellCostProfile,
+                            seismicAcquisitionAndProcessing,
+                            countryOffice,
+                            exploration?.gAndGAdminCost,
+                        ], projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
+                    }
                 }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-    }, [activeTab])
+    }, [activeTabCase])
 
-    useEffect(() => {
-        const {
-            explorationWellCostProfile,
-            appraisalWellCostProfile,
-            sidetrackCostProfile,
-            seismicAcquisitionAndProcessing,
-        } = exploration
-        setExplorationWellCost(explorationWellCostProfile)
-        setExplorationAppraisalWellCost(appraisalWellCostProfile)
-        setExplorationSidetrackCost(sidetrackCostProfile)
-        setSeismicAcqAndProcCost(seismicAcquisitionAndProcessing)
-        const countryOffice = exploration.countryOfficeCost
-        setCountryOfficeCost(countryOffice)
-    }, [exploration])
+    // useEffect(() => {
+    //     const {
+    //         explorationWellCostProfile,
+    //         appraisalWellCostProfile,
+    //         sidetrackCostProfile,
+    //         seismicAcquisitionAndProcessing,
+    //     } = exploration
+    //     setExplorationWellCost(explorationWellCostProfile)
+    //     setExplorationAppraisalWellCost(appraisalWellCostProfile)
+    //     setExplorationSidetrackCost(sidetrackCostProfile)
+    //     setSeismicAcqAndProcCost(seismicAcquisitionAndProcessing)
+    //     const countryOffice = exploration.countryOfficeCost
+    //     setCountryOfficeCost(countryOffice)
+    // }, [exploration])
 
     useEffect(() => {
         if (studyGridRef.current
@@ -362,23 +336,24 @@ const CaseCostTab = ({
     }
 
     const handleCaseFeasibilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
+        const newCase = { ...projectCase }
         const newCapexFactorFeasibilityStudies = e.currentTarget.value.length > 0
             ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
         if (newCapexFactorFeasibilityStudies !== undefined) {
             newCase.capexFactorFeasibilityStudies = newCapexFactorFeasibilityStudies / 100
         } else { newCase.capexFactorFeasibilityStudies = 0 }
-        setCase(newCase)
+        newCase ?? setProjectCaseEdited(newCase)
+        // setProjectCase(newCase as Components.Schemas.CaseDto)
     }
 
     const handleCaseFEEDChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...caseItem }
+        const newCase = { ...projectCase }
         const newCapexFactorFEEDStudies = e.currentTarget.value.length > 0
             ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
         if (newCapexFactorFEEDStudies !== undefined) {
             newCase.capexFactorFEEDStudies = newCapexFactorFEEDStudies / 100
         } else { newCase.capexFactorFEEDStudies = 0 }
-        setCase(newCase)
+        newCase ?? setProjectCaseEdited(newCase)
     }
 
     const handleSurfMaturityChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
@@ -386,7 +361,7 @@ const CaseCostTab = ({
             const newMaturity: Components.Schemas.Maturity = Number(e.currentTarget.value) as Components.Schemas.Maturity
             const newSurf = { ...surf }
             newSurf.maturity = newMaturity
-            updatedAndSetSurf(newSurf)
+            updatedAndSetSurf(newSurf as Components.Schemas.SurfDto)
         }
     }
 
@@ -572,8 +547,8 @@ const CaseCostTab = ({
         {
             profileName: "Seismic acquisition and processing",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: seismicAcqAndProcCost,
-            set: setSeismicAcqAndProcCost,
+            profile: seismicAcquisitionAndProcessing,
+            set: setSeismicAcquisitionAndProcessing,
         },
         {
             profileName: "Country office cost",
@@ -584,8 +559,8 @@ const CaseCostTab = ({
         {
             profileName: "Exploration well cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: explorationWellCost,
-            set: setExplorationWellCost,
+            profile: explorationWellCostProfile,
+            set: setExplorationWellCostProfile,
         },
         {
             profileName: "Appraisal well cost",
@@ -619,127 +594,129 @@ const CaseCostTab = ({
         setObject(newObject)
     }
 
+    // TODO: remove ?? from all these useEffects. this is not what the nullish coalescing operator is for. assigning values to variables
+    // eslint no unused expressions gets triggered here
     useEffect(() => {
-        updateObject(caseItem, setCase, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
+        projectCase ?? updateObject(projectCase, setProjectCase, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
     }, [totalFeasibilityAndConceptStudiesOverride])
 
     useEffect(() => {
-        updateObject(caseItem, setCase, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
+        projectCase ?? updateObject(projectCase, setProjectCase, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
     }, [totalFEEDStudiesOverride])
 
     useEffect(() => {
-        updateObject(caseItem, setCase, "totalOtherStudies", totalOtherStudies)
+        projectCase ?? updateObject(projectCase, setProjectCase, "totalOtherStudies", totalOtherStudies)
     }, [totalOtherStudies])
 
     useEffect(() => {
-        updateObject(caseItem, setCase, "wellInterventionCostProfileOverride", wellInterventionCostProfileOverride)
+        projectCase ?? updateObject(projectCase, setProjectCase, "wellInterventionCostProfileOverride", wellInterventionCostProfileOverride)
     }, [wellInterventionCostProfileOverride])
 
     useEffect(() => {
-        updateObject(caseItem, setCase, "offshoreFacilitiesOperationsCostProfileOverride", offshoreFacilitiesOperationsCostProfileOverride)
+        projectCase ?? updateObject(projectCase, setProjectCase, "offshoreFacilitiesOperationsCostProfileOverride", offshoreFacilitiesOperationsCostProfileOverride)
     }, [offshoreFacilitiesOperationsCostProfileOverride])
 
     useEffect(() => {
-        updateObject(caseItem, setCase, "historicCostCostProfile", historicCostCostProfile)
+        projectCase ?? updateObject(projectCase, setProjectCase, "historicCostCostProfile", historicCostCostProfile)
     }, [historicCostCostProfile])
 
     useEffect(() => {
-        updateObject(caseItem, setCase, "additionalOPEXCostProfile", additionalOPEXCostProfile)
+        projectCase ?? updateObject(projectCase, setProjectCase, "additionalOPEXCostProfile", additionalOPEXCostProfile)
     }, [additionalOPEXCostProfile])
 
     useEffect(() => {
-        updateObject(caseItem, setCase, "cessationWellsCostOverride", cessationWellsCostOverride)
+        projectCase ?? updateObject(projectCase, setProjectCase, "cessationWellsCostOverride", cessationWellsCostOverride)
     }, [cessationWellsCostOverride])
 
     useEffect(() => {
-        updateObject(caseItem, setCase, "cessationOffshoreFacilitiesCostOverride", cessationOffshoreFacilitiesCostOverride)
+        projectCase ?? updateObject(projectCase, setProjectCase, "cessationOffshoreFacilitiesCostOverride", cessationOffshoreFacilitiesCostOverride)
     }, [cessationOffshoreFacilitiesCostOverride])
 
     useEffect(() => {
-        updateObject(surf, setSurf, "costProfile", surfCost)
+        surf ?? updateObject(surf, setSurf, "costProfile", surfCost)
     }, [surfCost])
 
     useEffect(() => {
-        updateObject(topside, setTopside, "costProfile", topsideCost)
+        topside ?? updateObject(topside, setTopside, "costProfile", topsideCost)
     }, [topsideCost])
 
     useEffect(() => {
-        updateObject(substructure, setSubstructure, "costProfile", substructureCost)
+        substructure ?? updateObject(substructure, setSubstructure, "costProfile", substructureCost)
     }, [substructureCost])
 
     useEffect(() => {
-        updateObject(transport, setTransport, "costProfile", transportCost)
+        transport ?? updateObject(transport, setTransport, "costProfile", transportCost)
     }, [transportCost])
 
     useEffect(() => {
-        updateObject(surf, setSurf, "costProfileOverride", surfCostOverride)
+        surf ?? updateObject(surf, setSurf, "costProfileOverride", surfCostOverride)
     }, [surfCostOverride])
 
     useEffect(() => {
-        updateObject(topside, setTopside, "costProfileOverride", topsideCostOverride)
+        topside ?? updateObject(topside, setTopside, "costProfileOverride", topsideCostOverride)
     }, [topsideCostOverride])
 
     useEffect(() => {
-        updateObject(substructure, setSubstructure, "costProfileOverride", substructureCostOverride)
+        substructure ?? updateObject(substructure, setSubstructure, "costProfileOverride", substructureCostOverride)
     }, [substructureCostOverride])
 
     useEffect(() => {
-        updateObject(transport, setTransport, "costProfileOverride", transportCostOverride)
+        transport ?? updateObject(transport, setTransport, "costProfileOverride", transportCostOverride)
     }, [transportCostOverride])
 
     useEffect(() => {
-        updateObject(wellProject, setWellProject, "oilProducerCostProfile", wellProjectOilProducerCost)
+        wellProject ?? updateObject(wellProject, setWellProject, "oilProducerCostProfile", wellProjectOilProducerCost)
     }, [wellProjectOilProducerCost])
 
     useEffect(() => {
-        updateObject(wellProject, setWellProject, "oilProducerCostProfileOverride", wellProjectOilProducerCostOverride)
+        wellProject ?? updateObject(wellProject, setWellProject, "oilProducerCostProfileOverride", wellProjectOilProducerCostOverride)
     }, [wellProjectOilProducerCostOverride])
 
     useEffect(() => {
-        updateObject(wellProject, setWellProject, "gasProducerCostProfile", wellProjectGasProducerCost)
+        wellProject ?? updateObject(wellProject, setWellProject, "gasProducerCostProfile", wellProjectGasProducerCost)
     }, [wellProjectGasProducerCost])
 
     useEffect(() => {
-        updateObject(wellProject, setWellProject, "gasProducerCostProfileOverride", wellProjectGasProducerCostOverride)
+        wellProject ?? updateObject(wellProject, setWellProject, "gasProducerCostProfileOverride", wellProjectGasProducerCostOverride)
     }, [wellProjectGasProducerCostOverride])
 
     useEffect(() => {
-        updateObject(wellProject, setWellProject, "waterInjectorCostProfile", wellProjectWaterInjectorCost)
+        wellProject ?? updateObject(wellProject, setWellProject, "waterInjectorCostProfile", wellProjectWaterInjectorCost)
     }, [wellProjectWaterInjectorCost])
 
     useEffect(() => {
-        updateObject(wellProject, setWellProject, "waterInjectorCostProfileOverride", wellProjectWaterInjectorCostOverride)
+        wellProject ?? updateObject(wellProject, setWellProject, "waterInjectorCostProfileOverride", wellProjectWaterInjectorCostOverride)
     }, [wellProjectWaterInjectorCostOverride])
 
     useEffect(() => {
-        updateObject(wellProject, setWellProject, "gasInjectorCostProfile", wellProjectGasInjectorCost)
+        wellProject ?? updateObject(wellProject, setWellProject, "gasInjectorCostProfile", wellProjectGasInjectorCost)
     }, [wellProjectGasInjectorCost])
 
     useEffect(() => {
-        updateObject(wellProject, setWellProject, "gasInjectorCostProfileOverride", wellProjectGasInjectorCostOverride)
+        wellProject ?? updateObject(wellProject, setWellProject, "gasInjectorCostProfileOverride", wellProjectGasInjectorCostOverride)
     }, [wellProjectGasInjectorCostOverride])
 
     useEffect(() => {
-        updateObject(exploration, setExploration, "explorationWellCostProfile", explorationWellCost)
-    }, [explorationWellCost])
+        exploration ?? updateObject(exploration, setExploration, "explorationWellCostProfile", explorationWellCostProfile)
+    }, [explorationWellCostProfile])
 
     useEffect(() => {
-        updateObject(exploration, setExploration, "appraisalWellCostProfile", explorationAppraisalWellCost)
+        exploration ?? updateObject(exploration, setExploration, "appraisalWellCostProfile", explorationAppraisalWellCost)
     }, [explorationAppraisalWellCost])
 
     useEffect(() => {
-        updateObject(exploration, setExploration, "sidetrackCostProfile", explorationSidetrackCost)
+        exploration ?? updateObject(exploration, setExploration, "sidetrackCostProfile", explorationSidetrackCost)
     }, [explorationSidetrackCost])
 
     useEffect(() => {
-        updateObject(exploration, setExploration, "seismicAcquisitionAndProcessing", seismicAcqAndProcCost)
-    }, [seismicAcqAndProcCost])
+        exploration ?? updateObject(exploration, setExploration, "seismicAcquisitionAndProcessing", seismicAcquisitionAndProcessing)
+    }, [seismicAcquisitionAndProcessing])
 
     useEffect(() => {
-        updateObject(exploration, setExploration, "countryOfficeCost", countryOfficeCost)
+        exploration ?? updateObject(exploration, setExploration, "countryOfficeCost", countryOfficeCost)
     }, [countryOfficeCost])
 
-    if (activeTab !== 5) { return null }
+    if (activeTabCase !== 5) { return null }
 
     const maturityOptions: { [key: string]: string } = {
         0: "A",
@@ -748,91 +725,90 @@ const CaseCostTab = ({
         3: "D",
     }
     return (
-        <>
-            <TopWrapper>
-                <PageTitle variant="h3">Cost</PageTitle>
-            </TopWrapper>
-            <InputContainer mobileColumns={1} desktopColumns={3} breakPoint={850}>
+        <Grid container spacing={3}>
+            <Grid item xs={12} md={4}>
                 <InputSwitcher
-                    value={`${caseItem.capexFactorFeasibilityStudies !== undefined ? (caseItem.capexFactorFeasibilityStudies * 100).toFixed(2) : ""}%`}
+                    value={`${projectCase?.capexFactorFeasibilityStudies !== undefined ? (projectCase?.capexFactorFeasibilityStudies * 100).toFixed(2) : ""}%`}
                     label="CAPEX factor feasibility studies"
                 >
                     <CaseNumberInput
                         onChange={handleCaseFeasibilityChange}
-                        defaultValue={caseItem.capexFactorFeasibilityStudies !== undefined ? caseItem.capexFactorFeasibilityStudies * 100 : undefined}
+                        defaultValue={projectCase?.capexFactorFeasibilityStudies !== undefined ? projectCase?.capexFactorFeasibilityStudies * 100 : undefined}
                         integer={false}
-                        label="CAPEX factor feasibility studies"
                         unit="%"
                         min={0}
                         max={100}
                     />
                 </InputSwitcher>
-
+            </Grid>
+            <Grid item xs={12} md={4}>
                 <InputSwitcher
-                    value={`${caseItem.capexFactorFEEDStudies !== undefined ? (caseItem.capexFactorFEEDStudies * 100).toFixed(2) : ""}%`}
+                    value={`${projectCase?.capexFactorFEEDStudies !== undefined ? (projectCase?.capexFactorFEEDStudies * 100).toFixed(2) : ""}%`}
                     label="CAPEX factor FEED studies"
                 >
                     <CaseNumberInput
                         onChange={handleCaseFEEDChange}
-                        defaultValue={caseItem.capexFactorFEEDStudies !== undefined ? caseItem.capexFactorFEEDStudies * 100 : undefined}
+                        defaultValue={projectCase?.capexFactorFEEDStudies !== undefined ? projectCase?.capexFactorFEEDStudies * 100 : undefined}
                         integer={false}
-                        label="CAPEX factor FEED studies"
                         unit="%"
                         min={0}
                         max={100}
                     />
                 </InputSwitcher>
-
-                <InputSwitcher value={maturityOptions[surf.maturity]} label="Maturity">
+            </Grid>
+            <Grid item xs={12} md={4}>
+                <InputSwitcher value={maturityOptions[surf?.maturity ?? "defaultKey"]} label="Maturity">
                     <NativeSelect
                         id="maturity"
-                        label="Maturity"
+                        label=""
                         onChange={handleSurfMaturityChange}
-                        value={surf.maturity}
+                        value={surf?.maturity ?? ""}
                     >
                         {Object.keys(maturityOptions).map((key) => (
                             <option key={key} value={key}>{maturityOptions[key]}</option>
                         ))}
                     </NativeSelect>
                 </InputSwitcher>
-
-            </InputContainer>
-            <FilterContainer>
-                <NativeSelect
-                    id="currency"
-                    label="Currency"
-                    onChange={() => { }}
-                    value={project.currency}
-                    disabled
-                >
-                    <option key="1" value={1}>MNOK</option>
-                    <option key="2" value={2}>MUSD</option>
-                </NativeSelect>
-                <CaseNumberInput
-                    onChange={handleStartYearChange}
-                    defaultValue={startYear}
-                    integer
-                    label="Start year"
-                    min={2010}
-                    max={2110}
-                />
-
-                <CaseNumberInput
-                    onChange={handleEndYearChange}
-                    defaultValue={endYear}
-                    integer
-                    label="End year"
-                    min={2010}
-                    max={2110}
-                />
-                <Button onClick={handleTableYearsClick}>
-                    Apply
-                </Button>
-            </FilterContainer>
-            <TableWrapper>
+            </Grid>
+            <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="flex-end">
+                <Grid item>
+                    <NativeSelect
+                        id="currency"
+                        label="Currency"
+                        onChange={() => { }}
+                        value={project?.currency}
+                        disabled
+                    >
+                        <option key="1" value={1}>MNOK</option>
+                        <option key="2" value={2}>MUSD</option>
+                    </NativeSelect>
+                </Grid>
+                <Grid item>
+                    <CaseNumberInput
+                        onChange={handleStartYearChange}
+                        defaultValue={startYear}
+                        integer
+                        label="Start year"
+                    />
+                </Grid>
+                <Grid item>
+                    <CaseNumberInput
+                        onChange={handleEndYearChange}
+                        defaultValue={endYear}
+                        integer
+                        label="End year"
+                    />
+                </Grid>
+                <Grid item>
+                    <Button onClick={handleTableYearsClick}>
+                        Apply
+                    </Button>
+                </Grid>
+            </Grid>
+            <Grid item xs={12}>
                 <CaseTabTable
                     timeSeriesData={studyTimeSeriesData}
-                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
+                    dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
                     tableName="Total study costs"
                     gridRef={studyGridRef}
@@ -841,11 +817,11 @@ const CaseCostTab = ({
                     includeFooter
                     totalRowName="Total study costs"
                 />
-            </TableWrapper>
-            <TableWrapper>
+            </Grid>
+            <Grid item xs={12}>
                 <CaseTabTable
                     timeSeriesData={opexTimeSeriesData}
-                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
+                    dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
                     tableName="OPEX"
                     gridRef={opexGridRef}
@@ -854,11 +830,11 @@ const CaseCostTab = ({
                     includeFooter
                     totalRowName="Total OPEX cost"
                 />
-            </TableWrapper>
-            <TableWrapper>
+            </Grid>
+            <Grid item xs={12}>
                 <CaseTabTable
                     timeSeriesData={cessationTimeSeriesData}
-                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
+                    dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
                     tableName="Cessation costs"
                     gridRef={cessationGridRef}
@@ -867,11 +843,11 @@ const CaseCostTab = ({
                     includeFooter
                     totalRowName="Total cessation cost"
                 />
-            </TableWrapper>
-            <TableWrapper>
+            </Grid>
+            <Grid item xs={12}>
                 <CaseTabTable
                     timeSeriesData={capexTimeSeriesData}
-                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
+                    dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
                     tableName="Offshore facilitiy costs"
                     gridRef={capexGridRef}
@@ -880,11 +856,11 @@ const CaseCostTab = ({
                     includeFooter
                     totalRowName="Total offshore facility cost"
                 />
-            </TableWrapper>
-            <TableWrapper>
+            </Grid>
+            <Grid item xs={12}>
                 <CaseTabTable
                     timeSeriesData={developmentTimeSeriesData}
-                    dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
+                    dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
                     tableName="Development well costs"
                     gridRef={developmentWellsGridRef}
@@ -893,19 +869,21 @@ const CaseCostTab = ({
                     includeFooter
                     totalRowName="Total development well cost"
                 />
-            </TableWrapper>
-            <CaseTabTable
-                timeSeriesData={explorationTimeSeriesData}
-                dg4Year={caseItem.dG4Date ? new Date(caseItem.dG4Date).getFullYear() : 2030}
-                tableYears={tableYears}
-                tableName="Exploration well costs"
-                gridRef={explorationWellsGridRef}
-                alignedGridsRef={[studyGridRef, opexGridRef, cessationGridRef, capexGridRef,
-                    developmentWellsGridRef]}
-                includeFooter
-                totalRowName="Total exploration cost"
-            />
-        </>
+            </Grid>
+            <Grid item xs={12}>
+                <CaseTabTable
+                    timeSeriesData={explorationTimeSeriesData}
+                    dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
+                    tableYears={tableYears}
+                    tableName="Exploration well costs"
+                    gridRef={explorationWellsGridRef}
+                    alignedGridsRef={[studyGridRef, opexGridRef, cessationGridRef, capexGridRef,
+                        developmentWellsGridRef]}
+                    includeFooter
+                    totalRowName="Total exploration cost"
+                />
+            </Grid>
+        </Grid>
     )
 }
 

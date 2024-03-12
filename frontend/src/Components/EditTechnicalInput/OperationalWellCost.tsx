@@ -1,8 +1,10 @@
-import { Input, Table } from "@equinor/eds-core-react"
+import { Input, Table, Typography } from "@equinor/eds-core-react"
 import {
     ChangeEventHandler,
     Dispatch, SetStateAction,
 } from "react"
+import { useModalContext } from "../../Context/ModalContext"
+import { useAppContext } from "../../Context/AppContext"
 
 interface Props {
     title: string
@@ -13,6 +15,8 @@ interface Props {
 const OperationalWellCost = ({
     title, setValue, value,
 }: Props) => {
+    const { editMode } = useAppContext()
+    const { editTechnicalInput } = useModalContext()
     const onValueChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         setValue(Number(e.target.value))
     }
@@ -22,12 +26,16 @@ const OperationalWellCost = ({
                 {title}
             </Table.Cell>
             <Table.Cell>
-                <Input
-                    id="WellCost"
-                    type="number"
-                    value={value}
-                    onChange={onValueChange}
-                />
+                {editMode || editTechnicalInput
+                    ? (
+                        <Input
+                            id="WellCost"
+                            type="number"
+                            value={value}
+                            onChange={onValueChange}
+                        />
+                    )
+                    : <Typography>{value}</Typography>}
             </Table.Cell>
         </Table.Row>
     )

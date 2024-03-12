@@ -1,39 +1,15 @@
 import { Dispatch, SetStateAction } from "react"
 import { Typography } from "@equinor/eds-core-react"
-import styled from "styled-components"
+import Grid from "@mui/material/Grid"
 import OperationalWellCosts from "./OperationalWellCosts"
 import WellListEditTechnicalInput from "./WellListEditTechnicalInput"
 
-const TopWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    margin-top: 12px;
-`
-
-const RowWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-`
-
-const ColumnWrapper = styled.div`
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-`
-
-const WellListWrapper = styled.div`
-    margin-bottom: 20px;
-    margin-right: 50px;
-`
-
 interface Props {
-    developmentOperationalWellCosts: Components.Schemas.DevelopmentOperationalWellCostsDto
-    setDevelopmentOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsDto>>
+    developmentOperationalWellCosts: Components.Schemas.DevelopmentOperationalWellCostsDto | undefined
+    setDevelopmentOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>>
 
-    explorationOperationalWellCosts: Components.Schemas.ExplorationOperationalWellCostsDto
-    setExplorationOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsDto>>
+    explorationOperationalWellCosts: Components.Schemas.ExplorationOperationalWellCostsDto | undefined
+    setExplorationOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>>
 
     wellProjectWells: Components.Schemas.WellDto[]
     setWellProjectWells: Dispatch<SetStateAction<Components.Schemas.WellDto[]>>
@@ -51,55 +27,43 @@ const WellCostsTab = ({
     explorationWells, setExplorationWells,
     setDeletedWells,
 }: Props) => (
-    <>
-        <TopWrapper color="danger">
-            <Typography variant="h1">Well Costs</Typography>
-        </TopWrapper>
-        <TopWrapper>
+    <Grid container spacing={2}>
+        <Grid item xs={12}>
             <Typography variant="body_long">
                 This input is used to calculate each case&apos;s well costs based on their drilling schedules.
             </Typography>
-
-        </TopWrapper>
-        <RowWrapper>
-            <ColumnWrapper>
-                <WellListWrapper>
-                    <WellListEditTechnicalInput
-                        explorationWells
-                        setWells={setExplorationWells}
-                        wells={explorationWells}
-                        setDeletedWells={setDeletedWells}
-                    />
-                </WellListWrapper>
-            </ColumnWrapper>
-            <ColumnWrapper>
-                <OperationalWellCosts
-                    title="Exploration costs"
-                    explorationOperationalWellCosts={explorationOperationalWellCosts}
-                    setExplorationOperationalWellCosts={setExplorationOperationalWellCosts}
-                />
-            </ColumnWrapper>
-        </RowWrapper>
-        <RowWrapper>
-            <ColumnWrapper>
-                <WellListWrapper>
-                    <WellListEditTechnicalInput
-                        explorationWells={false}
-                        setWells={setWellProjectWells}
-                        wells={wellProjectWells}
-                        setDeletedWells={setDeletedWells}
-                    />
-                </WellListWrapper>
-            </ColumnWrapper>
-            <ColumnWrapper>
-                <OperationalWellCosts
-                    title="Development costs"
-                    developmentOperationalWellCosts={developmentOperationalWellCosts}
-                    setDevelopmentOperationalWellCosts={setDevelopmentOperationalWellCosts}
-                />
-            </ColumnWrapper>
-        </RowWrapper>
-    </>
+        </Grid>
+        <Grid item xs={12} md={6}>
+            <WellListEditTechnicalInput
+                explorationWells
+                setWells={setExplorationWells}
+                wells={explorationWells}
+                setDeletedWells={setDeletedWells}
+            />
+        </Grid>
+        <Grid item xs={12} md={6}>
+            <OperationalWellCosts
+                title="Exploration costs"
+                explorationOperationalWellCosts={explorationOperationalWellCosts}
+                setExplorationOperationalWellCosts={setExplorationOperationalWellCosts}
+            />
+        </Grid>
+        <Grid item xs={12} md={6}>
+            <WellListEditTechnicalInput
+                explorationWells={false}
+                setWells={setWellProjectWells}
+                wells={wellProjectWells}
+                setDeletedWells={setDeletedWells}
+            />
+        </Grid>
+        <Grid item xs={12} md={6}>
+            <OperationalWellCosts
+                title="Development costs"
+                developmentOperationalWellCosts={developmentOperationalWellCosts}
+                setDevelopmentOperationalWellCosts={setDevelopmentOperationalWellCosts}
+            />
+        </Grid>
+    </Grid>
 )
 
 export default WellCostsTab

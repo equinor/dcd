@@ -38,9 +38,8 @@ export class __BaseService {
                     console.error("Error: An internal server error occurred. Please try again later.")
                 }
                 return Promise.reject(error)
-            }
+            },
         )
-    
     }
 
     private async request(path: string, options?: RequestOptions): Promise<any> {

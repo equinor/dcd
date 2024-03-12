@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import {
     Dispatch,
     SetStateAction,
@@ -16,19 +17,19 @@ import { OverrideTimeSeriesPrompt } from "../../OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../../Utils/constants"
 
 interface Props {
-    timeSeriesData: any[]
+    allTimeSeriesData: any[]
     dg4Year: number
     tableYears: [number, number]
-    tableName: string
     alignedGridsRef?: any[]
     gridRef?: any
     includeFooter: boolean
     totalRowName?: string
 }
 
-const CaseTabTable = ({
-    timeSeriesData, dg4Year,
-    tableYears, tableName,
+const CaseTabTableWithGrouping = ({
+    allTimeSeriesData,
+    dg4Year,
+    tableYears,
     alignedGridsRef, gridRef,
     includeFooter, totalRowName,
 }: Props) => {
@@ -41,10 +42,12 @@ const CaseTabTable = ({
 
     const profilesToRowData = () => {
         const tableRows: any[] = []
-        timeSeriesData.forEach((ts) => {
+        const timeSeriesData = allTimeSeriesData?.flat()
+        timeSeriesData?.forEach((ts: { overrideProfile?: any; total?: any; overrideProfileSet?: any; set?: any; profile?: any; group?: any; profileName?: any; unit?: any }) => {
             const isOverridden = ts.overrideProfile?.override === true
             const rowObject: any = {}
-            const { profileName, unit } = ts
+            const { group, profileName, unit } = ts
+            rowObject.group = group
             rowObject.profileName = profileName
             rowObject.unit = unit
             rowObject.total = ts.total ?? 0
@@ -59,38 +62,24 @@ const CaseTabTable = ({
 
             if (rowObject.profile && rowObject.profile.values?.length > 0) {
                 let j = 0
-                if (tableName === "Production profiles" || tableName === "CO2 emissions") {
-                    for (let i = rowObject.profile.startYear;
-                        i < rowObject.profile.startYear + rowObject.profile.values.length;
-                        i += 1) {
-                        rowObject[(dg4Year + i).toString()] = rowObject.profile.values.map(
-                            (v: number) => Math.round((v + Number.EPSILON) * 1000) / 1000,
-                        )[j]
-                        j += 1
-                        rowObject.total = Math.round(rowObject.profile.values.map(
-                            (v: number) => (v + Number.EPSILON),
-                        ).reduce((x: number, y: number) => x + y) * 1000) / 1000
-                        if (ts.total !== undefined) {
-                            rowObject.total = Math.round(ts.total * 1000) / 1000
-                        }
-                    }
-                } else {
-                    for (let i = rowObject.profile.startYear;
-                        i < rowObject.profile.startYear + rowObject.profile.values.length;
-                        i += 1) {
-                        rowObject[(dg4Year + i).toString()] = rowObject.profile.values.map(
-                            (v: number) => Math.round((v + Number.EPSILON) * 10) / 10,
-                        )[j]
-                        j += 1
-                        rowObject.total = Math.round(rowObject.profile.values.map(
-                            (v: number) => (v + Number.EPSILON),
-                        ).reduce((x: number, y: number) => x + y) * 10) / 10
-                    }
+                for (let i = rowObject.profile.startYear; i < rowObject.profile.startYear + rowObject.profile.values.length; i += 1) {
+                    const yearKey = (dg4Year + i).toString()
+                    const value = rowObject.profile.values[j]
+                    const roundedValue = Math.round((value + Number.EPSILON) * 100) / 100 // Adjust rounding logic as needed
+                    rowObject[yearKey] = roundedValue
+
+                    j += 1
+                }
+
+                const totalValue = rowObject.profile.values.reduce((acc: any, value: any) => acc + value, 0)
+                rowObject.total = Math.round((totalValue + Number.EPSILON) * 100) / 100 // Adjust rounding logic as needed
+                if (ts.total !== undefined) {
+                    rowObject.total = Math.round(ts.total * 100) / 100
                 }
             }
-
             tableRows.push(rowObject)
         })
+
         return tableRows
     }
 
@@ -139,24 +128,34 @@ const CaseTabTable = ({
     const generateTableYearColDefs = () => {
         const columnPinned: any[] = [
             {
-                field: "profileName",
-                headerName: tableName,
-                width: 250,
-                editable: false,
+                field: "group",
+                headerName: "Summary",
+                rowGroup: true,
                 pinned: "left",
+                hide: true, // Hide this column but use it for grouping
                 aggFunc: () => totalRowName ?? "Total",
+            },
+            {
+                field: "profileName",
+                headerName: "Field",
+                width: 350,
+                editable: false,
+                cellStyle: { fontWeight: "normal" },
+                // pinned: "left",
+                // aggFunc: () => totalRowName,
             },
             {
                 field: "unit",
                 width: 100,
                 editable: false,
-                pinned: "left",
-                aggFunc: (params: any) => {
-                    if (params?.values?.length > 0) {
-                        return params.values[0]
-                    }
-                    return ""
-                },
+                // cellRenderer: (params: { node: { group: any }; value: any }) => {
+                //     // Display "Sum" for group headers or footers
+                //     if (params.node.group) {
+                //         return "Sum";
+                //     }
+                //     // Otherwise, display the actual unit value
+                //     return params.value;
+                // }
             },
             {
                 field: "total",
@@ -167,15 +166,7 @@ const CaseTabTable = ({
                 aggFunc: "sum",
                 cellStyle: { fontWeight: "bold" },
             },
-            {
-                headerName: "",
-                width: 60,
-                field: "set",
-                pinned: "right",
-                aggFunc: "",
-                editable: false,
-                cellRenderer: lockIcon,
-            },
+
         ]
         const isEditable = (params: any) => {
             if (params.data.overrideProfileSet === undefined && params.data.set !== undefined) {
@@ -186,6 +177,7 @@ const CaseTabTable = ({
             }
             return false
         }
+
         const yearDefs: any[] = []
         for (let index = tableYears[0]; index <= tableYears[1]; index += 1) {
             yearDefs.push({
@@ -194,10 +186,12 @@ const CaseTabTable = ({
                 editable: (params: any) => isEditable(params),
                 minWidth: 100,
                 aggFunc: "sum",
+                cellStyle: { fontWeight: "bold" },
             })
         }
         return columnPinned.concat([...yearDefs])
     }
+    const groupDefaultExpanded = 1
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
@@ -205,7 +199,7 @@ const CaseTabTable = ({
         setRowData(profilesToRowData())
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
-    }, [timeSeriesData, tableYears])
+    }, [])
 
     const handleCellValueChange = (p: any) => {
         const properties = Object.keys(p.data)
@@ -280,6 +274,7 @@ const CaseTabTable = ({
                     style={{
                         display: "flex", flexDirection: "column", width: "100%",
                     }}
+                    className="ag-theme-alpine-fusion"
                 >
                     <AgGridReact
                         ref={gridRef}
@@ -293,11 +288,15 @@ const CaseTabTable = ({
                         enableRangeSelection
                         suppressCopySingleCellRanges
                         suppressMovableColumns
+                        suppressAggFuncInHeader
                         enableCharts
                         alignedGrids={gridRefArrayToAlignedGrid()}
                         groupIncludeTotalFooter={includeFooter}
                         getRowStyle={getRowStyle}
                         suppressLastEmptyLineOnPaste
+                        groupDefaultExpanded={groupDefaultExpanded}
+                    // groupDisplayType={'groupRows'}
+
                     />
                 </div>
             </div>
@@ -305,4 +304,4 @@ const CaseTabTable = ({
     )
 }
 
-export default CaseTabTable
+export default CaseTabTableWithGrouping

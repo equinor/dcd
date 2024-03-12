@@ -1,31 +1,18 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import {
-    Progress, Banner, Icon, Typography,
-} from "@equinor/eds-core-react"
+import { Banner, Icon } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
-import styled from "styled-components"
 import { Outlet, useNavigate } from "react-router-dom"
-import { useAppContext } from "../Context/AppContext"
+import { useProjectContext } from "../Context/ProjectContext"
 import { GetProjectService } from "../Services/ProjectService"
 import CreateCaseModal from "./CreateCaseModal"
 import EditTechnicalInputModal from "./EditTechnicalInput/EditTechnicalInputModal"
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
-`
+import { useAppContext } from "../Context/AppContext"
 
 const RouteCoordinator = (): JSX.Element => {
-    const { project, setProject } = useAppContext()
+    const { setIsCreating, setIsLoading } = useAppContext()
+    const { setProject } = useProjectContext()
     const { currentContext } = useModuleCurrentContext()
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [isCreating, setIsCreating] = useState<boolean>(false)
 
     const navigate = useNavigate()
 
@@ -38,7 +25,6 @@ const RouteCoordinator = (): JSX.Element => {
     }, [currentContext])
 
     useEffect(() => {
-        console.log("getting project", currentContext)
         const fetchAndSetProject = async () => {
             if (!currentContext?.externalId) {
                 console.log("No externalId in context")
@@ -70,22 +56,6 @@ const RouteCoordinator = (): JSX.Element => {
         fetchAndSetProject()
     }, [currentContext, setProject])
 
-    if ((isLoading || !project || project.id === "") && currentContext) {
-        if (isCreating) {
-            return (
-                <Wrapper>
-                    <Progress.Circular size={24} color="primary" />
-                    <Typography variant="h4">Creating project</Typography>
-                </Wrapper>
-            )
-        }
-        return (
-            <Wrapper>
-                <Progress.Circular size={24} color="primary" />
-                <Typography variant="h4">Loading project</Typography>
-            </Wrapper>
-        )
-    }
     if (!currentContext) {
         return (
             <Banner>

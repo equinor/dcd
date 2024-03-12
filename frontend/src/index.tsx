@@ -5,6 +5,8 @@ import { ComponentRenderArgs, makeComponent } from "@equinor/fusion-framework-re
 import AppComponent from "./AppComponent"
 import { configure } from "./config"
 
+import "./styles.css"
+
 const appComponent = createElement(AppComponent)
 
 const createApp = (args: ComponentRenderArgs) => makeComponent(appComponent, args, configure)
