@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using api.Adapters;
 using api.Context;
 using api.Dtos;
+using api.Mappings;
 using api.Models;
 using api.Services.GenerateCostProfiles;
 
@@ -331,10 +332,13 @@ public class CaseWithAssetsService : ICaseWithAssetsService
 
         var item = await _drainageStrategyService.GetDrainageStrategy(drainageStrategyId);
 
-        _mapper.Map(updatedDto, item);
+        _mapper.Map(updatedDto, item, opts => opts.Items["ConversionUnit"] = unit.ToString());
 
         var updatedItem = _context.DrainageStrategies!.Update(item);
-        return _mapper.Map<DrainageStrategyDto>(updatedItem.Entity);
+
+        var destination = _mapper.Map<DrainageStrategy, DrainageStrategyDto>(updatedItem.Entity, opts => opts.Items["ConversionUnit"] = unit.ToString());
+
+        return destination;
     }
 
     public async Task<WellProjectDto?> UpdateWellProject(Guid wellProjectLink, UpdateWellProjectDto updatedDto, ProfilesToGenerate profilesToGenerate)

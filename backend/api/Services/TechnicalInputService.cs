@@ -111,13 +111,11 @@ public class TechnicalInputService : ITechnicalInputService
     }
 
     private async Task<(ExplorationDto explorationDto, WellProjectDto wellProjectDto)?> CreateAndUpdateWells(
-        Guid projectId,
-        CreateWellDto[]? createWellDtos,
-        UpdateWellDto[]? updateWellDtos
-        )
+            Guid projectId,
+            CreateWellDto[]? createWellDtos,
+            UpdateWellDto[]? updateWellDtos
+            )
     {
-        var runCostProfileCalculation = false;
-        var runSaveChanges = false;
         var updatedWells = new List<Guid>();
 
         if (createWellDtos != null)
@@ -130,9 +128,7 @@ public class TechnicalInputService : ITechnicalInputService
                     throw new ArgumentNullException(nameof(well));
                 }
                 well.ProjectId = projectId;
-                var updatedWell = _context.Wells!.Add(well);
-
-                runSaveChanges = true;
+                _context.Wells!.Add(well);
             }
         }
 
@@ -143,22 +139,20 @@ public class TechnicalInputService : ITechnicalInputService
                 var existing = await _wellService.GetWell(wellDto.Id);
                 if (wellDto.WellCost != existing.WellCost || wellDto.WellCategory != existing.WellCategory)
                 {
-                    runCostProfileCalculation = true;
                     updatedWells.Add(wellDto.Id);
                 }
                 _mapper.Map(wellDto, existing);
-
                 _context.Wells!.Update(existing);
             }
         }
 
-        if (runSaveChanges)
+        if (createWellDtos?.Any() == true || updateWellDtos?.Any() == true)
         {
             await _context.SaveChangesAsync();
         }
-        if (runCostProfileCalculation)
+        if (updatedWells.Any())
         {
-            // await _costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWells);
+            await _costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWells);
         }
         return null;
     }

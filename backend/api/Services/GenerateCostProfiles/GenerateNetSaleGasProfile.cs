@@ -53,7 +53,7 @@ public class GenerateNetSaleGasProfile : IGenerateNetSaleGasProfile
 
         await UpdateDrainageStrategyAndSave(drainageStrategy, netSaleGas);
 
-        var dto = _mapper.Map<NetSalesGasDto>(netSaleGas);
+        var dto = _mapper.Map<NetSalesGasDto>(netSaleGas, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 
         return dto ?? new NetSalesGasDto();
     }
