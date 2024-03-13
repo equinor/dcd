@@ -81,7 +81,7 @@ const CaseView = () => {
     } = useCaseContext()
 
     if (!projectCase || !project) {
-        throw new Error("Project case or project is undefined")
+        return (<>Loading...</>)
     }
 
     const {
@@ -246,7 +246,7 @@ const CaseView = () => {
         || !transport
         || !explorationWells
         || !wellProjectWells) {
-        throw new Error("Required data is missing")
+        return (<>One or more assets missing</>)
     }
 
     return (
