@@ -222,6 +222,8 @@ public class DrainageStrategyProfile : Profile
                 case nameof(NetSalesGas):
                 case nameof(NetSalesGasOverride):
                     return toDto ? 35.315 * returnValue : 1.0 / 35.315 * returnValue;
+                default:
+                    throw new InvalidOperationException($"Unexpected type: {type}");
             }
         }
 

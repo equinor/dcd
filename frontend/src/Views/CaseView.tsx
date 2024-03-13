@@ -80,7 +80,9 @@ const CaseView = () => {
         setCountryOfficeCost,
     } = useCaseContext()
 
-    if (!projectCase) return (null)
+    if (!projectCase || !project) {
+        throw new Error("Project case or project is undefined")
+    }
 
     const {
         wellProject,
@@ -194,7 +196,7 @@ const CaseView = () => {
         setUpdateFromServer(true)
 
         try {
-            const result = await (await GetCaseWithAssetsService()).update(project?.id!, projectCase?.id!, dto)
+            const result = await (await GetCaseWithAssetsService()).update(project.id, projectCase.id, dto)
             const projectResult = { ...result.projectDto }
             setProject(projectResult)
 
@@ -231,10 +233,11 @@ const CaseView = () => {
         saveProjectCase && handleCaseSave()
     }, [saveProjectCase])
 
-    if (isLoading
-        || !project
-        || !projectCase
-        || !drainageStrategy
+    if (isLoading) {
+        return (<>Loading...</>)
+    }
+
+    if (!drainageStrategy
         || !exploration
         || !wellProject
         || !surf
@@ -243,7 +246,7 @@ const CaseView = () => {
         || !transport
         || !explorationWells
         || !wellProjectWells) {
-        return (<></>)
+        throw new Error("Required data is missing")
     }
 
     return (
