@@ -161,7 +161,7 @@ const EditTechnicalInputModal = () => {
                     <Tabs activeTab={activeTab} onChange={setActiveTab}>
                         <List>
                             <Tab>Well Costs</Tab>
-                            <Tab><img src="/prosp.png" alt="PROSP" style={{ width: "300px" }} /></Tab>
+                            <Tab>PROSP</Tab>
                             <Tab>CO2</Tab>
                         </List>
                         <Panels>
