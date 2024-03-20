@@ -28,7 +28,7 @@ const Controls = () => {
         project, setProject, projectEdited, setProjectEdited,
     } = useProjectContext()
     const {
-        projectCase, setProjectCase, renameProjectCase, setRenameProjectCase, projectCaseEdited, setProjectCaseEdited,
+        projectCase, setProjectCase, renameProjectCase, setRenameProjectCase, projectCaseEdited, setProjectCaseEdited, setSaveProjectCase,
     } = useCaseContext()
     const { setTechnicalModalIsOpen } = useModalContext()
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
@@ -81,6 +81,7 @@ const Controls = () => {
 
     const handleCaseSave = async () => {
         setProjectCase(projectCaseEdited)
+        setSaveProjectCase(true)
         handleCancel()
     }
 
