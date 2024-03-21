@@ -14,6 +14,7 @@ import { useCaseContext } from "../../../Context/CaseContext"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
 import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
 import { useModalContext } from "../../../Context/ModalContext"
+import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 
 interface Props {
     topside: Components.Schemas.TopsideDto,
@@ -111,6 +112,30 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     const capexTimeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Drilling",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: undefined,
+            group: "CAPEX",
+        },
+        {
+            profileName: "Offshore facilities",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: undefined,
+            group: "CAPEX",
+        },
+        {
+            profileName: "Onshore facilities",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: undefined,
+            group: "CAPEX",
+        },
+        {
+            profileName: "Cessation - offshore facilities",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: undefined,
+            group: "CAPEX",
+        },
+        {
+            profileName: "Cessation - onshore facilities",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: undefined,
             group: "CAPEX",
@@ -223,24 +248,24 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         } return undefined
     }
 
-    const setTableYearsFromProfiles = (profiles: (ITimeSeries | undefined)[]) => {
-        let firstYear = Number.MAX_SAFE_INTEGER
-        let lastYear = Number.MIN_SAFE_INTEGER
-        profiles.forEach((p) => {
-            if (p && p.startYear !== undefined && p.startYear < firstYear) {
-                firstYear = p.startYear
-            }
-            const profileLastYear = getTimeSeriesLastYear(p)
-            if (profileLastYear !== undefined && profileLastYear > lastYear) {
-                lastYear = profileLastYear
-            }
-        })
-        if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER && projectCase?.dG4Date) {
-            setStartYear(firstYear + new Date(projectCase?.dG4Date).getFullYear())
-            setEndYear(lastYear + new Date(projectCase?.dG4Date).getFullYear())
-            setTableYears([firstYear + new Date(projectCase?.dG4Date).getFullYear(), lastYear + new Date(projectCase?.dG4Date).getFullYear()])
-        }
-    }
+    // const setTableYearsFromProfiles = (profiles: (ITimeSeries | undefined)[]) => {
+    //     let firstYear = Number.MAX_SAFE_INTEGER
+    //     let lastYear = Number.MIN_SAFE_INTEGER
+    //     profiles.forEach((p) => {
+    //         if (p && p.startYear !== undefined && p.startYear < firstYear) {
+    //             firstYear = p.startYear
+    //         }
+    //         const profileLastYear = getTimeSeriesLastYear(p)
+    //         if (profileLastYear !== undefined && profileLastYear > lastYear) {
+    //             lastYear = profileLastYear
+    //         }
+    //     })
+    //     if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER && projectCase?.dG4Date) {
+    //         setStartYear(firstYear + new Date(projectCase?.dG4Date).getFullYear())
+    //         setEndYear(lastYear + new Date(projectCase?.dG4Date).getFullYear())
+    //         setTableYears([firstYear + new Date(projectCase?.dG4Date).getFullYear(), lastYear + new Date(projectCase?.dG4Date).getFullYear()])
+    //     }
+    // }
 
     const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...projectCase }
@@ -305,10 +330,10 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             ? transport.costProfileOverride : transport.costProfile
                         setTransportCost(transportCostProfile)
 
-                        setTableYearsFromProfiles([
+                        SetTableYearsFromProfiles([
                             totalStudy, opex, cessation,
                             topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
-                        ])
+                        ], projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
 
                         // Exploration costs
                         setTotalExplorationCost(MergeTimeseriesList([
