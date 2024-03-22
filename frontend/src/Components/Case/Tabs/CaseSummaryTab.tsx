@@ -44,6 +44,10 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         transport, setTransport,
         transportCost, setTransportCost,
 
+        // Drilling cost
+        developmentOperationalWellCosts,
+        setDevelopmentOperationalWellCosts,
+
         // Exploration
         totalExplorationCost,
         setTotalExplorationCost,
@@ -74,9 +78,10 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     const [totalStudyCost, setTotalStudyCost] = useState<ITimeSeries>()
     const [opexCost, setOpexCost] = useState<Components.Schemas.OpexCostProfileDto>()
     const [cessationCost, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto>()
+    const [historicCost] = useState<Components.Schemas.HistoricCostCostProfileDto>()
 
     // CAPEX
-    const [historicCost] = useState<Components.Schemas.HistoricCostCostProfileDto>()
+    const [totalDrillingCost, setTotalDrillingCost] = useState<ITimeSeries>()
 
     const [, setStartYear] = useState<number>(2020)
     const [, setEndYear] = useState<number>(2030)
@@ -329,6 +334,11 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         const transportCostProfile = transport.costProfileOverride?.override
                             ? transport.costProfileOverride : transport.costProfile
                         setTransportCost(transportCostProfile)
+
+                        // setTotalDrillingCost(developmentOperationalWellCosts?.rigUpgrading)
+                        // (MergeTimeseriesList([
+                        //     developmentOperationalWellCosts?.rigUpgrading,
+                        // ]))
 
                         SetTableYearsFromProfiles([
                             totalStudy, opex, cessation,

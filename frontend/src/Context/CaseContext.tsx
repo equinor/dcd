@@ -50,6 +50,10 @@ interface CaseContextType {
     explorationWells: Components.Schemas.ExplorationWellDto[] | undefined
     setExplorationWells: Dispatch<SetStateAction<Components.Schemas.ExplorationWellDto[] | undefined>>
 
+    // Drilling cost
+    developmentOperationalWellCosts: Components.Schemas.DevelopmentOperationalWellCostsDto | undefined
+    setDevelopmentOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>>
+
     // Study
     totalFeasibilityAndConceptStudies: Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined
     setTotalFeasibilityAndConceptStudies: Dispatch<SetStateAction<Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined>>
@@ -104,6 +108,9 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
     const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellProjectWellDto[] | undefined>()
     const [explorationWells, setExplorationWells] = useState<Components.Schemas.ExplorationWellDto[] | undefined>()
+
+    // Drilling cost
+    const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>()
 
     // Study
     const [totalFeasibilityAndConceptStudies, setTotalFeasibilityAndConceptStudies] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined>()
@@ -160,6 +167,10 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         explorationWells,
         setExplorationWells,
 
+        // Drilling cost
+        developmentOperationalWellCosts,
+        setDevelopmentOperationalWellCosts,
+
         // Study
         totalFeasibilityAndConceptStudies,
         setTotalFeasibilityAndConceptStudies,
@@ -213,6 +224,9 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
         wellProjectWells,
         explorationWells,
+
+        // Drilling cost
+        developmentOperationalWellCosts,
 
         // Study
         totalFeasibilityAndConceptStudies,
