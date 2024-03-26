@@ -158,6 +158,7 @@ const WellListEditTechnicalInput = ({
         editable: true,
         onCellValueChanged: updateWells,
         suppressMenu: true,
+        cellClass: (params: any) => editMode ? "editableCell" : undefined,
     }), [])
 
     const [columnDefs] = useState<ColDef[]>([
@@ -231,6 +232,7 @@ const WellListEditTechnicalInput = ({
                         domLayout="autoHeight"
                         onGridReady={onGridReady}
                         stopEditingWhenCellsLoseFocus
+                        singleClickEdit={editMode}
                     />
                 </div>
             </Grid>

@@ -14,6 +14,7 @@ import { ColDef } from "@ag-grid-community/core"
 import { isInteger } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../../Utils/constants"
+import { useAppContext } from "../../../Context/AppContext"
 
 interface Props {
     timeSeriesData: any[]
@@ -38,6 +39,7 @@ const CaseTabTable = ({
     const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
     const [overrideProfile, setOverrideProfile] = useState<any>()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
+    const { editMode } = useAppContext()
 
     const profilesToRowData = () => {
         const tableRows: any[] = []
@@ -129,6 +131,41 @@ const CaseTabTable = ({
         return null
     }
 
+    const editableCell = (params: any) => {
+        const handleLockIconClick = () => {
+            if (params?.data?.override !== undefined) {
+                setOverrideModalOpen(true)
+                setOverrideModalProfileName(params.data.profileName)
+                setOverrideModalProfileSet(() => params.data.overrideProfileSet)
+                setOverrideProfile(params.data.overrideProfile)
+
+                params.api.redrawRows()
+                params.api.refreshCells()
+            }
+        }
+        if (params.data?.overrideProfileSet !== undefined) {
+            return (params.data.overrideProfile?.override) ? (
+                <Icon
+                    data={lock_open}
+                    opacity={0.5}
+                    color="#007079"
+                    onClick={handleLockIconClick}
+                />
+            )
+                : (
+                    <Icon
+                        data={lock}
+                        color="#007079"
+                        onClick={handleLockIconClick}
+                    />
+                )
+        }
+        if (!params?.data?.set) {
+            return <Icon data={lock} color="#007079" />
+        }
+        return null
+    }
+
     const getRowStyle = (params: any) => {
         if (params.node.footer) {
             return { fontWeight: "bold" }
@@ -178,10 +215,10 @@ const CaseTabTable = ({
             },
         ]
         const isEditable = (params: any) => {
-            if (params.data.overrideProfileSet === undefined && params.data.set !== undefined) {
+            if (editMode && params.data?.overrideProfileSet === undefined && params.data?.set !== undefined) {
                 return true
             }
-            if (params.data.overrideProfile.override) {
+            if (editMode && params.data?.overrideProfile !== undefined && params.data?.overrideProfile.override) {
                 return true
             }
             return false
@@ -194,6 +231,7 @@ const CaseTabTable = ({
                 editable: (params: any) => isEditable(params),
                 minWidth: 100,
                 aggFunc: "sum",
+                cellClass: (params: any) => editMode && isEditable(params) ? "editableCell" : undefined,
             })
         }
         return columnPinned.concat([...yearDefs])
@@ -298,6 +336,7 @@ const CaseTabTable = ({
                         groupIncludeTotalFooter={includeFooter}
                         getRowStyle={getRowStyle}
                         suppressLastEmptyLineOnPaste
+                        singleClickEdit={editMode}
                     />
                 </div>
             </div>
