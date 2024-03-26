@@ -9,6 +9,7 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import { isExplorationWell, isInteger } from "../../../../Utils/common"
 import { EMPTY_GUID } from "../../../../Utils/constants"
+import { useAppContext } from "../../../../Context/AppContext"
 
 interface Props {
     dg4Year: number
@@ -32,6 +33,7 @@ const CaseDrillingScheduleTabTable = ({
 }: Props) => {
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([])
+    const { editMode } = useAppContext()
 
     const createMissingAssetWellsFromWells = (assetWell: any[]) => {
         const newAssetWells: (Components.Schemas.ExplorationWellDto | Components.Schemas.WellProjectWellDto)[] = [...assetWells]
@@ -101,6 +103,15 @@ const CaseDrillingScheduleTabTable = ({
         }
     }
 
+    const isEditable = (params: any) => {
+        if (editMode && params.data.overrideProfileSet === undefined && params.data.set !== undefined) {
+            return true
+        }
+        if (editMode && params.data.overrideProfile.override) {
+            return true
+        }
+        return false
+    }
     const generateTableYearColDefs = () => {
         const columnPinned: any[] = [
             {
@@ -116,6 +127,8 @@ const CaseDrillingScheduleTabTable = ({
                 field: index.toString(),
                 flex: 1,
                 minWidth: 100,
+                editable: (params: any) => isEditable(params),
+                cellClass: (params: any) => editMode && isEditable(params) ? "editableCell" : undefined,
             })
         }
         return columnPinned.concat([...yearDefs])
@@ -221,6 +234,7 @@ const CaseDrillingScheduleTabTable = ({
                     suppressMovableColumns
                     enableCharts
                     alignedGrids={gridRefArrayToAlignedGrid()}
+                    singleClickEdit={editMode}
                 />
             </div>
         </div>
