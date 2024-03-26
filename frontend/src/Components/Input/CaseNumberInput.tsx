@@ -1,16 +1,7 @@
-import { Input, Label } from "@equinor/eds-core-react"
+import { InputWrapper, Input } from "@equinor/eds-core-react"
 import { useState, ChangeEventHandler, useEffect } from "react"
-import styled from "styled-components"
 import { preventNonDigitInput, isWithinRange } from "../../Utils/common"
 
-const WrapperColumn = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-
-const StyledLabel = styled(Label) <{ $variant: "error" | undefined }>`
-    color: ${(props) => (props.$variant === "error" ? "red" : "black")};
-`
 
 interface Props {
     onChange: ChangeEventHandler<HTMLInputElement>
@@ -38,6 +29,7 @@ const CaseNumberInput = ({
     const [hasError, setHasError] = useState(false)
     const [visibleLabel, setVisibleLabel] = useState(label)
     const [inputValue, setInputValue] = useState(defaultValue)
+    const [errorMessage, setErrorMessage] = useState("")
 
     const checkInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (integer) {
@@ -59,16 +51,19 @@ const CaseNumberInput = ({
                 setVisibleLabel(label)
                 setHasError(false)
             } else {
-                setVisibleLabel(`(min: ${min}, max: ${max})`)
+                setErrorMessage(`(min: ${min}, max: ${max})`)
                 setHasError(true)
             }
         }
     }, [inputValue, label, min, max])
 
     return (
-        <WrapperColumn>
+        <InputWrapper 
+            color={hasError ? "error" : undefined}
+            labelProps={{
+                label: visibleLabel ? `${visibleLabel} ${errorMessage}` : undefined
+            }}>
             <Input
-                id="numberInput"
                 type="number"
                 value={inputValue}
                 disabled={disabled}
@@ -78,12 +73,7 @@ const CaseNumberInput = ({
                 rightAdornments={unit}
                 variant={hasError ? "error" : undefined}
             />
-            <StyledLabel
-                $variant={hasError ? "error" : undefined}
-                htmlFor="numberInput"
-                label={visibleLabel}
-            />
-        </WrapperColumn>
+        </InputWrapper>
     )
 }
 
