@@ -131,41 +131,6 @@ const CaseTabTable = ({
         return null
     }
 
-    const editableCell = (params: any) => {
-        const handleLockIconClick = () => {
-            if (params?.data?.override !== undefined) {
-                setOverrideModalOpen(true)
-                setOverrideModalProfileName(params.data.profileName)
-                setOverrideModalProfileSet(() => params.data.overrideProfileSet)
-                setOverrideProfile(params.data.overrideProfile)
-
-                params.api.redrawRows()
-                params.api.refreshCells()
-            }
-        }
-        if (params.data?.overrideProfileSet !== undefined) {
-            return (params.data.overrideProfile?.override) ? (
-                <Icon
-                    data={lock_open}
-                    opacity={0.5}
-                    color="#007079"
-                    onClick={handleLockIconClick}
-                />
-            )
-                : (
-                    <Icon
-                        data={lock}
-                        color="#007079"
-                        onClick={handleLockIconClick}
-                    />
-                )
-        }
-        if (!params?.data?.set) {
-            return <Icon data={lock} color="#007079" />
-        }
-        return null
-    }
-
     const getRowStyle = (params: any) => {
         if (params.node.footer) {
             return { fontWeight: "bold" }

@@ -158,7 +158,7 @@ const WellListEditTechnicalInput = ({
         editable: true,
         onCellValueChanged: updateWells,
         suppressMenu: true,
-        cellClass: (params: any) => editMode ? "editableCell" : undefined,
+        cellClass: editMode ? "editableCell" : undefined,
     }), [])
 
     const [columnDefs] = useState<ColDef[]>([
