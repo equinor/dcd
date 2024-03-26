@@ -201,7 +201,9 @@ const CaseCostTab = ({
                         setTransportCost(transportCostProfile)
                         const transportCostProfileOverride = transport.costProfileOverride
                         setTransportCostOverride(transportCostProfileOverride)
-
+                        console.log(1, surfCost?.values)
+                        console.log(2, topsideCost?.values)
+                        console.log(3, transportCost?.values)
                         // Development
                         const {
                             oilProducerCostProfile,

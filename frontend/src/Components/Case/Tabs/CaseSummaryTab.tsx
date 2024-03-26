@@ -82,6 +82,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
     // CAPEX
     const [totalDrillingCost, setTotalDrillingCost] = useState<ITimeSeries>()
+    const [offshoreFacilitiesCost, setOffshoreFacilitiesCost] = useState<ITimeSeries>()
 
     const [, setStartYear] = useState<number>(2020)
     const [, setEndYear] = useState<number>(2030)
@@ -118,13 +119,13 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         {
             profileName: "Drilling",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: undefined,
+            profile: totalDrillingCost,
             group: "CAPEX",
         },
         {
             profileName: "Offshore facilities",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: undefined,
+            profile: offshoreFacilitiesCost,
             group: "CAPEX",
         },
         {
@@ -335,6 +336,20 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             ? transport.costProfileOverride : transport.costProfile
                         setTransportCost(transportCostProfile)
 
+                        console.log(1, surfCost?.values)
+                        console.log(2, topsideCost?.values)
+                        console.log(3, transportCost?.values)
+
+                        setOffshoreFacilitiesCost(MergeTimeseriesList([surfCost, topsideCost, transportCost]))
+                        console.log(4, surfCostProfile.values)
+
+                        // Drilling cost
+                        // Drilling = Rig upgrading (development) + rig mob/demob (development) + production well(oil producer + gas producer?) +
+                        // water injection well + gas injection well + re-completions(?) + spare well type 1(?) + spare well type 2(?) + spare well type 3
+                        // Setting Rig upgrading and rig mob/demob to first year because we dont have a way to specify which year the costs appear.
+                        // re-completions, spare well type 1, spare well type 2 and spare well type 3 is a part of the drilling cost in BCCST,
+                        // but can't be found in Prosp and are therefore missing in this calculation
+                        
                         // setTotalDrillingCost(developmentOperationalWellCosts?.rigUpgrading)
                         // (MergeTimeseriesList([
                         //     developmentOperationalWellCosts?.rigUpgrading,
