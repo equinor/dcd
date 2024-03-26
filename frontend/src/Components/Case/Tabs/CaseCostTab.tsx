@@ -24,13 +24,6 @@ import { useModalContext } from "../../../Context/ModalContext"
 
 interface Props {
 
-    offshoreFacilitiesOperationsCostProfile: Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined,
-    setOffshoreFacilitiesOperationsCostProfile: Dispatch<SetStateAction<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined>>,
-
-    wellInterventionCostProfile: Components.Schemas.WellInterventionCostProfileDto | undefined,
-    setWellInterventionCostProfile: Dispatch<SetStateAction<Components.Schemas.WellInterventionCostProfileDto | undefined>>,
-
-    additionalOPEXCostProfile: Components.Schemas.AdditionalOPEXCostProfileDto | undefined,
     cessationWellsCost: Components.Schemas.TotalFEEDStudiesDto | undefined,
     setCessationWellsCost: Dispatch<SetStateAction<Components.Schemas.CessationWellsCostDto | undefined>>,
 
@@ -43,10 +36,7 @@ interface Props {
 }
 
 const CaseCostTab = ({
-    offshoreFacilitiesOperationsCostProfile,
-    setOffshoreFacilitiesOperationsCostProfile,
-    wellInterventionCostProfile,
-    setWellInterventionCostProfile,
+
     cessationWellsCost,
     setCessationWellsCost,
     cessationOffshoreFacilitiesCost,
@@ -75,6 +65,16 @@ const CaseCostTab = ({
         transport, setTransport,
         transportCost, setTransportCost,
 
+        // OPEX
+        historicCostCostProfile,
+        setHistoricCostCostProfile,
+        wellInterventionCostProfile,
+        setWellInterventionCostProfile,
+        offshoreFacilitiesOperationsCostProfile,
+        setOffshoreFacilitiesOperationsCostProfile,
+        additionalOPEXCostProfile,
+        setAdditionalOPEXCostProfile,
+
         // Exploration
         totalExplorationCost,
         setTotalExplorationCost,
@@ -101,8 +101,6 @@ const CaseCostTab = ({
 
     const [offshoreFacilitiesOperationsCostProfileOverride, setOffshoreFacilitiesOperationsCostProfileOverride] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto>()
     const [wellInterventionCostProfileOverride, setWellInterventionCostProfileOverride] = useState<Components.Schemas.WellInterventionCostProfileOverrideDto>()
-    const [additionalOPEXCostProfile, setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto>()
-    const [historicCostCostProfile, setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto>()
 
     const [cessationWellsCostOverride, setCessationWellsCostOverride] = useState<Components.Schemas.CessationWellsCostOverrideDto>()
     const [cessationOffshoreFacilitiesCostOverride, setCessationOffshoreFacilitiesCostOverride] = useState<Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto>()
