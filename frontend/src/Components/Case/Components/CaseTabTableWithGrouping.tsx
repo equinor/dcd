@@ -171,10 +171,10 @@ const CaseTabTableWithGrouping = ({
 
         ]
         const isEditable = (params: any) => {
-            if (editMode && params.data.overrideProfileSet === undefined && params.data.set !== undefined) {
+            if (editMode && params.data?.overrideProfileSet === undefined && params.data?.set !== undefined) {
                 return true
             }
-            if (editMode && params.data.overrideProfile?.override) {
+            if (editMode && params.data?.overrideProfile?.override) {
                 return true
             }
             return false
