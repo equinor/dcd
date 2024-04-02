@@ -276,7 +276,7 @@ const CaseCO2Tab = ({
                         chartTitle="CO2 distribution"
                         barColors={["#243746", "#EB0037", "#A8CED1"]}
                         height={400}
-                        width="100%"
+                        width="400px"
                         totalCo2Emission={co2EmissionsTotalString()}
                         unit="million tonnes"
                     />
