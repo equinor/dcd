@@ -44,7 +44,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         transport, setTransport,
         transportCost, setTransportCost,
 
-        // OPEX
+        // OPEX 
         historicCostCostProfile,
         // wellInterventionCostProfile,
         offshoreFacilitiesOperationsCostProfile,
