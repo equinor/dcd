@@ -8,6 +8,7 @@ import {
 } from "react"
 import {
     Button,
+    Typography,
     NativeSelect,
 } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
@@ -829,7 +830,7 @@ const CaseCostTab = ({
                     </NativeSelect>
                 </InputSwitcher>
             </Grid>
-            <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="flex-end">
+            <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="flex-end" marginTop={6}>
                 <Grid item>
                     <NativeSelect
                         id="currency"
@@ -843,19 +844,19 @@ const CaseCostTab = ({
                     </NativeSelect>
                 </Grid>
                 <Grid item>
+                    <Typography variant="caption">Start year</Typography>
                     <CaseNumberInput
                         onChange={handleStartYearChange}
                         defaultValue={startYear}
                         integer
-                        label="Start year"
                     />
                 </Grid>
                 <Grid item>
+                    <Typography variant="caption">End year</Typography>
                     <CaseNumberInput
                         onChange={handleEndYearChange}
                         defaultValue={endYear}
                         integer
-                        label="End year"
                     />
                 </Grid>
                 <Grid item>
