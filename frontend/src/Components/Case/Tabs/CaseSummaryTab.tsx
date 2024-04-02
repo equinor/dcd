@@ -14,6 +14,7 @@ import { useCaseContext } from "../../../Context/CaseContext"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
 import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
 import { useModalContext } from "../../../Context/ModalContext"
+import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 
 interface Props {
     topside: Components.Schemas.TopsideDto,
@@ -43,6 +44,16 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         transport, setTransport,
         transportCost, setTransportCost,
 
+        // OPEX
+        historicCostCostProfile,
+        setHistoricCostCostProfile,
+        wellInterventionCostProfile,
+        setWellInterventionCostProfile,
+        offshoreFacilitiesOperationsCostProfile,
+        setOffshoreFacilitiesOperationsCostProfile,
+        additionalOPEXCostProfile,
+        setAdditionalOPEXCostProfile,
+
         // Exploration
         totalExplorationCost,
         setTotalExplorationCost,
@@ -69,23 +80,18 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     const {
         projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase,
     } = useCaseContext()
+
     // OPEX
     const [totalStudyCost, setTotalStudyCost] = useState<ITimeSeries>()
     const [opexCost, setOpexCost] = useState<Components.Schemas.OpexCostProfileDto>()
     const [cessationCost, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto>()
 
     // CAPEX
-    const [historicCost] = useState<Components.Schemas.HistoricCostCostProfileDto>()
-
     const [, setStartYear] = useState<number>(2020)
     const [, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
-    const [historicCostCostProfile, setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto | undefined>()
-    const [offshoreFacilitiesOperationsCostProfile, setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined>()
-
     const [offshoreOpexPlussWellIntervention, setOffshoreOpexPlussWellIntervention] = useState<ITimeSeries | undefined>()
-    const [additionalOPEXCostProfile, setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto | undefined>()
 
     interface ITimeSeriesData {
         group?: string
@@ -223,24 +229,27 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         } return undefined
     }
 
-    const setTableYearsFromProfiles = (profiles: (ITimeSeries | undefined)[]) => {
-        let firstYear = Number.MAX_SAFE_INTEGER
-        let lastYear = Number.MIN_SAFE_INTEGER
-        profiles.forEach((p) => {
-            if (p && p.startYear !== undefined && p.startYear < firstYear) {
-                firstYear = p.startYear
-            }
-            const profileLastYear = getTimeSeriesLastYear(p)
-            if (profileLastYear !== undefined && profileLastYear > lastYear) {
-                lastYear = profileLastYear
-            }
-        })
-        if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER && projectCase?.dG4Date) {
-            setStartYear(firstYear + new Date(projectCase?.dG4Date).getFullYear())
-            setEndYear(lastYear + new Date(projectCase?.dG4Date).getFullYear())
-            setTableYears([firstYear + new Date(projectCase?.dG4Date).getFullYear(), lastYear + new Date(projectCase?.dG4Date).getFullYear()])
-        }
-    }
+    // const setTableYearsFromProfiles = (profiles: (ITimeSeries | undefined)[]) => {
+    //     let firstYear = Number.MAX_SAFE_INTEGER
+    //     let lastYear = Number.MIN_SAFE_INTEGER
+
+    //     profiles.forEach((p) => {
+    //         if (p && p.startYear !== undefined && p.startYear > 0 && p.startYear < firstYear) {
+    //             firstYear = p.startYear
+    //         }
+    //         const profileLastYear = getTimeSeriesLastYear(p)
+    //         if (profileLastYear !== undefined && profileLastYear > 0 && profileLastYear > lastYear) {
+    //             lastYear = profileLastYear
+    //         }
+    //     })
+
+    //     if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER && projectCase?.dG4Date) {
+    //         const baseYear = new Date(projectCase.dG4Date).getFullYear()
+    //         setStartYear(firstYear + baseYear)
+    //         setEndYear(lastYear + baseYear)
+    //         setTableYears([firstYear + baseYear, lastYear + baseYear])
+    //     }
+    // }
 
     const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...projectCase }
@@ -305,11 +314,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             ? transport.costProfileOverride : transport.costProfile
                         setTransportCost(transportCostProfile)
 
-                        setTableYearsFromProfiles([
-                            totalStudy, opex, cessation,
-                            topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
-                        ])
-
                         // Exploration costs
                         setTotalExplorationCost(MergeTimeseriesList([
                             explorationWellCostProfile,
@@ -317,7 +321,15 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             explorationSidetrackCost,
                             seismicAcquisitionAndProcessing,
                             countryOfficeCost,
-                            gAndGAdminCost]))
+                            //gAndGAdminCost
+                        ]))
+
+                        SetTableYearsFromProfiles([
+                            totalExplorationCost, totalOtherStudies, totalFeasibilityAndConceptStudies, totalFEEDStudies, historicCostCostProfile, offshoreOpexPlussWellIntervention,
+                            additionalOPEXCostProfile,
+                            // totalStudy, opex, cessation,
+                            // topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
+                        ], projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
                     }
                 }
             } catch (error) {

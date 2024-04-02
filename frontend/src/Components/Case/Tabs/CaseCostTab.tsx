@@ -97,8 +97,8 @@ const CaseCostTab = ({
         setExploration,
     } = useModalContext()
     const { project } = useProjectContext()
-    // OPEX
 
+    // OPEX
     const [offshoreFacilitiesOperationsCostProfileOverride, setOffshoreFacilitiesOperationsCostProfileOverride] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto>()
     const [wellInterventionCostProfileOverride, setWellInterventionCostProfileOverride] = useState<Components.Schemas.WellInterventionCostProfileOverrideDto>()
 
