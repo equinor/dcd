@@ -225,28 +225,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         } return undefined
     }
 
-    // const setTableYearsFromProfiles = (profiles: (ITimeSeries | undefined)[]) => {
-    //     let firstYear = Number.MAX_SAFE_INTEGER
-    //     let lastYear = Number.MIN_SAFE_INTEGER
-
-    //     profiles.forEach((p) => {
-    //         if (p && p.startYear !== undefined && p.startYear > 0 && p.startYear < firstYear) {
-    //             firstYear = p.startYear
-    //         }
-    //         const profileLastYear = getTimeSeriesLastYear(p)
-    //         if (profileLastYear !== undefined && profileLastYear > 0 && profileLastYear > lastYear) {
-    //             lastYear = profileLastYear
-    //         }
-    //     })
-
-    //     if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER && projectCase?.dG4Date) {
-    //         const baseYear = new Date(projectCase.dG4Date).getFullYear()
-    //         setStartYear(firstYear + baseYear)
-    //         setEndYear(lastYear + baseYear)
-    //         setTableYears([firstYear + baseYear, lastYear + baseYear])
-    //     }
-    // }
-
     const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...projectCase }
         newCase.npv = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
