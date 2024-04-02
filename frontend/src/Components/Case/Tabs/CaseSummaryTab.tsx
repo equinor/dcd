@@ -46,13 +46,9 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
         // OPEX
         historicCostCostProfile,
-        setHistoricCostCostProfile,
         wellInterventionCostProfile,
-        setWellInterventionCostProfile,
         offshoreFacilitiesOperationsCostProfile,
-        setOffshoreFacilitiesOperationsCostProfile,
         additionalOPEXCostProfile,
-        setAdditionalOPEXCostProfile,
 
         // Exploration
         totalExplorationCost,
@@ -321,7 +317,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             explorationSidetrackCost,
                             seismicAcquisitionAndProcessing,
                             countryOfficeCost,
-                            //gAndGAdminCost
+                            // gAndGAdminCost
                         ]))
 
                         SetTableYearsFromProfiles([

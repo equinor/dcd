@@ -64,13 +64,13 @@ const CaseView = () => {
         explorationWells, setExplorationWells,
 
         // OPEX
-        historicCostCostProfile,
+        // historicCostCostProfile,
         setHistoricCostCostProfile,
-        wellInterventionCostProfile,
+        // wellInterventionCostProfile,
         setWellInterventionCostProfile,
-        offshoreFacilitiesOperationsCostProfile,
+        // offshoreFacilitiesOperationsCostProfile,
         setOffshoreFacilitiesOperationsCostProfile,
-        additionalOPEXCostProfile,
+        // additionalOPEXCostProfile,
         setAdditionalOPEXCostProfile,
 
         // Exploration
