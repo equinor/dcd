@@ -76,8 +76,6 @@ const CaseCostTab = ({
         setAdditionalOPEXCostProfile,
 
         // Exploration
-        totalExplorationCost,
-        setTotalExplorationCost,
         explorationWellCostProfile,
         setExplorationWellCostProfile,
         gAndGAdminCost,
@@ -154,8 +152,6 @@ const CaseCostTab = ({
                         setTotalFeasibilityAndConceptStudiesOverride(projectCase?.totalFeasibilityAndConceptStudiesOverride)
                         setTotalFEEDStudies(totalFEED)
                         setTotalFEEDStudiesOverride(projectCase?.totalFEEDStudiesOverride)
-                        console.log(1, totalOtherStudies)
-                        console.log(1, projectCase.totalOtherStudies)
 
                         setTotalOtherStudies(totalOtherStudiesLocal)
 
