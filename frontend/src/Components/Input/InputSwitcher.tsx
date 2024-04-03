@@ -13,7 +13,7 @@ const InputSwitcher = ({ value, label, children }: InputSwitcherProps): JSX.Elem
     return (
         <InputWrapper
             labelProps={{
-                label: label
+                label,
             }}
         >
             {editMode
