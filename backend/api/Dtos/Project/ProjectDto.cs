@@ -82,6 +82,6 @@ public class ProjectDto
                Country == projectDto.Country && Id == projectDto.Id &&
                ProjectCategory == projectDto.ProjectCategory && 
                ProjectPhase == projectDto.ProjectPhase && 
-               Classification == projectDto.Class;
+               Classification == projectDto.Classification;
     }
 }
