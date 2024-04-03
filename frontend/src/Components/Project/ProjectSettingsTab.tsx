@@ -34,6 +34,17 @@ const ProjectSettingsTab = () => {
         3: "Confidential",
     }
 
+    const handleClassificationChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
+        if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
+            setClassification(Number(e.currentTarget.value))
+            const newClassification: Components.Schemas.Classification = classificationOptions[Number(e.currentTarget.value)] as Components.Schemas.Classification
+            const newProject: Components.Schemas.ProjectDto = { ...project }
+            newProject.classification = newClassification
+            console.log("newProject with new classification", newProject)
+            setProjectEdited(newProject)
+        }
+    }
+
     if (!project) {
         return <div>Loading project data...</div>
     }
@@ -81,7 +92,7 @@ const ProjectSettingsTab = () => {
                         <NativeSelect
                             id="classification"
                             label=""
-                            onChange={(e) => setClassification(Number(e.currentTarget.value))}
+                            onChange={(e) => handleClassificationChange(e)}
                             value={classification}
                         >
                             {Object.entries(classificationOptions).map(([key, value]) => (

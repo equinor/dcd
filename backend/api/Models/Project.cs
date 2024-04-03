@@ -87,3 +87,11 @@ public enum ProjectCategory
     RenewableOther,
     Ccs,
 }
+
+public enum ProjectClassification
+{
+    Open,
+    Internal,
+    Restricted,
+    Confidential
+}
