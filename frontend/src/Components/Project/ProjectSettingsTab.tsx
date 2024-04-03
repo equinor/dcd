@@ -37,7 +37,7 @@ const ProjectSettingsTab = () => {
     const handleClassificationChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
             setClassification(Number(e.currentTarget.value))
-            const newClassification: Components.Schemas.Classification = classificationOptions[Number(e.currentTarget.value)] as Components.Schemas.Classification
+            const newClassification: Components.Schemas.Classification = Number(e.currentTarget.value) as unknown as Components.Schemas.Classification
             const newProject: Components.Schemas.ProjectDto = { ...project }
             newProject.classification = newClassification
             console.log("newProject with new classification", newProject)

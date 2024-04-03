@@ -7,7 +7,7 @@ namespace api.Dtos;
 public class ProjectDto
 {
     [Required]
-    public ProjectClassification Classification { get; set; }
+    public ProjectClassification Classification { get; set; } 
     [Required]
     public Guid Id { get; set; }
     [Required]
