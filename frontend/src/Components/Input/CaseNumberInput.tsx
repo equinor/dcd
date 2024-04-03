@@ -2,7 +2,6 @@ import { InputWrapper, Input } from "@equinor/eds-core-react"
 import { useState, ChangeEventHandler, useEffect } from "react"
 import { preventNonDigitInput, isWithinRange } from "../../Utils/common"
 
-
 interface Props {
     onChange: ChangeEventHandler<HTMLInputElement>
     defaultValue: number | undefined
@@ -29,7 +28,6 @@ const CaseNumberInput = ({
     const [hasError, setHasError] = useState(false)
     const [visibleLabel, setVisibleLabel] = useState(label)
     const [inputValue, setInputValue] = useState(defaultValue)
-    const [errorMessage, setErrorMessage] = useState("")
 
     const checkInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (integer) {
@@ -51,18 +49,19 @@ const CaseNumberInput = ({
                 setVisibleLabel(label)
                 setHasError(false)
             } else {
-                setErrorMessage(`(min: ${min}, max: ${max})`)
+                setVisibleLabel(`${label} (min: ${min}, max: ${max})`)
                 setHasError(true)
             }
         }
     }, [inputValue, label, min, max])
 
     return (
-        <InputWrapper 
+        <InputWrapper
             color={hasError ? "error" : undefined}
             labelProps={{
-                label: visibleLabel ? `${visibleLabel} ${errorMessage}` : undefined
-            }}>
+                label: visibleLabel ? `${visibleLabel}` : undefined,
+            }}
+        >
             <Input
                 type="number"
                 value={inputValue}
