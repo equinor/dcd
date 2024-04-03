@@ -41,7 +41,6 @@ public class STEAService : ISTEAService
             sTEACaseDtos.Add(sTEACaseDto);
         }
 
-        // var projDto = _mapper.Map<Project, ProjectDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
         if (projectDto == null)
         {
             _logger.LogError("Failed to map project to dto");
