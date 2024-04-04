@@ -247,7 +247,7 @@ const CaseCO2Tab = ({
             <Grid item xs={12}>
                 <CaseCO2DistributionTable topside={topside} />
             </Grid>
-            <Grid item xs={12} md={8}>
+            <Grid item xs={12} lg={8}>
                 <AgChartsTimeseries
                     data={co2EmissionsChartData()}
                     chartTitle="Annual CO2 emissions"
@@ -260,7 +260,7 @@ const CaseCO2Tab = ({
                     axesData={chartAxes}
                 />
             </Grid>
-            <Grid item xs={12} md={4} container direction="column" spacing={1} justifyContent="center" alignItems="center">
+            <Grid item xs={12} lg={4} container direction="column" spacing={1} justifyContent="center" alignItems="center">
                 <Grid item>
                     <Typography variant="h4">Average lifetime CO2 intensity</Typography>
                 </Grid>
