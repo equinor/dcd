@@ -326,6 +326,11 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             // gAndGAdminCost
                         ]))
 
+                        // Drilling cost
+                        setTotalDrillingCost(MergeTimeseriesList([
+                            
+                        ]))
+
                         SetTableYearsFromProfiles([
                             totalExplorationCost, totalOtherStudies, totalFeasibilityAndConceptStudies, totalFEEDStudies, historicCostCostProfile, offshoreOpexPlussWellIntervention,
                             additionalOPEXCostProfile,
