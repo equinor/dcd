@@ -45,7 +45,7 @@ const CaseCostTab = ({
     setWellProject,
 }: Props) => {
     const {
-        projectCase, setProjectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase,
+        projectCase, setProjectCase, setProjectCaseEdited, activeTabCase,
         totalFeasibilityAndConceptStudies,
         setTotalFeasibilityAndConceptStudies,
         totalFeasibilityAndConceptStudiesOverride,
@@ -268,21 +268,6 @@ const CaseCostTab = ({
             }
         })()
     }, [activeTabCase])
-
-    // useEffect(() => {
-    //     const {
-    //         explorationWellCostProfile,
-    //         appraisalWellCostProfile,
-    //         sidetrackCostProfile,
-    //         seismicAcquisitionAndProcessing,
-    //     } = exploration
-    //     setExplorationWellCost(explorationWellCostProfile)
-    //     setExplorationAppraisalWellCost(appraisalWellCostProfile)
-    //     setExplorationSidetrackCost(sidetrackCostProfile)
-    //     setSeismicAcqAndProcCost(seismicAcquisitionAndProcessing)
-    //     const countryOffice = exploration.countryOfficeCost
-    //     setCountryOfficeCost(countryOffice)
-    // }, [exploration])
 
     useEffect(() => {
         if (studyGridRef.current

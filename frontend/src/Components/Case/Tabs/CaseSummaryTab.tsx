@@ -13,15 +13,7 @@ import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
 import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
-import { useModalContext } from "../../../Context/ModalContext"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
-
-interface Props {
-    topside: Components.Schemas.TopsideDto,
-    surf: Components.Schemas.SurfDto,
-    substructure: Components.Schemas.SubstructureDto,
-    transport: Components.Schemas.TransportDto,
-}
 
 const CaseSummaryTab = (): React.ReactElement | null => {
     const {
@@ -59,14 +51,9 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         totalOtherStudies,
     } = useCaseContext()
 
-    const {
-        exploration,
-        setExploration,
-    } = useModalContext()
-
     const { project } = useProjectContext()
     const {
-        projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase,
+        projectCase, setProjectCaseEdited, activeTabCase,
     } = useCaseContext()
 
     // OPEX
@@ -210,12 +197,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         studycostTimeSeriesData,
         opexTimeSeriesData,
     ]
-
-    const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
-        if (timeSeries && timeSeries.startYear && timeSeries.values) {
-            return timeSeries.startYear + timeSeries.values.length - 1
-        } return undefined
-    }
 
     const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...projectCase }
