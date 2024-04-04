@@ -282,8 +282,6 @@ const CaseView = () => {
                         </Panel>
                         <Panel>
                             <CaseCostTab
-                                wellProject={wellProject}
-                                setWellProject={setWellProject}
                                 cessationWellsCost={cessationWellsCost}
                                 setCessationWellsCost={setCessationWellsCost}
                                 cessationOffshoreFacilitiesCost={cessationOffshoreFacilitiesCost}

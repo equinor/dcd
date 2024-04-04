@@ -26,13 +26,8 @@ interface Props {
 
     cessationWellsCost: Components.Schemas.TotalFEEDStudiesDto | undefined,
     setCessationWellsCost: Dispatch<SetStateAction<Components.Schemas.CessationWellsCostDto | undefined>>,
-
     cessationOffshoreFacilitiesCost: Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined,
-    setCessationOffshoreFacilitiesCost: Dispatch<SetStateAction<Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined>>,
-
-    wellProject: Components.Schemas.WellProjectDto,
-    setWellProject: Dispatch<SetStateAction<Components.Schemas.WellProjectDto | undefined>>,
-
+    setCessationOffshoreFacilitiesCost: Dispatch<SetStateAction<Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined>>
 }
 
 const CaseCostTab = ({
@@ -41,8 +36,6 @@ const CaseCostTab = ({
     setCessationWellsCost,
     cessationOffshoreFacilitiesCost,
     setCessationOffshoreFacilitiesCost,
-    wellProject,
-    setWellProject,
 }: Props) => {
     const {
         projectCase, setProjectCase, setProjectCaseEdited, activeTabCase,
@@ -89,11 +82,13 @@ const CaseCostTab = ({
         countryOfficeCost,
         setCountryOfficeCost,
     } = useCaseContext()
-
     const {
+        wellProject,
+        setWellProject,
         exploration,
         setExploration,
     } = useModalContext()
+
     const { project } = useProjectContext()
 
     // OPEX
@@ -108,6 +103,8 @@ const CaseCostTab = ({
     const [surfCostOverride, setSurfCostOverride] = useState<Components.Schemas.SurfCostProfileOverrideDto>()
     const [substructureCostOverride, setSubstructureCostOverride] = useState<Components.Schemas.SubstructureCostProfileOverrideDto>()
     const [transportCostOverride, setTransportCostOverride] = useState<Components.Schemas.TransportCostProfileOverrideDto>()
+
+    const [oilProducerCostProfileOverride, setOilProducerCostProfileOverride] = useState<Components.Schemas.OilProducerCostProfileOverrideDto>()
 
     // Development
     const [wellProjectOilProducerCost, setWellProjectOilProducerCost] = useState<Components.Schemas.OilProducerCostProfileDto>()
@@ -142,7 +139,7 @@ const CaseCostTab = ({
     useEffect(() => {
         (async () => {
             try {
-                if (projectCase && project && topside && surf && substructure && transport && exploration) {
+                if (projectCase && project && topside && surf && substructure && transport && exploration && wellProject) {
                     if (activeTabCase === 5) {
                         const totalFeasibility = projectCase?.totalFeasibilityAndConceptStudies
                         const totalFEED = projectCase?.totalFEEDStudies
@@ -195,20 +192,18 @@ const CaseCostTab = ({
                         setTransportCost(transportCostProfile)
                         const transportCostProfileOverride = transport.costProfileOverride
                         setTransportCostOverride(transportCostProfileOverride)
-                        console.log(1, surfCost?.values)
-                        console.log(2, topsideCost?.values)
-                        console.log(3, transportCost?.values)
+
                         // Development
                         const {
                             oilProducerCostProfile,
                             gasProducerCostProfile,
                             waterInjectorCostProfile,
                             gasInjectorCostProfile,
-                            oilProducerCostProfileOverride,
                             gasProducerCostProfileOverride,
                             waterInjectorCostProfileOverride,
                             gasInjectorCostProfileOverride,
                         } = wellProject
+
                         setWellProjectOilProducerCost(oilProducerCostProfile)
                         setWellProjectOilProducerCostOverride(oilProducerCostProfileOverride)
                         setWellProjectGasProducerCost(gasProducerCostProfile)
