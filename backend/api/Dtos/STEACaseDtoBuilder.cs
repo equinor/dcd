@@ -19,7 +19,7 @@ public static class STEACaseDtoBuilder
         var startYearsCase = new int[] { sTEACaseDto.Exploration.StartYear, sTEACaseDto.ProductionAndSalesVolumes.StartYear,
             sTEACaseDto.Capex.StartYear, sTEACaseDto.StudyCostProfile.StartYear, sTEACaseDto.OpexCostProfile.StartYear, sTEACaseDto.Capex.CessationCost.StartYear };
         Array.Sort(startYearsCase);
-        sTEACaseDto.StartYear = Array.Find(startYearsCase, e => e > 0);
+        sTEACaseDto.StartYear = Array.Find(startYearsCase, e => e > 1);
 
         return sTEACaseDto;
     }

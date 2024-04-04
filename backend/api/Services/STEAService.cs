@@ -28,9 +28,9 @@ public class STEAService : ISTEAService
     {
         var project = await _projectService.GetProject(ProjectId);
         var sTEACaseDtos = new List<STEACaseDto>();
+        var projectDto = _mapper.Map<Project, ProjectDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
         foreach (Case c in project.Cases!)
         {
-            var projectDto = _mapper.Map<ProjectDto>(project);
             var caseDto = _mapper.Map<CaseDto>(c);
             if (projectDto == null || caseDto == null)
             {
@@ -41,12 +41,11 @@ public class STEAService : ISTEAService
             sTEACaseDtos.Add(sTEACaseDto);
         }
 
-        var projDto = _mapper.Map<ProjectDto>(project);
-        if (projDto == null)
+        if (projectDto == null)
         {
             _logger.LogError("Failed to map project to dto");
             throw new Exception("Failed to map project to dto");
         }
-        return STEAProjectDtoBuilder.Build(projDto, sTEACaseDtos);
+        return STEAProjectDtoBuilder.Build(projectDto, sTEACaseDtos);
     }
 }
