@@ -13,74 +13,53 @@ import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
 import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
-import { useModalContext } from "../../../Context/ModalContext"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
-
-interface Props {
-    topside: Components.Schemas.TopsideDto,
-    surf: Components.Schemas.SurfDto,
-    substructure: Components.Schemas.SubstructureDto,
-    transport: Components.Schemas.TransportDto,
-}
 
 const CaseSummaryTab = (): React.ReactElement | null => {
     const {
-        totalFeasibilityAndConceptStudies,
-        setTotalFeasibilityAndConceptStudies,
-        totalFeasibilityAndConceptStudiesOverride,
-        setTotalFeasibilityAndConceptStudiesOverride,
-        totalFEEDStudies,
-        setTotalFEEDStudies,
-        totalFEEDStudiesOverride,
-        setTotalFEEDStudiesOverride,
-        totalOtherStudies,
-        setTotalOtherStudies,
-        topside, setTopside,
-        topsideCost, setTopsideCost,
-        surf, setSurf,
-        surfCost, setSurfCost,
-        substructure, setSubstructure,
-        substructureCost, setSubstructureCost,
-        transport, setTransport,
-        transportCost, setTransportCost,
 
-        // OPEX 
+        topside,
+        setTopsideCost,
+        surf,
+        setSurfCost,
+        substructure,
+        setSubstructureCost,
+        transport,
+        setTransportCost,
+
+        // OPEX
         historicCostCostProfile,
-        // wellInterventionCostProfile,
-        offshoreFacilitiesOperationsCostProfile,
+        // wellInterventionCostProfile, // missing implementation
+        // offshoreFacilitiesOperationsCostProfile, // missing implementation
         additionalOPEXCostProfile,
 
         // Exploration
         totalExplorationCost,
         setTotalExplorationCost,
         explorationWellCostProfile,
-        setExplorationWellCostProfile,
-        gAndGAdminCost,
-        setGAndGAdminCost,
+        // gAndGAdminCost,// missing implementation
         seismicAcquisitionAndProcessing,
-        setSeismicAcquisitionAndProcessing,
         explorationSidetrackCost,
-        setExplorationSidetrackCost,
         explorationAppraisalWellCost,
-        setExplorationAppraisalWellCost,
         countryOfficeCost,
-        setCountryOfficeCost,
-    } = useCaseContext()
 
-    const {
-        exploration,
-        setExploration,
-    } = useModalContext()
+        // Study cost
+        totalFeasibilityAndConceptStudies,
+        totalFeasibilityAndConceptStudiesOverride,
+        totalFEEDStudies,
+        totalFEEDStudiesOverride,
+        totalOtherStudies,
+    } = useCaseContext()
 
     const { project } = useProjectContext()
     const {
-        projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase,
+        projectCase, setProjectCaseEdited, activeTabCase,
     } = useCaseContext()
 
     // OPEX
-    const [totalStudyCost, setTotalStudyCost] = useState<ITimeSeries>()
-    const [opexCost, setOpexCost] = useState<Components.Schemas.OpexCostProfileDto>()
-    const [cessationCost, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto>()
+    const [, setTotalStudyCost] = useState<ITimeSeries>()
+    const [, setOpexCost] = useState<Components.Schemas.OpexCostProfileDto>()
+    const [, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto>()
 
     // CAPEX
     const [, setStartYear] = useState<number>(2020)
@@ -219,12 +198,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         opexTimeSeriesData,
     ]
 
-    const getTimeSeriesLastYear = (timeSeries: ITimeSeries | undefined): number | undefined => {
-        if (timeSeries && timeSeries.startYear && timeSeries.values) {
-            return timeSeries.startYear + timeSeries.values.length - 1
-        } return undefined
-    }
-
     const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...projectCase }
         newCase.npv = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
@@ -271,7 +244,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         ))
 
                         // CAPEX
-
                         const topsideCostProfile = topside.costProfileOverride?.override
                             ? topside.costProfileOverride : topside.costProfile
                         setTopsideCost(topsideCostProfile)
@@ -295,14 +267,12 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             explorationSidetrackCost,
                             seismicAcquisitionAndProcessing,
                             countryOfficeCost,
-                            // gAndGAdminCost
+                            // gAndGAdminCost // Missing implementation, uncomment when gAndGAdminCost is fixed
                         ]))
 
                         SetTableYearsFromProfiles([
-                            totalExplorationCost, totalOtherStudies, totalFeasibilityAndConceptStudies, totalFEEDStudies, historicCostCostProfile, offshoreOpexPlussWellIntervention,
-                            additionalOPEXCostProfile,
-                            // totalStudy, opex, cessation,
-                            // topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
+                            totalExplorationCost, totalOtherStudies, totalFeasibilityAndConceptStudies, totalFEEDStudies, historicCostCostProfile,
+                            offshoreOpexPlussWellIntervention, additionalOPEXCostProfile,
                         ], projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
                     }
                 }

@@ -1,4 +1,4 @@
-import { useState, ChangeEventHandler } from "react"
+import { useState, ChangeEventHandler, useEffect } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useProjectContext } from "../../Context/ProjectContext"
@@ -6,8 +6,21 @@ import InputSwitcher from "../Input/InputSwitcher"
 
 const ProjectSettingsTab = () => {
     const { project, projectEdited, setProjectEdited } = useProjectContext()
-    const [classification, setClassification] = useState(0) // TODO: Get classification from project
+    const [classification, setClassification] = useState<number | undefined>(undefined)
     const [dummyRole, setDummyRole] = useState(0) // TODO: Get role from user
+
+    const classificationOptions: { [key: number]: string } = {
+        0: "Open",
+        1: "Internal",
+        2: "Restricted",
+        3: "Confidential",
+    }
+
+    useEffect(() => {
+        if (project) {
+            setClassification(project.classification)
+        }
+    }, [project])
 
     const handlePhysicalUnitChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
@@ -27,11 +40,14 @@ const ProjectSettingsTab = () => {
         }
     }
 
-    const classificationOptions: { [key: number]: string } = {
-        0: "Internal",
-        1: "Open",
-        2: "Restricted",
-        3: "Confidential",
+    const handleClassificationChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
+        if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
+            setClassification(Number(e.currentTarget.value))
+            const newClassification: Components.Schemas.Classification = Number(e.currentTarget.value) as unknown as Components.Schemas.Classification
+            const newProject: Components.Schemas.ProjectDto = { ...project }
+            newProject.classification = newClassification
+            setProjectEdited(newProject)
+        }
     }
 
     if (!project) {
@@ -75,14 +91,14 @@ const ProjectSettingsTab = () => {
             <Grid item>
                 {dummyRole === 0 && (
                     <InputSwitcher
-                        value={classificationOptions[classification]}
+                        value={classification !== undefined ? classificationOptions[classification] : "Not set"}
                         label="Classification"
                     >
                         <NativeSelect
                             id="classification"
                             label=""
-                            onChange={(e) => setClassification(Number(e.currentTarget.value))}
-                            value={classification}
+                            onChange={(e) => handleClassificationChange(e)}
+                            value={classification || undefined}
                         >
                             {Object.entries(classificationOptions).map(([key, value]) => (
                                 <option key={key} value={key}>{value}</option>

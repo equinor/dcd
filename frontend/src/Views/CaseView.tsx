@@ -1,6 +1,6 @@
 import { Tabs } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
-import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import Grid from "@mui/material/Grid"
 import CaseDescriptionTab from "../Components/Case/Tabs/CaseDescriptionTab"
 import CaseCostTab from "../Components/Case/Tabs/CaseCostTab"
@@ -39,55 +39,32 @@ const CaseView = () => {
         setActiveTabCase,
 
         // Study cost
-        totalFeasibilityAndConceptStudies,
         setTotalFeasibilityAndConceptStudies,
-        totalFeasibilityAndConceptStudiesOverride,
-        setTotalFeasibilityAndConceptStudiesOverride,
-        totalFEEDStudies,
         setTotalFEEDStudies,
-        totalFEEDStudiesOverride,
-        setTotalFEEDStudiesOverride,
-        totalOtherStudies,
         setTotalOtherStudies,
 
-        topside, setTopside,
-        topsideCost, setTopsideCost,
-        surf, setSurf,
-        surfCost, setSurfCost,
-        substructure, setSubstructure,
-        substructureCost, setSubstructureCost,
-        transport, setTransport,
-        transportCost, setTransportCost,
-        drainageStrategy, setDrainageStrategy,
+        topside,
+        setTopside,
+        surf,
+        setSurf,
+        substructure,
+        setSubstructure,
+        transport,
+        setTransport,
+        drainageStrategy,
+        setDrainageStrategy,
 
-        wellProjectWells, setWellProjectWells,
-        explorationWells, setExplorationWells,
+        wellProjectWells,
+        setWellProjectWells,
+        explorationWells,
+        setExplorationWells,
 
         // OPEX
-        // historicCostCostProfile,
         setHistoricCostCostProfile,
-        // wellInterventionCostProfile,
         setWellInterventionCostProfile,
-        // offshoreFacilitiesOperationsCostProfile,
         setOffshoreFacilitiesOperationsCostProfile,
-        // additionalOPEXCostProfile,
         setAdditionalOPEXCostProfile,
 
-        // Exploration
-        totalExplorationCost,
-        setTotalExplorationCost,
-        explorationWellCostProfile,
-        setExplorationWellCostProfile,
-        gAndGAdminCost,
-        setGAndGAdminCost,
-        seismicAcquisitionAndProcessing,
-        setSeismicAcquisitionAndProcessing,
-        explorationSidetrackCost,
-        setExplorationSidetrackCost,
-        explorationAppraisalWellCost,
-        setExplorationAppraisalWellCost,
-        countryOfficeCost,
-        setCountryOfficeCost,
     } = useCaseContext()
 
     if (!projectCase || !project) {
@@ -212,7 +189,6 @@ const CaseView = () => {
             setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.additionalOPEXCostProfileDto, setAdditionalOPEXCostProfile)
             setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationWellsCostDto, setCessationWellsCost)
             setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationOffshoreFacilitiesCostDto, setCessationOffshoreFacilitiesCost)
-            setIfNotNull(result.generatedProfilesDto?.gAndGAdminCostDto, setGAndGAdminCost)
             setIfNotNull(result.generatedProfilesDto?.co2EmissionsDto, setCo2Emissions)
             setIfNotNull(result.generatedProfilesDto?.fuelFlaringAndLossesDto, setFuelFlaringAndLosses)
             setIfNotNull(result.generatedProfilesDto?.netSalesGasDto, setNetSalesGas)

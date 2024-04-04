@@ -123,7 +123,7 @@ const Controls = () => {
                         <Input
                             ref={nameInput}
                             type="text"
-                            value={projectCase && projectCase.name}
+                            defaultValue={projectCase && projectCase.name}
                             onChange={(e: { target: { value: SetStateAction<string> } }) => setUpdatedName(e.target.value)}
                         />
                     )
