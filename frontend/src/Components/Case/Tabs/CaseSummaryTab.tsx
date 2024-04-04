@@ -44,9 +44,11 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         transport, setTransport,
         transportCost, setTransportCost,
 
-        // Drilling cost
-        developmentOperationalWellCosts,
-        setDevelopmentOperationalWellCosts,
+        // OPEX
+        historicCostCostProfile,
+        // wellInterventionCostProfile,
+        offshoreFacilitiesOperationsCostProfile,
+        additionalOPEXCostProfile,
 
         // Exploration
         totalExplorationCost,
@@ -74,6 +76,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     const {
         projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase,
     } = useCaseContext()
+
     // OPEX
     const [totalStudyCost, setTotalStudyCost] = useState<ITimeSeries>()
     const [opexCost, setOpexCost] = useState<Components.Schemas.OpexCostProfileDto>()
@@ -88,11 +91,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     const [, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
-    const [historicCostCostProfile, setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto | undefined>()
-    const [offshoreFacilitiesOperationsCostProfile, setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined>()
-
     const [offshoreOpexPlussWellIntervention, setOffshoreOpexPlussWellIntervention] = useState<ITimeSeries | undefined>()
-    const [additionalOPEXCostProfile, setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto | undefined>()
 
     interface ITimeSeriesData {
         group?: string
@@ -254,25 +253,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         } return undefined
     }
 
-    // const setTableYearsFromProfiles = (profiles: (ITimeSeries | undefined)[]) => {
-    //     let firstYear = Number.MAX_SAFE_INTEGER
-    //     let lastYear = Number.MIN_SAFE_INTEGER
-    //     profiles.forEach((p) => {
-    //         if (p && p.startYear !== undefined && p.startYear < firstYear) {
-    //             firstYear = p.startYear
-    //         }
-    //         const profileLastYear = getTimeSeriesLastYear(p)
-    //         if (profileLastYear !== undefined && profileLastYear > lastYear) {
-    //             lastYear = profileLastYear
-    //         }
-    //     })
-    //     if (firstYear < Number.MAX_SAFE_INTEGER && lastYear > Number.MIN_SAFE_INTEGER && projectCase?.dG4Date) {
-    //         setStartYear(firstYear + new Date(projectCase?.dG4Date).getFullYear())
-    //         setEndYear(lastYear + new Date(projectCase?.dG4Date).getFullYear())
-    //         setTableYears([firstYear + new Date(projectCase?.dG4Date).getFullYear(), lastYear + new Date(projectCase?.dG4Date).getFullYear()])
-    //     }
-    // }
-
     const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...projectCase }
         newCase.npv = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
@@ -336,30 +316,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             ? transport.costProfileOverride : transport.costProfile
                         setTransportCost(transportCostProfile)
 
-                        console.log(1, surfCost?.values)
-                        console.log(2, topsideCost?.values)
-                        console.log(3, transportCost?.values)
-
-                        setOffshoreFacilitiesCost(MergeTimeseriesList([surfCost, topsideCost, transportCost]))
-                        console.log(4, surfCostProfile.values)
-
-                        // Drilling cost
-                        // Drilling = Rig upgrading (development) + rig mob/demob (development) + production well(oil producer + gas producer?) +
-                        // water injection well + gas injection well + re-completions(?) + spare well type 1(?) + spare well type 2(?) + spare well type 3
-                        // Setting Rig upgrading and rig mob/demob to first year because we dont have a way to specify which year the costs appear.
-                        // re-completions, spare well type 1, spare well type 2 and spare well type 3 is a part of the drilling cost in BCCST,
-                        // but can't be found in Prosp and are therefore missing in this calculation
-                        
-                        // setTotalDrillingCost(developmentOperationalWellCosts?.rigUpgrading)
-                        // (MergeTimeseriesList([
-                        //     developmentOperationalWellCosts?.rigUpgrading,
-                        // ]))
-
-                        SetTableYearsFromProfiles([
-                            totalStudy, opex, cessation,
-                            topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
-                        ], projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
-
                         // Exploration costs
                         setTotalExplorationCost(MergeTimeseriesList([
                             explorationWellCostProfile,
@@ -367,7 +323,15 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             explorationSidetrackCost,
                             seismicAcquisitionAndProcessing,
                             countryOfficeCost,
-                            gAndGAdminCost]))
+                            // gAndGAdminCost
+                        ]))
+
+                        SetTableYearsFromProfiles([
+                            totalExplorationCost, totalOtherStudies, totalFeasibilityAndConceptStudies, totalFEEDStudies, historicCostCostProfile, offshoreOpexPlussWellIntervention,
+                            additionalOPEXCostProfile,
+                            // totalStudy, opex, cessation,
+                            // topsideCostProfile, surfCostProfile, substructureCostProfile, transportCostProfile,
+                        ], projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
                     }
                 }
             } catch (error) {

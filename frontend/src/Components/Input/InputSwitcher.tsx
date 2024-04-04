@@ -10,9 +10,6 @@ interface InputSwitcherProps {
 const InputSwitcher = ({ value, label, children }: InputSwitcherProps): JSX.Element => {
     const { editMode } = useAppContext()
 
-    if (editMode) {
-        return children
-    }
     return (
         <InputWrapper
             labelProps={{

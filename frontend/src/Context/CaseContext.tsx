@@ -68,6 +68,16 @@ interface CaseContextType {
     totalOtherStudies: Components.Schemas.TotalOtherStudiesDto | undefined,
     setTotalOtherStudies: Dispatch<SetStateAction<Components.Schemas.TotalOtherStudiesDto | undefined>>
 
+    // OPEX
+    historicCostCostProfile: Components.Schemas.HistoricCostCostProfileDto | undefined,
+    setHistoricCostCostProfile: Dispatch<SetStateAction<Components.Schemas.HistoricCostCostProfileDto | undefined>>,
+    wellInterventionCostProfile: Components.Schemas.WellInterventionCostProfileDto | undefined,
+    setWellInterventionCostProfile: Dispatch<SetStateAction<Components.Schemas.WellInterventionCostProfileDto | undefined>>,
+    offshoreFacilitiesOperationsCostProfile: Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined,
+    setOffshoreFacilitiesOperationsCostProfile: Dispatch<SetStateAction<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined>>,
+    additionalOPEXCostProfile: Components.Schemas.AdditionalOPEXCostProfileDto | undefined,
+    setAdditionalOPEXCostProfile: Dispatch<SetStateAction<Components.Schemas.AdditionalOPEXCostProfileDto | undefined>>,
+
     // Exploration
     totalExplorationCost: ITimeSeries | undefined,
     setTotalExplorationCost: Dispatch<SetStateAction<ITimeSeries | undefined>>,
@@ -119,6 +129,12 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [totalFEEDStudies, setTotalFEEDStudies] = useState<Components.Schemas.TotalFEEDStudiesDto | undefined>()
     const [totalFEEDStudiesOverride, setTotalFEEDStudiesOverride] = useState<Components.Schemas.TotalFEEDStudiesOverrideDto | undefined>()
     const [totalOtherStudies, setTotalOtherStudies] = useState<Components.Schemas.TotalOtherStudiesDto | undefined>()
+
+    // OPEX
+    const [historicCostCostProfile, setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto | undefined>()
+    const [wellInterventionCostProfile, setWellInterventionCostProfile] = useState<Components.Schemas.WellInterventionCostProfileDto | undefined>()
+    const [offshoreFacilitiesOperationsCostProfile, setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined>()
+    const [additionalOPEXCostProfile, setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto | undefined>()
 
     // Exploration
     const [totalExplorationCost, setTotalExplorationCost] = useState<ITimeSeries | undefined>()
@@ -183,6 +199,15 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         totalOtherStudies,
         setTotalOtherStudies,
 
+        // OPEX
+        historicCostCostProfile,
+        setHistoricCostCostProfile,
+        wellInterventionCostProfile,
+        setWellInterventionCostProfile,
+        offshoreFacilitiesOperationsCostProfile,
+        setOffshoreFacilitiesOperationsCostProfile,
+        additionalOPEXCostProfile,
+        setAdditionalOPEXCostProfile,
         // Exploration
         totalExplorationCost,
         setTotalExplorationCost,
@@ -234,6 +259,12 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         totalFEEDStudies,
         totalFEEDStudiesOverride,
         totalOtherStudies,
+
+        // OPEX
+        historicCostCostProfile,
+        wellInterventionCostProfile,
+        offshoreFacilitiesOperationsCostProfile,
+        additionalOPEXCostProfile,
 
         // Exploration
         totalExplorationCost,

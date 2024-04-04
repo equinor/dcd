@@ -14,6 +14,7 @@ import { ColDef } from "@ag-grid-community/core"
 import { isInteger } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../../Utils/constants"
+import { useAppContext } from "../../../Context/AppContext"
 
 interface Props {
     timeSeriesData: any[]
@@ -38,6 +39,7 @@ const CaseTabTable = ({
     const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
     const [overrideProfile, setOverrideProfile] = useState<any>()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
+    const { editMode } = useAppContext()
 
     const profilesToRowData = () => {
         const tableRows: any[] = []
@@ -178,10 +180,10 @@ const CaseTabTable = ({
             },
         ]
         const isEditable = (params: any) => {
-            if (params.data.overrideProfileSet === undefined && params.data.set !== undefined) {
+            if (editMode && params.data?.overrideProfileSet === undefined && params.data?.set !== undefined) {
                 return true
             }
-            if (params.data.overrideProfile.override) {
+            if (editMode && params.data?.overrideProfile !== undefined && params.data?.overrideProfile.override) {
                 return true
             }
             return false
@@ -194,6 +196,7 @@ const CaseTabTable = ({
                 editable: (params: any) => isEditable(params),
                 minWidth: 100,
                 aggFunc: "sum",
+                cellClass: (params: any) => editMode && isEditable(params) ? "editableCell" : undefined,
             })
         }
         return columnPinned.concat([...yearDefs])
@@ -298,6 +301,7 @@ const CaseTabTable = ({
                         groupIncludeTotalFooter={includeFooter}
                         getRowStyle={getRowStyle}
                         suppressLastEmptyLineOnPaste
+                        singleClickEdit={editMode}
                     />
                 </div>
             </div>

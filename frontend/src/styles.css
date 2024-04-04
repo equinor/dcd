@@ -45,3 +45,16 @@ label[class*="Label__LabelBase"] {
 .ConceptApp .MuiDialogActions-root {
     padding: 20px 24px;
 }
+
+.ag-theme-alpine-fusion .ag-row-odd {
+    background-color: var(--ag-background-color);
+}
+
+.ag-theme-alpine-fusion .ag-cell-inline-editing {
+    padding: 0;
+}
+
+.ag-theme-alpine-fusion [role="gridcell"].editableCell:not(.ag-cell-range-selected) {
+    background-color: var(--UI-Background-Light, #F7F7F7);
+    border-right: 1px solid #DBDBDB;
+}

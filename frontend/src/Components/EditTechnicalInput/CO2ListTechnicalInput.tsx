@@ -9,6 +9,7 @@ import { Switch } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid"
 import { useProjectContext } from "../../Context/ProjectContext"
+import { useAppContext } from "../../Context/AppContext"
 
 const CO2ListTechnicalInput = () => {
     const gridRef = useRef<any>(null)
@@ -26,6 +27,7 @@ const CO2ListTechnicalInput = () => {
     const [averageDevelopmentWellDrillingDays, setAverageDevelopmentWellDrillingDays] = useState<number>(project.averageDevelopmentDrillingDays ?? 0)
     const [dailyEmissionsFromDrillingRig, setDailyEmissionsFromDrillingRig] = useState<number>(project.dailyEmissionFromDrillingRig ?? 0)
     const [rowData, setRowData] = useState([{}])
+    const { editMode } = useAppContext()
 
     let cO2VentedRow = true
 
@@ -47,7 +49,8 @@ const CO2ListTechnicalInput = () => {
             headerName: "Value",
             width: 500,
             flex: 1,
-            editable: true,
+            editable: editMode,
+            cellClass: editMode ? "editableCell" : undefined,
         },
     ])
 
@@ -204,6 +207,7 @@ const CO2ListTechnicalInput = () => {
                         onGridReady={onGridReady}
                         isExternalFilterPresent={isExternalFilterPresent}
                         doesExternalFilterPass={doesExternalFilterPass}
+                        singleClickEdit={editMode}
                     />
                 </div>
             </Grid>
