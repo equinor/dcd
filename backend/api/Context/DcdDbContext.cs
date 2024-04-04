@@ -73,6 +73,10 @@ public class DcdDbContext : DbContext
             .HasOne(w => w.Well)
             .WithMany(w => w.ExplorationWells)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Project>()
+            .Property(p => p.Classification)
+            .HasDefaultValue(ProjectClassification.Internal);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

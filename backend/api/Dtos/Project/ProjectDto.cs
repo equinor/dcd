@@ -7,7 +7,7 @@ namespace api.Dtos;
 public class ProjectDto
 {
     [Required]
-    public ProjectClassification Classification { get; set; } 
+    public ProjectClassification Classification { get; set; }
     [Required]
     public Guid Id { get; set; }
     [Required]
@@ -77,11 +77,11 @@ public class ProjectDto
     public bool Equals(ProjectDto projectDto)
     {
         return Name == projectDto.Name &&
-               CommonLibraryName == projectDto.CommonLibraryName && 
+               CommonLibraryName == projectDto.CommonLibraryName &&
                FusionProjectId == projectDto.FusionProjectId &&
                Country == projectDto.Country && Id == projectDto.Id &&
-               ProjectCategory == projectDto.ProjectCategory && 
-               ProjectPhase == projectDto.ProjectPhase && 
+               ProjectCategory == projectDto.ProjectCategory &&
+               ProjectPhase == projectDto.ProjectPhase &&
                Classification == projectDto.Classification;
     }
 }
