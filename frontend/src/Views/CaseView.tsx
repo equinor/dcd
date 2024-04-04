@@ -39,10 +39,7 @@ const CaseView = () => {
         setActiveTabCase,
 
         // Study cost
-        totalFeasibilityAndConceptStudies,
         setTotalFeasibilityAndConceptStudies,
-        totalFeasibilityAndConceptStudiesOverride,
-        setTotalFeasibilityAndConceptStudiesOverride,
         totalFEEDStudies,
         setTotalFEEDStudies,
         totalFEEDStudiesOverride,
