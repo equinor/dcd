@@ -81,7 +81,6 @@ public class ProjectDto
                FusionProjectId == projectDto.FusionProjectId &&
                Country == projectDto.Country && Id == projectDto.Id &&
                ProjectCategory == projectDto.ProjectCategory &&
-               ProjectPhase == projectDto.ProjectPhase &&
-               Classification == projectDto.Classification;
+               ProjectPhase == projectDto.ProjectPhase;
     }
 }
