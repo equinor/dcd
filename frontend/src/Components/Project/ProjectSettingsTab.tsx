@@ -17,10 +17,8 @@ const ProjectSettingsTab = () => {
     }
 
     useEffect(() => {
-        console.log("setting classification")
         if (project) {
             setClassification(project.classification)
-            console.log("classification set", project.classification)
         }
     }, [project])
 
@@ -48,7 +46,6 @@ const ProjectSettingsTab = () => {
             const newClassification: Components.Schemas.Classification = Number(e.currentTarget.value) as unknown as Components.Schemas.Classification
             const newProject: Components.Schemas.ProjectDto = { ...project }
             newProject.classification = newClassification
-            console.log("newProject with new classification", newProject)
             setProjectEdited(newProject)
         }
     }
