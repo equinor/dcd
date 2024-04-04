@@ -10,8 +10,8 @@ const ProjectSettingsTab = () => {
     const [dummyRole, setDummyRole] = useState(0) // TODO: Get role from user
 
     const classificationOptions: { [key: number]: string } = {
-        0: "Internal",
-        1: "Open",
+        0: "Open",
+        1: "Internal",
         2: "Restricted",
         3: "Confidential",
     }
