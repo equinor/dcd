@@ -12,7 +12,7 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20240405070725_ProjectClassification")]
+    [Migration("20240405072150_ProjectClassification")]
     partial class ProjectClassification
     {
         /// <inheritdoc />
