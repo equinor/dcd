@@ -12,8 +12,8 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20240404110153_AddProjectClassificationDefaultValue")]
-    partial class AddProjectClassificationDefaultValue
+    [Migration("20240405070725_ProjectClassification")]
+    partial class ProjectClassification
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -2577,7 +2577,7 @@ namespace api.Migrations
                     b.HasOne("api.Models.Well", "Well")
                         .WithMany("ExplorationWells")
                         .HasForeignKey("WellId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("DrillingSchedule");
@@ -3157,7 +3157,7 @@ namespace api.Migrations
                     b.HasOne("api.Models.Well", "Well")
                         .WithMany("WellProjectWells")
                         .HasForeignKey("WellId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("api.Models.WellProject", "WellProject")
