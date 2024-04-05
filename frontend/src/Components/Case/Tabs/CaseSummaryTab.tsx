@@ -74,6 +74,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     // CAPEX
     const [totalDrillingCost, setTotalDrillingCost] = useState<ITimeSeries>()
     const [offshoreFacilitiesCost, setOffshoreFacilitiesCost] = useState<ITimeSeries>()
+    const [onshoreFacilitiesCost, setOnshoreFacilitiesCost] = useState<ITimeSeries>()
 
     const [, setStartYear] = useState<number>(2020)
     const [, setEndYear] = useState<number>(2030)
@@ -119,7 +120,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         {
             profileName: "Onshore facilities",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: undefined,
+            profile: onshoreFacilitiesCost,
             group: "CAPEX",
         },
         {
