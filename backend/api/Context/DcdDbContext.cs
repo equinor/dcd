@@ -64,7 +64,7 @@ public class DcdDbContext : DbContext
         modelBuilder.Entity<WellProjectWell>()
             .HasOne(w => w.Well)
             .WithMany(w => w.WellProjectWells)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<ExplorationWell>()
             .HasKey(ew => new { ew.ExplorationId, ew.WellId });
@@ -72,7 +72,7 @@ public class DcdDbContext : DbContext
         modelBuilder.Entity<ExplorationWell>()
             .HasOne(w => w.Well)
             .WithMany(w => w.ExplorationWells)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<Project>()
             .Property(p => p.Classification)
