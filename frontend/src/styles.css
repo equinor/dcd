@@ -2,6 +2,10 @@ body {
     margin: 0;
 }
 
+* {
+    scrollbar-width: thin;
+}
+
 .App {
     font-family: Equinor;
 }
