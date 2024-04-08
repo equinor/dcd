@@ -154,11 +154,13 @@ const Sidebar = () => {
                         <Grid item flex={sidebarOpen ? 1 : undefined} sx={{padding: "8px"}}>
                             <Typography variant="overline">Cases</Typography>
                         </Grid>
-                        {sidebarOpen && (<Grid item>
-                            <Tooltip title="Add new case">
-                                <Button variant="ghost_icon" className="GhostButton" onClick={() => addNewCase()}><Icon data={add} /></Button>
-                            </Tooltip>
-                        </Grid>)}
+                        {sidebarOpen && (
+                            <Grid item>
+                                <Tooltip title="Add new case">
+                                    <Button variant="ghost_icon" className="GhostButton" onClick={() => addNewCase()}><Icon data={add} /></Button>
+                                </Tooltip>
+                            </Grid>
+                        )}
                     </Grid>
                 </Grid>
                 <Timeline data-timeline={true} container justifyContent="flex-start" alignItems="flex-start" direction="column">
