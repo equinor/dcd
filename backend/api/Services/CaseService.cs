@@ -153,6 +153,7 @@ public class CaseService : ICaseService
             .Include(c => c.CessationWellsCostOverride)
             .Include(c => c.CessationOffshoreFacilitiesCost)
             .Include(c => c.CessationOffshoreFacilitiesCostOverride)
+            .Include(c => c.CessationOnshoreFacilitiesCost)
             .FirstOrDefaultAsync(c => c.Id == caseId);
         if (caseItem == null)
         {
@@ -181,6 +182,7 @@ public class CaseService : ICaseService
                     .Include(c => c.CessationWellsCostOverride)
                     .Include(c => c.CessationOffshoreFacilitiesCost)
                     .Include(c => c.CessationOffshoreFacilitiesCostOverride)
+                    .Include(c => c.CessationOnshoreFacilitiesCost)
                     .ToListAsync();
         }
         else

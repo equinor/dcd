@@ -57,6 +57,7 @@ public class DuplicateCaseService : IDuplicateCaseService
             .Include(c => c.CessationWellsCostOverride)
             .Include(c => c.CessationOffshoreFacilitiesCost)
             .Include(c => c.CessationOffshoreFacilitiesCostOverride)
+            .Include(c => c.CessationOnshoreFacilitiesCost)
             .FirstOrDefaultAsync(c => c.Id == caseId);
         if (caseItem == null)
         {
@@ -111,6 +112,10 @@ public class DuplicateCaseService : IDuplicateCaseService
         if (caseItem.CessationOffshoreFacilitiesCostOverride != null)
         {
             caseItem.CessationOffshoreFacilitiesCostOverride.Id = Guid.Empty;
+        }
+        if (caseItem.CessationOnshoreFacilitiesCost != null)
+        {
+            caseItem.CessationOnshoreFacilitiesCost.Id = Guid.Empty;
         }
         if (caseItem.WellInterventionCostProfile != null)
         {

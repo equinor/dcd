@@ -1,5 +1,13 @@
 declare namespace Components {
     namespace Schemas {
+        export interface OnshoreRelatedOPEXCostProfileDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion: string;
+            currency: Currency /* int32 */;
+        }
         export interface AdditionalOPEXCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
@@ -65,6 +73,7 @@ declare namespace Components {
             cessationWellsCostOverride: CessationWellsCostOverrideDto;
             cessationOffshoreFacilitiesCost: CessationOffshoreFacilitiesCostDto;
             cessationOffshoreFacilitiesCostOverride: CessationOffshoreFacilitiesCostOverrideDto;
+            cessationOnshoreFacilitiesCost: CessationOnshoreFacilitiesCostDto;
             totalFeasibilityAndConceptStudies: TotalFeasibilityAndConceptStudiesDto;
             totalFeasibilityAndConceptStudiesOverride: TotalFeasibilityAndConceptStudiesOverrideDto;
             totalFEEDStudies: TotalFEEDStudiesDto;
@@ -75,6 +84,7 @@ declare namespace Components {
             wellInterventionCostProfileOverride: WellInterventionCostProfileOverrideDto;
             offshoreFacilitiesOperationsCostProfile: OffshoreFacilitiesOperationsCostProfileDto;
             offshoreFacilitiesOperationsCostProfileOverride: OffshoreFacilitiesOperationsCostProfileOverrideDto;
+            onshoreRelatedOPEXCostProfile: OnshoreRelatedOPEXCostProfileDto
             additionalOPEXCostProfile: AdditionalOPEXCostProfileDto;
             drainageStrategyLink: string; // uuid
             wellProjectLink: string; // uuid
@@ -113,8 +123,18 @@ declare namespace Components {
             cessationCostDto?: CessationCostDto;
             cessationWellsCostDto?: CessationWellsCostDto;
             cessationOffshoreFacilitiesCostDto?: CessationOffshoreFacilitiesCostDto;
+            cessationOnshoreFacilitiesCostDto: CessationOnshoreFacilitiesCostDto;
+
         }
         export interface CessationOffshoreFacilitiesCostDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion: string;
+            currency: Currency /* int32 */;
+        }
+        export interface CessationOnshoreFacilitiesCostDto {
             id: string; // uuid
             startYear: number; // int32
             values?: number /* double */[] | null;
@@ -473,6 +493,7 @@ declare namespace Components {
             historicCostCostProfileDto?: HistoricCostCostProfileDto;
             wellInterventionCostProfileDto?: WellInterventionCostProfileDto;
             offshoreFacilitiesOperationsCostProfileDto?: OffshoreFacilitiesOperationsCostProfileDto;
+            onshoreRelatedOPEXCostProfileDto?: OnshoreRelatedOPEXCostProfileDto;
             additionalOPEXCostProfileDto?: AdditionalOPEXCostProfileDto;
         }
         export type PhysUnit = 0 | 1; // int32
@@ -932,6 +953,7 @@ declare namespace Components {
             dG4Date?: string; // date-time
             cessationWellsCostOverride?: UpdateCessationWellsCostOverrideDto;
             cessationOffshoreFacilitiesCostOverride?: UpdateCessationOffshoreFacilitiesCostOverrideDto;
+            cessationOnshoreFacilitiesCost?: UpdateCessationOnshoreFacilitiesCostDto;
             totalFeasibilityAndConceptStudiesOverride?: UpdateTotalFeasibilityAndConceptStudiesOverrideDto;
             totalFEEDStudiesOverride?: UpdateTotalFEEDStudiesOverrideDto;
             totalOtherStudies?: UpdateTotalOtherStudies;
@@ -950,6 +972,11 @@ declare namespace Components {
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
             override?: boolean;
+        }
+        export interface UpdateCessationOnshoreFacilitiesCostDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            currency?: Currency /* int32 */;
         }
         export interface UpdateCessationWellsCostOverrideDto {
             startYear?: number; // int32

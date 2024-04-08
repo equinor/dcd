@@ -50,10 +50,15 @@ interface CaseContextType {
     explorationWells: Components.Schemas.ExplorationWellDto[] | undefined
     setExplorationWells: Dispatch<SetStateAction<Components.Schemas.ExplorationWellDto[] | undefined>>
 
+    // CAPEX
     // Drilling cost
     developmentOperationalWellCosts: Components.Schemas.DevelopmentOperationalWellCostsDto | undefined
     setDevelopmentOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>>
 
+    cessationOffshoreFacilitiesCost: Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined,
+    setCessationOffshoreFacilitiesCost: Dispatch<SetStateAction<Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined>>
+    cessationOnshoreFacilitiesCost: Components.Schemas.CessationOnshoreFacilitiesCostDto | undefined,
+    setCessationOnshoreFacilitiesCost: Dispatch<SetStateAction<Components.Schemas.CessationOnshoreFacilitiesCostDto | undefined>>
     // Study
     totalFeasibilityAndConceptStudies: Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined
     setTotalFeasibilityAndConceptStudies: Dispatch<SetStateAction<Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined>>
@@ -75,6 +80,8 @@ interface CaseContextType {
     setWellInterventionCostProfile: Dispatch<SetStateAction<Components.Schemas.WellInterventionCostProfileDto | undefined>>,
     offshoreFacilitiesOperationsCostProfile: Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined,
     setOffshoreFacilitiesOperationsCostProfile: Dispatch<SetStateAction<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined>>,
+    onshoreRelatedOPEXCostProfile: Components.Schemas.OnshoreRelatedOPEXCostProfileDto | undefined,
+    setOnshoreRelatedOPEXCostProfile: Dispatch<SetStateAction<Components.Schemas.OnshoreRelatedOPEXCostProfileDto | undefined>>,
     additionalOPEXCostProfile: Components.Schemas.AdditionalOPEXCostProfileDto | undefined,
     setAdditionalOPEXCostProfile: Dispatch<SetStateAction<Components.Schemas.AdditionalOPEXCostProfileDto | undefined>>,
 
@@ -119,8 +126,11 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellProjectWellDto[] | undefined>()
     const [explorationWells, setExplorationWells] = useState<Components.Schemas.ExplorationWellDto[] | undefined>()
 
+    // CAPEX
     // Drilling cost
     const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>()
+    const [cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost] = useState<Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined>()
+    const [cessationOnshoreFacilitiesCost, setCessationOnshoreFacilitiesCost] = useState<Components.Schemas.CessationOnshoreFacilitiesCostDto | undefined>()
 
     // Study
     const [totalFeasibilityAndConceptStudies, setTotalFeasibilityAndConceptStudies] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined>()
@@ -134,6 +144,7 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [historicCostCostProfile, setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto | undefined>()
     const [wellInterventionCostProfile, setWellInterventionCostProfile] = useState<Components.Schemas.WellInterventionCostProfileDto | undefined>()
     const [offshoreFacilitiesOperationsCostProfile, setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined>()
+    const [onshoreRelatedOPEXCostProfile, setOnshoreRelatedOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto | undefined>()
     const [additionalOPEXCostProfile, setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto | undefined>()
 
     // Exploration
@@ -183,9 +194,14 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         explorationWells,
         setExplorationWells,
 
+        // CAPEX
         // Drilling cost
         developmentOperationalWellCosts,
         setDevelopmentOperationalWellCosts,
+        cessationOffshoreFacilitiesCost,
+        setCessationOffshoreFacilitiesCost,
+        cessationOnshoreFacilitiesCost,
+        setCessationOnshoreFacilitiesCost,
 
         // Study
         totalFeasibilityAndConceptStudies,
@@ -206,6 +222,8 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setWellInterventionCostProfile,
         offshoreFacilitiesOperationsCostProfile,
         setOffshoreFacilitiesOperationsCostProfile,
+        onshoreRelatedOPEXCostProfile,
+        setOnshoreRelatedOPEXCostProfile,
         additionalOPEXCostProfile,
         setAdditionalOPEXCostProfile,
         // Exploration
@@ -250,8 +268,11 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         wellProjectWells,
         explorationWells,
 
+        // CAPEX
         // Drilling cost
         developmentOperationalWellCosts,
+        cessationOffshoreFacilitiesCost,
+        cessationOnshoreFacilitiesCost,
 
         // Study
         totalFeasibilityAndConceptStudies,
@@ -264,6 +285,7 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         historicCostCostProfile,
         wellInterventionCostProfile,
         offshoreFacilitiesOperationsCostProfile,
+        onshoreRelatedOPEXCostProfile,
         additionalOPEXCostProfile,
 
         // Exploration

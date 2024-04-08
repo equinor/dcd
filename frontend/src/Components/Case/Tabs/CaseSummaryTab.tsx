@@ -28,10 +28,18 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         transport,
         setTransportCost,
 
+        // CAPEX
+        cessationOffshoreFacilitiesCost,
+        setCessationOffshoreFacilitiesCost,
+        cessationOnshoreFacilitiesCost,
+        setCessationOnshoreFacilitiesCost,
+
         // OPEX
         historicCostCostProfile,
-        // wellInterventionCostProfile, // missing implementation
-        // offshoreFacilitiesOperationsCostProfile, // missing implementation
+        wellInterventionCostProfile,
+        offshoreFacilitiesOperationsCostProfile,
+        onshoreRelatedOPEXCostProfile,
+        setOnshoreRelatedOPEXCostProfile,
         additionalOPEXCostProfile,
 
         // Exploration
@@ -70,6 +78,9 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     const [tableGasProducer, setTableGasProducer] = useState<ITimeSeries>()
     const [tableWaterInjector, setTableWaterInjector] = useState<ITimeSeries>()
     const [tableGasInjector, setTableGasInjector] = useState<ITimeSeries>()
+
+    const [wellInterventionCostProfileOverride, setWellInterventionCostProfileOverride] = useState<Components.Schemas.WellInterventionCostProfileOverrideDto>()
+    const [offshoreFacilitiesOperationsCostProfileOverride, setOffshoreFacilitiesOperationsCostProfileOverride] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto>()
 
     // CAPEX
     const [totalDrillingCost, setTotalDrillingCost] = useState<ITimeSeries>()
@@ -114,7 +125,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         {
             profileName: "Offshore facilities",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: offshoreFacilitiesCost,
+            profile: offshoreFacilitiesOperationsCostProfile,
             group: "CAPEX",
         },
         {
@@ -126,13 +137,13 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         {
             profileName: "Cessation - offshore facilities",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: undefined,
+            profile: cessationOffshoreFacilitiesCost,
             group: "CAPEX",
         },
         {
             profileName: "Cessation - onshore facilities",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: undefined,
+            profile: cessationOnshoreFacilitiesCost,
             group: "CAPEX",
         },
 
@@ -176,7 +187,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         {
             profileName: "Onshore related OPEX",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: undefined,
+            profile: onshoreRelatedOPEXCostProfile,
             group: "OPEX",
         },
         {
@@ -278,9 +289,17 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         setOpexCost(opex)
                         setCessationCost(cessation)
 
-                        setOffshoreOpexPlussWellIntervention(MergeTimeseriesList(
-                            [projectCase.wellInterventionCostProfileOverride, projectCase.offshoreFacilitiesOperationsCostProfileOverride],
-                        ))
+                        setOffshoreOpexPlussWellIntervention(
+                            MergeTimeseriesList(
+                                [
+                                    (wellInterventionCostProfileOverride?.override === true
+                                        ? wellInterventionCostProfileOverride
+                                        : wellInterventionCostProfile),
+                                    (offshoreFacilitiesOperationsCostProfileOverride?.override === true
+                                        ? offshoreFacilitiesOperationsCostProfileOverride
+                                        : offshoreFacilitiesOperationsCostProfile)],
+                            ),
+                        )
 
                         // CAPEX
                         const topsideCostProfile = topside.costProfileOverride?.override
@@ -366,13 +385,14 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         }
 
                         // Call the function with the costs to add
-                        addDevelopmentCostsToFirstYearOfDrilling(rigUpgradingCost, rigMobDemobCost);
+                        addDevelopmentCostsToFirstYearOfDrilling(rigUpgradingCost, rigMobDemobCost)
 
                         console.log(22, totalDrillingCost)
 
                         SetTableYearsFromProfiles([
                             totalExplorationCost, totalOtherStudies, totalFeasibilityAndConceptStudies, totalFEEDStudies, historicCostCostProfile,
-                            offshoreOpexPlussWellIntervention, additionalOPEXCostProfile,
+                            offshoreOpexPlussWellIntervention, additionalOPEXCostProfile, onshoreRelatedOPEXCostProfile,
+
                         ], projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
                     }
                 }

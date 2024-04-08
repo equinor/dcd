@@ -51,11 +51,12 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
 
         var cessationWellsCost = caseItem.CessationWellsCost ?? new CessationWellsCost();
         var cessationOffshoreFacilitiesCost = caseItem.CessationOffshoreFacilitiesCost ?? new CessationOffshoreFacilitiesCost();
+        var cessationOnshoreFacilitiesCost = caseItem.CessationOnshoreFacilitiesCost ?? new CessationOnshoreFacilitiesCost();
 
         var lastYear = await GetRelativeLastYearOfProduction(caseItem);
         if (lastYear == null)
         {
-            await UpdateCaseAndSave(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost);
+            await UpdateCaseAndSave(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCost);
             return new CessationCostWrapperDto();
         }
 
@@ -89,9 +90,13 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
             _logger.LogInformation("Surf {0} not found.", caseItem.SurfLink);
         }
 
-        await UpdateCaseAndSave(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost);
+        var cessationOnshore = caseItem.CessationOnshoreFacilitiesCost ?? new CessationOnshoreFacilitiesCost();
+        var cessationOnshoreDto = _mapper.Map<CessationOnshoreFacilitiesCostDto>(cessationOnshore);
+        result.CessationOnshoreFacilitiesCostDto = cessationOnshoreDto;
 
-        var cessationTimeSeries = TimeSeriesCost.MergeCostProfiles(cessationWellsCost, cessationOffshoreFacilitiesCost);
+        await UpdateCaseAndSave(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCost);
+
+        var cessationTimeSeries = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCost });
         var cessation = new CessationCost
         {
             StartYear = cessationTimeSeries.StartYear,
@@ -104,10 +109,11 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         return result;
     }
 
-    private async Task<int> UpdateCaseAndSave(Case caseItem, CessationWellsCost cessationWellsCost, CessationOffshoreFacilitiesCost cessationOffshoreFacilitiesCost)
+    private async Task<int> UpdateCaseAndSave(Case caseItem, CessationWellsCost cessationWellsCost, CessationOffshoreFacilitiesCost cessationOffshoreFacilitiesCost, CessationOnshoreFacilitiesCost cessationOnshoreFacilitiesCost)
     {
         caseItem.CessationWellsCost = cessationWellsCost;
         caseItem.CessationOffshoreFacilitiesCost = cessationOffshoreFacilitiesCost;
+        caseItem.CessationOnshoreFacilitiesCost = cessationOnshoreFacilitiesCost;
         return await _context.SaveChangesAsync();
     }
 

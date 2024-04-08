@@ -119,6 +119,20 @@ public static class STEACaseDtoBuilder
             costProfileDtos.Add(caseDto.CessationOffshoreFacilitiesCost);
         }
 
+        if (caseDto.CessationOffshoreFacilitiesCostOverride?.Override == true)
+        {
+            costProfileDtos.Add(caseDto.CessationOffshoreFacilitiesCostOverride);
+        }
+        else if (caseDto.CessationOffshoreFacilitiesCost != null)
+        {
+            costProfileDtos.Add(caseDto.CessationOffshoreFacilitiesCost);
+        }
+
+        if (caseDto.CessationOnshoreFacilitiesCost != null)
+        {
+            costProfileDtos.Add(caseDto.CessationOnshoreFacilitiesCost);
+        }
+        
         var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);
         var cessationCost = new CessationCostDto
         {

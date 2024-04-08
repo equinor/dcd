@@ -66,24 +66,27 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         offshoreFacilitiesOperationsCost.Values = newOffshoreFacilitiesOperationsCost.Values;
 
         var historicCost = caseItem.HistoricCostCostProfile ?? new HistoricCostCostProfile();
-
+        var onshoreRelatedOPEXCost = caseItem.OnshoreRelatedOPEXCostProfile ?? new OnshoreRelatedOPEXCostProfile();
         var additionalOPEXCost = caseItem.AdditionalOPEXCostProfile ?? new AdditionalOPEXCostProfile();
 
-        await UpdateCaseAndSave(caseItem, wellInterventionCost, offshoreFacilitiesOperationsCost, historicCost, additionalOPEXCost);
+        await UpdateCaseAndSave(caseItem, wellInterventionCost, offshoreFacilitiesOperationsCost, historicCost, onshoreRelatedOPEXCost, additionalOPEXCost);
 
         var wellInterventionCostDto = _mapper.Map<WellInterventionCostProfileDto>(wellInterventionCost);
         var offshoreFacilitiesOperationsCostDto = _mapper.Map<OffshoreFacilitiesOperationsCostProfileDto>(offshoreFacilitiesOperationsCost);
-        var historicCostCostProfileDto = _mapper.Map<HistoricCostCostProfileDto>(historicCost);
-        var additionalOPEXCostProfileDto = _mapper.Map<AdditionalOPEXCostProfileDto>(additionalOPEXCost);
+        var historicCostCostDto = _mapper.Map<HistoricCostCostProfileDto>(historicCost);
+        var onshoreRelatedOPEXCostDto = _mapper.Map<OnshoreRelatedOPEXCostProfileDto>(additionalOPEXCost);
+        var additionalOPEXCostDto = _mapper.Map<AdditionalOPEXCostProfileDto>(additionalOPEXCost);
 
         result.WellInterventionCostProfileDto = wellInterventionCostDto;
         result.OffshoreFacilitiesOperationsCostProfileDto = offshoreFacilitiesOperationsCostDto;
-        result.HistoricCostCostProfileDto = historicCostCostProfileDto;
-        result.AdditionalOPEXCostProfileDto = additionalOPEXCostProfileDto;
+        result.HistoricCostCostProfileDto = historicCostCostDto;
+        result.OnshoreRelatedOPEXCostProfileDto = onshoreRelatedOPEXCostDto;
+        result.AdditionalOPEXCostProfileDto = additionalOPEXCostDto;
 
         var OPEX = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> {wellInterventionCost,
             offshoreFacilitiesOperationsCost,
             historicCost,
+            onshoreRelatedOPEXCost,
             additionalOPEXCost});
 
         var opexCostProfile = new OpexCostProfile
@@ -102,11 +105,13 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         WellInterventionCostProfile wellInterventionCostProfile,
         OffshoreFacilitiesOperationsCostProfile offshoreFacilitiesOperationsCostProfile,
         HistoricCostCostProfile historicCostCostProfile,
+        OnshoreRelatedOPEXCostProfile onshoreRelatedOPEXCostProfile,
         AdditionalOPEXCostProfile additionalOPEXCostProfile)
     {
         caseItem.WellInterventionCostProfile = wellInterventionCostProfile;
         caseItem.OffshoreFacilitiesOperationsCostProfile = offshoreFacilitiesOperationsCostProfile;
         caseItem.HistoricCostCostProfile = historicCostCostProfile;
+        caseItem.OnshoreRelatedOPEXCostProfile = onshoreRelatedOPEXCostProfile;
         caseItem.AdditionalOPEXCostProfile = additionalOPEXCostProfile;
         return await _context.SaveChangesAsync();
     }

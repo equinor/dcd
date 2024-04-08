@@ -14,6 +14,7 @@ public class CaseProfile : Profile
         CreateMap<CessationWellsCostOverride, CessationWellsCostOverrideDto>();
         CreateMap<CessationOffshoreFacilitiesCost, CessationOffshoreFacilitiesCostDto>();
         CreateMap<CessationOffshoreFacilitiesCostOverride, CessationOffshoreFacilitiesCostOverrideDto>();
+        CreateMap<CessationOnshoreFacilitiesCost, CessationOnshoreFacilitiesCostDto>();
         CreateMap<TotalFeasibilityAndConceptStudies, TotalFeasibilityAndConceptStudiesDto>();
         CreateMap<TotalFeasibilityAndConceptStudiesOverride, TotalFeasibilityAndConceptStudiesOverrideDto>();
         CreateMap<TotalFEEDStudies, TotalFEEDStudiesDto>();
@@ -24,6 +25,7 @@ public class CaseProfile : Profile
         CreateMap<OffshoreFacilitiesOperationsCostProfile, OffshoreFacilitiesOperationsCostProfileDto>();
         CreateMap<OffshoreFacilitiesOperationsCostProfileOverride, OffshoreFacilitiesOperationsCostProfileOverrideDto>();
         CreateMap<HistoricCostCostProfile, HistoricCostCostProfileDto>();
+        CreateMap<OnshoreRelatedOPEXCostProfile, OnshoreRelatedOPEXCostProfileDto>();
         CreateMap<AdditionalOPEXCostProfile, AdditionalOPEXCostProfileDto>();
 
         CreateMap<UpdateCaseDto, Case>();

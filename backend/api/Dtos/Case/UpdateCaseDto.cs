@@ -32,6 +32,7 @@ public class UpdateCaseDto
 
     public UpdateCessationWellsCostOverrideDto? CessationWellsCostOverride { get; set; }
     public UpdateCessationOffshoreFacilitiesCostOverrideDto? CessationOffshoreFacilitiesCostOverride { get; set; }
+    public UpdateCessationOnshoreFacilitiesCostOverrideDto? CessationOnshoreFacilitiesCostOverride { get; set; }
 
     public UpdateTotalFeasibilityAndConceptStudiesOverrideDto? TotalFeasibilityAndConceptStudiesOverride { get; set; }
     public UpdateTotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
@@ -55,6 +56,10 @@ public class UpdateCessationWellsCostOverrideDto : UpdateTimeSeriesCostDto, ITim
 }
 
 public class UpdateCessationOffshoreFacilitiesCostOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
+}
+public class UpdateCessationOnshoreFacilitiesCostOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
 {
     public bool Override { get; set; }
 }

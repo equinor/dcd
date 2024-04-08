@@ -22,21 +22,7 @@ import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import { useModalContext } from "../../../Context/ModalContext"
 
-interface Props {
-
-    cessationWellsCost: Components.Schemas.TotalFEEDStudiesDto | undefined,
-    setCessationWellsCost: Dispatch<SetStateAction<Components.Schemas.CessationWellsCostDto | undefined>>,
-    cessationOffshoreFacilitiesCost: Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined,
-    setCessationOffshoreFacilitiesCost: Dispatch<SetStateAction<Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined>>
-}
-
-const CaseCostTab = ({
-
-    cessationWellsCost,
-    setCessationWellsCost,
-    cessationOffshoreFacilitiesCost,
-    setCessationOffshoreFacilitiesCost,
-}: Props) => {
+const CaseCostTab = (): React.ReactElement | null => {
     const {
         projectCase, setProjectCase, setProjectCaseEdited, activeTabCase,
         totalFeasibilityAndConceptStudies,
@@ -58,6 +44,14 @@ const CaseCostTab = ({
         transport, setTransport,
         transportCost, setTransportCost,
 
+        // CAPEX
+        cessationWellsCost,
+        setCessationWellsCost,
+        cessationOffshoreFacilitiesCost,
+        setCessationOffshoreFacilitiesCost,
+        cessationOnshoreFacilitiesCost,
+        setCessationOnshoreFacilitiesCost,
+
         // OPEX
         historicCostCostProfile,
         setHistoricCostCostProfile,
@@ -65,6 +59,8 @@ const CaseCostTab = ({
         setWellInterventionCostProfile,
         offshoreFacilitiesOperationsCostProfile,
         setOffshoreFacilitiesOperationsCostProfile,
+        onshoreRelatedOPEXCostProfile,
+        setOnshoreRelatedOPEXCostProfile,
         additionalOPEXCostProfile,
         setAdditionalOPEXCostProfile,
 
@@ -103,8 +99,6 @@ const CaseCostTab = ({
     const [surfCostOverride, setSurfCostOverride] = useState<Components.Schemas.SurfCostProfileOverrideDto>()
     const [substructureCostOverride, setSubstructureCostOverride] = useState<Components.Schemas.SubstructureCostProfileOverrideDto>()
     const [transportCostOverride, setTransportCostOverride] = useState<Components.Schemas.TransportCostProfileOverrideDto>()
-
-    const [oilProducerCostProfileOverride, setOilProducerCostProfileOverride] = useState<Components.Schemas.OilProducerCostProfileOverrideDto>()
 
     // Development
     const [wellProjectOilProducerCost, setWellProjectOilProducerCost] = useState<Components.Schemas.OilProducerCostProfileDto>()
@@ -164,13 +158,22 @@ const CaseCostTab = ({
                         setHistoricCostCostProfile(historicCostCostProfileLocal)
                         setAdditionalOPEXCostProfile(additionalOPEXCostProfileLocal)
 
+                        // Development
+                        const {
+                            cessationWellsCost,
+                            cessationOffshoreFacilities,
+                            cessationOnshoreFacilities,
+                        } = projectCase
+
                         const cessationWells = projectCase?.cessationWellsCost
                         const cessationOffshoreFacilities = projectCase?.cessationOffshoreFacilitiesCost
+                        const cessationOnshoreFacilities = projectCase?.cessationOnshoreFacilitiesCost
 
-                        setCessationWellsCost(cessationWells)
+                        setCessationWellsCost(cessationWellsCost)
                         setCessationWellsCostOverride(projectCase?.cessationWellsCostOverride)
                         setCessationOffshoreFacilitiesCost(cessationOffshoreFacilities)
                         setCessationOffshoreFacilitiesCostOverride(projectCase?.cessationOffshoreFacilitiesCostOverride)
+                        setCessationOnshoreFacilitiesCost(cessationOnshoreFacilities)
 
                         // CAPEX
                         const topsideCostProfile = topside.costProfile
@@ -199,6 +202,7 @@ const CaseCostTab = ({
                             gasProducerCostProfile,
                             waterInjectorCostProfile,
                             gasInjectorCostProfile,
+                            oilProducerCostProfileOverride,
                             gasProducerCostProfileOverride,
                             waterInjectorCostProfileOverride,
                             gasInjectorCostProfileOverride,
@@ -231,6 +235,7 @@ const CaseCostTab = ({
                             projectCase?.offshoreFacilitiesOperationsCostProfile,
                             projectCase?.cessationWellsCost,
                             projectCase?.cessationOffshoreFacilitiesCost,
+                            projectCase?.cessationOnshoreFacilitiesCost,
                             projectCase?.totalFeasibilityAndConceptStudiesOverride,
                             projectCase?.totalFEEDStudiesOverride,
                             projectCase?.wellInterventionCostProfileOverride,
@@ -284,6 +289,7 @@ const CaseCostTab = ({
         offshoreFacilitiesOperationsCostProfile,
         wellInterventionCostProfile,
         historicCostCostProfile,
+        onshoreRelatedOPEXCostProfile,
         additionalOPEXCostProfile,
     ])
 
@@ -293,7 +299,7 @@ const CaseCostTab = ({
             && cessationGridRef.current.api.refreshCells) {
             cessationGridRef.current.api.refreshCells()
         }
-    }, [cessationWellsCost, cessationOffshoreFacilitiesCost])
+    }, [cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCost])
 
     useEffect(() => {
         if (explorationWellsGridRef.current
@@ -419,6 +425,12 @@ const CaseCostTab = ({
             overrideProfileSet: setOffshoreFacilitiesOperationsCostProfileOverride,
         },
         {
+            profileName: "Onshore related OPEX (input req.)",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: onshoreRelatedOPEXCostProfile,
+            set: setOnshoreRelatedOPEXCostProfile,
+        },
+        {
             profileName: "Additional OPEX (input req.)",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: additionalOPEXCostProfile,
@@ -442,6 +454,12 @@ const CaseCostTab = ({
             overridable: true,
             overrideProfile: cessationOffshoreFacilitiesCostOverride,
             overrideProfileSet: setCessationOffshoreFacilitiesCostOverride,
+        },
+        {
+            profileName: "CAPEX - Cessation - Onshore facilities",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: cessationOnshoreFacilitiesCost,
+            set: setCessationOnshoreFacilitiesCost,
         },
     ]
 
@@ -624,6 +642,12 @@ const CaseCostTab = ({
             updateObject(projectCase, setProjectCase, "cessationOffshoreFacilitiesCostOverride", cessationOffshoreFacilitiesCostOverride)
         }
     }, [cessationOffshoreFacilitiesCostOverride])
+
+    useEffect(() => {
+        if (projectCase) {
+            updateObject(projectCase, setProjectCase, "cessationOnshoreFacilitiesCost", cessationOnshoreFacilitiesCost)
+        }
+    }, [cessationOnshoreFacilitiesCost])
 
     useEffect(() => {
         if (surf) {
