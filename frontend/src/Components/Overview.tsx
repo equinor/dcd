@@ -44,7 +44,7 @@ const Overview = () => {
                     <Grid
                         item
                         alignSelf="flex-start"
-                        className="ag-theme-alpine-fusion"
+                        className="ag-theme-alpine-fusion ContentOverview"
                         sx={{ padding: "1rem" }}
                         container
                         spacing={2}

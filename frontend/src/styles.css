@@ -58,3 +58,8 @@ label[class*="Label__LabelBase"] {
     background-color: var(--UI-Background-Light, #F7F7F7);
     border-right: 1px solid #DBDBDB;
 }
+
+.ContentOverview {
+    height: calc(100vh - 35px);
+    overflow: hidden;
+}
