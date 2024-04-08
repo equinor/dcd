@@ -8,7 +8,7 @@ import {
 } from "react"
 
 import {
-    Button, NativeSelect, Typography,
+    NativeSelect, Typography,
 } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import CaseNumberInput from "../../../Input/CaseNumberInput"
@@ -17,6 +17,7 @@ import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
 import InputSwitcher from "../../../Input/InputSwitcher"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
+import RangeButton from "../../../Buttons/RangeButton"
 
 interface Props {
     explorationWells: Components.Schemas.ExplorationWellDto[],
@@ -38,9 +39,7 @@ const CaseDrillingScheduleTab = ({
     wellProject,
 }: Props) => {
     const { project } = useProjectContext()
-    const {
-        projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase,
-    } = useCaseContext()
+    const { projectCase, activeTabCase } = useCaseContext()
     if (!projectCase) return null
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -224,7 +223,7 @@ const CaseDrillingScheduleTab = ({
                     />
                 </InputSwitcher>
             </Grid>
-            <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="flex-end">
+            <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="baseline" marginTop={6}>
                 <Grid item>
                     <NativeSelect
                         id="currency"
@@ -238,27 +237,27 @@ const CaseDrillingScheduleTab = ({
                     </NativeSelect>
                 </Grid>
                 <Grid item>
+                    <Typography variant="caption">Start year</Typography>
                     <CaseNumberInput
                         onChange={handleStartYearChange}
                         defaultValue={startYear}
                         integer
-                        label="Start year"
-                    />
-                </Grid>
-                <Grid item>
-                    <CaseNumberInput
-                        onChange={handleEndYearChange}
-                        defaultValue={endYear}
-                        integer
-                        label="End year"
                         min={2010}
                         max={2100}
                     />
                 </Grid>
                 <Grid item>
-                    <Button onClick={handleTableYearsClick}>
-                        Apply
-                    </Button>
+                    <Typography variant="caption">End year</Typography>
+                    <CaseNumberInput
+                        onChange={handleEndYearChange}
+                        defaultValue={endYear}
+                        integer
+                        min={2010}
+                        max={2100}
+                    />
+                </Grid>
+                <Grid item>
+                    <RangeButton onClick={handleTableYearsClick} />
                 </Grid>
             </Grid>
             <Grid item xs={12}>

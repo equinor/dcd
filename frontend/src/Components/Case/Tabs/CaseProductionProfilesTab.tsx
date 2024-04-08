@@ -6,7 +6,7 @@ import {
     useEffect,
     useRef,
 } from "react"
-import { Button, NativeSelect } from "@equinor/eds-core-react"
+import { NativeSelect, Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import CaseNumberInput from "../../Input/CaseNumberInput"
 import CaseTabTable from "../Components/CaseTabTable"
@@ -17,6 +17,7 @@ import { ITimeSeriesOverride } from "../../../Models/ITimeSeriesOverride"
 import InputSwitcher from "../../Input/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
+import RangeButton from "../../Buttons/RangeButton"
 
 interface ITimeSeriesData {
     profileName: string
@@ -430,7 +431,7 @@ const CaseProductionProfilesTab = ({
                 </InputSwitcher>
 
             </Grid>
-            <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="flex-end">
+            <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="baseline" marginTop={6}>
                 <Grid item>
                     <NativeSelect
                         id="unit"
@@ -444,27 +445,27 @@ const CaseProductionProfilesTab = ({
                     </NativeSelect>
                 </Grid>
                 <Grid item>
+                    <Typography variant="caption">Start year</Typography>
                     <CaseNumberInput
                         onChange={handleStartYearChange}
                         defaultValue={startYear}
                         integer
-                        label="Start year"
                         min={2010}
                         max={2110}
                     />
                 </Grid>
                 <Grid item>
+                    <Typography variant="caption">End year</Typography>
                     <CaseNumberInput
                         onChange={handleEndYearChange}
                         defaultValue={endYear}
                         integer
-                        label="End year"
                         min={2010}
                         max={2110}
                     />
                 </Grid>
                 <Grid item>
-                    <Button onClick={handleTableYearsClick}>  Apply </Button>
+                    <RangeButton onClick={handleTableYearsClick} />
                 </Grid>
             </Grid>
             <Grid item xs={12}>
