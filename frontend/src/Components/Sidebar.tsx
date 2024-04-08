@@ -23,8 +23,11 @@ const StyledSidebar = styled(SideBar)`
     height: calc(100vh - 60px);
     overflow: hidden;
     display: grid;
-    grid-template-rows: auto 60px;
+    grid-template-rows: auto 80px;
     z-index: 5;
+    &[open] {
+        grid-template-rows: auto 60px;
+    }
 `
 
 const StyledSidebarContent = styled(Content)`
@@ -171,8 +174,9 @@ const Sidebar = () => {
                                 <Grid item container key={`menu - item - ${index + 1} `} justifyContent="center" data-timeline-active={location.pathname.includes(subItem.id)}>
                                     <Tooltip title={`${subItem.name ? subItem.name : "Untitled"} - Strategy: ${productionStrategyOverviewToString(subItem.productionStrategyOverview)}`} placement="right">
                                         <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(subItem.id)}>
-                                            {sidebarOpen && subItem.name ? subItem.name : "Untitled"}
                                             {!sidebarOpen && `#${index+1}`}
+                                            {(sidebarOpen && subItem.name) && subItem.name}
+                                            {(sidebarOpen && (subItem.name === "" || subItem.name === undefined)) && "Untitled"}
                                         </TimelineElement>
                                     </Tooltip>
                                 </Grid>
