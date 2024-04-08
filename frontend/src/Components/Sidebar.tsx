@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react"
 import styled from "styled-components"
 import { useLocation, useNavigate } from "react-router-dom"
 import {
     Icon, SideBar, Button, Typography, Tooltip, Divider,
 } from "@equinor/eds-core-react"
-import { file, add, info_circle, dashboard, settings, compare } from "@equinor/eds-icons"
+import { add, info_circle, dashboard, settings, compare } from "@equinor/eds-icons"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import Grid from "@mui/material/Grid"
 import { useProjectContext } from "../Context/ProjectContext"
@@ -24,7 +23,7 @@ const StyledSidebar = styled(SideBar)`
     height: calc(100vh - 60px);
     overflow: hidden;
     display: grid;
-    grid-template-rows: auto 5rem;
+    grid-template-rows: auto 60px;
     z-index: 5;
 `
 
@@ -38,10 +37,9 @@ const Timeline = styled(Grid)`
     position: relative;
     max-height: 100%;
     overflow: auto;
-    &[aria-timeline="true"] {
-        margin: 0 0.5rem;
-        padding: 0.5rem 0;
-        width: calc(100% - 1rem);
+    &[data-timeline="true"] {
+        margin: 0 8px;
+        width: calc(100% - 16px);
         overflow-x: hidden;
         overflow-y: auto;
         display: flex;
@@ -54,16 +52,16 @@ const Timeline = styled(Grid)`
             border-left: 2px solid #DCDCDC;
             width: 100%;
             &.GhostItem {
-                min-height: 1rem;
+                min-height: 14px;
             }
-            &[aria-active="true"],
+            &[data-timeline-active="true"],
             &:not(.GhostItem):hover {
                 z-index: 100;
                 border-left: 2px solid #007079;
             }
         }
     }
-    &[aria-timeline="false"] .GhostItem {
+    &[data-timeline="false"] .GhostItem {
         display: none;
     }
 `
@@ -78,12 +76,13 @@ const SidebarFooter = styled(Footer)`
 const TimelineElement = styled(Button)`
     width: 100%;
     text-align: left;
+    height: 28px;
     &:before {
         display: none;
     }
     & > span {
         display: block;
-        line-height: 2rem;
+        line-height: 28px;
         text-overflow: ellipsis;
         text-wrap: nowrap;
         overflow: hidden;
@@ -116,12 +115,12 @@ const Sidebar = () => {
                         && (
                             <Grid item container justifyContent="center">
                                 <Grid item xs={12} container alignItems="center" justifyContent={sidebarOpen ? "space-between" : "center"}>
-                                    <Grid item sx={{padding: "0.5rem"}}>
+                                    <Grid item sx={{padding: "8px"}}>
                                         <ProjectTitle variant="overline">{sidebarOpen ? currentContext?.title : "Project"}</ProjectTitle>
                                     </Grid>
                                 </Grid>
 
-                                <Timeline aria-timeline={sidebarOpen}>
+                                <Timeline data-timeline={sidebarOpen}>
                                     <Grid item className="GhostItem"></Grid>
                                     <Grid item>
                                         <TimelineElement variant="ghost" className="GhostButton" onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 0 } })}>
@@ -152,25 +151,26 @@ const Sidebar = () => {
                             </Grid>
                         )}
                     <Grid item xs={12} container alignItems="center" justifyContent={sidebarOpen ? "space-between" : "center"}>
-                        <Grid item flex={sidebarOpen ? 1 : undefined} sx={{padding: "0.5rem"}}>
+                        <Grid item flex={sidebarOpen ? 1 : undefined} sx={{padding: "8px"}}>
                             <Typography variant="overline">Cases</Typography>
                         </Grid>
-                        {sidebarOpen && <Grid item>
+                        {sidebarOpen && (<Grid item>
                             <Tooltip title="Add new case">
                                 <Button variant="ghost_icon" className="GhostButton" onClick={() => addNewCase()}><Icon data={add} /></Button>
                             </Tooltip>
-                        </Grid>}
+                        </Grid>)}
                     </Grid>
                 </Grid>
-                <Timeline aria-timeline={true} container justifyContent="flex-start" alignItems="flex-start" direction="column">
+                <Timeline data-timeline={true} container justifyContent="flex-start" alignItems="flex-start" direction="column">
                     <Grid item className="GhostItem"></Grid>
                     {
                         project?.cases.sort((a, b) => new Date(a.createTime).getDate()
                             - new Date(b.createTime).getDate()).map((subItem, index) => (
-                                <Grid item container key={`menu - item - ${index + 1} `} justifyContent="center" aria-active={location.pathname.includes(subItem.id)}>
+                                <Grid item container key={`menu - item - ${index + 1} `} justifyContent="center" data-timeline-active={location.pathname.includes(subItem.id)}>
                                     <Tooltip title={`${subItem.name ? subItem.name : "Untitled"} - Strategy: ${productionStrategyOverviewToString(subItem.productionStrategyOverview)}`} placement="right">
                                         <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(subItem.id)}>
-                                            {sidebarOpen ? (subItem.name ? subItem.name : "Untitled") : `#${index+1}`}
+                                            {sidebarOpen && subItem.name ? subItem.name : "Untitled"}
+                                            {!sidebarOpen && `#${index+1}`}
                                         </TimelineElement>
                                     </Tooltip>
                                 </Grid>
