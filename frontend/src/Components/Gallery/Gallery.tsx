@@ -73,9 +73,9 @@ const Gallery = () => {
         setExpandedImage(image)
         setModalOpen(true)
     }
-
-    return (
-        <>
+    return gallery.length > 0 || editMode
+    ? (
+        <Grid item xs={12}>
             <ImageModal
                 image={expandedImage}
                 modalOpen={modalOpen}
@@ -112,8 +112,9 @@ const Gallery = () => {
                     )
                 }
             </Wrapper>
-        </>
+        </Grid>
     )
+    : null
 }
 
 export default Gallery
