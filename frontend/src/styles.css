@@ -10,9 +10,17 @@ body {
     font-family: Equinor;
 }
 
+.ConceptApp.MainGrid {
+    height: calc(100vh - 60px);
+    width: 100vw;
+    overflow-x: hidden;
+    
+}
+
 div[class*="TabList"][role="tablist"] {
     position: relative;
     z-index: 1;
+    scrollbar-width: none;
 }
 div[class*="TabList"][role="tablist"]:after {
     content: '';
