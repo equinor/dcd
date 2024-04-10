@@ -9,7 +9,7 @@ import { useProjectContext } from "../Context/ProjectContext"
 import { useCaseContext } from "../Context/CaseContext"
 
 const Overview = () => {
-    const { isCreating, isLoading, editMode } = useAppContext()
+    const { isCreating, isLoading, editMode, sidebarOpen } = useAppContext()
     const { project } = useProjectContext()
     const { setProjectCase } = useCaseContext()
 
@@ -25,7 +25,7 @@ const Overview = () => {
     }, [project, caseId, editMode])
 
     return (
-        <Grid container display="grid" gridTemplateColumns="256px auto" sx={{ height: "calc(100vh - 60px)" }} className="ConceptApp">
+        <Grid container display="grid" className="ConceptApp MainGrid" gridTemplateColumns={sidebarOpen ? "256px 1fr" : "72px 1fr"}>
             <Grid item alignSelf="stretch">
                 <Sidebar />
             </Grid>
@@ -45,7 +45,7 @@ const Overview = () => {
                         item
                         alignSelf="flex-start"
                         className="ag-theme-alpine-fusion"
-                        sx={{ padding: "1rem" }}
+                        sx={{ padding: "1rem", width: "100%", overflowX: "auto" }}
                         container
                         spacing={2}
                         alignItems="flex-start"
