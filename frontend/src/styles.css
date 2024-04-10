@@ -65,5 +65,6 @@ label[class*="Label__LabelBase"] {
 
 .ContentOverview {
     height: calc(100vh - 35px);
+    padding: 16px;
     overflow: hidden;
 }

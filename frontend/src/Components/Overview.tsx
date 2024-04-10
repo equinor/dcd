@@ -45,7 +45,6 @@ const Overview = () => {
                         item
                         alignSelf="flex-start"
                         className="ag-theme-alpine-fusion ContentOverview"
-                        sx={{ padding: "1rem" }}
                         container
                         spacing={2}
                         alignItems="flex-start"
