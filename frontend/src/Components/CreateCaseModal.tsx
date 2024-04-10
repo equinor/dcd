@@ -5,6 +5,7 @@ import {
     NativeSelect,
     Progress,
     InputWrapper,
+    Typography,
 } from "@equinor/eds-core-react"
 import {
     useState,
@@ -13,14 +14,13 @@ import {
     useEffect,
     FormEventHandler,
 } from "react"
-import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
+import { MarkdownEditor } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
 import Modal from "./Modal/Modal"
 import { defaultDate, isDefaultDate, toMonthDate } from "../Utils/common"
 import { GetCaseService } from "../Services/CaseService"
 import { useProjectContext } from "../Context/ProjectContext"
 import { useModalContext } from "../Context/ModalContext"
-import CaseNumberInput from "./Input/CaseNumberInput"
 import { useAppContext } from "../Context/AppContext"
 
 const CreateCaseModal = () => {
@@ -79,8 +79,8 @@ const CreateCaseModal = () => {
         setCaseName(e.currentTarget.value)
     }
 
-    const handleDescriptionChange: FormEventHandler<any> = async (e) => {
-        setDescription(e.currentTarget.value)
+    function handleDescriptionChange(value: string) {
+        setDescription(value)
     }
 
     const handleProductionStrategyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
@@ -186,13 +186,14 @@ const CreateCaseModal = () => {
                 </Grid>
                 <Grid item xs={12}>
                     <InputWrapper labelProps={{ label: "Description" }}>
-                        <TextArea
-                            id="description"
-                            placeholder="Enter a description"
-                            onInput={handleDescriptionChange}
-                            value={description ?? ""}
-                            cols={10000}
-                            rows={4}
+                        <MarkdownEditor
+                            minHeight="100px"
+                            value={description}
+                            menuItems={['strong', 'em', 'bullet_list', 'ordered_list', 'blockquote', 'h1', 'h2', 'h3', 'paragraph']}
+                            onInput={markdown => {
+                                const value = (markdown as any).target._value
+                                handleDescriptionChange(value)
+                            }}
                         />
                     </InputWrapper>
                 </Grid>
