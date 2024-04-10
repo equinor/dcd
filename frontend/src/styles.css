@@ -2,6 +2,10 @@ body {
     margin: 0;
 }
 
+* {
+    scrollbar-width: thin;
+}
+
 .App {
     font-family: Equinor;
 }
@@ -65,4 +69,10 @@ label[class*="Label__LabelBase"] {
 .ag-theme-alpine-fusion [role="gridcell"].editableCell:not(.ag-cell-range-selected) {
     background-color: var(--UI-Background-Light, #F7F7F7);
     border-right: 1px solid #DBDBDB;
+}
+
+.ContentOverview {
+    height: calc(100vh - 35px);
+    padding: 16px;
+    overflow: hidden;
 }
