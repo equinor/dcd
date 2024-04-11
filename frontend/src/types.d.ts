@@ -272,7 +272,6 @@ declare namespace Components {
             appraisalWellCostProfile: AppraisalWellCostProfileDto;
             sidetrackCostProfile: SidetrackCostProfileDto;
             gAndGAdminCost: GAndGAdminCostDto;
-            gAndGAdminCostOverride?: GAndGAdminCostOverrideDto;
             seismicAcquisitionAndProcessing: SeismicAcquisitionAndProcessingDto;
             countryOfficeCost: CountryOfficeCostDto;
             rigMobDemob: number; // double
@@ -516,8 +515,9 @@ declare namespace Components {
         }
         export type ProductionStrategyOverview = 0 | 1 | 2 | 3 | 4; // int32
         export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
-        export type Classification = 0 | 1 | 2 | 3
+        export type ProjectClassification = 0 | 1 | 2 | 3; // int32
         export interface ProjectDto {
+            classification: ProjectClassification /* int32 */;
             id: string; // uuid
             name: string;
             commonLibraryId: string; // uuid
@@ -551,7 +551,6 @@ declare namespace Components {
             dailyEmissionFromDrillingRig: number; // double
             averageDevelopmentDrillingDays: number; // double
             hasChanges: boolean;
-            classification: Classification;
         }
         export type ProjectPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
         export interface ProjectWithGeneratedProfilesDto {
@@ -1086,6 +1085,7 @@ declare namespace Components {
             country?: string | null;
             currency?: Currency /* int32 */;
             physicalUnit?: PhysUnit /* int32 */;
+            classification?: ProjectClassification /* int32 */;
             projectPhase?: ProjectPhase /* int32 */;
             projectCategory?: ProjectCategory /* int32 */;
             explorationOperationalWellCosts?: UpdateExplorationOperationalWellCostsDto;
