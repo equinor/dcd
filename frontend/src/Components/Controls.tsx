@@ -137,14 +137,16 @@ const Controls = () => {
                         </Grid>
                     )}
                 <Grid item>
-                    <Button onClick={handleEdit}>
+                    <Button onClick={handleEdit} variant={editMode ? "outlined" : "contained"}>
                         {isSaving
                             ? <Progress.Dots />
                             : (
                                 <>
-                                    <Icon data={editMode ? save : edit} />
+                                    {editMode ? "Save and close edit mode" : "Edit"}
                                     {" "}
-                                    {editMode ? "Save" : "Edit"}
+                                    {!editMode && projectCase && "case"}
+                                    {!editMode && !projectCase && "project"}
+                                    <Icon data={editMode ? save : edit} />
                                 </>
                             )}
                     </Button>
