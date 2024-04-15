@@ -5,7 +5,7 @@ import {
     Button, Icon, Typography,
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
-import { MarkdownEditor, MarkdownViewer } from '@equinor/fusion-react-markdown';
+import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
 import { getProjectPhaseName, getProjectCategoryName, unwrapProjectId } from "../../Utils/common"
 import { GetProjectService } from "../../Services/ProjectService"
@@ -85,8 +85,9 @@ const ProjectOverviewTab = () => {
                 {editMode
                     ? (
                         <MarkdownEditor
-                            menuItems={['strong', 'em', 'bullet_list', 'ordered_list', 'blockquote', 'h1', 'h2', 'h3', 'paragraph']}
-                            onInput={markdown => {
+                            menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
+                            onInput={(markdown) => {
+                                // eslint-disable-next-line no-underscore-dangle
                                 const value = (markdown as any).target._value
                                 handleDescriptionChange(value)
                             }}
@@ -94,8 +95,7 @@ const ProjectOverviewTab = () => {
                             {projectEdited?.description !== undefined ? projectEdited.description : project?.description}
                         </MarkdownEditor>
                     )
-                    : <MarkdownViewer value={project.description} />
-                }
+                    : <MarkdownViewer value={project.description} />}
             </Grid>
             <Grid item xs={12} container spacing={1} justifyContent="space-between">
                 <Grid item>

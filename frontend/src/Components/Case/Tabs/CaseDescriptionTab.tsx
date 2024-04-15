@@ -1,9 +1,8 @@
 import {
     ChangeEventHandler,
-    FormEventHandler,
 } from "react"
 import { NativeSelect, Typography } from "@equinor/eds-core-react"
-import { MarkdownEditor, MarkdownViewer } from '@equinor/fusion-react-markdown';
+import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
 import CaseNumberInput from "../../Input/CaseNumberInput"
 import InputSwitcher from "../../Input/InputSwitcher"
@@ -106,8 +105,9 @@ const CaseDescriptionTab = () => {
                 {editMode
                     ? (
                         <MarkdownEditor
-                            menuItems={['strong', 'em', 'bullet_list', 'ordered_list', 'blockquote', 'h1', 'h2', 'h3', 'paragraph']}
-                            onInput={markdown => {
+                            menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
+                            onInput={(markdown) => {
+                                // eslint-disable-next-line no-underscore-dangle
                                 const value = (markdown as any).target._value
                                 handleDescriptionChange(value)
                             }}
@@ -115,8 +115,7 @@ const CaseDescriptionTab = () => {
                             {projectCaseEdited ? projectCaseEdited.description : projectCase?.description ?? ""}
                         </MarkdownEditor>
                     )
-                    : <MarkdownViewer value={projectCase.description} />
-                }
+                    : <MarkdownViewer value={projectCase.description} />}
             </Grid>
             <Grid item xs={12} md={4}>
                 <InputSwitcher
@@ -198,7 +197,7 @@ const CaseDescriptionTab = () => {
             <Grid item xs={12} md={4}>
                 <InputSwitcher
                     label="Facilities availability"
-                    value={`${projectCase?.facilitiesAvailability !== undefined ? (projectCase?.facilitiesAvailability * 100).toFixed(2) : ""}%`}
+                    value={`${projectCase?.facilitiesAvailability !== undefined ? (projectCase.facilitiesAvailability * 100).toFixed(2) : ""}%`}
                 >
                     <CaseNumberInput
                         onChange={handleFacilitiesAvailabilityChange}

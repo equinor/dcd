@@ -5,14 +5,12 @@ import {
     NativeSelect,
     Progress,
     InputWrapper,
-    Typography,
 } from "@equinor/eds-core-react"
 import {
     useState,
     ChangeEventHandler,
     MouseEventHandler,
     useEffect,
-    FormEventHandler,
 } from "react"
 import { MarkdownEditor } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
@@ -189,8 +187,9 @@ const CreateCaseModal = () => {
                         <MarkdownEditor
                             minHeight="100px"
                             value={description}
-                            menuItems={['strong', 'em', 'bullet_list', 'ordered_list', 'blockquote', 'h1', 'h2', 'h3', 'paragraph']}
-                            onInput={markdown => {
+                            menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
+                            onInput={(markdown) => {
+                                // eslint-disable-next-line no-underscore-dangle
                                 const value = (markdown as any).target._value
                                 handleDescriptionChange(value)
                             }}
