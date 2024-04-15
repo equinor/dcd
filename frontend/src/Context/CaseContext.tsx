@@ -150,7 +150,7 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [historicCostCostProfile, setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto | undefined>()
     const [wellInterventionCostProfile, setWellInterventionCostProfile] = useState<Components.Schemas.WellInterventionCostProfileDto | undefined>()
     const [offshoreFacilitiesOperationsCostProfile, setOffshoreFacilitiesOperationsCostProfile] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileDto | undefined>()
-    const [onshoreRelatedOPEXCostProfile, setOnshoreRelatedOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto | undefined>()
+    const [onshoreRelatedOPEXCostProfile, setOnshoreRelatedOPEXCostProfile] = useState<Components.Schemas.OnshoreRelatedOPEXCostProfileDto | undefined>()
     const [additionalOPEXCostProfile, setAdditionalOPEXCostProfile] = useState<Components.Schemas.AdditionalOPEXCostProfileDto | undefined>()
 
     // Exploration

@@ -335,7 +335,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             ? wellProject.oilProducerCostProfileOverride
                             : wellProject?.oilProducerCostProfile)
 
-
                         setTableGasProducer(wellProject?.gasProducerCostProfileOverride?.override === true
                             ? wellProject.gasProducerCostProfileOverride
                             : wellProject?.gasProducerCostProfile)

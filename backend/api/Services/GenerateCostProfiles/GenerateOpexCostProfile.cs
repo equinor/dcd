@@ -74,7 +74,7 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         var wellInterventionCostDto = _mapper.Map<WellInterventionCostProfileDto>(wellInterventionCost);
         var offshoreFacilitiesOperationsCostDto = _mapper.Map<OffshoreFacilitiesOperationsCostProfileDto>(offshoreFacilitiesOperationsCost);
         var historicCostCostDto = _mapper.Map<HistoricCostCostProfileDto>(historicCost);
-        var onshoreRelatedOPEXCostDto = _mapper.Map<OnshoreRelatedOPEXCostProfileDto>(additionalOPEXCost);
+        var onshoreRelatedOPEXCostDto = _mapper.Map<OnshoreRelatedOPEXCostProfileDto>(onshoreRelatedOPEXCost);
         var additionalOPEXCostDto = _mapper.Map<AdditionalOPEXCostProfileDto>(additionalOPEXCost);
 
         result.WellInterventionCostProfileDto = wellInterventionCostDto;
@@ -83,7 +83,8 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         result.OnshoreRelatedOPEXCostProfileDto = onshoreRelatedOPEXCostDto;
         result.AdditionalOPEXCostProfileDto = additionalOPEXCostDto;
 
-        var OPEX = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> {wellInterventionCost,
+        var OPEX = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> {
+            wellInterventionCost,
             offshoreFacilitiesOperationsCost,
             historicCost,
             onshoreRelatedOPEXCost,
