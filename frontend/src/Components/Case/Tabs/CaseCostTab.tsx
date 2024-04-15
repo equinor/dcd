@@ -157,12 +157,6 @@ const CaseCostTab = (): React.ReactElement | null => {
                         setAdditionalOPEXCostProfile(additionalOPEXCostProfileLocal)
 
                         // Development
-                        const {
-                            cessationWellsCost,
-                            cessationOffshoreFacilities,
-                            cessationOnshoreFacilities,
-                        } = projectCase
-
                         const cessationWells = projectCase?.cessationWellsCost
                         const cessationOffshoreFacilities = projectCase?.cessationOffshoreFacilitiesCost
                         const cessationOnshoreFacilities = projectCase?.cessationOnshoreFacilitiesCost

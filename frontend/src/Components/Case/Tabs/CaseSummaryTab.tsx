@@ -29,6 +29,8 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         setTransportCost,
 
         // CAPEX
+        totalDrillingCost,
+        setTotalDrillingCost,
         cessationOffshoreFacilitiesCost,
         setCessationOffshoreFacilitiesCost,
         cessationOnshoreFacilitiesCost,
@@ -83,7 +85,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     const [offshoreFacilitiesOperationsCostProfileOverride, setOffshoreFacilitiesOperationsCostProfileOverride] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto>()
 
     // CAPEX
-    const [totalDrillingCost, setTotalDrillingCost] = useState<ITimeSeries>()
     const [offshoreFacilitiesCost, setOffshoreFacilitiesCost] = useState<ITimeSeries>()
     const [onshoreFacilitiesCost, setOnshoreFacilitiesCost] = useState<ITimeSeries>()
 
@@ -317,6 +318,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         const transportCostProfile = transport.costProfileOverride?.override
                             ? transport.costProfileOverride : transport.costProfile
                         setTransportCost(transportCostProfile)
+                        console.log(2, explorationWellCostProfile)
 
                         // Exploration costs
                         setTotalExplorationCost(MergeTimeseriesList([
@@ -333,6 +335,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             ? wellProject.oilProducerCostProfileOverride
                             : wellProject?.oilProducerCostProfile)
 
+
                         setTableGasProducer(wellProject?.gasProducerCostProfileOverride?.override === true
                             ? wellProject.gasProducerCostProfileOverride
                             : wellProject?.gasProducerCostProfile)
@@ -344,6 +347,10 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         setTableGasInjector(wellProject?.gasInjectorCostProfileOverride?.override === true
                             ? wellProject.gasInjectorCostProfileOverride
                             : wellProject?.gasInjectorCostProfile)
+                            console.log(1, tableOilProducer)
+                            console.log(1, tableGasProducer)
+                            console.log(1, tableWaterInjector)
+                            console.log(1, tableGasInjector)
 
                         setTotalDrillingCost(MergeTimeseriesList([
                             tableOilProducer,
@@ -383,11 +390,12 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                                 console.log("Total drilling cost is undefined.")
                             }
                         }
+                        console.log(22, totalDrillingCost)
 
                         // Call the function with the costs to add
                         addDevelopmentCostsToFirstYearOfDrilling(rigUpgradingCost, rigMobDemobCost)
 
-                        console.log(22, totalDrillingCost)
+                        console.log(222, totalDrillingCost)
 
                         SetTableYearsFromProfiles([
                             totalExplorationCost, totalOtherStudies, totalFeasibilityAndConceptStudies, totalFEEDStudies, historicCostCostProfile,

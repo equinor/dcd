@@ -80,7 +80,7 @@ const Controls = () => {
     }
 
     const handleCaseSave = async () => {
-        setProjectCase(projectCaseEdited)
+        setProjectCase(projectCase)
         setSaveProjectCase(true)
         handleCancel()
     }

@@ -52,8 +52,12 @@ interface CaseContextType {
 
     // CAPEX
     // Drilling cost
+    totalDrillingCost: ITimeSeries | undefined,
+    setTotalDrillingCost: Dispatch<SetStateAction<ITimeSeries | undefined>>,
     developmentOperationalWellCosts: Components.Schemas.DevelopmentOperationalWellCostsDto | undefined
     setDevelopmentOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>>
+    cessationWellsCost: Components.Schemas.CessationWellsCostDto | undefined
+    setCessationWellsCost: Dispatch<SetStateAction<Components.Schemas.CessationWellsCostDto | undefined>>
 
     cessationOffshoreFacilitiesCost: Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined,
     setCessationOffshoreFacilitiesCost: Dispatch<SetStateAction<Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined>>
@@ -128,6 +132,8 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
     // CAPEX
     // Drilling cost
+    const [totalDrillingCost, setTotalDrillingCost] = useState<ITimeSeries | undefined>()
+    const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto | undefined>()
     const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>()
     const [cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost] = useState<Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined>()
     const [cessationOnshoreFacilitiesCost, setCessationOnshoreFacilitiesCost] = useState<Components.Schemas.CessationOnshoreFacilitiesCostDto | undefined>()
@@ -196,6 +202,10 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
         // CAPEX
         // Drilling cost
+        totalDrillingCost,
+        setTotalDrillingCost,
+        cessationWellsCost,
+        setCessationWellsCost,
         developmentOperationalWellCosts,
         setDevelopmentOperationalWellCosts,
         cessationOffshoreFacilitiesCost,
@@ -270,6 +280,8 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
         // CAPEX
         // Drilling cost
+        totalDrillingCost,
+        cessationWellsCost,
         developmentOperationalWellCosts,
         cessationOffshoreFacilitiesCost,
         cessationOnshoreFacilitiesCost,
