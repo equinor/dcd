@@ -9,7 +9,9 @@ import { useProjectContext } from "../Context/ProjectContext"
 import { useCaseContext } from "../Context/CaseContext"
 
 const Overview = () => {
-    const { isCreating, isLoading, editMode, sidebarOpen } = useAppContext()
+    const {
+        isCreating, isLoading, editMode, sidebarOpen,
+    } = useAppContext()
     const { project } = useProjectContext()
     const { setProjectCase } = useCaseContext()
 
@@ -25,7 +27,7 @@ const Overview = () => {
     }, [project, caseId, editMode])
 
     return (
-        <Grid container display="grid" className="ConceptApp MainGrid" gridTemplateColumns={sidebarOpen ? "256px 1fr" : "72px 1fr"}>
+        <Grid container display="grid" className="ConceptApp MainGrid" gridTemplateColumns={sidebarOpen ? "200px 1fr" : "72px 1fr"}>
             <Grid item alignSelf="stretch">
                 <Sidebar />
             </Grid>

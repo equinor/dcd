@@ -74,6 +74,8 @@ const Gallery = () => {
         setModalOpen(true)
     }
 
+    if (gallery.length <= 0 && !editMode) { return null }
+
     return (
         <>
             <ImageModal

@@ -559,12 +559,8 @@ const CaseCostTab = ({
     }
 
     function updateObject<T>(object: T | undefined, setObject: Dispatch<SetStateAction<T | undefined>>, key: keyof T, value: any): void {
-        if (!object || !value) {
-            console.error("Object or value is undefined")
-            return
-        }
-        if (object[key] === value) {
-            console.error("Object key is already set to value")
+        if (!object) {
+            console.error("Object is undefined")
             return
         }
         const newObject: T = { ...object }

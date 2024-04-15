@@ -1,3 +1,4 @@
+import styled from "styled-components"
 import { Tabs } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
@@ -15,15 +16,15 @@ import { useProjectContext } from "../Context/ProjectContext"
 import { useModalContext } from "../Context/ModalContext"
 import { useCaseContext } from "../Context/CaseContext"
 import { useAppContext } from "../Context/AppContext"
-import styled from "styled-components"
 
 const {
     List, Tab, Panels, Panel,
 } = Tabs
 
 const CasePanel = styled(Panel)`
-    height: calc(100vh - 210px);
+    height: calc(100vh - 226px);
     overflow: auto;
+    padding: 12px;
 `
 
 const CaseView = () => {

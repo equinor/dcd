@@ -13,8 +13,10 @@ const {
 } = Tabs
 
 const ScrollablePanel = styled(Panel)`
+    width: calc(100% - 32px);
     height: calc(100vh - 210px);
     overflow: auto;
+    padding: 16px;
 `
 
 const ProjectView = () => {

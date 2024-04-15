@@ -104,7 +104,7 @@ const Controls = () => {
     }
 
     return (
-        <Grid container spacing={1} justifyContent="space-between" alignItems="center">
+        <Grid container spacing={1} justifyContent="space-between" alignItems="center" sx={{ padding: "16px 16px 0 16px" }}>
 
             {projectCase
                 && (

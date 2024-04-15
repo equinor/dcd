@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { Typography } from "@equinor/eds-core-react"
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Grid from "@mui/material/Grid"
@@ -69,9 +68,7 @@ export const TabPanel = (props: TabPanelProps) => {
         aria-labelledby={`vertical-tab-${index}`}
         {...other}
       >
-        {value === index && (
-            <Typography>{children}</Typography>
-        )}
+        {value === index && children}
       </div>
     );
   }

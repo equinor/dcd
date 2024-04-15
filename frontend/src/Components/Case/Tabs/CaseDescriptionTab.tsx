@@ -190,7 +190,7 @@ const CaseDescriptionTab = () => {
             <Grid item xs={12} md={4}>
                 <InputSwitcher
                     label="Facilities availability"
-                    value={`${projectCase?.facilitiesAvailability !== undefined ? (projectCase?.facilitiesAvailability * 100).toFixed(2) : ""}%`}
+                    value={`${projectCase?.facilitiesAvailability !== undefined ? (projectCase.facilitiesAvailability * 100).toFixed(2) : ""}%`}
                 >
                     <CaseNumberInput
                         onChange={handleFacilitiesAvailabilityChange}
