@@ -16,15 +16,18 @@ import { useProjectContext } from "../Context/ProjectContext"
 import { useModalContext } from "../Context/ModalContext"
 import { useCaseContext } from "../Context/CaseContext"
 import { useAppContext } from "../Context/AppContext"
+import { EnvironmentVariables } from "../environmentVariables"
+
+const env = EnvironmentVariables.ENVIRONMENT
 
 const {
     List, Tab, Panels, Panel,
 } = Tabs
 
-const CasePanel = styled(Panel)`
-    height: calc(100vh - 226px);
-    overflow: auto;
-    padding: 12px;
+const ScrollablePanel = styled(Panel)`
+  height: calc(100vh - ${env === "dev" ? "200px" : "235px"});
+  padding: 16px;
+  overflow: auto;
 `
 
 const CaseView = () => {
@@ -246,10 +249,10 @@ const CaseView = () => {
                         <Tab>Summary</Tab>
                     </List>
                     <Panels>
-                        <CasePanel>
+                        <ScrollablePanel>
                             <CaseDescriptionTab />
-                        </CasePanel>
-                        <CasePanel>
+                        </ScrollablePanel>
+                        <ScrollablePanel>
                             <CaseProductionProfilesTab
                                 drainageStrategy={drainageStrategy}
                                 setDrainageStrategy={setDrainageStrategy}
@@ -260,11 +263,11 @@ const CaseView = () => {
                                 importedElectricity={importedElectricity}
                                 setImportedElectricity={setImportedElectricity}
                             />
-                        </CasePanel>
-                        <CasePanel>
+                        </ScrollablePanel>
+                        <ScrollablePanel>
                             <CaseScheduleTab />
-                        </CasePanel>
-                        <CasePanel>
+                        </ScrollablePanel>
+                        <ScrollablePanel>
                             <CaseDrillingScheduleTab
                                 explorationWells={explorationWells}
                                 setExplorationWells={setExplorationWells}
@@ -274,8 +277,8 @@ const CaseView = () => {
                                 exploration={exploration}
                                 wellProject={wellProject}
                             />
-                        </CasePanel>
-                        <CasePanel>
+                        </ScrollablePanel>
+                        <ScrollablePanel>
                             <CaseFacilitiesTab
                                 topside={topside}
                                 setTopside={setTopside}
@@ -286,8 +289,8 @@ const CaseView = () => {
                                 transport={transport}
                                 setTransport={setTransport}
                             />
-                        </CasePanel>
-                        <CasePanel>
+                        </ScrollablePanel>
+                        <ScrollablePanel>
                             <CaseCostTab
                                 wellProject={wellProject}
                                 setWellProject={setWellProject}
@@ -296,8 +299,8 @@ const CaseView = () => {
                                 cessationOffshoreFacilitiesCost={cessationOffshoreFacilitiesCost}
                                 setCessationOffshoreFacilitiesCost={setCessationOffshoreFacilitiesCost}
                             />
-                        </CasePanel>
-                        <CasePanel>
+                        </ScrollablePanel>
+                        <ScrollablePanel>
                             <CaseCO2Tab
                                 topside={topside}
                                 setTopside={setTopside}
@@ -306,10 +309,10 @@ const CaseView = () => {
                                 co2Emissions={co2Emissions}
                                 setCo2Emissions={setCo2Emissions}
                             />
-                        </CasePanel>
-                        <CasePanel>
+                        </ScrollablePanel>
+                        <ScrollablePanel>
                             <CaseSummaryTab />
-                        </CasePanel>
+                        </ScrollablePanel>
                     </Panels>
                 </Tabs>
             </Grid>

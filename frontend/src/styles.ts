@@ -75,7 +75,7 @@ export default createGlobalStyle`
   }
 
   .ContentOverview {
-    height: 100%;
+    height: calc(100% + 16px);
     overflow: hidden;
   }
 

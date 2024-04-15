@@ -1,22 +1,24 @@
 import { useEffect } from "react"
+import styled from "styled-components"
 import { Tabs } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useLocation } from "react-router-dom"
-import styled from "styled-components"
 import ProjectOverviewTab from "../Components/Project/ProjectOverviewTab"
 import ProjectCompareCasesTab from "../Components/Project/CompareCasesTab/CompareCasesTabOverview"
 import ProjectSettingsTab from "../Components/Project/ProjectSettingsTab"
 import { useProjectContext } from "../Context/ProjectContext"
+import { EnvironmentVariables } from "../environmentVariables"
+
+const env = EnvironmentVariables.ENVIRONMENT
 
 const {
     List, Tab, Panels, Panel,
 } = Tabs
 
 const ScrollablePanel = styled(Panel)`
-    width: calc(100% - 32px);
-    height: calc(100vh - 210px);
-    overflow: auto;
-    padding: 16px;
+  height: calc(100vh - ${env === "dev" ? "195px" : "230px"});
+  padding: 16px;
+  overflow: auto;
 `
 
 const ProjectView = () => {
