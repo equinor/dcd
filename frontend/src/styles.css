@@ -2,13 +2,25 @@ body {
     margin: 0;
 }
 
+* {
+    scrollbar-width: thin;
+}
+
 .App {
     font-family: Equinor;
+}
+
+.ConceptApp.MainGrid {
+    height: calc(100vh - 60px);
+    width: 100vw;
+    overflow-x: hidden;
+    
 }
 
 div[class*="TabList"][role="tablist"] {
     position: relative;
     z-index: 1;
+    scrollbar-width: none;
 }
 div[class*="TabList"][role="tablist"]:after {
     content: '';
@@ -57,4 +69,10 @@ label[class*="Label__LabelBase"] {
 .ag-theme-alpine-fusion [role="gridcell"].editableCell:not(.ag-cell-range-selected) {
     background-color: var(--UI-Background-Light, #F7F7F7);
     border-right: 1px solid #DBDBDB;
+}
+
+.ContentOverview {
+    height: calc(100vh - 35px);
+    padding: 16px;
+    overflow: hidden;
 }

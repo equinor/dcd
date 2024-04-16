@@ -15,10 +15,16 @@ import { useProjectContext } from "../Context/ProjectContext"
 import { useModalContext } from "../Context/ModalContext"
 import { useCaseContext } from "../Context/CaseContext"
 import { useAppContext } from "../Context/AppContext"
+import styled from "styled-components"
 
 const {
     List, Tab, Panels, Panel,
 } = Tabs
+
+const CasePanel = styled(Panel)`
+    height: calc(100vh - 210px);
+    overflow: auto;
+`
 
 const CaseView = () => {
     const {
@@ -244,10 +250,10 @@ const CaseView = () => {
                         <Tab>Summary</Tab>
                     </List>
                     <Panels>
-                        <Panel>
+                        <CasePanel>
                             <CaseDescriptionTab />
-                        </Panel>
-                        <Panel>
+                        </CasePanel>
+                        <CasePanel>
                             <CaseProductionProfilesTab
                                 drainageStrategy={drainageStrategy}
                                 setDrainageStrategy={setDrainageStrategy}
@@ -258,11 +264,11 @@ const CaseView = () => {
                                 importedElectricity={importedElectricity}
                                 setImportedElectricity={setImportedElectricity}
                             />
-                        </Panel>
-                        <Panel>
+                        </CasePanel>
+                        <CasePanel>
                             <CaseScheduleTab />
-                        </Panel>
-                        <Panel>
+                        </CasePanel>
+                        <CasePanel>
                             <CaseDrillingScheduleTab
                                 explorationWells={explorationWells}
                                 setExplorationWells={setExplorationWells}
@@ -272,8 +278,8 @@ const CaseView = () => {
                                 exploration={exploration}
                                 wellProject={wellProject}
                             />
-                        </Panel>
-                        <Panel>
+                        </CasePanel>
+                        <CasePanel>
                             <CaseFacilitiesTab
                                 topside={topside}
                                 setTopside={setTopside}
@@ -284,7 +290,7 @@ const CaseView = () => {
                                 transport={transport}
                                 setTransport={setTransport}
                             />
-                        </Panel>
+                        </CasePanel>
                         <Panel>
                             <CaseCostTab />
                         </Panel>
@@ -298,9 +304,9 @@ const CaseView = () => {
                                 setCo2Emissions={setCo2Emissions}
                             />
                         </Panel>
-                        <Panel>
+                        <CasePanel>
                             <CaseSummaryTab />
-                        </Panel>
+                        </CasePanel>
                     </Panels>
                 </Tabs>
             </Grid>

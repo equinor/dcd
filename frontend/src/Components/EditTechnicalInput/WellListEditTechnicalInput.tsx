@@ -148,9 +148,6 @@ const WellListEditTechnicalInput = ({
         </Button>
     )
 
-    type SortOrder = "desc" | "asc" | null
-    const order: SortOrder = "asc"
-
     const defaultColDef = useMemo(() => ({
         sortable: true,
         filter: true,
@@ -163,7 +160,7 @@ const WellListEditTechnicalInput = ({
 
     const [columnDefs] = useState<ColDef[]>([
         {
-            field: "name", sort: order, width: 110,
+            field: "name", width: 110,
         },
         {
             field: "wellCategory",

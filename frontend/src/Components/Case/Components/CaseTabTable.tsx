@@ -28,10 +28,14 @@ interface Props {
 }
 
 const CaseTabTable = ({
-    timeSeriesData, dg4Year,
-    tableYears, tableName,
-    alignedGridsRef, gridRef,
-    includeFooter, totalRowName,
+    timeSeriesData,
+    dg4Year,
+    tableYears,
+    tableName,
+    alignedGridsRef,
+    gridRef,
+    includeFooter,
+    totalRowName,
 }: Props) => {
     const styles = useStyles()
     const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
@@ -188,6 +192,45 @@ const CaseTabTable = ({
             }
             return false
         }
+
+        const validationRules: { [key: string]: { min: number, max: number } } = {
+            // production profiles
+            "Oil production": { min: 0, max: 1000000 },
+            "Gas production": { min: 0, max: 1000000 },
+            "Water production": { min: 0, max: 1000000 },
+            "Water injection": { min: 0, max: 1000000 },
+            "Fuel, flaring and losses": { min: 0, max: 1000000 },
+            "Net sales gas": { min: 0, max: 1000000 },
+            "Imported electricity": { min: 0, max: 1000000 },
+
+            // CO2 emissions
+            "Annual CO2 emissions": { min: 0, max: 1000000 },
+            "Year-by-year CO2 intensity": { min: 0, max: 1000000 },
+        }
+
+        const validateInput = (params: any) => {
+            const { value, data } = params
+            if (isEditable(params) && editMode && params.value) {
+                console.log(data.profileName)
+                // Runtime check to ensure data.profileName is a valid key
+
+                if (validationRules[data.profileName] === undefined) {
+                    console.log("No validation rules for", data.profileName)
+                    return false
+                }
+
+                if (data.profileName in validationRules) {
+                    if (value.toString().match(/^[0-9]+$/)
+                        && value >= validationRules[data.profileName].min
+                        && value <= validationRules[data.profileName].max) {
+                        return false
+                    }
+                    return true
+                }
+            }
+            return false
+        }
+
         const yearDefs: any[] = []
         for (let index = tableYears[0]; index <= tableYears[1]; index += 1) {
             yearDefs.push({
@@ -196,7 +239,10 @@ const CaseTabTable = ({
                 editable: (params: any) => isEditable(params),
                 minWidth: 100,
                 aggFunc: "sum",
-                cellClass: (params: any) => editMode && isEditable(params) ? "editableCell" : undefined,
+                cellClassRules: {
+                    "red-cell": (params: any) => validateInput(params),
+                },
+                cellClass: (params: any) => (editMode && isEditable(params) ? "editableCell" : undefined),
             })
         }
         return columnPinned.concat([...yearDefs])

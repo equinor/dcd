@@ -20,6 +20,8 @@ interface AppContextType {
     setEditMode: Dispatch<SetStateAction<boolean>>,
     updateFromServer: boolean,
     setUpdateFromServer: Dispatch<SetStateAction<boolean>>,
+    sidebarOpen: boolean,
+    setSidebarOpen: Dispatch<SetStateAction<boolean>>,
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
@@ -30,6 +32,7 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [isSaving, setIsSaving] = useState<boolean>(false)
     const [editMode, setEditMode] = useState<boolean>(false)
     const [updateFromServer, setUpdateFromServer] = useState<boolean>(true)
+    const [sidebarOpen, setSidebarOpen] = useState<boolean>(true)
 
     const value = useMemo(() => ({
         isCreating,
@@ -42,6 +45,8 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setEditMode,
         updateFromServer,
         setUpdateFromServer,
+        sidebarOpen,
+        setSidebarOpen,
     }), [
         isCreating,
         setIsCreating,
@@ -53,6 +58,8 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setEditMode,
         updateFromServer,
         setUpdateFromServer,
+        sidebarOpen,
+        setSidebarOpen,
     ])
 
     return (
