@@ -40,7 +40,7 @@ const CaseView = () => {
 
         // CAPEX
         setCessationOffshoreFacilitiesCost,
-        setCessationOnshoreFacilitiesCost,
+        setCessationOnshoreFacilitiesCostProfile,
 
         // Study cost
         setTotalFeasibilityAndConceptStudies,
@@ -193,7 +193,7 @@ const CaseView = () => {
             setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.additionalOPEXCostProfileDto, setAdditionalOPEXCostProfile)
             setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationWellsCostDto, setCessationWellsCost)
             setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationOffshoreFacilitiesCostDto, setCessationOffshoreFacilitiesCost)
-            setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationOnshoreFacilitiesCostDto, setCessationOnshoreFacilitiesCost)
+            setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationOnshoreFacilitiesCostProfileDto, setCessationOnshoreFacilitiesCostProfile)
             setIfNotNull(result.generatedProfilesDto?.co2EmissionsDto, setCo2Emissions)
             setIfNotNull(result.generatedProfilesDto?.fuelFlaringAndLossesDto, setFuelFlaringAndLosses)
             setIfNotNull(result.generatedProfilesDto?.netSalesGasDto, setNetSalesGas)

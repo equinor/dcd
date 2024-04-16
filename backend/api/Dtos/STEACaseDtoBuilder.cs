@@ -48,6 +48,10 @@ public static class STEACaseDtoBuilder
         {
             costProfileDtos.Add(caseDto.OffshoreFacilitiesOperationsCostProfile);
         }
+        if (caseDto.OnshoreRelatedOPEXCostProfile != null)
+        {
+            costProfileDtos.Add(caseDto.OnshoreRelatedOPEXCostProfile);
+        }
         if (caseDto.AdditionalOPEXCostProfile != null)
         {
             costProfileDtos.Add(caseDto.AdditionalOPEXCostProfile);
@@ -128,11 +132,11 @@ public static class STEACaseDtoBuilder
             costProfileDtos.Add(caseDto.CessationOffshoreFacilitiesCost);
         }
 
-        if (caseDto.CessationOnshoreFacilitiesCost != null)
+        if (caseDto.CessationOnshoreFacilitiesCostProfile != null)
         {
-            costProfileDtos.Add(caseDto.CessationOnshoreFacilitiesCost);
+            costProfileDtos.Add(caseDto.CessationOnshoreFacilitiesCostProfile);
         }
-        
+
         var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);
         var cessationCost = new CessationCostDto
         {

@@ -61,8 +61,8 @@ interface CaseContextType {
 
     cessationOffshoreFacilitiesCost: Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined,
     setCessationOffshoreFacilitiesCost: Dispatch<SetStateAction<Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined>>
-    cessationOnshoreFacilitiesCost: Components.Schemas.CessationOnshoreFacilitiesCostDto | undefined,
-    setCessationOnshoreFacilitiesCost: Dispatch<SetStateAction<Components.Schemas.CessationOnshoreFacilitiesCostDto | undefined>>
+    cessationOnshoreFacilitiesCostProfile: Components.Schemas.CessationOnshoreFacilitiesCostProfileDto | undefined,
+    setCessationOnshoreFacilitiesCostProfile: Dispatch<SetStateAction<Components.Schemas.CessationOnshoreFacilitiesCostProfileDto | undefined>>
     // Study
     totalFeasibilityAndConceptStudies: Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined
     setTotalFeasibilityAndConceptStudies: Dispatch<SetStateAction<Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined>>
@@ -136,7 +136,7 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto | undefined>()
     const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>()
     const [cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost] = useState<Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined>()
-    const [cessationOnshoreFacilitiesCost, setCessationOnshoreFacilitiesCost] = useState<Components.Schemas.CessationOnshoreFacilitiesCostDto | undefined>()
+    const [cessationOnshoreFacilitiesCostProfile, setCessationOnshoreFacilitiesCostProfile] = useState<Components.Schemas.CessationOnshoreFacilitiesCostProfileDto | undefined>()
 
     // Study
     const [totalFeasibilityAndConceptStudies, setTotalFeasibilityAndConceptStudies] = useState<Components.Schemas.TotalFeasibilityAndConceptStudiesDto | undefined>()
@@ -210,8 +210,8 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setDevelopmentOperationalWellCosts,
         cessationOffshoreFacilitiesCost,
         setCessationOffshoreFacilitiesCost,
-        cessationOnshoreFacilitiesCost,
-        setCessationOnshoreFacilitiesCost,
+        cessationOnshoreFacilitiesCostProfile,
+        setCessationOnshoreFacilitiesCostProfile,
 
         // Study
         totalFeasibilityAndConceptStudies,
@@ -284,7 +284,7 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         cessationWellsCost,
         developmentOperationalWellCosts,
         cessationOffshoreFacilitiesCost,
-        cessationOnshoreFacilitiesCost,
+        cessationOnshoreFacilitiesCostProfile,
 
         // Study
         totalFeasibilityAndConceptStudies,

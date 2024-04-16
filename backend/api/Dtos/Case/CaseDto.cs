@@ -73,7 +73,7 @@ public class CaseDto
     [Required]
     public CessationOffshoreFacilitiesCostOverrideDto CessationOffshoreFacilitiesCostOverride { get; set; } = null!;
     [Required]
-    public CessationOnshoreFacilitiesCostDto CessationOnshoreFacilitiesCost { get; set; } = null!;
+    public CessationOnshoreFacilitiesCostProfileDto? CessationOnshoreFacilitiesCostProfile { get; set; } = new CessationOnshoreFacilitiesCostProfileDto();
     [Required]
     public TotalFeasibilityAndConceptStudiesDto? TotalFeasibilityAndConceptStudies { get; set; }
     [Required]
@@ -142,7 +142,7 @@ public class CessationOffshoreFacilitiesCostOverrideDto : TimeSeriesCostDto, ITi
     [Required]
     public bool Override { get; set; }
 }
-public class CessationOnshoreFacilitiesCostDto : TimeSeriesCostDto
+public class CessationOnshoreFacilitiesCostProfileDto : TimeSeriesCostDto
 {
 }
 
@@ -209,7 +209,7 @@ public class CessationCostWrapperDto
     public CessationCostDto? CessationCostDto { get; set; }
     public CessationWellsCostDto? CessationWellsCostDto { get; set; }
     public CessationOffshoreFacilitiesCostDto? CessationOffshoreFacilitiesCostDto { get; set; }
-    public CessationOnshoreFacilitiesCostDto? CessationOnshoreFacilitiesCostDto { get; set; }
+    public CessationOnshoreFacilitiesCostProfileDto? CessationOnshoreFacilitiesCostProfileDto { get; set; }
 
 }
 

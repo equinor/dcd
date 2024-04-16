@@ -33,8 +33,8 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         setTotalDrillingCost,
         cessationOffshoreFacilitiesCost,
         setCessationOffshoreFacilitiesCost,
-        cessationOnshoreFacilitiesCost,
-        setCessationOnshoreFacilitiesCost,
+        cessationOnshoreFacilitiesCostProfile,
+        setCessationOnshoreFacilitiesCostProfile,
 
         // OPEX
         historicCostCostProfile,
@@ -144,7 +144,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         {
             profileName: "Cessation - onshore facilities",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationOnshoreFacilitiesCost,
+            profile: cessationOnshoreFacilitiesCostProfile,
             group: "CAPEX",
         },
 

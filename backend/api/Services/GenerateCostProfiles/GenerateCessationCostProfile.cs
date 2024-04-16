@@ -51,12 +51,12 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
 
         var cessationWellsCost = caseItem.CessationWellsCost ?? new CessationWellsCost();
         var cessationOffshoreFacilitiesCost = caseItem.CessationOffshoreFacilitiesCost ?? new CessationOffshoreFacilitiesCost();
-        var cessationOnshoreFacilitiesCost = caseItem.CessationOnshoreFacilitiesCost ?? new CessationOnshoreFacilitiesCost();
+        var CessationOnshoreFacilitiesCostProfile = caseItem.CessationOnshoreFacilitiesCostProfile ?? new CessationOnshoreFacilitiesCostProfile();
 
         var lastYear = await GetRelativeLastYearOfProduction(caseItem);
         if (lastYear == null)
         {
-            await UpdateCaseAndSave(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCost);
+            await UpdateCaseAndSave(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost, CessationOnshoreFacilitiesCostProfile);
             return new CessationCostWrapperDto();
         }
 
@@ -90,13 +90,13 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
             _logger.LogInformation("Surf {0} not found.", caseItem.SurfLink);
         }
 
-        var cessationOnshore = caseItem.CessationOnshoreFacilitiesCost ?? new CessationOnshoreFacilitiesCost();
-        var cessationOnshoreDto = _mapper.Map<CessationOnshoreFacilitiesCostDto>(cessationOnshore);
-        result.CessationOnshoreFacilitiesCostDto = cessationOnshoreDto;
+        var cessationOnshore = caseItem.CessationOnshoreFacilitiesCostProfile ?? new CessationOnshoreFacilitiesCostProfile();
+        var cessationOnshoreDto = _mapper.Map<CessationOnshoreFacilitiesCostProfileDto>(cessationOnshore);
+        result.CessationOnshoreFacilitiesCostProfileDto = cessationOnshoreDto;
 
-        await UpdateCaseAndSave(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCost);
+        await UpdateCaseAndSave(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost, CessationOnshoreFacilitiesCostProfile);
 
-        var cessationTimeSeries = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCost });
+        var cessationTimeSeries = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { cessationWellsCost, cessationOffshoreFacilitiesCost, CessationOnshoreFacilitiesCostProfile });
         var cessation = new CessationCost
         {
             StartYear = cessationTimeSeries.StartYear,
@@ -109,11 +109,11 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         return result;
     }
 
-    private async Task<int> UpdateCaseAndSave(Case caseItem, CessationWellsCost cessationWellsCost, CessationOffshoreFacilitiesCost cessationOffshoreFacilitiesCost, CessationOnshoreFacilitiesCost cessationOnshoreFacilitiesCost)
+    private async Task<int> UpdateCaseAndSave(Case caseItem, CessationWellsCost cessationWellsCost, CessationOffshoreFacilitiesCost cessationOffshoreFacilitiesCost, CessationOnshoreFacilitiesCostProfile CessationOnshoreFacilitiesCostProfile)
     {
         caseItem.CessationWellsCost = cessationWellsCost;
         caseItem.CessationOffshoreFacilitiesCost = cessationOffshoreFacilitiesCost;
-        caseItem.CessationOnshoreFacilitiesCost = cessationOnshoreFacilitiesCost;
+        caseItem.CessationOnshoreFacilitiesCostProfile = CessationOnshoreFacilitiesCostProfile;
         return await _context.SaveChangesAsync();
     }
 

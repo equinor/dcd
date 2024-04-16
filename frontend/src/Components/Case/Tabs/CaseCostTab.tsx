@@ -47,8 +47,8 @@ const CaseCostTab = (): React.ReactElement | null => {
         setCessationWellsCost,
         cessationOffshoreFacilitiesCost,
         setCessationOffshoreFacilitiesCost,
-        cessationOnshoreFacilitiesCost,
-        setCessationOnshoreFacilitiesCost,
+        cessationOnshoreFacilitiesCostProfile,
+        setCessationOnshoreFacilitiesCostProfile,
 
         // OPEX
         historicCostCostProfile,
@@ -147,6 +147,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                         const wellIntervention = wellInterventionCostProfile
                         const offshoreFacilitiesOperations = projectCase?.offshoreFacilitiesOperationsCostProfile
                         const historicCostCostProfileLocal = projectCase?.historicCostCostProfile
+                        const onshoreRelatedOPEXCostProfileLocal = projectCase?.onshoreRelatedOPEXCostProfile
                         const additionalOPEXCostProfileLocal = projectCase?.additionalOPEXCostProfile
 
                         setWellInterventionCostProfile(wellIntervention)
@@ -154,18 +155,19 @@ const CaseCostTab = (): React.ReactElement | null => {
                         setOffshoreFacilitiesOperationsCostProfile(offshoreFacilitiesOperations)
                         setOffshoreFacilitiesOperationsCostProfileOverride(projectCase?.offshoreFacilitiesOperationsCostProfileOverride)
                         setHistoricCostCostProfile(historicCostCostProfileLocal)
+                        setOnshoreRelatedOPEXCostProfile(onshoreRelatedOPEXCostProfileLocal)
                         setAdditionalOPEXCostProfile(additionalOPEXCostProfileLocal)
 
                         // Development
                         const cessationWells = projectCase?.cessationWellsCost
                         const cessationOffshoreFacilities = projectCase?.cessationOffshoreFacilitiesCost
-                        const cessationOnshoreFacilities = projectCase?.cessationOnshoreFacilitiesCost
+                        const cessationOnshoreFacilities = projectCase?.cessationOnshoreFacilitiesCostProfile
 
                         setCessationWellsCost(cessationWellsCost)
                         setCessationWellsCostOverride(projectCase?.cessationWellsCostOverride)
                         setCessationOffshoreFacilitiesCost(cessationOffshoreFacilities)
                         setCessationOffshoreFacilitiesCostOverride(projectCase?.cessationOffshoreFacilitiesCostOverride)
-                        setCessationOnshoreFacilitiesCost(cessationOnshoreFacilities)
+                        setCessationOnshoreFacilitiesCostProfile(cessationOnshoreFacilities)
 
                         // CAPEX
                         const topsideCostProfile = topside.costProfile
@@ -227,7 +229,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                             projectCase?.offshoreFacilitiesOperationsCostProfile,
                             projectCase?.cessationWellsCost,
                             projectCase?.cessationOffshoreFacilitiesCost,
-                            projectCase?.cessationOnshoreFacilitiesCost,
+                            projectCase?.cessationOnshoreFacilitiesCostProfile,
                             projectCase?.totalFeasibilityAndConceptStudiesOverride,
                             projectCase?.totalFEEDStudiesOverride,
                             projectCase?.wellInterventionCostProfileOverride,
@@ -291,7 +293,7 @@ const CaseCostTab = (): React.ReactElement | null => {
             && cessationGridRef.current.api.refreshCells) {
             cessationGridRef.current.api.refreshCells()
         }
-    }, [cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCost])
+    }, [cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCostProfile])
 
     useEffect(() => {
         if (explorationWellsGridRef.current
@@ -450,8 +452,8 @@ const CaseCostTab = (): React.ReactElement | null => {
         {
             profileName: "CAPEX - Cessation - Onshore facilities",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationOnshoreFacilitiesCost,
-            set: setCessationOnshoreFacilitiesCost,
+            profile: cessationOnshoreFacilitiesCostProfile,
+            set: setCessationOnshoreFacilitiesCostProfile,
         },
     ]
 
@@ -613,6 +615,12 @@ const CaseCostTab = (): React.ReactElement | null => {
 
     useEffect(() => {
         if (projectCase) {
+            updateObject(projectCase, setProjectCase, "onshoreRelatedOPEXCostProfile", onshoreRelatedOPEXCostProfile)
+        }
+    }, [onshoreRelatedOPEXCostProfile])
+
+    useEffect(() => {
+        if (projectCase) {
             updateObject(projectCase, setProjectCase, "historicCostCostProfile", historicCostCostProfile)
         }
     }, [historicCostCostProfile])
@@ -637,9 +645,9 @@ const CaseCostTab = (): React.ReactElement | null => {
 
     useEffect(() => {
         if (projectCase) {
-            updateObject(projectCase, setProjectCase, "cessationOnshoreFacilitiesCost", cessationOnshoreFacilitiesCost)
+            updateObject(projectCase, setProjectCase, "cessationOnshoreFacilitiesCostProfile", cessationOnshoreFacilitiesCostProfile)
         }
-    }, [cessationOnshoreFacilitiesCost])
+    }, [cessationOnshoreFacilitiesCostProfile])
 
     useEffect(() => {
         if (surf) {

@@ -40,7 +40,7 @@ public class Case
     public CessationWellsCostOverride? CessationWellsCostOverride { get; set; }
     public CessationOffshoreFacilitiesCost? CessationOffshoreFacilitiesCost { get; set; }
     public CessationOffshoreFacilitiesCostOverride? CessationOffshoreFacilitiesCostOverride { get; set; }
-    public CessationOnshoreFacilitiesCost? CessationOnshoreFacilitiesCost { get; set; }
+    public CessationOnshoreFacilitiesCostProfile? CessationOnshoreFacilitiesCostProfile { get; set; }
 
     public TotalFeasibilityAndConceptStudies? TotalFeasibilityAndConceptStudies { get; set; }
     public TotalFeasibilityAndConceptStudiesOverride? TotalFeasibilityAndConceptStudiesOverride { get; set; }
@@ -110,7 +110,7 @@ public class CessationOffshoreFacilitiesCostOverride : TimeSeriesCost, ICaseTime
     public Case Case { get; set; } = null!;
     public bool Override { get; set; }
 }
-public class CessationOnshoreFacilitiesCost : TimeSeriesCost, ICaseTimeSeries
+public class CessationOnshoreFacilitiesCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
     public Case Case { get; set; } = null!;
