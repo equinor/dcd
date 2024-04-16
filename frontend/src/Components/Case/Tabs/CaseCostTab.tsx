@@ -639,6 +639,12 @@ const CaseCostTab = (): React.ReactElement | null => {
 
     useEffect(() => {
         if (projectCase) {
+            updateObject(projectCase, setProjectCase, "cessationOffshoreFacilitiesCost", cessationOffshoreFacilitiesCost)
+        }
+    }, [cessationOffshoreFacilitiesCost])
+
+    useEffect(() => {
+        if (projectCase) {
             updateObject(projectCase, setProjectCase, "cessationOffshoreFacilitiesCostOverride", cessationOffshoreFacilitiesCostOverride)
         }
     }, [cessationOffshoreFacilitiesCostOverride])

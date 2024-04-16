@@ -86,7 +86,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
     // CAPEX
     const [offshoreFacilitiesCost, setOffshoreFacilitiesCost] = useState<ITimeSeries>()
-    const [onshoreFacilitiesCost, setOnshoreFacilitiesCost] = useState<ITimeSeries>()
 
     const [, setStartYear] = useState<number>(2020)
     const [, setEndYear] = useState<number>(2030)
@@ -126,13 +125,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         {
             profileName: "Offshore facilities",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: offshoreFacilitiesOperationsCostProfile,
-            group: "CAPEX",
-        },
-        {
-            profileName: "Onshore facilities",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: onshoreFacilitiesCost,
+            profile: offshoreOpexPlussWellIntervention,
             group: "CAPEX",
         },
         {
@@ -293,14 +286,17 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         setOffshoreOpexPlussWellIntervention(
                             MergeTimeseriesList(
                                 [
-                                    (wellInterventionCostProfileOverride?.override === true
-                                        ? wellInterventionCostProfileOverride
-                                        : wellInterventionCostProfile),
-                                    (offshoreFacilitiesOperationsCostProfileOverride?.override === true
-                                        ? offshoreFacilitiesOperationsCostProfileOverride
-                                        : offshoreFacilitiesOperationsCostProfile)],
+                                    (projectCase.wellInterventionCostProfileOverride?.override === true
+                                        ? projectCase.wellInterventionCostProfileOverride
+                                        : projectCase.wellInterventionCostProfile),
+                                    (projectCase.offshoreFacilitiesOperationsCostProfileOverride?.override === true
+                                        ? projectCase.offshoreFacilitiesOperationsCostProfileOverride
+                                        : projectCase.offshoreFacilitiesOperationsCostProfile)],
                             ),
                         )
+
+                        // setCessationOffshoreFacilitiesCost(projectCase.cessationOffshoreFacilitiesCostOverride?.override
+                        //     ? projectCase.cessationOffshoreFacilitiesCostOverride : projectCase.cessationOffshoreFacilitiesCost)
 
                         // CAPEX
                         const topsideCostProfile = topside.costProfileOverride?.override
