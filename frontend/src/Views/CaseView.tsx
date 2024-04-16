@@ -291,10 +291,10 @@ const CaseView = () => {
                                 setTransport={setTransport}
                             />
                         </CasePanel>
-                        <Panel>
+                        <CasePanel>
                             <CaseCostTab />
-                        </Panel>
-                        <Panel>
+                        </CasePanel>
+                        <CasePanel>
                             <CaseCO2Tab
                                 topside={topside}
                                 setTopside={setTopside}
@@ -303,7 +303,7 @@ const CaseView = () => {
                                 co2Emissions={co2Emissions}
                                 setCo2Emissions={setCo2Emissions}
                             />
-                        </Panel>
+                        </CasePanel>
                         <CasePanel>
                             <CaseSummaryTab />
                         </CasePanel>
