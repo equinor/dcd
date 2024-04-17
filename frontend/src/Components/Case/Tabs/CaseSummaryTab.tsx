@@ -295,8 +295,8 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             ),
                         )
 
-                        // setCessationOffshoreFacilitiesCost(projectCase.cessationOffshoreFacilitiesCostOverride?.override
-                        //     ? projectCase.cessationOffshoreFacilitiesCostOverride : projectCase.cessationOffshoreFacilitiesCost)
+                         setCessationOffshoreFacilitiesCost(projectCase.cessationOffshoreFacilitiesCostOverride?.override
+                             ? projectCase.cessationOffshoreFacilitiesCostOverride : projectCase.cessationOffshoreFacilitiesCost)
 
                         // CAPEX
                         const topsideCostProfile = topside.costProfileOverride?.override
