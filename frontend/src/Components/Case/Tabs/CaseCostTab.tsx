@@ -575,56 +575,56 @@ const CaseCostTab = ({
     }
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCase, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
         }
     }, [totalFeasibilityAndConceptStudiesOverride])
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCase, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
         }
     }, [totalFEEDStudiesOverride])
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCase, "totalOtherStudies", totalOtherStudies)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "totalOtherStudies", totalOtherStudies)
         }
     }, [totalOtherStudies])
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCase, "wellInterventionCostProfileOverride", wellInterventionCostProfileOverride)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "wellInterventionCostProfileOverride", wellInterventionCostProfileOverride)
         }
     }, [wellInterventionCostProfileOverride])
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCase, "offshoreFacilitiesOperationsCostProfileOverride", offshoreFacilitiesOperationsCostProfileOverride)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "offshoreFacilitiesOperationsCostProfileOverride", offshoreFacilitiesOperationsCostProfileOverride)
         }
     }, [offshoreFacilitiesOperationsCostProfileOverride])
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCase, "historicCostCostProfile", historicCostCostProfile)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "historicCostCostProfile", historicCostCostProfile)
         }
     }, [historicCostCostProfile])
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCase, "additionalOPEXCostProfile", additionalOPEXCostProfile)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "additionalOPEXCostProfile", additionalOPEXCostProfile)
         }
     }, [additionalOPEXCostProfile])
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCase, "cessationWellsCostOverride", cessationWellsCostOverride)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "cessationWellsCostOverride", cessationWellsCostOverride)
         }
     }, [cessationWellsCostOverride])
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCase, "cessationOffshoreFacilitiesCostOverride", cessationOffshoreFacilitiesCostOverride)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "cessationOffshoreFacilitiesCostOverride", cessationOffshoreFacilitiesCostOverride)
         }
     }, [cessationOffshoreFacilitiesCostOverride])
 
