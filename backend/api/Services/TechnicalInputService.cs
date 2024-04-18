@@ -85,7 +85,7 @@ public class TechnicalInputService : ITechnicalInputService
         await _context.SaveChangesAsync();
 
         var returnProject = await _projectService.GetProject(projectId);
-        var returnProjectDto = _mapper.Map<ProjectDto>(returnProject);
+        var returnProjectDto = _mapper.Map<ProjectDto>(returnProject, opts => opts.Items["ConversionUnit"] = returnProject.PhysicalUnit.ToString());
 
         if (returnProjectDto == null)
         {
@@ -162,7 +162,7 @@ public class TechnicalInputService : ITechnicalInputService
         var updatedItem = _context.Projects!.Update(project);
         await _context.SaveChangesAsync();
 
-        var projectDto = _mapper.Map<ProjectDto>(updatedItem.Entity);
+        var projectDto = _mapper.Map<ProjectDto>(updatedItem.Entity, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
         if (projectDto == null)
         {
             _logger.LogError("Failed to map project to dto");
