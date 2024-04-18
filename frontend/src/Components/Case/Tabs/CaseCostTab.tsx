@@ -43,7 +43,9 @@ const CaseCostTab = ({
     setWellProject,
 }: Props) => {
     const {
-        projectCase, setProjectCase, setProjectCaseEdited, activeTabCase,
+        projectCase, setProjectCase,
+        projectCaseEdited, setProjectCaseEdited,
+        activeTabCase,
         totalFeasibilityAndConceptStudies,
         setTotalFeasibilityAndConceptStudies,
         totalFeasibilityAndConceptStudiesOverride,
@@ -313,7 +315,7 @@ const CaseCostTab = ({
     }
 
     const handleCaseFeasibilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...projectCase }
+        const newCase = { ...projectCaseEdited }
         const newCapexFactorFeasibilityStudies = e.currentTarget.value.length > 0
             ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
         if (newCapexFactorFeasibilityStudies !== undefined) {
@@ -324,7 +326,7 @@ const CaseCostTab = ({
     }
 
     const handleCaseFEEDChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...projectCase }
+        const newCase = { ...projectCaseEdited }
         const newCapexFactorFEEDStudies = e.currentTarget.value.length > 0
             ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
         if (newCapexFactorFEEDStudies !== undefined) {
