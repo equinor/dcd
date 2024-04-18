@@ -138,7 +138,7 @@ public class ProjectService : IProjectService
             var projectDtos = new List<ProjectDto>();
             foreach (var project in projects)
             {
-                var projectDto = _mapper.Map<ProjectDto>(project);
+                var projectDto = _mapper.Map<ProjectDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
                 if (projectDto != null)
                 {
                     projectDtos.Add(projectDto);
