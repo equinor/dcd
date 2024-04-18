@@ -45,6 +45,12 @@ const EditTechnicalInputModal = () => {
     const [originalWellProjectWells, setOriginalWellProjectWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => !isExplorationWell(w)) ?? [])
     const [originalExplorationWells, setOriginalExplorationWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => isExplorationWell(w)) ?? [])
 
+    useEffect(() => {
+        console.log("EditTechnicalInputModal: project", project)
+        console.log("explo", explorationOperationalWellCosts)
+        console.log("dev", developmentOperationalWellCosts)
+    }, [project, explorationOperationalWellCosts, developmentOperationalWellCosts])
+
     const handleSave = async () => {
         try {
             const dto: Components.Schemas.UpdateTechnicalInputDto = {}
@@ -135,6 +141,12 @@ const EditTechnicalInputModal = () => {
             setOriginalWellProjectWells(originalWellProjectWellsResult)
             const originalExplorationWellsResult = structuredClone(project?.wells.filter((w) => isExplorationWell(w)))
             setOriginalExplorationWells(originalExplorationWellsResult)
+        }
+        if (project && !developmentOperationalWellCosts && !explorationOperationalWellCosts) {
+            setDevelopmentOperationalWellCosts(project?.developmentOperationalWellCosts)
+            setExplorationOperationalWellCosts(project?.explorationOperationalWellCosts)
+            setOriginalDevelopmentOperationalWellCosts(project?.developmentOperationalWellCosts)
+            setOriginalExplorationOperationalWellCosts(project?.explorationOperationalWellCosts)
         }
     }, [project])
 
