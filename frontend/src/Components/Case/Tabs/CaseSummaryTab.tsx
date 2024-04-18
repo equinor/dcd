@@ -255,7 +255,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     }
 
     useEffect(() => {
-        (async () => {
+        const fetchData = (async () => {
             try {
                 if (projectCase && project && topside && surf && substructure && transport && wellProject) {
                     if (project && activeTabCase === 7 && projectCase?.id) {
@@ -295,8 +295,8 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             ),
                         )
 
-                         setCessationOffshoreFacilitiesCost(projectCase.cessationOffshoreFacilitiesCostOverride?.override
-                             ? projectCase.cessationOffshoreFacilitiesCostOverride : projectCase.cessationOffshoreFacilitiesCost)
+                        setCessationOffshoreFacilitiesCost(projectCase.cessationOffshoreFacilitiesCostOverride?.override
+                            ? projectCase.cessationOffshoreFacilitiesCostOverride : projectCase.cessationOffshoreFacilitiesCost)
 
                         // CAPEX
                         const topsideCostProfile = topside.costProfileOverride?.override
@@ -349,7 +349,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             tableGasInjector,
                         ]))
 
-                        const addDevelopmentCostsToFirstYearOfDrilling = (totalDrillingCost: ITimeSeries, upgradingCost: number, mobDemobCost: number, setTotalDrillingCost: { (value: SetStateAction<ITimeSeries | undefined>): void; (arg0: any): void }) => {
+                        const addDevelopmentCostsToFirstYearOfDrilling = (upgradingCost: number, mobDemobCost: number) => {
                             if (totalDrillingCost) {
                                 // Clone totalDrillingCost to avoid direct state mutation
                                 const updatedTotalDrillingCost = { ...totalDrillingCost }
@@ -379,9 +379,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             }
                         }
 
-
-                        // Call the function with the costs to add
-
                         useEffect(() => {
                             if (totalDrillingCost) {
                                 const rigUpgradingCost = project.developmentOperationalWellCosts.rigUpgrading
@@ -389,9 +386,10 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                                 console.log("rigupgrading", rigUpgradingCost)
                                 console.log("mobdemob", rigMobDemobCost)
                                 // Call the function with the updated totalDrillingCost
-                                addDevelopmentCostsToFirstYearOfDrilling(totalDrillingCost, rigUpgradingCost, rigMobDemobCost, setTotalDrillingCost);
+                                addDevelopmentCostsToFirstYearOfDrilling(rigUpgradingCost, rigMobDemobCost)
                             }
-                        }, [totalDrillingCost])
+                        }, [project.developmentOperationalWellCosts.rigUpgrading, project.developmentOperationalWellCosts.rigMobDemob])
+
                         SetTableYearsFromProfiles([
                             totalExplorationCost, totalOtherStudies, totalFeasibilityAndConceptStudies, totalFEEDStudies, historicCostCostProfile,
                             offshoreOpexPlussWellIntervention, additionalOPEXCostProfile, onshoreRelatedOPEXCostProfile,
@@ -402,8 +400,9 @@ const CaseSummaryTab = (): React.ReactElement | null => {
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
-        })()
-    }, [activeTabCase])
+        })
+        fetchData()
+    }, [activeTabCase, totalDrillingCost])
 
     if (activeTabCase !== 7) { return null }
 
