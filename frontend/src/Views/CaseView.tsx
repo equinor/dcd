@@ -2,6 +2,7 @@ import { Tabs } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import Grid from "@mui/material/Grid"
+import styled from "styled-components"
 import CaseDescriptionTab from "../Components/Case/Tabs/CaseDescriptionTab"
 import CaseCostTab from "../Components/Case/Tabs/CaseCostTab"
 import CaseFacilitiesTab from "../Components/Case/Tabs/CaseFacilitiesTab"
@@ -15,7 +16,6 @@ import { useProjectContext } from "../Context/ProjectContext"
 import { useModalContext } from "../Context/ModalContext"
 import { useCaseContext } from "../Context/CaseContext"
 import { useAppContext } from "../Context/AppContext"
-import styled from "styled-components"
 
 const {
     List, Tab, Panels, Panel,
