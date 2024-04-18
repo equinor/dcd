@@ -16,6 +16,7 @@ const routes: RouteObject[] = [
                 children: [
                     { index: true, element: <ProjectView /> },
                     { path: "case/:caseId", element: <CaseView /> },
+                    { path: "case/:caseId/:tab", element: <CaseView /> },
                 ],
             },
         ],

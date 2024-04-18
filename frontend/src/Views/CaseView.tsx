@@ -1,6 +1,6 @@
 import { Tabs } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import Grid from "@mui/material/Grid"
 import styled from "styled-components"
 import CaseDescriptionTab from "../Components/Case/Tabs/CaseDescriptionTab"
@@ -27,8 +27,14 @@ const CasePanel = styled(Panel)`
 `
 
 const CaseView = () => {
+    const { caseId, tab } = useParams()
+
     const {
-        setIsSaving, isLoading, setIsLoading, updateFromServer, setUpdateFromServer,
+        setIsSaving,
+        isLoading,
+        setIsLoading,
+        updateFromServer,
+        setUpdateFromServer,
     } = useAppContext()
 
     const {
@@ -98,6 +104,36 @@ const CaseView = () => {
 
     const navigate = useNavigate()
     const location = useLocation()
+
+    const tabNames = [
+        "Description",
+        "Production Profiles",
+        "Schedule",
+        "Drilling Schedule",
+        "Facilities",
+        "Cost",
+        "CO2 Emissions",
+        "Summary",
+    ]
+
+    // when the URL changes, set the active tab to the tab name in the URL
+    useEffect(() => {
+        if (tab) {
+            const tabIndex = tabNames.indexOf(tab)
+            if (activeTabCase !== tabIndex) {
+                setActiveTabCase(tabIndex)
+            }
+        }
+    }, [])
+
+    // when user navigates to a different tab, add the tab name to the URL
+    useEffect(() => {
+        if (activeTabCase !== undefined) {
+            const tabName = tabNames[activeTabCase]
+            const projectUrl = location.pathname.split("/case")[0]
+            navigate(`${projectUrl}/case/${caseId}/${tabName}`)
+        }
+    }, [activeTabCase])
 
     useEffect(() => {
         if (project && updateFromServer) {
@@ -235,14 +271,7 @@ const CaseView = () => {
             <Grid item xs={12}>
                 <Tabs activeTab={activeTabCase} onChange={setActiveTabCase} scrollable>
                     <List>
-                        <Tab>Description</Tab>
-                        <Tab>Production Profiles</Tab>
-                        <Tab>Schedule</Tab>
-                        <Tab>Drilling Schedule</Tab>
-                        <Tab>Facilities</Tab>
-                        <Tab>Cost</Tab>
-                        <Tab>CO2 Emissions</Tab>
-                        <Tab>Summary</Tab>
+                        {tabNames.map((tabName) => <Tab key={tabName}>{tabName}</Tab>)}
                     </List>
                     <Panels>
                         <CasePanel>
