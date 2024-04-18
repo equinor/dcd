@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { Banner, Icon } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
-import { Outlet, useNavigate } from "react-router-dom"
+import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useProjectContext } from "../Context/ProjectContext"
 import { GetProjectService } from "../Services/ProjectService"
 import CreateCaseModal from "./CreateCaseModal"
@@ -15,13 +15,18 @@ const RouteCoordinator = (): JSX.Element => {
     const { currentContext } = useModuleCurrentContext()
 
     const navigate = useNavigate()
+    const location = useLocation()
 
     useEffect(() => {
-        if (currentContext?.externalId) {
-            navigate(currentContext.id)
-        } else {
-            navigate("/")
+        const getPathToNavigate = () => {
+            if (!currentContext?.externalId) {
+                return "/"
+            }
+
+            return location.pathname.includes("/case") ? location.pathname : currentContext.id
         }
+
+        navigate(getPathToNavigate())
     }, [currentContext])
 
     useEffect(() => {
