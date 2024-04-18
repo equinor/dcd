@@ -10,4 +10,8 @@ public class CreateWellDto
     public string? Name { get; set; }
     [Required]
     public WellCategory WellCategory { get; set; }
+    public double WellInterventionCost { get; set; }
+    public double PlugingAndAbandonmentCost { get; set; }
+    public double WellCost { get; set; }
+    public double DrillingDays { get; set; }
 }
