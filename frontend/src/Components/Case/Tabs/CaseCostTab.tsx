@@ -43,7 +43,7 @@ const CaseCostTab = ({
     setWellProject,
 }: Props) => {
     const {
-        projectCase, setProjectCase,
+        projectCase,
         projectCaseEdited, setProjectCaseEdited,
         activeTabCase,
         totalFeasibilityAndConceptStudies,
