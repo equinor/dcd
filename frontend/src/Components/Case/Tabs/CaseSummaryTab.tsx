@@ -384,9 +384,10 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
                         useEffect(() => {
                             if (totalDrillingCost) {
-                                const rigUpgradingCost = project.developmentOperationalWellCosts.rigUpgrading;
-                                const rigMobDemobCost = project.developmentOperationalWellCosts.rigMobDemob;
-
+                                const rigUpgradingCost = project.developmentOperationalWellCosts.rigUpgrading
+                                const rigMobDemobCost = project.developmentOperationalWellCosts.rigMobDemob
+                                console.log("rigupgrading", rigUpgradingCost)
+                                console.log("mobdemob", rigMobDemobCost)
                                 // Call the function with the updated totalDrillingCost
                                 addDevelopmentCostsToFirstYearOfDrilling(totalDrillingCost, rigUpgradingCost, rigMobDemobCost, setTotalDrillingCost);
                             }
