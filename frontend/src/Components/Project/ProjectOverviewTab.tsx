@@ -77,12 +77,6 @@ const ProjectOverviewTab = () => {
                         {project.country ?? "Not defined in Common Library"}
                     </Typography>
                 </Grid>
-                <Grid item>
-                    <Button onClick={submitToSTEA}>
-                        <Icon data={archive} size={18} />
-                        Export to STEA
-                    </Button>
-                </Grid>
             </Grid>
             <Grid item xs={12}>
                 <Typography group="input" variant="label" htmlFor="description">Project description</Typography>
@@ -111,6 +105,12 @@ const ProjectOverviewTab = () => {
                 </Grid>
                 <Grid item xs={12}>
                     <CasesTable />
+                </Grid>
+                <Grid item>
+                    <Button variant="outlined" onClick={submitToSTEA}>
+                        <Icon data={archive} size={18} />
+                        Download input to STEA
+                    </Button>
                 </Grid>
             </Grid>
         </Grid>
