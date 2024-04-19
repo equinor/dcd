@@ -329,48 +329,43 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         const oilProducerCostProfile = wellProject?.oilProducerCostProfileOverride?.override
                             ? wellProject.oilProducerCostProfileOverride
                             : wellProject?.oilProducerCostProfile
-                        setTableOilProducer(oilProducerCostProfile)
 
                         const gasProducerCostProfile = wellProject?.gasProducerCostProfileOverride?.override
                             ? wellProject.gasProducerCostProfileOverride
                             : wellProject?.gasProducerCostProfile
-                        setTableGasProducer(gasProducerCostProfile)
 
                         const waterInjectorCostProfile = wellProject?.waterInjectorCostProfileOverride?.override
                             ? wellProject.waterInjectorCostProfileOverride
                             : wellProject?.waterInjectorCostProfile
-                        setTableWaterInjector(waterInjectorCostProfile)
 
                         const gasInjectorCostProfile = wellProject?.gasInjectorCostProfileOverride?.override
                             ? wellProject.gasInjectorCostProfileOverride
                             : wellProject?.gasInjectorCostProfile
-                        setTableGasInjector(gasInjectorCostProfile)
 
+                        const startYears = [
+                            oilProducerCostProfile,
+                            gasProducerCostProfile,
+                            waterInjectorCostProfile,
+                            gasInjectorCostProfile,
+                        ].map((series) => series?.startYear).filter((startYear) => startYear !== undefined) as number[]
+
+                        const minStartYear = startYears.length > 0 ? Math.min(...startYears) : 2020
+                        console.log("minStartYear", minStartYear)
+
+                        let drillingCostSeriesList: (ITimeSeries | undefined)[] = [
+                            oilProducerCostProfile,
+                            gasProducerCostProfile,
+                            waterInjectorCostProfile,
+                            gasInjectorCostProfile,
+                        ]
+
+                        // Define timeSeriesWithCostProfile here
+                        const rigUpgradingCost = project.developmentOperationalWellCosts.rigUpgrading
+                        const rigMobDemobCost = project.developmentOperationalWellCosts.rigMobDemob
+                        const sumOfRigAndMobDemob = rigUpgradingCost + rigMobDemobCost
                         interface ITimeSeriesWithCostProfile extends ITimeSeries {
                             developmentRigUpgradingAndMobDemobCostProfile?: number[] | null
                         }
-                        const startYears = [
-                            tableOilProducer,
-                            tableGasProducer,
-                            tableWaterInjector,
-                            tableGasInjector,
-                        ].map((series) => series?.startYear).filter((startYear) => startYear !== undefined) as number[];
-
-                        const minStartYear = startYears.length > 0 ? Math.min(...startYears) : 2020;
-                        console.log("minStartYear", minStartYear);
-
-                        setTotalDrillingCost(MergeTimeseriesList([
-                            tableOilProducer,
-                            tableGasProducer,
-                            tableWaterInjector,
-                            tableGasInjector,
-                        ]))
-                        console.log("TotalDrillingCost2", totalDrillingCost)
-                        const rigUpgradingCost = project.developmentOperationalWellCosts.rigUpgrading
-                        const rigMobDemobCost = project.developmentOperationalWellCosts.rigMobDemob
-
-                        const sumOfRigAndMobDemob = rigUpgradingCost + rigMobDemobCost
-
                         const timeSeriesWithCostProfile: ITimeSeriesWithCostProfile = {
                             id: "developmentRigUpgradingAndMobDemob",
                             startYear: minStartYear,
@@ -378,56 +373,22 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             values: [sumOfRigAndMobDemob],
                             sum: sumOfRigAndMobDemob,
                         }
-                        console.log("timeSeriesWithCostProfile", timeSeriesWithCostProfile)
-                        if (totalDrillingCost && sumOfRigAndMobDemob) {
-                            setTotalDrillingCost(MergeTimeseriesList([
-                                tableOilProducer,
-                                tableGasProducer,
-                                tableWaterInjector,
-                                tableGasInjector,
-                                timeSeriesWithCostProfile,
-                            ]))
+
+                        // If all drilling cost profiles are undefined or have no values, and there are values in timeSeriesWithCostProfile,
+                        // then totalDrillingCost should contain timeSeriesWithCostProfile with startYear 2020
+                        if (drillingCostSeriesList.every((series) => !series || !series.values || series.values.length === 0) && timeSeriesWithCostProfile?.values && timeSeriesWithCostProfile.values.length > 0) {
+                            drillingCostSeriesList = [timeSeriesWithCostProfile]
                         }
-                        // const addDevelopmentCostsToFirstYearOfDrilling = (upgradingCost: number, mobDemobCost: number) => {
-                        //     if (totalDrillingCost) {
-                        //         // Clone totalDrillingCost to avoid direct state mutation
-                        //         const updatedTotalDrillingCost = { ...totalDrillingCost }
+                        console.log("timeSeriesWithCostProfile", timeSeriesWithCostProfile)
 
-                        //         // Ensure values is an array before attempting to spread it.
-                        //         // This also initializes values to an empty array if it's null or undefined.
-                        //         const firstYearValues = Array.isArray(updatedTotalDrillingCost.values) ? [...updatedTotalDrillingCost.values] : []
+                        // If totalDrillingCost already contains timeSeriesWithCostProfile, don't add it again
+                        if (!drillingCostSeriesList.includes(timeSeriesWithCostProfile)) {
+                            drillingCostSeriesList.push(timeSeriesWithCostProfile)
+                        }
 
-                        //         // Proceed with the assumption that firstYearValues is an array (which it now is).
-                        //         if (firstYearValues.length > 0) {
-                        //             // Only add rigMobDemobCost and rigUpgradingCost if they are greater than 0
-                        //             const costToAdd = Math.max(0, upgradingCost) + Math.max(0, mobDemobCost)
-                        //             firstYearValues[0] = (firstYearValues[0] || 0) + costToAdd
-                        //         } else {
-                        //             // If there were no values, initialize with the costs provided.
-                        //             firstYearValues.push(Math.max(0, upgradingCost) + Math.max(0, mobDemobCost))
-                        //         }
+                        setTotalDrillingCost(MergeTimeseriesList(drillingCostSeriesList))
+                        console.log("TotalDrillingCost2", totalDrillingCost)
 
-                        //         // Update the cloned object with the new or modified values array.
-                        //         updatedTotalDrillingCost.values = firstYearValues
-
-                        //         // Update the state with the modified drilling cost object.
-                        //         setTotalDrillingCost(updatedTotalDrillingCost)
-                        //     } else {
-                        //         // Handle the case where totalDrillingCost is not initialized properly.
-                        //         console.log("Total drilling cost is undefined.")
-                        //     }
-                        // }
-                        // console.log("totalDrillingCost", totalDrillingCost)
-                        // //useEffect(() => {
-                        // if (totalDrillingCost) {
-                        //     const rigUpgradingCost = project.developmentOperationalWellCosts.rigUpgrading
-                        //     const rigMobDemobCost = project.developmentOperationalWellCosts.rigMobDemob
-                        //     console.log("rigupgrading", rigUpgradingCost)
-                        //     console.log("mobdemob", rigMobDemobCost)
-                        //     // Call the function with the updated totalDrillingCost
-                        //     addDevelopmentCostsToFirstYearOfDrilling(rigUpgradingCost, rigMobDemobCost)
-                        // }
-                        // //}, [project.developmentOperationalWellCosts.rigUpgrading, project.developmentOperationalWellCosts.rigMobDemob])
 
                         SetTableYearsFromProfiles([
                             totalExplorationCost, totalOtherStudies, totalFeasibilityAndConceptStudies, totalFEEDStudies, historicCostCostProfile,
@@ -440,7 +401,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-        //fetchData()
     }, [activeTabCase])
 
     if (activeTabCase !== 7) { return null }

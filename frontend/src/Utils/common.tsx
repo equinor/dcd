@@ -183,7 +183,7 @@ export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | u
 
     const timeSeries: ITimeSeries = {
         id: t1.id || t2.id || "",
-        startYear: minYear + cleanedValues.length - 1,
+        startYear: minYear,
         values: cleanedValues,
     }
 
