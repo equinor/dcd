@@ -349,16 +349,15 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         interface ITimeSeriesWithCostProfile extends ITimeSeries {
                             developmentRigUpgradingAndMobDemobCostProfile?: number[] | null
                         }
+                        const startYears = [
+                            tableOilProducer,
+                            tableGasProducer,
+                            tableWaterInjector,
+                            tableGasInjector,
+                        ].map((series) => series?.startYear).filter((startYear) => startYear !== undefined) as number[];
 
-                        const minStartYear = Math.min(
-                            ...[
-                                tableOilProducer,
-                                tableGasProducer,
-                                tableWaterInjector,
-                                tableGasInjector,
-                            ].filter((series) => series?.startYear !== undefined).map((series) => series!.startYear!)
-                        )
-                        console.log("minStartYear", minStartYear)
+                        const minStartYear = startYears.length > 0 ? Math.min(...startYears) : 2020;
+                        console.log("minStartYear", minStartYear);
 
                         setTotalDrillingCost(MergeTimeseriesList([
                             tableOilProducer,
