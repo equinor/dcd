@@ -198,49 +198,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         },
     ]
 
-    const prodAndSalesTimeSeriesData: ITimeSeriesData[] = [
-        {
-            profileName: "Oil / condensate production",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: undefined,
-        },
-        {
-            profileName: "NGL production",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: undefined,
-        },
-        {
-            profileName: "Sales gas",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: undefined,
-        },
-        {
-            profileName: "Gas import",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: undefined,
-        },
-        {
-            profileName: "CO2 emissions",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: undefined,
-        },
-        {
-            profileName: "Imported electricity",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: undefined,
-        },
-        {
-            profileName: "Deferred oil profile (MSm3/yr)",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: undefined,
-        },
-        {
-            profileName: "Deferreal gas (GSm3/yr)",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: undefined,
-        },
-    ]
-
     const allTimeSeriesData = [
         explorationTimeSeriesData,
         capexTimeSeriesData,
@@ -377,34 +334,58 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         const rigUpgradingCost = project.developmentOperationalWellCosts.rigUpgrading
                         const rigMobDemobCost = project.developmentOperationalWellCosts.rigMobDemob
                         const sumOfRigAndMobDemob = rigUpgradingCost + rigMobDemobCost
-                        interface ITimeSeriesWithCostProfile extends ITimeSeries {
-                            developmentRigUpgradingAndMobDemobCostProfile?: number[] | null
-                        }
-                        const timeSeriesWithCostProfile: ITimeSeriesWithCostProfile = {
-                            id: "developmentRigUpgradingAndMobDemob",
-                            startYear: minStartYear,
-                            name: "Development Rig Upgrading and Mob/Demob Costs",
-                            values: [sumOfRigAndMobDemob],
-                            sum: sumOfRigAndMobDemob,
-                        }
 
-                        // If all drilling cost profiles are undefined or have no values, and there are values in timeSeriesWithCostProfile,
-                        // then totalDrillingCost should contain timeSeriesWithCostProfile with startYear 2020
-                        if (drillingCostSeriesList.every((series) => !series || !series.values || series.values.length === 0) && timeSeriesWithCostProfile?.values && timeSeriesWithCostProfile.values.length > 0) {
-                            drillingCostSeriesList = [timeSeriesWithCostProfile]
-                        }
+                        if (sumOfRigAndMobDemob > 0) {
+                            // Define timeSeriesWithCostProfile here
+                            interface ITimeSeriesWithCostProfile extends ITimeSeries {
+                                developmentRigUpgradingAndMobDemobCostProfile?: number[] | null;
+                            }
 
-                        // If totalDrillingCost already contains timeSeriesWithCostProfile, don't add it again
-                        if (!drillingCostSeriesList.includes(timeSeriesWithCostProfile)) {
-                            drillingCostSeriesList.push(timeSeriesWithCostProfile)
-                        }
+                            const timeSeriesWithCostProfile: ITimeSeriesWithCostProfile = {
+                                id: "developmentRigUpgradingAndMobDemob",
+                                startYear: minStartYear,
+                                name: "Development Rig Upgrading and Mob/Demob Costs",
+                                values: [sumOfRigAndMobDemob],
+                                sum: sumOfRigAndMobDemob,
+                            }
 
+                            if (
+                                drillingCostSeriesList.every((series) => !series || !series.values || series.values.length === 0)
+                                && timeSeriesWithCostProfile?.values && timeSeriesWithCostProfile.values.length > 0
+                            ) {
+                                drillingCostSeriesList = [timeSeriesWithCostProfile]
+                            }
+                            if (!drillingCostSeriesList.includes(timeSeriesWithCostProfile)) {
+                                drillingCostSeriesList.push(timeSeriesWithCostProfile)
+                            }
+                        }
                         setTotalDrillingCost(MergeTimeseriesList(drillingCostSeriesList))
 
                         SetTableYearsFromProfiles([
-                            projectCase, wellProject, totalExplorationCost, totalOtherStudies, totalFeasibilityAndConceptStudies, totalFEEDStudies, historicCostCostProfile,
-                            additionalOPEXCostProfile, onshoreRelatedOPEXCostProfile, totalDrillingCost, offshoreOpexPlussWellIntervention,
-
+                            projectCase, wellProject, totalExplorationCost, totalOtherStudies, totalFeasibilityAndConceptStudies, totalFEEDStudiesOverride, historicCostCostProfile,
+                            additionalOPEXCostProfile, onshoreRelatedOPEXCostProfile, offshoreOpexPlussWellIntervention, projectCase?.totalFeasibilityAndConceptStudies,
+                            projectCase?.totalFEEDStudies,
+                            projectCase?.wellInterventionCostProfile,
+                            projectCase?.offshoreFacilitiesOperationsCostProfile,
+                            projectCase?.cessationWellsCost,
+                            projectCase?.cessationOffshoreFacilitiesCost,
+                            projectCase?.cessationOnshoreFacilitiesCostProfile,
+                            projectCase?.totalFeasibilityAndConceptStudiesOverride,
+                            projectCase?.wellInterventionCostProfileOverride,
+                            projectCase?.offshoreFacilitiesOperationsCostProfileOverride,
+                            projectCase?.cessationWellsCostOverride,
+                            projectCase?.cessationOffshoreFacilitiesCostOverride,
+                            surfCostProfile,
+                            topsideCostProfile,
+                            substructureCostProfile,
+                            transportCostProfile,
+                            oilProducerCostProfile,
+                            gasProducerCostProfile,
+                            waterInjectorCostProfile,
+                            gasInjectorCostProfile,
+                            explorationWellCostProfile,
+                            seismicAcquisitionAndProcessing,
+                            totalDrillingCost,
                         ], projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
                     }
                 }
@@ -447,15 +428,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                     dg4Year={projectCase?.dG4Date ? new Date(projectCase.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
                     includeFooter={false}
-                />
-            </Grid>
-            <Grid item xs={12}>
-                <CaseTabTable
-                    timeSeriesData={prodAndSalesTimeSeriesData}
-                    dg4Year={projectCase?.dG4Date ? new Date(projectCase.dG4Date).getFullYear() : 2030}
-                    tableYears={tableYears}
-                    tableName="Production & Sales Volume"
-                    includeFooter
                 />
             </Grid>
         </Grid>
