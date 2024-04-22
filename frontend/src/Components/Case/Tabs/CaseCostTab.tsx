@@ -650,8 +650,8 @@ const CaseCostTab = (): React.ReactElement | null => {
     }, [cessationOffshoreFacilitiesCostOverride])
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCaseEdited, "cessationOnshoreFacilitiesCostProfile", cessationOnshoreFacilitiesCostProfile)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "cessationOnshoreFacilitiesCostProfile", cessationOnshoreFacilitiesCostProfile)
         }
     }, [cessationOnshoreFacilitiesCostProfile])
 
