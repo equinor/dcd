@@ -100,10 +100,10 @@ interface CaseContextType {
     setCountryOfficeCost: Dispatch<SetStateAction<Components.Schemas.CountryOfficeCostDto | undefined>>
     explorationWellCostProfile: Components.Schemas.ExplorationWellCostProfileDto | undefined
     setExplorationWellCostProfile: Dispatch<SetStateAction<Components.Schemas.ExplorationWellCostProfileDto | undefined>>
-    explorationAppraisalWellCost: Components.Schemas.AppraisalWellCostProfileDto | undefined
-    setExplorationAppraisalWellCost: Dispatch<SetStateAction<Components.Schemas.AppraisalWellCostProfileDto | undefined>>
-    explorationSidetrackCost: Components.Schemas.SidetrackCostProfileDto | undefined
-    setExplorationSidetrackCost: Dispatch<SetStateAction<Components.Schemas.SidetrackCostProfileDto | undefined>>
+    appraisalWellCostProfile: Components.Schemas.AppraisalWellCostProfileDto | undefined
+    setAppraisalWellCostProfile: Dispatch<SetStateAction<Components.Schemas.AppraisalWellCostProfileDto | undefined>>
+    sidetrackCostProfile: Components.Schemas.SidetrackCostProfileDto | undefined
+    setSidetrackCostProfile: Dispatch<SetStateAction<Components.Schemas.SidetrackCostProfileDto | undefined>>
 }
 
 const CaseContext = createContext<CaseContextType | undefined>(undefined)
@@ -156,8 +156,8 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     // Exploration
     const [totalExplorationCost, setTotalExplorationCost] = useState<ITimeSeries | undefined>()
     const [explorationWellCostProfile, setExplorationWellCostProfile] = useState<Components.Schemas.ExplorationWellCostProfileDto>()
-    const [explorationAppraisalWellCost, setExplorationAppraisalWellCost] = useState<Components.Schemas.AppraisalWellCostProfileDto>()
-    const [explorationSidetrackCost, setExplorationSidetrackCost] = useState<Components.Schemas.SidetrackCostProfileDto>()
+    const [appraisalWellCostProfile, setAppraisalWellCostProfile] = useState<Components.Schemas.AppraisalWellCostProfileDto>()
+    const [sidetrackCostProfile, setSidetrackCostProfile] = useState<Components.Schemas.SidetrackCostProfileDto>()
     const [seismicAcquisitionAndProcessing, setSeismicAcquisitionAndProcessing] = useState<Components.Schemas.SeismicAcquisitionAndProcessingDto>()
     const [countryOfficeCost, setCountryOfficeCost] = useState<Components.Schemas.CountryOfficeCostDto>()
     const [gAndGAdminCost, setGAndGAdminCost] = useState<Components.Schemas.GAndGAdminCostDto>()
@@ -245,10 +245,10 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setGAndGAdminCost,
         seismicAcquisitionAndProcessing,
         setSeismicAcquisitionAndProcessing,
-        explorationSidetrackCost,
-        setExplorationSidetrackCost,
-        explorationAppraisalWellCost,
-        setExplorationAppraisalWellCost,
+        sidetrackCostProfile,
+        setSidetrackCostProfile,
+        appraisalWellCostProfile,
+        setAppraisalWellCostProfile,
         countryOfficeCost,
         setCountryOfficeCost,
     }), [
@@ -305,8 +305,8 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         explorationWellCostProfile,
         gAndGAdminCost,
         countryOfficeCost,
-        explorationAppraisalWellCost,
-        explorationSidetrackCost,
+        appraisalWellCostProfile,
+        sidetrackCostProfile,
         seismicAcquisitionAndProcessing,
     ])
 

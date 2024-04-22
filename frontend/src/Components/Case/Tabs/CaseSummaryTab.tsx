@@ -18,7 +18,9 @@ import { useModalContext } from "../../../Context/ModalContext"
 
 const CaseSummaryTab = (): React.ReactElement | null => {
     const {
-
+        projectCase,
+        setProjectCaseEdited,
+        activeTabCase,
         topside,
         setTopsideCost,
         surf,
@@ -44,6 +46,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         onshoreRelatedOPEXCostProfile,
         setOnshoreRelatedOPEXCostProfile,
         additionalOPEXCostProfile,
+        setAdditionalOPEXCostProfile,
 
         // Exploration
         totalExplorationCost,
@@ -51,26 +54,28 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         explorationWellCostProfile,
         // gAndGAdminCost,// missing implementation
         seismicAcquisitionAndProcessing,
-        explorationSidetrackCost,
-        explorationAppraisalWellCost,
+        sidetrackCostProfile,
+        appraisalWellCostProfile,
         countryOfficeCost,
 
         // Study cost
         totalFeasibilityAndConceptStudies,
+        setTotalFeasibilityAndConceptStudiesOverride,
         totalFeasibilityAndConceptStudiesOverride,
         totalFEEDStudies,
         totalFEEDStudiesOverride,
+        setTotalFEEDStudiesOverride,
         totalOtherStudies,
+        setTotalOtherStudies,
     } = useCaseContext()
 
     const {
         wellProject,
+        exploration,
+        setExploration,
     } = useModalContext()
 
     const { project } = useProjectContext()
-    const {
-        projectCase, setProjectCaseEdited, activeTabCase,
-    } = useCaseContext()
 
     // OPEX
     const [, setTotalStudyCost] = useState<ITimeSeries>()
@@ -258,9 +263,8 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     useEffect(() => {
         (async () => {
             try {
-                if (projectCase && project && topside && surf && substructure && transport && wellProject) {
-                    console.log("wellProject", wellProject)
-                    if (project && activeTabCase === 7 && projectCase?.id) {
+                if (projectCase && project && topside && surf && substructure && transport && wellProject && exploration) {
+                    if (activeTabCase === 7 && projectCase?.id) {
                         const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(project.id, projectCase?.id)
                         const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(project.id, projectCase?.id)
                         const cessationWrapper = (await GetGenerateProfileService()).generateCessationCost(project.id, projectCase?.id)
@@ -270,7 +274,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
                         let feasibility = (await studyWrapper).totalFeasibilityAndConceptStudiesDto
                         let feed = (await studyWrapper).totalFEEDStudiesDto
-                        const totalOtherStudiesLocal = (await studyWrapper).totalOtherStudiesDto
 
                         if (projectCase?.totalFeasibilityAndConceptStudiesOverride?.override === true) {
                             feasibility = projectCase?.totalFeasibilityAndConceptStudiesOverride
@@ -278,13 +281,15 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         if (projectCase?.totalFEEDStudiesOverride?.override === true) {
                             feed = projectCase?.totalFEEDStudiesOverride
                         }
-
-                        const totalStudy = MergeTimeseriesList([feasibility, feed, totalOtherStudiesLocal])
-                        setTotalStudyCost(totalStudy)
+                        setTotalFeasibilityAndConceptStudiesOverride(projectCase.totalFeasibilityAndConceptStudiesOverride)
+                        setTotalFEEDStudiesOverride(projectCase.totalFEEDStudiesOverride)
+                        setTotalOtherStudies(projectCase.totalOtherStudies)
 
                         setOpexCost(opex)
                         setCessationCost(cessation)
                         setHistoricCostCostProfile(projectCase.historicCostCostProfile)
+                        setOnshoreRelatedOPEXCostProfile(projectCase.onshoreRelatedOPEXCostProfile)
+                        setAdditionalOPEXCostProfile(projectCase.additionalOPEXCostProfile)
                         setOffshoreOpexPlussWellIntervention(
                             MergeTimeseriesList(
                                 [
@@ -299,9 +304,8 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         const cessationOffshoreFacilitiesCostProfile = projectCase.cessationOffshoreFacilitiesCostOverride?.override === true
                             ? projectCase.cessationOffshoreFacilitiesCostOverride
                             : projectCase.cessationOffshoreFacilitiesCost
-                        setCessationOffshoreFacilitiesCost(cessationOffshoreFacilitiesCostProfile)
-                        console.log("cessationOffshoreFacilitiesCostProfile", cessationOffshoreFacilitiesCostProfile)
-
+                        setCessationOffshoreFacilitiesCost(projectCase.cessationOffshoreFacilitiesCostOverride)
+                        setCessationOnshoreFacilitiesCostProfile(projectCase.cessationOnshoreFacilitiesCostProfile)
                         // CAPEX
                         const topsideCostProfile = topside.costProfileOverride?.override
                             ? topside.costProfileOverride : topside.costProfile
@@ -328,11 +332,11 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
                         // Exploration costs
                         setTotalExplorationCost(MergeTimeseriesList([
-                            explorationWellCostProfile,
-                            explorationAppraisalWellCost,
-                            explorationSidetrackCost,
-                            seismicAcquisitionAndProcessing,
-                            countryOfficeCost,
+                            exploration.explorationWellCostProfile,
+                            exploration.appraisalWellCostProfile,
+                            exploration.sidetrackCostProfile,
+                            exploration.seismicAcquisitionAndProcessing,
+                            exploration.countryOfficeCost,
                             // gAndGAdminCost // Missing implementation, uncomment when gAndGAdminCost is fixed
                         ]))
 
@@ -399,7 +403,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
                         SetTableYearsFromProfiles([
                             projectCase, wellProject, totalExplorationCost, totalOtherStudies, totalFeasibilityAndConceptStudies, totalFEEDStudies, historicCostCostProfile,
-                            additionalOPEXCostProfile, onshoreRelatedOPEXCostProfile,
+                            additionalOPEXCostProfile, onshoreRelatedOPEXCostProfile, totalDrillingCost, offshoreOpexPlussWellIntervention,
 
                         ], projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
                     }
@@ -408,7 +412,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-    }, [activeTabCase, wellProject, projectCase, topside])
+    }, [activeTabCase])
 
     if (activeTabCase !== 7) { return null }
 

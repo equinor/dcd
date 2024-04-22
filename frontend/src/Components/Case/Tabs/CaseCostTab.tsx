@@ -71,10 +71,10 @@ const CaseCostTab = (): React.ReactElement | null => {
         setGAndGAdminCost,
         seismicAcquisitionAndProcessing,
         setSeismicAcquisitionAndProcessing,
-        explorationSidetrackCost,
-        setExplorationSidetrackCost,
-        explorationAppraisalWellCost,
-        setExplorationAppraisalWellCost,
+        sidetrackCostProfile,
+        setSidetrackCostProfile,
+        appraisalWellCostProfile,
+        setAppraisalWellCostProfile,
         countryOfficeCost,
         setCountryOfficeCost,
     } = useCaseContext()
@@ -139,35 +139,32 @@ const CaseCostTab = (): React.ReactElement | null => {
                         const totalFEED = projectCase?.totalFEEDStudies
                         const totalOtherStudiesLocal = projectCase.totalOtherStudies
 
-                        setTotalFeasibilityAndConceptStudies(totalFeasibility)
+                        setTotalFeasibilityAndConceptStudies(totalFeasibilityAndConceptStudies)
                         setTotalFeasibilityAndConceptStudiesOverride(projectCase?.totalFeasibilityAndConceptStudiesOverride)
-                        setTotalFEEDStudies(totalFEED)
+                        setTotalFEEDStudies(totalFEEDStudies)
                         setTotalFEEDStudiesOverride(projectCase?.totalFEEDStudiesOverride)
 
                         setTotalOtherStudies(totalOtherStudiesLocal)
 
-                        const wellIntervention = wellInterventionCostProfile
                         const offshoreFacilitiesOperations = projectCase?.offshoreFacilitiesOperationsCostProfile
                         const historicCostCostProfileLocal = projectCase?.historicCostCostProfile
                         const onshoreRelatedOPEXCostProfileLocal = projectCase?.onshoreRelatedOPEXCostProfile
                         const additionalOPEXCostProfileLocal = projectCase?.additionalOPEXCostProfile
 
-                        setWellInterventionCostProfile(wellIntervention)
+                        setWellInterventionCostProfile(wellInterventionCostProfile)
                         setWellInterventionCostProfileOverride(projectCase?.wellInterventionCostProfileOverride)
-                        setOffshoreFacilitiesOperationsCostProfile(offshoreFacilitiesOperations)
+                        setOffshoreFacilitiesOperationsCostProfile(offshoreFacilitiesOperationsCostProfile)
                         setOffshoreFacilitiesOperationsCostProfileOverride(projectCase?.offshoreFacilitiesOperationsCostProfileOverride)
                         setHistoricCostCostProfile(historicCostCostProfileLocal)
                         setOnshoreRelatedOPEXCostProfile(onshoreRelatedOPEXCostProfileLocal)
                         setAdditionalOPEXCostProfile(additionalOPEXCostProfileLocal)
 
                         // Development
-                        const cessationWells = projectCase?.cessationWellsCost
-                        const cessationOffshoreFacilities = projectCase?.cessationOffshoreFacilitiesCost
                         const cessationOnshoreFacilities = projectCase?.cessationOnshoreFacilitiesCostProfile
 
                         setCessationWellsCost(cessationWellsCost)
                         setCessationWellsCostOverride(projectCase?.cessationWellsCostOverride)
-                        setCessationOffshoreFacilitiesCost(cessationOffshoreFacilities)
+                        setCessationOffshoreFacilitiesCost(cessationOffshoreFacilitiesCost)
                         setCessationOffshoreFacilitiesCostOverride(projectCase?.cessationOffshoreFacilitiesCostOverride)
                         setCessationOnshoreFacilitiesCostProfile(cessationOnshoreFacilities)
                         console.log(1, cessationOffshoreFacilitiesCost)
@@ -218,8 +215,8 @@ const CaseCostTab = (): React.ReactElement | null => {
 
                         setSeismicAcquisitionAndProcessing(exploration.seismicAcquisitionAndProcessing)
                         setExplorationWellCostProfile(exploration.explorationWellCostProfile)
-                        setExplorationAppraisalWellCost(exploration.appraisalWellCostProfile)
-                        setExplorationSidetrackCost(exploration.sidetrackCostProfile)
+                        setAppraisalWellCostProfile(exploration.appraisalWellCostProfile)
+                        setSidetrackCostProfile(exploration.sidetrackCostProfile)
                         const countryOffice = exploration.countryOfficeCost
                         setCountryOfficeCost(countryOffice)
 
@@ -557,14 +554,14 @@ const CaseCostTab = (): React.ReactElement | null => {
         {
             profileName: "Appraisal well cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: explorationAppraisalWellCost,
-            set: setExplorationAppraisalWellCost,
+            profile: appraisalWellCostProfile,
+            set: setAppraisalWellCostProfile,
         },
         {
             profileName: "Sidetrack well cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: explorationSidetrackCost,
-            set: setExplorationSidetrackCost,
+            profile: sidetrackCostProfile,
+            set: setSidetrackCostProfile,
         },
     ]
 
@@ -762,15 +759,15 @@ const CaseCostTab = (): React.ReactElement | null => {
 
     useEffect(() => {
         if (exploration) {
-            updateObject(exploration, setExploration, "appraisalWellCostProfile", explorationAppraisalWellCost)
+            updateObject(exploration, setExploration, "appraisalWellCostProfile", appraisalWellCostProfile)
         }
-    }, [explorationAppraisalWellCost])
+    }, [appraisalWellCostProfile])
 
     useEffect(() => {
         if (exploration) {
-            updateObject(exploration, setExploration, "sidetrackCostProfile", explorationSidetrackCost)
+            updateObject(exploration, setExploration, "sidetrackCostProfile", sidetrackCostProfile)
         }
-    }, [explorationSidetrackCost])
+    }, [sidetrackCostProfile])
 
     useEffect(() => {
         if (exploration) {
