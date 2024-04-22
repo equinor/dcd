@@ -259,6 +259,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         (async () => {
             try {
                 if (projectCase && project && topside && surf && substructure && transport && wellProject) {
+                    console.log("wellProject", wellProject)
                     if (project && activeTabCase === 7 && projectCase?.id) {
                         const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(project.id, projectCase?.id)
                         const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(project.id, projectCase?.id)
@@ -397,7 +398,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         setTotalDrillingCost(MergeTimeseriesList(drillingCostSeriesList))
 
                         SetTableYearsFromProfiles([
-                            totalExplorationCost, totalOtherStudies, totalFeasibilityAndConceptStudies, totalFEEDStudies, historicCostCostProfile,
+                            projectCase, wellProject, totalExplorationCost, totalOtherStudies, totalFeasibilityAndConceptStudies, totalFEEDStudies, historicCostCostProfile,
                             additionalOPEXCostProfile, onshoreRelatedOPEXCostProfile,
 
                         ], projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
