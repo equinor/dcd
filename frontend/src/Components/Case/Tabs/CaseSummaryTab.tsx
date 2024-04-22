@@ -38,6 +38,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
         // OPEX
         historicCostCostProfile,
+        setHistoricCostCostProfile,
         wellInterventionCostProfile,
         offshoreFacilitiesOperationsCostProfile,
         onshoreRelatedOPEXCostProfile,
@@ -125,7 +126,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         {
             profileName: "Offshore facilities",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: offshoreOpexPlussWellIntervention,
+            profile: offshoreFacilitiesCost,
             group: "CAPEX",
         },
         {
@@ -282,7 +283,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
                         setOpexCost(opex)
                         setCessationCost(cessation)
-
+                        setHistoricCostCostProfile(projectCase.historicCostCostProfile)
                         setOffshoreOpexPlussWellIntervention(
                             MergeTimeseriesList(
                                 [
@@ -294,9 +295,11 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                                         : projectCase.offshoreFacilitiesOperationsCostProfile)],
                             ),
                         )
-
-                        setCessationOffshoreFacilitiesCost(projectCase.cessationOffshoreFacilitiesCostOverride?.override
-                            ? projectCase.cessationOffshoreFacilitiesCostOverride : projectCase.cessationOffshoreFacilitiesCost)
+                        const cessationOffshoreFacilitiesCostProfile = projectCase.cessationOffshoreFacilitiesCostOverride?.override === true
+                            ? projectCase.cessationOffshoreFacilitiesCostOverride
+                            : projectCase.cessationOffshoreFacilitiesCost
+                        setCessationOffshoreFacilitiesCost(cessationOffshoreFacilitiesCostProfile)
+                        console.log("cessationOffshoreFacilitiesCostProfile", cessationOffshoreFacilitiesCostProfile)
 
                         // CAPEX
                         const topsideCostProfile = topside.costProfileOverride?.override
@@ -314,6 +317,13 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         const transportCostProfile = transport.costProfileOverride?.override
                             ? transport.costProfileOverride : transport.costProfile
                         setTransportCost(transportCostProfile)
+
+                        setOffshoreFacilitiesCost(MergeTimeseriesList([
+                            surfCostProfile,
+                            substructureCostProfile,
+                            transportCostProfile,
+                        ]))
+                        setCessationOffshoreFacilitiesCost(cessationOffshoreFacilitiesCostProfile)
 
                         // Exploration costs
                         setTotalExplorationCost(MergeTimeseriesList([
@@ -350,7 +360,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         ].map((series) => series?.startYear).filter((startYear) => startYear !== undefined) as number[]
 
                         const minStartYear = startYears.length > 0 ? Math.min(...startYears) : 2020
-                        console.log("minStartYear", minStartYear)
 
                         let drillingCostSeriesList: (ITimeSeries | undefined)[] = [
                             oilProducerCostProfile,
@@ -379,7 +388,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         if (drillingCostSeriesList.every((series) => !series || !series.values || series.values.length === 0) && timeSeriesWithCostProfile?.values && timeSeriesWithCostProfile.values.length > 0) {
                             drillingCostSeriesList = [timeSeriesWithCostProfile]
                         }
-                        console.log("timeSeriesWithCostProfile", timeSeriesWithCostProfile)
 
                         // If totalDrillingCost already contains timeSeriesWithCostProfile, don't add it again
                         if (!drillingCostSeriesList.includes(timeSeriesWithCostProfile)) {
@@ -387,8 +395,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         }
 
                         setTotalDrillingCost(MergeTimeseriesList(drillingCostSeriesList))
-                        console.log("TotalDrillingCost2", totalDrillingCost)
-
 
                         SetTableYearsFromProfiles([
                             totalExplorationCost, totalOtherStudies, totalFeasibilityAndConceptStudies, totalFEEDStudies, historicCostCostProfile,
@@ -401,7 +407,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-    }, [activeTabCase])
+    }, [activeTabCase, wellProject, projectCase, topside])
 
     if (activeTabCase !== 7) { return null }
 

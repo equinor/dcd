@@ -170,7 +170,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                         setCessationOffshoreFacilitiesCost(cessationOffshoreFacilities)
                         setCessationOffshoreFacilitiesCostOverride(projectCase?.cessationOffshoreFacilitiesCostOverride)
                         setCessationOnshoreFacilitiesCostProfile(cessationOnshoreFacilities)
-
+                        console.log(1, cessationOffshoreFacilitiesCost)
+                        console.log(2, cessationOffshoreFacilitiesCostOverride)
                         // CAPEX
                         const topsideCostProfile = topside.costProfile
                         setTopsideCost(topsideCostProfile)
