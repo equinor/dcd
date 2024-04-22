@@ -3,7 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom"
 import {
     Icon, SideBar, Button, Typography, Tooltip, Divider,
 } from "@equinor/eds-core-react"
-import { add, info_circle, dashboard, settings, compare } from "@equinor/eds-icons"
+import {
+    add, info_circle, dashboard, settings, compare,
+} from "@equinor/eds-icons"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import Grid from "@mui/material/Grid"
 import { useProjectContext } from "../Context/ProjectContext"
@@ -99,7 +101,7 @@ const Sidebar = () => {
     const { currentContext } = useModuleCurrentContext()
     const { sidebarOpen, setSidebarOpen } = useAppContext()
     const navigate = useNavigate()
-    const location = useLocation();
+    const location = useLocation()
     if (!project) return null
 
     const selectCase = (caseId: string) => {
@@ -111,42 +113,54 @@ const Sidebar = () => {
     }
 
     return (
-        <StyledSidebar open={sidebarOpen} onToggle={toggle => setSidebarOpen(toggle)}>
+        <StyledSidebar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>
             <StyledSidebarContent>
                 <Grid container justifyContent="center">
                     {projectCase
                         && (
                             <Grid item container justifyContent="center">
                                 <Grid item xs={12} container alignItems="center" justifyContent={sidebarOpen ? "space-between" : "center"}>
-                                    <Grid item sx={{padding: "8px"}}>
+                                    <Grid item sx={{ padding: "8px" }}>
                                         <ProjectTitle variant="overline">{sidebarOpen ? currentContext?.title : "Project"}</ProjectTitle>
                                     </Grid>
                                 </Grid>
 
                                 <Timeline data-timeline={sidebarOpen}>
-                                    <Grid item className="GhostItem"></Grid>
+                                    <Grid item className="GhostItem" />
                                     <Grid item>
-                                        <TimelineElement variant="ghost" className="GhostButton" onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 0 } })}>
+                                        <TimelineElement
+                                            variant="ghost"
+                                            className="GhostButton"
+                                            onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 0 } })}
+                                        >
                                             {sidebarOpen
-                                            ? "Overview"
-                                            : <Tooltip title="Overview" placement="right"><Icon data={dashboard} /></Tooltip>}
+                                                ? "Overview"
+                                                : <Tooltip title="Overview" placement="right"><Icon data={dashboard} /></Tooltip>}
                                         </TimelineElement>
                                     </Grid>
                                     <Grid item>
-                                        <TimelineElement variant="ghost" className="GhostButton" onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 1 } })}>
+                                        <TimelineElement
+                                            variant="ghost"
+                                            className="GhostButton"
+                                            onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 1 } })}
+                                        >
                                             {sidebarOpen
-                                            ? "Compare Cases"
-                                            : <Tooltip title="Compare Cases" placement="right"><Icon data={compare} /></Tooltip>}
+                                                ? "Compare Cases"
+                                                : <Tooltip title="Compare Cases" placement="right"><Icon data={compare} /></Tooltip>}
                                         </TimelineElement>
                                     </Grid>
                                     <Grid item>
-                                        <TimelineElement variant="ghost" className="GhostButton" onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 2 } })}>
+                                        <TimelineElement
+                                            variant="ghost"
+                                            className="GhostButton"
+                                            onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 2 } })}
+                                        >
                                             {sidebarOpen
-                                            ? "Settings"
-                                            : <Tooltip title="Settings" placement="right"><Icon data={settings} /></Tooltip>}
+                                                ? "Settings"
+                                                : <Tooltip title="Settings" placement="right"><Icon data={settings} /></Tooltip>}
                                         </TimelineElement>
                                     </Grid>
-                                    <Grid item className="GhostItem"></Grid>
+                                    <Grid item className="GhostItem" />
                                 </Timeline>
                                 <Grid item xs={12}>
                                     <Divider />
@@ -154,7 +168,7 @@ const Sidebar = () => {
                             </Grid>
                         )}
                     <Grid item xs={12} container alignItems="center" justifyContent={sidebarOpen ? "space-between" : "center"}>
-                        <Grid item flex={sidebarOpen ? 1 : undefined} sx={{padding: "8px"}}>
+                        <Grid item flex={sidebarOpen ? 1 : undefined} sx={{ padding: "8px" }}>
                             <Typography variant="overline">Cases</Typography>
                         </Grid>
                         {sidebarOpen && (
@@ -166,35 +180,43 @@ const Sidebar = () => {
                         )}
                     </Grid>
                 </Grid>
-                <Timeline data-timeline={true} container justifyContent="flex-start" alignItems="flex-start" direction="column">
-                    <Grid item className="GhostItem"></Grid>
+                <Timeline data-timeline container justifyContent="flex-start" alignItems="flex-start" direction="column">
+                    <Grid item className="GhostItem" />
                     {
-                        project?.cases.sort((a, b) => new Date(a.createTime).getDate()
-                            - new Date(b.createTime).getDate()).map((subItem, index) => (
-                                <Grid item container key={`menu - item - ${index + 1} `} justifyContent="center" data-timeline-active={location.pathname.includes(subItem.id)}>
-                                    <Tooltip title={`${subItem.name ? subItem.name : "Untitled"} - Strategy: ${productionStrategyOverviewToString(subItem.productionStrategyOverview)}`} placement="right">
-                                        <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(subItem.id)}>
-                                            {!sidebarOpen && `#${index+1}`}
-                                            {(sidebarOpen && subItem.name) && subItem.name}
-                                            {(sidebarOpen && (subItem.name === "" || subItem.name === undefined)) && "Untitled"}
-                                        </TimelineElement>
-                                    </Tooltip>
-                                </Grid>
-                            ))
+                        project?.cases.sort((a, b) => new Date(a.createTime).getDate() - new Date(b.createTime).getDate()).map((subItem, index) => (
+                            <Grid
+                                item
+                                container
+                                key={`menu - item - ${index + 1} `}
+                                justifyContent="center"
+                                data-timeline-active={location.pathname.includes(subItem.id)}
+                            >
+                                <Tooltip
+                                    title={`${subItem.name ? subItem.name : "Untitled"} - Strategy: ${productionStrategyOverviewToString(subItem.productionStrategyOverview)}`}
+                                    placement="right"
+                                >
+                                    <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(subItem.id)}>
+                                        {!sidebarOpen && `#${index + 1}`}
+                                        {(sidebarOpen && subItem.name) && subItem.name}
+                                        {(sidebarOpen && (subItem.name === "" || subItem.name === undefined)) && "Untitled"}
+                                    </TimelineElement>
+                                </Tooltip>
+                            </Grid>
+                        ))
                     }
-                    <Grid item className="GhostItem"></Grid>
+                    <Grid item className="GhostItem" />
                 </Timeline>
             </StyledSidebarContent>
             <SidebarFooter>
                 <Grid container justifyContent={sidebarOpen ? "space-evenly" : "center"} alignItems="center">
-                    <Tooltip title={!sidebarOpen ? "Send feedback" : ''} placement="right">
+                    <Tooltip title={!sidebarOpen ? "Send feedback" : ""} placement="right">
                         <Typography
                             as="a"
                             href="https://forms.office.com/Pages/ResponsePage.aspx?id=NaKkOuK21UiRlX_PBbRZsCjGTHQnxJxIkcdHZ_YqW4BUMTQyTVNLOEY0VUtSUjIwN1QxUVJIRjBaNC4u"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
-                            {sidebarOpen ? 'Send feedback' : <Icon data={info_circle}></Icon>}
+                            {sidebarOpen ? "Send feedback" : <Icon data={info_circle} />}
                         </Typography>
                     </Tooltip>
                     <Toggle />
