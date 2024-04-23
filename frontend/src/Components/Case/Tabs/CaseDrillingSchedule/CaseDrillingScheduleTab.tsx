@@ -40,7 +40,7 @@ const CaseDrillingScheduleTab = ({
 }: Props) => {
     const { project } = useProjectContext()
     const { projectCase, activeTabCase } = useCaseContext()
-    if (!projectCase) return null
+    if (!projectCase) { return null }
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])

@@ -44,6 +44,8 @@ const CaseTabTable = ({
     const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
     const [overrideProfile, setOverrideProfile] = useState<any>()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
+    const [gridApi, setGridApi] = useState(null)
+
     const { editMode } = useAppContext()
 
     const profilesToRowData = () => {
@@ -242,11 +244,17 @@ const CaseTabTable = ({
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
-    useEffect(() => {
-        setRowData(profilesToRowData())
-        const newColDefs = generateTableYearColDefs()
-        setColumnDefs(newColDefs)
-    }, [timeSeriesData, tableYears])
+    const onGridReady = (params: any) => {
+        setGridApi(params.api)
+    }
+
+    const updateRowData = (newData: any) => {
+        if (gridApi) {
+            (gridApi as any).setRowData(newData)
+        } else {
+            setRowData(newData)
+        }
+    }
 
     const handleCellValueChange = (p: any) => {
         const properties = Object.keys(p.data)
@@ -307,6 +315,12 @@ const CaseTabTable = ({
         return undefined
     }
 
+    useEffect(() => {
+        updateRowData(profilesToRowData())
+        const newColDefs = generateTableYearColDefs()
+        setColumnDefs(newColDefs)
+    }, [timeSeriesData, tableYears])
+
     return (
         <>
             <OverrideTimeSeriesPrompt
@@ -340,6 +354,7 @@ const CaseTabTable = ({
                         getRowStyle={getRowStyle}
                         suppressLastEmptyLineOnPaste
                         singleClickEdit={editMode}
+                        onGridReady={onGridReady}
                     />
                 </div>
             </div>

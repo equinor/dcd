@@ -52,11 +52,13 @@ public class DuplicateCaseService : IDuplicateCaseService
             .Include(c => c.WellInterventionCostProfileOverride)
             .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
             .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+            .Include(c => c.OnshoreRelatedOPEXCostProfile)
             .Include(c => c.AdditionalOPEXCostProfile)
             .Include(c => c.CessationWellsCost)
             .Include(c => c.CessationWellsCostOverride)
             .Include(c => c.CessationOffshoreFacilitiesCost)
             .Include(c => c.CessationOffshoreFacilitiesCostOverride)
+            .Include(c => c.CessationOnshoreFacilitiesCostProfile)
             .FirstOrDefaultAsync(c => c.Id == caseId);
         if (caseItem == null)
         {
@@ -112,6 +114,10 @@ public class DuplicateCaseService : IDuplicateCaseService
         {
             caseItem.CessationOffshoreFacilitiesCostOverride.Id = Guid.Empty;
         }
+        if (caseItem.CessationOnshoreFacilitiesCostProfile != null)
+        {
+            caseItem.CessationOnshoreFacilitiesCostProfile.Id = Guid.Empty;
+        }
         if (caseItem.WellInterventionCostProfile != null)
         {
             caseItem.WellInterventionCostProfile.Id = Guid.Empty;
@@ -131,6 +137,10 @@ public class DuplicateCaseService : IDuplicateCaseService
         if (caseItem.HistoricCostCostProfile != null)
         {
             caseItem.HistoricCostCostProfile.Id = Guid.Empty;
+        }
+        if (caseItem.OnshoreRelatedOPEXCostProfile != null)
+        {
+            caseItem.OnshoreRelatedOPEXCostProfile.Id = Guid.Empty;
         }
         if (caseItem.AdditionalOPEXCostProfile != null)
         {

@@ -103,15 +103,6 @@ const CaseDrillingScheduleTabTable = ({
         }
     }
 
-    const isEditable = (params: any) => {
-        if (editMode && params.data.overrideProfileSet === undefined && params.data.set !== undefined) {
-            return true
-        }
-        if (editMode && params.data.overrideProfile.override) {
-            return true
-        }
-        return false
-    }
     const generateTableYearColDefs = () => {
         const columnPinned: any[] = [
             {
@@ -127,8 +118,8 @@ const CaseDrillingScheduleTabTable = ({
                 field: index.toString(),
                 flex: 1,
                 minWidth: 100,
-                editable: (params: any) => isEditable(params),
-                cellClass: (params: any) => editMode && isEditable(params) ? "editableCell" : undefined,
+                editable: editMode,
+                cellClass: editMode ? "editableCell" : undefined,
             })
         }
         return columnPinned.concat([...yearDefs])
@@ -211,7 +202,7 @@ const CaseDrillingScheduleTabTable = ({
         wellsToRowData()
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
-    }, [assetWells, tableYears, wells])
+    }, [assetWells, tableYears, wells, editMode])
 
     return (
         <div className={styles.root}>
