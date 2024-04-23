@@ -64,28 +64,38 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         await _context.SaveChangesAsync();
     }
 
-    public ExplorationDto[] UpdateExplorations(Exploration[] updatedExplorationDtos)
-    {
-        var updatedExplorationDtoList = new List<ExplorationDto>();
-        foreach (var explorationDto in updatedExplorationDtos)
-        {
-            var updatedExplorationDto = UpdateExploration(explorationDto);
-            updatedExplorationDtoList.Add(updatedExplorationDto);
-        }
-
-        return updatedExplorationDtoList.ToArray();
-    }
-
-    public WellProjectDto[] UpdateWellProjects(WellProject[] updatedWellProjectDtos)
+    private WellProjectDto[] UpdateWellProjects(WellProject[] updatedWellProjects)
     {
         var updatedWellProjectDtoList = new List<WellProjectDto>();
-        foreach (var wellProjectDto in updatedWellProjectDtos)
+        foreach (var updatedWellProject in updatedWellProjects)
         {
-            var updatedWellProjectDto = UpdateWellProject(wellProjectDto);
-            updatedWellProjectDtoList.Add(updatedWellProjectDto);
+            var wellProject = _context.WellProjects!.Update(updatedWellProject);
+            var wellProjectDto = _mapper.Map<WellProjectDto>(wellProject.Entity);
+            if (wellProjectDto == null)
+            {
+                throw new ArgumentNullException(nameof(wellProjectDto));
+            }
+            updatedWellProjectDtoList.Add(wellProjectDto);
         }
 
         return updatedWellProjectDtoList.ToArray();
+    }
+
+    private ExplorationDto[] UpdateExplorations(Exploration[] updatedExplorations)
+    {
+        var updatedExplorationDtoList = new List<ExplorationDto>();
+        foreach (var updatedExploration in updatedExplorations)
+        {
+            var exploration = _context.Explorations!.Update(updatedExploration);
+            var explorationDto = _mapper.Map<ExplorationDto>(exploration.Entity);
+            if (explorationDto == null)
+            {
+                throw new ArgumentNullException(nameof(explorationDto));
+            }
+            updatedExplorationDtoList.Add(explorationDto);
+        }
+
+        return updatedExplorationDtoList.ToArray();
     }
 
     private async Task<Exploration> GetExploration(Guid explorationId)
@@ -102,30 +112,9 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         return wellProject;
     }
 
-    public ExplorationDto UpdateExploration(Exploration updatedExplorationDto)
-    {
-        var exploration = _context.Explorations!.Update(updatedExplorationDto);
-        var explorationDto = _mapper.Map<ExplorationDto>(exploration.Entity);
-        if (explorationDto == null)
-        {
-            throw new ArgumentNullException(nameof(explorationDto));
-        }
-        return explorationDto;
-    }
 
-    public WellProjectDto UpdateWellProject(WellProject updatedWellProjectDto)
-    {
 
-        var wellProject = _context.WellProjects!.Update(updatedWellProjectDto);
-        var wellProjectDto = _mapper.Map<WellProjectDto>(wellProject.Entity);
-        if (wellProjectDto == null)
-        {
-            throw new ArgumentNullException(nameof(wellProjectDto));
-        }
-        return wellProjectDto;
-    }
-
-    public async Task<Exploration> UpdateExplorationCostProfilesForCase(Guid caseId)
+    private async Task<Exploration> UpdateExplorationCostProfilesForCase(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
 
@@ -136,7 +125,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         return UpdateExplorationCostProfilesForCase(exploration, explorationWells);
     }
 
-    public Exploration UpdateExplorationCostProfilesForCase(Exploration exploration, IEnumerable<ExplorationWell> explorationWells)
+    private Exploration UpdateExplorationCostProfilesForCase(Exploration exploration, IEnumerable<ExplorationWell> explorationWells)
     {
         var wellIds = explorationWells.Select(ew => ew.WellId);
         var wells = GetAllWells().Where(w => wellIds.Contains(w.Id));
@@ -200,7 +189,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         return mergedCostProfile;
     }
 
-    public async Task<WellProject> UpdateWellProjectCostProfilesForCase(Guid caseId)
+    private async Task<WellProject> UpdateWellProjectCostProfilesForCase(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
 
@@ -210,7 +199,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         return UpdateWellProjectCostProfilesForCase(wellProject, wellProjectWells);
     }
 
-    public WellProject UpdateWellProjectCostProfilesForCase(WellProject wellProject, IEnumerable<WellProjectWell> wellProjectWells)
+    private WellProject UpdateWellProjectCostProfilesForCase(WellProject wellProject, IEnumerable<WellProjectWell> wellProjectWells)
     {
         var wellIds = wellProjectWells.Select(ew => ew.WellId);
         var wells = GetAllWells().Where(w => wellIds.Contains(w.Id));
@@ -285,7 +274,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         return mergedCostProfile;
     }
 
-    public IEnumerable<Well> GetAllWells()
+    private IEnumerable<Well> GetAllWells()
     {
         if (_context.Wells != null)
         {
@@ -298,7 +287,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         }
     }
 
-    public IEnumerable<ExplorationWell> GetAllExplorationWells()
+    private IEnumerable<ExplorationWell> GetAllExplorationWells()
     {
         if (_context.ExplorationWell != null)
         {
@@ -311,7 +300,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         }
     }
 
-    public IEnumerable<WellProjectWell> GetAllWellProjectWells()
+    private IEnumerable<WellProjectWell> GetAllWellProjectWells()
     {
         if (_context.WellProjectWell != null)
         {
