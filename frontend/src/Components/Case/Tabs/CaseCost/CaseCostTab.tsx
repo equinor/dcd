@@ -1,24 +1,20 @@
 import {
-    ChangeEventHandler,
     Dispatch,
     SetStateAction,
     useEffect,
     useRef,
     useState,
 } from "react"
-import { NativeSelect, Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import CaseNumberInput from "../../Input/CaseNumberInput"
-import CaseTabTable from "../Components/CaseTabTable"
-import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
-import { ITimeSeries } from "../../../Models/ITimeSeries"
-import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
-import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
-import InputSwitcher from "../../Input/InputSwitcher"
-import { useProjectContext } from "../../../Context/ProjectContext"
-import { useCaseContext } from "../../../Context/CaseContext"
-import { useModalContext } from "../../../Context/ModalContext"
-import RangeButton from "../../Buttons/RangeButton"
+import CaseTabTable from "../../Components/CaseTabTable"
+import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
+import { ITimeSeries } from "../../../../Models/ITimeSeries"
+import { ITimeSeriesCostOverride } from "../../../../Models/ITimeSeriesCostOverride"
+import { ITimeSeriesCost } from "../../../../Models/ITimeSeriesCost"
+import { useProjectContext } from "../../../../Context/ProjectContext"
+import { useCaseContext } from "../../../../Context/CaseContext"
+import { useModalContext } from "../../../../Context/ModalContext"
+import Header from "./Header"
 
 const CaseCostTab = (): React.ReactElement | null => {
     const {
@@ -268,6 +264,8 @@ const CaseCostTab = (): React.ReactElement | null => {
             && studyGridRef.current.api
             && studyGridRef.current.api.refreshCells) {
             studyGridRef.current.api.refreshCells()
+
+            console.log("Refreshing study grid")
         }
     }, [totalFeasibilityAndConceptStudies, totalFEEDStudies, totalOtherStudies])
 
@@ -276,6 +274,8 @@ const CaseCostTab = (): React.ReactElement | null => {
             && opexGridRef.current.api
             && opexGridRef.current.api.refreshCells) {
             opexGridRef.current.api.refreshCells()
+
+            console.log("Refreshing opex grid")
         }
     }, [
         offshoreFacilitiesOperationsCostProfile,
@@ -290,6 +290,8 @@ const CaseCostTab = (): React.ReactElement | null => {
             && cessationGridRef.current.api
             && cessationGridRef.current.api.refreshCells) {
             cessationGridRef.current.api.refreshCells()
+
+            console.log("Refreshing cessation grid")
         }
     }, [cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCostProfile])
 
@@ -298,65 +300,10 @@ const CaseCostTab = (): React.ReactElement | null => {
             && explorationWellsGridRef.current.api
             && explorationWellsGridRef.current.api.refreshCells) {
             explorationWellsGridRef.current.api.refreshCells()
+
+            console.log("Refreshing exploration wells grid")
         }
     }, [gAndGAdminCost])
-
-    const updatedAndSetSurf = (surfItem: Components.Schemas.SurfDto) => {
-        const newSurf: Components.Schemas.SurfDto = { ...surfItem }
-        if (surfCost) {
-            newSurf.costProfile = surfCost
-        }
-        setSurf(newSurf)
-    }
-
-    const handleCaseFeasibilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...projectCaseEdited }
-        const newCapexFactorFeasibilityStudies = e.currentTarget.value.length > 0
-            ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
-        if (newCapexFactorFeasibilityStudies !== undefined) {
-            newCase.capexFactorFeasibilityStudies = newCapexFactorFeasibilityStudies / 100
-        } else { newCase.capexFactorFeasibilityStudies = 0 }
-        console.log("handling case feasibility change", newCase.capexFactorFeasibilityStudies)
-        setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
-    }
-
-    const handleCaseFEEDChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...projectCaseEdited }
-        const newCapexFactorFEEDStudies = e.currentTarget.value.length > 0
-            ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
-        if (newCapexFactorFEEDStudies !== undefined) {
-            newCase.capexFactorFEEDStudies = newCapexFactorFEEDStudies / 100
-        } else { newCase.capexFactorFEEDStudies = 0 }
-        console.log("handling case FEED change", newCase.capexFactorFEEDStudies)
-        setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
-    }
-
-    const handleSurfMaturityChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1) {
-            const newMaturity: Components.Schemas.Maturity = Number(e.currentTarget.value) as Components.Schemas.Maturity
-            const newSurf = { ...surf }
-            newSurf.maturity = newMaturity
-            updatedAndSetSurf(newSurf as Components.Schemas.SurfDto)
-        }
-    }
-
-    const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newStartYear = Number(e.currentTarget.value)
-        if (newStartYear < 2010) {
-            setStartYear(2010)
-            return
-        }
-        setStartYear(newStartYear)
-    }
-
-    const handleEndYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newEndYear = Number(e.currentTarget.value)
-        if (newEndYear > 2100) {
-            setEndYear(2100)
-            return
-        }
-        setEndYear(newEndYear)
-    }
 
     interface ITimeSeriesData {
         profileName: string
@@ -562,10 +509,6 @@ const CaseCostTab = (): React.ReactElement | null => {
             set: setSidetrackCostProfile,
         },
     ]
-
-    const handleTableYearsClick = () => {
-        setTableYears([startYear, endYear])
-    }
 
     function updateObject<T>(object: T | undefined, setObject: Dispatch<SetStateAction<T | undefined>>, key: keyof T, value: any): void {
         if (!object || !value) {
@@ -781,95 +724,15 @@ const CaseCostTab = (): React.ReactElement | null => {
 
     if (activeTabCase !== 5) { return null }
 
-    const maturityOptions: { [key: string]: string } = {
-        0: "A",
-        1: "B",
-        2: "C",
-        3: "D",
-    }
     return (
         <Grid container spacing={3}>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${projectCase?.capexFactorFeasibilityStudies !== undefined ? ((projectCase.capexFactorFeasibilityStudies ?? 0) * 100).toFixed(2) : ""}%`}
-                    label="CAPEX factor feasibility studies"
-                >
-                    <CaseNumberInput
-                        onChange={handleCaseFeasibilityChange}
-                        defaultValue={projectCase?.capexFactorFeasibilityStudies !== undefined ? (projectCase.capexFactorFeasibilityStudies ?? 0) * 100 : undefined}
-                        integer={false}
-                        unit="%"
-                        min={0}
-                        max={100}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${projectCase?.capexFactorFEEDStudies !== undefined ? ((projectCase.capexFactorFEEDStudies ?? 0) * 100).toFixed(2) : ""}%`}
-                    label="CAPEX factor FEED studies"
-                >
-                    <CaseNumberInput
-                        onChange={handleCaseFEEDChange}
-                        defaultValue={projectCase?.capexFactorFEEDStudies !== undefined ? (projectCase.capexFactorFEEDStudies ?? 0) * 100 : undefined}
-                        integer={false}
-                        unit="%"
-                        min={0}
-                        max={100}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher value={maturityOptions[surf?.maturity ?? "defaultKey"]} label="Maturity">
-                    <NativeSelect
-                        id="maturity"
-                        label=""
-                        onChange={handleSurfMaturityChange}
-                        value={surf?.maturity ?? ""}
-                    >
-                        {Object.keys(maturityOptions).map((key) => (
-                            <option key={key} value={key}>{maturityOptions[key]}</option>
-                        ))}
-                    </NativeSelect>
-                </InputSwitcher>
-            </Grid>
-            <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="baseline" marginTop={6}>
-                <Grid item>
-                    <NativeSelect
-                        id="currency"
-                        label="Currency"
-                        onChange={() => { }}
-                        value={project?.currency}
-                        disabled
-                    >
-                        <option key="1" value={1}>MNOK</option>
-                        <option key="2" value={2}>MUSD</option>
-                    </NativeSelect>
-                </Grid>
-                <Grid item>
-                    <Typography variant="caption">Start year</Typography>
-                    <CaseNumberInput
-                        onChange={handleStartYearChange}
-                        defaultValue={startYear}
-                        integer
-                        min={2010}
-                        max={2100}
-                    />
-                </Grid>
-                <Grid item>
-                    <Typography variant="caption">End year</Typography>
-                    <CaseNumberInput
-                        onChange={handleEndYearChange}
-                        defaultValue={endYear}
-                        integer
-                        min={2010}
-                        max={2100}
-                    />
-                </Grid>
-                <Grid item>
-                    <RangeButton onClick={handleTableYearsClick} />
-                </Grid>
-            </Grid>
+            <Header
+                startYear={startYear}
+                endYear={endYear}
+                setStartYear={setStartYear}
+                setEndYear={setEndYear}
+                setTableYears={setTableYears}
+            />
             <Grid item xs={12}>
                 <CaseTabTable
                     timeSeriesData={studyTimeSeriesData}
