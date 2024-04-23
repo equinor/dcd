@@ -282,7 +282,6 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         }
         else
         {
-            _logger.LogInformation("No Wells existing");
             return new List<Well>();
         }
     }
@@ -295,7 +294,6 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         }
         else
         {
-            _logger.LogInformation("No ExplorationWells existing");
             return new List<ExplorationWell>();
         }
     }
@@ -308,7 +306,6 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         }
         else
         {
-            _logger.LogInformation("No WellProjectWells existing");
             return new List<WellProjectWell>();
         }
     }
