@@ -205,7 +205,6 @@ export const MergeTimeseriesList = (timeSeriesList: (ITimeSeries | undefined)[])
     return mergedTimeSeries
 }
 
-
 export function formatDate(isoDateString: string): string {
     if (isoDateString === "0001-01-01T00:00:00+00:00" || isoDateString === "0001-01-01T00:00:00.000Z") {
         return "_"

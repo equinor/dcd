@@ -3,7 +3,6 @@ import {
 } from "react"
 import Grid from "@mui/material/Grid"
 import CaseNumberInput from "../../Input/CaseNumberInput"
-import CaseTabTable from "../Components/CaseTabTable"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { GetGenerateProfileService } from "../../../Services/CaseGeneratedProfileService"
 import { MergeTimeseriesList } from "../../../Utils/common"
@@ -41,8 +40,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         // OPEX
         historicCostCostProfile,
         setHistoricCostCostProfile,
-        wellInterventionCostProfile,
-        offshoreFacilitiesOperationsCostProfile,
         onshoreRelatedOPEXCostProfile,
         setOnshoreRelatedOPEXCostProfile,
         additionalOPEXCostProfile,
@@ -54,15 +51,14 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         explorationWellCostProfile,
         // gAndGAdminCost,// missing implementation
         seismicAcquisitionAndProcessing,
-        sidetrackCostProfile,
-        appraisalWellCostProfile,
-        countryOfficeCost,
 
         // Study cost
         totalFeasibilityAndConceptStudies,
-        setTotalFeasibilityAndConceptStudiesOverride,
+        setTotalFeasibilityAndConceptStudies,
         totalFeasibilityAndConceptStudiesOverride,
+        setTotalFeasibilityAndConceptStudiesOverride,
         totalFEEDStudies,
+        setTotalFEEDStudies,
         totalFEEDStudiesOverride,
         setTotalFEEDStudiesOverride,
         totalOtherStudies,
@@ -72,23 +68,13 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     const {
         wellProject,
         exploration,
-        setExploration,
     } = useModalContext()
 
     const { project } = useProjectContext()
 
     // OPEX
-    const [, setTotalStudyCost] = useState<ITimeSeries>()
     const [, setOpexCost] = useState<Components.Schemas.OpexCostProfileDto>()
     const [, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto>()
-
-    const [tableOilProducer, setTableOilProducer] = useState<ITimeSeries>()
-    const [tableGasProducer, setTableGasProducer] = useState<ITimeSeries>()
-    const [tableWaterInjector, setTableWaterInjector] = useState<ITimeSeries>()
-    const [tableGasInjector, setTableGasInjector] = useState<ITimeSeries>()
-
-    const [wellInterventionCostProfileOverride, setWellInterventionCostProfileOverride] = useState<Components.Schemas.WellInterventionCostProfileOverrideDto>()
-    const [offshoreFacilitiesOperationsCostProfileOverride, setOffshoreFacilitiesOperationsCostProfileOverride] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto>()
 
     // CAPEX
     const [offshoreFacilitiesCost, setOffshoreFacilitiesCost] = useState<ITimeSeries>()
@@ -98,7 +84,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
     const [offshoreOpexPlussWellIntervention, setOffshoreOpexPlussWellIntervention] = useState<ITimeSeries | undefined>()
-    const [wellProjectOilProducerCost, setWellProjectOilProducerCost] = useState<Components.Schemas.OilProducerCostProfileDto>()
 
     interface ITimeSeriesData {
         group?: string
@@ -238,7 +223,9 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         if (projectCase?.totalFEEDStudiesOverride?.override === true) {
                             feed = projectCase?.totalFEEDStudiesOverride
                         }
+                        setTotalFeasibilityAndConceptStudies(feasibility)
                         setTotalFeasibilityAndConceptStudiesOverride(projectCase.totalFeasibilityAndConceptStudiesOverride)
+                        setTotalFEEDStudies(feed)
                         setTotalFEEDStudiesOverride(projectCase.totalFEEDStudiesOverride)
                         setTotalOtherStudies(projectCase.totalOtherStudies)
 
