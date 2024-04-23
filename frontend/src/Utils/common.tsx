@@ -142,7 +142,7 @@ export const productionStrategyOverviewToString = (value?: Components.Schemas.Pr
 export const isExplorationWell = (well: Components.Schemas.WellDto | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
 
 const MergeCostProfileData = (arrays: number[][], offsets: number[]): number[] => {
-    const maxLength = Math.max(...arrays.map((arr) => arr.length + offsets[arrays.indexOf(arr)]))
+    const maxLength = Math.max(...arrays.map((arr, idx) => arr.length + offsets[idx]))
     const result = new Array(maxLength).fill(0)
 
     arrays.forEach((arr, idx) => {
@@ -157,26 +157,38 @@ const MergeCostProfileData = (arrays: number[][], offsets: number[]): number[] =
     return result
 }
 
-export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
-    const startYears = [t1, t2].map((t) => t?.startYear ?? 0)
-    const minYear = Math.min(...startYears)
-    const arrays = [t1, t2].map((t) => t?.values ?? [])
-    const offsets = startYears.map((year) => Math.abs(year - minYear))
-
-    const values: number[] = MergeCostProfileData(arrays, offsets)
-
-    const timeSeries = {
-        id: t1?.id ?? t2?.id ?? "",
-        startYear: minYear,
-        values,
+const removeLeadingZeroes = (array: number[]): number[] => {
+    let index = 0
+    while (index < array.length && array[index] === 0) {
+        index += 1
     }
+    return array.slice(index)
+}
+
+export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
+    if (!t1) return t2 || { id: "", startYear: 0, values: [] }
+    if (!t2) return t1
+
+    const arrays = [t1.values ?? [], t2.values ?? []]
+
+    const mergedValues = MergeCostProfileData(arrays, [t1.startYear ?? 0, t2.startYear ?? 0])
+
+    const minYear = Math.min(t1.startYear ?? 3000, t2.startYear ?? 3000)
+
+    const cleanedValues = removeLeadingZeroes(mergedValues)
+
+    const timeSeries: ITimeSeries = {
+        id: t1.id || t2.id || "",
+        startYear: minYear,
+        values: cleanedValues,
+    }
+
     return timeSeries
 }
 
 export const MergeTimeseriesList = (timeSeriesList: (ITimeSeries | undefined)[]): ITimeSeries => {
-    let mergedTimeSeries: ITimeSeries = { id: "", startYear: 0, values: [] }
+    let mergedTimeSeries: ITimeSeries = { id: "", startYear: 3000, values: [] }
 
-    // Iterate through the list and merge consecutively
     timeSeriesList.forEach((currentSeries, index) => {
         if (index === 0) {
             mergedTimeSeries = currentSeries ?? mergedTimeSeries

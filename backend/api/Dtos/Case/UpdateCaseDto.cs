@@ -32,6 +32,7 @@ public class UpdateCaseDto
 
     public UpdateCessationWellsCostOverrideDto? CessationWellsCostOverride { get; set; }
     public UpdateCessationOffshoreFacilitiesCostOverrideDto? CessationOffshoreFacilitiesCostOverride { get; set; }
+    public UpdateCessationOnshoreFacilitiesCostProfileDto? CessationOnshoreFacilitiesCostProfile { get; set; }
 
     public UpdateTotalFeasibilityAndConceptStudiesOverrideDto? TotalFeasibilityAndConceptStudiesOverride { get; set; }
     public UpdateTotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
@@ -40,6 +41,7 @@ public class UpdateCaseDto
     public UpdateHistoricCostCostProfile? HistoricCostCostProfile { get; set; }
     public UpdateWellInterventionCostProfileOverrideDto? WellInterventionCostProfileOverride { get; set; }
     public UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
+    public UpdateOnshoreRelatedOPEXCostProfile? OnshoreRelatedOPEXCostProfile { get; set; }
     public UpdateAdditionalOPEXCostProfile? AdditionalOPEXCostProfile { get; set; }
 
     public double Capex { get; set; }
@@ -57,6 +59,9 @@ public class UpdateCessationWellsCostOverrideDto : UpdateTimeSeriesCostDto, ITim
 public class UpdateCessationOffshoreFacilitiesCostOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
 {
     public bool Override { get; set; }
+}
+public class UpdateCessationOnshoreFacilitiesCostProfileDto : UpdateTimeSeriesCostDto
+{
 }
 
 
@@ -85,6 +90,9 @@ public class UpdateTotalOtherStudies : UpdateTimeSeriesCostDto
 }
 
 public class UpdateHistoricCostCostProfile : UpdateTimeSeriesCostDto
+{
+}
+public class UpdateOnshoreRelatedOPEXCostProfile : UpdateTimeSeriesCostDto
 {
 }
 

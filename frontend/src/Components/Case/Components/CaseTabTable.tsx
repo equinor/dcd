@@ -15,6 +15,7 @@ import { isInteger } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../../Utils/constants"
 import { useAppContext } from "../../../Context/AppContext"
+import ErrorCellRenderer from "./ErrorCellRenderer"
 
 interface Props {
     timeSeriesData: any[]
@@ -212,22 +213,13 @@ const CaseTabTable = ({
 
         const validateInput = (params: any) => {
             const { value, data } = params
-            if (isEditable(params) && editMode && params.value) {
-                if (validationRules[data.profileName] === undefined) {
-                    console.log("No validation rules for", data.profileName)
-                    return false
-                }
-
-                if (data.profileName in validationRules) {
-                    if (value.toString().match(/^[0-9]+$/)
-                        && value >= validationRules[data.profileName].min
-                        && value <= validationRules[data.profileName].max) {
-                        return false
-                    }
-                    return true
+            if (isEditable(params) && editMode && value) {
+                const rule = validationRules[data.profileName]
+                if (rule && (value < rule.min || value > rule.max)) {
+                    return `Value must be between ${rule.min} and ${rule.max}.`
                 }
             }
-            return false
+            return null
         }
 
         const yearDefs: any[] = []
@@ -238,9 +230,12 @@ const CaseTabTable = ({
                 editable: (params: any) => isEditable(params),
                 minWidth: 100,
                 aggFunc: "sum",
-                cellClassRules: {
-                    "red-cell": (params: any) => validateInput(params),
-                },
+                cellRenderer: ErrorCellRenderer,
+                cellRendererParams: (params: any) => ({
+                    value: params.value,
+                    errorMsg: validateInput(params),
+                }),
+                cellStyle: { padding: "0px" },
                 cellClass: (params: any) => (editMode && isEditable(params) ? "editableCell" : undefined),
             })
         }
