@@ -148,13 +148,11 @@ public class CaseService : ICaseService
             .Include(c => c.WellInterventionCostProfileOverride)
             .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
             .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
-            .Include(c => c.OnshoreRelatedOPEXCostProfile)
             .Include(c => c.AdditionalOPEXCostProfile)
             .Include(c => c.CessationWellsCost)
             .Include(c => c.CessationWellsCostOverride)
             .Include(c => c.CessationOffshoreFacilitiesCost)
             .Include(c => c.CessationOffshoreFacilitiesCostOverride)
-            .Include(c => c.CessationOnshoreFacilitiesCostProfile)
             .FirstOrDefaultAsync(c => c.Id == caseId);
         if (caseItem == null)
         {
@@ -178,13 +176,11 @@ public class CaseService : ICaseService
                     .Include(c => c.WellInterventionCostProfileOverride)
                     .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
                     .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
-                    .Include(c => c.OnshoreRelatedOPEXCostProfile)
                     .Include(c => c.AdditionalOPEXCostProfile)
                     .Include(c => c.CessationWellsCost)
                     .Include(c => c.CessationWellsCostOverride)
                     .Include(c => c.CessationOffshoreFacilitiesCost)
                     .Include(c => c.CessationOffshoreFacilitiesCostOverride)
-                    .Include(c => c.CessationOnshoreFacilitiesCostProfile)
                     .ToListAsync();
         }
         else

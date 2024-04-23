@@ -50,10 +50,6 @@ const CaseView = () => {
         activeTabCase,
         setActiveTabCase,
 
-        // CAPEX
-        setCessationOffshoreFacilitiesCost,
-        setCessationOnshoreFacilitiesCostProfile,
-
         // Study cost
         setTotalFeasibilityAndConceptStudies,
         setTotalFEEDStudies,
@@ -79,7 +75,6 @@ const CaseView = () => {
         setHistoricCostCostProfile,
         setWellInterventionCostProfile,
         setOffshoreFacilitiesOperationsCostProfile,
-        setOnshoreRelatedOPEXCostProfile,
         setAdditionalOPEXCostProfile,
 
     } = useCaseContext()
@@ -98,6 +93,8 @@ const CaseView = () => {
     const [wells, setWells] = useState<Components.Schemas.WellDto[]>()
 
     const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>()
+    const [cessationOffshoreFacilitiesCost,
+        setCessationOffshoreFacilitiesCost] = useState<Components.Schemas.CessationOffshoreFacilitiesCostDto>()
 
     const [co2Emissions, setCo2Emissions] = useState<Components.Schemas.Co2EmissionsDto>()
 
@@ -231,11 +228,9 @@ const CaseView = () => {
             setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.offshoreFacilitiesOperationsCostProfileDto, setOffshoreFacilitiesOperationsCostProfile)
             setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.wellInterventionCostProfileDto, setWellInterventionCostProfile)
             setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.historicCostCostProfileDto, setHistoricCostCostProfile)
-            setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.onshoreRelatedOPEXCostProfileDto, setOnshoreRelatedOPEXCostProfile)
             setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.additionalOPEXCostProfileDto, setAdditionalOPEXCostProfile)
             setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationWellsCostDto, setCessationWellsCost)
             setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationOffshoreFacilitiesCostDto, setCessationOffshoreFacilitiesCost)
-            setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationOnshoreFacilitiesCostProfileDto, setCessationOnshoreFacilitiesCostProfile)
             setIfNotNull(result.generatedProfilesDto?.co2EmissionsDto, setCo2Emissions)
             setIfNotNull(result.generatedProfilesDto?.fuelFlaringAndLossesDto, setFuelFlaringAndLosses)
             setIfNotNull(result.generatedProfilesDto?.netSalesGasDto, setNetSalesGas)
@@ -321,7 +316,14 @@ const CaseView = () => {
                             />
                         </CasePanel>
                         <CasePanel>
-                            <CaseCostTab />
+                            <CaseCostTab
+                                wellProject={wellProject}
+                                setWellProject={setWellProject}
+                                cessationWellsCost={cessationWellsCost}
+                                setCessationWellsCost={setCessationWellsCost}
+                                cessationOffshoreFacilitiesCost={cessationOffshoreFacilitiesCost}
+                                setCessationOffshoreFacilitiesCost={setCessationOffshoreFacilitiesCost}
+                            />
                         </CasePanel>
                         <CasePanel>
                             <CaseCO2Tab

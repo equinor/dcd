@@ -40,7 +40,6 @@ public class Case
     public CessationWellsCostOverride? CessationWellsCostOverride { get; set; }
     public CessationOffshoreFacilitiesCost? CessationOffshoreFacilitiesCost { get; set; }
     public CessationOffshoreFacilitiesCostOverride? CessationOffshoreFacilitiesCostOverride { get; set; }
-    public CessationOnshoreFacilitiesCostProfile? CessationOnshoreFacilitiesCostProfile { get; set; }
 
     public TotalFeasibilityAndConceptStudies? TotalFeasibilityAndConceptStudies { get; set; }
     public TotalFeasibilityAndConceptStudiesOverride? TotalFeasibilityAndConceptStudiesOverride { get; set; }
@@ -52,7 +51,6 @@ public class Case
     public WellInterventionCostProfileOverride? WellInterventionCostProfileOverride { get; set; }
     public OffshoreFacilitiesOperationsCostProfile? OffshoreFacilitiesOperationsCostProfile { get; set; }
     public OffshoreFacilitiesOperationsCostProfileOverride? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
-    public OnshoreRelatedOPEXCostProfile? OnshoreRelatedOPEXCostProfile { get; set; }
     public AdditionalOPEXCostProfile? AdditionalOPEXCostProfile { get; set; }
 
     public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
@@ -110,11 +108,7 @@ public class CessationOffshoreFacilitiesCostOverride : TimeSeriesCost, ICaseTime
     public Case Case { get; set; } = null!;
     public bool Override { get; set; }
 }
-public class CessationOnshoreFacilitiesCostProfile : TimeSeriesCost, ICaseTimeSeries
-{
-    [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
-}
+
 public class OpexCostProfile : TimeSeriesCost
 {
 }
@@ -146,11 +140,6 @@ public class OffshoreFacilitiesOperationsCostProfileOverride : TimeSeriesCost, I
     [ForeignKey("Case.Id")]
     public Case Case { get; set; } = null!;
     public bool Override { get; set; }
-}
-public class OnshoreRelatedOPEXCostProfile : TimeSeriesCost, ICaseTimeSeries
-{
-    [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
 }
 public class AdditionalOPEXCostProfile : TimeSeriesCost, ICaseTimeSeries
 {

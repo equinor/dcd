@@ -187,8 +187,8 @@ const CaseTabTableWithGrouping = ({
                 editable: (params: any) => isEditable(params),
                 minWidth: 100,
                 aggFunc: "sum",
-                cellClass: (params: any) => (editMode && isEditable(params) ? "editableCell" : undefined),
-                cellStyle: { fontWeight: "bold" },
+                cellClass: (params: any) => editMode && isEditable(params) ? "editableCell" : undefined,
+                CellStyle: {fontWeight: "bold"}
             })
         }
         return columnPinned.concat([...yearDefs])

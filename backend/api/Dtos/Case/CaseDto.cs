@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Dtos;
 using api.Models;
 
 namespace api.Dtos;
@@ -73,8 +72,6 @@ public class CaseDto
     [Required]
     public CessationOffshoreFacilitiesCostOverrideDto CessationOffshoreFacilitiesCostOverride { get; set; } = null!;
     [Required]
-    public CessationOnshoreFacilitiesCostProfileDto? CessationOnshoreFacilitiesCostProfile { get; set; } = new CessationOnshoreFacilitiesCostProfileDto();
-    [Required]
     public TotalFeasibilityAndConceptStudiesDto? TotalFeasibilityAndConceptStudies { get; set; }
     [Required]
     public TotalFeasibilityAndConceptStudiesOverrideDto? TotalFeasibilityAndConceptStudiesOverride { get; set; }
@@ -94,8 +91,6 @@ public class CaseDto
     public OffshoreFacilitiesOperationsCostProfileDto? OffshoreFacilitiesOperationsCostProfile { get; set; }
     [Required]
     public OffshoreFacilitiesOperationsCostProfileOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
-    [Required]
-    public OnshoreRelatedOPEXCostProfileDto? OnshoreRelatedOPEXCostProfile { get; set; } = new OnshoreRelatedOPEXCostProfileDto();
     [Required]
     public AdditionalOPEXCostProfileDto? AdditionalOPEXCostProfile { get; set; } = new AdditionalOPEXCostProfileDto();
 
@@ -142,9 +137,6 @@ public class CessationOffshoreFacilitiesCostOverrideDto : TimeSeriesCostDto, ITi
     [Required]
     public bool Override { get; set; }
 }
-public class CessationOnshoreFacilitiesCostProfileDto : TimeSeriesCostDto
-{
-}
 
 public class OpexCostProfileDto : TimeSeriesCostDto
 {
@@ -174,9 +166,6 @@ public class OffshoreFacilitiesOperationsCostProfileOverrideDto : TimeSeriesCost
     public bool Override { get; set; }
 }
 
-public class OnshoreRelatedOPEXCostProfileDto : TimeSeriesCostDto
-{
-}
 public class AdditionalOPEXCostProfileDto : TimeSeriesCostDto
 {
 }
@@ -209,8 +198,6 @@ public class CessationCostWrapperDto
     public CessationCostDto? CessationCostDto { get; set; }
     public CessationWellsCostDto? CessationWellsCostDto { get; set; }
     public CessationOffshoreFacilitiesCostDto? CessationOffshoreFacilitiesCostDto { get; set; }
-    public CessationOnshoreFacilitiesCostProfileDto? CessationOnshoreFacilitiesCostProfileDto { get; set; }
-
 }
 
 public class OpexCostProfileWrapperDto
@@ -220,7 +207,6 @@ public class OpexCostProfileWrapperDto
 
     public WellInterventionCostProfileDto? WellInterventionCostProfileDto { get; set; }
     public OffshoreFacilitiesOperationsCostProfileDto? OffshoreFacilitiesOperationsCostProfileDto { get; set; }
-    public OnshoreRelatedOPEXCostProfileDto? OnshoreRelatedOPEXCostProfileDto { get; set; }
     public AdditionalOPEXCostProfileDto? AdditionalOPEXCostProfileDto { get; set; }
 
 }
