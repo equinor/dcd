@@ -166,19 +166,15 @@ const removeLeadingZeroes = (array: number[]): number[] => {
 }
 
 export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
-    // Check if either time series is undefined and return the other one directly
     if (!t1) return t2 || { id: "", startYear: 0, values: [] }
     if (!t2) return t1
 
     const arrays = [t1.values ?? [], t2.values ?? []]
 
-    // Merge the time series data
     const mergedValues = MergeCostProfileData(arrays, [t1.startYear ?? 0, t2.startYear ?? 0])
 
-    // Find the first year that holds any value > 0
     const minYear = Math.min(t1.startYear ?? 3000, t2.startYear ?? 3000)
 
-    // Remove leading zeros from the merged array
     const cleanedValues = removeLeadingZeroes(mergedValues)
 
     const timeSeries: ITimeSeries = {
@@ -193,7 +189,6 @@ export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | u
 export const MergeTimeseriesList = (timeSeriesList: (ITimeSeries | undefined)[]): ITimeSeries => {
     let mergedTimeSeries: ITimeSeries = { id: "", startYear: 3000, values: [] }
 
-    // Iterate through the list and merge consecutively
     timeSeriesList.forEach((currentSeries, index) => {
         if (index === 0) {
             mergedTimeSeries = currentSeries ?? mergedTimeSeries

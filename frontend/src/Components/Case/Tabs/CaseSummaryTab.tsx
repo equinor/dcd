@@ -317,13 +317,11 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             gasInjectorCostProfile,
                         ]
 
-                        // Define timeSeriesWithCostProfile here
                         const rigUpgradingCost = project.developmentOperationalWellCosts.rigUpgrading
                         const rigMobDemobCost = project.developmentOperationalWellCosts.rigMobDemob
                         const sumOfRigAndMobDemob = rigUpgradingCost + rigMobDemobCost
 
                         if (sumOfRigAndMobDemob > 0) {
-                            // Define timeSeriesWithCostProfile here
                             interface ITimeSeriesWithCostProfile extends ITimeSeries {
                                 developmentRigUpgradingAndMobDemobCostProfile?: number[] | null;
                             }
