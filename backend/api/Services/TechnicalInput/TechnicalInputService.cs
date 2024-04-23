@@ -7,18 +7,16 @@ using api.Models;
 
 using AutoMapper;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Services;
 
 public class TechnicalInputService : ITechnicalInputService
 {
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
-    private readonly ICaseService _caseService;
-    private readonly IWellProjectService _wellProjectService;
-    private readonly IExplorationService _explorationService;
     private readonly IExplorationOperationalWellCostsService _explorationOperationalWellCostsService;
     private readonly IDevelopmentOperationalWellCostsService _developmentOperationalWellCostsService;
-    private readonly IWellService _wellService;
     private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
     private readonly ILogger<TechnicalInputService> _logger;
     private readonly IMapper _mapper;
@@ -26,12 +24,8 @@ public class TechnicalInputService : ITechnicalInputService
     public TechnicalInputService(
         DcdDbContext context,
         IProjectService projectService,
-        ICaseService caseService,
-        IWellProjectService wellProjectService,
-        IExplorationService explorationService,
         IExplorationOperationalWellCostsService explorationOperationalWellCostsService,
         IDevelopmentOperationalWellCostsService developmentOperationalWellCostsService,
-        IWellService wellService,
         ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
         ILoggerFactory loggerFactory,
         IMapper mapper
@@ -40,15 +34,9 @@ public class TechnicalInputService : ITechnicalInputService
         _context = context;
 
         _projectService = projectService;
-        _caseService = caseService;
-
-        _explorationService = explorationService;
-        _wellProjectService = wellProjectService;
 
         _explorationOperationalWellCostsService = explorationOperationalWellCostsService;
         _developmentOperationalWellCostsService = developmentOperationalWellCostsService;
-
-        _wellService = wellService;
 
         _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
 
@@ -136,7 +124,7 @@ public class TechnicalInputService : ITechnicalInputService
         {
             foreach (var wellDto in updateWellDtos)
             {
-                var existing = await _wellService.GetWell(wellDto.Id);
+                var existing = await GetWell(wellDto.Id);
                 if (wellDto.WellCost != existing.WellCost || wellDto.WellCategory != existing.WellCategory)
                 {
                     updatedWells.Add(wellDto.Id);
@@ -155,6 +143,19 @@ public class TechnicalInputService : ITechnicalInputService
             await _costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWells);
         }
         return null;
+    }
+
+    private async Task<Well> GetWell(Guid wellId)
+    {
+        var well = await _context.Wells!
+            .Include(e => e.WellProjectWells)
+            .Include(e => e.ExplorationWells)
+            .FirstOrDefaultAsync(w => w.Id == wellId);
+        if (well == null)
+        {
+            throw new ArgumentException(string.Format("Well {0} not found.", wellId));
+        }
+        return well;
     }
     private async Task<ProjectDto> UpdateProject(Project project, UpdateProjectDto updatedDto)
     {
