@@ -13,6 +13,7 @@ import { useModalContext } from "../../../../Context/ModalContext"
 import Header from "./Header"
 import CessationCosts from "./Tables/CessationCosts"
 import { updateObject } from "../../../../Utils/common"
+import DevelopmentWellCosts from "./Tables/DevelopmentWellCosts"
 
 const CaseCostTab = (): React.ReactElement | null => {
     const {
@@ -82,23 +83,6 @@ const CaseCostTab = (): React.ReactElement | null => {
     const [substructureCostOverride, setSubstructureCostOverride] = useState<Components.Schemas.SubstructureCostProfileOverrideDto>()
     const [transportCostOverride, setTransportCostOverride] = useState<Components.Schemas.TransportCostProfileOverrideDto>()
 
-    // Development
-    const [wellProjectOilProducerCost, setWellProjectOilProducerCost] = useState<Components.Schemas.OilProducerCostProfileDto>()
-    const [wellProjectOilProducerCostOverride,
-        setWellProjectOilProducerCostOverride] = useState<Components.Schemas.OilProducerCostProfileOverrideDto>()
-
-    const [wellProjectGasProducerCost, setWellProjectGasProducerCost] = useState<Components.Schemas.GasProducerCostProfileDto>()
-    const [wellProjectGasProducerCostOverride,
-        setWellProjectGasProducerCostOverride] = useState<Components.Schemas.GasProducerCostProfileOverrideDto>()
-
-    const [wellProjectWaterInjectorCost, setWellProjectWaterInjectorCost] = useState<Components.Schemas.WaterInjectorCostProfileDto>()
-    const [wellProjectWaterInjectorCostOverride,
-        setWellProjectWaterInjectorCostOverride] = useState<Components.Schemas.WaterInjectorCostProfileOverrideDto>()
-
-    const [wellProjectGasInjectorCost, setWellProjectGasInjectorCost] = useState<Components.Schemas.GasInjectorCostProfileDto>()
-    const [wellProjectGasInjectorCostOverride,
-        setWellProjectGasInjectorCostOverride] = useState<Components.Schemas.GasInjectorCostProfileOverrideDto>()
-
     // Exploration
 
     const [startYear, setStartYear] = useState<number>(2020)
@@ -145,18 +129,6 @@ const CaseCostTab = (): React.ReactElement | null => {
 
                         setTransportCost(transport.costProfile)
                         setTransportCostOverride(transport.costProfileOverride)
-
-                        setWellProjectOilProducerCost(wellProject.oilProducerCostProfile)
-                        setWellProjectOilProducerCostOverride(wellProject.oilProducerCostProfileOverride)
-
-                        setWellProjectGasProducerCost(wellProject.gasProducerCostProfile)
-                        setWellProjectGasProducerCostOverride(wellProject.gasProducerCostProfileOverride)
-
-                        setWellProjectWaterInjectorCost(wellProject.waterInjectorCostProfile)
-                        setWellProjectWaterInjectorCostOverride(wellProject.waterInjectorCostProfileOverride)
-
-                        setWellProjectGasInjectorCost(wellProject.gasInjectorCostProfile)
-                        setWellProjectGasInjectorCostOverride(wellProject.gasInjectorCostProfileOverride)
 
                         setSeismicAcquisitionAndProcessing(exploration.seismicAcquisitionAndProcessing)
                         setExplorationWellCostProfile(exploration.explorationWellCostProfile)
@@ -341,41 +313,6 @@ const CaseCostTab = (): React.ReactElement | null => {
         },
     ]
 
-    const developmentTimeSeriesData: ITimeSeriesData[] = [
-        {
-            profileName: "Oil producer cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: wellProjectOilProducerCost,
-            overridable: true,
-            overrideProfile: wellProjectOilProducerCostOverride,
-            overrideProfileSet: setWellProjectOilProducerCostOverride,
-        },
-        {
-            profileName: "Gas producer cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: wellProjectGasProducerCost,
-            overridable: true,
-            overrideProfile: wellProjectGasProducerCostOverride,
-            overrideProfileSet: setWellProjectGasProducerCostOverride,
-        },
-        {
-            profileName: "Water injector cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: wellProjectWaterInjectorCost,
-            overridable: true,
-            overrideProfile: wellProjectWaterInjectorCostOverride,
-            overrideProfileSet: setWellProjectWaterInjectorCostOverride,
-        },
-        {
-            profileName: "Gas injector cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: wellProjectGasInjectorCost,
-            overridable: true,
-            overrideProfile: wellProjectGasInjectorCostOverride,
-            overrideProfileSet: setWellProjectGasInjectorCostOverride,
-        },
-    ]
-
     const explorationTimeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "G&G and admin costs",
@@ -510,54 +447,6 @@ const CaseCostTab = (): React.ReactElement | null => {
     }, [transportCostOverride])
 
     useEffect(() => {
-        if (wellProject) {
-            updateObject(wellProject, setWellProject, "oilProducerCostProfile", wellProjectOilProducerCost)
-        }
-    }, [wellProjectOilProducerCost])
-
-    useEffect(() => {
-        if (wellProject) {
-            updateObject(wellProject, setWellProject, "oilProducerCostProfileOverride", wellProjectOilProducerCostOverride)
-        }
-    }, [wellProjectOilProducerCostOverride])
-
-    useEffect(() => {
-        if (wellProject) {
-            updateObject(wellProject, setWellProject, "gasProducerCostProfile", wellProjectGasProducerCost)
-        }
-    }, [wellProjectGasProducerCost])
-
-    useEffect(() => {
-        if (wellProject) {
-            updateObject(wellProject, setWellProject, "gasProducerCostProfileOverride", wellProjectGasProducerCostOverride)
-        }
-    }, [wellProjectGasProducerCostOverride])
-
-    useEffect(() => {
-        if (wellProject) {
-            updateObject(wellProject, setWellProject, "waterInjectorCostProfile", wellProjectWaterInjectorCost)
-        }
-    }, [wellProjectWaterInjectorCost])
-
-    useEffect(() => {
-        if (wellProject) {
-            updateObject(wellProject, setWellProject, "waterInjectorCostProfileOverride", wellProjectWaterInjectorCostOverride)
-        }
-    }, [wellProjectWaterInjectorCostOverride])
-
-    useEffect(() => {
-        if (wellProject) {
-            updateObject(wellProject, setWellProject, "gasInjectorCostProfile", wellProjectGasInjectorCost)
-        }
-    }, [wellProjectGasInjectorCost])
-
-    useEffect(() => {
-        if (wellProject) {
-            updateObject(wellProject, setWellProject, "gasInjectorCostProfileOverride", wellProjectGasInjectorCostOverride)
-        }
-    }, [wellProjectGasInjectorCostOverride])
-
-    useEffect(() => {
         if (exploration) {
             updateObject(exploration, setExploration, "explorationWellCostProfile", explorationWellCostProfile)
         }
@@ -651,16 +540,16 @@ const CaseCostTab = (): React.ReactElement | null => {
                 />
             </Grid>
             <Grid item xs={12}>
-                <CaseTabTable
-                    timeSeriesData={developmentTimeSeriesData}
-                    dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
+                <DevelopmentWellCosts
                     tableYears={tableYears}
-                    tableName="Development well costs"
-                    gridRef={developmentWellsGridRef}
-                    alignedGridsRef={[studyGridRef, opexGridRef, cessationGridRef, capexGridRef,
-                        explorationWellsGridRef]}
-                    includeFooter
-                    totalRowName="Total development well cost"
+                    developmentWellsGridRef={developmentWellsGridRef}
+                    alignedGridsRef={[
+                        studyGridRef,
+                        opexGridRef,
+                        cessationGridRef,
+                        capexGridRef,
+                        explorationWellsGridRef,
+                    ]}
                 />
             </Grid>
             <Grid item xs={12}>

@@ -5,7 +5,7 @@ import RangeButton from "../../../../Buttons/RangeButton"
 import CaseNumberInput from "../../../../Input/CaseNumberInput"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
 
-interface TotalStudyCostsProps {
+interface RearRangeProps {
     startYear: number
     setStartYear: (startYear: number) => void
     endYear: number
@@ -13,7 +13,7 @@ interface TotalStudyCostsProps {
     setTableYears: (years: [number, number]) => void
 }
 
-const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
+const RearRange: React.FC<RearRangeProps> = ({
     startYear,
     setStartYear,
     endYear,
@@ -85,4 +85,4 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
     )
 }
 
-export default TotalStudyCosts
+export default RearRange
