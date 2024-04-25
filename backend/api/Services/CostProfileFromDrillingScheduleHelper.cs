@@ -114,7 +114,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
 
 
 
-    private async Task<Exploration> UpdateExplorationCostProfilesForCase(Guid caseId)
+    public async Task<Exploration> UpdateExplorationCostProfilesForCase(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
 
@@ -189,7 +189,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         return mergedCostProfile;
     }
 
-    private async Task<WellProject> UpdateWellProjectCostProfilesForCase(Guid caseId)
+    public async Task<WellProject> UpdateWellProjectCostProfilesForCase(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
 

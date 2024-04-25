@@ -268,6 +268,9 @@ public class CaseWithAssetsService : ICaseWithAssetsService
                 _context.ExplorationWell!.Add(explorationWell);
             }
         }
+
+        var wellProject = await _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
+        await _context.SaveChangesAsync();
     }
 
     public async Task CreateAndUpdateWellProjectWells(UpdateWellProjectWellDto[] wellProjectWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate)
@@ -296,6 +299,9 @@ public class CaseWithAssetsService : ICaseWithAssetsService
                 _context.WellProjectWell!.Add(wellProjectWell);
             }
         }
+
+        var wellProject = await _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<CaseDto> UpdateCase(Guid caseId, UpdateCaseDto updatedDto, ProfilesToGenerate profilesToGenerate)
