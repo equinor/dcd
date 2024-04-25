@@ -15,6 +15,7 @@ import CessationCosts from "./Tables/CessationCosts"
 import { updateObject } from "../../../../Utils/common"
 import DevelopmentWellCosts from "./Tables/DevelopmentWellCosts"
 import ExplorationWellCosts from "./Tables/ExplorationWellCosts"
+import OffshoreFacillityCosts from "./Tables/OffshoreFacilityCosts"
 
 const CaseCostTab = (): React.ReactElement | null => {
     const {
@@ -32,13 +33,13 @@ const CaseCostTab = (): React.ReactElement | null => {
         totalOtherStudies,
         setTotalOtherStudies,
         topside, setTopside,
-        topsideCost, setTopsideCost,
+        topsideCost,
         surf, setSurf,
-        surfCost, setSurfCost,
+        surfCost,
         substructure, setSubstructure,
-        substructureCost, setSubstructureCost,
+        substructureCost,
         transport, setTransport,
-        transportCost, setTransportCost,
+        transportCost,
         // OPEX
         historicCostCostProfile,
         setHistoricCostCostProfile,
@@ -62,12 +63,6 @@ const CaseCostTab = (): React.ReactElement | null => {
     // OPEX
     const [offshoreFacilitiesOperationsCostProfileOverride, setOffshoreFacilitiesOperationsCostProfileOverride] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto>()
     const [wellInterventionCostProfileOverride, setWellInterventionCostProfileOverride] = useState<Components.Schemas.WellInterventionCostProfileOverrideDto>()
-
-    // CAPEX
-    const [topsideCostOverride, setTopsideCostOverride] = useState<Components.Schemas.TopsideCostProfileOverrideDto>()
-    const [surfCostOverride, setSurfCostOverride] = useState<Components.Schemas.SurfCostProfileOverrideDto>()
-    const [substructureCostOverride, setSubstructureCostOverride] = useState<Components.Schemas.SubstructureCostProfileOverrideDto>()
-    const [transportCostOverride, setTransportCostOverride] = useState<Components.Schemas.TransportCostProfileOverrideDto>()
 
     // Exploration
 
@@ -103,18 +98,6 @@ const CaseCostTab = (): React.ReactElement | null => {
                         setOnshoreRelatedOPEXCostProfile(projectCase.onshoreRelatedOPEXCostProfile)
                         setAdditionalOPEXCostProfile(projectCase.additionalOPEXCostProfile)
                         setTotalOtherStudies(projectCase.totalOtherStudies)
-
-                        setTopsideCost(topside.costProfile)
-                        setTopsideCostOverride(topside.costProfileOverride)
-
-                        setSurfCost(surf.costProfile)
-                        setSurfCostOverride(surf.costProfileOverride)
-
-                        setSubstructureCost(substructure.costProfile)
-                        setSubstructureCostOverride(substructure.costProfileOverride)
-
-                        setTransportCost(transport.costProfile)
-                        setTransportCostOverride(transport.costProfileOverride)
 
                         SetTableYearsFromProfiles([
                             projectCase.totalFeasibilityAndConceptStudies,
@@ -247,41 +230,6 @@ const CaseCostTab = (): React.ReactElement | null => {
         },
     ]
 
-    const capexTimeSeriesData: ITimeSeriesData[] = [
-        {
-            profileName: "Subsea production system",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: surfCost,
-            overridable: true,
-            overrideProfile: surfCostOverride,
-            overrideProfileSet: setSurfCostOverride,
-        },
-        {
-            profileName: "Topside",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: topsideCost,
-            overridable: true,
-            overrideProfile: topsideCostOverride,
-            overrideProfileSet: setTopsideCostOverride,
-        },
-        {
-            profileName: "Substructure",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: substructureCost,
-            overridable: true,
-            overrideProfile: substructureCostOverride,
-            overrideProfileSet: setSubstructureCostOverride,
-        },
-        {
-            profileName: "Transport system",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: transportCost,
-            overridable: true,
-            overrideProfile: transportCostOverride,
-            overrideProfileSet: setTransportCostOverride,
-        },
-    ]
-
     useEffect(() => {
         if (projectCaseEdited) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
@@ -354,30 +302,6 @@ const CaseCostTab = (): React.ReactElement | null => {
         }
     }, [transportCost])
 
-    useEffect(() => {
-        if (surf) {
-            updateObject(surf, setSurf, "costProfileOverride", surfCostOverride)
-        }
-    }, [surfCostOverride])
-
-    useEffect(() => {
-        if (topside) {
-            updateObject(topside, setTopside, "costProfileOverride", topsideCostOverride)
-        }
-    }, [topsideCostOverride])
-
-    useEffect(() => {
-        if (substructure) {
-            updateObject(substructure, setSubstructure, "costProfileOverride", substructureCostOverride)
-        }
-    }, [substructureCostOverride])
-
-    useEffect(() => {
-        if (transport) {
-            updateObject(transport, setTransport, "costProfileOverride", transportCostOverride)
-        }
-    }, [transportCostOverride])
-
     if (activeTabCase !== 5) { return null }
 
     return (
@@ -409,8 +333,13 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     tableName="OPEX"
                     gridRef={opexGridRef}
-                    alignedGridsRef={[studyGridRef, cessationGridRef, capexGridRef,
-                        developmentWellsGridRef, explorationWellsGridRef]}
+                    alignedGridsRef={[
+                        studyGridRef,
+                        cessationGridRef,
+                        capexGridRef,
+                        developmentWellsGridRef,
+                        explorationWellsGridRef,
+                    ]}
                     includeFooter
                     totalRowName="Total OPEX cost"
                 />
@@ -429,16 +358,16 @@ const CaseCostTab = (): React.ReactElement | null => {
                 />
             </Grid>
             <Grid item xs={12}>
-                <CaseTabTable
-                    timeSeriesData={capexTimeSeriesData}
-                    dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
+                <OffshoreFacillityCosts
                     tableYears={tableYears}
-                    tableName="Offshore facilitiy costs"
-                    gridRef={capexGridRef}
-                    alignedGridsRef={[studyGridRef, opexGridRef, cessationGridRef,
-                        developmentWellsGridRef, explorationWellsGridRef]}
-                    includeFooter
-                    totalRowName="Total offshore facility cost"
+                    capexGridRef={capexGridRef}
+                    alignedGridsRef={[
+                        studyGridRef,
+                        opexGridRef,
+                        cessationGridRef,
+                        developmentWellsGridRef,
+                        explorationWellsGridRef,
+                    ]}
                 />
             </Grid>
             <Grid item xs={12}>

@@ -74,45 +74,25 @@ const CessationCosts: React.FC<CesationCostsProps> = ({ tableYears, cessationGri
 
     useEffect(() => {
         if (projectCaseEdited) {
-            updateObject(
-                projectCaseEdited,
-                setProjectCaseEdited,
-                "cessationWellsCostOverride",
-                cessationWellsCostOverride,
-            )
+            updateObject(projectCaseEdited, setProjectCaseEdited, "cessationWellsCostOverride", cessationWellsCostOverride)
         }
     }, [cessationWellsCostOverride])
 
     useEffect(() => {
         if (projectCaseEdited) {
-            updateObject(
-                projectCaseEdited,
-                setProjectCaseEdited,
-                "cessationOffshoreFacilitiesCostOverride",
-                cessationOffshoreFacilitiesCostOverride,
-            )
+            updateObject(projectCaseEdited, setProjectCaseEdited, "cessationOffshoreFacilitiesCostOverride", cessationOffshoreFacilitiesCostOverride)
         }
     }, [cessationOffshoreFacilitiesCostOverride])
 
     useEffect(() => {
         if (projectCaseEdited) {
-            updateObject(
-                projectCaseEdited,
-                setProjectCaseEdited,
-                "cessationOnshoreFacilitiesCostProfile",
-                cessationOnshoreFacilitiesCostProfile,
-            )
+            updateObject(projectCaseEdited, setProjectCaseEdited, "cessationOnshoreFacilitiesCostProfile", cessationOnshoreFacilitiesCostProfile)
         }
     }, [cessationOnshoreFacilitiesCostProfile])
 
     useEffect(() => {
         if (projectCaseEdited) {
-            updateObject(
-                projectCaseEdited,
-                setProjectCaseEdited,
-                "cessationOffshoreFacilitiesCost",
-                cessationOffshoreFacilitiesCost,
-            )
+            updateObject(projectCaseEdited, setProjectCaseEdited, "cessationOffshoreFacilitiesCost", cessationOffshoreFacilitiesCost)
         }
     }, [cessationOffshoreFacilitiesCost])
 
