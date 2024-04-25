@@ -14,6 +14,7 @@ import Header from "./Header"
 import CessationCosts from "./Tables/CessationCosts"
 import { updateObject } from "../../../../Utils/common"
 import DevelopmentWellCosts from "./Tables/DevelopmentWellCosts"
+import ExplorationWellCosts from "./Tables/ExplorationWellCosts"
 
 const CaseCostTab = (): React.ReactElement | null => {
     const {
@@ -50,25 +51,10 @@ const CaseCostTab = (): React.ReactElement | null => {
         additionalOPEXCostProfile,
         setAdditionalOPEXCostProfile,
 
-        // Exploration
-        explorationWellCostProfile,
-        setExplorationWellCostProfile,
-        gAndGAdminCost,
-        setGAndGAdminCost,
-        seismicAcquisitionAndProcessing,
-        setSeismicAcquisitionAndProcessing,
-        sidetrackCostProfile,
-        setSidetrackCostProfile,
-        appraisalWellCostProfile,
-        setAppraisalWellCostProfile,
-        countryOfficeCost,
-        setCountryOfficeCost,
     } = useCaseContext()
     const {
         wellProject,
-        setWellProject,
         exploration,
-        setExploration,
     } = useModalContext()
 
     const { project } = useProjectContext()
@@ -129,13 +115,6 @@ const CaseCostTab = (): React.ReactElement | null => {
 
                         setTransportCost(transport.costProfile)
                         setTransportCostOverride(transport.costProfileOverride)
-
-                        setSeismicAcquisitionAndProcessing(exploration.seismicAcquisitionAndProcessing)
-                        setExplorationWellCostProfile(exploration.explorationWellCostProfile)
-                        setAppraisalWellCostProfile(exploration.appraisalWellCostProfile)
-                        setSidetrackCostProfile(exploration.sidetrackCostProfile)
-                        setCountryOfficeCost(exploration.countryOfficeCost)
-                        setGAndGAdminCost(exploration.gAndGAdminCost)
 
                         SetTableYearsFromProfiles([
                             projectCase.totalFeasibilityAndConceptStudies,
@@ -205,16 +184,6 @@ const CaseCostTab = (): React.ReactElement | null => {
         onshoreRelatedOPEXCostProfile,
         additionalOPEXCostProfile,
     ])
-
-    useEffect(() => {
-        if (explorationWellsGridRef.current
-            && explorationWellsGridRef.current.api
-            && explorationWellsGridRef.current.api.refreshCells) {
-            explorationWellsGridRef.current.api.refreshCells()
-
-            console.log("Refreshing exploration wells grid")
-        }
-    }, [gAndGAdminCost])
 
     const studyTimeSeriesData: ITimeSeriesData[] = [
         {
@@ -313,43 +282,6 @@ const CaseCostTab = (): React.ReactElement | null => {
         },
     ]
 
-    const explorationTimeSeriesData: ITimeSeriesData[] = [
-        {
-            profileName: "G&G and admin costs",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: gAndGAdminCost,
-        },
-        {
-            profileName: "Seismic acquisition and processing",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: seismicAcquisitionAndProcessing,
-            set: setSeismicAcquisitionAndProcessing,
-        },
-        {
-            profileName: "Country office cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: countryOfficeCost,
-            set: setCountryOfficeCost,
-        },
-        {
-            profileName: "Exploration well cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: explorationWellCostProfile,
-            set: setExplorationWellCostProfile,
-        },
-        {
-            profileName: "Appraisal well cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: appraisalWellCostProfile,
-            set: setAppraisalWellCostProfile,
-        },
-        {
-            profileName: "Sidetrack well cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: sidetrackCostProfile,
-            set: setSidetrackCostProfile,
-        },
-    ]
     useEffect(() => {
         if (projectCaseEdited) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
@@ -446,36 +378,6 @@ const CaseCostTab = (): React.ReactElement | null => {
         }
     }, [transportCostOverride])
 
-    useEffect(() => {
-        if (exploration) {
-            updateObject(exploration, setExploration, "explorationWellCostProfile", explorationWellCostProfile)
-        }
-    }, [explorationWellCostProfile])
-
-    useEffect(() => {
-        if (exploration) {
-            updateObject(exploration, setExploration, "appraisalWellCostProfile", appraisalWellCostProfile)
-        }
-    }, [appraisalWellCostProfile])
-
-    useEffect(() => {
-        if (exploration) {
-            updateObject(exploration, setExploration, "sidetrackCostProfile", sidetrackCostProfile)
-        }
-    }, [sidetrackCostProfile])
-
-    useEffect(() => {
-        if (exploration) {
-            updateObject(exploration, setExploration, "seismicAcquisitionAndProcessing", seismicAcquisitionAndProcessing)
-        }
-    }, [seismicAcquisitionAndProcessing])
-
-    useEffect(() => {
-        if (exploration) {
-            updateObject(exploration, setExploration, "countryOfficeCost", countryOfficeCost)
-        }
-    }, [countryOfficeCost])
-
     if (activeTabCase !== 5) { return null }
 
     return (
@@ -553,16 +455,16 @@ const CaseCostTab = (): React.ReactElement | null => {
                 />
             </Grid>
             <Grid item xs={12}>
-                <CaseTabTable
-                    timeSeriesData={explorationTimeSeriesData}
-                    dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
+                <ExplorationWellCosts
                     tableYears={tableYears}
-                    tableName="Exploration well costs"
-                    gridRef={explorationWellsGridRef}
-                    alignedGridsRef={[studyGridRef, opexGridRef, cessationGridRef, capexGridRef,
-                        developmentWellsGridRef]}
-                    includeFooter
-                    totalRowName="Total exploration cost"
+                    explorationWellsGridRef={explorationWellsGridRef}
+                    alignedGridsRef={[
+                        studyGridRef,
+                        opexGridRef,
+                        cessationGridRef,
+                        capexGridRef,
+                        developmentWellsGridRef,
+                    ]}
                 />
             </Grid>
         </Grid>
