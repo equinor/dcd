@@ -103,14 +103,14 @@ public class CaseService : ICaseService
         {
             Name = "Exploration",
         };
-        var exploration = await _explorationService.NewCreateExploration(projectId, createdCase.Entity.Id, explorationDto);
+        var exploration = await _explorationService.CreateExploration(projectId, createdCase.Entity.Id, explorationDto);
         caseItem.ExplorationLink = exploration.Id;
 
         var wellProjectDto = new CreateWellProjectDto
         {
             Name = "WellProject",
         };
-        var wellProject = await _wellProjectService.NewCreateWellProject(projectId, createdCase.Entity.Id, wellProjectDto);
+        var wellProject = await _wellProjectService.CreateWellProject(projectId, createdCase.Entity.Id, wellProjectDto);
         caseItem.WellProjectLink = wellProject.Id;
 
         return await _projectService.GetProjectDto(project.Id);

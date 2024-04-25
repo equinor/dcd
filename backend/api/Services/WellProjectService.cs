@@ -82,7 +82,7 @@ public class WellProjectService : IWellProjectService
         return newWellProjectDto;
     }
 
-    public async Task<WellProject> NewCreateWellProject(Guid projectId, Guid sourceCaseId, CreateWellProjectDto wellProjectDto)
+    public async Task<WellProject> CreateWellProject(Guid projectId, Guid sourceCaseId, CreateWellProjectDto wellProjectDto)
     {
         var wellProject = _mapper.Map<WellProject>(wellProjectDto);
         if (wellProject == null)
@@ -108,7 +108,7 @@ public class WellProjectService : IWellProjectService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<WellProjectDto> NewUpdateWellProject(WellProjectDto updatedWellProjectDto)
+    public async Task<WellProjectDto> UpdateWellProject(WellProjectDto updatedWellProjectDto)
     {
         var existing = await GetWellProject(updatedWellProjectDto.Id);
         _mapper.Map(updatedWellProjectDto, existing);
@@ -116,34 +116,6 @@ public class WellProjectService : IWellProjectService
         var updatedWellProject = _context.WellProjects!.Update(existing);
         await _context.SaveChangesAsync();
         var dto = _mapper.Map<WellProjectDto>(updatedWellProject);
-        if (dto == null)
-        {
-            _logger.LogError("Failed to map well project to dto");
-            throw new Exception("Failed to map well project to dto");
-        }
-        return dto;
-    }
-
-    public async Task<WellProjectDto[]> UpdateMultiple(WellProjectDto[] updatedWellProjectDtos)
-    {
-        var updatedWellProjectDtoList = new List<WellProjectDto>();
-        foreach (var wellProjectDto in updatedWellProjectDtos)
-        {
-            var updatedWellProjectDto = await UpdateSingleWellProject(wellProjectDto);
-            updatedWellProjectDtoList.Add(updatedWellProjectDto);
-        }
-
-        await _context.SaveChangesAsync();
-        return updatedWellProjectDtoList.ToArray();
-    }
-
-    public async Task<WellProjectDto> UpdateSingleWellProject(WellProjectDto updatedWellProjectDto)
-    {
-        var existing = await GetWellProject(updatedWellProjectDto.Id);
-        _mapper.Map(updatedWellProjectDto, existing);
-        var wellProject = _context.WellProjects!.Update(existing);
-        await _context.SaveChangesAsync();
-        var dto = _mapper.Map<WellProjectDto>(wellProject);
         if (dto == null)
         {
             _logger.LogError("Failed to map well project to dto");
