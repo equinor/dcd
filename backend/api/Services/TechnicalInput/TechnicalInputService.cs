@@ -55,6 +55,11 @@ public class TechnicalInputService : ITechnicalInputService
 
         var returnDto = new TechnicalInputDto();
 
+        if (technicalInputDto.DeleteWellDtos?.Length > 0)
+        {
+            await DeleteWells(technicalInputDto.DeleteWellDtos);
+        }
+
         if (technicalInputDto.UpdateWellDtos?.Length > 0 || technicalInputDto.CreateWellDtos?.Length > 0)
         {
             var wellResult = await CreateAndUpdateWells(projectId, technicalInputDto.CreateWellDtos, technicalInputDto.UpdateWellDtos);
@@ -63,11 +68,6 @@ public class TechnicalInputService : ITechnicalInputService
                 returnDto.ExplorationDto = wellResult.Value.explorationDto;
                 returnDto.WellProjectDto = wellResult.Value.wellProjectDto;
             }
-        }
-
-        if (technicalInputDto.DeleteWellDtos?.Length > 0)
-        {
-            await DeleteWells(technicalInputDto.DeleteWellDtos);
         }
 
         await _context.SaveChangesAsync();
@@ -88,13 +88,39 @@ public class TechnicalInputService : ITechnicalInputService
 
     private async Task DeleteWells(DeleteWellDto[] deleteWellDtos)
     {
+        var affectedAssets = new Dictionary<string, List<Guid>>() {
+            { nameof(Exploration), new List<Guid>() },
+            { nameof(WellProject), new List<Guid>() }
+        };
+
         foreach (var wellDto in deleteWellDtos)
         {
             var well = await _context.Wells!.FindAsync(wellDto.Id);
             if (well != null)
             {
+                var explorationWells = _context.ExplorationWell!.Where(ew => ew.WellId == well.Id);
+                foreach (var explorationWell in explorationWells)
+                {
+                    _context.ExplorationWell!.Remove(explorationWell);
+                    affectedAssets[nameof(Exploration)].Add(explorationWell.ExplorationId);
+                }
+                var wellProjectWells = _context.WellProjectWell!.Where(ew => ew.WellId == well.Id);
+                foreach (var wellProjectWell in wellProjectWells)
+                {
+                    _context.WellProjectWell!.Remove(wellProjectWell);
+                    affectedAssets[nameof(WellProject)].Add(wellProjectWell.WellProjectId);
+                }
                 _context.Wells.Remove(well);
             }
+        }
+        await _context.SaveChangesAsync();
+        foreach (var explorationId in affectedAssets[nameof(Exploration)])
+        {
+            await _costProfileFromDrillingScheduleHelper.UpdateExplorationCostProfiles(explorationId);
+        }
+        foreach (var wellProjectId in affectedAssets[nameof(WellProject)])
+        {
+            await _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfiles(wellProjectId);
         }
     }
 
@@ -138,7 +164,7 @@ public class TechnicalInputService : ITechnicalInputService
         {
             await _context.SaveChangesAsync();
         }
-        if (updatedWells.Any())
+        if (updatedWells.Count != 0)
         {
             await _costProfileFromDrillingScheduleHelper.UpdateCostProfilesForWells(updatedWells);
         }

@@ -112,13 +112,16 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         return wellProject;
     }
 
-
-
     public async Task<Exploration> UpdateExplorationCostProfilesForCase(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
 
-        var exploration = await GetExploration(caseItem.ExplorationLink);
+        return await UpdateExplorationCostProfiles(caseItem.ExplorationLink);
+    }
+
+    public async Task<Exploration> UpdateExplorationCostProfiles(Guid explorationId)
+    {
+        var exploration = await GetExploration(explorationId);
 
         var explorationWells = GetAllExplorationWells().Where(ew => ew.ExplorationId == exploration.Id);
 
@@ -193,7 +196,12 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
     {
         var caseItem = await _caseService.GetCase(caseId);
 
-        var wellProject = await GetWellProject(caseItem.WellProjectLink);
+        return await UpdateWellProjectCostProfiles(caseItem.WellProjectLink);
+    }
+
+    public async Task<WellProject> UpdateWellProjectCostProfiles(Guid wellProjectId)
+    {
+        var wellProject = await GetWellProject(wellProjectId);
         var wellProjectWells = GetAllWellProjectWells().Where(ew => ew.WellProjectId == wellProject.Id);
 
         return UpdateWellProjectCostProfilesForCase(wellProject, wellProjectWells);
