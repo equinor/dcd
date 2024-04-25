@@ -208,19 +208,10 @@ const Sidebar = () => {
                 </Timeline>
             </StyledSidebarContent>
             <SidebarFooter>
-                <Grid container justifyContent={sidebarOpen ? "space-evenly" : "center"} alignItems="center">
-                    <Tooltip title={!sidebarOpen ? "Send feedback" : ""} placement="right">
-                        <Typography
-                            as="a"
-                            href="https://forms.office.com/Pages/ResponsePage.aspx?id=NaKkOuK21UiRlX_PBbRZsCjGTHQnxJxIkcdHZ_YqW4BUMTQyTVNLOEY0VUtSUjIwN1QxUVJIRjBaNC4u"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            {sidebarOpen ? "Send feedback" : <Icon data={info_circle} />}
-                        </Typography>
-                    </Tooltip>
+                <Grid container justifyContent="flex-end" alignItems="flex-end">
                     <Toggle />
                 </Grid>
+
             </SidebarFooter>
         </StyledSidebar>
     )
