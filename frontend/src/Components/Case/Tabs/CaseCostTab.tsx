@@ -38,7 +38,10 @@ const CaseCostTab = (): React.ReactElement | null => {
         topside, setTopside,
         topsideCost, setTopsideCost,
         surf, setSurf,
-        surfCost, setSurfCost,
+        surfCost,
+        setSurfCost,
+        surfCostOverride,
+        setSurfCostOverride,
         substructure, setSubstructure,
         substructureCost, setSubstructureCost,
         transport, setTransport,
@@ -49,6 +52,8 @@ const CaseCostTab = (): React.ReactElement | null => {
         setCessationWellsCost,
         cessationOffshoreFacilitiesCost,
         setCessationOffshoreFacilitiesCost,
+        cessationOffshoreFacilitiesCostOverride,
+        setCessationOffshoreFacilitiesCostOverride,
         cessationOnshoreFacilitiesCostProfile,
         setCessationOnshoreFacilitiesCostProfile,
 
@@ -92,11 +97,9 @@ const CaseCostTab = (): React.ReactElement | null => {
     const [wellInterventionCostProfileOverride, setWellInterventionCostProfileOverride] = useState<Components.Schemas.WellInterventionCostProfileOverrideDto>()
 
     const [cessationWellsCostOverride, setCessationWellsCostOverride] = useState<Components.Schemas.CessationWellsCostOverrideDto>()
-    const [cessationOffshoreFacilitiesCostOverride, setCessationOffshoreFacilitiesCostOverride] = useState<Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto>()
 
     // CAPEX
     const [topsideCostOverride, setTopsideCostOverride] = useState<Components.Schemas.TopsideCostProfileOverrideDto>()
-    const [surfCostOverride, setSurfCostOverride] = useState<Components.Schemas.SurfCostProfileOverrideDto>()
     const [substructureCostOverride, setSubstructureCostOverride] = useState<Components.Schemas.SubstructureCostProfileOverrideDto>()
     const [transportCostOverride, setTransportCostOverride] = useState<Components.Schemas.TransportCostProfileOverrideDto>()
 
@@ -129,24 +132,21 @@ const CaseCostTab = (): React.ReactElement | null => {
     const capexGridRef = useRef<any>(null)
     const developmentWellsGridRef = useRef<any>(null)
     const explorationWellsGridRef = useRef<any>(null)
+    const surfGridRef = useRef<any>(null)
 
     useEffect(() => {
         (async () => {
             try {
                 if (projectCase && project && topside && surf && substructure && transport && exploration && wellProject) {
                     if (activeTabCase === 5) {
-                        const totalFeasibility = projectCase?.totalFeasibilityAndConceptStudies
-                        const totalFEED = projectCase?.totalFEEDStudies
                         const totalOtherStudiesLocal = projectCase.totalOtherStudies
 
                         setTotalFeasibilityAndConceptStudies(totalFeasibilityAndConceptStudies)
                         setTotalFeasibilityAndConceptStudiesOverride(projectCase?.totalFeasibilityAndConceptStudiesOverride)
                         setTotalFEEDStudies(totalFEEDStudies)
                         setTotalFEEDStudiesOverride(projectCase?.totalFEEDStudiesOverride)
-
                         setTotalOtherStudies(totalOtherStudiesLocal)
 
-                        const offshoreFacilitiesOperations = projectCase?.offshoreFacilitiesOperationsCostProfile
                         const historicCostCostProfileLocal = projectCase?.historicCostCostProfile
                         const onshoreRelatedOPEXCostProfileLocal = projectCase?.onshoreRelatedOPEXCostProfile
                         const additionalOPEXCostProfileLocal = projectCase?.additionalOPEXCostProfile
@@ -161,12 +161,12 @@ const CaseCostTab = (): React.ReactElement | null => {
 
                         // Development
                         const cessationOnshoreFacilities = projectCase?.cessationOnshoreFacilitiesCostProfile
-
                         setCessationWellsCost(cessationWellsCost)
                         setCessationWellsCostOverride(projectCase?.cessationWellsCostOverride)
                         setCessationOffshoreFacilitiesCost(cessationOffshoreFacilitiesCost)
                         setCessationOffshoreFacilitiesCostOverride(projectCase?.cessationOffshoreFacilitiesCostOverride)
                         setCessationOnshoreFacilitiesCostProfile(cessationOnshoreFacilities)
+
                         // CAPEX
                         const topsideCostProfile = topside.costProfile
                         setTopsideCost(topsideCostProfile)
@@ -174,7 +174,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                         setTopsideCostOverride(topsideCostProfileOverride)
 
                         const surfCostProfile = surf.costProfile
-                        setSurfCost(surfCostProfile)
+                        setSurfCost(surfCost)
                         const surfCostProfileOverride = surf.costProfileOverride
                         setSurfCostOverride(surfCostProfileOverride)
 
@@ -210,7 +210,6 @@ const CaseCostTab = (): React.ReactElement | null => {
                         setWellProjectGasInjectorCostOverride(gasInjectorCostProfileOverride)
 
                         // Exploration
-
                         setSeismicAcquisitionAndProcessing(exploration.seismicAcquisitionAndProcessing)
                         setExplorationWellCostProfile(exploration.explorationWellCostProfile)
                         setAppraisalWellCostProfile(exploration.appraisalWellCostProfile)
@@ -308,6 +307,13 @@ const CaseCostTab = (): React.ReactElement | null => {
         }
         setSurf(newSurf)
     }
+    useEffect(() => {
+        if (surfGridRef.current
+            && surfGridRef.current.api
+            && surfGridRef.current.api.refreshCells) {
+            surfGridRef.current.api.refreshCells()
+        }
+    }, [surfCost])
 
     const handleCaseFeasibilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...projectCaseEdited }
@@ -635,11 +641,11 @@ const CaseCostTab = (): React.ReactElement | null => {
         }
     }, [cessationWellsCostOverride])
 
-    useEffect(() => {
-        if (projectCaseEdited) {
-            updateObject(projectCaseEdited, setProjectCaseEdited, "cessationOffshoreFacilitiesCost", cessationOffshoreFacilitiesCost)
-        }
-    }, [cessationOffshoreFacilitiesCost])
+    // useEffect(() => {
+    //     if (projectCaseEdited) {
+    //         updateObject(projectCaseEdited, setProjectCaseEdited, "cessationOffshoreFacilitiesCost", cessationOffshoreFacilitiesCost)
+    //     }
+    // }, [cessationOffshoreFacilitiesCost])
 
     useEffect(() => {
         if (projectCaseEdited) {
@@ -653,11 +659,11 @@ const CaseCostTab = (): React.ReactElement | null => {
         }
     }, [cessationOnshoreFacilitiesCostProfile])
 
-    useEffect(() => {
-        if (surf) {
-            updateObject(surf, setSurf, "costProfile", surfCost)
-        }
-    }, [surfCost])
+    // useEffect(() => {
+    //     if (surf) {
+    //         updateObject(surf, setSurf, "costProfile", surfCost)
+    //     }
+    // }, [surfCost])
 
     useEffect(() => {
         if (topside) {
