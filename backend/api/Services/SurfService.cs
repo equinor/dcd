@@ -57,9 +57,10 @@ public class SurfService : ISurfService
         return newSurfDto;
     }
 
-    public async Task<ProjectDto> UpdateSurf(SurfDto updatedSurfDto)
+    public async Task<ProjectDto> UpdateSurf<TDto>(TDto updatedSurfDto, Guid surfId)
+        where TDto : BaseUpdateSurfDto
     {
-        var existing = await GetSurf(updatedSurfDto.Id);
+        var existing = await GetSurf(surfId);
         _mapper.Map(updatedSurfDto, existing);
 
         existing.LastChangedDate = DateTimeOffset.UtcNow;
@@ -82,24 +83,7 @@ public class SurfService : ISurfService
         return surf;
     }
 
-    public async Task<ProjectDto> CreateSurf(SurfDto surfDto, Guid sourceCaseId)
-    {
-        var surf = _mapper.Map<Surf>(surfDto);
-        if (surf == null)
-        {
-            throw new ArgumentNullException(nameof(surf));
-        }
-        var project = await _projectService.GetProject(surf.ProjectId);
-        surf.Project = project;
-        surf.ProspVersion = surfDto.ProspVersion;
-        surf.LastChangedDate = DateTimeOffset.UtcNow;
-        _context.Surfs!.Add(surf);
-        await _context.SaveChangesAsync();
-        await SetCaseLink(surf, sourceCaseId, project);
-        return await _projectService.GetProjectDto(surf.ProjectId);
-    }
-
-    public async Task<Surf> NewCreateSurf(Guid projectId, Guid sourceCaseId, CreateSurfDto surfDto)
+    public async Task<Surf> CreateSurf(Guid projectId, Guid sourceCaseId, CreateSurfDto surfDto)
     {
         var surf = _mapper.Map<Surf>(surfDto);
         if (surf == null)

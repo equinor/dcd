@@ -59,24 +59,7 @@ public class TopsideService : ITopsideService
         return newTopsideDto;
     }
 
-    public async Task<ProjectDto> CreateTopside(TopsideDto topsideDto, Guid sourceCaseId)
-    {
-        var topside = _mapper.Map<Topside>(topsideDto);
-        if (topside == null)
-        {
-            throw new ArgumentNullException(nameof(topside));
-        }
-        var project = await _projectService.GetProject(topsideDto.ProjectId);
-        topside.Project = project;
-        topside.LastChangedDate = DateTimeOffset.UtcNow;
-        topside.ProspVersion = topsideDto.ProspVersion;
-        _context.Topsides!.Add(topside);
-        await _context.SaveChangesAsync();
-        await SetCaseLink(topside, sourceCaseId, project);
-        return await _projectService.GetProjectDto(project.Id);
-    }
-
-    public async Task<Topside> NewCreateTopside(Guid projectId, Guid sourceCaseId, CreateTopsideDto topsideDto)
+    public async Task<Topside> CreateTopside(Guid projectId, Guid sourceCaseId, CreateTopsideDto topsideDto)
     {
         var topside = _mapper.Map<Topside>(topsideDto);
         if (topside == null)
@@ -103,15 +86,16 @@ public class TopsideService : ITopsideService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<ProjectDto> UpdateTopside(TopsideDto updatedTopsideDto)
+    public async Task<ProjectDto> UpdateTopside<TDto>(TDto updatedTopsideDto, Guid topsideId)
+        where TDto : BaseUpdateTopsideDto
     {
-        var existing = await GetTopside(updatedTopsideDto.Id);
+        var existing = await GetTopside(topsideId);
         _mapper.Map(updatedTopsideDto, existing);
 
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Topsides!.Update(existing);
         await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDto(updatedTopsideDto.ProjectId);
+        return await _projectService.GetProjectDto(existing.ProjectId);
     }
 
     public async Task<Topside> GetTopside(Guid topsideId)
