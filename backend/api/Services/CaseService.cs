@@ -116,7 +116,8 @@ public class CaseService : ICaseService
         return await _projectService.GetProjectDto(project.Id);
     }
 
-    public async Task<ProjectDto> UpdateCase(Guid caseId, UpdateCaseDto updatedCaseDto)
+    public async Task<ProjectDto> UpdateCase<TDto>(Guid caseId, TDto updatedCaseDto)
+        where TDto : BaseUpdateCaseDto
     {
         var caseItem = await GetCase(caseId);
 

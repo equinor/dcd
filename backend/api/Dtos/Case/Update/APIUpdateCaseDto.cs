@@ -2,7 +2,7 @@ using api.Models;
 
 namespace api.Dtos;
 
-public class UpdateCaseDto
+public class APIUpdateCaseDto : BaseUpdateCaseDto
 {
     public string? Name { get; set; }
     public string? Description { get; set; }

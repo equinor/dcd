@@ -12,14 +12,14 @@ public class ProspSharepointImportService
     private static ILogger<ProspSharepointImportService>? _logger;
     private readonly IConfiguration _config;
     private readonly GraphServiceClient _graphServiceClient;
-    private readonly ProspExcelImportService _service;
+    private readonly ProspExcelImportService _prospExcelImportService;
 
     public ProspSharepointImportService(IConfiguration config, GraphServiceClient graphServiceClient,
-        ProspExcelImportService service, ILoggerFactory loggerFactory)
+        ProspExcelImportService prospExcelImportService, ILoggerFactory loggerFactory)
     {
         _graphServiceClient = graphServiceClient;
         _config = config;
-        _service = service;
+        _prospExcelImportService = prospExcelImportService;
         _logger = loggerFactory.CreateLogger<ProspSharepointImportService>();
     }
 
@@ -180,7 +180,7 @@ public class ProspSharepointImportService
             }
 
             var caseId = new Guid(importDto.Id);
-            await _service.ClearImportedProspData(caseId, projectId);
+            await _prospExcelImportService.ClearImportedProspData(caseId, projectId);
         }
 
         var siteId = GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()!.SharePointSiteUrl)?.Result[0];
@@ -224,7 +224,7 @@ public class ProspSharepointImportService
                 var assets = MapAssets(iteminfo.Surf, iteminfo.Substructure, iteminfo.Topside,
                     iteminfo.Transport);
 
-                projectDto = await _service.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
+                projectDto = await _prospExcelImportService.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
                     projectId,
                     assets,
                     iteminfo.SharePointFileId,

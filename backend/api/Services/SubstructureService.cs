@@ -97,9 +97,10 @@ public class SubstructureService : ISubstructureService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<ProjectDto> UpdateSubstructure(SubstructureDto updatedSubstructureDto)
+    public async Task<ProjectDto> UpdateSubstructure<TDto>(TDto updatedSubstructureDto, Guid substructureId)
+        where TDto : BaseUpdateSubstructureDto
     {
-        var existing = await GetSubstructure(updatedSubstructureDto.Id);
+        var existing = await GetSubstructure(substructureId);
 
         _mapper.Map(updatedSubstructureDto, existing);
 

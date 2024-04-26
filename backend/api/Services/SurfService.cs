@@ -57,9 +57,10 @@ public class SurfService : ISurfService
         return newSurfDto;
     }
 
-    public async Task<ProjectDto> UpdateSurf(SurfDto updatedSurfDto)
+    public async Task<ProjectDto> UpdateSurf<TDto>(TDto updatedSurfDto, Guid surfId)
+        where TDto : BaseUpdateSurfDto
     {
-        var existing = await GetSurf(updatedSurfDto.Id);
+        var existing = await GetSurf(surfId);
         _mapper.Map(updatedSurfDto, existing);
 
         existing.LastChangedDate = DateTimeOffset.UtcNow;

@@ -304,7 +304,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         var wellProject = await _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
     }
 
-    public async Task<CaseDto> UpdateCase(Guid caseId, UpdateCaseDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<CaseDto> UpdateCase(Guid caseId, APIUpdateCaseDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         profilesToGenerate.StudyCost = true;
         profilesToGenerate.Co2Emissions = true;
@@ -371,7 +371,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         return _mapper.Map<ExplorationDto>(updatedItem.Entity);
     }
 
-    public async Task<SurfDto?> UpdateSurf(Guid surfLink, UpdateSurfDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<SurfDto?> UpdateSurf(Guid surfLink, APIUpdateSurfDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         profilesToGenerate.StudyCost = true;
         profilesToGenerate.CessationCost = true;
@@ -384,7 +384,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         return _mapper.Map<SurfDto>(updatedItem.Entity);
     }
 
-    public async Task<SubstructureDto?> UpdateSubstructure(Guid substructureLink, UpdateSubstructureDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<SubstructureDto?> UpdateSubstructure(Guid substructureLink, APIUpdateSubstructureDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         profilesToGenerate.StudyCost = true;
 
