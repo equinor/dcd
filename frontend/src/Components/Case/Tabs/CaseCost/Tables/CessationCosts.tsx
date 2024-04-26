@@ -113,11 +113,11 @@ const CessationCosts: React.FC<CesationCostsProps> = ({ tableYears, cessationGri
             timeSeriesData={cessationTimeSeriesData}
             dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
             tableYears={tableYears}
-            tableName="Cessation costs"
+            tableName="Cessation cost"
             gridRef={cessationGridRef}
             alignedGridsRef={alignedGridsRef}
             includeFooter
-            totalRowName="Total cessation cost"
+            totalRowName="Total"
         />
     )
 }

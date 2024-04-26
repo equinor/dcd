@@ -105,11 +105,11 @@ const TotalStudyCosts: React.FC<CesationCostsProps> = ({ tableYears, studyGridRe
             timeSeriesData={studyTimeSeriesData}
             dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
             tableYears={tableYears}
-            tableName="Total study costs"
+            tableName="Total study cost"
             gridRef={studyGridRef}
             alignedGridsRef={alignedGridsRef}
             includeFooter
-            totalRowName="Total study costs"
+            totalRowName="Total"
         />
     )
 }

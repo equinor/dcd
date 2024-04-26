@@ -47,7 +47,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
 
     const explorationTimeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "G&G and admin costs",
+            profileName: "G&G and admin",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: gAndGAdminCost,
             // set: setGAndGAdminCost,  this was not used in the original code but should it?
@@ -59,25 +59,25 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             set: setSeismicAcquisitionAndProcessing,
         },
         {
-            profileName: "Country office cost",
+            profileName: "Country office",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: countryOfficeCost,
             set: setCountryOfficeCost,
         },
         {
-            profileName: "Exploration well cost",
+            profileName: "Exploration well",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: explorationWellCostProfile,
             set: setExplorationWellCostProfile,
         },
         {
-            profileName: "Appraisal well cost",
+            profileName: "Appraisal well",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: appraisalWellCostProfile,
             set: setAppraisalWellCostProfile,
         },
         {
-            profileName: "Sidetrack well cost",
+            profileName: "Sidetrack well",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: sidetrackCostProfile,
             set: setSidetrackCostProfile,
@@ -140,11 +140,11 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             timeSeriesData={explorationTimeSeriesData}
             dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
             tableYears={tableYears}
-            tableName="Exploration well costs"
+            tableName="Exploration well cost"
             gridRef={explorationWellsGridRef}
             alignedGridsRef={alignedGridsRef}
             includeFooter
-            totalRowName="Total exploration cost"
+            totalRowName="Total"
         />
     )
 }

@@ -38,7 +38,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
 
     const developmentTimeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "Oil producer cost",
+            profileName: "Oil producer",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: wellProjectOilProducerCost,
             overridable: true,
@@ -46,7 +46,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             overrideProfileSet: setWellProjectOilProducerCostOverride,
         },
         {
-            profileName: "Gas producer cost",
+            profileName: "Gas producer",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: wellProjectGasProducerCost,
             overridable: true,
@@ -54,7 +54,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             overrideProfileSet: setWellProjectGasProducerCostOverride,
         },
         {
-            profileName: "Water injector cost",
+            profileName: "Water injector",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: wellProjectWaterInjectorCost,
             overridable: true,
@@ -62,7 +62,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             overrideProfileSet: setWellProjectWaterInjectorCostOverride,
         },
         {
-            profileName: "Gas injector cost",
+            profileName: "Gas injector",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: wellProjectGasInjectorCost,
             overridable: true,
@@ -140,11 +140,11 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             timeSeriesData={developmentTimeSeriesData}
             dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
             tableYears={tableYears}
-            tableName="Development well costs"
+            tableName="Development well cost"
             gridRef={developmentWellsGridRef}
             alignedGridsRef={alignedGridsRef}
             includeFooter
-            totalRowName="Total development well cost"
+            totalRowName="Total"
         />
     )
 }

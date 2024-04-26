@@ -138,11 +138,11 @@ const Opex: React.FC<OpexProps> = ({ tableYears, opexGridRef, alignedGridsRef })
             timeSeriesData={opexTimeSeriesData}
             dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
             tableYears={tableYears}
-            tableName="OPEX"
+            tableName="OPEX cost"
             gridRef={opexGridRef}
             alignedGridsRef={alignedGridsRef}
             includeFooter
-            totalRowName="Total OPEX cost"
+            totalRowName="Total"
         />
     )
 }
