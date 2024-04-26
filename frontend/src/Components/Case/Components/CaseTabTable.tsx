@@ -26,7 +26,6 @@ interface Props {
     gridRef?: any
     includeFooter: boolean
     totalRowName?: string
-    displayFourDecimals?: boolean
 }
 
 const CaseTabTable = ({
@@ -38,7 +37,6 @@ const CaseTabTable = ({
     gridRef,
     includeFooter,
     totalRowName,
-    displayFourDecimals = false,
 }: Props) => {
     const styles = useStyles()
     const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
