@@ -28,26 +28,8 @@ public class TransportService : ITransportService
         _logger = loggerFactory.CreateLogger<TransportService>();
         _mapper = mapper;
     }
-    public async Task<ProjectDto> CreateTransport(TransportDto transportDto, Guid sourceCaseId)
-    {
-        var transport = _mapper.Map<Transport>(transportDto);
-        if (transport == null)
-        {
-            throw new ArgumentNullException(nameof(transport));
-        }
-        var project = await _projectService.GetProject(transport.ProjectId);
-        transport.Project = project;
-        transport.ProspVersion = transportDto.ProspVersion;
-        transport.LastChangedDate = DateTimeOffset.UtcNow;
-        transport.GasExportPipelineLength = transportDto.GasExportPipelineLength;
-        transport.OilExportPipelineLength = transportDto.OilExportPipelineLength;
-        _context.Transports!.Add(transport);
-        await _context.SaveChangesAsync();
-        await SetCaseLink(transport, sourceCaseId, project);
-        return await _projectService.GetProjectDto(transport.ProjectId);
-    }
 
-    public async Task<Transport> NewCreateTransport(Guid projectId, Guid sourceCaseId, CreateTransportDto transportDto)
+    public async Task<Transport> CreateTransport(Guid projectId, Guid sourceCaseId, CreateTransportDto transportDto)
     {
         var transport = _mapper.Map<Transport>(transportDto);
         if (transport == null)
@@ -117,15 +99,16 @@ public class TransportService : ITransportService
         return transport;
     }
 
-    public async Task<ProjectDto> UpdateTransport(TransportDto updatedTransportDto)
+    public async Task<ProjectDto> UpdateTransport<TDto>(TDto updatedTransportDto, Guid transportId)
+        where TDto : BaseUpdateTransportDto
     {
-        var existing = await GetTransport(updatedTransportDto.Id);
+        var existing = await GetTransport(transportId);
 
         _mapper.Map(updatedTransportDto, existing);
 
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Transports!.Update(existing);
         await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDto(updatedTransportDto.ProjectId);
+        return await _projectService.GetProjectDto(existing.ProjectId);
     }
 }

@@ -4,7 +4,6 @@ namespace api.Dtos;
 
 public abstract class BaseUpdateTopsideDto
 {
-    public string Name { get; set; } = string.Empty!;
     public double DryWeight { get; set; }
     public double OilCapacity { get; set; }
     public double GasCapacity { get; set; }

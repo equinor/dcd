@@ -30,18 +30,7 @@ public class SubstructureService : ISubstructureService
         _mapper = mapper;
     }
 
-    public async Task<ProjectDto> CreateSubstructure(Substructure substructure, Guid sourceCaseId)
-    {
-        var project = await _projectService.GetProject(substructure.ProjectId);
-        substructure.Project = project;
-        substructure.LastChangedDate = DateTimeOffset.UtcNow;
-        _context.Substructures!.Add(substructure);
-        await _context.SaveChangesAsync();
-        await SetCaseLink(substructure, sourceCaseId, project);
-        return await _projectService.GetProjectDto(project.Id);
-    }
-
-    public async Task<Substructure> NewCreateSubstructure(Guid projectId, Guid sourceCaseId, CreateSubstructureDto substructureDto)
+    public async Task<Substructure> CreateSubstructure(Guid projectId, Guid sourceCaseId, CreateSubstructureDto substructureDto)
     {
         var substructure = _mapper.Map<Substructure>(substructureDto);
         if (substructure == null)

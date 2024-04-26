@@ -83,24 +83,7 @@ public class SurfService : ISurfService
         return surf;
     }
 
-    public async Task<ProjectDto> CreateSurf(SurfDto surfDto, Guid sourceCaseId)
-    {
-        var surf = _mapper.Map<Surf>(surfDto);
-        if (surf == null)
-        {
-            throw new ArgumentNullException(nameof(surf));
-        }
-        var project = await _projectService.GetProject(surf.ProjectId);
-        surf.Project = project;
-        surf.ProspVersion = surfDto.ProspVersion;
-        surf.LastChangedDate = DateTimeOffset.UtcNow;
-        _context.Surfs!.Add(surf);
-        await _context.SaveChangesAsync();
-        await SetCaseLink(surf, sourceCaseId, project);
-        return await _projectService.GetProjectDto(surf.ProjectId);
-    }
-
-    public async Task<Surf> NewCreateSurf(Guid projectId, Guid sourceCaseId, CreateSurfDto surfDto)
+    public async Task<Surf> CreateSurf(Guid projectId, Guid sourceCaseId, CreateSurfDto surfDto)
     {
         var surf = _mapper.Map<Surf>(surfDto);
         if (surf == null)

@@ -6,7 +6,6 @@ namespace api.Dtos;
 
 public abstract class BaseUpdateSubstructureDto
 {
-    public string Name { get; set; } = string.Empty!;
     public double DryWeight { get; set; }
     public Currency Currency { get; set; }
     public int CostYear { get; set; }
