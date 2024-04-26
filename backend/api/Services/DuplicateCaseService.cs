@@ -149,8 +149,10 @@ public class DuplicateCaseService : IDuplicateCaseService
 
         var project = await _projectService.GetProject(caseItem.ProjectId);
         caseItem.Project = project;
-
-        caseItem.Name += " - copy";
+        if (project.Cases != null)
+        {
+            caseItem.Name = GetUniqueCopyName(project.Cases, caseItem.Name);
+        }
         _context.Cases!.Add(caseItem);
 
         await _drainageStrategyService.CopyDrainageStrategy(caseItem.DrainageStrategyLink, caseItem.Id);
@@ -167,5 +169,21 @@ public class DuplicateCaseService : IDuplicateCaseService
 
         await _context.SaveChangesAsync();
         return await _projectService.GetProjectDto(project.Id);
+    }
+
+    private string GetUniqueCopyName(IEnumerable<Case> cases, string originalName)
+    {
+        var copyName = " - copy";
+        var newName = originalName + copyName;
+        var i = 1;
+
+        string potentialName = newName;
+        while (cases.Any(c => c.Name == potentialName))
+        {
+            i++;
+            potentialName = newName + $" ({i})";
+        }
+
+        return potentialName;
     }
 }
