@@ -112,6 +112,30 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
     }, [transportCostOverride])
 
     useEffect(() => {
+        if (surf) {
+            updateObject(surf, setSurf, "costProfile", surfCost)
+        }
+    }, [surfCost])
+
+    useEffect(() => {
+        if (topside) {
+            updateObject(topside, setTopside, "costProfile", topsideCost)
+        }
+    }, [topsideCost])
+
+    useEffect(() => {
+        if (substructure) {
+            updateObject(substructure, setSubstructure, "costProfile", substructureCost)
+        }
+    }, [substructureCost])
+
+    useEffect(() => {
+        if (transport) {
+            updateObject(transport, setTransport, "costProfile", transportCost)
+        }
+    }, [transportCost])
+
+    useEffect(() => {
         if (activeTabCase === 5) {
             if (topside) {
                 setTopsideCost(topside.costProfile)

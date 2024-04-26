@@ -4,53 +4,34 @@ import {
     useState,
 } from "react"
 import Grid from "@mui/material/Grid"
-import CaseTabTable from "../../Components/CaseTabTable"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
-import { ITimeSeriesData } from "../../../../Models/ITimeSeriesData"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import { useModalContext } from "../../../../Context/ModalContext"
 import Header from "./Header"
 import CessationCosts from "./Tables/CessationCosts"
-import { updateObject } from "../../../../Utils/common"
 import DevelopmentWellCosts from "./Tables/DevelopmentWellCosts"
 import ExplorationWellCosts from "./Tables/ExplorationWellCosts"
 import OffshoreFacillityCosts from "./Tables/OffshoreFacilityCosts"
 import Opex from "./Tables/Opex"
+import TotalStudyCosts from "./Tables/TotalStudyCosts"
 
 const CaseCostTab = (): React.ReactElement | null => {
+    const { project } = useProjectContext()
+
     const {
         projectCase,
-        projectCaseEdited, setProjectCaseEdited,
         activeTabCase,
-        totalFeasibilityAndConceptStudies,
-        setTotalFeasibilityAndConceptStudies,
-        totalFeasibilityAndConceptStudiesOverride,
-        setTotalFeasibilityAndConceptStudiesOverride,
-        totalFEEDStudies,
-        setTotalFEEDStudies,
-        totalFEEDStudiesOverride,
-        setTotalFEEDStudiesOverride,
-        totalOtherStudies,
-        setTotalOtherStudies,
-        topside, setTopside,
-        topsideCost,
-        surf, setSurf,
-        surfCost,
-        substructure, setSubstructure,
-        substructureCost,
-        transport, setTransport,
-        transportCost,
-
+        topside,
+        surf,
+        substructure,
+        transport,
     } = useCaseContext()
+
     const {
         wellProject,
         exploration,
     } = useModalContext()
-
-    const { project } = useProjectContext()
-
-    // Exploration
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -68,13 +49,6 @@ const CaseCostTab = (): React.ReactElement | null => {
             try {
                 if (projectCase && project && topside && surf && substructure && transport && exploration && wellProject) {
                     if (activeTabCase === 5) {
-                        setTotalFeasibilityAndConceptStudies(projectCase.totalFeasibilityAndConceptStudies)
-                        setTotalFeasibilityAndConceptStudiesOverride(projectCase.totalFeasibilityAndConceptStudiesOverride)
-
-                        setTotalFEEDStudies(projectCase.totalFEEDStudies)
-                        setTotalFEEDStudiesOverride(projectCase.totalFEEDStudiesOverride)
-                        setTotalOtherStudies(projectCase.totalOtherStudies)
-
                         SetTableYearsFromProfiles([
                             projectCase.totalFeasibilityAndConceptStudies,
                             projectCase.totalFEEDStudies,
@@ -118,83 +92,6 @@ const CaseCostTab = (): React.ReactElement | null => {
         })()
     }, [activeTabCase])
 
-    useEffect(() => {
-        if (studyGridRef.current
-            && studyGridRef.current.api
-            && studyGridRef.current.api.refreshCells) {
-            studyGridRef.current.api.refreshCells()
-
-            console.log("Refreshing study grid")
-        }
-    }, [totalFeasibilityAndConceptStudies, totalFEEDStudies, totalOtherStudies])
-
-    const studyTimeSeriesData: ITimeSeriesData[] = [
-        {
-            profileName: "Feasibility & conceptual stud.",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalFeasibilityAndConceptStudies,
-            overridable: true,
-            overrideProfile: totalFeasibilityAndConceptStudiesOverride,
-            overrideProfileSet: setTotalFeasibilityAndConceptStudiesOverride,
-        },
-        {
-            profileName: "FEED studies (DG2-DG3)",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalFEEDStudies,
-            overridable: true,
-            overrideProfile: totalFEEDStudiesOverride,
-            overrideProfileSet: setTotalFEEDStudiesOverride,
-        },
-        {
-            profileName: "Other studies",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalOtherStudies,
-            set: setTotalOtherStudies,
-        },
-    ]
-
-    useEffect(() => {
-        if (projectCaseEdited) {
-            updateObject(projectCaseEdited, setProjectCaseEdited, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
-        }
-    }, [totalFeasibilityAndConceptStudiesOverride])
-
-    useEffect(() => {
-        if (projectCaseEdited) {
-            updateObject(projectCaseEdited, setProjectCaseEdited, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
-        }
-    }, [totalFEEDStudiesOverride])
-
-    useEffect(() => {
-        if (projectCaseEdited) {
-            updateObject(projectCaseEdited, setProjectCaseEdited, "totalOtherStudies", totalOtherStudies)
-        }
-    }, [totalOtherStudies])
-
-    useEffect(() => {
-        if (surf) {
-            updateObject(surf, setSurf, "costProfile", surfCost)
-        }
-    }, [surfCost])
-
-    useEffect(() => {
-        if (topside) {
-            updateObject(topside, setTopside, "costProfile", topsideCost)
-        }
-    }, [topsideCost])
-
-    useEffect(() => {
-        if (substructure) {
-            updateObject(substructure, setSubstructure, "costProfile", substructureCost)
-        }
-    }, [substructureCost])
-
-    useEffect(() => {
-        if (transport) {
-            updateObject(transport, setTransport, "costProfile", transportCost)
-        }
-    }, [transportCost])
-
     if (activeTabCase !== 5) { return null }
 
     return (
@@ -207,16 +104,16 @@ const CaseCostTab = (): React.ReactElement | null => {
                 setTableYears={setTableYears}
             />
             <Grid item xs={12}>
-                <CaseTabTable
-                    timeSeriesData={studyTimeSeriesData}
-                    dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
+                <TotalStudyCosts
                     tableYears={tableYears}
-                    tableName="Total study costs"
-                    gridRef={studyGridRef}
-                    alignedGridsRef={[opexGridRef, cessationGridRef, capexGridRef,
-                        developmentWellsGridRef, explorationWellsGridRef]}
-                    includeFooter
-                    totalRowName="Total study costs"
+                    studyGridRef={studyGridRef}
+                    alignedGridsRef={[
+                        opexGridRef,
+                        cessationGridRef,
+                        capexGridRef,
+                        developmentWellsGridRef,
+                        explorationWellsGridRef,
+                    ]}
                 />
             </Grid>
             <Grid item xs={12}>
