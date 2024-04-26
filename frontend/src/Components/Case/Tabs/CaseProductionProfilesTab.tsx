@@ -504,6 +504,7 @@ const CaseProductionProfilesTab = ({
                     tableName="Production profiles"
                     includeFooter={false}
                     gridRef={gridRef}
+                    displayFourDecimals
                 />
             </Grid>
         </Grid>

@@ -26,6 +26,7 @@ interface Props {
     gridRef?: any
     includeFooter: boolean
     totalRowName?: string
+    displayFourDecimals?: boolean
 }
 
 const CaseTabTable = ({
@@ -37,6 +38,7 @@ const CaseTabTable = ({
     gridRef,
     includeFooter,
     totalRowName,
+    displayFourDecimals = false,
 }: Props) => {
     const styles = useStyles()
     const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
@@ -73,12 +75,12 @@ const CaseTabTable = ({
                         i < rowObject.profile.startYear + rowObject.profile.values.length;
                         i += 1) {
                         rowObject[(dg4Year + i).toString()] = rowObject.profile.values.map(
-                            (v: number) => Math.round((v + Number.EPSILON) * 1000) / 1000,
+                            (v: number) => Math.round((v + Number.EPSILON) * 10000) / 10000,
                         )[j]
                         j += 1
                         rowObject.total = Math.round(rowObject.profile.values.map(
                             (v: number) => (v + Number.EPSILON),
-                        ).reduce((x: number, y: number) => x + y) * 1000) / 1000
+                        ).reduce((x: number, y: number) => x + y) * 10000) / 10000
                         if (ts.total !== undefined) {
                             rowObject.total = Math.round(ts.total * 1000) / 1000
                         }
