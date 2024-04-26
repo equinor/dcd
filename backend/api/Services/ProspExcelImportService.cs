@@ -423,10 +423,10 @@ public class ProspExcelImportService
         caseItem.SharepointFileName = null;
         caseItem.SharepointFileUrl = null;
 
-        // ClearImportedSurf(caseItem);
-        // ClearImportedTopside(caseItem);
-        // ClearImportedSubstructure(caseItem);
-        // ClearImportedTransport(caseItem);
+        ClearImportedSurf(caseItem);
+        ClearImportedTopside(caseItem);
+        ClearImportedSubstructure(caseItem);
+        ClearImportedTransport(caseItem);
 
         var caseDto = _mapper.Map<APIUpdateCaseDto>(caseItem);
 
@@ -440,98 +440,51 @@ public class ProspExcelImportService
 
     private void ClearImportedSurf(Case caseItem)
     {
-        // var surfLink = caseItem.SurfLink;
-        // var surf = new Models.Surf
-        // {
-        //     Id = surfLink,
-        //     CostProfile = null,
-        //     ProjectId = caseItem.ProjectId,
-        //     Source = Source.ConceptApp,
-        // };
+        var surfLink = caseItem.SurfLink;
+        var dto = new PROSPUpdateSurfDto
+        {
+            CostProfile = new UpdateSurfCostProfileDto(),
+            Source = Source.ConceptApp,
+        };
 
-        // var dto = _mapper.Map<SurfDto>(surf);
-
-        // if (dto == null)
-        // {
-        //     throw new Exception();
-        // }
-
-        // if (surfLink != Guid.Empty)
-        // {
-        //     _surfService.UpdateSurf(dto);
-        // }
+        _surfService.UpdateSurf(dto, surfLink);
     }
 
     private void ClearImportedTopside(Case caseItem)
     {
-        // var topsideLink = caseItem.TopsideLink;
-        // var topside = new Topside
-        // {
-        //     Id = topsideLink,
-        //     CostProfile = null,
-        //     ProjectId = caseItem.ProjectId,
-        //     Source = Source.ConceptApp,
-        // };
+        var topsideLink = caseItem.TopsideLink;
+        var dto = new PROSPUpdateTopsideDto
+        {
+            CostProfile = new UpdateTopsideCostProfileDto(),
+            Source = Source.ConceptApp,
+        };
 
-        // var dto = _mapper.Map<TopsideDto>(topside);
 
-        // if (dto == null)
-        // {
-        //     throw new Exception();
-        // }
-
-        // if (topsideLink != Guid.Empty)
-        // {
-        //     _topsideService.UpdateTopside(dto);
-        // }
+        _topsideService.UpdateTopside(dto, topsideLink);
     }
 
     private void ClearImportedSubstructure(Case caseItem)
     {
-        // var substructureLink = caseItem.SubstructureLink;
-        // var substructure = new Substructure
-        // {
-        //     Id = substructureLink,
-        //     CostProfile = null,
-        //     ProjectId = caseItem.ProjectId,
-        //     Source = Source.ConceptApp,
-        // };
+        var substructureLink = caseItem.SubstructureLink;
+        var dto = new PROSPUpdateSubstructureDto
+        {
+            CostProfile = new UpdateSubstructureCostProfileDto(),
+            Source = Source.ConceptApp,
+        };
 
-        // var dto = _mapper.Map<SubstructureDto>(substructure);
-
-        // if (dto == null)
-        // {
-        //     throw new Exception();
-        // }
-
-        // if (substructureLink != Guid.Empty)
-        // {
-        //     _substructureService.UpdateSubstructure(dto);
-        // }
+        _substructureService.UpdateSubstructure(dto, substructureLink);
     }
 
     private void ClearImportedTransport(Case caseItem)
     {
-        // var transportLink = caseItem.TransportLink;
-        // var transport = new Models.Transport
-        // {
-        //     Id = transportLink,
-        //     CostProfile = null,
-        //     ProjectId = caseItem.ProjectId,
-        //     Source = Source.ConceptApp,
-        // };
+        var transportLink = caseItem.TransportLink;
+        var dto = new PROSPUpdateTransportDto
+        {
+            CostProfile = new UpdateTransportCostProfileDto(),
+            Source = Source.ConceptApp,
+        };
 
-        // var dto = _mapper.Map<TransportDto>(transport);
-
-        // if (dto == null)
-        // {
-        //     throw new Exception();
-        // }
-
-        // if (transportLink != Guid.Empty)
-        // {
-        //     _transportService.UpdateTransport(dto);
-        // }
+        _transportService.UpdateTransport(dto, transportLink);
     }
 
     private static Concept MapSubstructureConcept(int importValue)
