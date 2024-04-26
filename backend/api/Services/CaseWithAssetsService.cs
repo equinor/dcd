@@ -396,7 +396,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         return _mapper.Map<SubstructureDto>(updatedItem.Entity);
     }
 
-    public async Task<TransportDto?> UpdateTransport(Guid transportLink, UpdateTransportDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<TransportDto?> UpdateTransport(Guid transportLink, APIUpdateTransportDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         profilesToGenerate.StudyCost = true;
 
@@ -407,7 +407,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         var updatedItem = _context.Transports!.Update(item);
         return _mapper.Map<TransportDto>(updatedItem.Entity);
     }
-    public async Task<TopsideDto?> UpdateTopside(Guid topsideLink, UpdateTopsideDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<TopsideDto?> UpdateTopside(Guid topsideLink, APIUpdateTopsideDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         profilesToGenerate.StudyCost = true;
         profilesToGenerate.OpexCost = true;

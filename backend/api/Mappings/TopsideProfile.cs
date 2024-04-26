@@ -14,7 +14,7 @@ public class TopsideProfile : Profile
         CreateMap<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>();
         CreateMap<TopsideCessationCostProfile, TopsideCessationCostProfileDto>();
 
-        CreateMap<UpdateTopsideDto, Topside>();
+        CreateMap<APIUpdateTopsideDto, Topside>();
         CreateMap<UpdateTopsideCostProfileOverrideDto, TopsideCostProfileOverride>();
 
         CreateMap<CreateTopsideDto, Topside>();
