@@ -153,7 +153,6 @@ public class DuplicateCaseService : IDuplicateCaseService
         {
             caseItem.Name = GetUniqueCopyName(project.Cases, caseItem.Name);
         }
-        // caseItem.Name += " - copy";
         _context.Cases!.Add(caseItem);
 
         await _drainageStrategyService.CopyDrainageStrategy(caseItem.DrainageStrategyLink, caseItem.Id);
