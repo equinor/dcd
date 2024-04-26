@@ -176,10 +176,14 @@ public class DuplicateCaseService : IDuplicateCaseService
         var copyName = " - copy";
         var newName = originalName + copyName;
         var i = 1;
-        while (cases.Any(c => c.Name == newName + (i > 1 ? $" ({i})" : "")))
+
+        string potentialName = newName;
+        while (cases.Any(c => c.Name == potentialName))
         {
             i++;
+            potentialName = newName + $" ({i})";
         }
-        return newName + (i > 1 ? $" ({i})" : "");
+
+        return potentialName;
     }
 }
