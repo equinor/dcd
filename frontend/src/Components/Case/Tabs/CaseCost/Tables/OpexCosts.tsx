@@ -5,13 +5,13 @@ import { useCaseContext } from "../../../../../Context/CaseContext"
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { updateObject } from "../../../../../Utils/common"
 
-interface OpexProps {
+interface OpexCostsProps {
     tableYears: [number, number]
     opexGridRef: React.MutableRefObject<any>
     alignedGridsRef: any[]
 }
 
-const Opex: React.FC<OpexProps> = ({ tableYears, opexGridRef, alignedGridsRef }) => {
+const OpexCosts: React.FC<OpexCostsProps> = ({ tableYears, opexGridRef, alignedGridsRef }) => {
     const { project } = useProjectContext()
     const {
         historicCostCostProfile,
@@ -147,4 +147,4 @@ const Opex: React.FC<OpexProps> = ({ tableYears, opexGridRef, alignedGridsRef })
     )
 }
 
-export default Opex
+export default OpexCosts
