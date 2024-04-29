@@ -1,4 +1,5 @@
 import _ from "lodash"
+import { Dispatch, SetStateAction } from "react"
 import { ITimeSeries } from "../Models/ITimeSeries"
 
 export const loginAccessTokenKey = "loginAccessToken"
@@ -216,4 +217,22 @@ export const isWithinRange = (number: number, max: number, min: number) => numbe
 
 export const preventNonDigitInput = (e: React.KeyboardEvent<HTMLInputElement>): void => {
     if (!/\d/.test(e.key)) e.preventDefault()
+}
+
+/**
+ * Updates a specified property of an object and sets the updated object using a React state setter function.
+ * If the property is already set to the provided value or if the object/value is not defined, logs an error and returns without updating.
+*/
+export function updateObject<T>(object: T | undefined, setObject: Dispatch<SetStateAction<T | undefined>>, key: keyof T, value: any): void {
+    if (!object || !value) {
+        console.error("Object or value is undefined")
+        return
+    }
+    if (object[key] === value) {
+        console.error("Object key is already set to value")
+        return
+    }
+    const newObject: T = { ...object }
+    newObject[key] = value
+    setObject(newObject)
 }

@@ -12,6 +12,7 @@ import { MenuModule } from "@ag-grid-enterprise/menu"
 import { MultiFilterModule } from "@ag-grid-enterprise/multi-filter"
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection"
 import { SetFilterModule } from "@ag-grid-enterprise/set-filter"
+import { ExcelExportModule } from "@ag-grid-enterprise/excel-export";
 
 export const configure: AppModuleInitiator = (configurator, args) => {
     const { basename } = args.env
@@ -27,6 +28,7 @@ export const configure: AppModuleInitiator = (configurator, args) => {
         SetFilterModule,
         MenuModule,
         GridChartsModule,
+        ExcelExportModule,
     ])
     enableAgGrid(configurator)
 
