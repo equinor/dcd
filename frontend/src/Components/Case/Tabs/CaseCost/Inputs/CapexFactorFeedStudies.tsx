@@ -17,7 +17,6 @@ const TotalStudyCosts: React.FC = () => {
         if (newCapexFactorFEEDStudies !== undefined) {
             newCase.capexFactorFEEDStudies = newCapexFactorFEEDStudies / 100
         } else { newCase.capexFactorFEEDStudies = 0 }
-        console.log("handling case FEED change", newCase.capexFactorFEEDStudies)
         setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
     }
 

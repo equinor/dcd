@@ -17,7 +17,6 @@ const CapexFactorFeasibilityStudies: React.FC = () => {
         if (newCapexFactorFeasibilityStudies !== undefined) {
             newCase.capexFactorFeasibilityStudies = newCapexFactorFeasibilityStudies / 100
         } else { newCase.capexFactorFeasibilityStudies = 0 }
-        console.log("handling case feasibility change", newCase.capexFactorFeasibilityStudies)
         setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
     }
     return (

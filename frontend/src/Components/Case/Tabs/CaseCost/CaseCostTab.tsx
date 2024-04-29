@@ -13,7 +13,7 @@ import CessationCosts from "./Tables/CessationCosts"
 import DevelopmentWellCosts from "./Tables/DevelopmentWellCosts"
 import ExplorationWellCosts from "./Tables/ExplorationWellCosts"
 import OffshoreFacillityCosts from "./Tables/OffshoreFacilityCosts"
-import Opex from "./Tables/Opex"
+import Opex from "./Tables/OpexCosts"
 import TotalStudyCosts from "./Tables/TotalStudyCosts"
 
 const CaseCostTab = (): React.ReactElement | null => {

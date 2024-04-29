@@ -38,7 +38,7 @@ const Opex: React.FC<OpexProps> = ({ tableYears, opexGridRef, alignedGridsRef })
 
     const opexTimeSeriesData: ITimeSeriesData[] = [
         {
-            profileName: "Historic Cost",
+            profileName: "Historic cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: historicCostCostProfile,
             set: setHistoricCostCostProfile,
