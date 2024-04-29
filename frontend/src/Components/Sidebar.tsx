@@ -358,6 +358,7 @@ const Sidebar = () => {
                     </Tooltip>
                     <Toggle />
                 </Grid>
+
             </SidebarFooter>
         </StyledSidebar>
     )

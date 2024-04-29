@@ -278,6 +278,37 @@ namespace api.Migrations
                     b.ToTable("CessationOffshoreFacilitiesCostOverride");
                 });
 
+            modelBuilder.Entity("api.Models.CessationOnshoreFacilitiesCostProfile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Case.Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EPAVersion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InternalData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StartYear")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Case.Id")
+                        .IsUnique();
+
+                    b.ToTable("CessationOnshoreFacilitiesCostProfile");
+                });
+
             modelBuilder.Entity("api.Models.CessationWellsCost", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1099,6 +1130,37 @@ namespace api.Migrations
                         .IsUnique();
 
                     b.ToTable("OilProducerCostProfileOverride");
+                });
+
+            modelBuilder.Entity("api.Models.OnshoreRelatedOPEXCostProfile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Case.Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EPAVersion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InternalData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StartYear")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Case.Id")
+                        .IsUnique();
+
+                    b.ToTable("OnshoreRelatedOPEXCostProfile");
                 });
 
             modelBuilder.Entity("api.Models.ProductionProfileGas", b =>
@@ -2460,6 +2522,17 @@ namespace api.Migrations
                     b.Navigation("Case");
                 });
 
+            modelBuilder.Entity("api.Models.CessationOnshoreFacilitiesCostProfile", b =>
+                {
+                    b.HasOne("api.Models.Case", "Case")
+                        .WithOne("CessationOnshoreFacilitiesCostProfile")
+                        .HasForeignKey("api.Models.CessationOnshoreFacilitiesCostProfile", "Case.Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Case");
+                });
+
             modelBuilder.Entity("api.Models.CessationWellsCost", b =>
                 {
                     b.HasOne("api.Models.Case", "Case")
@@ -2769,6 +2842,17 @@ namespace api.Migrations
                         .IsRequired();
 
                     b.Navigation("WellProject");
+                });
+
+            modelBuilder.Entity("api.Models.OnshoreRelatedOPEXCostProfile", b =>
+                {
+                    b.HasOne("api.Models.Case", "Case")
+                        .WithOne("OnshoreRelatedOPEXCostProfile")
+                        .HasForeignKey("api.Models.OnshoreRelatedOPEXCostProfile", "Case.Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Case");
                 });
 
             modelBuilder.Entity("api.Models.ProductionProfileGas", b =>
@@ -3178,6 +3262,8 @@ namespace api.Migrations
 
                     b.Navigation("CessationOffshoreFacilitiesCostOverride");
 
+                    b.Navigation("CessationOnshoreFacilitiesCostProfile");
+
                     b.Navigation("CessationWellsCost");
 
                     b.Navigation("CessationWellsCostOverride");
@@ -3187,6 +3273,8 @@ namespace api.Migrations
                     b.Navigation("OffshoreFacilitiesOperationsCostProfile");
 
                     b.Navigation("OffshoreFacilitiesOperationsCostProfileOverride");
+
+                    b.Navigation("OnshoreRelatedOPEXCostProfile");
 
                     b.Navigation("TotalFEEDStudies");
 

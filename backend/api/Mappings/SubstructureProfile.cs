@@ -14,7 +14,9 @@ public class SubstructureProfile : Profile
         CreateMap<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>();
         CreateMap<SubstructureCessationCostProfile, SubstructureCessationCostProfileDto>();
 
-        CreateMap<UpdateSubstructureDto, Substructure>();
+        CreateMap<APIUpdateSubstructureDto, Substructure>();
+        CreateMap<PROSPUpdateSubstructureDto, Substructure>();
+        CreateMap<UpdateSubstructureCostProfileDto, SubstructureCostProfile>();
         CreateMap<UpdateSubstructureCostProfileOverrideDto, SubstructureCostProfileOverride>();
 
         CreateMap<CreateSubstructureDto, Substructure>();

@@ -268,6 +268,9 @@ public class CaseWithAssetsService : ICaseWithAssetsService
                 _context.ExplorationWell!.Add(explorationWell);
             }
         }
+
+        await _context.SaveChangesAsync();
+        var wellProject = await _costProfileFromDrillingScheduleHelper.UpdateExplorationCostProfilesForCase(caseId);
     }
 
     public async Task CreateAndUpdateWellProjectWells(UpdateWellProjectWellDto[] wellProjectWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate)
@@ -296,9 +299,12 @@ public class CaseWithAssetsService : ICaseWithAssetsService
                 _context.WellProjectWell!.Add(wellProjectWell);
             }
         }
+
+        await _context.SaveChangesAsync();
+        var wellProject = await _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
     }
 
-    public async Task<CaseDto> UpdateCase(Guid caseId, UpdateCaseDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<CaseDto> UpdateCase(Guid caseId, APIUpdateCaseDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         profilesToGenerate.StudyCost = true;
         profilesToGenerate.Co2Emissions = true;
@@ -365,7 +371,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         return _mapper.Map<ExplorationDto>(updatedItem.Entity);
     }
 
-    public async Task<SurfDto?> UpdateSurf(Guid surfLink, UpdateSurfDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<SurfDto?> UpdateSurf(Guid surfLink, APIUpdateSurfDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         profilesToGenerate.StudyCost = true;
         profilesToGenerate.CessationCost = true;
@@ -378,7 +384,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         return _mapper.Map<SurfDto>(updatedItem.Entity);
     }
 
-    public async Task<SubstructureDto?> UpdateSubstructure(Guid substructureLink, UpdateSubstructureDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<SubstructureDto?> UpdateSubstructure(Guid substructureLink, APIUpdateSubstructureDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         profilesToGenerate.StudyCost = true;
 
@@ -390,7 +396,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         return _mapper.Map<SubstructureDto>(updatedItem.Entity);
     }
 
-    public async Task<TransportDto?> UpdateTransport(Guid transportLink, UpdateTransportDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<TransportDto?> UpdateTransport(Guid transportLink, APIUpdateTransportDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         profilesToGenerate.StudyCost = true;
 
@@ -401,7 +407,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         var updatedItem = _context.Transports!.Update(item);
         return _mapper.Map<TransportDto>(updatedItem.Entity);
     }
-    public async Task<TopsideDto?> UpdateTopside(Guid topsideLink, UpdateTopsideDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<TopsideDto?> UpdateTopside(Guid topsideLink, APIUpdateTopsideDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         profilesToGenerate.StudyCost = true;
         profilesToGenerate.OpexCost = true;

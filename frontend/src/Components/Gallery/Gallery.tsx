@@ -112,10 +112,11 @@ const Gallery = () => {
                             setExeededLimit={setExeededLimit}
                         />
                     )
-                }
-            </Wrapper>
-        </>
-    )
+                    }
+                </Wrapper>
+            </Grid>
+        )
+        : null
 }
 
 export default Gallery

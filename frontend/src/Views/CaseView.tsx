@@ -1,8 +1,9 @@
 import styled from "styled-components"
 import { Tabs } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import Grid from "@mui/material/Grid"
+import styled from "styled-components"
 import CaseDescriptionTab from "../Components/Case/Tabs/CaseDescriptionTab"
 import CaseCostTab from "../Components/Case/Tabs/CaseCostTab"
 import CaseFacilitiesTab from "../Components/Case/Tabs/CaseFacilitiesTab"
@@ -31,8 +32,14 @@ const ScrollablePanel = styled(Panel)`
 `
 
 const CaseView = () => {
+    const { caseId, tab } = useParams()
+
     const {
-        setIsSaving, isLoading, setIsLoading, updateFromServer, setUpdateFromServer,
+        setIsSaving,
+        isLoading,
+        setIsLoading,
+        updateFromServer,
+        setUpdateFromServer,
     } = useAppContext()
 
     const {
@@ -47,6 +54,10 @@ const CaseView = () => {
         setSaveProjectCase,
         activeTabCase,
         setActiveTabCase,
+
+        // CAPEX
+        setCessationOffshoreFacilitiesCost,
+        setCessationOnshoreFacilitiesCostProfile,
 
         // Study cost
         setTotalFeasibilityAndConceptStudies,
@@ -73,6 +84,7 @@ const CaseView = () => {
         setHistoricCostCostProfile,
         setWellInterventionCostProfile,
         setOffshoreFacilitiesOperationsCostProfile,
+        setOnshoreRelatedOPEXCostProfile,
         setAdditionalOPEXCostProfile,
 
     } = useCaseContext()
@@ -91,8 +103,6 @@ const CaseView = () => {
     const [wells, setWells] = useState<Components.Schemas.WellDto[]>()
 
     const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>()
-    const [cessationOffshoreFacilitiesCost,
-        setCessationOffshoreFacilitiesCost] = useState<Components.Schemas.CessationOffshoreFacilitiesCostDto>()
 
     const [co2Emissions, setCo2Emissions] = useState<Components.Schemas.Co2EmissionsDto>()
 
@@ -102,6 +112,36 @@ const CaseView = () => {
 
     const navigate = useNavigate()
     const location = useLocation()
+
+    const tabNames = [
+        "Description",
+        "Production Profiles",
+        "Schedule",
+        "Drilling Schedule",
+        "Facilities",
+        "Cost",
+        "CO2 Emissions",
+        "Summary",
+    ]
+
+    // when the URL changes, set the active tab to the tab name in the URL
+    useEffect(() => {
+        if (tab) {
+            const tabIndex = tabNames.indexOf(tab)
+            if (activeTabCase !== tabIndex) {
+                setActiveTabCase(tabIndex)
+            }
+        }
+    }, [])
+
+    // when user navigates to a different tab, add the tab name to the URL
+    useEffect(() => {
+        if (activeTabCase !== undefined) {
+            const tabName = tabNames[activeTabCase]
+            const projectUrl = location.pathname.split("/case")[0]
+            navigate(`${projectUrl}/case/${caseId}/${tabName}`)
+        }
+    }, [activeTabCase])
 
     useEffect(() => {
         if (project && updateFromServer) {
@@ -196,9 +236,11 @@ const CaseView = () => {
             setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.offshoreFacilitiesOperationsCostProfileDto, setOffshoreFacilitiesOperationsCostProfile)
             setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.wellInterventionCostProfileDto, setWellInterventionCostProfile)
             setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.historicCostCostProfileDto, setHistoricCostCostProfile)
+            setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.onshoreRelatedOPEXCostProfileDto, setOnshoreRelatedOPEXCostProfile)
             setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.additionalOPEXCostProfileDto, setAdditionalOPEXCostProfile)
             setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationWellsCostDto, setCessationWellsCost)
             setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationOffshoreFacilitiesCostDto, setCessationOffshoreFacilitiesCost)
+            setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationOnshoreFacilitiesCostProfileDto, setCessationOnshoreFacilitiesCostProfile)
             setIfNotNull(result.generatedProfilesDto?.co2EmissionsDto, setCo2Emissions)
             setIfNotNull(result.generatedProfilesDto?.fuelFlaringAndLossesDto, setFuelFlaringAndLosses)
             setIfNotNull(result.generatedProfilesDto?.netSalesGasDto, setNetSalesGas)
@@ -239,14 +281,7 @@ const CaseView = () => {
             <Grid item xs={12}>
                 <Tabs activeTab={activeTabCase} onChange={setActiveTabCase} scrollable>
                     <List>
-                        <Tab>Description</Tab>
-                        <Tab>Production Profiles</Tab>
-                        <Tab>Schedule</Tab>
-                        <Tab>Drilling Schedule</Tab>
-                        <Tab>Facilities</Tab>
-                        <Tab>Cost</Tab>
-                        <Tab>CO2 Emissions</Tab>
-                        <Tab>Summary</Tab>
+                        {tabNames.map((tabName) => <Tab key={tabName}>{tabName}</Tab>)}
                     </List>
                     <Panels>
                         <ScrollablePanel>

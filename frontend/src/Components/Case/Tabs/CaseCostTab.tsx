@@ -20,30 +20,11 @@ import { useCaseContext } from "../../../Context/CaseContext"
 import { useModalContext } from "../../../Context/ModalContext"
 import RangeButton from "../../Buttons/RangeButton"
 
-interface Props {
-
-    cessationWellsCost: Components.Schemas.TotalFEEDStudiesDto | undefined,
-    setCessationWellsCost: Dispatch<SetStateAction<Components.Schemas.CessationWellsCostDto | undefined>>,
-
-    cessationOffshoreFacilitiesCost: Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined,
-    setCessationOffshoreFacilitiesCost: Dispatch<SetStateAction<Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined>>,
-
-    wellProject: Components.Schemas.WellProjectDto,
-    setWellProject: Dispatch<SetStateAction<Components.Schemas.WellProjectDto | undefined>>,
-
-}
-
-const CaseCostTab = ({
-
-    cessationWellsCost,
-    setCessationWellsCost,
-    cessationOffshoreFacilitiesCost,
-    setCessationOffshoreFacilitiesCost,
-    wellProject,
-    setWellProject,
-}: Props) => {
+const CaseCostTab = (): React.ReactElement | null => {
     const {
-        projectCase, setProjectCase, setProjectCaseEdited, activeTabCase,
+        projectCase,
+        projectCaseEdited, setProjectCaseEdited,
+        activeTabCase,
         totalFeasibilityAndConceptStudies,
         setTotalFeasibilityAndConceptStudies,
         totalFeasibilityAndConceptStudiesOverride,
@@ -63,6 +44,14 @@ const CaseCostTab = ({
         transport, setTransport,
         transportCost, setTransportCost,
 
+        // CAPEX
+        cessationWellsCost,
+        setCessationWellsCost,
+        cessationOffshoreFacilitiesCost,
+        setCessationOffshoreFacilitiesCost,
+        cessationOnshoreFacilitiesCostProfile,
+        setCessationOnshoreFacilitiesCostProfile,
+
         // OPEX
         historicCostCostProfile,
         setHistoricCostCostProfile,
@@ -70,6 +59,8 @@ const CaseCostTab = ({
         setWellInterventionCostProfile,
         offshoreFacilitiesOperationsCostProfile,
         setOffshoreFacilitiesOperationsCostProfile,
+        onshoreRelatedOPEXCostProfile,
+        setOnshoreRelatedOPEXCostProfile,
         additionalOPEXCostProfile,
         setAdditionalOPEXCostProfile,
 
@@ -80,18 +71,20 @@ const CaseCostTab = ({
         setGAndGAdminCost,
         seismicAcquisitionAndProcessing,
         setSeismicAcquisitionAndProcessing,
-        explorationSidetrackCost,
-        setExplorationSidetrackCost,
-        explorationAppraisalWellCost,
-        setExplorationAppraisalWellCost,
+        sidetrackCostProfile,
+        setSidetrackCostProfile,
+        appraisalWellCostProfile,
+        setAppraisalWellCostProfile,
         countryOfficeCost,
         setCountryOfficeCost,
     } = useCaseContext()
-
     const {
+        wellProject,
+        setWellProject,
         exploration,
         setExploration,
     } = useModalContext()
+
     const { project } = useProjectContext()
 
     // OPEX
@@ -140,39 +133,40 @@ const CaseCostTab = ({
     useEffect(() => {
         (async () => {
             try {
-                if (projectCase && project && topside && surf && substructure && transport && exploration) {
+                if (projectCase && project && topside && surf && substructure && transport && exploration && wellProject) {
                     if (activeTabCase === 5) {
                         const totalFeasibility = projectCase?.totalFeasibilityAndConceptStudies
                         const totalFEED = projectCase?.totalFEEDStudies
                         const totalOtherStudiesLocal = projectCase.totalOtherStudies
 
-                        setTotalFeasibilityAndConceptStudies(totalFeasibility)
+                        setTotalFeasibilityAndConceptStudies(totalFeasibilityAndConceptStudies)
                         setTotalFeasibilityAndConceptStudiesOverride(projectCase?.totalFeasibilityAndConceptStudiesOverride)
-                        setTotalFEEDStudies(totalFEED)
+                        setTotalFEEDStudies(totalFEEDStudies)
                         setTotalFEEDStudiesOverride(projectCase?.totalFEEDStudiesOverride)
 
                         setTotalOtherStudies(totalOtherStudiesLocal)
 
-                        const wellIntervention = wellInterventionCostProfile
                         const offshoreFacilitiesOperations = projectCase?.offshoreFacilitiesOperationsCostProfile
                         const historicCostCostProfileLocal = projectCase?.historicCostCostProfile
+                        const onshoreRelatedOPEXCostProfileLocal = projectCase?.onshoreRelatedOPEXCostProfile
                         const additionalOPEXCostProfileLocal = projectCase?.additionalOPEXCostProfile
 
-                        setWellInterventionCostProfile(wellIntervention)
+                        setWellInterventionCostProfile(wellInterventionCostProfile)
                         setWellInterventionCostProfileOverride(projectCase?.wellInterventionCostProfileOverride)
-                        setOffshoreFacilitiesOperationsCostProfile(offshoreFacilitiesOperations)
+                        setOffshoreFacilitiesOperationsCostProfile(offshoreFacilitiesOperationsCostProfile)
                         setOffshoreFacilitiesOperationsCostProfileOverride(projectCase?.offshoreFacilitiesOperationsCostProfileOverride)
                         setHistoricCostCostProfile(historicCostCostProfileLocal)
+                        setOnshoreRelatedOPEXCostProfile(onshoreRelatedOPEXCostProfileLocal)
                         setAdditionalOPEXCostProfile(additionalOPEXCostProfileLocal)
 
-                        const cessationWells = projectCase?.cessationWellsCost
-                        const cessationOffshoreFacilities = projectCase?.cessationOffshoreFacilitiesCost
+                        // Development
+                        const cessationOnshoreFacilities = projectCase?.cessationOnshoreFacilitiesCostProfile
 
-                        setCessationWellsCost(cessationWells)
+                        setCessationWellsCost(cessationWellsCost)
                         setCessationWellsCostOverride(projectCase?.cessationWellsCostOverride)
-                        setCessationOffshoreFacilitiesCost(cessationOffshoreFacilities)
+                        setCessationOffshoreFacilitiesCost(cessationOffshoreFacilitiesCost)
                         setCessationOffshoreFacilitiesCostOverride(projectCase?.cessationOffshoreFacilitiesCostOverride)
-
+                        setCessationOnshoreFacilitiesCostProfile(cessationOnshoreFacilities)
                         // CAPEX
                         const topsideCostProfile = topside.costProfile
                         setTopsideCost(topsideCostProfile)
@@ -205,6 +199,7 @@ const CaseCostTab = ({
                             waterInjectorCostProfileOverride,
                             gasInjectorCostProfileOverride,
                         } = wellProject
+
                         setWellProjectOilProducerCost(oilProducerCostProfile)
                         setWellProjectOilProducerCostOverride(oilProducerCostProfileOverride)
                         setWellProjectGasProducerCost(gasProducerCostProfile)
@@ -218,8 +213,8 @@ const CaseCostTab = ({
 
                         setSeismicAcquisitionAndProcessing(exploration.seismicAcquisitionAndProcessing)
                         setExplorationWellCostProfile(exploration.explorationWellCostProfile)
-                        setExplorationAppraisalWellCost(exploration.appraisalWellCostProfile)
-                        setExplorationSidetrackCost(exploration.sidetrackCostProfile)
+                        setAppraisalWellCostProfile(exploration.appraisalWellCostProfile)
+                        setSidetrackCostProfile(exploration.sidetrackCostProfile)
                         const countryOffice = exploration.countryOfficeCost
                         setCountryOfficeCost(countryOffice)
 
@@ -232,6 +227,7 @@ const CaseCostTab = ({
                             projectCase?.offshoreFacilitiesOperationsCostProfile,
                             projectCase?.cessationWellsCost,
                             projectCase?.cessationOffshoreFacilitiesCost,
+                            projectCase?.cessationOnshoreFacilitiesCostProfile,
                             projectCase?.totalFeasibilityAndConceptStudiesOverride,
                             projectCase?.totalFEEDStudiesOverride,
                             projectCase?.wellInterventionCostProfileOverride,
@@ -285,6 +281,7 @@ const CaseCostTab = ({
         offshoreFacilitiesOperationsCostProfile,
         wellInterventionCostProfile,
         historicCostCostProfile,
+        onshoreRelatedOPEXCostProfile,
         additionalOPEXCostProfile,
     ])
 
@@ -294,7 +291,7 @@ const CaseCostTab = ({
             && cessationGridRef.current.api.refreshCells) {
             cessationGridRef.current.api.refreshCells()
         }
-    }, [cessationWellsCost, cessationOffshoreFacilitiesCost])
+    }, [cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCostProfile])
 
     useEffect(() => {
         if (explorationWellsGridRef.current
@@ -313,7 +310,7 @@ const CaseCostTab = ({
     }
 
     const handleCaseFeasibilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...projectCase }
+        const newCase = { ...projectCaseEdited }
         const newCapexFactorFeasibilityStudies = e.currentTarget.value.length > 0
             ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
         if (newCapexFactorFeasibilityStudies !== undefined) {
@@ -324,7 +321,7 @@ const CaseCostTab = ({
     }
 
     const handleCaseFEEDChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...projectCase }
+        const newCase = { ...projectCaseEdited }
         const newCapexFactorFEEDStudies = e.currentTarget.value.length > 0
             ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
         if (newCapexFactorFEEDStudies !== undefined) {
@@ -420,6 +417,12 @@ const CaseCostTab = ({
             overrideProfileSet: setOffshoreFacilitiesOperationsCostProfileOverride,
         },
         {
+            profileName: "Onshore related OPEX (input req.)",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: onshoreRelatedOPEXCostProfile,
+            set: setOnshoreRelatedOPEXCostProfile,
+        },
+        {
             profileName: "Additional OPEX (input req.)",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: additionalOPEXCostProfile,
@@ -443,6 +446,12 @@ const CaseCostTab = ({
             overridable: true,
             overrideProfile: cessationOffshoreFacilitiesCostOverride,
             overrideProfileSet: setCessationOffshoreFacilitiesCostOverride,
+        },
+        {
+            profileName: "CAPEX - Cessation - Onshore facilities",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: cessationOnshoreFacilitiesCostProfile,
+            set: setCessationOnshoreFacilitiesCostProfile,
         },
     ]
 
@@ -543,14 +552,14 @@ const CaseCostTab = ({
         {
             profileName: "Appraisal well cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: explorationAppraisalWellCost,
-            set: setExplorationAppraisalWellCost,
+            profile: appraisalWellCostProfile,
+            set: setAppraisalWellCostProfile,
         },
         {
             profileName: "Sidetrack well cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: explorationSidetrackCost,
-            set: setExplorationSidetrackCost,
+            profile: sidetrackCostProfile,
+            set: setSidetrackCostProfile,
         },
     ]
 
@@ -569,58 +578,76 @@ const CaseCostTab = ({
     }
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCase, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
         }
     }, [totalFeasibilityAndConceptStudiesOverride])
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCase, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
         }
     }, [totalFEEDStudiesOverride])
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCase, "totalOtherStudies", totalOtherStudies)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "totalOtherStudies", totalOtherStudies)
         }
     }, [totalOtherStudies])
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCase, "wellInterventionCostProfileOverride", wellInterventionCostProfileOverride)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "wellInterventionCostProfileOverride", wellInterventionCostProfileOverride)
         }
     }, [wellInterventionCostProfileOverride])
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCase, "offshoreFacilitiesOperationsCostProfileOverride", offshoreFacilitiesOperationsCostProfileOverride)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "offshoreFacilitiesOperationsCostProfileOverride", offshoreFacilitiesOperationsCostProfileOverride)
         }
     }, [offshoreFacilitiesOperationsCostProfileOverride])
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCase, "historicCostCostProfile", historicCostCostProfile)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "onshoreRelatedOPEXCostProfile", onshoreRelatedOPEXCostProfile)
+        }
+    }, [onshoreRelatedOPEXCostProfile])
+
+    useEffect(() => {
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "historicCostCostProfile", historicCostCostProfile)
         }
     }, [historicCostCostProfile])
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCase, "additionalOPEXCostProfile", additionalOPEXCostProfile)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "additionalOPEXCostProfile", additionalOPEXCostProfile)
         }
     }, [additionalOPEXCostProfile])
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCase, "cessationWellsCostOverride", cessationWellsCostOverride)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "cessationWellsCostOverride", cessationWellsCostOverride)
         }
     }, [cessationWellsCostOverride])
 
     useEffect(() => {
-        if (projectCase) {
-            updateObject(projectCase, setProjectCase, "cessationOffshoreFacilitiesCostOverride", cessationOffshoreFacilitiesCostOverride)
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "cessationOffshoreFacilitiesCost", cessationOffshoreFacilitiesCost)
+        }
+    }, [cessationOffshoreFacilitiesCost])
+
+    useEffect(() => {
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "cessationOffshoreFacilitiesCostOverride", cessationOffshoreFacilitiesCostOverride)
         }
     }, [cessationOffshoreFacilitiesCostOverride])
+
+    useEffect(() => {
+        if (projectCaseEdited) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "cessationOnshoreFacilitiesCostProfile", cessationOnshoreFacilitiesCostProfile)
+        }
+    }, [cessationOnshoreFacilitiesCostProfile])
 
     useEffect(() => {
         if (surf) {
@@ -726,15 +753,15 @@ const CaseCostTab = ({
 
     useEffect(() => {
         if (exploration) {
-            updateObject(exploration, setExploration, "appraisalWellCostProfile", explorationAppraisalWellCost)
+            updateObject(exploration, setExploration, "appraisalWellCostProfile", appraisalWellCostProfile)
         }
-    }, [explorationAppraisalWellCost])
+    }, [appraisalWellCostProfile])
 
     useEffect(() => {
         if (exploration) {
-            updateObject(exploration, setExploration, "sidetrackCostProfile", explorationSidetrackCost)
+            updateObject(exploration, setExploration, "sidetrackCostProfile", sidetrackCostProfile)
         }
-    }, [explorationSidetrackCost])
+    }, [sidetrackCostProfile])
 
     useEffect(() => {
         if (exploration) {

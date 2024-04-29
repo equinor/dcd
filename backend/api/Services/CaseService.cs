@@ -72,7 +72,7 @@ public class CaseService : ICaseService
             Name = "Topside",
             Source = Source.ConceptApp,
         };
-        var topside = await _topsideService.NewCreateTopside(projectId, createdCase.Entity.Id, topsideDto);
+        var topside = await _topsideService.CreateTopside(projectId, createdCase.Entity.Id, topsideDto);
         caseItem.TopsideLink = topside.Id;
 
         var surfDto = new CreateSurfDto
@@ -80,7 +80,7 @@ public class CaseService : ICaseService
             Name = "Surf",
             Source = Source.ConceptApp,
         };
-        var surf = await _surfService.NewCreateSurf(projectId, createdCase.Entity.Id, surfDto);
+        var surf = await _surfService.CreateSurf(projectId, createdCase.Entity.Id, surfDto);
         caseItem.SurfLink = surf.Id;
 
         var substructureDto = new CreateSubstructureDto
@@ -88,7 +88,7 @@ public class CaseService : ICaseService
             Name = "Substructure",
             Source = Source.ConceptApp,
         };
-        var substructure = await _substructureService.NewCreateSubstructure(projectId, createdCase.Entity.Id, substructureDto);
+        var substructure = await _substructureService.CreateSubstructure(projectId, createdCase.Entity.Id, substructureDto);
         caseItem.SubstructureLink = substructure.Id;
 
         var transportDto = new CreateTransportDto
@@ -96,27 +96,28 @@ public class CaseService : ICaseService
             Name = "Transport",
             Source = Source.ConceptApp,
         };
-        var transport = await _transportService.NewCreateTransport(projectId, createdCase.Entity.Id, transportDto);
+        var transport = await _transportService.CreateTransport(projectId, createdCase.Entity.Id, transportDto);
         caseItem.TransportLink = transport.Id;
 
         var explorationDto = new CreateExplorationDto
         {
             Name = "Exploration",
         };
-        var exploration = await _explorationService.NewCreateExploration(projectId, createdCase.Entity.Id, explorationDto);
+        var exploration = await _explorationService.CreateExploration(projectId, createdCase.Entity.Id, explorationDto);
         caseItem.ExplorationLink = exploration.Id;
 
         var wellProjectDto = new CreateWellProjectDto
         {
             Name = "WellProject",
         };
-        var wellProject = await _wellProjectService.NewCreateWellProject(projectId, createdCase.Entity.Id, wellProjectDto);
+        var wellProject = await _wellProjectService.CreateWellProject(projectId, createdCase.Entity.Id, wellProjectDto);
         caseItem.WellProjectLink = wellProject.Id;
 
         return await _projectService.GetProjectDto(project.Id);
     }
 
-    public async Task<ProjectDto> UpdateCase(Guid caseId, UpdateCaseDto updatedCaseDto)
+    public async Task<ProjectDto> UpdateCase<TDto>(Guid caseId, TDto updatedCaseDto)
+        where TDto : BaseUpdateCaseDto
     {
         var caseItem = await GetCase(caseId);
 
@@ -148,11 +149,13 @@ public class CaseService : ICaseService
             .Include(c => c.WellInterventionCostProfileOverride)
             .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
             .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+            .Include(c => c.OnshoreRelatedOPEXCostProfile)
             .Include(c => c.AdditionalOPEXCostProfile)
             .Include(c => c.CessationWellsCost)
             .Include(c => c.CessationWellsCostOverride)
             .Include(c => c.CessationOffshoreFacilitiesCost)
             .Include(c => c.CessationOffshoreFacilitiesCostOverride)
+            .Include(c => c.CessationOnshoreFacilitiesCostProfile)
             .FirstOrDefaultAsync(c => c.Id == caseId);
         if (caseItem == null)
         {
@@ -176,11 +179,13 @@ public class CaseService : ICaseService
                     .Include(c => c.WellInterventionCostProfileOverride)
                     .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
                     .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+                    .Include(c => c.OnshoreRelatedOPEXCostProfile)
                     .Include(c => c.AdditionalOPEXCostProfile)
                     .Include(c => c.CessationWellsCost)
                     .Include(c => c.CessationWellsCostOverride)
                     .Include(c => c.CessationOffshoreFacilitiesCost)
                     .Include(c => c.CessationOffshoreFacilitiesCostOverride)
+                    .Include(c => c.CessationOnshoreFacilitiesCostProfile)
                     .ToListAsync();
         }
         else

@@ -63,7 +63,7 @@
         "@equinor/fusion-framework-react-app": "4.3.5",
         "@equinor/fusion-framework-react-module-context": "^6.0.20",
         "@equinor/fusion-react-ag-grid-styles": "30.2.0",
-        "@equinor/fusion-react-textarea": "^0.6.1",
+        "@equinor/fusion-react-markdown": "^0.3.2",
         "@mui/material": "^5.15.10",
         "@originjs/vite-plugin-commonjs": "^1.0.3",
         "@remix-run/router": "^1.8.0",

@@ -136,6 +136,12 @@ const EditTechnicalInputModal = () => {
             const originalExplorationWellsResult = structuredClone(project?.wells.filter((w) => isExplorationWell(w)))
             setOriginalExplorationWells(originalExplorationWellsResult)
         }
+        if (project && !developmentOperationalWellCosts && !explorationOperationalWellCosts) {
+            setDevelopmentOperationalWellCosts(project?.developmentOperationalWellCosts)
+            setExplorationOperationalWellCosts(project?.explorationOperationalWellCosts)
+            setOriginalDevelopmentOperationalWellCosts(project?.developmentOperationalWellCosts)
+            setOriginalExplorationOperationalWellCosts(project?.explorationOperationalWellCosts)
+        }
     }, [project])
 
     useEffect(() => {

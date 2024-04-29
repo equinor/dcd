@@ -72,7 +72,7 @@ public class ExplorationService : IExplorationService
         return newExplorationDto;
     }
 
-    public async Task<Exploration> NewCreateExploration(Guid projectId, Guid sourceCaseId, CreateExplorationDto explorationDto)
+    public async Task<Exploration> CreateExploration(Guid projectId, Guid sourceCaseId, CreateExplorationDto explorationDto)
     {
         var exploration = _mapper.Map<Exploration>(explorationDto);
         if (exploration == null)
@@ -98,7 +98,7 @@ public class ExplorationService : IExplorationService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<ExplorationDto> NewUpdateExploration(ExplorationDto updatedExplorationDto)
+    public async Task<ExplorationDto> UpdateExploration(ExplorationDto updatedExplorationDto)
     {
         var existing = await GetExploration(updatedExplorationDto.Id);
         _mapper.Map(updatedExplorationDto, existing);
@@ -106,35 +106,6 @@ public class ExplorationService : IExplorationService
         var updatedExploration = _context.Explorations!.Update(existing);
         await _context.SaveChangesAsync();
         var explorationDto = _mapper.Map<ExplorationDto>(updatedExploration.Entity);
-        if (explorationDto == null)
-        {
-            throw new ArgumentNullException(nameof(explorationDto));
-        }
-        return explorationDto;
-    }
-
-    public async Task<ExplorationDto[]> UpdateMultiple(ExplorationDto[] updatedExplorationDtos)
-    {
-        var updatedExplorationDtoList = new List<ExplorationDto>();
-        foreach (var explorationDto in updatedExplorationDtos)
-        {
-            var updatedExplorationDto = await UpdateSingleExploration(explorationDto);
-            updatedExplorationDtoList.Add(updatedExplorationDto);
-        }
-
-        await _context.SaveChangesAsync();
-        return updatedExplorationDtoList.ToArray();
-    }
-
-    public async Task<ExplorationDto> UpdateSingleExploration(ExplorationDto updatedExplorationDto)
-    {
-        var existing = await GetExploration(updatedExplorationDto.Id);
-
-        _mapper.Map(updatedExplorationDto, existing);
-
-        var exploration = _context.Explorations!.Update(existing);
-        await _context.SaveChangesAsync();
-        var explorationDto = _mapper.Map<ExplorationDto>(exploration.Entity);
         if (explorationDto == null)
         {
             throw new ArgumentNullException(nameof(explorationDto));

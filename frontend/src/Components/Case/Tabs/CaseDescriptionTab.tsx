@@ -1,17 +1,18 @@
 import {
     ChangeEventHandler,
-    FormEventHandler,
 } from "react"
-import { NativeSelect } from "@equinor/eds-core-react"
-import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
+import { NativeSelect, Typography } from "@equinor/eds-core-react"
+import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
 import CaseNumberInput from "../../Input/CaseNumberInput"
 import InputSwitcher from "../../Input/InputSwitcher"
 import Gallery from "../../Gallery/Gallery"
 import { useCaseContext } from "../../../Context/CaseContext"
+import { useAppContext } from "../../../Context/AppContext"
 
 const CaseDescriptionTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
+    const { editMode } = useAppContext()
 
     if (!projectCase) return null
 
@@ -30,10 +31,11 @@ const CaseDescriptionTab = () => {
         3: "Subsea booster pumps",
     }
 
-    const handleDescriptionChange: FormEventHandler<any> = async (e) => {
-        const newCase = { ...projectCase }
-        newCase.description = e.currentTarget.value
-        setProjectCaseEdited(newCase)
+    function handleDescriptionChange(value: string) {
+        if (projectCaseEdited) {
+            const updatedProjectCase = { ...projectCaseEdited, description: value }
+            setProjectCaseEdited(updatedProjectCase)
+        }
     }
 
     const handleFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -97,18 +99,23 @@ const CaseDescriptionTab = () => {
 
     return (
         <Grid container spacing={2}>
-            <Grid item xs={12}>
-                <Gallery />
-                <InputSwitcher label="Description" value={projectCaseEdited ? projectCaseEdited.description : projectCase?.description ?? ""}>
-                    <TextArea
-                        id="description"
-                        placeholder="Enter a description"
-                        onInput={handleDescriptionChange}
-                        value={projectCaseEdited ? projectCaseEdited.description : projectCase?.description ?? ""}
-                        cols={10000}
-                        rows={8}
-                    />
-                </InputSwitcher>
+            <Gallery />
+            <Grid item xs={12} sx={{ marginBottom: editMode ? "32px" : 0 }}>
+                <Typography group="input" variant="label">Description</Typography>
+                {editMode
+                    ? (
+                        <MarkdownEditor
+                            menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
+                            onInput={(markdown) => {
+                                // eslint-disable-next-line no-underscore-dangle
+                                const value = (markdown as any).target._value
+                                handleDescriptionChange(value)
+                            }}
+                        >
+                            {projectCaseEdited ? projectCaseEdited.description : projectCase?.description ?? ""}
+                        </MarkdownEditor>
+                    )
+                    : <MarkdownViewer value={projectCase.description} />}
             </Grid>
             <Grid item xs={12} md={4}>
                 <InputSwitcher

@@ -138,7 +138,7 @@ public class ProjectService : IProjectService
             var projectDtos = new List<ProjectDto>();
             foreach (var project in projects)
             {
-                var projectDto = _mapper.Map<ProjectDto>(project);
+                var projectDto = _mapper.Map<ProjectDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
                 if (projectDto != null)
                 {
                     projectDtos.Add(projectDto);
@@ -247,11 +247,13 @@ public class ProjectService : IProjectService
                 .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfile)
                 .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
                 .Include(p => p.Cases)!.ThenInclude(c => c.HistoricCostCostProfile)
+                .Include(p => p.Cases)!.ThenInclude(c => c.OnshoreRelatedOPEXCostProfile)
                 .Include(p => p.Cases)!.ThenInclude(c => c.AdditionalOPEXCostProfile)
                 .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCost)
                 .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCostOverride)
                 .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCost)
                 .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCostOverride)
+                .Include(p => p.Cases)!.ThenInclude(c => c.CessationOnshoreFacilitiesCostProfile)
                 .Include(p => p.Wells)
                 .Include(p => p.ExplorationOperationalWellCosts)
                 .Include(p => p.DevelopmentOperationalWellCosts)
@@ -275,11 +277,13 @@ public class ProjectService : IProjectService
                     .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfile)
                     .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
                     .Include(p => p.Cases)!.ThenInclude(c => c.HistoricCostCostProfile)
+                    .Include(p => p.Cases)!.ThenInclude(c => c.OnshoreRelatedOPEXCostProfile)
                     .Include(p => p.Cases)!.ThenInclude(c => c.AdditionalOPEXCostProfile)
                     .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCost)
                     .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCostOverride)
                     .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCost)
                     .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCostOverride)
+                    .Include(p => p.Cases)!.ThenInclude(c => c.CessationOnshoreFacilitiesCostProfile)
                     .Include(p => p.Wells)
                     .Include(p => p.ExplorationOperationalWellCosts)
                     .Include(p => p.DevelopmentOperationalWellCosts)

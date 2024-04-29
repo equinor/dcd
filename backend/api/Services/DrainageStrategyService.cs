@@ -65,7 +65,10 @@ public class DrainageStrategyService : IDrainageStrategyService
         var source = await GetDrainageStrategy(drainageStrategyId);
         var unit = (await _projectService.GetProject(source.ProjectId)).PhysicalUnit;
 
-        var newDrainageStrategyDto = _mapper.Map<DrainageStrategyDto>(source);
+        var newDrainageStrategyDto = _mapper.Map<DrainageStrategy, DrainageStrategyDto>(
+            source,
+            opts => opts.Items["ConversionUnit"] = unit.ToString()
+        );
 
         if (newDrainageStrategyDto == null)
         {
