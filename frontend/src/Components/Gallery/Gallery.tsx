@@ -73,36 +73,36 @@ const Gallery = () => {
         setExpandedImage(image)
         setModalOpen(true)
     }
-
-    return (
-        <>
-            <ImageModal
-                image={expandedImage}
-                modalOpen={modalOpen}
-                setModalOpen={setModalOpen}
-            />
-            <GalleryLabel $warning={exeededLimit}>
-                {gallery.length > 0 && !editMode && "Gallery"}
-                {editMode && `Gallery (${gallery.length} / 4)`}
-            </GalleryLabel>
-            <Wrapper>
-                {gallery.map((image, index) => (
-                    <ImageWithHover key={`menu - item - ${index + 1} `}>
-                        <img src={image} alt={`upload #${index + 1} `} />
-                        <Controls>
-                            {editMode && (
-                                <Button variant="contained_icon" color="danger" onClick={() => handleDelete(image)}>
-                                    <Icon size={18} data={delete_to_trash} />
+    return gallery.length > 0 || editMode
+        ? (
+            <Grid item xs={12}>
+                <ImageModal
+                    image={expandedImage}
+                    modalOpen={modalOpen}
+                    setModalOpen={setModalOpen}
+                />
+                <GalleryLabel $warning={exeededLimit}>
+                    {gallery.length > 0 && !editMode && "Gallery"}
+                    {editMode && `Gallery (${gallery.length} / 4)`}
+                </GalleryLabel>
+                <Wrapper>
+                    {gallery.map((image, index) => (
+                        <ImageWithHover key={`menu - item - ${index + 1} `}>
+                            <img src={image} alt={`upload #${index + 1} `} />
+                            <Controls>
+                                {editMode && (
+                                    <Button variant="contained_icon" color="danger" onClick={() => handleDelete(image)}>
+                                        <Icon size={18} data={delete_to_trash} />
+                                    </Button>
+                                )}
+                                <Button variant="contained_icon" color="secondary" onClick={() => handleExpand(image)}>
+                                    <Icon size={18} data={expand_screen} />
                                 </Button>
-                            )}
-                            <Button variant="contained_icon" color="secondary" onClick={() => handleExpand(image)}>
-                                <Icon size={18} data={expand_screen} />
-                            </Button>
-                        </Controls>
-                    </ImageWithHover>
-                ))}
-                {
-                    editMode && gallery.length < 4
+                            </Controls>
+                        </ImageWithHover>
+                    ))}
+                    {
+                        editMode && gallery.length < 4
                     && (
                         <ImageUpload
                             gallery={gallery}
@@ -110,10 +110,11 @@ const Gallery = () => {
                             setExeededLimit={setExeededLimit}
                         />
                     )
-                }
-            </Wrapper>
-        </>
-    )
+                    }
+                </Wrapper>
+            </Grid>
+        )
+        : null
 }
 
 export default Gallery

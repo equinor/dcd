@@ -1,12 +1,11 @@
 import {
     MouseEventHandler,
-    FormEventHandler,
 } from "react"
 import {
-    Button, Icon, Label, Typography,
+    Button, Icon, Typography,
 } from "@equinor/eds-core-react"
 import { add, archive } from "@equinor/eds-icons"
-import TextArea from "@equinor/fusion-react-textarea/dist/TextArea"
+import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
 import { getProjectPhaseName, getProjectCategoryName, unwrapProjectId } from "../../Utils/common"
 import { GetProjectService } from "../../Services/ProjectService"
@@ -28,12 +27,9 @@ const ProjectOverviewTab = () => {
         addNewCase,
     } = useModalContext()
 
-    const handleDescriptionChange: FormEventHandler = (e) => {
-        const target = e.target as typeof e.target & {
-            value: string
-        }
+    function handleDescriptionChange(value: string) {
         if (projectEdited) {
-            const updatedProject = { ...projectEdited, description: target.value }
+            const updatedProject = { ...projectEdited, description: value }
             setProjectEdited(updatedProject)
         }
     }
@@ -60,38 +56,40 @@ const ProjectOverviewTab = () => {
         <Grid container columnSpacing={2} rowSpacing={3}>
             <Grid item xs={12} container spacing={1} justifyContent="space-between">
                 <Grid item>
-                    <Typography group="input" variant="label">Project Phase:</Typography>
+                    <Typography group="input" variant="label">Project Phase</Typography>
                     <Typography aria-label="Project phase">
                         {getProjectPhaseName(project.projectPhase)}
                     </Typography>
                 </Grid>
                 <Grid item>
-                    <Typography group="input" variant="label">Project Category:</Typography>
+                    <Typography group="input" variant="label">Project Category</Typography>
                     <Typography aria-label="Project category">
                         {getProjectCategoryName(project.projectCategory)}
                     </Typography>
                 </Grid>
                 <Grid item>
-                    <Typography group="input" variant="label">Country:</Typography>
+                    <Typography group="input" variant="label">Country</Typography>
                     <Typography aria-label="Country">
                         {project.country ?? "Not defined in Common Library"}
                     </Typography>
                 </Grid>
             </Grid>
-            <Grid item xs={12}>
-                <Typography group="input" variant="label" htmlFor="description">Project description</Typography>
+            <Grid item xs={12} sx={{ marginBottom: editMode ? "32px" : 0 }}>
+                <Typography group="input" variant="label">Description</Typography>
                 {editMode
                     ? (
-                        <TextArea
-                            id="description"
-                            placeholder="Enter a description"
-                            onInput={handleDescriptionChange}
-                            value={projectEdited ? projectEdited.description : project?.description}
-                            cols={10000}
-                            rows={8}
-                        />
+                        <MarkdownEditor
+                            menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
+                            onInput={(markdown) => {
+                                // eslint-disable-next-line no-underscore-dangle
+                                const value = (markdown as any).target._value
+                                handleDescriptionChange(value)
+                            }}
+                        >
+                            {projectEdited?.description !== undefined ? projectEdited.description : project?.description}
+                        </MarkdownEditor>
                     )
-                    : <Typography>{project.description ?? undefined}</Typography>}
+                    : <MarkdownViewer value={project.description} />}
             </Grid>
             <Grid item xs={12} container spacing={1} justifyContent="space-between">
                 <Grid item>
