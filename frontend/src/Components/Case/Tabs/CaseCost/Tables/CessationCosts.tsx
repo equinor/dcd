@@ -28,10 +28,11 @@ const CessationCosts: React.FC<CesationCostsProps> = ({ tableYears, cessationGri
         cessationOnshoreFacilitiesCostProfile,
         setCessationOnshoreFacilitiesCostProfile,
 
+        cessationOffshoreFacilitiesCostOverride,
+        setCessationOffshoreFacilitiesCostOverride,
     } = useCaseContext()
 
     const [cessationWellsCostOverride, setCessationWellsCostOverride] = useState<Components.Schemas.CessationWellsCostOverrideDto>()
-    const [cessationOffshoreFacilitiesCostOverride, setCessationOffshoreFacilitiesCostOverride] = useState<Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto>()
 
     const cessationTimeSeriesData: ITimeSeriesData[] = [
         {
@@ -91,20 +92,15 @@ const CessationCosts: React.FC<CesationCostsProps> = ({ tableYears, cessationGri
     }, [cessationOnshoreFacilitiesCostProfile])
 
     useEffect(() => {
-        if (projectCaseEdited) {
-            updateObject(projectCaseEdited, setProjectCaseEdited, "cessationOffshoreFacilitiesCost", cessationOffshoreFacilitiesCost)
-        }
-    }, [cessationOffshoreFacilitiesCost])
-
-    useEffect(() => {
         if (activeTabCase === 5 && projectCase) {
-            setCessationWellsCost(projectCase.cessationWellsCostOverride)
-            setCessationWellsCostOverride(projectCase.cessationWellsCostOverride) // does not do anything?
+            setCessationWellsCost(cessationWellsCost)
+            setCessationWellsCostOverride(projectCase.cessationWellsCostOverride)
 
-            setCessationOffshoreFacilitiesCost(projectCase.cessationOffshoreFacilitiesCostOverride)
-            setCessationOffshoreFacilitiesCostOverride(projectCase.cessationOffshoreFacilitiesCostOverride) // does not do anything?
+            setCessationOffshoreFacilitiesCost(cessationOffshoreFacilitiesCost)
+            setCessationOffshoreFacilitiesCostOverride(projectCase.cessationOffshoreFacilitiesCostOverride)
 
-            setCessationOnshoreFacilitiesCostProfile(projectCase.cessationOnshoreFacilitiesCostProfile)
+            const cessationOnshoreFacilities = projectCase?.cessationOnshoreFacilitiesCostProfile
+            setCessationOnshoreFacilitiesCostProfile(cessationOnshoreFacilities)
         }
     }, [activeTabCase])
 
