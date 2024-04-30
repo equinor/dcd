@@ -93,14 +93,13 @@ const CessationCosts: React.FC<CesationCostsProps> = ({ tableYears, cessationGri
 
     useEffect(() => {
         if (activeTabCase === 5 && projectCase) {
-            setCessationWellsCost(cessationWellsCost)
+            setCessationWellsCost(projectCase.cessationWellsCost)
             setCessationWellsCostOverride(projectCase.cessationWellsCostOverride)
 
-            setCessationOffshoreFacilitiesCost(cessationOffshoreFacilitiesCost)
+            setCessationOffshoreFacilitiesCost(projectCase?.cessationOffshoreFacilitiesCost)
             setCessationOffshoreFacilitiesCostOverride(projectCase.cessationOffshoreFacilitiesCostOverride)
 
-            const cessationOnshoreFacilities = projectCase?.cessationOnshoreFacilitiesCostProfile
-            setCessationOnshoreFacilitiesCostProfile(cessationOnshoreFacilities)
+            setCessationOnshoreFacilitiesCostProfile(projectCase?.cessationOnshoreFacilitiesCostProfile)
         }
     }, [activeTabCase])
 
