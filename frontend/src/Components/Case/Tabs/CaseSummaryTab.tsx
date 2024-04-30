@@ -234,11 +234,8 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         setOnshoreRelatedOPEXCostProfile(projectCase.onshoreRelatedOPEXCostProfile)
                         setAdditionalOPEXCostProfile(projectCase.additionalOPEXCostProfile)
 
-                        let cessOff = (await cessationWrapper).cessationOffshoreFacilitiesCostDto
-                        if (projectCase?.cessationOffshoreFacilitiesCostOverride?.override === true) {
-                            cessOff = projectCase?.cessationOffshoreFacilitiesCostOverride
-                        }
-                        setCessationOffshoreFacilitiesCost(cessOff)
+
+                        setCessationOffshoreFacilitiesCost(projectCase.cessationOffshoreFacilitiesCost)
                         setCessationOffshoreFacilitiesCostOverride(projectCase.cessationOffshoreFacilitiesCostOverride)
 
                         setCessationOnshoreFacilitiesCostProfile(projectCase.cessationOnshoreFacilitiesCostProfile)
