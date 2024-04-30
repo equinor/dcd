@@ -2,6 +2,7 @@ import {
     useEffect,
     useRef,
     useState,
+    useMemo,
 } from "react"
 import Grid from "@mui/material/Grid"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
@@ -13,7 +14,7 @@ import CessationCosts from "./Tables/CessationCosts"
 import DevelopmentWellCosts from "./Tables/DevelopmentWellCosts"
 import ExplorationWellCosts from "./Tables/ExplorationWellCosts"
 import OffshoreFacillityCosts from "./Tables/OffshoreFacilityCosts"
-import Opex from "./Tables/OpexCosts"
+import OpexCosts from "./Tables/OpexCosts"
 import TotalStudyCosts from "./Tables/TotalStudyCosts"
 
 const CaseCostTab = (): React.ReactElement | null => {
@@ -43,6 +44,14 @@ const CaseCostTab = (): React.ReactElement | null => {
     const capexGridRef = useRef<any>(null)
     const developmentWellsGridRef = useRef<any>(null)
     const explorationWellsGridRef = useRef<any>(null)
+
+    const alignedGridsRef = useMemo(() => [
+        opexGridRef,
+        cessationGridRef,
+        capexGridRef,
+        developmentWellsGridRef,
+        explorationWellsGridRef,
+    ], [opexGridRef, cessationGridRef, capexGridRef, developmentWellsGridRef, explorationWellsGridRef])
 
     useEffect(() => {
         (async () => {
@@ -107,78 +116,42 @@ const CaseCostTab = (): React.ReactElement | null => {
                 <TotalStudyCosts
                     tableYears={tableYears}
                     studyGridRef={studyGridRef}
-                    alignedGridsRef={[
-                        opexGridRef,
-                        cessationGridRef,
-                        capexGridRef,
-                        developmentWellsGridRef,
-                        explorationWellsGridRef,
-                    ]}
+                    alignedGridsRef={alignedGridsRef}
                 />
             </Grid>
             <Grid item xs={12}>
-                <Opex
+                <OpexCosts
                     tableYears={tableYears}
                     opexGridRef={opexGridRef}
-                    alignedGridsRef={[
-                        studyGridRef,
-                        cessationGridRef,
-                        capexGridRef,
-                        developmentWellsGridRef,
-                        explorationWellsGridRef,
-                    ]}
+                    alignedGridsRef={alignedGridsRef}
                 />
             </Grid>
             <Grid item xs={12}>
                 <CessationCosts
                     tableYears={tableYears}
                     cessationGridRef={cessationGridRef}
-                    alignedGridsRef={[
-                        studyGridRef,
-                        opexGridRef,
-                        capexGridRef,
-                        developmentWellsGridRef,
-                        explorationWellsGridRef,
-                    ]}
+                    alignedGridsRef={alignedGridsRef}
                 />
             </Grid>
             <Grid item xs={12}>
                 <OffshoreFacillityCosts
                     tableYears={tableYears}
                     capexGridRef={capexGridRef}
-                    alignedGridsRef={[
-                        studyGridRef,
-                        opexGridRef,
-                        cessationGridRef,
-                        developmentWellsGridRef,
-                        explorationWellsGridRef,
-                    ]}
+                    alignedGridsRef={alignedGridsRef}
                 />
             </Grid>
             <Grid item xs={12}>
                 <DevelopmentWellCosts
                     tableYears={tableYears}
                     developmentWellsGridRef={developmentWellsGridRef}
-                    alignedGridsRef={[
-                        studyGridRef,
-                        opexGridRef,
-                        cessationGridRef,
-                        capexGridRef,
-                        explorationWellsGridRef,
-                    ]}
+                    alignedGridsRef={alignedGridsRef}
                 />
             </Grid>
             <Grid item xs={12}>
                 <ExplorationWellCosts
                     tableYears={tableYears}
                     explorationWellsGridRef={explorationWellsGridRef}
-                    alignedGridsRef={[
-                        studyGridRef,
-                        opexGridRef,
-                        cessationGridRef,
-                        capexGridRef,
-                        developmentWellsGridRef,
-                    ]}
+                    alignedGridsRef={alignedGridsRef}
                 />
             </Grid>
         </Grid>
