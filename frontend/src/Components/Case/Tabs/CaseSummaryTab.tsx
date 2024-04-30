@@ -206,34 +206,15 @@ const CaseSummaryTab = (): React.ReactElement | null => {
             try {
                 if (projectCase && project && topside && surf && substructure && transport && wellProject && exploration) {
                     if (activeTabCase === 7 && projectCase?.id) {
-                        const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(project.id, projectCase?.id)
-                        const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(project.id, projectCase?.id)
-                        const cessationWrapper = (await GetGenerateProfileService()).generateCessationCost(project.id, projectCase?.id)
-
-                        const opex = (await opexWrapper).opexCostProfileDto
-                        const cessation = (await cessationWrapper).cessationCostDto
-
-                        let feasibility = (await studyWrapper).totalFeasibilityAndConceptStudiesDto
-                        let feed = (await studyWrapper).totalFEEDStudiesDto
-
-                        if (projectCase?.totalFeasibilityAndConceptStudiesOverride?.override === true) {
-                            feasibility = projectCase?.totalFeasibilityAndConceptStudiesOverride
-                        }
-                        if (projectCase?.totalFEEDStudiesOverride?.override === true) {
-                            feed = projectCase?.totalFEEDStudiesOverride
-                        }
-                        setTotalFeasibilityAndConceptStudies(feasibility)
+                        setTotalFeasibilityAndConceptStudies(projectCase.totalFeasibilityAndConceptStudies)
                         setTotalFeasibilityAndConceptStudiesOverride(projectCase.totalFeasibilityAndConceptStudiesOverride)
-                        setTotalFEEDStudies(feed)
+                        setTotalFEEDStudies(projectCase.totalFEEDStudies)
                         setTotalFEEDStudiesOverride(projectCase.totalFEEDStudiesOverride)
                         setTotalOtherStudies(projectCase.totalOtherStudies)
 
-                        setOpexCost(opex)
-                        setCessationCost(cessation)
                         setHistoricCostCostProfile(projectCase.historicCostCostProfile)
                         setOnshoreRelatedOPEXCostProfile(projectCase.onshoreRelatedOPEXCostProfile)
                         setAdditionalOPEXCostProfile(projectCase.additionalOPEXCostProfile)
-
 
                         setCessationOffshoreFacilitiesCost(projectCase.cessationOffshoreFacilitiesCost)
                         setCessationOffshoreFacilitiesCostOverride(projectCase.cessationOffshoreFacilitiesCostOverride)

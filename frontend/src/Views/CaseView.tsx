@@ -151,6 +151,116 @@ const CaseView = () => {
         }
     }, [activeTabCase])
 
+    const handleOffshoreOpexPlussWellIntervention = () => {
+        setOffshoreOpexPlussWellIntervention(
+            MergeTimeseriesList([
+                (projectCase.wellInterventionCostProfileOverride?.override === true
+                    ? projectCase.wellInterventionCostProfileOverride
+                    : projectCase.wellInterventionCostProfile),
+                (projectCase.offshoreFacilitiesOperationsCostProfileOverride?.override === true
+                    ? projectCase.offshoreFacilitiesOperationsCostProfileOverride
+                    : projectCase.offshoreFacilitiesOperationsCostProfile),
+            ]),
+        )
+    }
+
+    const handleTotalExplorationCost = () => {
+        if (exploration) {
+            setTotalExplorationCost(MergeTimeseriesList([
+                exploration.explorationWellCostProfile,
+                exploration.appraisalWellCostProfile,
+                exploration.sidetrackCostProfile,
+                exploration.seismicAcquisitionAndProcessing,
+                exploration.countryOfficeCost,
+                // gAndGAdminCost // Missing implementation, uncomment when gAndGAdminCost is fixed
+            ]))
+        }
+    }
+
+    const handleOffshoreFacilitiesCost = () => {
+        const surfCostProfile = surf?.costProfileOverride?.override
+            ? surf.costProfileOverride : surf?.costProfile
+        setSurfCost(surfCostProfile)
+
+        const substructureCostProfile = substructure?.costProfileOverride?.override
+            ? substructure.costProfileOverride : substructure?.costProfile
+        setSubstructureCost(substructureCostProfile)
+
+        const transportCostProfile = transport?.costProfileOverride?.override
+            ? transport.costProfileOverride : transport?.costProfile
+        setTransportCost(transportCostProfile)
+
+        setOffshoreFacilitiesCost(MergeTimeseriesList([
+            surfCostProfile,
+            substructureCostProfile,
+            transportCostProfile,
+        ]))
+    }
+
+    const handleDrilling = () => {
+        const oilProducerCostProfile = wellProject?.oilProducerCostProfileOverride?.override
+            ? wellProject.oilProducerCostProfileOverride
+            : wellProject?.oilProducerCostProfile
+
+        const gasProducerCostProfile = wellProject?.gasProducerCostProfileOverride?.override
+            ? wellProject.gasProducerCostProfileOverride
+            : wellProject?.gasProducerCostProfile
+
+        const waterInjectorCostProfile = wellProject?.waterInjectorCostProfileOverride?.override
+            ? wellProject.waterInjectorCostProfileOverride
+            : wellProject?.waterInjectorCostProfile
+
+        const gasInjectorCostProfile = wellProject?.gasInjectorCostProfileOverride?.override
+            ? wellProject.gasInjectorCostProfileOverride
+            : wellProject?.gasInjectorCostProfile
+
+        const startYears = [
+            oilProducerCostProfile,
+            gasProducerCostProfile,
+            waterInjectorCostProfile,
+            gasInjectorCostProfile,
+        ].map((series) => series?.startYear).filter((startYear) => startYear !== undefined) as number[]
+
+        const minStartYear = startYears.length > 0 ? Math.min(...startYears) : 2020
+
+        let drillingCostSeriesList: (ITimeSeries | undefined)[] = [
+            oilProducerCostProfile,
+            gasProducerCostProfile,
+            waterInjectorCostProfile,
+            gasInjectorCostProfile,
+        ]
+
+        const rigUpgradingCost = project.developmentOperationalWellCosts.rigUpgrading
+        const rigMobDemobCost = project.developmentOperationalWellCosts.rigMobDemob
+        const sumOfRigAndMobDemob = rigUpgradingCost + rigMobDemobCost
+
+        if (sumOfRigAndMobDemob > 0) {
+            interface ITimeSeriesWithCostProfile extends ITimeSeries {
+                developmentRigUpgradingAndMobDemobCostProfile?: number[] | null;
+            }
+
+            const timeSeriesWithCostProfile: ITimeSeriesWithCostProfile = {
+                id: "developmentRigUpgradingAndMobDemob",
+                startYear: minStartYear,
+                name: "Development Rig Upgrading and Mob/Demob Costs",
+                values: [sumOfRigAndMobDemob],
+                sum: sumOfRigAndMobDemob,
+            }
+
+            if (
+                drillingCostSeriesList.every((series) => !series || !series.values || series.values.length === 0)
+                && timeSeriesWithCostProfile?.values && timeSeriesWithCostProfile.values.length > 0
+            ) {
+                drillingCostSeriesList = [timeSeriesWithCostProfile]
+            }
+            if (!drillingCostSeriesList.includes(timeSeriesWithCostProfile)) {
+                drillingCostSeriesList.push(timeSeriesWithCostProfile)
+            }
+        }
+
+        setTotalDrillingCost(MergeTimeseriesList(drillingCostSeriesList))
+    }
+
     useEffect(() => {
         if (project && updateFromServer) {
             const caseResult = project.cases.find((o) => o.id === projectCase?.id)
@@ -161,113 +271,16 @@ const CaseView = () => {
                 }
             }
 
-            setOffshoreOpexPlussWellIntervention(
-                MergeTimeseriesList(
-                    [
-                        (projectCase.wellInterventionCostProfileOverride?.override === true
-                            ? projectCase.wellInterventionCostProfileOverride
-                            : projectCase.wellInterventionCostProfile),
-                        (projectCase.offshoreFacilitiesOperationsCostProfileOverride?.override === true
-                            ? projectCase.offshoreFacilitiesOperationsCostProfileOverride
-                            : projectCase.offshoreFacilitiesOperationsCostProfile)],
-                ),
-            )
-
-            if (exploration) {
-                setTotalExplorationCost(MergeTimeseriesList([
-                    exploration.explorationWellCostProfile,
-                    exploration.appraisalWellCostProfile,
-                    exploration.sidetrackCostProfile,
-                    exploration.seismicAcquisitionAndProcessing,
-                    exploration.countryOfficeCost,
-                    // gAndGAdminCost // Missing implementation, uncomment when gAndGAdminCost is fixed
-                ]))
-            }
-            const surfCostProfile = surf?.costProfileOverride?.override
-                ? surf.costProfileOverride : surf?.costProfile
-            setSurfCost(surfCostProfile)
-
-            const substructureCostProfile = substructure?.costProfileOverride?.override
-                ? substructure.costProfileOverride : substructure?.costProfile
-            setSubstructureCost(substructureCostProfile)
-
-            const transportCostProfile = transport?.costProfileOverride?.override
-                ? transport.costProfileOverride : transport?.costProfile
-            setTransportCost(transportCostProfile)
-
-            setOffshoreFacilitiesCost(MergeTimeseriesList([
-                surfCostProfile,
-                substructureCostProfile,
-                transportCostProfile,
-            ]))
-
-            const oilProducerCostProfile = wellProject?.oilProducerCostProfileOverride?.override
-                ? wellProject.oilProducerCostProfileOverride
-                : wellProject?.oilProducerCostProfile
-
-            const gasProducerCostProfile = wellProject?.gasProducerCostProfileOverride?.override
-                ? wellProject.gasProducerCostProfileOverride
-                : wellProject?.gasProducerCostProfile
-
-            const waterInjectorCostProfile = wellProject?.waterInjectorCostProfileOverride?.override
-                ? wellProject.waterInjectorCostProfileOverride
-                : wellProject?.waterInjectorCostProfile
-
-            const gasInjectorCostProfile = wellProject?.gasInjectorCostProfileOverride?.override
-                ? wellProject.gasInjectorCostProfileOverride
-                : wellProject?.gasInjectorCostProfile
-
-            const startYears = [
-                oilProducerCostProfile,
-                gasProducerCostProfile,
-                waterInjectorCostProfile,
-                gasInjectorCostProfile,
-            ].map((series) => series?.startYear).filter((startYear) => startYear !== undefined) as number[]
-
-            const minStartYear = startYears.length > 0 ? Math.min(...startYears) : 2020
-
-            let drillingCostSeriesList: (ITimeSeries | undefined)[] = [
-                oilProducerCostProfile,
-                gasProducerCostProfile,
-                waterInjectorCostProfile,
-                gasInjectorCostProfile,
-            ]
-
-            const rigUpgradingCost = project.developmentOperationalWellCosts.rigUpgrading
-            const rigMobDemobCost = project.developmentOperationalWellCosts.rigMobDemob
-            const sumOfRigAndMobDemob = rigUpgradingCost + rigMobDemobCost
-
-            if (sumOfRigAndMobDemob > 0) {
-                interface ITimeSeriesWithCostProfile extends ITimeSeries {
-                    developmentRigUpgradingAndMobDemobCostProfile?: number[] | null;
-                }
-
-                const timeSeriesWithCostProfile: ITimeSeriesWithCostProfile = {
-                    id: "developmentRigUpgradingAndMobDemob",
-                    startYear: minStartYear,
-                    name: "Development Rig Upgrading and Mob/Demob Costs",
-                    values: [sumOfRigAndMobDemob],
-                    sum: sumOfRigAndMobDemob,
-                }
-
-                if (
-                    drillingCostSeriesList.every((series) => !series || !series.values || series.values.length === 0)
-                    && timeSeriesWithCostProfile?.values && timeSeriesWithCostProfile.values.length > 0
-                ) {
-                    drillingCostSeriesList = [timeSeriesWithCostProfile]
-                }
-                if (!drillingCostSeriesList.includes(timeSeriesWithCostProfile)) {
-                    drillingCostSeriesList.push(timeSeriesWithCostProfile)
-                }
-            }
-
-            setTotalDrillingCost(MergeTimeseriesList(drillingCostSeriesList))
-
             const drainageStrategyResult = project?.drainageStrategies
                 .find((drain) => drain.id === caseResult?.drainageStrategyLink)
             setDrainageStrategy(
                 drainageStrategyResult,
             )
+
+            handleOffshoreOpexPlussWellIntervention()
+            handleTotalExplorationCost()
+            handleOffshoreFacilitiesCost()
+            handleDrilling()
 
             const explorationResult = project
                 ?.explorations.find((exp) => exp.id === caseResult?.explorationLink)
