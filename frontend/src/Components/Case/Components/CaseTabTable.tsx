@@ -115,6 +115,11 @@ const CaseTabTable = ({
                 params.api.refreshCells()
             }
         }
+
+        if (params.node.footer) {
+            return null
+        }
+
         if (params.data?.overrideProfileSet !== undefined) {
             return (params.data.overrideProfile?.override) ? (
                 <Icon
