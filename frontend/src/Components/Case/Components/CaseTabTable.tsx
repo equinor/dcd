@@ -368,6 +368,7 @@ const CaseTabTable = ({
                         suppressLastEmptyLineOnPaste
                         singleClickEdit={editMode}
                         onGridReady={onGridReady}
+                        stopEditingWhenCellsLoseFocus
                     />
                 </div>
             </div>
