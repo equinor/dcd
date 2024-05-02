@@ -142,59 +142,54 @@ export const productionStrategyOverviewToString = (value?: Components.Schemas.Pr
 
 export const isExplorationWell = (well: Components.Schemas.WellDto | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
 
-const MergeCostProfileData = (arrays: number[][], offsets: number[]): number[] => {
-    const maxLength = Math.max(...arrays.map((arr, idx) => arr.length + offsets[idx]))
+const mergeTimeSeriesValues = (dataArrays: number[][], offsets: number[]): number[] => {
+    if (dataArrays.length !== offsets.length) {
+        throw new Error("dataArrays and offsets must have the same length")
+    }
+
+    const maxLength = Math.max(...dataArrays.map((dataArray, index) => dataArray.length + offsets[index]))
     const result = new Array(maxLength).fill(0)
 
-    arrays.forEach((arr, idx) => {
-        const offset = offsets[idx]
-        for (let i = 0; i < arr.length; i += 1) {
-            if (i + offset < maxLength) {
-                result[i + offset] += arr[i]
+    dataArrays.forEach((dataArray: number[], index: number) => {
+        const offset = offsets[index]
+        dataArray.forEach((value: number, i: number) => {
+            const adjustedIndex = i + offset
+            if (adjustedIndex < maxLength) {
+                result[adjustedIndex] += value
             }
-        }
+        })
     })
 
     return result
 }
 
-const removeLeadingZeroes = (array: number[]): number[] => {
-    let index = 0
-    while (index < array.length && array[index] === 0) {
-        index += 1
-    }
-    return array.slice(index)
-}
+export const mergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
+    if (!t1) { return t2 || { id: "", startYear: 0, values: [] } }
+    if (!t2) { return t1 }
 
-export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
-    if (!t1) return t2 || { id: "", startYear: 0, values: [] }
-    if (!t2) return t1
+    const startYears = [t1, t2].map((t: ITimeSeries | undefined) => t?.startYear ?? 0)
+    const minYear = Math.min(...startYears)
 
-    const arrays = [t1.values ?? [], t2.values ?? []]
+    const arrays = [t1, t2].map((t: ITimeSeries | undefined) => t?.values ?? [])
+    const offsets = startYears.map((year: number) => Math.abs(year - minYear))
 
-    const mergedValues = MergeCostProfileData(arrays, [t1.startYear ?? 0, t2.startYear ?? 0])
+    const mergedValues = mergeTimeSeriesValues(arrays, offsets)
 
-    const minYear = Math.min(t1.startYear ?? 3000, t2.startYear ?? 3000)
-
-    const cleanedValues = removeLeadingZeroes(mergedValues)
-
-    const timeSeries: ITimeSeries = {
+    return {
         id: t1.id || t2.id || "",
         startYear: minYear,
-        values: cleanedValues,
+        values: mergedValues,
     }
-
-    return timeSeries
 }
 
-export const MergeTimeseriesList = (timeSeriesList: (ITimeSeries | undefined)[]): ITimeSeries => {
-    let mergedTimeSeries: ITimeSeries = { id: "", startYear: 3000, values: [] }
+export const mergeTimeseriesList = (timeSeriesList: (ITimeSeries | undefined)[]): ITimeSeries => {
+    let mergedTimeSeries: ITimeSeries = { id: "", startYear: 0, values: [] }
 
     timeSeriesList.forEach((currentSeries, index) => {
         if (index === 0) {
             mergedTimeSeries = currentSeries ?? mergedTimeSeries
         } else {
-            mergedTimeSeries = MergeTimeseries(mergedTimeSeries, currentSeries)
+            mergedTimeSeries = mergeTimeseries(mergedTimeSeries, currentSeries)
         }
     })
 
@@ -216,7 +211,7 @@ export function formatDate(isoDateString: string): string {
 export const isWithinRange = (number: number, max: number, min: number) => number >= max && number <= min
 
 export const preventNonDigitInput = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (!/\d/.test(e.key)) e.preventDefault()
+    if (!/\d/.test(e.key)) { e.preventDefault() }
 }
 
 /**

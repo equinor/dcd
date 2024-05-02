@@ -54,6 +54,10 @@ public class CaseService : ICaseService
         caseItem.CapexFactorFeasibilityStudies = 0.015;
         caseItem.CapexFactorFEEDStudies = 0.015;
 
+        if (caseItem.DG4Date == DateTimeOffset.MinValue) {
+            caseItem.DG4Date = new DateTimeOffset(2030, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        }
+
         caseItem.CreateTime = DateTimeOffset.UtcNow;
 
         var createdCase = _context.Cases!.Add(caseItem);
