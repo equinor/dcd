@@ -96,6 +96,12 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
 
     useEffect(() => {
         if (exploration) {
+            updateObject(exploration, setExploration, "gAndGAdminCost", gAndGAdminCost)
+        }
+    }, [gAndGAdminCost])
+
+    useEffect(() => {
+        if (exploration) {
             updateObject(exploration, setExploration, "explorationWellCostProfile", explorationWellCostProfile)
         }
     }, [explorationWellCostProfile])
