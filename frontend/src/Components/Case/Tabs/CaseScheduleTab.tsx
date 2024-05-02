@@ -185,6 +185,14 @@ const CaseScheduleTab = () => {
         return dates
     }
 
+    const toScheduleValue = (date: string) => {
+        const dateString = dateFromString(date)
+        if (isDefaultDate(dateString)) {
+            return undefined
+        }
+        return toMonthDate(dateString)
+    }
+
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} md={6} lg={6}>
@@ -197,7 +205,7 @@ const CaseScheduleTab = () => {
                         id="dgaDate"
                         name="dgaDate"
                         onChange={handleDGAChange}
-                        value={dateFromString(projectCaseEdited ? projectCaseEdited.dgaDate : projectCase.dgaDate)}
+                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dgaDate : projectCase.dgaDate)}
                     />
                 </InputSwitcher>
             </Grid>
@@ -211,7 +219,7 @@ const CaseScheduleTab = () => {
                         id="dgbDate"
                         name="dgbDate"
                         onChange={handleDGBChange}
-                        value={dateFromString(projectCaseEdited ? projectCaseEdited.dgbDate : projectCase.dgbDate)}
+                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dgbDate : projectCase.dgbDate)}
                     />
                 </InputSwitcher>
             </Grid>
@@ -225,7 +233,7 @@ const CaseScheduleTab = () => {
                         id="dgcDate"
                         name="dgcDate"
                         onChange={handleDGCChange}
-                        value={dateFromString(projectCaseEdited ? projectCaseEdited.dgcDate : projectCase.dgcDate)}
+                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dgcDate : projectCase.dgcDate)}
                     />
                 </InputSwitcher>
             </Grid>
@@ -239,7 +247,7 @@ const CaseScheduleTab = () => {
                         id="apxDate"
                         name="apxDate"
                         onChange={handleAPXChange}
-                        value={dateFromString(projectCaseEdited ? projectCaseEdited.apxDate : projectCase.apxDate)}
+                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.apxDate : projectCase.apxDate)}
                     />
                 </InputSwitcher>
             </Grid>
@@ -253,7 +261,7 @@ const CaseScheduleTab = () => {
                         id="apzDate"
                         name="apzDate"
                         onChange={handleAPZChange}
-                        value={dateFromString(projectCaseEdited ? projectCaseEdited.apzDate : projectCase.apzDate)}
+                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.apzDate : projectCase.apzDate)}
                     />
                 </InputSwitcher>
             </Grid>
@@ -268,7 +276,7 @@ const CaseScheduleTab = () => {
                         id="dg0Date"
                         name="dg0Date"
                         onChange={handleDG0Change}
-                        value={dateFromString(projectCaseEdited ? projectCaseEdited.dG0Date : projectCase.dG0Date)}
+                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG0Date : projectCase.dG0Date)}
                         max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG1Date, projectCaseEdited.dG2Date, projectCaseEdited.dG3Date, projectCaseEdited.dG4Date])) : undefined}
                         min={undefined}
                     />
@@ -285,7 +293,7 @@ const CaseScheduleTab = () => {
                         id="dg1Date"
                         name="dg1Date"
                         onChange={handleDG1Change}
-                        value={dateFromString(projectCaseEdited ? projectCaseEdited.dG1Date : projectCase.dG1Date)}
+                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG1Date : projectCase.dG1Date)}
                         max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG2Date, projectCaseEdited.dG3Date, projectCaseEdited.dG4Date])) : undefined}
                         min={projectCaseEdited ? findMinDate(getDatesFromStrings([projectCaseEdited.dG0Date])) : undefined}
                     />
@@ -301,7 +309,7 @@ const CaseScheduleTab = () => {
                         id="dg2Date"
                         name="dg2Date"
                         onChange={handleDG2Change}
-                        value={dateFromString(projectCaseEdited ? projectCaseEdited.dG2Date : projectCase.dG2Date)}
+                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG2Date : projectCase.dG2Date)}
                         max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG3Date, projectCaseEdited.dG4Date])) : undefined}
                         min={projectCaseEdited ? findMinDate(getDatesFromStrings([projectCaseEdited.dG0Date, projectCaseEdited.dG1Date])) : undefined}
                     />
@@ -317,7 +325,7 @@ const CaseScheduleTab = () => {
                         id="dg3Date"
                         name="dg3Date"
                         onChange={handleDG3Change}
-                        value={dateFromString(projectCaseEdited ? projectCaseEdited.dG3Date : projectCase.dG3Date)}
+                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG3Date : projectCase.dG3Date)}
                         max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG4Date])) : undefined}
                         min={projectCaseEdited ? findMinDate(getDatesFromStrings([projectCaseEdited.dG0Date, projectCaseEdited.dG1Date, projectCaseEdited.dG2Date])) : undefined}
                     />
@@ -333,7 +341,7 @@ const CaseScheduleTab = () => {
                         id="dg4Date"
                         name="dg4Date"
                         onChange={handleDG4Change}
-                        value={dateFromString(projectCaseEdited ? projectCaseEdited.dG3Date : projectCase.dG3Date)}
+                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG3Date : projectCase.dG3Date)}
                         max={undefined}
                         min={projectCaseEdited ? findMinDate(getDatesFromStrings([projectCaseEdited.dG0Date, projectCaseEdited.dG1Date, projectCaseEdited.dG2Date, projectCaseEdited.dG3Date])) : undefined}
                     />
