@@ -1,5 +1,5 @@
 import { viteCommonjs } from "@originjs/vite-plugin-commonjs"
-import defineConfig from "vite"
+import { defineConfig } from "vite"
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js"
 import checker from "vite-plugin-checker"
 
