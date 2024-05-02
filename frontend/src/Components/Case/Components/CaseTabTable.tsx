@@ -115,11 +115,6 @@ const CaseTabTable = ({
                 params.api.refreshCells()
             }
         }
-
-        if (params.node.footer) {
-            return null
-        }
-
         if (params.data?.overrideProfileSet !== undefined) {
             return (params.data.overrideProfile?.override) ? (
                 <Icon
@@ -137,7 +132,7 @@ const CaseTabTable = ({
                     />
                 )
         }
-        if (!params?.data?.set) {
+        if (params.data && !params?.data?.set) {
             return <Icon data={lock} color="#007079" />
         }
         return null
