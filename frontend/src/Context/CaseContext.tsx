@@ -34,6 +34,8 @@ interface CaseContextType {
     setSurf: Dispatch<SetStateAction<Components.Schemas.SurfDto | undefined>>
     surfCost: Components.Schemas.SurfCostProfileDto | undefined
     setSurfCost: Dispatch<SetStateAction<Components.Schemas.SurfCostProfileDto | undefined>>
+    surfCostOverride: Components.Schemas.SurfCostProfileOverrideDto | undefined
+    setSurfCostOverride: Dispatch<SetStateAction<Components.Schemas.SurfCostProfileOverrideDto | undefined>>
     substructure: Components.Schemas.SubstructureDto | undefined
     setSubstructure: Dispatch<SetStateAction<Components.Schemas.SubstructureDto | undefined>>
     substructureCost: Components.Schemas.SubstructureCostProfileDto | undefined
@@ -61,6 +63,8 @@ interface CaseContextType {
 
     cessationOffshoreFacilitiesCost: Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined,
     setCessationOffshoreFacilitiesCost: Dispatch<SetStateAction<Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined>>
+    cessationOffshoreFacilitiesCostOverride: Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto | undefined
+    setCessationOffshoreFacilitiesCostOverride: Dispatch<SetStateAction<Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto | undefined>>
     cessationOnshoreFacilitiesCostProfile: Components.Schemas.CessationOnshoreFacilitiesCostProfileDto | undefined,
     setCessationOnshoreFacilitiesCostProfile: Dispatch<SetStateAction<Components.Schemas.CessationOnshoreFacilitiesCostProfileDto | undefined>>
     // Study
@@ -104,6 +108,12 @@ interface CaseContextType {
     setAppraisalWellCostProfile: Dispatch<SetStateAction<Components.Schemas.AppraisalWellCostProfileDto | undefined>>
     sidetrackCostProfile: Components.Schemas.SidetrackCostProfileDto | undefined
     setSidetrackCostProfile: Dispatch<SetStateAction<Components.Schemas.SidetrackCostProfileDto | undefined>>
+
+    offshoreFacilitiesCost: ITimeSeries | undefined,
+    setOffshoreFacilitiesCost: Dispatch<SetStateAction<ITimeSeries | undefined>>,
+
+    offshoreOpexPlussWellIntervention: ITimeSeries | undefined,
+    setOffshoreOpexPlussWellIntervention: Dispatch<SetStateAction<ITimeSeries | undefined>>,
 }
 
 const CaseContext = createContext<CaseContextType | undefined>(undefined)
@@ -121,6 +131,7 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [topsideCost, setTopsideCost] = useState<Components.Schemas.TopsideCostProfileDto | undefined>()
     const [surf, setSurf] = useState<Components.Schemas.SurfDto>()
     const [surfCost, setSurfCost] = useState<Components.Schemas.SurfCostProfileDto | undefined>()
+    const [surfCostOverride, setSurfCostOverride] = useState<Components.Schemas.SurfCostProfileOverrideDto>()
     const [substructure, setSubstructure] = useState<Components.Schemas.SubstructureDto>()
     const [substructureCost, setSubstructureCost] = useState<Components.Schemas.SubstructureCostProfileDto | undefined>()
     const [transport, setTransport] = useState<Components.Schemas.TransportDto>()
@@ -136,6 +147,7 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [cessationWellsCost, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto | undefined>()
     const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>()
     const [cessationOffshoreFacilitiesCost, setCessationOffshoreFacilitiesCost] = useState<Components.Schemas.CessationOffshoreFacilitiesCostDto | undefined>()
+    const [cessationOffshoreFacilitiesCostOverride, setCessationOffshoreFacilitiesCostOverride] = useState<Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto | undefined>()
     const [cessationOnshoreFacilitiesCostProfile, setCessationOnshoreFacilitiesCostProfile] = useState<Components.Schemas.CessationOnshoreFacilitiesCostProfileDto | undefined>()
 
     // Study
@@ -162,6 +174,9 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [countryOfficeCost, setCountryOfficeCost] = useState<Components.Schemas.CountryOfficeCostDto>()
     const [gAndGAdminCost, setGAndGAdminCost] = useState<Components.Schemas.GAndGAdminCostDto>()
 
+    const [offshoreFacilitiesCost, setOffshoreFacilitiesCost] = useState<ITimeSeries>()
+    const [offshoreOpexPlussWellIntervention, setOffshoreOpexPlussWellIntervention] = useState<ITimeSeries | undefined>()
+
     const value = useMemo(() => ({
         projectCase,
         setProjectCase,
@@ -184,6 +199,8 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setSurf,
         surfCost,
         setSurfCost,
+        surfCostOverride,
+        setSurfCostOverride,
         substructure,
         setSubstructure,
         substructureCost,
@@ -210,6 +227,8 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setDevelopmentOperationalWellCosts,
         cessationOffshoreFacilitiesCost,
         setCessationOffshoreFacilitiesCost,
+        cessationOffshoreFacilitiesCostOverride,
+        setCessationOffshoreFacilitiesCostOverride,
         cessationOnshoreFacilitiesCostProfile,
         setCessationOnshoreFacilitiesCostProfile,
 
@@ -251,6 +270,12 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setAppraisalWellCostProfile,
         countryOfficeCost,
         setCountryOfficeCost,
+
+        offshoreFacilitiesCost,
+        setOffshoreFacilitiesCost,
+
+        offshoreOpexPlussWellIntervention,
+        setOffshoreOpexPlussWellIntervention,
     }), [
         projectCase,
         setProjectCase,
@@ -269,6 +294,7 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         topsideCost,
         surf,
         surfCost,
+        surfCostOverride,
         substructure,
         substructureCost,
         transport,
@@ -284,6 +310,7 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         cessationWellsCost,
         developmentOperationalWellCosts,
         cessationOffshoreFacilitiesCost,
+        cessationOffshoreFacilitiesCostOverride,
         cessationOnshoreFacilitiesCostProfile,
 
         // Study
@@ -308,6 +335,9 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         appraisalWellCostProfile,
         sidetrackCostProfile,
         seismicAcquisitionAndProcessing,
+
+        offshoreFacilitiesCost,
+        offshoreOpexPlussWellIntervention,
     ])
 
     useEffect(() => {

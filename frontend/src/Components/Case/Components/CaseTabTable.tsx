@@ -145,6 +145,18 @@ const CaseTabTable = ({
         return undefined
     }
 
+    const numberValueParser = (params: { newValue: any }) => {
+        const { newValue } = params
+        if (typeof newValue === "string") {
+            const processedValue = newValue.replace(/\s/g, "").replace(/,/g, ".")
+            const numberValue = Number(processedValue)
+            if (!Number.isNaN(numberValue)) {
+                return numberValue
+            }
+        }
+        return newValue
+    }
+
     const generateTableYearColDefs = () => {
         const columnPinned: any[] = [
             {
@@ -237,6 +249,7 @@ const CaseTabTable = ({
                 }),
                 cellStyle: { padding: "0px" },
                 cellClass: (params: any) => (editMode && isEditable(params) ? "editableCell" : undefined),
+                valueParser: numberValueParser,
             })
         }
         return columnPinned.concat([...yearDefs])
@@ -291,15 +304,6 @@ const CaseTabTable = ({
         }
     }
 
-    const defaultColDef = useMemo(() => ({
-        sortable: true,
-        filter: true,
-        resizable: true,
-        editable: true,
-        onCellValueChanged: handleCellValueChange,
-        suppressMenu: true,
-    }), [])
-
     const gridRefArrayToAlignedGrid = () => {
         if (alignedGridsRef && alignedGridsRef.length > 0) {
             const refArray: any[] = []
@@ -314,6 +318,15 @@ const CaseTabTable = ({
         }
         return undefined
     }
+
+    const defaultColDef = useMemo(() => ({
+        sortable: true,
+        filter: true,
+        resizable: true,
+        editable: true,
+        onCellValueChanged: handleCellValueChange,
+        suppressMenu: true,
+    }), [])
 
     useEffect(() => {
         updateRowData(profilesToRowData())
