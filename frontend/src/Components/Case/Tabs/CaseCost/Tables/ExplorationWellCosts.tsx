@@ -50,7 +50,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             profileName: "G&G and admin",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: gAndGAdminCost,
-            // set: setGAndGAdminCost,  this was not used in the original code but should it?
+            set: setGAndGAdminCost,
         },
         {
             profileName: "Seismic acquisition and processing",

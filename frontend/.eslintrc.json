@@ -17,6 +17,7 @@
         "import/prefer-default-export": "off",
         "semi": ["error", "never"],
         "quotes": ["error", "double"],
+        "curly": ["error", "all"],
         "lines-between-class-members": [
             "error",
             "always",

@@ -16,7 +16,7 @@ import { useProjectContext } from "../Context/ProjectContext"
 import { useModalContext } from "../Context/ModalContext"
 import { useCaseContext } from "../Context/CaseContext"
 import { useAppContext } from "../Context/AppContext"
-import { MergeTimeseriesList } from "../Utils/common"
+import { mergeTimeseriesList } from "../Utils/common"
 import { ITimeSeries } from "../Models/ITimeSeries"
 
 const {
@@ -153,7 +153,7 @@ const CaseView = () => {
 
     const handleOffshoreOpexPlussWellIntervention = () => {
         setOffshoreOpexPlussWellIntervention(
-            MergeTimeseriesList([
+            mergeTimeseriesList([
                 (projectCase.wellInterventionCostProfileOverride?.override === true
                     ? projectCase.wellInterventionCostProfileOverride
                     : projectCase.wellInterventionCostProfile),
@@ -166,7 +166,7 @@ const CaseView = () => {
 
     const handleTotalExplorationCost = () => {
         if (exploration) {
-            setTotalExplorationCost(MergeTimeseriesList([
+            setTotalExplorationCost(mergeTimeseriesList([
                 exploration.explorationWellCostProfile,
                 exploration.appraisalWellCostProfile,
                 exploration.sidetrackCostProfile,
@@ -190,7 +190,7 @@ const CaseView = () => {
             ? transport.costProfileOverride : transport?.costProfile
         setTransportCost(transportCostProfile)
 
-        setOffshoreFacilitiesCost(MergeTimeseriesList([
+        setOffshoreFacilitiesCost(mergeTimeseriesList([
             surfCostProfile,
             substructureCostProfile,
             transportCostProfile,
@@ -257,8 +257,7 @@ const CaseView = () => {
                 drillingCostSeriesList.push(timeSeriesWithCostProfile)
             }
         }
-
-        setTotalDrillingCost(MergeTimeseriesList(drillingCostSeriesList))
+        setTotalDrillingCost(mergeTimeseriesList(drillingCostSeriesList))
     }
 
     useEffect(() => {
