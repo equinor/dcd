@@ -5,17 +5,21 @@ import {
     useState,
     useEffect,
 } from "react"
-
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { lock, lock_open } from "@equinor/eds-icons"
-import { Icon } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
-import { isInteger } from "../../../Utils/common"
+import {
+    isInteger,
+    tableCellisEditable,
+    numberValueParser,
+    getCaseRowStyle,
+    validateInput,
+} from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../../Utils/constants"
 import { useAppContext } from "../../../Context/AppContext"
 import ErrorCellRenderer from "./ErrorCellRenderer"
+import ClickableLockIcon from "./ClickableLockIcon"
 
 interface Props {
     timeSeriesData: any[]
@@ -38,15 +42,15 @@ const CaseTabTable = ({
     includeFooter,
     totalRowName,
 }: Props) => {
+    const { editMode } = useAppContext()
     const styles = useStyles()
+
     const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
     const [overrideModalProfileName, setOverrideModalProfileName] = useState<string>("")
     const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
     const [overrideProfile, setOverrideProfile] = useState<any>()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
     const [gridApi, setGridApi] = useState(null)
-
-    const { editMode } = useAppContext()
 
     const profilesToRowData = () => {
         const tableRows: any[] = []
@@ -103,59 +107,15 @@ const CaseTabTable = ({
         return tableRows
     }
 
-    const lockIcon = (params: any) => {
-        const handleLockIconClick = () => {
-            if (params?.data?.override !== undefined) {
-                setOverrideModalOpen(true)
-                setOverrideModalProfileName(params.data.profileName)
-                setOverrideModalProfileSet(() => params.data.overrideProfileSet)
-                setOverrideProfile(params.data.overrideProfile)
-
-                params.api.redrawRows()
-                params.api.refreshCells()
-            }
-        }
-        if (params.data?.overrideProfileSet !== undefined) {
-            return (params.data.overrideProfile?.override) ? (
-                <Icon
-                    data={lock_open}
-                    opacity={0.5}
-                    color="#007079"
-                    onClick={handleLockIconClick}
-                />
-            )
-                : (
-                    <Icon
-                        data={lock}
-                        color="#007079"
-                        onClick={handleLockIconClick}
-                    />
-                )
-        }
-        if (params.data && !params?.data?.set) {
-            return <Icon data={lock} color="#007079" />
-        }
-        return null
-    }
-
-    const getRowStyle = (params: any) => {
-        if (params.node.footer) {
-            return { fontWeight: "bold" }
-        }
-        return undefined
-    }
-
-    const numberValueParser = (params: { newValue: any }) => {
-        const { newValue } = params
-        if (typeof newValue === "string") {
-            const processedValue = newValue.replace(/\s/g, "").replace(/,/g, ".")
-            const numberValue = Number(processedValue)
-            if (!Number.isNaN(numberValue)) {
-                return numberValue
-            }
-        }
-        return newValue
-    }
+    const lockIconRenderer = (params: any) => (
+        <ClickableLockIcon
+            clickedElement={params}
+            setOverrideModalOpen={setOverrideModalOpen}
+            setOverrideModalProfileName={setOverrideModalProfileName}
+            setOverrideModalProfileSet={setOverrideModalProfileSet}
+            setOverrideProfile={setOverrideProfile}
+        />
+    )
 
     const generateTableYearColDefs = () => {
         const columnPinned: any[] = [
@@ -195,60 +155,28 @@ const CaseTabTable = ({
                 pinned: "right",
                 aggFunc: "",
                 editable: false,
-                cellRenderer: lockIcon,
+                cellRenderer: lockIconRenderer,
             },
         ]
-        const isEditable = (params: any) => {
-            if (editMode && params.data?.overrideProfileSet === undefined && params.data?.set !== undefined) {
-                return true
-            }
-            if (editMode && params.data?.overrideProfile !== undefined && params.data?.overrideProfile.override) {
-                return true
-            }
-            return false
-        }
-
-        const validationRules: { [key: string]: { min: number, max: number } } = {
-            // production profiles
-            "Oil production": { min: 0, max: 1000000 },
-            "Gas production": { min: 0, max: 1000000 },
-            "Water production": { min: 0, max: 1000000 },
-            "Water injection": { min: 0, max: 1000000 },
-            "Fuel, flaring and losses": { min: 0, max: 1000000 },
-            "Net sales gas": { min: 0, max: 1000000 },
-            "Imported electricity": { min: 0, max: 1000000 },
-
-            // CO2 emissions
-            "Annual CO2 emissions": { min: 0, max: 1000000 },
-            "Year-by-year CO2 intensity": { min: 0, max: 1000000 },
-        }
-
-        const validateInput = (params: any) => {
-            const { value, data } = params
-            if (isEditable(params) && editMode && value) {
-                const rule = validationRules[data.profileName]
-                if (rule && (value < rule.min || value > rule.max)) {
-                    return `Value must be between ${rule.min} and ${rule.max}.`
-                }
-            }
-            return null
-        }
 
         const yearDefs: any[] = []
         for (let index = tableYears[0]; index <= tableYears[1]; index += 1) {
             yearDefs.push({
                 field: index.toString(),
                 flex: 1,
-                editable: (params: any) => isEditable(params),
+                editable: (params: any) => tableCellisEditable(params, editMode),
                 minWidth: 100,
                 aggFunc: "sum",
                 cellRenderer: ErrorCellRenderer,
                 cellRendererParams: (params: any) => ({
                     value: params.value,
-                    errorMsg: validateInput(params),
+                    errorMsg: validateInput(params, editMode),
                 }),
-                cellStyle: { padding: "0px" },
-                cellClass: (params: any) => (editMode && isEditable(params) ? "editableCell" : undefined),
+                cellStyle: {
+                    padding: "0px",
+                    textAlign: "right",
+                },
+                cellClass: (params: any) => (editMode && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
                 valueParser: numberValueParser,
             })
         }
@@ -364,7 +292,7 @@ const CaseTabTable = ({
                         enableCharts
                         alignedGrids={gridRefArrayToAlignedGrid()}
                         groupIncludeTotalFooter={includeFooter}
-                        getRowStyle={getRowStyle}
+                        getRowStyle={getCaseRowStyle}
                         suppressLastEmptyLineOnPaste
                         singleClickEdit={editMode}
                         onGridReady={onGridReady}
