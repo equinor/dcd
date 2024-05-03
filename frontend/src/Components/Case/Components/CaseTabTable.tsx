@@ -10,7 +10,7 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import {
     isInteger,
-    isEditable,
+    tableCellisEditable,
     numberValueParser,
     getCaseRowStyle,
     validateInput,
@@ -164,7 +164,7 @@ const CaseTabTable = ({
             yearDefs.push({
                 field: index.toString(),
                 flex: 1,
-                editable: (params: any) => isEditable(params, editMode),
+                editable: (params: any) => tableCellisEditable(params, editMode),
                 minWidth: 100,
                 aggFunc: "sum",
                 cellRenderer: ErrorCellRenderer,
@@ -176,7 +176,7 @@ const CaseTabTable = ({
                     padding: "0px",
                     textAlign: "right",
                 },
-                cellClass: (params: any) => (editMode && isEditable(params, editMode) ? "editableCell" : undefined),
+                cellClass: (params: any) => (editMode && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
                 valueParser: numberValueParser,
             })
         }
@@ -296,6 +296,7 @@ const CaseTabTable = ({
                         suppressLastEmptyLineOnPaste
                         singleClickEdit={editMode}
                         onGridReady={onGridReady}
+                        stopEditingWhenCellsLoseFocus
                     />
                 </div>
             </div>

@@ -46,7 +46,7 @@ const LockIcon: React.FC<LockIconProps> = ({
                 />
             )
     }
-    if (!clickedElement?.data?.set) {
+    if (clickedElement.data && !clickedElement?.data?.set) {
         return <Icon data={lock} color="#007079" />
     }
     return null

@@ -238,7 +238,7 @@ export function updateObject<T>(object: T | undefined, setObject: Dispatch<SetSt
     setObject(newObject)
 }
 
-export const isEditable = (params: any, editMode: boolean) => {
+export const tableCellisEditable = (params: any, editMode: boolean) => {
     if (editMode && params.data?.overrideProfileSet === undefined && params.data?.set !== undefined) {
         return true
     }
@@ -269,7 +269,7 @@ export const getCaseRowStyle = (params: any) => {
 
 export const validateInput = (params: any, editMode: boolean) => {
     const { value, data } = params
-    if (isEditable(params, editMode) && editMode && value) {
+    if (tableCellisEditable(params, editMode) && editMode && value) {
         const rule = TABLE_VALIDATION_RULES[data.profileName]
         if (rule && (value < rule.min || value > rule.max)) {
             return `Value must be between ${rule.min} and ${rule.max}.`
