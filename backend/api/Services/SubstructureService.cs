@@ -3,6 +3,7 @@ using api.Adapters;
 using api.Context;
 using api.Dtos;
 using api.Models;
+using api.Repositories;
 
 using AutoMapper;
 
@@ -16,18 +17,21 @@ public class SubstructureService : ISubstructureService
     private readonly IProjectService _projectService;
     private readonly ILogger<SubstructureService> _logger;
     private readonly IMapper _mapper;
+    private readonly SubstructureRepository _repository;
 
     public SubstructureService(
         DcdDbContext context,
         IProjectService projectService,
         ILoggerFactory loggerFactory,
-        IMapper mapper
+        IMapper mapper,
+        SubstructureRepository substructureRepository
         )
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<SubstructureService>();
         _mapper = mapper;
+        _repository = substructureRepository;
     }
 
     public async Task<Substructure> CreateSubstructure(Guid projectId, Guid sourceCaseId, CreateSubstructureDto substructureDto)
@@ -86,7 +90,7 @@ public class SubstructureService : ISubstructureService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<ProjectDto> UpdateSubstructure<TDto>(TDto updatedSubstructureDto, Guid substructureId)
+    public async Task<SubstructureDto> UpdateSubstructure<TDto>(TDto updatedSubstructureDto, Guid substructureId)
         where TDto : BaseUpdateSubstructureDto
     {
         var existing = await GetSubstructure(substructureId);
@@ -96,13 +100,30 @@ public class SubstructureService : ISubstructureService
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Substructures!.Update(existing);
         await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDto(existing.ProjectId);
+        var dto = _mapper.Map<SubstructureDto>(existing);
+        return dto ?? throw new ArgumentNullException(nameof(dto));
     }
+
+    public async Task<SubstructureDto> UpdateSubstructureAsync<TDto>(TDto updatedSubstructureDto, Guid substructureId)
+        where TDto : BaseUpdateSubstructureDto
+    {
+        var existingSubstructure = await _repository.GetSubstructure(substructureId)
+            ?? throw new KeyNotFoundException("Substructure not found.");
+
+        _mapper.Map(updatedSubstructureDto, existingSubstructure);
+        existingSubstructure.LastChangedDate = DateTimeOffset.UtcNow;
+
+        var updatedSubstructure = await _repository.UpdateSubstructure(existingSubstructure);
+        var dto = _mapper.Map<SubstructureDto>(updatedSubstructure);
+
+        return dto ?? throw new InvalidOperationException("Mapping resulted in a null DTO.");
+    }
+
+
 
     public async Task<Substructure> GetSubstructure(Guid substructureId)
     {
         var substructure = await _context.Substructures!
-            .Include(c => c.Project)
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
