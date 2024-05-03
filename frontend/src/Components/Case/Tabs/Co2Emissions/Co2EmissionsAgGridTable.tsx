@@ -101,6 +101,7 @@ const CaseCO2DistributionTable = ({
                 suppressMovableColumns
                 enableCharts
                 onGridReady={onGridReady}
+                stopEditingWhenCellsLoseFocus
             />
         </div>
     )
