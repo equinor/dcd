@@ -28,30 +28,20 @@ const Controls = () => {
         project, setProject, projectEdited, setProjectEdited,
     } = useProjectContext()
     const {
-        projectCase, setProjectCase, renameProjectCase, setRenameProjectCase, projectCaseEdited, setProjectCaseEdited, setSaveProjectCase,
+        projectCase, setProjectCase, projectCaseEdited, setProjectCaseEdited, setSaveProjectCase,
     } = useCaseContext()
     const { setTechnicalModalIsOpen } = useModalContext()
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
     const nameInput = useRef<any>(null)
-    const [updatedName, setUpdatedName] = useState<string>("")
 
-    useEffect(() => {
-        if (nameInput.current !== undefined && renameProjectCase && projectCase) {
-            nameInput.current.focus()
-        }
-    }, [renameProjectCase, nameInput])
-
-    useEffect(() => {
-        if (projectCase) {
-            const updatedCase = { ...projectCase }
-            updatedCase.name = updatedName
-            setProjectCaseEdited(updatedCase)
-        }
-    }, [updatedName])
+    const updateCaseName = (name: string) => {
+        const updatedCase = { ...projectCase }
+        updatedCase.name = name
+        setProjectCaseEdited(updatedCase as Components.Schemas.CaseDto)
+    }
 
     const handleCancel = async () => {
-        setRenameProjectCase(false)
         setEditMode(false)
         setProjectEdited(undefined)
         setProjectCaseEdited(undefined)
@@ -75,7 +65,6 @@ const Controls = () => {
     }
 
     const handleCaseEdit = async () => {
-        setRenameProjectCase(true)
         setEditMode(true)
     }
 
@@ -118,13 +107,13 @@ const Controls = () => {
                     </Grid>
                 )}
             <Grid item xs>
-                {renameProjectCase
+                {editMode
                     ? (
                         <Input
                             ref={nameInput}
                             type="text"
                             defaultValue={projectCase && projectCase.name}
-                            onChange={(e: { target: { value: SetStateAction<string> } }) => setUpdatedName(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateCaseName(e.target.value)}
                         />
                     )
                     : <Typography variant="h4">{projectCase ? projectCase.name : currentContext?.title}</Typography>}
@@ -174,7 +163,6 @@ const Controls = () => {
                             <Icon data={more_vertical} />
                         </Button>
                         <CaseDropMenu
-                            setRenameProjectCase={setRenameProjectCase}
                             isMenuOpen={isMenuOpen}
                             setIsMenuOpen={setIsMenuOpen}
                             menuAnchorEl={menuAnchorEl}

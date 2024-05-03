@@ -52,7 +52,7 @@ const CaseProductionProfilesTab = ({
     const {
         projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase,
     } = useCaseContext()
-    if (!projectCase) return null
+    if (!projectCase) { return null }
     const [gas, setGas] = useState<Components.Schemas.ProductionProfileGasDto>()
     const [oil, setOil] = useState<Components.Schemas.ProductionProfileOilDto>()
     const [water, setWater] = useState<Components.Schemas.ProductionProfileWaterDto>()
@@ -119,8 +119,8 @@ const CaseProductionProfilesTab = ({
             ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
         if (newfacilitiesAvailability !== undefined) {
             newCase.facilitiesAvailability = newfacilitiesAvailability / 100
+            setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
         } else { newCase.facilitiesAvailability = 0 }
-        newCase ?? setProjectCaseEdited(newCase)
     }
 
     const handleDrainageStrategyGasSolutionChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
@@ -324,14 +324,16 @@ const CaseProductionProfilesTab = ({
         <Grid container spacing={2}>
             <Grid item xs={12} md={6} lg={3}>
                 <InputSwitcher
-                    value={projectCase?.facilitiesAvailability !== undefined
-                        ? `${projectCase?.facilitiesAvailability * 100}%` : ""}
+                    value={projectCase.facilitiesAvailability
+                        ? `${projectCase.facilitiesAvailability * 100}%`
+                        : ""}
                     label="Facilities availability"
                 >
                     <CaseNumberInput
                         onChange={handleCaseFacilitiesAvailabilityChange}
                         defaultValue={projectCase?.facilitiesAvailability
-                            !== undefined ? projectCase?.facilitiesAvailability * 100 : undefined}
+                            ? projectCase.facilitiesAvailability * 100
+                            : undefined}
                         integer={false}
                         unit="%"
                         min={0}

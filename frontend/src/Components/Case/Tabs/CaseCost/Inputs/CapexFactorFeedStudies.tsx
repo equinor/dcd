@@ -16,8 +16,8 @@ const TotalStudyCosts: React.FC = () => {
             ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
         if (newCapexFactorFEEDStudies !== undefined) {
             newCase.capexFactorFEEDStudies = newCapexFactorFEEDStudies / 100
+            setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
         } else { newCase.capexFactorFEEDStudies = 0 }
-        setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
     }
 
     return (

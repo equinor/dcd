@@ -7,18 +7,17 @@ import {
     ReactNode,
     useContext,
     useMemo,
-    useEffect,
 } from "react"
-import { useAppContext } from "./AppContext"
 import { ITimeSeries } from "../Models/ITimeSeries"
+import { CaseEditInstance } from "../Models/Interfaces"
 
 interface CaseContextType {
     projectCase: Components.Schemas.CaseDto | undefined;
     setProjectCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
-    renameProjectCase: boolean,
-    setRenameProjectCase: Dispatch<SetStateAction<boolean>>,
-    projectCaseEdited: Components.Schemas.CaseDto | undefined;
-    setProjectCaseEdited: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
+    projectCaseEdited: Components.Schemas.CaseDto | undefined; // todo: replace with caseEdits
+    setProjectCaseEdited: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>, // todo: replace with caseEdits
+    caseEdits: CaseEditInstance[] | undefined;
+    setCaseEdits: Dispatch<SetStateAction<CaseEditInstance[] | undefined>>,
     saveProjectCase: boolean,
     setSaveProjectCase: Dispatch<SetStateAction<boolean>>,
     projectCaseNew: Components.Schemas.CreateCaseDto | undefined;
@@ -119,9 +118,8 @@ interface CaseContextType {
 const CaseContext = createContext<CaseContextType | undefined>(undefined)
 
 const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const { editMode, setEditMode } = useAppContext()
     const [projectCase, setProjectCase] = useState<Components.Schemas.CaseDto | undefined>()
-    const [renameProjectCase, setRenameProjectCase] = useState<boolean>(false)
+    const [caseEdits, setCaseEdits] = useState<CaseEditInstance[] | undefined>()
     const [projectCaseEdited, setProjectCaseEdited] = useState<Components.Schemas.CaseDto | undefined>()
     const [saveProjectCase, setSaveProjectCase] = useState<boolean>(false)
     const [projectCaseNew, setProjectCaseNew] = useState<Components.Schemas.CreateCaseDto | undefined>()
@@ -180,8 +178,8 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const value = useMemo(() => ({
         projectCase,
         setProjectCase,
-        renameProjectCase,
-        setRenameProjectCase,
+        caseEdits,
+        setCaseEdits,
         projectCaseEdited,
         setProjectCaseEdited,
         saveProjectCase,
@@ -279,8 +277,6 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     }), [
         projectCase,
         setProjectCase,
-        renameProjectCase,
-        setRenameProjectCase,
         projectCaseEdited,
         setProjectCaseEdited,
         saveProjectCase,
@@ -339,13 +335,6 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         offshoreFacilitiesCost,
         offshoreOpexPlussWellIntervention,
     ])
-
-    useEffect(() => {
-        if (editMode && projectCase && !projectCaseEdited) {
-            setProjectCaseEdited(projectCase)
-            setRenameProjectCase(editMode)
-        }
-    }, [editMode, projectCaseEdited])
 
     return (
         <CaseContext.Provider value={value}>

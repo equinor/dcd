@@ -14,7 +14,7 @@ const CaseDescriptionTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
     const { editMode } = useAppContext()
 
-    if (!projectCase) return null
+    if (!projectCase) { return null }
 
     const productionStrategyOptions = {
         0: "Depletion",

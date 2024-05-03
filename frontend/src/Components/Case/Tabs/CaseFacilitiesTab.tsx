@@ -31,7 +31,7 @@ const CaseFacilitiesTab = ({
 }: Props) => {
     const { project } = useProjectContext()
     const { projectCase, setProjectCaseEdited } = useCaseContext()
-    if (!projectCase) return null
+    if (!projectCase) { return null }
 
     const platformConceptValues: { [key: number]: string } = {
         0: "No Concept",
