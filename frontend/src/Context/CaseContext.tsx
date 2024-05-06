@@ -11,6 +11,7 @@ import {
 } from "react"
 import { ITimeSeries } from "../Models/ITimeSeries"
 import { EditInstance } from "../Models/Interfaces"
+import { useAppContext } from "../Context/AppContext"
 
 interface CaseContextType {
     projectCase: Components.Schemas.CaseDto | undefined;
@@ -337,9 +338,17 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         offshoreOpexPlussWellIntervention,
     ])
 
+    const { editMode } = useAppContext()
+
     useEffect(() => {
         localStorage.setItem("caseEdits", JSON.stringify(caseEdits))
     }, [caseEdits])
+
+    useEffect(() => {
+        if (editMode && projectCase && !projectCaseEdited) {
+            setProjectCaseEdited(projectCase)
+        }
+    }, [editMode, projectCaseEdited])
 
     return (
         <CaseContext.Provider value={value}>
