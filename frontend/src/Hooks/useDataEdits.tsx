@@ -7,8 +7,8 @@ import { EditInstance } from "../Models/Interfaces"
 
 const useDataEdits = (): {
     addEdit: (
-        newValue: string | undefined,
-        previousValue: string | undefined,
+        newValue: string | number | undefined,
+        previousValue: string | number | undefined,
         objectKey: keyof Components.Schemas.CaseDto,
         inputLabel: string,
         level: "project" | "case",
@@ -24,8 +24,8 @@ const useDataEdits = (): {
     }, TIMER), [])
 
     const addEdit = (
-        newValue: string | undefined,
-        previousValue: string | undefined,
+        newValue: string | number | undefined,
+        previousValue: string | number | undefined,
         objectKey: keyof Components.Schemas.CaseDto,
         inputLabel: string,
         level: "project" | "case",
