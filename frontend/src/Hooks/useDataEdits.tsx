@@ -12,6 +12,7 @@ const useDataEdits = (): {
         objectKey: keyof Components.Schemas.CaseDto,
         inputLabel: string,
         level: "project" | "case",
+        objectId: string,
     ) => void;
 } => {
     const TIMER = 800
@@ -28,6 +29,7 @@ const useDataEdits = (): {
         objectKey: keyof Components.Schemas.CaseDto,
         inputLabel: string,
         level: "project" | "case",
+        objectId: string,
     ) => {
         if (newValue === previousValue) { return }
 
@@ -39,6 +41,7 @@ const useDataEdits = (): {
             uuid: uuidv4(),
             timeStamp: getCurrentTime(),
             level,
+            objectId,
         }
 
         debouncedChangeHandler(editInstanceObject)

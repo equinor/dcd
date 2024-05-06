@@ -46,9 +46,11 @@ const Controls = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
 
+    if (!projectCase) { return null }
+
     const updateCaseName = (name: string) => {
         const newCase = { ...projectCase }
-        addEdit(name, newCase.name, "name", "name", "case")
+        addEdit(name, newCase.name, "name", "name", "case", newCase.id)
         newCase.name = name
         setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
     }
@@ -107,17 +109,15 @@ const Controls = () => {
     return (
         <Grid container spacing={1} justifyContent="space-between" alignItems="center">
 
-            {projectCase
-                && (
-                    <Grid item xs={0}>
-                        <Button
-                            onClick={backToProject}
-                            variant="ghost_icon"
-                        >
-                            <Icon data={arrow_back} />
-                        </Button>
-                    </Grid>
-                )}
+            <Grid item xs={0}>
+                <Button
+                    onClick={backToProject}
+                    variant="ghost_icon"
+                >
+                    <Icon data={arrow_back} />
+                </Button>
+            </Grid>
+
             <Grid item xs>
                 {editMode
                     ? (
@@ -163,27 +163,24 @@ const Controls = () => {
                 </Grid>
             </Grid>
 
-            {projectCase
-                && (
-                    <Grid item>
-                        <EditsSideBar />
-                        <Button
-                            variant="ghost_icon"
-                            aria-label="case menu"
-                            ref={setMenuAnchorEl}
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        >
-                            <Icon data={more_vertical} />
-                        </Button>
+            <Grid item>
+                <EditsSideBar />
+                <Button
+                    variant="ghost_icon"
+                    aria-label="case menu"
+                    ref={setMenuAnchorEl}
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                >
+                    <Icon data={more_vertical} />
+                </Button>
 
-                        <CaseDropMenu
-                            isMenuOpen={isMenuOpen}
-                            setIsMenuOpen={setIsMenuOpen}
-                            menuAnchorEl={menuAnchorEl}
-                            projectCase={projectCase}
-                        />
-                    </Grid>
-                )}
+                <CaseDropMenu
+                    isMenuOpen={isMenuOpen}
+                    setIsMenuOpen={setIsMenuOpen}
+                    menuAnchorEl={menuAnchorEl}
+                    projectCase={projectCase}
+                />
+            </Grid>
         </Grid>
     )
 }

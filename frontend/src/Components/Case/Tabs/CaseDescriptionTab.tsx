@@ -54,7 +54,7 @@ const CaseDescriptionTab = () => {
         const newCase = { ...projectCase }
         const newValue = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
 
-        addEdit(newValue.toString(), newCase.producerCount.toString(), "producerCount", "Production wells", "case")
+        addEdit(newValue.toString(), newCase.producerCount.toString(), "producerCount", "Production wells", "case", newCase.id)
         newCase.producerCount = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
         setProjectCaseEdited(newCase)
     }

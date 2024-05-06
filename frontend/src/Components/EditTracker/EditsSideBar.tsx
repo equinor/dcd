@@ -37,47 +37,46 @@ const ChangeView = styled.div`
     `
 
 const EditsSideBar: React.FC = () => {
-    const { caseEdits } = useCaseContext()
+    const { caseEdits, projectCase } = useCaseContext()
+
     const [toggleSidesheet, setToggleSidesheet] = React.useState<boolean>(false)
 
     useEffect(() => {
         console.log("edits changed", caseEdits)
     }, [caseEdits])
 
-    if (caseEdits && caseEdits.length > 0) {
-        return (
-            <>
-                <Tooltip title="See edit history">
-                    <Button variant="ghost_icon" onClick={() => setToggleSidesheet(true)}>
-                        <Icon data={history} />
-                    </Button>
-                </Tooltip>
-                <SideSheet
-                    title="Edits"
-                    open={toggleSidesheet}
-                    onClose={() => setToggleSidesheet(false)}
-                    variant="large"
-                >
-                    {caseEdits.map((edit) => (
-                        <EditInstance key={edit.uuid} style={{ marginBottom: "10px" }}>
-                            <Header>
-                                <Typography variant="caption">{String(edit.inputLabel)}</Typography>
-                                <Typography variant="overline">{edit.timeStamp}</Typography>
-                            </Header>
-                            <ChangeView>
-                                <PreviousValue>{edit.previousValue}</PreviousValue>
-                                <div>
-                                    <Icon data={arrow_forward} size={16} />
-                                </div>
-                                <NewValue>{edit.newValue}</NewValue>
-                            </ChangeView>
-                        </EditInstance>
-                    ))}
-                </SideSheet>
-            </>
-        )
-    }
-    return null
+    return (
+        <>
+            <Tooltip title="See edit history">
+                <Button variant="ghost_icon" onClick={() => setToggleSidesheet(true)}>
+                    <Icon data={history} />
+                </Button>
+            </Tooltip>
+            <SideSheet
+                title="Edits"
+                open={toggleSidesheet}
+                onClose={() => setToggleSidesheet(false)}
+                variant="large"
+            >
+                {projectCase && caseEdits.map((edit) => (edit.level === "case" && edit.objectId === projectCase.id ? (
+                    <EditInstance key={edit.uuid} style={{ marginBottom: "10px" }}>
+                        <Header>
+                            <Typography variant="caption">{String(edit.inputLabel)}</Typography>
+                            <Typography variant="overline">{edit.timeStamp}</Typography>
+                        </Header>
+                        <ChangeView>
+                            <PreviousValue>{edit.previousValue}</PreviousValue>
+                            <div>
+                                <Icon data={arrow_forward} size={16} />
+                            </div>
+                            <NewValue>{edit.newValue}</NewValue>
+                        </ChangeView>
+                    </EditInstance>
+                ) : null))}
+
+            </SideSheet>
+        </>
+    )
 }
 
 export default EditsSideBar
