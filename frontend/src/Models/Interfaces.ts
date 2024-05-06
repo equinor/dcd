@@ -1,6 +1,9 @@
-export interface CaseEditInstance {
-    value: string;
-    caseObjectKey: keyof Components.Schemas.CaseDto;
-    validationRule: string;
-    isValid: boolean;
+export interface EditInstance {
+    uuid: string;
+    newValue: string | undefined;
+    previousValue: string | undefined;
+    objectKey: keyof Components.Schemas.CaseDto | Components.Schemas.ProjectDto;
+    inputLabel: string;
+    timeStamp: string;
+    level: "project" | "case"
 }

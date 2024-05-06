@@ -1,5 +1,5 @@
 import {
-    useState, useRef, useEffect, SetStateAction,
+    useState, useRef,
 } from "react"
 import { useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
@@ -17,28 +17,40 @@ import { useModalContext } from "../Context/ModalContext"
 import CaseDropMenu from "../Components/Case/Components/CaseDropMenu"
 import { GetProjectService } from "../Services/ProjectService"
 import { useAppContext } from "../Context/AppContext"
+import useDataEdits from "../Hooks/useDataEdits"
+import EditsSideBar from "./EditTracker/EditsSideBar"
 
 const Controls = () => {
     const navigate = useNavigate()
 
+    const { addEdit } = useDataEdits()
+    const { setTechnicalModalIsOpen } = useModalContext()
     const { currentContext } = useModuleCurrentContext()
-
     const { isSaving, editMode, setEditMode } = useAppContext()
     const {
-        project, setProject, projectEdited, setProjectEdited,
+        project,
+        setProject,
+        projectEdited,
+        setProjectEdited,
     } = useProjectContext()
     const {
-        projectCase, setProjectCase, projectCaseEdited, setProjectCaseEdited, setSaveProjectCase,
+        projectCase,
+        setProjectCase,
+        projectCaseEdited,
+        setProjectCaseEdited,
+        setSaveProjectCase,
     } = useCaseContext()
-    const { setTechnicalModalIsOpen } = useModalContext()
-    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
-    const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
+
     const nameInput = useRef<any>(null)
 
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+    const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
+
     const updateCaseName = (name: string) => {
-        const updatedCase = { ...projectCase }
-        updatedCase.name = name
-        setProjectCaseEdited(updatedCase as Components.Schemas.CaseDto)
+        const newCase = { ...projectCase }
+        addEdit(name, newCase.name, "name", "name", "case")
+        newCase.name = name
+        setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
     }
 
     const handleCancel = async () => {
@@ -109,7 +121,7 @@ const Controls = () => {
             <Grid item xs>
                 {editMode
                     ? (
-                        <Input
+                        <Input // todo: should not be allowed to be empty
                             ref={nameInput}
                             type="text"
                             defaultValue={projectCase && projectCase.name}
@@ -154,6 +166,7 @@ const Controls = () => {
             {projectCase
                 && (
                     <Grid item>
+                        <EditsSideBar />
                         <Button
                             variant="ghost_icon"
                             aria-label="case menu"
@@ -162,6 +175,7 @@ const Controls = () => {
                         >
                             <Icon data={more_vertical} />
                         </Button>
+
                         <CaseDropMenu
                             isMenuOpen={isMenuOpen}
                             setIsMenuOpen={setIsMenuOpen}

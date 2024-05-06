@@ -7,17 +7,18 @@ import {
     ReactNode,
     useContext,
     useMemo,
+    useEffect,
 } from "react"
 import { ITimeSeries } from "../Models/ITimeSeries"
-import { CaseEditInstance } from "../Models/Interfaces"
+import { EditInstance } from "../Models/Interfaces"
 
 interface CaseContextType {
     projectCase: Components.Schemas.CaseDto | undefined;
     setProjectCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
     projectCaseEdited: Components.Schemas.CaseDto | undefined; // todo: replace with caseEdits
     setProjectCaseEdited: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>, // todo: replace with caseEdits
-    caseEdits: CaseEditInstance[] | undefined;
-    setCaseEdits: Dispatch<SetStateAction<CaseEditInstance[] | undefined>>,
+    caseEdits: EditInstance[];
+    setCaseEdits: Dispatch<SetStateAction<EditInstance[]>>,
     saveProjectCase: boolean,
     setSaveProjectCase: Dispatch<SetStateAction<boolean>>,
     projectCaseNew: Components.Schemas.CreateCaseDto | undefined;
@@ -119,7 +120,7 @@ const CaseContext = createContext<CaseContextType | undefined>(undefined)
 
 const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [projectCase, setProjectCase] = useState<Components.Schemas.CaseDto | undefined>()
-    const [caseEdits, setCaseEdits] = useState<CaseEditInstance[] | undefined>()
+    const [caseEdits, setCaseEdits] = useState<EditInstance[]>(JSON.parse(localStorage.getItem("caseEdits") || "[]"))
     const [projectCaseEdited, setProjectCaseEdited] = useState<Components.Schemas.CaseDto | undefined>()
     const [saveProjectCase, setSaveProjectCase] = useState<boolean>(false)
     const [projectCaseNew, setProjectCaseNew] = useState<Components.Schemas.CreateCaseDto | undefined>()
@@ -335,6 +336,10 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         offshoreFacilitiesCost,
         offshoreOpexPlussWellIntervention,
     ])
+
+    useEffect(() => {
+        localStorage.setItem("caseEdits", JSON.stringify(caseEdits))
+    }, [caseEdits])
 
     return (
         <CaseContext.Provider value={value}>

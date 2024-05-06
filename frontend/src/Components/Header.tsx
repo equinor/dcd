@@ -8,7 +8,6 @@ import { GetProjectService } from "../Services/ProjectService"
 import CreateCaseModal from "./CreateCaseModal"
 import EditTechnicalInputModal from "./EditTechnicalInput/EditTechnicalInputModal"
 import { useAppContext } from "../Context/AppContext"
-import EditsSideBar from "./EditTracker/EditsSideBar"
 
 const RouteCoordinator = (): JSX.Element => {
     const { setIsCreating, setIsLoading } = useAppContext()
@@ -78,7 +77,6 @@ const RouteCoordinator = (): JSX.Element => {
         <>
             <CreateCaseModal />
             <EditTechnicalInputModal />
-            <EditsSideBar />
             <Outlet />
         </>
     )
