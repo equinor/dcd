@@ -5,7 +5,6 @@ import Grid from "@mui/material/Grid"
 import CaseNumberInput from "../../Input/CaseNumberInput"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { GetGenerateProfileService } from "../../../Services/CaseGeneratedProfileService"
-import { MergeTimeseriesList } from "../../../Utils/common"
 import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
 import InputSwitcher from "../../Input/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
@@ -31,9 +30,10 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
         // CAPEX
         totalDrillingCost,
-        setTotalDrillingCost,
         cessationOffshoreFacilitiesCost,
         setCessationOffshoreFacilitiesCost,
+        cessationOffshoreFacilitiesCostOverride,
+        setCessationOffshoreFacilitiesCostOverride,
         cessationOnshoreFacilitiesCostProfile,
         setCessationOnshoreFacilitiesCostProfile,
 
@@ -47,7 +47,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
         // Exploration
         totalExplorationCost,
-        setTotalExplorationCost,
         explorationWellCostProfile,
         // gAndGAdminCost,// missing implementation
         seismicAcquisitionAndProcessing,
@@ -63,6 +62,10 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         setTotalFEEDStudiesOverride,
         totalOtherStudies,
         setTotalOtherStudies,
+
+        offshoreFacilitiesCost,
+
+        offshoreOpexPlussWellIntervention,
     } = useCaseContext()
 
     const {
@@ -77,13 +80,9 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     const [, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto>()
 
     // CAPEX
-    const [offshoreFacilitiesCost, setOffshoreFacilitiesCost] = useState<ITimeSeries>()
-
     const [, setStartYear] = useState<number>(2020)
     const [, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
-
-    const [offshoreOpexPlussWellIntervention, setOffshoreOpexPlussWellIntervention] = useState<ITimeSeries | undefined>()
 
     interface ITimeSeriesData {
         group?: string
@@ -122,7 +121,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         {
             profileName: "Cessation - offshore facilities",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationOffshoreFacilitiesCost,
+            profile: cessationOffshoreFacilitiesCostOverride?.override ? cessationOffshoreFacilitiesCostOverride : cessationOffshoreFacilitiesCost,
             group: "CAPEX",
         },
         {
@@ -207,49 +206,21 @@ const CaseSummaryTab = (): React.ReactElement | null => {
             try {
                 if (projectCase && project && topside && surf && substructure && transport && wellProject && exploration) {
                     if (activeTabCase === 7 && projectCase?.id) {
-                        const studyWrapper = (await GetGenerateProfileService()).generateStudyCost(project.id, projectCase?.id)
-                        const opexWrapper = (await GetGenerateProfileService()).generateOpexCost(project.id, projectCase?.id)
-                        const cessationWrapper = (await GetGenerateProfileService()).generateCessationCost(project.id, projectCase?.id)
-
-                        const opex = (await opexWrapper).opexCostProfileDto
-                        const cessation = (await cessationWrapper).cessationCostDto
-
-                        let feasibility = (await studyWrapper).totalFeasibilityAndConceptStudiesDto
-                        let feed = (await studyWrapper).totalFEEDStudiesDto
-
-                        if (projectCase?.totalFeasibilityAndConceptStudiesOverride?.override === true) {
-                            feasibility = projectCase?.totalFeasibilityAndConceptStudiesOverride
-                        }
-                        if (projectCase?.totalFEEDStudiesOverride?.override === true) {
-                            feed = projectCase?.totalFEEDStudiesOverride
-                        }
-                        setTotalFeasibilityAndConceptStudies(feasibility)
+                        setTotalFeasibilityAndConceptStudies(projectCase.totalFeasibilityAndConceptStudies)
                         setTotalFeasibilityAndConceptStudiesOverride(projectCase.totalFeasibilityAndConceptStudiesOverride)
-                        setTotalFEEDStudies(feed)
+                        setTotalFEEDStudies(projectCase.totalFEEDStudies)
                         setTotalFEEDStudiesOverride(projectCase.totalFEEDStudiesOverride)
                         setTotalOtherStudies(projectCase.totalOtherStudies)
 
-                        setOpexCost(opex)
-                        setCessationCost(cessation)
                         setHistoricCostCostProfile(projectCase.historicCostCostProfile)
                         setOnshoreRelatedOPEXCostProfile(projectCase.onshoreRelatedOPEXCostProfile)
                         setAdditionalOPEXCostProfile(projectCase.additionalOPEXCostProfile)
-                        setOffshoreOpexPlussWellIntervention(
-                            MergeTimeseriesList(
-                                [
-                                    (projectCase.wellInterventionCostProfileOverride?.override === true
-                                        ? projectCase.wellInterventionCostProfileOverride
-                                        : projectCase.wellInterventionCostProfile),
-                                    (projectCase.offshoreFacilitiesOperationsCostProfileOverride?.override === true
-                                        ? projectCase.offshoreFacilitiesOperationsCostProfileOverride
-                                        : projectCase.offshoreFacilitiesOperationsCostProfile)],
-                            ),
-                        )
-                        const cessationOffshoreFacilitiesCostProfile = projectCase.cessationOffshoreFacilitiesCostOverride?.override === true
-                            ? projectCase.cessationOffshoreFacilitiesCostOverride
-                            : projectCase.cessationOffshoreFacilitiesCost
-                        setCessationOffshoreFacilitiesCost(projectCase.cessationOffshoreFacilitiesCostOverride)
+
+                        setCessationOffshoreFacilitiesCost(projectCase.cessationOffshoreFacilitiesCost)
+                        setCessationOffshoreFacilitiesCostOverride(projectCase.cessationOffshoreFacilitiesCostOverride)
+
                         setCessationOnshoreFacilitiesCostProfile(projectCase.cessationOnshoreFacilitiesCostProfile)
+
                         // CAPEX
                         const topsideCostProfile = topside.costProfileOverride?.override
                             ? topside.costProfileOverride : topside.costProfile
@@ -267,23 +238,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             ? transport.costProfileOverride : transport.costProfile
                         setTransportCost(transportCostProfile)
 
-                        setOffshoreFacilitiesCost(MergeTimeseriesList([
-                            surfCostProfile,
-                            substructureCostProfile,
-                            transportCostProfile,
-                        ]))
-                        setCessationOffshoreFacilitiesCost(cessationOffshoreFacilitiesCostProfile)
-
-                        // Exploration costs
-                        setTotalExplorationCost(MergeTimeseriesList([
-                            exploration.explorationWellCostProfile,
-                            exploration.appraisalWellCostProfile,
-                            exploration.sidetrackCostProfile,
-                            exploration.seismicAcquisitionAndProcessing,
-                            exploration.countryOfficeCost,
-                            // gAndGAdminCost // Missing implementation, uncomment when gAndGAdminCost is fixed
-                        ]))
-
                         // Drilling cost
                         const oilProducerCostProfile = wellProject?.oilProducerCostProfileOverride?.override
                             ? wellProject.oilProducerCostProfileOverride
@@ -300,51 +254,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         const gasInjectorCostProfile = wellProject?.gasInjectorCostProfileOverride?.override
                             ? wellProject.gasInjectorCostProfileOverride
                             : wellProject?.gasInjectorCostProfile
-
-                        const startYears = [
-                            oilProducerCostProfile,
-                            gasProducerCostProfile,
-                            waterInjectorCostProfile,
-                            gasInjectorCostProfile,
-                        ].map((series) => series?.startYear).filter((startYear) => startYear !== undefined) as number[]
-
-                        const minStartYear = startYears.length > 0 ? Math.min(...startYears) : 2020
-
-                        let drillingCostSeriesList: (ITimeSeries | undefined)[] = [
-                            oilProducerCostProfile,
-                            gasProducerCostProfile,
-                            waterInjectorCostProfile,
-                            gasInjectorCostProfile,
-                        ]
-
-                        const rigUpgradingCost = project.developmentOperationalWellCosts.rigUpgrading
-                        const rigMobDemobCost = project.developmentOperationalWellCosts.rigMobDemob
-                        const sumOfRigAndMobDemob = rigUpgradingCost + rigMobDemobCost
-
-                        if (sumOfRigAndMobDemob > 0) {
-                            interface ITimeSeriesWithCostProfile extends ITimeSeries {
-                                developmentRigUpgradingAndMobDemobCostProfile?: number[] | null;
-                            }
-
-                            const timeSeriesWithCostProfile: ITimeSeriesWithCostProfile = {
-                                id: "developmentRigUpgradingAndMobDemob",
-                                startYear: minStartYear,
-                                name: "Development Rig Upgrading and Mob/Demob Costs",
-                                values: [sumOfRigAndMobDemob],
-                                sum: sumOfRigAndMobDemob,
-                            }
-
-                            if (
-                                drillingCostSeriesList.every((series) => !series || !series.values || series.values.length === 0)
-                                && timeSeriesWithCostProfile?.values && timeSeriesWithCostProfile.values.length > 0
-                            ) {
-                                drillingCostSeriesList = [timeSeriesWithCostProfile]
-                            }
-                            if (!drillingCostSeriesList.includes(timeSeriesWithCostProfile)) {
-                                drillingCostSeriesList.push(timeSeriesWithCostProfile)
-                            }
-                        }
-                        setTotalDrillingCost(MergeTimeseriesList(drillingCostSeriesList))
 
                         SetTableYearsFromProfiles([
                             projectCase, wellProject, totalExplorationCost, totalOtherStudies, totalFeasibilityAndConceptStudies, totalFEEDStudiesOverride, historicCostCostProfile,

@@ -949,3 +949,4 @@ const CaseCostTab = (): React.ReactElement | null => {
 }
 
 export default CaseCostTab
+
