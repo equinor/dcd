@@ -16,8 +16,8 @@ const CapexFactorFeasibilityStudies: React.FC = () => {
             ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
         if (newCapexFactorFeasibilityStudies !== undefined) {
             newCase.capexFactorFeasibilityStudies = newCapexFactorFeasibilityStudies / 100
-            setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
         } else { newCase.capexFactorFeasibilityStudies = 0 }
+        setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
     }
     return (
         <InputSwitcher

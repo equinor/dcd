@@ -38,12 +38,7 @@ const ChangeView = styled.div`
 
 const EditsSideBar: React.FC = () => {
     const { caseEdits, projectCase } = useCaseContext()
-
     const [toggleSidesheet, setToggleSidesheet] = React.useState<boolean>(false)
-
-    useEffect(() => {
-        console.log("edits changed", caseEdits)
-    }, [caseEdits])
 
     return (
         <>

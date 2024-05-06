@@ -52,7 +52,7 @@ const Controls = () => {
         const newCase = { ...projectCase }
         addEdit(name, newCase.name, "name", "name", "case", newCase.id)
         newCase.name = name
-        setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
+        setProjectCaseEdited(newCase)
     }
 
     const handleCancel = async () => {
@@ -97,12 +97,16 @@ const Controls = () => {
     const handleEdit = () => {
         if (projectCaseEdited) {
             handleCaseSave()
+            console.log("case saved")
         } else if (projectEdited) {
             handleProjectSave()
+            console.log("project saved")
         } else if (projectCase) {
             handleCaseEdit()
+            console.log("case edit")
         } else {
             handleProjectEdit()
+            console.log("project edit")
         }
     }
 
