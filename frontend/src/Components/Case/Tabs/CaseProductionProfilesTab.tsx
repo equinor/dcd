@@ -120,7 +120,7 @@ const CaseProductionProfilesTab = ({
         if (newfacilitiesAvailability !== undefined) {
             newCase.facilitiesAvailability = newfacilitiesAvailability / 100
         } else { newCase.facilitiesAvailability = 0 }
-        setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
+        newCase ?? setProjectCaseEdited(newCase) // setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
     }
 
     const handleDrainageStrategyGasSolutionChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {

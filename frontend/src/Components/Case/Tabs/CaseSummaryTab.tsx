@@ -189,13 +189,13 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...projectCase }
         newCase.npv = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
-        setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
+        newCase ?? setProjectCaseEdited(newCase) // setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
     }
 
     const handleCaseBreakEvenChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...projectCase }
         newCase.breakEven = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
+        newCase ?? setProjectCaseEdited(newCase) // setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
     }
 
     useEffect(() => {
