@@ -26,6 +26,8 @@ public class DcdDbContext : DbContext
 
     public DbSet<Substructure> Substructures { get; set; } = null!;
     public DbSet<SubstructureCostProfile> SubstructureCostProfiles { get; set; } = null!;
+    public DbSet<SubstructureCostProfileOverride> SubstructureCostProfileOverrides { get; set; } = null!;
+
     public DbSet<SubstructureCessationCostProfile> SubstructureCessationCostProfiles { get; set; } = null!;
 
     public DbSet<Topside> Topsides { get; set; } = null!;

@@ -1,12 +1,7 @@
-using api.Adapters;
 using api.Dtos;
-using api.Models;
 using api.Services;
 
-using Api.Authorization;
-using Api.Services.FusionIntegration;
-
-using AutoMapper;
+using api.Authorization;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -44,14 +39,15 @@ public class SubstructuresController : ControllerBase
         return await _substructureService.UpdateSubstructure(caseId, substructureId, dto);
     }
 
-        [HttpPut("{substructureId}/cost-profile-override/{costProfileId}")]
+    [HttpPut("{substructureId}/cost-profile-override/{costProfileId}")]
     public async Task<SubstructureCostProfileOverrideDto> UpdateSubstructureCostProfileOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid substructureId,
+        [FromRoute] Guid costProfileId,
         [FromBody] UpdateSubstructureCostProfileOverrideDto dto)
     {
-        return await _substructureService.UpdateSubstructure(dto, substructureId);
+        return await _substructureService.UpdateSubstructureCostProfileOverride(caseId, substructureId, costProfileId, dto);
     }
 
 

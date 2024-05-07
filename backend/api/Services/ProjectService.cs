@@ -7,7 +7,7 @@ using api.Exceptions;
 using api.Mappings;
 using api.Models;
 
-using Api.Services.FusionIntegration;
+using api.Services.FusionIntegration;
 
 using AutoMapper;
 

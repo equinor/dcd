@@ -1,10 +1,10 @@
-using api.Adapters;
 using api.Dtos;
+using api.Exceptions;
 using api.Models;
 using api.Services;
 
-using Api.Authorization;
-using Api.Services.FusionIntegration;
+using api.Authorization;
+using api.Services.FusionIntegration;
 
 using AutoMapper;
 

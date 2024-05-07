@@ -4,7 +4,7 @@ using Fusion;
 using Fusion.Integration.Authentication;
 using Fusion.Integration.Profile;
 
-namespace Api.Authorization;
+namespace api.Authorization;
 
 public class ClaimsMiddelware
 {

@@ -37,11 +37,15 @@ public class CaseRepository : ICaseRepository
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            _logger.LogError(ex, "Failed to update Case with id {caseId}.", caseId);
+            _logger.LogWarning(ex, "Failed to update ModifyDate for Case with id {caseId}.", caseId);
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "An error occurred while updating the Case with id {caseId}.", caseId);
+            _logger.LogWarning(ex, "An error occurred while updating ModifyDate for the Case with id {caseId}.", caseId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to update modify time for case id {CaseId}, but operation continues.", caseId);
         }
     }
 }

@@ -1,12 +1,10 @@
-using System;
-
 using api.Context;
 using api.Models;
 
 
 namespace api.Repositories;
 
-public class SubstructureRepository
+public class SubstructureRepository : ISubstructureRepository
 {
     private readonly DcdDbContext _context;
 
@@ -25,5 +23,17 @@ public class SubstructureRepository
         _context.Substructures.Update(substructure);
         await _context.SaveChangesAsync();
         return substructure;
+    }
+
+    public async Task<SubstructureCostProfileOverride?> GetSubstructureCostProfileOverride(Guid substructureCostProfileOverrideId)
+    {
+        return await _context.SubstructureCostProfileOverrides.FindAsync(substructureCostProfileOverrideId);
+    }
+
+    public async Task<SubstructureCostProfileOverride> UpdateSubstructureCostProfileOverride(SubstructureCostProfileOverride substructureCostProfileOverride)
+    {
+        _context.SubstructureCostProfileOverrides.Update(substructureCostProfileOverride);
+        await _context.SaveChangesAsync();
+        return substructureCostProfileOverride;
     }
 }

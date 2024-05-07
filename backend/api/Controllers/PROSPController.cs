@@ -1,9 +1,7 @@
-using System.Net;
-
 using api.Dtos;
 using api.Services;
 
-using Api.Authorization;
+using api.Authorization;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

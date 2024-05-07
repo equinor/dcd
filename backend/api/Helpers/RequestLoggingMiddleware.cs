@@ -2,7 +2,8 @@ using System.Net;
 
 using Newtonsoft.Json;
 
-namespace Api.Helpers;
+namespace api.Helpers;
+
 public class RequestLoggingMiddleware
 {
     private readonly RequestDelegate _next;

@@ -2,7 +2,7 @@ using api.Dtos;
 using api.Excel;
 using api.Services;
 
-using Api.Authorization;
+using api.Authorization;
 
 using ClosedXML.Excel;
 

@@ -1,6 +1,6 @@
-using api.Adapters;
 using api.Context;
 using api.Dtos;
+using api.Exceptions;
 using api.Models;
 
 using AutoMapper;
