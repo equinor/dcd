@@ -154,7 +154,7 @@ public class TopsideService : ITopsideService
     }
 
     public async Task<TopsideCostProfileOverrideDto> UpdateTopsideCostProfileOverride(
-        Guid caseId, 
+        Guid caseId,
         Guid topsideId,
         Guid costProfileId,
         UpdateTopsideCostProfileOverrideDto dto
