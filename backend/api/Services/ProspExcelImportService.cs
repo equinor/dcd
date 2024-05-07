@@ -296,7 +296,7 @@ public class ProspExcelImportService
             CostYear = costYear,
         };
 
-        await _substructureService.UpdateSubstructure(updateSubstructureDto, substructureLink);
+        await _substructureService.UpdateSubstructureAndCostProfiles(updateSubstructureDto, substructureLink);
     }
 
     private async Task ImportTransport(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
@@ -472,7 +472,7 @@ public class ProspExcelImportService
             Source = Source.ConceptApp,
         };
 
-        _substructureService.UpdateSubstructure(dto, substructureLink);
+        _substructureService.UpdateSubstructureAndCostProfiles(dto, substructureLink);
     }
 
     private void ClearImportedTransport(Case caseItem)

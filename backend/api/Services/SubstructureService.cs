@@ -2,6 +2,7 @@
 using api.Adapters;
 using api.Context;
 using api.Dtos;
+using api.Exceptions;
 using api.Models;
 using api.Repositories;
 
@@ -18,13 +19,15 @@ public class SubstructureService : ISubstructureService
     private readonly ILogger<SubstructureService> _logger;
     private readonly IMapper _mapper;
     private readonly SubstructureRepository _repository;
+    private readonly ICaseRepository _caseRepository;
 
     public SubstructureService(
         DcdDbContext context,
         IProjectService projectService,
         ILoggerFactory loggerFactory,
         IMapper mapper,
-        SubstructureRepository substructureRepository
+        SubstructureRepository substructureRepository,
+        ICaseRepository caseRepository
         )
     {
         _context = context;
@@ -32,6 +35,7 @@ public class SubstructureService : ISubstructureService
         _logger = loggerFactory.CreateLogger<SubstructureService>();
         _mapper = mapper;
         _repository = substructureRepository;
+        _caseRepository = caseRepository;
     }
 
     public async Task<Substructure> CreateSubstructure(Guid projectId, Guid sourceCaseId, CreateSubstructureDto substructureDto)
@@ -90,7 +94,7 @@ public class SubstructureService : ISubstructureService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<SubstructureDto> UpdateSubstructure<TDto>(TDto updatedSubstructureDto, Guid substructureId)
+    public async Task<SubstructureDto> UpdateSubstructureAndCostProfiles<TDto>(TDto updatedSubstructureDto, Guid substructureId)
         where TDto : BaseUpdateSubstructureDto
     {
         var existing = await GetSubstructure(substructureId);
@@ -104,23 +108,6 @@ public class SubstructureService : ISubstructureService
         return dto ?? throw new ArgumentNullException(nameof(dto));
     }
 
-    public async Task<SubstructureDto> UpdateSubstructureAsync<TDto>(TDto updatedSubstructureDto, Guid substructureId)
-        where TDto : BaseUpdateSubstructureDto
-    {
-        var existingSubstructure = await _repository.GetSubstructure(substructureId)
-            ?? throw new KeyNotFoundException("Substructure not found.");
-
-        _mapper.Map(updatedSubstructureDto, existingSubstructure);
-        existingSubstructure.LastChangedDate = DateTimeOffset.UtcNow;
-
-        var updatedSubstructure = await _repository.UpdateSubstructure(existingSubstructure);
-        var dto = _mapper.Map<SubstructureDto>(updatedSubstructure);
-
-        return dto ?? throw new InvalidOperationException("Mapping resulted in a null DTO.");
-    }
-
-
-
     public async Task<Substructure> GetSubstructure(Guid substructureId)
     {
         var substructure = await _context.Substructures!
@@ -133,5 +120,43 @@ public class SubstructureService : ISubstructureService
             throw new ArgumentException(string.Format("Substructure {0} not found.", substructureId));
         }
         return substructure;
+    }
+
+    public async Task<SubstructureDto> UpdateSubstructure<TDto>(Guid caseId, Guid substructureId, TDto updatedSubstructureDto)
+        where TDto : BaseUpdateSubstructureDto
+    {
+        var existingSubstructure = await _repository.GetSubstructure(substructureId)
+            ?? throw new NotFoundInDBException($"Substructure with id {substructureId} not found.");
+
+        _mapper.Map(updatedSubstructureDto, existingSubstructure);
+        existingSubstructure.LastChangedDate = DateTimeOffset.UtcNow;
+
+        Substructure updatedSubstructure;
+        try
+        {
+            updatedSubstructure = await _repository.UpdateSubstructure(existingSubstructure);
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to update substructure with id {SubstructureId} for case id {CaseId}.", substructureId, caseId);
+            throw;
+        }
+
+        await _caseRepository.UpdateModifyTime(caseId);
+
+        var dto = MapToDto(updatedSubstructure, substructureId);
+
+        return dto;
+    }
+
+    private SubstructureDto MapToDto(Substructure updatedSubstructure, Guid substructureId)
+    {
+        var dto = _mapper.Map<SubstructureDto>(updatedSubstructure);
+        if (dto == null)
+        {
+            _logger.LogError("Mapping of substructure with id {SubstructureId} resulted in a null DTO.", substructureId);
+            throw new MappingException("Mapping resulted in a null DTO.", substructureId);
+        }
+        return dto;
     }
 }

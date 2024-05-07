@@ -41,7 +41,7 @@ public class SubstructuresController : ControllerBase
         [FromRoute] Guid substructureId,
         [FromBody] APIUpdateSubstructureDto dto)
     {
-        return await _substructureService.UpdateSubstructure(dto, substructureId);
+        return await _substructureService.UpdateSubstructure(caseId, substructureId, dto);
     }
 
         [HttpPut("{substructureId}/cost-profile-override/{costProfileId}")]

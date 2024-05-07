@@ -22,8 +22,6 @@ public class SubstructureRepository
 
     public async Task<Substructure> UpdateSubstructure(Substructure substructure)
     {
-        ArgumentNullException.ThrowIfNull(substructure);
-
         _context.Substructures.Update(substructure);
         await _context.SaveChangesAsync();
         return substructure;
