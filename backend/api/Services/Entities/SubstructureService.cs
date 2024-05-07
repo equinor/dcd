@@ -146,7 +146,11 @@ public class SubstructureService : ISubstructureService
         return updatedDto;
     }
 
-    public async Task<SubstructureDto> UpdateSubstructure<TDto>(Guid caseId, Guid substructureId, TDto updatedSubstructureDto)
+    public async Task<SubstructureDto> UpdateSubstructure<TDto>(
+        Guid caseId,
+        Guid substructureId,
+        TDto updatedSubstructureDto
+    )
         where TDto : BaseUpdateSubstructureDto
     {
         var existingSubstructure = await _repository.GetSubstructure(substructureId)

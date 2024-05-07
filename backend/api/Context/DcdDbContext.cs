@@ -33,6 +33,7 @@ public class DcdDbContext : DbContext
     public DbSet<Topside> Topsides { get; set; } = null!;
 
     public DbSet<TopsideCostProfile> TopsideCostProfiles { get; set; } = null!;
+    public DbSet<TopsideCostProfileOverride> TopsideCostProfileOverrides { get; set; } = null!;
     public DbSet<TopsideCessationCostProfile> TopsideCessationCostProfiles { get; set; } = null!;
 
     public DbSet<Transport> Transports { get; set; } = null!;

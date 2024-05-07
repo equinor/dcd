@@ -7,6 +7,7 @@ public interface ITopsideService
 {
     Task<TopsideDto> CopyTopside(Guid topsideId, Guid sourceCaseId);
     Task<Topside> CreateTopside(Guid projectId, Guid sourceCaseId, CreateTopsideDto topsideDto);
-    Task<ProjectDto> UpdateTopside<TDto>(TDto updatedTopsideDto, Guid topsideId) where TDto : BaseUpdateTopsideDto;
+    Task<ProjectDto> UpdateTopsideAndCostProfiles<TDto>(TDto updatedTopsideDto, Guid topsideId) where TDto : BaseUpdateTopsideDto;
     Task<Topside> GetTopside(Guid topsideId);
+    Task<TopsideDto> UpdateTopside<TDto>(Guid caseId, Guid topsideId, TDto updatedTopsideDto) where TDto : BaseUpdateTopsideDto;
 }

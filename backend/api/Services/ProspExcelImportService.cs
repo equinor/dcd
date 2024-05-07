@@ -249,7 +249,7 @@ public class ProspExcelImportService
             PeakElectricityImported = peakElectricityImported,
         };
 
-        await _topsideService.UpdateTopside(updateTopsideDto, topsideLink);
+        await _topsideService.UpdateTopsideAndCostProfiles(updateTopsideDto, topsideLink);
     }
 
     private async Task ImportSubstructure(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
@@ -460,7 +460,7 @@ public class ProspExcelImportService
         };
 
 
-        _topsideService.UpdateTopside(dto, topsideLink);
+        _topsideService.UpdateTopsideAndCostProfiles(dto, topsideLink);
     }
 
     private void ClearImportedSubstructure(Case caseItem)
