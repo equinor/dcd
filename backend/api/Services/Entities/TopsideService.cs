@@ -108,6 +108,23 @@ public class TopsideService : ITopsideService
         return await _projectService.GetProjectDto(existing.ProjectId);
     }
 
+
+
+    public async Task<Topside> GetTopside(Guid topsideId)
+    {
+        var topside = await _context.Topsides!
+            .Include(c => c.Project)
+            .Include(c => c.CostProfile)
+            .Include(c => c.CostProfileOverride)
+            .Include(c => c.CessationCostProfile)
+            .FirstOrDefaultAsync(o => o.Id == topsideId);
+        if (topside == null)
+        {
+            throw new ArgumentException(string.Format("Topside {0} not found.", topsideId));
+        }
+        return topside;
+    }
+
     public async Task<TopsideDto> UpdateTopside<TDto>(
         Guid caseId,
         Guid topsideId,
@@ -136,18 +153,33 @@ public class TopsideService : ITopsideService
         return dto;
     }
 
-    public async Task<Topside> GetTopside(Guid topsideId)
+    public async Task<TopsideCostProfileOverrideDto> UpdateTopsideCostProfileOverride(
+        Guid caseId, 
+        Guid topsideId,
+        Guid costProfileId,
+        UpdateTopsideCostProfileOverrideDto dto
+    )
     {
-        var topside = await _context.Topsides!
-            .Include(c => c.Project)
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
-            .FirstOrDefaultAsync(o => o.Id == topsideId);
-        if (topside == null)
+        var existingCostProfile = await _repository.GetTopsideCostProfileOverride(costProfileId)
+            ?? throw new NotFoundInDBException($"Cost profile override with id {costProfileId} not found.");
+
+        _mapper.Map(dto, existingCostProfile);
+
+        TopsideCostProfileOverride updatedCostProfile;
+        try
         {
-            throw new ArgumentException(string.Format("Topside {0} not found.", topsideId));
+            updatedCostProfile = await _repository.UpdateTopsideCostProfileOverride(existingCostProfile);
         }
-        return topside;
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to update cost profile override with id {CostProfileId} for topside id {TopsideId} for case id {CaseId}.", costProfileId, topsideId, caseId);
+            throw;
+        }
+
+        await _caseRepository.UpdateModifyTime(caseId);
+
+        var updatedDto = _mapperService.MapToDto<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>(updatedCostProfile, costProfileId);
+
+        return updatedDto;
     }
 }

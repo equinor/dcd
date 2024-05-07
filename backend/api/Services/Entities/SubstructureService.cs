@@ -19,6 +19,7 @@ public class SubstructureService : ISubstructureService
     private readonly IMapper _mapper;
     private readonly ISubstructureRepository _repository;
     private readonly ICaseRepository _caseRepository;
+    private readonly IMapperService _mapperService;
 
     public SubstructureService(
         DcdDbContext context,
@@ -26,7 +27,8 @@ public class SubstructureService : ISubstructureService
         ILoggerFactory loggerFactory,
         IMapper mapper,
         ISubstructureRepository substructureRepository,
-        ICaseRepository caseRepository
+        ICaseRepository caseRepository,
+        IMapperService mapperService
         )
     {
         _context = context;
@@ -35,6 +37,7 @@ public class SubstructureService : ISubstructureService
         _mapper = mapper;
         _repository = substructureRepository;
         _caseRepository = caseRepository;
+        _mapperService = mapperService;
     }
 
     public async Task<Substructure> CreateSubstructure(Guid projectId, Guid sourceCaseId, CreateSubstructureDto substructureDto)
@@ -121,7 +124,12 @@ public class SubstructureService : ISubstructureService
         return substructure;
     }
 
-    public async Task<SubstructureCostProfileOverrideDto> UpdateSubstructureCostProfileOverride(Guid caseId, Guid substructureId, Guid costProfileId, UpdateSubstructureCostProfileOverrideDto dto)
+    public async Task<SubstructureCostProfileOverrideDto> UpdateSubstructureCostProfileOverride(
+        Guid caseId,
+        Guid substructureId,
+        Guid costProfileId,
+        UpdateSubstructureCostProfileOverrideDto dto
+        )
     {
         var existingCostProfile = await _repository.GetSubstructureCostProfileOverride(costProfileId)
             ?? throw new NotFoundInDBException($"Cost profile override with id {costProfileId} not found.");
@@ -141,7 +149,7 @@ public class SubstructureService : ISubstructureService
 
         await _caseRepository.UpdateModifyTime(caseId);
 
-        var updatedDto = MapToDto<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>(updatedCostProfile, costProfileId);
+        var updatedDto = _mapperService.MapToDto<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>(updatedCostProfile, costProfileId);
 
         return updatedDto;
     }
@@ -172,30 +180,8 @@ public class SubstructureService : ISubstructureService
 
         await _caseRepository.UpdateModifyTime(caseId);
 
-        var dto = MapToDto(updatedSubstructure, substructureId);
+        var dto = _mapperService.MapToDto<Substructure, SubstructureDto>(updatedSubstructure, substructureId);
 
-        return dto;
-    }
-
-    private SubstructureDto MapToDto(Substructure updatedSubstructure, Guid substructureId)
-    {
-        var dto = _mapper.Map<SubstructureDto>(updatedSubstructure);
-        if (dto == null)
-        {
-            _logger.LogError("Mapping of substructure with id {SubstructureId} resulted in a null DTO.", substructureId);
-            throw new MappingException("Mapping resulted in a null DTO.", substructureId);
-        }
-        return dto;
-    }
-
-    private TDto MapToDto<T, TDto>(T entity, Guid id)
-    {
-        var dto = _mapper.Map<TDto>(entity);
-        if (dto == null)
-        {
-            _logger.LogError("Mapping of {entityType} with id {id} resulted in a null DTO.", typeof(T), id);
-            throw new MappingException("Mapping resulted in a null DTO.", id);
-        }
         return dto;
     }
 }

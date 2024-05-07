@@ -10,4 +10,5 @@ public interface ITopsideService
     Task<ProjectDto> UpdateTopsideAndCostProfiles<TDto>(TDto updatedTopsideDto, Guid topsideId) where TDto : BaseUpdateTopsideDto;
     Task<Topside> GetTopside(Guid topsideId);
     Task<TopsideDto> UpdateTopside<TDto>(Guid caseId, Guid topsideId, TDto updatedTopsideDto) where TDto : BaseUpdateTopsideDto;
+    Task<TopsideCostProfileOverrideDto> UpdateTopsideCostProfileOverride(Guid caseId, Guid topsideId, Guid costProfileId, UpdateTopsideCostProfileOverrideDto dto);
 }

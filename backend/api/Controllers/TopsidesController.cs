@@ -33,7 +33,7 @@ public class TopsidesController : ControllerBase
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid topsideId,
-        [FromBody] APIUpdateSubstructureDto dto)
+        [FromBody] APIUpdateTopsideDto dto)
     {
         return await _topsideService.UpdateTopside(caseId, topsideId, dto);
     }
@@ -46,7 +46,7 @@ public class TopsidesController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateTopsideCostProfileOverrideDto dto)
     {
-        return await _topsideService.UpdateSubstructureCostProfileOverride(caseId, topsideId, costProfileId, dto);
+        return await _topsideService.UpdateTopsideCostProfileOverride(caseId, topsideId, costProfileId, dto);
     }
 
 
