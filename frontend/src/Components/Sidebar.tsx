@@ -102,7 +102,7 @@ const Sidebar = () => {
     const { sidebarOpen, setSidebarOpen } = useAppContext()
     const navigate = useNavigate()
     const location = useLocation()
-    if (!project) return null
+    if (!project) { return null }
 
     const selectCase = (caseId: string) => {
         if (!currentContext || !caseId) { return null }

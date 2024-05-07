@@ -1,5 +1,5 @@
 import {
-    useState, useRef, useEffect, SetStateAction,
+    useState, useRef,
 } from "react"
 import { useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
@@ -17,41 +17,45 @@ import { useModalContext } from "../Context/ModalContext"
 import CaseDropMenu from "../Components/Case/Components/CaseDropMenu"
 import { GetProjectService } from "../Services/ProjectService"
 import { useAppContext } from "../Context/AppContext"
+import useDataEdits from "../Hooks/useDataEdits"
+import EditsSideBar from "./EditTracker/EditsSideBar"
 
 const Controls = () => {
     const navigate = useNavigate()
 
+    const { addEdit } = useDataEdits()
+    const { setTechnicalModalIsOpen } = useModalContext()
     const { currentContext } = useModuleCurrentContext()
-
     const { isSaving, editMode, setEditMode } = useAppContext()
     const {
-        project, setProject, projectEdited, setProjectEdited,
+        project,
+        setProject,
+        projectEdited,
+        setProjectEdited,
     } = useProjectContext()
     const {
-        projectCase, setProjectCase, renameProjectCase, setRenameProjectCase, projectCaseEdited, setProjectCaseEdited, setSaveProjectCase,
+        projectCase,
+        setProjectCase,
+        projectCaseEdited,
+        setProjectCaseEdited,
+        setSaveProjectCase,
     } = useCaseContext()
-    const { setTechnicalModalIsOpen } = useModalContext()
+
+    const nameInput = useRef<any>(null)
+
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
-    const nameInput = useRef<any>(null)
-    const [updatedName, setUpdatedName] = useState<string>("")
 
-    useEffect(() => {
-        if (nameInput.current !== undefined && renameProjectCase && projectCase) {
-            nameInput.current.focus()
-        }
-    }, [renameProjectCase, nameInput])
+    if (!projectCase) { return null }
 
-    useEffect(() => {
-        if (projectCase) {
-            const updatedCase = { ...projectCase }
-            updatedCase.name = updatedName
-            setProjectCaseEdited(updatedCase)
-        }
-    }, [updatedName])
+    const updateCaseName = (name: string) => {
+        const newCase = { ...projectCase }
+        addEdit(name, newCase.name, "name", "name", "case", newCase.id)
+        newCase.name = name
+        setProjectCaseEdited(newCase)
+    }
 
     const handleCancel = async () => {
-        setRenameProjectCase(false)
         setEditMode(false)
         setProjectEdited(undefined)
         setProjectCaseEdited(undefined)
@@ -75,7 +79,6 @@ const Controls = () => {
     }
 
     const handleCaseEdit = async () => {
-        setRenameProjectCase(true)
         setEditMode(true)
     }
 
@@ -106,25 +109,23 @@ const Controls = () => {
     return (
         <Grid container spacing={1} justifyContent="space-between" alignItems="center">
 
-            {projectCase
-                && (
-                    <Grid item xs={0}>
-                        <Button
-                            onClick={backToProject}
-                            variant="ghost_icon"
-                        >
-                            <Icon data={arrow_back} />
-                        </Button>
-                    </Grid>
-                )}
+            <Grid item xs={0}>
+                <Button
+                    onClick={backToProject}
+                    variant="ghost_icon"
+                >
+                    <Icon data={arrow_back} />
+                </Button>
+            </Grid>
+
             <Grid item xs>
-                {renameProjectCase
+                {editMode
                     ? (
-                        <Input
+                        <Input // todo: should not be allowed to be empty
                             ref={nameInput}
                             type="text"
                             defaultValue={projectCase && projectCase.name}
-                            onChange={(e: { target: { value: SetStateAction<string> } }) => setUpdatedName(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateCaseName(e.target.value)}
                         />
                     )
                     : <Typography variant="h4">{projectCase ? projectCase.name : currentContext?.title}</Typography>}
@@ -162,26 +163,24 @@ const Controls = () => {
                 </Grid>
             </Grid>
 
-            {projectCase
-                && (
-                    <Grid item>
-                        <Button
-                            variant="ghost_icon"
-                            aria-label="case menu"
-                            ref={setMenuAnchorEl}
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        >
-                            <Icon data={more_vertical} />
-                        </Button>
-                        <CaseDropMenu
-                            setRenameProjectCase={setRenameProjectCase}
-                            isMenuOpen={isMenuOpen}
-                            setIsMenuOpen={setIsMenuOpen}
-                            menuAnchorEl={menuAnchorEl}
-                            projectCase={projectCase}
-                        />
-                    </Grid>
-                )}
+            <Grid item>
+                <EditsSideBar />
+                <Button
+                    variant="ghost_icon"
+                    aria-label="case menu"
+                    ref={setMenuAnchorEl}
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                >
+                    <Icon data={more_vertical} />
+                </Button>
+
+                <CaseDropMenu
+                    isMenuOpen={isMenuOpen}
+                    setIsMenuOpen={setIsMenuOpen}
+                    menuAnchorEl={menuAnchorEl}
+                    projectCase={projectCase}
+                />
+            </Grid>
         </Grid>
     )
 }

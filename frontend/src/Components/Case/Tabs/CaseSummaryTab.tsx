@@ -75,13 +75,10 @@ const CaseSummaryTab = (): React.ReactElement | null => {
 
     const { project } = useProjectContext()
 
-    // OPEX
-    const [, setOpexCost] = useState<Components.Schemas.OpexCostProfileDto>()
-    const [, setCessationCost] = useState<Components.Schemas.SurfCessationCostProfileDto>()
-
-    // CAPEX
+    // TODO: this is wrong we are using setters but never using the values
     const [, setStartYear] = useState<number>(2020)
     const [, setEndYear] = useState<number>(2030)
+
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
     interface ITimeSeriesData {
@@ -192,13 +189,13 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...projectCase }
         newCase.npv = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
-        newCase ?? setProjectCaseEdited(newCase)
+        setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
     }
 
     const handleCaseBreakEvenChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...projectCase }
         newCase.breakEven = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        newCase ?? setProjectCaseEdited(newCase)
+        setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
     }
 
     useEffect(() => {

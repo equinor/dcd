@@ -12,7 +12,7 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { lock, lock_open } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
-import { isInteger } from "../../../Utils/common"
+import { isInteger, tableCellisEditable } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../../Utils/constants"
 import { useAppContext } from "../../../Context/AppContext"
@@ -170,24 +170,16 @@ const CaseTabTableWithGrouping = ({
             },
 
         ]
-        const isEditable = (params: any) => {
-            if (editMode && params.data?.overrideProfileSet === undefined && params.data?.set !== undefined) {
-                return true
-            }
-            if (editMode && params.data?.overrideProfile?.override) {
-                return true
-            }
-            return false
-        }
+
         const yearDefs: any[] = []
         for (let index = tableYears[0]; index <= tableYears[1]; index += 1) {
             yearDefs.push({
                 field: index.toString(),
                 flex: 1,
-                editable: (params: any) => isEditable(params),
+                editable: (params: any) => tableCellisEditable(params, editMode),
                 minWidth: 100,
                 aggFunc: "sum",
-                cellClass: (params: any) => (editMode && isEditable(params) ? "editableCell" : undefined),
+                cellClass: (params: any) => (editMode && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
                 cellStyle: { fontWeight: "bold" },
             })
         }
@@ -298,8 +290,7 @@ const CaseTabTableWithGrouping = ({
                         suppressLastEmptyLineOnPaste
                         groupDefaultExpanded={groupDefaultExpanded}
                         singleClickEdit={editMode}
-                    // groupDisplayType={'groupRows'}
-
+                        stopEditingWhenCellsLoseFocus
                     />
                 </div>
             </div>

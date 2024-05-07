@@ -1,6 +1,6 @@
-import _ from "lodash"
 import { Dispatch, SetStateAction } from "react"
 import { ITimeSeries } from "../Models/ITimeSeries"
+import { TABLE_VALIDATION_RULES } from "../Utils/constants"
 
 export const loginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
@@ -230,4 +230,54 @@ export function updateObject<T>(object: T | undefined, setObject: Dispatch<SetSt
     const newObject: T = { ...object }
     newObject[key] = value
     setObject(newObject)
+}
+
+export const tableCellisEditable = (params: any, editMode: boolean) => {
+    if (editMode && params.data?.overrideProfileSet === undefined && params.data?.set !== undefined) {
+        return true
+    }
+    if (editMode && params.data?.overrideProfile !== undefined && params.data?.overrideProfile.override) {
+        return true
+    }
+    return false
+}
+
+export const numberValueParser = (params: { newValue: any }) => {
+    const { newValue } = params
+    if (typeof newValue === "string") {
+        const processedValue = newValue.replace(/\s/g, "").replace(/,/g, ".")
+        const numberValue = Number(processedValue)
+        if (!Number.isNaN(numberValue)) {
+            return numberValue
+        }
+    }
+    return newValue
+}
+
+export const getCaseRowStyle = (params: any) => {
+    if (params.node.footer) {
+        return { fontWeight: "bold" }
+    }
+    return undefined
+}
+
+export const validateInput = (params: any, editMode: boolean) => {
+    const { value, data } = params
+    if (tableCellisEditable(params, editMode) && editMode && value) {
+        const rule = TABLE_VALIDATION_RULES[data.profileName]
+        if (rule && (value < rule.min || value > rule.max)) {
+            return `Value must be between ${rule.min} and ${rule.max}.`
+        }
+    }
+    return null
+}
+
+export const getCurrentTime = (): string => {
+    const now = new Date()
+    const hours = now.getHours()
+    const minutes = now.getMinutes()
+
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes.toString()
+
+    return `${hours}:${formattedMinutes}`
 }
