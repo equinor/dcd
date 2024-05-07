@@ -187,8 +187,14 @@ builder.Services.AddScoped<ICompareCasesService, CompareCasesService>();
 builder.Services.AddScoped<IGenerateCo2DrillingFlaringFuelTotals, GenerateCo2DrillingFlaringFuelTotals>();
 builder.Services.AddScoped<ISTEAService, STEAService>();
 
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<ICaseRepository, CaseRepository>();
 builder.Services.AddScoped<ISubstructureRepository, SubstructureRepository>();
+builder.Services.AddScoped<ITopsideRepository, TopsideRepository>();
+builder.Services.AddScoped<IDrainageStrategyRepository, DrainageStrategyRepository>();
+
+builder.Services.AddScoped<IMapperService, MapperService>();
+builder.Services.AddScoped<IConversionMapperService, ConversionMapperService>();
 
 builder.Services.AddHostedService<RefreshProjectService>();
 builder.Services.AddScoped<ProspExcelImportService>();

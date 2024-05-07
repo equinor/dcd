@@ -16,7 +16,7 @@ public class TopsideService : ITopsideService
     private readonly IProjectService _projectService;
     private readonly ILogger<TopsideService> _logger;
     private readonly IMapper _mapper;
-    private readonly TopsideRepository _repository;
+    private readonly ITopsideRepository _repository;
     private readonly ICaseRepository _caseRepository;
     private readonly IMapperService _mapperService;
 
@@ -25,7 +25,7 @@ public class TopsideService : ITopsideService
         IProjectService projectService,
         ILoggerFactory loggerFactory,
         IMapper mapper,
-        TopsideRepository repository,
+        ITopsideRepository repository,
         ICaseRepository caseRepository,
         IMapperService mapperService
         )

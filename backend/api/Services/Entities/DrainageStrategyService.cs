@@ -2,6 +2,7 @@ using api.Context;
 using api.Dtos;
 using api.Exceptions;
 using api.Models;
+using api.Repositories;
 
 using AutoMapper;
 
@@ -16,17 +17,30 @@ public class DrainageStrategyService : IDrainageStrategyService
     private readonly IProjectService _projectService;
     private readonly ILogger<DrainageStrategyService> _logger;
     private readonly IMapper _mapper;
+    private readonly ICaseRepository _caseRepository;
+    private readonly IDrainageStrategyRepository _repository;
+    private readonly IConversionMapperService _conversionMapperService;
+    private readonly IProjectRepository _projectRepository;
 
     public DrainageStrategyService(
         DcdDbContext context,
         IProjectService projectService,
         ILoggerFactory loggerFactory,
-        IMapper mapper)
+        IMapper mapper,
+        ICaseRepository caseRepository,
+        IDrainageStrategyRepository repository,
+        IConversionMapperService conversionMapperService,
+        IProjectRepository projectRepository
+        )
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<DrainageStrategyService>();
         _mapper = mapper;
+        _caseRepository = caseRepository;
+        _repository = repository;
+        _conversionMapperService = conversionMapperService;
+        _projectRepository = projectRepository;
     }
 
     public async Task<ProjectDto> CreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
@@ -170,5 +184,74 @@ public class DrainageStrategyService : IDrainageStrategyService
             throw new ArgumentException(string.Format("Drainage strategy {0} not found.", drainageStrategyId));
         }
         return drainageStrategy;
+    }
+
+    public async Task<DrainageStrategyDto> UpdateDrainageStrategy(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        UpdateDrainageStrategyDto updatedDrainageStrategyDto
+    )
+    {
+        var existingDrainageStrategy = await _repository.GetDrainageStrategy(drainageStrategyId)
+            ?? throw new NotFoundInDBException($"Drainage strategy with id {drainageStrategyId} not found.");
+
+        var project = await _projectRepository.GetProject(projectId)
+            ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
+
+        // TODO conversion
+        _conversionMapperService.MapToEntity(updatedDrainageStrategyDto, existingDrainageStrategy);
+        _mapper.Map(updatedDrainageStrategyDto, existingDrainageStrategy);
+
+        DrainageStrategy updatedDrainageStrategy;
+        try
+        {
+            updatedDrainageStrategy = await _repository.UpdateDrainageStrategy(existingDrainageStrategy);
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to update drainage strategy with id {drainageStrategyId} for case id {CaseId}.", drainageStrategyId, caseId);
+            throw;
+        }
+
+        await _caseRepository.UpdateModifyTime(caseId);
+
+        var dto = _conversionMapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(updatedDrainageStrategy, drainageStrategyId, project.PhysicalUnit);
+        return dto;
+    }
+
+    public async Task<ProductionProfileOilDto> UpdateProductionProfileOil(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid productionProfileOilId,
+        UpdateProductionProfileOilDto updatedProductionProfileOilDto
+    )
+    {
+        var existingProfile = await _repository.GetProductionProfileOil(productionProfileOilId)
+            ?? throw new NotFoundInDBException($"Production profile oil with id {productionProfileOilId} not found.");
+
+        var project = await _projectRepository.GetProject(projectId)
+            ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
+
+        // TODO Conversion
+        _conversionMapperService.MapToEntity(updatedProductionProfileOilDto, existingProfile);
+        _mapper.Map(updatedProductionProfileOilDto, existingProfile);
+
+        ProductionProfileOil updatedProfile;
+        try
+        {
+            updatedProfile = await _repository.UpdateProductionProfileOil(existingProfile);
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to update production profile oil with id {productionProfileOilId} for case id {CaseId}.", productionProfileOilId, caseId);
+            throw;
+        }
+
+        await _caseRepository.UpdateModifyTime(caseId);
+
+        var updatedDto = _conversionMapperService.MapToDto<ProductionProfileOil, ProductionProfileOilDto>(updatedProfile, productionProfileOilId, project.PhysicalUnit);
+        return updatedDto;
     }
 }
