@@ -9,12 +9,14 @@ import InputSwitcher from "../../Input/InputSwitcher"
 import Gallery from "../../Gallery/Gallery"
 import { useCaseContext } from "../../../Context/CaseContext"
 import { useAppContext } from "../../../Context/AppContext"
+import useDataEdits from "../../../Hooks/useDataEdits"
 
 const CaseDescriptionTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
     const { editMode } = useAppContext()
+    const { addEdit } = useDataEdits()
 
-    if (!projectCase) return null
+    if (!projectCase) { return null }
 
     const productionStrategyOptions = {
         0: "Depletion",
@@ -50,6 +52,9 @@ const CaseDescriptionTab = () => {
 
     const handleProducerCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         const newCase = { ...projectCase }
+        const newValue = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
+
+        addEdit(newValue, newCase.producerCount, "producerCount", "Production wells", "case", newCase.id)
         newCase.producerCount = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
         setProjectCaseEdited(newCase)
     }

@@ -1,4 +1,3 @@
-import _ from "lodash"
 import { Dispatch, SetStateAction } from "react"
 import { ITimeSeries } from "../Models/ITimeSeries"
 import { TABLE_VALIDATION_RULES } from "../Utils/constants"
@@ -271,4 +270,14 @@ export const validateInput = (params: any, editMode: boolean) => {
         }
     }
     return null
+}
+
+export const getCurrentTime = (): string => {
+    const now = new Date()
+    const hours = now.getHours()
+    const minutes = now.getMinutes()
+
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes.toString()
+
+    return `${hours}:${formattedMinutes}`
 }
