@@ -1,13 +1,12 @@
+using api.Authorization;
 using api.Context;
+using api.Helpers;
 using api.Mappings;
 using api.Repositories;
 using api.SampleData.Generators;
 using api.Services;
-using api.Services.GenerateCostProfiles;
-
-using api.Authorization;
-using api.Helpers;
 using api.Services.FusionIntegration;
+using api.Services.GenerateCostProfiles;
 
 using Azure.Identity;
 
@@ -250,7 +249,8 @@ if (app.Environment.IsDevelopment())
 {
     IdentityModelEventSource.ShowPII = true;
     app.UseSwagger();
-    app.UseSwaggerUI(options => {
+    app.UseSwaggerUI(options =>
+    {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "Concept App");
     });
 }

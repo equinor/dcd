@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Authorization;
-
 using api.Authorization.Extensions;
+
+using Microsoft.AspNetCore.Authorization;
 
 namespace api.Authorization;
 
