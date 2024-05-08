@@ -18,6 +18,7 @@ import InputSwitcher from "../../Input/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import RangeButton from "../../Buttons/RangeButton"
+import { handleStartYearStateChange, handleEndYearStateChange } from "../../../Utils/common"
 
 interface ITimeSeriesData {
     profileName: string
@@ -113,10 +114,10 @@ const CaseProductionProfilesTab = ({
         setDrainageStrategy(newDrainageStrategy)
     }
 
-    const handleCaseFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const handleCaseFacilitiesAvailabilityChange = (value: number): void => {
         const newCase = { ...projectCaseEdited }
-        const newfacilitiesAvailability = e.currentTarget.value.length > 0
-            ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
+        const newfacilitiesAvailability = value > 0
+            ? Math.min(Math.max(value, 0), 100) : undefined
         if (newfacilitiesAvailability !== undefined) {
             newCase.facilitiesAvailability = newfacilitiesAvailability / 100
         } else { newCase.facilitiesAvailability = 0 }
@@ -130,24 +131,6 @@ const CaseProductionProfilesTab = ({
             newDrainageStrategy.gasSolution = newGasSolution
             updateAndSetDraiangeStrategy(newDrainageStrategy)
         }
-    }
-
-    const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newStartYear = Number(e.currentTarget.value)
-        if (newStartYear < 2010) {
-            setStartYear(2010)
-            return
-        }
-        setStartYear(newStartYear)
-    }
-
-    const handleEndYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newEndYear = Number(e.currentTarget.value)
-        if (newEndYear > 2100) {
-            setEndYear(2100)
-            return
-        }
-        setEndYear(newEndYear)
     }
 
     const timeSeriesData: ITimeSeriesData[] = [
@@ -240,11 +223,17 @@ const CaseProductionProfilesTab = ({
                     setNetSalesGas(drainageStrategy.netSalesGas)
                     setImportedElectricity(drainageStrategy.importedElectricity)
 
-                    SetTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
-                        drainageStrategy.netSalesGasOverride, drainageStrategy.fuelFlaringAndLossesOverride,
-                        drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
-                        drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
-                        drainageStrategy.productionProfileWaterInjection, drainageStrategy.importedElectricityOverride,
+                    SetTableYearsFromProfiles([
+                        drainageStrategy.netSalesGas,
+                        drainageStrategy.fuelFlaringAndLosses,
+                        drainageStrategy.netSalesGasOverride,
+                        drainageStrategy.fuelFlaringAndLossesOverride,
+                        drainageStrategy.productionProfileGas,
+                        drainageStrategy.productionProfileOil,
+                        drainageStrategy.productionProfileWater,
+                        drainageStrategy.productionProfileNGL,
+                        drainageStrategy.productionProfileWaterInjection,
+                        drainageStrategy.importedElectricityOverride,
                         drainageStrategy.co2EmissionsOverride,
                     ], new Date(projectCase?.dG4Date).getFullYear(), setStartYear, setEndYear, setTableYears)
                     setGas(drainageStrategy.productionProfileGas)
@@ -449,7 +438,7 @@ const CaseProductionProfilesTab = ({
                 <Grid item>
                     <Typography variant="caption">Start year</Typography>
                     <CaseNumberInput
-                        onChange={handleStartYearChange}
+                        onChange={(value) => handleStartYearStateChange(value, setStartYear)}
                         defaultValue={startYear}
                         integer
                         min={2010}
@@ -459,7 +448,7 @@ const CaseProductionProfilesTab = ({
                 <Grid item>
                     <Typography variant="caption">End year</Typography>
                     <CaseNumberInput
-                        onChange={handleEndYearChange}
+                        onChange={(value) => handleEndYearStateChange(value, setEndYear)}
                         defaultValue={endYear}
                         integer
                         min={2010}

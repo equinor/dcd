@@ -48,7 +48,7 @@ const Controls = () => {
 
     if (!projectCase) { return null }
 
-    const updateCaseName = (name: string) => {
+    const handleCaseNameChange = (name: string) => {
         const newCase = { ...projectCase }
         addEdit(name, newCase.name, "name", "name", "case", newCase.id)
         newCase.name = name
@@ -125,7 +125,7 @@ const Controls = () => {
                             ref={nameInput}
                             type="text"
                             defaultValue={projectCase && projectCase.name}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateCaseName(e.target.value)}
+                            onBlur={() => handleCaseNameChange(nameInput.current.value)}
                         />
                     )
                     : <Typography variant="h4">{projectCase ? projectCase.name : currentContext?.title}</Typography>}
