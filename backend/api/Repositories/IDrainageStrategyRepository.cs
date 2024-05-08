@@ -14,4 +14,12 @@ public interface IDrainageStrategyRepository
     Task<ProductionProfileWater> UpdateProductionProfileWater(ProductionProfileWater productionProfile);
     Task<ProductionProfileWaterInjection?> GetProductionProfileWaterInjection(Guid productionProfileId);
     Task<ProductionProfileWaterInjection> UpdateProductionProfileWaterInjection(ProductionProfileWaterInjection productionProfile);
+    Task<FuelFlaringAndLossesOverride?> GetFuelFlaringAndLossesOverride(Guid profileId);
+    Task<FuelFlaringAndLossesOverride> UpdateFuelFlaringAndLossesOverride(FuelFlaringAndLossesOverride profileId);
+    Task<NetSalesGasOverride?> GetNetSalesGasOverride(Guid profileId);
+    Task<NetSalesGasOverride> UpdateNetSalesGasOverride(NetSalesGasOverride profileId);
+    Task<Co2EmissionsOverride?> GetCo2EmissionsOverride(Guid profileId);
+    Task<Co2EmissionsOverride> UpdateCo2EmissionsOverride(Co2EmissionsOverride profileId);
+    Task<ImportedElectricityOverride?> GetImportedElectricityOverride(Guid profileId);
+    Task<ImportedElectricityOverride> UpdateImportedElectricityOverride(ImportedElectricityOverride profileId);
 }

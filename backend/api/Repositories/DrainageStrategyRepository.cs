@@ -49,7 +49,7 @@ public class DrainageStrategyRepository : IDrainageStrategyRepository
         return productionProfile;
     }
 
-        public async Task<ProductionProfileWater?> GetProductionProfileWater(Guid productionProfileId)
+    public async Task<ProductionProfileWater?> GetProductionProfileWater(Guid productionProfileId)
     {
         return await _context.ProductionProfileWater.FindAsync(productionProfileId);
     }
@@ -61,7 +61,7 @@ public class DrainageStrategyRepository : IDrainageStrategyRepository
         return productionProfile;
     }
 
-        public async Task<ProductionProfileWaterInjection?> GetProductionProfileWaterInjection(Guid productionProfileId)
+    public async Task<ProductionProfileWaterInjection?> GetProductionProfileWaterInjection(Guid productionProfileId)
     {
         return await _context.ProductionProfileWaterInjection.FindAsync(productionProfileId);
     }
@@ -71,5 +71,53 @@ public class DrainageStrategyRepository : IDrainageStrategyRepository
         _context.ProductionProfileWaterInjection.Update(productionProfile);
         await _context.SaveChangesAsync();
         return productionProfile;
+    }
+
+    public async Task<FuelFlaringAndLossesOverride?> GetFuelFlaringAndLossesOverride(Guid profileId)
+    {
+        return await _context.FuelFlaringAndLossesOverride.FindAsync(profileId);
+    }
+
+    public async Task<FuelFlaringAndLossesOverride> UpdateFuelFlaringAndLossesOverride(FuelFlaringAndLossesOverride profileId)
+    {
+        _context.FuelFlaringAndLossesOverride.Update(profileId);
+        await _context.SaveChangesAsync();
+        return profileId;
+    }
+
+    public async Task<NetSalesGasOverride?> GetNetSalesGasOverride(Guid profileId)
+    {
+        return await _context.NetSalesGasOverride.FindAsync(profileId);
+    }
+
+    public async Task<NetSalesGasOverride> UpdateNetSalesGasOverride(NetSalesGasOverride profileId)
+    {
+        _context.NetSalesGasOverride.Update(profileId);
+        await _context.SaveChangesAsync();
+        return profileId;
+    }
+
+    public async Task<Co2EmissionsOverride?> GetCo2EmissionsOverride(Guid profileId)
+    {
+        return await _context.Co2EmissionsOverride.FindAsync(profileId);
+    }
+
+    public async Task<Co2EmissionsOverride> UpdateCo2EmissionsOverride(Co2EmissionsOverride profileId)
+    {
+        _context.Co2EmissionsOverride.Update(profileId);
+        await _context.SaveChangesAsync();
+        return profileId;
+    }
+
+    public async Task<ImportedElectricityOverride?> GetImportedElectricityOverride(Guid profileId)
+    {
+        return await _context.ImportedElectricityOverride.FindAsync(profileId);
+    }
+
+    public async Task<ImportedElectricityOverride> UpdateImportedElectricityOverride(ImportedElectricityOverride profileId)
+    {
+        _context.ImportedElectricityOverride.Update(profileId);
+        await _context.SaveChangesAsync();
+        return profileId;
     }
 }

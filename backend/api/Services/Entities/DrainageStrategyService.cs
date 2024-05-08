@@ -226,7 +226,7 @@ public class DrainageStrategyService : IDrainageStrategyService
         UpdateProductionProfileOilDto updatedProductionProfileOilDto
     )
     {
-        return await UpdateProductionProfile<ProductionProfileOil, ProductionProfileOilDto, UpdateProductionProfileOilDto>(
+        return await UpdateDrainageStrategyProfile<ProductionProfileOil, ProductionProfileOilDto, UpdateProductionProfileOilDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -245,7 +245,7 @@ public class DrainageStrategyService : IDrainageStrategyService
         UpdateProductionProfileGasDto updatedProductionProfileGasDto
     )
     {
-        return await UpdateProductionProfile<ProductionProfileGas, ProductionProfileGasDto, UpdateProductionProfileGasDto>(
+        return await UpdateDrainageStrategyProfile<ProductionProfileGas, ProductionProfileGasDto, UpdateProductionProfileGasDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -264,7 +264,7 @@ public class DrainageStrategyService : IDrainageStrategyService
         UpdateProductionProfileWaterDto updatedProductionProfileWaterDto
     )
     {
-        return await UpdateProductionProfile<ProductionProfileWater, ProductionProfileWaterDto, UpdateProductionProfileWaterDto>(
+        return await UpdateDrainageStrategyProfile<ProductionProfileWater, ProductionProfileWaterDto, UpdateProductionProfileWaterDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -283,7 +283,7 @@ public class DrainageStrategyService : IDrainageStrategyService
         UpdateProductionProfileWaterInjectionDto updatedProductionProfileWaterInjectionDto
     )
     {
-        return await UpdateProductionProfile<ProductionProfileWaterInjection, ProductionProfileWaterInjectionDto, UpdateProductionProfileWaterInjectionDto>(
+        return await UpdateDrainageStrategyProfile<ProductionProfileWaterInjection, ProductionProfileWaterInjectionDto, UpdateProductionProfileWaterInjectionDto>(
             projectId,
             caseId,
             drainageStrategyId,
@@ -294,7 +294,83 @@ public class DrainageStrategyService : IDrainageStrategyService
         );
     }
 
-    private async Task<TDto> UpdateProductionProfile<TProfile, TDto, TUpdateDto>(
+    public async Task<FuelFlaringAndLossesOverrideDto> UpdateFuelFlaringAndLossesOverride(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid profileId,
+        UpdateFuelFlaringAndLossesOverrideDto updateDto
+    )
+    {
+        return await UpdateDrainageStrategyProfile<FuelFlaringAndLossesOverride, FuelFlaringAndLossesOverrideDto, UpdateFuelFlaringAndLossesOverrideDto>(
+            projectId,
+            caseId,
+            drainageStrategyId,
+            profileId,
+            updateDto,
+            _repository.GetFuelFlaringAndLossesOverride,
+            _repository.UpdateFuelFlaringAndLossesOverride
+        );
+    }
+
+    public async Task<NetSalesGasOverrideDto> UpdateNetSalesGasOverride(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid profileId,
+        UpdateNetSalesGasOverrideDto updateDto
+    )
+    {
+        return await UpdateDrainageStrategyProfile<NetSalesGasOverride, NetSalesGasOverrideDto, UpdateNetSalesGasOverrideDto>(
+            projectId,
+            caseId,
+            drainageStrategyId,
+            profileId,
+            updateDto,
+            _repository.GetNetSalesGasOverride,
+            _repository.UpdateNetSalesGasOverride
+        );
+    }
+
+    public async Task<Co2EmissionsOverrideDto> UpdateCo2EmissionsOverride(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid profileId,
+        UpdateCo2EmissionsOverrideDto updateDto
+    )
+    {
+        return await UpdateDrainageStrategyProfile<Co2EmissionsOverride, Co2EmissionsOverrideDto, UpdateCo2EmissionsOverrideDto>(
+            projectId,
+            caseId,
+            drainageStrategyId,
+            profileId,
+            updateDto,
+            _repository.GetCo2EmissionsOverride,
+            _repository.UpdateCo2EmissionsOverride
+        );
+    }
+
+    public async Task<ImportedElectricityOverrideDto> UpdateImportedElectricityOverride(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid profileId,
+        UpdateImportedElectricityOverrideDto updateDto
+    )
+    {
+        return await UpdateDrainageStrategyProfile<ImportedElectricityOverride, ImportedElectricityOverrideDto, UpdateImportedElectricityOverrideDto>(
+            projectId,
+            caseId,
+            drainageStrategyId,
+            profileId,
+            updateDto,
+            _repository.GetImportedElectricityOverride,
+            _repository.UpdateImportedElectricityOverride
+        );
+    }
+
+    private async Task<TDto> UpdateDrainageStrategyProfile<TProfile, TDto, TUpdateDto>(
         Guid projectId,
         Guid caseId,
         Guid drainageStrategyId,
@@ -303,7 +379,7 @@ public class DrainageStrategyService : IDrainageStrategyService
         Func<Guid, Task<TProfile?>> getProfile,
         Func<TProfile, Task<TProfile>> updateProfile
     )
-        where TProfile : class
+        where TProfile : class, IDrainageStrategyTimeSeries
         where TDto : class
         where TUpdateDto : class
     {

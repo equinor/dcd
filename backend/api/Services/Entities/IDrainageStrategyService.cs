@@ -41,4 +41,36 @@ public interface IDrainageStrategyService
         Guid productionProfileId,
         UpdateProductionProfileWaterInjectionDto updatedProductionProfileWaterInjectionDto
     );
+
+    Task<FuelFlaringAndLossesOverrideDto> UpdateFuelFlaringAndLossesOverride(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid profileId,
+        UpdateFuelFlaringAndLossesOverrideDto updateDto
+    );
+
+    Task<NetSalesGasOverrideDto> UpdateNetSalesGasOverride(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid profileId,
+        UpdateNetSalesGasOverrideDto updateDto
+    );
+
+    Task<Co2EmissionsOverrideDto> UpdateCo2EmissionsOverride(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid profileId,
+        UpdateCo2EmissionsOverrideDto updateDto
+    );
+
+    Task<ImportedElectricityOverrideDto> UpdateImportedElectricityOverride(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid profileId,
+        UpdateImportedElectricityOverrideDto updateDto
+    );
 }

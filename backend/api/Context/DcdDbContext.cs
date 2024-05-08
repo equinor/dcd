@@ -26,14 +26,14 @@ public class DcdDbContext : DbContext
 
     public DbSet<Substructure> Substructures { get; set; } = null!;
     public DbSet<SubstructureCostProfile> SubstructureCostProfiles { get; set; } = null!;
-    public DbSet<SubstructureCostProfileOverride> SubstructureCostProfileOverrides { get; set; } = null!;
+    public DbSet<SubstructureCostProfileOverride> SubstructureCostProfileOverride { get; set; } = null!;
 
     public DbSet<SubstructureCessationCostProfile> SubstructureCessationCostProfiles { get; set; } = null!;
 
     public DbSet<Topside> Topsides { get; set; } = null!;
 
     public DbSet<TopsideCostProfile> TopsideCostProfiles { get; set; } = null!;
-    public DbSet<TopsideCostProfileOverride> TopsideCostProfileOverrides { get; set; } = null!;
+    public DbSet<TopsideCostProfileOverride> TopsideCostProfileOverride { get; set; } = null!;
     public DbSet<TopsideCessationCostProfile> TopsideCessationCostProfiles { get; set; } = null!;
 
     public DbSet<Transport> Transports { get; set; } = null!;
@@ -45,10 +45,21 @@ public class DcdDbContext : DbContext
     public DbSet<ProductionProfileOil> ProductionProfileOil { get; set; } = null!;
     public DbSet<ProductionProfileWater> ProductionProfileWater { get; set; } = null!;
     public DbSet<ProductionProfileWaterInjection> ProductionProfileWaterInjection { get; set; } = null!;
+
     public DbSet<FuelFlaringAndLosses> FuelFlaringAndLosses { get; set; } = null!;
+    public DbSet<FuelFlaringAndLossesOverride> FuelFlaringAndLossesOverride { get; set; } = null!;
+
     public DbSet<NetSalesGas> NetSalesGas { get; set; } = null!;
+    public DbSet<NetSalesGasOverride> NetSalesGasOverride { get; set; } = null!;
+
     public DbSet<Co2Emissions> Co2Emissions { get; set; } = null!;
+    public DbSet<Co2EmissionsOverride> Co2EmissionsOverride { get; set; } = null!;
+
     public DbSet<ProductionProfileNGL> ProductionProfileNGL { get; set; } = null!;
+
+    public DbSet<ImportedElectricity> ImportedElectricity { get; set; } = null!;
+    public DbSet<ImportedElectricityOverride> ImportedElectricityOverride { get; set; } = null!;
+
 
     public DbSet<WellProject> WellProjects { get; set; } = null!;
 

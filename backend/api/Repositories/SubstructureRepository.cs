@@ -27,12 +27,12 @@ public class SubstructureRepository : ISubstructureRepository
 
     public async Task<SubstructureCostProfileOverride?> GetSubstructureCostProfileOverride(Guid substructureCostProfileOverrideId)
     {
-        return await _context.SubstructureCostProfileOverrides.FindAsync(substructureCostProfileOverrideId);
+        return await _context.SubstructureCostProfileOverride.FindAsync(substructureCostProfileOverrideId);
     }
 
     public async Task<SubstructureCostProfileOverride> UpdateSubstructureCostProfileOverride(SubstructureCostProfileOverride substructureCostProfileOverride)
     {
-        _context.SubstructureCostProfileOverrides.Update(substructureCostProfileOverride);
+        _context.SubstructureCostProfileOverride.Update(substructureCostProfileOverride);
         await _context.SaveChangesAsync();
         return substructureCostProfileOverride;
     }

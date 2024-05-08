@@ -52,3 +52,9 @@ public class UpdateCo2EmissionsOverrideDto : UpdateTimeSeriesMassDto, ITimeSerie
 {
     public bool Override { get; set; }
 }
+
+public class UpdateImportedElectricityOverrideDto : UpdateTimeSeriesEnergyDto, ITimeSeriesOverrideDto
+{
+    public bool Override { get; set; }
+}
+

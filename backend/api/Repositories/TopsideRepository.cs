@@ -27,12 +27,12 @@ public class TopsideRepository : ITopsideRepository
 
     public async Task<TopsideCostProfileOverride?> GetTopsideCostProfileOverride(Guid topsideCostProfileOverrideId)
     {
-        return await _context.TopsideCostProfileOverrides.FindAsync(topsideCostProfileOverrideId);
+        return await _context.TopsideCostProfileOverride.FindAsync(topsideCostProfileOverrideId);
     }
 
     public async Task<TopsideCostProfileOverride> UpdateTopsideCostProfileOverride(TopsideCostProfileOverride topsideCostProfileOverride)
     {
-        _context.TopsideCostProfileOverrides.Update(topsideCostProfileOverride);
+        _context.TopsideCostProfileOverride.Update(topsideCostProfileOverride);
         await _context.SaveChangesAsync();
         return topsideCostProfileOverride;
     }
