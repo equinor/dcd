@@ -1,17 +1,10 @@
-namespace Api.Services.FusionIntegration;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using Api.Services.FusionIntegration.Models;
+using api.Services.FusionIntegration.Models;
 
 using Fusion.Integration;
 
-using Microsoft.Extensions.Logging;
-
 using Newtonsoft.Json;
+
+namespace api.Services.FusionIntegration;
 
 public class FusionService : IFusionService
 {

@@ -13,12 +13,12 @@ import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 
 interface Props {
-    topside: Components.Schemas.TopsideDto,
-    setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideDto | undefined>>,
+    topside: Components.Schemas.TopsideWithProfilesDto,
+    setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideWithProfilesDto | undefined>>,
     surf: Components.Schemas.SurfDto,
     setSurf: Dispatch<SetStateAction<Components.Schemas.SurfDto | undefined>>,
-    substructure: Components.Schemas.SubstructureDto,
-    setSubstrucutre: Dispatch<SetStateAction<Components.Schemas.SubstructureDto | undefined>>,
+    substructure: Components.Schemas.SubstructureWithProfilesDto,
+    setSubstrucutre: Dispatch<SetStateAction<Components.Schemas.SubstructureWithProfilesDto | undefined>>,
     transport: Components.Schemas.TransportDto,
     setTransport: Dispatch<SetStateAction<Components.Schemas.TransportDto | undefined>>,
 }

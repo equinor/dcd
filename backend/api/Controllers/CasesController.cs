@@ -1,7 +1,6 @@
+using api.Authorization;
 using api.Dtos;
 using api.Services;
-
-using Api.Authorization;
 
 using AutoMapper;
 

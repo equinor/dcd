@@ -1,12 +1,12 @@
+using api.Authorization;
 using api.Context;
+using api.Helpers;
 using api.Mappings;
+using api.Repositories;
 using api.SampleData.Generators;
 using api.Services;
+using api.Services.FusionIntegration;
 using api.Services.GenerateCostProfiles;
-
-using Api.Authorization;
-using Api.Helpers;
-using Api.Services.FusionIntegration;
 
 using Azure.Identity;
 
@@ -187,6 +187,15 @@ builder.Services.AddScoped<ICompareCasesService, CompareCasesService>();
 builder.Services.AddScoped<IGenerateCo2DrillingFlaringFuelTotals, GenerateCo2DrillingFlaringFuelTotals>();
 builder.Services.AddScoped<ISTEAService, STEAService>();
 
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<ICaseRepository, CaseRepository>();
+builder.Services.AddScoped<ISubstructureRepository, SubstructureRepository>();
+builder.Services.AddScoped<ITopsideRepository, TopsideRepository>();
+builder.Services.AddScoped<IDrainageStrategyRepository, DrainageStrategyRepository>();
+
+builder.Services.AddScoped<IMapperService, MapperService>();
+builder.Services.AddScoped<IConversionMapperService, ConversionMapperService>();
+
 builder.Services.AddHostedService<RefreshProjectService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
@@ -204,14 +213,14 @@ builder.Services.AddControllers(
 );
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddSwaggerGen(options =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo
+    options.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "Concept App",
         Version = "v1",
     });
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey,
@@ -221,7 +230,7 @@ builder.Services.AddSwaggerGen(c =>
         Description =
             "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
     });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -246,7 +255,10 @@ if (app.Environment.IsDevelopment())
 {
     IdentityModelEventSource.ShowPII = true;
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Concept App");
+    });
 }
 
 app.UseCors(_accessControlPolicyName);

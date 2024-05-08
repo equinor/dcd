@@ -1,9 +1,6 @@
-namespace Api.Services.FusionIntegration;
+using api.Services.FusionIntegration.Models;
 
-using System;
-using System.Threading.Tasks;
-
-using Api.Services.FusionIntegration.Models;
+namespace api.Services.FusionIntegration;
 
 public interface IFusionService
 {

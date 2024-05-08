@@ -1,3 +1,5 @@
+namespace api.Exceptions;
+
 
 public class NotFoundInDBException : Exception
 {

@@ -27,8 +27,8 @@ interface CaseContextType {
     activeTabCase: number;
     setActiveTabCase: Dispatch<SetStateAction<number>>,
 
-    topside: Components.Schemas.TopsideDto | undefined
-    setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideDto | undefined>>
+    topside: Components.Schemas.TopsideWithProfilesDto | undefined
+    setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideWithProfilesDto | undefined>>
     topsideCost: Components.Schemas.TopsideCostProfileDto | undefined
     setTopsideCost: Dispatch<SetStateAction<Components.Schemas.TopsideCostProfileDto | undefined>>
     surf: Components.Schemas.SurfDto | undefined
@@ -37,16 +37,16 @@ interface CaseContextType {
     setSurfCost: Dispatch<SetStateAction<Components.Schemas.SurfCostProfileDto | undefined>>
     surfCostOverride: Components.Schemas.SurfCostProfileOverrideDto | undefined
     setSurfCostOverride: Dispatch<SetStateAction<Components.Schemas.SurfCostProfileOverrideDto | undefined>>
-    substructure: Components.Schemas.SubstructureDto | undefined
-    setSubstructure: Dispatch<SetStateAction<Components.Schemas.SubstructureDto | undefined>>
+    substructure: Components.Schemas.SubstructureWithProfilesDto | undefined
+    setSubstructure: Dispatch<SetStateAction<Components.Schemas.SubstructureWithProfilesDto | undefined>>
     substructureCost: Components.Schemas.SubstructureCostProfileDto | undefined
     setSubstructureCost: Dispatch<SetStateAction<Components.Schemas.SubstructureCostProfileDto | undefined>>
     transport: Components.Schemas.TransportDto | undefined
     setTransport: Dispatch<SetStateAction<Components.Schemas.TransportDto | undefined>>
     transportCost: Components.Schemas.TransportCostProfileDto | undefined
     setTransportCost: Dispatch<SetStateAction<Components.Schemas.TransportCostProfileDto | undefined>>
-    drainageStrategy: Components.Schemas.DrainageStrategyDto | undefined
-    setDrainageStrategy: Dispatch<SetStateAction<Components.Schemas.DrainageStrategyDto | undefined>>
+    drainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto | undefined
+    setDrainageStrategy: Dispatch<SetStateAction<Components.Schemas.DrainageStrategyWithProfilesDto | undefined>>
 
     wellProjectWells: Components.Schemas.WellProjectWellDto[] | undefined
     setWellProjectWells: Dispatch<SetStateAction<Components.Schemas.WellProjectWellDto[] | undefined>>
@@ -127,16 +127,16 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [projectCaseNew, setProjectCaseNew] = useState<Components.Schemas.CreateCaseDto | undefined>()
     const [activeTabCase, setActiveTabCase] = useState<number>(0)
 
-    const [topside, setTopside] = useState<Components.Schemas.TopsideDto | undefined>()
+    const [topside, setTopside] = useState<Components.Schemas.TopsideWithProfilesDto | undefined>()
     const [topsideCost, setTopsideCost] = useState<Components.Schemas.TopsideCostProfileDto | undefined>()
     const [surf, setSurf] = useState<Components.Schemas.SurfDto>()
     const [surfCost, setSurfCost] = useState<Components.Schemas.SurfCostProfileDto | undefined>()
     const [surfCostOverride, setSurfCostOverride] = useState<Components.Schemas.SurfCostProfileOverrideDto>()
-    const [substructure, setSubstructure] = useState<Components.Schemas.SubstructureDto>()
+    const [substructure, setSubstructure] = useState<Components.Schemas.SubstructureWithProfilesDto>()
     const [substructureCost, setSubstructureCost] = useState<Components.Schemas.SubstructureCostProfileDto | undefined>()
     const [transport, setTransport] = useState<Components.Schemas.TransportDto>()
     const [transportCost, setTransportCost] = useState<Components.Schemas.TransportCostProfileDto | undefined>()
-    const [drainageStrategy, setDrainageStrategy] = useState<Components.Schemas.DrainageStrategyDto>()
+    const [drainageStrategy, setDrainageStrategy] = useState<Components.Schemas.DrainageStrategyWithProfilesDto>()
 
     const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellProjectWellDto[] | undefined>()
     const [explorationWells, setExplorationWells] = useState<Components.Schemas.ExplorationWellDto[] | undefined>()

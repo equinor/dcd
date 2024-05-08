@@ -29,8 +29,8 @@ interface ITimeSeriesData {
     overridable?: boolean
 }
 interface Props {
-    drainageStrategy: Components.Schemas.DrainageStrategyDto,
-    setDrainageStrategy: Dispatch<SetStateAction<Components.Schemas.DrainageStrategyDto | undefined>>,
+    drainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto,
+    setDrainageStrategy: Dispatch<SetStateAction<Components.Schemas.DrainageStrategyWithProfilesDto | undefined>>,
 
     netSalesGas: Components.Schemas.NetSalesGasDto | undefined,
     setNetSalesGas: Dispatch<SetStateAction<Components.Schemas.NetSalesGasDto | undefined>>,
@@ -84,7 +84,7 @@ const CaseProductionProfilesTab = ({
 
     const gridRef = useRef<any>(null)
 
-    const updateAndSetDraiangeStrategy = (drainage: Components.Schemas.DrainageStrategyDto) => {
+    const updateAndSetDraiangeStrategy = (drainage: Components.Schemas.DrainageStrategyWithProfilesDto) => {
         if (drainageStrategy === undefined) { return }
         if (netSalesGas === undefined
             || fuelFlaringAndLosses === undefined
@@ -98,7 +98,7 @@ const CaseProductionProfilesTab = ({
             || fuelFlaringAndLossesOverride === undefined) {
             return
         }
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainage }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainage }
         newDrainageStrategy.netSalesGas = netSalesGas
         newDrainageStrategy.netSalesGasOverride = netSalesGasOverride
         newDrainageStrategy.fuelFlaringAndLosses = fuelFlaringAndLosses
@@ -241,11 +241,11 @@ const CaseProductionProfilesTab = ({
                     setImportedElectricity(drainageStrategy.importedElectricity)
 
                     SetTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
-                    drainageStrategy.netSalesGasOverride, drainageStrategy.fuelFlaringAndLossesOverride,
-                    drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
-                    drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
-                    drainageStrategy.productionProfileWaterInjection, drainageStrategy.importedElectricityOverride,
-                    drainageStrategy.co2EmissionsOverride,
+                        drainageStrategy.netSalesGasOverride, drainageStrategy.fuelFlaringAndLossesOverride,
+                        drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
+                        drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
+                        drainageStrategy.productionProfileWaterInjection, drainageStrategy.importedElectricityOverride,
+                        drainageStrategy.co2EmissionsOverride,
                     ], new Date(projectCase?.dG4Date).getFullYear(), setStartYear, setEndYear, setTableYears)
                     setGas(drainageStrategy.productionProfileGas)
                     setOil(drainageStrategy.productionProfileOil)
@@ -264,49 +264,49 @@ const CaseProductionProfilesTab = ({
     }, [activeTabCase])
 
     useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
         if (!oil) { return }
         newDrainageStrategy.productionProfileOil = oil
         setDrainageStrategy(newDrainageStrategy)
     }, [oil])
 
     useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
         if (!gas) { return }
         newDrainageStrategy.productionProfileGas = gas
         setDrainageStrategy(newDrainageStrategy)
     }, [gas])
 
     useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
         if (!water) { return }
         newDrainageStrategy.productionProfileWater = water
         setDrainageStrategy(newDrainageStrategy)
     }, [water])
 
     useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
         if (!waterInjection) { return }
         newDrainageStrategy.productionProfileWaterInjection = waterInjection
         setDrainageStrategy(newDrainageStrategy)
     }, [waterInjection])
 
     useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
         if (!importedElectricityOverride) { return }
         newDrainageStrategy.importedElectricityOverride = importedElectricityOverride
         setDrainageStrategy(newDrainageStrategy)
     }, [importedElectricityOverride])
 
     useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
         if (!fuelFlaringAndLossesOverride) { return }
         newDrainageStrategy.fuelFlaringAndLossesOverride = fuelFlaringAndLossesOverride
         setDrainageStrategy(newDrainageStrategy)
     }, [fuelFlaringAndLossesOverride])
 
     useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
         if (!netSalesGasOverride) { return }
         newDrainageStrategy.netSalesGasOverride = netSalesGasOverride
         setDrainageStrategy(newDrainageStrategy)

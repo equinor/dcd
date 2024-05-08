@@ -9,6 +9,7 @@ public class DrainageStrategyProfile : Profile
 {
     public DrainageStrategyProfile()
     {
+        CreateMap<DrainageStrategy, DrainageStrategyWithProfilesDto>();
         CreateMap<DrainageStrategy, DrainageStrategyDto>();
         CreateMap<ProductionProfileOil, ProductionProfileOilDto>()
             .ForMember(
@@ -106,6 +107,7 @@ public class DrainageStrategyProfile : Profile
         CreateMap<Co2Intensity, Co2IntensityDto>();
 
         CreateMap<UpdateDrainageStrategyDto, DrainageStrategy>();
+        CreateMap<UpdateDrainageStrategyWithProfilesDto, DrainageStrategy>();
         CreateMap<UpdateFuelFlaringAndLossesOverrideDto, FuelFlaringAndLossesOverride>()
             .ForMember(
                 dest => dest.Values,

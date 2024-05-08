@@ -323,9 +323,9 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         return caseDto;
     }
 
-    public async Task<DrainageStrategyDto?> UpdateDrainageStrategy(
+    public async Task<DrainageStrategyWithProfilesDto?> UpdateDrainageStrategy(
         Guid drainageStrategyId,
-        UpdateDrainageStrategyDto updatedDto,
+        UpdateDrainageStrategyWithProfilesDto updatedDto,
         PhysUnit unit,
         ProfilesToGenerate profilesToGenerate
         )
@@ -342,7 +342,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
 
         var updatedItem = _context.DrainageStrategies!.Update(item);
 
-        var destination = _mapper.Map<DrainageStrategy, DrainageStrategyDto>(updatedItem.Entity, opts => opts.Items["ConversionUnit"] = unit.ToString());
+        var destination = _mapper.Map<DrainageStrategy, DrainageStrategyWithProfilesDto>(updatedItem.Entity, opts => opts.Items["ConversionUnit"] = unit.ToString());
 
         return destination;
     }
@@ -384,7 +384,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         return _mapper.Map<SurfDto>(updatedItem.Entity);
     }
 
-    public async Task<SubstructureDto?> UpdateSubstructure(Guid substructureLink, APIUpdateSubstructureDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<SubstructureWithProfilesDto?> UpdateSubstructure(Guid substructureLink, APIUpdateSubstructureWithProfilesDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         profilesToGenerate.StudyCost = true;
 
@@ -393,7 +393,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         _mapper.Map(updatedDto, item);
 
         var updatedItem = _context.Substructures!.Update(item);
-        return _mapper.Map<SubstructureDto>(updatedItem.Entity);
+        return _mapper.Map<SubstructureWithProfilesDto>(updatedItem.Entity);
     }
 
     public async Task<TransportDto?> UpdateTransport(Guid transportLink, APIUpdateTransportDto updatedDto, ProfilesToGenerate profilesToGenerate)
@@ -407,7 +407,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         var updatedItem = _context.Transports!.Update(item);
         return _mapper.Map<TransportDto>(updatedItem.Entity);
     }
-    public async Task<TopsideDto?> UpdateTopside(Guid topsideLink, APIUpdateTopsideDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<TopsideWithProfilesDto?> UpdateTopside(Guid topsideLink, APIUpdateTopsideWithProfilesDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         profilesToGenerate.StudyCost = true;
         profilesToGenerate.OpexCost = true;
@@ -420,6 +420,6 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         _mapper.Map(updatedDto, item);
 
         var updatedItem = _context.Topsides!.Update(item);
-        return _mapper.Map<TopsideDto>(updatedItem.Entity);
+        return _mapper.Map<TopsideWithProfilesDto>(updatedItem.Entity);
     }
 }

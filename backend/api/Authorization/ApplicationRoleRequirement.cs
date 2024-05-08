@@ -1,8 +1,6 @@
-namespace Api.Authorization;
-
-using System.Collections.Generic;
-
 using Microsoft.AspNetCore.Authorization;
+
+namespace api.Authorization;
 
 public class ApplicationRoleRequirement : IAuthorizationRequirement
 {

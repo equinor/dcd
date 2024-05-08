@@ -3,10 +3,11 @@ using System.Diagnostics;
 using api.Adapters;
 using api.Context;
 using api.Dtos;
+using api.Exceptions;
 using api.Mappings;
 using api.Models;
 
-using Api.Services.FusionIntegration;
+using api.Services.FusionIntegration;
 
 using AutoMapper;
 

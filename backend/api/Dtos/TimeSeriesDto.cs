@@ -178,8 +178,15 @@ public class UpdateTimeSeriesMassDto
     public int StartYear { get; set; }
     public double[]? Values { get; set; } = [];
 }
+
 public class TimeSeriesEnergyDto : TimeSeriesDoubleDto
 {
+}
+
+public class UpdateTimeSeriesEnergyDto
+{
+    public int StartYear { get; set; }
+    public double[]? Values { get; set; } = [];
 }
 
 public class TimeSeriesScheduleDto : TimeSeriesDto<int>

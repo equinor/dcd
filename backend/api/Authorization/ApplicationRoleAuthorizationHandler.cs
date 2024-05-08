@@ -1,10 +1,8 @@
-namespace Api.Authorization;
-
-using System.Threading.Tasks;
-
-using Api.Authorization.Extensions;
+using api.Authorization.Extensions;
 
 using Microsoft.AspNetCore.Authorization;
+
+namespace api.Authorization;
 
 public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<ApplicationRoleRequirement>
 {

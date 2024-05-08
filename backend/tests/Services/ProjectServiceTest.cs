@@ -1,3 +1,4 @@
+using api.Exceptions;
 using api.Models;
 using api.SampleData.Generators;
 using api.Services;
