@@ -5,6 +5,9 @@ export type ServiceConfig = {
 }
 
 const configuration = {
+    BaseUrl: {
+        BASE_URL: "",
+    },
     CaseService: {
         BASE_URL: "",
     },
@@ -35,6 +38,7 @@ const configuration = {
 }
 
 export const buildConfig = (baseUrl: string) => {
+    configuration.BaseUrl.BASE_URL = `${baseUrl}/`
     configuration.CaseService.BASE_URL = `${baseUrl}/`
     configuration.CaseWithAssetsService.BASE_URL = `${baseUrl}/`
     configuration.TechnicalInputService.BASE_URL = `${baseUrl}/`
