@@ -398,7 +398,8 @@ public class DrainageStrategyService : IDrainageStrategyService
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update production profile with id {productionProfileId} for case id {caseId}.", productionProfileId, caseId);
+            var profileName = typeof(TProfile).Name;
+            _logger.LogError(ex, "Failed to update profile {profileName} with id {productionProfileId} for case id {caseId}.", profileName, productionProfileId, caseId);
             throw;
         }
 
