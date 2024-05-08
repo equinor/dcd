@@ -4,7 +4,7 @@ using api.Models;
 
 namespace api.Dtos;
 
-public class SubstructureDto
+public class SubstructureWithProfilesDto
 {
     [Required]
     public Guid Id { get; set; }
@@ -12,6 +12,12 @@ public class SubstructureDto
     public string Name { get; set; } = string.Empty!;
     [Required]
     public Guid ProjectId { get; set; }
+    [Required]
+    public SubstructureCostProfileDto CostProfile { get; set; } = new SubstructureCostProfileDto();
+    [Required]
+    public SubstructureCostProfileOverrideDto CostProfileOverride { get; set; } = new SubstructureCostProfileOverrideDto();
+    [Required]
+    public SubstructureCessationCostProfileDto CessationCostProfile { get; set; } = new SubstructureCessationCostProfileDto();
     [Required]
     public double DryWeight { get; set; }
     [Required]
@@ -30,4 +36,18 @@ public class SubstructureDto
     public Concept Concept { get; set; }
     public DateTimeOffset? DG3Date { get; set; }
     public DateTimeOffset? DG4Date { get; set; }
+    public bool HasChanges { get; set; }
+}
+
+public class SubstructureCostProfileDto : TimeSeriesCostDto
+{
+}
+public class SubstructureCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    [Required]
+    public bool Override { get; set; }
+}
+
+public class SubstructureCessationCostProfileDto : TimeSeriesCostDto
+{
 }

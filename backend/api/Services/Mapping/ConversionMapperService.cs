@@ -31,4 +31,18 @@ public class ConversionMapperService : IConversionMapperService
         }
         return dto;
     }
+
+    public T MapToEntity<T, TDto>(TDto dto, T existing, Guid id, PhysUnit physUnit)
+        where T : class
+        where TDto : class
+    {
+        var entity = _mapper.Map(dto, existing, opts => opts.Items["ConversionUnit"] = physUnit.ToString());
+        if (entity == null)
+        {
+            var entityType = typeof(T).Name;
+            _logger.LogError("Mapping of {EntityType} with id {Id} resulted in a null entity.", entityType, id);
+            throw new MappingException($"Mapping of {entityType} resulted in a null entity.", id);
+        }
+        return entity;
+    }
 }

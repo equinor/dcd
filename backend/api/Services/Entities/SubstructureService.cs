@@ -56,10 +56,10 @@ public class SubstructureService : ISubstructureService
         return createdSubstructure.Entity;
     }
 
-    public async Task<SubstructureDto> CopySubstructure(Guid substructureId, Guid sourceCaseId)
+    public async Task<SubstructureWithProfilesDto> CopySubstructure(Guid substructureId, Guid sourceCaseId)
     {
         var source = await GetSubstructure(substructureId);
-        var newSubstructureDto = _mapper.Map<SubstructureDto>(source);
+        var newSubstructureDto = _mapper.Map<SubstructureWithProfilesDto>(source);
         if (newSubstructureDto == null)
         {
             throw new ArgumentNullException(nameof(newSubstructureDto));
@@ -96,7 +96,7 @@ public class SubstructureService : ISubstructureService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<SubstructureDto> UpdateSubstructureAndCostProfiles<TDto>(TDto updatedSubstructureDto, Guid substructureId)
+    public async Task<SubstructureWithProfilesDto> UpdateSubstructureAndCostProfiles<TDto>(TDto updatedSubstructureDto, Guid substructureId)
         where TDto : BaseUpdateSubstructureDto
     {
         var existing = await GetSubstructure(substructureId);
@@ -106,7 +106,7 @@ public class SubstructureService : ISubstructureService
         existing.LastChangedDate = DateTimeOffset.UtcNow;
         _context.Substructures!.Update(existing);
         await _context.SaveChangesAsync();
-        var dto = _mapper.Map<SubstructureDto>(existing);
+        var dto = _mapper.Map<SubstructureWithProfilesDto>(existing);
         return dto ?? throw new ArgumentNullException(nameof(dto));
     }
 

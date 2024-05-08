@@ -9,11 +9,13 @@ public class SubstructureProfile : Profile
 {
     public SubstructureProfile()
     {
+        CreateMap<Substructure, SubstructureWithProfilesDto>();
         CreateMap<Substructure, SubstructureDto>();
         CreateMap<SubstructureCostProfile, SubstructureCostProfileDto>();
         CreateMap<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>();
         CreateMap<SubstructureCessationCostProfile, SubstructureCessationCostProfileDto>();
 
+        CreateMap<APIUpdateSubstructureWithProfilesDto, Substructure>();
         CreateMap<APIUpdateSubstructureDto, Substructure>();
         CreateMap<PROSPUpdateSubstructureDto, Substructure>();
         CreateMap<UpdateSubstructureCostProfileDto, SubstructureCostProfile>();

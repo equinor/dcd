@@ -43,7 +43,7 @@ public class DrainageStrategyService : IDrainageStrategyService
         _projectRepository = projectRepository;
     }
 
-    public async Task<ProjectDto> CreateDrainageStrategy(DrainageStrategyDto drainageStrategyDto, Guid sourceCaseId)
+    public async Task<ProjectDto> CreateDrainageStrategy(DrainageStrategyWithProfilesDto drainageStrategyDto, Guid sourceCaseId)
     {
         var unit = (await _projectService.GetProject(drainageStrategyDto.ProjectId)).PhysicalUnit;
         var drainageStrategy = _mapper.Map<DrainageStrategy>(drainageStrategyDto);
@@ -74,12 +74,12 @@ public class DrainageStrategyService : IDrainageStrategyService
         return createdDrainageStrategy.Entity;
     }
 
-    public async Task<DrainageStrategyDto> CopyDrainageStrategy(Guid drainageStrategyId, Guid sourceCaseId)
+    public async Task<DrainageStrategyWithProfilesDto> CopyDrainageStrategy(Guid drainageStrategyId, Guid sourceCaseId)
     {
         var source = await GetDrainageStrategy(drainageStrategyId);
         var unit = (await _projectService.GetProject(source.ProjectId)).PhysicalUnit;
 
-        var newDrainageStrategyDto = _mapper.Map<DrainageStrategy, DrainageStrategyDto>(
+        var newDrainageStrategyDto = _mapper.Map<DrainageStrategy, DrainageStrategyWithProfilesDto>(
             source,
             opts => opts.Items["ConversionUnit"] = unit.ToString()
         );
@@ -147,7 +147,7 @@ public class DrainageStrategyService : IDrainageStrategyService
         // var dto = DrainageStrategyDtoAdapter.Convert(drainageStrategy, unit);
 
         // return dto;
-        return new DrainageStrategyDto();
+        return new DrainageStrategyWithProfilesDto();
     }
 
     private async Task SetCaseLink(DrainageStrategy drainageStrategy, Guid sourceCaseId, Project project)
@@ -199,9 +199,7 @@ public class DrainageStrategyService : IDrainageStrategyService
         var project = await _projectRepository.GetProject(projectId)
             ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
 
-        // TODO conversion
-        _conversionMapperService.MapToEntity(updatedDrainageStrategyDto, existingDrainageStrategy);
-        _mapper.Map(updatedDrainageStrategyDto, existingDrainageStrategy);
+        _conversionMapperService.MapToEntity(updatedDrainageStrategyDto, existingDrainageStrategy, drainageStrategyId, project.PhysicalUnit);
 
         DrainageStrategy updatedDrainageStrategy;
         try
@@ -234,9 +232,7 @@ public class DrainageStrategyService : IDrainageStrategyService
         var project = await _projectRepository.GetProject(projectId)
             ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
 
-        // TODO Conversion
-        _conversionMapperService.MapToEntity(updatedProductionProfileOilDto, existingProfile);
-        _mapper.Map(updatedProductionProfileOilDto, existingProfile);
+        _conversionMapperService.MapToEntity(updatedProductionProfileOilDto, existingProfile, drainageStrategyId, project.PhysicalUnit);
 
         ProductionProfileOil updatedProfile;
         try

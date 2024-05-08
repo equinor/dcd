@@ -5,7 +5,7 @@ namespace api.Services;
 
 public interface ITopsideService
 {
-    Task<TopsideDto> CopyTopside(Guid topsideId, Guid sourceCaseId);
+    Task<TopsideWithProfilesDto> CopyTopside(Guid topsideId, Guid sourceCaseId);
     Task<Topside> CreateTopside(Guid projectId, Guid sourceCaseId, CreateTopsideDto topsideDto);
     Task<ProjectDto> UpdateTopsideAndCostProfiles<TDto>(TDto updatedTopsideDto, Guid topsideId) where TDto : BaseUpdateTopsideDto;
     Task<Topside> GetTopside(Guid topsideId);

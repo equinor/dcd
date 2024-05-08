@@ -39,10 +39,10 @@ public class TopsideService : ITopsideService
         _mapperService = mapperService;
     }
 
-    public async Task<TopsideDto> CopyTopside(Guid topsideId, Guid sourceCaseId)
+    public async Task<TopsideWithProfilesDto> CopyTopside(Guid topsideId, Guid sourceCaseId)
     {
         var source = await GetTopside(topsideId);
-        var newTopsideDto = _mapper.Map<TopsideDto>(source);
+        var newTopsideDto = _mapper.Map<TopsideWithProfilesDto>(source);
         if (newTopsideDto == null)
         {
             _logger.LogError("Failed to map topside to dto");

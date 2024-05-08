@@ -4,7 +4,7 @@ using api.Models;
 
 namespace api.Dtos;
 
-public class TopsideDto
+public class TopsideWithProfilesDto
 {
     [Required]
     public Guid Id { get; set; }
@@ -12,6 +12,12 @@ public class TopsideDto
     public string Name { get; set; } = string.Empty!;
     [Required]
     public Guid ProjectId { get; set; }
+    [Required]
+    public TopsideCostProfileDto CostProfile { get; set; } = new TopsideCostProfileDto();
+    [Required]
+    public TopsideCostProfileOverrideDto CostProfileOverride { get; set; } = new TopsideCostProfileOverrideDto();
+    [Required]
+    public TopsideCessationCostProfileDto CessationCostProfile { get; set; } = new TopsideCessationCostProfileDto();
     [Required]
     public double DryWeight { get; set; }
     [Required]
@@ -62,4 +68,19 @@ public class TopsideDto
     public double FacilityOpex { get; set; }
     [Required]
     public double PeakElectricityImported { get; set; }
+    public bool HasChanges { get; set; }
+}
+
+public class TopsideCostProfileDto : TimeSeriesCostDto
+{
+}
+
+public class TopsideCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    [Required]
+    public bool Override { get; set; }
+}
+
+public class TopsideCessationCostProfileDto : TimeSeriesCostDto
+{
 }
