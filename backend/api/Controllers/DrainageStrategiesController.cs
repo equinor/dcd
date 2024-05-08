@@ -49,5 +49,41 @@ public class DrainageStrategiesController : ControllerBase
         return await _drainageStrategyService.UpdateProductionProfileOil(projectId, caseId, drainageStrategyId, profileId, dto);
     }
 
+        [HttpPut("{drainageStrategyId}/production-profile-gas/{profileId}")]
+    public async Task<ProductionProfileGasDto> UpdateProductionProfileGas(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromRoute] Guid profileId,
+        [FromBody] UpdateProductionProfileGasDto dto)
+    {
+        return await _drainageStrategyService.UpdateProductionProfileGas(projectId, caseId, drainageStrategyId, profileId, dto);
+    }
+
+
+    [HttpPut("{drainageStrategyId}/production-profile-water/{profileId}")]
+    public async Task<ProductionProfileWaterDto> UpdateProductionProfileWater(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromRoute] Guid profileId,
+        [FromBody] UpdateProductionProfileWaterDto dto)
+    {
+        return await _drainageStrategyService.UpdateProductionProfileWater(projectId, caseId, drainageStrategyId, profileId, dto);
+    }
+
+
+    [HttpPut("{drainageStrategyId}/production-profile-water-injection/{profileId}")]
+    public async Task<ProductionProfileWaterInjectionDto> UpdateProductionProfileWaterInjection(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromRoute] Guid profileId,
+        [FromBody] UpdateProductionProfileWaterInjectionDto dto)
+    {
+        return await _drainageStrategyService.UpdateProductionProfileWaterInjection(projectId, caseId, drainageStrategyId, profileId, dto);
+    }
+
+
 
 }

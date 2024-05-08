@@ -36,4 +36,40 @@ public class DrainageStrategyRepository : IDrainageStrategyRepository
         await _context.SaveChangesAsync();
         return productionProfileOil;
     }
+
+    public async Task<ProductionProfileGas?> GetProductionProfileGas(Guid productionProfileId)
+    {
+        return await _context.ProductionProfileGas.FindAsync(productionProfileId);
+    }
+
+    public async Task<ProductionProfileGas> UpdateProductionProfileGas(ProductionProfileGas productionProfile)
+    {
+        _context.ProductionProfileGas.Update(productionProfile);
+        await _context.SaveChangesAsync();
+        return productionProfile;
+    }
+
+        public async Task<ProductionProfileWater?> GetProductionProfileWater(Guid productionProfileId)
+    {
+        return await _context.ProductionProfileWater.FindAsync(productionProfileId);
+    }
+
+    public async Task<ProductionProfileWater> UpdateProductionProfileWater(ProductionProfileWater productionProfile)
+    {
+        _context.ProductionProfileWater.Update(productionProfile);
+        await _context.SaveChangesAsync();
+        return productionProfile;
+    }
+
+        public async Task<ProductionProfileWaterInjection?> GetProductionProfileWaterInjection(Guid productionProfileId)
+    {
+        return await _context.ProductionProfileWaterInjection.FindAsync(productionProfileId);
+    }
+
+    public async Task<ProductionProfileWaterInjection> UpdateProductionProfileWaterInjection(ProductionProfileWaterInjection productionProfile)
+    {
+        _context.ProductionProfileWaterInjection.Update(productionProfile);
+        await _context.SaveChangesAsync();
+        return productionProfile;
+    }
 }

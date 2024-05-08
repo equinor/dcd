@@ -208,7 +208,7 @@ public class DrainageStrategyService : IDrainageStrategyService
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update drainage strategy with id {drainageStrategyId} for case id {CaseId}.", drainageStrategyId, caseId);
+            _logger.LogError(ex, "Failed to update drainage strategy with id {drainageStrategyId} for case id {caseId}.", drainageStrategyId, caseId);
             throw;
         }
 
@@ -226,28 +226,109 @@ public class DrainageStrategyService : IDrainageStrategyService
         UpdateProductionProfileOilDto updatedProductionProfileOilDto
     )
     {
-        var existingProfile = await _repository.GetProductionProfileOil(productionProfileOilId)
-            ?? throw new NotFoundInDBException($"Production profile oil with id {productionProfileOilId} not found.");
+        return await UpdateProductionProfile<ProductionProfileOil, ProductionProfileOilDto, UpdateProductionProfileOilDto>(
+            projectId,
+            caseId,
+            drainageStrategyId,
+            productionProfileOilId,
+            updatedProductionProfileOilDto,
+            _repository.GetProductionProfileOil,
+            _repository.UpdateProductionProfileOil
+        );
+    }
+
+    public async Task<ProductionProfileGasDto> UpdateProductionProfileGas(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid productionProfileId,
+        UpdateProductionProfileGasDto updatedProductionProfileGasDto
+    )
+    {
+        return await UpdateProductionProfile<ProductionProfileGas, ProductionProfileGasDto, UpdateProductionProfileGasDto>(
+            projectId,
+            caseId,
+            drainageStrategyId,
+            productionProfileId,
+            updatedProductionProfileGasDto,
+            _repository.GetProductionProfileGas,
+            _repository.UpdateProductionProfileGas
+        );
+    }
+
+    public async Task<ProductionProfileWaterDto> UpdateProductionProfileWater(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid productionProfileId,
+        UpdateProductionProfileWaterDto updatedProductionProfileWaterDto
+    )
+    {
+        return await UpdateProductionProfile<ProductionProfileWater, ProductionProfileWaterDto, UpdateProductionProfileWaterDto>(
+            projectId,
+            caseId,
+            drainageStrategyId,
+            productionProfileId,
+            updatedProductionProfileWaterDto,
+            _repository.GetProductionProfileWater,
+            _repository.UpdateProductionProfileWater
+        );
+    }
+
+    public async Task<ProductionProfileWaterInjectionDto> UpdateProductionProfileWaterInjection(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid productionProfileId,
+        UpdateProductionProfileWaterInjectionDto updatedProductionProfileWaterInjectionDto
+    )
+    {
+        return await UpdateProductionProfile<ProductionProfileWaterInjection, ProductionProfileWaterInjectionDto, UpdateProductionProfileWaterInjectionDto>(
+            projectId,
+            caseId,
+            drainageStrategyId,
+            productionProfileId,
+            updatedProductionProfileWaterInjectionDto,
+            _repository.GetProductionProfileWaterInjection,
+            _repository.UpdateProductionProfileWaterInjection
+        );
+    }
+
+    private async Task<TDto> UpdateProductionProfile<TProfile, TDto, TUpdateDto>(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid productionProfileId,
+        TUpdateDto updatedProductionProfileDto,
+        Func<Guid, Task<TProfile?>> getProfile,
+        Func<TProfile, Task<TProfile>> updateProfile
+    )
+        where TProfile : class
+        where TDto : class
+        where TUpdateDto : class
+    {
+        var existingProfile = await getProfile(productionProfileId)
+            ?? throw new NotFoundInDBException($"Production profile with id {productionProfileId} not found.");
 
         var project = await _projectRepository.GetProject(projectId)
             ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
 
-        _conversionMapperService.MapToEntity(updatedProductionProfileOilDto, existingProfile, drainageStrategyId, project.PhysicalUnit);
+        _conversionMapperService.MapToEntity(updatedProductionProfileDto, existingProfile, drainageStrategyId, project.PhysicalUnit);
 
-        ProductionProfileOil updatedProfile;
+        TProfile updatedProfile;
         try
         {
-            updatedProfile = await _repository.UpdateProductionProfileOil(existingProfile);
+            updatedProfile = await updateProfile(existingProfile);
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update production profile oil with id {productionProfileOilId} for case id {CaseId}.", productionProfileOilId, caseId);
+            _logger.LogError(ex, "Failed to update production profile with id {productionProfileId} for case id {caseId}.", productionProfileId, caseId);
             throw;
         }
 
         await _caseRepository.UpdateModifyTime(caseId);
 
-        var updatedDto = _conversionMapperService.MapToDto<ProductionProfileOil, ProductionProfileOilDto>(updatedProfile, productionProfileOilId, project.PhysicalUnit);
+        var updatedDto = _conversionMapperService.MapToDto<TProfile, TDto>(updatedProfile, productionProfileId, project.PhysicalUnit);
         return updatedDto;
     }
 }
