@@ -135,7 +135,7 @@ public class TopsideService : ITopsideService
         var existingTopside = await _repository.GetTopside(topsideId)
             ?? throw new NotFoundInDBException($"Topside with id {topsideId} not found.");
 
-        _mapper.Map(updatedTopsideDto, existingTopside);
+        _mapperService.MapToEntity(updatedTopsideDto, existingTopside, topsideId);
         existingTopside.LastChangedDate = DateTimeOffset.UtcNow;
 
         Topside updatedTopside;
@@ -148,6 +148,8 @@ public class TopsideService : ITopsideService
             _logger.LogError(ex, "Failed to update topside with id {topsideId} for case id {CaseId}.", topsideId, caseId);
             throw;
         }
+
+        await _caseRepository.UpdateModifyTime(caseId);
 
         var dto = _mapperService.MapToDto<Topside, TopsideDto>(updatedTopside, topsideId);
         return dto;
@@ -163,7 +165,7 @@ public class TopsideService : ITopsideService
         var existingCostProfile = await _repository.GetTopsideCostProfileOverride(costProfileId)
             ?? throw new NotFoundInDBException($"Cost profile override with id {costProfileId} not found.");
 
-        _mapper.Map(dto, existingCostProfile);
+        _mapperService.MapToEntity(dto, existingCostProfile, costProfileId);
 
         TopsideCostProfileOverride updatedCostProfile;
         try

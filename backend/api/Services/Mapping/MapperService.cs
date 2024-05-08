@@ -30,4 +30,18 @@ public class MapperService : IMapperService
         }
         return dto;
     }
+
+    public T MapToEntity<T, TDto>(TDto dto, T existing, Guid id)
+        where T : class
+        where TDto : class
+    {
+        var entity = _mapper.Map(dto, existing);
+        if (entity == null)
+        {
+            var entityType = typeof(T).Name;
+            _logger.LogError("Mapping of {EntityType} with id {Id} resulted in a null entity.", entityType, id);
+            throw new MappingException($"Mapping of {entityType} resulted in a null entity.", id);
+        }
+        return entity;
+    }
 }
