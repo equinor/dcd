@@ -1,13 +1,9 @@
-using System.ComponentModel.DataAnnotations;
-
 using api.Models;
 
 namespace api.Dtos;
 
 public class UpdateDrainageStrategyDto
 {
-    public string Name { get; set; } = null!;
-    public string Description { get; set; } = null!;
     public double NGLYield { get; set; }
     public int ProducerCount { get; set; }
     public int GasInjectorCount { get; set; }
