@@ -23,10 +23,10 @@ import { useCaseContext } from "../../../../Context/CaseContext"
 import RangeButton from "../../../Buttons/RangeButton"
 
 interface Props {
-    topside: Components.Schemas.TopsideDto,
-    setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideDto | undefined>>,
-    drainageStrategy: Components.Schemas.DrainageStrategyDto,
-    setDrainageStrategy: Dispatch<SetStateAction<Components.Schemas.DrainageStrategyDto | undefined>>,
+    topside: Components.Schemas.TopsideWithProfilesDto,
+    setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideWithProfilesDto | undefined>>,
+    drainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto,
+    setDrainageStrategy: Dispatch<SetStateAction<Components.Schemas.DrainageStrategyWithProfilesDto | undefined>>,
     co2Emissions: Components.Schemas.Co2EmissionsDto | undefined,
     setCo2Emissions: Dispatch<SetStateAction<Components.Schemas.Co2EmissionsDto | undefined>>,
 }
@@ -40,7 +40,7 @@ const CaseCO2Tab = ({
     const {
         projectCase, activeTabCase,
     } = useCaseContext()
-    if (!projectCase) return null
+    if (!projectCase) { return null }
 
     const [co2Intensity, setCo2Intensity] = useState<Components.Schemas.Co2IntensityDto>()
     const [co2IntensityTotal, setCo2IntensityTotal] = useState<number>(0)
@@ -211,7 +211,7 @@ const CaseCO2Tab = ({
     ]
 
     useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
         if (!co2EmissionsOverride) {
             return
         }
