@@ -7,7 +7,7 @@ const useDataEdits = (): {
     addEdit: (
         newValue: string | number | undefined,
         previousValue: string | number | undefined,
-        objectKey: keyof Components.Schemas.CaseDto,
+        objectKey: string | number,
         inputLabel: string,
         level: "project" | "case",
         objectId: string,
@@ -18,7 +18,7 @@ const useDataEdits = (): {
     const addEdit = (
         newValue: string | number | undefined,
         previousValue: string | number | undefined,
-        objectKey: keyof Components.Schemas.CaseDto,
+        objectKey: string | number,
         inputLabel: string,
         level: "project" | "case",
         objectId: string,

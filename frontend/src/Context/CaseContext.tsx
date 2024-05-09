@@ -22,8 +22,6 @@ interface CaseContextType {
     setCaseEdits: Dispatch<SetStateAction<EditInstance[]>>,
     saveProjectCase: boolean,
     setSaveProjectCase: Dispatch<SetStateAction<boolean>>,
-    projectCaseNew: Components.Schemas.CreateCaseDto | undefined;
-    setProjectCaseNew: Dispatch<SetStateAction<Components.Schemas.CreateCaseDto | undefined>>,
     activeTabCase: number;
     setActiveTabCase: Dispatch<SetStateAction<number>>,
 
@@ -124,7 +122,6 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [caseEdits, setCaseEdits] = useState<EditInstance[]>(JSON.parse(localStorage.getItem("caseEdits") || "[]"))
     const [projectCaseEdited, setProjectCaseEdited] = useState<Components.Schemas.CaseDto | undefined>()
     const [saveProjectCase, setSaveProjectCase] = useState<boolean>(false)
-    const [projectCaseNew, setProjectCaseNew] = useState<Components.Schemas.CreateCaseDto | undefined>()
     const [activeTabCase, setActiveTabCase] = useState<number>(0)
 
     const [topside, setTopside] = useState<Components.Schemas.TopsideWithProfilesDto | undefined>()
@@ -186,8 +183,6 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setProjectCaseEdited,
         saveProjectCase,
         setSaveProjectCase,
-        projectCaseNew,
-        setProjectCaseNew,
         activeTabCase,
         setActiveTabCase,
 
@@ -283,8 +278,6 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setProjectCaseEdited,
         saveProjectCase,
         setSaveProjectCase,
-        projectCaseNew,
-        setProjectCaseNew,
         activeTabCase,
         setActiveTabCase,
 

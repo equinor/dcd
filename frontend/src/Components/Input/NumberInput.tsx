@@ -1,8 +1,9 @@
 import { InputWrapper, Input, Icon } from "@equinor/eds-core-react"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { error_filled } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { preventNonDigitInput, isWithinRange } from "../../Utils/common"
+import useDataEdits from "../../Hooks/useDataEdits"
 
 const ErrorIcon = styled(Icon)`
     margin-left: 8px;
@@ -21,7 +22,7 @@ const StyledInput = styled(Input)`
 `
 
 interface Props {
-    onChange: (value: number) => void
+    onSubmit: (value: number) => void
     defaultValue: number | undefined
     integer: boolean
     disabled?: boolean
@@ -31,8 +32,8 @@ interface Props {
     max?: number
 }
 
-const CaseNumberInput = ({
-    onChange,
+const NumberInput = ({
+    onSubmit: onChange,
     defaultValue,
     integer,
     disabled,
@@ -41,13 +42,15 @@ const CaseNumberInput = ({
     min,
     max,
 }: Props) => {
+    const { addEdit } = useDataEdits()
+
     const [hasError, setHasError] = useState(false)
     const [inputValue, setInputValue] = useState(defaultValue)
     const [helperText, setHelperText] = useState("\u200B")
 
     const submitChange = (newValue: number) => {
         setInputValue(newValue)
-        onChange(newValue)
+
         if (min !== undefined && max !== undefined) {
             if (!isWithinRange(newValue, min, max)) {
                 setHelperText(`(min: ${min}, max: ${max})`)
@@ -55,6 +58,7 @@ const CaseNumberInput = ({
             } else {
                 setHasError(false)
                 setHelperText("\u200B")
+                onChange(newValue)
             }
         }
     }
@@ -91,4 +95,4 @@ const CaseNumberInput = ({
     )
 }
 
-export default CaseNumberInput
+export default NumberInput

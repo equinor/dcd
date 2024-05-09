@@ -6,9 +6,9 @@ import {
     useEffect,
     useRef,
 } from "react"
-import { NativeSelect, Typography } from "@equinor/eds-core-react"
+import { NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import CaseNumberInput from "../../Input/CaseNumberInput"
+import CaseEditInput from "../../Input/CaseEditInput"
 import CaseTabTable from "../Components/CaseTabTable"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
@@ -17,8 +17,7 @@ import { ITimeSeriesOverride } from "../../../Models/ITimeSeriesOverride"
 import InputSwitcher from "../../Input/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
-import RangeButton from "../../Buttons/RangeButton"
-import { handleStartYearStateChange, handleEndYearStateChange } from "../../../Utils/common"
+import DateRangePicker from "../../Input/DateRangePicker"
 
 interface ITimeSeriesData {
     profileName: string
@@ -82,6 +81,15 @@ const CaseProductionProfilesTab = ({
         2: "Electrical submerged pumps",
         3: "Subsea booster pumps",
     }
+
+    const datePickerValue = (() => {
+        if (project?.physicalUnit === 1) {
+            return "Oil field"
+        } if (project?.physicalUnit === 0) {
+            return "SI"
+        }
+        return ""
+    })()
 
     const gridRef = useRef<any>(null)
 
@@ -312,23 +320,19 @@ const CaseProductionProfilesTab = ({
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} md={6} lg={3}>
-                <InputSwitcher
-                    value={projectCase.facilitiesAvailability
-                        ? `${projectCase.facilitiesAvailability * 100}%`
-                        : ""}
+                <CaseEditInput
+                    object={projectCase}
+                    objectKey={projectCase?.facilitiesAvailability}
                     label="Facilities availability"
-                >
-                    <CaseNumberInput
-                        onChange={handleCaseFacilitiesAvailabilityChange}
-                        defaultValue={projectCase?.facilitiesAvailability
-                            ? projectCase.facilitiesAvailability * 100
-                            : undefined}
-                        integer={false}
-                        unit="%"
-                        min={0}
-                        max={100}
-                    />
-                </InputSwitcher>
+                    onSubmit={handleCaseFacilitiesAvailabilityChange}
+                    value={projectCase?.facilitiesAvailability
+                        ? projectCase.facilitiesAvailability * 100
+                        : undefined}
+                    integer={false}
+                    unit="%"
+                    min={0}
+                    max={100}
+                />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <InputSwitcher
@@ -383,82 +387,47 @@ const CaseProductionProfilesTab = ({
                 </InputSwitcher>
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
-                <InputSwitcher
+                <CaseEditInput
+                    object={projectCase}
+                    objectKey={projectCase?.producerCount}
                     label="Oil producer wells"
-                    value={projectCase?.producerCount.toString()}
-                >
-                    <CaseNumberInput
-                        onChange={() => { }}
-                        defaultValue={projectCase?.producerCount}
-                        integer
-                        disabled
-                    />
-                </InputSwitcher>
+                    onSubmit={() => { }}
+                    value={projectCase?.producerCount}
+                    integer
+                    disabled
+                />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
-                <InputSwitcher
+                <CaseEditInput
+                    object={projectCase}
+                    objectKey={projectCase?.waterInjectorCount}
                     label="Water injector wells"
-                    value={projectCase?.waterInjectorCount.toString()}
-                >
-                    <CaseNumberInput
-                        onChange={() => { }}
-                        defaultValue={projectCase?.waterInjectorCount}
-                        integer
-                        disabled
-                    />
-                </InputSwitcher>
+                    onSubmit={() => { }}
+                    value={projectCase?.waterInjectorCount}
+                    integer
+                    disabled
+                />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
-                <InputSwitcher
+                <CaseEditInput
+                    object={projectCase}
+                    objectKey={projectCase?.gasInjectorCount}
                     label="Gas injector wells"
-                    value={projectCase?.gasInjectorCount.toString()}
-                >
-                    <CaseNumberInput
-                        onChange={() => { }}
-                        defaultValue={projectCase?.gasInjectorCount}
-                        integer
-                        disabled
-                    />
-                </InputSwitcher>
-
+                    onSubmit={() => { }}
+                    value={projectCase?.gasInjectorCount}
+                    integer
+                    disabled
+                />
             </Grid>
-            <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="baseline" marginTop={6}>
-                <Grid item>
-                    <NativeSelect
-                        id="unit"
-                        label="Units"
-                        onChange={() => { }}
-                        value={project?.physicalUnit}
-                        disabled
-                    >
-                        <option key={0} value={0}>SI</option>
-                        <option key={1} value={1}>Oil field</option>
-                    </NativeSelect>
-                </Grid>
-                <Grid item>
-                    <Typography variant="caption">Start year</Typography>
-                    <CaseNumberInput
-                        onChange={(value) => handleStartYearStateChange(value, setStartYear)}
-                        defaultValue={startYear}
-                        integer
-                        min={2010}
-                        max={2110}
-                    />
-                </Grid>
-                <Grid item>
-                    <Typography variant="caption">End year</Typography>
-                    <CaseNumberInput
-                        onChange={(value) => handleEndYearStateChange(value, setEndYear)}
-                        defaultValue={endYear}
-                        integer
-                        min={2010}
-                        max={2110}
-                    />
-                </Grid>
-                <Grid item>
-                    <RangeButton onClick={handleTableYearsClick} />
-                </Grid>
-            </Grid>
+            <DateRangePicker
+                setStartYear={setStartYear}
+                setEndYear={setEndYear}
+                startYear={startYear}
+                endYear={endYear}
+                labelText="Units"
+                labelValue={datePickerValue}
+                handleTableYearsClick={handleTableYearsClick}
+            />
             <Grid item xs={12}>
                 <AgChartsTimeseries
                     data={productionProfilesChartData()}

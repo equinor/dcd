@@ -2,7 +2,8 @@ import Grid from "@mui/material/Grid"
 import CapexFactorFeasibilityStudies from "./Inputs/CapexFactorFeasibilityStudies"
 import CapexFactorFeedStudies from "./Inputs/CapexFactorFeedStudies"
 import Maturity from "./Inputs/Maturity"
-import YearRange from "./Inputs/YearRange"
+import DateRangePicker from "../../../Input/DateRangePicker"
+import { useProjectContext } from "../../../../Context/ProjectContext"
 
 interface HeaderProps {
     startYear: number;
@@ -18,27 +19,43 @@ const Header: React.FC<HeaderProps> = ({
     endYear,
     setEndYear,
     setTableYears,
-}) => (
-    <>
-        <Grid item xs={12} md={4}>
-            <CapexFactorFeasibilityStudies />
-        </Grid>
-        <Grid item xs={12} md={4}>
-            <CapexFactorFeedStudies />
-        </Grid>
-        <Grid item xs={12} md={4}>
-            <Maturity />
-        </Grid>
-        <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="baseline" marginTop={6}>
-            <YearRange
+}) => {
+    const { project } = useProjectContext()
+
+    const handleTableYearsClick = () => {
+        setTableYears([startYear, endYear])
+    }
+
+    const datePickerValue = (() => {
+        if (project?.currency === 1) {
+            return "MNOK"
+        } if (project?.currency === 2) {
+            return "MUSD"
+        }
+        return ""
+    })()
+    return (
+        <>
+            <Grid item xs={12} md={4}>
+                <CapexFactorFeasibilityStudies />
+            </Grid>
+            <Grid item xs={12} md={4}>
+                <CapexFactorFeedStudies />
+            </Grid>
+            <Grid item xs={12} md={4}>
+                <Maturity />
+            </Grid>
+            <DateRangePicker
                 startYear={startYear}
                 endYear={endYear}
                 setStartYear={setStartYear}
                 setEndYear={setEndYear}
-                setTableYears={setTableYears}
+                handleTableYearsClick={handleTableYearsClick}
+                labelText="Currency"
+                labelValue={datePickerValue}
             />
-        </Grid>
-    </>
-)
+        </>
+    )
+}
 
 export default Header

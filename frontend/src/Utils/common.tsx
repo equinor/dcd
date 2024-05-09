@@ -296,21 +296,3 @@ export const setNonNegativeNumberState = (value: number, objectKey: string, stat
     newState[objectKey] = Math.max(value, 0)
     setState(newState)
 }
-
-export const handleStartYearStateChange = (value: number, setStartYear: (startYear: number) => void): void => {
-    const newStartYear = value
-    if (newStartYear < 2010) {
-        setStartYear(2010)
-        return
-    }
-    setStartYear(newStartYear)
-}
-
-export const handleEndYearStateChange = (value: number, setEndYear: (endYear: number) => void): void => {
-    const newEndYear = value
-    if (newEndYear > 2100) {
-        setEndYear(2100)
-        return
-    }
-    setEndYear(newEndYear)
-}

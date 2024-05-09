@@ -11,7 +11,7 @@ import { arrow_forward, history } from "@equinor/eds-icons"
 import { useCaseContext } from "../../Context/CaseContext"
 
 const EditInstance = styled.div`
-    margin: 20px 0;
+    margin: 20px 15px 20px 0;
 `
 
 const Header = styled.div`
