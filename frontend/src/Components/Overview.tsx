@@ -27,13 +27,13 @@ const Overview = () => {
     }, [project, caseId, editMode])
 
     return (
-        <Grid container display="grid" className="ConceptApp MainGrid" gridTemplateColumns={sidebarOpen ? "200px 1fr" : "72px 1fr"}>
-            <Grid item alignSelf="stretch">
+        <Grid container className="ConceptApp MainGrid" direction="column">
+            <Grid item alignSelf="stretch" flexGrow={1}>
                 <Sidebar />
             </Grid>
             {(isCreating || isLoading)
                 ? (
-                    <Grid item alignSelf="stretch" container spacing={1} alignItems="center" justifyContent="center">
+                    <Grid item flexGrow={0} alignSelf="stretch" container spacing={1} alignItems="center" justifyContent="center">
                         <Grid item>
                             <Progress.Circular size={24} color="primary" />
                         </Grid>
@@ -45,17 +45,14 @@ const Overview = () => {
                 : (
                     <Grid
                         item
-                        alignSelf="flex-start"
                         className="ag-theme-alpine-fusion ContentOverview"
-                        container
                         spacing={2}
-                        alignItems="flex-start"
-                        alignContent="flex-start"
+                        sx={{ width: `calc(100% - ${sidebarOpen ? "200px" : "72px"})` }}
                     >
-                        <Grid item xs={12}>
+                        <Grid>
                             <Controls />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid className="ContentPanels">
                             <Outlet />
                         </Grid>
                     </Grid>

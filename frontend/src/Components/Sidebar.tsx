@@ -37,24 +37,24 @@ const ProjectTitle = styled(Typography)`
 `
 
 const StyledSidebar = styled(SideBar)`
-    position: fixed;
-    height: calc(100% - ${env === "dev" ? "49px" : "83px"});
-    overflow: hidden;
-    display: grid;
-    grid-template-rows: auto 80px;
-    z-index: 5;
+    display: flex;
+    flex-flow: column;
+    flex-grow: 1;
+    height: 100%;
     width: 72px;
     min-width: 72px;
+    overflow: hidden;
+    z-index: 5;
     &[open] {
-        grid-template-rows: auto 60px;
         width: 200px;
         min-width: 200px;
     }
 `
 
 const StyledSidebarContent = styled(Content)`
-    display: grid;
-    grid-template-rows: auto 1fr;
+    display: flex;
+    flex-flow: column;
+    flex-grow: 1;
     width: 100%;
     overflow: hidden;
 `
@@ -122,7 +122,7 @@ const Sidebar = () => {
     const { sidebarOpen, setSidebarOpen } = useAppContext()
     const navigate = useNavigate()
     const location = useLocation()
-    if (!project) return null
+    if (!project) { return null }
 
     const selectCase = (caseId: string) => {
         if (!currentContext || !caseId) {
@@ -267,7 +267,7 @@ const Sidebar = () => {
                         >
                             <Typography variant="overline">Cases</Typography>
                         </Grid>
-                        {sidebarOpen && (
+                        {(sidebarOpen && project?.cases.length > 0) && (
                             <Grid item>
                                 <Tooltip title="Add new case">
                                     <Button
@@ -282,56 +282,68 @@ const Sidebar = () => {
                         )}
                     </Grid>
                 </Grid>
-                <Timeline
-                    data-timeline
-                    container
-                    justifyContent="flex-start"
-                    alignItems="flex-start"
-                    direction="column"
-                >
-                    <Grid item className="GhostItem" />
-                    {project?.cases
-                        .sort(
-                            (a, b) => new Date(a.createTime).getDate()
+                {project?.cases.length > 0
+                    ? (
+                        <Timeline
+                            data-timeline
+                            container
+                            justifyContent="flex-start"
+                            alignItems="flex-start"
+                            direction="column"
+                        >
+                            <Grid item className="GhostItem" />
+                            {project?.cases
+                                .sort(
+                                    (a, b) => new Date(a.createTime).getDate()
                                 - new Date(b.createTime).getDate(),
-                        )
-                        .map((subItem, index) => (
-                            <Grid
-                                item
-                                container
-                                key={`menu - item - ${index + 1} `}
-                                justifyContent="center"
-                                data-timeline-active={location.pathname.includes(
-                                    subItem.id,
-                                )}
-                            >
-                                <Tooltip
-                                    title={`${
-                                        subItem.name ? subItem.name : "Untitled"
-                                    } - Strategy: ${productionStrategyOverviewToString(
-                                        subItem.productionStrategyOverview,
-                                    )}`}
-                                    placement="right"
-                                >
-                                    <TimelineElement
-                                        variant="ghost"
-                                        className="GhostButton"
-                                        onClick={() => selectCase(subItem.id)}
+                                )
+                                .map((subItem, index) => (
+                                    <Grid
+                                        item
+                                        container
+                                        key={`menu - item - ${index + 1} `}
+                                        justifyContent="center"
+                                        data-timeline-active={location.pathname.includes(
+                                            subItem.id,
+                                        )}
                                     >
-                                        {!sidebarOpen && `#${index + 1}`}
-                                        {sidebarOpen
+                                        <Tooltip
+                                            title={`${
+                                                subItem.name ? subItem.name : "Untitled"
+                                            } - Strategy: ${productionStrategyOverviewToString(
+                                                subItem.productionStrategyOverview,
+                                            )}`}
+                                            placement="right"
+                                        >
+                                            <TimelineElement
+                                                variant="ghost"
+                                                className="GhostButton"
+                                                onClick={() => selectCase(subItem.id)}
+                                            >
+                                                {!sidebarOpen && `#${index + 1}`}
+                                                {sidebarOpen
                                             && subItem.name
                                             && subItem.name}
-                                        {sidebarOpen
+                                                {sidebarOpen
                                             && (subItem.name === ""
                                                 || subItem.name === undefined)
                                             && "Untitled"}
-                                    </TimelineElement>
-                                </Tooltip>
-                            </Grid>
-                        ))}
-                    <Grid item className="GhostItem" />
-                </Timeline>
+                                            </TimelineElement>
+                                        </Tooltip>
+                                    </Grid>
+                                ))}
+                            <Grid item className="GhostItem" />
+                        </Timeline>
+                    )
+                    : (
+                        <Button
+                            variant="ghost"
+                            onClick={() => addNewCase()}
+                        >
+                            <Icon data={add} />
+                            <Typography>Add new case</Typography>
+                        </Button>
+                    )}
             </StyledSidebarContent>
             <SidebarFooter>
                 <Grid

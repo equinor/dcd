@@ -3,7 +3,6 @@ import { Tabs } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import Grid from "@mui/material/Grid"
-import styled from "styled-components"
 import CaseDescriptionTab from "../Components/Case/Tabs/CaseDescriptionTab"
 import CaseCostTab from "../Components/Case/Tabs/CaseCost/CaseCostTab"
 import CaseFacilitiesTab from "../Components/Case/Tabs/CaseFacilitiesTab"
@@ -27,10 +26,15 @@ const {
     List, Tab, Panels, Panel,
 } = Tabs
 
+const StyledPanels = styled(Panels)`
+  height: inherit;
+  overflow: hidden;
+`
+
 const ScrollablePanel = styled(Panel)`
-  height: calc(100vh - ${env === "dev" ? "200px" : "235px"});
+  max-height: 85%;
   padding: 16px;
-  overflow: auto;
+  overflow-y: auto;
 `
 
 const CaseView = () => {
@@ -384,7 +388,9 @@ const CaseView = () => {
     }
 
     useEffect(() => {
-        saveProjectCase && handleCaseSave()
+        if (saveProjectCase) {
+            handleCaseSave()
+        }
     }, [saveProjectCase])
 
     if (isLoading) {
@@ -404,13 +410,13 @@ const CaseView = () => {
     }
 
     return (
-        <Grid container spacing={1} alignSelf="flex-start">
+        <Grid item xs={12} container spacing={1} alignSelf="flex-start" sx={{ height: "100%" }}>
             <Grid item xs={12}>
                 <Tabs activeTab={activeTabCase} onChange={setActiveTabCase} scrollable>
                     <List>
                         {tabNames.map((tabName) => <Tab key={tabName}>{tabName}</Tab>)}
                     </List>
-                    <Panels>
+                    <StyledPanels>
                         <ScrollablePanel>
                             <CaseDescriptionTab />
                         </ScrollablePanel>
@@ -453,14 +459,7 @@ const CaseView = () => {
                             />
                         </ScrollablePanel>
                         <ScrollablePanel>
-                            <CaseCostTab
-                                wellProject={wellProject}
-                                setWellProject={setWellProject}
-                                cessationWellsCost={cessationWellsCost}
-                                setCessationWellsCost={setCessationWellsCost}
-                                cessationOffshoreFacilitiesCost={cessationOffshoreFacilitiesCost}
-                                setCessationOffshoreFacilitiesCost={setCessationOffshoreFacilitiesCost}
-                            />
+                            <CaseCostTab />
                         </ScrollablePanel>
                         <ScrollablePanel>
                             <CaseCO2Tab
@@ -475,7 +474,7 @@ const CaseView = () => {
                         <ScrollablePanel>
                             <CaseSummaryTab />
                         </ScrollablePanel>
-                    </Panels>
+                    </StyledPanels>
                 </Tabs>
             </Grid>
         </Grid>

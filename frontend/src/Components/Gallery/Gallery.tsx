@@ -77,7 +77,7 @@ const Gallery = () => {
     if (gallery.length <= 0 && !editMode) { return null }
 
     return (
-        <>
+        <Grid item xs={12}>
             <ImageModal
                 image={expandedImage}
                 modalOpen={modalOpen}
@@ -103,20 +103,16 @@ const Gallery = () => {
                         </Controls>
                     </ImageWithHover>
                 ))}
-                {
-                    editMode && gallery.length < 4
-                    && (
-                        <ImageUpload
-                            gallery={gallery}
-                            setGallery={setGallery}
-                            setExeededLimit={setExeededLimit}
-                        />
-                    )
-                    }
-                </Wrapper>
-            </Grid>
-        )
-        : null
+                {editMode && gallery.length < 4 && (
+                    <ImageUpload
+                        gallery={gallery}
+                        setGallery={setGallery}
+                        setExeededLimit={setExeededLimit}
+                    />
+                )}
+            </Wrapper>
+        </Grid>
+    )
 }
 
 export default Gallery

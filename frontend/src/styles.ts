@@ -1,7 +1,11 @@
 import { createGlobalStyle } from "styled-components"
+import { EnvironmentVariables } from "./environmentVariables"
+
+const env = EnvironmentVariables.ENVIRONMENT
 
 export default createGlobalStyle`
   body {
+    --header-height: ${env === "dev" ? "48px" : "calc((var(--grid-unit)* 10px) + 2px)"};
     margin: 0;
   }
 
@@ -13,18 +17,23 @@ export default createGlobalStyle`
     font-family: Equinor;
   }
 
-  .ConceptApp.MainGrid {
-    height: 100%;
-    width: 100vw;
+  .ConceptApp.MainGrid,
+  .ContentOverview,
+  .ContentOverview .ContentPanels,
+  .ContentOverview .ContentPanels > .MuiGrid-root,
+  .ContentOverview .ContentPanels > .MuiGrid-root > .MuiGrid-root,
+  .ContentOverview .ContentPanels > .MuiGrid-root > .MuiGrid-root > div {
+    height: -webkit-fill-available;
     overflow: hidden;
-    
   }
 
   div[class*="TabList"][role="tablist"] {
     position: relative;
     z-index: 1;
     scrollbar-width: none;
+    overflow-y: none;
   }
+
   div[class*="TabList"][role="tablist"]:after {
     content: '';
     display: block;
@@ -72,11 +81,6 @@ export default createGlobalStyle`
   .ag-theme-alpine-fusion [role="gridcell"].editableCell:not(.ag-cell-range-selected) {
     background-color: var(--UI-Background-Light, #F7F7F7);
     border-right: 1px solid #DBDBDB;
-  }
-
-  .ContentOverview {
-    height: calc(100% + 16px);
-    overflow: hidden;
   }
 
   .ag-aria-description-container {

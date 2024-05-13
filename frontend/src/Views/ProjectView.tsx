@@ -15,8 +15,12 @@ const {
     List, Tab, Panels, Panel,
 } = Tabs
 
+const StyledPanels = styled(Panels)`
+  height: 100%;
+`
+
 const ScrollablePanel = styled(Panel)`
-  height: calc(100vh - ${env === "dev" ? "195px" : "230px"});
+  height: 100%;
   padding: 16px;
   overflow: auto;
 `
@@ -31,15 +35,15 @@ const ProjectView = () => {
     }, [activeTabProjectParam])
 
     return (
-        <Grid container spacing={1} alignSelf="flex-start">
-            <Grid item xs={12}>
+        <Grid container spacing={1} alignSelf="flex-start" sx={{ height: "100%" }}>
+            <Grid item xs={12} sx={{ height: "100%" }}>
                 <Tabs activeTab={activeTabProject} onChange={setActiveTabProject}>
                     <List>
                         <Tab>Overview </Tab>
                         <Tab>Compare cases</Tab>
                         <Tab>Settings</Tab>
                     </List>
-                    <Panels>
+                    <StyledPanels>
                         <ScrollablePanel>
                             <ProjectOverviewTab />
                         </ScrollablePanel>
@@ -49,7 +53,7 @@ const ProjectView = () => {
                         <ScrollablePanel>
                             <ProjectSettingsTab />
                         </ScrollablePanel>
-                    </Panels>
+                    </StyledPanels>
                 </Tabs>
             </Grid>
         </Grid>
