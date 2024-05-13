@@ -10,10 +10,10 @@ const CapexFactorFeasibilityStudies: React.FC = () => {
         setProjectCaseEdited,
     } = useCaseContext()
 
-    const handleCaseFeasibilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const handleCaseFeasibilityChange = (value: number): void => {
         const newCase = { ...projectCaseEdited }
-        const newCapexFactorFeasibilityStudies = e.currentTarget.value.length > 0
-            ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
+        const newCapexFactorFeasibilityStudies = value > 0
+            ? Math.min(Math.max(value, 0), 100) : undefined
         if (newCapexFactorFeasibilityStudies !== undefined) {
             newCase.capexFactorFeasibilityStudies = newCapexFactorFeasibilityStudies / 100
         } else { newCase.capexFactorFeasibilityStudies = 0 }

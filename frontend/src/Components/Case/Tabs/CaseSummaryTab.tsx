@@ -4,7 +4,6 @@ import {
 import Grid from "@mui/material/Grid"
 import CaseNumberInput from "../../Input/CaseNumberInput"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
-import { GetGenerateProfileService } from "../../../Services/CaseGeneratedProfileService"
 import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
 import InputSwitcher from "../../Input/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
@@ -13,6 +12,7 @@ import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
 import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 import { useModalContext } from "../../../Context/ModalContext"
+import { setNonNegativeNumberState } from "../../../Utils/common"
 
 const CaseSummaryTab = (): React.ReactElement | null => {
     const {
@@ -186,18 +186,6 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         opexTimeSeriesData,
     ]
 
-    const handleCaseNPVChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...projectCase }
-        newCase.npv = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
-        setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
-    }
-
-    const handleCaseBreakEvenChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...projectCase }
-        newCase.breakEven = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
-    }
-
     useEffect(() => {
         (async () => {
             try {
@@ -293,7 +281,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
             <Grid item xs={12} md={6}>
                 <InputSwitcher value={`${projectCase?.npv}`} label="NPV before tax">
                     <CaseNumberInput
-                        onChange={handleCaseNPVChange}
+                        onChange={(value) => setNonNegativeNumberState(value, "npv", projectCase, setProjectCaseEdited)}
                         defaultValue={projectCase?.npv}
                         integer={false}
                         allowNegative
@@ -305,7 +293,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
             <Grid item xs={12} md={6}>
                 <InputSwitcher value={`${projectCase?.breakEven}`} label="B/E before tax">
                     <CaseNumberInput
-                        onChange={handleCaseBreakEvenChange}
+                        onChange={(value) => setNonNegativeNumberState(value, "breakEven", projectCase, setProjectCaseEdited)}
                         defaultValue={projectCase?.breakEven}
                         integer={false}
                         min={0}

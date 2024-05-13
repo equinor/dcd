@@ -18,6 +18,7 @@ import InputSwitcher from "../../../Input/InputSwitcher"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import RangeButton from "../../../Buttons/RangeButton"
+import { handleStartYearStateChange, handleEndYearStateChange } from "../../../../Utils/common"
 
 interface Props {
     explorationWells: Components.Schemas.ExplorationWellDto[],
@@ -59,23 +60,6 @@ const CaseDrillingScheduleTab = ({
     const [appraisalWellCount, setAppraisalWellCount] = useState<number>(0)
     const [, setSidetrackCount] = useState<number>(0)
 
-    const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newStartYear = Number(e.currentTarget.value)
-        if (newStartYear < 2010) {
-            setStartYear(2010)
-            return
-        }
-        setStartYear(newStartYear)
-    }
-
-    const handleEndYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newEndYear = Number(e.currentTarget.value)
-        if (newEndYear > 2100) {
-            setEndYear(2100)
-            return
-        }
-        setEndYear(newEndYear)
-    }
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
     }
@@ -239,7 +223,7 @@ const CaseDrillingScheduleTab = ({
                 <Grid item>
                     <Typography variant="caption">Start year</Typography>
                     <CaseNumberInput
-                        onChange={handleStartYearChange}
+                        onChange={(value) => handleStartYearStateChange(value, setStartYear)}
                         defaultValue={startYear}
                         integer
                         min={2010}
@@ -249,7 +233,7 @@ const CaseDrillingScheduleTab = ({
                 <Grid item>
                     <Typography variant="caption">End year</Typography>
                     <CaseNumberInput
-                        onChange={handleEndYearChange}
+                        onChange={(value) => handleEndYearStateChange(value, setEndYear)}
                         defaultValue={endYear}
                         integer
                         min={2010}

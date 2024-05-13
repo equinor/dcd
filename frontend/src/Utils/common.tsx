@@ -281,3 +281,36 @@ export const getCurrentTime = (): string => {
 
     return `${hours}:${formattedMinutes}`
 }
+
+/**
+ * Updates a state object with a non-negative number value.
+ * If the provided value is negative, sets the object key to 0.
+ * @param value The number value to set.
+ * @param objectKey The key of the object to update.
+ * @param state The state object to update.
+ * @param setState The state setter function.
+ * @returns void
+ */
+export const setNonNegativeNumberState = (value: number, objectKey: string, state: any, setState: Dispatch<SetStateAction<any>>): void => {
+    const newState = { ...state }
+    newState[objectKey] = Math.max(value, 0)
+    setState(newState)
+}
+
+export const handleStartYearStateChange = (value: number, setStartYear: (startYear: number) => void): void => {
+    const newStartYear = value
+    if (newStartYear < 2010) {
+        setStartYear(2010)
+        return
+    }
+    setStartYear(newStartYear)
+}
+
+export const handleEndYearStateChange = (value: number, setEndYear: (endYear: number) => void): void => {
+    const newEndYear = value
+    if (newEndYear > 2100) {
+        setEndYear(2100)
+        return
+    }
+    setEndYear(newEndYear)
+}
