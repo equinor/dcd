@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from "uuid"
 import { useCaseContext } from "../Context/CaseContext"
-import { getCurrentTime } from "../Utils/common"
 import { EditInstance } from "../Models/Interfaces"
 
 const useDataEdits = (): {
@@ -31,7 +30,7 @@ const useDataEdits = (): {
             objectKey,
             inputLabel,
             uuid: uuidv4(),
-            timeStamp: getCurrentTime(),
+            timeStamp: new Date().getTime(),
             level,
             objectId,
         }

@@ -9,7 +9,12 @@ import { useProjectContext } from "../Context/ProjectContext"
 import { useCaseContext } from "../Context/CaseContext"
 
 const Overview = () => {
-    const { isCreating, isLoading, editMode, sidebarOpen } = useAppContext()
+    const {
+        isCreating,
+        isLoading,
+        editMode,
+        sidebarOpen,
+    } = useAppContext()
     const { project } = useProjectContext()
     const { setProjectCase } = useCaseContext()
 

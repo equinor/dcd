@@ -117,9 +117,15 @@ interface CaseContextType {
 
 const CaseContext = createContext<CaseContextType | undefined>(undefined)
 
+const getFilteredEdits = () => {
+    const savedEdits = JSON.parse(localStorage.getItem("caseEdits") || "[]")
+    const oneHourAgo = new Date().getTime() - (60 * 60 * 1000)
+    return savedEdits.filter((edit: EditInstance) => edit.timeStamp > oneHourAgo)
+}
+
 const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [projectCase, setProjectCase] = useState<Components.Schemas.CaseDto | undefined>()
-    const [caseEdits, setCaseEdits] = useState<EditInstance[]>(JSON.parse(localStorage.getItem("caseEdits") || "[]"))
+    const [caseEdits, setCaseEdits] = useState<EditInstance[]>(getFilteredEdits())
     const [projectCaseEdited, setProjectCaseEdited] = useState<Components.Schemas.CaseDto | undefined>()
     const [saveProjectCase, setSaveProjectCase] = useState<boolean>(false)
     const [activeTabCase, setActiveTabCase] = useState<number>(0)

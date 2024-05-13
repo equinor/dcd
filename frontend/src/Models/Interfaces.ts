@@ -4,7 +4,7 @@ export interface EditInstance {
     previousValue: string | number| undefined; // the value before the edit
     objectKey: string | number; // the key of the entry in the object being edited
     inputLabel: string; // the label of the input field being edited
-    timeStamp: string; // (hh:mm)
+    timeStamp: number;
     level: "project" | "case";
     objectId: string; // the id of the object being edited (project id or case id)
 }

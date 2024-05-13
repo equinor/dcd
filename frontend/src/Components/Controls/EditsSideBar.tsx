@@ -9,6 +9,7 @@ import {
 import styled from "styled-components"
 import { arrow_forward, history } from "@equinor/eds-icons"
 import { useCaseContext } from "../../Context/CaseContext"
+import { formatTime } from "../../Utils/common"
 
 const EditInstance = styled.div`
     margin: 20px 15px 20px 0;
@@ -61,7 +62,7 @@ const EditsSideBar: React.FC = () => {
                         <EditInstance key={edit.uuid} style={{ marginBottom: "10px" }}>
                             <Header>
                                 <Typography variant="caption">{String(edit.inputLabel)}</Typography>
-                                <Typography variant="overline">{edit.timeStamp}</Typography>
+                                <Typography variant="overline">{formatTime(edit.timeStamp)}</Typography>
                             </Header>
                             <ChangeView>
                                 <PreviousValue>{edit.previousValue}</PreviousValue>

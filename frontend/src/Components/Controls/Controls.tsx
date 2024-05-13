@@ -10,15 +10,16 @@ import {
     save, edit, keyboard_tab, more_vertical, arrow_back,
 } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid"
-import { projectPath } from "../Utils/common"
-import { useProjectContext } from "../Context/ProjectContext"
-import { useCaseContext } from "../Context/CaseContext"
-import { useModalContext } from "../Context/ModalContext"
-import CaseDropMenu from "../Components/Case/Components/CaseDropMenu"
-import { GetProjectService } from "../Services/ProjectService"
-import { useAppContext } from "../Context/AppContext"
-import useDataEdits from "../Hooks/useDataEdits"
-import EditsSideBar from "./Controls/EditsSideBar"
+import { projectPath } from "../../Utils/common"
+import { useProjectContext } from "../../Context/ProjectContext"
+import { useCaseContext } from "../../Context/CaseContext"
+import { useModalContext } from "../../Context/ModalContext"
+import CaseDropMenu from "../Case/Components/CaseDropMenu"
+import { GetProjectService } from "../../Services/ProjectService"
+import { useAppContext } from "../../Context/AppContext"
+import useDataEdits from "../../Hooks/useDataEdits"
+import EditsSideBar from "./EditsSideBar"
+import UndoControls from "./UndoControls"
 
 const Controls = () => {
     const navigate = useNavigate()
@@ -117,7 +118,6 @@ const Controls = () => {
                     <Icon data={arrow_back} />
                 </Button>
             </Grid>
-
             <Grid item xs>
                 {editMode
                     ? (
@@ -162,9 +162,14 @@ const Controls = () => {
                     </Button>
                 </Grid>
             </Grid>
-
+            <Grid item>
+                <UndoControls />
+                <p>hi</p>
+            </Grid>
             <Grid item>
                 <EditsSideBar />
+            </Grid>
+            <Grid item>
                 <Button
                     variant="ghost_icon"
                     aria-label="case menu"
@@ -173,7 +178,6 @@ const Controls = () => {
                 >
                     <Icon data={more_vertical} />
                 </Button>
-
                 <CaseDropMenu
                     isMenuOpen={isMenuOpen}
                     setIsMenuOpen={setIsMenuOpen}
