@@ -9,16 +9,17 @@ import {
     useMemo,
     useEffect,
 } from "react"
-import { useAppContext } from "./AppContext"
 import { ITimeSeries } from "../Models/ITimeSeries"
+import { EditInstance } from "../Models/Interfaces"
+import { useAppContext } from "../Context/AppContext"
 
 interface CaseContextType {
     projectCase: Components.Schemas.CaseDto | undefined;
     setProjectCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
-    renameProjectCase: boolean,
-    setRenameProjectCase: Dispatch<SetStateAction<boolean>>,
-    projectCaseEdited: Components.Schemas.CaseDto | undefined;
-    setProjectCaseEdited: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
+    projectCaseEdited: Components.Schemas.CaseDto | undefined; // todo: replace with caseEdits
+    setProjectCaseEdited: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>, // todo: replace with caseEdits
+    caseEdits: EditInstance[];
+    setCaseEdits: Dispatch<SetStateAction<EditInstance[]>>,
     saveProjectCase: boolean,
     setSaveProjectCase: Dispatch<SetStateAction<boolean>>,
     projectCaseNew: Components.Schemas.CreateCaseDto | undefined;
@@ -26,8 +27,8 @@ interface CaseContextType {
     activeTabCase: number;
     setActiveTabCase: Dispatch<SetStateAction<number>>,
 
-    topside: Components.Schemas.TopsideDto | undefined
-    setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideDto | undefined>>
+    topside: Components.Schemas.TopsideWithProfilesDto | undefined
+    setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideWithProfilesDto | undefined>>
     topsideCost: Components.Schemas.TopsideCostProfileDto | undefined
     setTopsideCost: Dispatch<SetStateAction<Components.Schemas.TopsideCostProfileDto | undefined>>
     surf: Components.Schemas.SurfDto | undefined
@@ -36,16 +37,16 @@ interface CaseContextType {
     setSurfCost: Dispatch<SetStateAction<Components.Schemas.SurfCostProfileDto | undefined>>
     surfCostOverride: Components.Schemas.SurfCostProfileOverrideDto | undefined
     setSurfCostOverride: Dispatch<SetStateAction<Components.Schemas.SurfCostProfileOverrideDto | undefined>>
-    substructure: Components.Schemas.SubstructureDto | undefined
-    setSubstructure: Dispatch<SetStateAction<Components.Schemas.SubstructureDto | undefined>>
+    substructure: Components.Schemas.SubstructureWithProfilesDto | undefined
+    setSubstructure: Dispatch<SetStateAction<Components.Schemas.SubstructureWithProfilesDto | undefined>>
     substructureCost: Components.Schemas.SubstructureCostProfileDto | undefined
     setSubstructureCost: Dispatch<SetStateAction<Components.Schemas.SubstructureCostProfileDto | undefined>>
     transport: Components.Schemas.TransportDto | undefined
     setTransport: Dispatch<SetStateAction<Components.Schemas.TransportDto | undefined>>
     transportCost: Components.Schemas.TransportCostProfileDto | undefined
     setTransportCost: Dispatch<SetStateAction<Components.Schemas.TransportCostProfileDto | undefined>>
-    drainageStrategy: Components.Schemas.DrainageStrategyDto | undefined
-    setDrainageStrategy: Dispatch<SetStateAction<Components.Schemas.DrainageStrategyDto | undefined>>
+    drainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto | undefined
+    setDrainageStrategy: Dispatch<SetStateAction<Components.Schemas.DrainageStrategyWithProfilesDto | undefined>>
 
     wellProjectWells: Components.Schemas.WellProjectWellDto[] | undefined
     setWellProjectWells: Dispatch<SetStateAction<Components.Schemas.WellProjectWellDto[] | undefined>>
@@ -119,24 +120,23 @@ interface CaseContextType {
 const CaseContext = createContext<CaseContextType | undefined>(undefined)
 
 const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const { editMode, setEditMode } = useAppContext()
     const [projectCase, setProjectCase] = useState<Components.Schemas.CaseDto | undefined>()
-    const [renameProjectCase, setRenameProjectCase] = useState<boolean>(false)
+    const [caseEdits, setCaseEdits] = useState<EditInstance[]>(JSON.parse(localStorage.getItem("caseEdits") || "[]"))
     const [projectCaseEdited, setProjectCaseEdited] = useState<Components.Schemas.CaseDto | undefined>()
     const [saveProjectCase, setSaveProjectCase] = useState<boolean>(false)
     const [projectCaseNew, setProjectCaseNew] = useState<Components.Schemas.CreateCaseDto | undefined>()
     const [activeTabCase, setActiveTabCase] = useState<number>(0)
 
-    const [topside, setTopside] = useState<Components.Schemas.TopsideDto | undefined>()
+    const [topside, setTopside] = useState<Components.Schemas.TopsideWithProfilesDto | undefined>()
     const [topsideCost, setTopsideCost] = useState<Components.Schemas.TopsideCostProfileDto | undefined>()
     const [surf, setSurf] = useState<Components.Schemas.SurfDto>()
     const [surfCost, setSurfCost] = useState<Components.Schemas.SurfCostProfileDto | undefined>()
     const [surfCostOverride, setSurfCostOverride] = useState<Components.Schemas.SurfCostProfileOverrideDto>()
-    const [substructure, setSubstructure] = useState<Components.Schemas.SubstructureDto>()
+    const [substructure, setSubstructure] = useState<Components.Schemas.SubstructureWithProfilesDto>()
     const [substructureCost, setSubstructureCost] = useState<Components.Schemas.SubstructureCostProfileDto | undefined>()
     const [transport, setTransport] = useState<Components.Schemas.TransportDto>()
     const [transportCost, setTransportCost] = useState<Components.Schemas.TransportCostProfileDto | undefined>()
-    const [drainageStrategy, setDrainageStrategy] = useState<Components.Schemas.DrainageStrategyDto>()
+    const [drainageStrategy, setDrainageStrategy] = useState<Components.Schemas.DrainageStrategyWithProfilesDto>()
 
     const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellProjectWellDto[] | undefined>()
     const [explorationWells, setExplorationWells] = useState<Components.Schemas.ExplorationWellDto[] | undefined>()
@@ -180,8 +180,8 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const value = useMemo(() => ({
         projectCase,
         setProjectCase,
-        renameProjectCase,
-        setRenameProjectCase,
+        caseEdits,
+        setCaseEdits,
         projectCaseEdited,
         setProjectCaseEdited,
         saveProjectCase,
@@ -279,8 +279,6 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     }), [
         projectCase,
         setProjectCase,
-        renameProjectCase,
-        setRenameProjectCase,
         projectCaseEdited,
         setProjectCaseEdited,
         saveProjectCase,
@@ -340,10 +338,15 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         offshoreOpexPlussWellIntervention,
     ])
 
+    const { editMode } = useAppContext()
+
+    useEffect(() => {
+        localStorage.setItem("caseEdits", JSON.stringify(caseEdits))
+    }, [caseEdits])
+
     useEffect(() => {
         if (editMode && projectCase && !projectCaseEdited) {
             setProjectCaseEdited(projectCase)
-            setRenameProjectCase(editMode)
         }
     }, [editMode, projectCaseEdited])
 

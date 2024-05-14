@@ -47,13 +47,13 @@ public class ProjectDto
     [Required]
     public ICollection<SurfDto> Surfs { get; set; } = [];
     [Required]
-    public ICollection<SubstructureDto> Substructures { get; set; } = [];
+    public ICollection<SubstructureWithProfilesDto> Substructures { get; set; } = [];
     [Required]
-    public ICollection<TopsideDto> Topsides { get; set; } = [];
+    public ICollection<TopsideWithProfilesDto> Topsides { get; set; } = [];
     [Required]
     public ICollection<TransportDto> Transports { get; set; } = [];
     [Required]
-    public ICollection<DrainageStrategyDto> DrainageStrategies { get; set; } = [];
+    public ICollection<DrainageStrategyWithProfilesDto> DrainageStrategies { get; set; } = [];
     [Required]
     public ICollection<WellProjectDto>? WellProjects { get; set; } = [];
     public string? SharepointSiteUrl { get; set; }

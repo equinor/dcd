@@ -249,7 +249,7 @@ public class ProspExcelImportService
             PeakElectricityImported = peakElectricityImported,
         };
 
-        await _topsideService.UpdateTopside(updateTopsideDto, topsideLink);
+        await _topsideService.UpdateTopsideAndCostProfiles(updateTopsideDto, topsideLink);
     }
 
     private async Task ImportSubstructure(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
@@ -296,7 +296,7 @@ public class ProspExcelImportService
             CostYear = costYear,
         };
 
-        await _substructureService.UpdateSubstructure(updateSubstructureDto, substructureLink);
+        await _substructureService.UpdateSubstructureAndCostProfiles(updateSubstructureDto, substructureLink);
     }
 
     private async Task ImportTransport(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
@@ -460,7 +460,7 @@ public class ProspExcelImportService
         };
 
 
-        _topsideService.UpdateTopside(dto, topsideLink);
+        _topsideService.UpdateTopsideAndCostProfiles(dto, topsideLink);
     }
 
     private void ClearImportedSubstructure(Case caseItem)
@@ -472,7 +472,7 @@ public class ProspExcelImportService
             Source = Source.ConceptApp,
         };
 
-        _substructureService.UpdateSubstructure(dto, substructureLink);
+        _substructureService.UpdateSubstructureAndCostProfiles(dto, substructureLink);
     }
 
     private void ClearImportedTransport(Case caseItem)

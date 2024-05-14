@@ -27,9 +27,9 @@ public static class TestDataGenerator
             ModifyTime = DateTimeOffset.UtcNow
         };
     }
-    public static DrainageStrategyDto Case2DrainageStrategy()
+    public static DrainageStrategyWithProfilesDto Case2DrainageStrategy()
     {
-        return new DrainageStrategyDto
+        return new DrainageStrategyWithProfilesDto
         {
             Name = "SkarvenDrainStratCase2",
             Description = "Skarvens drainage strategy",

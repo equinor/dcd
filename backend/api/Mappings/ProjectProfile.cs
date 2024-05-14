@@ -1,7 +1,7 @@
 using api.Dtos;
 using api.Models;
 
-using Api.Services.FusionIntegration.Models;
+using api.Services.FusionIntegration.Models;
 
 using AutoMapper;
 

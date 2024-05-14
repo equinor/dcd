@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 using Microsoft.AspNetCore.Authorization;
 
-namespace Api.Authorization;
+namespace api.Authorization;
 
 [DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
 public class ApplicationRolePolicyProvider : IAuthorizationPolicyProvider

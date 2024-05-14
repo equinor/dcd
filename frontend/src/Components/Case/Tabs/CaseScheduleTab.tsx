@@ -16,9 +16,9 @@ import { useCaseContext } from "../../../Context/CaseContext"
 
 const CaseScheduleTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
-    if (!projectCase) return null
+    if (!projectCase) { return null }
     const handleDG0Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        if (!projectCaseEdited) return
+        if (!projectCaseEdited) { return }
         const newCase = { ...projectCaseEdited }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
@@ -51,7 +51,7 @@ const CaseScheduleTab = () => {
     }
 
     const handleDG1Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        if (!projectCaseEdited) return
+        if (!projectCaseEdited) { return }
         const newCase = { ...projectCaseEdited }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
@@ -63,7 +63,7 @@ const CaseScheduleTab = () => {
     }
 
     const handleDG2Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        if (!projectCaseEdited) return
+        if (!projectCaseEdited) { return }
         const newCase = { ...projectCaseEdited }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
@@ -75,7 +75,7 @@ const CaseScheduleTab = () => {
     }
 
     const handleDG3Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        if (!projectCaseEdited) return
+        if (!projectCaseEdited) { return }
         const newCase = { ...projectCaseEdited }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
@@ -87,7 +87,7 @@ const CaseScheduleTab = () => {
     }
 
     const handleDG4Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        if (!projectCaseEdited) return
+        if (!projectCaseEdited) { return }
         const newCase = { ...projectCaseEdited }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
@@ -99,7 +99,7 @@ const CaseScheduleTab = () => {
     }
 
     const handleDGAChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        if (!projectCaseEdited) return
+        if (!projectCaseEdited) { return }
         const newCase: Components.Schemas.CaseDto = { ...projectCaseEdited }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
@@ -111,7 +111,7 @@ const CaseScheduleTab = () => {
     }
 
     const handleDGBChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        if (!projectCaseEdited) return
+        if (!projectCaseEdited) { return }
         const newCase = { ...projectCaseEdited }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
@@ -123,7 +123,7 @@ const CaseScheduleTab = () => {
     }
 
     const handleDGCChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        if (!projectCaseEdited) return
+        if (!projectCaseEdited) { return }
         const newCase = { ...projectCaseEdited }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
@@ -135,7 +135,7 @@ const CaseScheduleTab = () => {
     }
 
     const handleAPXChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        if (!projectCaseEdited) return
+        if (!projectCaseEdited) { return }
         const newCase = { ...projectCaseEdited }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {
@@ -147,7 +147,7 @@ const CaseScheduleTab = () => {
     }
 
     const handleAPZChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        if (!projectCaseEdited) return
+        if (!projectCaseEdited) { return }
         const newCase = { ...projectCaseEdited }
         const newDate = new Date(e.target.value)
         if (Number.isNaN(newDate.getTime())) {

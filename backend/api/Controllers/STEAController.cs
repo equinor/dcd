@@ -1,14 +1,12 @@
+using api.Authorization;
 using api.Dtos;
 using api.Excel;
 using api.Services;
-
-using Api.Authorization;
 
 using ClosedXML.Excel;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 using Microsoft.Identity.Web.Resource;
 
 namespace api.Controllers;

@@ -18,6 +18,7 @@ import InputSwitcher from "../../Input/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import RangeButton from "../../Buttons/RangeButton"
+import { handleStartYearStateChange, handleEndYearStateChange } from "../../../Utils/common"
 
 interface ITimeSeriesData {
     profileName: string
@@ -29,8 +30,8 @@ interface ITimeSeriesData {
     overridable?: boolean
 }
 interface Props {
-    drainageStrategy: Components.Schemas.DrainageStrategyDto,
-    setDrainageStrategy: Dispatch<SetStateAction<Components.Schemas.DrainageStrategyDto | undefined>>,
+    drainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto,
+    setDrainageStrategy: Dispatch<SetStateAction<Components.Schemas.DrainageStrategyWithProfilesDto | undefined>>,
 
     netSalesGas: Components.Schemas.NetSalesGasDto | undefined,
     setNetSalesGas: Dispatch<SetStateAction<Components.Schemas.NetSalesGasDto | undefined>>,
@@ -52,7 +53,7 @@ const CaseProductionProfilesTab = ({
     const {
         projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase,
     } = useCaseContext()
-    if (!projectCase) return null
+    if (!projectCase) { return null }
     const [gas, setGas] = useState<Components.Schemas.ProductionProfileGasDto>()
     const [oil, setOil] = useState<Components.Schemas.ProductionProfileOilDto>()
     const [water, setWater] = useState<Components.Schemas.ProductionProfileWaterDto>()
@@ -84,7 +85,7 @@ const CaseProductionProfilesTab = ({
 
     const gridRef = useRef<any>(null)
 
-    const updateAndSetDraiangeStrategy = (drainage: Components.Schemas.DrainageStrategyDto) => {
+    const updateAndSetDraiangeStrategy = (drainage: Components.Schemas.DrainageStrategyWithProfilesDto) => {
         if (drainageStrategy === undefined) { return }
         if (netSalesGas === undefined
             || fuelFlaringAndLosses === undefined
@@ -98,7 +99,7 @@ const CaseProductionProfilesTab = ({
             || fuelFlaringAndLossesOverride === undefined) {
             return
         }
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainage }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainage }
         newDrainageStrategy.netSalesGas = netSalesGas
         newDrainageStrategy.netSalesGasOverride = netSalesGasOverride
         newDrainageStrategy.fuelFlaringAndLosses = fuelFlaringAndLosses
@@ -113,14 +114,14 @@ const CaseProductionProfilesTab = ({
         setDrainageStrategy(newDrainageStrategy)
     }
 
-    const handleCaseFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const handleCaseFacilitiesAvailabilityChange = (value: number): void => {
         const newCase = { ...projectCaseEdited }
-        const newfacilitiesAvailability = e.currentTarget.value.length > 0
-            ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
+        const newfacilitiesAvailability = value > 0
+            ? Math.min(Math.max(value, 0), 100) : undefined
         if (newfacilitiesAvailability !== undefined) {
             newCase.facilitiesAvailability = newfacilitiesAvailability / 100
         } else { newCase.facilitiesAvailability = 0 }
-        newCase ?? setProjectCaseEdited(newCase)
+        setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
     }
 
     const handleDrainageStrategyGasSolutionChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
@@ -130,24 +131,6 @@ const CaseProductionProfilesTab = ({
             newDrainageStrategy.gasSolution = newGasSolution
             updateAndSetDraiangeStrategy(newDrainageStrategy)
         }
-    }
-
-    const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newStartYear = Number(e.currentTarget.value)
-        if (newStartYear < 2010) {
-            setStartYear(2010)
-            return
-        }
-        setStartYear(newStartYear)
-    }
-
-    const handleEndYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newEndYear = Number(e.currentTarget.value)
-        if (newEndYear > 2100) {
-            setEndYear(2100)
-            return
-        }
-        setEndYear(newEndYear)
     }
 
     const timeSeriesData: ITimeSeriesData[] = [
@@ -240,12 +223,18 @@ const CaseProductionProfilesTab = ({
                     setNetSalesGas(drainageStrategy.netSalesGas)
                     setImportedElectricity(drainageStrategy.importedElectricity)
 
-                    SetTableYearsFromProfiles([drainageStrategy.netSalesGas, drainageStrategy.fuelFlaringAndLosses,
-                    drainageStrategy.netSalesGasOverride, drainageStrategy.fuelFlaringAndLossesOverride,
-                    drainageStrategy.productionProfileGas, drainageStrategy.productionProfileOil,
-                    drainageStrategy.productionProfileWater, drainageStrategy.productionProfileNGL,
-                    drainageStrategy.productionProfileWaterInjection, drainageStrategy.importedElectricityOverride,
-                    drainageStrategy.co2EmissionsOverride,
+                    SetTableYearsFromProfiles([
+                        drainageStrategy.netSalesGas,
+                        drainageStrategy.fuelFlaringAndLosses,
+                        drainageStrategy.netSalesGasOverride,
+                        drainageStrategy.fuelFlaringAndLossesOverride,
+                        drainageStrategy.productionProfileGas,
+                        drainageStrategy.productionProfileOil,
+                        drainageStrategy.productionProfileWater,
+                        drainageStrategy.productionProfileNGL,
+                        drainageStrategy.productionProfileWaterInjection,
+                        drainageStrategy.importedElectricityOverride,
+                        drainageStrategy.co2EmissionsOverride,
                     ], new Date(projectCase?.dG4Date).getFullYear(), setStartYear, setEndYear, setTableYears)
                     setGas(drainageStrategy.productionProfileGas)
                     setOil(drainageStrategy.productionProfileOil)
@@ -264,49 +253,49 @@ const CaseProductionProfilesTab = ({
     }, [activeTabCase])
 
     useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
         if (!oil) { return }
         newDrainageStrategy.productionProfileOil = oil
         setDrainageStrategy(newDrainageStrategy)
     }, [oil])
 
     useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
         if (!gas) { return }
         newDrainageStrategy.productionProfileGas = gas
         setDrainageStrategy(newDrainageStrategy)
     }, [gas])
 
     useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
         if (!water) { return }
         newDrainageStrategy.productionProfileWater = water
         setDrainageStrategy(newDrainageStrategy)
     }, [water])
 
     useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
         if (!waterInjection) { return }
         newDrainageStrategy.productionProfileWaterInjection = waterInjection
         setDrainageStrategy(newDrainageStrategy)
     }, [waterInjection])
 
     useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
         if (!importedElectricityOverride) { return }
         newDrainageStrategy.importedElectricityOverride = importedElectricityOverride
         setDrainageStrategy(newDrainageStrategy)
     }, [importedElectricityOverride])
 
     useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
         if (!fuelFlaringAndLossesOverride) { return }
         newDrainageStrategy.fuelFlaringAndLossesOverride = fuelFlaringAndLossesOverride
         setDrainageStrategy(newDrainageStrategy)
     }, [fuelFlaringAndLossesOverride])
 
     useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyDto = { ...drainageStrategy }
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
         if (!netSalesGasOverride) { return }
         newDrainageStrategy.netSalesGasOverride = netSalesGasOverride
         setDrainageStrategy(newDrainageStrategy)
@@ -324,14 +313,16 @@ const CaseProductionProfilesTab = ({
         <Grid container spacing={2}>
             <Grid item xs={12} md={6} lg={3}>
                 <InputSwitcher
-                    value={projectCase?.facilitiesAvailability !== undefined
-                        ? `${projectCase?.facilitiesAvailability * 100}%` : ""}
+                    value={projectCase.facilitiesAvailability
+                        ? `${projectCase.facilitiesAvailability * 100}%`
+                        : ""}
                     label="Facilities availability"
                 >
                     <CaseNumberInput
                         onChange={handleCaseFacilitiesAvailabilityChange}
                         defaultValue={projectCase?.facilitiesAvailability
-                            !== undefined ? projectCase?.facilitiesAvailability * 100 : undefined}
+                            ? projectCase.facilitiesAvailability * 100
+                            : undefined}
                         integer={false}
                         unit="%"
                         min={0}
@@ -447,7 +438,7 @@ const CaseProductionProfilesTab = ({
                 <Grid item>
                     <Typography variant="caption">Start year</Typography>
                     <CaseNumberInput
-                        onChange={handleStartYearChange}
+                        onChange={(value) => handleStartYearStateChange(value, setStartYear)}
                         defaultValue={startYear}
                         integer
                         min={2010}
@@ -457,7 +448,7 @@ const CaseProductionProfilesTab = ({
                 <Grid item>
                     <Typography variant="caption">End year</Typography>
                     <CaseNumberInput
-                        onChange={handleEndYearChange}
+                        onChange={(value) => handleEndYearStateChange(value, setEndYear)}
                         defaultValue={endYear}
                         integer
                         min={2010}

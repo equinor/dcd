@@ -1,6 +1,6 @@
-namespace Api.Authorization;
-
 using Microsoft.AspNetCore.Authorization;
+
+namespace api.Authorization;
 
 public sealed class RequiresApplicationRolesAttribute : AuthorizeAttribute
 {

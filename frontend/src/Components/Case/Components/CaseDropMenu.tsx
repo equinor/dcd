@@ -18,7 +18,6 @@ interface CaseDropMenuProps {
     setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
     menuAnchorEl: HTMLElement | null
     projectCase: any
-    setRenameProjectCase: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
@@ -26,7 +25,6 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     setIsMenuOpen,
     menuAnchorEl,
     projectCase,
-    setRenameProjectCase,
 }) => {
     const navigate = useNavigate()
     const {
@@ -37,10 +35,10 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     const { addNewCase } = useModalContext()
 
     const deleteAndGoToProject = async () => {
-        if (!projectCase || !project) return
+        if (!projectCase || !project) { return }
 
         if (await deleteCase(projectCase?.id, project, setProject)) {
-            if (project.fusionProjectId) navigate(`/${project.fusionProjectId}`)
+            if (project.fusionProjectId) { navigate(`/${project.fusionProjectId}`) }
         }
     }
 
@@ -52,33 +50,19 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
             onClose={() => setIsMenuOpen(false)}
             placement="bottom"
         >
-            <Menu.Item
-                onClick={() => addNewCase()}
-            >
+            <Menu.Item onClick={() => addNewCase()}>
                 <Icon data={add} size={16} />
                 <Typography group="navigation" variant="menu_title" as="span">
                     Add New Case
                 </Typography>
             </Menu.Item>
-            <Menu.Item
-                onClick={() => project && duplicateCase(projectCase?.id, project, setProject)}
-            >
+            <Menu.Item onClick={() => project && duplicateCase(projectCase?.id, project, setProject)}>
                 <Icon data={library_add} size={16} />
                 <Typography group="navigation" variant="menu_title" as="span">
                     Duplicate
                 </Typography>
             </Menu.Item>
-            <Menu.Item
-                onClick={() => setRenameProjectCase(true)}
-            >
-                <Icon data={edit} size={16} />
-                <Typography group="navigation" variant="menu_title" as="span">
-                    Rename
-                </Typography>
-            </Menu.Item>
-            <Menu.Item
-                onClick={() => project && deleteAndGoToProject()}
-            >
+            <Menu.Item onClick={() => project && deleteAndGoToProject()}>
                 <Icon data={delete_to_trash} size={16} />
                 <Typography group="navigation" variant="menu_title" as="span">
                     Delete

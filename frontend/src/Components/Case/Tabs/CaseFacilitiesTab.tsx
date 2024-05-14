@@ -11,14 +11,15 @@ import CaseNumberInput from "../../Input/CaseNumberInput"
 import InputSwitcher from "../../Input/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
+import { setNonNegativeNumberState } from "../../../Utils/common"
 
 interface Props {
-    topside: Components.Schemas.TopsideDto,
-    setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideDto | undefined>>,
+    topside: Components.Schemas.TopsideWithProfilesDto,
+    setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideWithProfilesDto | undefined>>,
     surf: Components.Schemas.SurfDto,
     setSurf: Dispatch<SetStateAction<Components.Schemas.SurfDto | undefined>>,
-    substructure: Components.Schemas.SubstructureDto,
-    setSubstrucutre: Dispatch<SetStateAction<Components.Schemas.SubstructureDto | undefined>>,
+    substructure: Components.Schemas.SubstructureWithProfilesDto,
+    setSubstrucutre: Dispatch<SetStateAction<Components.Schemas.SubstructureWithProfilesDto | undefined>>,
     transport: Components.Schemas.TransportDto,
     setTransport: Dispatch<SetStateAction<Components.Schemas.TransportDto | undefined>>,
 }
@@ -31,7 +32,7 @@ const CaseFacilitiesTab = ({
 }: Props) => {
     const { project } = useProjectContext()
     const { projectCase, setProjectCaseEdited } = useCaseContext()
-    if (!projectCase) return null
+    if (!projectCase) { return null }
 
     const platformConceptValues: { [key: number]: string } = {
         0: "No Concept",
@@ -65,108 +66,6 @@ const CaseFacilitiesTab = ({
         13: "HDPE lined CS (Water injection only)",
     }
 
-    const handleFacilityOpexChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newTopside = { ...topside }
-        newTopside.facilityOpex = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
-        setTopside(newTopside)
-    }
-
-    const handleSurfCessationCostChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newSurf = { ...surf }
-        newSurf.cessationCost = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
-        setSurf(newSurf)
-    }
-
-    const handleTopsideDryWeightChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newTopside = { ...topside }
-        newTopside.dryWeight = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setTopside(newTopside)
-    }
-
-    const handleTopsidePeakElectricityImportedChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newTopside = { ...topside }
-        newTopside.peakElectricityImported = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setTopside(newTopside)
-    }
-
-    const handleTopsideProducerCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newTopside = { ...topside }
-        newTopside.producerCount = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
-        setTopside(newTopside)
-    }
-
-    const handleTopsideGasInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newTopside = { ...topside }
-        newTopside.gasInjectorCount = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
-        setTopside(newTopside)
-    }
-
-    const handleTopsideWaterInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newTopside = { ...topside }
-        newTopside.waterInjectorCount = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
-        setTopside(newTopside)
-    }
-
-    const handleTopsideOilCapacityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newTopside = { ...topside }
-        newTopside.oilCapacity = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setTopside(newTopside)
-    }
-
-    const handleTopsideGasCapacityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newTopside = { ...topside }
-        newTopside.gasCapacity = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setTopside(newTopside)
-    }
-
-    const handleTopsideWaterInjectionCapacityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newTopside = { ...topside }
-        newTopside.waterInjectionCapacity = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
-        setTopside(newTopside)
-    }
-
-    const handleSurfTemplateCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newSurf = { ...surf }
-        newSurf.templateCount = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setSurf(newSurf)
-    }
-
-    const handleSurfRiserCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newSurf = { ...surf }
-        newSurf.riserCount = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setSurf(newSurf)
-    }
-
-    const handleSurfProducerCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newSurf = { ...surf }
-        newSurf.producerCount = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
-        setSurf(newSurf)
-    }
-
-    const handleSurfGasInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newSurf = { ...surf }
-        newSurf.gasInjectorCount = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
-        setSurf(newSurf)
-    }
-
-    const handleSurfWaterInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newSurf = { ...surf }
-        newSurf.waterInjectorCount = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
-        setSurf(newSurf)
-    }
-
-    const handleSurfInfieldPipelineSystemLengthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newSurf = { ...surf }
-        newSurf.infieldPipelineSystemLength = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setSurf(newSurf)
-    }
-
-    const handleSurfUmbilicalSystemLengthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newSurf = { ...surf }
-        newSurf.umbilicalSystemLength = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setSurf(newSurf)
-    }
-
     const handleProductionFlowlineChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].indexOf(Number(e.currentTarget.value)) !== -1) {
             const newProductionFlowline: Components.Schemas.ProductionFlowline = Number(e.currentTarget.value) as Components.Schemas.ProductionFlowline
@@ -176,9 +75,9 @@ const CaseFacilitiesTab = ({
         }
     }
 
-    const handleSubstructureDryweightChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const handleSubstructureDryweightChange = (value: number): void => {
         const newSubstructure = { ...substructure }
-        newSubstructure.dryWeight = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
+        newSubstructure.dryWeight = value > 0 ? Math.max(value, 0) : 0
         setSubstrucutre(newSubstructure)
     }
 
@@ -196,22 +95,10 @@ const CaseFacilitiesTab = ({
         }
     }
 
-    const handleHostChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const handleHostChange = (value: number): void => {
         const newCase = { ...projectCase }
-        newCase.host = e.currentTarget.value
+        newCase.host = value > 0 ? value.toString() : ""
         setProjectCaseEdited(newCase)
-    }
-
-    const handleTransportOilExportPipelineLengthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newTransport = { ...transport }
-        newTransport.oilExportPipelineLength = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setTransport(newTransport)
-    }
-
-    const handleTransportGasExportPipelineLengthChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newTransport = { ...transport }
-        newTransport.gasExportPipelineLength = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setTransport(newTransport)
     }
 
     return (
@@ -256,7 +143,7 @@ const CaseFacilitiesTab = ({
                     label="Facility opex"
                 >
                     <CaseNumberInput
-                        onChange={handleFacilityOpexChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "facilityOpex", topside, setTopside)}
                         defaultValue={Math.round(Number(topside?.facilityOpex) * 10) / 10}
                         integer={false}
                         unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
@@ -269,7 +156,7 @@ const CaseFacilitiesTab = ({
                     label="Cessation cost"
                 >
                     <CaseNumberInput
-                        onChange={handleSurfCessationCostChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "cessationCost", surf, setSurf)}
                         defaultValue={Math.round(Number(surf?.cessationCost) * 10) / 10}
                         integer={false}
                         unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
@@ -285,7 +172,7 @@ const CaseFacilitiesTab = ({
                     label="Topside dry weight"
                 >
                     <CaseNumberInput
-                        onChange={handleTopsideDryWeightChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "dryWeight", topside, setTopside)}
                         defaultValue={Math.round(Number(topside?.dryWeight) * 1) / 1}
                         integer
                         unit="tonnes"
@@ -314,7 +201,7 @@ const CaseFacilitiesTab = ({
                     label="Peak electricity imported"
                 >
                     <CaseNumberInput
-                        onChange={handleTopsidePeakElectricityImportedChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "peakElectricityImported", topside, setTopside)}
                         defaultValue={Math.round(Number(topside?.peakElectricityImported) * 10) / 10}
                         integer={false}
                         unit="MW"
@@ -329,7 +216,7 @@ const CaseFacilitiesTab = ({
                     label="Oil capacity"
                 >
                     <CaseNumberInput
-                        onChange={handleTopsideOilCapacityChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "oilCapacity", topside, setTopside)}
                         defaultValue={Math.round(Number(topside?.oilCapacity) * 1) / 1}
                         integer
                         unit="Sm³/sd"
@@ -344,7 +231,7 @@ const CaseFacilitiesTab = ({
                     label="Gas capacity"
                 >
                     <CaseNumberInput
-                        onChange={handleTopsideGasCapacityChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "gasCapacity", topside, setTopside)}
                         defaultValue={Math.round(Number(topside?.gasCapacity) * 10) / 10}
                         integer={false}
                         unit="MSm³/sd"
@@ -359,7 +246,7 @@ const CaseFacilitiesTab = ({
                     label="Water injection capacity"
                 >
                     <CaseNumberInput
-                        onChange={handleTopsideWaterInjectionCapacityChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "waterInjectionCapacity", topside, setTopside)}
                         defaultValue={Math.round(Number(topside?.waterInjectionCapacity) * 1) / 1}
                         integer
                         unit="MSm³/sd"
@@ -375,7 +262,7 @@ const CaseFacilitiesTab = ({
                     label="Producer count"
                 >
                     <CaseNumberInput
-                        onChange={handleTopsideProducerCountChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "producerCount", topside, setTopside)}
                         defaultValue={topside?.producerCount}
                         integer
                         min={0}
@@ -389,7 +276,7 @@ const CaseFacilitiesTab = ({
                     label="Gas injector count"
                 >
                     <CaseNumberInput
-                        onChange={handleTopsideGasInjectorCountChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "gasInjectorCount", topside, setTopside)}
                         defaultValue={topside?.gasInjectorCount}
                         integer
                         min={0}
@@ -403,7 +290,7 @@ const CaseFacilitiesTab = ({
                     label="Water injector count"
                 >
                     <CaseNumberInput
-                        onChange={handleTopsideWaterInjectorCountChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "waterInjectorCount", topside, setTopside)}
                         defaultValue={topside?.waterInjectorCount}
                         integer
                         min={0}
@@ -417,7 +304,7 @@ const CaseFacilitiesTab = ({
             <Grid item xs={12} md={4}>
                 <InputSwitcher value={`${surf?.templateCount}`} label="Templates">
                     <CaseNumberInput
-                        onChange={handleSurfTemplateCountChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "templateCount", surf, setSurf)}
                         defaultValue={surf?.templateCount}
                         integer
                         min={0}
@@ -428,7 +315,7 @@ const CaseFacilitiesTab = ({
             <Grid item xs={12} md={4}>
                 <InputSwitcher value={`${surf?.riserCount}`} label="Risers">
                     <CaseNumberInput
-                        onChange={handleSurfRiserCountChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "riserCount", surf, setSurf)}
                         defaultValue={surf?.riserCount}
                         integer
                         min={0}
@@ -439,7 +326,7 @@ const CaseFacilitiesTab = ({
             <Grid item xs={12} md={4}>
                 <InputSwitcher value={`${Math.round(Number(surf?.infieldPipelineSystemLength) * 10) / 10} km`} label="Production lines length">
                     <CaseNumberInput
-                        onChange={handleSurfInfieldPipelineSystemLengthChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "infieldPipelineSystemLength", surf, setSurf)}
                         defaultValue={Math.round(Number(surf?.infieldPipelineSystemLength) * 10) / 10}
                         integer={false}
                         unit="km"
@@ -451,7 +338,7 @@ const CaseFacilitiesTab = ({
             <Grid item xs={12} md={4}>
                 <InputSwitcher value={`${Math.round(Number(surf?.umbilicalSystemLength) * 10) / 10} km`} label="Umbilical system length">
                     <CaseNumberInput
-                        onChange={handleSurfUmbilicalSystemLengthChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "umbilicalSystemLength", surf, setSurf)}
                         defaultValue={Math.round(Number(surf?.umbilicalSystemLength) * 10) / 10}
                         integer={false}
                         unit="km"
@@ -485,7 +372,7 @@ const CaseFacilitiesTab = ({
             <Grid item xs={12} md={4}>
                 <InputSwitcher value={`${surf?.producerCount}`} label="Producer count">
                     <CaseNumberInput
-                        onChange={handleSurfProducerCountChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "producerCount", surf, setSurf)}
                         defaultValue={surf?.producerCount}
                         integer
                     />
@@ -494,7 +381,7 @@ const CaseFacilitiesTab = ({
             <Grid item xs={12} md={4}>
                 <InputSwitcher value={`${surf?.gasInjectorCount}`} label="Gas injector count">
                     <CaseNumberInput
-                        onChange={handleSurfGasInjectorCountChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "gasInjectorCount", surf, setSurf)}
                         defaultValue={surf?.gasInjectorCount}
                         integer
                         min={0}
@@ -505,7 +392,7 @@ const CaseFacilitiesTab = ({
             <Grid item xs={12} md={4}>
                 <InputSwitcher value={`${surf?.waterInjectorCount}`} label="Water injector count">
                     <CaseNumberInput
-                        onChange={handleSurfWaterInjectorCountChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "waterInjectorCount", surf, setSurf)}
                         defaultValue={surf?.waterInjectorCount}
                         integer
                         min={0}
@@ -519,7 +406,7 @@ const CaseFacilitiesTab = ({
             <Grid item xs={12} md={4}>
                 <InputSwitcher value={`${Math.round(Number(transport?.oilExportPipelineLength) * 10) / 10} km`} label="Oil export pipeline length">
                     <CaseNumberInput
-                        onChange={handleTransportOilExportPipelineLengthChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "oilExportPipelineLength", transport, setTransport)}
                         defaultValue={Math.round(Number(transport?.oilExportPipelineLength) * 10) / 10}
                         integer={false}
                         unit="km"
@@ -531,7 +418,7 @@ const CaseFacilitiesTab = ({
             <Grid item xs={12} md={4}>
                 <InputSwitcher value={`${Math.round(Number(transport?.gasExportPipelineLength) * 10) / 10} km`} label="Gas export pipeline length">
                     <CaseNumberInput
-                        onChange={handleTransportGasExportPipelineLengthChange}
+                        onChange={(value: number) => setNonNegativeNumberState(value, "gasExportPipelineLength", transport, setTransport)}
                         defaultValue={Math.round(Number(transport?.gasExportPipelineLength) * 10) / 10}
                         integer={false}
                         unit="km"

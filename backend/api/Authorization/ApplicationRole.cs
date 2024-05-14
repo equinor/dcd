@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Api.Authorization;
+namespace api.Authorization;
 
 public enum ApplicationRole
 {

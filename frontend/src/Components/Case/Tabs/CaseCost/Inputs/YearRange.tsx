@@ -1,9 +1,10 @@
-import React, { ChangeEventHandler } from "react"
+import React from "react"
 import { NativeSelect, Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import RangeButton from "../../../../Buttons/RangeButton"
 import CaseNumberInput from "../../../../Input/CaseNumberInput"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
+import { handleStartYearStateChange, handleEndYearStateChange } from "../../../../../Utils/common"
 
 interface RearRangeProps {
     startYear: number
@@ -26,24 +27,6 @@ const RearRange: React.FC<RearRangeProps> = ({
         setTableYears([startYear, endYear])
     }
 
-    const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newStartYear = Number(e.currentTarget.value)
-        if (newStartYear < 2010) {
-            setStartYear(2010)
-            return
-        }
-        setStartYear(newStartYear)
-    }
-
-    const handleEndYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newEndYear = Number(e.currentTarget.value)
-        if (newEndYear > 2100) {
-            setEndYear(2100)
-            return
-        }
-        setEndYear(newEndYear)
-    }
-
     return (
         <>
             <Grid item>
@@ -61,7 +44,7 @@ const RearRange: React.FC<RearRangeProps> = ({
             <Grid item>
                 <Typography variant="caption">Start year</Typography>
                 <CaseNumberInput
-                    onChange={handleStartYearChange}
+                    onChange={(value) => handleStartYearStateChange(value, setStartYear)}
                     defaultValue={startYear}
                     integer
                     min={2010}
@@ -71,7 +54,7 @@ const RearRange: React.FC<RearRangeProps> = ({
             <Grid item>
                 <Typography variant="caption">End year</Typography>
                 <CaseNumberInput
-                    onChange={handleEndYearChange}
+                    onChange={(value) => handleEndYearStateChange(value, setEndYear)}
                     defaultValue={endYear}
                     integer
                     min={2010}
