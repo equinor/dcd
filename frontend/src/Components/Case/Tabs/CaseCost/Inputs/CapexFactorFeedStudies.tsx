@@ -10,10 +10,10 @@ const TotalStudyCosts: React.FC = () => {
         setProjectCaseEdited,
     } = useCaseContext()
 
-    const handleCaseFEEDChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const handleCaseFEEDChange = (value: number): void => {
         const newCase = { ...projectCaseEdited }
-        const newCapexFactorFEEDStudies = e.currentTarget.value.length > 0
-            ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
+        const newCapexFactorFEEDStudies = value > 0
+            ? Math.min(Math.max(value, 0), 100) : undefined
         if (newCapexFactorFEEDStudies !== undefined) {
             newCase.capexFactorFEEDStudies = newCapexFactorFEEDStudies / 100
         } else { newCase.capexFactorFEEDStudies = 0 }

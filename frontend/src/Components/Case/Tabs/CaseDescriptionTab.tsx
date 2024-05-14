@@ -1,5 +1,6 @@
 import {
     ChangeEventHandler,
+    useEffect,
 } from "react"
 import { NativeSelect, Typography } from "@equinor/eds-core-react"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
@@ -9,12 +10,11 @@ import InputSwitcher from "../../Input/InputSwitcher"
 import Gallery from "../../Gallery/Gallery"
 import { useCaseContext } from "../../../Context/CaseContext"
 import { useAppContext } from "../../../Context/AppContext"
-import useDataEdits from "../../../Hooks/useDataEdits"
+import { setNonNegativeNumberState } from "../../../Utils/common"
 
 const CaseDescriptionTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
     const { editMode } = useAppContext()
-    const { addEdit } = useDataEdits()
 
     if (!projectCase) { return null }
 
@@ -33,6 +33,10 @@ const CaseDescriptionTab = () => {
         3: "Subsea booster pumps",
     }
 
+    useEffect(() => {
+        console.log("project case edited", projectCaseEdited)
+    }, [projectCaseEdited])
+
     function handleDescriptionChange(value: string) {
         if (projectCaseEdited) {
             const updatedProjectCase = { ...projectCaseEdited, description: value }
@@ -40,34 +44,13 @@ const CaseDescriptionTab = () => {
         }
     }
 
-    const handleFacilitiesAvailabilityChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const handleFacilitiesAvailabilityChange = (value: number): void => {
         const newCase = { ...projectCase }
-        const newfacilitiesAvailability = e.currentTarget.value.length > 0
-            ? Math.min(Math.max(Number(e.currentTarget.value), 0), 100) : undefined
+        const newfacilitiesAvailability = value > 0
+            ? Math.min(Math.max(value, 0), 100) : undefined
         if (newfacilitiesAvailability !== undefined) {
             newCase.facilitiesAvailability = newfacilitiesAvailability / 100
         } else { newCase.facilitiesAvailability = 0 }
-        setProjectCaseEdited(newCase)
-    }
-
-    const handleProducerCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...projectCase }
-        const newValue = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-
-        addEdit(newValue, newCase.producerCount, "producerCount", "Production wells", "case", newCase.id)
-        newCase.producerCount = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setProjectCaseEdited(newCase)
-    }
-
-    const handleGasInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...projectCase }
-        newCase.gasInjectorCount = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
-        setProjectCaseEdited(newCase)
-    }
-
-    const handletWaterInjectorCountChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newCase = { ...projectCase }
-        newCase.waterInjectorCount = e.currentTarget.value.length > 0 ? Math.max(Number(e.currentTarget.value), 0) : 0
         setProjectCaseEdited(newCase)
     }
 
@@ -128,13 +111,14 @@ const CaseDescriptionTab = () => {
                     value={projectCaseEdited ? projectCaseEdited.producerCount.toString() : projectCase.producerCount.toString()}
                 >
                     <CaseNumberInput
-                        onChange={handleProducerCountChange}
+                        onChange={(value) => setNonNegativeNumberState(value, "producerCount", projectCaseEdited, setProjectCaseEdited)}
                         defaultValue={projectCaseEdited ? projectCaseEdited.producerCount : projectCase?.producerCount}
                         integer
                         min={0}
                         max={100000}
                     />
                 </InputSwitcher>
+
             </Grid>
             <Grid item xs={12} md={4}>
                 <InputSwitcher
@@ -142,7 +126,7 @@ const CaseDescriptionTab = () => {
                     value={projectCaseEdited ? projectCaseEdited.producerCount.toString() : projectCase.waterInjectorCount.toString()}
                 >
                     <CaseNumberInput
-                        onChange={handletWaterInjectorCountChange}
+                        onChange={(value) => setNonNegativeNumberState(value, "waterInjectorCount", projectCaseEdited, setProjectCaseEdited)}
                         defaultValue={projectCaseEdited ? projectCaseEdited.waterInjectorCount : projectCase?.waterInjectorCount}
                         integer
                         disabled={false}
@@ -157,7 +141,7 @@ const CaseDescriptionTab = () => {
                     value={projectCaseEdited ? projectCaseEdited.gasInjectorCount.toString() : projectCase.gasInjectorCount.toString()}
                 >
                     <CaseNumberInput
-                        onChange={handleGasInjectorCountChange}
+                        onChange={(value) => setNonNegativeNumberState(value, "gasInjectorCount", projectCaseEdited, setProjectCaseEdited)}
                         defaultValue={projectCaseEdited ? projectCaseEdited.gasInjectorCount : projectCase?.gasInjectorCount}
                         integer
                         min={0}

@@ -1,5 +1,5 @@
 import { InputWrapper, Input, Icon } from "@equinor/eds-core-react"
-import { useState, ChangeEventHandler, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { error_filled } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { preventNonDigitInput, isWithinRange } from "../../Utils/common"
@@ -21,7 +21,7 @@ const StyledInput = styled(Input)`
 `
 
 interface Props {
-    onChange: ChangeEventHandler<HTMLInputElement>
+    onChange: (value: number) => void
     defaultValue: number | undefined
     integer: boolean
     disabled?: boolean
@@ -44,16 +44,12 @@ const CaseNumberInput = ({
     const [hasError, setHasError] = useState(false)
     const [inputValue, setInputValue] = useState(defaultValue)
     const [helperText, setHelperText] = useState("\u200B")
-    const checkInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
-        if (integer) {
-            preventNonDigitInput(event)
-        }
-        setInputValue(Number(event.currentTarget.value))
-    }
 
-    useEffect(() => {
+    const submitChange = (newValue: number) => {
+        setInputValue(newValue)
+        onChange(newValue)
         if (min !== undefined && max !== undefined) {
-            if (!isWithinRange(Number(inputValue), min, max)) {
+            if (!isWithinRange(newValue, min, max)) {
                 setHelperText(`(min: ${min}, max: ${max})`)
                 setHasError(true)
             } else {
@@ -61,7 +57,18 @@ const CaseNumberInput = ({
                 setHelperText("\u200B")
             }
         }
-    }, [inputValue, min, max])
+    }
+
+    const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+        const newValue = Number(event.target.value)
+        submitChange(newValue)
+    }
+
+    const checkInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (integer) {
+            preventNonDigitInput(event)
+        }
+    }
 
     return (
         <InputWrapper
@@ -72,9 +79,9 @@ const CaseNumberInput = ({
         >
             <StyledInput
                 type="number"
-                value={inputValue}
+                defaultValue={inputValue}
                 disabled={disabled}
-                onChange={onChange}
+                onBlur={handleBlur}
                 min={allowNegative ? undefined : 0}
                 onInput={(event: React.FormEvent<HTMLInputElement>) => checkInput(event as unknown as React.KeyboardEvent<HTMLInputElement>)}
                 rightAdornments={[unit, hasError ? <ErrorIcon size={16} data={error_filled} /> : undefined]}

@@ -26,16 +26,19 @@ const PreviousValue = styled(Typography)`
     opacity: 0.5;
 `
 
-const NewValue = styled(Typography)`
-`
-
 const ChangeView = styled.div`
     display: flex;
     flex-wrap: nowrap;
     gap: 10px;
     align-items: center;
-    `
-
+`
+const StyledSideSheet = styled(SideSheet)`
+    padding-right: 0;
+`
+const SheetBody = styled.div`
+    overflow-y: auto;
+    height: 100%;
+`
 const EditsSideBar: React.FC = () => {
     const { caseEdits, projectCase } = useCaseContext()
     const [toggleSidesheet, setToggleSidesheet] = React.useState<boolean>(false)
@@ -47,29 +50,31 @@ const EditsSideBar: React.FC = () => {
                     <Icon data={history} />
                 </Button>
             </Tooltip>
-            <SideSheet
+            <StyledSideSheet
                 title="Edits"
                 open={toggleSidesheet}
                 onClose={() => setToggleSidesheet(false)}
                 variant="large"
             >
-                {projectCase && caseEdits.map((edit) => (edit.level === "case" && edit.objectId === projectCase.id ? (
-                    <EditInstance key={edit.uuid} style={{ marginBottom: "10px" }}>
-                        <Header>
-                            <Typography variant="caption">{String(edit.inputLabel)}</Typography>
-                            <Typography variant="overline">{edit.timeStamp}</Typography>
-                        </Header>
-                        <ChangeView>
-                            <PreviousValue>{edit.previousValue}</PreviousValue>
-                            <div>
-                                <Icon data={arrow_forward} size={16} />
-                            </div>
-                            <NewValue>{edit.newValue}</NewValue>
-                        </ChangeView>
-                    </EditInstance>
-                ) : null))}
+                <SheetBody>
+                    {projectCase && caseEdits.map((edit) => (edit.level === "case" && edit.objectId === projectCase.id ? (
+                        <EditInstance key={edit.uuid} style={{ marginBottom: "10px" }}>
+                            <Header>
+                                <Typography variant="caption">{String(edit.inputLabel)}</Typography>
+                                <Typography variant="overline">{edit.timeStamp}</Typography>
+                            </Header>
+                            <ChangeView>
+                                <PreviousValue>{edit.previousValue}</PreviousValue>
+                                <div>
+                                    <Icon data={arrow_forward} size={16} />
+                                </div>
+                                <Typography>{edit.newValue}</Typography>
+                            </ChangeView>
+                        </EditInstance>
+                    ) : null))}
+                </SheetBody>
 
-            </SideSheet>
+            </StyledSideSheet>
         </>
     )
 }

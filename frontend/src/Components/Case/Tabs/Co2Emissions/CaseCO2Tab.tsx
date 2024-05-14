@@ -1,7 +1,6 @@
 import {
     Dispatch,
     SetStateAction,
-    ChangeEventHandler,
     useState,
     useEffect,
     useRef,
@@ -21,6 +20,7 @@ import InputSwitcher from "../../../Input/InputSwitcher"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import RangeButton from "../../../Buttons/RangeButton"
+import { setNonNegativeNumberState, handleStartYearStateChange, handleEndYearStateChange } from "../../../../Utils/common"
 
 interface Props {
     topside: Components.Schemas.TopsideWithProfilesDto,
@@ -115,30 +115,6 @@ const CaseCO2Tab = ({
             }
         })()
     }, [activeTabCase])
-
-    const handleStartYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newStartYear = Number(e.currentTarget.value)
-        if (newStartYear < 2010) {
-            setStartYear(2010)
-            return
-        }
-        setStartYear(newStartYear)
-    }
-
-    const handleEndYearChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newEndYear = Number(e.currentTarget.value)
-        if (newEndYear > 2100) {
-            setEndYear(2100)
-            return
-        }
-        setEndYear(newEndYear)
-    }
-
-    const handleTopsideFuelConsumptionChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const newTopside = { ...topside }
-        newTopside.fuelConsumption = e.currentTarget.value.length > 0 ? Number(e.currentTarget.value) : 0
-        setTopside(newTopside)
-    }
 
     interface ITimeSeriesData {
         profileName: string
@@ -236,7 +212,7 @@ const CaseCO2Tab = ({
             <Grid item xs={12}>
                 <InputSwitcher value={`${topside?.fuelConsumption} million Sm³ gas/sd`} label="Fuel consumption">
                     <CaseNumberInput
-                        onChange={handleTopsideFuelConsumptionChange}
+                        onChange={(value) => setNonNegativeNumberState(value, "fuelConsumption", topside, setTopside)}
                         defaultValue={topside?.fuelConsumption}
                         integer={false}
                         unit="million Sm³ gas/sd"
@@ -297,7 +273,7 @@ const CaseCO2Tab = ({
                 <Grid item>
                     <Typography variant="caption">Start year</Typography>
                     <CaseNumberInput
-                        onChange={handleStartYearChange}
+                        onChange={(value) => handleStartYearStateChange(value, setStartYear)}
                         defaultValue={startYear}
                         integer
                         min={2010}
@@ -307,7 +283,7 @@ const CaseCO2Tab = ({
                 <Grid item>
                     <Typography variant="caption">End year</Typography>
                     <CaseNumberInput
-                        onChange={handleEndYearChange}
+                        onChange={(value) => handleEndYearStateChange(value, setEndYear)}
                         defaultValue={endYear}
                         integer
                         min={2010}
