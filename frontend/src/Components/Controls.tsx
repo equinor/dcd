@@ -19,6 +19,7 @@ import { GetProjectService } from "../Services/ProjectService"
 import { useAppContext } from "../Context/AppContext"
 import useDataEdits from "../Hooks/useDataEdits"
 import EditsSideBar from "./EditTracker/EditsSideBar"
+import { PROJECT_CLASSIFICATION } from "../Utils/constants"
 
 const Controls = () => {
     const navigate = useNavigate()
@@ -127,7 +128,21 @@ const Controls = () => {
                             onBlur={() => handleCaseNameChange(nameInput.current.value)}
                         />
                     )
-                    : <Typography variant="h4">{projectCase ? projectCase.name : currentContext?.title}</Typography>}
+                    : (
+                        <>
+                            <Typography variant="h4">
+                                {projectCase ? projectCase.name : project?.name}
+                            </Typography>
+                            {project && !projectCase && (
+                                <Tooltip placement="bottom-start" title={PROJECT_CLASSIFICATION[project?.classification].description}>
+                                    <Chip variant={PROJECT_CLASSIFICATION[project?.classification].color}>
+                                        <Icon data={PROJECT_CLASSIFICATION[project?.classification].icon} />
+                                        {PROJECT_CLASSIFICATION[project?.classification].label}
+                                    </Chip>
+                                </Tooltip>
+                            )}
+                        </>
+                    )}
             </Grid>
             <Grid item xs container spacing={1} alignItems="center" justifyContent="flex-end">
                 {editMode
