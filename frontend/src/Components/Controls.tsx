@@ -1,13 +1,21 @@
-import {
-    useState, useRef,
-} from "react"
+import { useState, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
-    Icon, Typography, Button, Progress, Input,
+    Icon,
+    Typography,
+    Button,
+    Progress,
+    Input,
+    Chip,
+    Tooltip,
 } from "@equinor/eds-core-react"
 import {
-    save, edit, keyboard_tab, more_vertical, arrow_back,
+    save,
+    edit,
+    keyboard_tab,
+    more_vertical,
+    arrow_back,
 } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid"
 import { projectPath } from "../Utils/common"
@@ -48,10 +56,14 @@ const Controls = () => {
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
 
     const handleCaseNameChange = (name: string) => {
-        const newCase = { ...projectCase }
-        addEdit(name, newCase.name, "name", "name", "case", newCase.id)
-        newCase.name = name
-        setProjectCaseEdited(newCase)
+        if (projectCase) {
+            const newCase = {
+                ...projectCase,
+            }
+            addEdit(name, newCase.name, "name", "name", "case", newCase.id)
+            newCase.name = name
+            setProjectCaseEdited(newCase)
+        }
     }
 
     const handleCancel = async () => {
@@ -62,7 +74,9 @@ const Controls = () => {
 
     const handleProjectSave = async () => {
         if (project && projectEdited) {
-            const updatedProject = { ...projectEdited }
+            const updatedProject = {
+                ...projectEdited,
+            }
             const result = await (await GetProjectService()).updateProject(project.id, updatedProject)
             setProject(result)
             setProjectEdited(undefined)
