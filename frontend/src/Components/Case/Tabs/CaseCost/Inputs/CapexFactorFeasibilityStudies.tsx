@@ -1,6 +1,6 @@
-import React, { ChangeEventHandler } from "react"
+import React from "react"
 import InputSwitcher from "../../../../Input/InputSwitcher"
-import CaseNumberInput from "../../../../Input/CaseNumberInput"
+import CaseEditInput from "../../../../Input/CaseEditInput"
 import { useCaseContext } from "../../../../../Context/CaseContext"
 
 const CapexFactorFeasibilityStudies: React.FC = () => {
@@ -20,19 +20,17 @@ const CapexFactorFeasibilityStudies: React.FC = () => {
         setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
     }
     return (
-        <InputSwitcher
-            value={`${projectCase?.capexFactorFeasibilityStudies !== undefined ? ((projectCase.capexFactorFeasibilityStudies ?? 0) * 100).toFixed(2) : ""}%`}
+        <CaseEditInput
+            object={projectCase}
+            objectKey={projectCase?.capexFactorFeasibilityStudies}
             label="CAPEX factor feasibility studies"
-        >
-            <CaseNumberInput
-                onChange={handleCaseFeasibilityChange}
-                defaultValue={projectCase?.capexFactorFeasibilityStudies !== undefined ? (projectCase.capexFactorFeasibilityStudies ?? 0) * 100 : undefined}
-                integer={false}
-                unit="%"
-                min={0}
-                max={100}
-            />
-        </InputSwitcher>
+            onSubmit={handleCaseFeasibilityChange}
+            value={projectCase?.capexFactorFeasibilityStudies !== undefined ? (projectCase.capexFactorFeasibilityStudies ?? 0) * 100 : undefined}
+            integer={false}
+            unit="%"
+            min={0}
+            max={100}
+        />
     )
 }
 

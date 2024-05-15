@@ -5,7 +5,7 @@ import {
 import { NativeSelect, Typography } from "@equinor/eds-core-react"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
-import CaseNumberInput from "../../Input/CaseNumberInput"
+import CaseEditInput from "../../Input/CaseEditInput"
 import InputSwitcher from "../../Input/InputSwitcher"
 import Gallery from "../../Gallery/Gallery"
 import { useCaseContext } from "../../../Context/CaseContext"
@@ -32,10 +32,6 @@ const CaseDescriptionTab = () => {
         2: "Electrical submerged pumps",
         3: "Subsea booster pumps",
     }
-
-    useEffect(() => {
-        console.log("project case edited", projectCaseEdited)
-    }, [projectCaseEdited])
 
     function handleDescriptionChange(value: string) {
         if (projectCaseEdited) {
@@ -106,48 +102,42 @@ const CaseDescriptionTab = () => {
                     : <MarkdownViewer value={projectCase.description} />}
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
+                <CaseEditInput
+                    object={projectCaseEdited}
+                    objectKey={projectCaseEdited?.producerCount}
                     label="Production wells"
-                    value={projectCaseEdited ? projectCaseEdited.producerCount.toString() : projectCase.producerCount.toString()}
-                >
-                    <CaseNumberInput
-                        onChange={(value) => setNonNegativeNumberState(value, "producerCount", projectCaseEdited, setProjectCaseEdited)}
-                        defaultValue={projectCaseEdited ? projectCaseEdited.producerCount : projectCase?.producerCount}
-                        integer
-                        min={0}
-                        max={100000}
-                    />
-                </InputSwitcher>
+                    onSubmit={(value) => setNonNegativeNumberState(value, "producerCount", projectCaseEdited, setProjectCaseEdited)}
+                    value={projectCaseEdited ? projectCaseEdited.producerCount : projectCase?.producerCount}
+                    integer
+                    min={0}
+                    max={100000}
+                />
+            </Grid>
+            <Grid item xs={12} md={4}>
 
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <InputSwitcher
+                <CaseEditInput
+                    object={projectCaseEdited}
+                    objectKey={projectCaseEdited?.waterInjectorCount}
                     label="Water injector wells"
-                    value={projectCaseEdited ? projectCaseEdited.producerCount.toString() : projectCase.waterInjectorCount.toString()}
-                >
-                    <CaseNumberInput
-                        onChange={(value) => setNonNegativeNumberState(value, "waterInjectorCount", projectCaseEdited, setProjectCaseEdited)}
-                        defaultValue={projectCaseEdited ? projectCaseEdited.waterInjectorCount : projectCase?.waterInjectorCount}
-                        integer
-                        disabled={false}
-                        min={0}
-                        max={100000}
-                    />
-                </InputSwitcher>
+                    onSubmit={(value) => setNonNegativeNumberState(value, "waterInjectorCount", projectCaseEdited, setProjectCaseEdited)}
+                    value={projectCaseEdited ? projectCaseEdited.waterInjectorCount : projectCase?.waterInjectorCount}
+                    integer
+                    disabled={false}
+                    min={0}
+                    max={100000}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
+                <CaseEditInput
+                    object={projectCaseEdited}
+                    objectKey={projectCaseEdited?.gasInjectorCount}
                     label="Gas injector wells"
-                    value={projectCaseEdited ? projectCaseEdited.gasInjectorCount.toString() : projectCase.gasInjectorCount.toString()}
-                >
-                    <CaseNumberInput
-                        onChange={(value) => setNonNegativeNumberState(value, "gasInjectorCount", projectCaseEdited, setProjectCaseEdited)}
-                        defaultValue={projectCaseEdited ? projectCaseEdited.gasInjectorCount : projectCase?.gasInjectorCount}
-                        integer
-                        min={0}
-                        max={100000}
-                    />
-                </InputSwitcher>
+                    onSubmit={(value) => setNonNegativeNumberState(value, "gasInjectorCount", projectCaseEdited, setProjectCaseEdited)}
+                    value={projectCaseEdited ? projectCaseEdited.gasInjectorCount : projectCase?.gasInjectorCount}
+                    integer
+                    min={0}
+                    max={100000}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
                 <InputSwitcher
@@ -184,19 +174,17 @@ const CaseDescriptionTab = () => {
                 </InputSwitcher>
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
+                <CaseEditInput
+                    object={projectCase}
+                    objectKey={projectCase.facilitiesAvailability}
                     label="Facilities availability"
-                    value={`${projectCase?.facilitiesAvailability !== undefined ? (projectCase.facilitiesAvailability * 100).toFixed(2) : ""}%`}
-                >
-                    <CaseNumberInput
-                        onChange={handleFacilitiesAvailabilityChange}
-                        defaultValue={defaultValue}
-                        integer={false}
-                        unit="%"
-                        min={0}
-                        max={100}
-                    />
-                </InputSwitcher>
+                    onSubmit={handleFacilitiesAvailabilityChange}
+                    value={defaultValue}
+                    integer={false}
+                    unit="%"
+                    min={0}
+                    max={100}
+                />
             </Grid>
         </Grid>
     )

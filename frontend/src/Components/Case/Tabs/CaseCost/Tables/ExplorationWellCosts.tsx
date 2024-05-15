@@ -89,8 +89,6 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             && explorationWellsGridRef.current.api
             && explorationWellsGridRef.current.api.refreshCells) {
             explorationWellsGridRef.current.api.refreshCells()
-
-            console.log("Refreshing exploration wells grid")
         }
     }, [gAndGAdminCost])
 

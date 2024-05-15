@@ -1,6 +1,5 @@
-import React, { ChangeEventHandler } from "react"
-import InputSwitcher from "../../../../Input/InputSwitcher"
-import CaseNumberInput from "../../../../Input/CaseNumberInput"
+import React from "react"
+import CaseEditInput from "../../../../Input/CaseEditInput"
 import { useCaseContext } from "../../../../../Context/CaseContext"
 
 const TotalStudyCosts: React.FC = () => {
@@ -21,19 +20,17 @@ const TotalStudyCosts: React.FC = () => {
     }
 
     return (
-        <InputSwitcher
-            value={`${projectCase?.capexFactorFEEDStudies !== undefined ? ((projectCase.capexFactorFEEDStudies ?? 0) * 100).toFixed(2) : ""}%`}
+        <CaseEditInput
+            object={projectCase}
+            objectKey={projectCase?.capexFactorFEEDStudies}
             label="CAPEX factor FEED studies"
-        >
-            <CaseNumberInput
-                onChange={handleCaseFEEDChange}
-                defaultValue={projectCase?.capexFactorFEEDStudies !== undefined ? (projectCase.capexFactorFEEDStudies ?? 0) * 100 : undefined}
-                integer={false}
-                unit="%"
-                min={0}
-                max={100}
-            />
-        </InputSwitcher>
+            onSubmit={handleCaseFEEDChange}
+            value={projectCase?.capexFactorFEEDStudies !== undefined ? (projectCase.capexFactorFEEDStudies ?? 0) * 100 : undefined}
+            integer={false}
+            unit="%"
+            min={0}
+            max={100}
+        />
     )
 }
 

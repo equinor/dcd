@@ -5,9 +5,9 @@ import {
     useEffect,
     useRef,
 } from "react"
-import { NativeSelect, Typography } from "@equinor/eds-core-react"
+import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import CaseNumberInput from "../../../Input/CaseNumberInput"
+import CaseEditInput from "../../../Input/CaseEditInput"
 import CaseTabTable from "../../Components/CaseTabTable"
 import { ITimeSeries } from "../../../../Models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
@@ -16,11 +16,10 @@ import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../../AgGrid/AgChartsTimeseries"
 import { AgChartsPie } from "../../../AgGrid/AgChartsPie"
 import { ITimeSeriesOverride } from "../../../../Models/ITimeSeriesOverride"
-import InputSwitcher from "../../../Input/InputSwitcher"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
-import RangeButton from "../../../Buttons/RangeButton"
-import { setNonNegativeNumberState, handleStartYearStateChange, handleEndYearStateChange } from "../../../../Utils/common"
+import { setNonNegativeNumberState } from "../../../../Utils/common"
+import DateRangePicker from "../../../Input/DateRangePicker"
 
 interface Props {
     topside: Components.Schemas.TopsideWithProfilesDto,
@@ -87,6 +86,15 @@ const CaseCO2Tab = ({
             },
         },
     ]
+
+    const datePickerValue = (() => {
+        if (project?.physicalUnit === 0) {
+            return "SI"
+        } if (project?.physicalUnit === 1) {
+            return "Oil field"
+        }
+        return ""
+    })()
 
     useEffect(() => {
         (async () => {
@@ -210,14 +218,15 @@ const CaseCO2Tab = ({
                 <Typography>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</Typography>
             </Grid>
             <Grid item xs={12}>
-                <InputSwitcher value={`${topside?.fuelConsumption} million Sm³ gas/sd`} label="Fuel consumption">
-                    <CaseNumberInput
-                        onChange={(value) => setNonNegativeNumberState(value, "fuelConsumption", topside, setTopside)}
-                        defaultValue={topside?.fuelConsumption}
-                        integer={false}
-                        unit="million Sm³ gas/sd"
-                    />
-                </InputSwitcher>
+                <CaseEditInput
+                    object={topside}
+                    objectKey={topside?.fuelConsumption}
+                    label="Fuel consumption"
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "fuelConsumption", topside, setTopside)}
+                    value={topside?.fuelConsumption}
+                    integer={false}
+                    unit="million Sm³ gas/sd"
+                />
             </Grid>
             <Grid item xs={12}>
                 <CaseCO2DistributionTable topside={topside} />
@@ -257,43 +266,15 @@ const CaseCO2Tab = ({
                     />
                 </Grid>
             </Grid>
-            <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="baseline" marginTop={6}>
-                <Grid item>
-                    <NativeSelect
-                        id="unit"
-                        label="Units"
-                        onChange={() => { }}
-                        value={project?.physicalUnit}
-                        disabled
-                    >
-                        <option key={0} value={0}>SI</option>
-                        <option key={1} value={1}>Oil field</option>
-                    </NativeSelect>
-                </Grid>
-                <Grid item>
-                    <Typography variant="caption">Start year</Typography>
-                    <CaseNumberInput
-                        onChange={(value) => handleStartYearStateChange(value, setStartYear)}
-                        defaultValue={startYear}
-                        integer
-                        min={2010}
-                        max={2100}
-                    />
-                </Grid>
-                <Grid item>
-                    <Typography variant="caption">End year</Typography>
-                    <CaseNumberInput
-                        onChange={(value) => handleEndYearStateChange(value, setEndYear)}
-                        defaultValue={endYear}
-                        integer
-                        min={2010}
-                        max={2100}
-                    />
-                </Grid>
-                <Grid item>
-                    <RangeButton onClick={handleTableYearsClick} />
-                </Grid>
-            </Grid>
+            <DateRangePicker
+                startYear={startYear}
+                endYear={endYear}
+                setStartYear={setStartYear}
+                setEndYear={setEndYear}
+                labelText="Units"
+                labelValue={datePickerValue}
+                handleTableYearsClick={handleTableYearsClick}
+            />
             <Grid item xs={12}>
                 <CaseTabTable
                     timeSeriesData={timeSeriesData}

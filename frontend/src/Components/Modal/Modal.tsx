@@ -14,7 +14,7 @@ type Props = {
 const Modal: FunctionComponent<Props> = ({
     isOpen, title, children,
 }) => {
-    if (!isOpen) return null
+    if (!isOpen) { return null }
     return (
         <Dialog open={isOpen} fullWidth maxWidth="lg" className="ConceptApp ag-theme-alpine-fusion">
             {title && <DialogTitle><Typography variant="h2" as="p">{title}</Typography></DialogTitle>}

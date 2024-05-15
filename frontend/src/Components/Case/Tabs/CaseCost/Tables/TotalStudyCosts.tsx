@@ -65,8 +65,6 @@ const TotalStudyCosts: React.FC<CesationCostsProps> = ({ tableYears, studyGridRe
             && studyGridRef.current.api
             && studyGridRef.current.api.refreshCells) {
             studyGridRef.current.api.refreshCells()
-
-            console.log("Refreshing study grid")
         }
     }, [totalFeasibilityAndConceptStudies, totalFEEDStudies, totalOtherStudies])
 
