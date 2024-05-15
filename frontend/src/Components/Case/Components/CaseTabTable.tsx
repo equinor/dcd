@@ -15,7 +15,7 @@ import {
     getCaseRowStyle,
     validateInput,
 } from "../../../Utils/common"
-import { OverrideTimeSeriesPrompt } from "../../OverrideTimeSeriesPrompt"
+import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../../Utils/constants"
 import { useAppContext } from "../../../Context/AppContext"
 import ErrorCellRenderer from "./ErrorCellRenderer"
@@ -253,7 +253,7 @@ const CaseTabTable = ({
         resizable: true,
         editable: true,
         onCellValueChanged: handleCellValueChange,
-        suppressMenu: true,
+        suppressMenuButton: true,
     }), [])
 
     useEffect(() => {

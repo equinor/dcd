@@ -272,16 +272,6 @@ export const validateInput = (params: any, editMode: boolean) => {
     return null
 }
 
-export const getCurrentTime = (): string => {
-    const now = new Date()
-    const hours = now.getHours()
-    const minutes = now.getMinutes()
-
-    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes.toString()
-
-    return `${hours}:${formattedMinutes}`
-}
-
 /**
  * Updates a state object with a non-negative number value.
  * If the provided value is negative, sets the object key to 0.
@@ -297,20 +287,14 @@ export const setNonNegativeNumberState = (value: number, objectKey: string, stat
     setState(newState)
 }
 
-export const handleStartYearStateChange = (value: number, setStartYear: (startYear: number) => void): void => {
-    const newStartYear = value
-    if (newStartYear < 2010) {
-        setStartYear(2010)
-        return
-    }
-    setStartYear(newStartYear)
-}
+export const formatTime = (timestamp: number): string => {
+    const date = new Date(timestamp)
+    const hours = date.getHours()
+    const minutes = date.getMinutes()
 
-export const handleEndYearStateChange = (value: number, setEndYear: (endYear: number) => void): void => {
-    const newEndYear = value
-    if (newEndYear > 2100) {
-        setEndYear(2100)
-        return
-    }
-    setEndYear(newEndYear)
+    // Pad single digits with a leading zero
+    const formattedHours = hours.toString().padStart(2, "0")
+    const formattedMinutes = minutes.toString().padStart(2, "0")
+
+    return `${formattedHours}:${formattedMinutes}`
 }

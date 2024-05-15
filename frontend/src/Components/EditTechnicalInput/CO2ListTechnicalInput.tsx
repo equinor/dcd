@@ -16,7 +16,7 @@ const CO2ListTechnicalInput = () => {
     const styles = useStyles()
     const { project, setProject } = useProjectContext()
 
-    if (!project) return null
+    if (!project) { return null }
 
     const [check, setCheck] = useState(false)
     const [cO2RemovedFromGas, setCO2RemovedFromGas] = useState<number>(project.cO2RemovedFromGas ?? 0)
@@ -139,7 +139,7 @@ const CO2ListTechnicalInput = () => {
         filter: true,
         resizable: true,
         onCellValueChanged: handleCellValueChange,
-        suppressMenu: true,
+        suppressMenuButton: true,
     }), [])
 
     const switchRow = () => {
@@ -150,7 +150,7 @@ const CO2ListTechnicalInput = () => {
     }
 
     const switchLabel = () => {
-        if (check) return "CO2 re-injected"
+        if (check) { return "CO2 re-injected" }
 
         return "CO2 vented"
     }

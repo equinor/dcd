@@ -5,7 +5,7 @@ import { info_circle } from "@equinor/eds-icons"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { useProjectContext } from "../Context/ProjectContext"
 import { GetProjectService } from "../Services/ProjectService"
-import CreateCaseModal from "./CreateCaseModal"
+import CreateCaseModal from "./Modal/CreateCaseModal"
 import EditTechnicalInputModal from "./EditTechnicalInput/EditTechnicalInputModal"
 import { useAppContext } from "../Context/AppContext"
 

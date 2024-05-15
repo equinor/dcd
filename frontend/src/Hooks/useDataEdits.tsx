@@ -1,24 +1,25 @@
 import { v4 as uuidv4 } from "uuid"
 import { useCaseContext } from "../Context/CaseContext"
-import { getCurrentTime } from "../Utils/common"
 import { EditInstance } from "../Models/Interfaces"
 
 const useDataEdits = (): {
     addEdit: (
         newValue: string | number | undefined,
         previousValue: string | number | undefined,
-        objectKey: keyof Components.Schemas.CaseDto,
+        objectKey: string | number,
         inputLabel: string,
         level: "project" | "case",
         objectId: string,
     ) => void;
+    undoEdit: () => void;
+    redoEdits: () => void;
 } => {
     const { setCaseEdits } = useCaseContext()
 
     const addEdit = (
         newValue: string | number | undefined,
         previousValue: string | number | undefined,
-        objectKey: keyof Components.Schemas.CaseDto,
+        objectKey: string | number,
         inputLabel: string,
         level: "project" | "case",
         objectId: string,
@@ -31,7 +32,7 @@ const useDataEdits = (): {
             objectKey,
             inputLabel,
             uuid: uuidv4(),
-            timeStamp: getCurrentTime(),
+            timeStamp: new Date().getTime(),
             level,
             objectId,
         }
@@ -39,7 +40,32 @@ const useDataEdits = (): {
         setCaseEdits((prevEdits) => [editInstanceObject, ...prevEdits])
     }
 
-    return { addEdit }
+    const undoEdit = () => {
+        console.log("Undoing edit")
+        /*
+        console.log(
+            `Unding edit:
+                ${latestEdit.inputLabel}
+                from ${latestEdit.newValue}
+                to ${latestEdit.previousValue}
+            `,
+        ) */
+    }
+
+    const redoEdits = () => {
+        console.log("Redoing edit")
+        /*
+            console.log(
+                `Redoing edit:
+                ${latestUndo.inputLabel}
+                from ${latestUndo.previousValue}
+                to ${latestUndo.newValue}
+            `,
+            )
+        */
+    }
+
+    return { addEdit, undoEdit, redoEdits }
 }
 
 export default useDataEdits

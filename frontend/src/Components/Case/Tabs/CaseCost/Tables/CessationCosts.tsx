@@ -64,8 +64,6 @@ const CessationCosts: React.FC<CesationCostsProps> = ({ tableYears, cessationGri
             && cessationGridRef.current.api
             && cessationGridRef.current.api.refreshCells) {
             cessationGridRef.current.api.refreshCells()
-
-            console.log("Refreshing cessation grid")
         }
     }, [
         cessationWellsCost,
