@@ -2,7 +2,7 @@ using api.Context;
 using api.SampleData.Generators;
 using api.Services;
 
-using Api.Services.FusionIntegration;
+using api.Services.FusionIntegration;
 
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;

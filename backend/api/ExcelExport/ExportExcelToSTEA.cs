@@ -19,10 +19,10 @@ public static class ExportToSTEA
             var businessCase = new BusinessCase();
             int headerRowCount = rowCount;
             rowCount++;
-            businessCase.Exploration = CreateExcelRow("Exploration Cost [Expected Real MNOK'21]", project.StartYear, c.Exploration, rowCount, 1);
+            businessCase.Exploration = CreateExcelRow("Exploration Cost", project.StartYear, c.Exploration, rowCount, 1);
 
             rowCount++;
-            businessCase.Capex = CreateExcelRow("Capex [Expected Real MNOK'21]", project.StartYear, c.Capex, rowCount, 1);
+            businessCase.Capex = CreateExcelRow("Capex", project.StartYear, c.Capex, rowCount, 1);
 
             rowCount++;
             businessCase.Drilling = CreateExcelRow("Drilling", project.StartYear, c.Capex.Drilling, rowCount, 1);
@@ -211,4 +211,3 @@ public class ExcelTableCell
         this.Value = Value;
     }
 }
-

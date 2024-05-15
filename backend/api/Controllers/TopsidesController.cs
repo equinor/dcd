@@ -1,9 +1,6 @@
-using api.Adapters;
+using api.Authorization;
 using api.Dtos;
-using api.Models;
 using api.Services;
-
-using Api.Authorization;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,50 +10,44 @@ namespace api.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("[controller]")]
+[Route("projects/{projectId}/cases/{caseId}/topsides")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
-        ApplicationRole.Admin,
-        ApplicationRole.ReadOnly,
-        ApplicationRole.User
-
-    )]
+    ApplicationRole.Admin,
+    ApplicationRole.ReadOnly,
+    ApplicationRole.User
+)]
 public class TopsidesController : ControllerBase
 {
     private readonly ITopsideService _topsideService;
 
-    public TopsidesController(ITopsideService topsideService)
+    public TopsidesController(
+        ITopsideService topsideService
+    )
     {
         _topsideService = topsideService;
     }
 
-    [HttpPost(Name = "CreateTopside")]
-    public ProjectDto CreateTopside([FromQuery] Guid sourceCaseId, [FromBody] TopsideDto topsideDto)
+    [HttpPut("{topsideId}")]
+    public async Task<TopsideDto> UpdateTopside(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid topsideId,
+        [FromBody] APIUpdateTopsideDto dto)
     {
-        return _topsideService.CreateTopside(topsideDto, sourceCaseId);
+        return await _topsideService.UpdateTopside(caseId, topsideId, dto);
     }
 
-    [HttpDelete("{topsideId}", Name = "DeleteTopside")]
-    public ProjectDto DeleteTopside(Guid topsideId)
+    [HttpPut("{topsideId}/cost-profile-override/{costProfileId}")]
+    public async Task<TopsideCostProfileOverrideDto> UpdateTopsideCostProfileOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid topsideId,
+        [FromRoute] Guid costProfileId,
+        [FromBody] UpdateTopsideCostProfileOverrideDto dto)
     {
-        return _topsideService.DeleteTopside(topsideId);
+        return await _topsideService.UpdateTopsideCostProfileOverride(caseId, topsideId, costProfileId, dto);
     }
 
-    [HttpPut(Name = "UpdateTopside")]
-    public ProjectDto UpdateTopside([FromBody] TopsideDto topsideDto)
-    {
-        return _topsideService.UpdateTopside(topsideDto);
-    }
 
-    [HttpPost("{topsideId}/copy", Name = "CopyTopside")]
-    public TopsideDto CopyTopside([FromQuery] Guid caseId, Guid topsideId)
-    {
-        return _topsideService.CopyTopside(topsideId, caseId);
-    }
-
-    [HttpPut("new", Name = "NewUpdateTopside")]
-    public TopsideDto NewUpdateTopside([FromBody] TopsideDto topsideDto)
-    {
-        return _topsideService.NewUpdateTopside(topsideDto);
-    }
 }

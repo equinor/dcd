@@ -1,31 +1,37 @@
-import { config } from "./config"
 import { __BaseService } from "./__BaseService"
+import { config } from "./config"
+import { getToken, loginAccessTokenKey } from "../Utils/common"
 
-import { LoginAccessTokenKey, GetToken } from "../Utils/common"
-import { Project } from "../models/Project"
-import { IAssetService } from "./IAssetService"
-import { Topside } from "../models/assets/topside/Topside"
-
-export class __TopsideService extends __BaseService implements IAssetService {
-    public async create(sourceCaseId: string, body: Components.Schemas.TopsideDto): Promise<Project> {
-        const res: Components.Schemas.ProjectDto = await this.postWithParams("", { body }, { params: { sourceCaseId } })
-        return Project.fromJSON(res)
+class TopsideService extends __BaseService {
+    public async updateTopside(
+        projectId: string,
+        caseId: string,
+        topsideId: string,
+        dto: Components.Schemas.APIUpdateTopsideDto,
+    ): Promise<Components.Schemas.TopsideDto> {
+        const res: Components.Schemas.TopsideDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/topsides/${topsideId}`,
+            { body: dto },
+        )
+        return res
     }
 
-    public async update(body: Components.Schemas.TopsideDto): Promise<Project> {
-        const res: Components.Schemas.ProjectDto = await this.put("", { body })
-        return Project.fromJSON(res)
-    }
-
-    public async newUpdate(body: Components.Schemas.TopsideDto): Promise<any> {
-        const res: Components.Schemas.TransportDto = await this.put("/new", { body })
-        return new Topside(res)
+    public async updateTopsideCostProfileOverride(
+        projectId: string,
+        caseId: string,
+        topsideId: string,
+        costProfileId: string,
+        dto: Components.Schemas.UpdateTopsideCostProfileOverrideDto,
+    ): Promise<Components.Schemas.TopsideCostProfileOverrideDto> {
+        const res: Components.Schemas.TopsideCostProfileOverrideDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/topsides/${topsideId}/cost-profile-override/${costProfileId}`,
+            { body: dto },
+        )
+        return res
     }
 }
 
-export async function GetTopsideService() {
-    return new __TopsideService({
-        ...config.TopsideService,
-        accessToken: await GetToken(LoginAccessTokenKey)!,
-    })
-}
+export const GetTopsideService = async () => new TopsideService({
+    ...config.BaseUrl,
+    accessToken: await getToken(loginAccessTokenKey)!,
+})

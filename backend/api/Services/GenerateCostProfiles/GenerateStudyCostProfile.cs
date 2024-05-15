@@ -5,6 +5,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 namespace api.Services;
 
 public class GenerateStudyCostProfile : IGenerateStudyCostProfile
@@ -17,9 +19,18 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
     private readonly ISurfService _surfService;
     private readonly ITransportService _transportService;
     private readonly DcdDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GenerateStudyCostProfile(DcdDbContext context, ILoggerFactory loggerFactory, ICaseService caseService, IWellProjectService wellProjectService, ITopsideService topsideService,
-        ISubstructureService substructureService, ISurfService surfService, ITransportService transportService)
+    public GenerateStudyCostProfile(
+        DcdDbContext context,
+        ILoggerFactory loggerFactory,
+        ICaseService caseService,
+        IWellProjectService wellProjectService,
+        ITopsideService topsideService,
+        ISubstructureService substructureService,
+        ISurfService surfService,
+        ITransportService transportService,
+        IMapper mapper)
     {
         _context = context;
         _logger = loggerFactory.CreateLogger<GenerateStudyCostProfile>();
@@ -29,17 +40,19 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         _substructureService = substructureService;
         _surfService = surfService;
         _transportService = transportService;
+        _mapper = mapper;
     }
 
-    public async Task<StudyCostProfileWrapperDto> GenerateAsync(Guid caseId)
+    public async Task<StudyCostProfileWrapperDto> Generate(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
+        var caseItem = await _caseService.GetCase(caseId);
 
-        var sumFacilityCost = SumAllCostFacility(caseItem);
-        var sumWellCost = SumWellCost(caseItem);
+        var sumFacilityCost = await SumAllCostFacility(caseItem);
+        var sumWellCost = await SumWellCost(caseItem);
 
         var newFeasibility = CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
         var newFeed = CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
+
 
         var feasibility = caseItem.TotalFeasibilityAndConceptStudies ?? newFeasibility;
         feasibility.StartYear = newFeasibility.StartYear;
@@ -49,34 +62,42 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         feed.StartYear = newFeed.StartYear;
         feed.Values = newFeed.Values;
 
-        var saveResult = await UpdateCaseAndSaveAsync(caseItem, feasibility, feed);
+        var otherStudies = caseItem.TotalOtherStudies ?? new TotalOtherStudies();
+
+        await UpdateCaseAndSave(caseItem, feasibility, feed, otherStudies);
 
         var result = new StudyCostProfileWrapperDto();
-        var feasibilityDto = CaseDtoAdapter.Convert<TotalFeasibilityAndConceptStudiesDto, TotalFeasibilityAndConceptStudies>(feasibility);
-        var feedDto = CaseDtoAdapter.Convert<TotalFEEDStudiesDto, TotalFEEDStudies>(feed);
+        var feasibilityDto = _mapper.Map<TotalFeasibilityAndConceptStudiesDto>(feasibility);
+        var feedDto = _mapper.Map<TotalFEEDStudiesDto>(feed);
+        var otherStudiesDto = _mapper.Map<TotalOtherStudiesDto>(otherStudies);
+
 
         result.TotalFeasibilityAndConceptStudiesDto = feasibilityDto;
         result.TotalFEEDStudiesDto = feedDto;
+        result.TotalOtherStudiesDto = otherStudiesDto;
 
-        if (feasibility.Values.Length == 0 && feed.Values.Length == 0)
+        if (feasibility.Values.Length == 0 && feed.Values.Length == 0 && otherStudies.Values.Length == 0)
         {
             return new StudyCostProfileWrapperDto();
         }
-        var cost = TimeSeriesCost.MergeCostProfiles(feasibility, feed);
+
+        var cost = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { feasibility, feed, otherStudies });
+
         var studyCost = new StudyCostProfile
         {
             StartYear = cost.StartYear,
             Values = cost.Values
         };
-        var study = CaseDtoAdapter.Convert<StudyCostProfileDto, StudyCostProfile>(studyCost);
+        var study = _mapper.Map<StudyCostProfileDto>(studyCost);
         result.StudyCostProfileDto = study;
         return result;
     }
 
-    private async Task<int> UpdateCaseAndSaveAsync(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies)
+    private async Task<int> UpdateCaseAndSave(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies, TotalOtherStudies totalOtherStudies)
     {
         caseItem.TotalFeasibilityAndConceptStudies = totalFeasibilityAndConceptStudies;
         caseItem.TotalFEEDStudies = totalFEEDStudies;
+        caseItem.TotalOtherStudies = totalOtherStudies;
         return await _context.SaveChangesAsync();
     }
 
@@ -98,8 +119,10 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         var lastYearDays = dg2.DayOfYear;
         var lastYearPercentage = lastYearDays / (double)totalDays;
 
-        var percentageOfYearList = new List<double>();
-        percentageOfYearList.Add(firstYearPercentage);
+        var percentageOfYearList = new List<double>
+        {
+            firstYearPercentage
+        };
         for (int i = dg0.Year + 1; i < dg2.Year; i++)
         {
             var days = DateTime.IsLeapYear(i) ? 366 : 365;
@@ -160,14 +183,14 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         return feasibilityAndConceptStudiesCost;
     }
 
-    public double SumAllCostFacility(Case caseItem)
+    public async Task<double> SumAllCostFacility(Case caseItem)
     {
         var sumFacilityCost = 0.0;
 
         Substructure substructure;
         try
         {
-            substructure = _substructureService.GetSubstructure(caseItem.SubstructureLink);
+            substructure = await _substructureService.GetSubstructure(caseItem.SubstructureLink);
             if (substructure.CostProfileOverride?.Override == true)
             {
                 sumFacilityCost += substructure.CostProfileOverride.Values.Sum();
@@ -185,7 +208,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         Surf surf;
         try
         {
-            surf = _surfService.GetSurf(caseItem.SurfLink);
+            surf = await _surfService.GetSurf(caseItem.SurfLink);
             if (surf.CostProfileOverride?.Override == true)
             {
                 sumFacilityCost += surf.CostProfileOverride.Values.Sum();
@@ -203,7 +226,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         Topside topside;
         try
         {
-            topside = _topsideService.GetTopside(caseItem.TopsideLink);
+            topside = await _topsideService.GetTopside(caseItem.TopsideLink);
             if (topside.CostProfileOverride?.Override == true)
             {
                 sumFacilityCost += topside.CostProfileOverride.Values.Sum();
@@ -221,7 +244,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         Transport transport;
         try
         {
-            transport = _transportService.GetTransport(caseItem.TransportLink);
+            transport = await _transportService.GetTransport(caseItem.TransportLink);
             if (transport.CostProfileOverride?.Override == true)
             {
                 sumFacilityCost += transport.CostProfileOverride.Values.Sum();
@@ -239,14 +262,14 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         return sumFacilityCost;
     }
 
-    public double SumWellCost(Case caseItem)
+    public async Task<double> SumWellCost(Case caseItem)
     {
         var sumWellCost = 0.0;
 
         WellProject wellProject;
         try
         {
-            wellProject = _wellProjectService.GetWellProject(caseItem.WellProjectLink);
+            wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
 
             if (wellProject.OilProducerCostProfileOverride?.Override == true)
             {

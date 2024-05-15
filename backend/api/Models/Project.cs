@@ -20,6 +20,7 @@ public class Project
     public ICollection<Topside>? Topsides { get; set; }
     public ICollection<Transport>? Transports { get; set; }
     public ProjectPhase ProjectPhase { get; set; }
+    public ProjectClassification Classification { get; set; }
     public ProjectCategory ProjectCategory { get; set; }
     public ExplorationOperationalWellCosts? ExplorationOperationalWellCosts { get; set; }
     public DevelopmentOperationalWellCosts? DevelopmentOperationalWellCosts { get; set; }
@@ -86,4 +87,12 @@ public enum ProjectCategory
     TieIn,
     RenewableOther,
     Ccs,
+}
+
+public enum ProjectClassification
+{
+    Open,
+    Internal,
+    Restricted,
+    Confidential
 }

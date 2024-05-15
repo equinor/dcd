@@ -1,9 +1,7 @@
-namespace Api.Services.FusionIntegration.Models;
-
-using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
+
+namespace api.Services.FusionIntegration.Models;
 
 /// <summary>
 /// Representation of a Project Master in Fusion.

@@ -4,6 +4,8 @@ using api.Dtos;
 using api.Helpers;
 using api.Models;
 
+using AutoMapper;
+
 namespace api.Services.GenerateCostProfiles;
 
 public class GenerateImportedElectricityProfile : IGenerateImportedElectricityProfile
@@ -13,23 +15,31 @@ public class GenerateImportedElectricityProfile : IGenerateImportedElectricityPr
     private readonly IProjectService _projectService;
     private readonly ITopsideService _topsideService;
     private readonly DcdDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GenerateImportedElectricityProfile(DcdDbContext context, ICaseService caseService, IProjectService projectService, ITopsideService topsideService,
-        IDrainageStrategyService drainageStrategyService)
+    public GenerateImportedElectricityProfile(
+        DcdDbContext context,
+        ICaseService caseService,
+        IProjectService projectService,
+        ITopsideService topsideService,
+        IDrainageStrategyService drainageStrategyService,
+        IMapper mapper
+        )
     {
         _context = context;
         _caseService = caseService;
         _projectService = projectService;
         _topsideService = topsideService;
         _drainageStrategyService = drainageStrategyService;
+        _mapper = mapper;
     }
 
-    public async Task<ImportedElectricityDto> GenerateAsync(Guid caseId)
+    public async Task<ImportedElectricityDto> Generate(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
-        var topside = _topsideService.GetTopside(caseItem.TopsideLink);
-        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
-        var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+        var caseItem = await _caseService.GetCase(caseId);
+        var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
+        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
         var facilitiesAvailability = caseItem.FacilitiesAvailability;
 
@@ -43,13 +53,14 @@ public class GenerateImportedElectricityProfile : IGenerateImportedElectricityPr
         importedElectricity.StartYear = calculateImportedElectricity.StartYear;
         importedElectricity.Values = calculateImportedElectricity.Values;
 
-        var saveResult = await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, importedElectricity);
+        await UpdateDrainageStrategyAndSave(drainageStrategy, importedElectricity);
 
-        var dto = DrainageStrategyDtoAdapter.Convert<ImportedElectricityDto, ImportedElectricity>(importedElectricity, project.PhysicalUnit);
+        var dto = _mapper.Map<ImportedElectricityDto>(importedElectricity);
+
         return dto ?? new ImportedElectricityDto();
     }
 
-    private async Task<int> UpdateDrainageStrategyAndSaveAsync(DrainageStrategy drainageStrategy, ImportedElectricity importedElectricity)
+    private async Task<int> UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, ImportedElectricity importedElectricity)
     {
         drainageStrategy.ImportedElectricity = importedElectricity;
         return await _context.SaveChangesAsync();

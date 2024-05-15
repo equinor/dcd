@@ -1,9 +1,8 @@
 using api.Dtos;
 
-namespace api.Services
+namespace api.Services;
+
+public interface ISTEAService
 {
-    public interface ISTEAService
-    {
-        STEAProjectDto GetInputToSTEA(Guid ProjectId);
-    }
+    Task<STEAProjectDto> GetInputToSTEA(Guid ProjectId);
 }

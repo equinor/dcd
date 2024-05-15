@@ -4,6 +4,8 @@ using api.Dtos;
 using api.Helpers;
 using api.Models;
 
+using AutoMapper;
+
 namespace api.Services.GenerateCostProfiles;
 
 public class GenerateNetSaleGasProfile : IGenerateNetSaleGasProfile
@@ -13,23 +15,31 @@ public class GenerateNetSaleGasProfile : IGenerateNetSaleGasProfile
     private readonly IProjectService _projectService;
     private readonly ITopsideService _topsideService;
     private readonly DcdDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GenerateNetSaleGasProfile(DcdDbContext context, ICaseService caseService, IProjectService projectService, ITopsideService topsideService,
-        IDrainageStrategyService drainageStrategyService)
+    public GenerateNetSaleGasProfile(
+        DcdDbContext context,
+        ICaseService caseService,
+        IProjectService projectService,
+        ITopsideService topsideService,
+        IDrainageStrategyService drainageStrategyService,
+        IMapper mapper
+        )
     {
         _context = context;
         _caseService = caseService;
         _projectService = projectService;
         _topsideService = topsideService;
         _drainageStrategyService = drainageStrategyService;
+        _mapper = mapper;
     }
 
-    public async Task<NetSalesGasDto> GenerateAsync(Guid caseId)
+    public async Task<NetSalesGasDto> Generate(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
-        var topside = _topsideService.GetTopside(caseItem.TopsideLink);
-        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
-        var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+        var caseItem = await _caseService.GetCase(caseId);
+        var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
+        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
         var fuelConsumptions =
             EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
         var flarings = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
@@ -41,13 +51,14 @@ public class GenerateNetSaleGasProfile : IGenerateNetSaleGasProfile
         netSaleGas.StartYear = calculateNetSaleGas.StartYear;
         netSaleGas.Values = calculateNetSaleGas.Values;
 
-        var saveResult = await UpdateDrainageStrategyAndSaveAsync(drainageStrategy, netSaleGas);
+        await UpdateDrainageStrategyAndSave(drainageStrategy, netSaleGas);
 
-        var dto = DrainageStrategyDtoAdapter.Convert<NetSalesGasDto, NetSalesGas>(netSaleGas, project.PhysicalUnit);
+        var dto = _mapper.Map<NetSalesGasDto>(netSaleGas, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+
         return dto ?? new NetSalesGasDto();
     }
 
-    private async Task<int> UpdateDrainageStrategyAndSaveAsync(DrainageStrategy drainageStrategy, NetSalesGas netSalesGas)
+    private async Task<int> UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, NetSalesGas netSalesGas)
     {
         drainageStrategy.NetSalesGas = netSalesGas;
         return await _context.SaveChangesAsync();

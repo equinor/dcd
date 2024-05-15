@@ -1,10 +1,11 @@
-using api.Adapters;
+using api.Authorization;
 using api.Dtos;
+using api.Exceptions;
 using api.Models;
 using api.Services;
+using api.Services.FusionIntegration;
 
-using Api.Authorization;
-using Api.Services.FusionIntegration;
+using AutoMapper;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ namespace api.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("[controller]")]
+[Route("projects")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
     ApplicationRole.Admin,
@@ -25,19 +26,31 @@ public class ProjectsController : ControllerBase
 {
     private readonly IFusionService _fusionService;
     private readonly IProjectService _projectService;
+    private readonly ICompareCasesService _compareCasesService;
+    private readonly ITechnicalInputService _technicalInputService;
+    private readonly IMapper _mapper;
 
-    public ProjectsController(IProjectService projectService, IFusionService fusionService)
+    public ProjectsController(
+        IProjectService projectService,
+        IFusionService fusionService,
+        ICompareCasesService compareCasesService,
+        ITechnicalInputService technicalInputService,
+        IMapper mapper
+    )
     {
         _projectService = projectService;
         _fusionService = fusionService;
+        _compareCasesService = compareCasesService;
+        _technicalInputService = technicalInputService;
+        _mapper = mapper;
     }
 
-    [HttpGet("{projectId}", Name = "GetProject")]
-    public ProjectDto? Get(Guid projectId)
+    [HttpGet("{projectId}")]
+    public async Task<ProjectDto?> Get(Guid projectId)
     {
         try
         {
-            return _projectService.GetProjectDto(projectId);
+            return await _projectService.GetProjectDto(projectId);
         }
         catch (NotFoundInDBException)
         {
@@ -45,58 +58,42 @@ public class ProjectsController : ControllerBase
         }
     }
 
-    [HttpPost("createFromFusion", Name = "CreateProjectFromContextId")]
-    public async Task<ProjectDto> CreateProjectFromContextIdAsync([FromQuery] Guid contextId)
+    [HttpPost]
+    public async Task<ProjectDto> CreateProject([FromQuery] Guid contextId)
     {
         var projectMaster = await _fusionService.ProjectMasterAsync(contextId);
         if (projectMaster != null)
         {
-            var category = CommonLibraryProjectDtoAdapter.ConvertCategory(projectMaster.ProjectCategory ?? "");
-            var phase = CommonLibraryProjectDtoAdapter.ConvertPhase(projectMaster.Phase ?? "");
-            ProjectDto projectDto = new()
+            var project = _mapper.Map<Project>(projectMaster);
+
+            if (project == null)
             {
-                Name = projectMaster.Description ?? "",
-                Description = projectMaster.Description ?? "",
-                CommonLibraryName = projectMaster.Description ?? "",
-                FusionProjectId = projectMaster.Identity,
-                Country = projectMaster.Country ?? "",
-                Currency = Currency.NOK,
-                PhysUnit = PhysUnit.SI,
-                ProjectId = projectMaster.Identity,
-                ProjectCategory = category,
-                ProjectPhase = phase,
-            };
-            var project = ProjectAdapter.Convert(projectDto);
+                throw new ArgumentNullException(nameof(project));
+            }
+
             project.CreateDate = DateTimeOffset.UtcNow;
-            return _projectService.CreateProject(project);
+
+            return await _projectService.CreateProject(project);
         }
 
         return new ProjectDto();
     }
 
-    [HttpGet(Name = "GetProjects")]
-    public IEnumerable<ProjectDto>? GetProjects()
+    [HttpPut("{projectId}")]
+    public async Task<ProjectDto> UpdateProject([FromRoute] Guid projectId, [FromBody] UpdateProjectDto projectDto)
     {
-        return _projectService.GetAllDtos();
+        return await _projectService.UpdateProject(projectId, projectDto);
     }
 
-    [HttpPost(Name = "CreateProject")]
-    public ProjectDto CreateProject([FromBody] ProjectDto projectDto)
+    [HttpGet("{projectId}/case-comparison")]
+    public async Task<List<CompareCasesDto>> CaseComparison(Guid projectId)
     {
-        var project = ProjectAdapter.Convert(projectDto);
-        project.CreateDate = DateTimeOffset.UtcNow;
-        return _projectService.CreateProject(project);
+        return new List<CompareCasesDto>(await _compareCasesService.Calculate(projectId));
     }
 
-    [HttpPut(Name = "UpdateProject")]
-    public ProjectDto UpdateProject([FromBody] ProjectDto projectDto)
+    [HttpPut("{projectId}/technical-input")]
+    public async Task<TechnicalInputDto> UpdateTechnicalInput([FromRoute] Guid projectId, [FromBody] UpdateTechnicalInputDto dto)
     {
-        return _projectService.UpdateProject(projectDto);
-    }
-
-    [HttpPut("ReferenceCase", Name = "SetReferenceCase")]
-    public ProjectDto SetReferenceCase([FromBody] ProjectDto projectDto)
-    {
-        return _projectService.SetReferenceCase(projectDto);
+        return await _technicalInputService.UpdateTehnicalInput(projectId, dto);
     }
 }

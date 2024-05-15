@@ -1,27 +1,25 @@
-/* eslint-disable camelcase */
 import {
     Button, Checkbox, Icon, NativeSelect, Progress,
 } from "@equinor/eds-core-react"
 import {
-    ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState,
+    ChangeEvent, useCallback, useEffect, useMemo, useRef, useState,
 } from "react"
-import { AgGridReact } from "ag-grid-react"
-import { GetRowIdFunc, GetRowIdParams, RowNode } from "ag-grid-enterprise"
-import styled from "styled-components"
+import { AgGridReact } from "@ag-grid-community/react"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
+import {
+    GetRowIdFunc,
+    GetRowIdParams,
+    RowNode,
+} from "@ag-grid-community/core"
 import { external_link } from "@equinor/eds-icons"
-import { Project } from "../../models/Project"
+import Grid from "@mui/material/Grid"
 import SharePointImport from "./SharePointImport"
-import { DriveItem } from "../../models/sharepoint/DriveItem"
+import { DriveItem } from "../../Models/sharepoint/DriveItem"
 import { ImportStatusEnum } from "./ImportStatusEnum"
 import { GetProspService } from "../../Services/ProspService"
+import { useProjectContext } from "../../Context/ProjectContext"
 
-const ApplyButtonWrapper = styled.div`
-    display: flex;
-    padding-top: 1em;
-`
 interface Props {
-    setProject: Dispatch<SetStateAction<Project | undefined>>
-    project: Project
     driveItems: DriveItem[] | undefined
     check: boolean
 }
@@ -43,18 +41,18 @@ interface RowData {
     transportStateChanged: boolean
     sharePointFileChanged: boolean,
 }
-function PROSPCaseList({
-    setProject,
-    project,
+const PROSPCaseList = ({
     driveItems,
     check,
-}: Props) {
+}: Props) => {
+    const { project, setProject } = useProjectContext()
     const gridRef = useRef<any>(null)
+    const styles = useStyles()
     const [rowData, setRowData] = useState<RowData[]>()
     const [isApplying, setIsApplying] = useState<boolean>()
 
     const casesToRowData = () => {
-        if (project.cases) {
+        if (project && project.cases) {
             const tableCases: RowData[] = []
             project.cases.forEach((c) => {
                 const tableCase: RowData = {
@@ -80,17 +78,12 @@ function PROSPCaseList({
             setRowData(tableCases)
         }
     }
-    useEffect(() => {
-        casesToRowData()
-        if (gridRef.current.redrawRows) {
-            gridRef.current.redrawRows()
-        }
-    }, [project, driveItems])
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
         filter: true,
         resizable: true,
+        suppressMenu: true,
     }), [])
 
     const rowIsChanged = (p: any) => (p.data.surfStateChanged
@@ -116,23 +109,23 @@ function PROSPCaseList({
     }
 
     const handleAdvancedSettingsChange = (p: any, value: ImportStatusEnum) => {
-        if (project.cases && project.cases !== null && project.cases !== undefined) {
-            const caseItem = project.cases.find((el: any) => p.data.id && p.data.id === el.id)
+        if (project && project.cases) {
+            const projectCase = project.cases.find((el: any) => p.data.id && p.data.id === el.id)
             const rowNode = gridRef.current?.getRowNode(p.node?.data.id)
-            if (caseItem) {
+            if (projectCase) {
                 switch (p.column.colId) {
                 case "surfState":
-                    rowNode.data.surfStateChanged = (SharePointImport.surfStatus(caseItem, project) !== value)
+                    rowNode.data.surfStateChanged = (SharePointImport.surfStatus(projectCase, project) !== value)
                     break
                 case "substructureState":
                     rowNode.data.substructureStateChanged = (
-                        SharePointImport.substructureStatus(caseItem, project) !== value)
+                        SharePointImport.substructureStatus(projectCase, project) !== value)
                     break
                 case "topsideState":
-                    rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(caseItem, project) !== value)
+                    rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(projectCase, project) !== value)
                     break
                 case "transportState":
-                    rowNode.data.transportStateChanged = (SharePointImport.transportStatus(caseItem, project) !== value)
+                    rowNode.data.transportStateChanged = (SharePointImport.transportStatus(projectCase, project) !== value)
                     break
                 default:
                     break
@@ -197,13 +190,9 @@ function PROSPCaseList({
         if (selectedFileId !== "") {
             const link = getFileLink(rowNode, selectedFileId)
             rowNode.setDataValue(
-                "fileLink", (
-                    <a
-                        href={link}
-                        aria-label="SharePoint File link"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
+                "fileLink",
+                (
+                    <a href={link} aria-label="SharePoint File link" target="_blank" rel="noopener noreferrer">
                         <Icon data={external_link} />
                     </a>),
             )
@@ -310,29 +299,11 @@ function PROSPCaseList({
         },
     ])
 
-    useEffect(() => {
-        const assetFields = ["surfState", "substructureState", "topsideState", "transportState"]
-        const newColumnDefs = [...columnDefs]
-        const columnData: any = []
-        newColumnDefs.forEach((cd) => {
-            if (assetFields.indexOf(cd.field) > -1) {
-                const colDef = { ...cd }
-                colDef.hide = !check
-                columnData.push(colDef)
-            } else {
-                columnData.push(cd)
-            }
-        })
-        if (columnData.length > 0) {
-            setColumnDefs(columnData)
-        }
-    }, [check])
-
     const onGridReady = (params: any) => {
         gridRef.current = params.api
     }
 
-    const gridDataToDtos = (p: Project) => {
+    const gridDataToDtos = (p: Components.Schemas.ProjectDto) => {
         const dtos: any[] = []
         gridRef.current.forEachNode((node: RowNode<RowData>) => {
             const dto: any = {}
@@ -356,7 +327,7 @@ function PROSPCaseList({
         return dtos
     }
 
-    const save = useCallback(async (p: Project) => {
+    const save = useCallback(async (p: Components.Schemas.ProjectDto) => {
         const dtos = gridDataToDtos(p)
         if (dtos.length > 0) {
             setIsApplying(true)
@@ -366,30 +337,56 @@ function PROSPCaseList({
         }
     }, [])
 
+    useEffect(() => {
+        const assetFields = ["surfState", "substructureState", "topsideState", "transportState"]
+        const newColumnDefs = [...columnDefs]
+        const columnData: any = []
+        newColumnDefs.forEach((cd) => {
+            if (assetFields.indexOf(cd.field) > -1) {
+                const colDef = { ...cd }
+                colDef.hide = !check
+                columnData.push(colDef)
+            } else {
+                columnData.push(cd)
+            }
+        })
+        if (columnData.length > 0) {
+            setColumnDefs(columnData)
+        }
+    }, [check])
+
+    useEffect(() => {
+        casesToRowData()
+        if (gridRef.current.redrawRows) {
+            gridRef.current.redrawRows()
+        }
+    }, [project, driveItems])
+
     return (
-        <>
-            <div
-                style={{
-                    display: "flex", flexDirection: "column", width: "100%",
-                }}
-                className="ag-theme-alpine"
-            >
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
-                    rowSelection="multiple"
-                    isRowSelectable={rowIsChanged}
-                    suppressRowClickSelection
-                    animateRows
-                    domLayout="autoHeight"
-                    onGridReady={onGridReady}
-                    getRowId={getRowId}
-                />
-            </div>
-            <ApplyButtonWrapper>
-                {!isApplying ? (
+        <Grid container spacing={1}>
+            <Grid item xs={12} className={styles.root}>
+                <div
+                    style={{
+                        display: "flex", flexDirection: "column", width: "100%",
+                    }}
+                >
+                    <AgGridReact
+                        ref={gridRef}
+                        rowData={rowData}
+                        columnDefs={columnDefs}
+                        defaultColDef={defaultColDef}
+                        rowSelection="multiple"
+                        isRowSelectable={rowIsChanged}
+                        suppressRowClickSelection
+                        animateRows
+                        domLayout="autoHeight"
+                        onGridReady={onGridReady}
+                        getRowId={getRowId}
+                    />
+                </div>
+            </Grid>
+            <Grid item>
+                {!isApplying && project ? (
                     <Button
                         onClick={() => save(project)}
                         color="secondary"
@@ -401,8 +398,8 @@ function PROSPCaseList({
                         <Progress.Dots color="primary" />
                     </Button>
                 )}
-            </ApplyButtonWrapper>
-        </>
+            </Grid>
+        </Grid>
     )
 }
 

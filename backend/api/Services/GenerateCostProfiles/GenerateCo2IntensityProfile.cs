@@ -3,6 +3,8 @@ using api.Dtos;
 using api.Helpers;
 using api.Models;
 
+using AutoMapper;
+
 namespace api.Services.GenerateCostProfiles;
 
 public class GenerateCo2IntensityProfile : IGenerateCo2IntensityProfile
@@ -11,21 +13,28 @@ public class GenerateCo2IntensityProfile : IGenerateCo2IntensityProfile
     private readonly IDrainageStrategyService _drainageStrategyService;
     private readonly IProjectService _projectService;
     private readonly IGenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
+    private readonly IMapper _mapper;
 
-    public GenerateCo2IntensityProfile(ICaseService caseService, IDrainageStrategyService drainageStrategyService, IProjectService projectService,
-        IGenerateCo2EmissionsProfile generateCo2EmissionsProfile)
+    public GenerateCo2IntensityProfile(
+        ICaseService caseService,
+        IDrainageStrategyService drainageStrategyService,
+        IProjectService projectService,
+        IGenerateCo2EmissionsProfile generateCo2EmissionsProfile,
+        IMapper mapper
+        )
     {
         _caseService = caseService;
         _projectService = projectService;
         _drainageStrategyService = drainageStrategyService;
         _generateCo2EmissionsProfile = generateCo2EmissionsProfile;
+        _mapper = mapper;
     }
 
-    public Co2IntensityDto Generate(Guid caseId)
+    public async Task<Co2IntensityDto> Generate(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
-        var project = _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
-        var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+        var caseItem = await _caseService.GetCase(caseId);
+        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
         var totalExportedVolumes = GetTotalExportedVolumes(drainageStrategy);
 
@@ -37,7 +46,7 @@ public class GenerateCo2IntensityProfile : IGenerateCo2IntensityProfile
         }
         else
         {
-            var generatedCo2 = _generateCo2EmissionsProfile.GenerateAsync(caseId).GetAwaiter().GetResult();
+            var generatedCo2 = await _generateCo2EmissionsProfile.Generate(caseId);
             generateCo2EmissionsProfile.StartYear = generatedCo2.StartYear;
             generateCo2EmissionsProfile.Values = generatedCo2.Values;
         }
@@ -70,7 +79,8 @@ public class GenerateCo2IntensityProfile : IGenerateCo2IntensityProfile
             Values = co2IntensityValues.ToArray(),
         };
 
-        var dto = DrainageStrategyDtoAdapter.Convert<Co2IntensityDto, Co2Intensity>(co2Intensity, project.PhysicalUnit);
+        var dto = _mapper.Map<Co2IntensityDto>(co2Intensity);
+
         return dto ?? new Co2IntensityDto();
     }
 

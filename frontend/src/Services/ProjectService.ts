@@ -1,50 +1,35 @@
-import { Project } from "../models/Project"
 import { config } from "./config"
 import { __BaseService } from "./__BaseService"
 
-import { GetToken, LoginAccessTokenKey } from "../Utils/common"
+import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 export class __ProjectService extends __BaseService {
-    async getProjects() {
-        const projects: Components.Schemas.ProjectDto[] = await this.get<Components.Schemas.ProjectDto[]>("")
-        return projects.map(Project.fromJSON)
-    }
-
-    async getProjectByID(id: string) {
+    async getProject(id: string) {
         const project: Components.Schemas.ProjectDto = await this.get<Components.Schemas.ProjectDto>(`/${id}`)
-        return Project.fromJSON(project)
+        return project
     }
 
-    createProject(project: Components.Schemas.ProjectDto) {
-        return this.post("", { body: project })
-    }
-
-    public async createProjectFromContextId(contextId: string): Promise<Project> {
+    public async createProject(contextId: string): Promise<Components.Schemas.ProjectDto> {
         const res: Components.Schemas.ProjectDto = await this.postWithParams(
-            "/createFromFusion",
+            "",
             {},
             { params: { contextId } },
         )
-        return Project.fromJSON(res)
+        return res
     }
 
-    public async updateProject(body: Components.Schemas.ProjectDto): Promise<Project> {
-        const res = await this.put("", { body })
-        return Project.fromJSON(res)
+    public async updateProject(projectId: string, body: Components.Schemas.UpdateProjectDto): Promise<Components.Schemas.ProjectDto> {
+        const res = await this.put(`${projectId}`, { body })
+        return res
     }
 
-    public async setReferenceCase(body:Components.Schemas.ProjectDto): Promise<Project> {
-        const res: Components.Schemas.ProjectDto = await this.put(
-            "/ReferenceCase",
-            { body },
-        )
-        return Project.fromJSON(res)
+    public async compareCases(projectId: string) {
+        const res: Components.Schemas.CompareCasesDto[] = await this.get<Components.Schemas.CompareCasesDto[]>(`/${projectId}/case-comparison`)
+        return res
     }
 }
 
-export async function GetProjectService() {
-    return new __ProjectService({
-        ...config.ProjectService,
-        accessToken: await GetToken(LoginAccessTokenKey)!,
-    })
-}
+export const GetProjectService = async () => new __ProjectService({
+    ...config.ProjectService,
+    accessToken: await getToken(loginAccessTokenKey)!,
+})

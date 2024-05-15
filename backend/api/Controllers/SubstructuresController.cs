@@ -1,9 +1,6 @@
-using api.Adapters;
+using api.Authorization;
 using api.Dtos;
-using api.Models;
 using api.Services;
-
-using Api.Authorization;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,51 +10,44 @@ namespace api.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("[controller]")]
+[Route("projects/{projectId}/cases/{caseId}/substructures")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
-        ApplicationRole.Admin,
-        ApplicationRole.ReadOnly,
-        ApplicationRole.User
-
-    )]
+    ApplicationRole.Admin,
+    ApplicationRole.ReadOnly,
+    ApplicationRole.User
+)]
 public class SubstructuresController : ControllerBase
 {
     private readonly ISubstructureService _substructureService;
 
-    public SubstructuresController(ISubstructureService substructureService)
+    public SubstructuresController(
+        ISubstructureService substructureService
+    )
     {
         _substructureService = substructureService;
     }
 
-    [HttpPost(Name = "CreateSubstructure")]
-    public ProjectDto CreateSubstructure([FromQuery] Guid sourceCaseId, [FromBody] SubstructureDto substructureDto)
+    [HttpPut("{substructureId}")]
+    public async Task<SubstructureDto> UpdateSubstructure(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid substructureId,
+        [FromBody] APIUpdateSubstructureDto dto)
     {
-        var substructure = SubstructureAdapter.Convert(substructureDto);
-        return _substructureService.CreateSubstructure(substructure, sourceCaseId);
+        return await _substructureService.UpdateSubstructure(caseId, substructureId, dto);
     }
 
-    [HttpDelete("{substructureId}", Name = "DeleteSubstructure")]
-    public ProjectDto DeleteSubstructure(Guid substructureId)
+    [HttpPut("{substructureId}/cost-profile-override/{costProfileId}")]
+    public async Task<SubstructureCostProfileOverrideDto> UpdateSubstructureCostProfileOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid substructureId,
+        [FromRoute] Guid costProfileId,
+        [FromBody] UpdateSubstructureCostProfileOverrideDto dto)
     {
-        return _substructureService.DeleteSubstructure(substructureId);
+        return await _substructureService.UpdateSubstructureCostProfileOverride(caseId, substructureId, costProfileId, dto);
     }
 
-    [HttpPut(Name = "UpdateSubstructure")]
-    public ProjectDto UpdateSubstructure([FromBody] SubstructureDto substructureDto)
-    {
-        return _substructureService.UpdateSubstructure(substructureDto);
-    }
 
-    [HttpPost("{substructureId}/copy", Name = "CopySubstructure")]
-    public SubstructureDto CopySubstructure([FromQuery] Guid caseId, Guid substructureId)
-    {
-        return _substructureService.CopySubstructure(substructureId, caseId);
-    }
-
-    [HttpPut("new", Name = "NewUpdateSubstructure")]
-    public SubstructureDto NewUpdateSubstructure([FromBody] SubstructureDto substructureDto)
-    {
-        return _substructureService.NewUpdateSubstructure(substructureDto);
-    }
 }

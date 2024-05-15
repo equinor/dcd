@@ -28,13 +28,13 @@ public class GenerateCo2IntensityTotal : IGenerateCo2IntensityTotal
         _generateCo2EmissionsProfile = generateCo2EmissionsProfile;
     }
 
-    public double Calculate(Guid caseId)
+    public async Task<double> Calculate(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
-        var project = _projectService.GetProject(caseItem.ProjectId);
-        var drainageStrategy = _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+        var caseItem = await _caseService.GetCase(caseId);
+        var project = await _projectService.GetProject(caseItem.ProjectId);
+        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
-        var generateCo2EmissionsProfile = _generateCo2EmissionsProfile.GenerateAsync(caseItem.Id).GetAwaiter().GetResult();
+        var generateCo2EmissionsProfile = await _generateCo2EmissionsProfile.Generate(caseItem.Id);
         double co2Intensity = CalculateCO2Intensity(caseItem, project, drainageStrategy, generateCo2EmissionsProfile);
         return co2Intensity;
     }

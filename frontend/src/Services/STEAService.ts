@@ -3,19 +3,18 @@ import { __BaseService } from "./__BaseService"
 
 import { config } from "./config"
 
-import { Project } from "../models/Project"
-import { LoginAccessTokenKey, GetToken } from "../Utils/common"
+import { loginAccessTokenKey, getToken } from "../Utils/common"
 
-class __STEAService extends __BaseService {
-    public async excelToSTEA(project: Project) {
+class STEAService extends __BaseService {
+    public async excelToSTEA(project: Components.Schemas.ProjectDto) {
         const postExcelResponse: any = await this.postExcel(project.id, "blob", { headers: { accept: "text/plain" } })
         FileSaver.saveAs(postExcelResponse, (`${project.name}.xlsx`))
     }
 }
 
-export async function GetSTEAService() {
-    return new __STEAService({
+export const GetSTEAService = async () => {
+    return new STEAService({
         ...config.STEAService,
-        accessToken: await GetToken(LoginAccessTokenKey)!,
+        accessToken: await getToken(loginAccessTokenKey)!,
     })
 }

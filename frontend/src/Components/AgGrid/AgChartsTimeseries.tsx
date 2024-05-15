@@ -1,7 +1,8 @@
 import { AgChartsReact } from "ag-charts-react"
+import { insertIf, separateProfileObjects } from "./AgChartHelperFunctions"
 
 interface Props {
-    data: any
+    data: object
     chartTitle: string
     barColors: string[]
     barProfiles: string[]
@@ -14,7 +15,7 @@ interface Props {
 }
 
 export const setValueToCorrespondingYear = (profile: any, i: number, startYear: number, dg4Year: number) => {
-    if (profile !== undefined && startYear !== undefined) {
+    if (profile && startYear !== undefined && profile.values) {
         const profileStartYear: number = Number(profile.startYear) + dg4Year
         const profileYears: number[] = Array.from(
             { length: profile.values.length },
@@ -43,15 +44,7 @@ export const AgChartsTimeseries = ({
         },
     }
 
-    function insertIf(condition: any, addAxes: boolean, ...elements: any) {
-        if (addAxes) {
-            const axesObject = { axes: axesData }
-            return condition ? axesObject : []
-        }
-        return condition ? elements : []
-    }
-
-    const defaultOptions: any = {
+    const defaultOptions: object = {
         data,
         title: { text: chartTitle ?? "" },
         subtitle: { text: unit ?? "" },
@@ -63,28 +56,10 @@ export const AgChartsTimeseries = ({
         },
         theme: figmaTheme,
         series: [
-            {
-                type: "column",
-                xKey: "year",
-                yKeys: barProfiles,
-                yNames: barNames,
-                grouped: true,
-                highlightStyle: {
-                    item: {
-                        fill: undefined,
-                        stroke: undefined,
-                        strokeWidth: 1,
-                    },
-                    series: {
-                        enabled: true,
-                        dimOpacity: 0.2,
-                        strokeWidth: 2,
-                    },
-                },
-            },
-            ...insertIf(lineChart !== undefined, false, lineChart),
+            ...separateProfileObjects(barProfiles, barNames, "year"),
+            ...insertIf(lineChart !== undefined, false, axesData, lineChart),
         ],
-        ...insertIf(axesData !== undefined, true, axesData),
+        ...insertIf(axesData !== undefined, true, axesData, lineChart),
         legend: { position: "bottom", spacing: 40 },
     }
 

@@ -1,10 +1,8 @@
-namespace Api.Authorization;
-
-using System.Threading.Tasks;
-
-using Api.Authorization.Extensions;
+using api.Authorization.Extensions;
 
 using Microsoft.AspNetCore.Authorization;
+
+namespace api.Authorization;
 
 public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<ApplicationRoleRequirement>
 {
@@ -17,11 +15,9 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
     }
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ApplicationRoleRequirement requirement)
     {
-        var requestPath = _httpContextAccessor.HttpContext?.Request.Path;
-
         if (context.User.Identity?.IsAuthenticated != true)
         {
-            HandleUnauthenticatedRequest(context, requestPath);
+            HandleUnauthenticatedRequest(context);
             return Task.CompletedTask;
         }
 
@@ -29,7 +25,7 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         if (!IsAuthorized(requirement, userRoles))
         {
             Console.WriteLine(context.User.AssignedApplicationRoles());
-            HandleUnauthorizedRequest(context, requestPath, requirement.Roles, userRoles);
+            HandleUnauthorizedRequest(context);
             return Task.CompletedTask;
         }
 
@@ -42,17 +38,12 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         return userRoles.Any(role => roleRequirement.Roles.Contains(role));
     }
 
-    private void HandleUnauthorizedRequest(
-    AuthorizationHandlerContext context,
-    PathString? requestPath,
-    List<ApplicationRole> requiredAnyOfTheseRoles,
-    List<ApplicationRole> userRoles
-)
+    private static void HandleUnauthorizedRequest(AuthorizationHandlerContext context)
     {
         context.Fail();
     }
 
-    private void HandleUnauthenticatedRequest(AuthorizationHandlerContext context, PathString? requestPath)
+    private static void HandleUnauthenticatedRequest(AuthorizationHandlerContext context)
     {
         context.Fail();
     }

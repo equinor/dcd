@@ -1,42 +1,37 @@
-import _ from "lodash"
-import { Case } from "../models/case/Case"
-import { ITimeSeries } from "../models/ITimeSeries"
-import { Well } from "../models/Well"
+import { Dispatch, SetStateAction } from "react"
+import { ITimeSeries } from "../Models/ITimeSeries"
+import { TABLE_VALIDATION_RULES } from "../Utils/constants"
 
-export const LoginAccessTokenKey = "loginAccessToken"
+export const loginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
 
-export const GetDrainageStrategy = (
+export const getDrainageStrategy = (
     project: Components.Schemas.ProjectDto,
     drainageStrategyId?: string,
 ) => project.drainageStrategies?.find((o) => o.id === drainageStrategyId)
 
-export function ProjectPath(projectId: string) {
-    return `/${projectId}`
-}
+export const projectPath = (projectId: string) => `/${projectId}`
 
-export function CasePath(projectId: string, caseId: string) {
-    return `${ProjectPath(projectId)}/case/${caseId}`
-}
+export const casePath = (projectId: string, caseId: string) => `${projectPath(projectId)}/case/${caseId}`
 
-export function StoreToken(keyName: string, token: string) {
+export const storeToken = (keyName: string, token: string) => {
     window.sessionStorage.setItem(keyName, token)
 }
 
-export function StoreAppId(appId: string) {
+export const storeAppId = (appId: string) => {
     window.sessionStorage.setItem("appId", appId)
 }
 
-export function StoreAppScope(appScope: string) {
+export const storeAppScope = (appScope: string) => {
     window.sessionStorage.setItem("appScope", appScope)
 }
 
-export function GetToken(keyName: string) {
+export const getToken = (keyName: string) => {
     const scopes = [[window.sessionStorage.getItem("appScope") || ""][0]]
     return window.Fusion.modules.auth.acquireAccessToken({ scopes })
 }
 
-export const unwrapCase = (_case?: Case | undefined): Case => {
+export const unwrapCase = (_case?: Components.Schemas.CaseDto | undefined): Components.Schemas.CaseDto => {
     if (_case === undefined || _case === null) {
         throw new Error("Attempted to Create a case from which has not been created")
     }
@@ -57,7 +52,7 @@ export const unwrapCaseId = (caseId?: string | undefined): string => {
     return caseId
 }
 
-export function GetProjectCategoryName(key?: Components.Schemas.ProjectCategory): string {
+export const getProjectCategoryName = (key?: Components.Schemas.ProjectCategory): string => {
     if (key === undefined) {
         return ""
     }
@@ -87,7 +82,7 @@ export function GetProjectCategoryName(key?: Components.Schemas.ProjectCategory)
     }[key]
 }
 
-export function GetProjectPhaseName(key?: Components.Schemas.ProjectPhase): string {
+export const getProjectPhaseName = (key?: Components.Schemas.ProjectPhase): string => {
     if (key === undefined) {
         return ""
     }
@@ -105,7 +100,7 @@ export function GetProjectPhaseName(key?: Components.Schemas.ProjectPhase): stri
     }[key]
 }
 
-export const ToMonthDate = (date?: Date | null): string | undefined => {
+export const toMonthDate = (date?: Date | null): string | undefined => {
     if (Number.isNaN(date?.getTime())) {
         return undefined
     }
@@ -113,18 +108,28 @@ export const ToMonthDate = (date?: Date | null): string | undefined => {
     return date?.toISOString().substring(0, 7)
 }
 
-export const IsDefaultDate = (date?: Date | null): boolean => {
-    if (date && (ToMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
+export const isDefaultDate = (date?: Date | null): boolean => {
+    if (date && (toMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
         return true
     }
     return false
 }
 
-export const DefaultDate = () => new Date("0001-01-01")
+export const isDefaultDateString = (dateString?: string | null): boolean => {
+    const date = new Date(dateString ?? "")
+    if (date && (toMonthDate(date) === "0001-01" || date.toLocaleDateString("en-CA") === "1-01-01")) {
+        return true
+    }
+    return false
+}
+
+export const dateFromString = (dateString?: string | null): Date => new Date(dateString ?? "")
+
+export const defaultDate = () => new Date("0001-01-01")
 
 export const isInteger = (value: string) => /^-?\d+$/.test(value)
 
-export const ProductionStrategyOverviewToString = (value?: Components.Schemas.ProductionStrategyOverview): string => {
+export const productionStrategyOverviewToString = (value?: Components.Schemas.ProductionStrategyOverview): string => {
     if (value === undefined) { return "" }
     return {
         0: "Depletion",
@@ -135,64 +140,177 @@ export const ProductionStrategyOverviewToString = (value?: Components.Schemas.Pr
     }[value]
 }
 
-export const IsExplorationWell = (well: Well | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
+export const isExplorationWell = (well: Components.Schemas.WellDto | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
 
-const zip = (t1: number[], t2: number[]) => t1.map((t1Value, index) => t1Value + (t2[index] ?? 0))
-
-const MergeCostProfileData = (t1: number[], t2: number[], offset: number): number[] => {
-    let doubleList: number[] = []
-    if (offset > t1.length) {
-        doubleList = doubleList.concat(t1)
-        const zeros = offset - t1.length
-
-        const zeroList = new Array(zeros).fill(0)
-
-        doubleList = doubleList.concat(zeroList)
-        doubleList = doubleList.concat(t2)
-        return doubleList
+const mergeTimeSeriesValues = (dataArrays: number[][], offsets: number[]): number[] => {
+    if (dataArrays.length !== offsets.length) {
+        throw new Error("dataArrays and offsets must have the same length")
     }
-    doubleList = doubleList.concat(t1.slice(0, offset))
 
-    if (t1.length - offset === t2.length) {
-        doubleList = doubleList.concat(zip(_.takeRight(t1, (t1.length - offset)), (t2)))
-    } else if (t1.length - offset > t2.length) {
-        doubleList = doubleList.concat(zip(_.takeRight(t1, (t1.length - offset)), t2))
-    } else {
-        doubleList = doubleList.concat(zip(_.takeRight(t1, (t1.length - offset)), t2))
-        const remaining = t2.length - (t1.length - offset)
-        doubleList = doubleList.concat(_.takeRight(t2, remaining))
-    }
-    return doubleList
+    const maxLength = Math.max(...dataArrays.map((dataArray, index) => dataArray.length + offsets[index]))
+    const result = new Array(maxLength).fill(0)
+
+    dataArrays.forEach((dataArray: number[], index: number) => {
+        const offset = offsets[index]
+        dataArray.forEach((value: number, i: number) => {
+            const adjustedIndex = i + offset
+            if (adjustedIndex < maxLength) {
+                result[adjustedIndex] += value
+            }
+        })
+    })
+
+    return result
 }
 
-export const MergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
-    const t1Year = t1?.startYear ?? 0
-    const t2Year = t2?.startYear ?? 0
-    const t1Values = t1?.values
-    const t2Values = t2?.values
+export const mergeTimeseries = (t1: ITimeSeries | undefined, t2: ITimeSeries | undefined): ITimeSeries => {
+    if (!t1) { return t2 || { id: "", startYear: 0, values: [] } }
+    if (!t2) { return t1 }
 
-    if (!t1Values || t1Values.length === 0) {
-        if (!t2Values || t2Values.length === 0) {
-            return { startYear: 0, values: [] }
+    const startYears = [t1, t2].map((t: ITimeSeries | undefined) => t?.startYear ?? 0)
+    const minYear = Math.min(...startYears)
+
+    const arrays = [t1, t2].map((t: ITimeSeries | undefined) => t?.values ?? [])
+    const offsets = startYears.map((year: number) => Math.abs(year - minYear))
+
+    const mergedValues = mergeTimeSeriesValues(arrays, offsets)
+
+    return {
+        id: t1.id || t2.id || "",
+        startYear: minYear,
+        values: mergedValues,
+    }
+}
+
+export const mergeTimeseriesList = (timeSeriesList: (ITimeSeries | undefined)[]): ITimeSeries => {
+    let mergedTimeSeries: ITimeSeries = { id: "", startYear: 0, values: [] }
+
+    timeSeriesList.forEach((currentSeries, index) => {
+        if (index === 0) {
+            mergedTimeSeries = currentSeries ?? mergedTimeSeries
+        } else {
+            mergedTimeSeries = mergeTimeseries(mergedTimeSeries, currentSeries)
         }
-        return t2
-    }
-    if (!t2Values || t2Values.length === 0) {
-        return t1
-    }
+    })
 
-    const offset = t1Year < t2Year ? t2Year - t1Year : t1Year - t2Year
+    return mergedTimeSeries
+}
 
-    let values: number[] = []
-    if (t1Year < t2Year) {
-        values = MergeCostProfileData(t1Values, t2Values, offset)
-    } else {
-        values = MergeCostProfileData(t2Values, t1Values, offset)
+export function formatDate(isoDateString: string): string {
+    if (isoDateString === "0001-01-01T00:00:00+00:00" || isoDateString === "0001-01-01T00:00:00.000Z") {
+        return "_"
     }
+    const date = new Date(isoDateString)
+    const options: Intl.DateTimeFormatOptions = {
+        month: "long",
+        year: "numeric",
+    }
+    return new Intl.DateTimeFormat("no-NO", options).format(date)
+}
 
-    const timeSeries = {
-        startYear: Math.min(t1Year, t2Year),
-        values,
+export const isWithinRange = (number: number, max: number, min: number) => number >= max && number <= min
+
+export const preventNonDigitInput = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (!/\d/.test(e.key)) { e.preventDefault() }
+}
+
+/**
+ * Updates a specified property of an object and sets the updated object using a React state setter function.
+ * If the property is already set to the provided value or if the object/value is not defined, logs an error and returns without updating.
+*/
+export function updateObject<T>(object: T | undefined, setObject: Dispatch<SetStateAction<T | undefined>>, key: keyof T, value: any): void {
+    if (!object || !value) {
+        console.error("Object or value is undefined")
+        return
     }
-    return timeSeries
+    if (object[key] === value) {
+        console.error("Object key is already set to value")
+        return
+    }
+    const newObject: T = { ...object }
+    newObject[key] = value
+    setObject(newObject)
+}
+
+export const tableCellisEditable = (params: any, editMode: boolean) => {
+    if (editMode && params.data?.overrideProfileSet === undefined && params.data?.set !== undefined) {
+        return true
+    }
+    if (editMode && params.data?.overrideProfile !== undefined && params.data?.overrideProfile.override) {
+        return true
+    }
+    return false
+}
+
+export const numberValueParser = (params: { newValue: any }) => {
+    const { newValue } = params
+    if (typeof newValue === "string") {
+        const processedValue = newValue.replace(/\s/g, "").replace(/,/g, ".")
+        const numberValue = Number(processedValue)
+        if (!Number.isNaN(numberValue)) {
+            return numberValue
+        }
+    }
+    return newValue
+}
+
+export const getCaseRowStyle = (params: any) => {
+    if (params.node.footer) {
+        return { fontWeight: "bold" }
+    }
+    return undefined
+}
+
+export const validateInput = (params: any, editMode: boolean) => {
+    const { value, data } = params
+    if (tableCellisEditable(params, editMode) && editMode && value) {
+        const rule = TABLE_VALIDATION_RULES[data.profileName]
+        if (rule && (value < rule.min || value > rule.max)) {
+            return `Value must be between ${rule.min} and ${rule.max}.`
+        }
+    }
+    return null
+}
+
+export const getCurrentTime = (): string => {
+    const now = new Date()
+    const hours = now.getHours()
+    const minutes = now.getMinutes()
+
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes.toString()
+
+    return `${hours}:${formattedMinutes}`
+}
+
+/**
+ * Updates a state object with a non-negative number value.
+ * If the provided value is negative, sets the object key to 0.
+ * @param value The number value to set.
+ * @param objectKey The key of the object to update.
+ * @param state The state object to update.
+ * @param setState The state setter function.
+ * @returns void
+ */
+export const setNonNegativeNumberState = (value: number, objectKey: string, state: any, setState: Dispatch<SetStateAction<any>>): void => {
+    const newState = { ...state }
+    newState[objectKey] = Math.max(value, 0)
+    setState(newState)
+}
+
+export const handleStartYearStateChange = (value: number, setStartYear: (startYear: number) => void): void => {
+    const newStartYear = value
+    if (newStartYear < 2010) {
+        setStartYear(2010)
+        return
+    }
+    setStartYear(newStartYear)
+}
+
+export const handleEndYearStateChange = (value: number, setEndYear: (endYear: number) => void): void => {
+    const newEndYear = value
+    if (newEndYear > 2100) {
+        setEndYear(2100)
+        return
+    }
+    setEndYear(newEndYear)
 }

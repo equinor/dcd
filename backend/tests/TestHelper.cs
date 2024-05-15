@@ -239,7 +239,7 @@ public static class TestHelper
         CompareMasses(expected.Co2Emissions, actual.Co2Emissions);
     }
 
-    public static void CompareDrainageStrategies(DrainageStrategy expected, DrainageStrategyDto actual)
+    public static void CompareDrainageStrategies(DrainageStrategy expected, DrainageStrategyWithProfilesDto actual)
     {
         if (expected == null || actual == null)
         {
@@ -273,12 +273,12 @@ public static class TestHelper
         CompareMasses(expected.Co2Emissions, actual.Co2Emissions);
     }
 
-    public static void CompareDrainageStrategies(DrainageStrategyDto expected, DrainageStrategy actual)
+    public static void CompareDrainageStrategies(DrainageStrategyWithProfilesDto expected, DrainageStrategy actual)
     {
         CompareDrainageStrategies(actual, expected);
     }
 
-    public static void CompareDrainageStrategies(DrainageStrategyDto expected, DrainageStrategyDto actual)
+    public static void CompareDrainageStrategies(DrainageStrategyWithProfilesDto expected, DrainageStrategyWithProfilesDto actual)
     {
         if (expected == null || actual == null)
         {
@@ -373,23 +373,7 @@ public static class TestHelper
             Assert.Null(expected);
             Assert.Null(actual);
         }
-        // else
-        // {
-        //     Assert.Equal(expected.Name, actual.Name);
-        //     Assert.Equal(expected.WellType, actual.WellType);
-
-        //     TestHelper.CompareCosts(expected.CostProfile, actual.CostProfile);
-        //     TestHelper.CompareYearValues(expected.DrillingSchedule, actual.DrillingSchedule);
-        //     TestHelper.CompareCosts(expected.GAndGAdminCost, actual.GAndGAdminCost);
-
-        //     Assert.Equal(expected.RigMobDemob, actual.RigMobDemob);
-        // }
     }
-
-    // public static void CompareExplorations(ExplorationDto expected, Exploration actual)
-    // {
-    //     CompareExplorations(actual, expected);
-    // }
 
     public static void CompareExplorations(ExplorationDto expected, ExplorationDto actual)
     {
@@ -524,7 +508,7 @@ public static class TestHelper
         }
     }
 
-    public static void CompareTopsides(Topside expected, TopsideDto actual)
+    public static void CompareTopsides(Topside expected, TopsideWithProfilesDto actual)
     {
         if (expected == null || actual == null)
         {

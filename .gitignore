@@ -4,8 +4,12 @@ backend/*/obj
 backend/api/Properties/launchSettings.json
 backend/api/app
 backend/api/.cache
+backend/api/logs
+dcd.sln
 
 node_modules/
+
+version.ts
 
 # frontend
 /.pnp

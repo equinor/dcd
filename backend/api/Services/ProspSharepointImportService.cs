@@ -12,21 +12,21 @@ public class ProspSharepointImportService
     private static ILogger<ProspSharepointImportService>? _logger;
     private readonly IConfiguration _config;
     private readonly GraphServiceClient _graphServiceClient;
-    private readonly ProspExcelImportService _service;
+    private readonly ProspExcelImportService _prospExcelImportService;
 
     public ProspSharepointImportService(IConfiguration config, GraphServiceClient graphServiceClient,
-        ProspExcelImportService service, ILoggerFactory loggerFactory)
+        ProspExcelImportService prospExcelImportService, ILoggerFactory loggerFactory)
     {
         _graphServiceClient = graphServiceClient;
         _config = config;
-        _service = service;
+        _prospExcelImportService = prospExcelImportService;
         _logger = loggerFactory.CreateLogger<ProspSharepointImportService>();
     }
 
     public async Task<List<DriveItem>> GetDeltaDriveItemCollectionFromSite(string? url)
     {
         var driveItems = new List<DriveItem>();
-        var siteIdAndParentRef = GetSiteIdAndParentReferencePath(url).Result;
+        var siteIdAndParentRef = await GetSiteIdAndParentReferencePath(url);
         var siteId = siteIdAndParentRef[0];
         var parentRefPath = siteIdAndParentRef.Count > 1 ? siteIdAndParentRef[1] : "";
 
@@ -94,30 +94,12 @@ public class ProspSharepointImportService
         return driveId;
     }
 
-
-    public static List<DriveItemDto> GetExcelDriveItemsFromSite(
-        List<DriveItem>? driveItemDeltaCollectionPage)
+    public class AccessDeniedException : Exception
     {
-        var dto = new List<DriveItemDto>();
-        try
+        public AccessDeniedException(string message, Exception innerException)
+            : base(message, innerException)
         {
-            if (driveItemDeltaCollectionPage != null)
-            {
-                foreach (var driveItem in driveItemDeltaCollectionPage.Where(item =>
-                             item.File != null && ValidMimeTypes().Contains(item.File.MimeType)))
-                {
-                    ConvertToDto(driveItem, dto);
-                }
-            }
-
-            return dto;
         }
-        catch (Exception? e)
-        {
-            _logger?.LogError(e, $"failed converting filtered driveItem list to driveItemDto in Site: {e.Message}");
-        }
-
-        return dto;
     }
 
     private async Task<List<string>> GetSiteIdAndParentReferencePath(string? url)
@@ -125,38 +107,51 @@ public class ProspSharepointImportService
         var siteData = new List<string>();
         try
         {
-            if (url != null)
+            if (string.IsNullOrEmpty(url))
             {
-                var siteUrl = new Uri(url);
-                var hostName = siteUrl.Host;
-                var pathFromIdParameter = HttpUtility.ParseQueryString(siteUrl.Query).Get("id");
-                var siteNameFromUrl = siteUrl.AbsolutePath.Split('/')[2];
-
-                // Example of valid relativepath: /sites/{your site name} such as /sites/ConceptApp-Test
-                var relativePath = $@"/sites/{siteNameFromUrl}";
-
-
-                var site = await _graphServiceClient.Sites.GetByPath(relativePath, hostName)
-                    .Request()
-                    .GetAsync();
-
-                siteData.Add(site.Id);
-
-                var documentLibraryNameFromUrl = siteUrl.AbsolutePath.Split('/')[3];
-                // DriveItem path to get content from subfolder, if no subfolder given then set folder from absolute path
-                var parentReferencePath = pathFromIdParameter != null
-                    ? $@"/drive/root:/{GetDriveItemPathFromUrl(pathFromIdParameter)}"
-                    : $@"/drive/root:/{documentLibraryNameFromUrl}";
-
-                siteData.Add(parentReferencePath);
-
-
-                return siteData;
+                throw new ArgumentException("URL cannot be null or empty.", nameof(url));
             }
+            // Basic validation of URL format
+            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? validatedUri))
+            {
+                throw new UriFormatException($"Invalid URL format: {url}");
+            }
+
+            var hostName = validatedUri.Host;
+            var pathFromIdParameter = HttpUtility.ParseQueryString(validatedUri.Query).Get("id");
+            var siteNameFromUrl = validatedUri.AbsolutePath.Split('/')[2];
+
+            // Example of valid relativepath: /sites/{your site name} such as /sites/ConceptApp-Test
+            var relativePath = $@"/sites/{siteNameFromUrl}";
+
+            var site = await _graphServiceClient.Sites.GetByPath(relativePath, hostName)
+                .Request()
+                .GetAsync();
+
+            siteData.Add(site.Id);
+
+            var documentLibraryNameFromUrl = validatedUri.AbsolutePath.Split('/')[3];
+            // DriveItem path to get content from subfolder, if no subfolder given then set folder from absolute path
+            var parentReferencePath = pathFromIdParameter != null
+                ? $@"/drive/root:/{GetDriveItemPathFromUrl(pathFromIdParameter)}"
+                : $@"/drive/root:/{documentLibraryNameFromUrl}";
+
+            siteData.Add(parentReferencePath);
         }
-        catch (Exception e)
+        catch (UriFormatException ex)
         {
-            _logger?.LogError(e, $"Invalid url: {e.Message}");
+            _logger?.LogError(ex, "Invalid URI format: {Url}", url);
+            throw; // Consider how to handle this error. Maybe wrap it in a custom exception for higher-level handling.
+        }
+        catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
+        {
+            _logger?.LogError(ex, "Access Denied when attempting to access SharePoint site: {Url}", url);
+            throw new AccessDeniedException("Access to SharePoint resource was denied.", ex);
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogError(ex, "An error occurred while attempting to access SharePoint site: {Url}", url);
+            throw; // Re-throw the exception to be handled upstream.
         }
 
         return siteData;
@@ -185,7 +180,7 @@ public class ProspSharepointImportService
             }
 
             var caseId = new Guid(importDto.Id);
-            _service.ClearImportedProspData(caseId, projectId);
+            await _prospExcelImportService.ClearImportedProspData(caseId, projectId);
         }
 
         var siteId = GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()!.SharePointSiteUrl)?.Result[0];
@@ -229,7 +224,7 @@ public class ProspSharepointImportService
                 var assets = MapAssets(iteminfo.Surf, iteminfo.Substructure, iteminfo.Topside,
                     iteminfo.Transport);
 
-                projectDto = _service.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
+                projectDto = await _prospExcelImportService.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
                     projectId,
                     assets,
                     iteminfo.SharePointFileId,
@@ -260,35 +255,5 @@ public class ProspSharepointImportService
             { nameof(Substructure), substructure },
             { nameof(Transport), transport },
         };
-    }
-
-    private static void ConvertToDto(DriveItem driveItem, List<DriveItemDto> dto)
-    {
-        var item = new DriveItemDto
-        {
-            Name = driveItem.Name,
-            Id = driveItem.Id,
-            CreatedBy = driveItem.CreatedBy,
-            Content = driveItem.Content,
-            CreatedDateTime = driveItem.CreatedDateTime,
-            Size = driveItem.Size,
-            SharepointIds = driveItem.SharepointIds,
-            LastModifiedBy = driveItem.LastModifiedBy,
-            LastModifiedDateTime = driveItem.LastModifiedDateTime,
-            SharepointFileUrl = driveItem.WebUrl,
-        };
-        dto.Add(item);
-    }
-
-    private static List<string> ValidMimeTypes()
-    {
-        var validMimeTypes = new List<string>
-        {
-            ExcelMimeTypes.Xls,
-            ExcelMimeTypes.Xlsb,
-            ExcelMimeTypes.Xlsm,
-            ExcelMimeTypes.Xlsx,
-        };
-        return validMimeTypes;
     }
 }

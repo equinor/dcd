@@ -1,55 +1,63 @@
 import { __BaseService } from "./__BaseService"
-
-import { Project } from "../models/Project"
 import { config } from "./config"
+import { getToken, loginAccessTokenKey } from "../Utils/common"
 
-import { GetToken, LoginAccessTokenKey } from "../Utils/common"
-import { Case } from "../models/case/Case"
-
-class __CaseService extends __BaseService {
-    public async createCase(data: Components.Schemas.CaseDto): Promise<Project> {
-        const res: Components.Schemas.ProjectDto = await this.post("", { body: data })
-        return Project.fromJSON(res)
-    }
-
-    public async create(data: Components.Schemas.CaseDto): Promise<Project> {
-        const res: Components.Schemas.ProjectDto = await this.post("/new", { body: data })
-        return Project.fromJSON(res)
-    }
-
-    public async updateCase(body: Components.Schemas.CaseDto): Promise<Project> {
-        const res: Components.Schemas.ProjectDto = await this.put("", { body })
-        return Project.fromJSON(res)
-    }
-
-    public async update(body: Components.Schemas.CaseDto): Promise<Case> {
-        const res: Components.Schemas.ProjectDto = await this.put("/new", { body })
-        return new Case(res)
-    }
-
-    public async duplicateCase(copyCaseId: string, data: Components.Schemas.CaseDto): Promise<Project> {
-        const res: Components.Schemas.ProjectDto = await this.postWithParams(
-            "/copy",
+class CaseService extends __BaseService {
+    public async create(
+        projectId: string,
+        data: Components.Schemas.CreateCaseDto,
+    ): Promise<Components.Schemas.ProjectDto> {
+        const res: Components.Schemas.ProjectDto = await this.post(
+            `projects/${projectId}/cases`,
             { body: data },
+        )
+        return res
+    }
+
+    public async updateCase(
+        projectId: string,
+        caseId: string,
+        body: Components.Schemas.CaseDto,
+    ): Promise<Components.Schemas.ProjectDto> {
+        const res: Components.Schemas.ProjectDto = await this.put(
+            `projects/${projectId}/cases/${caseId}`,
+            { body },
+        )
+        return res
+    }
+
+    public async getCase(
+        projectId: string,
+        caseId: string,
+    ): Promise<Components.Schemas.ProjectDto> {
+        const res = await this.get(`projects/${projectId}/cases/${caseId}`)
+        return res
+    }
+
+    public async duplicateCase(
+        projectId: string,
+        copyCaseId: string,
+    ): Promise<Components.Schemas.ProjectDto> {
+        const res: Components.Schemas.ProjectDto = await this.postWithParams(
+            `projects/${projectId}/cases/copy`,
+            { body: {} },
             { params: { copyCaseId } },
         )
-        return Project.fromJSON(res)
+        return res
     }
 
-    public async deleteCase(caseId: string): Promise<Project> {
-        const res: Components.Schemas.ProjectDto = await this.delete(`/${caseId}`)
-        return Project.fromJSON(res)
+    public async deleteCase(
+        projectId: string,
+        caseId: string,
+    ): Promise<Components.Schemas.ProjectDto> {
+        const res: Components.Schemas.ProjectDto = await this.delete(
+            `projects/${projectId}/cases/${caseId}`,
+        )
+        return res
     }
 }
 
-export const CaseService = new __CaseService({
+export const GetCaseService = async () => new CaseService({
     ...config.CaseService,
-    accessToken: window.sessionStorage.getItem("loginAccessToken")!,
+    accessToken: await getToken(loginAccessTokenKey)!,
 })
-
-export async function GetCaseService() {
-    return new __CaseService({
-        ...config.CaseService,
-        accessToken: await GetToken(LoginAccessTokenKey)!,
-    })
-}

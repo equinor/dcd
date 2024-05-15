@@ -1,3 +1,4 @@
+using api.Exceptions;
 using api.Models;
 using api.SampleData.Generators;
 using api.Services;
@@ -22,12 +23,12 @@ public class ProjectServiceTest : IDisposable
     }
 
     [Fact]
-    public void GetAll()
+    public async Task GetAll()
     {
         var loggerFactory = new LoggerFactory();
         var projectFromSampleDataGenerator = SampleCaseGenerator.initializeCases(SampleAssetGenerator.initializeAssets()).Projects.OrderBy(p => p.Name);
         var projectService = new ProjectService(fixture.context, loggerFactory);
-        var projectsFromService = projectService.GetAll().OrderBy(p => p.Name);
+        var projectsFromService = (await projectService.GetAll()).OrderBy(p => p.Name);
         var projectsExpectedActual = projectFromSampleDataGenerator.Zip(projectsFromService);
         Assert.Equal(projectFromSampleDataGenerator.Count(), projectsFromService.Count());
         foreach (var projectPair in projectsExpectedActual)
@@ -37,26 +38,26 @@ public class ProjectServiceTest : IDisposable
     }
 
     [Fact]
-    public void GetProject()
+    public async Task GetProject()
     {
         var loggerFactory = new LoggerFactory();
         var projectService = new ProjectService(fixture.context, loggerFactory);
-        IEnumerable<Project> projectsFromGetAllService = projectService.GetAll();
+        IEnumerable<Project> projectsFromGetAllService = await projectService.GetAll();
         var projectsFromSampleDataGenerator = SampleCaseGenerator.initializeCases(SampleAssetGenerator.initializeAssets()).Projects;
         Assert.Equal(projectsFromSampleDataGenerator.Count, projectsFromGetAllService.Count());
         foreach (var project in projectsFromGetAllService)
         {
-            var projectFromGetProjectService = projectService.GetProject(project.Id);
+            var projectFromGetProjectService = await projectService.GetProject(project.Id);
             var projectFromSampleDataGenerator = projectsFromSampleDataGenerator.Find(p => p.Name == project.Name);
             TestHelper.CompareProjects(projectFromSampleDataGenerator, projectFromGetProjectService);
         }
     }
 
     [Fact]
-    public void GetDoesNotExist()
+    public async Task GetDoesNotExist()
     {
         var loggerFactory = new LoggerFactory();
         ProjectService projectService = new ProjectService(fixture.context, loggerFactory);
-        Assert.Throws<NotFoundInDBException>(() => projectService.GetProject(new Guid()));
+        await Assert.ThrowsAsync<NotFoundInDBException>(async () => await projectService.GetProject(new Guid()));
     }
 }

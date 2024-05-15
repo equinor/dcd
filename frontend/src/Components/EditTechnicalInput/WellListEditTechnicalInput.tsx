@@ -1,25 +1,22 @@
-import { Button, NativeSelect } from "@equinor/eds-core-react"
+import { Button, Icon, NativeSelect } from "@equinor/eds-core-react"
+import { add, delete_to_trash } from "@equinor/eds-icons"
 import {
-    ChangeEvent,
-    Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
+    ChangeEvent, Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
 } from "react"
-import { AgGridReact } from "ag-grid-react"
-import styled from "styled-components"
-import { Project } from "../../models/Project"
-import { Well } from "../../models/Well"
-import "ag-grid-enterprise"
+import { AgGridReact } from "@ag-grid-community/react"
+import useStyles from "@equinor/fusion-react-ag-grid-styles"
+import { ColDef } from "@ag-grid-community/core"
+import Grid from "@mui/material/Grid"
 import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
-
-const ButtonWrapper = styled.div`
-    margin-top: 20px;
-    margin-bottom: 40px;
-`
+import { useProjectContext } from "../../Context/ProjectContext"
+import { useModalContext } from "../../Context/ModalContext"
+import { useAppContext } from "../../Context/AppContext"
 
 interface Props {
-    project: Project
-    wells: Well[] | undefined
-    setWells: Dispatch<SetStateAction<Well[]>>
+    wells: Components.Schemas.WellDto[] | undefined
+    setWells: Dispatch<SetStateAction<Components.Schemas.WellDto[]>>
     explorationWells: boolean
+    setDeletedWells: Dispatch<SetStateAction<string[]>>
 }
 
 interface TableWell {
@@ -28,20 +25,24 @@ interface TableWell {
     wellCategory: Components.Schemas.WellCategory,
     drillingDays: number,
     wellCost: number,
-    well: Well
-    wells: Well[]
+    well: Components.Schemas.WellDto
+    wells: Components.Schemas.WellDto[]
 }
 
-function WellListEditTechnicalInput({
-    project, explorationWells, wells, setWells,
-}: Props) {
-    const gridRef = useRef(null)
-
-    const onGridReady = (params: any) => {
-        gridRef.current = params.api
-    }
-
+const WellListEditTechnicalInput = ({
+    explorationWells,
+    wells,
+    setWells,
+    setDeletedWells,
+}: Props) => {
+    const { editMode } = useAppContext()
+    const { project } = useProjectContext()
+    const { editTechnicalInput } = useModalContext()
     const [rowData, setRowData] = useState<TableWell[]>()
+
+    const gridRef = useRef(null)
+    const styles = useStyles()
+    const onGridReady = (params: any) => { gridRef.current = params.api }
 
     const wellsToRowData = () => {
         if (wells) {
@@ -63,12 +64,8 @@ function WellListEditTechnicalInput({
         }
     }
 
-    useEffect(() => {
-        wellsToRowData()
-    }, [wells])
-
     const updateWells = (p: any) => {
-        const rowWells: Well[] = p.data.wells
+        const rowWells: any[] = p.data.wells
         if (rowWells) {
             const { field } = p.colDef
             const index = rowWells.findIndex((w) => w === p.data.well)
@@ -125,8 +122,31 @@ function WellListEditTechnicalInput({
         )
     }
 
-    type SortOrder = "desc" | "asc" | null
-    const order: SortOrder = "asc"
+    const handleDeleteWell = (p: any) => {
+        const rowWells: any[] = p.data.wells
+        if (rowWells) {
+            const index = rowWells.findIndex((w) => w === p.data.well)
+            if (index > -1) {
+                const updatedWells = [...rowWells]
+                updatedWells.splice(index, 1)
+                setWells(updatedWells)
+                setDeletedWells((prev) => {
+                    if (!prev.includes(p.data.well.id)) {
+                        const deletedWells = [...prev]
+                        deletedWells.push(p.data.well.id)
+                        return deletedWells
+                    }
+                    return prev
+                })
+            }
+        }
+    }
+
+    const deleteWellRenderer = (p: any) => (
+        <Button variant="ghost_icon" onClick={() => handleDeleteWell(p)}>
+            <Icon data={delete_to_trash} />
+        </Button>
+    )
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
@@ -134,11 +154,13 @@ function WellListEditTechnicalInput({
         resizable: true,
         editable: true,
         onCellValueChanged: updateWells,
+        suppressMenu: true,
+        cellClass: editMode ? "editableCell" : undefined,
     }), [])
 
-    const [columnDefs] = useState([
+    const [columnDefs] = useState<ColDef[]>([
         {
-            field: "name", sort: order, width: 110,
+            field: "name", width: 110,
         },
         {
             field: "wellCategory",
@@ -159,13 +181,19 @@ function WellListEditTechnicalInput({
                 template: customUnitHeaderTemplate("Cost", `${project?.currency === 1 ? "mill NOK" : "mill USD"}`),
             },
         },
+        {
+            field: "delete",
+            headerName: "",
+            cellRenderer: deleteWellRenderer,
+        },
     ])
 
     const CreateWell = async () => {
-        const newWell = new Well()
-        newWell.wellCategory = !explorationWells ? 0 : 4
-        newWell.name = "New well"
-        newWell.projectId = project.projectId
+        const newWell: any = {
+            wellCategory: !explorationWells ? 0 : 4,
+            name: "New well",
+            projectId: project?.id,
+        }
         if (wells) {
             const newWells = [...wells, newWell]
             setWells(newWells)
@@ -174,32 +202,48 @@ function WellListEditTechnicalInput({
         }
     }
 
+    useEffect(() => {
+        wellsToRowData()
+    }, [wells])
+
     return (
-        <>
-            <div
-                style={{
-                    display: "flex", flexDirection: "column", width: "100%",
-                }}
-                className="ag-theme-alpine"
-            >
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={rowData}
-                    columnDefs={columnDefs}
-                    defaultColDef={defaultColDef}
-                    animateRows
-                    domLayout="autoHeight"
-                    onGridReady={onGridReady}
-                />
-            </div>
-            <ButtonWrapper>
-                <Button onClick={CreateWell} variant="outlined">
-                    {explorationWells
-                        ? "+   Add new exploration well type" : "+   Add new development/drilling well type"}
-                </Button>
-            </ButtonWrapper>
-        </>
+        <Grid container spacing={1}>
+            <Grid item xs={12} className={styles.root}>
+                <div
+                    style={{
+                        display: "flex", flexDirection: "column", width: "100%",
+                    }}
+                >
+                    {/* Hardcoded title and description using Typography */}
+                    {/* <Title variant="h1">Well Costs</Title>
+                    <Description variant="body_long">
+                        This input is used to calculate each case's well costs based on their drilling schedules.
+                    </Description> */}
+
+                    <AgGridReact
+                        ref={gridRef}
+                        rowData={rowData}
+                        columnDefs={columnDefs}
+                        defaultColDef={defaultColDef}
+                        animateRows
+                        domLayout="autoHeight"
+                        onGridReady={onGridReady}
+                        stopEditingWhenCellsLoseFocus
+                        singleClickEdit={editMode}
+                    />
+                </div>
+            </Grid>
+            {(editMode || editTechnicalInput) && (
+                <Grid item>
+                    <Button onClick={CreateWell} variant="outlined">
+                        <Icon data={add} />
+                        {explorationWells
+                            ? "Add new exploration well type"
+                            : "Add new development/drilling well type"}
+                    </Button>
+                </Grid>
+            )}
+        </Grid>
     )
 }
-
 export default WellListEditTechnicalInput

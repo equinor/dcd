@@ -3,10 +3,7 @@
         "browser": true,
         "es2021": true
     },
-    "extends": [
-        "plugin:react/recommended",
-        "airbnb"
-    ],
+    "extends": ["plugin:react/recommended", "airbnb"],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaFeatures": {
@@ -15,16 +12,18 @@
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
-    "plugins": [
-        "react",
-        "@typescript-eslint"
-    ],
+    "plugins": ["react", "@typescript-eslint"],
     "rules": {
         "import/prefer-default-export": "off",
         "semi": ["error", "never"],
         "quotes": ["error", "double"],
-        "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
-        "indent": ["error", 4],
+        "curly": ["error", "all"],
+        "lines-between-class-members": [
+            "error",
+            "always",
+            { "exceptAfterSingleLine": true }
+        ],
+        "indent": ["warn", 4],
         "import/extensions": 0,
         "react/function-component-definition": 0,
         "react/jsx-filename-extension": [2, { "extensions": [".jsx", ".tsx"] }],
@@ -34,29 +33,41 @@
         "react/jsx-indent-props": [2, 4],
         "react/require-default-props": 0,
         "react/prop-types": 0,
-        "max-len": ["error", 120]
+        "max-len": ["warn", 180],
+        "linebreak-style": 0,
+        "camelcase": 0,
+        "no-unused-vars": "warn",
+        "no-unused-expressions": "warn",
+        "react/jsx-props-no-spreading": "off"
     },
     "overrides": [
         {
             "files": "*.ts?(x)",
             "rules": {
-                "jsx-a11y/label-has-associated-control": ["error", {
-                    "required": {
-                      "some": ["nesting", "id"]
+                "jsx-a11y/label-has-associated-control": [
+                    "error",
+                    {
+                        "required": {
+                            "some": ["nesting", "id"]
+                        }
                     }
-                  }],
-                  "jsx-a11y/label-has-for": ["error", {
-                    "required": {
-                      "some": ["nesting", "id"]
+                ],
+                "jsx-a11y/label-has-for": [
+                    "error",
+                    {
+                        "required": {
+                            "some": ["nesting", "id"]
+                        }
                     }
-                  }],
+                ],
                 "no-unused-vars": "off",
-                "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
                 "no-use-before-define": "off",
                 "@typescript-eslint/no-use-before-define": "error",
                 "no-undef": "off",
                 "no-shadow": "off",
-                "@typescript-eslint/no-shadow": "error"
+                "@typescript-eslint/no-shadow": "error",
+                "semi": ["error", "never"],
+                "@typescript-eslint/no-unused-vars": "warn"
             }
         },
         {

@@ -5,6 +5,8 @@ using api.Context;
 using api.Dtos;
 using api.Models;
 
+using AutoMapper;
+
 
 namespace api.Services;
 
@@ -14,32 +16,44 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
     private readonly ICaseService _caseService;
     private readonly ILogger<GenerateGAndGAdminCostProfile> _logger;
     private readonly IExplorationService _explorationService;
+    private readonly IExplorationWellService _explorationWellService;
     private readonly DcdDbContext _context;
+    private readonly IMapper _mapper;
 
-    public GenerateGAndGAdminCostProfile(DcdDbContext context, ILoggerFactory loggerFactory, IProjectService projectService, ICaseService caseService, IExplorationService explorationService)
+    public GenerateGAndGAdminCostProfile(
+        DcdDbContext context,
+        ILoggerFactory loggerFactory,
+        IProjectService projectService,
+        ICaseService caseService,
+        IExplorationService explorationService,
+        IExplorationWellService explorationWellService,
+        IMapper mapper
+        )
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<GenerateGAndGAdminCostProfile>();
         _caseService = caseService;
         _explorationService = explorationService;
+        _explorationWellService = explorationWellService;
+        _mapper = mapper;
     }
 
-    public async Task<GAndGAdminCostDto> GenerateAsync(Guid caseId)
+    public async Task<GAndGAdminCostDto> Generate(Guid caseId)
     {
-        var caseItem = _caseService.GetCase(caseId);
+        var caseItem = await _caseService.GetCase(caseId);
 
         Exploration exploration;
         try
         {
-            exploration = _explorationService.GetExploration(caseItem.ExplorationLink);
+            exploration = await _explorationService.GetExploration(caseItem.ExplorationLink);
         }
         catch (ArgumentException)
         {
             _logger.LogInformation("Exploration {0} not found.", caseItem.ExplorationLink);
             return new GAndGAdminCostDto();
         }
-        var linkedWells = exploration.ExplorationWells?.Where(ew => ew.Well.WellCategory == WellCategory.Exploration_Well).ToList();
+        var linkedWells = await _explorationWellService.GetExplorationWellsForExploration(exploration.Id);
         if (exploration != null && linkedWells?.Count > 0)
         {
             var drillingSchedules = linkedWells.Select(lw => lw.DrillingSchedule);
@@ -47,7 +61,7 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
             var dG1Date = caseItem.DG1Date;
             if (earliestYear != null && dG1Date.Year >= earliestYear)
             {
-                var project = _projectService.GetProject(caseItem.ProjectId);
+                var project = await _projectService.GetProject(caseItem.ProjectId);
                 var country = project.Country;
                 var countryCost = MapCountry(country);
                 var lastYear = new DateTimeOffset(dG1Date.Year, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
@@ -69,15 +83,17 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
                 values.Add(countryCost * percentageOfLastYear);
                 gAndGAdminCost.Values = values.ToArray();
 
-                var saveResult = await UpdateExplorationAndSaveAsync(exploration, gAndGAdminCost);
+                await UpdateExplorationAndSave(exploration, gAndGAdminCost);
 
-                return ExplorationDtoAdapter.Convert(gAndGAdminCost);
+                var dto = _mapper.Map<GAndGAdminCostDto>(gAndGAdminCost);
+
+                return dto ?? new GAndGAdminCostDto();
             }
         }
         return new GAndGAdminCostDto();
     }
 
-    private async Task<int> UpdateExplorationAndSaveAsync(Exploration exploration, GAndGAdminCost gAndGAdminCost)
+    private async Task<int> UpdateExplorationAndSave(Exploration exploration, GAndGAdminCost gAndGAdminCost)
     {
         exploration.GAndGAdminCost = gAndGAdminCost;
         return await _context.SaveChangesAsync();

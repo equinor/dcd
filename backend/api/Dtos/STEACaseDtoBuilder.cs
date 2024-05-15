@@ -6,8 +6,10 @@ public static class STEACaseDtoBuilder
 {
     public static STEACaseDto Build(CaseDto caseDto, ProjectDto projectDto)
     {
-        var sTEACaseDto = new STEACaseDto();
-        sTEACaseDto.Name = caseDto.Name;
+        var sTEACaseDto = new STEACaseDto
+        {
+            Name = caseDto.Name
+        };
         AddStudyCost(sTEACaseDto, caseDto);
         AddOpexCost(sTEACaseDto, caseDto);
         AddCapex(projectDto, sTEACaseDto, caseDto);
@@ -17,7 +19,7 @@ public static class STEACaseDtoBuilder
         var startYearsCase = new int[] { sTEACaseDto.Exploration.StartYear, sTEACaseDto.ProductionAndSalesVolumes.StartYear,
             sTEACaseDto.Capex.StartYear, sTEACaseDto.StudyCostProfile.StartYear, sTEACaseDto.OpexCostProfile.StartYear, sTEACaseDto.Capex.CessationCost.StartYear };
         Array.Sort(startYearsCase);
-        sTEACaseDto.StartYear = Array.Find(startYearsCase, e => e > 0);
+        sTEACaseDto.StartYear = Array.Find(startYearsCase, e => e > 1);
 
         return sTEACaseDto;
     }
@@ -25,6 +27,10 @@ public static class STEACaseDtoBuilder
     private static void AddOpexCost(STEACaseDto sTEACaseDto, CaseDto caseDto)
     {
         var costProfileDtos = new List<TimeSeriesCostDto>();
+        if (caseDto.HistoricCostCostProfile != null)
+        {
+            costProfileDtos.Add(caseDto.HistoricCostCostProfile);
+        }
         if (caseDto.WellInterventionCostProfileOverride?.Override == true)
         {
             costProfileDtos.Add(caseDto.WellInterventionCostProfileOverride);
@@ -42,9 +48,18 @@ public static class STEACaseDtoBuilder
         {
             costProfileDtos.Add(caseDto.OffshoreFacilitiesOperationsCostProfile);
         }
+        if (caseDto.OnshoreRelatedOPEXCostProfile != null)
+        {
+            costProfileDtos.Add(caseDto.OnshoreRelatedOPEXCostProfile);
+        }
+        if (caseDto.AdditionalOPEXCostProfile != null)
+        {
+            costProfileDtos.Add(caseDto.AdditionalOPEXCostProfile);
+        }
 
         var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);
-        var opexCost = new OpexCostProfileDto()
+
+        var opexCost = new OpexCostProfileDto
         {
             StartYear = costProfile.StartYear,
             Values = costProfile.Values,
@@ -64,7 +79,6 @@ public static class STEACaseDtoBuilder
         {
             costProfileDtos.Add(caseDto.TotalFeasibilityAndConceptStudies);
         }
-
         if (caseDto.TotalFEEDStudiesOverride?.Override == true)
         {
             costProfileDtos.Add(caseDto.TotalFEEDStudiesOverride);
@@ -73,9 +87,13 @@ public static class STEACaseDtoBuilder
         {
             costProfileDtos.Add(caseDto.TotalFEEDStudies);
         }
+        if (caseDto.TotalOtherStudies?.Values.Length > 0)
+        {
+            costProfileDtos.Add(caseDto.TotalOtherStudies);
+        }
 
         var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);
-        var studyCost = new StudyCostProfileDto()
+        var studyCost = new StudyCostProfileDto
         {
             StartYear = costProfile.StartYear,
             Values = costProfile.Values,
@@ -105,8 +123,13 @@ public static class STEACaseDtoBuilder
             costProfileDtos.Add(caseDto.CessationOffshoreFacilitiesCost);
         }
 
+        if (caseDto.CessationOnshoreFacilitiesCostProfile != null)
+        {
+            costProfileDtos.Add(caseDto.CessationOnshoreFacilitiesCostProfile);
+        }
+
         var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);
-        var cessationCost = new CessationCostDto()
+        var cessationCost = new CessationCostDto
         {
             StartYear = costProfile.StartYear,
             Values = costProfile.Values,
@@ -268,7 +291,7 @@ public static class STEACaseDtoBuilder
 
             if (drainageStrategyDto.NetSalesGasOverride?.Override == true)
             {
-                var productionProfile = new NetSalesGasDto()
+                var productionProfile = new NetSalesGasDto
                 {
                     StartYear = drainageStrategyDto.NetSalesGasOverride.StartYear,
                     Values = drainageStrategyDto.NetSalesGasOverride.Values,
@@ -284,7 +307,7 @@ public static class STEACaseDtoBuilder
 
             if (drainageStrategyDto.ImportedElectricityOverride?.Override == true)
             {
-                var productionProfile = new ImportedElectricityDto()
+                var productionProfile = new ImportedElectricityDto
                 {
                     StartYear = drainageStrategyDto.ImportedElectricityOverride.StartYear,
                     Values = drainageStrategyDto.ImportedElectricityOverride.Values,
@@ -300,7 +323,7 @@ public static class STEACaseDtoBuilder
 
             if (drainageStrategyDto.Co2EmissionsOverride?.Override == true)
             {
-                var profile = new Co2EmissionsDto()
+                var profile = new Co2EmissionsDto
                 {
                     StartYear = drainageStrategyDto.Co2EmissionsOverride.StartYear,
                     Values = drainageStrategyDto.Co2EmissionsOverride.Values,

@@ -1,7 +1,8 @@
+using api.Authorization;
 using api.Dtos;
 using api.Services;
 
-using Api.Authorization;
+using AutoMapper;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,7 @@ namespace api.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("[controller]")]
+[Route("projects/{projectId}/cases")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
     ApplicationRole.Admin,
@@ -29,39 +30,27 @@ public class CasesController : ControllerBase
         _duplicateCaseService = duplicateCaseService;
     }
 
-    [HttpPost(Name = "CreateCase")]
-    public ProjectDto CreateCase([FromBody] CaseDto caseDto)
+    [HttpPost]
+    public async Task<ProjectDto> CreateCase([FromRoute] Guid projectId, [FromBody] CreateCaseDto caseDto)
     {
-        return _caseService.CreateCase(caseDto);
-    }
-
-    [HttpPost("new", Name = "NewCreateCase")]
-    public ProjectDto NewCreateCase([FromBody] CaseDto caseDto)
-    {
-        return _caseService.NewCreateCase(caseDto);
+        return await _caseService.CreateCase(projectId, caseDto);
     }
 
     [HttpPost("copy", Name = "Duplicate")]
-    public ProjectDto DuplicateCase([FromQuery] Guid copyCaseId)
+    public async Task<ProjectDto> DuplicateCase([FromQuery] Guid copyCaseId)
     {
-        return _duplicateCaseService.DuplicateCase(copyCaseId);
+        return await _duplicateCaseService.DuplicateCase(copyCaseId);
     }
 
-    [HttpPut(Name = "UpdateCase")]
-    public ProjectDto UpdateCase([FromBody] CaseDto caseDto)
+    [HttpPut("{caseId}")]
+    public async Task<ProjectDto> UpdateCase([FromRoute] Guid caseId, [FromBody] APIUpdateCaseDto caseDto)
     {
-        return _caseService.UpdateCase(caseDto);
+        return await _caseService.UpdateCase(caseId, caseDto);
     }
 
-    [HttpPut("new", Name = "NewUpdateCase")]
-    public CaseDto NewUpdateCase([FromBody] CaseDto caseDto)
+    [HttpDelete("{caseId}")]
+    public async Task<ProjectDto> DeleteCase(Guid caseId)
     {
-        return _caseService.NewUpdateCase(caseDto);
-    }
-
-    [HttpDelete("{caseId}", Name = "DeleteCase")]
-    public ProjectDto DeleteTransport(Guid caseId)
-    {
-        return _caseService.DeleteCase(caseId);
+        return await _caseService.DeleteCase(caseId);
     }
 }

@@ -1,12 +1,21 @@
-import { registerApp as registerLegacy } from "@equinor/fusion"
-import { createComponent } from "@equinor/fusion-framework-react-app"
+import { createElement } from "react"
+import { createRoot } from "react-dom/client"
+import { ComponentRenderArgs, makeComponent } from "@equinor/fusion-framework-react-app"
 
-import App from "./app/App"
-import { configurator } from "./config"
+import AppComponent from "./AppComponent"
+import { configure } from "./config"
 
-registerLegacy("conceptapp", {
-    render: createComponent(App, configurator),
-    AppComponent: App,
-})
+import "./styles.css"
 
-if (module.hot) module.hot.accept()
+const appComponent = createElement(AppComponent)
+
+const createApp = (args: ComponentRenderArgs) => makeComponent(appComponent, args, configure)
+
+export const renderApp = (el: HTMLElement, args: ComponentRenderArgs) => {
+    const app = createApp(args)
+    const root = createRoot(el)
+    root.render(createElement(app))
+    return () => root.unmount()
+}
+
+export default renderApp

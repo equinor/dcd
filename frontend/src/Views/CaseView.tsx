@@ -1,762 +1,472 @@
-/* eslint-disable max-len */
-/* eslint-disable camelcase */
-import {
-    Button, Icon, Menu, Progress, Tabs, Typography,
-} from "@equinor/eds-core-react"
+import { Tabs } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
-import { useHistory, useLocation, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
+import Grid from "@mui/material/Grid"
 import styled from "styled-components"
-import {
-    add,
-    bookmark_filled,
-    bookmark_outlined,
-    delete_to_trash,
-    edit,
-    library_add,
-    more_vertical,
-} from "@equinor/eds-icons"
-import { useCurrentContext } from "@equinor/fusion"
-import { tokens } from "@equinor/eds-tokens"
-import { Tooltip } from "@material-ui/core"
-import { Project } from "../models/Project"
-import { Case } from "../models/case/Case"
-import { GetProjectService } from "../Services/ProjectService"
-import { ProjectPath, unwrapProjectId } from "../Utils/common"
-import CaseDescriptionTab from "./Case/CaseDescriptionTab"
-import { DrainageStrategy } from "../models/assets/drainagestrategy/DrainageStrategy"
-import { WellProject } from "../models/assets/wellproject/WellProject"
-import { Surf } from "../models/assets/surf/Surf"
-import { Topside } from "../models/assets/topside/Topside"
-import { Substructure } from "../models/assets/substructure/Substructure"
-import { Exploration } from "../models/assets/exploration/Exploration"
-import { Transport } from "../models/assets/transport/Transport"
-import EditTechnicalInputModal from "../Components/EditTechnicalInput/EditTechnicalInputModal"
-import CaseCostTab from "./Case/CaseCostTab"
-import CaseFacilitiesTab from "./Case/CaseFacilitiesTab"
-import CaseProductionProfilesTab from "./Case/CaseProductionProfilesTab"
-import { GetCaseService } from "../Services/CaseService"
-import EditCaseModal from "../Components/Case/EditCaseModal"
-import CaseScheduleTab from "./Case/CaseScheduleTab"
-import CaseSummaryTab from "./Case/CaseSummaryTab"
-import CaseDrillingScheduleTab from "./Case/CaseDrillingScheduleTab"
-import { Well } from "../models/Well"
-import { WellProjectWell } from "../models/WellProjectWell"
-import { ExplorationWell } from "../models/ExplorationWell"
-import CaseCO2Tab from "./Case/CaseCO2Tab"
+import CaseDescriptionTab from "../Components/Case/Tabs/CaseDescriptionTab"
+import CaseCostTab from "../Components/Case/Tabs/CaseCost/CaseCostTab"
+import CaseFacilitiesTab from "../Components/Case/Tabs/CaseFacilitiesTab"
+import CaseProductionProfilesTab from "../Components/Case/Tabs/CaseProductionProfilesTab"
+import CaseScheduleTab from "../Components/Case/Tabs/CaseScheduleTab"
+import CaseSummaryTab from "../Components/Case/Tabs/CaseSummaryTab"
+import CaseDrillingScheduleTab from "../Components/Case/Tabs/CaseDrillingSchedule/CaseDrillingScheduleTab"
+import CaseCO2Tab from "../Components/Case/Tabs/Co2Emissions/CaseCO2Tab"
 import { GetCaseWithAssetsService } from "../Services/CaseWithAssetsService"
-import { EMPTY_GUID } from "../Utils/constants"
-import { CessationOffshoreFacilitiesCost } from "../models/case/CessationOffshoreFacilitiesCost"
-import { CessationWellsCost } from "../models/case/CessationWellsCost"
-import { OffshoreFacilitiesOperationsCostProfile } from "../models/case/OffshoreFacilitiesOperationsCostProfile"
-import { TotalFeasibilityAndConceptStudies } from "../models/case/TotalFeasibilityAndConceptStudies"
-import { TotalFEEDStudies } from "../models/case/TotalFEEDStudies"
-import { WellInterventionCostProfile } from "../models/case/WellInterventionCostProfile"
-import { GAndGAdminCost } from "../models/assets/exploration/GAndGAdminCost"
-import { Co2Emissions } from "../models/assets/drainagestrategy/Co2Emissions"
-import { FuelFlaringAndLosses } from "../models/assets/drainagestrategy/FuelFlaringAndLosses"
-import { NetSalesGas } from "../models/assets/drainagestrategy/NetSalesGas"
-import { ImportedElectricity } from "../models/assets/drainagestrategy/ImportedElectricity"
+import { useProjectContext } from "../Context/ProjectContext"
+import { useModalContext } from "../Context/ModalContext"
+import { useCaseContext } from "../Context/CaseContext"
+import { useAppContext } from "../Context/AppContext"
+import { mergeTimeseriesList } from "../Utils/common"
+import { ITimeSeries } from "../Models/ITimeSeries"
 
-const { Panel } = Tabs
-const { List, Tab, Panels } = Tabs
+const {
+    List, Tab, Panels, Panel,
+} = Tabs
 
-const CaseViewDiv = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-
-const PageTitle = styled(Typography)`
-    flex-grow: 1;
-    padding-left: 30px;
-`
-
-const TransparentButton = styled(Button)`
-    color: #007079;
-    background-color: white;
-    border: 1px solid #007079;
-    margin-left: 1rem;
-`
-
-const DividerLine = styled.div`
-`
-
-const StyledTabPanel = styled(Panel)`
-    margin-left: 40px;
-    margin-right: 40px;
-    padding-top: 0px;
-`
-const HeaderWrapper = styled.div`
-    background-color: white;
-    width: calc(100% - 16rem);
-    position: fixed;
-    z-index: 100;
-    padding-top: 30px;
-`
-const TabMenuWrapper = styled.div`
-    position: fixed;
-    z-index: 1000;
-    width: calc(100% - 16rem);
-    border-bottom: 1px solid LightGray;
-    margin-top: 95px;
-`
-
-const TabContentWrapper = styled.div`
-    margin-top: 145px;
-`
-
-const CaseButtonsWrapper = styled.div`
-    align-items: flex-end;
-    display: flex;
-    flex-direction: row;
-    margin-left: auto;
-    z-index: 110;
-`
-
-const ColumnWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`
-
-const RowWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 78px;
-`
-const MenuIcon = styled(Icon)`
-    color: ${tokens.colors.text.static_icons__secondary.rgba};
-    margin-right: 0.5rem;
-    margin-bottom: -0.2rem;
+const CasePanel = styled(Panel)`
+    height: calc(100vh - 210px);
+    overflow: auto;
 `
 
 const CaseView = () => {
-    const [editTechnicalInputModalIsOpen, setEditTechnicalInputModalIsOpen] = useState<boolean>(false)
+    const { caseId, tab } = useParams()
 
-    const [project, setProject] = useState<Project>()
-    const [caseItem, setCase] = useState<Case>()
-    const [activeTab, setActiveTab] = useState<number>(0)
-    const { fusionContextId, caseId } = useParams<Record<string, string | undefined>>()
-    const currentProject = useCurrentContext()
+    const {
+        setIsSaving,
+        isLoading,
+        setIsLoading,
+        updateFromServer,
+        setUpdateFromServer,
+    } = useAppContext()
 
-    const [drainageStrategy, setDrainageStrategy] = useState<DrainageStrategy>()
-    const [exploration, setExploration] = useState<Exploration>()
-    const [wellProject, setWellProject] = useState<WellProject>()
-    const [surf, setSurf] = useState<Surf>()
-    const [topside, setTopside] = useState<Topside>()
-    const [substructure, setSubstructure] = useState<Substructure>()
-    const [transport, setTransport] = useState<Transport>()
+    const {
+        project,
+        setProject,
+    } = useProjectContext()
 
-    const [originalCase, setOriginalCase] = useState<Case>()
-    const [originalDrainageStrategy, setOriginalDrainageStrategy] = useState<DrainageStrategy>()
-    const [originalWellProject, setOriginalWellProject] = useState<WellProject>()
-    const [originalExploration, setOriginalExploration] = useState<Exploration>()
-    const [originalSurf, setOriginalSurf] = useState<Surf>()
-    const [originalSubstructure, setOriginalSubstructure] = useState<Substructure>()
-    const [originalTopside, setOriginalTopside] = useState<Topside>()
-    const [originalTransport, setOriginalTransport] = useState<Transport>()
+    const {
+        projectCase,
+        setProjectCase,
+        saveProjectCase,
+        setSaveProjectCase,
+        activeTabCase,
+        setActiveTabCase,
 
-    const [wells, setWells] = useState<Well[]>()
-    const [wellProjectWells, setWellProjectWells] = useState<WellProjectWell[]>()
-    const [explorationWells, setExplorationWells] = useState<ExplorationWell[]>()
+        // CAPEX
+        setCessationOffshoreFacilitiesCost,
+        setCessationOnshoreFacilitiesCostProfile,
 
-    const [originalWellProjectWells, setOriginalWellProjectWells] = useState<WellProjectWell[]>()
-    const [originalExplorationWells, setOriginalExplorationWells] = useState<ExplorationWell[]>()
+        // Study cost
+        setTotalFeasibilityAndConceptStudies,
+        setTotalFEEDStudies,
+        setTotalOtherStudies,
 
-    const [totalFeasibilityAndConceptStudies,
-        setTotalFeasibilityAndConceptStudies] = useState<TotalFeasibilityAndConceptStudies>()
+        topside,
+        setTopside,
+        surf,
+        setSurf,
+        substructure,
+        setSubstructure,
+        transport,
+        setTransport,
+        drainageStrategy,
+        setDrainageStrategy,
 
-    const [totalFEEDStudies, setTotalFEEDStudies] = useState<TotalFEEDStudies>()
+        wellProjectWells,
+        setWellProjectWells,
+        explorationWells,
+        setExplorationWells,
 
-    const [offshoreFacilitiesOperationsCostProfile,
-        setOffshoreFacilitiesOperationsCostProfile] = useState<OffshoreFacilitiesOperationsCostProfile>()
+        // OPEX
+        setHistoricCostCostProfile,
+        setWellInterventionCostProfile,
+        setOffshoreFacilitiesOperationsCostProfile,
+        setOnshoreRelatedOPEXCostProfile,
+        setAdditionalOPEXCostProfile,
 
-    const [wellInterventionCostProfile, setWellInterventionCostProfile] = useState<WellInterventionCostProfile>()
+        setTotalDrillingCost,
 
-    const [cessationWellsCost, setCessationWellsCost] = useState<CessationWellsCost>()
-    const [cessationOffshoreFacilitiesCost,
-        setCessationOffshoreFacilitiesCost] = useState<CessationOffshoreFacilitiesCost>()
+        setSurfCost,
+        setSubstructureCost,
+        setTransportCost,
 
-    const [gAndGAdminCost, setGAndGAdminCost] = useState<GAndGAdminCost>()
+        setOffshoreFacilitiesCost,
 
-    const [co2Emissions, setCo2Emissions] = useState<Co2Emissions>()
+        setTotalExplorationCost,
 
-    const [netSalesGas, setNetSalesGas] = useState<NetSalesGas>()
-    const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<FuelFlaringAndLosses>()
-    const [importedElectricity, setImportedElectricity] = useState<ImportedElectricity>()
+        setOffshoreOpexPlussWellIntervention,
+    } = useCaseContext()
 
-    const [editCaseModalIsOpen, setEditCaseModalIsOpen] = useState<boolean>(false)
-    const [createCaseModalIsOpen, setCreateCaseModalIsOpen] = useState<boolean>(false)
+    if (!projectCase || !project) {
+        return (<>Loading...</>)
+    }
 
-    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
-    const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
+    const {
+        wellProject,
+        setWellProject,
+        exploration,
+        setExploration,
+    } = useModalContext()
 
-    const toggleTechnicalInputModal = () => setEditTechnicalInputModalIsOpen(!editTechnicalInputModalIsOpen)
-    const toggleEditCaseModal = () => setEditCaseModalIsOpen(!editCaseModalIsOpen)
-    const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
+    const [wells, setWells] = useState<Components.Schemas.WellDto[]>()
 
-    const history = useHistory()
+    const [, setCessationWellsCost] = useState<Components.Schemas.CessationWellsCostDto>()
+
+    const [co2Emissions, setCo2Emissions] = useState<Components.Schemas.Co2EmissionsDto>()
+
+    const [netSalesGas, setNetSalesGas] = useState<Components.Schemas.NetSalesGasDto>()
+    const [fuelFlaringAndLosses, setFuelFlaringAndLosses] = useState<Components.Schemas.FuelFlaringAndLossesDto>()
+    const [importedElectricity, setImportedElectricity] = useState<Components.Schemas.ImportedElectricityDto>()
+
+    const navigate = useNavigate()
     const location = useLocation()
 
-    const [isLoading, setIsLoading] = useState<boolean>()
-    const [isSaving, setIsSaving] = useState<boolean>()
-    const [updateFromServer, setUpdateFromServer] = useState<boolean>(true)
+    const tabNames = [
+        "Description",
+        "Production Profiles",
+        "Schedule",
+        "Drilling Schedule",
+        "Facilities",
+        "Cost",
+        "CO2 Emissions",
+        "Summary",
+    ]
 
+    // when the URL changes, set the active tab to the tab name in the URL
     useEffect(() => {
-        (async () => {
-            try {
-                setUpdateFromServer(true)
-                setIsLoading(true)
-                const projectId = unwrapProjectId(currentProject?.externalId)
-                const projectResult = await (await GetProjectService()).getProjectByID(projectId)
-                setProject(projectResult)
-            } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${currentProject?.externalId}`, error)
+        if (tab) {
+            const tabIndex = tabNames.indexOf(tab)
+            if (activeTabCase !== tabIndex) {
+                setActiveTabCase(tabIndex)
             }
-        })()
-    }, [currentProject?.externalId, caseId, fusionContextId])
+        }
+    }, [])
+
+    // when user navigates to a different tab, add the tab name to the URL
+    useEffect(() => {
+        if (activeTabCase !== undefined) {
+            const tabName = tabNames[activeTabCase]
+            const projectUrl = location.pathname.split("/case")[0]
+            navigate(`${projectUrl}/case/${caseId}/${tabName}`)
+        }
+    }, [activeTabCase])
+
+    const handleOffshoreOpexPlussWellIntervention = () => {
+        setOffshoreOpexPlussWellIntervention(
+            mergeTimeseriesList([
+                (projectCase.wellInterventionCostProfileOverride?.override === true
+                    ? projectCase.wellInterventionCostProfileOverride
+                    : projectCase.wellInterventionCostProfile),
+                (projectCase.offshoreFacilitiesOperationsCostProfileOverride?.override === true
+                    ? projectCase.offshoreFacilitiesOperationsCostProfileOverride
+                    : projectCase.offshoreFacilitiesOperationsCostProfile),
+            ]),
+        )
+    }
+
+    const handleTotalExplorationCost = () => {
+        if (exploration) {
+            setTotalExplorationCost(mergeTimeseriesList([
+                exploration.explorationWellCostProfile,
+                exploration.appraisalWellCostProfile,
+                exploration.sidetrackCostProfile,
+                exploration.seismicAcquisitionAndProcessing,
+                exploration.countryOfficeCost,
+                // gAndGAdminCost // Missing implementation, uncomment when gAndGAdminCost is fixed
+            ]))
+        }
+    }
+
+    const handleOffshoreFacilitiesCost = () => {
+        const surfCostProfile = surf?.costProfileOverride?.override
+            ? surf.costProfileOverride : surf?.costProfile
+        setSurfCost(surfCostProfile)
+
+        const substructureCostProfile = substructure?.costProfileOverride?.override
+            ? substructure.costProfileOverride : substructure?.costProfile
+        setSubstructureCost(substructureCostProfile)
+
+        const transportCostProfile = transport?.costProfileOverride?.override
+            ? transport.costProfileOverride : transport?.costProfile
+        setTransportCost(transportCostProfile)
+
+        setOffshoreFacilitiesCost(mergeTimeseriesList([
+            surfCostProfile,
+            substructureCostProfile,
+            transportCostProfile,
+        ]))
+    }
+
+    const handleDrilling = () => {
+        const oilProducerCostProfile = wellProject?.oilProducerCostProfileOverride?.override
+            ? wellProject.oilProducerCostProfileOverride
+            : wellProject?.oilProducerCostProfile
+
+        const gasProducerCostProfile = wellProject?.gasProducerCostProfileOverride?.override
+            ? wellProject.gasProducerCostProfileOverride
+            : wellProject?.gasProducerCostProfile
+
+        const waterInjectorCostProfile = wellProject?.waterInjectorCostProfileOverride?.override
+            ? wellProject.waterInjectorCostProfileOverride
+            : wellProject?.waterInjectorCostProfile
+
+        const gasInjectorCostProfile = wellProject?.gasInjectorCostProfileOverride?.override
+            ? wellProject.gasInjectorCostProfileOverride
+            : wellProject?.gasInjectorCostProfile
+
+        const startYears = [
+            oilProducerCostProfile,
+            gasProducerCostProfile,
+            waterInjectorCostProfile,
+            gasInjectorCostProfile,
+        ].map((series) => series?.startYear).filter((startYear) => startYear !== undefined) as number[]
+
+        const minStartYear = startYears.length > 0 ? Math.min(...startYears) : 2020
+
+        let drillingCostSeriesList: (ITimeSeries | undefined)[] = [
+            oilProducerCostProfile,
+            gasProducerCostProfile,
+            waterInjectorCostProfile,
+            gasInjectorCostProfile,
+        ]
+
+        const rigUpgradingCost = project.developmentOperationalWellCosts.rigUpgrading
+        const rigMobDemobCost = project.developmentOperationalWellCosts.rigMobDemob
+        const sumOfRigAndMobDemob = rigUpgradingCost + rigMobDemobCost
+
+        if (sumOfRigAndMobDemob > 0) {
+            interface ITimeSeriesWithCostProfile extends ITimeSeries {
+                developmentRigUpgradingAndMobDemobCostProfile?: number[] | null;
+            }
+
+            const timeSeriesWithCostProfile: ITimeSeriesWithCostProfile = {
+                id: "developmentRigUpgradingAndMobDemob",
+                startYear: minStartYear,
+                name: "Development Rig Upgrading and Mob/Demob Costs",
+                values: [sumOfRigAndMobDemob],
+                sum: sumOfRigAndMobDemob,
+            }
+
+            if (
+                drillingCostSeriesList.every((series) => !series || !series.values || series.values.length === 0)
+                && timeSeriesWithCostProfile?.values && timeSeriesWithCostProfile.values.length > 0
+            ) {
+                drillingCostSeriesList = [timeSeriesWithCostProfile]
+            }
+            if (!drillingCostSeriesList.includes(timeSeriesWithCostProfile)) {
+                drillingCostSeriesList.push(timeSeriesWithCostProfile)
+            }
+        }
+        setTotalDrillingCost(mergeTimeseriesList(drillingCostSeriesList))
+    }
 
     useEffect(() => {
         if (project && updateFromServer) {
-            const caseResult = project.cases.find((o) => o.id === caseId)
+            const caseResult = project.cases.find((o) => o.id === projectCase?.id)
             if (!caseResult) {
                 if (location.pathname.indexOf("/case") > -1) {
                     const projectUrl = location.pathname.split("/case")[0]
-                    history.push(projectUrl)
+                    navigate(projectUrl)
                 }
             }
-            setOriginalCase(caseResult)
-            setCase(caseResult)
 
             const drainageStrategyResult = project?.drainageStrategies
                 .find((drain) => drain.id === caseResult?.drainageStrategyLink)
-            setOriginalDrainageStrategy(drainageStrategyResult)
             setDrainageStrategy(
                 drainageStrategyResult,
             )
 
+            handleOffshoreOpexPlussWellIntervention()
+            handleTotalExplorationCost()
+            handleOffshoreFacilitiesCost()
+            handleDrilling()
+
             const explorationResult = project
                 ?.explorations.find((exp) => exp.id === caseResult?.explorationLink)
-            setOriginalExploration(explorationResult)
             setExploration(explorationResult)
 
             const wellProjectResult = project
                 ?.wellProjects.find((wp) => wp.id === caseResult?.wellProjectLink)
-            setOriginalWellProject(wellProjectResult)
             setWellProject(wellProjectResult)
 
             const surfResult = project?.surfs.find((sur) => sur.id === caseResult?.surfLink)
-            setOriginalSurf(surfResult)
             setSurf(surfResult)
 
             const topsideResult = project?.topsides.find((top) => top.id === caseResult?.topsideLink)
-            setOriginalTopside(topsideResult)
             setTopside(topsideResult)
 
             const substructureResult = project?.substructures.find((sub) => sub.id === caseResult?.substructureLink)
-            setOriginalSubstructure(substructureResult)
             setSubstructure(substructureResult)
 
             const transportResult = project?.transports.find((tran) => tran.id === caseResult?.transportLink)
-            setOriginalTransport(transportResult)
             setTransport(transportResult)
 
             setWells(project.wells)
 
-            const wellProjectWellsResult = structuredClone(wellProjectResult?.wellProjectWells)
             setWellProjectWells(wellProjectResult?.wellProjectWells ?? [])
-            setOriginalWellProjectWells(wellProjectWellsResult ?? [])
 
-            const explorationWellsResult = structuredClone(explorationResult?.explorationWells)
             setExplorationWells(explorationResult?.explorationWells ?? [])
-            setOriginalExplorationWells(explorationWellsResult ?? [])
 
             setUpdateFromServer(false)
             setIsLoading(false)
         } else if (project) {
-            const caseResult = project.cases.find((o) => o.id === caseId)
-
-            const surfResult = project.surfs.find((sur) => sur.id === caseResult?.surfLink)
-            setOriginalSurf(surfResult)
+            const surfResult = project.surfs.find((sur) => sur.id === projectCase?.surfLink)
             setSurf(surfResult)
 
-            const topsideResult = project.topsides.find((top) => top.id === caseResult?.topsideLink)
-            setOriginalTopside(topsideResult)
+            const topsideResult = project.topsides.find((top) => top.id === projectCase?.topsideLink)
             setTopside(topsideResult)
 
-            const substructureResult = project.substructures.find((sub) => sub.id === caseResult?.substructureLink)
-            setOriginalSubstructure(substructureResult)
+            const substructureResult = project.substructures.find((sub) => sub.id === projectCase?.substructureLink)
             setSubstructure(substructureResult)
 
-            const transportResult = project.transports.find((tran) => tran.id === caseResult?.transportLink)
-            setOriginalTransport(transportResult)
+            const transportResult = project.transports.find((tran) => tran.id === projectCase?.transportLink)
             setTransport(transportResult)
 
             setWells(project.wells)
         }
     }, [project])
 
-    const duplicateCase = async () => {
-        try {
-            if (caseItem?.id) {
-                const newProject = await (await GetCaseService()).duplicateCase(caseItem?.id, {})
-                setProject(newProject)
-                history.push(ProjectPath(fusionContextId!))
-            }
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
-        }
-    }
-
-    const deleteCase = async () => {
-        try {
-            if (caseItem?.id && project?.id) {
-                const newProject = await (await GetCaseService()).deleteCase(caseItem?.id)
-                setProject(newProject)
-                history.push(ProjectPath(fusionContextId!))
-            }
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
-        }
-    }
-
-    if (isLoading || !project || !caseItem
-        || !drainageStrategy || !exploration
-        || !wellProject || !surf || !topside
-        || !substructure || !transport
-        || !explorationWells || !wellProjectWells) {
-        return (
-            <>
-                <Progress.Circular size={16} color="primary" />
-                <p>Loading case</p>
-            </>
-        )
-    }
-
-    const setCaseAsReference = async () => {
-        try {
-            const projectDto = Project.Copy(project)
-            if (projectDto.referenceCaseId === caseItem.id) {
-                projectDto.referenceCaseId = EMPTY_GUID
-            } else {
-                projectDto.referenceCaseId = caseItem.id
-            }
-            const newProject = await (await GetProjectService()).setReferenceCase(projectDto)
-            setProject(newProject)
-        } catch (error) {
-            console.error("[ProjectView] error while submitting form data", error)
-        }
-    }
-
-    const handleSave = async () => {
-        const dto: Components.Schemas.CaseWithAssetsWrapperDto = {}
-
-        dto.caseDto = caseItem
-        if (!(JSON.stringify(caseItem) === JSON.stringify(originalCase))) {
-            dto.caseDto.hasChanges = true
-        }
-
-        dto.drainageStrategyDto = drainageStrategy
-        if (!(JSON.stringify(drainageStrategy) === JSON.stringify(originalDrainageStrategy))) {
-            dto.drainageStrategyDto.hasChanges = true
-        }
-
-        dto.wellProjectDto = wellProject
-        if (!(JSON.stringify(wellProject) === JSON.stringify(originalWellProject))) {
-            dto.wellProjectDto.hasChanges = true
-        }
-
-        dto.explorationDto = exploration
-        if (!(JSON.stringify(exploration) === JSON.stringify(originalExploration))) {
-            dto.explorationDto.hasChanges = true
-        }
-
-        dto.surfDto = surf
-        if (!(JSON.stringify(surf) === JSON.stringify(originalSurf))) {
-            dto.surfDto.hasChanges = true
-        }
-
-        dto.substructureDto = substructure
-        if (!(JSON.stringify(substructure) === JSON.stringify(originalSubstructure))) {
-            dto.substructureDto.hasChanges = true
-        }
-
-        dto.transportDto = transport
-        if (!(JSON.stringify(transport) === JSON.stringify(originalTransport))) {
-            dto.transportDto.hasChanges = true
-        }
-
-        dto.topsideDto = topside
-        if (!(JSON.stringify(topside) === JSON.stringify(originalTopside))) {
-            dto.topsideDto.hasChanges = true
-        }
-
-        dto.explorationWellDto = explorationWells
-        if (dto.explorationWellDto?.length > 0) {
-            dto.explorationWellDto.forEach((expWellDto, index) => {
-                if (expWellDto.drillingSchedule?.id !== EMPTY_GUID) {
-                    const originalExpWell = originalExplorationWells
-                        ?.find((oew) => oew.explorationId === expWellDto.explorationId
-                            && oew.wellId === expWellDto.wellId)
-
-                    if (!(JSON.stringify(expWellDto) === JSON.stringify(originalExpWell))) {
-                        dto.explorationWellDto![index].hasChanges = true
-                    }
-                }
-            })
-        }
-
-        dto.wellProjectWellDtos = wellProjectWells
-        if (dto.wellProjectWellDtos?.length > 0) {
-            dto.wellProjectWellDtos.forEach((wpWellDto, index: number) => {
-                if (wpWellDto.drillingSchedule?.id !== EMPTY_GUID) {
-                    const originalWpWell = originalWellProjectWells
-                        ?.find((owpw) => owpw.wellProjectId === wpWellDto.wellProjectId
-                            && owpw.wellId === wpWellDto.wellId)
-
-                    if (!(JSON.stringify(wpWellDto) === JSON.stringify(originalWpWell))) {
-                        dto.wellProjectWellDtos![index].hasChanges = true
-                    }
-                }
-            })
+    const handleCaseSave = async () => {
+        const dto: Components.Schemas.CaseWithAssetsWrapperDto = {
+            caseDto: projectCase,
+            drainageStrategyDto: drainageStrategy,
+            wellProjectDto: wellProject,
+            explorationDto: exploration,
+            surfDto: surf,
+            substructureDto: substructure,
+            transportDto: transport,
+            topsideDto: topside,
+            explorationWellDto: explorationWells,
+            wellProjectWellDtos: wellProjectWells,
         }
 
         setIsSaving(true)
         setUpdateFromServer(true)
+
         try {
-            const result = await (await GetCaseWithAssetsService()).update(dto)
-            const projectResult = Project.fromJSON(result.projectDto!)
+            const result = await (await GetCaseWithAssetsService()).update(project.id, projectCase.id, dto)
+            const projectResult = { ...result.projectDto }
             setProject(projectResult)
-            if (result.generatedProfilesDto?.studyCostProfileWrapperDto !== null && result.generatedProfilesDto?.studyCostProfileWrapperDto !== undefined) {
-                setTotalFeasibilityAndConceptStudies(TotalFeasibilityAndConceptStudies.fromJSON(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFeasibilityAndConceptStudiesDto))
-                setTotalFEEDStudies(TotalFEEDStudies.fromJSON(result.generatedProfilesDto.studyCostProfileWrapperDto.totalFEEDStudiesDto))
+
+            const setIfNotNull = (data: any, setState: any) => {
+                if (data !== null && data !== undefined) { setState(data) }
             }
-            if (result.generatedProfilesDto?.opexCostProfileWrapperDto !== null && result.generatedProfilesDto?.opexCostProfileWrapperDto !== undefined) {
-                setOffshoreFacilitiesOperationsCostProfile(OffshoreFacilitiesOperationsCostProfile.fromJSON(result.generatedProfilesDto.opexCostProfileWrapperDto?.offshoreFacilitiesOperationsCostProfileDto))
-                setWellInterventionCostProfile(WellInterventionCostProfile.fromJSON(result.generatedProfilesDto.opexCostProfileWrapperDto?.wellInterventionCostProfileDto))
-            }
-            if (result.generatedProfilesDto?.cessationCostWrapperDto !== null && result.generatedProfilesDto?.cessationCostWrapperDto !== undefined) {
-                setCessationWellsCost(CessationWellsCost.fromJSON(result.generatedProfilesDto.cessationCostWrapperDto.cessationWellsCostDto))
-                setCessationOffshoreFacilitiesCost(CessationOffshoreFacilitiesCost.fromJSON(result.generatedProfilesDto.cessationCostWrapperDto.cessationOffshoreFacilitiesCostDto))
-            }
-            if (result.generatedProfilesDto?.gAndGAdminCostDto !== null && result.generatedProfilesDto?.gAndGAdminCostDto !== undefined) {
-                setGAndGAdminCost(GAndGAdminCost.fromJSON(result.generatedProfilesDto.gAndGAdminCostDto))
-            }
-            if (result.generatedProfilesDto?.co2EmissionsDto !== null && result.generatedProfilesDto?.co2EmissionsDto !== undefined) {
-                setCo2Emissions(Co2Emissions.fromJson(result.generatedProfilesDto.co2EmissionsDto))
-            }
-            if (result.generatedProfilesDto?.fuelFlaringAndLossesDto !== null && result.generatedProfilesDto?.fuelFlaringAndLossesDto !== undefined) {
-                setFuelFlaringAndLosses(FuelFlaringAndLosses.fromJson(result.generatedProfilesDto.fuelFlaringAndLossesDto))
-            }
-            if (result.generatedProfilesDto?.netSalesGasDto !== null && result.generatedProfilesDto?.netSalesGasDto !== undefined) {
-                setNetSalesGas(NetSalesGas.fromJson(result.generatedProfilesDto.netSalesGasDto))
-            }
-            if (result.generatedProfilesDto?.importedElectricityDto !== null && result.generatedProfilesDto?.importedElectricityDto !== undefined) {
-                setImportedElectricity(ImportedElectricity.fromJson(result.generatedProfilesDto.importedElectricityDto))
-            }
+
+            setIfNotNull(result.generatedProfilesDto?.studyCostProfileWrapperDto?.totalFeasibilityAndConceptStudiesDto, setTotalFeasibilityAndConceptStudies)
+            setIfNotNull(result.generatedProfilesDto?.studyCostProfileWrapperDto?.totalFEEDStudiesDto, setTotalFEEDStudies)
+            setIfNotNull(result.generatedProfilesDto?.studyCostProfileWrapperDto?.totalOtherStudiesDto, setTotalOtherStudies)
+            setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.offshoreFacilitiesOperationsCostProfileDto, setOffshoreFacilitiesOperationsCostProfile)
+            setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.wellInterventionCostProfileDto, setWellInterventionCostProfile)
+            setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.historicCostCostProfileDto, setHistoricCostCostProfile)
+            setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.onshoreRelatedOPEXCostProfileDto, setOnshoreRelatedOPEXCostProfile)
+            setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.additionalOPEXCostProfileDto, setAdditionalOPEXCostProfile)
+            setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationWellsCostDto, setCessationWellsCost)
+            setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationOffshoreFacilitiesCostDto, setCessationOffshoreFacilitiesCost)
+            setIfNotNull(result.generatedProfilesDto?.cessationCostWrapperDto?.cessationOnshoreFacilitiesCostProfileDto, setCessationOnshoreFacilitiesCostProfile)
+            setIfNotNull(result.generatedProfilesDto?.co2EmissionsDto, setCo2Emissions)
+            setIfNotNull(result.generatedProfilesDto?.fuelFlaringAndLossesDto, setFuelFlaringAndLosses)
+            setIfNotNull(result.generatedProfilesDto?.netSalesGasDto, setNetSalesGas)
+            setIfNotNull(result.generatedProfilesDto?.importedElectricityDto, setImportedElectricity)
+
+            setProjectCase(result.projectDto.cases.find((c) => c.name === dto.caseDto?.name))
+
             setIsSaving(false)
         } catch (e) {
             setIsSaving(false)
             console.error("Error when saving case and assets: ", e)
         }
+        setSaveProjectCase(false)
     }
 
-    const withReferenceCase = () => {
-        if (project.referenceCaseId === caseItem.id) {
-            return bookmark_filled
-        }
-        return undefined
+    useEffect(() => {
+        saveProjectCase && handleCaseSave()
+    }, [saveProjectCase])
+
+    if (isLoading) {
+        return (<>Loading...</>)
+    }
+
+    if (!drainageStrategy
+        || !exploration
+        || !wellProject
+        || !surf
+        || !topside
+        || !substructure
+        || !transport
+        || !explorationWells
+        || !wellProjectWells) {
+        return (<>One or more assets missing</>)
     }
 
     return (
-        <div>
-            <HeaderWrapper>
-                <RowWrapper>
-                    <PageTitle variant="h4">
-                        {project.referenceCaseId === caseItem.id && (
-                            <Tooltip title="Reference case">
-                                <MenuIcon data={withReferenceCase()} size={18} />
-                            </Tooltip>
-                        )}
-                        {caseItem.name}
-                    </PageTitle>
-                    <ColumnWrapper>
-                        <CaseButtonsWrapper>
-                            {!isSaving ? <Button onClick={handleSave}>Save</Button> : (
-                                <Button>
-                                    <Progress.Dots />
-                                </Button>
-                            )}
-                            <TransparentButton
-                                onClick={() => toggleTechnicalInputModal()}
-                                variant="outlined"
-                            >
-                                Edit technical input
-                            </TransparentButton>
-                            <Button
-                                variant="ghost"
-                                aria-label="case menu"
-                                ref={setMenuAnchorEl}
-                                onClick={() => (isMenuOpen ? setIsMenuOpen(false) : setIsMenuOpen(true))}
-                            >
-                                <Icon data={more_vertical} />
-                            </Button>
-                        </CaseButtonsWrapper>
-                    </ColumnWrapper>
-                </RowWrapper>
-                <Menu
-                    id="menu-complex"
-                    open={isMenuOpen}
-                    anchorEl={menuAnchorEl}
-                    onClose={() => setIsMenuOpen(false)}
-                    placement="bottom"
-                >
-                    <Menu.Item
-                        onClick={toggleCreateCaseModal}
-                    >
-                        <Icon data={add} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Add New Case
-                        </Typography>
-                    </Menu.Item>
-                    <Menu.Item
-                        onClick={duplicateCase}
-                    >
-                        <Icon data={library_add} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Duplicate
-                        </Typography>
-                    </Menu.Item>
-                    <Menu.Item
-                        onClick={toggleEditCaseModal}
-                    >
-                        <Icon data={edit} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Rename
-                        </Typography>
-                    </Menu.Item>
-                    <Menu.Item
-                        onClick={deleteCase}
-                    >
-                        <Icon data={delete_to_trash} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Delete
-                        </Typography>
-                    </Menu.Item>
-                    {project.referenceCaseId === caseItem.id
-                        ? (
-                            <Menu.Item
-                                onClick={setCaseAsReference}
-                            >
-                                <Icon data={bookmark_outlined} size={16} />
-                                <Typography group="navigation" variant="menu_title" as="span">
-                                    Remove as reference case
-                                </Typography>
-                            </Menu.Item>
-                        )
-                        : (
-                            <Menu.Item
-                                onClick={setCaseAsReference}
-                            >
-                                <Icon data={bookmark_filled} size={16} />
-                                <Typography group="navigation" variant="menu_title" as="span">
-                                    Set as reference case
-                                </Typography>
-                            </Menu.Item>
-                        )}
-                </Menu>
-            </HeaderWrapper>
-            <CaseViewDiv>
-                <Tabs activeTab={activeTab} onChange={setActiveTab}>
-                    <TabMenuWrapper>
-                        <List>
-                            <Tab>Description</Tab>
-                            <Tab>Production Profiles</Tab>
-                            <Tab>Schedule</Tab>
-                            <Tab>Drilling Schedule</Tab>
-                            <Tab>Facilities</Tab>
-                            <Tab>Cost</Tab>
-                            <Tab>CO2 Emissions</Tab>
-                            <Tab>Summary</Tab>
-                        </List>
-                    </TabMenuWrapper>
-                    <TabContentWrapper>
-                        <Panels>
-                            <StyledTabPanel>
-                                <CaseDescriptionTab
-                                    project={project}
-                                    setProject={setProject}
-                                    caseItem={caseItem}
-                                    setCase={setCase}
-                                    activeTab={activeTab}
-                                />
-                            </StyledTabPanel>
-                            <StyledTabPanel>
-                                <CaseProductionProfilesTab
-                                    project={project}
-                                    setProject={setProject}
-                                    caseItem={caseItem}
-                                    setCase={setCase}
-                                    drainageStrategy={drainageStrategy}
-                                    setDrainageStrategy={setDrainageStrategy}
-                                    activeTab={activeTab}
-                                    fuelFlaringAndLosses={fuelFlaringAndLosses}
-                                    setFuelFlaringAndLosses={setFuelFlaringAndLosses}
-                                    netSalesGas={netSalesGas}
-                                    setNetSalesGas={setNetSalesGas}
-                                    importedElectricity={importedElectricity}
-                                    setImportedElectricity={setImportedElectricity}
-                                />
-                            </StyledTabPanel>
-                            <StyledTabPanel>
-                                <CaseScheduleTab
-                                    project={project}
-                                    setProject={setProject}
-                                    caseItem={caseItem}
-                                    setCase={setCase}
-                                    activeTab={activeTab}
-                                />
-                            </StyledTabPanel>
-                            <StyledTabPanel>
-                                <CaseDrillingScheduleTab
-                                    project={project}
-                                    setProject={setProject}
-                                    caseItem={caseItem}
-                                    setCase={setCase}
-                                    exploration={exploration}
-                                    setExploration={setExploration}
-                                    wellProject={wellProject}
-                                    setWellProject={setWellProject}
-                                    explorationWells={explorationWells}
-                                    setExplorationWells={setExplorationWells}
-                                    wellProjectWells={wellProjectWells}
-                                    setWellProjectWells={setWellProjectWells}
-                                    wells={wells}
-                                    activeTab={activeTab}
-                                />
-                            </StyledTabPanel>
-                            <StyledTabPanel>
-                                <CaseFacilitiesTab
-                                    project={project}
-                                    setProject={setProject}
-                                    caseItem={caseItem}
-                                    setCase={setCase}
-                                    topside={topside}
-                                    setTopside={setTopside}
-                                    surf={surf}
-                                    setSurf={setSurf}
-                                    substructure={substructure}
-                                    setSubstrucutre={setSubstructure}
-                                    transport={transport}
-                                    setTransport={setTransport}
-                                    activeTab={activeTab}
-                                />
-                            </StyledTabPanel>
-                            <StyledTabPanel>
-                                <CaseCostTab
-                                    project={project}
-                                    setProject={setProject}
-                                    caseItem={caseItem}
-                                    setCase={setCase}
-                                    exploration={exploration}
-                                    setExploration={setExploration}
-                                    wellProject={wellProject}
-                                    setWellProject={setWellProject}
-                                    topside={topside}
-                                    setTopside={setTopside}
-                                    surf={surf}
-                                    setSurf={setSurf}
-                                    substructure={substructure}
-                                    setSubstructure={setSubstructure}
-                                    transport={transport}
-                                    setTransport={setTransport}
-                                    drainageStrategy={drainageStrategy}
-                                    activeTab={activeTab}
-                                    totalFeasibilityAndConceptStudies={totalFeasibilityAndConceptStudies}
-                                    setTotalFeasibilityAndConceptStudies={setTotalFeasibilityAndConceptStudies}
-                                    totalFEEDStudies={totalFEEDStudies}
-                                    setTotalFEEDStudies={setTotalFEEDStudies}
-                                    offshoreFacilitiesOperationsCostProfile={offshoreFacilitiesOperationsCostProfile}
-                                    setOffshoreFacilitiesOperationsCostProfile={setOffshoreFacilitiesOperationsCostProfile}
-                                    wellInterventionCostProfile={wellInterventionCostProfile}
-                                    setWellInterventionCostProfile={setWellInterventionCostProfile}
-                                    cessationWellsCost={cessationWellsCost}
-                                    setCessationWellsCost={setCessationWellsCost}
-                                    cessationOffshoreFacilitiesCost={cessationOffshoreFacilitiesCost}
-                                    setCessationOffshoreFacilitiesCost={setCessationOffshoreFacilitiesCost}
-                                    gAndGAdminCost={gAndGAdminCost}
-                                    setGAndGAdminCost={setGAndGAdminCost}
-                                />
-                            </StyledTabPanel>
-                            <StyledTabPanel>
-                                <CaseCO2Tab
-                                    project={project}
-                                    setProject={setProject}
-                                    caseItem={caseItem}
-                                    setCase={setCase}
-                                    activeTab={activeTab}
-                                    topside={topside}
-                                    setTopside={setTopside}
-                                    drainageStrategy={drainageStrategy}
-                                    setDrainageStrategy={setDrainageStrategy}
-                                    co2Emissions={co2Emissions}
-                                    setCo2Emissions={setCo2Emissions}
-                                />
-                            </StyledTabPanel>
-                            <StyledTabPanel>
-                                <CaseSummaryTab
-                                    project={project}
-                                    setProject={setProject}
-                                    caseItem={caseItem}
-                                    setCase={setCase}
-                                    exploration={exploration}
-                                    setExploration={setExploration}
-                                    wellProject={wellProject}
-                                    setWellProject={setWellProject}
-                                    topside={topside}
-                                    setTopside={setTopside}
-                                    surf={surf}
-                                    setSurf={setSurf}
-                                    substructure={substructure}
-                                    setSubstrucutre={setSubstructure}
-                                    transport={transport}
-                                    setTransport={setTransport}
-                                    drainageStrategy={drainageStrategy}
-                                    activeTab={activeTab}
-                                />
-                            </StyledTabPanel>
-                        </Panels>
-                    </TabContentWrapper>
+        <Grid container spacing={1} alignSelf="flex-start">
+            <Grid item xs={12}>
+                <Tabs activeTab={activeTabCase} onChange={setActiveTabCase} scrollable>
+                    <List>
+                        {tabNames.map((tabName) => <Tab key={tabName}>{tabName}</Tab>)}
+                    </List>
+                    <Panels>
+                        <CasePanel>
+                            <CaseDescriptionTab />
+                        </CasePanel>
+                        <CasePanel>
+                            <CaseProductionProfilesTab
+                                drainageStrategy={drainageStrategy}
+                                setDrainageStrategy={setDrainageStrategy}
+                                fuelFlaringAndLosses={fuelFlaringAndLosses}
+                                setFuelFlaringAndLosses={setFuelFlaringAndLosses}
+                                netSalesGas={netSalesGas}
+                                setNetSalesGas={setNetSalesGas}
+                                importedElectricity={importedElectricity}
+                                setImportedElectricity={setImportedElectricity}
+                            />
+                        </CasePanel>
+                        <CasePanel>
+                            <CaseScheduleTab />
+                        </CasePanel>
+                        <CasePanel>
+                            <CaseDrillingScheduleTab
+                                explorationWells={explorationWells}
+                                setExplorationWells={setExplorationWells}
+                                wellProjectWells={wellProjectWells}
+                                setWellProjectWells={setWellProjectWells}
+                                wells={wells}
+                                exploration={exploration}
+                                wellProject={wellProject}
+                            />
+                        </CasePanel>
+                        <CasePanel>
+                            <CaseFacilitiesTab
+                                topside={topside}
+                                setTopside={setTopside}
+                                surf={surf}
+                                setSurf={setSurf}
+                                substructure={substructure}
+                                setSubstrucutre={setSubstructure}
+                                transport={transport}
+                                setTransport={setTransport}
+                            />
+                        </CasePanel>
+                        <CasePanel>
+                            <CaseCostTab />
+                        </CasePanel>
+                        <CasePanel>
+                            <CaseCO2Tab
+                                topside={topside}
+                                setTopside={setTopside}
+                                drainageStrategy={drainageStrategy}
+                                setDrainageStrategy={setDrainageStrategy}
+                                co2Emissions={co2Emissions}
+                                setCo2Emissions={setCo2Emissions}
+                            />
+                        </CasePanel>
+                        <CasePanel>
+                            <CaseSummaryTab />
+                        </CasePanel>
+                    </Panels>
                 </Tabs>
-                <DividerLine />
-            </CaseViewDiv>
-            <EditTechnicalInputModal
-                toggleEditTechnicalInputModal={toggleTechnicalInputModal}
-                isOpen={editTechnicalInputModalIsOpen}
-                project={project}
-                setProject={setProject}
-                setWells={setWells}
-                caseId={caseItem.id}
-                setExploration={setExploration}
-                setWellProject={setWellProject}
-            />
-            <EditCaseModal
-                setProject={setProject}
-                project={project}
-                caseId={caseItem.id}
-                isOpen={editCaseModalIsOpen}
-                toggleModal={toggleEditCaseModal}
-                editMode
-                navigate
-            />
-            <EditCaseModal
-                setProject={setProject}
-                project={project}
-                caseId={caseItem.id}
-                isOpen={createCaseModalIsOpen}
-                toggleModal={toggleCreateCaseModal}
-                editMode={false}
-                navigate
-            />
-        </div>
+            </Grid>
+        </Grid>
     )
 }
 

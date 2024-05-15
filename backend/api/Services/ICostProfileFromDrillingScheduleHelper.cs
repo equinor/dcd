@@ -1,14 +1,13 @@
 using api.Dtos;
 using api.Models;
 
-namespace api.Services
+namespace api.Services;
+
+public interface ICostProfileFromDrillingScheduleHelper
 {
-    public interface ICostProfileFromDrillingScheduleHelper
-    {
-        void UpdateCostProfilesForWells(List<Guid> wellIds);
-        ExplorationDto UpdateExplorationCostProfilesForCase(Exploration exploration, IEnumerable<ExplorationWell> explorationWells);
-        ExplorationDto UpdateExplorationCostProfilesForCase(Guid caseId);
-        WellProjectDto UpdateWellProjectCostProfilesForCase(Guid caseId);
-        WellProjectDto UpdateWellProjectCostProfilesForCase(WellProject wellProject, IEnumerable<WellProjectWell> wellProjectWells);
-    }
+    Task UpdateCostProfilesForWells(List<Guid> wellIds);
+    Task<Exploration> UpdateExplorationCostProfilesForCase(Guid caseId);
+    Task<Exploration> UpdateExplorationCostProfiles(Guid explorationId);
+    Task<WellProject> UpdateWellProjectCostProfilesForCase(Guid caseId);
+    Task<WellProject> UpdateWellProjectCostProfiles(Guid wellProjectId);
 }

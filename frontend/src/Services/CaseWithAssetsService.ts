@@ -1,26 +1,17 @@
 import { __BaseService } from "./__BaseService"
 
-import { Project } from "../models/Project"
 import { config } from "./config"
 
-import { GetToken, LoginAccessTokenKey } from "../Utils/common"
-import { Case } from "../models/case/Case"
+import { getToken, loginAccessTokenKey } from "../Utils/common"
 
-class __CaseWithAssetsService extends __BaseService {
-    public async update(body: any): Promise<Components.Schemas.ProjectWithGeneratedProfilesDto> {
-        const res: Components.Schemas.ProjectWithGeneratedProfilesDto = await this.put("", { body })
+class CaseWithAssetsService extends __BaseService {
+    public async update(projectId: string, caseId: string, body: any): Promise<Components.Schemas.ProjectWithGeneratedProfilesDto> {
+        const res: Components.Schemas.ProjectWithGeneratedProfilesDto = await this.post(`projects/${projectId}/cases/${caseId}/case-with-assets`, { body })
         return res
     }
 }
 
-export const CaseWithAssetsService = new __CaseWithAssetsService({
+export const GetCaseWithAssetsService = async () => new CaseWithAssetsService({
     ...config.CaseWithAssetsService,
-    accessToken: window.sessionStorage.getItem("loginAccessToken")!,
+    accessToken: await getToken(loginAccessTokenKey)!,
 })
-
-export async function GetCaseWithAssetsService() {
-    return new __CaseWithAssetsService({
-        ...config.CaseWithAssetsService,
-        accessToken: await GetToken(LoginAccessTokenKey)!,
-    })
-}

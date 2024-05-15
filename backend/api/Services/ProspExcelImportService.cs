@@ -3,6 +3,8 @@ using api.Dtos;
 using api.Helpers;
 using api.Models;
 
+using AutoMapper;
+
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
@@ -21,12 +23,19 @@ public class ProspExcelImportService
     private readonly ISurfService _surfService;
     private readonly ITopsideService _topsideService;
     private readonly ITransportService _transportService;
+    private readonly IMapper _mapper;
 
 
-    public ProspExcelImportService(IProjectService projectService, ICaseService caseService, ILoggerFactory loggerFactory,
+    public ProspExcelImportService(
+        IProjectService projectService,
+        ICaseService caseService,
+        ILoggerFactory loggerFactory,
         ISurfService surfService,
-        ISubstructureService substructureService, ITopsideService topsideService, ITransportService transportService,
-        IConfiguration config)
+        ISubstructureService substructureService,
+        ITopsideService topsideService,
+        ITransportService transportService,
+        IConfiguration config,
+        IMapper mapper)
     {
         _projectService = projectService;
         loggerFactory.CreateLogger<ProspExcelImportService>();
@@ -36,15 +45,20 @@ public class ProspExcelImportService
         _transportService = transportService;
         _prospConfig = CreateConfig(config);
         _caseService = caseService;
+        _mapper = mapper;
     }
 
     private Prosp CreateConfig(IConfiguration config)
     {
         var prospImportConfig = config.GetSection("FileImportSettings:Prosp").Get<Prosp>();
-        prospImportConfig.Surf = config.GetSection("FileImportSettings:Prosp:Surf").Get<Surf>();
-        prospImportConfig.SubStructure = config.GetSection("FileImportSettings:Prosp:SubStructure").Get<SubStructure>();
-        prospImportConfig.TopSide = config.GetSection("FileImportSettings:Prosp:TopSide").Get<TopSide>();
-        prospImportConfig.Transport = config.GetSection("FileImportSettings:Prosp:Transport").Get<Transport>();
+        if (prospImportConfig == null)
+        {
+            throw new Exception("Prosp import settings not found in appsettings.json");
+        }
+        prospImportConfig.Surf = config.GetSection("FileImportSettings:Prosp:Surf").Get<Surf>() ?? new Surf();
+        prospImportConfig.SubStructure = config.GetSection("FileImportSettings:Prosp:SubStructure").Get<SubStructure>() ?? new SubStructure();
+        prospImportConfig.TopSide = config.GetSection("FileImportSettings:Prosp:TopSide").Get<TopSide>() ?? new TopSide();
+        prospImportConfig.Transport = config.GetSection("FileImportSettings:Prosp:Transport").Get<Transport>() ?? new Transport();
         return prospImportConfig;
     }
 
@@ -73,7 +87,7 @@ public class ProspExcelImportService
     private static double[] ReadDoubleValues(IEnumerable<Cell> cellData, List<string> coordinates)
     {
         var values = new List<double>();
-        foreach (var cell in cellData.Where(c => coordinates.Contains(c.CellReference)))
+        foreach (var cell in cellData.Where(c => c?.CellReference != null && coordinates.Contains(c.CellReference!)))
             if (double.TryParse(cell.CellValue?.InnerText.Replace(',', '.'), out var value))
             {
                 values.Add(value);
@@ -93,7 +107,7 @@ public class ProspExcelImportService
         return new DateTime(1900, 1, 1);
     }
 
-    private void ImportSurf(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
+    private async Task ImportSurf(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
     {
         List<string> costProfileCoords = new()
         {
@@ -120,7 +134,7 @@ public class ProspExcelImportService
         var waterInjectorCount = ReadIntValue(cellData, _prospConfig.Surf.waterInjectorCount);
         var gasInjectorCount = ReadIntValue(cellData, _prospConfig.Surf.gasInjectorCount);
         var cessationCost = ReadDoubleValue(cellData, _prospConfig.Surf.cessationCost);
-        var costProfile = new SurfCostProfile
+        var costProfile = new UpdateSurfCostProfileDto
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year,
@@ -132,13 +146,11 @@ public class ProspExcelImportService
         var importedCurrency = ReadIntValue(cellData, _prospConfig.Surf.importedCurrency);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
-        var surfLink = _caseService.GetCase(sourceCaseId).SurfLink;
-        var newSurf = new Models.Surf
+        var surfLink = (await _caseService.GetCase(sourceCaseId)).SurfLink;
+
+        var updatedSurfDto = new PROSPUpdateSurfDto
         {
-            Id = surfLink,
-            Name = "ImportedSurf",
             CostProfile = costProfile,
-            ProjectId = projectId,
             ProductionFlowline = productionFlowLine,
             UmbilicalSystemLength = lengthUmbilicalSystem,
             InfieldPipelineSystemLength = lengthProductionLine,
@@ -149,7 +161,6 @@ public class ProspExcelImportService
             ProspVersion = versionDate,
             Currency = currency,
             CostYear = costYear,
-            Maturity = Maturity.A,
             DG3Date = dG3Date,
             DG4Date = dG4Date,
             ProducerCount = producerCount,
@@ -158,19 +169,10 @@ public class ProspExcelImportService
             CessationCost = cessationCost,
         };
 
-        var dto = SurfDtoAdapter.Convert(newSurf);
-
-        if (surfLink != Guid.Empty)
-        {
-            _surfService.UpdateSurf(dto);
-        }
-        else
-        {
-            _surfService.CreateSurf(dto, sourceCaseId);
-        }
+        await _surfService.UpdateSurf(updatedSurfDto, surfLink);
     }
 
-    private void ImportTopside(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
+    private async Task ImportTopside(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
     {
         List<string> costProfileCoords = new()
         {
@@ -205,7 +207,7 @@ public class ProspExcelImportService
         var cO2OnMaxWaterInjectionProfile =
             ReadDoubleValue(cellData, _prospConfig.TopSide.cO2OnMaxWaterInjectionProfile);
         var facilityOpex = ReadDoubleValue(cellData, _prospConfig.TopSide.facilityOpex);
-        var costProfile = new TopsideCostProfile
+        var costProfile = new UpdateTopsideCostProfileDto
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year,
@@ -217,13 +219,10 @@ public class ProspExcelImportService
         var importedCurrency = ReadIntValue(cellData, _prospConfig.TopSide.importedCurrency);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
-        var topsideLink = _caseService.GetCase(sourceCaseId).TopsideLink;
-        var newTopside = new Topside
+        var topsideLink = (await _caseService.GetCase(sourceCaseId)).TopsideLink;
+        var updateTopsideDto = new PROSPUpdateTopsideDto
         {
-            Id = topsideLink,
-            Name = "ImportedTopside",
             CostProfile = costProfile,
-            ProjectId = projectId,
             DG3Date = dG3Date,
             DG4Date = dG4Date,
             DryWeight = dryWeight,
@@ -246,22 +245,14 @@ public class ProspExcelImportService
             ProspVersion = versionDate,
             Currency = currency,
             CostYear = costYear,
-            Maturity = Maturity.A,
             FacilityOpex = facilityOpex,
             PeakElectricityImported = peakElectricityImported,
         };
-        var dto = TopsideDtoAdapter.Convert(newTopside);
-        if (topsideLink != Guid.Empty)
-        {
-            _topsideService.UpdateTopside(dto);
-        }
-        else
-        {
-            _topsideService.CreateTopside(dto, sourceCaseId);
-        }
+
+        await _topsideService.UpdateTopsideAndCostProfiles(updateTopsideDto, topsideLink);
     }
 
-    private void ImportSubstructure(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
+    private async Task ImportSubstructure(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
     {
         List<string> costProfileCoords = new()
         {
@@ -279,7 +270,7 @@ public class ProspExcelImportService
         var dryWeight = ReadDoubleValue(cellData, _prospConfig.SubStructure.dryWeight);
         var conceptInt = ReadIntValue(cellData, _prospConfig.SubStructure.conceptInt);
         var concept = MapSubstructureConcept(conceptInt);
-        var costProfile = new SubstructureCostProfile
+        var costProfile = new UpdateSubstructureCostProfileDto
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year,
@@ -291,13 +282,10 @@ public class ProspExcelImportService
         var importedCurrency = ReadIntValue(cellData, _prospConfig.SubStructure.importedCurrency);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
-        var substructureLink = _caseService.GetCase(sourceCaseId).SubstructureLink;
-        var newSubstructure = new Substructure
+        var substructureLink = (await _caseService.GetCase(sourceCaseId)).SubstructureLink;
+        var updateSubstructureDto = new PROSPUpdateSubstructureDto
         {
-            Id = substructureLink,
-            Name = "ImportedSubstructure",
             CostProfile = costProfile,
-            ProjectId = projectId,
             DryWeight = dryWeight,
             Concept = concept,
             DG3Date = dG3Date,
@@ -306,21 +294,12 @@ public class ProspExcelImportService
             ProspVersion = versionDate,
             Currency = currency,
             CostYear = costYear,
-            Maturity = Maturity.A,
         };
 
-        if (substructureLink != Guid.Empty)
-        {
-            var dto = SubstructureDtoAdapter.Convert(newSubstructure);
-            _substructureService.UpdateSubstructure(dto);
-        }
-        else
-        {
-            _substructureService.CreateSubstructure(newSubstructure, sourceCaseId);
-        }
+        await _substructureService.UpdateSubstructureAndCostProfiles(updateSubstructureDto, substructureLink);
     }
 
-    private void ImportTransport(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
+    private async Task ImportTransport(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
     {
         List<string> costProfileCoords = new()
         {
@@ -335,7 +314,7 @@ public class ProspExcelImportService
         var costProfileStartYear = ReadIntValue(cellData, _prospConfig.Transport.costProfileStartYear);
         var dG3Date = ReadDateValue(cellData, _prospConfig.Transport.dG3Date);
         var dG4Date = ReadDateValue(cellData, _prospConfig.Transport.dG4Date);
-        var costProfile = new TransportCostProfile
+        var costProfile = new UpdateTransportCostProfileDto
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year,
@@ -349,13 +328,10 @@ public class ProspExcelImportService
         var gasExportPipelineLength = ReadDoubleValue(cellData, _prospConfig.Transport.gasExportPipelineLength);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
-        var transportLink = _caseService.GetCase(sourceCaseId).TransportLink;
-        var newTransport = new Models.Transport
+        var transportLink = (await _caseService.GetCase(sourceCaseId)).TransportLink;
+        var updateTransportDto = new PROSPUpdateTransportDto
         {
-            Id = transportLink,
-            Name = "ImportedTransport",
             CostProfile = costProfile,
-            ProjectId = projectId,
             DG3Date = dG3Date,
             DG4Date = dG4Date,
             Source = Source.Prosp,
@@ -364,62 +340,12 @@ public class ProspExcelImportService
             CostYear = costYear,
             OilExportPipelineLength = oilExportPipelineLength,
             GasExportPipelineLength = gasExportPipelineLength,
-            Maturity = Maturity.A,
         };
-        var dto = TransportDtoAdapter.Convert(newTransport);
-        if (transportLink != Guid.Empty)
-        {
-            _transportService.UpdateTransport(dto);
-        }
-        else
-        {
-            _transportService.CreateTransport(dto, sourceCaseId);
-        }
+
+        await _transportService.UpdateTransport(updateTransportDto, transportLink);
     }
 
-    public ProjectDto ImportProsp(IFormFile file, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets)
-    {
-        using var ms = new MemoryStream();
-        file.CopyTo(ms);
-        using var document = SpreadsheetDocument.Open(ms, false);
-        var workbookPart = document.WorkbookPart;
-        var mainSheet = workbookPart?.Workbook.Descendants<Sheet>()
-            .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SheetName);
-
-        if (mainSheet?.Id != null && workbookPart != null)
-        {
-            var wsPart = (WorksheetPart)workbookPart.GetPartById(mainSheet.Id!);
-            var cellData = wsPart?.Worksheet.Descendants<Cell>();
-
-            if (cellData != null)
-            {
-                var parsedData = cellData.ToList();
-                if (assets["Surf"])
-                {
-                    ImportSurf(parsedData, sourceCaseId, projectId);
-                }
-
-                if (assets["Topside"])
-                {
-                    ImportTopside(parsedData, sourceCaseId, projectId);
-                }
-
-                if (assets["Substructure"])
-                {
-                    ImportSubstructure(parsedData, sourceCaseId, projectId);
-                }
-
-                if (assets["Transport"])
-                {
-                    ImportTransport(parsedData, sourceCaseId, projectId);
-                }
-            }
-        }
-
-        return _projectService.GetProjectDto(projectId);
-    }
-
-    public ProjectDto ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets,
+    public async Task<ProjectDto> ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets,
         string sharepointFileId, string? sharepointFileName, string? sharepointFileUrl)
     {
         using var document = SpreadsheetDocument.Open(stream, false);
@@ -427,7 +353,7 @@ public class ProspExcelImportService
         var mainSheet = workbookPart?.Workbook.Descendants<Sheet>()
             .FirstOrDefault(x => x.Name?.ToString()?.ToLower() == SheetName);
 
-        var caseItem = _caseService.GetCase(sourceCaseId);
+        var caseItem = await _caseService.GetCase(sourceCaseId);
         caseItem.SharepointFileId = sharepointFileId;
         caseItem.SharepointFileName = sharepointFileName;
         caseItem.SharepointFileUrl = sharepointFileUrl;
@@ -442,7 +368,7 @@ public class ProspExcelImportService
                 var parsedData = cellData.ToList();
                 if (assets["Surf"])
                 {
-                    ImportSurf(parsedData, sourceCaseId, projectId);
+                    await ImportSurf(parsedData, sourceCaseId, projectId);
                 }
                 else
                 {
@@ -451,7 +377,7 @@ public class ProspExcelImportService
 
                 if (assets["Topside"])
                 {
-                    ImportTopside(parsedData, sourceCaseId, projectId);
+                    await ImportTopside(parsedData, sourceCaseId, projectId);
                 }
                 else
                 {
@@ -460,7 +386,7 @@ public class ProspExcelImportService
 
                 if (assets["Substructure"])
                 {
-                    ImportSubstructure(parsedData, sourceCaseId, projectId);
+                    await ImportSubstructure(parsedData, sourceCaseId, projectId);
                 }
                 else
                 {
@@ -469,7 +395,7 @@ public class ProspExcelImportService
 
                 if (assets["Transport"])
                 {
-                    ImportTransport(parsedData, sourceCaseId, projectId);
+                    await ImportTransport(parsedData, sourceCaseId, projectId);
                 }
                 else
                 {
@@ -477,16 +403,22 @@ public class ProspExcelImportService
                 }
             }
 
-            var caseDto = CaseDtoAdapter.Convert(caseItem);
-            return _caseService.UpdateCase(caseDto);
+            var caseDto = new PROSPUpdateCaseDto
+            {
+                SharepointFileId = sharepointFileId,
+                SharepointFileName = sharepointFileName,
+                SharepointFileUrl = sharepointFileUrl,
+            };
+
+            return await _caseService.UpdateCase(sourceCaseId, caseDto);
         }
 
-        return _projectService.GetProjectDto(projectId);
+        return await _projectService.GetProjectDto(projectId);
     }
 
-    public void ClearImportedProspData(Guid sourceCaseId, Guid projectId)
+    public async Task ClearImportedProspData(Guid sourceCaseId, Guid projectId)
     {
-        var caseItem = _caseService.GetCase(sourceCaseId);
+        var caseItem = await _caseService.GetCase(sourceCaseId);
         caseItem.SharepointFileId = null;
         caseItem.SharepointFileName = null;
         caseItem.SharepointFileUrl = null;
@@ -496,84 +428,63 @@ public class ProspExcelImportService
         ClearImportedSubstructure(caseItem);
         ClearImportedTransport(caseItem);
 
-        var caseDto = CaseDtoAdapter.Convert(caseItem);
-        _caseService.UpdateCase(caseDto);
+        var caseDto = _mapper.Map<APIUpdateCaseDto>(caseItem);
+
+        if (caseDto == null)
+        {
+            throw new Exception();
+        }
+
+        await _caseService.UpdateCase(sourceCaseId, caseDto);
     }
 
     private void ClearImportedSurf(Case caseItem)
     {
         var surfLink = caseItem.SurfLink;
-        var surf = new Models.Surf
+        var dto = new PROSPUpdateSurfDto
         {
-            Id = surfLink,
-            CostProfile = null,
-            ProjectId = caseItem.ProjectId,
+            CostProfile = new UpdateSurfCostProfileDto(),
             Source = Source.ConceptApp,
         };
 
-        var dto = SurfDtoAdapter.Convert(surf);
-
-        if (surfLink != Guid.Empty)
-        {
-            _surfService.UpdateSurf(dto);
-        }
+        _surfService.UpdateSurf(dto, surfLink);
     }
 
     private void ClearImportedTopside(Case caseItem)
     {
         var topsideLink = caseItem.TopsideLink;
-        var topside = new Topside
+        var dto = new PROSPUpdateTopsideDto
         {
-            Id = topsideLink,
-            CostProfile = null,
-            ProjectId = caseItem.ProjectId,
+            CostProfile = new UpdateTopsideCostProfileDto(),
             Source = Source.ConceptApp,
         };
 
-        var dto = TopsideDtoAdapter.Convert(topside);
 
-        if (topsideLink != Guid.Empty)
-        {
-            _topsideService.UpdateTopside(dto);
-        }
+        _topsideService.UpdateTopsideAndCostProfiles(dto, topsideLink);
     }
 
     private void ClearImportedSubstructure(Case caseItem)
     {
         var substructureLink = caseItem.SubstructureLink;
-        var substructure = new Substructure
+        var dto = new PROSPUpdateSubstructureDto
         {
-            Id = substructureLink,
-            CostProfile = null,
-            ProjectId = caseItem.ProjectId,
+            CostProfile = new UpdateSubstructureCostProfileDto(),
             Source = Source.ConceptApp,
         };
 
-        var dto = SubstructureDtoAdapter.Convert(substructure);
-
-        if (substructureLink != Guid.Empty)
-        {
-            _substructureService.UpdateSubstructure(dto);
-        }
+        _substructureService.UpdateSubstructureAndCostProfiles(dto, substructureLink);
     }
 
     private void ClearImportedTransport(Case caseItem)
     {
         var transportLink = caseItem.TransportLink;
-        var transport = new Models.Transport
+        var dto = new PROSPUpdateTransportDto
         {
-            Id = transportLink,
-            CostProfile = null,
-            ProjectId = caseItem.ProjectId,
+            CostProfile = new UpdateTransportCostProfileDto(),
             Source = Source.ConceptApp,
         };
 
-        var dto = TransportDtoAdapter.Convert(transport);
-
-        if (transportLink != Guid.Empty)
-        {
-            _transportService.UpdateTransport(dto);
-        }
+        _transportService.UpdateTransport(dto, transportLink);
     }
 
     private static Concept MapSubstructureConcept(int importValue)
