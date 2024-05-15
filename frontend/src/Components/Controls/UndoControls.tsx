@@ -1,9 +1,11 @@
-import React, { useState } from "react"
+import React, { useState, useCallback } from "react"
 import {
     Typography, Button, Icon, Tooltip,
 } from "@equinor/eds-core-react"
 import { redo, undo } from "@equinor/eds-icons"
 import styled from "styled-components"
+import { debounce } from "lodash"
+import useDataEdits from "../../Hooks/useDataEdits"
 
 const Container = styled.div`
    display: flex;
@@ -14,13 +16,7 @@ const Container = styled.div`
 
 const UndoControls: React.FC = () => {
     const [isSaving, setIsSaving] = useState(false)
-
-    const pretendToSave = async () => {
-        setIsSaving(true)
-        setTimeout(() => {
-            setIsSaving(false)
-        }, 2000)
-    }
+    const { undoEdit, redoEdits } = useDataEdits()
 
     return (
         <Container>
@@ -32,7 +28,7 @@ const UndoControls: React.FC = () => {
             <Tooltip title="Undo">
                 <Button
                     variant="ghost_icon"
-                    onClick={pretendToSave}
+                    onClick={undoEdit}
                 >
                     <Icon data={undo} />
                 </Button>
@@ -40,7 +36,7 @@ const UndoControls: React.FC = () => {
             <Tooltip title="Redo">
                 <Button
                     variant="ghost_icon"
-                    onClick={pretendToSave}
+                    onClick={redoEdits}
                 >
                     <Icon data={redo} />
                 </Button>

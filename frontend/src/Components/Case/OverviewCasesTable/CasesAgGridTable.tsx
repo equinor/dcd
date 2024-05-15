@@ -65,10 +65,10 @@ const CasesAgGridTable = ({
         sortable: true,
         filter: true,
         resizable: true,
-        suppressMenu: true,
+        suppressMenuButton: true,
     }), [])
 
-    if (!project) return <p>project not found</p>
+    if (!project) { return <p>project not found</p> }
 
     const productionStrategyToString = (p: any) => {
         const stringValue = productionStrategyOverviewToString(p.value)

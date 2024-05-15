@@ -74,7 +74,7 @@ const CaseCO2DistributionTable = ({
         filter: true,
         resizable: true,
         editable: false,
-        suppressMenu: true,
+        suppressMenuButton: true,
     }), [])
 
     const onGridReady = (params: any) => {

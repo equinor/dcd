@@ -83,7 +83,7 @@ const PROSPCaseList = ({
         sortable: true,
         filter: true,
         resizable: true,
-        suppressMenu: true,
+        suppressMenuButton: true,
     }), [])
 
     const rowIsChanged = (p: any) => (p.data.surfStateChanged

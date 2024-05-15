@@ -2,8 +2,8 @@ import { useEffect } from "react"
 import { Outlet, useParams } from "react-router-dom"
 import Grid from "@mui/material/Grid"
 import { Progress, Typography } from "@equinor/eds-core-react"
-import Sidebar from "./Sidebar"
-import Controls from "./Controls"
+import Sidebar from "./Controls/Sidebar/Sidebar"
+import Controls from "./Controls/Controls"
 import { useAppContext } from "../Context/AppContext"
 import { useProjectContext } from "../Context/ProjectContext"
 import { useCaseContext } from "../Context/CaseContext"
@@ -17,7 +17,6 @@ const Overview = () => {
     } = useAppContext()
     const { project } = useProjectContext()
     const { setProjectCase } = useCaseContext()
-
     const { caseId } = useParams()
 
     useEffect(() => {

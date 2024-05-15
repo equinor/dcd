@@ -11,6 +11,8 @@ const useDataEdits = (): {
         level: "project" | "case",
         objectId: string,
     ) => void;
+    undoEdit: () => void;
+    redoEdits: () => void;
 } => {
     const { setCaseEdits } = useCaseContext()
 
@@ -38,7 +40,32 @@ const useDataEdits = (): {
         setCaseEdits((prevEdits) => [editInstanceObject, ...prevEdits])
     }
 
-    return { addEdit }
+    const undoEdit = () => {
+        console.log("Undoing edit")
+        /*
+        console.log(
+            `Unding edit:
+                ${latestEdit.inputLabel}
+                from ${latestEdit.newValue}
+                to ${latestEdit.previousValue}
+            `,
+        ) */
+    }
+
+    const redoEdits = () => {
+        console.log("Redoing edit")
+        /*
+            console.log(
+                `Redoing edit:
+                ${latestUndo.inputLabel}
+                from ${latestUndo.previousValue}
+                to ${latestUndo.newValue}
+            `,
+            )
+        */
+    }
+
+    return { addEdit, undoEdit, redoEdits }
 }
 
 export default useDataEdits

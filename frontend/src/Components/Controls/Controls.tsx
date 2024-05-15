@@ -18,7 +18,7 @@ import CaseDropMenu from "../Case/Components/CaseDropMenu"
 import { GetProjectService } from "../../Services/ProjectService"
 import { useAppContext } from "../../Context/AppContext"
 import useDataEdits from "../../Hooks/useDataEdits"
-import EditsSideBar from "./EditsSideBar"
+import HistoryButton from "../Buttons/HistoryButton"
 import UndoControls from "./UndoControls"
 
 const Controls = () => {
@@ -164,10 +164,9 @@ const Controls = () => {
             </Grid>
             <Grid item>
                 <UndoControls />
-                <p>hi</p>
             </Grid>
             <Grid item>
-                <EditsSideBar />
+                <HistoryButton size={24} />
             </Grid>
             <Grid item>
                 <Button

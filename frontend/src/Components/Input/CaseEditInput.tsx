@@ -35,7 +35,6 @@ const CaseEditInput: React.FC<CaseEditInputProps> = ({
     const { projectCase } = useCaseContext()
 
     const addToEditsAndSubmit = (insertedValue: number) => {
-        // logs can be removed once the solution has matured and we are confident that the edits are working as expected
         if (!projectCase) {
             console.error("Case not found")
             return

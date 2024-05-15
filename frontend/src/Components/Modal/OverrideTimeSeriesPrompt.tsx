@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, FunctionComponent } from "react"
 import { Button, Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import Modal from "./Modal/Modal"
+import Modal from "./Modal"
 
 type Props = {
     isOpen: boolean
@@ -18,7 +18,7 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
     setProfile,
     profile,
 }) => {
-    if (!isOpen) return null
+    if (!isOpen) { return null }
     const toggleIsOpen = () => {
         setIsOpen(!isOpen)
     }
