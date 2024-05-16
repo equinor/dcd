@@ -14,6 +14,7 @@ import {
     numberValueParser,
     getCaseRowStyle,
     validateInput,
+    profileAndUnitInSameCell,
 } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../../Utils/constants"
@@ -122,6 +123,9 @@ const CaseTabTable = ({
             {
                 field: "profileName",
                 headerName: tableName,
+                cellRenderer: (params: any) => (
+                    profileAndUnitInSameCell(params, rowData)
+                ),
                 width: 250,
                 editable: false,
                 pinned: "left",
@@ -138,6 +142,7 @@ const CaseTabTable = ({
                     }
                     return ""
                 },
+                hide: true,
             },
             {
                 field: "total",
