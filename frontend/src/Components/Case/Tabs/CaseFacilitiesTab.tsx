@@ -7,7 +7,7 @@ import {
     NativeSelect, Typography, Input,
 } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import CaseNumberInput from "../../Input/CaseNumberInput"
+import CaseEditInput from "../../Input/CaseEditInput"
 import InputSwitcher from "../../Input/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
@@ -138,214 +138,196 @@ const CaseFacilitiesTab = ({
                 </Grid>
             )}
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${Math.round(Number(topside?.facilityOpex) * 10) / 10} ${project?.currency === 1 ? "MNOK" : "MUSD"}`}
+
+                <CaseEditInput
+                    object={topside}
+                    objectKey={topside.facilityOpex}
                     label="Facility opex"
-                >
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "facilityOpex", topside, setTopside)}
-                        defaultValue={Math.round(Number(topside?.facilityOpex) * 10) / 10}
-                        integer={false}
-                        unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
-                    />
-                </InputSwitcher>
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "facilityOpex", topside, setTopside)}
+                    value={Math.round(Number(topside?.facilityOpex) * 10) / 10}
+                    integer={false}
+                    unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
+                />
+
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${Math.round(Number(surf?.cessationCost) * 10) / 10} ${project?.currency === 1 ? "MNOK" : "MUSD"}`}
+                <CaseEditInput
+                    object={surf}
+                    objectKey={surf.cessationCost}
                     label="Cessation cost"
-                >
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "cessationCost", surf, setSurf)}
-                        defaultValue={Math.round(Number(surf?.cessationCost) * 10) / 10}
-                        integer={false}
-                        unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
-                    />
-                </InputSwitcher>
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "cessationCost", surf, setSurf)}
+                    value={Math.round(Number(surf?.cessationCost) * 10) / 10}
+                    integer={false}
+                    unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
+                />
             </Grid>
             <Grid item xs={12}>
                 <Typography variant="h4">Topside</Typography>
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${Math.round(Number(topside?.dryWeight) * 1) / 1} tonnes`}
+                <CaseEditInput
+                    object={topside}
+                    objectKey={topside.dryWeight}
                     label="Topside dry weight"
-                >
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "dryWeight", topside, setTopside)}
-                        defaultValue={Math.round(Number(topside?.dryWeight) * 1) / 1}
-                        integer
-                        unit="tonnes"
-                        min={0}
-                        max={1000000}
-                    />
-                </InputSwitcher>
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "dryWeight", topside, setTopside)}
+                    value={Math.round(Number(topside?.dryWeight) * 1) / 1}
+                    integer
+                    unit="tonnes"
+                    min={0}
+                    max={1000000}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${projectCase.facilitiesAvailability ?? 0 * 100}%`}
+                <CaseEditInput
                     label="Facilities availability"
-                >
-                    <CaseNumberInput
-                        onChange={() => { }}
-                        defaultValue={projectCase.facilitiesAvailability ?? 0 * 100}
-                        integer
-                        disabled
-                        unit="%"
-                    />
-                </InputSwitcher>
+                    value={projectCase.facilitiesAvailability ?? 0 * 100}
+                    integer
+                    disabled
+                    unit="%"
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${Math.round(Number(topside?.peakElectricityImported) * 10) / 10} MW`}
+                <CaseEditInput
+                    object={topside}
+                    objectKey={topside.peakElectricityImported}
                     label="Peak electricity imported"
-                >
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "peakElectricityImported", topside, setTopside)}
-                        defaultValue={Math.round(Number(topside?.peakElectricityImported) * 10) / 10}
-                        integer={false}
-                        unit="MW"
-                        min={0}
-                        max={1000000}
-                    />
-                </InputSwitcher>
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "peakElectricityImported", topside, setTopside)}
+                    value={Math.round(Number(topside?.peakElectricityImported) * 10) / 10}
+                    integer={false}
+                    unit="MW"
+                    min={0}
+                    max={1000000}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${Math.round(Number(topside?.oilCapacity) * 1) / 1} Sm³/sd`}
+
+                <CaseEditInput
+                    object={topside}
+                    objectKey={topside.oilCapacity}
                     label="Oil capacity"
-                >
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "oilCapacity", topside, setTopside)}
-                        defaultValue={Math.round(Number(topside?.oilCapacity) * 1) / 1}
-                        integer
-                        unit="Sm³/sd"
-                        min={0}
-                        max={1000000}
-                    />
-                </InputSwitcher>
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "oilCapacity", topside, setTopside)}
+                    value={Math.round(Number(topside?.oilCapacity) * 1) / 1}
+                    integer
+                    unit="Sm³/sd"
+                    min={0}
+                    max={1000000}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${Math.round(Number(topside?.gasCapacity) * 10) / 10} MSm³/sd`}
+                <CaseEditInput
+                    object={topside}
+                    objectKey={topside.gasCapacity}
                     label="Gas capacity"
-                >
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "gasCapacity", topside, setTopside)}
-                        defaultValue={Math.round(Number(topside?.gasCapacity) * 10) / 10}
-                        integer={false}
-                        unit="MSm³/sd"
-                        min={0}
-                        max={1000000}
-                    />
-                </InputSwitcher>
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "gasCapacity", topside, setTopside)}
+                    value={Math.round(Number(topside?.gasCapacity) * 10) / 10}
+                    integer={false}
+                    unit="MSm³/sd"
+                    min={0}
+                    max={1000000}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${Math.round(Number(topside?.waterInjectionCapacity) * 1) / 1} MSm³/sd`}
+                <CaseEditInput
+                    object={topside}
+                    objectKey={topside.waterInjectionCapacity}
                     label="Water injection capacity"
-                >
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "waterInjectionCapacity", topside, setTopside)}
-                        defaultValue={Math.round(Number(topside?.waterInjectionCapacity) * 1) / 1}
-                        integer
-                        unit="MSm³/sd"
-                    />
-                </InputSwitcher>
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "waterInjectionCapacity", topside, setTopside)}
+                    value={Math.round(Number(topside?.waterInjectionCapacity) * 1) / 1}
+                    integer
+                    unit="MSm³/sd"
+                />
             </Grid>
             <Grid item xs={12}>
                 <Typography variant="h4">Platform wells</Typography>
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${topside?.producerCount}`}
+                <CaseEditInput
+                    object={topside}
+                    objectKey={topside.producerCount}
                     label="Producer count"
-                >
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "producerCount", topside, setTopside)}
-                        defaultValue={topside?.producerCount}
-                        integer
-                        min={0}
-                        max={1000000}
-                    />
-                </InputSwitcher>
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "producerCount", topside, setTopside)}
+                    value={topside?.producerCount}
+                    integer
+                    min={0}
+                    max={1000000}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${topside?.gasInjectorCount}`}
+                <CaseEditInput
+                    object={topside}
+                    objectKey={topside.gasInjectorCount}
                     label="Gas injector count"
-                >
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "gasInjectorCount", topside, setTopside)}
-                        defaultValue={topside?.gasInjectorCount}
-                        integer
-                        min={0}
-                        max={1000000}
-                    />
-                </InputSwitcher>
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "gasInjectorCount", topside, setTopside)}
+                    value={topside?.gasInjectorCount}
+                    integer
+                    min={0}
+                    max={1000000}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={`${topside?.waterInjectorCount}`}
+                <CaseEditInput
+                    object={topside}
+                    objectKey={topside.waterInjectorCount}
                     label="Water injector count"
-                >
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "waterInjectorCount", topside, setTopside)}
-                        defaultValue={topside?.waterInjectorCount}
-                        integer
-                        min={0}
-                        max={1000000}
-                    />
-                </InputSwitcher>
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "waterInjectorCount", topside, setTopside)}
+                    value={topside?.waterInjectorCount}
+                    integer
+                    min={0}
+                    max={1000000}
+                />
             </Grid>
             <Grid item xs={12}>
                 <Typography variant="h4">SURF</Typography>
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${surf?.templateCount}`} label="Templates">
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "templateCount", surf, setSurf)}
-                        defaultValue={surf?.templateCount}
-                        integer
-                        min={0}
-                        max={1000000}
-                    />
-                </InputSwitcher>
+                <CaseEditInput
+                    object={surf}
+                    objectKey={surf.templateCount}
+                    label="Templates"
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "templateCount", surf, setSurf)}
+                    value={surf?.templateCount}
+                    integer
+                    min={0}
+                    max={1000000}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${surf?.riserCount}`} label="Risers">
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "riserCount", surf, setSurf)}
-                        defaultValue={surf?.riserCount}
-                        integer
-                        min={0}
-                        max={1000000}
-                    />
-                </InputSwitcher>
+                <CaseEditInput
+                    object={surf}
+                    objectKey={surf.riserCount}
+                    label="Risers"
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "riserCount", surf, setSurf)}
+                    value={surf?.riserCount}
+                    integer
+                    min={0}
+                    max={1000000}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${Math.round(Number(surf?.infieldPipelineSystemLength) * 10) / 10} km`} label="Production lines length">
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "infieldPipelineSystemLength", surf, setSurf)}
-                        defaultValue={Math.round(Number(surf?.infieldPipelineSystemLength) * 10) / 10}
-                        integer={false}
-                        unit="km"
-                        min={0}
-                        max={1000000}
-                    />
-                </InputSwitcher>
+                <CaseEditInput
+                    object={surf}
+                    objectKey={surf.infieldPipelineSystemLength}
+                    label="Production lines length"
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "infieldPipelineSystemLength", surf, setSurf)}
+                    value={Math.round(Number(surf?.infieldPipelineSystemLength) * 10) / 10}
+                    integer={false}
+                    unit="km"
+                    min={0}
+                    max={1000000}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${Math.round(Number(surf?.umbilicalSystemLength) * 10) / 10} km`} label="Umbilical system length">
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "umbilicalSystemLength", surf, setSurf)}
-                        defaultValue={Math.round(Number(surf?.umbilicalSystemLength) * 10) / 10}
-                        integer={false}
-                        unit="km"
-                        min={0}
-                        max={1000000}
-                    />
-                </InputSwitcher>
+                <CaseEditInput
+                    object={surf}
+                    objectKey={surf.umbilicalSystemLength}
+                    label="Umbilical system length"
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "umbilicalSystemLength", surf, setSurf)}
+                    value={Math.round(Number(surf?.umbilicalSystemLength) * 10) / 10}
+                    integer={false}
+                    unit="km"
+                    min={0}
+                    max={1000000}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
                 <InputSwitcher
@@ -370,77 +352,83 @@ const CaseFacilitiesTab = ({
                 <Typography variant="h4">Subsea wells</Typography>
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${surf?.producerCount}`} label="Producer count">
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "producerCount", surf, setSurf)}
-                        defaultValue={surf?.producerCount}
-                        integer
-                    />
-                </InputSwitcher>
+                <CaseEditInput
+                    object={surf}
+                    objectKey={surf.producerCount}
+                    label="Producer count"
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "producerCount", surf, setSurf)}
+                    value={surf?.producerCount}
+                    integer
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${surf?.gasInjectorCount}`} label="Gas injector count">
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "gasInjectorCount", surf, setSurf)}
-                        defaultValue={surf?.gasInjectorCount}
-                        integer
-                        min={0}
-                        max={1000000}
-                    />
-                </InputSwitcher>
+                <CaseEditInput
+                    object={surf}
+                    objectKey={surf.gasInjectorCount}
+                    label="Gas injector count"
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "gasInjectorCount", surf, setSurf)}
+                    value={surf?.gasInjectorCount}
+                    integer
+                    min={0}
+                    max={1000000}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${surf?.waterInjectorCount}`} label="Water injector count">
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "waterInjectorCount", surf, setSurf)}
-                        defaultValue={surf?.waterInjectorCount}
-                        integer
-                        min={0}
-                        max={1000000}
-                    />
-                </InputSwitcher>
+                <CaseEditInput
+                    object={surf}
+                    objectKey={surf.waterInjectorCount}
+                    label="Water injector count"
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "waterInjectorCount", surf, setSurf)}
+                    value={surf?.waterInjectorCount}
+                    integer
+                    min={0}
+                    max={1000000}
+                />
             </Grid>
             <Grid item xs={12}>
                 <Typography variant="h4">Transport</Typography>
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${Math.round(Number(transport?.oilExportPipelineLength) * 10) / 10} km`} label="Oil export pipeline length">
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "oilExportPipelineLength", transport, setTransport)}
-                        defaultValue={Math.round(Number(transport?.oilExportPipelineLength) * 10) / 10}
-                        integer={false}
-                        unit="km"
-                        min={0}
-                        max={1000000}
-                    />
-                </InputSwitcher>
+                <CaseEditInput
+                    object={transport}
+                    objectKey={transport.oilExportPipelineLength}
+                    label="Oil export pipeline length"
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "oilExportPipelineLength", transport, setTransport)}
+                    value={Math.round(Number(transport?.oilExportPipelineLength) * 10) / 10}
+                    integer={false}
+                    unit="km"
+                    min={0}
+                    max={1000000}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${Math.round(Number(transport?.gasExportPipelineLength) * 10) / 10} km`} label="Gas export pipeline length">
-                    <CaseNumberInput
-                        onChange={(value: number) => setNonNegativeNumberState(value, "gasExportPipelineLength", transport, setTransport)}
-                        defaultValue={Math.round(Number(transport?.gasExportPipelineLength) * 10) / 10}
-                        integer={false}
-                        unit="km"
-                        min={0}
-                        max={1000000}
-                    />
-                </InputSwitcher>
+                <CaseEditInput
+                    object={transport}
+                    objectKey={transport.gasExportPipelineLength}
+                    label="Gas export pipeline length"
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "gasExportPipelineLength", transport, setTransport)}
+                    value={Math.round(Number(transport?.gasExportPipelineLength) * 10) / 10}
+                    integer={false}
+                    unit="km"
+                    min={0}
+                    max={1000000}
+                />
             </Grid>
             <Grid item xs={12}>
                 <Typography variant="h4">Substructure</Typography>
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher value={`${Math.round(Number(substructure?.dryWeight) * 1) / 1} tonnes`} label="Substructure dry weight">
-                    <CaseNumberInput
-                        onChange={handleSubstructureDryweightChange}
-                        defaultValue={Math.round(Number(substructure?.dryWeight) * 1) / 1}
-                        integer
-                        unit="tonnes"
-                        min={0}
-                        max={1000000}
-                    />
-                </InputSwitcher>
+                <CaseEditInput
+                    object={substructure}
+                    objectKey={substructure.dryWeight}
+                    label="Substructure dry weight"
+                    onSubmit={handleSubstructureDryweightChange}
+                    value={Math.round(Number(substructure?.dryWeight) * 1) / 1}
+                    integer
+                    unit="tonnes"
+                    min={0}
+                    max={1000000}
+                />
             </Grid>
         </Grid>
     )

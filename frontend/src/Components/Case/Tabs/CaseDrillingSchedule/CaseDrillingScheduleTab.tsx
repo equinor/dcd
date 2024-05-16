@@ -1,24 +1,20 @@
 import {
     Dispatch,
     SetStateAction,
-    ChangeEventHandler,
     useState,
     useEffect,
     useRef,
 } from "react"
 
-import {
-    NativeSelect, Typography,
-} from "@equinor/eds-core-react"
+import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import CaseNumberInput from "../../../Input/CaseNumberInput"
+import CaseEditInput from "../../../Input/CaseEditInput"
 import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleAgGridTable"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
 import InputSwitcher from "../../../Input/InputSwitcher"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
-import RangeButton from "../../../Buttons/RangeButton"
-import { handleStartYearStateChange, handleEndYearStateChange } from "../../../../Utils/common"
+import DateRangePicker from "../../../Input/DateRangePicker"
 
 interface Props {
     explorationWells: Components.Schemas.ExplorationWellDto[],
@@ -45,6 +41,15 @@ const CaseDrillingScheduleTab = ({
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+
+    const datePickerValue = (() => {
+        if (project?.currency === 1) {
+            return "MNOK"
+        } if (project?.currency === 2) {
+            return "MUSD"
+        }
+        return ""
+    })()
 
     const wellProjectWellsGridRef = useRef(null)
     const explorationWellsGridRef = useRef(null)
@@ -130,120 +135,62 @@ const CaseDrillingScheduleTab = ({
                 <Typography>Create wells in technical input in order to see them in the list below.</Typography>
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={explorationWellCount.toString()}
+                <CaseEditInput
                     label="Exploration wells"
-                >
-                    <CaseNumberInput
-                        onChange={() => { }}
-                        defaultValue={explorationWellCount}
-                        integer
-                        disabled
-                    />
-                </InputSwitcher>
+                    value={explorationWellCount}
+                    integer
+                    disabled
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={appraisalWellCount.toString()}
+                <CaseEditInput
                     label="Appraisal wells"
-                >
-                    <CaseNumberInput
-                        onChange={() => { }}
-                        defaultValue={appraisalWellCount}
-                        integer
-                        disabled
-                    />
-                </InputSwitcher>
+                    value={appraisalWellCount}
+                    integer
+                    disabled
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={oilProducerCount.toString()}
+                <CaseEditInput
                     label="Oil producer wells"
-                >
-                    <CaseNumberInput
-                        onChange={() => { }}
-                        defaultValue={oilProducerCount}
-                        integer
-                        disabled
-                    />
-                </InputSwitcher>
+                    value={oilProducerCount}
+                    integer
+                    disabled
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={gasProducerCount.toString()}
+                <CaseEditInput
                     label="Gas producer wells"
-                >
-                    <CaseNumberInput
-                        onChange={() => { }}
-                        defaultValue={gasProducerCount}
-                        integer
-                        disabled
-                    />
-                </InputSwitcher>
+                    value={gasProducerCount}
+                    integer
+                    disabled
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={waterInjectorCount.toString()}
+                <CaseEditInput
                     label="Water injector wells"
-                >
-                    <CaseNumberInput
-                        onChange={() => { }}
-                        defaultValue={waterInjectorCount}
-                        integer
-                        disabled
-                    />
-                </InputSwitcher>
+                    value={waterInjectorCount}
+                    integer
+                    disabled
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={gasInjectorCount.toString()}
+                <CaseEditInput
                     label="Gas injector wells"
-                >
-                    <CaseNumberInput
-                        onChange={() => { }}
-                        defaultValue={gasInjectorCount}
-                        integer
-                        disabled
-                    />
-                </InputSwitcher>
+                    value={gasInjectorCount}
+                    integer
+                    disabled
+                />
             </Grid>
-            <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="baseline" marginTop={6}>
-                <Grid item>
-                    <NativeSelect
-                        id="currency"
-                        label="Currency"
-                        onChange={() => { }}
-                        value={project?.currency}
-                        disabled
-                    >
-                        <option key="1" value={1}>MNOK</option>
-                        <option key="2" value={2}>MUSD</option>
-                    </NativeSelect>
-                </Grid>
-                <Grid item>
-                    <Typography variant="caption">Start year</Typography>
-                    <CaseNumberInput
-                        onChange={(value) => handleStartYearStateChange(value, setStartYear)}
-                        defaultValue={startYear}
-                        integer
-                        min={2010}
-                        max={2100}
-                    />
-                </Grid>
-                <Grid item>
-                    <Typography variant="caption">End year</Typography>
-                    <CaseNumberInput
-                        onChange={(value) => handleEndYearStateChange(value, setEndYear)}
-                        defaultValue={endYear}
-                        integer
-                        min={2010}
-                        max={2100}
-                    />
-                </Grid>
-                <Grid item>
-                    <RangeButton onClick={handleTableYearsClick} />
-                </Grid>
-            </Grid>
+            <DateRangePicker
+                setStartYear={setStartYear}
+                setEndYear={setEndYear}
+                startYear={startYear}
+                endYear={endYear}
+                labelText="Currency"
+                labelValue={datePickerValue}
+                handleTableYearsClick={handleTableYearsClick}
+            />
             <Grid item xs={12}>
                 <CaseDrillingScheduleTabTable
                     assetWells={explorationWells}

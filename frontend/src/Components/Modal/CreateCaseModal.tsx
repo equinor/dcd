@@ -14,12 +14,12 @@ import {
 } from "react"
 import { MarkdownEditor } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
-import Modal from "./Modal/Modal"
-import { defaultDate, isDefaultDate, toMonthDate } from "../Utils/common"
-import { GetCaseService } from "../Services/CaseService"
-import { useProjectContext } from "../Context/ProjectContext"
-import { useModalContext } from "../Context/ModalContext"
-import { useAppContext } from "../Context/AppContext"
+import Modal from "./Modal"
+import { defaultDate, isDefaultDate, toMonthDate } from "../../Utils/common"
+import { GetCaseService } from "../../Services/CaseService"
+import { useProjectContext } from "../../Context/ProjectContext"
+import { useModalContext } from "../../Context/ModalContext"
+import { useAppContext } from "../../Context/AppContext"
 
 const CreateCaseModal = () => {
     const { isLoading, setIsLoading } = useAppContext()
@@ -158,7 +158,6 @@ const CreateCaseModal = () => {
 
     return (
         <Modal isOpen={caseModalIsOpen} title={caseModalEditMode ? "Edit case" : "Add new case"}>
-            {/* ModalContent */}
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>
                     <InputWrapper labelProps={{ label: "Name" }}>

@@ -78,8 +78,6 @@ const OpexCosts: React.FC<OpexCostsProps> = ({ tableYears, opexGridRef, alignedG
             && opexGridRef.current.api
             && opexGridRef.current.api.refreshCells) {
             opexGridRef.current.api.refreshCells()
-
-            console.log("Refreshing opex grid")
         }
     }, [
         offshoreFacilitiesOperationsCostProfile,

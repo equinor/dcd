@@ -13,7 +13,7 @@ import { lock, lock_open } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
 import { isInteger, tableCellisEditable } from "../../../Utils/common"
-import { OverrideTimeSeriesPrompt } from "../../OverrideTimeSeriesPrompt"
+import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../../Utils/constants"
 import { useAppContext } from "../../../Context/AppContext"
 
@@ -236,7 +236,7 @@ const CaseTabTableWithGrouping = ({
         resizable: true,
         editable: true,
         onCellValueChanged: handleCellValueChange,
-        suppressMenu: true,
+        suppressMenuButton: true,
     }), [])
 
     const gridRefArrayToAlignedGrid = () => {

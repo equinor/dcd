@@ -1,8 +1,8 @@
 import {
-    ChangeEventHandler, Dispatch, SetStateAction, useEffect, useState,
+    Dispatch, SetStateAction, useEffect, useState,
 } from "react"
 import Grid from "@mui/material/Grid"
-import CaseNumberInput from "../../Input/CaseNumberInput"
+import CaseEditInput from "../../Input/CaseEditInput"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
 import InputSwitcher from "../../Input/InputSwitcher"
@@ -279,27 +279,29 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     return (
         <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
-                <InputSwitcher value={`${projectCase?.npv}`} label="NPV before tax">
-                    <CaseNumberInput
-                        onChange={(value) => setNonNegativeNumberState(value, "npv", projectCase, setProjectCaseEdited)}
-                        defaultValue={projectCase?.npv}
-                        integer={false}
-                        allowNegative
-                        min={0}
-                        max={1000000}
-                    />
-                </InputSwitcher>
+                <CaseEditInput
+                    object={projectCase}
+                    objectKey={projectCase?.npv}
+                    label="NPV before tax"
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "npv", projectCase, setProjectCaseEdited)}
+                    value={projectCase?.npv}
+                    integer={false}
+                    allowNegative
+                    min={0}
+                    max={1000000}
+                />
             </Grid>
             <Grid item xs={12} md={6}>
-                <InputSwitcher value={`${projectCase?.breakEven}`} label="B/E before tax">
-                    <CaseNumberInput
-                        onChange={(value) => setNonNegativeNumberState(value, "breakEven", projectCase, setProjectCaseEdited)}
-                        defaultValue={projectCase?.breakEven}
-                        integer={false}
-                        min={0}
-                        max={1000000}
-                    />
-                </InputSwitcher>
+                <CaseEditInput
+                    object={projectCase}
+                    objectKey={projectCase?.breakEven}
+                    label="B/E before tax"
+                    onSubmit={(value: number) => setNonNegativeNumberState(value, "breakEven", projectCase, setProjectCaseEdited)}
+                    value={projectCase?.breakEven}
+                    integer={false}
+                    min={0}
+                    max={1000000}
+                />
             </Grid>
             <Grid item xs={12}>
                 <CaseTabTableWithGrouping

@@ -209,7 +209,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
         filter: true,
         resizable: true,
         editable: false,
-        suppressMenu: true,
+        suppressMenuButton: true,
     }), [])
 
     return (
