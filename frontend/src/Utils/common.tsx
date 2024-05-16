@@ -302,9 +302,8 @@ export const formatTime = (timestamp: number): string => {
 /**
  * Sets timeseries profile name and unit in same cell.
  * @param params Column params.
- * @param rowData IMPORTANT! Unit have to be the same for all profiles for unit to be correct by using rowData in this instance. Total doesn't have its own unit value.
  */
-export const profileAndUnitInSameCell = (params: any, rowData: any) => (
+export const profileAndUnitInSameCell = (params: any) => (
     <div style={{ lineHeight: "100%", marginTop: "7px" }}>
         {params.value}
         <br />
@@ -312,7 +311,7 @@ export const profileAndUnitInSameCell = (params: any, rowData: any) => (
             fontWeight: "normal", fontSize: "10px", marginTop: "-4px", color: "#6F6F6F",
         }}
         >
-            {params.data?.unit ? params.data.unit : rowData[0].unit}
+            {params.data?.unit ? params.data.unit : params.node.aggData?.unit}
         </span>
     </div>
 )

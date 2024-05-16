@@ -124,7 +124,7 @@ const CaseTabTable = ({
                 field: "profileName",
                 headerName: tableName,
                 cellRenderer: (params: any) => (
-                    profileAndUnitInSameCell(params, rowData)
+                    profileAndUnitInSameCell(params)
                 ),
                 width: 250,
                 editable: false,
