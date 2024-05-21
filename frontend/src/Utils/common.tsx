@@ -292,7 +292,7 @@ export const formatTime = (timestamp: number): string => {
     const hours = date.getHours()
     const minutes = date.getMinutes()
 
-    // Pad single digits with a leading zero
+    // Pads single digits with a leading zero
     const formattedHours = hours.toString().padStart(2, "0")
     const formattedMinutes = minutes.toString().padStart(2, "0")
 
