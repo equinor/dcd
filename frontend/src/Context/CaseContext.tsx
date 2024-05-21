@@ -120,7 +120,12 @@ const CaseContext = createContext<CaseContextType | undefined>(undefined)
 const getFilteredEdits = () => {
     const savedEdits = JSON.parse(localStorage.getItem("caseEdits") || "[]")
     const oneHourAgo = new Date().getTime() - (60 * 60 * 1000)
-    return savedEdits.filter((edit: EditInstance) => edit.timeStamp > oneHourAgo)
+
+    // localStorage cleanup to remove edits older than 1 hour
+    const recentEdits = savedEdits.filter((edit: EditInstance) => edit.timeStamp > oneHourAgo)
+    localStorage.setItem("caseEdits", JSON.stringify(recentEdits))
+
+    return recentEdits
 }
 
 const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
