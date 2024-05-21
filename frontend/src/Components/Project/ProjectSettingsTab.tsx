@@ -3,18 +3,12 @@ import { NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useProjectContext } from "../../Context/ProjectContext"
 import InputSwitcher from "../Input/InputSwitcher"
+import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
 
 const ProjectSettingsTab = () => {
     const { project, projectEdited, setProjectEdited } = useProjectContext()
     const [classification, setClassification] = useState<number | undefined>(undefined)
     const [dummyRole, setDummyRole] = useState(0) // TODO: Get role from user
-
-    const classificationOptions: { [key: number]: string } = {
-        0: "Open",
-        1: "Internal",
-        2: "Restricted",
-        3: "Confidential",
-    }
 
     useEffect(() => {
         if (project) {
@@ -91,7 +85,7 @@ const ProjectSettingsTab = () => {
             <Grid item>
                 {dummyRole === 0 && (
                     <InputSwitcher
-                        value={classification !== undefined ? classificationOptions[classification] : "Not set"}
+                        value={classification !== undefined ? PROJECT_CLASSIFICATION[classification].label : "Not set"}
                         label="Classification"
                     >
                         <NativeSelect
@@ -100,8 +94,8 @@ const ProjectSettingsTab = () => {
                             onChange={(e) => handleClassificationChange(e)}
                             value={classification || undefined}
                         >
-                            {Object.entries(classificationOptions).map(([key, value]) => (
-                                <option key={key} value={key}>{value}</option>
+                            {Object.entries(PROJECT_CLASSIFICATION).map(([key, value]) => (
+                                <option key={key} value={key}>{value.label}</option>
                             ))}
                         </NativeSelect>
                     </InputSwitcher>

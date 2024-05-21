@@ -20,6 +20,7 @@ import { EMPTY_GUID } from "../../../Utils/constants"
 import { useAppContext } from "../../../Context/AppContext"
 import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
+import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
 
 interface Props {
     timeSeriesData: any[]
@@ -122,22 +123,13 @@ const CaseTabTable = ({
             {
                 field: "profileName",
                 headerName: tableName,
+                cellRenderer: (params: any) => (
+                    profileAndUnitInSameCell(params, rowData)
+                ),
                 width: 250,
                 editable: false,
                 pinned: "left",
                 aggFunc: () => totalRowName ?? "Total",
-            },
-            {
-                field: "unit",
-                width: 100,
-                editable: false,
-                pinned: "left",
-                aggFunc: (params: any) => {
-                    if (params?.values?.length > 0) {
-                        return params.values[0]
-                    }
-                    return ""
-                },
             },
             {
                 field: "total",
@@ -185,16 +177,8 @@ const CaseTabTable = ({
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
-    const onGridReady = (params: any) => {
-        setGridApi(params.api)
-    }
-
     const updateRowData = (newData: any) => {
-        if (gridApi) {
-            (gridApi as any).setRowData(newData)
-        } else {
-            setRowData(newData)
-        }
+        setRowData(newData)
     }
 
     const handleCellValueChange = (p: any) => {
@@ -295,7 +279,6 @@ const CaseTabTable = ({
                         getRowStyle={getCaseRowStyle}
                         suppressLastEmptyLineOnPaste
                         singleClickEdit={editMode}
-                        onGridReady={onGridReady}
                         stopEditingWhenCellsLoseFocus
                     />
                 </div>

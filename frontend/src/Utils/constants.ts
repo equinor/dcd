@@ -1,3 +1,5 @@
+import { visibility, lock, type IconData } from "@equinor/eds-icons"
+
 export const EMPTY_GUID = "00000000-0000-0000-0000-000000000000"
 
 export const TABLE_VALIDATION_RULES: { [key: string]: { min: number, max: number } } = {
@@ -13,4 +15,40 @@ export const TABLE_VALIDATION_RULES: { [key: string]: { min: number, max: number
     // CO2 emissions
     "Annual CO2 emissions": { min: 0, max: 1000000 },
     "Year-by-year CO2 intensity": { min: 0, max: 1000000 },
+}
+
+interface ProjectClassification {
+    label: string,
+    description: string,
+    icon: IconData,
+    color: "default" | "active" | "error" | undefined
+}
+
+export const PROJECT_CLASSIFICATION: { [key: number]: ProjectClassification } = {
+    0: {
+        label: "Open",
+        description: "This project is open. There are no consequences if information is made available for unauthorized persons.",
+        icon: visibility,
+        color: "active",
+    },
+    1: {
+        label: "Internal",
+        description: "This project is classified as internal and its information is restricted to Equinor personnel. External sharing requires the project leader's approval.",
+        icon: visibility,
+        color: "active",
+    },
+    2: {
+        label: "Restricted",
+        // eslint-disable-next-line max-len
+        description: "This project is restricted. Information here is not allowed to be shared with unauthrized persons and screenshots should be stored safly and handled according to this classification.",
+        icon: lock,
+        color: "error",
+    },
+    3: {
+        label: "Confidential",
+        // eslint-disable-next-line max-len
+        description: "This project is confidential. Information here is not allowed to be shared with unauthrized persons and screenshots should be stored safly and handled according to this classification.",
+        icon: lock,
+        color: "error",
+    },
 }
