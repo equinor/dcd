@@ -16,6 +16,7 @@ import { isInteger, tableCellisEditable } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../../Utils/constants"
 import { useAppContext } from "../../../Context/AppContext"
+import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
 
 interface Props {
     allTimeSeriesData: any[]
@@ -143,21 +144,11 @@ const CaseTabTableWithGrouping = ({
                 width: 350,
                 editable: false,
                 cellStyle: { fontWeight: "normal" },
+                cellRenderer: (params: any) => (
+                    profileAndUnitInSameCell(params, rowData)
+                ),
                 // pinned: "left",
                 // aggFunc: () => totalRowName,
-            },
-            {
-                field: "unit",
-                width: 100,
-                editable: false,
-                // cellRenderer: (params: { node: { group: any }; value: any }) => {
-                //     // Display "Sum" for group headers or footers
-                //     if (params.node.group) {
-                //         return "Sum";
-                //     }
-                //     // Otherwise, display the actual unit value
-                //     return params.value;
-                // }
             },
             {
                 field: "total",
