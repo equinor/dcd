@@ -185,16 +185,8 @@ const CaseTabTable = ({
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
-    const onGridReady = (params: any) => {
-        setGridApi(params.api)
-    }
-
     const updateRowData = (newData: any) => {
-        if (gridApi) {
-            (gridApi as any).setRowData(newData)
-        } else {
-            setRowData(newData)
-        }
+        setRowData(newData)
     }
 
     const handleCellValueChange = (p: any) => {
@@ -295,7 +287,6 @@ const CaseTabTable = ({
                         getRowStyle={getCaseRowStyle}
                         suppressLastEmptyLineOnPaste
                         singleClickEdit={editMode}
-                        onGridReady={onGridReady}
                         stopEditingWhenCellsLoseFocus
                     />
                 </div>
