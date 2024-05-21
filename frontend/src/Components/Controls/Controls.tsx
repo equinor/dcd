@@ -1,6 +1,7 @@
 import { useState, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import styled from "styled-components"
 import {
     Icon,
     Typography,
@@ -29,6 +30,17 @@ import useDataEdits from "../../Hooks/useDataEdits"
 import HistoryButton from "../Buttons/HistoryButton"
 import UndoControls from "./UndoControls"
 import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
+
+const StyledChip = styled(Chip)`
+    cursor: help;
+`
+
+const SmallTooltip = styled(Tooltip)`
+    white-space: pre-wrap !important;
+    max-width: 300px !important;
+    font-size: 1rem !important;
+    text-align: center !important;
+`
 
 const Controls = () => {
     const navigate = useNavigate()
@@ -148,12 +160,15 @@ const Controls = () => {
                                 {projectCase ? projectCase.name : project?.name}
                             </Typography>
                             {project && !projectCase && (
-                                <Tooltip placement="bottom-start" title={PROJECT_CLASSIFICATION[project?.classification].description}>
-                                    <Chip variant={PROJECT_CLASSIFICATION[project?.classification].color}>
+                                <SmallTooltip
+                                    placement="bottom-start"
+                                    title={PROJECT_CLASSIFICATION[project?.classification].description}
+                                >
+                                    <StyledChip variant={PROJECT_CLASSIFICATION[project?.classification].color}>
                                         <Icon data={PROJECT_CLASSIFICATION[project?.classification].icon} />
                                         {PROJECT_CLASSIFICATION[project?.classification].label}
-                                    </Chip>
-                                </Tooltip>
+                                    </StyledChip>
+                                </SmallTooltip>
                             )}
                         </>
                     )}
