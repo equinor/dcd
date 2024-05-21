@@ -14,13 +14,13 @@ import {
     numberValueParser,
     getCaseRowStyle,
     validateInput,
-    profileAndUnitInSameCell,
 } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../../Utils/constants"
 import { useAppContext } from "../../../Context/AppContext"
 import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
+import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
 
 interface Props {
     timeSeriesData: any[]
