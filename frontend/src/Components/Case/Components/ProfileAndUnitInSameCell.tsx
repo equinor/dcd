@@ -1,3 +1,17 @@
+import styled from "styled-components"
+
+const CellWrapper = styled.div`
+    line-height: 100%;
+    margin-top: 7px;
+`
+
+const UnitWrapper = styled.span`
+    font-weight: normal;
+    font-size: 10px;
+    margin-top: -4px;
+    color: #6F6F6F;
+`
+
 /**
  * Sets timeseries profile name and unit in same cell.
  */
@@ -7,16 +21,13 @@ const profileAndUnitInSameCell = (params: any, rowData: any) => {
     const totalUnit = checkAllUnitsAreSame && !params.data?.group ? rowUnits[0] : ""
 
     return (
-        <div style={{ lineHeight: "100%", marginTop: "7px" }}>
+        <CellWrapper>
             {params.value}
             <br />
-            <span style={{
-                fontWeight: "normal", fontSize: "10px", marginTop: "-4px", color: "#6F6F6F",
-            }}
-            >
+            <UnitWrapper>
                 {params.data?.unit ? params.data.unit : totalUnit}
-            </span>
-        </div>
+            </UnitWrapper>
+        </CellWrapper>
     )
 }
 
