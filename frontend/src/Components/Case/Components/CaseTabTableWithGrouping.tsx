@@ -12,7 +12,7 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { lock, lock_open } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
-import { isInteger, tableCellisEditable } from "../../../Utils/common"
+import { isInteger, profileAndUnitInSameCell, tableCellisEditable } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../../Utils/constants"
 import { useAppContext } from "../../../Context/AppContext"
@@ -143,21 +143,11 @@ const CaseTabTableWithGrouping = ({
                 width: 350,
                 editable: false,
                 cellStyle: { fontWeight: "normal" },
+                cellRenderer: (params: any) => (
+                    profileAndUnitInSameCell(params, rowData)
+                ),
                 // pinned: "left",
                 // aggFunc: () => totalRowName,
-            },
-            {
-                field: "unit",
-                width: 100,
-                editable: false,
-                // cellRenderer: (params: { node: { group: any }; value: any }) => {
-                //     // Display "Sum" for group headers or footers
-                //     if (params.node.group) {
-                //         return "Sum";
-                //     }
-                //     // Otherwise, display the actual unit value
-                //     return params.value;
-                // }
             },
             {
                 field: "total",
