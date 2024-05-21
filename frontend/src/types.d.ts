@@ -375,6 +375,18 @@ declare namespace Components {
             drillingDays?: number; // double
         }
         export type Currency = 1 | 2; // int32
+        export interface DeferredGasProductionDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+        }
+        export interface DeferredOilProductionDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+        }
         export interface DeleteWellDto {
             id: string; // uuid
         }
@@ -424,6 +436,8 @@ declare namespace Components {
             importedElectricity: ImportedElectricityDto;
             importedElectricityOverride: ImportedElectricityOverrideDto;
             co2Intensity: Co2IntensityDto;
+            deferredOilProduction: DeferredOilProductionDto;
+            deferredGasProduction: DeferredGasProductionDto;
         }
         export interface DrillingScheduleDto {
             id: string; // uuid
@@ -1168,6 +1182,14 @@ declare namespace Components {
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
         }
+        export interface UpdateDeferredGasProductionDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+        }
+        export interface UpdateDeferredOilProductionDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+        }
         export interface UpdateDevelopmentOperationalWellCostsDto {
             rigUpgrading?: number; // double
             rigMobDemob?: number; // double
@@ -1175,8 +1197,6 @@ declare namespace Components {
             pluggingAndAbandonment?: number; // double
         }
         export interface UpdateDrainageStrategyDto {
-            name?: string | null;
-            description?: string | null;
             nglYield?: number; // double
             producerCount?: number; // int32
             gasInjectorCount?: number; // int32
@@ -1200,6 +1220,8 @@ declare namespace Components {
             fuelFlaringAndLossesOverride?: UpdateFuelFlaringAndLossesOverrideDto;
             netSalesGasOverride?: UpdateNetSalesGasOverrideDto;
             co2EmissionsOverride?: UpdateCo2EmissionsOverrideDto;
+            deferredOilProductionDto?: UpdateDeferredOilProductionDto;
+            deferredGasProductionDto?: UpdateDeferredGasProductionDto;
         }
         export interface UpdateDrillingScheduleDto {
             startYear?: number; // int32

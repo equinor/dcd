@@ -21,6 +21,8 @@ public class UpdateDrainageStrategyWithProfilesDto
     public UpdateFuelFlaringAndLossesOverrideDto? FuelFlaringAndLossesOverride { get; set; }
     public UpdateNetSalesGasOverrideDto? NetSalesGasOverride { get; set; }
     public UpdateCo2EmissionsOverrideDto? Co2EmissionsOverride { get; set; }
+    public UpdateDeferredOilProductionDto? DeferredOilProductionDto { get; set; }
+    public UpdateDeferredGasProductionDto? DeferredGasProductionDto { get; set; }
 }
 
 public class UpdateProductionProfileOilDto : UpdateTimeSeriesVolumeDto
@@ -58,3 +60,10 @@ public class UpdateImportedElectricityOverrideDto : UpdateTimeSeriesEnergyDto, I
     public bool Override { get; set; }
 }
 
+public class UpdateDeferredOilProductionDto : UpdateTimeSeriesVolumeDto
+{
+}
+
+public class UpdateDeferredGasProductionDto : UpdateTimeSeriesVolumeDto
+{
+}

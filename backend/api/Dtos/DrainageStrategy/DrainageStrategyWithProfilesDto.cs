@@ -58,6 +58,11 @@ public class DrainageStrategyWithProfilesDto
 
     [Required]
     public Co2IntensityDto? Co2Intensity { get; set; }
+    [Required]
+    public DeferredOilProductionDto DeferredOilProduction { get; set; } = new DeferredOilProductionDto();
+    [Required]
+    public DeferredGasProductionDto DeferredGasProduction { get; set; } = new DeferredGasProductionDto();
+   
 }
 
 public class ProductionProfileOilDto : TimeSeriesVolumeDto
@@ -119,5 +124,13 @@ public class ProductionProfileNGLDto : TimeSeriesVolumeDto
 }
 
 public class Co2IntensityDto : TimeSeriesMassDto
+{
+}
+
+public class DeferredOilProductionDto : TimeSeriesVolumeDto
+{
+}
+
+public class DeferredGasProductionDto : TimeSeriesVolumeDto
 {
 }
