@@ -301,7 +301,6 @@ export const formatTime = (timestamp: number): string => {
 
 /**
  * Sets timeseries profile name and unit in same cell.
- * @param params Column params.
  */
 export const profileAndUnitInSameCell = (params: any, rowData: any) => {
     const rowUnits = rowData.map((data: any) => data.unit)
