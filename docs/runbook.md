@@ -2,7 +2,7 @@
 
 ### Prerequisites
 
-- [.NET 6.0+](https://dotnet.microsoft.com/download/dotnet/6.0)
+- [.NET 8.0+](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 - [Node 16+ with npm 8+](https://github.com/nodesource/distributions/blob/master/README.md)
 - [Docker](https://docs.docker.com/engine/install/)
 
