@@ -62,7 +62,6 @@ public class DrainageStrategyWithProfilesDto
     public DeferredOilProductionDto DeferredOilProduction { get; set; } = new DeferredOilProductionDto();
     [Required]
     public DeferredGasProductionDto DeferredGasProduction { get; set; } = new DeferredGasProductionDto();
-   
 }
 
 public class ProductionProfileOilDto : TimeSeriesVolumeDto
