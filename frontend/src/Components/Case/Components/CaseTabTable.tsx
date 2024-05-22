@@ -105,6 +105,15 @@ const CaseTabTable = ({
 
             tableRows.push(rowObject)
         })
+
+        // move to seperate generic component
+        if (!editMode) {
+            const hideProfilesWithoutValues = ["Deferred oil production", "Deferred gas production"]
+            const matchProfileName = (profile: any) => hideProfilesWithoutValues.some((name) => name !== profile.profileName)
+            const hideNullValueProfile = (profile: any) => hideProfilesWithoutValues.some((name) => name === profile.profileName && profile.profile === null)
+            return tableRows.filter((profile) => matchProfileName(profile) && !hideNullValueProfile(profile))
+        }
+
         return tableRows
     }
 
