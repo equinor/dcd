@@ -2,6 +2,7 @@ using api.Context;
 using api.Dtos;
 using api.Exceptions;
 using api.Models;
+using api.Repositories;
 
 using AutoMapper;
 
@@ -15,16 +16,26 @@ public class SurfService : ISurfService
     private readonly IProjectService _projectService;
     private readonly ILogger<SurfService> _logger;
     private readonly IMapper _mapper;
+    private readonly ISurfRepository _repository;
+    private readonly ICaseRepository _caseRepository;
+    private readonly IMapperService _mapperService;
     public SurfService(
         DcdDbContext context,
         IProjectService projectService,
         ILoggerFactory loggerFactory,
-        IMapper mapper)
+        IMapper mapper,
+        ISurfRepository repository,
+        ICaseRepository caseRepository,
+        IMapperService mapperService
+        )
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<SurfService>();
         _mapper = mapper;
+        _repository = repository;
+        _caseRepository = caseRepository;
+        _mapperService = mapperService;
     }
 
     public async Task<SurfDto> CopySurf(Guid surfId, Guid sourceCaseId)
@@ -57,7 +68,7 @@ public class SurfService : ISurfService
         return newSurfDto;
     }
 
-    public async Task<ProjectDto> UpdateSurf<TDto>(TDto updatedSurfDto, Guid surfId)
+    public async Task<ProjectDto> UpdateSurfAndCostProfiles<TDto>(TDto updatedSurfDto, Guid surfId)
         where TDto : BaseUpdateSurfDto
     {
         var existing = await GetSurf(surfId);
@@ -108,5 +119,64 @@ public class SurfService : ISurfService
         }
         case_.SurfLink = surf.Id;
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<SurfDto> UpdateSurf<TDto>(
+        Guid caseId,
+        Guid surfId,
+        TDto updatedSurfDto
+    )
+        where TDto : BaseUpdateSurfDto
+    {
+        var existingSurf = await _repository.GetSurf(surfId)
+            ?? throw new ArgumentException(string.Format($"Surf with id {surfId} not found."));
+
+        _mapperService.MapToEntity(updatedSurfDto, existingSurf, surfId);
+        existingSurf.LastChangedDate = DateTimeOffset.UtcNow;
+
+        Surf updatedSurf;
+        try
+        {
+            updatedSurf = await _repository.UpdateSurf(existingSurf);
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to update surf with id {surfId} for case id {caseId}.", surfId, caseId);
+            throw;
+        }
+
+        await _caseRepository.UpdateModifyTime(caseId);
+
+        var dto = _mapperService.MapToDto<Surf, SurfDto>(updatedSurf, surfId);
+        return dto;
+    }
+
+    public async Task<SurfCostProfileOverrideDto> UpdateSurfCostProfileOverride(
+        Guid caseId,
+        Guid surfId,
+        Guid costProfileId,
+        UpdateSurfCostProfileOverrideDto updatedSurfCostProfileOverrideDto
+    )
+    {
+        var existingSurfCostProfileOverride = await _repository.GetSurfCostProfileOverride(costProfileId)
+            ?? throw new NotFoundInDBException($"Cost profile override with id {costProfileId} not found.");
+
+        _mapperService.MapToEntity(updatedSurfCostProfileOverrideDto, existingSurfCostProfileOverride, costProfileId);
+
+        SurfCostProfileOverride updatedSurfCostProfileOverride;
+        try
+        {
+            updatedSurfCostProfileOverride = await _repository.UpdateSurfCostProfileOverride(existingSurfCostProfileOverride);
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to update surf cost profile override with id {costProfileId} for surf id {surfId} for case id {caseId}.", costProfileId, surfId, caseId);
+            throw;
+        }
+
+        await _caseRepository.UpdateModifyTime(caseId);
+
+        var dto = _mapperService.MapToDto<SurfCostProfileOverride, SurfCostProfileOverrideDto>(updatedSurfCostProfileOverride, costProfileId);
+        return dto;
     }
 }

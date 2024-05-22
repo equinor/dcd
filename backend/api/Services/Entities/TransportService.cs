@@ -2,6 +2,7 @@ using api.Context;
 using api.Dtos;
 using api.Exceptions;
 using api.Models;
+using api.Repositories;
 
 using AutoMapper;
 
@@ -15,18 +16,27 @@ public class TransportService : ITransportService
     private readonly IProjectService _projectService;
     private readonly ILogger<TransportService> _logger;
     private readonly IMapper _mapper;
+    private readonly ICaseRepository _caseRepository;
+    private readonly ITransportRepository _repository;
+    private readonly IMapperService _mapperService;
 
     public TransportService(
         DcdDbContext context,
         IProjectService projectService,
         ILoggerFactory loggerFactory,
-        IMapper mapper
+        IMapper mapper,
+        ICaseRepository caseRepository,
+        ITransportRepository transportRepository,
+        IMapperService mapperService
         )
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<TransportService>();
         _mapper = mapper;
+        _caseRepository = caseRepository;
+        _repository = transportRepository;
+        _mapperService = mapperService;
     }
 
     public async Task<Transport> CreateTransport(Guid projectId, Guid sourceCaseId, CreateTransportDto transportDto)
@@ -99,7 +109,7 @@ public class TransportService : ITransportService
         return transport;
     }
 
-    public async Task<ProjectDto> UpdateTransport<TDto>(TDto updatedTransportDto, Guid transportId)
+    public async Task<ProjectDto> UpdateTransportAndCostProfiles<TDto>(TDto updatedTransportDto, Guid transportId)
         where TDto : BaseUpdateTransportDto
     {
         var existing = await GetTransport(transportId);
@@ -110,5 +120,60 @@ public class TransportService : ITransportService
         _context.Transports!.Update(existing);
         await _context.SaveChangesAsync();
         return await _projectService.GetProjectDto(existing.ProjectId);
+    }
+
+    public async Task<TransportDto> UpdateTransport<TDto>(Guid caseId, Guid transportId, TDto updatedTransportDto)
+        where TDto : BaseUpdateTransportDto
+    {
+        var existing = await _repository.GetTransport(transportId)
+            ?? throw new NotFoundInDBException($"Transport with id {transportId} not found.");
+
+        _mapperService.MapToEntity(updatedTransportDto, existing, transportId);
+        existing.LastChangedDate = DateTimeOffset.UtcNow;
+
+        Transport updatedTransport;
+        try
+        {
+            updatedTransport = await _repository.UpdateTransport(existing);
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            _logger.LogError(ex, "Failed to update transport with id {transportId} for case id {caseId}.", transportId, caseId);
+            throw;
+        }
+
+        await _caseRepository.UpdateModifyTime(caseId);
+
+        var dto = _mapperService.MapToDto<Transport, TransportDto>(updatedTransport, transportId);
+        return dto;
+    }
+
+    public async Task<TransportCostProfileOverrideDto> UpdateTransportCostProfileOverride(
+        Guid caseId,
+        Guid transportId,
+        Guid costProfileId,
+        UpdateTransportCostProfileOverrideDto dto)
+    {
+        var existingCostProfile = await _repository.GetTransportCostProfileOverride(costProfileId)
+            ?? throw new NotFoundInDBException($"Transport cost profile override with id {costProfileId} not found.");
+
+        _mapperService.MapToEntity(dto, existingCostProfile, costProfileId);
+
+        TransportCostProfileOverride updatedCostProfile;
+        try
+        {
+            updatedCostProfile = await _repository.UpdateTransportCostProfileOverride(existingCostProfile);
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            _logger.LogError(ex, "Failed to update transport cost profile override with id {costProfileId} for transport id {transportId}.", costProfileId, transportId);
+            throw;
+        }
+
+        await _caseRepository.UpdateModifyTime(caseId);
+
+        var updatedDto = _mapperService.MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(updatedCostProfile, costProfileId);
+
+        return updatedDto;
     }
 }

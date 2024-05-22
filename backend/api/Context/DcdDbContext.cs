@@ -22,6 +22,7 @@ public class DcdDbContext : DbContext
 
     public DbSet<Surf> Surfs { get; set; } = null!;
     public DbSet<SurfCostProfile> SurfCostProfile { get; set; } = null!;
+    public DbSet<SurfCostProfileOverride> SurfCostProfileOverride { get; set; } = null!;
     public DbSet<SurfCessationCostProfile> SurfCessationCostProfiles { get; set; } = null!;
 
     public DbSet<Substructure> Substructures { get; set; } = null!;
@@ -38,6 +39,7 @@ public class DcdDbContext : DbContext
 
     public DbSet<Transport> Transports { get; set; } = null!;
     public DbSet<TransportCostProfile> TransportCostProfile { get; set; } = null!;
+    public DbSet<TransportCostProfileOverride> TransportCostProfileOverride { get; set; } = null!;
     public DbSet<TransportCessationCostProfile> TransportCessationCostProfiles { get; set; } = null!;
 
     public DbSet<DrainageStrategy> DrainageStrategies { get; set; } = null!;
