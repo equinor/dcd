@@ -21,6 +21,7 @@ import { useAppContext } from "../../../Context/AppContext"
 import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
+import hideProfilesWithoutValues from "./HideProfilesWithoutValues"
 
 interface Props {
     timeSeriesData: any[]
@@ -31,6 +32,7 @@ interface Props {
     gridRef?: any
     includeFooter: boolean
     totalRowName?: string
+    profilesToHideWithoutValues?: string[]
 }
 
 const CaseTabTable = ({
@@ -42,6 +44,7 @@ const CaseTabTable = ({
     gridRef,
     includeFooter,
     totalRowName,
+    profilesToHideWithoutValues,
 }: Props) => {
     const { editMode } = useAppContext()
     const styles = useStyles()
@@ -106,12 +109,12 @@ const CaseTabTable = ({
             tableRows.push(rowObject)
         })
 
-        // move to seperate generic component
-        if (!editMode) {
-            const hideProfilesWithoutValues = ["Deferred oil production", "Deferred gas production"]
-            const matchProfileName = (profile: any) => hideProfilesWithoutValues.some((name) => name !== profile.profileName)
-            const hideNullValueProfile = (profile: any) => hideProfilesWithoutValues.some((name) => name === profile.profileName && profile.profile === null)
-            return tableRows.filter((profile) => matchProfileName(profile) && !hideNullValueProfile(profile))
+        if (profilesToHideWithoutValues !== undefined) {
+            return hideProfilesWithoutValues(
+                editMode,
+                profilesToHideWithoutValues,
+                tableRows,
+            )
         }
 
         return tableRows
