@@ -278,7 +278,6 @@ const CaseTabTable = ({
                         groupIncludeTotalFooter={includeFooter}
                         getRowStyle={getCaseRowStyle}
                         suppressLastEmptyLineOnPaste
-                        singleClickEdit={editMode}
                         stopEditingWhenCellsLoseFocus
                     />
                 </div>
