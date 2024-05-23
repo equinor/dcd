@@ -4,10 +4,11 @@ import {
     useMemo,
     useState,
     useEffect,
+    useCallback,
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { ColDef } from "@ag-grid-community/core"
+import { ColDef, GridReadyEvent } from "@ag-grid-community/core"
 import {
     isInteger,
     tableCellisEditable,
@@ -246,6 +247,14 @@ const CaseTabTable = ({
         setColumnDefs(newColDefs)
     }, [timeSeriesData, tableYears])
 
+    // creates issue with grid not loading on page refresh...
+    const onGridReady = useCallback((params: GridReadyEvent) => {
+        params.api.showLoadingOverlay()
+        setTimeout(() => {
+            updateRowData(profilesToRowData())
+        }, 100)
+    }, [])
+
     return (
         <>
             <OverrideTimeSeriesPrompt
@@ -268,7 +277,7 @@ const CaseTabTable = ({
                         defaultColDef={defaultColDef}
                         animateRows
                         domLayout="autoHeight"
-                        enableCellChangeFlash
+                        enableCellChangeFlash={editMode}
                         rowSelection="multiple"
                         enableRangeSelection
                         suppressCopySingleCellRanges
@@ -280,6 +289,7 @@ const CaseTabTable = ({
                         suppressLastEmptyLineOnPaste
                         singleClickEdit={editMode}
                         stopEditingWhenCellsLoseFocus
+                        onGridReady={onGridReady}
                     />
                 </div>
             </div>
