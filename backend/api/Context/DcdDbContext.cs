@@ -64,6 +64,10 @@ public class DcdDbContext : DbContext
 
 
     public DbSet<WellProject> WellProjects { get; set; } = null!;
+    public DbSet<OilProducerCostProfileOverride> OilProducerCostProfileOverride { get; set; } = null!;
+    public DbSet<GasProducerCostProfileOverride> GasProducerCostProfileOverride { get; set; } = null!;
+    public DbSet<WaterInjectorCostProfileOverride> WaterInjectorCostProfileOverride { get; set; } = null!;
+    public DbSet<GasInjectorCostProfileOverride> GasInjectorCostProfileOverride { get; set; } = null!;
 
     public DbSet<DrillingSchedule> DrillingSchedule { get; set; } = null!;
 

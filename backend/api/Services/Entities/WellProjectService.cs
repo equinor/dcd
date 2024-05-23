@@ -2,6 +2,7 @@ using api.Context;
 using api.Dtos;
 using api.Exceptions;
 using api.Models;
+using api.Repositories;
 
 using AutoMapper;
 
@@ -15,18 +16,27 @@ public class WellProjectService : IWellProjectService
     private readonly IProjectService _projectService;
     private readonly ILogger<WellProjectService> _logger;
     private readonly IMapper _mapper;
+    private readonly IWellProjectRepository _repository;
+    private readonly ICaseRepository _caseRepository;
+    private readonly IMapperService _mapperService;
 
     public WellProjectService(
         DcdDbContext context,
         IProjectService projectService,
         ILoggerFactory loggerFactory,
-        IMapper mapper
+        IMapper mapper,
+        IWellProjectRepository repository,
+        ICaseRepository caseRepository,
+        IMapperService mapperService
         )
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<WellProjectService>();
         _mapper = mapper;
+        _repository = repository;
+        _caseRepository = caseRepository;
+        _mapperService = mapperService;
     }
 
     public async Task<WellProjectDto> CopyWellProject(Guid wellProjectId, Guid sourceCaseId)
@@ -108,7 +118,7 @@ public class WellProjectService : IWellProjectService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<WellProjectDto> UpdateWellProject(WellProjectDto updatedWellProjectDto)
+    public async Task<WellProjectDto> UpdateWellProjectAndCostProfiles(WellProjectDto updatedWellProjectDto)
     {
         var existing = await GetWellProject(updatedWellProjectDto.Id);
         _mapper.Map(updatedWellProjectDto, existing);
@@ -141,5 +151,33 @@ public class WellProjectService : IWellProjectService
             throw new ArgumentException(string.Format("Well project {0} not found.", wellProjectId));
         }
         return wellProject;
+    }
+
+    public async Task<WellProjectDto> UpdateWellProject(
+        Guid caseId,
+        Guid wellProjectId,
+        UpdateWellProjectDto updatedWellProjectDto
+    )
+    {
+        var existingWellProject = await _repository.GetWellProject(wellProjectId)
+            ?? throw new NotFoundInDBException($"Well project with id {wellProjectId} not found.");
+
+        _mapperService.MapToEntity(updatedWellProjectDto, existingWellProject, wellProjectId);
+
+        WellProject updatedWellProject;
+        try
+        {
+            updatedWellProject = await _repository.UpdateWellProject(existingWellProject);
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to update well project with id {wellProjectId} for case id {caseId}.", wellProjectId, caseId);
+            throw;
+        }
+
+        await _caseRepository.UpdateModifyTime(caseId);
+
+        var dto = _mapperService.MapToDto<WellProject, WellProjectDto>(updatedWellProject, wellProjectId);
+        return dto;
     }
 }

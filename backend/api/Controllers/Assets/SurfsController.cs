@@ -29,7 +29,7 @@ public class SurfsController : ControllerBase
     }
 
     [HttpPut("{surfId}")]
-    public async Task<SurfDto> UpdateTransport(
+    public async Task<SurfDto> UpdateSurf(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid surfId,
@@ -39,7 +39,7 @@ public class SurfsController : ControllerBase
     }
 
     [HttpPut("{surfId}/cost-profile-override/{costProfileId}")]
-    public async Task<SurfCostProfileOverrideDto> UpdateTransportCostProfileOverride(
+    public async Task<SurfCostProfileOverrideDto> UpdateSurfCostProfileOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid surfId,
