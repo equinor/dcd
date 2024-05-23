@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react"
 import { ITimeSeries } from "../Models/ITimeSeries"
 import { TABLE_VALIDATION_RULES } from "../Utils/constants"
+import { EditEntry } from "../Models/Interfaces"
 
 export const loginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
@@ -297,4 +298,9 @@ export const formatTime = (timestamp: number): string => {
     const formattedMinutes = minutes.toString().padStart(2, "0")
 
     return `${formattedHours}:${formattedMinutes}`
+}
+
+export const getCurrentEditId = (editIndexes: EditEntry[], projectCase: Components.Schemas.CaseDto | undefined): string | undefined => {
+    const currentCaseEditId = editIndexes.find((entry: EditEntry) => entry.caseId === projectCase?.id && entry.currentEditId)
+    return (currentCaseEditId as unknown as EditEntry)?.currentEditId
 }

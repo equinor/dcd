@@ -38,7 +38,6 @@ const ProjectDetails: React.FC = () => {
                         </Grid>
 
                         <Timeline data-timeline={sidebarOpen}>
-                            <Grid item className="GhostItem" />
                             <Grid item>
                                 <TimelineElement
                                     variant="ghost"
@@ -72,7 +71,6 @@ const ProjectDetails: React.FC = () => {
                                         : <Tooltip title="Settings" placement="right"><Icon data={settings} /></Tooltip>}
                                 </TimelineElement>
                             </Grid>
-                            <Grid item className="GhostItem" />
                         </Timeline>
 
                     </Grid>

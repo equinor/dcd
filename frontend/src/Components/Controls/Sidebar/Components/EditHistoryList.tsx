@@ -6,6 +6,7 @@ import { useCaseContext } from "../../../../Context/CaseContext"
 import { formatTime } from "../../../../Utils/common"
 import { useAppContext } from "../../../../Context/AppContext"
 import HistoryButton from "../../../Buttons/HistoryButton"
+import useDataEdits from "../../../../Hooks/useDataEdits"
 
 const Header = styled.div`
     display: flex;
@@ -28,15 +29,15 @@ const Content = styled.div`
     overflow: auto;
     -ms-overflow-style: none; 
     scrollbar-width: none; 
-    margin: 0 5px;
     
     &::-webkit-scrollbar { 
         display: none;  
     }
 `
 
-const EditInstance = styled.div`
-    margin: 10px 5px 10px 0;
+const EditInstance = styled.div<{ $isActive: boolean }>`
+    padding: 10px 5px 10px 15px;
+    border-left: 2px solid ${({ $isActive }) => ($isActive ? "#007079" : "#DCDCDC")};
 `
 
 const PreviousValue = styled(Typography)`
@@ -67,6 +68,7 @@ const ChangeView = styled.div`
 
 const EditHistoryList: React.FC = () => {
     const { caseEdits, projectCase } = useCaseContext()
+    const { getCurrentEditId } = useDataEdits()
 
     const {
         editHistoryIsActive,
@@ -86,7 +88,7 @@ const EditHistoryList: React.FC = () => {
             )}
             <Content>
                 {sidebarOpen && projectCase && editHistoryIsActive && caseEdits.map((edit) => (edit.level === "case" && edit.objectId === projectCase.id ? (
-                    <EditInstance key={edit.uuid} style={{ marginBottom: "10px" }}>
+                    <EditInstance key={edit.uuid} $isActive={edit.uuid === getCurrentEditId()}>
                         <Header>
                             <Typography variant="caption">{String(edit.inputLabel)}</Typography>
                             <Typography variant="overline">{formatTime(edit.timeStamp)}</Typography>
@@ -100,7 +102,7 @@ const EditHistoryList: React.FC = () => {
                         </ChangeView>
                     </EditInstance>
                 ) : null))}
-                {editHistoryIsActive && caseEdits.length === 0 && <NextValue>No edits..</NextValue>}
+                {editHistoryIsActive && caseEdits.length === 0 && <NextValue>No recent edits..</NextValue>}
             </Content>
         </Container>
     )
