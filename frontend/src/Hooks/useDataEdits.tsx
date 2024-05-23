@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid"
 import { useEffect, useState } from "react"
 import { useCaseContext } from "../Context/CaseContext"
 import { EditInstance, EditEntry } from "../Models/Interfaces"
+import { getCurrentEditId } from "../Utils/common"
 
 const useDataEdits = (): {
     addEdit: (
@@ -14,7 +15,6 @@ const useDataEdits = (): {
     ) => void;
     undoEdit: () => void;
     redoEdit: () => void;
-    getCurrentEditId: () => string | undefined;
 } => {
     const {
         caseEdits,
@@ -24,6 +24,30 @@ const useDataEdits = (): {
         setEditIndexes,
     } = useCaseContext()
 
+    const [caseEditsBelongingToCurrentCase, setCaseEditsBelongingToCurrentCase] = useState<EditInstance[]>([])
+
+    useEffect(() => {
+        if (projectCase) {
+            setCaseEditsBelongingToCurrentCase(caseEdits.filter((edit) => edit.objectId === projectCase.id))
+        }
+    }, [projectCase])
+
+    useEffect(() => {
+        const storedCaseEdits = localStorage.getItem("caseEdits")
+        const caseEditsArray = storedCaseEdits ? JSON.parse(storedCaseEdits) : []
+
+        if (caseEditsArray.length === 0) {
+            // reset editIndexes if there are no recent edits
+            localStorage.setItem("editIndexes", JSON.stringify([]))
+            setEditIndexes([])
+        } else {
+            // otherwise, load the editIndexes from localStorage
+            const storedEditIndexes = localStorage.getItem("editIndexes")
+            const editIndexesArray = storedEditIndexes ? JSON.parse(storedEditIndexes) : []
+            setEditIndexes(editIndexesArray)
+        }
+    }, [])
+
     const updateEditIndex = (newEditId: string) => {
         if (!projectCase) {
             console.log("you are not in a project case")
@@ -31,39 +55,19 @@ const useDataEdits = (): {
         }
 
         const editEntry: EditEntry = { caseId: projectCase.id, currentEditId: newEditId }
-
-        // Retrieve existing editIndexes from localStorage, or initialize an empty array if it doesn't exist
         const storedEditIndexes = localStorage.getItem("editIndexes")
-        const updatedEditIndexes = storedEditIndexes ? JSON.parse(storedEditIndexes) : []
+        const editIndexesArray = storedEditIndexes ? JSON.parse(storedEditIndexes) : []
+        const currentCasesEditIndex = editIndexesArray.findIndex((entry: { caseId: string }) => entry.caseId === projectCase.id)
 
-        // Check if an entry with the same caseId exists
-        const existingEntryIndex = updatedEditIndexes.findIndex((entry: { caseId: string }) => entry.caseId === projectCase.id)
-
-        if (existingEntryIndex !== -1) {
-            // If it exists, update the currentEditId for that entry
-            updatedEditIndexes[existingEntryIndex].currentEditId = newEditId
+        if (currentCasesEditIndex !== -1) {
+            editIndexesArray[currentCasesEditIndex].currentEditId = newEditId
         } else {
-            // If it doesn't exist, add the new entry
-            updatedEditIndexes.push(editEntry)
+            editIndexesArray.push(editEntry)
         }
 
-        localStorage.setItem("editIndexes", JSON.stringify(updatedEditIndexes))
-        setEditIndexes(updatedEditIndexes)
+        localStorage.setItem("editIndexes", JSON.stringify(editIndexesArray))
+        setEditIndexes(editIndexesArray)
     }
-
-    useEffect(() => {
-        const storedCaseEdits = localStorage.getItem("caseEdits")
-        const parsedCaseEdits = storedCaseEdits ? JSON.parse(storedCaseEdits) : []
-        if (parsedCaseEdits.length === 0) {
-            // reset editIndexes if there are no recent edits
-            localStorage.setItem("editIndexes", JSON.stringify([]))
-            setEditIndexes([])
-        } else {
-            const storedEditIndexes = localStorage.getItem("editIndexes")
-            const parsedEditIndexes = storedEditIndexes ? JSON.parse(storedEditIndexes) : []
-            setEditIndexes(parsedEditIndexes)
-        }
-    }, [])
 
     const addEdit = (
         newValue: string | number | undefined,
@@ -90,22 +94,8 @@ const useDataEdits = (): {
         updateEditIndex(editInstanceObject.uuid)
     }
 
-    const getCurrentEditId = () => {
-        const currentCaseEditId = editIndexes.find((entry: EditEntry) => entry.caseId === projectCase?.id && entry.currentEditId)
-        return (currentCaseEditId as unknown as EditEntry)?.currentEditId
-    }
-
-    const [caseEditsBelongingToCurrentCase, setCaseEditsBelongingToCurrentCase] = useState<EditInstance[]>([])
-
-    useEffect(() => {
-        if (projectCase) {
-            const edits = caseEdits.filter((edit) => edit.objectId === projectCase.id)
-            setCaseEditsBelongingToCurrentCase(edits)
-        }
-    }, [projectCase])
-
     const undoEdit = () => {
-        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId())
+        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, projectCase))
 
         const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
         const updatedEditIndex = currentEditIndex + 1
@@ -124,7 +114,7 @@ const useDataEdits = (): {
     }
 
     const redoEdit = () => {
-        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId())
+        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, projectCase))
 
         if (currentEditIndex <= 0) {
             // If the current edit is the first one or not found, redo the last edit.
@@ -142,7 +132,7 @@ const useDataEdits = (): {
     }
 
     return {
-        addEdit, undoEdit, redoEdit, getCurrentEditId,
+        addEdit, undoEdit, redoEdit,
     }
 }
 

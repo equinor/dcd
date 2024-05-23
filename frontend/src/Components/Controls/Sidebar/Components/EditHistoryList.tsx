@@ -3,10 +3,9 @@ import styled from "styled-components"
 import { Typography, Icon, Button } from "@equinor/eds-core-react"
 import { arrow_forward, arrow_drop_down, arrow_drop_up } from "@equinor/eds-icons"
 import { useCaseContext } from "../../../../Context/CaseContext"
-import { formatTime } from "../../../../Utils/common"
+import { formatTime, getCurrentEditId } from "../../../../Utils/common"
 import { useAppContext } from "../../../../Context/AppContext"
 import HistoryButton from "../../../Buttons/HistoryButton"
-import useDataEdits from "../../../../Hooks/useDataEdits"
 
 const Header = styled.div`
     display: flex;
@@ -20,12 +19,13 @@ const Container = styled.div<{ $sidebarOpen: boolean }>`
     display: flex;
     flex-direction: column;
     width: 100%;
-    margin: ${({ $sidebarOpen }) => ($sidebarOpen ? "0 8px" : "0")};
+    padding: ${({ $sidebarOpen }) => ($sidebarOpen ? "0 8px 20px 8px" : "0")};
     align-items: ${({ $sidebarOpen }) => ($sidebarOpen ? "space-between" : "center")};
+    border-bottom: 1px solid #DCDCDC;
 `
 
 const Content = styled.div`
-    max-height: 200px;
+    max-height: 300px;
     overflow: auto;
     -ms-overflow-style: none; 
     scrollbar-width: none; 
@@ -46,7 +46,6 @@ const PreviousValue = styled(Typography)`
     opacity: 0.5;
     max-width: 100px;
     font-size: 12px;
-
 `
 
 const NextValue = styled(Typography)`
@@ -67,8 +66,7 @@ const ChangeView = styled.div`
 `
 
 const EditHistoryList: React.FC = () => {
-    const { caseEdits, projectCase } = useCaseContext()
-    const { getCurrentEditId } = useDataEdits()
+    const { caseEdits, projectCase, editIndexes } = useCaseContext()
 
     const {
         editHistoryIsActive,
@@ -88,7 +86,7 @@ const EditHistoryList: React.FC = () => {
             )}
             <Content>
                 {sidebarOpen && projectCase && editHistoryIsActive && caseEdits.map((edit) => (edit.level === "case" && edit.objectId === projectCase.id ? (
-                    <EditInstance key={edit.uuid} $isActive={edit.uuid === getCurrentEditId()}>
+                    <EditInstance key={edit.uuid} $isActive={edit.uuid === getCurrentEditId(editIndexes, projectCase)}>
                         <Header>
                             <Typography variant="caption">{String(edit.inputLabel)}</Typography>
                             <Typography variant="overline">{formatTime(edit.timeStamp)}</Typography>

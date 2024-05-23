@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import {
     Typography, Button, Icon, Tooltip,
 } from "@equinor/eds-core-react"
@@ -22,7 +22,7 @@ const UndoControls: React.FC = () => {
         editIndexes,
     } = useCaseContext()
 
-    const [isSaving, setIsSaving] = useState(false)
+    const [isSaving, setIsSaving] = useState(false) // todo: implement saving state from api call status
     const { undoEdit, redoEdit } = useDataEdits()
 
     const editsBelongingToCurrentCase = projectCase && caseEdits.filter((edit) => edit.objectId === projectCase.id)
@@ -31,7 +31,6 @@ const UndoControls: React.FC = () => {
     if (!editsBelongingToCurrentCase || editsBelongingToCurrentCase.length === 0) { return null }
 
     const canUndo = () => {
-        // If there's no current edit, return false.
         if (!currentEditId) {
             return false
         }
@@ -41,7 +40,6 @@ const UndoControls: React.FC = () => {
     }
 
     const canRedo = () => {
-        // If there's no current edit, and there are edits belonging to the current case, return true.
         if (!currentEditId && editsBelongingToCurrentCase.length > 0) {
             return true
         }
