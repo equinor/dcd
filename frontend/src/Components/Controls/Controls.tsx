@@ -193,9 +193,11 @@ const Controls = () => {
             <Grid item>
                 <UndoControls />
             </Grid>
+            {/*
             <Grid item>
                 <HistoryButton size={24} />
             </Grid>
+            */}
             {projectCase && (
                 <Grid item>
                     <Button

@@ -6,6 +6,7 @@ import { useCaseContext } from "../../../../Context/CaseContext"
 import { formatTime, getCurrentEditId } from "../../../../Utils/common"
 import { useAppContext } from "../../../../Context/AppContext"
 import HistoryButton from "../../../Buttons/HistoryButton"
+import CaseEditHistory from "../../../Case/Components/CaseEditHistory"
 
 const Header = styled.div`
     display: flex;
@@ -65,15 +66,16 @@ const ChangeView = styled.div`
     }
 `
 
-const EditHistoryList: React.FC = () => {
-    const { caseEdits, projectCase, editIndexes } = useCaseContext()
+const CurrentCaseEditHistory: React.FC = () => {
+    const { caseEdits, projectCase } = useCaseContext()
+    const editsBelongingToCurrentCase = projectCase && caseEdits.filter((edit) => edit.objectId === projectCase.id)
 
     const {
         editHistoryIsActive,
         setEditHistoryIsActive,
         sidebarOpen,
     } = useAppContext()
-
+    if (!projectCase) { return null }
     return (
         <Container $sidebarOpen={sidebarOpen}>
             {!sidebarOpen ? <HistoryButton /> : (
@@ -85,25 +87,11 @@ const EditHistoryList: React.FC = () => {
                 </Header>
             )}
             <Content>
-                {sidebarOpen && projectCase && editHistoryIsActive && caseEdits.map((edit) => (edit.level === "case" && edit.objectId === projectCase.id ? (
-                    <EditInstance key={edit.uuid} $isActive={edit.uuid === getCurrentEditId(editIndexes, projectCase)}>
-                        <Header>
-                            <Typography variant="caption">{String(edit.inputLabel)}</Typography>
-                            <Typography variant="overline">{formatTime(edit.timeStamp)}</Typography>
-                        </Header>
-                        <ChangeView>
-                            <PreviousValue>{edit.previousValue}</PreviousValue>
-                            <div>
-                                <Icon data={arrow_forward} size={16} />
-                            </div>
-                            <NextValue>{edit.newValue}</NextValue>
-                        </ChangeView>
-                    </EditInstance>
-                ) : null))}
-                {editHistoryIsActive && caseEdits.length === 0 && <NextValue>No recent edits..</NextValue>}
+                {sidebarOpen && projectCase && editHistoryIsActive && <CaseEditHistory caseId={projectCase.id} />}
+                {editHistoryIsActive && editsBelongingToCurrentCase?.length === 0 && <NextValue>No recent edits..</NextValue>}
             </Content>
         </Container>
     )
 }
 
-export default EditHistoryList
+export default CurrentCaseEditHistory

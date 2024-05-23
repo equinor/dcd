@@ -30,22 +30,22 @@ const CasesList: React.FC = () => {
 
     return (
         <>
-            {project.cases.sort((a, b) => new Date(a.createTime).getDate() - new Date(b.createTime).getDate()).map((subItem, index) => (
+            {project.cases.sort((a, b) => new Date(a.createTime).getDate() - new Date(b.createTime).getDate()).map((projectCase, index) => (
                 <Grid
                     item
                     container
                     justifyContent="space-between"
                     key={`menu - item - ${index + 1} `}
-                    data-timeline-active={location.pathname.includes(subItem.id)}
+                    data-timeline-active={location.pathname.includes(projectCase.id)}
                 >
                     <Tooltip
-                        title={`${subItem.name ? subItem.name : "Untitled"} - Strategy: ${productionStrategyOverviewToString(subItem.productionStrategyOverview)}`}
+                        title={`${projectCase.name ? projectCase.name : "Untitled"} - Strategy: ${productionStrategyOverviewToString(projectCase.productionStrategyOverview)}`}
                         placement="right"
                     >
-                        <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(subItem.id)}>
+                        <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.id)}>
                             {!sidebarOpen && `#${index + 1}`}
-                            {(sidebarOpen && subItem.name) && subItem.name}
-                            {(sidebarOpen && (subItem.name === "" || subItem.name === undefined)) && "Untitled"}
+                            {(sidebarOpen && projectCase.name) && projectCase.name}
+                            {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
                         </TimelineElement>
                     </Tooltip>
                 </Grid>
