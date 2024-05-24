@@ -22,6 +22,7 @@ import { useAppContext } from "../../../Context/AppContext"
 import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
+import hideProfilesWithoutValues from "./HideProfilesWithoutValues"
 
 interface Props {
     timeSeriesData: any[]
@@ -32,6 +33,7 @@ interface Props {
     gridRef?: any
     includeFooter: boolean
     totalRowName?: string
+    profilesToHideWithoutValues?: string[]
 }
 
 const CaseTabTable = ({
@@ -43,6 +45,7 @@ const CaseTabTable = ({
     gridRef,
     includeFooter,
     totalRowName,
+    profilesToHideWithoutValues,
 }: Props) => {
     const { editMode } = useAppContext()
     const styles = useStyles()
@@ -106,6 +109,15 @@ const CaseTabTable = ({
 
             tableRows.push(rowObject)
         })
+
+        if (profilesToHideWithoutValues !== undefined) {
+            return hideProfilesWithoutValues(
+                editMode,
+                profilesToHideWithoutValues,
+                tableRows,
+            )
+        }
+
         return tableRows
     }
 

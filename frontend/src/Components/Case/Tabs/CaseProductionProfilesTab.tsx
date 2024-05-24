@@ -63,9 +63,14 @@ const CaseProductionProfilesTab = ({
     const [fuelFlaringAndLossesOverride, setFuelFlaringAndLossesOverride] = useState<Components.Schemas.FuelFlaringAndLossesOverrideDto>()
     const [importedElectricityOverride, setImportedElectricityOverride] = useState<Components.Schemas.ImportedElectricityOverrideDto>()
 
+    const [deferredGas, setDeferredGas] = useState<Components.Schemas.DeferredGasProductionDto>()
+    const [deferredOil, setDeferredOil] = useState<Components.Schemas.DeferredOilProductionDto>()
+
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+
+    const profilesToHideWithoutValues = ["Deferred oil production", "Deferred gas production"]
 
     const productionStrategyOptions = {
         0: "Depletion",
@@ -104,7 +109,9 @@ const CaseProductionProfilesTab = ({
             || waterInjection === undefined
             || importedElectricityOverride === undefined
             || netSalesGasOverride === undefined
-            || fuelFlaringAndLossesOverride === undefined) {
+            || fuelFlaringAndLossesOverride === undefined
+            || deferredGas === undefined
+            || deferredOil === undefined) {
             return
         }
         const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainage }
@@ -117,6 +124,8 @@ const CaseProductionProfilesTab = ({
         newDrainageStrategy.productionProfileWater = water
         newDrainageStrategy.productionProfileNGL = nGL
         newDrainageStrategy.productionProfileWaterInjection = waterInjection
+        newDrainageStrategy.deferredGasProduction = deferredGas
+        newDrainageStrategy.deferredOilProduction = deferredOil
 
         newDrainageStrategy.importedElectricityOverride = importedElectricityOverride
         setDrainageStrategy(newDrainageStrategy)
@@ -190,6 +199,18 @@ const CaseProductionProfilesTab = ({
             overrideProfile: importedElectricityOverride,
             overrideProfileSet: setImportedElectricityOverride,
         },
+        {
+            profileName: "Deferred oil production",
+            unit: `${project?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
+            set: setDeferredOil,
+            profile: deferredOil,
+        },
+        {
+            profileName: "Deferred gas production",
+            unit: `${project?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
+            set: setDeferredGas,
+            profile: deferredGas,
+        },
     ]
 
     const handleTableYearsClick = () => {
@@ -243,6 +264,8 @@ const CaseProductionProfilesTab = ({
                         drainageStrategy.productionProfileWaterInjection,
                         drainageStrategy.importedElectricityOverride,
                         drainageStrategy.co2EmissionsOverride,
+                        drainageStrategy.deferredGasProduction,
+                        drainageStrategy.deferredOilProduction,
                     ], new Date(projectCase?.dG4Date).getFullYear(), setStartYear, setEndYear, setTableYears)
                     setGas(drainageStrategy.productionProfileGas)
                     setOil(drainageStrategy.productionProfileOil)
@@ -253,6 +276,9 @@ const CaseProductionProfilesTab = ({
                     setImportedElectricityOverride(drainageStrategy.importedElectricityOverride)
                     setNetSalesGasOverride(drainageStrategy.netSalesGasOverride)
                     setFuelFlaringAndLossesOverride(drainageStrategy.fuelFlaringAndLossesOverride)
+
+                    setDeferredGas(drainageStrategy.deferredGasProduction)
+                    setDeferredOil(drainageStrategy.deferredOilProduction)
                 }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
@@ -308,6 +334,20 @@ const CaseProductionProfilesTab = ({
         newDrainageStrategy.netSalesGasOverride = netSalesGasOverride
         setDrainageStrategy(newDrainageStrategy)
     }, [netSalesGasOverride])
+
+    useEffect(() => {
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
+        if (!deferredOil) { return }
+        newDrainageStrategy.deferredOilProduction = deferredOil
+        setDrainageStrategy(newDrainageStrategy)
+    }, [deferredOil])
+
+    useEffect(() => {
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
+        if (!deferredGas) { return }
+        newDrainageStrategy.deferredGasProduction = deferredGas
+        setDrainageStrategy(newDrainageStrategy)
+    }, [deferredGas])
 
     useEffect(() => {
         if (gridRef.current && gridRef.current.api && gridRef.current.api.refreshCells) {
@@ -464,6 +504,7 @@ const CaseProductionProfilesTab = ({
                     tableName="Production profiles"
                     includeFooter={false}
                     gridRef={gridRef}
+                    profilesToHideWithoutValues={profilesToHideWithoutValues}
                 />
             </Grid>
         </Grid>

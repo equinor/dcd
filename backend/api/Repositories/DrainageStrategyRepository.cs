@@ -120,4 +120,28 @@ public class DrainageStrategyRepository : IDrainageStrategyRepository
         await _context.SaveChangesAsync();
         return profileId;
     }
+
+    public async Task<DeferredOilProduction?> GetDeferredOilProduction(Guid productionProfileId)
+    {
+        return await _context.DeferredOilProduction.FindAsync(productionProfileId);
+    }
+
+    public async Task<DeferredOilProduction> UpdateDeferredOilProduction(DeferredOilProduction productionProfile)
+    {
+        _context.DeferredOilProduction.Update(productionProfile);
+        await _context.SaveChangesAsync();
+        return productionProfile;
+    }
+
+    public async Task<DeferredGasProduction?> GetDeferredGasProduction(Guid productionProfileId)
+    {
+        return await _context.DeferredGasProduction.FindAsync(productionProfileId);
+    }
+
+    public async Task<DeferredGasProduction> UpdateDeferredGasProduction(DeferredGasProduction productionProfile)
+    {
+        _context.DeferredGasProduction.Update(productionProfile);
+        await _context.SaveChangesAsync();
+        return productionProfile;
+    }
 }
