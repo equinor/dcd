@@ -38,7 +38,6 @@ const ProjectDetails: React.FC = () => {
                         </Grid>
 
                         <Timeline data-timeline={sidebarOpen}>
-                            <Grid item className="GhostItem" />
                             <Grid item>
                                 <TimelineElement
                                     variant="ghost"
@@ -68,11 +67,21 @@ const ProjectDetails: React.FC = () => {
                                     onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 2 } })}
                                 >
                                     {sidebarOpen
+                                        ? "Case edit history"
+                                    : <Tooltip title="Case edit history" placement="right"><Icon data={settings} /></Tooltip>}
+                                </TimelineElement>
+                            </Grid>
+                            <Grid item>
+                                <TimelineElement
+                                    variant="ghost"
+                                    className="GhostButton"
+                                    onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 3 } })}
+                                >
+                                    {sidebarOpen
                                         ? "Settings"
                                         : <Tooltip title="Settings" placement="right"><Icon data={settings} /></Tooltip>}
                                 </TimelineElement>
                             </Grid>
-                            <Grid item className="GhostItem" />
                         </Timeline>
 
                     </Grid>

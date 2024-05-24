@@ -8,3 +8,8 @@ export interface EditInstance {
     level: "project" | "case";
     objectId: string; // the id of the object being edited (project id or case id)
 }
+
+export interface EditEntry {
+    caseId: string;
+    currentEditId: string;
+}
