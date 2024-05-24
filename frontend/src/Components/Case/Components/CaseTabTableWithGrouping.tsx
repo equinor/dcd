@@ -280,7 +280,6 @@ const CaseTabTableWithGrouping = ({
                         getRowStyle={getRowStyle}
                         suppressLastEmptyLineOnPaste
                         groupDefaultExpanded={groupDefaultExpanded}
-                        singleClickEdit={editMode}
                         stopEditingWhenCellsLoseFocus
                     />
                 </div>

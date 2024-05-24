@@ -3,7 +3,6 @@ import { useState } from "react"
 import { error_filled } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { preventNonDigitInput, isWithinRange } from "../../Utils/common"
-import useDataEdits from "../../Hooks/useDataEdits"
 
 const ErrorIcon = styled(Icon)`
     margin-left: 8px;
@@ -33,7 +32,7 @@ interface Props {
 }
 
 const NumberInput = ({
-    onSubmit: onChange,
+    onSubmit,
     defaultValue,
     integer,
     disabled,
@@ -42,30 +41,31 @@ const NumberInput = ({
     min,
     max,
 }: Props) => {
-    const { addEdit } = useDataEdits()
-
     const [hasError, setHasError] = useState(false)
     const [inputValue, setInputValue] = useState(defaultValue)
     const [helperText, setHelperText] = useState("\u200B")
 
-    const submitChange = (newValue: number) => {
+    const inputIsValid = (newValue: number) => {
         setInputValue(newValue)
-
         if (min !== undefined && max !== undefined) {
             if (!isWithinRange(newValue, min, max)) {
                 setHelperText(`(min: ${min}, max: ${max})`)
                 setHasError(true)
-            } else {
-                setHasError(false)
-                setHelperText("\u200B")
-                onChange(newValue)
+                return false
             }
+            setHasError(false)
+            setHelperText("\u200B")
+
+            return true
         }
+        return true
     }
 
     const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
         const newValue = Number(event.target.value)
-        submitChange(newValue)
+        if (inputIsValid(newValue)) {
+            onSubmit(newValue)
+        }
     }
 
     const checkInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
