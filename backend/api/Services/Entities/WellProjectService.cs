@@ -180,4 +180,107 @@ public class WellProjectService : IWellProjectService
         var dto = _mapperService.MapToDto<WellProject, WellProjectDto>(updatedWellProject, wellProjectId);
         return dto;
     }
+
+    public async Task<OilProducerCostProfileOverrideDto> UpdateOilProducerCostProfileOverride(
+        Guid caseId,
+        Guid wellProjectId,
+        Guid profileId,
+        UpdateOilProducerCostProfileOverrideDto updateDto
+    )
+    {
+        return await UpdateWellProjectCostProfile<OilProducerCostProfileOverride, OilProducerCostProfileOverrideDto, UpdateOilProducerCostProfileOverrideDto>(
+            caseId,
+            wellProjectId,
+            profileId,
+            updateDto,
+            _repository.GetOilProducerCostProfileOverride,
+            _repository.UpdateOilProducerCostProfileOverride
+        );
+    }
+
+    public async Task<GasProducerCostProfileOverrideDto> UpdateGasProducerCostProfileOverride(
+        Guid caseId,
+        Guid wellProjectId,
+        Guid profileId,
+        UpdateGasProducerCostProfileOverrideDto updateDto
+    )
+    {
+        return await UpdateWellProjectCostProfile<GasProducerCostProfileOverride, GasProducerCostProfileOverrideDto, UpdateGasProducerCostProfileOverrideDto>(
+            caseId,
+            wellProjectId,
+            profileId,
+            updateDto,
+            _repository.GetGasProducerCostProfileOverride,
+            _repository.UpdateGasProducerCostProfileOverride
+        );
+    }
+
+    public async Task<WaterInjectorCostProfileOverrideDto> UpdateWaterInjectorCostProfileOverride(
+        Guid caseId,
+        Guid wellProjectId,
+        Guid profileId,
+        UpdateWaterInjectorCostProfileOverrideDto updateDto
+    )
+    {
+        return await UpdateWellProjectCostProfile<WaterInjectorCostProfileOverride, WaterInjectorCostProfileOverrideDto, UpdateWaterInjectorCostProfileOverrideDto>(
+            caseId,
+            wellProjectId,
+            profileId,
+            updateDto,
+            _repository.GetWaterInjectorCostProfileOverride,
+            _repository.UpdateWaterInjectorCostProfileOverride
+        );
+    }
+
+    public async Task<GasInjectorCostProfileOverrideDto> UpdateGasInjectorCostProfileOverride(
+        Guid caseId,
+        Guid wellProjectId,
+        Guid profileId,
+        UpdateGasInjectorCostProfileOverrideDto updateDto
+    )
+    {
+        return await UpdateWellProjectCostProfile<GasInjectorCostProfileOverride, GasInjectorCostProfileOverrideDto, UpdateGasInjectorCostProfileOverrideDto>(
+            caseId,
+            wellProjectId,
+            profileId,
+            updateDto,
+            _repository.GetGasInjectorCostProfileOverride,
+            _repository.UpdateGasInjectorCostProfileOverride
+        );
+    }
+
+    private async Task<TDto> UpdateWellProjectCostProfile<TProfile, TDto, TUpdateDto>(
+        Guid caseId,
+        Guid wellProjectId,
+        Guid profileId,
+        TUpdateDto updatedProfileDto,
+        Func<Guid, Task<TProfile?>> getProfile,
+        Func<TProfile, Task<TProfile>> updateProfile
+    )
+        where TProfile : class, IWellProjectTimeSeries
+        where TDto : class
+        where TUpdateDto : class
+    {
+        var existingProfile = await getProfile(profileId)
+            ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
+
+        _mapperService.MapToEntity(updatedProfileDto, existingProfile, wellProjectId);
+
+        TProfile updatedProfile;
+        try
+        {
+            updatedProfile = await updateProfile(existingProfile);
+        }
+        catch (DbUpdateException ex)
+        {
+            var profileName = typeof(TProfile).Name;
+            _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
+            throw;
+        }
+
+        await _caseRepository.UpdateModifyTime(caseId);
+
+        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
+        return updatedDto;
+    }
 }
