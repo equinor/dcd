@@ -178,10 +178,6 @@ const CaseTabTable = ({
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
-    const updateRowData = (newData: any) => {
-        setRowData(newData)
-    }
-
     const handleCellValueChange = (p: any) => {
         const properties = Object.keys(p.data)
         const tableTimeSeriesValues: any[] = []
@@ -242,16 +238,14 @@ const CaseTabTable = ({
     }), [])
 
     useEffect(() => {
-        updateRowData(profilesToRowData())
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
-    }, [timeSeriesData, tableYears])
+    }, [timeSeriesData, tableYears, rowData])
 
-    // creates issue with grid not loading on page refresh...
     const onGridReady = useCallback((params: GridReadyEvent) => {
         params.api.showLoadingOverlay()
         setTimeout(() => {
-            updateRowData(profilesToRowData())
+            setRowData(profilesToRowData())
         }, 100)
     }, [])
 
