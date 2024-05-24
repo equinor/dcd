@@ -8,6 +8,7 @@ import { productionStrategyOverviewToString, casePath } from "../../../../Utils/
 import { TimelineElement } from "../Sidebar"
 import { useAppContext } from "../../../../Context/AppContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
+import ReferenceCaseIcon from "../../../Case/Components/ReferenceCaseIcon"
 
 const CasesList: React.FC = () => {
     const { project } = useProjectContext()
@@ -38,6 +39,10 @@ const CasesList: React.FC = () => {
                     key={`menu - item - ${index + 1} `}
                     data-timeline-active={location.pathname.includes(projectCase.id)}
                 >
+                    <ReferenceCaseIcon
+                        project={project}
+                        projectCase={projectCase}
+                    />
                     <Tooltip
                         title={`${projectCase.name ? projectCase.name : "Untitled"} - Strategy: ${productionStrategyOverviewToString(projectCase.productionStrategyOverview)}`}
                         placement="right"

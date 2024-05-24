@@ -26,9 +26,9 @@ import CaseDropMenu from "../Case/Components/CaseDropMenu"
 import { GetProjectService } from "../../Services/ProjectService"
 import { useAppContext } from "../../Context/AppContext"
 import useDataEdits from "../../Hooks/useDataEdits"
-import HistoryButton from "../Buttons/HistoryButton"
 import UndoControls from "./UndoControls"
 import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
+import ReferenceCaseIcon from "../Case/Components/ReferenceCaseIcon"
 
 const Controls = () => {
     const navigate = useNavigate()
@@ -144,6 +144,10 @@ const Controls = () => {
                     )
                     : (
                         <>
+                            <ReferenceCaseIcon
+                                project={project}
+                                projectCase={projectCase}
+                            />
                             <Typography variant="h4">
                                 {projectCase ? projectCase.name : project?.name}
                             </Typography>
