@@ -22,10 +22,10 @@ public class WellProjectsController : ControllerBase
     private readonly IWellProjectService _wellProjectService;
 
     public WellProjectsController(
-        IWellProjectService surfService
+        IWellProjectService wellProjectService
     )
     {
-        _wellProjectService = surfService;
+        _wellProjectService = wellProjectService;
     }
 
     [HttpPut("{wellProjectId}")]

@@ -10,29 +10,29 @@ public class UpdateExplorationDto
     public double RigMobDemob { get; set; }
     public Currency Currency { get; set; }
 
-    public UpdateSeismicAcquisitionAndProcessing? SeismicAcquisitionAndProcessing { get; set; }
-    public UpdateCountryOfficeCost? CountryOfficeCost { get; set; }
-    public UpdateExplorationWellCostProfile? ExplorationWellCostProfile { get; set; }
-    public UpdateAppraisalWellCostProfile? AppraisalWellCostProfile { get; set; }
-    public UpdateSidetrackCostProfile? SidetrackCostProfile { get; set; }
+    public UpdateSeismicAcquisitionAndProcessingDto? SeismicAcquisitionAndProcessing { get; set; }
+    public UpdateCountryOfficeCostDto? CountryOfficeCost { get; set; }
+    public UpdateExplorationWellCostProfileDto? ExplorationWellCostProfile { get; set; }
+    public UpdateAppraisalWellCostProfileDto? AppraisalWellCostProfile { get; set; }
+    public UpdateSidetrackCostProfileDto? SidetrackCostProfile { get; set; }
 }
 
-public class UpdateSeismicAcquisitionAndProcessing : UpdateTimeSeriesCostDto
+public class UpdateSeismicAcquisitionAndProcessingDto : UpdateTimeSeriesCostDto
 {
 }
 
-public class UpdateCountryOfficeCost : UpdateTimeSeriesCostDto
+public class UpdateCountryOfficeCostDto : UpdateTimeSeriesCostDto
 {
 }
 
-public class UpdateExplorationWellCostProfile : UpdateTimeSeriesCostDto
+public class UpdateExplorationWellCostProfileDto : UpdateTimeSeriesCostDto
 {
 }
 
-public class UpdateAppraisalWellCostProfile : UpdateTimeSeriesCostDto
+public class UpdateAppraisalWellCostProfileDto : UpdateTimeSeriesCostDto
 {
 }
 
-public class UpdateSidetrackCostProfile : UpdateTimeSeriesCostDto
+public class UpdateSidetrackCostProfileDto : UpdateTimeSeriesCostDto
 {
 }
