@@ -1,9 +1,8 @@
 import React from "react"
 import styled from "styled-components"
 import { Typography, Icon, Button } from "@equinor/eds-core-react"
-import { arrow_forward, arrow_drop_down, arrow_drop_up } from "@equinor/eds-icons"
+import { arrow_drop_down, arrow_drop_up } from "@equinor/eds-icons"
 import { useCaseContext } from "../../../../Context/CaseContext"
-import { formatTime, getCurrentEditId } from "../../../../Utils/common"
 import { useAppContext } from "../../../../Context/AppContext"
 import HistoryButton from "../../../Buttons/HistoryButton"
 import CaseEditHistory from "../../../Case/Components/CaseEditHistory"
@@ -36,34 +35,9 @@ const Content = styled.div`
     }
 `
 
-const EditInstance = styled.div<{ $isActive: boolean }>`
-    padding: 10px 5px 10px 15px;
-    border-left: 2px solid ${({ $isActive }) => ($isActive ? "#007079" : "#DCDCDC")};
-`
-
-const PreviousValue = styled(Typography)`
-    color: red;
-    text-decoration: line-through;
-    opacity: 0.5;
-    max-width: 100px;
-    font-size: 12px;
-`
-
 const NextValue = styled(Typography)`
     max-width: 100px;
     font-size: 12px;
-`
-
-const ChangeView = styled.div`
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 10px;
-    align-items: center;
-
-    & > p {
-        white-space: wrap;
-        overflow: hidden;
-    }
 `
 
 const CurrentCaseEditHistory: React.FC = () => {
