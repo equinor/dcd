@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import {
     Typography, Button, Icon, Tooltip,
 } from "@equinor/eds-core-react"
@@ -28,10 +28,8 @@ const UndoControls: React.FC = () => {
     const editsBelongingToCurrentCase = projectCase && caseEdits.filter((edit) => edit.objectId === projectCase.id)
     const currentEditId = getCurrentEditId(editIndexes, projectCase)
 
-    if (!editsBelongingToCurrentCase || editsBelongingToCurrentCase.length === 0) { return null }
-
     const canUndo = () => {
-        if (!currentEditId) {
+        if (!currentEditId || !editsBelongingToCurrentCase) {
             return false
         }
 
@@ -40,6 +38,9 @@ const UndoControls: React.FC = () => {
     }
 
     const canRedo = () => {
+        if (!editsBelongingToCurrentCase) {
+            return false
+        }
         if (!currentEditId && editsBelongingToCurrentCase.length > 0) {
             return true
         }
@@ -47,6 +48,34 @@ const UndoControls: React.FC = () => {
         const currentEditIndex = editsBelongingToCurrentCase.findIndex((edit) => edit.uuid === currentEditId)
         return currentEditIndex < editsBelongingToCurrentCase.length && currentEditIndex > 0
     }
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0
+            const undoKey = isMac ? event.metaKey && event.key === "z" : event.ctrlKey && event.key === "z"
+            const redoKey = isMac ? event.metaKey && event.key === "y" : event.ctrlKey && event.key === "y"
+
+            if (undoKey) {
+                event.preventDefault()
+                event.stopPropagation()
+                if (canUndo()) {
+                    undoEdit()
+                }
+            } else if (redoKey) {
+                event.preventDefault()
+                event.stopPropagation()
+                if (canRedo()) {
+                    redoEdit()
+                }
+            }
+        }
+
+        window.addEventListener("keydown", handleKeyDown)
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown)
+        }
+    }, [undoEdit, redoEdit, canUndo, canRedo])
 
     return (
         <Container>

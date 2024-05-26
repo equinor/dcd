@@ -34,6 +34,7 @@ const useDataEdits = (): {
         }
     }, [projectCase, caseEdits])
 
+    // TODO: move this out, it runs every time the hook is called
     useEffect(() => {
         const storedCaseEdits = localStorage.getItem("caseEdits")
         const caseEditsArray = storedCaseEdits ? JSON.parse(storedCaseEdits) : []
