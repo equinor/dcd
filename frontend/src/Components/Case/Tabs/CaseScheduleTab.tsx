@@ -11,7 +11,7 @@ import {
     toMonthDate,
     formatDate,
 } from "../../../Utils/common"
-import InputSwitcher from "../../Input/InputSwitcher"
+import InputSwitcher from "../../Input/Components/InputSwitcher"
 import { useCaseContext } from "../../../Context/CaseContext"
 
 const CaseScheduleTab = () => {

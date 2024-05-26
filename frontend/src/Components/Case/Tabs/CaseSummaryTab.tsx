@@ -2,10 +2,9 @@ import {
     Dispatch, SetStateAction, useEffect, useState,
 } from "react"
 import Grid from "@mui/material/Grid"
-import CaseEditInput from "../../Input/CaseEditInput"
+import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
-import InputSwitcher from "../../Input/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
@@ -279,7 +278,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     return (
         <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={projectCase}
                     objectKey={projectCase?.npv}
                     label="NPV before tax"
@@ -292,7 +291,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                 />
             </Grid>
             <Grid item xs={12} md={6}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={projectCase}
                     objectKey={projectCase?.breakEven}
                     label="B/E before tax"

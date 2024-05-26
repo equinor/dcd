@@ -1,6 +1,6 @@
 import React from "react"
-import NumberInput from "./NumberInput"
-import InputSwitcher from "./InputSwitcher"
+import NumberInputWithValidation from "./Components/NumberInputWithValidation"
+import InputSwitcher from "./Components/InputSwitcher"
 import useDataEdits from "../../Hooks/useDataEdits"
 import { useCaseContext } from "../../Context/CaseContext"
 
@@ -18,7 +18,7 @@ interface CaseEditInputProps {
     max?: number;
 }
 
-const CaseEditInput: React.FC<CaseEditInputProps> = ({
+const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
     label,
     object,
     objectKey,
@@ -66,7 +66,7 @@ const CaseEditInput: React.FC<CaseEditInputProps> = ({
             label={label}
             value={`${value}`}
         >
-            <NumberInput
+            <NumberInputWithValidation
                 onSubmit={addToEditsAndSubmit}
                 defaultValue={value}
                 integer={integer}
@@ -80,4 +80,4 @@ const CaseEditInput: React.FC<CaseEditInputProps> = ({
     )
 }
 
-export default CaseEditInput
+export default SwitchableNumberInput

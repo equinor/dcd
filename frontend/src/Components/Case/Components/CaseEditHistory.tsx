@@ -56,11 +56,15 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
                             <Typography variant="overline">{formatTime(edit.timeStamp)}</Typography>
                         </Header>
                         <ChangeView>
-                            <PreviousValue>{edit.previousValue}</PreviousValue>
+                            <PreviousValue>
+                                {edit.previousDisplayValue ? edit.previousDisplayValue : edit.previousValue}
+                            </PreviousValue>
                             <div>
                                 <Icon data={arrow_forward} size={16} />
                             </div>
-                            <NextValue>{edit.newValue}</NextValue>
+                            <NextValue>
+                                {edit.newDisplayValue ? edit.newDisplayValue : edit.newValue}
+                            </NextValue>
                         </ChangeView>
                     </EditInstance>
                 ) : null))

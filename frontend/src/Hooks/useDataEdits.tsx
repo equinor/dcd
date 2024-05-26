@@ -12,6 +12,8 @@ const useDataEdits = (): {
         inputLabel: string,
         level: "project" | "case",
         objectId: string,
+        newDisplayValue?: string | number | undefined,
+        previousDisplayValue?: string | number | undefined,
     ) => void;
     undoEdit: () => void;
     redoEdit: () => void;
@@ -30,7 +32,7 @@ const useDataEdits = (): {
         if (projectCase) {
             setCaseEditsBelongingToCurrentCase(caseEdits.filter((edit) => edit.objectId === projectCase.id))
         }
-    }, [projectCase])
+    }, [projectCase, caseEdits])
 
     useEffect(() => {
         const storedCaseEdits = localStorage.getItem("caseEdits")
@@ -76,6 +78,8 @@ const useDataEdits = (): {
         inputLabel: string,
         level: "project" | "case",
         objectId: string,
+        newDisplayValue?: string | number | undefined,
+        previousDisplayValue?: string | number | undefined,
     ) => {
         if (newValue === previousValue) { return }
 
@@ -88,6 +92,8 @@ const useDataEdits = (): {
             timeStamp: new Date().getTime(),
             level,
             objectId,
+            newDisplayValue,
+            previousDisplayValue,
         }
 
         setCaseEdits((prevEdits) => [editInstanceObject, ...prevEdits])

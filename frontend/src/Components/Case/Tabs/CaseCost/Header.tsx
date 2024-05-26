@@ -2,7 +2,7 @@ import Grid from "@mui/material/Grid"
 import CapexFactorFeasibilityStudies from "./Inputs/CapexFactorFeasibilityStudies"
 import CapexFactorFeedStudies from "./Inputs/CapexFactorFeedStudies"
 import Maturity from "./Inputs/Maturity"
-import DateRangePicker from "../../../Input/DateRangePicker"
+import DateRangePicker from "../../../Input/TableDateRangePicker"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 
 interface HeaderProps {

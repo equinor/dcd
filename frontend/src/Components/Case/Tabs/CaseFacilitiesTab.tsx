@@ -7,11 +7,12 @@ import {
     NativeSelect, Typography, Input,
 } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import CaseEditInput from "../../Input/CaseEditInput"
-import InputSwitcher from "../../Input/InputSwitcher"
+import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
+import InputSwitcher from "../../Input/Components/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import { setNonNegativeNumberState } from "../../../Utils/common"
+import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 
 interface Props {
     topside: Components.Schemas.TopsideWithProfilesDto,
@@ -104,23 +105,13 @@ const CaseFacilitiesTab = ({
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={platformConceptValues[substructure?.concept]}
+                <SwitchableDropdownInput
+                    value={substructure?.concept}
+                    options={platformConceptValues}
+                    objectKey={substructure?.concept}
                     label="Platform concept"
-                >
-                    <NativeSelect
-                        id="platformConcept"
-                        label=""
-                        onChange={handleSubstructureConceptChange}
-                        value={substructure?.concept}
-                    >
-                        {
-                            Object.keys(platformConceptValues).map((key) => (
-                                <option key={key} value={key}>{platformConceptValues[Number(key)]}</option>
-                            ))
-                        }
-                    </NativeSelect>
-                </InputSwitcher>
+                    onSubmit={handleSubstructureConceptChange}
+                />
             </Grid>
             {substructure.concept === 1 && (
                 <Grid item xs={12} md={4}>
@@ -139,7 +130,7 @@ const CaseFacilitiesTab = ({
             )}
             <Grid item xs={12} md={4}>
 
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={topside}
                     objectKey={topside.facilityOpex}
                     label="Facility opex"
@@ -151,7 +142,7 @@ const CaseFacilitiesTab = ({
 
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={surf}
                     objectKey={surf.cessationCost}
                     label="Cessation cost"
@@ -165,7 +156,7 @@ const CaseFacilitiesTab = ({
                 <Typography variant="h4">Topside</Typography>
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={topside}
                     objectKey={topside.dryWeight}
                     label="Topside dry weight"
@@ -178,7 +169,7 @@ const CaseFacilitiesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     label="Facilities availability"
                     value={projectCase.facilitiesAvailability ?? 0 * 100}
                     integer
@@ -187,7 +178,7 @@ const CaseFacilitiesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={topside}
                     objectKey={topside.peakElectricityImported}
                     label="Peak electricity imported"
@@ -201,7 +192,7 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
 
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={topside}
                     objectKey={topside.oilCapacity}
                     label="Oil capacity"
@@ -214,7 +205,7 @@ const CaseFacilitiesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={topside}
                     objectKey={topside.gasCapacity}
                     label="Gas capacity"
@@ -227,7 +218,7 @@ const CaseFacilitiesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={topside}
                     objectKey={topside.waterInjectionCapacity}
                     label="Water injection capacity"
@@ -241,7 +232,7 @@ const CaseFacilitiesTab = ({
                 <Typography variant="h4">Platform wells</Typography>
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={topside}
                     objectKey={topside.producerCount}
                     label="Producer count"
@@ -253,7 +244,7 @@ const CaseFacilitiesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={topside}
                     objectKey={topside.gasInjectorCount}
                     label="Gas injector count"
@@ -265,7 +256,7 @@ const CaseFacilitiesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={topside}
                     objectKey={topside.waterInjectorCount}
                     label="Water injector count"
@@ -280,7 +271,7 @@ const CaseFacilitiesTab = ({
                 <Typography variant="h4">SURF</Typography>
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={surf}
                     objectKey={surf.templateCount}
                     label="Templates"
@@ -292,7 +283,7 @@ const CaseFacilitiesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={surf}
                     objectKey={surf.riserCount}
                     label="Risers"
@@ -304,7 +295,7 @@ const CaseFacilitiesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={surf}
                     objectKey={surf.infieldPipelineSystemLength}
                     label="Production lines length"
@@ -317,7 +308,7 @@ const CaseFacilitiesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={surf}
                     objectKey={surf.umbilicalSystemLength}
                     label="Umbilical system length"
@@ -330,29 +321,19 @@ const CaseFacilitiesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={productionFlowlineValues[surf?.productionFlowline]}
+                <SwitchableDropdownInput
+                    value={surf.productionFlowline}
+                    options={productionFlowlineValues}
+                    objectKey={surf.productionFlowline}
                     label="Production flowline"
-                >
-                    <NativeSelect
-                        id="productionFlowline"
-                        label=""
-                        onChange={handleProductionFlowlineChange}
-                        value={surf?.productionFlowline}
-                    >
-                        {
-                            Object.keys(productionFlowlineValues).map((key) => (
-                                <option key={key} value={key}>{productionFlowlineValues[Number(key)]}</option>
-                            ))
-                        }
-                    </NativeSelect>
-                </InputSwitcher>
+                    onSubmit={handleProductionFlowlineChange}
+                />
             </Grid>
             <Grid item xs={12}>
                 <Typography variant="h4">Subsea wells</Typography>
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={surf}
                     objectKey={surf.producerCount}
                     label="Producer count"
@@ -362,7 +343,7 @@ const CaseFacilitiesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={surf}
                     objectKey={surf.gasInjectorCount}
                     label="Gas injector count"
@@ -374,7 +355,7 @@ const CaseFacilitiesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={surf}
                     objectKey={surf.waterInjectorCount}
                     label="Water injector count"
@@ -389,7 +370,7 @@ const CaseFacilitiesTab = ({
                 <Typography variant="h4">Transport</Typography>
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={transport}
                     objectKey={transport.oilExportPipelineLength}
                     label="Oil export pipeline length"
@@ -402,7 +383,7 @@ const CaseFacilitiesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={transport}
                     objectKey={transport.gasExportPipelineLength}
                     label="Gas export pipeline length"
@@ -418,7 +399,7 @@ const CaseFacilitiesTab = ({
                 <Typography variant="h4">Substructure</Typography>
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={substructure}
                     objectKey={substructure.dryWeight}
                     label="Substructure dry weight"

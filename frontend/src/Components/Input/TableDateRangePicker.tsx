@@ -2,7 +2,7 @@ import React from "react"
 import Grid from "@mui/material/Grid"
 import { Typography } from "@equinor/eds-core-react"
 import RangeButton from "../Buttons/RangeButton"
-import CaseNumberInput from "./NumberInput"
+import CaseNumberInput from "./Components/NumberInputWithValidation"
 
 interface DateRangePickerProps {
     setStartYear: (startYear: number) => void

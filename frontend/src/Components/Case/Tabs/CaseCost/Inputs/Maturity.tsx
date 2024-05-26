@@ -1,6 +1,6 @@
 import React, { ChangeEventHandler } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
-import InputSwitcher from "../../../../Input/InputSwitcher"
+import InputSwitcher from "../../../../Input/Components/InputSwitcher"
 import { useCaseContext } from "../../../../../Context/CaseContext"
 
 const Maturity: React.FC = () => {

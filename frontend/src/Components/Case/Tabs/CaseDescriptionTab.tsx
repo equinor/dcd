@@ -1,12 +1,9 @@
-import {
-    ChangeEventHandler,
-    useEffect,
-} from "react"
-import { NativeSelect, Typography } from "@equinor/eds-core-react"
+import { ChangeEventHandler } from "react"
+import { Typography } from "@equinor/eds-core-react"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
-import CaseEditInput from "../../Input/CaseEditInput"
-import InputSwitcher from "../../Input/InputSwitcher"
+import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
+import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import Gallery from "../../Gallery/Gallery"
 import { useCaseContext } from "../../../Context/CaseContext"
 import { useAppContext } from "../../../Context/AppContext"
@@ -102,7 +99,7 @@ const CaseDescriptionTab = () => {
                     : <MarkdownViewer value={projectCase.description} />}
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={projectCaseEdited}
                     objectKey={projectCaseEdited?.producerCount}
                     label="Production wells"
@@ -115,7 +112,7 @@ const CaseDescriptionTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
 
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={projectCaseEdited}
                     objectKey={projectCaseEdited?.waterInjectorCount}
                     label="Water injector wells"
@@ -128,7 +125,7 @@ const CaseDescriptionTab = () => {
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={projectCaseEdited}
                     objectKey={projectCaseEdited?.gasInjectorCount}
                     label="Gas injector wells"
@@ -140,41 +137,25 @@ const CaseDescriptionTab = () => {
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={productionStrategyOptions[projectCase?.productionStrategyOverview]}
+                <SwitchableDropdownInput
+                    value={projectCase.productionStrategyOverview}
+                    options={productionStrategyOptions}
+                    objectKey={projectCaseEdited ? projectCaseEdited.productionStrategyOverview : projectCase.productionStrategyOverview}
                     label="Production strategy overview"
-                >
-                    <NativeSelect
-                        id="productionStrategy"
-                        label=""
-                        onChange={handleProductionStrategyChange}
-                        value={projectCaseEdited ? projectCaseEdited.productionStrategyOverview : projectCase.productionStrategyOverview}
-                    >
-                        {Object.entries(productionStrategyOptions).map(([value, label]) => (
-                            <option key={value} value={value}>{label}</option>
-                        ))}
-                    </NativeSelect>
-                </InputSwitcher>
+                    onSubmit={handleProductionStrategyChange}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={artificialLiftOptions[projectCase?.artificialLift]}
+                <SwitchableDropdownInput
+                    value={projectCase.artificialLift}
+                    options={artificialLiftOptions}
+                    objectKey={projectCaseEdited ? projectCaseEdited.artificialLift : projectCase.artificialLift}
                     label="Artificial lift"
-                >
-                    <NativeSelect
-                        id="artificialLift"
-                        label=""
-                        onChange={handleArtificialLiftChange}
-                        value={projectCaseEdited ? projectCaseEdited.artificialLift : projectCase.artificialLift}
-                    >
-                        {Object.entries(artificialLiftOptions).map(([value, label]) => (
-                            <option key={value} value={value}>{label}</option>
-                        ))}
-                    </NativeSelect>
-                </InputSwitcher>
+                    onSubmit={handleArtificialLiftChange}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     object={projectCase}
                     objectKey={projectCase.facilitiesAvailability}
                     label="Facilities availability"
