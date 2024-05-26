@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useRef } from "react"
 import { Typography, Icon } from "@equinor/eds-core-react"
 import { arrow_forward } from "@equinor/eds-icons"
 import styled from "styled-components"
@@ -45,29 +45,45 @@ interface CaseEditHistoryProps {
 }
 const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
     const { caseEdits, projectCase, editIndexes } = useCaseContext()
+    const activeRef = useRef<HTMLDivElement | null>(null)
+
+    useEffect(() => {
+        if (activeRef.current) {
+            activeRef.current.scrollIntoView({ behavior: "smooth", block: "center" })
+        }
+    }, [caseEdits, editIndexes, projectCase])
 
     return (
         <>
             {
-                caseEdits.map((edit) => (edit.level === "case" && edit.objectId === caseId ? (
-                    <EditInstance key={edit.uuid} $isActive={edit.uuid === getCurrentEditId(editIndexes, projectCase)}>
-                        <Header>
-                            <Typography variant="caption">{String(edit.inputLabel)}</Typography>
-                            <Typography variant="overline">{formatTime(edit.timeStamp)}</Typography>
-                        </Header>
-                        <ChangeView>
-                            <PreviousValue>
-                                {edit.previousDisplayValue ? edit.previousDisplayValue : edit.previousValue}
-                            </PreviousValue>
-                            <div>
-                                <Icon data={arrow_forward} size={16} />
-                            </div>
-                            <NextValue>
-                                {edit.newDisplayValue ? edit.newDisplayValue : edit.newValue}
-                            </NextValue>
-                        </ChangeView>
-                    </EditInstance>
-                ) : null))
+                caseEdits.map((edit) => {
+                    const isActive = edit.uuid === getCurrentEditId(editIndexes, projectCase)
+                    return (
+                        edit.level === "case" && edit.objectId === caseId ? (
+                            <EditInstance
+                                key={edit.uuid}
+                                $isActive={isActive}
+                                ref={isActive ? activeRef : null}
+                            >
+                                <Header>
+                                    <Typography variant="caption">{String(edit.inputLabel)}</Typography>
+                                    <Typography variant="overline">{formatTime(edit.timeStamp)}</Typography>
+                                </Header>
+                                <ChangeView>
+                                    <PreviousValue>
+                                        {edit.previousDisplayValue ? edit.previousDisplayValue : edit.previousValue}
+                                    </PreviousValue>
+                                    <div>
+                                        <Icon data={arrow_forward} size={16} />
+                                    </div>
+                                    <NextValue>
+                                        {edit.newDisplayValue ? edit.newDisplayValue : edit.newValue}
+                                    </NextValue>
+                                </ChangeView>
+                            </EditInstance>
+                        ) : null
+                    )
+                })
             }
         </>
     )
