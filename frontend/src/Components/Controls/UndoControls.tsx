@@ -51,10 +51,11 @@ const UndoControls: React.FC = () => {
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
-            const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0
+            const isMac = navigator.userAgent.indexOf("Mac OS X") !== -1
             const undoKey = isMac ? event.metaKey && event.key === "z" : event.ctrlKey && event.key === "z"
             const redoKey = isMac ? event.metaKey && event.key === "y" : event.ctrlKey && event.key === "y"
 
+            console.log("you are using a mac: ", isMac) // todo: remove when someone with a pc gets to test this
             if (undoKey) {
                 event.preventDefault()
                 event.stopPropagation()
