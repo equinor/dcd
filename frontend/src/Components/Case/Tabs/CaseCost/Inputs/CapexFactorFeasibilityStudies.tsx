@@ -1,5 +1,4 @@
 import React from "react"
-import InputSwitcher from "../../../../Input/Components/InputSwitcher"
 import SwitchableNumberInput from "../../../../Input/SwitchableNumberInput"
 import { useCaseContext } from "../../../../../Context/CaseContext"
 
@@ -21,7 +20,6 @@ const CapexFactorFeasibilityStudies: React.FC = () => {
     }
     return (
         <SwitchableNumberInput
-            object={projectCase}
             objectKey={projectCase?.capexFactorFeasibilityStudies}
             label="CAPEX factor feasibility studies"
             onSubmit={handleCaseFeasibilityChange}

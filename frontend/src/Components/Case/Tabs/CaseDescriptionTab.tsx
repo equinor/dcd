@@ -8,10 +8,12 @@ import Gallery from "../../Gallery/Gallery"
 import { useCaseContext } from "../../../Context/CaseContext"
 import { useAppContext } from "../../../Context/AppContext"
 import { setNonNegativeNumberState } from "../../../Utils/common"
+import useDataEdits from "../../../Hooks/useDataEdits"
 
 const CaseDescriptionTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
     const { editMode } = useAppContext()
+    const { addEdit } = useDataEdits()
 
     if (!projectCase) { return null }
 
@@ -34,6 +36,7 @@ const CaseDescriptionTab = () => {
         if (projectCaseEdited) {
             const updatedProjectCase = { ...projectCaseEdited, description: value }
             setProjectCaseEdited(updatedProjectCase)
+            addEdit(value, projectCaseEdited.description, "description", "Description", "case", projectCaseEdited.id)
         }
     }
 
@@ -87,7 +90,7 @@ const CaseDescriptionTab = () => {
                     ? (
                         <MarkdownEditor
                             menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
-                            onInput={(markdown) => {
+                            onBlur={(markdown) => {
                                 // eslint-disable-next-line no-underscore-dangle
                                 const value = (markdown as any).target._value
                                 handleDescriptionChange(value)
@@ -100,7 +103,6 @@ const CaseDescriptionTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={projectCaseEdited}
                     objectKey={projectCaseEdited?.producerCount}
                     label="Production wells"
                     onSubmit={(value) => setNonNegativeNumberState(value, "producerCount", projectCaseEdited, setProjectCaseEdited)}
@@ -113,7 +115,6 @@ const CaseDescriptionTab = () => {
             <Grid item xs={12} md={4}>
 
                 <SwitchableNumberInput
-                    object={projectCaseEdited}
                     objectKey={projectCaseEdited?.waterInjectorCount}
                     label="Water injector wells"
                     onSubmit={(value) => setNonNegativeNumberState(value, "waterInjectorCount", projectCaseEdited, setProjectCaseEdited)}
@@ -126,7 +127,6 @@ const CaseDescriptionTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={projectCaseEdited}
                     objectKey={projectCaseEdited?.gasInjectorCount}
                     label="Gas injector wells"
                     onSubmit={(value) => setNonNegativeNumberState(value, "gasInjectorCount", projectCaseEdited, setProjectCaseEdited)}
@@ -156,7 +156,6 @@ const CaseDescriptionTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={projectCase}
                     objectKey={projectCase.facilitiesAvailability}
                     label="Facilities availability"
                     onSubmit={handleFacilitiesAvailabilityChange}

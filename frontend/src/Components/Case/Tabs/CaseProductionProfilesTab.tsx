@@ -366,7 +366,6 @@ const CaseProductionProfilesTab = ({
         <Grid container spacing={2}>
             <Grid item xs={12} md={6} lg={3}>
                 <SwitchableNumberInput
-                    object={projectCase}
                     objectKey={projectCase?.facilitiesAvailability}
                     label="Facilities availability"
                     onSubmit={handleCaseFacilitiesAvailabilityChange}
@@ -426,7 +425,6 @@ const CaseProductionProfilesTab = ({
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <SwitchableNumberInput
-                    object={projectCase}
                     objectKey={projectCase?.producerCount}
                     label="Oil producer wells"
                     onSubmit={() => { }}
@@ -437,7 +435,6 @@ const CaseProductionProfilesTab = ({
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <SwitchableNumberInput
-                    object={projectCase}
                     objectKey={projectCase?.waterInjectorCount}
                     label="Water injector wells"
                     onSubmit={() => { }}
@@ -448,7 +445,6 @@ const CaseProductionProfilesTab = ({
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <SwitchableNumberInput
-                    object={projectCase}
                     objectKey={projectCase?.gasInjectorCount}
                     label="Gas injector wells"
                     onSubmit={() => { }}

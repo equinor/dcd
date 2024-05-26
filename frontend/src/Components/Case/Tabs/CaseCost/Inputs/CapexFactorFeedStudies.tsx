@@ -21,7 +21,6 @@ const TotalStudyCosts: React.FC = () => {
 
     return (
         <SwitchableNumberInput
-            object={projectCase}
             objectKey={projectCase?.capexFactorFEEDStudies}
             label="CAPEX factor FEED studies"
             onSubmit={handleCaseFEEDChange}

@@ -131,7 +131,6 @@ const CaseFacilitiesTab = ({
             <Grid item xs={12} md={4}>
 
                 <SwitchableNumberInput
-                    object={topside}
                     objectKey={topside.facilityOpex}
                     label="Facility opex"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "facilityOpex", topside, setTopside)}
@@ -143,7 +142,6 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={surf}
                     objectKey={surf.cessationCost}
                     label="Cessation cost"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "cessationCost", surf, setSurf)}
@@ -157,7 +155,6 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={topside}
                     objectKey={topside.dryWeight}
                     label="Topside dry weight"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "dryWeight", topside, setTopside)}
@@ -179,7 +176,6 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={topside}
                     objectKey={topside.peakElectricityImported}
                     label="Peak electricity imported"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "peakElectricityImported", topside, setTopside)}
@@ -193,7 +189,6 @@ const CaseFacilitiesTab = ({
             <Grid item xs={12} md={4}>
 
                 <SwitchableNumberInput
-                    object={topside}
                     objectKey={topside.oilCapacity}
                     label="Oil capacity"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "oilCapacity", topside, setTopside)}
@@ -206,7 +201,6 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={topside}
                     objectKey={topside.gasCapacity}
                     label="Gas capacity"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "gasCapacity", topside, setTopside)}
@@ -219,7 +213,6 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={topside}
                     objectKey={topside.waterInjectionCapacity}
                     label="Water injection capacity"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "waterInjectionCapacity", topside, setTopside)}
@@ -233,7 +226,6 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={topside}
                     objectKey={topside.producerCount}
                     label="Producer count"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "producerCount", topside, setTopside)}
@@ -245,7 +237,6 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={topside}
                     objectKey={topside.gasInjectorCount}
                     label="Gas injector count"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "gasInjectorCount", topside, setTopside)}
@@ -257,7 +248,6 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={topside}
                     objectKey={topside.waterInjectorCount}
                     label="Water injector count"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "waterInjectorCount", topside, setTopside)}
@@ -272,7 +262,6 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={surf}
                     objectKey={surf.templateCount}
                     label="Templates"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "templateCount", surf, setSurf)}
@@ -284,7 +273,6 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={surf}
                     objectKey={surf.riserCount}
                     label="Risers"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "riserCount", surf, setSurf)}
@@ -296,7 +284,6 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={surf}
                     objectKey={surf.infieldPipelineSystemLength}
                     label="Production lines length"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "infieldPipelineSystemLength", surf, setSurf)}
@@ -309,7 +296,6 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={surf}
                     objectKey={surf.umbilicalSystemLength}
                     label="Umbilical system length"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "umbilicalSystemLength", surf, setSurf)}
@@ -334,7 +320,6 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={surf}
                     objectKey={surf.producerCount}
                     label="Producer count"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "producerCount", surf, setSurf)}
@@ -344,7 +329,6 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={surf}
                     objectKey={surf.gasInjectorCount}
                     label="Gas injector count"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "gasInjectorCount", surf, setSurf)}
@@ -356,7 +340,6 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={surf}
                     objectKey={surf.waterInjectorCount}
                     label="Water injector count"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "waterInjectorCount", surf, setSurf)}
@@ -371,7 +354,6 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={transport}
                     objectKey={transport.oilExportPipelineLength}
                     label="Oil export pipeline length"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "oilExportPipelineLength", transport, setTransport)}
@@ -384,7 +366,6 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={transport}
                     objectKey={transport.gasExportPipelineLength}
                     label="Gas export pipeline length"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "gasExportPipelineLength", transport, setTransport)}
@@ -400,7 +381,6 @@ const CaseFacilitiesTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    object={substructure}
                     objectKey={substructure.dryWeight}
                     label="Substructure dry weight"
                     onSubmit={handleSubstructureDryweightChange}

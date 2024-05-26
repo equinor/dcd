@@ -6,7 +6,6 @@ import { useCaseContext } from "../../Context/CaseContext"
 
 interface CaseEditInputProps {
     label: string;
-    object?: object;
     objectKey?: string | number
     onSubmit?: (value: number) => void;
     value: number | undefined;
@@ -20,7 +19,6 @@ interface CaseEditInputProps {
 
 const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
     label,
-    object,
     objectKey,
     onSubmit, // this will be obsolete when we introduce autosave.
     value,
