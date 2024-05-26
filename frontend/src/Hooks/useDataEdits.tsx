@@ -97,7 +97,15 @@ const useDataEdits = (): {
             previousDisplayValue,
         }
 
-        setCaseEdits((prevEdits) => [editInstanceObject, ...prevEdits])
+        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, projectCase))
+        let edits = caseEditsBelongingToCurrentCase
+
+        if (currentEditIndex > 0) {
+            edits = caseEditsBelongingToCurrentCase.slice(currentEditIndex)
+        }
+
+        edits = [editInstanceObject, ...edits]
+        setCaseEdits(edits)
         updateEditIndex(editInstanceObject.uuid)
     }
 
