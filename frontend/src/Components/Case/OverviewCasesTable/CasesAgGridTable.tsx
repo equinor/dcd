@@ -19,6 +19,7 @@ import { ColDef } from "@ag-grid-community/core"
 import { casePath, productionStrategyOverviewToString } from "../../../Utils/common"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
+import ReferenceCaseIcon from "../Components/ReferenceCaseIcon"
 
 const StyledIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
@@ -27,6 +28,12 @@ const StyledIcon = styled(Icon)`
 `
 const AgTableContainer = styled.div`
     overflow: auto;
+`
+
+const Wrapper = styled.div`
+    justify-content: center;
+    align-items: center;
+    display: inline-flex;
 `
 
 interface TableCase {
@@ -101,14 +108,12 @@ const CasesAgGridTable = ({
     }
 
     const nameWithReferenceCase = (p: any) => (
-        <>
-            <Button as="span" variant="ghost" className="GhostButton" onClick={() => selectCase(p)}>{p.value}</Button>
+        <Wrapper>
             {p.node.data.referenceCaseId === p.node.data.id && (
-                <Tooltip title="Reference case">
-                    <StyledIcon data={bookmark_filled} size={16} />
-                </Tooltip>
+                <ReferenceCaseIcon iconPlacement="casesTable" />
             )}
-        </>
+            <Button as="span" variant="ghost" className="GhostButton" onClick={() => selectCase(p)}>{p.value}</Button>
+        </Wrapper>
     )
 
     const [columnDefs] = useState<ColDef[]>([

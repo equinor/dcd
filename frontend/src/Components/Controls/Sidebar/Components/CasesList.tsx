@@ -3,12 +3,20 @@ import { Grid } from "@mui/material"
 import { Tooltip } from "@equinor/eds-core-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import styled from "styled-components"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { productionStrategyOverviewToString, casePath } from "../../../../Utils/common"
 import { TimelineElement } from "../Sidebar"
 import { useAppContext } from "../../../../Context/AppContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import ReferenceCaseIcon from "../../../Case/Components/ReferenceCaseIcon"
+
+const Wrapper = styled.div`
+    justify-content: center;
+    align-items: center;
+    display: inline-flex;
+    margin-left: 1.1rem;
+`
 
 const CasesList: React.FC = () => {
     const { project } = useProjectContext()
@@ -39,18 +47,19 @@ const CasesList: React.FC = () => {
                     key={`menu - item - ${index + 1} `}
                     data-timeline-active={location.pathname.includes(projectCase.id)}
                 >
-                    <ReferenceCaseIcon
-                        project={project}
-                        projectCase={projectCase}
-                    />
                     <Tooltip
                         title={`${projectCase.name ? projectCase.name : "Untitled"} - Strategy: ${productionStrategyOverviewToString(projectCase.productionStrategyOverview)}`}
                         placement="right"
                     >
                         <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.id)}>
-                            {!sidebarOpen && `#${index + 1}`}
-                            {(sidebarOpen && projectCase.name) && projectCase.name}
-                            {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
+                            <Wrapper>
+                                {project?.referenceCaseId === projectCase?.id && (
+                                    <ReferenceCaseIcon iconPlacement="sideBar" />
+                                )}
+                                {!sidebarOpen && `#${index + 1}`}
+                                {(sidebarOpen && projectCase.name) && projectCase.name}
+                                {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
+                            </Wrapper>
                         </TimelineElement>
                     </Tooltip>
                 </Grid>

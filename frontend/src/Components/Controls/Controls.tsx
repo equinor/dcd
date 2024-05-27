@@ -16,8 +16,11 @@ import {
     keyboard_tab,
     more_vertical,
     arrow_back,
+    bookmark_filled,
 } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid"
+import { tokens } from "@equinor/eds-tokens"
+import styled from "styled-components"
 import { projectPath } from "../../Utils/common"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { useCaseContext } from "../../Context/CaseContext"
@@ -26,6 +29,7 @@ import CaseDropMenu from "../Case/Components/CaseDropMenu"
 import { GetProjectService } from "../../Services/ProjectService"
 import { useAppContext } from "../../Context/AppContext"
 import useDataEdits from "../../Hooks/useDataEdits"
+import HistoryButton from "../Buttons/HistoryButton"
 import UndoControls from "./UndoControls"
 import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
 import ReferenceCaseIcon from "../Case/Components/ReferenceCaseIcon"
@@ -144,10 +148,9 @@ const Controls = () => {
                     )
                     : (
                         <>
-                            <ReferenceCaseIcon
-                                project={project}
-                                projectCase={projectCase}
-                            />
+                            {project?.referenceCaseId === projectCase?.id && (
+                                <ReferenceCaseIcon />
+                            )}
                             <Typography variant="h4">
                                 {projectCase ? projectCase.name : project?.name}
                             </Typography>

@@ -5,19 +5,45 @@ import styled from "styled-components"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
-    margin-right: 0.5rem;
-    margin-bottom: -0.2rem;
+    margin-right: 0.2rem;
 `
 
-const ReferenceCaseIcon = (project: any, projectCase: any) => {
-    if (project?.referenceCaseId === projectCase?.id) {
+const CasesTableIcon = styled(Icon)`
+    color: ${tokens.colors.text.static_icons__secondary.rgba};
+    margin-right: -0.5rem;
+    margin-left: -0.5rem;
+`
+
+const SideBarIcon = styled(Icon)`
+    color: ${tokens.colors.text.static_icons__secondary.rgba};
+    margin-right: 0.2rem;
+    margin-left: -1.2rem;
+`
+
+interface Props {
+    iconPlacement?: string
+}
+
+const ReferenceCaseIcon = ({ iconPlacement }: Props) => {
+    if (iconPlacement === "sideBar") {
         return (
             <Tooltip title="Reference case">
-                <MenuIcon data={bookmark_filled} size={18} />
+                <SideBarIcon data={bookmark_filled} size={16} />
             </Tooltip>
         )
     }
-    return <></>
+    if (iconPlacement === "casesTable") {
+        return (
+            <Tooltip title="Reference case">
+                <CasesTableIcon data={bookmark_filled} size={16} />
+            </Tooltip>
+        )
+    }
+    return (
+        <Tooltip title="Reference case">
+            <MenuIcon data={bookmark_filled} size={18} />
+        </Tooltip>
+    )
 }
 
 export default ReferenceCaseIcon
