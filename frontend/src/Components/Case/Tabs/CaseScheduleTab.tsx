@@ -1,7 +1,6 @@
 import {
     ChangeEventHandler,
 } from "react"
-import { Input } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import {
     dateFromString,
@@ -9,9 +8,7 @@ import {
     isDefaultDate,
     isDefaultDateString,
     toMonthDate,
-    formatDate,
 } from "../../../Utils/common"
-import InputSwitcher from "../../Input/Components/InputSwitcher"
 import { useCaseContext } from "../../../Context/CaseContext"
 import SwitchableDateInput from "../../Input/SwitchableDateInput"
 
