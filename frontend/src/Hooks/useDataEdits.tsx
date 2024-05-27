@@ -98,9 +98,9 @@ const useDataEdits = (): {
         }
 
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, projectCase))
-        let edits = caseEditsBelongingToCurrentCase
+        const caseEditsNotBelongingToCurrentCase = caseEdits.filter((edit) => edit.objectId !== objectId)
 
-        console.log("Removing edits from index", currentEditIndex)
+        let edits = caseEditsBelongingToCurrentCase
 
         if (currentEditIndex > 0) {
             edits = caseEditsBelongingToCurrentCase.slice(currentEditIndex)
@@ -110,7 +110,7 @@ const useDataEdits = (): {
             edits = []
         }
 
-        edits = [editInstanceObject, ...edits]
+        edits = [editInstanceObject, ...edits, ...caseEditsNotBelongingToCurrentCase]
         setCaseEdits(edits)
         updateEditIndex(editInstanceObject.uuid)
     }
