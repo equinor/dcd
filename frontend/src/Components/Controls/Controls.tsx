@@ -17,6 +17,7 @@ import {
     more_vertical,
     arrow_back,
     bookmark_filled,
+    bookmark_outlined,
 } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid"
 import { tokens } from "@equinor/eds-tokens"
@@ -31,8 +32,13 @@ import { useAppContext } from "../../Context/AppContext"
 import useDataEdits from "../../Hooks/useDataEdits"
 import HistoryButton from "../Buttons/HistoryButton"
 import UndoControls from "./UndoControls"
-import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
+import { EMPTY_GUID, PROJECT_CLASSIFICATION } from "../../Utils/constants"
 import ReferenceCaseIcon from "../Case/Components/ReferenceCaseIcon"
+
+const MenuIcon = styled(Icon)`
+    color: ${tokens.colors.text.static_icons__secondary.rgba};
+    margin-right: 0.2rem;
+`
 
 const Controls = () => {
     const navigate = useNavigate()
@@ -59,6 +65,24 @@ const Controls = () => {
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
+
+    const handleReferenceCaseChange = (referenceCaseId: string) => {
+        if (project && projectEdited) {
+            console.log(referenceCaseId)
+            const newProject = {
+                ...project,
+            }
+            console.log(newProject.referenceCaseId)
+            addEdit(referenceCaseId, newProject.referenceCaseId, "referenceCaseId", "referenceCaseId", "project", newProject.id)
+            if (newProject.referenceCaseId === referenceCaseId) {
+                newProject.referenceCaseId = EMPTY_GUID
+            } else {
+                newProject.referenceCaseId = referenceCaseId
+            }
+            console.log(newProject)
+            setProjectEdited(newProject)
+        }
+    }
 
     const handleCaseNameChange = (name: string) => {
         if (projectCase) {
@@ -139,17 +163,36 @@ const Controls = () => {
             <Grid item xs display="flex" alignItems="center" gap={1}>
                 {editMode && projectCase
                     ? (
-                        <Input // todo: should not be allowed to be empty
-                            ref={nameInput}
-                            type="text"
-                            defaultValue={projectCase && projectCase.name}
-                            onBlur={() => handleCaseNameChange(nameInput.current.value)}
-                        />
+                        <>
+                            {project?.referenceCaseId !== projectCase.id ? (
+                                <Tooltip title="Set as reference case">
+                                    <Button variant="ghost" onClick={() => handleReferenceCaseChange(projectCase.id)}>
+                                        <MenuIcon data={bookmark_outlined} size={18} />
+                                    </Button>
+                                </Tooltip>
+                            )
+                                : (
+                                    <Tooltip title="Remove as reference case" onClick={() => handleReferenceCaseChange(projectCase.id)}>
+                                        <Button variant="ghost" onClick={() => handleReferenceCaseChange(projectCase.id)}>
+                                            <MenuIcon data={bookmark_filled} size={18} />
+                                        </Button>
+                                    </Tooltip>
+                                )}
+                            <Input // todo: should not be allowed to be empty
+                                ref={nameInput}
+                                type="text"
+                                defaultValue={projectCase && projectCase.name}
+                                onBlur={() => handleCaseNameChange(nameInput.current.value)}
+                            />
+                        </>
                     )
                     : (
                         <>
                             {project?.referenceCaseId === projectCase?.id && (
-                                <ReferenceCaseIcon />
+                                <ReferenceCaseIcon
+                                    iconPlacement="caseView"
+                                    iconData={bookmark_filled}
+                                />
                             )}
                             <Typography variant="h4">
                                 {projectCase ? projectCase.name : project?.name}
