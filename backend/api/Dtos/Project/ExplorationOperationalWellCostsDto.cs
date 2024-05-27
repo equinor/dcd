@@ -18,6 +18,4 @@ public class ExplorationOperationalWellCostsDto
     public double AppraisalRigMobDemob { get; set; }
     [Required]
     public double AppraisalProjectDrillingCosts { get; set; }
-    [Required]
-    public bool HasChanges { get; set; }
 }

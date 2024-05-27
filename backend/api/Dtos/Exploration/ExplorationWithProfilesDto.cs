@@ -31,15 +31,28 @@ public class ExplorationWithProfilesDto
     [Required]
     public List<ExplorationWellDto>? ExplorationWells { get; set; } = [];
 }
+
 public class ExplorationWellCostProfileDto : TimeSeriesCostDto
 {
+
 }
 public class AppraisalWellCostProfileDto : TimeSeriesCostDto
 {
+
 }
 public class SidetrackCostProfileDto : TimeSeriesCostDto
 {
+
 }
-public class GAndGAdminCostDto : TimeSeriesCostDto { }
-public class SeismicAcquisitionAndProcessingDto : TimeSeriesCostDto { }
-public class CountryOfficeCostDto : TimeSeriesCostDto { }
+public class GAndGAdminCostDto : TimeSeriesCostDto
+{
+
+}
+public class SeismicAcquisitionAndProcessingDto : TimeSeriesCostDto
+{
+
+}
+public class CountryOfficeCostDto : TimeSeriesCostDto
+{
+
+}

@@ -71,8 +71,6 @@ public class ProjectDto
     public double DailyEmissionFromDrillingRig { get; set; }
     [Required]
     public double AverageDevelopmentDrillingDays { get; set; }
-    [Required]
-    public bool HasChanges { get; set; }
 
     public bool Equals(ProjectDto projectDto)
     {

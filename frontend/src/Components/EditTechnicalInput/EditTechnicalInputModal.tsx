@@ -56,17 +56,6 @@ const EditTechnicalInputModal = () => {
             dto.developmentOperationalWellCostsDto = developmentOperationalWellCosts
 
             const wellDtos = [...explorationWells, ...wellProjectWells]
-            const originalWells = [...originalExplorationWells, ...originalWellProjectWells]
-            if (wellDtos?.length > 0) {
-                wellDtos.forEach((wellDto, index) => {
-                    if (wellDto.id !== EMPTY_GUID) {
-                        const originalWell = originalWells.find((ow) => ow.id === wellDto.id)
-                        if (!(JSON.stringify(wellDto) === JSON.stringify(originalWell))) {
-                            wellDtos![index].hasChanges = true
-                        }
-                    }
-                })
-            }
 
             dto.createWellDtos = wellDtos.filter((w) => w.id === EMPTY_GUID || w.id === undefined || w.id === null || w.id === "")
             dto.updateWellDtos = wellDtos.filter((w) => w.id !== EMPTY_GUID && w.id !== undefined && w.id !== null && w.id !== "")

@@ -425,7 +425,6 @@ declare namespace Components {
             rigMobDemob: number; // double
             annualWellInterventionCostPerWell: number; // double
             pluggingAndAbandonment: number; // double
-            hasChanges: boolean;
         }
         export interface DrainageStrategyDto {
             id: string; // uuid
@@ -499,7 +498,6 @@ declare namespace Components {
             explorationProjectDrillingCosts: number; // double
             appraisalRigMobDemob: number; // double
             appraisalProjectDrillingCosts: number; // double
-            hasChanges: boolean;
         }
         export interface ExplorationWellCostProfileDto {
             id: string; // uuid
@@ -513,7 +511,6 @@ declare namespace Components {
             drillingSchedule: DrillingScheduleDto;
             explorationId: string; // uuid
             wellId: string; // uuid
-            hasChanges?: boolean;
         }
         export interface ExplorationWithProfilesDto {
             id: string; // uuid
@@ -785,7 +782,6 @@ declare namespace Components {
             cO2Vented: number; // double
             dailyEmissionFromDrillingRig: number; // double
             averageDevelopmentDrillingDays: number; // double
-            hasChanges: boolean;
         }
         export type ProjectPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
         export interface ProjectWithGeneratedProfilesDto {
@@ -929,7 +925,6 @@ declare namespace Components {
             concept: Concept /* int32 */;
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
-            hasChanges?: boolean;
         }
         export interface SurfCessationCostProfileDto {
             id: string; // uuid
@@ -1214,7 +1209,6 @@ declare namespace Components {
             prospVersion?: string | null; // date-time
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
-            hasChanges?: boolean;
         }
         export interface UpdateAdditionalOPEXCostProfile {
             startYear?: number; // int32
@@ -1547,7 +1541,6 @@ declare namespace Components {
             wellCategory: WellCategory /* int32 */;
             wellCost: number; // double
             drillingDays: number; // double
-            hasChanges?: boolean;
             hasCostChanges?: boolean;
         }
         export interface WellInterventionCostProfileDto {
@@ -1578,7 +1571,6 @@ declare namespace Components {
             drillingSchedule: DrillingScheduleDto;
             wellProjectId: string; // uuid
             wellId: string; // uuid
-            hasChanges?: boolean;
         }
         export interface WellProjectWithProfilesDto {
             id: string; // uuid
@@ -2048,18 +2040,18 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdExplorations$WellProjectIdCountryOfficeCost$CostProfileId {
+    namespace Projects$ProjectIdCases$CaseIdExplorations$ExplorationIdCountryOfficeCost$CostProfileId {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type CostProfileId = string; // uuid
+                export type ExplorationId = string; // uuid
                 export type ProjectId = string; // uuid
-                export type WellProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                wellProjectId: Parameters.WellProjectId /* uuid */;
+                explorationId: Parameters.ExplorationId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
             export type RequestBody = Components.Schemas.UpdateCountryOfficeCostDto;
@@ -2068,18 +2060,18 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdExplorations$WellProjectIdSeismicAcquisitionAndProcessing$CostProfileId {
+    namespace Projects$ProjectIdCases$CaseIdExplorations$ExplorationIdSeismicAcquisitionAndProcessing$CostProfileId {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type CostProfileId = string; // uuid
+                export type ExplorationId = string; // uuid
                 export type ProjectId = string; // uuid
-                export type WellProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                wellProjectId: Parameters.WellProjectId /* uuid */;
+                explorationId: Parameters.ExplorationId /* uuid */;
                 costProfileId: Parameters.CostProfileId /* uuid */;
             }
             export type RequestBody = Components.Schemas.UpdateSeismicAcquisitionAndProcessingDto;
@@ -2156,6 +2148,44 @@ declare namespace Paths {
             }
         }
     }
+    namespace Projects$ProjectIdCases$CaseIdSurfs$SurfId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+                export type SurfId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                surfId: Parameters.SurfId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.APIUpdateSurfDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.SurfDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdSurfs$SurfIdCostProfileOverride$CostProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type CostProfileId = string; // uuid
+                export type ProjectId = string; // uuid
+                export type SurfId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                surfId: Parameters.SurfId /* uuid */;
+                costProfileId: Parameters.CostProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateSurfCostProfileOverrideDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.SurfCostProfileOverrideDto;
+            }
+        }
+    }
     namespace Projects$ProjectIdCases$CaseIdTopsides$TopsideId {
         namespace Put {
             namespace Parameters {
@@ -2191,44 +2221,6 @@ declare namespace Paths {
             export type RequestBody = Components.Schemas.UpdateTopsideCostProfileOverrideDto;
             namespace Responses {
                 export type $200 = Components.Schemas.TopsideCostProfileOverrideDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdTransports$SurfId {
-        namespace Put {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type ProjectId = string; // uuid
-                export type SurfId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                surfId: Parameters.SurfId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.APIUpdateSurfDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.SurfDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdTransports$SurfIdCostProfileOverride$CostProfileId {
-        namespace Put {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type CostProfileId = string; // uuid
-                export type ProjectId = string; // uuid
-                export type SurfId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                surfId: Parameters.SurfId /* uuid */;
-                costProfileId: Parameters.CostProfileId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.UpdateSurfCostProfileOverrideDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.SurfCostProfileOverrideDto;
             }
         }
     }

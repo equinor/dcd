@@ -33,7 +33,6 @@ public class TransportWithProfilesDto
     public DateTimeOffset? ProspVersion { get; set; }
     public DateTimeOffset? DG3Date { get; set; }
     public DateTimeOffset? DG4Date { get; set; }
-    public bool HasChanges { get; set; }
 }
 
 public class TransportCostProfileDto : TimeSeriesCostDto
