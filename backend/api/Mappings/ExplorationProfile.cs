@@ -9,6 +9,7 @@ public class ExplorationProfile : Profile
 {
     public ExplorationProfile()
     {
+        CreateMap<Exploration, ExplorationDto>();
         CreateMap<Exploration, ExplorationWithProfilesDto>();
         CreateMap<ExplorationWellCostProfile, ExplorationWellCostProfileDto>();
         CreateMap<AppraisalWellCostProfile, AppraisalWellCostProfileDto>();
@@ -18,6 +19,7 @@ public class ExplorationProfile : Profile
         CreateMap<CountryOfficeCost, CountryOfficeCostDto>();
         CreateMap<ExplorationWell, ExplorationWellDto>().ReverseMap();
 
+        CreateMap<UpdateExplorationDto, Exploration>();
         CreateMap<UpdateExplorationWithProfilesDto, Exploration>();
         CreateMap<UpdateSeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>();
         CreateMap<UpdateCountryOfficeCostDto, CountryOfficeCost>();
