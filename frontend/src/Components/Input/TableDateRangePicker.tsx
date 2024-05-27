@@ -1,9 +1,19 @@
 import React from "react"
 import Grid from "@mui/material/Grid"
 import { Typography } from "@equinor/eds-core-react"
+import styled from "styled-components"
 import RangeButton from "../Buttons/RangeButton"
-import CaseNumberInput from "./NumberInput"
+import CaseNumberInput from "./Components/NumberInputWithValidation"
 
+const Helper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    top: 11px;
+    margin-right: 20px;
+`
 interface DateRangePickerProps {
     setStartYear: (startYear: number) => void
     setEndYear: (endYear: number) => void
@@ -43,13 +53,14 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
     return (
         <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="baseline" marginTop={6}>
-            <Grid item>
-                <Typography>
+            <Helper>
+                <Typography variant="meta">
                     {labelText}
-                    {" "}
+                </Typography>
+                <Typography variant="caption">
                     {labelValue}
                 </Typography>
-            </Grid>
+            </Helper>
             <Grid item>
                 <Typography variant="caption">Start year</Typography>
                 <CaseNumberInput

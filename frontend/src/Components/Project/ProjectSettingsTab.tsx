@@ -2,7 +2,7 @@ import { useState, ChangeEventHandler, useEffect } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useProjectContext } from "../../Context/ProjectContext"
-import InputSwitcher from "../Input/InputSwitcher"
+import InputSwitcher from "../Input/Components/InputSwitcher"
 import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
 
 const ProjectSettingsTab = () => {

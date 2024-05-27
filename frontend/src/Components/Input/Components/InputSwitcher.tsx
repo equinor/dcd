@@ -1,5 +1,5 @@
 import { Typography, InputWrapper } from "@equinor/eds-core-react"
-import { useAppContext } from "../../Context/AppContext"
+import { useAppContext } from "../../../Context/AppContext"
 
 interface InputSwitcherProps {
     label?: string;

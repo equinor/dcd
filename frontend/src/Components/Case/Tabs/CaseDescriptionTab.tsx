@@ -1,20 +1,19 @@
-import {
-    ChangeEventHandler,
-    useEffect,
-} from "react"
-import { NativeSelect, Typography } from "@equinor/eds-core-react"
+import { ChangeEventHandler } from "react"
+import { Typography } from "@equinor/eds-core-react"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
-import CaseEditInput from "../../Input/CaseEditInput"
-import InputSwitcher from "../../Input/InputSwitcher"
+import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
+import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import Gallery from "../../Gallery/Gallery"
 import { useCaseContext } from "../../../Context/CaseContext"
 import { useAppContext } from "../../../Context/AppContext"
 import { setNonNegativeNumberState } from "../../../Utils/common"
+import useDataEdits from "../../../Hooks/useDataEdits"
 
 const CaseDescriptionTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
     const { editMode } = useAppContext()
+    const { addEdit } = useDataEdits()
 
     if (!projectCase) { return null }
 
@@ -37,6 +36,7 @@ const CaseDescriptionTab = () => {
         if (projectCaseEdited) {
             const updatedProjectCase = { ...projectCaseEdited, description: value }
             setProjectCaseEdited(updatedProjectCase)
+            addEdit(value, projectCaseEdited.description, "description", "Description", "case", projectCaseEdited.id)
         }
     }
 
@@ -90,7 +90,7 @@ const CaseDescriptionTab = () => {
                     ? (
                         <MarkdownEditor
                             menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
-                            onInput={(markdown) => {
+                            onBlur={(markdown) => {
                                 // eslint-disable-next-line no-underscore-dangle
                                 const value = (markdown as any).target._value
                                 handleDescriptionChange(value)
@@ -102,8 +102,7 @@ const CaseDescriptionTab = () => {
                     : <MarkdownViewer value={projectCase.description} />}
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
-                    object={projectCaseEdited}
+                <SwitchableNumberInput
                     objectKey={projectCaseEdited?.producerCount}
                     label="Production wells"
                     onSubmit={(value) => setNonNegativeNumberState(value, "producerCount", projectCaseEdited, setProjectCaseEdited)}
@@ -115,8 +114,7 @@ const CaseDescriptionTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
 
-                <CaseEditInput
-                    object={projectCaseEdited}
+                <SwitchableNumberInput
                     objectKey={projectCaseEdited?.waterInjectorCount}
                     label="Water injector wells"
                     onSubmit={(value) => setNonNegativeNumberState(value, "waterInjectorCount", projectCaseEdited, setProjectCaseEdited)}
@@ -128,8 +126,7 @@ const CaseDescriptionTab = () => {
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
-                    object={projectCaseEdited}
+                <SwitchableNumberInput
                     objectKey={projectCaseEdited?.gasInjectorCount}
                     label="Gas injector wells"
                     onSubmit={(value) => setNonNegativeNumberState(value, "gasInjectorCount", projectCaseEdited, setProjectCaseEdited)}
@@ -140,42 +137,25 @@ const CaseDescriptionTab = () => {
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={productionStrategyOptions[projectCase?.productionStrategyOverview]}
+                <SwitchableDropdownInput
+                    value={projectCase.productionStrategyOverview}
+                    options={productionStrategyOptions}
+                    objectKey={projectCaseEdited ? projectCaseEdited.productionStrategyOverview : projectCase.productionStrategyOverview}
                     label="Production strategy overview"
-                >
-                    <NativeSelect
-                        id="productionStrategy"
-                        label=""
-                        onChange={handleProductionStrategyChange}
-                        value={projectCaseEdited ? projectCaseEdited.productionStrategyOverview : projectCase.productionStrategyOverview}
-                    >
-                        {Object.entries(productionStrategyOptions).map(([value, label]) => (
-                            <option key={value} value={value}>{label}</option>
-                        ))}
-                    </NativeSelect>
-                </InputSwitcher>
+                    onSubmit={handleProductionStrategyChange}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <InputSwitcher
-                    value={artificialLiftOptions[projectCase?.artificialLift]}
+                <SwitchableDropdownInput
+                    value={projectCase.artificialLift}
+                    options={artificialLiftOptions}
+                    objectKey={projectCaseEdited ? projectCaseEdited.artificialLift : projectCase.artificialLift}
                     label="Artificial lift"
-                >
-                    <NativeSelect
-                        id="artificialLift"
-                        label=""
-                        onChange={handleArtificialLiftChange}
-                        value={projectCaseEdited ? projectCaseEdited.artificialLift : projectCase.artificialLift}
-                    >
-                        {Object.entries(artificialLiftOptions).map(([value, label]) => (
-                            <option key={value} value={value}>{label}</option>
-                        ))}
-                    </NativeSelect>
-                </InputSwitcher>
+                    onSubmit={handleArtificialLiftChange}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
-                    object={projectCase}
+                <SwitchableNumberInput
                     objectKey={projectCase.facilitiesAvailability}
                     label="Facilities availability"
                     onSubmit={handleFacilitiesAvailabilityChange}
