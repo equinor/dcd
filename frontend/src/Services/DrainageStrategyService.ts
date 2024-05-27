@@ -127,6 +127,34 @@ class DrainageStrategyService extends __BaseService {
         )
         return res
     }
+
+    public async updateDeferredOilProduction(
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        productionProfileId: string,
+        dto: Components.Schemas.UpdateDeferredOilProductionDto,
+    ): Promise<Components.Schemas.DeferredOilProductionDto> {
+        const res: Components.Schemas.DeferredOilProductionDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/deferred-oil-production/${productionProfileId}`,
+            { body: dto },
+        )
+        return res
+    }
+
+    public async updateDeferredGasProduction(
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        productionProfileId: string,
+        dto: Components.Schemas.UpdateDeferredGasProductionDto,
+    ): Promise<Components.Schemas.DeferredGasProductionDto> {
+        const res: Components.Schemas.DeferredGasProductionDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/deferred-gas-production/${productionProfileId}`,
+            { body: dto },
+        )
+        return res
+    }
 }
 
 export const GetDrainageStrategyService = async () => new DrainageStrategyService({

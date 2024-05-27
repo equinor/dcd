@@ -101,6 +101,24 @@ public class DrainageStrategyProfile : Profile
                     nameof(Co2EmissionsOverride)
                     )
                     ));
+        CreateMap<DeferredOilProduction, DeferredOilProductionDto>()
+            .ForMember(
+                dest => dest.Values,
+                opt => opt.MapFrom((src, dest, destMember, context) =>
+                    ConvertValuesToDTO(src.Values,
+                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    nameof(DeferredOilProduction)
+                    )
+                    ));
+        CreateMap<DeferredGasProduction, DeferredGasProductionDto>()
+            .ForMember(
+                dest => dest.Values,
+                opt => opt.MapFrom((src, dest, destMember, context) =>
+                    ConvertValuesToDTO(src.Values,
+                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    nameof(DeferredGasProduction)
+                    )
+                    ));
         CreateMap<ProductionProfileNGL, ProductionProfileNGLDto>();
         CreateMap<ImportedElectricity, ImportedElectricityDto>();
         CreateMap<ImportedElectricityOverride, ImportedElectricityOverrideDto>();
@@ -151,6 +169,24 @@ public class DrainageStrategyProfile : Profile
                     ConvertValuesFromDTO(src.Values,
                     (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(ProductionProfileGas)
+                    )
+                    ));
+        CreateMap<UpdateDeferredOilProductionDto, DeferredOilProduction>()
+            .ForMember(
+                dest => dest.Values,
+                opt => opt.MapFrom((src, dest, destMember, context) =>
+                    ConvertValuesFromDTO(src.Values,
+                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    nameof(DeferredOilProduction)
+                    )
+                    ));
+        CreateMap<UpdateDeferredGasProductionDto, DeferredGasProduction>()
+            .ForMember(
+                dest => dest.Values,
+                opt => opt.MapFrom((src, dest, destMember, context) =>
+                    ConvertValuesFromDTO(src.Values,
+                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    nameof(DeferredGasProduction)
                     )
                     ));
         CreateMap<UpdateProductionProfileWaterDto, ProductionProfileWater>()
@@ -221,6 +257,8 @@ public class DrainageStrategyProfile : Profile
                 case nameof(ProductionProfileGas):
                 case nameof(FuelFlaringAndLosses):
                 case nameof(FuelFlaringAndLossesOverride):
+                case nameof(DeferredOilProduction):
+                case nameof(DeferredGasProduction):
                 case nameof(NetSalesGas):
                 case nameof(NetSalesGasOverride):
                     return toDto ? 35.315 * returnValue : 1.0 / 35.315 * returnValue;

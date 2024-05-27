@@ -60,6 +60,8 @@ public class DcdDbContext : DbContext
     public DbSet<ImportedElectricity> ImportedElectricity { get; set; } = null!;
     public DbSet<ImportedElectricityOverride> ImportedElectricityOverride { get; set; } = null!;
 
+    public DbSet<DeferredOilProduction> DeferredOilProduction { get; set; } = null!;
+    public DbSet<DeferredGasProduction> DeferredGasProduction { get; set; } = null!;
 
     public DbSet<WellProject> WellProjects { get; set; } = null!;
 

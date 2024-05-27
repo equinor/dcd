@@ -142,6 +142,14 @@ public class DrainageStrategyService : IDrainageStrategyService
         {
             newDrainageStrategyDto.ImportedElectricityOverride.Id = Guid.Empty;
         }
+        if (newDrainageStrategyDto.DeferredOilProduction != null)
+        {
+            newDrainageStrategyDto.DeferredOilProduction.Id = Guid.Empty;
+        }
+        if (newDrainageStrategyDto.DeferredGasProduction != null)
+        {
+            newDrainageStrategyDto.DeferredGasProduction.Id = Guid.Empty;
+        }
 
         // var drainageStrategy = await NewCreateDrainageStrategy(newDrainageStrategyDto, sourceCaseId);
         // var dto = DrainageStrategyDtoAdapter.Convert(drainageStrategy, unit);
@@ -178,6 +186,8 @@ public class DrainageStrategyService : IDrainageStrategyService
             .Include(c => c.ProductionProfileNGL)
             .Include(c => c.ImportedElectricity)
             .Include(c => c.ImportedElectricityOverride)
+            .Include(c => c.DeferredOilProduction)
+            .Include(c => c.DeferredGasProduction)
             .FirstOrDefaultAsync(o => o.Id == drainageStrategyId);
         if (drainageStrategy == null)
         {
@@ -367,6 +377,44 @@ public class DrainageStrategyService : IDrainageStrategyService
             updateDto,
             _repository.GetImportedElectricityOverride,
             _repository.UpdateImportedElectricityOverride
+        );
+    }
+
+    public async Task<DeferredOilProductionDto> UpdateDeferredOilProduction(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid productionProfileId,
+        UpdateDeferredOilProductionDto updatedDeferredOilProductionDto
+    )
+    {
+        return await UpdateDrainageStrategyProfile<DeferredOilProduction, DeferredOilProductionDto, UpdateDeferredOilProductionDto>(
+            projectId,
+            caseId,
+            drainageStrategyId,
+            productionProfileId,
+            updatedDeferredOilProductionDto,
+            _repository.GetDeferredOilProduction,
+            _repository.UpdateDeferredOilProduction
+        );
+    }
+
+    public async Task<DeferredGasProductionDto> UpdateDeferredGasProduction(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid productionProfileId,
+        UpdateDeferredGasProductionDto updatedDeferredGasProductionDto
+    )
+    {
+        return await UpdateDrainageStrategyProfile<DeferredGasProduction, DeferredGasProductionDto, UpdateDeferredGasProductionDto>(
+            projectId,
+            caseId,
+            drainageStrategyId,
+            productionProfileId,
+            updatedDeferredGasProductionDto,
+            _repository.GetDeferredGasProduction,
+            _repository.UpdateDeferredGasProduction
         );
     }
 
