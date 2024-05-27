@@ -9,6 +9,7 @@ using api.Services.FusionIntegration;
 using api.Services.GenerateCostProfiles;
 
 using Azure.Identity;
+using Azure.Storage.Blobs;
 
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -245,6 +246,10 @@ builder.Services.AddSwaggerGen(options =>
         },
     });
 });
+
+builder.Services.AddSingleton(x => new BlobServiceClient(builder.Configuration.GetConnectionString("AzureBlobStorage")));
+builder.Services.AddSingleton<IBlobStorageService>(x =>
+    new BlobStorageService(x.GetRequiredService<BlobServiceClient>(), "dcdimagestorage"));
 
 
 builder.Host.UseSerilog();

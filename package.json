@@ -1,9 +1,15 @@
 {
   "lint-staged": {
-      "*.{j,t}s?(x)": "npx eslint --fix"
+    "*.{j,t}s?(x)": "npx eslint --fix"
   },
   "devDependencies": {
     "husky": "^7.0.4",
     "lint-staged": "^12.3.4"
+  },
+  "dependencies": {
+    "@azure/storage-blob": "^12.18.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
   }
 }
