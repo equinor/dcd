@@ -33,6 +33,8 @@ public class DrainageStrategy
 
     public ImportedElectricity? ImportedElectricity { get; set; }
     public ImportedElectricityOverride? ImportedElectricityOverride { get; set; }
+    public DeferredOilProduction? DeferredOilProduction { get; set; }
+    public DeferredGasProduction? DeferredGasProduction { get; set; }
 }
 
 public enum GasSolution
@@ -131,4 +133,16 @@ public class Co2Intensity : TimeSeriesMass
 public interface IDrainageStrategyTimeSeries
 {
     DrainageStrategy DrainageStrategy { get; set; }
+}
+
+public class DeferredOilProduction : TimeSeriesVolume, IDrainageStrategyTimeSeries
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
+}
+
+public class DeferredGasProduction : TimeSeriesVolume, IDrainageStrategyTimeSeries
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }

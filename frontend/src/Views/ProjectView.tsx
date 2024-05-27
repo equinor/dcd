@@ -6,6 +6,7 @@ import styled from "styled-components"
 import ProjectOverviewTab from "../Components/Project/ProjectOverviewTab"
 import ProjectCompareCasesTab from "../Components/Project/CompareCasesTab/CompareCasesTabOverview"
 import ProjectSettingsTab from "../Components/Project/ProjectSettingsTab"
+import EditHistoryOverviewTab from "../Components/Project/EditHistoryOverviewTab"
 import { useProjectContext } from "../Context/ProjectContext"
 
 const {
@@ -33,6 +34,7 @@ const ProjectView = () => {
                     <List>
                         <Tab>Overview </Tab>
                         <Tab>Compare cases</Tab>
+                        <Tab>Case edit history</Tab>
                         <Tab>Settings</Tab>
                     </List>
                     <Panels>
@@ -41,6 +43,9 @@ const ProjectView = () => {
                         </ScrollablePanel>
                         <ScrollablePanel>
                             <ProjectCompareCasesTab />
+                        </ScrollablePanel>
+                        <ScrollablePanel>
+                            <EditHistoryOverviewTab />
                         </ScrollablePanel>
                         <ScrollablePanel>
                             <ProjectSettingsTab />

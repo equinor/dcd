@@ -375,6 +375,18 @@ declare namespace Components {
             drillingDays?: number; // double
         }
         export type Currency = 1 | 2; // int32
+        export interface DeferredGasProductionDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+        }
+        export interface DeferredOilProductionDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+        }
         export interface DeleteWellDto {
             id: string; // uuid
         }
@@ -424,6 +436,8 @@ declare namespace Components {
             importedElectricity: ImportedElectricityDto;
             importedElectricityOverride: ImportedElectricityOverrideDto;
             co2Intensity: Co2IntensityDto;
+            deferredOilProduction: DeferredOilProductionDto;
+            deferredGasProduction: DeferredGasProductionDto;
         }
         export interface DrillingScheduleDto {
             id: string; // uuid
@@ -1168,6 +1182,14 @@ declare namespace Components {
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
         }
+        export interface UpdateDeferredGasProductionDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+        }
+        export interface UpdateDeferredOilProductionDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+        }
         export interface UpdateDevelopmentOperationalWellCostsDto {
             rigUpgrading?: number; // double
             rigMobDemob?: number; // double
@@ -1175,8 +1197,6 @@ declare namespace Components {
             pluggingAndAbandonment?: number; // double
         }
         export interface UpdateDrainageStrategyDto {
-            name?: string | null;
-            description?: string | null;
             nglYield?: number; // double
             producerCount?: number; // int32
             gasInjectorCount?: number; // int32
@@ -1200,6 +1220,8 @@ declare namespace Components {
             fuelFlaringAndLossesOverride?: UpdateFuelFlaringAndLossesOverrideDto;
             netSalesGasOverride?: UpdateNetSalesGasOverrideDto;
             co2EmissionsOverride?: UpdateCo2EmissionsOverrideDto;
+            deferredOilProductionDto?: UpdateDeferredOilProductionDto;
+            deferredGasProductionDto?: UpdateDeferredGasProductionDto;
         }
         export interface UpdateDrillingScheduleDto {
             startYear?: number; // int32
@@ -1739,6 +1761,46 @@ declare namespace Paths {
             export type RequestBody = Components.Schemas.UpdateCo2EmissionsOverrideDto;
             namespace Responses {
                 export type $200 = Components.Schemas.Co2EmissionsOverrideDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdDrainageStrategies$DrainageStrategyIdDeferredGasProduction$ProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type DrainageStrategyId = string; // uuid
+                export type ProfileId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
+                profileId: Parameters.ProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateDeferredGasProductionDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.DeferredGasProductionDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdDrainageStrategies$DrainageStrategyIdDeferredOilProduction$ProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type DrainageStrategyId = string; // uuid
+                export type ProfileId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
+                profileId: Parameters.ProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateDeferredOilProductionDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.DeferredOilProductionDto;
             }
         }
     }

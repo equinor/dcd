@@ -4,10 +4,11 @@ import {
     useMemo,
     useState,
     useEffect,
+    useCallback,
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { ColDef } from "@ag-grid-community/core"
+import { ColDef, GridReadyEvent } from "@ag-grid-community/core"
 import {
     isInteger,
     tableCellisEditable,
@@ -20,6 +21,8 @@ import { EMPTY_GUID } from "../../../Utils/constants"
 import { useAppContext } from "../../../Context/AppContext"
 import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
+import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
+import hideProfilesWithoutValues from "./HideProfilesWithoutValues"
 
 interface Props {
     timeSeriesData: any[]
@@ -30,6 +33,7 @@ interface Props {
     gridRef?: any
     includeFooter: boolean
     totalRowName?: string
+    profilesToHideWithoutValues?: string[]
 }
 
 const CaseTabTable = ({
@@ -41,6 +45,7 @@ const CaseTabTable = ({
     gridRef,
     includeFooter,
     totalRowName,
+    profilesToHideWithoutValues,
 }: Props) => {
     const { editMode } = useAppContext()
     const styles = useStyles()
@@ -104,6 +109,15 @@ const CaseTabTable = ({
 
             tableRows.push(rowObject)
         })
+
+        if (profilesToHideWithoutValues !== undefined) {
+            return hideProfilesWithoutValues(
+                editMode,
+                profilesToHideWithoutValues,
+                tableRows,
+            )
+        }
+
         return tableRows
     }
 
@@ -122,22 +136,13 @@ const CaseTabTable = ({
             {
                 field: "profileName",
                 headerName: tableName,
+                cellRenderer: (params: any) => (
+                    profileAndUnitInSameCell(params, rowData)
+                ),
                 width: 250,
                 editable: false,
                 pinned: "left",
                 aggFunc: () => totalRowName ?? "Total",
-            },
-            {
-                field: "unit",
-                width: 100,
-                editable: false,
-                pinned: "left",
-                aggFunc: (params: any) => {
-                    if (params?.values?.length > 0) {
-                        return params.values[0]
-                    }
-                    return ""
-                },
             },
             {
                 field: "total",
@@ -184,10 +189,6 @@ const CaseTabTable = ({
     }
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
-
-    const updateRowData = (newData: any) => {
-        setRowData(newData)
-    }
 
     const handleCellValueChange = (p: any) => {
         const properties = Object.keys(p.data)
@@ -249,10 +250,16 @@ const CaseTabTable = ({
     }), [])
 
     useEffect(() => {
-        updateRowData(profilesToRowData())
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
-    }, [timeSeriesData, tableYears])
+    }, [timeSeriesData, tableYears, rowData])
+
+    const onGridReady = useCallback((params: GridReadyEvent) => {
+        params.api.showLoadingOverlay()
+        setTimeout(() => {
+            setRowData(profilesToRowData())
+        }, 100)
+    }, [])
 
     return (
         <>
@@ -276,7 +283,7 @@ const CaseTabTable = ({
                         defaultColDef={defaultColDef}
                         animateRows
                         domLayout="autoHeight"
-                        enableCellChangeFlash
+                        enableCellChangeFlash={editMode}
                         rowSelection="multiple"
                         enableRangeSelection
                         suppressCopySingleCellRanges
@@ -286,8 +293,8 @@ const CaseTabTable = ({
                         groupIncludeTotalFooter={includeFooter}
                         getRowStyle={getCaseRowStyle}
                         suppressLastEmptyLineOnPaste
-                        singleClickEdit={editMode}
                         stopEditingWhenCellsLoseFocus
+                        onGridReady={onGridReady}
                     />
                 </div>
             </div>

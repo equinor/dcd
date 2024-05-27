@@ -5,7 +5,7 @@ import { useProjectContext } from "../../../Context/ProjectContext"
 import { useAppContext } from "../../../Context/AppContext"
 import ProjectDetails from "./Components/ProjectDetails"
 import CasesDetails from "./Components/CasesDetails"
-import EditHistoryList from "./Components/EditHistoryList"
+import CurrentCaseEditHistory from "./Components/CurrentCaseEditHistory"
 
 const { Toggle, Content, Footer } = SideBar
 
@@ -100,7 +100,7 @@ const Sidebar = () => {
                     <Grid item xs={12}>
                         <Divider />
                     </Grid>
-                    <EditHistoryList />
+                    <CurrentCaseEditHistory />
                 </Grid>
             </StyledSidebarContent>
             <SidebarFooter>

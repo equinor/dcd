@@ -125,4 +125,26 @@ public class DrainageStrategiesController : ControllerBase
     {
         return await _drainageStrategyService.UpdateImportedElectricityOverride(projectId, caseId, drainageStrategyId, profileId, dto);
     }
+
+    [HttpPut("{drainageStrategyId}/deferred-oil-production/{profileId}")]
+    public async Task<DeferredOilProductionDto> UpdateDeferredOilProduction(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromRoute] Guid profileId,
+        [FromBody] UpdateDeferredOilProductionDto dto)
+    {
+        return await _drainageStrategyService.UpdateDeferredOilProduction(projectId, caseId, drainageStrategyId, profileId, dto);
+    }
+
+    [HttpPut("{drainageStrategyId}/deferred-gas-production/{profileId}")]
+    public async Task<DeferredGasProductionDto> UpdateDeferredGasProduction(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromRoute] Guid profileId,
+        [FromBody] UpdateDeferredGasProductionDto dto)
+    {
+        return await _drainageStrategyService.UpdateDeferredGasProduction(projectId, caseId, drainageStrategyId, profileId, dto);
+    }
 }
