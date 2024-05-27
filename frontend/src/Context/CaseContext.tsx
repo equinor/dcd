@@ -24,6 +24,8 @@ interface CaseContextType {
     setSaveProjectCase: Dispatch<SetStateAction<boolean>>,
     activeTabCase: number;
     setActiveTabCase: Dispatch<SetStateAction<number>>,
+    editIndexes: any[]
+    setEditIndexes: Dispatch<SetStateAction<any[]>>
 
     topside: Components.Schemas.TopsideWithProfilesDto | undefined
     setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideWithProfilesDto | undefined>>
@@ -120,7 +122,12 @@ const CaseContext = createContext<CaseContextType | undefined>(undefined)
 const getFilteredEdits = () => {
     const savedEdits = JSON.parse(localStorage.getItem("caseEdits") || "[]")
     const oneHourAgo = new Date().getTime() - (60 * 60 * 1000)
-    return savedEdits.filter((edit: EditInstance) => edit.timeStamp > oneHourAgo)
+
+    // localStorage cleanup to remove edits older than 1 hour
+    const recentEdits = savedEdits.filter((edit: EditInstance) => edit.timeStamp > oneHourAgo)
+    localStorage.setItem("caseEdits", JSON.stringify(recentEdits))
+
+    return recentEdits
 }
 
 const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
@@ -129,6 +136,7 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [projectCaseEdited, setProjectCaseEdited] = useState<Components.Schemas.CaseDto | undefined>()
     const [saveProjectCase, setSaveProjectCase] = useState<boolean>(false)
     const [activeTabCase, setActiveTabCase] = useState<number>(0)
+    const [editIndexes, setEditIndexes] = useState<any[]>([])
 
     const [topside, setTopside] = useState<Components.Schemas.TopsideWithProfilesDto | undefined>()
     const [topsideCost, setTopsideCost] = useState<Components.Schemas.TopsideCostProfileDto | undefined>()
@@ -191,6 +199,8 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setSaveProjectCase,
         activeTabCase,
         setActiveTabCase,
+        editIndexes,
+        setEditIndexes,
 
         topside,
         setTopside,
@@ -286,6 +296,8 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setSaveProjectCase,
         activeTabCase,
         setActiveTabCase,
+        editIndexes,
+        setEditIndexes,
 
         topside,
         topsideCost,

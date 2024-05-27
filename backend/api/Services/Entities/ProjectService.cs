@@ -497,6 +497,8 @@ public class ProjectService : IProjectService
                 .Include(c => c.ProductionProfileNGL)
                 .Include(c => c.ImportedElectricity)
                 .Include(c => c.ImportedElectricityOverride)
+                .Include(c => c.DeferredOilProduction)
+                .Include(c => c.DeferredGasProduction)
                 .Where(d => d.Project.Id.Equals(projectId)).ToListAsync();
         }
         else

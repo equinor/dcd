@@ -36,21 +36,19 @@ const CaseEditInput: React.FC<CaseEditInputProps> = ({
 
     const addToEditsAndSubmit = (insertedValue: number) => {
         if (!projectCase) {
-            console.error("Case not found")
+            console.log("Case not found")
             return
         }
 
         if (!onSubmit) {
-            console.error("onSubmit not defined")
+            console.log("onSubmit not defined")
             return
         }
 
-        if (!object || !objectKey) {
-            console.error("Object or objectKey not defined")
+        if (objectKey === undefined) {
+            console.log("Object or objectKey not defined")
             return
         }
-
-        console.log("Adding edit", insertedValue, value, objectKey, label, "case", projectCase.id)
 
         onSubmit(insertedValue)
         addEdit(

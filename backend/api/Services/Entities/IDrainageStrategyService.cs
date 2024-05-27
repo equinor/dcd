@@ -73,4 +73,20 @@ public interface IDrainageStrategyService
         Guid profileId,
         UpdateImportedElectricityOverrideDto updateDto
     );
+
+    Task<DeferredOilProductionDto> UpdateDeferredOilProduction(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid profileId,
+        UpdateDeferredOilProductionDto updatedDeferredOilProductionDto
+    );
+
+    Task<DeferredGasProductionDto> UpdateDeferredGasProduction(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid profileId,
+        UpdateDeferredGasProductionDto updatedDeferredGasProductionDto
+    );
 }
