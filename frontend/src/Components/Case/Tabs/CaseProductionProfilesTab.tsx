@@ -8,16 +8,17 @@ import {
 } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import CaseEditInput from "../../Input/CaseEditInput"
+import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import CaseTabTable from "../Components/CaseTabTable"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../AgGrid/AgChartsTimeseries"
 import { ITimeSeriesOverride } from "../../../Models/ITimeSeriesOverride"
-import InputSwitcher from "../../Input/InputSwitcher"
+import InputSwitcher from "../../Input/Components/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
-import DateRangePicker from "../../Input/DateRangePicker"
+import DateRangePicker from "../../Input/TableDateRangePicker"
+import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 
 interface ITimeSeriesData {
     profileName: string
@@ -63,9 +64,14 @@ const CaseProductionProfilesTab = ({
     const [fuelFlaringAndLossesOverride, setFuelFlaringAndLossesOverride] = useState<Components.Schemas.FuelFlaringAndLossesOverrideDto>()
     const [importedElectricityOverride, setImportedElectricityOverride] = useState<Components.Schemas.ImportedElectricityOverrideDto>()
 
+    const [deferredGas, setDeferredGas] = useState<Components.Schemas.DeferredGasProductionDto>()
+    const [deferredOil, setDeferredOil] = useState<Components.Schemas.DeferredOilProductionDto>()
+
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+
+    const profilesToHideWithoutValues = ["Deferred oil production", "Deferred gas production"]
 
     const productionStrategyOptions = {
         0: "Depletion",
@@ -104,7 +110,9 @@ const CaseProductionProfilesTab = ({
             || waterInjection === undefined
             || importedElectricityOverride === undefined
             || netSalesGasOverride === undefined
-            || fuelFlaringAndLossesOverride === undefined) {
+            || fuelFlaringAndLossesOverride === undefined
+            || deferredGas === undefined
+            || deferredOil === undefined) {
             return
         }
         const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainage }
@@ -117,6 +125,8 @@ const CaseProductionProfilesTab = ({
         newDrainageStrategy.productionProfileWater = water
         newDrainageStrategy.productionProfileNGL = nGL
         newDrainageStrategy.productionProfileWaterInjection = waterInjection
+        newDrainageStrategy.deferredGasProduction = deferredGas
+        newDrainageStrategy.deferredOilProduction = deferredOil
 
         newDrainageStrategy.importedElectricityOverride = importedElectricityOverride
         setDrainageStrategy(newDrainageStrategy)
@@ -141,6 +151,10 @@ const CaseProductionProfilesTab = ({
         }
     }
 
+    const gasSolutionOptions = {
+        0: "Export",
+        1: "Injection",
+    }
     const timeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Oil production",
@@ -189,6 +203,18 @@ const CaseProductionProfilesTab = ({
             overridable: true,
             overrideProfile: importedElectricityOverride,
             overrideProfileSet: setImportedElectricityOverride,
+        },
+        {
+            profileName: "Deferred oil production",
+            unit: `${project?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
+            set: setDeferredOil,
+            profile: deferredOil,
+        },
+        {
+            profileName: "Deferred gas production",
+            unit: `${project?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
+            set: setDeferredGas,
+            profile: deferredGas,
         },
     ]
 
@@ -243,6 +269,8 @@ const CaseProductionProfilesTab = ({
                         drainageStrategy.productionProfileWaterInjection,
                         drainageStrategy.importedElectricityOverride,
                         drainageStrategy.co2EmissionsOverride,
+                        drainageStrategy.deferredGasProduction,
+                        drainageStrategy.deferredOilProduction,
                     ], new Date(projectCase?.dG4Date).getFullYear(), setStartYear, setEndYear, setTableYears)
                     setGas(drainageStrategy.productionProfileGas)
                     setOil(drainageStrategy.productionProfileOil)
@@ -253,6 +281,9 @@ const CaseProductionProfilesTab = ({
                     setImportedElectricityOverride(drainageStrategy.importedElectricityOverride)
                     setNetSalesGasOverride(drainageStrategy.netSalesGasOverride)
                     setFuelFlaringAndLossesOverride(drainageStrategy.fuelFlaringAndLossesOverride)
+
+                    setDeferredGas(drainageStrategy.deferredGasProduction)
+                    setDeferredOil(drainageStrategy.deferredOilProduction)
                 }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)
@@ -310,6 +341,20 @@ const CaseProductionProfilesTab = ({
     }, [netSalesGasOverride])
 
     useEffect(() => {
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
+        if (!deferredOil) { return }
+        newDrainageStrategy.deferredOilProduction = deferredOil
+        setDrainageStrategy(newDrainageStrategy)
+    }, [deferredOil])
+
+    useEffect(() => {
+        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
+        if (!deferredGas) { return }
+        newDrainageStrategy.deferredGasProduction = deferredGas
+        setDrainageStrategy(newDrainageStrategy)
+    }, [deferredGas])
+
+    useEffect(() => {
         if (gridRef.current && gridRef.current.api && gridRef.current.api.refreshCells) {
             gridRef.current.api.refreshCells()
         }
@@ -320,8 +365,7 @@ const CaseProductionProfilesTab = ({
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} md={6} lg={3}>
-                <CaseEditInput
-                    object={projectCase}
+                <SwitchableNumberInput
                     objectKey={projectCase?.facilitiesAvailability}
                     label="Facilities availability"
                     onSubmit={handleCaseFacilitiesAvailabilityChange}
@@ -335,20 +379,13 @@ const CaseProductionProfilesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
-                <InputSwitcher
-                    value={drainageStrategy?.gasSolution === 0 ? "Export" : "Injection"}
+                <SwitchableDropdownInput
+                    value={drainageStrategy.gasSolution}
+                    options={gasSolutionOptions}
+                    objectKey={drainageStrategy.gasSolution}
                     label="Gas solution"
-                >
-                    <NativeSelect
-                        id="gasSolution"
-                        label=""
-                        onChange={handleDrainageStrategyGasSolutionChange}
-                        value={drainageStrategy?.gasSolution}
-                    >
-                        <option key={0} value={0}>Export</option>
-                        <option key={1} value={1}>Injection</option>
-                    </NativeSelect>
-                </InputSwitcher>
+                    onSubmit={handleDrainageStrategyGasSolutionChange}
+                />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <InputSwitcher
@@ -387,8 +424,7 @@ const CaseProductionProfilesTab = ({
                 </InputSwitcher>
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
-                <CaseEditInput
-                    object={projectCase}
+                <SwitchableNumberInput
                     objectKey={projectCase?.producerCount}
                     label="Oil producer wells"
                     onSubmit={() => { }}
@@ -398,8 +434,7 @@ const CaseProductionProfilesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
-                <CaseEditInput
-                    object={projectCase}
+                <SwitchableNumberInput
                     objectKey={projectCase?.waterInjectorCount}
                     label="Water injector wells"
                     onSubmit={() => { }}
@@ -409,8 +444,7 @@ const CaseProductionProfilesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
-                <CaseEditInput
-                    object={projectCase}
+                <SwitchableNumberInput
                     objectKey={projectCase?.gasInjectorCount}
                     label="Gas injector wells"
                     onSubmit={() => { }}
@@ -464,6 +498,7 @@ const CaseProductionProfilesTab = ({
                     tableName="Production profiles"
                     includeFooter={false}
                     gridRef={gridRef}
+                    profilesToHideWithoutValues={profilesToHideWithoutValues}
                 />
             </Grid>
         </Grid>

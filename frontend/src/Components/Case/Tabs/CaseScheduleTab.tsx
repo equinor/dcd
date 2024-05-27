@@ -1,7 +1,6 @@
 import {
     ChangeEventHandler,
 } from "react"
-import { Input } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import {
     dateFromString,
@@ -9,10 +8,9 @@ import {
     isDefaultDate,
     isDefaultDateString,
     toMonthDate,
-    formatDate,
 } from "../../../Utils/common"
-import InputSwitcher from "../../Input/InputSwitcher"
 import { useCaseContext } from "../../../Context/CaseContext"
+import SwitchableDateInput from "../../Input/SwitchableDateInput"
 
 const CaseScheduleTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
@@ -196,156 +194,94 @@ const CaseScheduleTab = () => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} md={6} lg={6}>
-                <InputSwitcher
-                    value={formatDate(projectCase.dgaDate)}
+                <SwitchableDateInput
+                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dgaDate : projectCase.dgaDate)}
+                    objectKey={projectCase.dgaDate}
                     label="DGA"
-                >
-                    <Input
-                        type="month"
-                        id="dgaDate"
-                        name="dgaDate"
-                        onChange={handleDGAChange}
-                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dgaDate : projectCase.dgaDate)}
-                    />
-                </InputSwitcher>
+                    onChange={handleDGAChange}
+                />
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
-                <InputSwitcher
-                    value={formatDate(projectCase.dgbDate)}
+                <SwitchableDateInput
+                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dgbDate : projectCase.dgbDate)}
+                    objectKey={projectCase.dgbDate}
                     label="DGB"
-                >
-                    <Input
-                        type="month"
-                        id="dgbDate"
-                        name="dgbDate"
-                        onChange={handleDGBChange}
-                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dgbDate : projectCase.dgbDate)}
-                    />
-                </InputSwitcher>
+                    onChange={handleDGBChange}
+                />
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
-                <InputSwitcher
-                    value={formatDate(projectCase.dgcDate)}
+                <SwitchableDateInput
+                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dgcDate : projectCase.dgcDate)}
+                    objectKey={projectCase.dgcDate}
                     label="DGC"
-                >
-                    <Input
-                        type="month"
-                        id="dgcDate"
-                        name="dgcDate"
-                        onChange={handleDGCChange}
-                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dgcDate : projectCase.dgcDate)}
-                    />
-                </InputSwitcher>
+                    onChange={handleDGCChange}
+                />
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
-                <InputSwitcher
-                    value={formatDate(projectCase.apxDate)}
+                <SwitchableDateInput
+                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.apxDate : projectCase.apxDate)}
+                    objectKey={projectCase.apxDate}
                     label="APX"
-                >
-                    <Input
-                        type="month"
-                        id="apxDate"
-                        name="apxDate"
-                        onChange={handleAPXChange}
-                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.apxDate : projectCase.apxDate)}
-                    />
-                </InputSwitcher>
+                    onChange={handleAPXChange}
+                />
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
-                <InputSwitcher
-                    value={formatDate(projectCase.apzDate)}
+                <SwitchableDateInput
+                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.apzDate : projectCase.apzDate)}
+                    objectKey={projectCase.apzDate}
                     label="APZ"
-                >
-                    <Input
-                        type="month"
-                        id="apzDate"
-                        name="apzDate"
-                        onChange={handleAPZChange}
-                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.apzDate : projectCase.apzDate)}
-                    />
-                </InputSwitcher>
+                    onChange={handleAPZChange}
+                />
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
-                <InputSwitcher
-                    value={formatDate(projectCase.dG0Date)}
+                <SwitchableDateInput
+                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG0Date : projectCase.dG0Date)}
+                    objectKey={projectCase.dG0Date}
                     label="DG0"
-                >
-
-                    <Input
-                        type="month"
-                        id="dg0Date"
-                        name="dg0Date"
-                        onChange={handleDG0Change}
-                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG0Date : projectCase.dG0Date)}
-                        max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG1Date, projectCaseEdited.dG2Date, projectCaseEdited.dG3Date, projectCaseEdited.dG4Date])) : undefined}
-                        min={undefined}
-                    />
-                </InputSwitcher>
+                    onChange={handleDG0Change}
+                    max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG1Date, projectCaseEdited.dG2Date, projectCaseEdited.dG3Date, projectCaseEdited.dG4Date])) : undefined}
+                    min={undefined}
+                />
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
-                <InputSwitcher
-                    value={formatDate(projectCase.dG1Date)}
+                <SwitchableDateInput
+                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG1Date : projectCase.dG1Date)}
+                    objectKey={projectCase.dG1Date}
                     label="DG1"
-                >
-
-                    <Input
-                        type="month"
-                        id="dg1Date"
-                        name="dg1Date"
-                        onChange={handleDG1Change}
-                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG1Date : projectCase.dG1Date)}
-                        max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG2Date, projectCaseEdited.dG3Date, projectCaseEdited.dG4Date])) : undefined}
-                        min={projectCaseEdited ? findMinDate(getDatesFromStrings([projectCaseEdited.dG0Date])) : undefined}
-                    />
-                </InputSwitcher>
+                    onChange={handleDG1Change}
+                    max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG2Date, projectCaseEdited.dG3Date, projectCaseEdited.dG4Date])) : undefined}
+                    min={projectCaseEdited ? findMinDate(getDatesFromStrings([projectCaseEdited.dG0Date])) : undefined}
+                />
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
-                <InputSwitcher
-                    value={formatDate(projectCase.dG2Date)}
+                <SwitchableDateInput
+                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG2Date : projectCase.dG2Date)}
+                    objectKey={projectCase.dG2Date}
                     label="DG2"
-                >
-                    <Input
-                        type="month"
-                        id="dg2Date"
-                        name="dg2Date"
-                        onChange={handleDG2Change}
-                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG2Date : projectCase.dG2Date)}
-                        max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG3Date, projectCaseEdited.dG4Date])) : undefined}
-                        min={projectCaseEdited ? findMinDate(getDatesFromStrings([projectCaseEdited.dG0Date, projectCaseEdited.dG1Date])) : undefined}
-                    />
-                </InputSwitcher>
+                    onChange={handleDG2Change}
+                    max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG3Date, projectCaseEdited.dG4Date])) : undefined}
+                    min={projectCaseEdited ? findMinDate(getDatesFromStrings([projectCaseEdited.dG0Date, projectCaseEdited.dG1Date])) : undefined}
+                />
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
-                <InputSwitcher
-                    value={formatDate(projectCase.dG3Date)}
+                <SwitchableDateInput
+                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG3Date : projectCase.dG3Date)}
+                    objectKey={projectCase.dG3Date}
                     label="DG3"
-                >
-                    <Input
-                        type="month"
-                        id="dg3Date"
-                        name="dg3Date"
-                        onChange={handleDG3Change}
-                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG3Date : projectCase.dG3Date)}
-                        max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG4Date])) : undefined}
-                        min={projectCaseEdited ? findMinDate(getDatesFromStrings([projectCaseEdited.dG0Date, projectCaseEdited.dG1Date, projectCaseEdited.dG2Date])) : undefined}
-                    />
-                </InputSwitcher>
+                    onChange={handleDG3Change}
+                    max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG4Date])) : undefined}
+                    min={projectCaseEdited ? findMinDate(getDatesFromStrings([projectCaseEdited.dG0Date, projectCaseEdited.dG1Date, projectCaseEdited.dG2Date])) : undefined}
+                />
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
-                <InputSwitcher
-                    value={formatDate(projectCase.dG4Date)}
+                <SwitchableDateInput
+                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG4Date : projectCase.dG4Date)}
+                    objectKey={projectCase.dG4Date}
                     label="DG4"
-                >
-                    <Input
-                        type="month"
-                        id="dg4Date"
-                        name="dg4Date"
-                        onChange={handleDG4Change}
-                        value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG3Date : projectCase.dG3Date)}
-                        max={undefined}
-                        min={projectCaseEdited ? findMinDate(getDatesFromStrings([projectCaseEdited.dG0Date, projectCaseEdited.dG1Date, projectCaseEdited.dG2Date, projectCaseEdited.dG3Date])) : undefined}
-                    />
-                </InputSwitcher>
+                    onChange={handleDG4Change}
+                    max={undefined}
+                    min={projectCaseEdited ? findMinDate(getDatesFromStrings([projectCaseEdited.dG0Date, projectCaseEdited.dG1Date, projectCaseEdited.dG2Date, projectCaseEdited.dG3Date])) : undefined}
+                />
             </Grid>
         </Grid>
     )

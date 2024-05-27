@@ -22,4 +22,8 @@ public interface IDrainageStrategyRepository
     Task<Co2EmissionsOverride> UpdateCo2EmissionsOverride(Co2EmissionsOverride profileId);
     Task<ImportedElectricityOverride?> GetImportedElectricityOverride(Guid profileId);
     Task<ImportedElectricityOverride> UpdateImportedElectricityOverride(ImportedElectricityOverride profileId);
+    Task<DeferredOilProduction?> GetDeferredOilProduction(Guid productionProfileId);
+    Task<DeferredOilProduction> UpdateDeferredOilProduction(DeferredOilProduction productionProfile);
+    Task<DeferredGasProduction?> GetDeferredGasProduction(Guid productionProfileId);
+    Task<DeferredGasProduction> UpdateDeferredGasProduction(DeferredGasProduction productionProfile);
 }

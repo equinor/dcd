@@ -161,7 +161,11 @@ const EditTechnicalInputModal = () => {
     }, [technicalModalIsOpen, setTechnicalModalIsOpen])
 
     return (
-        <Modal isOpen={technicalModalIsOpen} title="Technical Input">
+        <Modal
+            isOpen={technicalModalIsOpen}
+            title="Technical Input"
+            fullWidth
+        >
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Tabs activeTab={activeTab} onChange={setActiveTab}>

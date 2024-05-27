@@ -31,9 +31,7 @@ const CasesDetails: React.FC = () => {
                 )}
             </Grid>
             <Timeline data-timeline container justifyContent="flex-start" alignItems="flex-start" direction="column">
-                <Grid item className="GhostItem" />
                 <CasesList />
-                <Grid item className="GhostItem" />
             </Timeline>
 
         </>
