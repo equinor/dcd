@@ -1,6 +1,7 @@
 import { useState, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import styled from "styled-components"
 import {
     Icon,
     Typography,
@@ -29,6 +30,39 @@ import useDataEdits from "../../Hooks/useDataEdits"
 import HistoryButton from "../Buttons/HistoryButton"
 import UndoControls from "./UndoControls"
 import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
+
+const StyledChip = styled(Chip)`
+    border-width: 0;
+    font-size: 1rem;
+    line-height: 1.8rem;
+    height: auto;
+    padding: 0 0.7rem 0 0.5rem;
+    cursor: help;
+    &.active {
+        background-color: #a1daa01a;
+        color: #358132;
+        svg {
+            fill: #358132;
+        }
+    }
+    &.error {
+        background-color: #FF66701A;
+        color: #B30D2F;
+        svg {
+            fill: #B30D2F;
+        }
+    }
+`
+
+const SmallTooltip = styled(Tooltip)`
+    white-space: pre-wrap !important;
+    max-width: 300px !important;
+    font-size: 1rem !important;
+    text-align: center !important;
+    div[class*="Arrow"] {
+        top: -10px !important;
+    }
+`
 
 const Controls = () => {
     const navigate = useNavigate()
@@ -148,12 +182,15 @@ const Controls = () => {
                                 {projectCase ? projectCase.name : project?.name}
                             </Typography>
                             {project && !projectCase && (
-                                <Tooltip placement="bottom-start" title={PROJECT_CLASSIFICATION[project?.classification].description}>
-                                    <Chip variant={PROJECT_CLASSIFICATION[project?.classification].color}>
+                                <SmallTooltip placement="bottom-start" title={PROJECT_CLASSIFICATION[project?.classification].description}>
+                                    <StyledChip
+                                        variant={PROJECT_CLASSIFICATION[project?.classification].color}
+                                        className={`ProjectClassification ${PROJECT_CLASSIFICATION[project?.classification].color}`}
+                                    >
                                         <Icon data={PROJECT_CLASSIFICATION[project?.classification].icon} />
                                         {PROJECT_CLASSIFICATION[project?.classification].label}
-                                    </Chip>
-                                </Tooltip>
+                                    </StyledChip>
+                                </SmallTooltip>
                             )}
                         </>
                     )}
