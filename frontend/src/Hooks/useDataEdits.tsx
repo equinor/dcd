@@ -12,6 +12,8 @@ const useDataEdits = (): {
         inputLabel: string,
         level: "project" | "case",
         objectId: string,
+        newDisplayValue?: string | number | undefined,
+        previousDisplayValue?: string | number | undefined,
     ) => void;
     undoEdit: () => void;
     redoEdit: () => void;
@@ -30,8 +32,9 @@ const useDataEdits = (): {
         if (projectCase) {
             setCaseEditsBelongingToCurrentCase(caseEdits.filter((edit) => edit.objectId === projectCase.id))
         }
-    }, [projectCase])
+    }, [projectCase, caseEdits])
 
+    // TODO: move this out, it runs every time the hook is called
     useEffect(() => {
         const storedCaseEdits = localStorage.getItem("caseEdits")
         const caseEditsArray = storedCaseEdits ? JSON.parse(storedCaseEdits) : []
@@ -76,6 +79,8 @@ const useDataEdits = (): {
         inputLabel: string,
         level: "project" | "case",
         objectId: string,
+        newDisplayValue?: string | number | undefined,
+        previousDisplayValue?: string | number | undefined,
     ) => {
         if (newValue === previousValue) { return }
 
@@ -88,9 +93,25 @@ const useDataEdits = (): {
             timeStamp: new Date().getTime(),
             level,
             objectId,
+            newDisplayValue,
+            previousDisplayValue,
         }
 
-        setCaseEdits((prevEdits) => [editInstanceObject, ...prevEdits])
+        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, projectCase))
+        const caseEditsNotBelongingToCurrentCase = caseEdits.filter((edit) => edit.objectId !== objectId)
+
+        let edits = caseEditsBelongingToCurrentCase
+
+        if (currentEditIndex > 0) {
+            edits = caseEditsBelongingToCurrentCase.slice(currentEditIndex)
+        }
+
+        if (currentEditIndex === -1) {
+            edits = []
+        }
+
+        edits = [editInstanceObject, ...edits, ...caseEditsNotBelongingToCurrentCase]
+        setCaseEdits(edits)
         updateEditIndex(editInstanceObject.uuid)
     }
 

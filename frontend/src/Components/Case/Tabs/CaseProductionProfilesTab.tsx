@@ -8,16 +8,17 @@ import {
 } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import CaseEditInput from "../../Input/CaseEditInput"
+import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import CaseTabTable from "../Components/CaseTabTable"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../AgGrid/AgChartsTimeseries"
 import { ITimeSeriesOverride } from "../../../Models/ITimeSeriesOverride"
-import InputSwitcher from "../../Input/InputSwitcher"
+import InputSwitcher from "../../Input/Components/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
-import DateRangePicker from "../../Input/DateRangePicker"
+import DateRangePicker from "../../Input/TableDateRangePicker"
+import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 
 interface ITimeSeriesData {
     profileName: string
@@ -150,6 +151,10 @@ const CaseProductionProfilesTab = ({
         }
     }
 
+    const gasSolutionOptions = {
+        0: "Export",
+        1: "Injection",
+    }
     const timeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Oil production",
@@ -360,8 +365,7 @@ const CaseProductionProfilesTab = ({
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} md={6} lg={3}>
-                <CaseEditInput
-                    object={projectCase}
+                <SwitchableNumberInput
                     objectKey={projectCase?.facilitiesAvailability}
                     label="Facilities availability"
                     onSubmit={handleCaseFacilitiesAvailabilityChange}
@@ -375,20 +379,13 @@ const CaseProductionProfilesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
-                <InputSwitcher
-                    value={drainageStrategy?.gasSolution === 0 ? "Export" : "Injection"}
+                <SwitchableDropdownInput
+                    value={drainageStrategy.gasSolution}
+                    options={gasSolutionOptions}
+                    objectKey={drainageStrategy.gasSolution}
                     label="Gas solution"
-                >
-                    <NativeSelect
-                        id="gasSolution"
-                        label=""
-                        onChange={handleDrainageStrategyGasSolutionChange}
-                        value={drainageStrategy?.gasSolution}
-                    >
-                        <option key={0} value={0}>Export</option>
-                        <option key={1} value={1}>Injection</option>
-                    </NativeSelect>
-                </InputSwitcher>
+                    onSubmit={handleDrainageStrategyGasSolutionChange}
+                />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <InputSwitcher
@@ -427,8 +424,7 @@ const CaseProductionProfilesTab = ({
                 </InputSwitcher>
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
-                <CaseEditInput
-                    object={projectCase}
+                <SwitchableNumberInput
                     objectKey={projectCase?.producerCount}
                     label="Oil producer wells"
                     onSubmit={() => { }}
@@ -438,8 +434,7 @@ const CaseProductionProfilesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
-                <CaseEditInput
-                    object={projectCase}
+                <SwitchableNumberInput
                     objectKey={projectCase?.waterInjectorCount}
                     label="Water injector wells"
                     onSubmit={() => { }}
@@ -449,8 +444,7 @@ const CaseProductionProfilesTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
-                <CaseEditInput
-                    object={projectCase}
+                <SwitchableNumberInput
                     objectKey={projectCase?.gasInjectorCount}
                     label="Gas injector wells"
                     onSubmit={() => { }}

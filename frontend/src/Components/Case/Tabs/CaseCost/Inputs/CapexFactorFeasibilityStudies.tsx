@@ -1,6 +1,5 @@
 import React from "react"
-import InputSwitcher from "../../../../Input/InputSwitcher"
-import CaseEditInput from "../../../../Input/CaseEditInput"
+import SwitchableNumberInput from "../../../../Input/SwitchableNumberInput"
 import { useCaseContext } from "../../../../../Context/CaseContext"
 
 const CapexFactorFeasibilityStudies: React.FC = () => {
@@ -20,8 +19,7 @@ const CapexFactorFeasibilityStudies: React.FC = () => {
         setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
     }
     return (
-        <CaseEditInput
-            object={projectCase}
+        <SwitchableNumberInput
             objectKey={projectCase?.capexFactorFeasibilityStudies}
             label="CAPEX factor feasibility studies"
             onSubmit={handleCaseFeasibilityChange}
