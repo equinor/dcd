@@ -77,6 +77,7 @@ const UndoControls: React.FC = () => {
         }
     }, [undoEdit, redoEdit, canUndo, canRedo])
 
+    if (!editsBelongingToCurrentCase || editsBelongingToCurrentCase.length === 0) { return null }
     return (
         <Container>
             {
