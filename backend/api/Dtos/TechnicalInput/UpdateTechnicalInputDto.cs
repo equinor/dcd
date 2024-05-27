@@ -10,6 +10,6 @@ public class UpdateTechnicalInputDto
     public CreateWellDto[]? CreateWellDtos { get; set; }
     public DeleteWellDto[]? DeleteWellDtos { get; set; }
     public UpdateProjectDto ProjectDto { get; set; } = null!;
-    public UpdateExplorationDto? ExplorationDto { get; set; }
-    public UpdateWellProjectDto? WellProjectDto { get; set; }
+    public UpdateExplorationWithProfilesDto? ExplorationDto { get; set; }
+    public UpdateWellProjectWithProfilesDto? WellProjectDto { get; set; }
 }

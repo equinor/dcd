@@ -38,10 +38,10 @@ public class SurfService : ISurfService
         _mapperService = mapperService;
     }
 
-    public async Task<SurfDto> CopySurf(Guid surfId, Guid sourceCaseId)
+    public async Task<SurfWithProfilesDto> CopySurf(Guid surfId, Guid sourceCaseId)
     {
         var source = await GetSurf(surfId);
-        var newSurfDto = _mapper.Map<SurfDto>(source);
+        var newSurfDto = _mapper.Map<SurfWithProfilesDto>(source);
         if (newSurfDto == null)
         {
             _logger.LogError("Failed to map surf to dto");

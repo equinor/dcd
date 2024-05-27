@@ -39,10 +39,10 @@ public class WellProjectService : IWellProjectService
         _mapperService = mapperService;
     }
 
-    public async Task<WellProjectDto> CopyWellProject(Guid wellProjectId, Guid sourceCaseId)
+    public async Task<WellProjectWithProfilesDto> CopyWellProject(Guid wellProjectId, Guid sourceCaseId)
     {
         var source = await GetWellProject(wellProjectId);
-        var newWellProjectDto = _mapper.Map<WellProjectDto>(source);
+        var newWellProjectDto = _mapper.Map<WellProjectWithProfilesDto>(source);
         if (newWellProjectDto == null)
         {
             _logger.LogError("Failed to map well project to dto");
@@ -118,14 +118,14 @@ public class WellProjectService : IWellProjectService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<WellProjectDto> UpdateWellProjectAndCostProfiles(WellProjectDto updatedWellProjectDto)
+    public async Task<WellProjectWithProfilesDto> UpdateWellProjectAndCostProfiles(WellProjectWithProfilesDto updatedWellProjectDto)
     {
         var existing = await GetWellProject(updatedWellProjectDto.Id);
         _mapper.Map(updatedWellProjectDto, existing);
 
         var updatedWellProject = _context.WellProjects!.Update(existing);
         await _context.SaveChangesAsync();
-        var dto = _mapper.Map<WellProjectDto>(updatedWellProject);
+        var dto = _mapper.Map<WellProjectWithProfilesDto>(updatedWellProject);
         if (dto == null)
         {
             _logger.LogError("Failed to map well project to dto");

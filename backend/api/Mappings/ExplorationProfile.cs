@@ -9,7 +9,7 @@ public class ExplorationProfile : Profile
 {
     public ExplorationProfile()
     {
-        CreateMap<Exploration, ExplorationDto>();
+        CreateMap<Exploration, ExplorationWithProfilesDto>();
         CreateMap<ExplorationWellCostProfile, ExplorationWellCostProfileDto>();
         CreateMap<AppraisalWellCostProfile, AppraisalWellCostProfileDto>();
         CreateMap<SidetrackCostProfile, SidetrackCostProfileDto>();
@@ -18,7 +18,7 @@ public class ExplorationProfile : Profile
         CreateMap<CountryOfficeCost, CountryOfficeCostDto>();
         CreateMap<ExplorationWell, ExplorationWellDto>().ReverseMap();
 
-        CreateMap<UpdateExplorationDto, Exploration>();
+        CreateMap<UpdateExplorationWithProfilesDto, Exploration>();
         CreateMap<UpdateSeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>();
         CreateMap<UpdateCountryOfficeCostDto, CountryOfficeCost>();
         CreateMap<UpdateExplorationWellCostProfileDto, ExplorationWellCostProfile>();
@@ -27,6 +27,6 @@ public class ExplorationProfile : Profile
 
 
         CreateMap<CreateExplorationDto, Exploration>();
-        CreateMap<ExplorationDto, UpdateExplorationDto>(); // Temp fix
+        CreateMap<ExplorationWithProfilesDto, UpdateExplorationWithProfilesDto>(); // Temp fix
     }
 }

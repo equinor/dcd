@@ -55,10 +55,10 @@ public class TransportService : ITransportService
         return createdTransport.Entity;
     }
 
-    public async Task<TransportDto> CopyTransport(Guid transportId, Guid sourceCaseId)
+    public async Task<TransportWithProfilesDto> CopyTransport(Guid transportId, Guid sourceCaseId)
     {
         var source = await GetTransport(transportId);
-        var newTransportDto = _mapper.Map<TransportDto>(source);
+        var newTransportDto = _mapper.Map<TransportWithProfilesDto>(source);
         if (newTransportDto == null)
         {
             throw new ArgumentNullException(nameof(newTransportDto));

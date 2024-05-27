@@ -9,7 +9,7 @@ public class WellProjectProfile : Profile
 {
     public WellProjectProfile()
     {
-        CreateMap<WellProject, WellProjectDto>();
+        CreateMap<WellProject, WellProjectWithProfilesDto>();
         CreateMap<OilProducerCostProfile, OilProducerCostProfileDto>();
         CreateMap<OilProducerCostProfileOverride, OilProducerCostProfileOverrideDto>();
         CreateMap<GasProducerCostProfile, GasProducerCostProfileDto>();
@@ -20,13 +20,13 @@ public class WellProjectProfile : Profile
         CreateMap<GasInjectorCostProfileOverride, GasInjectorCostProfileOverrideDto>();
         CreateMap<WellProjectWell, WellProjectWellDto>().ReverseMap();
 
-        CreateMap<UpdateWellProjectDto, WellProject>();
+        CreateMap<UpdateWellProjectWithProfilesDto, WellProject>();
         CreateMap<UpdateOilProducerCostProfileOverrideDto, OilProducerCostProfileOverride>();
         CreateMap<UpdateGasProducerCostProfileOverrideDto, GasProducerCostProfileOverride>();
         CreateMap<UpdateWaterInjectorCostProfileOverrideDto, WaterInjectorCostProfileOverride>();
         CreateMap<UpdateGasInjectorCostProfileOverrideDto, GasInjectorCostProfileOverride>();
 
         CreateMap<CreateWellProjectDto, WellProject>();
-        CreateMap<WellProjectDto, UpdateWellProjectDto>(); // Temp fix
+        CreateMap<WellProjectWithProfilesDto, UpdateWellProjectWithProfilesDto>(); // Temp fix
     }
 }

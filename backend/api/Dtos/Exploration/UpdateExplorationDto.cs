@@ -6,33 +6,6 @@ namespace api.Dtos;
 
 public class UpdateExplorationDto
 {
-    public string Name { get; set; } = string.Empty;
     public double RigMobDemob { get; set; }
     public Currency Currency { get; set; }
-
-    public UpdateSeismicAcquisitionAndProcessingDto? SeismicAcquisitionAndProcessing { get; set; }
-    public UpdateCountryOfficeCostDto? CountryOfficeCost { get; set; }
-    public UpdateExplorationWellCostProfileDto? ExplorationWellCostProfile { get; set; }
-    public UpdateAppraisalWellCostProfileDto? AppraisalWellCostProfile { get; set; }
-    public UpdateSidetrackCostProfileDto? SidetrackCostProfile { get; set; }
-}
-
-public class UpdateSeismicAcquisitionAndProcessingDto : UpdateTimeSeriesCostDto
-{
-}
-
-public class UpdateCountryOfficeCostDto : UpdateTimeSeriesCostDto
-{
-}
-
-public class UpdateExplorationWellCostProfileDto : UpdateTimeSeriesCostDto
-{
-}
-
-public class UpdateAppraisalWellCostProfileDto : UpdateTimeSeriesCostDto
-{
-}
-
-public class UpdateSidetrackCostProfileDto : UpdateTimeSeriesCostDto
-{
 }

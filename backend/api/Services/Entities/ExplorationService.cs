@@ -41,10 +41,10 @@ public class ExplorationService : IExplorationService
     }
 
 
-    public async Task<ExplorationDto> CopyExploration(Guid explorationId, Guid sourceCaseId)
+    public async Task<ExplorationWithProfilesDto> CopyExploration(Guid explorationId, Guid sourceCaseId)
     {
         var source = await GetExploration(explorationId);
-        var newExplorationDto = _mapper.Map<ExplorationDto>(source);
+        var newExplorationDto = _mapper.Map<ExplorationWithProfilesDto>(source);
         if (newExplorationDto == null)
         {
             throw new ArgumentNullException(nameof(newExplorationDto));
@@ -108,14 +108,14 @@ public class ExplorationService : IExplorationService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<ExplorationDto> UpdateExplorationAndCostProfiles(ExplorationDto updatedExplorationDto)
+    public async Task<ExplorationWithProfilesDto> UpdateExplorationAndCostProfiles(ExplorationWithProfilesDto updatedExplorationDto)
     {
         var existing = await GetExploration(updatedExplorationDto.Id);
         _mapper.Map(updatedExplorationDto, existing);
 
         var updatedExploration = _context.Explorations!.Update(existing);
         await _context.SaveChangesAsync();
-        var explorationDto = _mapper.Map<ExplorationDto>(updatedExploration.Entity);
+        var explorationDto = _mapper.Map<ExplorationWithProfilesDto>(updatedExploration.Entity);
         if (explorationDto == null)
         {
             throw new ArgumentNullException(nameof(explorationDto));

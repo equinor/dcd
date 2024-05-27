@@ -329,7 +329,7 @@ public static class TestHelper
         }
     }
 
-    public static void CompareTransports(Transport expected, TransportDto actual)
+    public static void CompareTransports(Transport expected, TransportWithProfilesDto actual)
     {
         if (expected == null || actual == null)
         {
@@ -366,7 +366,7 @@ public static class TestHelper
         }
     }
 
-    public static void CompareExplorations(Exploration expected, ExplorationDto actual)
+    public static void CompareExplorations(Exploration expected, ExplorationWithProfilesDto actual)
     {
         if (expected == null || actual == null)
         {
@@ -375,7 +375,7 @@ public static class TestHelper
         }
     }
 
-    public static void CompareExplorations(ExplorationDto expected, ExplorationDto actual)
+    public static void CompareExplorations(ExplorationWithProfilesDto expected, ExplorationWithProfilesDto actual)
     {
         if (expected == null || actual == null)
         {
@@ -457,7 +457,7 @@ public static class TestHelper
         Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
     }
 
-    public static void CompareWellProjects(WellProject expected, WellProjectDto actual)
+    public static void CompareWellProjects(WellProject expected, WellProjectWithProfilesDto actual)
     {
         if (expected == null || actual == null)
         {
@@ -470,12 +470,12 @@ public static class TestHelper
         Assert.Equal(expected.ArtificialLift, actual.ArtificialLift);
     }
 
-    public static void CompareWellProjects(WellProjectDto expected, WellProject actual)
+    public static void CompareWellProjects(WellProjectWithProfilesDto expected, WellProject actual)
     {
         CompareWellProjects(actual, expected);
     }
 
-    public static void CompareWellProjects(WellProjectDto expected, WellProjectDto actual)
+    public static void CompareWellProjects(WellProjectWithProfilesDto expected, WellProjectWithProfilesDto actual)
     {
         if (expected == null || actual == null)
         {

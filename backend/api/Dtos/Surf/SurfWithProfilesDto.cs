@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using api.Models;
 namespace api.Dtos;
 
-public class SurfDto
+public class SurfWithProfilesDto
 {
     [Required]
     public Guid Id { get; set; }
@@ -11,6 +11,12 @@ public class SurfDto
     public string Name { get; set; } = string.Empty!;
     [Required]
     public Guid ProjectId { get; set; }
+    [Required]
+    public SurfCostProfileDto CostProfile { get; set; } = new SurfCostProfileDto();
+    [Required]
+    public SurfCostProfileOverrideDto CostProfileOverride { get; set; } = new SurfCostProfileOverrideDto();
+    [Required]
+    public SurfCessationCostProfileDto CessationCostProfile { get; set; } = new SurfCessationCostProfileDto();
     [Required]
     public double CessationCost { get; set; }
     [Required]
@@ -46,4 +52,25 @@ public class SurfDto
     public string ApprovedBy { get; set; } = string.Empty;
     public DateTimeOffset? DG3Date { get; set; }
     public DateTimeOffset? DG4Date { get; set; }
+}
+
+public class SurfCostProfileDto : TimeSeriesCostDto
+{
+
+}
+
+public class SurfCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
+{
+    [Required]
+    public bool Override { get; set; }
+}
+
+public class SurfCessationCostProfileDto : TimeSeriesCostDto
+{
+
+}
+
+public enum ProductionFlowlineDto
+{
+    Default = 999
 }
