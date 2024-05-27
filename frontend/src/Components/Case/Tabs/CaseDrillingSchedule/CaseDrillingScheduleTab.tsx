@@ -22,8 +22,8 @@ interface Props {
     wellProjectWells: Components.Schemas.WellProjectWellDto[],
     setWellProjectWells: Dispatch<SetStateAction<Components.Schemas.WellProjectWellDto[] | undefined>>,
     wells: Components.Schemas.WellDto[] | undefined
-    exploration: Components.Schemas.ExplorationDto,
-    wellProject: Components.Schemas.WellProjectDto,
+    exploration: Components.Schemas.ExplorationWithProfilesDto,
+    wellProject: Components.Schemas.WellProjectWithProfilesDto,
 }
 
 const CaseDrillingScheduleTab = ({

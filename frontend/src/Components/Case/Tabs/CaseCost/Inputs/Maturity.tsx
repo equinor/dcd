@@ -17,8 +17,8 @@ const Maturity: React.FC = () => {
         3: "D",
     }
 
-    const updatedAndSetSurf = (surfItem: Components.Schemas.SurfDto) => {
-        const newSurf: Components.Schemas.SurfDto = { ...surfItem }
+    const updatedAndSetSurf = (surfItem: Components.Schemas.SurfWithProfilesDto) => {
+        const newSurf: Components.Schemas.SurfWithProfilesDto = { ...surfItem }
         if (surfCost) {
             newSurf.costProfile = surfCost
         }
@@ -30,7 +30,7 @@ const Maturity: React.FC = () => {
             const newMaturity: Components.Schemas.Maturity = Number(e.currentTarget.value) as Components.Schemas.Maturity
             const newSurf = { ...surf }
             newSurf.maturity = newMaturity
-            updatedAndSetSurf(newSurf as Components.Schemas.SurfDto)
+            updatedAndSetSurf(newSurf as Components.Schemas.SurfWithProfilesDto)
         }
     }
 

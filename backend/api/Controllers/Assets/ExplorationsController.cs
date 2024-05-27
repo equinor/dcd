@@ -38,25 +38,25 @@ public class ExplorationsController : ControllerBase
         return await _explorationService.UpdateExploration(caseId, explorationId, dto);
     }
 
-    [HttpPut("{wellProjectId}/seismic-acquisition-and-processing/{costProfileId}")]
+    [HttpPut("{explorationId}/seismic-acquisition-and-processing/{costProfileId}")]
     public async Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
-        [FromRoute] Guid wellProjectId,
+        [FromRoute] Guid explorationId,
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateSeismicAcquisitionAndProcessingDto dto)
     {
-        return await _explorationService.UpdateSeismicAcquisitionAndProcessing(caseId, wellProjectId, costProfileId, dto);
+        return await _explorationService.UpdateSeismicAcquisitionAndProcessing(caseId, explorationId, costProfileId, dto);
     }
 
-    [HttpPut("{wellProjectId}/country-office-cost/{costProfileId}")]
+    [HttpPut("{explorationId}/country-office-cost/{costProfileId}")]
     public async Task<CountryOfficeCostDto> UpdateCountryOfficeCost(
     [FromRoute] Guid projectId,
     [FromRoute] Guid caseId,
-    [FromRoute] Guid wellProjectId,
+    [FromRoute] Guid explorationId,
     [FromRoute] Guid costProfileId,
     [FromBody] UpdateCountryOfficeCostDto dto)
     {
-        return await _explorationService.UpdateCountryOfficeCost(caseId, wellProjectId, costProfileId, dto);
+        return await _explorationService.UpdateCountryOfficeCost(caseId, explorationId, costProfileId, dto);
     }
 }

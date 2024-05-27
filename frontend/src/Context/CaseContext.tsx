@@ -31,8 +31,8 @@ interface CaseContextType {
     setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideWithProfilesDto | undefined>>
     topsideCost: Components.Schemas.TopsideCostProfileDto | undefined
     setTopsideCost: Dispatch<SetStateAction<Components.Schemas.TopsideCostProfileDto | undefined>>
-    surf: Components.Schemas.SurfDto | undefined
-    setSurf: Dispatch<SetStateAction<Components.Schemas.SurfDto | undefined>>
+    surf: Components.Schemas.SurfWithProfilesDto | undefined
+    setSurf: Dispatch<SetStateAction<Components.Schemas.SurfWithProfilesDto | undefined>>
     surfCost: Components.Schemas.SurfCostProfileDto | undefined
     setSurfCost: Dispatch<SetStateAction<Components.Schemas.SurfCostProfileDto | undefined>>
     surfCostOverride: Components.Schemas.SurfCostProfileOverrideDto | undefined
@@ -41,8 +41,8 @@ interface CaseContextType {
     setSubstructure: Dispatch<SetStateAction<Components.Schemas.SubstructureWithProfilesDto | undefined>>
     substructureCost: Components.Schemas.SubstructureCostProfileDto | undefined
     setSubstructureCost: Dispatch<SetStateAction<Components.Schemas.SubstructureCostProfileDto | undefined>>
-    transport: Components.Schemas.TransportDto | undefined
-    setTransport: Dispatch<SetStateAction<Components.Schemas.TransportDto | undefined>>
+    transport: Components.Schemas.TransportWithProfilesDto | undefined
+    setTransport: Dispatch<SetStateAction<Components.Schemas.TransportWithProfilesDto | undefined>>
     transportCost: Components.Schemas.TransportCostProfileDto | undefined
     setTransportCost: Dispatch<SetStateAction<Components.Schemas.TransportCostProfileDto | undefined>>
     drainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto | undefined
@@ -140,12 +140,12 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
     const [topside, setTopside] = useState<Components.Schemas.TopsideWithProfilesDto | undefined>()
     const [topsideCost, setTopsideCost] = useState<Components.Schemas.TopsideCostProfileDto | undefined>()
-    const [surf, setSurf] = useState<Components.Schemas.SurfDto>()
+    const [surf, setSurf] = useState<Components.Schemas.SurfWithProfilesDto>()
     const [surfCost, setSurfCost] = useState<Components.Schemas.SurfCostProfileDto | undefined>()
     const [surfCostOverride, setSurfCostOverride] = useState<Components.Schemas.SurfCostProfileOverrideDto>()
     const [substructure, setSubstructure] = useState<Components.Schemas.SubstructureWithProfilesDto>()
     const [substructureCost, setSubstructureCost] = useState<Components.Schemas.SubstructureCostProfileDto | undefined>()
-    const [transport, setTransport] = useState<Components.Schemas.TransportDto>()
+    const [transport, setTransport] = useState<Components.Schemas.TransportWithProfilesDto>()
     const [transportCost, setTransportCost] = useState<Components.Schemas.TransportCostProfileDto | undefined>()
     const [drainageStrategy, setDrainageStrategy] = useState<Components.Schemas.DrainageStrategyWithProfilesDto>()
 

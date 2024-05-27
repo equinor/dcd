@@ -10,7 +10,7 @@ namespace api.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("projects/{projectId}/cases/{caseId}/transports")]
+[Route("projects/{projectId}/cases/{caseId}/surfs")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
     ApplicationRole.Admin,
