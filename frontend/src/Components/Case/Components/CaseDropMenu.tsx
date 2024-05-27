@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import {
     Menu, Typography, Icon, Button,
 } from "@equinor/eds-core-react"
@@ -35,7 +35,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     } = useProjectContext()
 
     const { addNewCase } = useModalContext()
-    const [confirmDelete, setConfirmDelete] = React.useState(false)
+    const [confirmDelete, setConfirmDelete] = useState(false)
 
     const deleteAndGoToProject = async () => {
         if (!projectCase || !project) { return }

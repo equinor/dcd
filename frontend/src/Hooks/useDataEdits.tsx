@@ -100,8 +100,14 @@ const useDataEdits = (): {
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, projectCase))
         let edits = caseEditsBelongingToCurrentCase
 
+        console.log("Removing edits from index", currentEditIndex)
+
         if (currentEditIndex > 0) {
             edits = caseEditsBelongingToCurrentCase.slice(currentEditIndex)
+        }
+
+        if (currentEditIndex === -1) {
+            edits = []
         }
 
         edits = [editInstanceObject, ...edits]
