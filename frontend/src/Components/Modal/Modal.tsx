@@ -1,5 +1,5 @@
 import {
-    FunctionComponent, ReactNode, Children, useState,
+    FunctionComponent, ReactNode, Children,
 } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import Dialog from "@mui/material/Dialog"
