@@ -11,5 +11,4 @@ public class WellProjectWellDto
     public Guid WellProjectId { get; set; } = Guid.Empty!;
     [Required]
     public Guid WellId { get; set; } = Guid.Empty!;
-    public bool HasChanges { get; set; }
 }

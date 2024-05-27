@@ -124,7 +124,7 @@ public class TechnicalInputService : ITechnicalInputService
         }
     }
 
-    private async Task<(ExplorationDto explorationDto, WellProjectDto wellProjectDto)?> CreateAndUpdateWells(
+    private async Task<(ExplorationWithProfilesDto explorationDto, WellProjectWithProfilesDto wellProjectDto)?> CreateAndUpdateWells(
             Guid projectId,
             CreateWellDto[]? createWellDtos,
             UpdateWellDto[]? updateWellDtos

@@ -64,13 +64,13 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         await _context.SaveChangesAsync();
     }
 
-    private WellProjectDto[] UpdateWellProjects(WellProject[] updatedWellProjects)
+    private WellProjectWithProfilesDto[] UpdateWellProjects(WellProject[] updatedWellProjects)
     {
-        var updatedWellProjectDtoList = new List<WellProjectDto>();
+        var updatedWellProjectDtoList = new List<WellProjectWithProfilesDto>();
         foreach (var updatedWellProject in updatedWellProjects)
         {
             var wellProject = _context.WellProjects!.Update(updatedWellProject);
-            var wellProjectDto = _mapper.Map<WellProjectDto>(wellProject.Entity);
+            var wellProjectDto = _mapper.Map<WellProjectWithProfilesDto>(wellProject.Entity);
             if (wellProjectDto == null)
             {
                 throw new ArgumentNullException(nameof(wellProjectDto));
@@ -81,13 +81,13 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         return updatedWellProjectDtoList.ToArray();
     }
 
-    private ExplorationDto[] UpdateExplorations(Exploration[] updatedExplorations)
+    private ExplorationWithProfilesDto[] UpdateExplorations(Exploration[] updatedExplorations)
     {
-        var updatedExplorationDtoList = new List<ExplorationDto>();
+        var updatedExplorationDtoList = new List<ExplorationWithProfilesDto>();
         foreach (var updatedExploration in updatedExplorations)
         {
             var exploration = _context.Explorations!.Update(updatedExploration);
-            var explorationDto = _mapper.Map<ExplorationDto>(exploration.Entity);
+            var explorationDto = _mapper.Map<ExplorationWithProfilesDto>(exploration.Entity);
             if (explorationDto == null)
             {
                 throw new ArgumentNullException(nameof(explorationDto));

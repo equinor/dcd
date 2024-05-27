@@ -7,7 +7,7 @@ import { Icon } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
 
 interface Props {
-    topside: Components.Schemas.TopsideDto,
+    topside: Components.Schemas.TopsideWithProfilesDto,
 }
 
 const CaseCO2DistributionTable = ({

@@ -24,10 +24,10 @@ interface ModalContextType {
     setTechnicalModalIsOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>,
     editTechnicalInput: boolean;
     setEditTechnicalInput: React.Dispatch<React.SetStateAction<boolean | undefined>>,
-    wellProject: Components.Schemas.WellProjectDto | undefined;
-    setWellProject: React.Dispatch<React.SetStateAction<Components.Schemas.WellProjectDto | undefined>>,
-    exploration: Components.Schemas.ExplorationDto | undefined;
-    setExploration: React.Dispatch<React.SetStateAction<Components.Schemas.ExplorationDto | undefined>>,
+    wellProject: Components.Schemas.WellProjectWithProfilesDto | undefined;
+    setWellProject: React.Dispatch<React.SetStateAction<Components.Schemas.WellProjectWithProfilesDto | undefined>>,
+    exploration: Components.Schemas.ExplorationWithProfilesDto | undefined;
+    setExploration: React.Dispatch<React.SetStateAction<Components.Schemas.ExplorationWithProfilesDto | undefined>>,
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined)
@@ -57,8 +57,8 @@ const ModalContextProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     // Technical input modal
     const [technicalModalIsOpen, setTechnicalModalIsOpen] = useState<boolean>(false)
     const [editTechnicalInput, setEditTechnicalInput] = useState<boolean | undefined>(undefined)
-    const [wellProject, setWellProject] = useState<Components.Schemas.WellProjectDto | undefined>(undefined)
-    const [exploration, setExploration] = useState<Components.Schemas.ExplorationDto | undefined>(undefined)
+    const [wellProject, setWellProject] = useState<Components.Schemas.WellProjectWithProfilesDto | undefined>(undefined)
+    const [exploration, setExploration] = useState<Components.Schemas.ExplorationWithProfilesDto | undefined>(undefined)
 
     const value = useMemo(() => ({
         caseModalIsOpen,
