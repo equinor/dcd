@@ -35,7 +35,7 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [editMode, setEditMode] = useState<boolean>(false)
     const [updateFromServer, setUpdateFromServer] = useState<boolean>(true)
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(true)
-    const [editHistoryIsActive, setEditHistoryIsActive] = useState(false)
+    const [editHistoryIsActive, setEditHistoryIsActive] = useState(true)
 
     const value = useMemo(() => ({
         isCreating,

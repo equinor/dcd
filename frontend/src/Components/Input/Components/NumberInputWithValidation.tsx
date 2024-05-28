@@ -2,7 +2,7 @@ import { InputWrapper, Input, Icon } from "@equinor/eds-core-react"
 import { useState } from "react"
 import { error_filled } from "@equinor/eds-icons"
 import styled from "styled-components"
-import { preventNonDigitInput, isWithinRange } from "../../Utils/common"
+import { preventNonDigitInput, isWithinRange } from "../../../Utils/common"
 
 const ErrorIcon = styled(Icon)`
     margin-left: 8px;
@@ -31,7 +31,7 @@ interface Props {
     max?: number
 }
 
-const NumberInput = ({
+const NumberInputWithValidation = ({
     onSubmit,
     defaultValue,
     integer,
@@ -95,4 +95,4 @@ const NumberInput = ({
     )
 }
 
-export default NumberInput
+export default NumberInputWithValidation

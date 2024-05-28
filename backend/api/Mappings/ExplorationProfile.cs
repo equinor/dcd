@@ -10,6 +10,7 @@ public class ExplorationProfile : Profile
     public ExplorationProfile()
     {
         CreateMap<Exploration, ExplorationDto>();
+        CreateMap<Exploration, ExplorationWithProfilesDto>();
         CreateMap<ExplorationWellCostProfile, ExplorationWellCostProfileDto>();
         CreateMap<AppraisalWellCostProfile, AppraisalWellCostProfileDto>();
         CreateMap<SidetrackCostProfile, SidetrackCostProfileDto>();
@@ -19,14 +20,15 @@ public class ExplorationProfile : Profile
         CreateMap<ExplorationWell, ExplorationWellDto>().ReverseMap();
 
         CreateMap<UpdateExplorationDto, Exploration>();
-        CreateMap<UpdateSeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessing>();
-        CreateMap<UpdateCountryOfficeCost, CountryOfficeCost>();
-        CreateMap<UpdateExplorationWellCostProfile, ExplorationWellCostProfile>();
-        CreateMap<UpdateAppraisalWellCostProfile, AppraisalWellCostProfile>();
-        CreateMap<UpdateSidetrackCostProfile, SidetrackCostProfile>();
+        CreateMap<UpdateExplorationWithProfilesDto, Exploration>();
+        CreateMap<UpdateSeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>();
+        CreateMap<UpdateCountryOfficeCostDto, CountryOfficeCost>();
+        CreateMap<UpdateExplorationWellCostProfileDto, ExplorationWellCostProfile>();
+        CreateMap<UpdateAppraisalWellCostProfileDto, AppraisalWellCostProfile>();
+        CreateMap<UpdateSidetrackCostProfileDto, SidetrackCostProfile>();
 
 
         CreateMap<CreateExplorationDto, Exploration>();
-        CreateMap<ExplorationDto, UpdateExplorationDto>(); // Temp fix
+        CreateMap<ExplorationWithProfilesDto, UpdateExplorationWithProfilesDto>(); // Temp fix
     }
 }

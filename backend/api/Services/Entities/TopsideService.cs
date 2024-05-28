@@ -108,8 +108,6 @@ public class TopsideService : ITopsideService
         return await _projectService.GetProjectDto(existing.ProjectId);
     }
 
-
-
     public async Task<Topside> GetTopside(Guid topsideId)
     {
         var topside = await _context.Topsides!
@@ -145,7 +143,7 @@ public class TopsideService : ITopsideService
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update topside with id {topsideId} for case id {CaseId}.", topsideId, caseId);
+            _logger.LogError(ex, "Failed to update topside with id {topsideId} for case id {caseId}.", topsideId, caseId);
             throw;
         }
 
@@ -174,7 +172,7 @@ public class TopsideService : ITopsideService
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update cost profile override with id {CostProfileId} for topside id {TopsideId} for case id {CaseId}.", costProfileId, topsideId, caseId);
+            _logger.LogError(ex, "Failed to update cost profile override with id {costProfileId} for topside id {topsideId} for case id {caseId}.", costProfileId, topsideId, caseId);
             throw;
         }
 

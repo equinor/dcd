@@ -157,7 +157,11 @@ const CreateCaseModal = () => {
     const disableCreateButton = () => caseName && caseName !== ""
 
     return (
-        <Modal isOpen={caseModalIsOpen} title={caseModalEditMode ? "Edit case" : "Add new case"}>
+        <Modal
+            isOpen={caseModalIsOpen}
+            title={caseModalEditMode ? "Edit case" : "Add new case"}
+            fullWidth
+        >
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>
                     <InputWrapper labelProps={{ label: "Name" }}>

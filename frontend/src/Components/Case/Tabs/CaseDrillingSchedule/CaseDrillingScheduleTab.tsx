@@ -8,13 +8,12 @@ import {
 
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import CaseEditInput from "../../../Input/CaseEditInput"
+import SwitchableNumberInput from "../../../Input/SwitchableNumberInput"
 import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleAgGridTable"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
-import InputSwitcher from "../../../Input/InputSwitcher"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
-import DateRangePicker from "../../../Input/DateRangePicker"
+import DateRangePicker from "../../../Input/TableDateRangePicker"
 
 interface Props {
     explorationWells: Components.Schemas.ExplorationWellDto[],
@@ -22,8 +21,8 @@ interface Props {
     wellProjectWells: Components.Schemas.WellProjectWellDto[],
     setWellProjectWells: Dispatch<SetStateAction<Components.Schemas.WellProjectWellDto[] | undefined>>,
     wells: Components.Schemas.WellDto[] | undefined
-    exploration: Components.Schemas.ExplorationDto,
-    wellProject: Components.Schemas.WellProjectDto,
+    exploration: Components.Schemas.ExplorationWithProfilesDto,
+    wellProject: Components.Schemas.WellProjectWithProfilesDto,
 }
 
 const CaseDrillingScheduleTab = ({
@@ -135,7 +134,7 @@ const CaseDrillingScheduleTab = ({
                 <Typography>Create wells in technical input in order to see them in the list below.</Typography>
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     label="Exploration wells"
                     value={explorationWellCount}
                     integer
@@ -143,7 +142,7 @@ const CaseDrillingScheduleTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     label="Appraisal wells"
                     value={appraisalWellCount}
                     integer
@@ -151,7 +150,7 @@ const CaseDrillingScheduleTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     label="Oil producer wells"
                     value={oilProducerCount}
                     integer
@@ -159,7 +158,7 @@ const CaseDrillingScheduleTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     label="Gas producer wells"
                     value={gasProducerCount}
                     integer
@@ -167,7 +166,7 @@ const CaseDrillingScheduleTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     label="Water injector wells"
                     value={waterInjectorCount}
                     integer
@@ -175,7 +174,7 @@ const CaseDrillingScheduleTab = ({
                 />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CaseEditInput
+                <SwitchableNumberInput
                     label="Gas injector wells"
                     value={gasInjectorCount}
                     integer

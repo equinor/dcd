@@ -1,5 +1,5 @@
 import React from "react"
-import CaseEditInput from "../../../../Input/CaseEditInput"
+import SwitchableNumberInput from "../../../../Input/SwitchableNumberInput"
 import { useCaseContext } from "../../../../../Context/CaseContext"
 
 const TotalStudyCosts: React.FC = () => {
@@ -20,8 +20,7 @@ const TotalStudyCosts: React.FC = () => {
     }
 
     return (
-        <CaseEditInput
-            object={projectCase}
+        <SwitchableNumberInput
             objectKey={projectCase?.capexFactorFEEDStudies}
             label="CAPEX factor FEED studies"
             onSubmit={handleCaseFEEDChange}

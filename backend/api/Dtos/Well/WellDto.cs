@@ -22,6 +22,5 @@ public class WellDto
     public double WellCost { get; set; }
     [Required]
     public double DrillingDays { get; set; }
-    public bool HasChanges { get; set; }
     public bool HasCostChanges { get; set; }
 }
