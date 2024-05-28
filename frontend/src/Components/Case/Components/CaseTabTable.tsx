@@ -54,7 +54,6 @@ const CaseTabTable = ({
     const [overrideModalProfileName, setOverrideModalProfileName] = useState<string>("")
     const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
     const [overrideProfile, setOverrideProfile] = useState<any>()
-    const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
     const [gridApi, setGridApi] = useState(null)
 
     const profilesToRowData = () => {
@@ -121,6 +120,8 @@ const CaseTabTable = ({
         return tableRows
     }
 
+    const gridRowData = gridRef.current?.api?.setGridOption("rowData", profilesToRowData())
+
     const lockIconRenderer = (params: any) => (
         <ClickableLockIcon
             clickedElement={params}
@@ -137,7 +138,7 @@ const CaseTabTable = ({
                 field: "profileName",
                 headerName: tableName,
                 cellRenderer: (params: any) => (
-                    profileAndUnitInSameCell(params, rowData)
+                    profileAndUnitInSameCell(params, profilesToRowData())
                 ),
                 width: 250,
                 editable: false,
@@ -252,13 +253,11 @@ const CaseTabTable = ({
     useEffect(() => {
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
-    }, [timeSeriesData, tableYears, rowData])
+    }, [timeSeriesData, tableYears])
 
     const onGridReady = useCallback((params: GridReadyEvent) => {
-        params.api.showLoadingOverlay()
-        setTimeout(() => {
-            setRowData(profilesToRowData())
-        }, 100)
+        const generateRowData = profilesToRowData()
+        params.api.setGridOption("rowData", generateRowData)
     }, [])
 
     return (
@@ -278,7 +277,7 @@ const CaseTabTable = ({
                 >
                     <AgGridReact
                         ref={gridRef}
-                        rowData={rowData}
+                        rowData={gridRef.current?.api?.setGridOption("rowData", profilesToRowData())}
                         columnDefs={columnDefs}
                         defaultColDef={defaultColDef}
                         animateRows
