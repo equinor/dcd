@@ -67,20 +67,18 @@ const Controls = () => {
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
 
     const handleReferenceCaseChange = (referenceCaseId: string) => {
-        if (project && projectEdited) {
-            console.log(referenceCaseId)
+        if (project) {
             const newProject = {
                 ...project,
             }
-            console.log(newProject.referenceCaseId)
-            addEdit(referenceCaseId, newProject.referenceCaseId, "referenceCaseId", "referenceCaseId", "project", newProject.id)
+            console.log(`newProject refCaseId: ${newProject.referenceCaseId}`)
             if (newProject.referenceCaseId === referenceCaseId) {
                 newProject.referenceCaseId = EMPTY_GUID
             } else {
-                newProject.referenceCaseId = referenceCaseId
+                newProject.referenceCaseId = referenceCaseId ?? ""
             }
-            console.log(newProject)
-            setProjectEdited(newProject)
+            console.log(`newproject refCaseId: ${newProject.referenceCaseId}`)
+            setProject(newProject)
         }
     }
 
@@ -191,7 +189,6 @@ const Controls = () => {
                             {project?.referenceCaseId === projectCase?.id && (
                                 <ReferenceCaseIcon
                                     iconPlacement="caseView"
-                                    iconData={bookmark_filled}
                                 />
                             )}
                             <Typography variant="h4">
