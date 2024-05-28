@@ -7,7 +7,7 @@ import {
 } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import CaseEditInput from "../../../Input/CaseEditInput"
+import SwitchableNumberInput from "../../../Input/SwitchableNumberInput"
 import CaseTabTable from "../../Components/CaseTabTable"
 import { ITimeSeries } from "../../../../Models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
@@ -19,7 +19,7 @@ import { ITimeSeriesOverride } from "../../../../Models/ITimeSeriesOverride"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import { setNonNegativeNumberState } from "../../../../Utils/common"
-import DateRangePicker from "../../../Input/DateRangePicker"
+import DateRangePicker from "../../../Input/TableDateRangePicker"
 
 interface Props {
     topside: Components.Schemas.TopsideWithProfilesDto,
@@ -218,8 +218,7 @@ const CaseCO2Tab = ({
                 <Typography>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</Typography>
             </Grid>
             <Grid item xs={12}>
-                <CaseEditInput
-                    object={topside}
+                <SwitchableNumberInput
                     objectKey={topside?.fuelConsumption}
                     label="Fuel consumption"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "fuelConsumption", topside, setTopside)}

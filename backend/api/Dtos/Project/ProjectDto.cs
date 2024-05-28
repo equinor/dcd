@@ -43,19 +43,19 @@ public class ProjectDto
     [Required]
     public ICollection<WellDto> Wells { get; set; } = [];
     [Required]
-    public ICollection<ExplorationDto> Explorations { get; set; } = [];
+    public ICollection<ExplorationWithProfilesDto> Explorations { get; set; } = [];
     [Required]
-    public ICollection<SurfDto> Surfs { get; set; } = [];
+    public ICollection<SurfWithProfilesDto> Surfs { get; set; } = [];
     [Required]
     public ICollection<SubstructureWithProfilesDto> Substructures { get; set; } = [];
     [Required]
     public ICollection<TopsideWithProfilesDto> Topsides { get; set; } = [];
     [Required]
-    public ICollection<TransportDto> Transports { get; set; } = [];
+    public ICollection<TransportWithProfilesDto> Transports { get; set; } = [];
     [Required]
     public ICollection<DrainageStrategyWithProfilesDto> DrainageStrategies { get; set; } = [];
     [Required]
-    public ICollection<WellProjectDto>? WellProjects { get; set; } = [];
+    public ICollection<WellProjectWithProfilesDto>? WellProjects { get; set; } = [];
     public string? SharepointSiteUrl { get; set; }
     [Required]
     public double CO2RemovedFromGas { get; set; }
@@ -71,8 +71,6 @@ public class ProjectDto
     public double DailyEmissionFromDrillingRig { get; set; }
     [Required]
     public double AverageDevelopmentDrillingDays { get; set; }
-    [Required]
-    public bool HasChanges { get; set; }
 
     public bool Equals(ProjectDto projectDto)
     {

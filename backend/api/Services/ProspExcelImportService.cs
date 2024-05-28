@@ -169,7 +169,7 @@ public class ProspExcelImportService
             CessationCost = cessationCost,
         };
 
-        await _surfService.UpdateSurf(updatedSurfDto, surfLink);
+        await _surfService.UpdateSurfAndCostProfiles(updatedSurfDto, surfLink);
     }
 
     private async Task ImportTopside(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
@@ -342,7 +342,7 @@ public class ProspExcelImportService
             GasExportPipelineLength = gasExportPipelineLength,
         };
 
-        await _transportService.UpdateTransport(updateTransportDto, transportLink);
+        await _transportService.UpdateTransportAndCostProfiles(updateTransportDto, transportLink);
     }
 
     public async Task<ProjectDto> ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets,
@@ -447,7 +447,7 @@ public class ProspExcelImportService
             Source = Source.ConceptApp,
         };
 
-        _surfService.UpdateSurf(dto, surfLink);
+        _surfService.UpdateSurfAndCostProfiles(dto, surfLink);
     }
 
     private void ClearImportedTopside(Case caseItem)
@@ -484,7 +484,7 @@ public class ProspExcelImportService
             Source = Source.ConceptApp,
         };
 
-        _transportService.UpdateTransport(dto, transportLink);
+        _transportService.UpdateTransportAndCostProfiles(dto, transportLink);
     }
 
     private static Concept MapSubstructureConcept(int importValue)

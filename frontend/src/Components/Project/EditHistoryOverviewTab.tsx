@@ -26,6 +26,14 @@ const EditHistoryOverviewTab = () => {
         return null
     }
 
+    if (project.cases.length === 0) {
+        return <Typography>The edit history for this project&apos;s cases will appear here once cases are created.</Typography>
+    }
+
+    if (caseEdits.length === 0) {
+        return <Typography>No edits have been made to the cases recently.</Typography>
+    }
+
     return (
         <Container>
             {project.cases

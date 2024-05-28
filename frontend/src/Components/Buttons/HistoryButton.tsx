@@ -6,13 +6,16 @@ import {
 } from "@equinor/eds-core-react"
 import { history } from "@equinor/eds-icons"
 import { useAppContext } from "../../Context/AppContext"
+import { useCaseContext } from "../../Context/CaseContext"
 
 interface props {
     size?: 16 | 24 | 32 | 48 | 18 | 40
 }
 
-const EditsSideBar: React.FC<props> = ({ size }) => {
+const HistoryButton: React.FC<props> = ({ size }) => {
     const { setEditHistoryIsActive, setSidebarOpen } = useAppContext()
+    const { projectCase } = useCaseContext()
+    if (!projectCase) { return null }
 
     const openHistory = () => {
         setEditHistoryIsActive(true)
@@ -28,4 +31,4 @@ const EditsSideBar: React.FC<props> = ({ size }) => {
     )
 }
 
-export default EditsSideBar
+export default HistoryButton
