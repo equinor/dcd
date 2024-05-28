@@ -277,7 +277,7 @@ const CaseTabTable = ({
                 >
                     <AgGridReact
                         ref={gridRef}
-                        rowData={gridRef.current?.api?.setGridOption("rowData", profilesToRowData())}
+                        rowData={gridRowData}
                         columnDefs={columnDefs}
                         defaultColDef={defaultColDef}
                         animateRows
