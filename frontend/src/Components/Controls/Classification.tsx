@@ -41,7 +41,7 @@ const SmallTooltip = styled(Tooltip)`
     }
 `
 
-const Controls = () => {
+const Classification = () => {
     const {
         project,
     } = useProjectContext()
@@ -64,4 +64,4 @@ const Controls = () => {
     )
 }
 
-export default Controls
+export default Classification
