@@ -7,8 +7,6 @@ import {
     Button,
     Progress,
     Input,
-    Chip,
-    Tooltip,
 } from "@equinor/eds-core-react"
 import {
     save,
@@ -26,9 +24,9 @@ import CaseDropMenu from "../Case/Components/CaseDropMenu"
 import { GetProjectService } from "../../Services/ProjectService"
 import { useAppContext } from "../../Context/AppContext"
 import useDataEdits from "../../Hooks/useDataEdits"
-import HistoryButton from "../Buttons/HistoryButton"
+// import HistoryButton from "../Buttons/HistoryButton"
 import UndoControls from "./UndoControls"
-import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
+import Classification from "./Classification"
 
 const Controls = () => {
     const navigate = useNavigate()
@@ -147,14 +145,7 @@ const Controls = () => {
                             <Typography variant="h4">
                                 {projectCase ? projectCase.name : project?.name}
                             </Typography>
-                            {project && !projectCase && (
-                                <Tooltip placement="bottom-start" title={PROJECT_CLASSIFICATION[project?.classification].description}>
-                                    <Chip variant={PROJECT_CLASSIFICATION[project?.classification].color}>
-                                        <Icon data={PROJECT_CLASSIFICATION[project?.classification].icon} />
-                                        {PROJECT_CLASSIFICATION[project?.classification].label}
-                                    </Chip>
-                                </Tooltip>
-                            )}
+                            <Classification />
                         </>
                     )}
             </Grid>
