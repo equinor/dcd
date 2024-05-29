@@ -129,7 +129,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({ tableYears, opexGridRef, alignedG
             setOnshoreRelatedOPEXCostProfile(projectCase.onshoreRelatedOPEXCostProfile)
             setAdditionalOPEXCostProfile(projectCase.additionalOPEXCostProfile)
         }
-    }, [activeTabCase])
+    }, [activeTabCase, projectCase])
 
     return (
         <CaseTabTable

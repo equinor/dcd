@@ -149,7 +149,7 @@ const CaseView = () => {
             const projectUrl = location.pathname.split("/case")[0]
             navigate(`${projectUrl}/case/${caseId}/${tabName}`)
         }
-    }, [activeTabCase])
+    }, [activeTabCase, caseId])
 
     const handleOffshoreOpexPlussWellIntervention = () => {
         setOffshoreOpexPlussWellIntervention(
@@ -324,7 +324,7 @@ const CaseView = () => {
 
             setWells(project.wells)
         }
-    }, [project])
+    }, [project, projectCase])
 
     const handleCaseSave = async () => {
         const dto: Components.Schemas.CaseWithAssetsWrapperDto = {

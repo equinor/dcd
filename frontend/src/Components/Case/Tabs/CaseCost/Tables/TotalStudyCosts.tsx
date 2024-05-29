@@ -96,7 +96,7 @@ const TotalStudyCosts: React.FC<CesationCostsProps> = ({ tableYears, studyGridRe
             setTotalFEEDStudies(projectCase.totalFEEDStudies)
             setTotalFEEDStudiesOverride(projectCase.totalFEEDStudiesOverride)
         }
-    }, [activeTabCase])
+    }, [activeTabCase, projectCase])
 
     return (
         <CaseTabTable

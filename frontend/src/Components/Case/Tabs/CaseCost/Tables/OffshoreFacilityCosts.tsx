@@ -157,7 +157,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
                 setTransportCostOverride(transport.costProfileOverride)
             }
         }
-    }, [activeTabCase])
+    }, [activeTabCase, projectCase])
 
     return (
         <CaseTabTable

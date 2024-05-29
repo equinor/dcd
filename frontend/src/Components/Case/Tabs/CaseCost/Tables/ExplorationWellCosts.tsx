@@ -131,7 +131,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             setCountryOfficeCost(exploration.countryOfficeCost)
             setGAndGAdminCost(exploration.gAndGAdminCost)
         }
-    }, [activeTabCase])
+    }, [activeTabCase, projectCase])
 
     return (
         <CaseTabTable

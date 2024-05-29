@@ -99,7 +99,7 @@ const CessationCosts: React.FC<CesationCostsProps> = ({ tableYears, cessationGri
 
             setCessationOnshoreFacilitiesCostProfile(projectCase?.cessationOnshoreFacilitiesCostProfile)
         }
-    }, [activeTabCase])
+    }, [activeTabCase, projectCase])
 
     return (
         <CaseTabTable

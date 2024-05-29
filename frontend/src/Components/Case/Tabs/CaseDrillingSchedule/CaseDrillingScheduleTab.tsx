@@ -124,7 +124,7 @@ const CaseDrillingScheduleTab = ({
             setAppraisalWellCount(sumWellsForWellCategory(5))
             setSidetrackCount(sumWellsForWellCategory(6))
         }
-    }, [wells, explorationWells, wellProjectWells, activeTabCase])
+    }, [wells, explorationWells, wellProjectWells, activeTabCase, projectCase])
 
     if (activeTabCase !== 3) { return null }
 

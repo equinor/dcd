@@ -133,7 +133,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             setWellProjectGasInjectorCost(wellProject.gasInjectorCostProfile)
             setWellProjectGasInjectorCostOverride(wellProject.gasInjectorCostProfileOverride)
         }
-    }, [activeTabCase])
+    }, [activeTabCase, projectCase])
 
     return (
         <CaseTabTable
