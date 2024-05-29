@@ -35,6 +35,9 @@ const configuration = {
     CompareCasesService: {
         BASE_URL: "",
     },
+    ImageUploadService: {
+        BASE_URL: "http://localhost:5000",
+    },
 }
 
 export const buildConfig = (baseUrl: string) => {

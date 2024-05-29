@@ -35,6 +35,7 @@ public class Case
     public double NPV { get; set; }
     public double BreakEven { get; set; }
     public string? Host { get; set; }
+    public ICollection<Image>? Images { get; set; }
 
     public CessationWellsCost? CessationWellsCost { get; set; }
     public CessationWellsCostOverride? CessationWellsCostOverride { get; set; }

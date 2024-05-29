@@ -153,6 +153,16 @@ Log.Logger = new LoggerConfiguration()
     .CreateBootstrapLogger();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 
+builder.Configuration.AddAzureAppConfiguration(options =>
+{
+    var azureAppConfigConnectionString = builder.Configuration["AppConfiguration:ConnectionString"];
+    options.Connect(azureAppConfigConnectionString)
+           .ConfigureKeyVault(kv =>
+           {
+               kv.SetCredential(new DefaultAzureCredential());
+           });
+});
+
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IFusionService, FusionService>();
 builder.Services.AddScoped<IDrainageStrategyService, DrainageStrategyService>();
@@ -247,9 +257,11 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddSingleton(x => new BlobServiceClient(builder.Configuration.GetConnectionString("AzureBlobStorage")));
+var azureBlobStorageConnectionString = builder.Configuration["AzureBlobStorageConnectionStringForImageUpload"];
+
+builder.Services.AddSingleton(x => new BlobServiceClient(azureBlobStorageConnectionString));
 builder.Services.AddSingleton<IBlobStorageService>(x =>
-    new BlobStorageService(x.GetRequiredService<BlobServiceClient>(), "dcdimagestorage"));
+    new BlobStorageService(x.GetRequiredService<BlobServiceClient>(), "upload"));
 
 
 builder.Host.UseSerilog();

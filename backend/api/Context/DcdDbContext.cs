@@ -71,6 +71,7 @@ public class DcdDbContext : DbContext
     public DbSet<GAndGAdminCost> GAndGAdminCost { get; set; } = null!;
     public DbSet<SeismicAcquisitionAndProcessing> SeismicAcquisitionAndProcessing { get; set; } = null!;
     public DbSet<CountryOfficeCost> CountryOfficeCost { get; set; } = null!;
+    public DbSet<Image> Images { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -93,6 +94,11 @@ public class DcdDbContext : DbContext
         modelBuilder.Entity<Project>()
             .Property(p => p.Classification)
             .HasDefaultValue(ProjectClassification.Internal);
+
+        modelBuilder.Entity<Case>()
+            .HasMany(c => c.Images)
+            .WithOne(i => i.Case)
+            .HasForeignKey(i => i.CaseId);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

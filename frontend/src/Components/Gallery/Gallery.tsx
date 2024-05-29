@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Box, Grid } from "@mui/material"
 import styled from "styled-components"
 import { Icon, Button, Typography } from "@equinor/eds-core-react"
@@ -6,6 +6,9 @@ import { delete_to_trash, expand_screen } from "@equinor/eds-icons"
 import ImageUpload from "./ImageUpload"
 import ImageModal from "./ImageModal"
 import { useAppContext } from "../../Context/AppContext"
+import { useCaseContext } from "../../Context/CaseContext"
+import { useProjectContext } from "../../Context/ProjectContext"
+import { getImageUploadService } from "../../Services/ImageUploadService"
 
 const Wrapper = styled(Grid)`
     padding: 2px;
@@ -63,6 +66,24 @@ const Gallery = () => {
     const [modalOpen, setModalOpen] = useState(false)
     const [expandedImage, setExpandedImage] = useState("")
     const [exeededLimit, setExeededLimit] = useState(false)
+    const { projectCase } = useCaseContext()
+    const { project } = useProjectContext()
+
+    useEffect(() => {
+        const loadImages = async () => {
+            if (project?.id && projectCase?.id) {
+                try {
+                    const imageUploadService = await getImageUploadService()
+                    const imageUrls = await imageUploadService.getImages(project.id, projectCase.id)
+                    setGallery(imageUrls)
+                } catch (error) {
+                    console.error("Error loading images:", error)
+                }
+            }
+        }
+
+        loadImages()
+    }, [project?.id, projectCase?.id])
 
     const handleDelete = (image: string) => {
         setGallery(gallery.filter((item) => item !== image))
