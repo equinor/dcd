@@ -8,8 +8,6 @@ import {
     Button,
     Progress,
     Input,
-    Chip,
-    Tooltip,
 } from "@equinor/eds-core-react"
 import {
     save,
@@ -27,20 +25,9 @@ import CaseDropMenu from "../Case/Components/CaseDropMenu"
 import { GetProjectService } from "../../Services/ProjectService"
 import { useAppContext } from "../../Context/AppContext"
 import useDataEdits from "../../Hooks/useDataEdits"
-import HistoryButton from "../Buttons/HistoryButton"
+// import HistoryButton from "../Buttons/HistoryButton"
 import UndoControls from "./UndoControls"
-import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
-
-const StyledChip = styled(Chip)`
-    cursor: help;
-`
-
-const SmallTooltip = styled(Tooltip)`
-    white-space: pre-wrap !important;
-    max-width: 300px !important;
-    font-size: 1rem !important;
-    text-align: center !important;
-`
+import Classification from "./Classification"
 
 const Controls = () => {
     const navigate = useNavigate()
@@ -159,17 +146,7 @@ const Controls = () => {
                             <Typography variant="h4">
                                 {projectCase ? projectCase.name : project?.name}
                             </Typography>
-                            {project && !projectCase && (
-                                <SmallTooltip
-                                    placement="bottom-start"
-                                    title={PROJECT_CLASSIFICATION[project?.classification].description}
-                                >
-                                    <StyledChip variant={PROJECT_CLASSIFICATION[project?.classification].color}>
-                                        <Icon data={PROJECT_CLASSIFICATION[project?.classification].icon} />
-                                        {PROJECT_CLASSIFICATION[project?.classification].label}
-                                    </StyledChip>
-                                </SmallTooltip>
-                            )}
+                            <Classification />
                         </>
                     )}
             </Grid>
