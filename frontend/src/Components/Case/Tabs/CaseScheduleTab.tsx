@@ -1,4 +1,3 @@
-import { useEffect } from "react"
 import Grid from "@mui/material/Grid"
 import {
     dateFromString,
@@ -43,6 +42,7 @@ const CaseScheduleTab = () => {
             max: ["dG1Date", "dG2Date", "dG3Date", "dG4Date"],
         },
         {
+            visible: true,
             label: "DG1",
             key: "dG1Date",
             min: ["dG0Date"],
