@@ -289,7 +289,7 @@ const CaseProductionProfilesTab = ({
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-    }, [activeTabCase])
+    }, [activeTabCase, drainageStrategy])
 
     useEffect(() => {
         const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
