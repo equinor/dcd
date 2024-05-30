@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import Grid from "@mui/material/Grid"
 import {
     dateFromString,
@@ -36,6 +37,7 @@ const CaseScheduleTab = () => {
             key: "apzDate",
         },
         {
+            visible: true,
             label: "DG0",
             key: "dG0Date",
             max: ["dG1Date", "dG2Date", "dG3Date", "dG4Date"],
@@ -47,18 +49,21 @@ const CaseScheduleTab = () => {
             max: ["dG2Date", "dG3Date", "dG4Date"],
         },
         {
+            visible: true,
             label: "DG2",
             key: "dG2Date",
             min: ["dG0Date", "dG1Date"],
             max: ["dG3Date", "dG4Date"],
         },
         {
+            visible: true,
             label: "DG3",
             key: "dG3Date",
             min: ["dG0Date", "dG1Date", "dG2Date"],
             max: ["dG4Date"],
         },
         {
+            visible: true,
             label: "DG4",
             key: "dG4Date",
             min: ["dG0Date", "dG1Date", "dG2Date", "dG3Date"],
@@ -154,25 +159,30 @@ const CaseScheduleTab = () => {
         return toMonthDate(dateString)
     }
 
+    const getDateValue = (dateKey: string) => {
+        if (projectCaseEdited) {
+            return toScheduleValue(projectCaseEdited[dateKey as keyof typeof projectCaseEdited])
+        }
+        if (!isDefaultDateString(String(projectCase[dateKey as keyof typeof projectCase]))) {
+            return toScheduleValue(projectCase[dateKey as keyof typeof projectCase])
+        }
+        return defaultDate().toISOString()
+    }
+
     return (
         <Grid container spacing={2}>
             {caseDateKeys
                 .filter((caseDateKey) => Object.keys(projectCase)
                     .filter((projectCaseKey) => caseDateKey.key === projectCaseKey))
                 .map((caseDate) => (
-                    (editMode
+                    (caseDate.visible
+                    || editMode
                     || toScheduleValue(projectCase[caseDate.key as keyof typeof projectCase])
                     )
                         ? (
                             <Grid item xs={12} md={6} lg={6}>
                                 <SwitchableDateInput
-                                    value={
-                                        toScheduleValue(
-                                            projectCaseEdited
-                                                ? projectCaseEdited[caseDate.key as keyof typeof projectCase]
-                                                : projectCase[caseDate.key as keyof typeof projectCase],
-                                        )
-                                    }
+                                    value={getDateValue(caseDate.key)}
                                     objectKey={caseDate.key}
                                     label={caseDate.label}
                                     onChange={(e) => (handleDateChange(caseDate.key, e.target.value))}
