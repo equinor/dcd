@@ -69,7 +69,6 @@ const CaseScheduleTab = () => {
         if (!projectCaseEdited) { return }
         const newCase = { ...projectCaseEdited }
         const newDate = new Date(dateValue)
-        console.log(Number.isNaN(newDate.getTime()))
         if (Number.isNaN(newDate.getTime())) {
             newCase.dG0Date = defaultDate().toISOString()
             setProjectCaseEdited(newCase)
@@ -103,7 +102,6 @@ const CaseScheduleTab = () => {
         if (!projectCaseEdited) { return }
         const newDate = new Date(dateValue)
         if (dateKey === "dG0Date") {
-            console.log(dateKey, dateValue)
             handleDG0Change(dateValue)
             return
         }
