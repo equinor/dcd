@@ -2,17 +2,19 @@ import {
     Dispatch,
     SetStateAction,
     ChangeEventHandler,
+    useState,
 } from "react"
-import {
-    NativeSelect, Typography, Input,
-} from "@equinor/eds-core-react"
+import { Typography, Input } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
+import { debounce } from "lodash"
+import { useMutation, useQueryClient } from "react-query"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import InputSwitcher from "../../Input/Components/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import { setNonNegativeNumberState } from "../../../Utils/common"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
+import { GetTopsideService } from "../../../Services/TopsideService"
 
 interface Props {
     topside: Components.Schemas.TopsideWithProfilesDto,
@@ -31,9 +33,85 @@ const CaseFacilitiesTab = ({
     substructure, setSubstrucutre,
     transport, setTransport,
 }: Props) => {
+    const queryClient = useQueryClient()
     const { project } = useProjectContext()
     const { projectCase, setProjectCaseEdited } = useCaseContext()
+    const [topsideCostProfileOverrideUpdate, setTopsideCostProfileOverrideUpdate] = useState<Components.Schemas.UpdateTopsideCostProfileOverrideDto | undefined>(undefined)
     if (!projectCase) { return null }
+
+    const [topsideData, setTopsideData] = useState<Components.Schemas.APIUpdateTopsideDto | undefined>(undefined)
+
+    const mutation = useMutation(
+        async (updatedData: Components.Schemas.APIUpdateTopsideDto) => {
+            const topsideService = await GetTopsideService()
+            return topsideService.updateTopside(project!.id, projectCase.id, topside.id, updatedData)
+        },
+        {
+            onSuccess: (data) => {
+                queryClient.setQueryData(["topsideData", project!.id, projectCase.id, topside.id], data)
+                console.log("API Response:", data)
+                // Set topsideData here for immediate UI update (optimistic)
+                setTopsideData(data)
+            },
+            onError: (error) => {
+                console.error("Failed to update topside:", error)
+                setTopsideData((prevData) => prevData) // Retains previous data
+            },
+        },
+    )
+
+    const updateTopside = (key: keyof Components.Schemas.APIUpdateTopsideDto, value: any) => {
+        // Create a copy of topsideData to avoid mutation
+        const updatedData = { ...topsideData, [key]: value }
+
+        setTopsideData(updatedData)
+
+        mutation.mutate(updatedData)
+    }
+
+    /*
+    let isApiCallInProgress = false
+    const updateTopside = async (key: keyof Components.Schemas.APIUpdateTopsideDto, value: any) => {
+        try {
+            setTopsideData((prevState) => ({
+                ...prevState,
+                [key]: value,
+            }))
+
+            const topsideService = await GetTopsideService()
+
+            const debouncedUpdate = debounce(async (updatedData) => {
+                if (isApiCallInProgress) { return } // Prevent new call if one is already in progress
+                isApiCallInProgress = true
+
+                try {
+                    const response: Components.Schemas.APIUpdateTopsideDto = await topsideService.updateTopside(project!.id, projectCase.id, topside.id, updatedData)
+                    console.log("API Response:", response)
+                    setTopsideData(response)
+                } catch (error) {
+                    console.error("Failed to update topside:", error)
+                } finally {
+                    isApiCallInProgress = false
+                }
+            }, 300)
+
+            debouncedUpdate({ ...topsideData, [key]: value })
+        } catch (error) {
+            console.error("Failed to update topside:", error)
+            setTopsideData((prevState) => ({
+                ...prevState,
+                [key]: topside[key],
+            }))
+        }
+    } */
+
+    const updateTopsideCostProfileOverride = async (key: keyof Components.Schemas.UpdateTopsideCostProfileOverrideDto, value: any) => {
+        if (topsideCostProfileOverrideUpdate) {
+            setTopsideCostProfileOverrideUpdate({ ...topsideCostProfileOverrideUpdate, [key]: value })
+        } else {
+            setTopsideCostProfileOverrideUpdate({ [key]: value })
+        }
+    }
 
     const platformConceptValues: { [key: number]: string } = {
         0: "No Concept",
@@ -133,7 +211,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={topside.facilityOpex}
                     label="Facility opex"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "facilityOpex", topside, setTopside)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "facilityOpex", topside, setTopside)
+                        updateTopside("facilityOpex", value)
+                    }}
                     value={Math.round(Number(topside?.facilityOpex) * 10) / 10}
                     integer={false}
                     unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
@@ -157,7 +238,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={topside.dryWeight}
                     label="Topside dry weight"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "dryWeight", topside, setTopside)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "dryWeight", topside, setTopside)
+                        updateTopside("dryWeight", value)
+                    }}
                     value={Math.round(Number(topside?.dryWeight) * 1) / 1}
                     integer
                     unit="tonnes"
@@ -178,7 +262,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={topside.peakElectricityImported}
                     label="Peak electricity imported"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "peakElectricityImported", topside, setTopside)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "peakElectricityImported", topside, setTopside)
+                        updateTopside("peakElectricityImported", value)
+                    }}
                     value={Math.round(Number(topside?.peakElectricityImported) * 10) / 10}
                     integer={false}
                     unit="MW"
@@ -191,7 +278,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={topside.oilCapacity}
                     label="Oil capacity"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "oilCapacity", topside, setTopside)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "oilCapacity", topside, setTopside)
+                        updateTopside("oilCapacity", value)
+                    }}
                     value={Math.round(Number(topside?.oilCapacity) * 1) / 1}
                     integer
                     unit="Sm³/sd"
@@ -203,7 +293,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={topside.gasCapacity}
                     label="Gas capacity"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "gasCapacity", topside, setTopside)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "gasCapacity", topside, setTopside)
+                        updateTopside("gasCapacity", value)
+                    }}
                     value={Math.round(Number(topside?.gasCapacity) * 10) / 10}
                     integer={false}
                     unit="MSm³/sd"
@@ -215,7 +308,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={topside.waterInjectionCapacity}
                     label="Water injection capacity"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "waterInjectionCapacity", topside, setTopside)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "waterInjectionCapacity", topside, setTopside)
+                        updateTopside("waterInjectionCapacity", value)
+                    }}
                     value={Math.round(Number(topside?.waterInjectionCapacity) * 1) / 1}
                     integer
                     unit="MSm³/sd"
@@ -228,7 +324,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={topside.producerCount}
                     label="Producer count"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "producerCount", topside, setTopside)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "producerCount", topside, setTopside)
+                        updateTopside("producerCount", value)
+                    }}
                     value={topside?.producerCount}
                     integer
                     min={0}
@@ -239,7 +338,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={topside.gasInjectorCount}
                     label="Gas injector count"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "gasInjectorCount", topside, setTopside)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "gasInjectorCount", topside, setTopside)
+                        updateTopside("gasInjectorCount", value)
+                    }}
                     value={topside?.gasInjectorCount}
                     integer
                     min={0}
@@ -250,7 +352,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={topside.waterInjectorCount}
                     label="Water injector count"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "waterInjectorCount", topside, setTopside)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "waterInjectorCount", topside, setTopside)
+                        updateTopside("waterInjectorCount", value)
+                    }}
                     value={topside?.waterInjectorCount}
                     integer
                     min={0}
