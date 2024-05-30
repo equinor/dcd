@@ -148,6 +148,7 @@ const CaseView = () => {
             const tabName = tabNames[activeTabCase]
             const projectUrl = location.pathname.split("/case")[0]
             navigate(`${projectUrl}/case/${caseId}/${tabName}`)
+            setUpdateFromServer(true)
         }
     }, [activeTabCase, caseId])
 
@@ -324,7 +325,7 @@ const CaseView = () => {
 
             setWells(project.wells)
         }
-    }, [project, projectCase])
+    }, [project, projectCase, updateFromServer])
 
     const handleCaseSave = async () => {
         const dto: Components.Schemas.CaseWithAssetsWrapperDto = {
