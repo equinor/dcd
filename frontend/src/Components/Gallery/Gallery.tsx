@@ -8,7 +8,7 @@ import ImageModal from "./ImageModal"
 import { useAppContext } from "../../Context/AppContext"
 import { useCaseContext } from "../../Context/CaseContext"
 import { useProjectContext } from "../../Context/ProjectContext"
-import { getImageUploadService } from "../../Services/ImageUploadService"
+import { getImageService } from "../../Services/ImageService"
 
 const Wrapper = styled(Grid)`
     padding: 2px;
@@ -73,8 +73,8 @@ const Gallery = () => {
         const loadImages = async () => {
             if (project?.id && projectCase?.id) {
                 try {
-                    const imageUploadService = await getImageUploadService()
-                    const imageUrls = await imageUploadService.getImages(project.id, projectCase.id)
+                    const imageService = await getImageService()
+                    const imageUrls = await imageService.getImages(project.id, projectCase.id)
                     setGallery(imageUrls)
                 } catch (error) {
                     console.error("Error loading images:", error)

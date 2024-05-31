@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 [Authorize]
 [ApiController]
-[Route("projects/{projectId}/cases/{caseId}/[controller]")]
+[Route("projects/{projectId}/cases/{caseId}/images")]
 public class BlobStorageController : ControllerBase
 {
     private readonly IBlobStorageService _blobStorageService;
@@ -18,7 +18,7 @@ public class BlobStorageController : ControllerBase
         _context = context;
     }
 
-    [HttpPost("upload")]
+    [HttpPost]
     public async Task<IActionResult> UploadImage(Guid projectId, Guid caseId, IFormFile image)
     {
         if (image == null || image.Length == 0)
@@ -46,8 +46,8 @@ public class BlobStorageController : ControllerBase
         return Ok(new { imageUrl });
     }
 
-    [HttpGet("images")]
-    public async Task<IActionResult> GetImages(Guid caseId)
+    [HttpGet]
+    public async Task<IActionResult> GetImages(Guid projectId, Guid caseId)
     {
         var images = await _context.Images
             .Where(img => img.CaseId == caseId)

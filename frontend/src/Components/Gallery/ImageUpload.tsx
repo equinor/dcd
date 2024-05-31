@@ -5,7 +5,7 @@ import styled from "styled-components"
 import { Icon } from "@equinor/eds-core-react"
 import { add } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
-import { getImageUploadService } from "../../Services/ImageUploadService"
+import { getImageService } from "../../Services/ImageService"
 import { useCaseContext } from "../../Context/CaseContext"
 import { useProjectContext } from "../../Context/ProjectContext"
 
@@ -52,8 +52,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         const loadImages = async () => {
             if (project?.id && projectCase?.id) {
                 try {
-                    const imageUploadService = await getImageUploadService()
-                    const imageUrls = await imageUploadService.getImages(project.id, projectCase.id)
+                    const imageService = await getImageService()
+                    const imageUrls = await imageService.getImages(project.id, projectCase.id)
                     setGallery(imageUrls)
                 } catch (error) {
                     console.error("Error loading images:", error)
@@ -75,9 +75,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
             return
         }
 
-        const imageUploadService = await getImageUploadService()
+        const imageService = await getImageService()
 
-        const uploadPromises = acceptedFiles.map((file) => imageUploadService.uploadImage(project.id, projectCase.id, file))
+        const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(project.id, projectCase.id, file))
 
         try {
             const uploadedImageUrls = await Promise.all(uploadPromises)

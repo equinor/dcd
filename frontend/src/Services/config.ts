@@ -35,7 +35,7 @@ const configuration = {
     CompareCasesService: {
         BASE_URL: "",
     },
-    ImageUploadService: {
+    ImageService: {
         BASE_URL: "http://localhost:5000",
     },
 }

@@ -2,12 +2,12 @@ import { __BaseService } from "./__BaseService"
 import { config } from "./config"
 import { getToken, loginAccessTokenKey } from "../Utils/common"
 
-export class ImageUploadService extends __BaseService {
+export class ImageService extends __BaseService {
     public async uploadImage(projectId: string, caseId: string, file: File): Promise<string> {
         const formData = new FormData()
         formData.append("image", file)
 
-        const response = await this.post(`projects/${projectId}/cases/${caseId}/blob-storage/upload`, {
+        const response = await this.post(`projects/${projectId}/cases/${caseId}/images`, {
             body: formData,
             headers: {
                 "Content-Type": "multipart/form-data",
@@ -18,12 +18,12 @@ export class ImageUploadService extends __BaseService {
     }
 
     public async getImages(projectId: string, caseId: string): Promise<string[]> {
-        const response = await this.get(`projects/${projectId}/cases/${caseId}/blob-storage/images`)
+        const response = await this.get(`projects/${projectId}/cases/${caseId}/images`)
         return response.map((img: any) => img.url)
     }
 }
 
-export const getImageUploadService = async () => new ImageUploadService({
-    ...config.ImageUploadService,
+export const getImageService = async () => new ImageService({
+    ...config.ImageService,
     accessToken: await getToken(loginAccessTokenKey)!,
 })
