@@ -68,7 +68,7 @@ const CaseFacilitiesTab = ({
     })
 
     const { updateData: updateCase } = useQuery({
-        queryKey: ["caseData", project!.id],
+        queryKey: ["caseData", project!.id, projectCase.id],
         mutationFn: async (updatedData: Components.Schemas.CaseDto) => {
             const caseService = await GetCaseService()
             return caseService.updateCase(project!.id, projectCase.id, updatedData)

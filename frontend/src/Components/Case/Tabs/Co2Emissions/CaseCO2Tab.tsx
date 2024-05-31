@@ -20,6 +20,8 @@ import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import { setNonNegativeNumberState } from "../../../../Utils/common"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
+import { GetTopsideService } from "../../../../Services/TopsideService"
+import useQuery from "../../../../Hooks/useQuery"
 
 interface Props {
     topside: Components.Schemas.TopsideWithProfilesDto,
@@ -212,6 +214,14 @@ const CaseCO2Tab = ({
 
     if (activeTabCase !== 6) { return null }
 
+    const { updateData: updateTopside } = useQuery({
+        queryKey: ["topsideData", project!.id, projectCase.id],
+        mutationFn: async (updatedData: Components.Schemas.APIUpdateTopsideDto) => {
+            const topsideService = await GetTopsideService()
+            return topsideService.updateTopside(project!.id, projectCase.id, topside.id, updatedData)
+        },
+    })
+
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -221,7 +231,10 @@ const CaseCO2Tab = ({
                 <SwitchableNumberInput
                     objectKey={topside?.fuelConsumption}
                     label="Fuel consumption"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "fuelConsumption", topside, setTopside)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "fuelConsumption", topside, setTopside)
+                        updateTopside("fuelConsumption", value)
+                    }}
                     value={topside?.fuelConsumption}
                     integer={false}
                     unit="million Sm³ gas/sd"

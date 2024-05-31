@@ -2,12 +2,18 @@ import React from "react"
 import SwitchableNumberInput from "../../../../Input/SwitchableNumberInput"
 import { useCaseContext } from "../../../../../Context/CaseContext"
 
-const TotalStudyCosts: React.FC = () => {
+interface props {
+    updateCase: (key: any, value: any) => void;
+}
+
+const TotalStudyCosts: React.FC<props> = ({ updateCase }) => {
     const {
         projectCase,
         projectCaseEdited,
         setProjectCaseEdited,
     } = useCaseContext()
+
+    if (!projectCase) { return null }
 
     const handleCaseFEEDChange = (value: number): void => {
         const newCase = { ...projectCaseEdited }
@@ -17,6 +23,7 @@ const TotalStudyCosts: React.FC = () => {
             newCase.capexFactorFEEDStudies = newCapexFactorFEEDStudies / 100
         } else { newCase.capexFactorFEEDStudies = 0 }
         setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
+        updateCase("capexFactorFEEDStudies", newCase.capexFactorFEEDStudies)
     }
 
     return (

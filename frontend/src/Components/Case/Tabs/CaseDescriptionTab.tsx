@@ -7,16 +7,28 @@ import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import Gallery from "../../Gallery/Gallery"
 import { useCaseContext } from "../../../Context/CaseContext"
 import { useAppContext } from "../../../Context/AppContext"
+import { useProjectContext } from "../../../Context/ProjectContext"
 import { setNonNegativeNumberState } from "../../../Utils/common"
 import useDataEdits from "../../../Hooks/useDataEdits"
+import useQuery from "../../../Hooks/useQuery"
+import { GetCaseService } from "../../../Services/CaseService"
 
 const CaseDescriptionTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
     const { editMode } = useAppContext()
     const { addEdit } = useDataEdits()
+    const { project } = useProjectContext()
     if (!projectCase) { return null }
 
     if (!projectCase) { return null }
+
+    const { updateData: updateCase } = useQuery({
+        queryKey: ["caseData", project!.id, projectCase.id],
+        mutationFn: async (updatedData: Components.Schemas.CaseDto) => {
+            const caseService = await GetCaseService()
+            return caseService.updateCase(project!.id, projectCase.id, updatedData)
+        },
+    })
 
     const productionStrategyOptions = {
         0: "Depletion",
@@ -38,6 +50,7 @@ const CaseDescriptionTab = () => {
             const updatedProjectCase = { ...projectCaseEdited, description: value }
             setProjectCaseEdited(updatedProjectCase)
             addEdit(value, projectCaseEdited.description, "description", "Description", "case", projectCaseEdited.id)
+            updateCase("description", value)
         }
     }
 
@@ -49,6 +62,7 @@ const CaseDescriptionTab = () => {
             newCase.facilitiesAvailability = newfacilitiesAvailability / 100
         } else { newCase.facilitiesAvailability = 0 }
         setProjectCaseEdited(newCase)
+        updateCase("facilitiesAvailability", newfacilitiesAvailability)
     }
 
     const handleProductionStrategyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
@@ -57,6 +71,7 @@ const CaseDescriptionTab = () => {
             const newCase = { ...projectCase }
             newCase.productionStrategyOverview = newProductionStrategy
             setProjectCaseEdited(newCase)
+            updateCase("productionStrategyOverview", newProductionStrategy)
         }
     }
 
@@ -66,6 +81,7 @@ const CaseDescriptionTab = () => {
             const newCase = { ...projectCase }
             newCase.artificialLift = newArtificialLift
             setProjectCaseEdited(newCase)
+            updateCase("artificialLift", newArtificialLift)
         }
     }
 
@@ -106,7 +122,10 @@ const CaseDescriptionTab = () => {
                 <SwitchableNumberInput
                     objectKey={projectCaseEdited?.producerCount}
                     label="Production wells"
-                    onSubmit={(value) => setNonNegativeNumberState(value, "producerCount", projectCaseEdited, setProjectCaseEdited)}
+                    onSubmit={(value) => {
+                        setNonNegativeNumberState(value, "producerCount", projectCaseEdited, setProjectCaseEdited)
+                        updateCase("producerCount", value)
+                    }}
                     value={projectCaseEdited ? projectCaseEdited.producerCount : projectCase?.producerCount}
                     integer
                     min={0}
@@ -118,7 +137,10 @@ const CaseDescriptionTab = () => {
                 <SwitchableNumberInput
                     objectKey={projectCaseEdited?.waterInjectorCount}
                     label="Water injector wells"
-                    onSubmit={(value) => setNonNegativeNumberState(value, "waterInjectorCount", projectCaseEdited, setProjectCaseEdited)}
+                    onSubmit={(value) => {
+                        setNonNegativeNumberState(value, "waterInjectorCount", projectCaseEdited, setProjectCaseEdited)
+                        updateCase("waterInjectorCount", value)
+                    }}
                     value={projectCaseEdited ? projectCaseEdited.waterInjectorCount : projectCase?.waterInjectorCount}
                     integer
                     disabled={false}
@@ -130,7 +152,10 @@ const CaseDescriptionTab = () => {
                 <SwitchableNumberInput
                     objectKey={projectCaseEdited?.gasInjectorCount}
                     label="Gas injector wells"
-                    onSubmit={(value) => setNonNegativeNumberState(value, "gasInjectorCount", projectCaseEdited, setProjectCaseEdited)}
+                    onSubmit={(value) => {
+                        setNonNegativeNumberState(value, "gasInjectorCount", projectCaseEdited, setProjectCaseEdited)
+                        updateCase("gasInjectorCount", value)
+                    }}
                     value={projectCaseEdited ? projectCaseEdited.gasInjectorCount : projectCase?.gasInjectorCount}
                     integer
                     min={0}

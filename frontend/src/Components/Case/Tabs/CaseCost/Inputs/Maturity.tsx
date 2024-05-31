@@ -2,13 +2,20 @@ import React, { ChangeEventHandler } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import InputSwitcher from "../../../../Input/Components/InputSwitcher"
 import { useCaseContext } from "../../../../../Context/CaseContext"
+import useQuery from "../../../../../Hooks/useQuery"
+import { GetSurfService } from "../../../../../Services/SurfService"
+import { useProjectContext } from "../../../../../Context/ProjectContext"
 
 const Maturity: React.FC = () => {
     const {
         surf,
         setSurf,
         surfCost,
+        projectCase,
     } = useCaseContext()
+    const { project } = useProjectContext()
+
+    if (!projectCase || !surf) { return null }
 
     const maturityOptions: { [key: string]: string } = {
         0: "A",
@@ -16,6 +23,14 @@ const Maturity: React.FC = () => {
         2: "C",
         3: "D",
     }
+
+    const { updateData: updateSurf } = useQuery({
+        queryKey: ["surfData", project!.id, projectCase.id],
+        mutationFn: async (updatedData: Components.Schemas.APIUpdateSurfDto) => {
+            const surfService = await GetSurfService()
+            return surfService.updateSurf(project!.id, projectCase.id, surf.id, updatedData)
+        },
+    })
 
     const updatedAndSetSurf = (surfItem: Components.Schemas.SurfWithProfilesDto) => {
         const newSurf: Components.Schemas.SurfWithProfilesDto = { ...surfItem }
@@ -31,6 +46,7 @@ const Maturity: React.FC = () => {
             const newSurf = { ...surf }
             newSurf.maturity = newMaturity
             updatedAndSetSurf(newSurf as Components.Schemas.SurfWithProfilesDto)
+            updateSurf("maturity", newMaturity)
         }
     }
 

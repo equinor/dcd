@@ -11,10 +11,24 @@ import {
 } from "../../../Utils/common"
 import { useCaseContext } from "../../../Context/CaseContext"
 import SwitchableDateInput from "../../Input/SwitchableDateInput"
+import useQuery from "../../../Hooks/useQuery"
+import { GetCaseService } from "../../../Services/CaseService"
+import { useProjectContext } from "../../../Context/ProjectContext"
 
 const CaseScheduleTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
+    const { project } = useProjectContext()
+
     if (!projectCase) { return null }
+
+    const { updateData: updateCase } = useQuery({
+        queryKey: ["caseData", project!.id, projectCase.id],
+        mutationFn: async (updatedData: Components.Schemas.CaseDto) => {
+            const caseService = await GetCaseService()
+            return caseService.updateCase(project!.id, projectCase.id, updatedData)
+        },
+    })
+
     const handleDG0Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
         if (!projectCaseEdited) { return }
         const newCase = { ...projectCaseEdited }
@@ -22,6 +36,7 @@ const CaseScheduleTab = () => {
         if (Number.isNaN(newDate.getTime())) {
             newCase.dG0Date = defaultDate().toISOString()
             setProjectCaseEdited(newCase)
+            updateCase("dG0Date", defaultDate().toISOString())
             return
         }
         newCase.dG0Date = new Date(e.target.value).toISOString()
@@ -46,6 +61,7 @@ const CaseScheduleTab = () => {
             newCase.dG4Date = dg.toISOString()
         }
         setProjectCaseEdited(newCase)
+        updateCase("dG0Date", newCase.dG0Date)
     }
 
     const handleDG1Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -58,6 +74,7 @@ const CaseScheduleTab = () => {
             newCase.dG1Date = new Date(e.target.value).toISOString()
         }
         setProjectCaseEdited(newCase)
+        updateCase("dG1Date", newCase.dG1Date)
     }
 
     const handleDG2Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -70,6 +87,7 @@ const CaseScheduleTab = () => {
             newCase.dG2Date = new Date(e.target.value).toISOString()
         }
         setProjectCaseEdited(newCase)
+        updateCase("dG2Date", newCase.dG2Date)
     }
 
     const handleDG3Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -82,6 +100,7 @@ const CaseScheduleTab = () => {
             newCase.dG3Date = new Date(e.target.value).toISOString()
         }
         setProjectCaseEdited(newCase)
+        updateCase("dG3Date", newCase.dG3Date)
     }
 
     const handleDG4Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -94,6 +113,7 @@ const CaseScheduleTab = () => {
             newCase.dG4Date = new Date(e.target.value).toISOString()
         }
         setProjectCaseEdited(newCase)
+        updateCase("dG4Date", newCase.dG4Date)
     }
 
     const handleDGAChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -106,6 +126,7 @@ const CaseScheduleTab = () => {
             newCase.dgaDate = new Date(e.target.value).toISOString()
         }
         setProjectCaseEdited(newCase)
+        updateCase("dgaDate", newCase.dgaDate)
     }
 
     const handleDGBChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -118,6 +139,7 @@ const CaseScheduleTab = () => {
             newCase.dgbDate = new Date(e.target.value).toISOString()
         }
         setProjectCaseEdited(newCase)
+        updateCase("dgbDate", newCase.dgbDate)
     }
 
     const handleDGCChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -130,6 +152,7 @@ const CaseScheduleTab = () => {
             newCase.dgcDate = new Date(e.target.value).toISOString()
         }
         setProjectCaseEdited(newCase)
+        updateCase("dgcDate", newCase.dgcDate)
     }
 
     const handleAPXChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -142,6 +165,7 @@ const CaseScheduleTab = () => {
             newCase.apxDate = new Date(e.target.value).toISOString()
         }
         setProjectCaseEdited(newCase)
+        updateCase("apxDate", newCase.apxDate)
     }
 
     const handleAPZChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -154,6 +178,7 @@ const CaseScheduleTab = () => {
             newCase.apzDate = new Date(e.target.value).toISOString()
         }
         setProjectCaseEdited(newCase)
+        updateCase("apzDate", newCase.apzDate)
     }
 
     const findMinDate = (dates: Date[]) => {
