@@ -36,7 +36,7 @@ const configuration = {
         BASE_URL: "",
     },
     ImageService: {
-        BASE_URL: "http://localhost:5000",
+        BASE_URL: "",
     },
 }
 
@@ -51,6 +51,7 @@ export const buildConfig = (baseUrl: string) => {
     configuration.WellService.BASE_URL = `${baseUrl}/`
     configuration.GenerateProfileService.BASE_URL = `${baseUrl}/`
     configuration.CompareCasesService.BASE_URL = `${baseUrl}/compare-cases`
+    configuration.ImageService.BASE_URL = `${baseUrl}/`
 }
 
 export const config = Object.freeze(configuration)
