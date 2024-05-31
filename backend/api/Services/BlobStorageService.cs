@@ -1,17 +1,24 @@
+using api.Context;
+
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
 using Azure.Storage.Sas;
 
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+
 public class BlobStorageService : IBlobStorageService
 {
+    private readonly DcdDbContext _context;
     private readonly BlobServiceClient _blobServiceClient;
     private readonly string _containerName;
 
-    public BlobStorageService(BlobServiceClient blobServiceClient, string containerName)
+    public BlobStorageService(BlobServiceClient blobServiceClient, string containerName, DcdDbContext context)
     {
         _blobServiceClient = blobServiceClient;
         _containerName = containerName;
+        _context = context;
     }
 
     public Task<string> GetBlobSasUrlAsync(string blobName)
@@ -46,7 +53,7 @@ public class BlobStorageService : IBlobStorageService
             ExpiresOn = DateTimeOffset.UtcNow.AddHours(1),
             Protocol = SasProtocol.Https
         };
-        sasBuilder.SetPermissions(permissions);
+        sasBuilder.SetPermissions(permissions | BlobSasPermissions.Read); // Include read permissions
 
         var sasToken = blobClient.GenerateSasUri(sasBuilder).Query;
 
@@ -66,8 +73,17 @@ public class BlobStorageService : IBlobStorageService
         await sasBlobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = contentType });
 
         var imageUrl = blobClient.Uri.ToString();
-        Console.WriteLine($"Uploaded image URL: {imageUrl}");
 
         return imageUrl;
+    }
+
+    public async Task<IEnumerable<string>> GetImageUrlsAsync(Guid caseId)
+    {
+        var images = await _context.Images
+            .Where(img => img.CaseId == caseId)
+            .Select(img => img.Url)
+            .ToListAsync();
+
+        return images;
     }
 }

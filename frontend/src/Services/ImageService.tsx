@@ -13,13 +13,12 @@ export class ImageService extends __BaseService {
                 "Content-Type": "multipart/form-data",
             },
         })
-        console.log("url", response.imageUrl)
         return response.imageUrl
     }
 
     public async getImages(projectId: string, caseId: string): Promise<string[]> {
         const response = await this.get(`projects/${projectId}/cases/${caseId}/images`)
-        return response.map((img: any) => img.url)
+        return response
     }
 }
 

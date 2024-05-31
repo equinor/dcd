@@ -95,10 +95,7 @@ public class DcdDbContext : DbContext
             .Property(p => p.Classification)
             .HasDefaultValue(ProjectClassification.Internal);
 
-        modelBuilder.Entity<Case>()
-            .HasMany(c => c.Images)
-            .WithOne(i => i.Case)
-            .HasForeignKey(i => i.CaseId);
+
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

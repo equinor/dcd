@@ -49,11 +49,15 @@ public class BlobStorageController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetImages(Guid projectId, Guid caseId)
     {
-        var images = await _context.Images
-            .Where(img => img.CaseId == caseId)
-            .Select(img => new { img.Url })
-            .ToListAsync();
-
-        return Ok(images);
+        try
+        {
+            var imageUrls = await _blobStorageService.GetImageUrlsAsync(caseId);
+            return Ok(imageUrls);
+        }
+        catch (Exception)
+        {
+            // Log the exception details if necessary
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving images.");
+        }
     }
 }
