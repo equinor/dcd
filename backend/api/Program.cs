@@ -259,13 +259,14 @@ builder.Services.AddSwaggerGen(options =>
 
 var azureBlobStorageConnectionString = builder.Configuration["AzureBlobStorageConnectionStringForImageUpload"];
 
-builder.Services.AddSingleton(x => new BlobServiceClient(azureBlobStorageConnectionString));
+builder.Services.AddScoped(x => new BlobServiceClient(azureBlobStorageConnectionString));
 
-builder.Services.AddScoped<IBlobStorageService>(x =>
-    new BlobStorageService(
-        x.GetRequiredService<BlobServiceClient>(),
-        "upload",
-        x.GetRequiredService<DcdDbContext>()));
+builder.Services.AddScoped<IBlobStorageService, BlobStorageService>((serviceProvider) =>
+{
+    var blobServiceClient = serviceProvider.GetRequiredService<BlobServiceClient>();
+    var dbContext = serviceProvider.GetRequiredService<DcdDbContext>();
+    return new BlobStorageService(blobServiceClient, "upload", dbContext);
+});
 
 builder.Host.UseSerilog();
 
