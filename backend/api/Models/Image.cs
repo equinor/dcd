@@ -16,6 +16,4 @@ public class Image
 
     [ForeignKey("Case")]
     public Guid CaseId { get; set; }
-
-    public Case Case { get; set; } = null!;
 }
