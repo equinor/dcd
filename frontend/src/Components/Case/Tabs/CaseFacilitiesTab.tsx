@@ -14,7 +14,7 @@ import { useCaseContext } from "../../../Context/CaseContext"
 import { setNonNegativeNumberState } from "../../../Utils/common"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import { GetTopsideService } from "../../../Services/TopsideService"
-import useOptimisticMutation from "../../../Hooks/useOptimisticMutation"
+import useQuery from "../../../Hooks/useQuery"
 import { GetSurfService } from "../../../Services/SurfService"
 import { GetSubstructureService } from "../../../Services/SubstructureService"
 import { GetCaseService } from "../../../Services/CaseService"
@@ -43,7 +43,7 @@ const CaseFacilitiesTab = ({
     if (!projectCase) { return null }
     const queryClient = useQueryClient()
 
-    const { updateData: updateTopside } = useOptimisticMutation({
+    const { updateData: updateTopside } = useQuery({
         queryKey: ["topsideData", project!.id, projectCase.id],
         mutationFn: async (updatedData: Components.Schemas.APIUpdateTopsideDto) => {
             const topsideService = await GetTopsideService()
@@ -51,7 +51,7 @@ const CaseFacilitiesTab = ({
         },
     })
 
-    const { updateData: updateSurf } = useOptimisticMutation({
+    const { updateData: updateSurf } = useQuery({
         queryKey: ["surfData", project!.id, projectCase.id],
         mutationFn: async (updatedData: Components.Schemas.APIUpdateSurfDto) => {
             const surfService = await GetSurfService()
@@ -59,7 +59,7 @@ const CaseFacilitiesTab = ({
         },
     })
 
-    const { updateData: updateSubstructure } = useOptimisticMutation({
+    const { updateData: updateSubstructure } = useQuery({
         queryKey: ["substructureData", project!.id, projectCase.id],
         mutationFn: async (updatedData: Components.Schemas.APIUpdateSubstructureDto) => {
             const substructureService = await GetSubstructureService()
@@ -67,7 +67,7 @@ const CaseFacilitiesTab = ({
         },
     })
 
-    const { updateData: updateCase } = useOptimisticMutation({
+    const { updateData: updateCase } = useQuery({
         queryKey: ["caseData", project!.id],
         mutationFn: async (updatedData: Components.Schemas.CaseDto) => {
             const caseService = await GetCaseService()
@@ -75,7 +75,7 @@ const CaseFacilitiesTab = ({
         },
     })
 
-    const { updateData: updateTransport } = useOptimisticMutation({
+    const { updateData: updateTransport } = useQuery({
         queryKey: ["transportData", project!.id, projectCase.id],
         mutationFn: async (updatedData: Components.Schemas.APIUpdateTransportDto) => {
             const transportService = await GetTransportService()
