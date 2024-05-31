@@ -2,12 +2,11 @@ import {
     Dispatch,
     SetStateAction,
     ChangeEventHandler,
-    useState,
+    useEffect,
 } from "react"
 import { Typography, Input } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import { debounce } from "lodash"
-import { useMutation, useQueryClient } from "react-query"
+import { useQueryClient } from "react-query"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import InputSwitcher from "../../Input/Components/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
@@ -15,6 +14,11 @@ import { useCaseContext } from "../../../Context/CaseContext"
 import { setNonNegativeNumberState } from "../../../Utils/common"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import { GetTopsideService } from "../../../Services/TopsideService"
+import useOptimisticMutation from "../../../Hooks/useOptimisticMutation"
+import { GetSurfService } from "../../../Services/SurfService"
+import { GetSubstructureService } from "../../../Services/SubstructureService"
+import { GetCaseService } from "../../../Services/CaseService"
+import { GetTransportService } from "../../../Services/TransportService"
 
 interface Props {
     topside: Components.Schemas.TopsideWithProfilesDto,
@@ -33,85 +37,58 @@ const CaseFacilitiesTab = ({
     substructure, setSubstrucutre,
     transport, setTransport,
 }: Props) => {
-    const queryClient = useQueryClient()
     const { project } = useProjectContext()
     const { projectCase, setProjectCaseEdited } = useCaseContext()
-    const [topsideCostProfileOverrideUpdate, setTopsideCostProfileOverrideUpdate] = useState<Components.Schemas.UpdateTopsideCostProfileOverrideDto | undefined>(undefined)
+
     if (!projectCase) { return null }
+    const queryClient = useQueryClient()
 
-    const [topsideData, setTopsideData] = useState<Components.Schemas.APIUpdateTopsideDto | undefined>(undefined)
-
-    const mutation = useMutation(
-        async (updatedData: Components.Schemas.APIUpdateTopsideDto) => {
+    const { updateData: updateTopside } = useOptimisticMutation({
+        queryKey: ["topsideData", project!.id, projectCase.id],
+        mutationFn: async (updatedData: Components.Schemas.APIUpdateTopsideDto) => {
             const topsideService = await GetTopsideService()
             return topsideService.updateTopside(project!.id, projectCase.id, topside.id, updatedData)
         },
-        {
-            onSuccess: (data) => {
-                queryClient.setQueryData(["topsideData", project!.id, projectCase.id, topside.id], data)
-                console.log("API Response:", data)
-                // Set topsideData here for immediate UI update (optimistic)
-                setTopsideData(data)
-            },
-            onError: (error) => {
-                console.error("Failed to update topside:", error)
-                setTopsideData((prevData) => prevData) // Retains previous data
-            },
+    })
+
+    const { updateData: updateSurf } = useOptimisticMutation({
+        queryKey: ["surfData", project!.id, projectCase.id],
+        mutationFn: async (updatedData: Components.Schemas.APIUpdateSurfDto) => {
+            const surfService = await GetSurfService()
+            return surfService.updateSurf(project!.id, projectCase.id, surf.id, updatedData)
         },
-    )
+    })
 
-    const updateTopside = (key: keyof Components.Schemas.APIUpdateTopsideDto, value: any) => {
-        // Create a copy of topsideData to avoid mutation
-        const updatedData = { ...topsideData, [key]: value }
+    const { updateData: updateSubstructure } = useOptimisticMutation({
+        queryKey: ["substructureData", project!.id, projectCase.id],
+        mutationFn: async (updatedData: Components.Schemas.APIUpdateSubstructureDto) => {
+            const substructureService = await GetSubstructureService()
+            return substructureService.updateSubstructure(project!.id, projectCase.id, substructure.id, updatedData)
+        },
+    })
 
-        setTopsideData(updatedData)
+    const { updateData: updateCase } = useOptimisticMutation({
+        queryKey: ["caseData", project!.id],
+        mutationFn: async (updatedData: Components.Schemas.CaseDto) => {
+            const caseService = await GetCaseService()
+            return caseService.updateCase(project!.id, projectCase.id, updatedData)
+        },
+    })
 
-        mutation.mutate(updatedData)
-    }
+    const { updateData: updateTransport } = useOptimisticMutation({
+        queryKey: ["transportData", project!.id, projectCase.id],
+        mutationFn: async (updatedData: Components.Schemas.APIUpdateTransportDto) => {
+            const transportService = await GetTransportService()
+            return transportService.updateTransport(project!.id, projectCase.id, transport.id, updatedData)
+        },
+    })
 
-    /*
-    let isApiCallInProgress = false
-    const updateTopside = async (key: keyof Components.Schemas.APIUpdateTopsideDto, value: any) => {
-        try {
-            setTopsideData((prevState) => ({
-                ...prevState,
-                [key]: value,
-            }))
-
-            const topsideService = await GetTopsideService()
-
-            const debouncedUpdate = debounce(async (updatedData) => {
-                if (isApiCallInProgress) { return } // Prevent new call if one is already in progress
-                isApiCallInProgress = true
-
-                try {
-                    const response: Components.Schemas.APIUpdateTopsideDto = await topsideService.updateTopside(project!.id, projectCase.id, topside.id, updatedData)
-                    console.log("API Response:", response)
-                    setTopsideData(response)
-                } catch (error) {
-                    console.error("Failed to update topside:", error)
-                } finally {
-                    isApiCallInProgress = false
-                }
-            }, 300)
-
-            debouncedUpdate({ ...topsideData, [key]: value })
-        } catch (error) {
-            console.error("Failed to update topside:", error)
-            setTopsideData((prevState) => ({
-                ...prevState,
-                [key]: topside[key],
-            }))
+    useEffect(() => {
+        const topsideData = queryClient.getQueryData<Components.Schemas.APIUpdateTopsideDto>(["topsideData", project!.id, projectCase.id])
+        if (topsideData) {
+            console.log("Updated topsideData:", topsideData)
         }
-    } */
-
-    const updateTopsideCostProfileOverride = async (key: keyof Components.Schemas.UpdateTopsideCostProfileOverrideDto, value: any) => {
-        if (topsideCostProfileOverrideUpdate) {
-            setTopsideCostProfileOverrideUpdate({ ...topsideCostProfileOverrideUpdate, [key]: value })
-        } else {
-            setTopsideCostProfileOverrideUpdate({ [key]: value })
-        }
-    }
+    }, [queryClient.getQueryData(["topsideData", project!.id, projectCase.id])])
 
     const platformConceptValues: { [key: number]: string } = {
         0: "No Concept",
@@ -151,6 +128,7 @@ const CaseFacilitiesTab = ({
             const newSurf = { ...surf }
             newSurf.productionFlowline = newProductionFlowline
             setSurf(newSurf)
+            updateSurf("productionFlowline", newProductionFlowline)
         }
     }
 
@@ -158,6 +136,7 @@ const CaseFacilitiesTab = ({
         const newSubstructure = { ...substructure }
         newSubstructure.dryWeight = value > 0 ? Math.max(value, 0) : 0
         setSubstrucutre(newSubstructure)
+        updateSubstructure("dryWeight", value)
     }
 
     const handleSubstructureConceptChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
@@ -171,6 +150,7 @@ const CaseFacilitiesTab = ({
                 setProjectCaseEdited(newCase)
             }
             setSubstrucutre(newSubstructure)
+            updateSubstructure("concept", newConcept)
         }
     }
 
@@ -178,6 +158,7 @@ const CaseFacilitiesTab = ({
         const newCase = { ...projectCase }
         newCase.host = value > 0 ? value.toString() : ""
         setProjectCaseEdited(newCase)
+        updateCase("host", value)
     }
 
     return (
@@ -225,7 +206,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={surf.cessationCost}
                     label="Cessation cost"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "cessationCost", surf, setSurf)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "cessationCost", surf, setSurf)
+                        updateSurf("cessationCost", value)
+                    }}
                     value={Math.round(Number(surf?.cessationCost) * 10) / 10}
                     integer={false}
                     unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
@@ -369,7 +353,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={surf.templateCount}
                     label="Templates"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "templateCount", surf, setSurf)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "templateCount", surf, setSurf)
+                        updateSurf("templateCount", value)
+                    }}
                     value={surf?.templateCount}
                     integer
                     min={0}
@@ -380,7 +367,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={surf.riserCount}
                     label="Risers"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "riserCount", surf, setSurf)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "riserCount", surf, setSurf)
+                        updateSurf("riserCount", value)
+                    }}
                     value={surf?.riserCount}
                     integer
                     min={0}
@@ -391,7 +381,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={surf.infieldPipelineSystemLength}
                     label="Production lines length"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "infieldPipelineSystemLength", surf, setSurf)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "infieldPipelineSystemLength", surf, setSurf)
+                        updateSurf("infieldPipelineSystemLength", value)
+                    }}
                     value={Math.round(Number(surf?.infieldPipelineSystemLength) * 10) / 10}
                     integer={false}
                     unit="km"
@@ -403,7 +396,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={surf.umbilicalSystemLength}
                     label="Umbilical system length"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "umbilicalSystemLength", surf, setSurf)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "umbilicalSystemLength", surf, setSurf)
+                        updateSurf("umbilicalSystemLength", value)
+                    }}
                     value={Math.round(Number(surf?.umbilicalSystemLength) * 10) / 10}
                     integer={false}
                     unit="km"
@@ -427,7 +423,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={surf.producerCount}
                     label="Producer count"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "producerCount", surf, setSurf)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "producerCount", surf, setSurf)
+                        updateSurf("producerCount", value)
+                    }}
                     value={surf?.producerCount}
                     integer
                 />
@@ -436,7 +435,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={surf.gasInjectorCount}
                     label="Gas injector count"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "gasInjectorCount", surf, setSurf)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "gasInjectorCount", surf, setSurf)
+                        updateSurf("gasInjectorCount", value)
+                    }}
                     value={surf?.gasInjectorCount}
                     integer
                     min={0}
@@ -447,7 +449,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={surf.waterInjectorCount}
                     label="Water injector count"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "waterInjectorCount", surf, setSurf)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "waterInjectorCount", surf, setSurf)
+                        updateSurf("waterInjectorCount", value)
+                    }}
                     value={surf?.waterInjectorCount}
                     integer
                     min={0}
@@ -461,7 +466,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={transport.oilExportPipelineLength}
                     label="Oil export pipeline length"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "oilExportPipelineLength", transport, setTransport)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "oilExportPipelineLength", transport, setTransport)
+                        updateTransport("oilExportPipelineLength", value)
+                    }}
                     value={Math.round(Number(transport?.oilExportPipelineLength) * 10) / 10}
                     integer={false}
                     unit="km"
@@ -473,7 +481,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     objectKey={transport.gasExportPipelineLength}
                     label="Gas export pipeline length"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "gasExportPipelineLength", transport, setTransport)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "gasExportPipelineLength", transport, setTransport)
+                        updateTransport("gasExportPipelineLength", value)
+                    }}
                     value={Math.round(Number(transport?.gasExportPipelineLength) * 10) / 10}
                     integer={false}
                     unit="km"

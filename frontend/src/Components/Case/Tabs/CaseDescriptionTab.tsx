@@ -14,6 +14,7 @@ const CaseDescriptionTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
     const { editMode } = useAppContext()
     const { addEdit } = useDataEdits()
+    if (!projectCase) { return null }
 
     if (!projectCase) { return null }
 
