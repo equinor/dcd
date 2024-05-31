@@ -1,5 +1,5 @@
 import {
-    Dispatch, SetStateAction, useEffect, useState,
+    Dispatch, SetStateAction, useEffect, useRef, useState,
 } from "react"
 import Grid from "@mui/material/Grid"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
@@ -79,6 +79,8 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     const [, setEndYear] = useState<number>(2030)
 
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+
+    const summaryGridRef = useRef<any>(null)
 
     interface ITimeSeriesData {
         group?: string
@@ -185,6 +187,24 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         opexTimeSeriesData,
     ]
 
+    console.log(exploration)
+    console.log(projectCase)
+
+    useEffect(() => {
+        if (summaryGridRef.current
+            && summaryGridRef.current.api
+            && summaryGridRef.current.api.refreshCells
+        ) {
+                console.log(summaryGridRef)
+            summaryGridRef.current.api.refreshCells()
+        }
+    }, [totalDrillingCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCostProfile,
+        historicCostCostProfile, onshoreRelatedOPEXCostProfile, additionalOPEXCostProfile,
+        explorationWellCostProfile, totalExplorationCost, seismicAcquisitionAndProcessing,
+        totalFeasibilityAndConceptStudies, totalFEEDStudies, totalOtherStudies,
+        offshoreFacilitiesCost, offshoreOpexPlussWellIntervention,
+    ])
+
     useEffect(() => {
         (async () => {
             try {
@@ -271,7 +291,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-    }, [activeTabCase])
+    }, [activeTabCase, projectCase])
 
     if (activeTabCase !== 7) { return null }
 
@@ -306,6 +326,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                     dg4Year={projectCase?.dG4Date ? new Date(projectCase.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
                     includeFooter={false}
+                    gridRef={summaryGridRef}
                 />
             </Grid>
         </Grid>

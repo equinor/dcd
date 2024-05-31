@@ -5,13 +5,14 @@ import {
     useMemo,
     useState,
     useEffect,
+    useCallback,
 } from "react"
 
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { lock, lock_open } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
-import { ColDef } from "@ag-grid-community/core"
+import { ColDef, GridReadyEvent } from "@ag-grid-community/core"
 import { isInteger, tableCellisEditable } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../../Utils/constants"
@@ -40,7 +41,7 @@ const CaseTabTableWithGrouping = ({
     const [overrideModalProfileName, setOverrideModalProfileName] = useState<string>("")
     const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
     const [overrideProfile, setOverrideProfile] = useState<any>()
-    const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
+    // const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
     const { editMode } = useAppContext()
 
     const profilesToRowData = () => {
@@ -85,6 +86,9 @@ const CaseTabTableWithGrouping = ({
 
         return tableRows
     }
+
+    const gridRowData = gridRef.current?.api?.setGridOption("rowData", profilesToRowData())
+    console.log(gridRef)
 
     const lockIcon = (params: any) => {
         const handleLockIconClick = () => {
@@ -145,7 +149,7 @@ const CaseTabTableWithGrouping = ({
                 editable: false,
                 cellStyle: { fontWeight: "normal" },
                 cellRenderer: (params: any) => (
-                    profileAndUnitInSameCell(params, rowData)
+                    profileAndUnitInSameCell(params, profilesToRowData())
                 ),
                 // pinned: "left",
                 // aggFunc: () => totalRowName,
@@ -181,10 +185,12 @@ const CaseTabTableWithGrouping = ({
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
     useEffect(() => {
-        setRowData(profilesToRowData())
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
+        // gridRef?.current.api.refreshCells({ force: true })
     }, [])
+
+    console.log(allTimeSeriesData)
 
     const handleCellValueChange = (p: any) => {
         const properties = Object.keys(p.data)
@@ -245,6 +251,11 @@ const CaseTabTableWithGrouping = ({
         return undefined
     }
 
+    const onGridReady = useCallback((params: GridReadyEvent) => {
+        const generateRowData = profilesToRowData()
+        params.api.setGridOption("rowData", generateRowData)
+    }, [])
+
     return (
         <>
             <OverrideTimeSeriesPrompt
@@ -263,7 +274,7 @@ const CaseTabTableWithGrouping = ({
                 >
                     <AgGridReact
                         ref={gridRef}
-                        rowData={rowData}
+                        rowData={gridRowData}
                         columnDefs={columnDefs}
                         defaultColDef={defaultColDef}
                         animateRows
@@ -281,6 +292,7 @@ const CaseTabTableWithGrouping = ({
                         suppressLastEmptyLineOnPaste
                         groupDefaultExpanded={groupDefaultExpanded}
                         stopEditingWhenCellsLoseFocus
+                        onGridReady={onGridReady}
                     />
                 </div>
             </div>
