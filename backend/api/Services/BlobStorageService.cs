@@ -1,4 +1,5 @@
 using api.Context;
+using api.Models;
 
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
@@ -87,7 +88,7 @@ public class BlobStorageService : IBlobStorageService
         return images;
     }
 
-    public async Task<string> SaveImageAsync(IFormFile image)
+    public async Task<string> SaveImageAsync(IFormFile image, Guid caseId)
     {
         var blobName = Guid.NewGuid().ToString();
         var contentType = image.ContentType;
@@ -97,6 +98,15 @@ public class BlobStorageService : IBlobStorageService
         var imageBytes = stream.ToArray();
 
         var imageUrl = await UploadImageAsync(imageBytes, contentType, blobName);
+
+        // Save the image record to the database
+        var newImage = new Image
+        {
+            CaseId = caseId,
+            Url = imageUrl,
+        };
+        _context.Images.Add(newImage);
+        await _context.SaveChangesAsync();
 
         return imageUrl;
     }
