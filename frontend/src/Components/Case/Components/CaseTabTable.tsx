@@ -191,12 +191,16 @@ const CaseTabTable = ({
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
     const handleCellValueChange = (p: any) => {
-        console.log(p.newValue)
-        console.log(p.oldValue)
+        /* helpers for finding right data to register in history tracker
+
         const cellName = p.colDef
         const columnName = p.colDef.headerName
+
         console.log(cellName)
         console.log(columnName)
+        console.log(p.newValue)
+        console.log(p.oldValue)
+        */
         const properties = Object.keys(p.data)
         const tableTimeSeriesValues: any[] = []
         properties.forEach((prop) => {
