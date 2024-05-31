@@ -86,4 +86,18 @@ public class BlobStorageService : IBlobStorageService
 
         return images;
     }
+
+    public async Task<string> SaveImageAsync(IFormFile image)
+    {
+        var blobName = Guid.NewGuid().ToString();
+        var contentType = image.ContentType;
+
+        using var stream = new MemoryStream();
+        await image.CopyToAsync(stream);
+        var imageBytes = stream.ToArray();
+
+        var imageUrl = await UploadImageAsync(imageBytes, contentType, blobName);
+
+        return imageUrl;
+    }
 }

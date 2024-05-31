@@ -18,7 +18,7 @@ public class BlobStorageController : ControllerBase
         _context = context;
     }
 
-    [HttpPost]
+     [HttpPost]
     public async Task<IActionResult> UploadImage(Guid projectId, Guid caseId, IFormFile image)
     {
         if (image == null || image.Length == 0)
@@ -26,14 +26,7 @@ public class BlobStorageController : ControllerBase
             return BadRequest("No image provided.");
         }
 
-        var blobName = Guid.NewGuid().ToString();
-        var contentType = image.ContentType;
-
-        using var stream = new MemoryStream();
-        await image.CopyToAsync(stream);
-        var imageBytes = stream.ToArray();
-
-        var imageUrl = await _blobStorageService.UploadImageAsync(imageBytes, contentType, blobName);
+        var imageUrl = await _blobStorageService.SaveImageAsync(image);
 
         var newImage = new Image
         {
@@ -56,7 +49,6 @@ public class BlobStorageController : ControllerBase
         }
         catch (Exception)
         {
-            // Log the exception details if necessary
             return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving images.");
         }
     }

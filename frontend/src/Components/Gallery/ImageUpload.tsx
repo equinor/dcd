@@ -22,19 +22,19 @@ padding: 20px;
 transition: 0.3s;
 gap: 10px;
 
-& svg {
-    fill: ${tokens.colors.interactive.primary__resting.rgba};
-    margin-top: 20px;
-}
+    & svg {
+        fill: ${tokens.colors.interactive.primary__resting.rgba};
+        margin-top: 20px;
+    }
 
-&:hover {
-    background-color: ${tokens.colors.interactive.primary__hover_alt.rgba};
-}
+    &:hover {
+        background-color: ${tokens.colors.interactive.primary__hover_alt.rgba};
+    }
 
-& p {
-    text-align: center;
-    opacity: 0.9;
-}
+    & p {
+        text-align: center;
+        opacity: 0.9;
+    }
 `
 
 interface ImageUploadProps {
