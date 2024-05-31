@@ -1,8 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
-using api.Context;
-using Microsoft.EntityFrameworkCore;
-using api.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 [Authorize]
 [ApiController]
@@ -10,15 +8,13 @@ using Microsoft.AspNetCore.Authorization;
 public class BlobStorageController : ControllerBase
 {
     private readonly IBlobStorageService _blobStorageService;
-    private readonly DcdDbContext _context;
 
-    public BlobStorageController(IBlobStorageService blobStorageService, DcdDbContext context)
+    public BlobStorageController(IBlobStorageService blobStorageService)
     {
         _blobStorageService = blobStorageService;
-        _context = context;
     }
 
-         [HttpPost]
+    [HttpPost]
     public async Task<IActionResult> UploadImage(Guid projectId, Guid caseId, IFormFile image)
     {
         if (image == null || image.Length == 0)

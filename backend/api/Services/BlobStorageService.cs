@@ -15,11 +15,11 @@ public class BlobStorageService : IBlobStorageService
     private readonly BlobServiceClient _blobServiceClient;
     private readonly string _containerName;
 
-    public BlobStorageService(BlobServiceClient blobServiceClient, string containerName, DcdDbContext context)
+    public BlobStorageService(BlobServiceClient blobServiceClient, DcdDbContext context, IConfiguration configuration)
     {
         _blobServiceClient = blobServiceClient;
-        _containerName = containerName;
         _context = context;
+        _containerName = configuration["AzureBlobStorageContainerName"]; // Retrieve container name from configuration
     }
 
     public Task<string> GetBlobSasUrlAsync(string blobName)
