@@ -3,6 +3,7 @@ import { NativeSelect } from "@equinor/eds-core-react"
 import InputSwitcher from "./Components/InputSwitcher"
 import useDataEdits from "../../Hooks/useDataEdits"
 import { useCaseContext } from "../../Context/CaseContext"
+import { useProjectContext } from "../../Context/ProjectContext"
 
 interface SwitchableDropdownInputProps {
     value: string | number;
@@ -19,8 +20,10 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
     label,
     onSubmit,
 }: SwitchableDropdownInputProps) => {
-    const { addEdit } = useDataEdits()
     const { projectCase } = useCaseContext()
+    const { project } = useProjectContext()
+
+    const { addEdit } = useDataEdits(project!.id, projectCase!.id)
 
     const addToEditsAndSubmit: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if (!projectCase) {

@@ -19,8 +19,7 @@ import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import DateRangePicker from "../../Input/TableDateRangePicker"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
-import useQuery from "../../../Hooks/useQuery"
-import { GetCaseService } from "../../../Services/CaseService"
+import useDataEdits from "../../../Hooks/useDataEdits"
 
 interface ITimeSeriesData {
     profileName: string
@@ -56,6 +55,8 @@ const CaseProductionProfilesTab = ({
         projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase,
     } = useCaseContext()
     if (!projectCase) { return null }
+
+    const { updateCase, addEdit } = useDataEdits(project!.id, projectCase.id)
     const [gas, setGas] = useState<Components.Schemas.ProductionProfileGasDto>()
     const [oil, setOil] = useState<Components.Schemas.ProductionProfileOilDto>()
     const [water, setWater] = useState<Components.Schemas.ProductionProfileWaterDto>()
@@ -101,14 +102,6 @@ const CaseProductionProfilesTab = ({
 
     const gridRef = useRef<any>(null)
 
-    const { updateData: updateCase } = useQuery({
-        queryKey: ["caseData", project!.id, projectCase.id],
-        mutationFn: async (updatedData: Components.Schemas.CaseDto) => {
-            const caseService = await GetCaseService()
-            return caseService.updateCase(project!.id, projectCase.id, updatedData)
-        },
-    })
-
     const updateAndSetDraiangeStrategy = (drainage: Components.Schemas.DrainageStrategyWithProfilesDto) => {
         if (drainageStrategy === undefined) { return }
         if (netSalesGas === undefined
@@ -151,6 +144,7 @@ const CaseProductionProfilesTab = ({
         } else { newCase.facilitiesAvailability = 0 }
         setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
         updateCase("facilitiesAvailability", newfacilitiesAvailability)
+        addEdit(value, newCase.facilitiesAvailability, "facilitiesAvailability", "Facilities availability", "case", projectCaseEdited!.id)
     }
 
     const handleDrainageStrategyGasSolutionChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {

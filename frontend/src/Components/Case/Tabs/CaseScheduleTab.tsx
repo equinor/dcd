@@ -11,9 +11,8 @@ import {
 } from "../../../Utils/common"
 import { useCaseContext } from "../../../Context/CaseContext"
 import SwitchableDateInput from "../../Input/SwitchableDateInput"
-import useQuery from "../../../Hooks/useQuery"
-import { GetCaseService } from "../../../Services/CaseService"
 import { useProjectContext } from "../../../Context/ProjectContext"
+import useDataEdits from "../../../Hooks/useDataEdits"
 
 const CaseScheduleTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
@@ -21,13 +20,7 @@ const CaseScheduleTab = () => {
 
     if (!projectCase) { return null }
 
-    const { updateData: updateCase } = useQuery({
-        queryKey: ["caseData", project!.id, projectCase.id],
-        mutationFn: async (updatedData: Components.Schemas.CaseDto) => {
-            const caseService = await GetCaseService()
-            return caseService.updateCase(project!.id, projectCase.id, updatedData)
-        },
-    })
+    const { updateCase } = useDataEdits(project!.id, projectCase.id)
 
     const handleDG0Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
         if (!projectCaseEdited) { return }

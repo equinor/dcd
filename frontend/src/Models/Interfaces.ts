@@ -15,3 +15,5 @@ export interface EditEntry {
     caseId: string;
     currentEditId: string;
 }
+
+export type ServiceName = "case" | "topside" | "surf" | "substructure" | "transport";

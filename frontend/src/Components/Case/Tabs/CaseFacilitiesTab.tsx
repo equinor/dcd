@@ -13,12 +13,7 @@ import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import { setNonNegativeNumberState } from "../../../Utils/common"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
-import { GetTopsideService } from "../../../Services/TopsideService"
-import useQuery from "../../../Hooks/useQuery"
-import { GetSurfService } from "../../../Services/SurfService"
-import { GetSubstructureService } from "../../../Services/SubstructureService"
-import { GetCaseService } from "../../../Services/CaseService"
-import { GetTransportService } from "../../../Services/TransportService"
+import useDataEdits from "../../../Hooks/useDataEdits"
 
 interface Props {
     topside: Components.Schemas.TopsideWithProfilesDto,
@@ -43,45 +38,13 @@ const CaseFacilitiesTab = ({
     if (!projectCase) { return null }
     const queryClient = useQueryClient()
 
-    const { updateData: updateTopside } = useQuery({
-        queryKey: ["topsideData", project!.id, projectCase.id],
-        mutationFn: async (updatedData: Components.Schemas.APIUpdateTopsideDto) => {
-            const topsideService = await GetTopsideService()
-            return topsideService.updateTopside(project!.id, projectCase.id, topside.id, updatedData)
-        },
-    })
-
-    const { updateData: updateSurf } = useQuery({
-        queryKey: ["surfData", project!.id, projectCase.id],
-        mutationFn: async (updatedData: Components.Schemas.APIUpdateSurfDto) => {
-            const surfService = await GetSurfService()
-            return surfService.updateSurf(project!.id, projectCase.id, surf.id, updatedData)
-        },
-    })
-
-    const { updateData: updateSubstructure } = useQuery({
-        queryKey: ["substructureData", project!.id, projectCase.id],
-        mutationFn: async (updatedData: Components.Schemas.APIUpdateSubstructureDto) => {
-            const substructureService = await GetSubstructureService()
-            return substructureService.updateSubstructure(project!.id, projectCase.id, substructure.id, updatedData)
-        },
-    })
-
-    const { updateData: updateCase } = useQuery({
-        queryKey: ["caseData", project!.id, projectCase.id],
-        mutationFn: async (updatedData: Components.Schemas.CaseDto) => {
-            const caseService = await GetCaseService()
-            return caseService.updateCase(project!.id, projectCase.id, updatedData)
-        },
-    })
-
-    const { updateData: updateTransport } = useQuery({
-        queryKey: ["transportData", project!.id, projectCase.id],
-        mutationFn: async (updatedData: Components.Schemas.APIUpdateTransportDto) => {
-            const transportService = await GetTransportService()
-            return transportService.updateTransport(project!.id, projectCase.id, transport.id, updatedData)
-        },
-    })
+    const {
+        updateTopside,
+        updateSurf,
+        updateSubstructure,
+        updateCase,
+        updateTransport,
+    } = useDataEdits(project!.id, projectCase.id, topside, surf, substructure, transport)
 
     useEffect(() => {
         const topsideData = queryClient.getQueryData<Components.Schemas.APIUpdateTopsideDto>(["topsideData", project!.id, projectCase.id])

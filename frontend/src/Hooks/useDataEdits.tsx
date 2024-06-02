@@ -1,10 +1,23 @@
 import { v4 as uuidv4 } from "uuid"
 import { useEffect, useState } from "react"
 import { useCaseContext } from "../Context/CaseContext"
-import { EditInstance, EditEntry } from "../Models/Interfaces"
+import { EditInstance, EditEntry, ServiceName } from "../Models/Interfaces"
 import { getCurrentEditId } from "../Utils/common"
+import useQuery from "../Hooks/useQuery"
+import { GetCaseService } from "../Services/CaseService"
+import { GetTopsideService } from "../Services/TopsideService"
+import { GetSurfService } from "../Services/SurfService"
+import { GetSubstructureService } from "../Services/SubstructureService"
+import { GetTransportService } from "../Services/TransportService"
 
-const useDataEdits = (): {
+const useDataEdits = (
+    projectId: string,
+    caseId: string,
+    topside?: Components.Schemas.TopsideDto,
+    surf?: Components.Schemas.SurfDto,
+    substructure?: Components.Schemas.SubstructureDto,
+    transport?: Components.Schemas.TransportDto,
+): {
     addEdit: (
         newValue: string | number | undefined,
         previousValue: string | number | undefined,
@@ -17,6 +30,11 @@ const useDataEdits = (): {
     ) => void;
     undoEdit: () => void;
     redoEdit: () => void;
+    updateCase(key: any, value: any): void;
+    updateTopside(key: any, value: any): void;
+    updateSurf(key: any, value: any): void;
+    updateSubstructure(key: any, value: any): void;
+    updateTransport(key: any, value: any): void;
 } => {
     const {
         caseEdits,
@@ -34,22 +52,61 @@ const useDataEdits = (): {
         }
     }, [projectCase, caseEdits])
 
-    // TODO: move this out, it runs every time the hook is called
-    useEffect(() => {
-        const storedCaseEdits = localStorage.getItem("caseEdits")
-        const caseEditsArray = storedCaseEdits ? JSON.parse(storedCaseEdits) : []
+    const { updateData: updateCase } = useQuery({
+        queryKey: ["caseData", projectId, caseId],
+        mutationFn: async (updatedData: Components.Schemas.CaseDto) => {
+            const caseService = await GetCaseService()
+            return caseService.updateCase(projectId, caseId, updatedData)
+        },
+    })
 
-        if (caseEditsArray.length === 0) {
-            // reset editIndexes if there are no recent edits
-            localStorage.setItem("editIndexes", JSON.stringify([]))
-            setEditIndexes([])
-        } else {
-            // otherwise, load the editIndexes from localStorage
-            const storedEditIndexes = localStorage.getItem("editIndexes")
-            const editIndexesArray = storedEditIndexes ? JSON.parse(storedEditIndexes) : []
-            setEditIndexes(editIndexesArray)
-        }
-    }, [])
+    const { updateData: updateTopside } = useQuery({
+        queryKey: ["topsideData", projectId, caseId],
+        mutationFn: async (updatedData: Components.Schemas.APIUpdateTopsideDto) => {
+            const topsideService = await GetTopsideService()
+            if (!topside) {
+                console.log("you are not in a topside")
+                return null
+            }
+            return topsideService.updateTopside(projectId, caseId, topside.id, updatedData)
+        },
+    })
+
+    const { updateData: updateSurf } = useQuery({
+        queryKey: ["surfData", projectId, caseId],
+        mutationFn: async (updatedData: Components.Schemas.APIUpdateSurfDto) => {
+            const surfService = await GetSurfService()
+            if (!surf) {
+                console.log("you are not in a surf")
+                return null
+            }
+            return surfService.updateSurf(projectId, caseId, surf.id, updatedData)
+        },
+    })
+
+    const { updateData: updateTransport } = useQuery({
+        queryKey: ["transportData", projectId, caseId],
+        mutationFn: async (updatedData: Components.Schemas.APIUpdateTransportDto) => {
+            const transportService = await GetTransportService()
+            if (!transport) {
+                console.log("you are not in a transport")
+                return null
+            }
+            return transportService.updateTransport(projectId, caseId, transport.id, updatedData)
+        },
+    })
+
+    const { updateData: updateSubstructure } = useQuery({
+        queryKey: ["substructureData", projectId, caseId],
+        mutationFn: async (updatedData: Components.Schemas.APIUpdateSubstructureDto) => {
+            const substructureService = await GetSubstructureService()
+            if (!substructure) {
+                console.log("you are not in a substructure")
+                return null
+            }
+            return substructureService.updateSubstructure(projectId, caseId, substructure.id, updatedData)
+        },
+    })
 
     const updateEditIndex = (newEditId: string) => {
         if (!projectCase) {
@@ -117,7 +174,6 @@ const useDataEdits = (): {
 
     const undoEdit = () => {
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, projectCase))
-
         const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
         const updatedEditIndex = currentEditIndex + 1
         const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
@@ -153,7 +209,14 @@ const useDataEdits = (): {
     }
 
     return {
-        addEdit, undoEdit, redoEdit,
+        addEdit,
+        undoEdit,
+        redoEdit,
+        updateCase,
+        updateTopside,
+        updateSurf,
+        updateSubstructure,
+        updateTransport,
     }
 }
 

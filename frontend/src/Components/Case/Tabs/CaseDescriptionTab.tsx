@@ -10,25 +10,15 @@ import { useAppContext } from "../../../Context/AppContext"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { setNonNegativeNumberState } from "../../../Utils/common"
 import useDataEdits from "../../../Hooks/useDataEdits"
-import useQuery from "../../../Hooks/useQuery"
-import { GetCaseService } from "../../../Services/CaseService"
 
 const CaseDescriptionTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
     const { editMode } = useAppContext()
-    const { addEdit } = useDataEdits()
     const { project } = useProjectContext()
-    if (!projectCase) { return null }
 
     if (!projectCase) { return null }
 
-    const { updateData: updateCase } = useQuery({
-        queryKey: ["caseData", project!.id, projectCase.id],
-        mutationFn: async (updatedData: Components.Schemas.CaseDto) => {
-            const caseService = await GetCaseService()
-            return caseService.updateCase(project!.id, projectCase.id, updatedData)
-        },
-    })
+    const { addEdit, updateCase } = useDataEdits(project!.id, projectCase.id)
 
     const productionStrategyOptions = {
         0: "Depletion",

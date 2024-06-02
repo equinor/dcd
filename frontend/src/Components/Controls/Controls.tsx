@@ -29,12 +29,6 @@ import UndoControls from "./UndoControls"
 import Classification from "./Classification"
 
 const Controls = () => {
-    const navigate = useNavigate()
-
-    const { addEdit } = useDataEdits()
-    const { setTechnicalModalIsOpen } = useModalContext()
-    const { currentContext } = useModuleCurrentContext()
-    const { isSaving, editMode, setEditMode } = useAppContext()
     const {
         project,
         setProject,
@@ -49,6 +43,14 @@ const Controls = () => {
         setSaveProjectCase,
     } = useCaseContext()
 
+    if (!project || !projectCase) { return null }
+
+    const navigate = useNavigate()
+    const { setTechnicalModalIsOpen } = useModalContext()
+    const { currentContext } = useModuleCurrentContext()
+    const { isSaving, editMode, setEditMode } = useAppContext()
+    const { addEdit, updateCase } = useDataEdits(project.id, projectCase.id)
+
     const nameInput = useRef<any>(null)
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
@@ -62,6 +64,7 @@ const Controls = () => {
             addEdit(name, newCase.name, "name", "name", "case", newCase.id)
             newCase.name = name
             setProjectCaseEdited(newCase)
+            updateCase("name", name)
         }
     }
 

@@ -4,6 +4,7 @@ import InputSwitcher from "../Input/Components/InputSwitcher"
 import { formatDate } from "../../Utils/common"
 import useDataEdits from "../../Hooks/useDataEdits"
 import { useCaseContext } from "../../Context/CaseContext"
+import { useProjectContext } from "../../Context/ProjectContext"
 
 interface SwitchableDateInputProps {
     objectKey: string
@@ -21,12 +22,14 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
     min,
     max,
 }) => {
-    const { addEdit } = useDataEdits()
     const { projectCase } = useCaseContext()
+    const { project } = useProjectContext()
+
+    if (!projectCase || !project) { return null }
+
+    const { addEdit } = useDataEdits(project!.id, projectCase!.id)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!projectCase) { return }
-
         onChange(e)
 
         addEdit(

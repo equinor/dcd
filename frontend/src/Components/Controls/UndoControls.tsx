@@ -7,6 +7,7 @@ import styled from "styled-components"
 import useDataEdits from "../../Hooks/useDataEdits"
 import { useCaseContext } from "../../Context/CaseContext"
 import { getCurrentEditId } from "../../Utils/common"
+import { useProjectContext } from "../../Context/ProjectContext"
 
 const Container = styled.div`
    display: flex;
@@ -22,8 +23,11 @@ const UndoControls: React.FC = () => {
         editIndexes,
     } = useCaseContext()
 
+    const { project } = useProjectContext()
+
     const [isSaving, setIsSaving] = useState(false) // todo: implement saving state from api call status
-    const { undoEdit, redoEdit } = useDataEdits()
+
+    const { undoEdit, redoEdit } = useDataEdits(project!.id, projectCase!.id)
 
     const editsBelongingToCurrentCase = projectCase && caseEdits.filter((edit) => edit.objectId === projectCase.id)
     const currentEditId = getCurrentEditId(editIndexes, projectCase)

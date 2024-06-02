@@ -5,6 +5,7 @@ import { useCaseContext } from "../../../../../Context/CaseContext"
 import useQuery from "../../../../../Hooks/useQuery"
 import { GetSurfService } from "../../../../../Services/SurfService"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
+import useDataEdits from "../../../../../Hooks/useDataEdits"
 
 const Maturity: React.FC = () => {
     const {
@@ -15,7 +16,9 @@ const Maturity: React.FC = () => {
     } = useCaseContext()
     const { project } = useProjectContext()
 
-    if (!projectCase || !surf) { return null }
+    if (!projectCase || !surf || !project) { return null }
+
+    const { updateSurf } = useDataEdits(project.id, projectCase.id, undefined, surf)
 
     const maturityOptions: { [key: string]: string } = {
         0: "A",
@@ -23,14 +26,6 @@ const Maturity: React.FC = () => {
         2: "C",
         3: "D",
     }
-
-    const { updateData: updateSurf } = useQuery({
-        queryKey: ["surfData", project!.id, projectCase.id],
-        mutationFn: async (updatedData: Components.Schemas.APIUpdateSurfDto) => {
-            const surfService = await GetSurfService()
-            return surfService.updateSurf(project!.id, projectCase.id, surf.id, updatedData)
-        },
-    })
 
     const updatedAndSetSurf = (surfItem: Components.Schemas.SurfWithProfilesDto) => {
         const newSurf: Components.Schemas.SurfWithProfilesDto = { ...surfItem }

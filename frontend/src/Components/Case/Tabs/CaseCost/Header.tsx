@@ -5,8 +5,8 @@ import Maturity from "./Inputs/Maturity"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import useQuery from "../../../../Hooks/useQuery"
-import { GetCaseService } from "../../../../Services/CaseService"
 import { useCaseContext } from "../../../../Context/CaseContext"
+import useDataEdits from "../../../../Hooks/useDataEdits"
 
 interface HeaderProps {
     startYear: number;
@@ -28,13 +28,7 @@ const Header: React.FC<HeaderProps> = ({
 
     if (!projectCase) { return null }
 
-    const { updateData: updateCase } = useQuery({
-        queryKey: ["caseData", project!.id, projectCase.id],
-        mutationFn: async (updatedData: Components.Schemas.CaseDto) => {
-            const caseService = await GetCaseService()
-            return caseService.updateCase(project!.id, projectCase.id, updatedData)
-        },
-    })
+    const { updateCase } = useDataEdits(project!.id, projectCase!.id)
 
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
