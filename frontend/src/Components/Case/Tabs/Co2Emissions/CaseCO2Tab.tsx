@@ -212,7 +212,6 @@ const CaseCO2Tab = ({
 
     if (activeTabCase !== 6) { return null }
 
-
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
