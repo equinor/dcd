@@ -48,10 +48,7 @@ public class BlobStorageService : IBlobStorageService
             CreateTime = createTime,
             CaseId = caseId,
         };
-        if (imageEntity == null)
-        {
-            throw new InvalidOperationException("Image entity cannot be null.");
-        }
+
         await _imageRepository.AddImage(imageEntity);
 
         var imageDto = _mapper.Map<ImageDto>(imageEntity);
@@ -67,11 +64,6 @@ public class BlobStorageService : IBlobStorageService
     public async Task<List<ImageDto>> GetCaseImages(Guid caseId)
     {
         var images = await _imageRepository.GetImagesByCaseId(caseId);
-
-        if (images == null)
-        {
-            throw new InvalidOperationException("Images cannot be null.");
-        }
 
         var imageDtos = _mapper.Map<List<ImageDto>>(images);
 
