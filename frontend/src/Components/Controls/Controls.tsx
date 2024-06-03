@@ -7,8 +7,6 @@ import {
     Button,
     Progress,
     Input,
-    Chip,
-    Tooltip,
 } from "@equinor/eds-core-react"
 import {
     save,
@@ -39,6 +37,7 @@ const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
     margin-right: 0.2rem;
 `
+import Classification from "./Classification"
 
 const Controls = () => {
     const navigate = useNavigate()
@@ -194,14 +193,7 @@ const Controls = () => {
                             <Typography variant="h4">
                                 {projectCase ? projectCase.name : project?.name}
                             </Typography>
-                            {project && !projectCase && (
-                                <Tooltip placement="bottom-start" title={PROJECT_CLASSIFICATION[project?.classification].description}>
-                                    <Chip variant={PROJECT_CLASSIFICATION[project?.classification].color}>
-                                        <Icon data={PROJECT_CLASSIFICATION[project?.classification].icon} />
-                                        {PROJECT_CLASSIFICATION[project?.classification].label}
-                                    </Chip>
-                                </Tooltip>
-                            )}
+                            <Classification />
                         </>
                     )}
             </Grid>
@@ -240,11 +232,9 @@ const Controls = () => {
             <Grid item>
                 <UndoControls />
             </Grid>
-            {/*
             <Grid item>
                 <HistoryButton size={24} />
             </Grid>
-            */}
             {projectCase && (
                 <Grid item>
                     <Button

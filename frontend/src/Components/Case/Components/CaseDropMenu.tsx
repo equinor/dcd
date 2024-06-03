@@ -1,9 +1,10 @@
-import React from "react"
-import { Menu, Typography, Icon } from "@equinor/eds-core-react"
+import React, { useState } from "react"
+import {
+    Menu, Typography, Icon, Button,
+} from "@equinor/eds-core-react"
 import {
     add,
     library_add,
-    edit,
     delete_to_trash,
     bookmark_outlined,
     bookmark_filled,
@@ -12,6 +13,7 @@ import { useNavigate } from "react-router-dom"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { deleteCase, duplicateCase, setCaseAsReference } from "../../../Utils/CaseController"
 import { useModalContext } from "../../../Context/ModalContext"
+import Modal from "../../Modal/Modal"
 
 interface CaseDropMenuProps {
     isMenuOpen: boolean
@@ -33,6 +35,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     } = useProjectContext()
 
     const { addNewCase } = useModalContext()
+    const [confirmDelete, setConfirmDelete] = useState(false)
 
     const deleteAndGoToProject = async () => {
         if (!projectCase || !project) { return }
@@ -43,53 +46,67 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     }
 
     return (
-        <Menu
-            id="menu-complex"
-            open={isMenuOpen}
-            anchorEl={menuAnchorEl}
-            onClose={() => setIsMenuOpen(false)}
-            placement="bottom"
-        >
-            <Menu.Item onClick={() => addNewCase()}>
-                <Icon data={add} size={16} />
-                <Typography group="navigation" variant="menu_title" as="span">
-                    Add New Case
+        <>
+            <Modal
+                title="Delete Case?"
+                isOpen={confirmDelete}
+            >
+                <Typography variant="body_short">
+                    Are you sure you want to delete this case?
                 </Typography>
-            </Menu.Item>
-            <Menu.Item onClick={() => project && duplicateCase(projectCase?.id, project, setProject)}>
-                <Icon data={library_add} size={16} />
-                <Typography group="navigation" variant="menu_title" as="span">
-                    Duplicate
-                </Typography>
-            </Menu.Item>
-            <Menu.Item onClick={() => project && deleteAndGoToProject()}>
-                <Icon data={delete_to_trash} size={16} />
-                <Typography group="navigation" variant="menu_title" as="span">
-                    Delete
-                </Typography>
-            </Menu.Item>
-            {project?.referenceCaseId === projectCase?.id
-                ? (
-                    <Menu.Item
-                        onClick={() => project && setCaseAsReference(projectCase?.id, project, setProject)}
-                    >
-                        <Icon data={bookmark_outlined} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Remove as reference case
-                        </Typography>
-                    </Menu.Item>
-                )
-                : (
-                    <Menu.Item
-                        onClick={() => project && setCaseAsReference(projectCase?.id, project, setProject)}
-                    >
-                        <Icon data={bookmark_filled} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Set as reference case
-                        </Typography>
-                    </Menu.Item>
-                )}
-        </Menu>
+                <div>
+                    <Button variant="ghost" onClick={() => setConfirmDelete(false)}>Cancel</Button>
+                    <Button onClick={deleteAndGoToProject}>Delete</Button>
+                </div>
+            </Modal>
+            <Menu
+                id="menu-complex"
+                open={isMenuOpen}
+                anchorEl={menuAnchorEl}
+                onClose={() => setIsMenuOpen(false)}
+                placement="bottom"
+            >
+                <Menu.Item onClick={() => addNewCase()}>
+                    <Icon data={add} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Add New Case
+                    </Typography>
+                </Menu.Item>
+                <Menu.Item onClick={() => project && duplicateCase(projectCase?.id, project, setProject)}>
+                    <Icon data={library_add} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Duplicate
+                    </Typography>
+                </Menu.Item>
+                <Menu.Item onClick={() => project && setConfirmDelete(true)}>
+                    <Icon data={delete_to_trash} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Delete
+                    </Typography>
+                </Menu.Item>
+                {project?.referenceCaseId === projectCase?.id
+                    ? (
+                        <Menu.Item
+                            onClick={() => project && setCaseAsReference(projectCase?.id, project, setProject)}
+                        >
+                            <Icon data={bookmark_outlined} size={16} />
+                            <Typography group="navigation" variant="menu_title" as="span">
+                                Remove as reference case
+                            </Typography>
+                        </Menu.Item>
+                    )
+                    : (
+                        <Menu.Item
+                            onClick={() => project && setCaseAsReference(projectCase?.id, project, setProject)}
+                        >
+                            <Icon data={bookmark_filled} size={16} />
+                            <Typography group="navigation" variant="menu_title" as="span">
+                                Set as reference case
+                            </Typography>
+                        </Menu.Item>
+                    )}
+            </Menu>
+        </>
     )
 }
 

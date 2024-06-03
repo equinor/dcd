@@ -68,7 +68,6 @@ public class TopsideWithProfilesDto
     public double FacilityOpex { get; set; }
     [Required]
     public double PeakElectricityImported { get; set; }
-    public bool HasChanges { get; set; }
 }
 
 public class TopsideCostProfileDto : TimeSeriesCostDto

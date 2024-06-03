@@ -104,16 +104,16 @@ public static class TestDataGenerator
             }
         };
     }
-    public static WellProjectDto Case2WellProject()
+    public static WellProjectWithProfilesDto Case2WellProject()
     {
-        return new WellProjectDto
+        return new WellProjectWithProfilesDto
         {
             Name = "SkarvenWellCase2",
         };
     }
-    public static ExplorationDto Case2Exploration()
+    public static ExplorationWithProfilesDto Case2Exploration()
     {
-        return new ExplorationDto
+        return new ExplorationWithProfilesDto
         {
             Name = "SkarvenExplCase2",
             GAndGAdminCost = new GAndGAdminCostDto

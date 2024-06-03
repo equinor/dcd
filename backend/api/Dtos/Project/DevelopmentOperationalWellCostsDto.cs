@@ -16,6 +16,4 @@ public class DevelopmentOperationalWellCostsDto
     public double AnnualWellInterventionCostPerWell { get; set; }
     [Required]
     public double PluggingAndAbandonment { get; set; }
-    [Required]
-    public bool HasChanges { get; set; }
 }
