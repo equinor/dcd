@@ -17,12 +17,12 @@ import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 interface Props {
     topside: Components.Schemas.TopsideWithProfilesDto,
     setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideWithProfilesDto | undefined>>,
-    surf: Components.Schemas.SurfDto,
-    setSurf: Dispatch<SetStateAction<Components.Schemas.SurfDto | undefined>>,
+    surf: Components.Schemas.SurfWithProfilesDto,
+    setSurf: Dispatch<SetStateAction<Components.Schemas.SurfWithProfilesDto | undefined>>,
     substructure: Components.Schemas.SubstructureWithProfilesDto,
     setSubstrucutre: Dispatch<SetStateAction<Components.Schemas.SubstructureWithProfilesDto | undefined>>,
-    transport: Components.Schemas.TransportDto,
-    setTransport: Dispatch<SetStateAction<Components.Schemas.TransportDto | undefined>>,
+    transport: Components.Schemas.TransportWithProfilesDto,
+    setTransport: Dispatch<SetStateAction<Components.Schemas.TransportWithProfilesDto | undefined>>,
 }
 
 const CaseFacilitiesTab = ({

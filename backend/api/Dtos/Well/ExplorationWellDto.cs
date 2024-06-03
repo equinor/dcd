@@ -11,5 +11,4 @@ public class ExplorationWellDto
     public Guid ExplorationId { get; set; } = Guid.Empty!;
     [Required]
     public Guid WellId { get; set; } = Guid.Empty!;
-    public bool HasChanges { get; set; }
 }

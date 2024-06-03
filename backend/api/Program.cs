@@ -203,6 +203,10 @@ builder.Services.AddScoped<ICaseRepository, CaseRepository>();
 builder.Services.AddScoped<ISubstructureRepository, SubstructureRepository>();
 builder.Services.AddScoped<ITopsideRepository, TopsideRepository>();
 builder.Services.AddScoped<IDrainageStrategyRepository, DrainageStrategyRepository>();
+builder.Services.AddScoped<IWellProjectRepository, WellProjectRepository>();
+builder.Services.AddScoped<IExplorationRepository, ExplorationRepository>();
+builder.Services.AddScoped<ITransportRepository, TransportRepository>();
+builder.Services.AddScoped<ISurfRepository, SurfRepository>();
 
 builder.Services.AddScoped<IMapperService, MapperService>();
 builder.Services.AddScoped<IConversionMapperService, ConversionMapperService>();
