@@ -1,9 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using api.Context;
 using api.Models;
-
 using Microsoft.EntityFrameworkCore;
-
-
 
 public class ImageRepository : IImageRepository
 {
@@ -20,10 +21,12 @@ public class ImageRepository : IImageRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<Image>> GetImagesByCaseIdAsync(Guid caseId)
+    public async Task<IEnumerable<string>> GetImagesByCaseIdAsync(Guid caseId)
     {
-        return await _context.Images
+        var images = await _context.Images
             .Where(img => img.CaseId == caseId)
+            .Select(img => img.Url)
             .ToListAsync();
+        return images;
     }
 }

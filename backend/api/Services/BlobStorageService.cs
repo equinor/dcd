@@ -1,25 +1,33 @@
-using api.Context;
 using api.Models;
-
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
 using Azure.Storage.Sas;
-
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 public class BlobStorageService : IBlobStorageService
 {
-    private readonly DcdDbContext _context;
     private readonly BlobServiceClient _blobServiceClient;
+    private readonly IImageRepository _imageRepository;
     private readonly string _containerName;
 
-    public BlobStorageService(BlobServiceClient blobServiceClient, string containerName, DcdDbContext context)
+    public BlobStorageService(BlobServiceClient blobServiceClient, IImageRepository imageRepository, IConfiguration configuration)
     {
         _blobServiceClient = blobServiceClient;
-        _containerName = containerName;
-        _context = context;
+        _imageRepository = imageRepository;
+        _containerName = configuration["azureStorageAccountImageContainerName"]
+                         ?? throw new InvalidOperationException("Container name configuration is missing.");
+
+        if (string.IsNullOrEmpty(_containerName))
+        {
+            throw new InvalidOperationException("Container name configuration is missing or empty.");
+        }
     }
 
     public Task<string> GetBlobSasUrlAsync(string blobName)
@@ -43,6 +51,7 @@ public class BlobStorageService : IBlobStorageService
 
         return Task.FromResult($"{blobClient.Uri}?{sasToken}");
     }
+
     private string GenerateSasTokenForBlob(BlobClient blobClient, BlobSasPermissions permissions)
     {
         var sasBuilder = new BlobSasBuilder
@@ -60,6 +69,7 @@ public class BlobStorageService : IBlobStorageService
 
         return sasToken;
     }
+
     public async Task<string> UploadImageAsync(byte[] imageBytes, string contentType, string blobName)
     {
         var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
@@ -78,37 +88,32 @@ public class BlobStorageService : IBlobStorageService
         return imageUrl;
     }
 
-    public async Task<IEnumerable<string>> GetImageUrlsAsync(Guid caseId)
-    {
-        var images = await _context.Images
-            .Where(img => img.CaseId == caseId)
-            .Select(img => img.Url)
-            .ToListAsync();
+public async Task<IEnumerable<string>> GetImageUrlsAsync(Guid caseId)
+{
+    var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+    var caseFolder = $"{caseId}/"; // Folder path for the case
+    var blobUrls = new List<string>();
 
-        return images;
+    await foreach (var blobItem in containerClient.GetBlobsAsync(prefix: caseFolder))
+    {
+        var blobClient = containerClient.GetBlobClient(blobItem.Name);
+        // Generate a SAS token for the blob if needed, or use the blob URI directly
+        var sasToken = GenerateSasTokenForBlob(blobClient, BlobSasPermissions.Read);
+        var blobUrl = $"{blobClient.Uri}{sasToken}";
+        blobUrls.Add(blobUrl);
     }
+
+    return blobUrls;
+}
 
     public async Task<string> SaveImageAsync(IFormFile image, Guid caseId)
-    {
-        var blobName = Guid.NewGuid().ToString();
-        var contentType = image.ContentType;
+{
+    var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+    var blobClient = containerClient.GetBlobClient($"{caseId}/{image.FileName}");
 
-        using var stream = new MemoryStream();
-        await image.CopyToAsync(stream);
-        var imageBytes = stream.ToArray();
+    await using var stream = image.OpenReadStream();
+    await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = image.ContentType });
 
-        var imageUrl = await UploadImageAsync(imageBytes, contentType, blobName);
-
-        // Save the image record to the database
-        var newImage = new Image
-        {
-            CaseId = caseId,
-            Url = imageUrl,
-        };
-
-        _context.Images.Add(newImage);
-        await _context.SaveChangesAsync();
-
-        return imageUrl;
-    }
+    return blobClient.Uri.ToString();
+}
 }

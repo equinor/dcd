@@ -78,7 +78,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         const imageService = await getImageService()
 
         const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(project.id, projectCase.id, file))
-
         try {
             const uploadedImageUrls = await Promise.all(uploadPromises)
             setGallery((prevGallery) => [...prevGallery, ...uploadedImageUrls])
