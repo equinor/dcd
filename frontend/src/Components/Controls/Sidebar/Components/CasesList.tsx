@@ -3,20 +3,13 @@ import { Grid } from "@mui/material"
 import { Tooltip } from "@equinor/eds-core-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import styled from "styled-components"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { productionStrategyOverviewToString, casePath } from "../../../../Utils/common"
 import { TimelineElement } from "../Sidebar"
 import { useAppContext } from "../../../../Context/AppContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
-import ReferenceCaseIcon from "../../../Case/Components/ReferenceCaseIcon"
-
-const Wrapper = styled.div`
-    justify-content: center;
-    align-items: center;
-    display: inline-flex;
-    margin-left: 1.1rem;
-`
+import { ReferenceCaseIcon, SideBarRefCaseWrapper } from "../../../Case/Components/ReferenceCaseIcon"
+import { EMPTY_GUID } from "../../../../Utils/constants"
 
 const CasesList: React.FC = () => {
     const { project } = useProjectContext()
@@ -52,14 +45,24 @@ const CasesList: React.FC = () => {
                         placement="right"
                     >
                         <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.id)}>
-                            <Wrapper>
-                                {project?.referenceCaseId === projectCase?.id && (
-                                    <ReferenceCaseIcon iconPlacement="sideBar" />
+                            {project?.referenceCaseId !== EMPTY_GUID
+                                ? (
+                                    <SideBarRefCaseWrapper>
+                                        {project?.referenceCaseId === projectCase?.id && (
+                                            <ReferenceCaseIcon iconPlacement="sideBar" />
+                                        )}
+                                        {!sidebarOpen && `#${index + 1}`}
+                                        {(sidebarOpen && projectCase.name) && projectCase.name}
+                                        {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
+                                    </SideBarRefCaseWrapper>
+                                )
+                                : (
+                                    <>
+                                        {!sidebarOpen && `#${index + 1}`}
+                                        {(sidebarOpen && projectCase.name) && projectCase.name}
+                                        {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
+                                    </>
                                 )}
-                                {!sidebarOpen && `#${index + 1}`}
-                                {(sidebarOpen && projectCase.name) && projectCase.name}
-                                {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
-                            </Wrapper>
                         </TimelineElement>
                     </Tooltip>
                 </Grid>

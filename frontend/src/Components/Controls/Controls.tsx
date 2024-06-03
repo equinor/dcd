@@ -7,6 +7,7 @@ import {
     Button,
     Progress,
     Input,
+    Tooltip,
 } from "@equinor/eds-core-react"
 import {
     save,
@@ -31,13 +32,13 @@ import useDataEdits from "../../Hooks/useDataEdits"
 import HistoryButton from "../Buttons/HistoryButton"
 import UndoControls from "./UndoControls"
 import { EMPTY_GUID, PROJECT_CLASSIFICATION } from "../../Utils/constants"
-import ReferenceCaseIcon from "../Case/Components/ReferenceCaseIcon"
+import { ChooseReferenceCase, ReferenceCaseIcon } from "../Case/Components/ReferenceCaseIcon"
+import Classification from "./Classification"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
     margin-right: 0.2rem;
 `
-import Classification from "./Classification"
 
 const Controls = () => {
     const navigate = useNavigate()
@@ -65,7 +66,7 @@ const Controls = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
 
-    const handleReferenceCaseChange = (referenceCaseId: string) => {
+    const handleReferenceCaseChange = async (referenceCaseId: string) => {
         if (project) {
             const newProject = {
                 ...project,
@@ -77,7 +78,8 @@ const Controls = () => {
                 newProject.referenceCaseId = referenceCaseId ?? ""
             }
             console.log(`newproject refCaseId: ${newProject.referenceCaseId}`)
-            setProject(newProject)
+            const updateProject = await (await GetProjectService()).updateProject(project.id, newProject)
+            setProject(updateProject)
         }
     }
 
@@ -161,20 +163,11 @@ const Controls = () => {
                 {editMode && projectCase
                     ? (
                         <>
-                            {project?.referenceCaseId !== projectCase.id ? (
-                                <Tooltip title="Set as reference case">
-                                    <Button variant="ghost" onClick={() => handleReferenceCaseChange(projectCase.id)}>
-                                        <MenuIcon data={bookmark_outlined} size={18} />
-                                    </Button>
-                                </Tooltip>
-                            )
-                                : (
-                                    <Tooltip title="Remove as reference case" onClick={() => handleReferenceCaseChange(projectCase.id)}>
-                                        <Button variant="ghost" onClick={() => handleReferenceCaseChange(projectCase.id)}>
-                                            <MenuIcon data={bookmark_filled} size={18} />
-                                        </Button>
-                                    </Tooltip>
-                                )}
+                            <ChooseReferenceCase
+                                projectRefCaseId={project?.referenceCaseId}
+                                projectCaseId={projectCase.id}
+                                handleReferenceCaseChange={() => handleReferenceCaseChange(projectCase.id)}
+                            />
                             <Input // todo: should not be allowed to be empty
                                 ref={nameInput}
                                 type="text"
@@ -186,9 +179,7 @@ const Controls = () => {
                     : (
                         <>
                             {project?.referenceCaseId === projectCase?.id && (
-                                <ReferenceCaseIcon
-                                    iconPlacement="caseView"
-                                />
+                                <ReferenceCaseIcon />
                             )}
                             <Typography variant="h4">
                                 {projectCase ? projectCase.name : project?.name}

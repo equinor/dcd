@@ -1,9 +1,16 @@
-import { Icon, Tooltip } from "@equinor/eds-core-react"
-import { bookmark_filled } from "@equinor/eds-icons"
+import { Button, Icon, Tooltip } from "@equinor/eds-core-react"
+import { bookmark_filled, bookmark_outlined } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import styled from "styled-components"
 
-const MenuIcon = styled(Icon)`
+export const SideBarRefCaseWrapper = styled.div`
+    justify-content: center;
+    align-items: center;
+    display: inline-flex;
+    margin-left: 1.1rem;
+`
+
+const CaseViewIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
     margin-right: 0.2rem;
 `
@@ -20,11 +27,36 @@ const SideBarIcon = styled(Icon)`
     margin-left: -1.2rem;
 `
 
-interface Props {
+interface PropsChooseRefCase {
+    handleReferenceCaseChange: () => void
+    projectRefCaseId: any
+    projectCaseId: any
+}
+
+export const ChooseReferenceCase = ({ handleReferenceCaseChange, projectRefCaseId, projectCaseId }: PropsChooseRefCase) => {
+    if (projectRefCaseId !== projectCaseId) {
+        return (
+            <Tooltip title="Set as reference case">
+                <Button variant="ghost" onClick={handleReferenceCaseChange}>
+                    <CaseViewIcon data={bookmark_outlined} size={18} />
+                </Button>
+            </Tooltip>
+        )
+    }
+    return (
+        <Tooltip title="Remove as reference case">
+            <Button variant="ghost" onClick={handleReferenceCaseChange}>
+                <CaseViewIcon data={bookmark_filled} size={18} />
+            </Button>
+        </Tooltip>
+    )
+}
+
+interface PropsShowIcon {
     iconPlacement?: string
 }
 
-const ReferenceCaseIcon = ({ iconPlacement }: Props) => {
+export const ReferenceCaseIcon = ({ iconPlacement }: PropsShowIcon) => {
     if (iconPlacement === "sideBar") {
         return (
             <Tooltip title="Reference case">
@@ -41,9 +73,7 @@ const ReferenceCaseIcon = ({ iconPlacement }: Props) => {
     }
     return (
         <Tooltip title="Reference case">
-            <MenuIcon data={bookmark_filled} size={18} />
+            <CaseViewIcon data={bookmark_filled} size={18} />
         </Tooltip>
     )
 }
-
-export default ReferenceCaseIcon

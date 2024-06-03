@@ -19,7 +19,7 @@ import { ColDef } from "@ag-grid-community/core"
 import { casePath, productionStrategyOverviewToString } from "../../../Utils/common"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
-import ReferenceCaseIcon from "../Components/ReferenceCaseIcon"
+import { ReferenceCaseIcon } from "../Components/ReferenceCaseIcon"
 
 const StyledIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
