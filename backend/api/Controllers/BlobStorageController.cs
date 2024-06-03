@@ -1,6 +1,7 @@
+using api.Dtos;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using api.Dtos;
 
 [Authorize]
 [ApiController]

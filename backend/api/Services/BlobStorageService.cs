@@ -25,28 +25,6 @@ public class BlobStorageService : IBlobStorageService
         }
     }
 
-    public Task<string> GetBlobSasUrl(string blobName)
-    {
-        var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-        var blobClient = containerClient.GetBlobClient(blobName);
-
-        var sasBuilder = new BlobSasBuilder
-        {
-            BlobContainerName = _containerName,
-            BlobName = blobName,
-            Resource = "b",
-            StartsOn = DateTimeOffset.UtcNow,
-            ExpiresOn = DateTimeOffset.UtcNow.AddHours(1),
-            Protocol = SasProtocol.Https
-        };
-
-        sasBuilder.SetPermissions(BlobSasPermissions.Write | BlobSasPermissions.Create);
-
-        var sasToken = blobClient.GenerateSasUri(sasBuilder).Query;
-
-        return Task.FromResult($"{blobClient.Uri}?{sasToken}");
-    }
-
     private string GenerateSasTokenForBlob(BlobClient blobClient, BlobSasPermissions permissions)
     {
         var sasBuilder = new BlobSasBuilder
@@ -63,41 +41,6 @@ public class BlobStorageService : IBlobStorageService
         var sasToken = blobClient.GenerateSasUri(sasBuilder).Query;
 
         return sasToken;
-    }
-
-    public async Task<string> UploadImage(byte[] imageBytes, string contentType, string blobName)
-    {
-        var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-        var blobClient = containerClient.GetBlobClient(blobName);
-
-        var sasToken = GenerateSasTokenForBlob(blobClient, permissions: BlobSasPermissions.Write);
-
-        var sasBlobUri = new Uri($"{blobClient.Uri}{sasToken}");
-        var sasBlobClient = new BlobClient(sasBlobUri);
-
-        using var stream = new MemoryStream(imageBytes, writable: false);
-        await sasBlobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = contentType });
-
-        var imageUrl = blobClient.Uri.ToString();
-
-        return imageUrl;
-    }
-
-    public async Task<IEnumerable<string>> GetImageUrls(Guid caseId)
-    {
-        var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-        var caseFolder = $"{caseId}/";
-        var blobUrls = new List<string>();
-
-        await foreach (var blobItem in containerClient.GetBlobsAsync(prefix: caseFolder))
-        {
-            var blobClient = containerClient.GetBlobClient(blobItem.Name);
-            var sasToken = GenerateSasTokenForBlob(blobClient, BlobSasPermissions.Read);
-            var blobUrl = $"{blobClient.Uri}{sasToken}";
-            blobUrls.Add(blobUrl);
-        }
-
-        return blobUrls;
     }
 
     public async Task<ImageDto> SaveImage(IFormFile image, Guid caseId)
@@ -133,17 +76,17 @@ public class BlobStorageService : IBlobStorageService
     }
 
     public async Task<List<ImageDto>> GetImagesByCaseIdAndMapToDto(Guid caseId)
-{
-    var images = await _imageRepository.GetImagesByCaseId(caseId);
-    var imageDtos = images.Select(image => new ImageDto
     {
-        Id = image.Id,
-        Url = image.Url,
-        CreateTime = image.CreateTime,
-        Description = image.Description,
-        CaseId = image.CaseId
-    }).ToList();
+        var images = await _imageRepository.GetImagesByCaseId(caseId);
+        var imageDtos = images.Select(image => new ImageDto
+        {
+            Id = image.Id,
+            Url = image.Url,
+            CreateTime = image.CreateTime,
+            Description = image.Description,
+            CaseId = image.CaseId
+        }).ToList();
 
-    return imageDtos;
-}
+        return imageDtos;
+    }
 }

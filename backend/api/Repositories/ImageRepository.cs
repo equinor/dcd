@@ -1,7 +1,8 @@
 using api.Context;
-using api.Models;
-using Microsoft.EntityFrameworkCore;
 using api.Dtos;
+using api.Models;
+
+using Microsoft.EntityFrameworkCore;
 
 public class ImageRepository : IImageRepository
 {
