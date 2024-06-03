@@ -2,17 +2,14 @@ import React from "react"
 import SwitchableNumberInput from "../../../../Input/SwitchableNumberInput"
 import { useCaseContext } from "../../../../../Context/CaseContext"
 
-interface props {
-    updateCase: (key: any, value: any) => void;
-}
-
-const CapexFactorFeasibilityStudies: React.FC<props> = ({ updateCase }) => {
+const CapexFactorFeasibilityStudies: React.FC = () => {
     const {
         projectCase,
         projectCaseEdited,
         setProjectCaseEdited,
     } = useCaseContext()
 
+    // todo: the value is manipulated before submition. find out how to handle that with the service implementation
     const handleCaseFeasibilityChange = (value: number): void => {
         const newCase = { ...projectCaseEdited }
         const newCapexFactorFeasibilityStudies = value > 0
@@ -21,11 +18,11 @@ const CapexFactorFeasibilityStudies: React.FC<props> = ({ updateCase }) => {
             newCase.capexFactorFeasibilityStudies = newCapexFactorFeasibilityStudies / 100
         } else { newCase.capexFactorFeasibilityStudies = 0 }
         setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
-        updateCase("capexFactorFeasibilityStudies", newCase.capexFactorFeasibilityStudies)
     }
     return (
         <SwitchableNumberInput
-            objectKey={projectCase?.capexFactorFeasibilityStudies}
+            serviceName="case"
+            serviceKey="capexFactorFeasibilityStudies"
             label="CAPEX factor feasibility studies"
             onSubmit={handleCaseFeasibilityChange}
             value={projectCase?.capexFactorFeasibilityStudies !== undefined ? (projectCase.capexFactorFeasibilityStudies ?? 0) * 100 : undefined}

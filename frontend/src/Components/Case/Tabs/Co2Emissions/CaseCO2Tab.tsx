@@ -229,11 +229,12 @@ const CaseCO2Tab = ({
             </Grid>
             <Grid item xs={12}>
                 <SwitchableNumberInput
-                    objectKey={topside?.fuelConsumption}
+                    serviceName="topside"
+                    serviceKey="fuelConsumption"
+                    serviceId={topside?.id}
                     label="Fuel consumption"
                     onSubmit={(value: number) => {
                         setNonNegativeNumberState(value, "fuelConsumption", topside, setTopside)
-                        updateTopside("fuelConsumption", value)
                     }}
                     value={topside?.fuelConsumption}
                     integer={false}

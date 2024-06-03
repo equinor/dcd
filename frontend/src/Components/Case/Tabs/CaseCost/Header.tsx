@@ -4,9 +4,7 @@ import CapexFactorFeedStudies from "./Inputs/CapexFactorFeedStudies"
 import Maturity from "./Inputs/Maturity"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
 import { useProjectContext } from "../../../../Context/ProjectContext"
-import useQuery from "../../../../Hooks/useQuery"
 import { useCaseContext } from "../../../../Context/CaseContext"
-import useDataEdits from "../../../../Hooks/useDataEdits"
 
 interface HeaderProps {
     startYear: number;
@@ -28,8 +26,6 @@ const Header: React.FC<HeaderProps> = ({
 
     if (!projectCase) { return null }
 
-    const { updateCase } = useDataEdits(project!.id, projectCase!.id)
-
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
     }
@@ -45,10 +41,10 @@ const Header: React.FC<HeaderProps> = ({
     return (
         <>
             <Grid item xs={12} md={4}>
-                <CapexFactorFeasibilityStudies updateCase={updateCase} />
+                <CapexFactorFeasibilityStudies />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CapexFactorFeedStudies updateCase={updateCase} />
+                <CapexFactorFeedStudies />
             </Grid>
             <Grid item xs={12} md={4}>
                 <Maturity />

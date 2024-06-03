@@ -1,6 +1,4 @@
-import {
-    ChangeEventHandler,
-} from "react"
+import { ChangeEventHandler } from "react"
 import Grid from "@mui/material/Grid"
 import {
     dateFromString,
@@ -11,16 +9,11 @@ import {
 } from "../../../Utils/common"
 import { useCaseContext } from "../../../Context/CaseContext"
 import SwitchableDateInput from "../../Input/SwitchableDateInput"
-import { useProjectContext } from "../../../Context/ProjectContext"
-import useDataEdits from "../../../Hooks/useDataEdits"
 
 const CaseScheduleTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
-    const { project } = useProjectContext()
 
     if (!projectCase) { return null }
-
-    const { updateCase } = useDataEdits(project!.id, projectCase.id)
 
     const handleDG0Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
         if (!projectCaseEdited) { return }
@@ -29,7 +22,6 @@ const CaseScheduleTab = () => {
         if (Number.isNaN(newDate.getTime())) {
             newCase.dG0Date = defaultDate().toISOString()
             setProjectCaseEdited(newCase)
-            updateCase("dG0Date", defaultDate().toISOString())
             return
         }
         newCase.dG0Date = new Date(e.target.value).toISOString()
@@ -54,7 +46,6 @@ const CaseScheduleTab = () => {
             newCase.dG4Date = dg.toISOString()
         }
         setProjectCaseEdited(newCase)
-        updateCase("dG0Date", newCase.dG0Date)
     }
 
     const handleDG1Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -67,7 +58,6 @@ const CaseScheduleTab = () => {
             newCase.dG1Date = new Date(e.target.value).toISOString()
         }
         setProjectCaseEdited(newCase)
-        updateCase("dG1Date", newCase.dG1Date)
     }
 
     const handleDG2Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -80,7 +70,6 @@ const CaseScheduleTab = () => {
             newCase.dG2Date = new Date(e.target.value).toISOString()
         }
         setProjectCaseEdited(newCase)
-        updateCase("dG2Date", newCase.dG2Date)
     }
 
     const handleDG3Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -93,7 +82,6 @@ const CaseScheduleTab = () => {
             newCase.dG3Date = new Date(e.target.value).toISOString()
         }
         setProjectCaseEdited(newCase)
-        updateCase("dG3Date", newCase.dG3Date)
     }
 
     const handleDG4Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -106,7 +94,6 @@ const CaseScheduleTab = () => {
             newCase.dG4Date = new Date(e.target.value).toISOString()
         }
         setProjectCaseEdited(newCase)
-        updateCase("dG4Date", newCase.dG4Date)
     }
 
     const handleDGAChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -119,7 +106,6 @@ const CaseScheduleTab = () => {
             newCase.dgaDate = new Date(e.target.value).toISOString()
         }
         setProjectCaseEdited(newCase)
-        updateCase("dgaDate", newCase.dgaDate)
     }
 
     const handleDGBChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -132,7 +118,6 @@ const CaseScheduleTab = () => {
             newCase.dgbDate = new Date(e.target.value).toISOString()
         }
         setProjectCaseEdited(newCase)
-        updateCase("dgbDate", newCase.dgbDate)
     }
 
     const handleDGCChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -145,7 +130,6 @@ const CaseScheduleTab = () => {
             newCase.dgcDate = new Date(e.target.value).toISOString()
         }
         setProjectCaseEdited(newCase)
-        updateCase("dgcDate", newCase.dgcDate)
     }
 
     const handleAPXChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -158,7 +142,6 @@ const CaseScheduleTab = () => {
             newCase.apxDate = new Date(e.target.value).toISOString()
         }
         setProjectCaseEdited(newCase)
-        updateCase("apxDate", newCase.apxDate)
     }
 
     const handleAPZChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
@@ -171,7 +154,6 @@ const CaseScheduleTab = () => {
             newCase.apzDate = new Date(e.target.value).toISOString()
         }
         setProjectCaseEdited(newCase)
-        updateCase("apzDate", newCase.apzDate)
     }
 
     const findMinDate = (dates: Date[]) => {
@@ -201,70 +183,71 @@ const CaseScheduleTab = () => {
         return dates
     }
 
-    const toScheduleValue = (date: string) => {
-        const dateString = dateFromString(date)
-        if (isDefaultDate(dateString)) {
-            return undefined
-        }
-        return toMonthDate(dateString)
-    }
-
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
-                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dgaDate : projectCase.dgaDate)}
-                    objectKey={projectCase.dgaDate}
+                    value={projectCaseEdited ? projectCaseEdited.dgaDate : projectCase.dgaDate}
+                    serviceName="case"
+                    serviceKey="dgaDate"
                     label="DGA"
                     onChange={handleDGAChange}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
-                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dgbDate : projectCase.dgbDate)}
-                    objectKey={projectCase.dgbDate}
+                    value={projectCaseEdited ? projectCaseEdited.dgbDate : projectCase.dgbDate}
+                    serviceName="case"
+                    serviceKey="dgbDate"
                     label="DGB"
                     onChange={handleDGBChange}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
-                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dgcDate : projectCase.dgcDate)}
-                    objectKey={projectCase.dgcDate}
+                    value={projectCaseEdited ? projectCaseEdited.dgcDate : projectCase.dgcDate}
+                    serviceName="case"
+                    serviceKey="dgcDate"
                     label="DGC"
                     onChange={handleDGCChange}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
-                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.apxDate : projectCase.apxDate)}
-                    objectKey={projectCase.apxDate}
+                    value={projectCaseEdited ? projectCaseEdited.apxDate : projectCase.apxDate}
+                    serviceName="case"
+                    serviceKey="apxDate"
                     label="APX"
                     onChange={handleAPXChange}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
-                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.apzDate : projectCase.apzDate)}
-                    objectKey={projectCase.apzDate}
+                    value={projectCaseEdited ? projectCaseEdited.apzDate : projectCase.apzDate}
+                    serviceName="case"
+                    serviceKey="apzDate"
                     label="APZ"
                     onChange={handleAPZChange}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
-                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG0Date : projectCase.dG0Date)}
-                    objectKey={projectCase.dG0Date}
+                    value={projectCaseEdited ? projectCaseEdited.dG0Date : projectCase.dG0Date}
+                    serviceName="case"
+                    serviceKey="dG0Date"
                     label="DG0"
                     onChange={handleDG0Change}
-                    max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG1Date, projectCaseEdited.dG2Date, projectCaseEdited.dG3Date, projectCaseEdited.dG4Date])) : undefined}
+                    max={projectCaseEdited
+                        ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG1Date, projectCaseEdited.dG2Date, projectCaseEdited.dG3Date, projectCaseEdited.dG4Date]))
+                        : undefined}
                     min={undefined}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
-                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG1Date : projectCase.dG1Date)}
-                    objectKey={projectCase.dG1Date}
+                    value={projectCaseEdited ? projectCaseEdited.dG1Date : projectCase.dG1Date}
+                    serviceName="case"
+                    serviceKey="dG1Date"
                     label="DG1"
                     onChange={handleDG1Change}
                     max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG2Date, projectCaseEdited.dG3Date, projectCaseEdited.dG4Date])) : undefined}
@@ -273,8 +256,9 @@ const CaseScheduleTab = () => {
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
-                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG2Date : projectCase.dG2Date)}
-                    objectKey={projectCase.dG2Date}
+                    value={projectCaseEdited ? projectCaseEdited.dG2Date : projectCase.dG2Date}
+                    serviceName="case"
+                    serviceKey="dG2Date"
                     label="DG2"
                     onChange={handleDG2Change}
                     max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG3Date, projectCaseEdited.dG4Date])) : undefined}
@@ -283,8 +267,9 @@ const CaseScheduleTab = () => {
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
-                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG3Date : projectCase.dG3Date)}
-                    objectKey={projectCase.dG3Date}
+                    value={projectCaseEdited ? projectCaseEdited.dG3Date : projectCase.dG3Date}
+                    serviceName="case"
+                    serviceKey="dG3Date"
                     label="DG3"
                     onChange={handleDG3Change}
                     max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG4Date])) : undefined}
@@ -293,12 +278,15 @@ const CaseScheduleTab = () => {
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
-                    value={toScheduleValue(projectCaseEdited ? projectCaseEdited.dG4Date : projectCase.dG4Date)}
-                    objectKey={projectCase.dG4Date}
+                    value={projectCaseEdited ? projectCaseEdited.dG4Date : projectCase.dG4Date}
+                    serviceName="case"
+                    serviceKey="dG4Date"
                     label="DG4"
                     onChange={handleDG4Change}
                     max={undefined}
-                    min={projectCaseEdited ? findMinDate(getDatesFromStrings([projectCaseEdited.dG0Date, projectCaseEdited.dG1Date, projectCaseEdited.dG2Date, projectCaseEdited.dG3Date])) : undefined}
+                    min={projectCaseEdited
+                        ? findMinDate(getDatesFromStrings([projectCaseEdited.dG0Date, projectCaseEdited.dG1Date, projectCaseEdited.dG2Date, projectCaseEdited.dG3Date]))
+                        : undefined}
                 />
             </Grid>
         </Grid>

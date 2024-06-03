@@ -42,7 +42,7 @@ const NextValue = styled(Typography)`
 
 const CurrentCaseEditHistory: React.FC = () => {
     const { caseEdits, projectCase } = useCaseContext()
-    const editsBelongingToCurrentCase = projectCase && caseEdits.filter((edit) => edit.objectId === projectCase.id)
+    const editsBelongingToCurrentCase = projectCase && caseEdits.filter((edit) => edit.caseId === projectCase.id)
 
     const {
         editHistoryIsActive,

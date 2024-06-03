@@ -4,11 +4,14 @@ import InputSwitcher from "./Components/InputSwitcher"
 import useDataEdits from "../../Hooks/useDataEdits"
 import { useCaseContext } from "../../Context/CaseContext"
 import { useProjectContext } from "../../Context/ProjectContext"
+import { ServiceKey, ServiceName } from "../../Models/Interfaces"
 
 interface SwitchableDropdownInputProps {
     value: string | number;
     options: { [key: string]: string };
-    objectKey: number;
+    serviceName: ServiceName;
+    serviceKey: ServiceKey;
+    serviceId?: string;
     label: string;
     onSubmit: ChangeEventHandler<HTMLSelectElement>
 }
@@ -16,47 +19,45 @@ interface SwitchableDropdownInputProps {
 const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
     value,
     options,
-    objectKey,
+    serviceName,
+    serviceKey,
+    serviceId,
     label,
     onSubmit,
 }: SwitchableDropdownInputProps) => {
     const { projectCase } = useCaseContext()
     const { project } = useProjectContext()
 
-    const { addEdit } = useDataEdits(project!.id, projectCase!.id)
+    if (!projectCase || !project) { return null }
+
+    const { addEdit } = useDataEdits()
 
     const addToEditsAndSubmit: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if (!projectCase) {
-            console.log("Case not found")
-            return
-        }
-
-        const newValue = e.currentTarget.value
-        const level = "case"
-        const objectId = projectCase?.id
-
         onSubmit(e)
+
         addEdit(
-            newValue,
-            value,
-            objectKey,
-            label,
-            level,
-            objectId,
-            options[newValue],
-            options[value],
+            e.currentTarget.value, // newValue
+            value, // previousValue
+            label, // inputLabel
+            project.id, // projectId
+            serviceName, // serviceName
+            serviceKey, // serviceKey
+            serviceId, // serviceId
+            projectCase.id, // caseId
+            options[e.currentTarget.value], // newDisplayValue
+            options[value], // previousDisplayValue
         )
     }
 
     return (
         <InputSwitcher
-            value={options[objectKey]}
+            value={options[value]}
             label={label}
         >
             <NativeSelect
                 label=""
                 id={label}
-                value={objectKey}
+                value={value}
                 onChange={addToEditsAndSubmit}
             >
                 {Object.entries(options).map(([key, val]) => (

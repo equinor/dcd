@@ -13,12 +13,12 @@ import useDataEdits from "../../../Hooks/useDataEdits"
 
 const CaseDescriptionTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
-    const { editMode } = useAppContext()
     const { project } = useProjectContext()
 
-    if (!projectCase) { return null }
+    if (!projectCase || !project) { return null }
 
-    const { addEdit, updateCase } = useDataEdits(project!.id, projectCase.id)
+    const { editMode } = useAppContext()
+    const { addEdit } = useDataEdits()
 
     const productionStrategyOptions = {
         0: "Depletion",
@@ -39,11 +39,18 @@ const CaseDescriptionTab = () => {
         if (projectCaseEdited) {
             const updatedProjectCase = { ...projectCaseEdited, description: value }
             setProjectCaseEdited(updatedProjectCase)
-            addEdit(value, projectCaseEdited.description, "description", "Description", "case", projectCaseEdited.id)
-            updateCase("description", value)
+            addEdit(
+                value, // newValue
+                projectCaseEdited.description, // previousValue
+                "Description", // inputLabel
+                project!.id, // projectId
+                "case", // serviceName
+                "description", // serviceKey
+            )
         }
     }
 
+    // TODO: the value is manipulated before submition. find out how to handle that with the service implementation
     const handleFacilitiesAvailabilityChange = (value: number): void => {
         const newCase = { ...projectCase }
         const newfacilitiesAvailability = value > 0
@@ -52,7 +59,6 @@ const CaseDescriptionTab = () => {
             newCase.facilitiesAvailability = newfacilitiesAvailability / 100
         } else { newCase.facilitiesAvailability = 0 }
         setProjectCaseEdited(newCase)
-        updateCase("facilitiesAvailability", newfacilitiesAvailability)
     }
 
     const handleProductionStrategyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
@@ -61,7 +67,6 @@ const CaseDescriptionTab = () => {
             const newCase = { ...projectCase }
             newCase.productionStrategyOverview = newProductionStrategy
             setProjectCaseEdited(newCase)
-            updateCase("productionStrategyOverview", newProductionStrategy)
         }
     }
 
@@ -71,7 +76,6 @@ const CaseDescriptionTab = () => {
             const newCase = { ...projectCase }
             newCase.artificialLift = newArtificialLift
             setProjectCaseEdited(newCase)
-            updateCase("artificialLift", newArtificialLift)
         }
     }
 
@@ -110,11 +114,11 @@ const CaseDescriptionTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    objectKey={projectCaseEdited?.producerCount}
+                    serviceName="case"
+                    serviceKey="producerCount"
                     label="Production wells"
                     onSubmit={(value) => {
                         setNonNegativeNumberState(value, "producerCount", projectCaseEdited, setProjectCaseEdited)
-                        updateCase("producerCount", value)
                     }}
                     value={projectCaseEdited ? projectCaseEdited.producerCount : projectCase?.producerCount}
                     integer
@@ -125,11 +129,11 @@ const CaseDescriptionTab = () => {
             <Grid item xs={12} md={4}>
 
                 <SwitchableNumberInput
-                    objectKey={projectCaseEdited?.waterInjectorCount}
+                    serviceName="case"
+                    serviceKey="waterInjectorCount"
                     label="Water injector wells"
                     onSubmit={(value) => {
                         setNonNegativeNumberState(value, "waterInjectorCount", projectCaseEdited, setProjectCaseEdited)
-                        updateCase("waterInjectorCount", value)
                     }}
                     value={projectCaseEdited ? projectCaseEdited.waterInjectorCount : projectCase?.waterInjectorCount}
                     integer
@@ -140,11 +144,11 @@ const CaseDescriptionTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    objectKey={projectCaseEdited?.gasInjectorCount}
+                    serviceName="case"
+                    serviceKey="gasInjectorCount"
                     label="Gas injector wells"
                     onSubmit={(value) => {
                         setNonNegativeNumberState(value, "gasInjectorCount", projectCaseEdited, setProjectCaseEdited)
-                        updateCase("gasInjectorCount", value)
                     }}
                     value={projectCaseEdited ? projectCaseEdited.gasInjectorCount : projectCase?.gasInjectorCount}
                     integer
@@ -154,25 +158,28 @@ const CaseDescriptionTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableDropdownInput
-                    value={projectCase.productionStrategyOverview}
+                    value={projectCaseEdited ? projectCaseEdited.productionStrategyOverview : projectCase.productionStrategyOverview}
+                    serviceName="case"
+                    serviceKey="productionStrategyOverview"
                     options={productionStrategyOptions}
-                    objectKey={projectCaseEdited ? projectCaseEdited.productionStrategyOverview : projectCase.productionStrategyOverview}
                     label="Production strategy overview"
                     onSubmit={handleProductionStrategyChange}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableDropdownInput
-                    value={projectCase.artificialLift}
+                    value={projectCaseEdited ? projectCaseEdited.artificialLift : projectCase.artificialLift}
+                    serviceName="case"
+                    serviceKey="artificialLift"
                     options={artificialLiftOptions}
-                    objectKey={projectCaseEdited ? projectCaseEdited.artificialLift : projectCase.artificialLift}
                     label="Artificial lift"
                     onSubmit={handleArtificialLiftChange}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    objectKey={projectCase.facilitiesAvailability}
+                    serviceName="case"
+                    serviceKey="facilitiesAvailability"
                     label="Facilities availability"
                     onSubmit={handleFacilitiesAvailabilityChange}
                     value={defaultValue}

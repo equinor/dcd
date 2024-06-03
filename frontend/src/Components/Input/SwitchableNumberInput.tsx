@@ -3,12 +3,16 @@ import NumberInputWithValidation from "./Components/NumberInputWithValidation"
 import InputSwitcher from "./Components/InputSwitcher"
 import useDataEdits from "../../Hooks/useDataEdits"
 import { useCaseContext } from "../../Context/CaseContext"
+import { useProjectContext } from "../../Context/ProjectContext"
+import { ServiceKey, ServiceName } from "../../Models/Interfaces"
 
 interface CaseEditInputProps {
     label: string;
-    objectKey?: string | number
     onSubmit?: (value: number) => void;
     value: number | undefined;
+    serviceName: ServiceName;
+    serviceKey: ServiceKey;
+    serviceId?: string;
     integer: boolean;
     disabled?: boolean;
     unit?: string;
@@ -19,9 +23,11 @@ interface CaseEditInputProps {
 
 const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
     label,
-    objectKey,
     onSubmit, // this will be obsolete when we introduce autosave.
     value,
+    serviceKey,
+    serviceName,
+    serviceId,
     integer,
     disabled,
     unit,
@@ -31,31 +37,24 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
 }: CaseEditInputProps) => {
     const { addEdit } = useDataEdits()
     const { projectCase } = useCaseContext()
+    const { project } = useProjectContext()
+
+    if (!projectCase || !project) { return null }
 
     const addToEditsAndSubmit = (insertedValue: number) => {
-        if (!projectCase) {
-            console.log("Case not found")
-            return
+        if (onSubmit) {
+            onSubmit(insertedValue) // this will be obsolete when we introduce autosave.
         }
 
-        if (!onSubmit) {
-            console.log("onSubmit not defined")
-            return
-        }
-
-        if (objectKey === undefined) {
-            console.log("Object or objectKey not defined")
-            return
-        }
-
-        onSubmit(insertedValue)
         addEdit(
-            insertedValue,
-            value,
-            objectKey,
-            label,
-            "case",
-            projectCase.id,
+            insertedValue, // newValue
+            value, // previousValue
+            label, // inputLabel
+            project.id, // projectId
+            serviceName, // serviceName
+            serviceKey, // serviceKey
+            serviceId, // serviceId
+            projectCase.id, // caseId
         )
     }
 

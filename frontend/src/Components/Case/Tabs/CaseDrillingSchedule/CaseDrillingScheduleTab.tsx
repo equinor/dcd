@@ -36,7 +36,9 @@ const CaseDrillingScheduleTab = ({
 }: Props) => {
     const { project } = useProjectContext()
     const { projectCase, activeTabCase } = useCaseContext()
+
     if (!projectCase) { return null }
+
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
@@ -135,6 +137,8 @@ const CaseDrillingScheduleTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    serviceName="case"
+                    serviceKey="producerCount" // dummy just to display swithable number input
                     label="Exploration wells"
                     value={explorationWellCount}
                     integer
@@ -143,6 +147,8 @@ const CaseDrillingScheduleTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    serviceName="case"
+                    serviceKey="producerCount" // dummy just to display swithable number input
                     label="Appraisal wells"
                     value={appraisalWellCount}
                     integer
@@ -151,6 +157,8 @@ const CaseDrillingScheduleTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    serviceName="case"
+                    serviceKey="producerCount" // dummy just to display disabled number input
                     label="Oil producer wells"
                     value={oilProducerCount}
                     integer
@@ -159,6 +167,8 @@ const CaseDrillingScheduleTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    serviceName="case"
+                    serviceKey="producerCount" // dummy just to display disabled number input
                     label="Gas producer wells"
                     value={gasProducerCount}
                     integer
@@ -167,6 +177,8 @@ const CaseDrillingScheduleTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    serviceName="case"
+                    serviceKey="producerCount" // dummy just to display disabled number input
                     label="Water injector wells"
                     value={waterInjectorCount}
                     integer
@@ -175,6 +187,8 @@ const CaseDrillingScheduleTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    serviceName="case"
+                    serviceKey="producerCount" // dummy just to display disabled number input
                     label="Gas injector wells"
                     value={gasInjectorCount}
                     integer

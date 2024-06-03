@@ -49,7 +49,7 @@ const Controls = () => {
     const { setTechnicalModalIsOpen } = useModalContext()
     const { currentContext } = useModuleCurrentContext()
     const { isSaving, editMode, setEditMode } = useAppContext()
-    const { addEdit, updateCase } = useDataEdits(project.id, projectCase.id)
+    const { addEdit } = useDataEdits()
 
     const nameInput = useRef<any>(null)
 
@@ -61,10 +61,16 @@ const Controls = () => {
             const newCase = {
                 ...projectCase,
             }
-            addEdit(name, newCase.name, "name", "name", "case", newCase.id)
+            addEdit(
+                name, // newValue
+                newCase.name, // previousValue
+                "Name", // inputLabel
+                project.id, // projectId
+                "case", // serviceName
+                "name", // serviceKey
+            )
             newCase.name = name
             setProjectCaseEdited(newCase)
-            updateCase("name", name)
         }
     }
 
