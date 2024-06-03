@@ -285,8 +285,6 @@ const useDataEdits = (): {
         const updatedEditIndex = currentEditIndex + 1
         const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
 
-        console.log("Undoing edit", editThatWillBeUndone)
-
         if (currentEditIndex === -1) {
             return
         }
@@ -294,6 +292,17 @@ const useDataEdits = (): {
             updateEditIndex("")
         } else {
             updateEditIndex(updatedEdit.uuid)
+        }
+
+        if (editThatWillBeUndone) {
+            submitToApi(
+                editThatWillBeUndone.projectId,
+                editThatWillBeUndone.caseId!,
+                editThatWillBeUndone.serviceName,
+                editThatWillBeUndone.serviceKey,
+                editThatWillBeUndone.previousValue,
+                editThatWillBeUndone.serviceId,
+            )
         }
     }
 
@@ -305,13 +314,30 @@ const useDataEdits = (): {
             const lastEdit = caseEditsBelongingToCurrentCase[caseEditsBelongingToCurrentCase.length - 1]
             if (lastEdit) {
                 updateEditIndex(lastEdit.uuid)
-                console.log("Redoing edit", lastEdit) // todo: submit to api
+                submitToApi(
+                    lastEdit.projectId,
+                    lastEdit.caseId!,
+                    lastEdit.serviceName,
+                    lastEdit.serviceKey,
+                    lastEdit.newValue,
+                    lastEdit.serviceId,
+                )
             }
         } else {
             // Otherwise, redo the previous edit.
             const updatedEdit = caseEditsBelongingToCurrentCase[currentEditIndex - 1]
             updateEditIndex(updatedEdit.uuid)
-            console.log("Redoing edit", updatedEdit) // todo: submit to api
+
+            if (updatedEdit) {
+                submitToApi(
+                    updatedEdit.projectId,
+                    updatedEdit.caseId!,
+                    updatedEdit.serviceName,
+                    updatedEdit.serviceKey,
+                    updatedEdit.newValue,
+                    updatedEdit.serviceId,
+                )
+            }
         }
     }
 

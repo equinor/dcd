@@ -307,12 +307,11 @@ const CaseFacilitiesTab = ({
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
                     serviceName="surf"
-                    serviceKey="dryWeight"
+                    serviceKey="templateCount"
                     serviceId={surf.id}
                     label="Templates"
                     onSubmit={(value: number) => {
                         setNonNegativeNumberState(value, "templateCount", surf, setSurf)
-                        // updateSurf("templateCount", value)
                     }}
                     value={surf?.templateCount}
                     integer
