@@ -1,5 +1,4 @@
 using api.Context;
-using api.Dtos;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +18,7 @@ public class ImageRepository : IImageRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Image>> GetImagesByCaseId(Guid caseId)
+    public async Task<List<Image>> GetImagesByCaseId(Guid caseId)
     {
         var images = await _context.Images
             .Where(img => img.CaseId == caseId)

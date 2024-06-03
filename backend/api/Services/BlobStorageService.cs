@@ -1,21 +1,27 @@
+using AutoMapper;
 using api.Dtos;
 using api.Models;
-
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using Azure.Storage.Blobs.Specialized;
-using Azure.Storage.Sas;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 public class BlobStorageService : IBlobStorageService
 {
     private readonly BlobServiceClient _blobServiceClient;
     private readonly IImageRepository _imageRepository;
+    private readonly IMapper _mapper;
     private readonly string _containerName;
 
-    public BlobStorageService(BlobServiceClient blobServiceClient, IImageRepository imageRepository, IConfiguration configuration)
+    public BlobStorageService(BlobServiceClient blobServiceClient, IImageRepository imageRepository, IConfiguration configuration, IMapper mapper)
     {
         _blobServiceClient = blobServiceClient;
         _imageRepository = imageRepository;
+        _mapper = mapper;
         _containerName = configuration["azureStorageAccountImageContainerName"]
                          ?? throw new InvalidOperationException("Container name configuration is missing.");
 
@@ -23,24 +29,6 @@ public class BlobStorageService : IBlobStorageService
         {
             throw new InvalidOperationException("Container name configuration is missing or empty.");
         }
-    }
-
-    private string GenerateSasTokenForBlob(BlobClient blobClient, BlobSasPermissions permissions)
-    {
-        var sasBuilder = new BlobSasBuilder
-        {
-            BlobContainerName = blobClient.GetParentBlobContainerClient().Name,
-            BlobName = blobClient.Name,
-            Resource = "b",
-            StartsOn = DateTimeOffset.UtcNow.AddMinutes(-5),
-            ExpiresOn = DateTimeOffset.UtcNow.AddHours(1),
-            Protocol = SasProtocol.Https
-        };
-        sasBuilder.SetPermissions(permissions | BlobSasPermissions.Read);
-
-        var sasToken = blobClient.GenerateSasUri(sasBuilder).Query;
-
-        return sasToken;
     }
 
     public async Task<ImageDto> SaveImage(IFormFile image, Guid caseId)
@@ -60,17 +48,18 @@ public class BlobStorageService : IBlobStorageService
             CreateTime = createTime,
             CaseId = caseId,
         };
-
+        if (imageEntity == null)
+        {
+            throw new InvalidOperationException("Image entity cannot be null.");
+        }
         await _imageRepository.AddImage(imageEntity);
 
-        var imageDto = new ImageDto
+        var imageDto = _mapper.Map<ImageDto>(imageEntity);
+
+        if (imageDto == null)
         {
-            Id = imageEntity.Id,
-            Url = imageEntity.Url,
-            CreateTime = imageEntity.CreateTime,
-            Description = imageEntity.Description,
-            CaseId = imageEntity.CaseId
-        };
+            throw new InvalidOperationException("Image mapping failed.");
+        }
 
         return imageDto;
     }
@@ -78,15 +67,18 @@ public class BlobStorageService : IBlobStorageService
     public async Task<List<ImageDto>> GetImagesByCaseIdAndMapToDto(Guid caseId)
     {
         var images = await _imageRepository.GetImagesByCaseId(caseId);
-        var imageDtos = images.Select(image => new ImageDto
-        {
-            Id = image.Id,
-            Url = image.Url,
-            CreateTime = image.CreateTime,
-            Description = image.Description,
-            CaseId = image.CaseId
-        }).ToList();
 
+        if (images == null)
+        {
+            throw new InvalidOperationException("Images cannot be null.");
+        }
+
+        var imageDtos = _mapper.Map<List<ImageDto>>(images);
+
+        if (imageDtos == null)
+        {
+            throw new InvalidOperationException("Image mapping failed.");
+        }
         return imageDtos;
     }
 }

@@ -9,7 +9,7 @@ public class Image
     public Guid Id { get; set; }
 
     [Required]
-    public string Url { get; set; } = string.Empty!;
+    public string Url { get; set; } = null!;
     public DateTimeOffset CreateTime { get; set; }
 
     public string? Description { get; set; }
