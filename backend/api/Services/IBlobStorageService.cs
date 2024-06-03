@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 using api.Dtos;
 
 public interface IBlobStorageService
