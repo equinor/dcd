@@ -12,13 +12,13 @@ public class ImageRepository : IImageRepository
         _context = context;
     }
 
-    public async Task AddImageAsync(Image image)
+    public async Task AddImage(Image image)
     {
         _context.Images.Add(image);
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Image>> GetImagesByCaseIdAsync(Guid caseId)
+    public async Task<IEnumerable<Image>> GetImagesByCaseId(Guid caseId)
     {
         var images = await _context.Images
             .Where(img => img.CaseId == caseId)

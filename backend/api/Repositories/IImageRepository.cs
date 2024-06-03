@@ -3,6 +3,6 @@ using api.Models;
 
 public interface IImageRepository
 {
-    Task AddImageAsync(Image image);
-    Task<IEnumerable<Image>> GetImagesByCaseIdAsync(Guid caseId);
+    Task AddImage(Image image);
+    Task<IEnumerable<Image>> GetImagesByCaseId(Guid caseId);
 }

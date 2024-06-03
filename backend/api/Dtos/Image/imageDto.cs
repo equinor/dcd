@@ -10,7 +10,7 @@ public class ImageDto
 
     [Required]
     [Url]
-    public required string Url { get; set; }
+    public string Url { get; set; } = null!;
 
     [Required]
     public DateTimeOffset CreateTime { get; set; }

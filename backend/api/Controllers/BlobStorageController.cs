@@ -24,7 +24,7 @@ public class BlobStorageController : ControllerBase
             return BadRequest("No image provided.");
         }
 
-        var imageDto = await _blobStorageService.SaveImageAsync(image, caseId);
+        var imageDto = await _blobStorageService.SaveImage(image, caseId);
         return Ok(imageDto);
     }
 
@@ -33,7 +33,7 @@ public class BlobStorageController : ControllerBase
     {
         try
         {
-            var imageDtos = await _imageRepository.GetImagesByCaseIdAsync(caseId);
+            var imageDtos = await _blobStorageService.GetImagesByCaseIdAndMapToDto(caseId);
             return Ok(imageDtos);
         }
         catch (Exception)

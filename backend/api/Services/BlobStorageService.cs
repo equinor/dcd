@@ -25,7 +25,7 @@ public class BlobStorageService : IBlobStorageService
         }
     }
 
-    public Task<string> GetBlobSasUrlAsync(string blobName)
+    public Task<string> GetBlobSasUrl(string blobName)
     {
         var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
         var blobClient = containerClient.GetBlobClient(blobName);
@@ -65,7 +65,7 @@ public class BlobStorageService : IBlobStorageService
         return sasToken;
     }
 
-    public async Task<string> UploadImageAsync(byte[] imageBytes, string contentType, string blobName)
+    public async Task<string> UploadImage(byte[] imageBytes, string contentType, string blobName)
     {
         var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
         var blobClient = containerClient.GetBlobClient(blobName);
@@ -83,7 +83,7 @@ public class BlobStorageService : IBlobStorageService
         return imageUrl;
     }
 
-    public async Task<IEnumerable<string>> GetImageUrlsAsync(Guid caseId)
+    public async Task<IEnumerable<string>> GetImageUrls(Guid caseId)
     {
         var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
         var caseFolder = $"{caseId}/";
@@ -100,7 +100,7 @@ public class BlobStorageService : IBlobStorageService
         return blobUrls;
     }
 
-    public async Task<ImageDto> SaveImageAsync(IFormFile image, Guid caseId)
+    public async Task<ImageDto> SaveImage(IFormFile image, Guid caseId)
     {
         var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
         var blobClient = containerClient.GetBlobClient($"{caseId}/{image.FileName}");
@@ -118,7 +118,7 @@ public class BlobStorageService : IBlobStorageService
             CaseId = caseId,
         };
 
-        await _imageRepository.AddImageAsync(imageEntity);
+        await _imageRepository.AddImage(imageEntity);
 
         var imageDto = new ImageDto
         {
@@ -131,4 +131,19 @@ public class BlobStorageService : IBlobStorageService
 
         return imageDto;
     }
+
+    public async Task<List<ImageDto>> GetImagesByCaseIdAndMapToDto(Guid caseId)
+{
+    var images = await _imageRepository.GetImagesByCaseId(caseId);
+    var imageDtos = images.Select(image => new ImageDto
+    {
+        Id = image.Id,
+        Url = image.Url,
+        CreateTime = image.CreateTime,
+        Description = image.Description,
+        CaseId = image.CaseId
+    }).ToList();
+
+    return imageDtos;
+}
 }
