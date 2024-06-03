@@ -9,12 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 public class BlobStorageController : ControllerBase
 {
     private readonly IBlobStorageService _blobStorageService;
-    private readonly IImageRepository _imageRepository;
 
-    public BlobStorageController(IBlobStorageService blobStorageService, IImageRepository imageRepository)
+    public BlobStorageController(IBlobStorageService blobStorageService)
     {
         _blobStorageService = blobStorageService;
-        _imageRepository = imageRepository;
     }
 
     [HttpPost]
