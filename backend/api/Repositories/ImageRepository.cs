@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using api.Context;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
+using api.Dtos; // Make sure to include the namespace where ImageDto is located
 
 public class ImageRepository : IImageRepository
 {
@@ -21,11 +22,18 @@ public class ImageRepository : IImageRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<string>> GetImagesByCaseIdAsync(Guid caseId)
+    public async Task<IEnumerable<ImageDto>> GetImagesByCaseIdAsync(Guid caseId)
     {
         var images = await _context.Images
             .Where(img => img.CaseId == caseId)
-            .Select(img => img.Url)
+            .Select(img => new ImageDto
+            {
+                Id = img.Id,
+                Url = img.Url,
+                CreateTime = img.CreateTime,
+                Description = img.Description,
+                CaseId = img.CaseId
+            })
             .ToListAsync();
         return images;
     }

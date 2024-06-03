@@ -14,7 +14,6 @@ const Wrapper = styled(Grid)`
     padding: 2px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(calc(25% - 20px), 1fr));
-    // 2 items per row:     grid-template-columns: repeat(auto-fill, minmax(calc(50% - 10px), 1fr)); 
     justify-content: start;
     gap: 10px;
     overflow: hidden;
@@ -74,8 +73,13 @@ const Gallery = () => {
             if (project?.id && projectCase?.id) {
                 try {
                     const imageService = await getImageService()
-                    const imageUrls = await imageService.getImages(project.id, projectCase.id)
-                    setGallery(imageUrls)
+                    const imageDtos = await imageService.getImages(project.id, projectCase.id)
+                    if (imageDtos) {
+                        const imageUrls = imageDtos.map((dto) => dto.url)
+                        setGallery(imageUrls)
+                    } else {
+                        console.error("Received undefined response from getImages")
+                    }
                 } catch (error) {
                     console.error("Error loading images:", error)
                 }
@@ -83,7 +87,7 @@ const Gallery = () => {
         }
 
         loadImages()
-    }, [project?.id, projectCase?.id])
+    }, [project?.id, projectCase?.id, setGallery])
 
     const handleDelete = (image: string) => {
         setGallery(gallery.filter((item) => item !== image))

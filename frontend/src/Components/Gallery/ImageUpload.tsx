@@ -48,12 +48,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
     const { project } = useProjectContext()
 
     useEffect(() => {
-        // Function to load images from the backend
         const loadImages = async () => {
             if (project?.id && projectCase?.id) {
                 try {
                     const imageService = await getImageService()
-                    const imageUrls = await imageService.getImages(project.id, projectCase.id)
+                    const imageDtos = await imageService.getImages(project.id, projectCase.id)
+                    const imageUrls = imageDtos.map((dto) => dto.url)
                     setGallery(imageUrls)
                 } catch (error) {
                     console.error("Error loading images:", error)
@@ -79,8 +79,13 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
 
         const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(project.id, projectCase.id, file))
         try {
-            const uploadedImageUrls = await Promise.all(uploadPromises)
-            setGallery((prevGallery) => [...prevGallery, ...uploadedImageUrls])
+            const uploadedImageDtos = await Promise.all(uploadPromises)
+            if (Array.isArray(uploadedImageDtos)) {
+                const uploadedImageUrls = uploadedImageDtos.map((dto) => dto.url)
+                setGallery((prevGallery) => [...prevGallery, ...uploadedImageUrls])
+            } else {
+                console.error("Received undefined response from uploadImage")
+            }
         } catch (error) {
             console.error("Error uploading images:", error)
         }

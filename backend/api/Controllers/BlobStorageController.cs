@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using api.Dtos;
 
 [Authorize]
 [ApiController]
@@ -8,32 +11,33 @@ using Microsoft.EntityFrameworkCore;
 public class BlobStorageController : ControllerBase
 {
     private readonly IBlobStorageService _blobStorageService;
+    private readonly IImageRepository _imageRepository;
 
-    public BlobStorageController(IBlobStorageService blobStorageService)
+    public BlobStorageController(IBlobStorageService blobStorageService, IImageRepository imageRepository)
     {
         _blobStorageService = blobStorageService;
+        _imageRepository = imageRepository;
     }
 
     [HttpPost]
-    public async Task<IActionResult> UploadImage(Guid projectId, Guid caseId, IFormFile image)
+    public async Task<ActionResult<ImageDto>> UploadImage(Guid projectId, Guid caseId, IFormFile image)
     {
         if (image == null || image.Length == 0)
         {
             return BadRequest("No image provided.");
         }
 
-        var imageUrl = await _blobStorageService.SaveImageAsync(image, caseId);
-
-        return Ok(new { imageUrl });
+        var imageDto = await _blobStorageService.SaveImageAsync(image, caseId);
+        return Ok(imageDto);
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetImages(Guid projectId, Guid caseId)
+    public async Task<ActionResult<List<ImageDto>>> GetImages(Guid projectId, Guid caseId)
     {
         try
         {
-            var imageUrls = await _blobStorageService.GetImageUrlsAsync(caseId);
-            return Ok(imageUrls);
+            var imageDtos = await _imageRepository.GetImagesByCaseIdAsync(caseId);
+            return Ok(imageDtos);
         }
         catch (Exception)
         {
