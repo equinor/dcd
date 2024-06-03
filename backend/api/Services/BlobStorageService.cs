@@ -64,7 +64,7 @@ public class BlobStorageService : IBlobStorageService
         return imageDto;
     }
 
-    public async Task<List<ImageDto>> GetImagesByCaseIdAndMapToDto(Guid caseId)
+    public async Task<List<ImageDto>> GetCaseImages(Guid caseId)
     {
         var images = await _imageRepository.GetImagesByCaseId(caseId);
 

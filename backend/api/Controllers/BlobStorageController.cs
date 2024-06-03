@@ -34,7 +34,7 @@ public class BlobStorageController : ControllerBase
     {
         try
         {
-            var imageDtos = await _blobStorageService.GetImagesByCaseIdAndMapToDto(caseId);
+            var imageDtos = await _blobStorageService.GetCaseImages(caseId);
             return Ok(imageDtos);
         }
         catch (Exception)
