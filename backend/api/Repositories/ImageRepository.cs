@@ -18,18 +18,10 @@ public class ImageRepository : IImageRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<ImageDto>> GetImagesByCaseIdAsync(Guid caseId)
+    public async Task<IEnumerable<Image>> GetImagesByCaseIdAsync(Guid caseId)
     {
         var images = await _context.Images
             .Where(img => img.CaseId == caseId)
-            .Select(img => new ImageDto
-            {
-                Id = img.Id,
-                Url = img.Url,
-                CreateTime = img.CreateTime,
-                Description = img.Description,
-                CaseId = img.CaseId
-            })
             .ToListAsync();
         return images;
     }
