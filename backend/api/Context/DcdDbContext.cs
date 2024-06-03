@@ -100,8 +100,6 @@ public class DcdDbContext : DbContext
         modelBuilder.Entity<Project>()
             .Property(p => p.Classification)
             .HasDefaultValue(ProjectClassification.Internal);
-
-
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
