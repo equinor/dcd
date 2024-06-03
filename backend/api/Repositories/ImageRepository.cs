@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using api.Context;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
-using api.Dtos; // Make sure to include the namespace where ImageDto is located
+using api.Dtos;
 
 public class ImageRepository : IImageRepository
 {

@@ -10,17 +10,17 @@ import { useCaseContext } from "../../Context/CaseContext"
 import { useProjectContext } from "../../Context/ProjectContext"
 
 const UploadBox = styled(Box)`
-display: flex;
-align-items: center;
-flex-direction: column;
-width: calc(100% - 40px);
-height: 160px;
-border: 1px dashed ${tokens.colors.interactive.primary__resting.rgba};
-border-radius: 5px;
-cursor: pointer;
-padding: 20px;
-transition: 0.3s;
-gap: 10px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: calc(100% - 40px);
+    height: 160px;
+    border: 1px dashed ${tokens.colors.interactive.primary__resting.rgba};
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 20px;
+    transition: 0.3s;
+    gap: 10px;
 
     & svg {
         fill: ${tokens.colors.interactive.primary__resting.rgba};
@@ -38,9 +38,9 @@ gap: 10px;
 `
 
 interface ImageUploadProps {
-    setGallery: React.Dispatch<React.SetStateAction<string[]>>;
-    gallery: string[];
-    setExeededLimit: React.Dispatch<React.SetStateAction<boolean>>;
+    setGallery: React.Dispatch<React.SetStateAction<string[]>>
+    gallery: string[]
+    setExeededLimit: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeededLimit }) => {

@@ -58,7 +58,7 @@ public class BlobStorageService : IBlobStorageService
             ExpiresOn = DateTimeOffset.UtcNow.AddHours(1),
             Protocol = SasProtocol.Https
         };
-        sasBuilder.SetPermissions(permissions | BlobSasPermissions.Read); // Include read permissions
+        sasBuilder.SetPermissions(permissions | BlobSasPermissions.Read);
 
         var sasToken = blobClient.GenerateSasUri(sasBuilder).Query;
 
@@ -86,13 +86,12 @@ public class BlobStorageService : IBlobStorageService
     public async Task<IEnumerable<string>> GetImageUrlsAsync(Guid caseId)
     {
         var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-        var caseFolder = $"{caseId}/"; // Folder path for the case
+        var caseFolder = $"{caseId}/";
         var blobUrls = new List<string>();
 
         await foreach (var blobItem in containerClient.GetBlobsAsync(prefix: caseFolder))
         {
             var blobClient = containerClient.GetBlobClient(blobItem.Name);
-            // Generate a SAS token for the blob if needed, or use the blob URI directly
             var sasToken = GenerateSasTokenForBlob(blobClient, BlobSasPermissions.Read);
             var blobUrl = $"{blobClient.Uri}{sasToken}";
             blobUrls.Add(blobUrl);
@@ -112,19 +111,15 @@ public class BlobStorageService : IBlobStorageService
         var imageUrl = blobClient.Uri.ToString();
         var createTime = DateTimeOffset.UtcNow;
 
-        // Create an Image object to save to the database
         var imageEntity = new Image
         {
             Url = imageUrl,
             CreateTime = createTime,
             CaseId = caseId,
-            // Set other properties as needed, e.g., Description
         };
 
-        // Save the Image object to the database using the repository
         await _imageRepository.AddImageAsync(imageEntity);
 
-        // Create an ImageDto from the Image object
         var imageDto = new ImageDto
         {
             Id = imageEntity.Id,
