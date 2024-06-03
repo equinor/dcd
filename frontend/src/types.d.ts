@@ -613,6 +613,13 @@ declare namespace Components {
             user?: Identity;
             "@odata.type"?: string | null;
         }
+        export interface ImageDto {
+            id: string; // uuid
+            url: string; // uri
+            createTime: string; // date-time
+            description?: string | null;
+            caseId: string; // uuid
+        }
         export interface ImportedElectricityDto {
             id: string; // uuid
             startYear: number; // int32
@@ -2077,6 +2084,37 @@ declare namespace Paths {
             export type RequestBody = Components.Schemas.UpdateSeismicAcquisitionAndProcessingDto;
             namespace Responses {
                 export type $200 = Components.Schemas.SeismicAcquisitionAndProcessingDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdImages {
+        namespace Get {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.ImageDto[];
+            }
+        }
+        namespace Post {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            export interface RequestBody {
+                image?: string; // binary
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.ImageDto;
             }
         }
     }
