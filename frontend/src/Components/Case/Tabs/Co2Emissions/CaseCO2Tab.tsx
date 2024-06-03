@@ -20,8 +20,6 @@ import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import { setNonNegativeNumberState } from "../../../../Utils/common"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
-import { GetTopsideService } from "../../../../Services/TopsideService"
-import useQuery from "../../../../Hooks/useQuery"
 
 interface Props {
     topside: Components.Schemas.TopsideWithProfilesDto,
@@ -214,13 +212,6 @@ const CaseCO2Tab = ({
 
     if (activeTabCase !== 6) { return null }
 
-    const { updateData: updateTopside } = useQuery({
-        queryKey: ["topsideData", project!.id, projectCase.id],
-        mutationFn: async (updatedData: Components.Schemas.APIUpdateTopsideDto) => {
-            const topsideService = await GetTopsideService()
-            return topsideService.updateTopside(project!.id, projectCase.id, topside.id, updatedData)
-        },
-    })
 
     return (
         <Grid container spacing={2}>
