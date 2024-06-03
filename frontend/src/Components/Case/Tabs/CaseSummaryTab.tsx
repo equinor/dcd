@@ -205,11 +205,14 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         offshoreFacilitiesCost, offshoreOpexPlussWellIntervention,
     ])
 
+    // certain profiles doesn't update as they are not set in this useEffect
+    // exploration cost and drilling is wrong when changing case
     useEffect(() => {
         (async () => {
             try {
                 if (projectCase && project && topside && surf && substructure && transport && wellProject && exploration) {
                     if (activeTabCase === 7 && projectCase?.id) {
+                        console.log(totalExplorationCost)
                         setTotalFeasibilityAndConceptStudies(projectCase.totalFeasibilityAndConceptStudies)
                         setTotalFeasibilityAndConceptStudiesOverride(projectCase.totalFeasibilityAndConceptStudiesOverride)
                         setTotalFEEDStudies(projectCase.totalFEEDStudies)
