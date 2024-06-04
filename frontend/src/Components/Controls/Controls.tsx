@@ -7,7 +7,6 @@ import {
     Button,
     Progress,
     Input,
-    Tooltip,
 } from "@equinor/eds-core-react"
 import {
     save,
@@ -15,12 +14,8 @@ import {
     keyboard_tab,
     more_vertical,
     arrow_back,
-    bookmark_filled,
-    bookmark_outlined,
 } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid"
-import { tokens } from "@equinor/eds-tokens"
-import styled from "styled-components"
 import { projectPath } from "../../Utils/common"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { useCaseContext } from "../../Context/CaseContext"
@@ -31,14 +26,9 @@ import { useAppContext } from "../../Context/AppContext"
 import useDataEdits from "../../Hooks/useDataEdits"
 import HistoryButton from "../Buttons/HistoryButton"
 import UndoControls from "./UndoControls"
-import { EMPTY_GUID, PROJECT_CLASSIFICATION } from "../../Utils/constants"
+import { EMPTY_GUID } from "../../Utils/constants"
 import { ChooseReferenceCase, ReferenceCaseIcon } from "../Case/Components/ReferenceCaseIcon"
 import Classification from "./Classification"
-
-const MenuIcon = styled(Icon)`
-    color: ${tokens.colors.text.static_icons__secondary.rgba};
-    margin-right: 0.2rem;
-`
 
 const Controls = () => {
     const navigate = useNavigate()
@@ -71,13 +61,11 @@ const Controls = () => {
             const newProject = {
                 ...project,
             }
-            console.log(`newProject refCaseId: ${newProject.referenceCaseId}`)
             if (newProject.referenceCaseId === referenceCaseId) {
                 newProject.referenceCaseId = EMPTY_GUID
             } else {
                 newProject.referenceCaseId = referenceCaseId ?? ""
             }
-            console.log(`newproject refCaseId: ${newProject.referenceCaseId}`)
             const updateProject = await (await GetProjectService()).updateProject(project.id, newProject)
             setProject(updateProject)
         }
