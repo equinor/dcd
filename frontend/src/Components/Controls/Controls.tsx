@@ -43,8 +43,6 @@ const Controls = () => {
         setSaveProjectCase,
     } = useCaseContext()
 
-    if (!project || !projectCase) { return null }
-
     const navigate = useNavigate()
     const { setTechnicalModalIsOpen } = useModalContext()
     const { currentContext } = useModuleCurrentContext()
@@ -55,6 +53,8 @@ const Controls = () => {
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
+
+    if (!project || !projectCase) { return null }
 
     const handleCaseNameChange = (name: string) => {
         if (projectCase) {
