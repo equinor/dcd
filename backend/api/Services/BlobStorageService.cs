@@ -1,18 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-
 using api.Dtos;
 using api.Models;
-
 using AutoMapper;
-
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 
 public class BlobStorageService : IBlobStorageService
 {

@@ -2107,17 +2107,21 @@ declare namespace Paths {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type ProjectId = string; // uuid
-                export type ProjectName = string;
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export interface QueryParameters {
-                projectName?: Parameters.ProjectName;
-            }
             export interface RequestBody {
-                image?: string; // binary
+                projectName?: string;
+                ContentType?: string;
+                ContentDisposition?: string;
+                Headers?: {
+                    [name: string]: string[];
+                };
+                Length?: number; // int64
+                Name?: string;
+                FileName?: string;
             }
             namespace Responses {
                 export type $200 = Components.Schemas.ImageDto;

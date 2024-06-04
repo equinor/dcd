@@ -16,7 +16,7 @@ public class BlobStorageController : ControllerBase
     }
 
     [HttpPost]
-public async Task<ActionResult<ImageDto>> UploadImage(Guid projectId, [FromForm] string projectName, Guid caseId, [FromForm] IFormFile image)
+    public async Task<ActionResult<ImageDto>> UploadImage(Guid projectId, [FromForm] string projectName, Guid caseId, [FromForm] IFormFile image)
     {
         if (image == null || image.Length == 0)
         {
