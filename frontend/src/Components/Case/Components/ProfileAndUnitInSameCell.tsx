@@ -18,7 +18,7 @@ const UnitWrapper = styled.span`
 const profileAndUnitInSameCell = (params: any, rowData: any) => {
     const rowUnits = rowData.map((data: any) => data.unit)
     const checkAllUnitsAreSame = rowUnits.every((unit: any) => unit === rowUnits[0])
-    const totalUnit = checkAllUnitsAreSame && !params.data?.group ? rowUnits[0] : ""
+    const totalUnit = checkAllUnitsAreSame && params.value !== undefined ? rowUnits[0] : ""
 
     return (
         <CellWrapper>

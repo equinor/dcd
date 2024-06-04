@@ -1,5 +1,5 @@
 import { Tabs } from "@equinor/eds-core-react"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import Grid from "@mui/material/Grid"
 import styled from "styled-components"
@@ -167,6 +167,7 @@ const CaseView = () => {
 
     const handleTotalExplorationCost = () => {
         if (exploration) {
+            console.log(exploration.explorationWellCostProfile)
             setTotalExplorationCost(mergeTimeseriesList([
                 exploration.explorationWellCostProfile,
                 exploration.appraisalWellCostProfile,
@@ -261,6 +262,16 @@ const CaseView = () => {
         setTotalDrillingCost(mergeTimeseriesList(drillingCostSeriesList))
     }
 
+    // needed as totalExplorationCost and drilling won't update properly
+    useEffect(() => {
+        if (exploration && projectCase) {
+            handleTotalExplorationCost()
+        }
+        if (project && wellProject) {
+            handleDrilling()
+        }
+    }, [exploration, wellProject])
+
     useEffect(() => {
         if (project && updateFromServer) {
             const caseResult = project.cases.find((o) => o.id === projectCase?.id)
@@ -282,6 +293,7 @@ const CaseView = () => {
             handleOffshoreFacilitiesCost()
             handleDrilling()
 
+            // so this is correct explorationlink
             const explorationResult = project
                 ?.explorations.find((exp) => exp.id === caseResult?.explorationLink)
             setExploration(explorationResult)
@@ -325,7 +337,7 @@ const CaseView = () => {
 
             setWells(project.wells)
         }
-    }, [project, projectCase, updateFromServer])
+    }, [project, projectCase, updateFromServer, exploration])
 
     const handleCaseSave = async () => {
         const dto: Components.Schemas.CaseWithAssetsWrapperDto = {
