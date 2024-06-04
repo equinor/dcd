@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { v4 as uuidv4 } from "uuid"
 import { useEffect, useState } from "react"
 import { useMutation, useQueryClient } from "react-query"
@@ -100,12 +101,17 @@ const useDataEdits = (): {
         const service = await GetTopsideService()
         const serviceMethod = service.updateTopside(projectId, caseId, topsideId, updatedData)
 
-        mutation.mutate({
-            projectId,
-            caseId,
-            assetId: topsideId,
-            serviceMethod,
-        })
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                assetId: topsideId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
     }
 
     const updateSurf = async (
@@ -119,12 +125,17 @@ const useDataEdits = (): {
         const service = await GetSurfService()
 
         const serviceMethod = service.updateSurf(projectId, caseId, surfId, updatedData)
-        mutation.mutate({
-            projectId,
-            caseId,
-            assetId: surfId,
-            serviceMethod,
-        })
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                assetId: surfId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
     }
 
     const updateSubstructure = async (
@@ -138,12 +149,17 @@ const useDataEdits = (): {
         const service = await GetSubstructureService()
         const serviceMethod = service.updateSubstructure(projectId, caseId, substructureId, updatedData)
 
-        mutation.mutate({
-            projectId,
-            caseId,
-            assetId: substructureId,
-            serviceMethod,
-        })
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                assetId: substructureId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
     }
 
     const updateTransport = async (
@@ -157,12 +173,17 @@ const useDataEdits = (): {
         const service = await GetTransportService()
         const serviceMethod = service.updateTransport(projectId, caseId, transportId, updatedData)
 
-        mutation.mutate({
-            projectId,
-            caseId,
-            assetId: transportId,
-            serviceMethod,
-        })
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                assetId: transportId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
     }
 
     const updateDrainageStrategy = async (
@@ -175,107 +196,80 @@ const useDataEdits = (): {
         const service = await GetDrainageStrategyService()
         const serviceMethod = service.updateDrainageStrategy(projectId, caseId, drainageStrategyId, value)
 
-        mutation.mutate({
-            projectId,
-            caseId,
-            assetId: drainageStrategyId,
-            serviceMethod,
-        })
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                assetId: drainageStrategyId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
     }
 
     const updateCase = async (
         projectId: string,
         caseId: string,
-        serviceKey: ServiceKey,
         value: any,
     ) => {
         const caseService = await GetCaseService()
         const serviceMethod = caseService.updateCase(projectId, caseId, value)
 
-        mutation.mutate({
-            projectId,
-            caseId,
-            serviceMethod,
-        })
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
     }
 
-    const submitToApi = (
+    const submitToApi = async (
         projectId: string,
         caseId: string,
         serviceName: ServiceName,
         serviceKey: ServiceKey,
         value: any,
         serviceId?: string,
-    ) => {
+    ): Promise<boolean> => {
         if (serviceName !== "case" && !serviceId) {
             console.log("ServiceId is required for this service")
-            return
+            return false
         }
 
+        let sucess = false
         switch (serviceName) {
-        case "case":
-            updateCase(projectId, caseId, serviceKey, value)
-            break
-        case "topside":
-            updateTopside(projectId, caseId, serviceId!, serviceKey, value)
-            break
-        case "surf":
-            updateSurf(projectId, caseId, serviceId!, serviceKey, value)
-            break
-        case "substructure":
-            updateSubstructure(projectId, caseId, serviceId!, serviceKey, value)
-            break
-        case "transport":
-            updateTransport(projectId, caseId, serviceId!, serviceKey, value)
-            break
-        case "drainageStrategy":
-            updateDrainageStrategy(projectId, caseId, serviceId!, serviceKey, value)
-            break
-        default:
-            console.log("Service not found")
+            case "case":
+                sucess = await updateCase(projectId, caseId, value)
+                break
+            case "topside":
+                sucess = await updateTopside(projectId, caseId, serviceId!, serviceKey, value)
+                break
+            case "surf":
+                sucess = await updateSurf(projectId, caseId, serviceId!, serviceKey, value)
+                break
+            case "substructure":
+                sucess = await updateSubstructure(projectId, caseId, serviceId!, serviceKey, value)
+                break
+            case "transport":
+                sucess = await updateTransport(projectId, caseId, serviceId!, serviceKey, value)
+                break
+            case "drainageStrategy":
+                sucess = await updateDrainageStrategy(projectId, caseId, serviceId!, serviceKey, value)
+                break
+            default:
+                console.log("Service not found")
         }
+
+        return sucess
     }
 
-    const addEdit = (
-        newValue: string | number | undefined,
-        previousValue: string | number | undefined,
-        inputLabel: string,
-        projectId: string,
-        serviceName: ServiceName,
-        serviceKey: ServiceKey,
-        serviceId?: string,
-        caseId?: string,
-        newDisplayValue?: string | number | undefined,
-        previousDisplayValue?: string | number | undefined,
-    ) => {
-        console.log("newValue: ", newValue)
-        console.log("previousValue: ", previousValue)
-        console.log("inputLabel: ", inputLabel)
-        console.log("projectId: ", projectId)
-        console.log("serviceName: ", serviceName)
-        console.log("serviceKey: ", serviceKey)
-        console.log("serviceId: ", serviceId)
-        console.log("caseId: ", caseId)
-        console.log("newDisplayValue: ", newDisplayValue)
-        console.log("previousDisplayValue: ", previousDisplayValue)
-
-        if (newValue === previousValue) { return }
-
-        const editInstanceObject: EditInstance = {
-            uuid: uuidv4(),
-            timeStamp: new Date().getTime(),
-            newValue,
-            previousValue,
-            inputLabel,
-            projectId,
-            serviceName,
-            serviceKey,
-            serviceId,
-            caseId,
-            newDisplayValue,
-            previousDisplayValue,
-        }
-
+    const addToHistoryTracker = async (editInstanceObject: EditInstance, caseId: string) => {
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, projectCase))
         const caseEditsNotBelongingToCurrentCase = caseEdits.filter((edit) => edit.caseId !== caseId)
 
@@ -292,7 +286,46 @@ const useDataEdits = (): {
         edits = [editInstanceObject, ...edits, ...caseEditsNotBelongingToCurrentCase]
         setCaseEdits(edits)
         updateEditIndex(editInstanceObject.uuid)
-        submitToApi(projectId, caseId!, serviceName, serviceKey, newValue, serviceId)
+        // submitToApi(projectId, caseId!, serviceName, serviceKey, newValue, serviceId)
+    }
+
+    const addEdit = async (
+        newValue: string | number | undefined,
+        previousValue: string | number | undefined,
+        inputLabel: string,
+        projectId: string,
+        serviceName: ServiceName,
+        serviceKey: ServiceKey,
+        serviceId?: string,
+        caseId?: string,
+        newDisplayValue?: string | number | undefined,
+        previousDisplayValue?: string | number | undefined,
+    ) => {
+        if (serviceName !== "case" && !serviceId) {
+            console.log("ServiceId is required for this service")
+            return
+        }
+
+        const editInstanceObject: EditInstance = {
+            uuid: uuidv4(),
+            timeStamp: new Date().getTime(),
+            newValue,
+            previousValue,
+            inputLabel,
+            projectId,
+            serviceName,
+            serviceKey,
+            serviceId,
+            caseId,
+            newDisplayValue,
+            previousDisplayValue,
+        }
+
+        const success = await submitToApi(projectId, caseId!, serviceName, serviceKey, newValue, serviceId)
+
+        if (success && caseId) {
+            addToHistoryTracker(editInstanceObject, caseId)
+        }
     }
 
     const undoEdit = () => {
