@@ -53,7 +53,6 @@ const CaseProductionProfilesTab = ({
     const {
         projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase,
     } = useCaseContext()
-    if (!projectCase) { return null }
 
     const [gas, setGas] = useState<Components.Schemas.ProductionProfileGasDto>()
     const [oil, setOil] = useState<Components.Schemas.ProductionProfileOilDto>()
@@ -393,7 +392,7 @@ const CaseProductionProfilesTab = ({
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <InputSwitcher
-                    value={productionStrategyOptions[projectCase?.productionStrategyOverview]}
+                    value={productionStrategyOptions[projectCase!.productionStrategyOverview]}
                     label="Production strategy overview"
                 >
                     <NativeSelect
@@ -411,7 +410,7 @@ const CaseProductionProfilesTab = ({
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <InputSwitcher
-                    value={artificialLiftOptions[projectCase?.artificialLift]}
+                    value={artificialLiftOptions[projectCase!.artificialLift]}
                     label="Artificial lift"
                 >
                     <NativeSelect
