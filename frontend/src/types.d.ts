@@ -619,6 +619,8 @@ declare namespace Components {
             createTime: string; // date-time
             description?: string | null;
             caseId: string; // uuid
+            projectName: string;
+            projectId: string; // uuid
         }
         export interface ImportedElectricityDto {
             id: string; // uuid
@@ -2105,10 +2107,14 @@ declare namespace Paths {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type ProjectId = string; // uuid
+                export type ProjectName = string;
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
+            }
+            export interface QueryParameters {
+                projectName?: Parameters.ProjectName;
             }
             export interface RequestBody {
                 image?: string; // binary

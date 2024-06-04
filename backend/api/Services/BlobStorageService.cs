@@ -34,11 +34,19 @@ public class BlobStorageService : IBlobStorageService
             throw new InvalidOperationException("Container name configuration is missing or empty.");
         }
     }
-
-    public async Task<ImageDto> SaveImage(IFormFile image, Guid caseId)
+    private string SanitizeBlobName(string name)
     {
+        return name.Replace(" ", "-").Replace("/", "-").Replace("\\", "-");
+    }
+    public async Task<ImageDto> SaveImage(Guid projectId, string projectName, IFormFile image, Guid caseId)
+    {
+        var sanitizedProjectName = SanitizeBlobName(projectName);
         var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-        var blobClient = containerClient.GetBlobClient($"{caseId}/{image.FileName}");
+
+        var imageId = Guid.NewGuid();
+        var blobName = $"{sanitizedProjectName}/{caseId}/{imageId}";
+        var blobClient = containerClient.GetBlobClient(blobName);
+
 
         await using var stream = image.OpenReadStream();
         await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = image.ContentType });
@@ -48,9 +56,13 @@ public class BlobStorageService : IBlobStorageService
 
         var imageEntity = new Image
         {
+            Id = imageId,
             Url = imageUrl,
             CreateTime = createTime,
             CaseId = caseId,
+            ProjectId = projectId,
+            ProjectName = sanitizedProjectName
+
         };
 
         await _imageRepository.AddImage(imageEntity);

@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,4 +17,10 @@ public class Image
 
     [ForeignKey("Case")]
     public Guid CaseId { get; set; }
+
+    [Required]
+    public string ProjectName { get; set; } = null!;
+    
+    [Required]
+    public Guid ProjectId { get; set; }
 }

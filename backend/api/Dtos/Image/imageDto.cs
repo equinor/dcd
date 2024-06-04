@@ -19,4 +19,10 @@ public class ImageDto
 
     [Required]
     public Guid CaseId { get; set; }
+
+    [Required]
+    public string ProjectName { get; set; } = null!;
+    
+    [Required]
+    public Guid ProjectId { get; set; }
 }
