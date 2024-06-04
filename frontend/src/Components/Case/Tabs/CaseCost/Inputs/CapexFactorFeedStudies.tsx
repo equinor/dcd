@@ -9,8 +9,6 @@ const CapexFactorFeedStudies: React.FC = () => {
         setProjectCaseEdited,
     } = useCaseContext()
 
-    if (!projectCase) { return null }
-
     const handleCaseFEEDChange = (value: number): void => {
         const newCase = { ...projectCaseEdited }
         const newCapexFactorFEEDStudies = value > 0
