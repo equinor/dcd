@@ -39,7 +39,6 @@ const CaseCO2Tab = ({
     const {
         projectCase, activeTabCase,
     } = useCaseContext()
-    if (!projectCase) { return null }
 
     const [co2Intensity, setCo2Intensity] = useState<Components.Schemas.Co2IntensityDto>()
     const [co2IntensityTotal, setCo2IntensityTotal] = useState<number>(0)
@@ -99,7 +98,7 @@ const CaseCO2Tab = ({
     useEffect(() => {
         (async () => {
             try {
-                if (project && activeTabCase === 6 && projectCase.id) {
+                if (projectCase && project && activeTabCase === 6 && projectCase.id) {
                     const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(project.id, projectCase.id)
                     const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(project.id, projectCase.id)
                     const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(project.id, projectCase.id)
@@ -167,14 +166,14 @@ const CaseCO2Tab = ({
                         useOverride ? co2EmissionsOverride : co2Emissions,
                         i,
                         startYear,
-                        projectCase.dG4Date ? new Date(projectCase.dG4Date).getFullYear() : 2030,
+                        projectCase!.dG4Date ? new Date(projectCase!.dG4Date).getFullYear() : 2030,
                     ),
                 co2Intensity:
                     setValueToCorrespondingYear(
                         co2Intensity,
                         i,
                         startYear,
-                        projectCase.dG4Date ? new Date(projectCase.dG4Date).getFullYear() : 2030,
+                        projectCase!.dG4Date ? new Date(projectCase!.dG4Date).getFullYear() : 2030,
                     ),
             })
         }
@@ -210,7 +209,7 @@ const CaseCO2Tab = ({
         }
     }, [co2Emissions])
 
-    if (activeTabCase !== 6) { return null }
+    if (activeTabCase !== 6 || !projectCase) { return null }
 
     return (
         <Grid container spacing={2}>
@@ -219,9 +218,13 @@ const CaseCO2Tab = ({
             </Grid>
             <Grid item xs={12}>
                 <SwitchableNumberInput
-                    objectKey={topside?.fuelConsumption}
+                    resourceName="topside"
+                    resourcePropertyKey="fuelConsumption"
+                    resourceId={topside?.id}
                     label="Fuel consumption"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "fuelConsumption", topside, setTopside)}
+                    onSubmit={(value: number) => {
+                        setNonNegativeNumberState(value, "fuelConsumption", topside, setTopside)
+                    }}
                     value={topside?.fuelConsumption}
                     integer={false}
                     unit="million Sm³ gas/sd"
