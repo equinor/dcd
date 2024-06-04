@@ -4,7 +4,6 @@ import CapexFactorFeedStudies from "./Inputs/CapexFactorFeedStudies"
 import Maturity from "./Inputs/Maturity"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
 import { useProjectContext } from "../../../../Context/ProjectContext"
-import { useCaseContext } from "../../../../Context/CaseContext"
 
 interface HeaderProps {
     startYear: number;
@@ -22,9 +21,6 @@ const Header: React.FC<HeaderProps> = ({
     setTableYears,
 }) => {
     const { project } = useProjectContext()
-    const { projectCase } = useCaseContext()
-
-    if (!projectCase) { return null }
 
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])

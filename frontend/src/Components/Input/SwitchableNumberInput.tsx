@@ -39,12 +39,11 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
     const { projectCase } = useCaseContext()
     const { project } = useProjectContext()
 
-    if (!projectCase || !project) { return null }
-
     const addToEditsAndSubmit = (insertedValue: number) => {
         if (onSubmit) {
             onSubmit(insertedValue) // this will be obsolete when we introduce autosave.
         }
+        if (!projectCase || !project) { return }
 
         addEdit({
             newValue: insertedValue,

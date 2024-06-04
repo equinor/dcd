@@ -49,7 +49,6 @@ const CurrentCaseEditHistory: React.FC = () => {
         setEditHistoryIsActive,
         sidebarOpen,
     } = useAppContext()
-    if (!projectCase) { return null }
     return (
         <Container $sidebarOpen={sidebarOpen}>
             {!sidebarOpen ? <HistoryButton /> : (

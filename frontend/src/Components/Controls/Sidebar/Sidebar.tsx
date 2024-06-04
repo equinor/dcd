@@ -1,7 +1,6 @@
 import styled from "styled-components"
 import { SideBar, Button, Divider } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import { useProjectContext } from "../../../Context/ProjectContext"
 import { useAppContext } from "../../../Context/AppContext"
 import ProjectDetails from "./Components/ProjectDetails"
 import CasesDetails from "./Components/CasesDetails"
@@ -83,10 +82,7 @@ export const TimelineElement = styled(Button)`
 `
 
 const Sidebar = () => {
-    const { project } = useProjectContext()
     const { sidebarOpen, setSidebarOpen } = useAppContext()
-
-    if (!project) { return null }
 
     return (
         <StyledSidebar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>

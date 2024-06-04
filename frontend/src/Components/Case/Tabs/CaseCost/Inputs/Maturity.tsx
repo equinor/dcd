@@ -15,8 +15,6 @@ const Maturity: React.FC = () => {
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
 
-    if (!projectCase || !surf || !project) { return null }
-
     const maturityOptions: { [key: string]: string } = {
         0: "A",
         1: "B",
@@ -38,6 +36,9 @@ const Maturity: React.FC = () => {
             const newSurf = { ...surf }
             newSurf.maturity = newMaturity
             updatedAndSetSurf(newSurf as Components.Schemas.SurfWithProfilesDto)
+
+            if (!projectCase || !surf || !project) { return }
+
             addEdit({
                 newValue: newMaturity,
                 previousValue: surf.maturity,

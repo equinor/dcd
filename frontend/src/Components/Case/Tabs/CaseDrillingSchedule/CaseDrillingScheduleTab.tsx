@@ -37,8 +37,6 @@ const CaseDrillingScheduleTab = ({
     const { project } = useProjectContext()
     const { projectCase, activeTabCase } = useCaseContext()
 
-    if (!projectCase) { return null }
-
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
@@ -103,12 +101,12 @@ const CaseDrillingScheduleTab = ({
     }
 
     useEffect(() => {
-        if (activeTabCase === 3 && projectCase.dG4Date !== undefined) {
+        if (activeTabCase === 3 && projectCase!.dG4Date !== undefined) {
             const explorationDrillingSchedule = explorationWells?.map((ew) => ew.drillingSchedule) ?? []
             const wellProjectDrillingSchedule = wellProjectWells?.map((ew) => ew.drillingSchedule) ?? []
             SetTableYearsFromProfiles(
                 [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
-                new Date(projectCase.dG4Date).getFullYear(),
+                new Date(projectCase!.dG4Date).getFullYear(),
                 setStartYear,
                 setEndYear,
                 setTableYears,
@@ -128,7 +126,7 @@ const CaseDrillingScheduleTab = ({
         }
     }, [wells, explorationWells, wellProjectWells, activeTabCase])
 
-    if (activeTabCase !== 3) { return null }
+    if (activeTabCase !== 3 || !projectCase) { return null }
 
     return (
         <Grid container spacing={2}>
