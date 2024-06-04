@@ -72,7 +72,7 @@ const Controls = () => {
     }
 
     const handleCaseNameChange = (name: string) => {
-        if (projectCase) {
+        if (projectCase && project) {
             const newCase = {
                 ...projectCase,
             }

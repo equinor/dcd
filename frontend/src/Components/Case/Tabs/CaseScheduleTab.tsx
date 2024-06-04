@@ -10,17 +10,16 @@ import {
 import { useCaseContext } from "../../../Context/CaseContext"
 import { useAppContext } from "../../../Context/AppContext"
 import SwitchableDateInput from "../../Input/SwitchableDateInput"
+import { ResourcePropertyKey } from "../../../Models/Interfaces"
 
 const CaseScheduleTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
 
-
     if (!projectCase) { return null }
-
-    const handleDG0Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
 
     const { editMode } = useAppContext()
     if (!projectCase) { return null }
+
     const caseDateKeys = [
         {
             label: "DGA",
@@ -183,15 +182,15 @@ const CaseScheduleTab = () => {
                     .filter((projectCaseKey) => caseDateKey.key === projectCaseKey))
                 .map((caseDate) => (
                     (caseDate.visible
-                    || editMode
-                    || toScheduleValue(projectCase[caseDate.key as keyof typeof projectCase])
+                        || editMode
+                        || toScheduleValue(projectCase[caseDate.key as keyof typeof projectCase])
                     )
                         ? (
                             <Grid item xs={12} md={6} lg={6}>
                                 <SwitchableDateInput
                                     value={getDateValue(caseDate.key)}
                                     resourceName="case"
-                                    resourcePropertyKey={caseDate.key}
+                                    resourcePropertyKey={caseDate.key as ResourcePropertyKey}
                                     label={caseDate.label}
                                     onChange={(e) => (handleDateChange(caseDate.key, e.target.value))}
                                     min={
