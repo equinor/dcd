@@ -22,7 +22,7 @@ public class ImageDto
 
     [Required]
     public string ProjectName { get; set; } = null!;
-    
+
     [Required]
     public Guid ProjectId { get; set; }
 }
