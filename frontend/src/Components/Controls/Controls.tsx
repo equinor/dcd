@@ -31,12 +31,6 @@ import { ChooseReferenceCase, ReferenceCaseIcon } from "../Case/Components/Refer
 import Classification from "./Classification"
 
 const Controls = () => {
-    const navigate = useNavigate()
-
-    const { addEdit } = useDataEdits()
-    const { setTechnicalModalIsOpen } = useModalContext()
-    const { currentContext } = useModuleCurrentContext()
-    const { isSaving, editMode, setEditMode } = useAppContext()
     const {
         project,
         setProject,
@@ -50,6 +44,12 @@ const Controls = () => {
         setProjectCaseEdited,
         setSaveProjectCase,
     } = useCaseContext()
+
+    const navigate = useNavigate()
+    const { setTechnicalModalIsOpen } = useModalContext()
+    const { currentContext } = useModuleCurrentContext()
+    const { isSaving, editMode, setEditMode } = useAppContext()
+    const { addEdit } = useDataEdits()
 
     const nameInput = useRef<any>(null)
 
@@ -76,7 +76,14 @@ const Controls = () => {
             const newCase = {
                 ...projectCase,
             }
-            addEdit(name, newCase.name, "name", "name", "case", newCase.id)
+            addEdit({
+                newValue: name,
+                previousValue: newCase.name,
+                inputLabel: "Name",
+                projectId: project.id,
+                resourceName: "case",
+                resourcePropertyKey: "name",
+            })
             newCase.name = name
             setProjectCaseEdited(newCase)
         }

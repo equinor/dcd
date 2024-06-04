@@ -2,13 +2,18 @@ import React, { ChangeEventHandler } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import InputSwitcher from "../../../../Input/Components/InputSwitcher"
 import { useCaseContext } from "../../../../../Context/CaseContext"
+import { useProjectContext } from "../../../../../Context/ProjectContext"
+import useDataEdits from "../../../../../Hooks/useDataEdits"
 
 const Maturity: React.FC = () => {
     const {
         surf,
         setSurf,
         surfCost,
+        projectCase,
     } = useCaseContext()
+    const { project } = useProjectContext()
+    const { addEdit } = useDataEdits()
 
     const maturityOptions: { [key: string]: string } = {
         0: "A",
@@ -31,6 +36,19 @@ const Maturity: React.FC = () => {
             const newSurf = { ...surf }
             newSurf.maturity = newMaturity
             updatedAndSetSurf(newSurf as Components.Schemas.SurfWithProfilesDto)
+
+            if (!projectCase || !surf || !project) { return }
+
+            addEdit({
+                newValue: newMaturity,
+                previousValue: surf.maturity,
+                inputLabel: "Maturity",
+                projectId: project.id,
+                resourceName: "surf",
+                resourcePropertyKey: "maturity",
+                resourceId: surf.id,
+                caseId: projectCase.id,
+            })
         }
     }
 

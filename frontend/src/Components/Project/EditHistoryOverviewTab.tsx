@@ -39,7 +39,7 @@ const EditHistoryOverviewTab = () => {
             {project.cases
                 .sort((a, b) => new Date(a.createTime).getTime() - new Date(b.createTime).getTime())
                 .map((projectCase, index) => {
-                    const filteredEdits = caseEdits.filter((edit) => edit.objectId === projectCase.id)
+                    const filteredEdits = caseEdits.filter((edit) => edit.caseId === projectCase.id)
                     return filteredEdits.length > 0 ? (
                         <CaseEdits key={projectCase.id}>
                             <Typography>{projectCase.name}</Typography>

@@ -1,3 +1,4 @@
+import { ChangeEventHandler } from "react"
 import Grid from "@mui/material/Grid"
 import {
     dateFromString,
@@ -12,6 +13,12 @@ import SwitchableDateInput from "../../Input/SwitchableDateInput"
 
 const CaseScheduleTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
+
+
+    if (!projectCase) { return null }
+
+    const handleDG0Change: ChangeEventHandler<HTMLInputElement> = async (e) => {
+
     const { editMode } = useAppContext()
     if (!projectCase) { return null }
     const caseDateKeys = [
@@ -183,7 +190,8 @@ const CaseScheduleTab = () => {
                             <Grid item xs={12} md={6} lg={6}>
                                 <SwitchableDateInput
                                     value={getDateValue(caseDate.key)}
-                                    objectKey={caseDate.key}
+                                    resourceName="case"
+                                    resourcePropertyKey={caseDate.key}
                                     label={caseDate.label}
                                     onChange={(e) => (handleDateChange(caseDate.key, e.target.value))}
                                     min={

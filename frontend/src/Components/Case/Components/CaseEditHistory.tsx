@@ -59,7 +59,7 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
                 caseEdits.map((edit) => {
                     const isActive = edit.uuid === getCurrentEditId(editIndexes, projectCase)
                     return (
-                        edit.level === "case" && edit.objectId === caseId ? (
+                        edit.caseId === caseId ? (
                             <EditInstance
                                 key={edit.uuid}
                                 $isActive={isActive}

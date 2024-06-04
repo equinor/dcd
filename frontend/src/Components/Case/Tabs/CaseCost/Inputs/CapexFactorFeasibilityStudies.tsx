@@ -9,6 +9,7 @@ const CapexFactorFeasibilityStudies: React.FC = () => {
         setProjectCaseEdited,
     } = useCaseContext()
 
+    // todo: the value is manipulated before submition. find out how to handle that with the service implementation
     const handleCaseFeasibilityChange = (value: number): void => {
         const newCase = { ...projectCaseEdited }
         const newCapexFactorFeasibilityStudies = value > 0
@@ -20,7 +21,8 @@ const CapexFactorFeasibilityStudies: React.FC = () => {
     }
     return (
         <SwitchableNumberInput
-            objectKey={projectCase?.capexFactorFeasibilityStudies}
+            resourceName="case"
+            resourcePropertyKey="capexFactorFeasibilityStudies"
             label="CAPEX factor feasibility studies"
             onSubmit={handleCaseFeasibilityChange}
             value={projectCase?.capexFactorFeasibilityStudies !== undefined ? (projectCase.capexFactorFeasibilityStudies ?? 0) * 100 : undefined}

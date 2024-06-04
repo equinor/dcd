@@ -361,6 +361,22 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         }
     }, [editMode, projectCaseEdited])
 
+    useEffect(() => {
+        const storedCaseEdits = localStorage.getItem("caseEdits")
+        const caseEditsArray = storedCaseEdits ? JSON.parse(storedCaseEdits) : []
+
+        if (caseEditsArray.length === 0) {
+            // reset editIndexes if there are no recent edits
+            localStorage.setItem("editIndexes", JSON.stringify([]))
+            setEditIndexes([])
+        } else {
+            // otherwise, load the editIndexes from localStorage
+            const storedEditIndexes = localStorage.getItem("editIndexes")
+            const editIndexesArray = storedEditIndexes ? JSON.parse(storedEditIndexes) : []
+            setEditIndexes(editIndexesArray)
+        }
+    }, [])
+
     return (
         <CaseContext.Provider value={value}>
             {children}
