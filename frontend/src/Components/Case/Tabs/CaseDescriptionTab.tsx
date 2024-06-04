@@ -15,10 +15,10 @@ const CaseDescriptionTab = () => {
     const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
     const { project } = useProjectContext()
 
-    if (!projectCase || !project) { return null }
-
     const { editMode } = useAppContext()
     const { addEdit } = useDataEdits()
+
+    if (!projectCase || !project) { return null }
 
     const productionStrategyOptions = {
         0: "Depletion",
