@@ -27,6 +27,7 @@ public class CaseProfile : Profile
         CreateMap<HistoricCostCostProfile, HistoricCostCostProfileDto>();
         CreateMap<OnshoreRelatedOPEXCostProfile, OnshoreRelatedOPEXCostProfileDto>();
         CreateMap<AdditionalOPEXCostProfile, AdditionalOPEXCostProfileDto>();
+        CreateMap<Image, ImageDto>();
 
         CreateMap<APIUpdateCaseDto, Case>();
         CreateMap<PROSPUpdateCaseDto, Case>();

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Box, Grid } from "@mui/material"
 import styled from "styled-components"
 import { Icon, Button, Typography } from "@equinor/eds-core-react"
@@ -6,12 +6,14 @@ import { delete_to_trash, expand_screen } from "@equinor/eds-icons"
 import ImageUpload from "./ImageUpload"
 import ImageModal from "./ImageModal"
 import { useAppContext } from "../../Context/AppContext"
+import { useCaseContext } from "../../Context/CaseContext"
+import { useProjectContext } from "../../Context/ProjectContext"
+import { getImageService } from "../../Services/ImageService"
 
 const Wrapper = styled(Grid)`
     padding: 2px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(calc(25% - 20px), 1fr));
-    // 2 items per row:     grid-template-columns: repeat(auto-fill, minmax(calc(50% - 10px), 1fr)); 
     justify-content: start;
     gap: 10px;
     overflow: hidden;
@@ -63,6 +65,29 @@ const Gallery = () => {
     const [modalOpen, setModalOpen] = useState(false)
     const [expandedImage, setExpandedImage] = useState("")
     const [exeededLimit, setExeededLimit] = useState(false)
+    const { projectCase } = useCaseContext()
+    const { project } = useProjectContext()
+
+    useEffect(() => {
+        const loadImages = async () => {
+            if (project?.id && projectCase?.id) {
+                try {
+                    const imageService = await getImageService()
+                    const imageDtos = await imageService.getImages(project.id, projectCase.id)
+                    if (imageDtos) {
+                        const imageUrls = imageDtos.map((dto) => dto.url)
+                        setGallery(imageUrls)
+                    } else {
+                        console.error("Received undefined response from getImages")
+                    }
+                } catch (error) {
+                    console.error("Error loading images:", error)
+                }
+            }
+        }
+
+        loadImages()
+    }, [project?.id, projectCase?.id, setGallery])
 
     const handleDelete = (image: string) => {
         setGallery(gallery.filter((item) => item !== image))
