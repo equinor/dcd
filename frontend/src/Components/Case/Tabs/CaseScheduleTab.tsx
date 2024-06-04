@@ -1,5 +1,5 @@
-import { ChangeEventHandler } from "react"
 import Grid from "@mui/material/Grid"
+import { v4 as uuidv4 } from "uuid"
 import {
     dateFromString,
     defaultDate,
@@ -186,7 +186,7 @@ const CaseScheduleTab = () => {
                         || toScheduleValue(projectCase[caseDate.key as keyof typeof projectCase])
                     )
                         ? (
-                            <Grid item xs={12} md={6} lg={6}>
+                            <Grid item xs={12} md={6} lg={6} key={uuidv4()}>
                                 <SwitchableDateInput
                                     value={getDateValue(caseDate.key)}
                                     resourceName="case"
