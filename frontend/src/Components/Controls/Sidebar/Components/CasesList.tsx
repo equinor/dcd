@@ -8,6 +8,8 @@ import { productionStrategyOverviewToString, casePath } from "../../../../Utils/
 import { TimelineElement } from "../Sidebar"
 import { useAppContext } from "../../../../Context/AppContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
+import { ReferenceCaseIcon, SideBarRefCaseWrapper } from "../../../Case/Components/ReferenceCaseIcon"
+import { EMPTY_GUID } from "../../../../Utils/constants"
 
 const CasesList: React.FC = () => {
     const { project } = useProjectContext()
@@ -43,9 +45,24 @@ const CasesList: React.FC = () => {
                         placement="right"
                     >
                         <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.id)}>
-                            {!sidebarOpen && `#${index + 1}`}
-                            {(sidebarOpen && projectCase.name) && projectCase.name}
-                            {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
+                            {project?.referenceCaseId !== EMPTY_GUID
+                                ? (
+                                    <SideBarRefCaseWrapper>
+                                        {project?.referenceCaseId === projectCase?.id && (
+                                            <ReferenceCaseIcon iconPlacement="sideBar" />
+                                        )}
+                                        {!sidebarOpen && `#${index + 1}`}
+                                        {(sidebarOpen && projectCase.name) && projectCase.name}
+                                        {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
+                                    </SideBarRefCaseWrapper>
+                                )
+                                : (
+                                    <>
+                                        {!sidebarOpen && `#${index + 1}`}
+                                        {(sidebarOpen && projectCase.name) && projectCase.name}
+                                        {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
+                                    </>
+                                )}
                         </TimelineElement>
                     </Tooltip>
                 </Grid>
