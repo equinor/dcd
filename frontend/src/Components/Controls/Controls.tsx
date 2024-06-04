@@ -25,7 +25,7 @@ import CaseDropMenu from "../Case/Components/CaseDropMenu"
 import { GetProjectService } from "../../Services/ProjectService"
 import { useAppContext } from "../../Context/AppContext"
 import useDataEdits from "../../Hooks/useDataEdits"
-// import HistoryButton from "../Buttons/HistoryButton"
+import HistoryButton from "../Buttons/HistoryButton"
 import UndoControls from "./UndoControls"
 import Classification from "./Classification"
 

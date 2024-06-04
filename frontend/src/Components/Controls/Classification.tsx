@@ -50,17 +50,19 @@ const Classification = () => {
     } = useCaseContext()
 
     return (
-        project && !projectCase && (
-            <SmallTooltip placement="bottom-start" title={PROJECT_CLASSIFICATION[project?.classification].description}>
-                <StyledChip
-                    variant={PROJECT_CLASSIFICATION[project?.classification].color}
-                    className={`ProjectClassification ${PROJECT_CLASSIFICATION[project?.classification].color}`}
-                >
-                    <Icon data={PROJECT_CLASSIFICATION[project?.classification].icon} />
-                    {PROJECT_CLASSIFICATION[project?.classification].label}
-                </StyledChip>
-            </SmallTooltip>
-        )
+        project && !projectCase
+            ? (
+                <SmallTooltip placement="bottom-start" title={PROJECT_CLASSIFICATION[project?.classification].description}>
+                    <StyledChip
+                        variant={PROJECT_CLASSIFICATION[project?.classification].color}
+                        className={`ProjectClassification ${PROJECT_CLASSIFICATION[project?.classification].color}`}
+                    >
+                        <Icon data={PROJECT_CLASSIFICATION[project?.classification].icon} />
+                        {PROJECT_CLASSIFICATION[project?.classification].label}
+                    </StyledChip>
+                </SmallTooltip>
+            )
+            : null
     )
 }
 

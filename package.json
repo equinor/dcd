@@ -1,6 +1,6 @@
 {
   "lint-staged": {
-      "*.{j,t}s?(x)": "npx eslint --fix"
+    "*.{j,t}s?(x)": "npx eslint --fix"
   },
   "devDependencies": {
     "husky": "^7.0.4",
