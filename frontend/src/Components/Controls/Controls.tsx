@@ -27,6 +27,8 @@ import { useAppContext } from "../../Context/AppContext"
 import useDataEdits from "../../Hooks/useDataEdits"
 import HistoryButton from "../Buttons/HistoryButton"
 import UndoControls from "./UndoControls"
+import { EMPTY_GUID } from "../../Utils/constants"
+import { ChooseReferenceCase, ReferenceCaseIcon } from "../Case/Components/ReferenceCaseIcon"
 import Classification from "./Classification"
 
 const Controls = () => {
@@ -54,6 +56,21 @@ const Controls = () => {
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
+
+    const handleReferenceCaseChange = async (referenceCaseId: string) => {
+        if (project) {
+            const newProject = {
+                ...project,
+            }
+            if (newProject.referenceCaseId === referenceCaseId) {
+                newProject.referenceCaseId = EMPTY_GUID
+            } else {
+                newProject.referenceCaseId = referenceCaseId ?? ""
+            }
+            const updateProject = await (await GetProjectService()).updateProject(project.id, newProject)
+            setProject(updateProject)
+        }
+    }
 
     const handleCaseNameChange = (name: string) => {
         if (projectCase) {
@@ -134,15 +151,25 @@ const Controls = () => {
             <Grid item xs display="flex" alignItems="center" gap={1}>
                 {editMode && projectCase
                     ? (
-                        <Input // todo: should not be allowed to be empty
-                            ref={nameInput}
-                            type="text"
-                            defaultValue={projectCase && projectCase.name}
-                            onBlur={() => handleCaseNameChange(nameInput.current.value)}
-                        />
+                        <>
+                            <ChooseReferenceCase
+                                projectRefCaseId={project?.referenceCaseId}
+                                projectCaseId={projectCase.id}
+                                handleReferenceCaseChange={() => handleReferenceCaseChange(projectCase.id)}
+                            />
+                            <Input // todo: should not be allowed to be empty
+                                ref={nameInput}
+                                type="text"
+                                defaultValue={projectCase && projectCase.name}
+                                onBlur={() => handleCaseNameChange(nameInput.current.value)}
+                            />
+                        </>
                     )
                     : (
                         <>
+                            {project?.referenceCaseId === projectCase?.id && (
+                                <ReferenceCaseIcon />
+                            )}
                             <Typography variant="h4">
                                 {projectCase ? projectCase.name : project?.name}
                             </Typography>
