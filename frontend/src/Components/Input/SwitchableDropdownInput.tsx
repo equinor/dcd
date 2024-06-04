@@ -28,9 +28,9 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
     const { projectCase } = useCaseContext()
     const { project } = useProjectContext()
 
-    if (!projectCase || !project) { return null }
-
     const { addEdit } = useDataEdits()
+
+    if (!projectCase || !project) { return null }
 
     const addToEditsAndSubmit: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         onSubmit(e)
