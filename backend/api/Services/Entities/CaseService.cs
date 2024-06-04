@@ -119,8 +119,20 @@ public class CaseService : ICaseService
         return await _projectService.GetProjectDto(project.Id);
     }
 
-    public async Task<ProjectDto> UpdateCase<TDto>(Guid caseId, TDto updatedCaseDto)
+    public async Task<ProjectDto> UpdateCaseAndProfiles<TDto>(Guid caseId, TDto updatedCaseDto)
         where TDto : BaseUpdateCaseDto
+    {
+        var caseItem = await GetCase(caseId);
+
+        _mapper.Map(updatedCaseDto, caseItem);
+
+        _context.Cases!.Update(caseItem);
+        await _context.SaveChangesAsync();
+        return await _projectService.GetProjectDto(caseItem.ProjectId);
+    }
+
+    public async Task<ProjectDto> UpdateCase<TDto>(Guid caseId, TDto updatedCaseDto)
+    where TDto : BaseUpdateCaseDto
     {
         var caseItem = await GetCase(caseId);
 

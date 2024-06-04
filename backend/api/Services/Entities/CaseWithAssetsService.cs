@@ -304,7 +304,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         var wellProject = await _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
     }
 
-    public async Task<CaseDto> UpdateCase(Guid caseId, APIUpdateCaseDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<CaseDto> UpdateCase(Guid caseId, APIUpdateCaseWithProfilesDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         profilesToGenerate.StudyCost = true;
         profilesToGenerate.Co2Emissions = true;

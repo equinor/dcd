@@ -42,11 +42,18 @@ public class CasesController : ControllerBase
         return await _duplicateCaseService.DuplicateCase(copyCaseId);
     }
 
+    // [HttpPut("{caseId}")]
+    // public async Task<ProjectDto> UpdateCaseAndProfiles([FromRoute] Guid caseId, [FromBody] APIUpdateCaseWithProfilesDto caseDto)
+    // {
+    //     return await _caseService.UpdateCaseAndProfiles(caseId, caseDto);
+    // }
+
     [HttpPut("{caseId}")]
     public async Task<ProjectDto> UpdateCase([FromRoute] Guid caseId, [FromBody] APIUpdateCaseDto caseDto)
     {
-        return await _caseService.UpdateCase(caseId, caseDto);
+        return await _caseService.UpdateCaseAndProfiles(caseId, caseDto);
     }
+
 
     [HttpDelete("{caseId}")]
     public async Task<ProjectDto> DeleteCase(Guid caseId)

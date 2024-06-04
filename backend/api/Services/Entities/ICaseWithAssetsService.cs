@@ -9,6 +9,6 @@ public interface ICaseWithAssetsService
 {
     Task CreateAndUpdateExplorationWells(UpdateExplorationWellDto[] explorationWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate);
     Task CreateAndUpdateWellProjectWells(UpdateWellProjectWellDto[] wellProjectWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate);
-    Task<CaseDto> UpdateCase(Guid caseId, APIUpdateCaseDto updatedDto, ProfilesToGenerate profilesToGenerate);
+    Task<CaseDto> UpdateCase(Guid caseId, APIUpdateCaseWithProfilesDto updatedDto, ProfilesToGenerate profilesToGenerate);
     Task<ProjectWithGeneratedProfilesDto> UpdateCaseWithAssets(Guid projectId, Guid caseId, CaseWithAssetsWrapperDto wrapper);
 }

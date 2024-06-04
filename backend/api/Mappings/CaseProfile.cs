@@ -29,7 +29,7 @@ public class CaseProfile : Profile
         CreateMap<AdditionalOPEXCostProfile, AdditionalOPEXCostProfileDto>();
         CreateMap<Image, ImageDto>();
 
-        CreateMap<APIUpdateCaseDto, Case>();
+        CreateMap<APIUpdateCaseWithProfilesDto, Case>();
         CreateMap<PROSPUpdateCaseDto, Case>();
         CreateMap<UpdateCessationWellsCostOverrideDto, CessationWellsCostOverride>();
         CreateMap<UpdateCessationOffshoreFacilitiesCostOverrideDto, CessationOffshoreFacilitiesCostOverride>();
