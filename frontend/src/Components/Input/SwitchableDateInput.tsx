@@ -66,13 +66,13 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
 
     return (
         <InputSwitcher
-            value={value ? formatDate(value) : ""
+            value={value ? formatDate(value) : ""}
             label={label}
         >
             <Input
                 type="month"
-                id={objectKey}
-                name={objectKey}
+                id={resourcePropertyKey}
+                name={resourcePropertyKey}
                 onChange={handleChange}
                 value={toScheduleValue(value || "")}
                 min={min}
