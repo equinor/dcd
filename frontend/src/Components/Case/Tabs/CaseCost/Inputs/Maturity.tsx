@@ -3,6 +3,7 @@ import { NativeSelect } from "@equinor/eds-core-react"
 import InputSwitcher from "../../../../Input/Components/InputSwitcher"
 import { useCaseContext } from "../../../../../Context/CaseContext"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
+import useDataEdits from "../../../../../Hooks/useDataEdits"
 
 const Maturity: React.FC = () => {
     const {
@@ -12,6 +13,7 @@ const Maturity: React.FC = () => {
         projectCase,
     } = useCaseContext()
     const { project } = useProjectContext()
+    const { addEdit } = useDataEdits()
 
     if (!projectCase || !surf || !project) { return null }
 
@@ -36,6 +38,16 @@ const Maturity: React.FC = () => {
             const newSurf = { ...surf }
             newSurf.maturity = newMaturity
             updatedAndSetSurf(newSurf as Components.Schemas.SurfWithProfilesDto)
+            addEdit(
+                newMaturity, // newValue
+                surf.maturity, // previousValue
+                "Maturity", // inputLabel
+                project.id, // projectId
+                "surf", // serviceName
+                "maturity", // serviceKey
+                surf.id, // serviceId
+                projectCase.id, // caseId
+            )
         }
     }
 

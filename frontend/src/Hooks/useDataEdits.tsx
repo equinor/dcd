@@ -207,6 +207,11 @@ const useDataEdits = (): {
         value: any,
         serviceId?: string,
     ) => {
+        if (serviceName !== "case" && !serviceId) {
+            console.log("ServiceId is required for this service")
+            return
+        }
+
         switch (serviceName) {
         case "case":
             updateCase(projectId, caseId, serviceKey, value)
@@ -243,6 +248,17 @@ const useDataEdits = (): {
         newDisplayValue?: string | number | undefined,
         previousDisplayValue?: string | number | undefined,
     ) => {
+        console.log("newValue: ", newValue)
+        console.log("previousValue: ", previousValue)
+        console.log("inputLabel: ", inputLabel)
+        console.log("projectId: ", projectId)
+        console.log("serviceName: ", serviceName)
+        console.log("serviceKey: ", serviceKey)
+        console.log("serviceId: ", serviceId)
+        console.log("caseId: ", caseId)
+        console.log("newDisplayValue: ", newDisplayValue)
+        console.log("previousDisplayValue: ", previousDisplayValue)
+
         if (newValue === previousValue) { return }
 
         const editInstanceObject: EditInstance = {

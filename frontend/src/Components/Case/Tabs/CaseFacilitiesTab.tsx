@@ -188,6 +188,8 @@ const CaseFacilitiesTab = ({
                     integer
                     disabled
                     unit="%"
+                    min={0}
+                    max={100}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
