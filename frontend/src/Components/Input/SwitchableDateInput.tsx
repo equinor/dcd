@@ -10,14 +10,14 @@ import {
 import useDataEdits from "../../Hooks/useDataEdits"
 import { useCaseContext } from "../../Context/CaseContext"
 import { useProjectContext } from "../../Context/ProjectContext"
-import { ServiceKey, ServiceName } from "../../Models/Interfaces"
+import { ResourcePropertyKey, ResourceName } from "../../Models/Interfaces"
 
 interface SwitchableDateInputProps {
     value: string | undefined
     label: string
-    serviceName: ServiceName
-    serviceKey: ServiceKey
-    serviceId?: string
+    resourceName: ResourceName
+    resourcePropertyKey: ResourcePropertyKey
+    resourceId?: string
     onChange: ChangeEventHandler<HTMLInputElement>
     min?: string
     max?: string
@@ -25,9 +25,9 @@ interface SwitchableDateInputProps {
 const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
     value,
     label,
-    serviceName,
-    serviceKey,
-    serviceId,
+    resourceName,
+    resourcePropertyKey,
+    resourceId,
     onChange,
     min,
     max,
@@ -50,18 +50,18 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         onChange(e)
         console.log(value)
-        addEdit(
-            e.target.value, // newValue
-            value, // previousValue
-            label, // inputLabel
-            project.id, // projectId
-            serviceName, // serviceName
-            serviceKey, // serviceKey
-            serviceId, // serviceId
-            projectCase.id, // caseId
-            formatDate(e.target.value), // newDisplayValue
-            value && formatDate((value) || ""), // previousDisplayValue
-        )
+        addEdit({
+            newValue: e.target.value,
+            previousValue: value,
+            inputLabel: label,
+            projectId: project.id,
+            resourceName,
+            resourcePropertyKey,
+            resourceId,
+            caseId: projectCase.id,
+            newDisplayValue: formatDate(e.target.value),
+            previousDisplayValue: value && formatDate((value) || ""),
+        })
     }
 
     return (

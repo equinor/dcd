@@ -188,8 +188,8 @@ const CaseScheduleTab = () => {
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
                     value={projectCaseEdited ? projectCaseEdited.dgaDate : projectCase.dgaDate}
-                    serviceName="case"
-                    serviceKey="dgaDate"
+                    resourceName="case"
+                    resourcePropertyKey="dgaDate"
                     label="DGA"
                     onChange={handleDGAChange}
                 />
@@ -197,8 +197,8 @@ const CaseScheduleTab = () => {
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
                     value={projectCaseEdited ? projectCaseEdited.dgbDate : projectCase.dgbDate}
-                    serviceName="case"
-                    serviceKey="dgbDate"
+                    resourceName="case"
+                    resourcePropertyKey="dgbDate"
                     label="DGB"
                     onChange={handleDGBChange}
                 />
@@ -206,8 +206,8 @@ const CaseScheduleTab = () => {
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
                     value={projectCaseEdited ? projectCaseEdited.dgcDate : projectCase.dgcDate}
-                    serviceName="case"
-                    serviceKey="dgcDate"
+                    resourceName="case"
+                    resourcePropertyKey="dgcDate"
                     label="DGC"
                     onChange={handleDGCChange}
                 />
@@ -215,8 +215,8 @@ const CaseScheduleTab = () => {
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
                     value={projectCaseEdited ? projectCaseEdited.apxDate : projectCase.apxDate}
-                    serviceName="case"
-                    serviceKey="apxDate"
+                    resourceName="case"
+                    resourcePropertyKey="apxDate"
                     label="APX"
                     onChange={handleAPXChange}
                 />
@@ -224,8 +224,8 @@ const CaseScheduleTab = () => {
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
                     value={projectCaseEdited ? projectCaseEdited.apzDate : projectCase.apzDate}
-                    serviceName="case"
-                    serviceKey="apzDate"
+                    resourceName="case"
+                    resourcePropertyKey="apzDate"
                     label="APZ"
                     onChange={handleAPZChange}
                 />
@@ -233,8 +233,8 @@ const CaseScheduleTab = () => {
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
                     value={projectCaseEdited ? projectCaseEdited.dG0Date : projectCase.dG0Date}
-                    serviceName="case"
-                    serviceKey="dG0Date"
+                    resourceName="case"
+                    resourcePropertyKey="dG0Date"
                     label="DG0"
                     onChange={handleDG0Change}
                     max={projectCaseEdited
@@ -246,8 +246,8 @@ const CaseScheduleTab = () => {
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
                     value={projectCaseEdited ? projectCaseEdited.dG1Date : projectCase.dG1Date}
-                    serviceName="case"
-                    serviceKey="dG1Date"
+                    resourceName="case"
+                    resourcePropertyKey="dG1Date"
                     label="DG1"
                     onChange={handleDG1Change}
                     max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG2Date, projectCaseEdited.dG3Date, projectCaseEdited.dG4Date])) : undefined}
@@ -257,8 +257,8 @@ const CaseScheduleTab = () => {
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
                     value={projectCaseEdited ? projectCaseEdited.dG2Date : projectCase.dG2Date}
-                    serviceName="case"
-                    serviceKey="dG2Date"
+                    resourceName="case"
+                    resourcePropertyKey="dG2Date"
                     label="DG2"
                     onChange={handleDG2Change}
                     max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG3Date, projectCaseEdited.dG4Date])) : undefined}
@@ -268,8 +268,8 @@ const CaseScheduleTab = () => {
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
                     value={projectCaseEdited ? projectCaseEdited.dG3Date : projectCase.dG3Date}
-                    serviceName="case"
-                    serviceKey="dG3Date"
+                    resourceName="case"
+                    resourcePropertyKey="dG3Date"
                     label="DG3"
                     onChange={handleDG3Change}
                     max={projectCaseEdited ? findMaxDate(getDatesFromStrings([projectCaseEdited.dG4Date])) : undefined}
@@ -279,8 +279,8 @@ const CaseScheduleTab = () => {
             <Grid item xs={12} md={6} lg={6}>
                 <SwitchableDateInput
                     value={projectCaseEdited ? projectCaseEdited.dG4Date : projectCase.dG4Date}
-                    serviceName="case"
-                    serviceKey="dG4Date"
+                    resourceName="case"
+                    resourcePropertyKey="dG4Date"
                     label="DG4"
                     onChange={handleDG4Change}
                     max={undefined}

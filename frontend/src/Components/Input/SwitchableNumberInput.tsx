@@ -4,15 +4,15 @@ import InputSwitcher from "./Components/InputSwitcher"
 import useDataEdits from "../../Hooks/useDataEdits"
 import { useCaseContext } from "../../Context/CaseContext"
 import { useProjectContext } from "../../Context/ProjectContext"
-import { ServiceKey, ServiceName } from "../../Models/Interfaces"
+import { ResourcePropertyKey, ResourceName } from "../../Models/Interfaces"
 
 interface CaseEditInputProps {
     label: string;
     onSubmit?: (value: number) => void;
     value: number | undefined;
-    serviceName: ServiceName;
-    serviceKey: ServiceKey;
-    serviceId?: string;
+    resourceName: ResourceName;
+    resourcePropertyKey: ResourcePropertyKey;
+    resourceId?: string;
     integer: boolean;
     disabled?: boolean;
     unit?: string;
@@ -25,9 +25,9 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
     label,
     onSubmit, // this will be obsolete when we introduce autosave.
     value,
-    serviceKey,
-    serviceName,
-    serviceId,
+    resourcePropertyKey,
+    resourceName,
+    resourceId,
     integer,
     disabled,
     unit,
@@ -46,16 +46,16 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
             onSubmit(insertedValue) // this will be obsolete when we introduce autosave.
         }
 
-        addEdit(
-            insertedValue, // newValue
-            value, // previousValue
-            label, // inputLabel
-            project.id, // projectId
-            serviceName, // serviceName
-            serviceKey, // serviceKey
-            serviceId, // serviceId
-            projectCase.id, // caseId
-        )
+        addEdit({
+            newValue: insertedValue,
+            previousValue: value,
+            inputLabel: label,
+            projectId: project.id,
+            resourceName,
+            resourcePropertyKey,
+            resourceId,
+            caseId: projectCase.id,
+        })
     }
 
     return (

@@ -6,8 +6,8 @@ import { useCaseContext } from "../Context/CaseContext"
 import {
     EditInstance,
     EditEntry,
-    ServiceName,
-    ServiceKey,
+    ResourceName,
+    ResourcePropertyKey,
 } from "../Models/Interfaces"
 import { getCurrentEditId } from "../Utils/common"
 import { GetCaseService } from "../Services/CaseService"
@@ -17,19 +17,21 @@ import { GetSubstructureService } from "../Services/SubstructureService"
 import { GetTransportService } from "../Services/TransportService"
 import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
 
+interface AddEditParams {
+    newValue: string | number | undefined;
+    previousValue: string | number | undefined;
+    inputLabel: string;
+    projectId: string;
+    resourceName: ResourceName;
+    resourcePropertyKey: ResourcePropertyKey;
+    resourceId?: string;
+    caseId?: string;
+    newDisplayValue?: string | number | undefined;
+    previousDisplayValue?: string | number | undefined;
+}
+
 const useDataEdits = (): {
-    addEdit: (
-        newValue: string | number | undefined,
-        previousValue: string | number | undefined,
-        inputLabel: string,
-        projectId: string,
-        serviceName: ServiceName,
-        serviceKey: ServiceKey,
-        serviceId?: string,
-        caseId?: string,
-        newDisplayValue?: string | number | undefined,
-        previousDisplayValue?: string | number | undefined,
-    ) => void;
+    addEdit: (params: AddEditParams) => void;
     undoEdit: () => void;
     redoEdit: () => void;
 } => {
@@ -76,13 +78,13 @@ const useDataEdits = (): {
         async ({ serviceMethod }: {
             projectId: string,
             caseId: string,
-            assetId?: string,
+            resourceId?: string,
             serviceMethod: object,
         }) => serviceMethod,
         {
             onSuccess: (results, variables) => {
-                const { projectId, caseId, assetId } = variables
-                queryClient.setQueryData([{ assetId, projectId, caseId }], results)
+                const { projectId, caseId, resourceId } = variables
+                queryClient.setQueryData([{ resourceId, projectId, caseId }], results)
             },
             onError: (error) => {
                 console.error("Failed to update data:", error)
@@ -94,10 +96,10 @@ const useDataEdits = (): {
         projectId: string,
         caseId: string,
         topsideId: string,
-        serviceKey: ServiceKey,
+        resourcePropertyKey: ResourcePropertyKey,
         value: string | number | undefined,
     ) => {
-        const updatedData = { [serviceKey]: value }
+        const updatedData = { [resourcePropertyKey]: value }
         const service = await GetTopsideService()
         const serviceMethod = service.updateTopside(projectId, caseId, topsideId, updatedData)
 
@@ -105,7 +107,7 @@ const useDataEdits = (): {
             await mutation.mutateAsync({
                 projectId,
                 caseId,
-                assetId: topsideId,
+                resourceId: topsideId,
                 serviceMethod,
             })
             return true
@@ -118,10 +120,10 @@ const useDataEdits = (): {
         projectId: string,
         caseId: string,
         surfId: string,
-        serviceKey: ServiceKey,
+        resourcePropertyKey: ResourcePropertyKey,
         value: string | number | undefined,
     ) => {
-        const updatedData = { [serviceKey]: value }
+        const updatedData = { [resourcePropertyKey]: value }
         const service = await GetSurfService()
 
         const serviceMethod = service.updateSurf(projectId, caseId, surfId, updatedData)
@@ -129,7 +131,7 @@ const useDataEdits = (): {
             await mutation.mutateAsync({
                 projectId,
                 caseId,
-                assetId: surfId,
+                resourceId: surfId,
                 serviceMethod,
             })
             return true
@@ -142,10 +144,10 @@ const useDataEdits = (): {
         projectId: string,
         caseId: string,
         substructureId: string,
-        serviceKey: ServiceKey,
+        resourcePropertyKey: ResourcePropertyKey,
         value: string | number | undefined,
     ) => {
-        const updatedData = { [serviceKey]: value }
+        const updatedData = { [resourcePropertyKey]: value }
         const service = await GetSubstructureService()
         const serviceMethod = service.updateSubstructure(projectId, caseId, substructureId, updatedData)
 
@@ -153,7 +155,7 @@ const useDataEdits = (): {
             await mutation.mutateAsync({
                 projectId,
                 caseId,
-                assetId: substructureId,
+                resourceId: substructureId,
                 serviceMethod,
             })
             return true
@@ -166,10 +168,10 @@ const useDataEdits = (): {
         projectId: string,
         caseId: string,
         transportId: string,
-        serviceKey: ServiceKey,
+        resourcePropertyKey: ResourcePropertyKey,
         value: string | number | undefined,
     ) => {
-        const updatedData = { [serviceKey]: value }
+        const updatedData = { [resourcePropertyKey]: value }
         const service = await GetTransportService()
         const serviceMethod = service.updateTransport(projectId, caseId, transportId, updatedData)
 
@@ -177,7 +179,7 @@ const useDataEdits = (): {
             await mutation.mutateAsync({
                 projectId,
                 caseId,
-                assetId: transportId,
+                resourceId: transportId,
                 serviceMethod,
             })
             return true
@@ -190,17 +192,18 @@ const useDataEdits = (): {
         projectId: string,
         caseId: string,
         drainageStrategyId: string,
-        serviceKey: ServiceKey,
+        resourcePropertyKey: ResourcePropertyKey,
         value: any,
     ) => {
+        const updatedData = { [resourcePropertyKey]: value }
         const service = await GetDrainageStrategyService()
-        const serviceMethod = service.updateDrainageStrategy(projectId, caseId, drainageStrategyId, value)
+        const serviceMethod = service.updateDrainageStrategy(projectId, caseId, drainageStrategyId, updatedData)
 
         try {
             await mutation.mutateAsync({
                 projectId,
                 caseId,
-                assetId: drainageStrategyId,
+                resourceId: drainageStrategyId,
                 serviceMethod,
             })
             return true
@@ -232,35 +235,35 @@ const useDataEdits = (): {
     const submitToApi = async (
         projectId: string,
         caseId: string,
-        serviceName: ServiceName,
-        serviceKey: ServiceKey,
+        resourceName: ResourceName,
+        resourcePropertyKey: ResourcePropertyKey,
         value: any,
-        serviceId?: string,
+        resourceId?: string,
     ): Promise<boolean> => {
-        if (serviceName !== "case" && !serviceId) {
-            console.log("ServiceId is required for this service")
+        if (resourceName !== "case" && !resourceId) {
+            console.log("asset id is required for this service")
             return false
         }
 
         let sucess = false
-        switch (serviceName) {
+        switch (resourceName) {
             case "case":
                 sucess = await updateCase(projectId, caseId, value)
                 break
             case "topside":
-                sucess = await updateTopside(projectId, caseId, serviceId!, serviceKey, value)
+                sucess = await updateTopside(projectId, caseId, resourceId!, resourcePropertyKey, value)
                 break
             case "surf":
-                sucess = await updateSurf(projectId, caseId, serviceId!, serviceKey, value)
+                sucess = await updateSurf(projectId, caseId, resourceId!, resourcePropertyKey, value)
                 break
             case "substructure":
-                sucess = await updateSubstructure(projectId, caseId, serviceId!, serviceKey, value)
+                sucess = await updateSubstructure(projectId, caseId, resourceId!, resourcePropertyKey, value)
                 break
             case "transport":
-                sucess = await updateTransport(projectId, caseId, serviceId!, serviceKey, value)
+                sucess = await updateTransport(projectId, caseId, resourceId!, resourcePropertyKey, value)
                 break
             case "drainageStrategy":
-                sucess = await updateDrainageStrategy(projectId, caseId, serviceId!, serviceKey, value)
+                sucess = await updateDrainageStrategy(projectId, caseId, resourceId!, resourcePropertyKey, value)
                 break
             default:
                 console.log("Service not found")
@@ -286,23 +289,22 @@ const useDataEdits = (): {
         edits = [editInstanceObject, ...edits, ...caseEditsNotBelongingToCurrentCase]
         setCaseEdits(edits)
         updateEditIndex(editInstanceObject.uuid)
-        // submitToApi(projectId, caseId!, serviceName, serviceKey, newValue, serviceId)
     }
 
-    const addEdit = async (
-        newValue: string | number | undefined,
-        previousValue: string | number | undefined,
-        inputLabel: string,
-        projectId: string,
-        serviceName: ServiceName,
-        serviceKey: ServiceKey,
-        serviceId?: string,
-        caseId?: string,
-        newDisplayValue?: string | number | undefined,
-        previousDisplayValue?: string | number | undefined,
-    ) => {
-        if (serviceName !== "case" && !serviceId) {
-            console.log("ServiceId is required for this service")
+    const addEdit = async ({
+        newValue,
+        previousValue,
+        inputLabel,
+        projectId,
+        resourceName,
+        resourcePropertyKey,
+        resourceId,
+        caseId,
+        newDisplayValue,
+        previousDisplayValue,
+    }: AddEditParams) => {
+        if (resourceName !== "case" && !resourceId) {
+            console.log("asset id is required for this service")
             return
         }
 
@@ -313,15 +315,15 @@ const useDataEdits = (): {
             previousValue,
             inputLabel,
             projectId,
-            serviceName,
-            serviceKey,
-            serviceId,
+            resourceName,
+            resourcePropertyKey,
+            resourceId,
             caseId,
             newDisplayValue,
             previousDisplayValue,
         }
 
-        const success = await submitToApi(projectId, caseId!, serviceName, serviceKey, newValue, serviceId)
+        const success = await submitToApi(projectId, caseId!, resourceName, resourcePropertyKey, newValue, resourceId)
 
         if (success && caseId) {
             addToHistoryTracker(editInstanceObject, caseId)
@@ -347,10 +349,10 @@ const useDataEdits = (): {
             submitToApi(
                 editThatWillBeUndone.projectId,
                 editThatWillBeUndone.caseId!,
-                editThatWillBeUndone.serviceName,
-                editThatWillBeUndone.serviceKey,
+                editThatWillBeUndone.resourceName,
+                editThatWillBeUndone.resourcePropertyKey,
                 editThatWillBeUndone.previousValue,
-                editThatWillBeUndone.serviceId,
+                editThatWillBeUndone.resourceId,
             )
         }
     }
@@ -366,10 +368,10 @@ const useDataEdits = (): {
                 submitToApi(
                     lastEdit.projectId,
                     lastEdit.caseId!,
-                    lastEdit.serviceName,
-                    lastEdit.serviceKey,
+                    lastEdit.resourceName,
+                    lastEdit.resourcePropertyKey,
                     lastEdit.newValue,
-                    lastEdit.serviceId,
+                    lastEdit.resourceId,
                 )
             }
         } else {
@@ -381,10 +383,10 @@ const useDataEdits = (): {
                 submitToApi(
                     updatedEdit.projectId,
                     updatedEdit.caseId!,
-                    updatedEdit.serviceName,
-                    updatedEdit.serviceKey,
+                    updatedEdit.resourceName,
+                    updatedEdit.resourcePropertyKey,
                     updatedEdit.newValue,
-                    updatedEdit.serviceId,
+                    updatedEdit.resourceId,
                 )
             }
         }

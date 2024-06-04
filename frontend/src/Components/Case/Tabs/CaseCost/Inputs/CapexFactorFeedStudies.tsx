@@ -2,7 +2,7 @@ import React from "react"
 import SwitchableNumberInput from "../../../../Input/SwitchableNumberInput"
 import { useCaseContext } from "../../../../../Context/CaseContext"
 
-const TotalStudyCosts: React.FC = () => {
+const CapexFactorFeedStudies: React.FC = () => {
     const {
         projectCase,
         projectCaseEdited,
@@ -23,8 +23,8 @@ const TotalStudyCosts: React.FC = () => {
 
     return (
         <SwitchableNumberInput
-            serviceName="case"
-            serviceKey="capexFactorFEEDStudies"
+            resourceName="case"
+            resourcePropertyKey="capexFactorFEEDStudies"
             label="CAPEX factor FEED studies"
             onSubmit={handleCaseFEEDChange}
             value={projectCase?.capexFactorFEEDStudies !== undefined ? (projectCase.capexFactorFEEDStudies ?? 0) * 100 : undefined}
@@ -36,4 +36,4 @@ const TotalStudyCosts: React.FC = () => {
     )
 }
 
-export default TotalStudyCosts
+export default CapexFactorFeedStudies

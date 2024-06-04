@@ -4,14 +4,14 @@ import InputSwitcher from "./Components/InputSwitcher"
 import useDataEdits from "../../Hooks/useDataEdits"
 import { useCaseContext } from "../../Context/CaseContext"
 import { useProjectContext } from "../../Context/ProjectContext"
-import { ServiceKey, ServiceName } from "../../Models/Interfaces"
+import { ResourcePropertyKey, ResourceName } from "../../Models/Interfaces"
 
 interface SwitchableDropdownInputProps {
     value: string | number;
     options: { [key: string]: string };
-    serviceName: ServiceName;
-    serviceKey: ServiceKey;
-    serviceId?: string;
+    resourceName: ResourceName;
+    resourcePropertyKey: ResourcePropertyKey;
+    resourceId?: string;
     label: string;
     onSubmit: ChangeEventHandler<HTMLSelectElement>
 }
@@ -19,9 +19,9 @@ interface SwitchableDropdownInputProps {
 const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
     value,
     options,
-    serviceName,
-    serviceKey,
-    serviceId,
+    resourceName,
+    resourcePropertyKey,
+    resourceId,
     label,
     onSubmit,
 }: SwitchableDropdownInputProps) => {
@@ -35,18 +35,18 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
     const addToEditsAndSubmit: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         onSubmit(e)
 
-        addEdit(
-            e.currentTarget.value, // newValue
-            value, // previousValue
-            label, // inputLabel
-            project.id, // projectId
-            serviceName, // serviceName
-            serviceKey, // serviceKey
-            serviceId, // serviceId
-            projectCase.id, // caseId
-            options[e.currentTarget.value], // newDisplayValue
-            options[value], // previousDisplayValue
-        )
+        addEdit({
+            newValue: e.currentTarget.value,
+            previousValue: value,
+            inputLabel: label,
+            projectId: project.id,
+            resourceName,
+            resourcePropertyKey,
+            resourceId,
+            caseId: projectCase.id,
+            newDisplayValue: options[e.currentTarget.value],
+            previousDisplayValue: options[value],
+        })
     }
 
     return (

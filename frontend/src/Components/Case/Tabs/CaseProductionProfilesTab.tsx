@@ -368,8 +368,8 @@ const CaseProductionProfilesTab = ({
         <Grid container spacing={2}>
             <Grid item xs={12} md={6} lg={3}>
                 <SwitchableNumberInput
-                    serviceName="case"
-                    serviceKey="facilitiesAvailability"
+                    resourceName="case"
+                    resourcePropertyKey="facilitiesAvailability"
                     label="Facilities availability"
                     onSubmit={handleCaseFacilitiesAvailabilityChange}
                     value={projectCase?.facilitiesAvailability
@@ -383,8 +383,8 @@ const CaseProductionProfilesTab = ({
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <SwitchableDropdownInput
-                    serviceName="drainageStrategy"
-                    serviceKey="gasSolution"
+                    resourceName="drainageStrategy"
+                    resourcePropertyKey="gasSolution"
                     value={drainageStrategy.gasSolution}
                     options={gasSolutionOptions}
                     label="Gas solution"
@@ -429,8 +429,8 @@ const CaseProductionProfilesTab = ({
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <SwitchableNumberInput
-                    serviceName="case"
-                    serviceKey="producerCount"
+                    resourceName="case"
+                    resourcePropertyKey="producerCount"
                     label="Oil producer wells"
                     onSubmit={() => { }}
                     value={projectCase?.producerCount}
@@ -440,8 +440,8 @@ const CaseProductionProfilesTab = ({
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <SwitchableNumberInput
-                    serviceName="case"
-                    serviceKey="waterInjectorCount"
+                    resourceName="case"
+                    resourcePropertyKey="waterInjectorCount"
                     label="Water injector wells"
                     onSubmit={() => { }}
                     value={projectCase?.waterInjectorCount}
@@ -451,8 +451,8 @@ const CaseProductionProfilesTab = ({
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <SwitchableNumberInput
-                    serviceName="case"
-                    serviceKey="gasInjectorCount"
+                    resourceName="case"
+                    resourcePropertyKey="gasInjectorCount"
                     label="Gas injector wells"
                     onSubmit={() => { }}
                     value={projectCase?.gasInjectorCount}

@@ -137,8 +137,8 @@ const CaseDrillingScheduleTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    serviceName="case"
-                    serviceKey="producerCount" // dummy just to display swithable number input
+                    resourceName="case"
+                    resourcePropertyKey="producerCount" // dummy just to display swithable number input
                     label="Exploration wells"
                     value={explorationWellCount}
                     integer
@@ -147,8 +147,8 @@ const CaseDrillingScheduleTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    serviceName="case"
-                    serviceKey="producerCount" // dummy just to display swithable number input
+                    resourceName="case"
+                    resourcePropertyKey="producerCount" // dummy just to display swithable number input
                     label="Appraisal wells"
                     value={appraisalWellCount}
                     integer
@@ -157,8 +157,8 @@ const CaseDrillingScheduleTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    serviceName="case"
-                    serviceKey="producerCount" // dummy just to display disabled number input
+                    resourceName="case"
+                    resourcePropertyKey="producerCount" // dummy just to display disabled number input
                     label="Oil producer wells"
                     value={oilProducerCount}
                     integer
@@ -167,8 +167,8 @@ const CaseDrillingScheduleTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    serviceName="case"
-                    serviceKey="producerCount" // dummy just to display disabled number input
+                    resourceName="case"
+                    resourcePropertyKey="producerCount" // dummy just to display disabled number input
                     label="Gas producer wells"
                     value={gasProducerCount}
                     integer
@@ -177,8 +177,8 @@ const CaseDrillingScheduleTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    serviceName="case"
-                    serviceKey="producerCount" // dummy just to display disabled number input
+                    resourceName="case"
+                    resourcePropertyKey="producerCount" // dummy just to display disabled number input
                     label="Water injector wells"
                     value={waterInjectorCount}
                     integer
@@ -187,8 +187,8 @@ const CaseDrillingScheduleTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    serviceName="case"
-                    serviceKey="producerCount" // dummy just to display disabled number input
+                    resourceName="case"
+                    resourcePropertyKey="producerCount" // dummy just to display disabled number input
                     label="Gas injector wells"
                     value={gasInjectorCount}
                     integer
@@ -211,7 +211,7 @@ const CaseDrillingScheduleTab = ({
                     setAssetWells={setExplorationWells}
                     tableName="Exploration wells"
                     tableYears={tableYears}
-                    assetId={exploration.id}
+                    resourceId={exploration.id}
                     wells={wells}
                     isExplorationTable
                     gridRef={explorationWellsGridRef}
@@ -225,7 +225,7 @@ const CaseDrillingScheduleTab = ({
                     setAssetWells={setWellProjectWells}
                     tableName="Development wells"
                     tableYears={tableYears}
-                    assetId={wellProject.id}
+                    resourceId={wellProject.id}
                     wells={wells}
                     isExplorationTable={false}
                     gridRef={wellProjectWellsGridRef}

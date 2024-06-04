@@ -61,14 +61,14 @@ const Controls = () => {
             const newCase = {
                 ...projectCase,
             }
-            addEdit(
-                name, // newValue
-                newCase.name, // previousValue
-                "Name", // inputLabel
-                project.id, // projectId
-                "case", // serviceName
-                "name", // serviceKey
-            )
+            addEdit({
+                newValue: name,
+                previousValue: newCase.name,
+                inputLabel: "Name",
+                projectId: project.id,
+                resourceName: "case",
+                resourcePropertyKey: "name",
+            })
             newCase.name = name
             setProjectCaseEdited(newCase)
         }

@@ -39,14 +39,14 @@ const CaseDescriptionTab = () => {
         if (projectCaseEdited) {
             const updatedProjectCase = { ...projectCaseEdited, description: value }
             setProjectCaseEdited(updatedProjectCase)
-            addEdit(
-                value, // newValue
-                projectCaseEdited.description, // previousValue
-                "Description", // inputLabel
-                project!.id, // projectId
-                "case", // serviceName
-                "description", // serviceKey
-            )
+            addEdit({
+                newValue: value,
+                previousValue: projectCaseEdited.description,
+                inputLabel: "Description",
+                projectId: project!.id,
+                resourceName: "case",
+                resourcePropertyKey: "description",
+            })
         }
     }
 
@@ -114,8 +114,8 @@ const CaseDescriptionTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    serviceName="case"
-                    serviceKey="producerCount"
+                    resourceName="case"
+                    resourcePropertyKey="producerCount"
                     label="Production wells"
                     onSubmit={(value) => {
                         setNonNegativeNumberState(value, "producerCount", projectCaseEdited, setProjectCaseEdited)
@@ -129,8 +129,8 @@ const CaseDescriptionTab = () => {
             <Grid item xs={12} md={4}>
 
                 <SwitchableNumberInput
-                    serviceName="case"
-                    serviceKey="waterInjectorCount"
+                    resourceName="case"
+                    resourcePropertyKey="waterInjectorCount"
                     label="Water injector wells"
                     onSubmit={(value) => {
                         setNonNegativeNumberState(value, "waterInjectorCount", projectCaseEdited, setProjectCaseEdited)
@@ -144,8 +144,8 @@ const CaseDescriptionTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    serviceName="case"
-                    serviceKey="gasInjectorCount"
+                    resourceName="case"
+                    resourcePropertyKey="gasInjectorCount"
                     label="Gas injector wells"
                     onSubmit={(value) => {
                         setNonNegativeNumberState(value, "gasInjectorCount", projectCaseEdited, setProjectCaseEdited)
@@ -159,8 +159,8 @@ const CaseDescriptionTab = () => {
             <Grid item xs={12} md={4}>
                 <SwitchableDropdownInput
                     value={projectCaseEdited ? projectCaseEdited.productionStrategyOverview : projectCase.productionStrategyOverview}
-                    serviceName="case"
-                    serviceKey="productionStrategyOverview"
+                    resourceName="case"
+                    resourcePropertyKey="productionStrategyOverview"
                     options={productionStrategyOptions}
                     label="Production strategy overview"
                     onSubmit={handleProductionStrategyChange}
@@ -169,8 +169,8 @@ const CaseDescriptionTab = () => {
             <Grid item xs={12} md={4}>
                 <SwitchableDropdownInput
                     value={projectCaseEdited ? projectCaseEdited.artificialLift : projectCase.artificialLift}
-                    serviceName="case"
-                    serviceKey="artificialLift"
+                    resourceName="case"
+                    resourcePropertyKey="artificialLift"
                     options={artificialLiftOptions}
                     label="Artificial lift"
                     onSubmit={handleArtificialLiftChange}
@@ -178,8 +178,8 @@ const CaseDescriptionTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    serviceName="case"
-                    serviceKey="facilitiesAvailability"
+                    resourceName="case"
+                    resourcePropertyKey="facilitiesAvailability"
                     label="Facilities availability"
                     onSubmit={handleFacilitiesAvailabilityChange}
                     value={defaultValue}

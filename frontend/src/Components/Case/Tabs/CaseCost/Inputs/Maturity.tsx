@@ -38,16 +38,16 @@ const Maturity: React.FC = () => {
             const newSurf = { ...surf }
             newSurf.maturity = newMaturity
             updatedAndSetSurf(newSurf as Components.Schemas.SurfWithProfilesDto)
-            addEdit(
-                newMaturity, // newValue
-                surf.maturity, // previousValue
-                "Maturity", // inputLabel
-                project.id, // projectId
-                "surf", // serviceName
-                "maturity", // serviceKey
-                surf.id, // serviceId
-                projectCase.id, // caseId
-            )
+            addEdit({
+                newValue: newMaturity,
+                previousValue: surf.maturity,
+                inputLabel: "Maturity",
+                projectId: project.id,
+                resourceName: "surf",
+                resourcePropertyKey: "maturity",
+                resourceId: surf.id,
+                caseId: projectCase.id,
+            })
         }
     }
 

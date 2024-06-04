@@ -21,8 +21,8 @@ const CapexFactorFeasibilityStudies: React.FC = () => {
     }
     return (
         <SwitchableNumberInput
-            serviceName="case"
-            serviceKey="capexFactorFeasibilityStudies"
+            resourceName="case"
+            resourcePropertyKey="capexFactorFeasibilityStudies"
             label="CAPEX factor feasibility studies"
             onSubmit={handleCaseFeasibilityChange}
             value={projectCase?.capexFactorFeasibilityStudies !== undefined ? (projectCase.capexFactorFeasibilityStudies ?? 0) * 100 : undefined}
