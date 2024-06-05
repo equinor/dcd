@@ -55,4 +55,19 @@ public class BlobStorageController : ControllerBase
             return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving images.");
         }
     }
+
+    [HttpDelete("{imageId}")]
+    public async Task<ActionResult> DeleteImage(Guid projectId, Guid caseId, Guid imageId)
+    {
+        try
+        {
+            await _blobStorageService.DeleteImage(caseId, imageId);
+            return NoContent();
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while deleting the image.");
+        }
+    }
+
 }

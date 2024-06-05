@@ -22,6 +22,16 @@ export class ImageService extends __BaseService {
         const response = await this.get(`projects/${projectId}/cases/${caseId}/images`)
         return response
     }
+
+    public async deleteImage(projectId: string, caseId: string, imageId: string): Promise<void> {
+        await this.delete(`projects/${projectId}/cases/${caseId}/images/${imageId}`)
+    }
+
+    public async findImageIdByImageUrl(projectId: string, caseId: string, imageUrl: string): Promise<string | undefined> {
+        const images = await this.getImages(projectId, caseId)
+        const foundImage = images.find((image) => image.url === imageUrl)
+        return foundImage?.id
+    }
 }
 
 export const getImageService = async () => new ImageService({

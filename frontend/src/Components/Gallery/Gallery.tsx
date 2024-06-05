@@ -59,6 +59,7 @@ const GalleryLabel = styled(Typography) <{ $warning: boolean }>`
     margin-right: 8px;
     color: ${({ $warning }) => ($warning ? "red" : "rgba(111, 111, 111, 1)")};
 `
+
 const Gallery = () => {
     const { editMode } = useAppContext()
     const [gallery, setGallery] = useState<string[]>([])
@@ -89,9 +90,22 @@ const Gallery = () => {
         loadImages()
     }, [project?.id, projectCase?.id, setGallery])
 
-    const handleDelete = (image: string) => {
-        setGallery(gallery.filter((item) => item !== image))
-        setExeededLimit(false)
+    const handleDelete = async (imageUrl: string) => {
+        try {
+            if (project?.id && projectCase?.id) {
+                const imageService = await getImageService()
+                const imageId = await imageService.findImageIdByImageUrl(project.id, projectCase.id, imageUrl)
+                if (imageId) {
+                    await imageService.deleteImage(project.id, projectCase.id, imageId)
+                    setGallery(gallery.filter((url) => url !== imageUrl))
+                    setExeededLimit(false)
+                } else {
+                    console.error("Image ID not found for the provided URL:", imageUrl)
+                }
+            }
+        } catch (error) {
+            console.error("Error deleting image:", error)
+        }
     }
 
     const handleExpand = (image: string) => {
@@ -128,13 +142,13 @@ const Gallery = () => {
                     ))}
                     {
                         editMode && gallery.length < 4
-                    && (
-                        <ImageUpload
-                            gallery={gallery}
-                            setGallery={setGallery}
-                            setExeededLimit={setExeededLimit}
-                        />
-                    )
+                        && (
+                            <ImageUpload
+                                gallery={gallery}
+                                setGallery={setGallery}
+                                setExeededLimit={setExeededLimit}
+                            />
+                        )
                     }
                 </Wrapper>
             </Grid>

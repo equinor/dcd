@@ -92,4 +92,24 @@ public class BlobStorageService : IBlobStorageService
         }
         return imageDtos;
     }
+
+    public async Task DeleteImage(Guid caseId, Guid imageId)
+    {
+        var image = await _imageRepository.GetImageById(imageId);
+        if (image == null)
+        {
+            throw new InvalidOperationException("Image not found.");
+        }
+
+        var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+
+        var sanitizedProjectName = SanitizeBlobName(image.ProjectName);
+        var blobName = $"{sanitizedProjectName}/{image.CaseId}/{image.Id}";
+
+        var blobClient = containerClient.GetBlobClient(blobName);
+
+        await blobClient.DeleteIfExistsAsync();
+        await _imageRepository.DeleteImage(image);
+    }
+
 }
