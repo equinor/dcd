@@ -12,8 +12,7 @@ import {
 import { useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { AgGridReact } from "@ag-grid-community/react"
-import { bookmark_filled, more_vertical } from "@equinor/eds-icons"
-import { tokens } from "@equinor/eds-tokens"
+import { more_vertical } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
 import { casePath, productionStrategyOverviewToString } from "../../../Utils/common"
@@ -21,11 +20,6 @@ import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import { ReferenceCaseIcon } from "../Components/ReferenceCaseIcon"
 
-const StyledIcon = styled(Icon)`
-    color: ${tokens.colors.text.static_icons__secondary.rgba};
-    margin-left: 0.5rem;
-    margin-bottom: -0.2rem;
-`
 const AgTableContainer = styled.div`
     overflow: auto;
 `
