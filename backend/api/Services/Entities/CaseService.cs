@@ -147,33 +147,6 @@ public class CaseService : ICaseService
         return await _projectService.GetProjectDto(caseItem.ProjectId);
     }
 
-    public async Task<CaseDto> UpdateCase<TDto>(
-            Guid caseId,
-            TDto updatedCaseDto
-        )
-        where TDto : BaseUpdateCaseDto
-    {
-        var existingCase = await _repository.GetCase(caseId)
-            ?? throw new NotFoundInDBException($"Case with id {caseId} not found.");
-
-        _mapperService.MapToEntity(updatedCaseDto, existingCase, caseId);
-
-        existingCase.ModifyTime = DateTimeOffset.UtcNow;
-
-        Case updatedCase;
-        try
-        {
-            updatedCase = await _repository.UpdateCase(existingCase);
-        }
-        catch (DbUpdateException ex) {
-            _logger.LogError(ex, "Failed to update case with id {caseId}.", caseId);
-            throw;
-        }
-
-        var dto = _mapperService.MapToDto<Case, CaseDto>(updatedCase, caseId);
-        return dto;
-    }
-
     public async Task<ProjectDto> DeleteCase(Guid caseId)
     {
         var caseItem = await GetCase(caseId);
@@ -239,5 +212,222 @@ public class CaseService : ICaseService
             _logger.LogInformation("No cases exists");
             return new List<Case>();
         }
+    }
+
+    public async Task<CaseDto> UpdateCase<TDto>(
+            Guid caseId,
+            TDto updatedCaseDto
+    )
+        where TDto : BaseUpdateCaseDto
+    {
+        var existingCase = await _repository.GetCase(caseId)
+            ?? throw new NotFoundInDBException($"Case with id {caseId} not found.");
+
+        _mapperService.MapToEntity(updatedCaseDto, existingCase, caseId);
+
+        existingCase.ModifyTime = DateTimeOffset.UtcNow;
+
+        Case updatedCase;
+        try
+        {
+            updatedCase = await _repository.UpdateCase(existingCase);
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to update case with id {caseId}.", caseId);
+            throw;
+        }
+
+        var dto = _mapperService.MapToDto<Case, CaseDto>(updatedCase, caseId);
+        return dto;
+    }
+
+    public async Task<CessationWellsCostOverrideDto> UpdateCessationWellsCostOverride(
+        Guid projectId,
+        Guid caseId,
+        Guid costProfileId,
+        UpdateCessationWellsCostOverrideDto updatedCostProfileDto
+    )
+    {
+        return await UpdateCaseCostProfile<CessationWellsCostOverride, CessationWellsCostOverrideDto, UpdateCessationWellsCostOverrideDto>(
+            projectId,
+            caseId,
+            costProfileId,
+            updatedCostProfileDto,
+            _repository.GetCessationWellsCostOverride,
+            _repository.UpdateCessationWellsCostOverride
+        );
+    }
+
+    public async Task<CessationOffshoreFacilitiesCostOverrideDto> UpdateCessationOffshoreFacilitiesCostOverride(
+        Guid projectId,
+        Guid caseId,
+        Guid costProfileId,
+        UpdateCessationOffshoreFacilitiesCostOverrideDto updatedCostProfileDto
+    )
+    {
+        return await UpdateCaseCostProfile<CessationOffshoreFacilitiesCostOverride, CessationOffshoreFacilitiesCostOverrideDto, UpdateCessationOffshoreFacilitiesCostOverrideDto>(
+            projectId,
+            caseId,
+            costProfileId,
+            updatedCostProfileDto,
+            _repository.GetCessationOffshoreFacilitiesCostOverride,
+            _repository.UpdateCessationOffshoreFacilitiesCostOverride
+        );
+    }
+
+    public async Task<TotalFeasibilityAndConceptStudiesOverrideDto> UpdateTotalFeasibilityAndConceptStudiesOverride(
+        Guid projectId,
+        Guid caseId,
+        Guid costProfileId,
+        UpdateTotalFeasibilityAndConceptStudiesOverrideDto updatedCostProfileDto
+    )
+    {
+        return await UpdateCaseCostProfile<TotalFeasibilityAndConceptStudiesOverride, TotalFeasibilityAndConceptStudiesOverrideDto, UpdateTotalFeasibilityAndConceptStudiesOverrideDto>(
+            projectId,
+            caseId,
+            costProfileId,
+            updatedCostProfileDto,
+            _repository.GetTotalFeasibilityAndConceptStudiesOverride,
+            _repository.UpdateTotalFeasibilityAndConceptStudiesOverride
+        );
+    }
+
+    public async Task<TotalFEEDStudiesOverrideDto> UpdateTotalFEEDStudiesOverride(
+        Guid projectId,
+        Guid caseId,
+        Guid costProfileId,
+        UpdateTotalFEEDStudiesOverrideDto updatedCostProfileDto
+    )
+    {
+        return await UpdateCaseCostProfile<TotalFEEDStudiesOverride, TotalFEEDStudiesOverrideDto, UpdateTotalFEEDStudiesOverrideDto>(
+            projectId,
+            caseId,
+            costProfileId,
+            updatedCostProfileDto,
+            _repository.GetTotalFEEDStudiesOverride,
+            _repository.UpdateTotalFEEDStudiesOverride
+        );
+    }
+
+    public async Task<HistoricCostCostProfileDto> UpdateHistoricCostCostProfile(
+        Guid projectId,
+        Guid caseId,
+        Guid costProfileId,
+        UpdateHistoricCostCostProfileDto updatedCostProfileDto
+    )
+    {
+        return await UpdateCaseCostProfile<HistoricCostCostProfile, HistoricCostCostProfileDto, UpdateHistoricCostCostProfileDto>(
+            projectId,
+            caseId,
+            costProfileId,
+            updatedCostProfileDto,
+            _repository.GetHistoricCostCostProfile,
+            _repository.UpdateHistoricCostCostProfile
+        );
+    }
+
+    public async Task<WellInterventionCostProfileOverrideDto> UpdateWellInterventionCostProfileOverride(
+        Guid projectId,
+        Guid caseId,
+        Guid costProfileId,
+        UpdateWellInterventionCostProfileOverrideDto updatedCostProfileDto
+    )
+    {
+        return await UpdateCaseCostProfile<WellInterventionCostProfileOverride, WellInterventionCostProfileOverrideDto, UpdateWellInterventionCostProfileOverrideDto>(
+            projectId,
+            caseId,
+            costProfileId,
+            updatedCostProfileDto,
+            _repository.GetWellInterventionCostProfileOverride,
+            _repository.UpdateWellInterventionCostProfileOverride
+        );
+    }
+
+    public async Task<OffshoreFacilitiesOperationsCostProfileOverrideDto> UpdateOffshoreFacilitiesOperationsCostProfileOverride(
+        Guid projectId,
+        Guid caseId,
+        Guid costProfileId,
+        UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto updatedCostProfileDto
+    )
+    {
+        return await UpdateCaseCostProfile<OffshoreFacilitiesOperationsCostProfileOverride, OffshoreFacilitiesOperationsCostProfileOverrideDto, UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto>(
+            projectId,
+            caseId,
+            costProfileId,
+            updatedCostProfileDto,
+            _repository.GetOffshoreFacilitiesOperationsCostProfileOverride,
+            _repository.UpdateOffshoreFacilitiesOperationsCostProfileOverride
+        );
+    }
+
+    public async Task<OnshoreRelatedOPEXCostProfileDto> UpdateOnshoreRelatedOPEXCostProfile(
+        Guid projectId,
+        Guid caseId,
+        Guid costProfileId,
+        UpdateOnshoreRelatedOPEXCostProfileDto updatedCostProfileDto
+    )
+    {
+        return await UpdateCaseCostProfile<OnshoreRelatedOPEXCostProfile, OnshoreRelatedOPEXCostProfileDto, UpdateOnshoreRelatedOPEXCostProfileDto>(
+            projectId,
+            caseId,
+            costProfileId,
+            updatedCostProfileDto,
+            _repository.GetOnshoreRelatedOPEXCostProfile,
+            _repository.UpdateOnshoreRelatedOPEXCostProfile
+        );
+    }
+
+
+    public async Task<AdditionalOPEXCostProfileDto> UpdateAdditionalOPEXCostProfile(
+        Guid projectId,
+        Guid caseId,
+        Guid costProfileId,
+        UpdateAdditionalOPEXCostProfileDto updatedCostProfileDto
+    )
+    {
+        return await UpdateCaseCostProfile<AdditionalOPEXCostProfile, AdditionalOPEXCostProfileDto, UpdateAdditionalOPEXCostProfileDto>(
+            projectId,
+            caseId,
+            costProfileId,
+            updatedCostProfileDto,
+            _repository.GetAdditionalOPEXCostProfile,
+            _repository.UpdateAdditionalOPEXCostProfile
+        );
+    }
+
+    private async Task<TDto> UpdateCaseCostProfile<TProfile, TDto, TUpdateDto>(
+        Guid projectId,
+        Guid caseId,
+        Guid costProfileId,
+        TUpdateDto updatedCostProfileDto,
+        Func<Guid, Task<TProfile?>> getProfile,
+        Func<TProfile, Task<TProfile>> updateProfile
+    )
+        where TProfile : class
+        where TDto : class
+        where TUpdateDto : class
+    {
+        var existingProfile = await getProfile(costProfileId)
+            ?? throw new NotFoundInDBException($"Production profile with id {costProfileId} not found.");
+
+        _mapperService.MapToEntity(updatedCostProfileDto, existingProfile, caseId);
+
+        TProfile updatedProfile;
+        try
+        {
+            updatedProfile = await updateProfile(existingProfile);
+        }
+        catch (DbUpdateException ex)
+        {
+            var profileName = typeof(TProfile).Name;
+            _logger.LogError(ex, "Failed to update profile {profileName} with id {costProfileId} for case id {caseId}.", profileName, costProfileId, caseId);
+            throw;
+        }
+
+        await _repository.UpdateModifyTime(caseId);
+
+        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, costProfileId);
+        return updatedDto;
     }
 }

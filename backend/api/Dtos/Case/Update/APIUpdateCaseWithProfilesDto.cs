@@ -38,11 +38,11 @@ public class APIUpdateCaseWithProfilesDto : BaseUpdateCaseDto
     public UpdateTotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
     public UpdateTotalOtherStudies? TotalOtherStudies { get; set; }
 
-    public UpdateHistoricCostCostProfile? HistoricCostCostProfile { get; set; }
+    public UpdateHistoricCostCostProfileDto? HistoricCostCostProfile { get; set; }
     public UpdateWellInterventionCostProfileOverrideDto? WellInterventionCostProfileOverride { get; set; }
     public UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
-    public UpdateOnshoreRelatedOPEXCostProfile? OnshoreRelatedOPEXCostProfile { get; set; }
-    public UpdateAdditionalOPEXCostProfile? AdditionalOPEXCostProfile { get; set; }
+    public UpdateOnshoreRelatedOPEXCostProfileDto? OnshoreRelatedOPEXCostProfile { get; set; }
+    public UpdateAdditionalOPEXCostProfileDto? AdditionalOPEXCostProfile { get; set; }
 
     public double Capex { get; set; }
     public CapexYear? CapexYear { get; set; }
@@ -89,13 +89,13 @@ public class UpdateTotalOtherStudies : UpdateTimeSeriesCostDto
 {
 }
 
-public class UpdateHistoricCostCostProfile : UpdateTimeSeriesCostDto
+public class UpdateHistoricCostCostProfileDto : UpdateTimeSeriesCostDto
 {
 }
-public class UpdateOnshoreRelatedOPEXCostProfile : UpdateTimeSeriesCostDto
+public class UpdateOnshoreRelatedOPEXCostProfileDto : UpdateTimeSeriesCostDto
 {
 }
 
-public class UpdateAdditionalOPEXCostProfile : UpdateTimeSeriesCostDto
+public class UpdateAdditionalOPEXCostProfileDto : UpdateTimeSeriesCostDto
 {
 }

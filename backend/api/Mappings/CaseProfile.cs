@@ -39,9 +39,9 @@ public class CaseProfile : Profile
         CreateMap<UpdateTotalOtherStudies, TotalOtherStudies>();
         CreateMap<UpdateWellInterventionCostProfileOverrideDto, WellInterventionCostProfileOverride>();
         CreateMap<UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto, OffshoreFacilitiesOperationsCostProfileOverride>();
-        CreateMap<UpdateHistoricCostCostProfile, HistoricCostCostProfile>();
-        CreateMap<UpdateOnshoreRelatedOPEXCostProfile, OnshoreRelatedOPEXCostProfile>();
-        CreateMap<UpdateAdditionalOPEXCostProfile, AdditionalOPEXCostProfile>();
+        CreateMap<UpdateHistoricCostCostProfileDto, HistoricCostCostProfile>();
+        CreateMap<UpdateOnshoreRelatedOPEXCostProfileDto, OnshoreRelatedOPEXCostProfile>();
+        CreateMap<UpdateAdditionalOPEXCostProfileDto, AdditionalOPEXCostProfile>();
 
         CreateMap<CreateCaseDto, Case>();
 
