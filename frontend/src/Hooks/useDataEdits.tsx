@@ -220,9 +220,9 @@ const useDataEdits = (): {
         value: any,
     ) => {
         const caseService = await GetCaseService()
-        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId }])
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: "" }])
         const updatedData = { ...existingDataInClient, [resourcePropertyKey]: value }
-        const serviceMethod = caseService.updateCase(projectId, caseId, updatedData as Components.Schemas.CaseDto)
+        const serviceMethod = caseService.updateCase(projectId, caseId, updatedData)
 
         try {
             await mutation.mutateAsync({
