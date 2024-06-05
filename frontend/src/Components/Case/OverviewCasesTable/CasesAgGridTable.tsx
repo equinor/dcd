@@ -108,12 +108,14 @@ const CasesAgGridTable = ({
     }
 
     const nameWithReferenceCase = (p: any) => (
+        <Tooltip title={p.value} placement="bottom-start">
         <Wrapper>
             {p.node.data.referenceCaseId === p.node.data.id && (
                 <ReferenceCaseIcon iconPlacement="casesTable" />
             )}
             <Button as="span" variant="ghost" className="GhostButton" onClick={() => selectCase(p)}>{p.value}</Button>
-        </Wrapper>
+            </Wrapper>
+        </Tooltip>
     )
 
     const [columnDefs] = useState<ColDef[]>([
