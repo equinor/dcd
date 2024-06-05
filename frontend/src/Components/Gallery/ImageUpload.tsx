@@ -65,7 +65,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         loadImages()
     }, [setGallery, project?.id, projectCase?.id])
 
-    const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
+    const MAX_FILE_SIZE = 5 * 1024 * 1024
     const MAX_FILES = 4
     const ACCEPTED_FILE_TYPES: Accept = {
         "image/jpeg": [".jpeg", ".jpg"],

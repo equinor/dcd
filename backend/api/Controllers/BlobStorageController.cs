@@ -3,7 +3,7 @@ using api.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-// [Authorize]
+[Authorize]
 [ApiController]
 [Route("projects/{projectId}/cases/{caseId}/images")]
 public class BlobStorageController : ControllerBase
