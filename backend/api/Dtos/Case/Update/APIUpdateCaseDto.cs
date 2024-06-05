@@ -1,11 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+
 using api.Models;
 
 namespace api.Dtos;
 
 public class APIUpdateCaseDto : BaseUpdateCaseDto
 {
-    public string? Name { get; set; }
-    public string? Description { get; set; }
+    [Required]
+    public string Name { get; set; } = null!;
+    [Required]
+    public string Description { get; set; } = null!;
     public bool? ReferenceCase { get; set; }
     public ArtificialLift? ArtificialLift { get; set; }
     public ProductionStrategyOverview? ProductionStrategyOverview { get; set; }

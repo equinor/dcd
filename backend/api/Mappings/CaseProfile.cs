@@ -9,6 +9,7 @@ public class CaseProfile : Profile
 {
     public CaseProfile()
     {
+        CreateMap<Case, CaseDto>();
         CreateMap<Case, CaseWithProfilesDto>();
         CreateMap<CessationWellsCost, CessationWellsCostDto>();
         CreateMap<CessationWellsCostOverride, CessationWellsCostOverrideDto>();
@@ -30,6 +31,7 @@ public class CaseProfile : Profile
         CreateMap<Image, ImageDto>();
 
         CreateMap<APIUpdateCaseWithProfilesDto, Case>();
+        CreateMap<APIUpdateCaseDto, Case>();
         CreateMap<PROSPUpdateCaseDto, Case>();
         CreateMap<UpdateCessationWellsCostOverrideDto, CessationWellsCostOverride>();
         CreateMap<UpdateCessationOffshoreFacilitiesCostOverrideDto, CessationOffshoreFacilitiesCostOverride>();
