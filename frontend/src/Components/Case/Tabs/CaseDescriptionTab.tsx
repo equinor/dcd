@@ -1,24 +1,25 @@
-import { ChangeEventHandler } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
+import { useQueryClient } from "react-query"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import Gallery from "../../Gallery/Gallery"
 import { useCaseContext } from "../../../Context/CaseContext"
 import { useAppContext } from "../../../Context/AppContext"
 import { useProjectContext } from "../../../Context/ProjectContext"
-import { setNonNegativeNumberState } from "../../../Utils/common"
 import useDataEdits from "../../../Hooks/useDataEdits"
 
 const CaseDescriptionTab = () => {
-    const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
+    const { projectCase } = useCaseContext()
     const { project } = useProjectContext()
-
     const { editMode } = useAppContext()
     const { addEdit } = useDataEdits()
+    const queryClient = useQueryClient()
 
     if (!projectCase || !project) { return null }
+
+    const caseData = queryClient.getQueryData([{ projectId: project.id, caseId: projectCase.id, resourceId: "" }]) as Components.Schemas.CaseDto
 
     const productionStrategyOptions = {
         0: "Depletion",
@@ -36,161 +37,118 @@ const CaseDescriptionTab = () => {
     }
 
     function handleDescriptionChange(value: string) {
-        if (projectCaseEdited) {
-            const updatedProjectCase = { ...projectCaseEdited, description: value }
-            setProjectCaseEdited(updatedProjectCase)
+        if (caseData) {
+            console.log("newValue: ", value)
+            console.log("previousValue: ", caseData?.description)
+            console.log("inputLabel: ", "Description")
+            console.log("projectId: ", project!.id)
+            console.log("resourceName: ", "case")
+            console.log("resourcePropertyKey: ", "description")
             addEdit({
                 newValue: value,
-                previousValue: projectCaseEdited.description,
+                previousValue: caseData.description,
                 inputLabel: "Description",
                 projectId: project!.id,
                 resourceName: "case",
                 resourcePropertyKey: "description",
+                resourceId: "",
+                caseId: caseData.id,
             })
         }
     }
 
-    // TODO: the value is manipulated before submition. find out how to handle that with the service implementation
-    const handleFacilitiesAvailabilityChange = (value: number): void => {
-        const newCase = { ...projectCase }
-        const newfacilitiesAvailability = value > 0
-            ? Math.min(Math.max(value, 0), 100) : undefined
-        if (newfacilitiesAvailability !== undefined) {
-            newCase.facilitiesAvailability = newfacilitiesAvailability / 100
-        } else { newCase.facilitiesAvailability = 0 }
-        setProjectCaseEdited(newCase)
+    if (caseData) {
+        return (
+            <Grid container spacing={2}>
+                <Gallery />
+                <Grid item xs={12} sx={{ marginBottom: editMode ? "32px" : 0 }}>
+                    <Typography group="input" variant="label">Description</Typography>
+                    {editMode
+                        ? (
+                            <MarkdownEditor
+                                menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
+                                onBlur={(markdown) => {
+                                    // eslint-disable-next-line no-underscore-dangle
+                                    const value = (markdown as any).target._value
+                                    handleDescriptionChange(value)
+                                }}
+                            >
+                                {caseData.description ?? ""}
+                            </MarkdownEditor>
+                        )
+                        : <MarkdownViewer value={caseData.description ?? ""} />}
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <SwitchableNumberInput
+                        resourceName="case"
+                        resourcePropertyKey="producerCount"
+                        label="Production wells"
+                        value={caseData.producerCount ?? 0}
+                        integer
+                        min={0}
+                        max={100000}
+                    />
+
+                </Grid>
+                <Grid item xs={12} md={4}>
+
+                    <SwitchableNumberInput
+                        resourceName="case"
+                        resourcePropertyKey="waterInjectorCount"
+                        label="Water injector wells"
+                        value={caseData.waterInjectorCount ?? 0}
+                        integer
+                        disabled={false}
+                        min={0}
+                        max={100000}
+                    />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <SwitchableNumberInput
+                        resourceName="case"
+                        resourcePropertyKey="gasInjectorCount"
+                        label="Gas injector wells"
+                        value={caseData.gasInjectorCount ?? 0}
+                        integer
+                        min={0}
+                        max={100000}
+                    />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <SwitchableDropdownInput
+                        value={caseData.productionStrategyOverview ?? 0}
+                        resourceName="case"
+                        resourcePropertyKey="productionStrategyOverview"
+                        options={productionStrategyOptions}
+                        label="Production strategy overview"
+                    />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <SwitchableDropdownInput
+                        value={caseData.artificialLift ?? 0}
+                        resourceName="case"
+                        resourcePropertyKey="artificialLift"
+                        options={artificialLiftOptions}
+                        label="Artificial lift"
+                    />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <SwitchableNumberInput
+                        resourceName="case"
+                        resourcePropertyKey="facilitiesAvailability"
+                        label="Facilities availability"
+                        value={caseData.facilitiesAvailability ?? 0}
+                        integer={false}
+                        unit="%"
+                        min={0}
+                        max={100}
+                    />
+                </Grid>
+            </Grid>
+        )
     }
 
-    const handleProductionStrategyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1, 2, 3, 4].indexOf(Number(e.currentTarget.value)) !== -1) {
-            const newProductionStrategy: Components.Schemas.ProductionStrategyOverview = Number(e.currentTarget.value) as Components.Schemas.ProductionStrategyOverview
-            const newCase = { ...projectCase }
-            newCase.productionStrategyOverview = newProductionStrategy
-            setProjectCaseEdited(newCase)
-        }
-    }
-
-    const handleArtificialLiftChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1) {
-            const newArtificialLift: Components.Schemas.ArtificialLift = Number(e.currentTarget.value) as Components.Schemas.ArtificialLift
-            const newCase = { ...projectCase }
-            newCase.artificialLift = newArtificialLift
-            setProjectCaseEdited(newCase)
-        }
-    }
-
-    const getFacilitiesAvailabilityDefaultValue = () => {
-        if (projectCaseEdited) {
-            return projectCaseEdited.facilitiesAvailability !== undefined
-                ? projectCaseEdited.facilitiesAvailability * 100
-                : undefined
-        }
-        return projectCase?.facilitiesAvailability !== undefined
-            ? projectCase.facilitiesAvailability * 100
-            : undefined
-    }
-
-    const defaultValue = getFacilitiesAvailabilityDefaultValue()
-
-    return (
-        <Grid container spacing={2}>
-            <Gallery />
-            <Grid item xs={12} sx={{ marginBottom: editMode ? "32px" : 0 }}>
-                <Typography group="input" variant="label">Description</Typography>
-                {editMode
-                    ? (
-                        <MarkdownEditor
-                            menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
-                            onBlur={(markdown) => {
-                                // eslint-disable-next-line no-underscore-dangle
-                                const value = (markdown as any).target._value
-                                handleDescriptionChange(value)
-                            }}
-                        >
-                            {projectCaseEdited ? projectCaseEdited.description : projectCase?.description ?? ""}
-                        </MarkdownEditor>
-                    )
-                    : <MarkdownViewer value={projectCase.description} />}
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <SwitchableNumberInput
-                    resourceName="case"
-                    resourcePropertyKey="producerCount"
-                    label="Production wells"
-                    onSubmit={(value) => {
-                        setNonNegativeNumberState(value, "producerCount", projectCaseEdited, setProjectCaseEdited)
-                    }}
-                    value={projectCaseEdited ? projectCaseEdited.producerCount : projectCase?.producerCount}
-                    integer
-                    min={0}
-                    max={100000}
-                />
-            </Grid>
-            <Grid item xs={12} md={4}>
-
-                <SwitchableNumberInput
-                    resourceName="case"
-                    resourcePropertyKey="waterInjectorCount"
-                    label="Water injector wells"
-                    onSubmit={(value) => {
-                        setNonNegativeNumberState(value, "waterInjectorCount", projectCaseEdited, setProjectCaseEdited)
-                    }}
-                    value={projectCaseEdited ? projectCaseEdited.waterInjectorCount : projectCase?.waterInjectorCount}
-                    integer
-                    disabled={false}
-                    min={0}
-                    max={100000}
-                />
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <SwitchableNumberInput
-                    resourceName="case"
-                    resourcePropertyKey="gasInjectorCount"
-                    label="Gas injector wells"
-                    onSubmit={(value) => {
-                        setNonNegativeNumberState(value, "gasInjectorCount", projectCaseEdited, setProjectCaseEdited)
-                    }}
-                    value={projectCaseEdited ? projectCaseEdited.gasInjectorCount : projectCase?.gasInjectorCount}
-                    integer
-                    min={0}
-                    max={100000}
-                />
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <SwitchableDropdownInput
-                    value={projectCaseEdited ? projectCaseEdited.productionStrategyOverview : projectCase.productionStrategyOverview}
-                    resourceName="case"
-                    resourcePropertyKey="productionStrategyOverview"
-                    options={productionStrategyOptions}
-                    label="Production strategy overview"
-                    onSubmit={handleProductionStrategyChange}
-                />
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <SwitchableDropdownInput
-                    value={projectCaseEdited ? projectCaseEdited.artificialLift : projectCase.artificialLift}
-                    resourceName="case"
-                    resourcePropertyKey="artificialLift"
-                    options={artificialLiftOptions}
-                    label="Artificial lift"
-                    onSubmit={handleArtificialLiftChange}
-                />
-            </Grid>
-            <Grid item xs={12} md={4}>
-                <SwitchableNumberInput
-                    resourceName="case"
-                    resourcePropertyKey="facilitiesAvailability"
-                    label="Facilities availability"
-                    onSubmit={handleFacilitiesAvailabilityChange}
-                    value={defaultValue}
-                    integer={false}
-                    unit="%"
-                    min={0}
-                    max={100}
-                />
-            </Grid>
-        </Grid>
-    )
+    return null
 }
 
 export default CaseDescriptionTab

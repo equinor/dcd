@@ -1,6 +1,5 @@
 /* eslint-disable indent */
 import { v4 as uuidv4 } from "uuid"
-import { useEffect, useState } from "react"
 import { useMutation, useQueryClient } from "react-query"
 import { useCaseContext } from "../Context/CaseContext"
 import {
@@ -222,6 +221,12 @@ const useDataEdits = (): {
         const caseService = await GetCaseService()
         const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: "" }])
         const updatedData = { ...existingDataInClient, [resourcePropertyKey]: value }
+        console.log("existingDataInClient: ", existingDataInClient)
+        console.log("projectId: ", projectId)
+        console.log("caseId: ", caseId)
+        console.log("resourcePropertyKey: ", resourcePropertyKey)
+        console.log("value: ", value)
+        console.log("updatedData: ", updatedData)
         const serviceMethod = caseService.updateCase(projectId, caseId, updatedData as Components.Schemas.APIUpdateCaseDto)
 
         try {

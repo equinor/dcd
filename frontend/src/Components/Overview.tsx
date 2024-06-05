@@ -13,6 +13,7 @@ const Overview = () => {
         isCreating,
         isLoading,
         editMode,
+        setEditMode,
         sidebarOpen,
         snackBarMessage,
         setSnackBarMessage,

@@ -13,7 +13,7 @@ interface SwitchableDropdownInputProps {
     resourcePropertyKey: ResourcePropertyKey;
     resourceId?: string;
     label: string;
-    onSubmit: ChangeEventHandler<HTMLSelectElement>
+    onSubmit?: ChangeEventHandler<HTMLSelectElement>
 }
 
 const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
@@ -30,12 +30,11 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
     const { addEdit } = useDataEdits()
 
     const addToEditsAndSubmit: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        onSubmit(e)
-
         if (!projectCase || !project) { return }
+        if (onSubmit) { onSubmit(e) }
 
         addEdit({
-            newValue: e.currentTarget.value,
+            newValue: Number(e.currentTarget.value),
             previousValue: value,
             inputLabel: label,
             projectId: project.id,
