@@ -95,8 +95,9 @@ const useDataEdits = (): {
         resourcePropertyKey: ResourcePropertyKey,
         value: string | number | undefined,
     ) => {
-        const updatedData = { [resourcePropertyKey]: value }
         const service = await GetTopsideService()
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: topsideId }])
+        const updatedData = { ...existingDataInClient, [resourcePropertyKey]: value }
         const serviceMethod = service.updateTopside(projectId, caseId, topsideId, updatedData)
 
         try {
@@ -119,10 +120,11 @@ const useDataEdits = (): {
         resourcePropertyKey: ResourcePropertyKey,
         value: string | number | undefined,
     ) => {
-        const updatedData = { [resourcePropertyKey]: value }
         const service = await GetSurfService()
-
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: surfId }])
+        const updatedData = { ...existingDataInClient, [resourcePropertyKey]: value }
         const serviceMethod = service.updateSurf(projectId, caseId, surfId, updatedData)
+
         try {
             await mutation.mutateAsync({
                 projectId,
@@ -143,8 +145,9 @@ const useDataEdits = (): {
         resourcePropertyKey: ResourcePropertyKey,
         value: string | number | undefined,
     ) => {
-        const updatedData = { [resourcePropertyKey]: value }
         const service = await GetSubstructureService()
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: substructureId }])
+        const updatedData = { ...existingDataInClient, [resourcePropertyKey]: value }
         const serviceMethod = service.updateSubstructure(projectId, caseId, substructureId, updatedData)
 
         try {
@@ -167,8 +170,9 @@ const useDataEdits = (): {
         resourcePropertyKey: ResourcePropertyKey,
         value: string | number | undefined,
     ) => {
-        const updatedData = { [resourcePropertyKey]: value }
         const service = await GetTransportService()
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: transportId }])
+        const updatedData = { ...existingDataInClient, [resourcePropertyKey]: value }
         const serviceMethod = service.updateTransport(projectId, caseId, transportId, updatedData)
 
         try {
@@ -191,8 +195,9 @@ const useDataEdits = (): {
         resourcePropertyKey: ResourcePropertyKey,
         value: any,
     ) => {
-        const updatedData = { [resourcePropertyKey]: value }
         const service = await GetDrainageStrategyService()
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        const updatedData = { ...existingDataInClient, [resourcePropertyKey]: value }
         const serviceMethod = service.updateDrainageStrategy(projectId, caseId, drainageStrategyId, updatedData)
 
         try {
@@ -214,9 +219,10 @@ const useDataEdits = (): {
         resourcePropertyKey: ResourcePropertyKey,
         value: any,
     ) => {
-        const updatedData = { [resourcePropertyKey]: value }
         const caseService = await GetCaseService()
-        const serviceMethod = caseService.updateCase(projectId, caseId, updatedData)
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId }])
+        const updatedData = { ...existingDataInClient, [resourcePropertyKey]: value }
+        const serviceMethod = caseService.updateCase(projectId, caseId, updatedData as Components.Schemas.CaseDto)
 
         try {
             await mutation.mutateAsync({
