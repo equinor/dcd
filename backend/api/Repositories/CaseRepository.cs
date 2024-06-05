@@ -1,4 +1,5 @@
 using api.Context;
+using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,18 @@ public class CaseRepository : ICaseRepository
     {
         _context = context;
         _logger = logger;
+    }
+
+    public async Task<Case?> GetCase(Guid caseId)
+    {
+        return await _context.Cases.FindAsync(caseId);
+    }
+
+    public async Task<Case> UpdateCase(Case updatedCase)
+    {
+        _context.Cases.Update(updatedCase);
+        await _context.SaveChangesAsync();
+        return updatedCase;
     }
 
     public async Task UpdateModifyTime(Guid caseId)

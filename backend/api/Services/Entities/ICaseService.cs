@@ -10,4 +10,5 @@ public interface ICaseService
     Task<ProjectDto> DeleteCase(Guid caseId);
     Task<Case> GetCase(Guid caseId);
     Task<IEnumerable<Case>> GetAll();
+    Task<CaseDto> UpdateCase<TDto>(Guid caseId, TDto updatedCaseDto) where TDto : BaseUpdateCaseDto;
 }

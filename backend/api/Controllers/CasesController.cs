@@ -49,9 +49,9 @@ public class CasesController : ControllerBase
     // }
 
     [HttpPut("{caseId}")]
-    public async Task<ProjectDto> UpdateCase([FromRoute] Guid caseId, [FromBody] APIUpdateCaseDto caseDto)
+    public async Task<CaseDto> UpdateCase([FromRoute] Guid caseId, [FromBody] APIUpdateCaseDto caseDto)
     {
-        return await _caseService.UpdateCaseAndProfiles(caseId, caseDto);
+        return await _caseService.UpdateCase(caseId, caseDto);
     }
 
 

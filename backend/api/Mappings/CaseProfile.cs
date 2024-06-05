@@ -9,7 +9,7 @@ public class CaseProfile : Profile
 {
     public CaseProfile()
     {
-        CreateMap<Case, CaseDto>();
+        CreateMap<Case, CaseWithProfilesDto>();
         CreateMap<CessationWellsCost, CessationWellsCostDto>();
         CreateMap<CessationWellsCostOverride, CessationWellsCostOverrideDto>();
         CreateMap<CessationOffshoreFacilitiesCost, CessationOffshoreFacilitiesCostDto>();

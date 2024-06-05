@@ -304,7 +304,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         var wellProject = await _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
     }
 
-    public async Task<CaseDto> UpdateCase(Guid caseId, APIUpdateCaseWithProfilesDto updatedDto, ProfilesToGenerate profilesToGenerate)
+    public async Task<CaseWithProfilesDto> UpdateCase(Guid caseId, APIUpdateCaseWithProfilesDto updatedDto, ProfilesToGenerate profilesToGenerate)
     {
         profilesToGenerate.StudyCost = true;
         profilesToGenerate.Co2Emissions = true;
@@ -315,7 +315,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         var item = await _caseService.GetCase(caseId);
         _mapper.Map(updatedDto, item);
         var updatedItem = _context.Cases!.Update(item);
-        var caseDto = _mapper.Map<CaseDto>(updatedItem.Entity);
+        var caseDto = _mapper.Map<CaseWithProfilesDto>(updatedItem.Entity);
         if (caseDto == null)
         {
             throw new Exception("Failed to update case");

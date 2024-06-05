@@ -185,7 +185,7 @@ public static class TestHelper
         }
     }
 
-    public static void CompareCases(Case expected, CaseDto actual)
+    public static void CompareCases(Case expected, CaseWithProfilesDto actual)
     {
         if (expected == null || actual == null)
         {
@@ -200,7 +200,7 @@ public static class TestHelper
         }
     }
 
-    public static void CompareCases(CaseDto expected, CaseDto actual)
+    public static void CompareCases(CaseWithProfilesDto expected, CaseWithProfilesDto actual)
     {
         Assert.Equal(expected.Name, actual.Name);
         Assert.Equal(expected.Description, actual.Description);

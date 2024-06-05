@@ -2,6 +2,7 @@ using api.Context;
 using api.Dtos;
 using api.Exceptions;
 using api.Models;
+using api.Repositories;
 
 using AutoMapper;
 
@@ -22,10 +23,23 @@ public class CaseService : ICaseService
     private readonly IWellProjectService _wellProjectService;
     private readonly ILogger<CaseService> _logger;
     private readonly IMapper _mapper;
+    private readonly IMapperService _mapperService;
+    private readonly ICaseRepository _repository;
 
-    public CaseService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory, IDrainageStrategyService drainageStrategyService,
-        ITopsideService topsideService, ISurfService surfService, ISubstructureService substructureService, ITransportService transportService,
-        IExplorationService explorationService, IWellProjectService wellProjectService, IMapper mapper)
+    public CaseService(
+        DcdDbContext context,
+        IProjectService projectService,
+        ILoggerFactory loggerFactory,
+        IDrainageStrategyService drainageStrategyService,
+        ITopsideService topsideService,
+        ISurfService surfService,
+        ISubstructureService substructureService,
+        ITransportService transportService,
+        IExplorationService explorationService,
+        IWellProjectService wellProjectService,
+        ICaseRepository repository,
+        IMapperService mapperService,
+        IMapper mapper)
     {
         _context = context;
         _projectService = projectService;
@@ -38,6 +52,8 @@ public class CaseService : ICaseService
         _wellProjectService = wellProjectService;
         _logger = loggerFactory.CreateLogger<CaseService>();
         _mapper = mapper;
+        _mapperService = mapperService;
+        _repository = repository;
     }
 
     public async Task<ProjectDto> CreateCase(Guid projectId, CreateCaseDto createCaseDto)
@@ -131,16 +147,31 @@ public class CaseService : ICaseService
         return await _projectService.GetProjectDto(caseItem.ProjectId);
     }
 
-    public async Task<ProjectDto> UpdateCase<TDto>(Guid caseId, TDto updatedCaseDto)
-    where TDto : BaseUpdateCaseDto
+    public async Task<CaseDto> UpdateCase<TDto>(
+            Guid caseId,
+            TDto updatedCaseDto
+        )
+        where TDto : BaseUpdateCaseDto
     {
-        var caseItem = await GetCase(caseId);
+        var existingCase = await _repository.GetCase(caseId)
+            ?? throw new NotFoundInDBException($"Case with id {caseId} not found.");
 
-        _mapper.Map(updatedCaseDto, caseItem);
+        _mapperService.MapToEntity(updatedCaseDto, existingCase, caseId);
 
-        _context.Cases!.Update(caseItem);
-        await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDto(caseItem.ProjectId);
+        existingCase.ModifyTime = DateTimeOffset.UtcNow;
+
+        Case updatedCase;
+        try
+        {
+            updatedCase = await _repository.UpdateCase(existingCase);
+        }
+        catch (DbUpdateException ex) {
+            _logger.LogError(ex, "Failed to update case with id {caseId}.", caseId);
+            throw;
+        }
+
+        var dto = _mapperService.MapToDto<Case, CaseDto>(updatedCase, caseId);
+        return dto;
     }
 
     public async Task<ProjectDto> DeleteCase(Guid caseId)
