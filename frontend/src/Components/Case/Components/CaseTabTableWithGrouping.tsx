@@ -12,7 +12,7 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { lock, lock_open } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
-import { formatColumnSum, isInteger, tableCellisEditable } from "../../../Utils/common"
+import { isInteger, tableCellisEditable } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../../Utils/constants"
 import { useAppContext } from "../../../Context/AppContext"
@@ -121,7 +121,7 @@ const CaseTabTableWithGrouping = ({
                 editable: false,
                 pinned: "right",
                 width: 100,
-                aggFunc: formatColumnSum,
+                aggFunc: "sum",
                 cellStyle: { fontWeight: "bold" },
             },
 
@@ -134,7 +134,7 @@ const CaseTabTableWithGrouping = ({
                 flex: 1,
                 editable: (params: any) => tableCellisEditable(params, editMode),
                 minWidth: 100,
-                aggFunc: formatColumnSum,
+                aggFunc: "sum",
                 cellClass: (params: any) => (editMode && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
                 cellStyle: { fontWeight: "bold" },
             })

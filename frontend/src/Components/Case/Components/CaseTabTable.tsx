@@ -15,7 +15,6 @@ import {
     numberValueParser,
     getCaseRowStyle,
     validateInput,
-    formatColumnSum,
 } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../../Utils/constants"
@@ -151,7 +150,7 @@ const CaseTabTable = ({
                 editable: false,
                 pinned: "right",
                 width: 100,
-                aggFunc: formatColumnSum,
+                aggFunc: "sum",
                 cellStyle: { fontWeight: "bold" },
             },
             {
@@ -172,7 +171,7 @@ const CaseTabTable = ({
                 flex: 1,
                 editable: (params: any) => tableCellisEditable(params, editMode),
                 minWidth: 100,
-                aggFunc: formatColumnSum,
+                aggFunc: "sum",
                 cellRenderer: ErrorCellRenderer,
                 cellRendererParams: (params: any) => ({
                     value: params.value,
