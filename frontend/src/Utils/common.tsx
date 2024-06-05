@@ -304,15 +304,3 @@ export const getCurrentEditId = (editIndexes: EditEntry[], projectCase: Componen
     const currentCaseEditId = editIndexes.find((entry: EditEntry) => entry.caseId === projectCase?.id && entry.currentEditId)
     return (currentCaseEditId as unknown as EditEntry)?.currentEditId
 }
-
-export const formatColumnSum = (params: { values: any[] }) => {
-    let sum = 0
-    params.values.forEach((value: any) => {
-        if (!Number(value)) {
-            sum += 0
-        } else {
-            sum += value
-        }
-    })
-    return sum > 0 ? parseFloat(sum.toFixed(10)) : ""
-}
