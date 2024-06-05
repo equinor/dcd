@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { Outlet, useParams } from "react-router-dom"
 import Grid from "@mui/material/Grid"
-import { Progress, Typography } from "@equinor/eds-core-react"
+import { Progress, Snackbar, Typography } from "@equinor/eds-core-react"
 import Sidebar from "./Controls/Sidebar/Sidebar"
 import Controls from "./Controls/Controls"
 import { useAppContext } from "../Context/AppContext"
@@ -14,6 +14,8 @@ const Overview = () => {
         isLoading,
         editMode,
         sidebarOpen,
+        snackBarMessage,
+        setSnackBarMessage,
     } = useAppContext()
     const { project } = useProjectContext()
     const { setProjectCase } = useCaseContext()
@@ -28,8 +30,15 @@ const Overview = () => {
         }
     }, [project, caseId, editMode])
 
+    useEffect(() => {
+        console.log(snackBarMessage)
+    }, [snackBarMessage])
+
     return (
         <Grid container display="grid" className="ConceptApp MainGrid" gridTemplateColumns={sidebarOpen ? "256px 1fr" : "72px 1fr"}>
+            <Snackbar open={snackBarMessage !== undefined} autoHideDuration={6000} onClose={() => setSnackBarMessage(undefined)}>
+                {snackBarMessage}
+            </Snackbar>
             <Grid item alignSelf="stretch">
                 <Sidebar />
             </Grid>
