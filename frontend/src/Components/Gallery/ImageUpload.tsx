@@ -8,6 +8,7 @@ import { tokens } from "@equinor/eds-tokens"
 import { getImageService } from "../../Services/ImageService"
 import { useCaseContext } from "../../Context/CaseContext"
 import { useProjectContext } from "../../Context/ProjectContext"
+import { useAppContext } from "../../Context/AppContext"
 
 const UploadBox = styled(Box)`
     display: flex;
@@ -37,11 +38,6 @@ const UploadBox = styled(Box)`
     }
 `
 
-const ErrorMessage = styled(Typography)`
-    color: ${tokens.colors.interactive.danger__text.rgba};
-    margin-top: 10px;
-`
-
 interface ImageUploadProps {
     setGallery: React.Dispatch<React.SetStateAction<string[]>>
     gallery: string[]
@@ -51,7 +47,7 @@ interface ImageUploadProps {
 const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeededLimit }) => {
     const { projectCase } = useCaseContext()
     const { project } = useProjectContext()
-    const [errorMessage, setErrorMessage] = useState<string>("")
+    const { setSnackBarMessage } = useAppContext()
 
     useEffect(() => {
         const loadImages = async () => {
@@ -78,15 +74,15 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
     }
 
     const onDrop = async (acceptedFiles: File[], fileRejections: FileRejection[]) => {
-        setErrorMessage("") // Reset error message
+        setSnackBarMessage("")
 
         fileRejections.forEach((rejection) => {
             const { file, errors } = rejection
             errors.forEach((error: { code: string }) => {
                 if (error.code === "file-too-large") {
-                    setErrorMessage(`File ${file.name} is too large. Maximum size is 5MB.`)
+                    setSnackBarMessage(`File ${file.name} is too large. Maximum size is 5MB.`)
                 } else if (error.code === "file-invalid-type") {
-                    setErrorMessage(`File ${file.name} is not an accepted image type.`)
+                    setSnackBarMessage(`File ${file.name} is not an accepted image type.`)
                 }
             })
         })
@@ -127,6 +123,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
 
     return (
         <UploadBox {...getRootProps()}>
+            {/* ... (existing code) */}
             <input {...getInputProps()} />
             <Icon data={add} size={48} />
             {isDragActive ? (
@@ -134,7 +131,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
             ) : (
                 <Typography variant="body1">Click or drag and drop images here to upload</Typography>
             )}
-            {errorMessage && <ErrorMessage variant="body2">{errorMessage}</ErrorMessage>}
         </UploadBox>
     )
 }
