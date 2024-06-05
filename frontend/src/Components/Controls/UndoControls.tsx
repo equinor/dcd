@@ -24,28 +24,27 @@ const Status = styled.div`
 
 const UndoControls: React.FC = () => {
     const {
-        caseEdits,
         projectCase,
         editIndexes,
+        caseEditsBelongingToCurrentCase,
     } = useCaseContext()
 
     const isMutating = useIsMutating()
 
     const { undoEdit, redoEdit } = useDataEdits()
 
-    const editsBelongingToCurrentCase = projectCase && caseEdits.filter((edit) => edit.caseId === projectCase.id)
     const currentEditId = getCurrentEditId(editIndexes, projectCase)
 
     const canUndo = () => {
         if (isMutating) {
             return false
         }
-        if (!currentEditId || !editsBelongingToCurrentCase) {
+        if (!currentEditId || !caseEditsBelongingToCurrentCase) {
             return false
         }
 
-        const currentEditIndex = editsBelongingToCurrentCase.findIndex((edit) => edit.uuid === currentEditId)
-        return currentEditIndex < editsBelongingToCurrentCase.length && currentEditIndex > -1
+        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === currentEditId)
+        return currentEditIndex < caseEditsBelongingToCurrentCase.length && currentEditIndex > -1
     }
 
     const canRedo = () => {
@@ -53,15 +52,15 @@ const UndoControls: React.FC = () => {
             return false
         }
 
-        if (!editsBelongingToCurrentCase) {
+        if (!caseEditsBelongingToCurrentCase) {
             return false
         }
-        if (!currentEditId && editsBelongingToCurrentCase.length > 0) {
+        if (!currentEditId && caseEditsBelongingToCurrentCase.length > 0) {
             return true
         }
 
-        const currentEditIndex = editsBelongingToCurrentCase.findIndex((edit) => edit.uuid === currentEditId)
-        return currentEditIndex < editsBelongingToCurrentCase.length && currentEditIndex > 0
+        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === currentEditId)
+        return currentEditIndex < caseEditsBelongingToCurrentCase.length && currentEditIndex > 0
     }
 
     const [saving, setSaving] = useState(false)
@@ -70,7 +69,7 @@ const UndoControls: React.FC = () => {
         setSaving(true)
         setTimeout(() => {
             setSaving(false)
-        }, 1000)
+        }, 500)
     }
 
     useEffect(() => {
@@ -107,7 +106,7 @@ const UndoControls: React.FC = () => {
         }
     }, [undoEdit, redoEdit, canUndo, canRedo])
 
-    if (!editsBelongingToCurrentCase || editsBelongingToCurrentCase.length === 0) { return null }
+    if (!caseEditsBelongingToCurrentCase || caseEditsBelongingToCurrentCase.length === 0) { return null }
     return (
         <Container>
             {

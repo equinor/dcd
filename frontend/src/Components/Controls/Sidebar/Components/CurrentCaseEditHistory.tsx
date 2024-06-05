@@ -41,8 +41,7 @@ const NextValue = styled(Typography)`
 `
 
 const CurrentCaseEditHistory: React.FC = () => {
-    const { caseEdits, projectCase } = useCaseContext()
-    const editsBelongingToCurrentCase = projectCase && caseEdits.filter((edit) => edit.caseId === projectCase.id)
+    const { projectCase, caseEditsBelongingToCurrentCase } = useCaseContext()
 
     const {
         editHistoryIsActive,
@@ -61,7 +60,7 @@ const CurrentCaseEditHistory: React.FC = () => {
             )}
             <Content>
                 {sidebarOpen && projectCase && editHistoryIsActive && <CaseEditHistory caseId={projectCase.id} />}
-                {editHistoryIsActive && editsBelongingToCurrentCase?.length === 0 && <NextValue>No recent edits..</NextValue>}
+                {editHistoryIsActive && caseEditsBelongingToCurrentCase?.length === 0 && <NextValue>No recent edits..</NextValue>}
             </Content>
         </Container>
     )

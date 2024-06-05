@@ -24,6 +24,8 @@ interface AppContextType {
     setSidebarOpen: Dispatch<SetStateAction<boolean>>,
     editHistoryIsActive: boolean;
     setEditHistoryIsActive: Dispatch<SetStateAction<boolean>>;
+    snackBarMessage: string | undefined;
+    setSnackBarMessage: Dispatch<SetStateAction<string | undefined>>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
@@ -36,6 +38,7 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [updateFromServer, setUpdateFromServer] = useState<boolean>(true)
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(true)
     const [editHistoryIsActive, setEditHistoryIsActive] = useState(true)
+    const [snackBarMessage, setSnackBarMessage] = useState<string | undefined>(undefined)
 
     const value = useMemo(() => ({
         isCreating,
@@ -52,6 +55,8 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setSidebarOpen,
         editHistoryIsActive,
         setEditHistoryIsActive,
+        snackBarMessage,
+        setSnackBarMessage,
     }), [
         isCreating,
         setIsCreating,
@@ -67,6 +72,8 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setSidebarOpen,
         editHistoryIsActive,
         setEditHistoryIsActive,
+        snackBarMessage,
+        setSnackBarMessage,
     ])
 
     return (

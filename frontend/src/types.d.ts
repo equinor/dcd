@@ -619,6 +619,8 @@ declare namespace Components {
             createTime: string; // date-time
             description?: string | null;
             caseId: string; // uuid
+            projectName: string;
+            projectId: string; // uuid
         }
         export interface ImportedElectricityDto {
             id: string; // uuid
@@ -2111,7 +2113,15 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
             }
             export interface RequestBody {
-                image?: string; // binary
+                projectName?: string;
+                ContentType?: string;
+                ContentDisposition?: string;
+                Headers?: {
+                    [name: string]: string[];
+                };
+                Length?: number; // int64
+                Name?: string;
+                FileName?: string;
             }
             namespace Responses {
                 export type $200 = Components.Schemas.ImageDto;

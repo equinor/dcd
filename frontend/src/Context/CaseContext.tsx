@@ -26,6 +26,8 @@ interface CaseContextType {
     setActiveTabCase: Dispatch<SetStateAction<number>>,
     editIndexes: any[]
     setEditIndexes: Dispatch<SetStateAction<any[]>>
+    caseEditsBelongingToCurrentCase: EditInstance[]
+    setCaseEditsBelongingToCurrentCase: Dispatch<SetStateAction<EditInstance[]>>
 
     topside: Components.Schemas.TopsideWithProfilesDto | undefined
     setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideWithProfilesDto | undefined>>
@@ -137,6 +139,7 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [saveProjectCase, setSaveProjectCase] = useState<boolean>(false)
     const [activeTabCase, setActiveTabCase] = useState<number>(0)
     const [editIndexes, setEditIndexes] = useState<any[]>([])
+    const [caseEditsBelongingToCurrentCase, setCaseEditsBelongingToCurrentCase] = useState<EditInstance[]>([])
 
     const [topside, setTopside] = useState<Components.Schemas.TopsideWithProfilesDto | undefined>()
     const [topsideCost, setTopsideCost] = useState<Components.Schemas.TopsideCostProfileDto | undefined>()
@@ -201,6 +204,8 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setActiveTabCase,
         editIndexes,
         setEditIndexes,
+        caseEditsBelongingToCurrentCase,
+        setCaseEditsBelongingToCurrentCase,
 
         topside,
         setTopside,
@@ -298,6 +303,8 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setActiveTabCase,
         editIndexes,
         setEditIndexes,
+        caseEditsBelongingToCurrentCase,
+        setCaseEditsBelongingToCurrentCase,
 
         topside,
         topsideCost,
@@ -354,6 +361,12 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     useEffect(() => {
         localStorage.setItem("caseEdits", JSON.stringify(caseEdits))
     }, [caseEdits])
+
+    useEffect(() => {
+        if (projectCase) {
+            setCaseEditsBelongingToCurrentCase(caseEdits.filter((edit) => edit.caseId === projectCase.id))
+        }
+    }, [projectCase, caseEdits])
 
     useEffect(() => {
         if (editMode && projectCase && !projectCaseEdited) {

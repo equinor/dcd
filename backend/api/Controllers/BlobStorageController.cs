@@ -16,14 +16,14 @@ public class BlobStorageController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ImageDto>> UploadImage(Guid projectId, Guid caseId, IFormFile image)
+    public async Task<ActionResult<ImageDto>> UploadImage(Guid projectId, [FromForm] string projectName, Guid caseId, [FromForm] IFormFile image)
     {
         if (image == null || image.Length == 0)
         {
             return BadRequest("No image provided.");
         }
 
-        var imageDto = await _blobStorageService.SaveImage(image, caseId);
+        var imageDto = await _blobStorageService.SaveImage(projectId, projectName, image, caseId);
         return Ok(imageDto);
     }
 
