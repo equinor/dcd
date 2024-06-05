@@ -132,7 +132,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         return _mapperService.MapToDto<T, TDto>(source, (Guid)id);
     }
 
-        private TDto? ConversionMapToDto<T, TDto>(T? source, Guid? id, PhysUnit physUnit) where T : class where TDto : class
+    private TDto? ConversionMapToDto<T, TDto>(T? source, Guid? id, PhysUnit physUnit) where T : class where TDto : class
     {
         if (source == null || id == null)
         {
