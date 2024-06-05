@@ -33,7 +33,10 @@ const OpexCosts: React.FC<OpexCostsProps> = ({ tableYears, opexGridRef, alignedG
         activeTabCase,
     } = useCaseContext()
 
-    const [offshoreFacilitiesOperationsCostProfileOverride, setOffshoreFacilitiesOperationsCostProfileOverride] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto>()
+    const [
+        offshoreFacilitiesOperationsCostProfileOverride,
+        setOffshoreFacilitiesOperationsCostProfileOverride,
+    ] = useState<Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto>()
     const [wellInterventionCostProfileOverride, setWellInterventionCostProfileOverride] = useState<Components.Schemas.WellInterventionCostProfileOverrideDto>()
 
     const opexTimeSeriesData: ITimeSeriesData[] = [
