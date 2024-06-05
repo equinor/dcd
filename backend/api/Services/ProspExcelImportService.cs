@@ -410,7 +410,7 @@ public class ProspExcelImportService
                 SharepointFileUrl = sharepointFileUrl,
             };
 
-            return await _caseService.UpdateCase(sourceCaseId, caseDto);
+            return await _caseService.UpdateCaseAndProfiles(sourceCaseId, caseDto);
         }
 
         return await _projectService.GetProjectDto(projectId);
@@ -428,14 +428,14 @@ public class ProspExcelImportService
         ClearImportedSubstructure(caseItem);
         ClearImportedTransport(caseItem);
 
-        var caseDto = _mapper.Map<APIUpdateCaseDto>(caseItem);
+        var caseDto = _mapper.Map<APIUpdateCaseWithProfilesDto>(caseItem);
 
         if (caseDto == null)
         {
             throw new Exception();
         }
 
-        await _caseService.UpdateCase(sourceCaseId, caseDto);
+        await _caseService.UpdateCaseAndProfiles(sourceCaseId, caseDto);
     }
 
     private void ClearImportedSurf(Case caseItem)

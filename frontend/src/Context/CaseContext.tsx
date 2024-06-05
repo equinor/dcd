@@ -14,10 +14,10 @@ import { EditInstance } from "../Models/Interfaces"
 import { useAppContext } from "../Context/AppContext"
 
 interface CaseContextType {
-    projectCase: Components.Schemas.CaseDto | undefined;
-    setProjectCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
-    projectCaseEdited: Components.Schemas.CaseDto | undefined; // todo: replace with caseEdits
-    setProjectCaseEdited: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>, // todo: replace with caseEdits
+    projectCase: Components.Schemas.CaseWithProfilesDto | undefined;
+    setProjectCase: Dispatch<SetStateAction<Components.Schemas.CaseWithProfilesDto | undefined>>,
+    projectCaseEdited: Components.Schemas.CaseWithProfilesDto | undefined; // todo: replace with caseEdits
+    setProjectCaseEdited: Dispatch<SetStateAction<Components.Schemas.CaseWithProfilesDto | undefined>>, // todo: replace with caseEdits
     caseEdits: EditInstance[];
     setCaseEdits: Dispatch<SetStateAction<EditInstance[]>>,
     saveProjectCase: boolean,
@@ -133,9 +133,9 @@ const getFilteredEdits = () => {
 }
 
 const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [projectCase, setProjectCase] = useState<Components.Schemas.CaseDto | undefined>()
+    const [projectCase, setProjectCase] = useState<Components.Schemas.CaseWithProfilesDto | undefined>()
     const [caseEdits, setCaseEdits] = useState<EditInstance[]>(getFilteredEdits())
-    const [projectCaseEdited, setProjectCaseEdited] = useState<Components.Schemas.CaseDto | undefined>()
+    const [projectCaseEdited, setProjectCaseEdited] = useState<Components.Schemas.CaseWithProfilesDto | undefined>()
     const [saveProjectCase, setSaveProjectCase] = useState<boolean>(false)
     const [activeTabCase, setActiveTabCase] = useState<number>(0)
     const [editIndexes, setEditIndexes] = useState<any[]>([])

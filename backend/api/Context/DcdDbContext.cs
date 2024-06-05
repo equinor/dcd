@@ -16,6 +16,16 @@ public class DcdDbContext : DbContext
     public DbSet<DevelopmentOperationalWellCosts> DevelopmentOperationalWellCosts { get; set; } = null!;
 
     public DbSet<Case> Cases { get; set; } = null!;
+    public DbSet<CessationWellsCostOverride> CessationWellsCostOverride { get; set; } = null!;
+    public DbSet<CessationOffshoreFacilitiesCostOverride> CessationOffshoreFacilitiesCostOverride { get; set; } = null!;
+    public DbSet<TotalFeasibilityAndConceptStudiesOverride> TotalFeasibilityAndConceptStudiesOverride { get; set; } = null!;
+    public DbSet<TotalFEEDStudiesOverride> TotalFEEDStudiesOverride { get; set; } = null!;
+    public DbSet<HistoricCostCostProfile> HistoricCostCostProfile { get; set; } = null!;
+    public DbSet<WellInterventionCostProfileOverride> WellInterventionCostProfileOverride { get; set; } = null!;
+    public DbSet<OffshoreFacilitiesOperationsCostProfileOverride> OffshoreFacilitiesOperationsCostProfileOverride { get; set; } = null!;
+    public DbSet<OnshoreRelatedOPEXCostProfile> OnshoreRelatedOPEXCostProfile { get; set; } = null!;
+    public DbSet<AdditionalOPEXCostProfile> AdditionalOPEXCostProfile { get; set; } = null!;
+
     public DbSet<Well> Wells { get; set; } = null!;
     public DbSet<WellProjectWell> WellProjectWell { get; set; } = null!;
     public DbSet<ExplorationWell> ExplorationWell { get; set; } = null!;

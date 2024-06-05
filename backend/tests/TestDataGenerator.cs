@@ -17,9 +17,9 @@ public static class TestDataGenerator
             ProjectPhase = ProjectPhase.BusinessPlanning
         };
     }
-    public static CaseDto Case2Case()
+    public static CaseWithProfilesDto Case2Case()
     {
-        return new CaseDto
+        return new CaseWithProfilesDto
         {
             Name = "Case 2",
             CreateTime = DateTimeOffset.UtcNow,

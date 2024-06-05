@@ -211,10 +211,12 @@ const useDataEdits = (): {
     const updateCase = async (
         projectId: string,
         caseId: string,
+        resourcePropertyKey: ResourcePropertyKey,
         value: any,
     ) => {
+        const updatedData = { [resourcePropertyKey]: value }
         const caseService = await GetCaseService()
-        const serviceMethod = caseService.updateCase(projectId, caseId, value)
+        const serviceMethod = caseService.updateCase(projectId, caseId, updatedData)
 
         try {
             await mutation.mutateAsync({
@@ -244,7 +246,7 @@ const useDataEdits = (): {
         let sucess = false
         switch (resourceName) {
             case "case":
-                sucess = await updateCase(projectId, caseId, value)
+                sucess = await updateCase(projectId, caseId, resourcePropertyKey, value)
                 break
             case "topside":
                 sucess = await updateTopside(projectId, caseId, resourceId!, resourcePropertyKey, value)

@@ -4,7 +4,7 @@ namespace api.Adapters;
 
 public static class STEACaseDtoBuilder
 {
-    public static STEACaseDto Build(CaseDto caseDto, ProjectDto projectDto)
+    public static STEACaseDto Build(CaseWithProfilesDto caseDto, ProjectDto projectDto)
     {
         var sTEACaseDto = new STEACaseDto
         {
@@ -24,7 +24,7 @@ public static class STEACaseDtoBuilder
         return sTEACaseDto;
     }
 
-    private static void AddOpexCost(STEACaseDto sTEACaseDto, CaseDto caseDto)
+    private static void AddOpexCost(STEACaseDto sTEACaseDto, CaseWithProfilesDto caseDto)
     {
         var costProfileDtos = new List<TimeSeriesCostDto>();
         if (caseDto.HistoricCostCostProfile != null)
@@ -68,7 +68,7 @@ public static class STEACaseDtoBuilder
         sTEACaseDto.OpexCostProfile.StartYear += caseDto.DG4Date.Year;
     }
 
-    private static void AddStudyCost(STEACaseDto sTEACaseDto, CaseDto caseDto)
+    private static void AddStudyCost(STEACaseDto sTEACaseDto, CaseWithProfilesDto caseDto)
     {
         var costProfileDtos = new List<TimeSeriesCostDto>();
         if (caseDto.TotalFeasibilityAndConceptStudiesOverride?.Override == true)
@@ -102,7 +102,7 @@ public static class STEACaseDtoBuilder
         sTEACaseDto.StudyCostProfile.StartYear += caseDto.DG4Date.Year;
     }
 
-    private static void AddCessationCost(STEACaseDto sTEACaseDto, CaseDto caseDto)
+    private static void AddCessationCost(STEACaseDto sTEACaseDto, CaseWithProfilesDto caseDto)
     {
         var costProfileDtos = new List<TimeSeriesCostDto>();
         if (caseDto.CessationWellsCostOverride?.Override == true)
@@ -138,7 +138,7 @@ public static class STEACaseDtoBuilder
         sTEACaseDto.Capex.CessationCost.StartYear += caseDto.DG4Date.Year;
     }
 
-    private static void AddCapex(ProjectDto p, STEACaseDto sTEACaseDto, CaseDto c)
+    private static void AddCapex(ProjectDto p, STEACaseDto sTEACaseDto, CaseWithProfilesDto c)
     {
         sTEACaseDto.Capex = new CapexDto
         {
@@ -270,7 +270,7 @@ public static class STEACaseDtoBuilder
         sTEACaseDto.Capex.AddValues(sTEACaseDto.Capex.OffshoreFacilities);
     }
 
-    private static void AddProductionSalesAndVolumes(ProjectDto p, STEACaseDto sTEACaseDto, CaseDto c)
+    private static void AddProductionSalesAndVolumes(ProjectDto p, STEACaseDto sTEACaseDto, CaseWithProfilesDto c)
     {
         sTEACaseDto.ProductionAndSalesVolumes = new ProductionAndSalesVolumesDto
         {
@@ -344,7 +344,7 @@ public static class STEACaseDtoBuilder
         }
     }
 
-    private static void AddExploration(ProjectDto p, STEACaseDto sTEACaseDto, CaseDto caseDto)
+    private static void AddExploration(ProjectDto p, STEACaseDto sTEACaseDto, CaseWithProfilesDto caseDto)
     {
         sTEACaseDto.Exploration = new TimeSeriesCostDto();
         if (caseDto.ExplorationLink != Guid.Empty)
