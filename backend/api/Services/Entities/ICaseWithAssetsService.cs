@@ -1,14 +1,11 @@
 using api.Dtos;
 using api.Models;
 
-using static api.Services.CaseWithAssetsService;
+using static api.Services.CaseAndAssetsService;
 
 namespace api.Services;
 
 public interface ICaseWithAssetsService
 {
-    Task CreateAndUpdateExplorationWells(UpdateExplorationWellDto[] explorationWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate);
-    Task CreateAndUpdateWellProjectWells(UpdateWellProjectWellDto[] wellProjectWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate);
-    Task<CaseWithProfilesDto> UpdateCase(Guid caseId, APIUpdateCaseWithProfilesDto updatedDto, ProfilesToGenerate profilesToGenerate);
-    Task<ProjectWithGeneratedProfilesDto> UpdateCaseWithAssets(Guid projectId, Guid caseId, CaseWithAssetsWrapperDto wrapper);
+    Task<CaseWithAssetsDto> GetCaseWithAssets(Guid projectId, Guid caseId);
 }

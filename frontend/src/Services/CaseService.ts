@@ -46,6 +46,14 @@ class CaseService extends __BaseService {
         return res
     }
 
+    public async getCaseWithAssets(
+        projectId: string,
+        caseId: string,
+    ): Promise<Components.Schemas.ProjectDto> {
+        const res = await this.get(`projects/${projectId}/cases/${caseId}/case-with-assets`)
+        return res
+    }
+
     public async duplicateCase(
         projectId: string,
         copyCaseId: string,
