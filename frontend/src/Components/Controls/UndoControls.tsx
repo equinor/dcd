@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react"
 import {
-    Typography, Button, Icon, Tooltip,
+    Typography, Button, Icon, Tooltip, CircularProgress,
 } from "@equinor/eds-core-react"
-import { redo, undo } from "@equinor/eds-icons"
+import { redo, undo, check_circle_outlined } from "@equinor/eds-icons"
 import styled from "styled-components"
+import { useIsMutating } from "react-query"
 import useDataEdits from "../../Hooks/useDataEdits"
 import { useCaseContext } from "../../Context/CaseContext"
 import { getCurrentEditId } from "../../Utils/common"
@@ -15,39 +16,67 @@ const Container = styled.div`
    margin: 0 15px;
 `
 
+const Status = styled.div`
+   display: flex;
+   align-items: center;
+   gap: 5px;
+`
+
 const UndoControls: React.FC = () => {
     const {
-        caseEdits,
         projectCase,
         editIndexes,
+        caseEditsBelongingToCurrentCase,
     } = useCaseContext()
 
-    const [isSaving, setIsSaving] = useState(false) // todo: implement saving state from api call status
+    const isMutating = useIsMutating()
+
     const { undoEdit, redoEdit } = useDataEdits()
 
-    const editsBelongingToCurrentCase = projectCase && caseEdits.filter((edit) => edit.objectId === projectCase.id)
     const currentEditId = getCurrentEditId(editIndexes, projectCase)
 
     const canUndo = () => {
-        if (!currentEditId || !editsBelongingToCurrentCase) {
+        if (isMutating) {
+            return false
+        }
+        if (!currentEditId || !caseEditsBelongingToCurrentCase) {
             return false
         }
 
-        const currentEditIndex = editsBelongingToCurrentCase.findIndex((edit) => edit.uuid === currentEditId)
-        return currentEditIndex < editsBelongingToCurrentCase.length && currentEditIndex > -1
+        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === currentEditId)
+        return currentEditIndex < caseEditsBelongingToCurrentCase.length && currentEditIndex > -1
     }
 
     const canRedo = () => {
-        if (!editsBelongingToCurrentCase) {
+        if (isMutating) {
             return false
         }
-        if (!currentEditId && editsBelongingToCurrentCase.length > 0) {
+
+        if (!caseEditsBelongingToCurrentCase) {
+            return false
+        }
+        if (!currentEditId && caseEditsBelongingToCurrentCase.length > 0) {
             return true
         }
 
-        const currentEditIndex = editsBelongingToCurrentCase.findIndex((edit) => edit.uuid === currentEditId)
-        return currentEditIndex < editsBelongingToCurrentCase.length && currentEditIndex > 0
+        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === currentEditId)
+        return currentEditIndex < caseEditsBelongingToCurrentCase.length && currentEditIndex > 0
     }
+
+    const [saving, setSaving] = useState(false)
+
+    const startCountDown = () => {
+        setSaving(true)
+        setTimeout(() => {
+            setSaving(false)
+        }, 500)
+    }
+
+    useEffect(() => {
+        if (isMutating) {
+            startCountDown()
+        }
+    }, [isMutating])
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -77,13 +106,25 @@ const UndoControls: React.FC = () => {
         }
     }, [undoEdit, redoEdit, canUndo, canRedo])
 
-    if (!editsBelongingToCurrentCase || editsBelongingToCurrentCase.length === 0) { return null }
+    if (!caseEditsBelongingToCurrentCase || caseEditsBelongingToCurrentCase.length === 0) { return null }
     return (
         <Container>
             {
-                isSaving
-                    ? <Typography variant="caption">Saving...</Typography>
-                    : <Typography variant="caption">Saved</Typography>
+                saving
+                    ? (
+                        <Status>
+                            <CircularProgress value={0} size={16} />
+                            <Typography variant="caption">saving...</Typography>
+                        </Status>
+                    )
+                    : (
+                        <Tooltip title="All changes are saved">
+                            <Status>
+                                <Icon data={check_circle_outlined} size={16} />
+                                <Typography variant="caption">up to date</Typography>
+                            </Status>
+                        </Tooltip>
+                    )
             }
             <Tooltip title="Undo">
                 <Button

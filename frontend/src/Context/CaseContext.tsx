@@ -14,10 +14,10 @@ import { EditInstance } from "../Models/Interfaces"
 import { useAppContext } from "../Context/AppContext"
 
 interface CaseContextType {
-    projectCase: Components.Schemas.CaseDto | undefined;
-    setProjectCase: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>,
-    projectCaseEdited: Components.Schemas.CaseDto | undefined; // todo: replace with caseEdits
-    setProjectCaseEdited: Dispatch<SetStateAction<Components.Schemas.CaseDto | undefined>>, // todo: replace with caseEdits
+    projectCase: Components.Schemas.CaseWithProfilesDto | undefined;
+    setProjectCase: Dispatch<SetStateAction<Components.Schemas.CaseWithProfilesDto | undefined>>,
+    projectCaseEdited: Components.Schemas.CaseWithProfilesDto | undefined; // todo: replace with caseEdits
+    setProjectCaseEdited: Dispatch<SetStateAction<Components.Schemas.CaseWithProfilesDto | undefined>>, // todo: replace with caseEdits
     caseEdits: EditInstance[];
     setCaseEdits: Dispatch<SetStateAction<EditInstance[]>>,
     saveProjectCase: boolean,
@@ -26,6 +26,8 @@ interface CaseContextType {
     setActiveTabCase: Dispatch<SetStateAction<number>>,
     editIndexes: any[]
     setEditIndexes: Dispatch<SetStateAction<any[]>>
+    caseEditsBelongingToCurrentCase: EditInstance[]
+    setCaseEditsBelongingToCurrentCase: Dispatch<SetStateAction<EditInstance[]>>
 
     topside: Components.Schemas.TopsideWithProfilesDto | undefined
     setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideWithProfilesDto | undefined>>
@@ -131,12 +133,13 @@ const getFilteredEdits = () => {
 }
 
 const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [projectCase, setProjectCase] = useState<Components.Schemas.CaseDto | undefined>()
+    const [projectCase, setProjectCase] = useState<Components.Schemas.CaseWithProfilesDto | undefined>()
     const [caseEdits, setCaseEdits] = useState<EditInstance[]>(getFilteredEdits())
-    const [projectCaseEdited, setProjectCaseEdited] = useState<Components.Schemas.CaseDto | undefined>()
+    const [projectCaseEdited, setProjectCaseEdited] = useState<Components.Schemas.CaseWithProfilesDto | undefined>()
     const [saveProjectCase, setSaveProjectCase] = useState<boolean>(false)
     const [activeTabCase, setActiveTabCase] = useState<number>(0)
     const [editIndexes, setEditIndexes] = useState<any[]>([])
+    const [caseEditsBelongingToCurrentCase, setCaseEditsBelongingToCurrentCase] = useState<EditInstance[]>([])
 
     const [topside, setTopside] = useState<Components.Schemas.TopsideWithProfilesDto | undefined>()
     const [topsideCost, setTopsideCost] = useState<Components.Schemas.TopsideCostProfileDto | undefined>()
@@ -201,6 +204,8 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setActiveTabCase,
         editIndexes,
         setEditIndexes,
+        caseEditsBelongingToCurrentCase,
+        setCaseEditsBelongingToCurrentCase,
 
         topside,
         setTopside,
@@ -298,6 +303,8 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setActiveTabCase,
         editIndexes,
         setEditIndexes,
+        caseEditsBelongingToCurrentCase,
+        setCaseEditsBelongingToCurrentCase,
 
         topside,
         topsideCost,
@@ -356,10 +363,32 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     }, [caseEdits])
 
     useEffect(() => {
+        if (projectCase) {
+            setCaseEditsBelongingToCurrentCase(caseEdits.filter((edit) => edit.caseId === projectCase.id))
+        }
+    }, [projectCase, caseEdits])
+
+    useEffect(() => {
         if (editMode && projectCase && !projectCaseEdited) {
             setProjectCaseEdited(projectCase)
         }
     }, [editMode, projectCaseEdited])
+
+    useEffect(() => {
+        const storedCaseEdits = localStorage.getItem("caseEdits")
+        const caseEditsArray = storedCaseEdits ? JSON.parse(storedCaseEdits) : []
+
+        if (caseEditsArray.length === 0) {
+            // reset editIndexes if there are no recent edits
+            localStorage.setItem("editIndexes", JSON.stringify([]))
+            setEditIndexes([])
+        } else {
+            // otherwise, load the editIndexes from localStorage
+            const storedEditIndexes = localStorage.getItem("editIndexes")
+            const editIndexesArray = storedEditIndexes ? JSON.parse(storedEditIndexes) : []
+            setEditIndexes(editIndexesArray)
+        }
+    }, [])
 
     return (
         <CaseContext.Provider value={value}>

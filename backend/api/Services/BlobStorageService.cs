@@ -36,7 +36,6 @@ public class BlobStorageService : IBlobStorageService
         _containerName = configuration[containerKey]
                              ?? throw new InvalidOperationException($"Container name configuration for {environment} is missing.");
     }
-
     private string SanitizeBlobName(string name)
     {
         return name.Replace(" ", "-").Replace("/", "-").Replace("\\", "-");

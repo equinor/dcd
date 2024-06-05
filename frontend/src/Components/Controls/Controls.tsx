@@ -26,15 +26,11 @@ import { useAppContext } from "../../Context/AppContext"
 import useDataEdits from "../../Hooks/useDataEdits"
 import HistoryButton from "../Buttons/HistoryButton"
 import UndoControls from "./UndoControls"
+import { EMPTY_GUID } from "../../Utils/constants"
+import { ChooseReferenceCase, ReferenceCaseIcon } from "../Case/Components/ReferenceCaseIcon"
 import Classification from "./Classification"
 
 const Controls = () => {
-    const navigate = useNavigate()
-
-    const { addEdit } = useDataEdits()
-    const { setTechnicalModalIsOpen } = useModalContext()
-    const { currentContext } = useModuleCurrentContext()
-    const { isSaving, editMode, setEditMode } = useAppContext()
     const {
         project,
         setProject,
@@ -49,17 +45,45 @@ const Controls = () => {
         setSaveProjectCase,
     } = useCaseContext()
 
+    const navigate = useNavigate()
+    const { setTechnicalModalIsOpen } = useModalContext()
+    const { currentContext } = useModuleCurrentContext()
+    const { isSaving, editMode, setEditMode } = useAppContext()
+    const { addEdit } = useDataEdits()
+
     const nameInput = useRef<any>(null)
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
 
+    const handleReferenceCaseChange = async (referenceCaseId: string) => {
+        if (project) {
+            const newProject = {
+                ...project,
+            }
+            if (newProject.referenceCaseId === referenceCaseId) {
+                newProject.referenceCaseId = EMPTY_GUID
+            } else {
+                newProject.referenceCaseId = referenceCaseId ?? ""
+            }
+            const updateProject = await (await GetProjectService()).updateProject(project.id, newProject)
+            setProject(updateProject)
+        }
+    }
+
     const handleCaseNameChange = (name: string) => {
-        if (projectCase) {
+        if (projectCase && project) {
             const newCase = {
                 ...projectCase,
             }
-            addEdit(name, newCase.name, "name", "name", "case", newCase.id)
+            addEdit({
+                newValue: name,
+                previousValue: newCase.name,
+                inputLabel: "Name",
+                projectId: project.id,
+                resourceName: "case",
+                resourcePropertyKey: "name",
+            })
             newCase.name = name
             setProjectCaseEdited(newCase)
         }
@@ -133,15 +157,25 @@ const Controls = () => {
             <Grid item xs display="flex" alignItems="center" gap={1}>
                 {editMode && projectCase
                     ? (
-                        <Input // todo: should not be allowed to be empty
-                            ref={nameInput}
-                            type="text"
-                            defaultValue={projectCase && projectCase.name}
-                            onBlur={() => handleCaseNameChange(nameInput.current.value)}
-                        />
+                        <>
+                            <ChooseReferenceCase
+                                projectRefCaseId={project?.referenceCaseId}
+                                projectCaseId={projectCase.id}
+                                handleReferenceCaseChange={() => handleReferenceCaseChange(projectCase.id)}
+                            />
+                            <Input // todo: should not be allowed to be empty
+                                ref={nameInput}
+                                type="text"
+                                defaultValue={projectCase && projectCase.name}
+                                onBlur={() => handleCaseNameChange(nameInput.current.value)}
+                            />
+                        </>
                     )
                     : (
                         <>
+                            {project?.referenceCaseId === projectCase?.id && (
+                                <ReferenceCaseIcon />
+                            )}
                             <Typography variant="h4">
                                 {projectCase ? projectCase.name : project?.name}
                             </Typography>

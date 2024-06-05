@@ -18,8 +18,8 @@ export class ImageService extends __BaseService {
         throw new Error("Upload image response data is undefined")
     }
 
-    public async getImages(projectId: string, caseId: string): Promise<Components.Schemas.ImageDto[]> {
-        const response = await this.get(`projects/${projectId}/cases/${caseId}/images`)
+    public async getImages(projectId: string, caseId: string): Promise < Components.Schemas.ImageDto[] > {
+    const response = await this.get(`projects/${projectId}/cases/${caseId}/images`)
         return response
     }
 

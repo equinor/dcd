@@ -1,11 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+
 using api.Models;
 
 namespace api.Dtos;
 
 public class APIUpdateCaseDto : BaseUpdateCaseDto
 {
-    public string? Name { get; set; }
-    public string? Description { get; set; }
+    [Required]
+    public string Name { get; set; } = null!;
+    [Required]
+    public string Description { get; set; } = null!;
     public bool? ReferenceCase { get; set; }
     public ArtificialLift? ArtificialLift { get; set; }
     public ProductionStrategyOverview? ProductionStrategyOverview { get; set; }
@@ -30,72 +34,9 @@ public class APIUpdateCaseDto : BaseUpdateCaseDto
     public DateTimeOffset DG3Date { get; set; }
     public DateTimeOffset DG4Date { get; set; }
 
-    public UpdateCessationWellsCostOverrideDto? CessationWellsCostOverride { get; set; }
-    public UpdateCessationOffshoreFacilitiesCostOverrideDto? CessationOffshoreFacilitiesCostOverride { get; set; }
-    public UpdateCessationOnshoreFacilitiesCostProfileDto? CessationOnshoreFacilitiesCostProfile { get; set; }
-
-    public UpdateTotalFeasibilityAndConceptStudiesOverrideDto? TotalFeasibilityAndConceptStudiesOverride { get; set; }
-    public UpdateTotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
-    public UpdateTotalOtherStudies? TotalOtherStudies { get; set; }
-
-    public UpdateHistoricCostCostProfile? HistoricCostCostProfile { get; set; }
-    public UpdateWellInterventionCostProfileOverrideDto? WellInterventionCostProfileOverride { get; set; }
-    public UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
-    public UpdateOnshoreRelatedOPEXCostProfile? OnshoreRelatedOPEXCostProfile { get; set; }
-    public UpdateAdditionalOPEXCostProfile? AdditionalOPEXCostProfile { get; set; }
-
     public double Capex { get; set; }
     public CapexYear? CapexYear { get; set; }
     public string? SharepointFileId { get; set; }
     public string? SharepointFileName { get; set; }
     public string? SharepointFileUrl { get; set; }
-}
-
-public class UpdateCessationWellsCostOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    public bool Override { get; set; }
-}
-
-public class UpdateCessationOffshoreFacilitiesCostOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    public bool Override { get; set; }
-}
-public class UpdateCessationOnshoreFacilitiesCostProfileDto : UpdateTimeSeriesCostDto
-{
-}
-
-
-public class UpdateWellInterventionCostProfileOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    public bool Override { get; set; }
-}
-
-public class UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    public bool Override { get; set; }
-}
-
-public class UpdateTotalFeasibilityAndConceptStudiesOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    public bool Override { get; set; }
-}
-
-public class UpdateTotalFEEDStudiesOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    public bool Override { get; set; }
-}
-
-public class UpdateTotalOtherStudies : UpdateTimeSeriesCostDto
-{
-}
-
-public class UpdateHistoricCostCostProfile : UpdateTimeSeriesCostDto
-{
-}
-public class UpdateOnshoreRelatedOPEXCostProfile : UpdateTimeSeriesCostDto
-{
-}
-
-public class UpdateAdditionalOPEXCostProfile : UpdateTimeSeriesCostDto
-{
 }

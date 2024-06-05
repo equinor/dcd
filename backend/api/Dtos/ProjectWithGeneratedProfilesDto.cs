@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-using static api.Services.CaseWithAssetsService;
+using static api.Services.CaseAndAssetsService;
 
 namespace api.Dtos;
 
