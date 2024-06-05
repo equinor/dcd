@@ -30,10 +30,6 @@ const Overview = () => {
         }
     }, [project, caseId, editMode])
 
-    useEffect(() => {
-        console.log(snackBarMessage)
-    }, [snackBarMessage])
-
     return (
         <Grid container display="grid" className="ConceptApp MainGrid" gridTemplateColumns={sidebarOpen ? "256px 1fr" : "72px 1fr"}>
             <Snackbar open={snackBarMessage !== undefined} autoHideDuration={6000} onClose={() => setSnackBarMessage(undefined)}>
