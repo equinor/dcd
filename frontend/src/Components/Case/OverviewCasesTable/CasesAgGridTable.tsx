@@ -117,17 +117,44 @@ const CasesAgGridTable = ({
     )
 
     const [columnDefs] = useState<ColDef[]>([
-        { field: "name", cellRenderer: nameWithReferenceCase, flex: 1 },
+        {
+            field: "name",
+            cellRenderer: nameWithReferenceCase,
+            minWidth: 100,
+            flex: 1,
+        },
         {
             field: "productionStrategyOverview",
             headerName: "Production Strategy Overview",
+            headerTooltip: "Production Strategy Overview",
             cellRenderer: productionStrategyToString,
+            width: 280,
         },
-        { field: "producerCount", headerName: "Producers" },
-        { field: "gasInjectorCount", headerName: "Gas injectors" },
-        { field: "waterInjectorCount", headerName: "Water injectors" },
-        { field: "createdAt", headerName: "Created" },
-        { field: "Options", cellRenderer: menuButton, width: 100 },
+        {
+            field: "producerCount",
+            headerName: "Producers",
+            width: 130,
+        },
+        {
+            field: "gasInjectorCount",
+            headerName: "Gas injectors",
+            width: 155,
+        },
+        {
+            field: "waterInjectorCount",
+            headerName: "Water injectors",
+            width: 170,
+        },
+        {
+            field: "createdAt",
+            headerName: "Created",
+            width: 120,
+        },
+        {
+            field: "Options",
+            cellRenderer: menuButton,
+            width: 120,
+        },
     ])
 
     const casesToRowData = () => {
