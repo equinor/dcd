@@ -9,6 +9,8 @@ import {
 
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
+import { lock, lock_open } from "@equinor/eds-icons"
+import { Icon } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
 import { formatColumnSum, isInteger, tableCellisEditable } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
@@ -35,9 +37,9 @@ const CaseTabTableWithGrouping = ({
 }: Props) => {
     const styles = useStyles()
     const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
-    const [overrideModalProfileName] = useState<string>("")
-    const [overrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
-    const [overrideProfile] = useState<any>()
+    const [overrideModalProfileName, setOverrideModalProfileName] = useState<string>("")
+    const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
+    const [overrideProfile, setOverrideProfile] = useState<any>()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
     const { editMode } = useAppContext()
 
