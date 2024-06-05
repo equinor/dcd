@@ -17,7 +17,7 @@ const CapexFactorFeasibilityStudies: React.FC = () => {
         if (newCapexFactorFeasibilityStudies !== undefined) {
             newCase.capexFactorFeasibilityStudies = newCapexFactorFeasibilityStudies / 100
         } else { newCase.capexFactorFeasibilityStudies = 0 }
-        setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
+        setProjectCaseEdited(newCase as Components.Schemas.CaseWithProfilesDto)
     }
     return (
         <SwitchableNumberInput

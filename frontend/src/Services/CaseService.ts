@@ -17,10 +17,22 @@ class CaseService extends __BaseService {
     public async updateCase(
         projectId: string,
         caseId: string,
-        body: Components.Schemas.CaseDto,
+        body: Components.Schemas.APIUpdateCaseDto,
+    ): Promise<Components.Schemas.CaseDto> {
+        const res: Components.Schemas.CaseDto = await this.put(
+            `projects/${projectId}/cases/${caseId}`,
+            { body },
+        )
+        return res
+    }
+
+    public async updateCaseAndProfiles(
+        projectId: string,
+        caseId: string,
+        body: Components.Schemas.APIUpdateCaseWithProfilesDto,
     ): Promise<Components.Schemas.ProjectDto> {
         const res: Components.Schemas.ProjectDto = await this.put(
-            `projects/${projectId}/cases/${caseId}`,
+            `projects/${projectId}/cases/${caseId}/update-case-and-profiles`,
             { body },
         )
         return res

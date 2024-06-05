@@ -42,11 +42,12 @@ public class CasesController : ControllerBase
         return await _duplicateCaseService.DuplicateCase(copyCaseId);
     }
 
-    // [HttpPut("{caseId}")]
-    // public async Task<ProjectDto> UpdateCaseAndProfiles([FromRoute] Guid caseId, [FromBody] APIUpdateCaseWithProfilesDto caseDto)
-    // {
-    //     return await _caseService.UpdateCaseAndProfiles(caseId, caseDto);
-    // }
+    // TODO: Remove once autosave is properly implemented
+    [HttpPut("{caseId}/update-case-and-profiles")]
+    public async Task<ProjectDto> UpdateCaseAndProfiles([FromRoute] Guid caseId, [FromBody] APIUpdateCaseWithProfilesDto caseDto)
+    {
+        return await _caseService.UpdateCaseAndProfiles(caseId, caseDto);
+    }
 
     [HttpPut("{caseId}")]
     public async Task<CaseDto> UpdateCase([FromRoute] Guid caseId, [FromBody] APIUpdateCaseDto caseDto)

@@ -125,7 +125,7 @@ const CreateCaseModal = () => {
                 newCase.waterInjectorCount = waterInjectorCount
                 newCase.productionStrategyOverview = productionStrategy ?? 0
                 console.log("submitting for edit: ", newCase)
-                projectResult = await (await GetCaseService()).updateCase(
+                projectResult = await (await GetCaseService()).updateCaseAndProfiles(
                     project.id,
                     projectCase.id,
                     newCase,
