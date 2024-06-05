@@ -1,8 +1,8 @@
 declare namespace Components {
     namespace Schemas {
         export interface APIUpdateCaseDto {
-            name?: string | null;
-            description?: string | null;
+            name: string;
+            description: string;
             referenceCase?: boolean | null;
             artificialLift?: ArtificialLift /* int32 */;
             productionStrategyOverview?: ProductionStrategyOverview /* int32 */;
@@ -284,6 +284,75 @@ declare namespace Components {
             sharepointFileId?: string | null;
             sharepointFileName?: string | null;
             sharepointFileUrl?: string | null;
+        }
+        export interface CaseWithAssetsDto {
+            case: CaseDto;
+            cessationWellsCost?: CessationWellsCostDto;
+            cessationWellsCostOverride?: CessationWellsCostOverrideDto;
+            cessationOffshoreFacilitiesCost?: CessationOffshoreFacilitiesCostDto;
+            cessationOffshoreFacilitiesCostOverride?: CessationOffshoreFacilitiesCostOverrideDto;
+            cessationOnshoreFacilitiesCostProfile?: CessationOnshoreFacilitiesCostProfileDto;
+            totalFeasibilityAndConceptStudies?: TotalFeasibilityAndConceptStudiesDto;
+            totalFeasibilityAndConceptStudiesOverride?: TotalFeasibilityAndConceptStudiesOverrideDto;
+            totalFEEDStudies?: TotalFEEDStudiesDto;
+            totalFEEDStudiesOverride?: TotalFEEDStudiesOverrideDto;
+            totalOtherStudies?: TotalOtherStudiesDto;
+            historicCostCostProfile?: HistoricCostCostProfileDto;
+            wellInterventionCostProfile?: WellInterventionCostProfileDto;
+            wellInterventionCostProfileOverride?: WellInterventionCostProfileOverrideDto;
+            offshoreFacilitiesOperationsCostProfile?: OffshoreFacilitiesOperationsCostProfileDto;
+            offshoreFacilitiesOperationsCostProfileOverride?: OffshoreFacilitiesOperationsCostProfileOverrideDto;
+            onshoreRelatedOPEXCostProfile?: OnshoreRelatedOPEXCostProfileDto;
+            additionalOPEXCostProfile?: AdditionalOPEXCostProfileDto;
+            topside: TopsideDto;
+            topsideCostProfile?: TopsideCostProfileDto;
+            topsideCostProfileOverride?: TopsideCostProfileOverrideDto;
+            topsideCessationCostProfile?: TopsideCessationCostProfileDto;
+            drainageStrategy: DrainageStrategyDto;
+            productionProfileOil?: ProductionProfileOilDto;
+            productionProfileGas?: ProductionProfileGasDto;
+            productionProfileWater?: ProductionProfileWaterDto;
+            productionProfileWaterInjection?: ProductionProfileWaterInjectionDto;
+            fuelFlaringAndLosses?: FuelFlaringAndLossesDto;
+            fuelFlaringAndLossesOverride?: FuelFlaringAndLossesOverrideDto;
+            netSalesGas?: NetSalesGasDto;
+            netSalesGasOverride?: NetSalesGasOverrideDto;
+            co2Emissions?: Co2EmissionsDto;
+            co2EmissionsOverride?: Co2EmissionsOverrideDto;
+            productionProfileNGL?: ProductionProfileNGLDto;
+            importedElectricity?: ImportedElectricityDto;
+            importedElectricityOverride?: ImportedElectricityOverrideDto;
+            co2Intensity?: Co2IntensityDto;
+            deferredOilProduction?: DeferredOilProductionDto;
+            deferredGasProduction?: DeferredGasProductionDto;
+            exploration: ExplorationDto;
+            explorationWellCostProfile?: ExplorationWellCostProfileDto;
+            appraisalWellCostProfile?: AppraisalWellCostProfileDto;
+            sidetrackCostProfile?: SidetrackCostProfileDto;
+            gAndGAdminCost?: GAndGAdminCostDto;
+            seismicAcquisitionAndProcessing?: SeismicAcquisitionAndProcessingDto;
+            countryOfficeCost?: CountryOfficeCostDto;
+            substructure: SubstructureDto;
+            substructureCostProfile?: SubstructureCostProfileDto;
+            substructureCostProfileOverride?: SubstructureCostProfileOverrideDto;
+            substructureCessationCostProfile?: SubstructureCessationCostProfileDto;
+            surf: SurfDto;
+            surfCostProfile?: SurfCostProfileDto;
+            surfCostProfileOverride?: SurfCostProfileOverrideDto;
+            surfCessationCostProfile?: SurfCessationCostProfileDto;
+            transport: TransportDto;
+            transportCostProfile?: TransportCostProfileDto;
+            transportCostProfileOverride?: TransportCostProfileOverrideDto;
+            transportCessationCostProfile?: TransportCessationCostProfileDto;
+            wellProject: WellProjectDto;
+            oilProducerCostProfile?: OilProducerCostProfileDto;
+            oilProducerCostProfileOverride?: OilProducerCostProfileOverrideDto;
+            gasProducerCostProfile?: GasProducerCostProfileDto;
+            gasProducerCostProfileOverride?: GasProducerCostProfileOverrideDto;
+            waterInjectorCostProfile?: WaterInjectorCostProfileDto;
+            waterInjectorCostProfileOverride?: WaterInjectorCostProfileOverrideDto;
+            gasInjectorCostProfile?: GasInjectorCostProfileDto;
+            gasInjectorCostProfileOverride?: GasInjectorCostProfileOverrideDto;
         }
         export interface CaseWithAssetsWrapperDto {
             caseDto?: APIUpdateCaseWithProfilesDto;
@@ -1844,6 +1913,21 @@ declare namespace Paths {
             }
         }
     }
+    namespace Projects$ProjectIdCases$CaseIdCaseWithAssets {
+        namespace Get {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.CaseWithAssetsDto;
+            }
+        }
+    }
     namespace Projects$ProjectIdCases$CaseIdCessation {
         namespace Get {
             namespace Parameters {
@@ -2270,6 +2354,24 @@ declare namespace Paths {
             }
             namespace Responses {
                 export type $200 = Components.Schemas.ImageDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdImages$ImageId {
+        namespace Delete {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ImageId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                imageId: Parameters.ImageId /* uuid */;
+            }
+            namespace Responses {
+                export interface $200 {
+                }
             }
         }
     }
