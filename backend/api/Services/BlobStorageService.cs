@@ -18,14 +18,25 @@ public class BlobStorageService : IBlobStorageService
         _blobServiceClient = blobServiceClient;
         _imageRepository = imageRepository;
         _mapper = mapper;
-        _containerName = configuration["azureStorageAccountImageContainerName"]
-                         ?? throw new InvalidOperationException("Container name configuration is missing.");
+        var environment = Environment.GetEnvironmentVariable("AppConfiguration__Environment") ?? "default";
 
-        if (string.IsNullOrEmpty(_containerName))
+        var containerKey = environment switch
         {
-            throw new InvalidOperationException("Container name configuration is missing or empty.");
-        }
+            "localdev" => "AzureStorageAccountImageContainerCI",
+            "CI" => "AzureStorageAccountImageContainerCI",
+            "radix-dev" => "AzureStorageAccountImageContainerCI",
+            "dev" => "AzureStorageAccountImageContainerCI",
+            "qa" => "AzureStorageAccountImageContainerQA",
+            "radix-qa" => "AzureStorageAccountImageContainerQA",
+            "prod" => "AzureStorageAccountImageContainerProd",
+            "radix-prod" => "AzureStorageAccountImageContainerProd",
+            _ => throw new InvalidOperationException($"Unknown fusion environment: {environment}")
+        };
+
+        _containerName = configuration[containerKey]
+                             ?? throw new InvalidOperationException($"Container name configuration for {environment} is missing.");
     }
+
     private string SanitizeBlobName(string name)
     {
         return name.Replace(" ", "-").Replace("/", "-").Replace("\\", "-");

@@ -1,5 +1,5 @@
-import React, { useEffect } from "react"
-import { useDropzone } from "react-dropzone"
+import React, { useState, useEffect } from "react"
+import { Accept, FileRejection, useDropzone } from "react-dropzone"
 import { Box, Typography } from "@mui/material"
 import styled from "styled-components"
 import { Icon } from "@equinor/eds-core-react"
@@ -37,6 +37,11 @@ const UploadBox = styled(Box)`
     }
 `
 
+const ErrorMessage = styled(Typography)`
+    color: ${tokens.colors.interactive.danger__text.rgba};
+    margin-top: 10px;
+`
+
 interface ImageUploadProps {
     setGallery: React.Dispatch<React.SetStateAction<string[]>>
     gallery: string[]
@@ -46,6 +51,7 @@ interface ImageUploadProps {
 const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeededLimit }) => {
     const { projectCase } = useCaseContext()
     const { project } = useProjectContext()
+    const [errorMessage, setErrorMessage] = useState<string>("")
 
     useEffect(() => {
         const loadImages = async () => {
@@ -63,8 +69,29 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         loadImages()
     }, [setGallery, project?.id, projectCase?.id])
 
-    const onDrop = async (acceptedFiles: File[]) => {
-        if (gallery.length + acceptedFiles.length > 4) {
+    const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
+    const MAX_FILES = 4
+    const ACCEPTED_FILE_TYPES: Accept = {
+        "image/jpeg": [".jpeg", ".jpg"],
+        "image/png": [".png"],
+        "image/gif": [".gif"],
+    }
+
+    const onDrop = async (acceptedFiles: File[], fileRejections: FileRejection[]) => {
+        setErrorMessage("") // Reset error message
+
+        fileRejections.forEach((rejection) => {
+            const { file, errors } = rejection
+            errors.forEach((error: { code: string }) => {
+                if (error.code === "file-too-large") {
+                    setErrorMessage(`File ${file.name} is too large. Maximum size is 5MB.`)
+                } else if (error.code === "file-invalid-type") {
+                    setErrorMessage(`File ${file.name} is not an accepted image type.`)
+                }
+            })
+        })
+
+        if (gallery.length + acceptedFiles.length > MAX_FILES) {
             setExeededLimit(true)
             return
         }
@@ -91,7 +118,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         }
     }
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop,
+        accept: ACCEPTED_FILE_TYPES,
+        maxSize: MAX_FILE_SIZE,
+        maxFiles: MAX_FILES,
+    })
 
     return (
         <UploadBox {...getRootProps()}>
@@ -102,6 +134,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
             ) : (
                 <Typography variant="body1">Click or drag and drop images here to upload</Typography>
             )}
+            {errorMessage && <ErrorMessage variant="body2">{errorMessage}</ErrorMessage>}
         </UploadBox>
     )
 }

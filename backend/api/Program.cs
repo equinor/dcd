@@ -8,6 +8,8 @@ using api.Services;
 using api.Services.FusionIntegration;
 using api.Services.GenerateCostProfiles;
 
+using AutoMapper;
+
 using Azure.Identity;
 using Azure.Storage.Blobs;
 
@@ -117,19 +119,19 @@ else
 {
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlConnectionString));
 }
-
+var fusionEnvironment = environment switch
+{
+    "dev" => "CI",
+    "qa" => "FQA",
+    "prod" => "FPRD",
+    "radix-prod" => "FPRD",
+    "radix-qa" => "FQA",
+    "radix-dev" => "CI",
+    _ => "CI",
+};
 builder.Services.AddFusionIntegration(options =>
 {
-    var fusionEnvironment = environment switch
-    {
-        "dev" => "CI",
-        "qa" => "FQA",
-        "prod" => "FPRD",
-        "radix-prod" => "FPRD",
-        "radix-qa" => "FQA",
-        "radix-dev" => "CI",
-        _ => "CI",
-    };
+
 
     Console.WriteLine("Fusion environment: " + fusionEnvironment);
     options.UseServiceInformation("ConceptApp", fusionEnvironment);
@@ -260,14 +262,22 @@ builder.Services.AddSwaggerGen(options =>
         },
     });
 });
-
 var azureBlobStorageConnectionString = builder.Configuration["AzureBlobStorageConnectionStringForImageUpload"];
-builder.Services.AddScoped<IImageRepository, ImageRepository>();
-
 builder.Services.AddScoped(x => new BlobServiceClient(azureBlobStorageConnectionString));
 
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 
+// builder.Services.AddScoped<IBlobStorageService>(serviceProvider =>
+// {
+//     var blobServiceClient = serviceProvider.GetRequiredService<BlobServiceClient>();
+//     var imageRepository = serviceProvider.GetRequiredService<IImageRepository>();
+//     var mapper = serviceProvider.GetRequiredService<IMapper>();
+//     var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+
+//     // Pass the fusionEnvironment to the BlobStorageService constructor
+//     return new BlobStorageService(blobServiceClient, imageRepository, configuration, mapper, fusionEnvironment);
+// });
 
 builder.Host.UseSerilog();
 
@@ -284,7 +294,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(_accessControlPolicyName);
-app.UseAuthentication();
+// app.UseAuthentication();
 app.UseMiddleware<ClaimsMiddelware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseAuthorization();
