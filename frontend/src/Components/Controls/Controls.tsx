@@ -132,13 +132,18 @@ const Controls = () => {
 
     const handleEdit = () => {
         if (projectCaseEdited) {
-            handleCaseSave()
+            // handleCaseSave() no longer needed with autosave
+            handleCancel()
+            console.log("handleCaseSave")
         } else if (projectEdited) {
             handleProjectSave()
+            console.log("handleProjectSave")
         } else if (projectCase) {
             handleCaseEdit()
+            console.log("handleCaseEdit")
         } else {
             handleProjectEdit()
+            console.log("handleProjectEdit")
         }
     }
 
@@ -196,7 +201,7 @@ const Controls = () => {
                             ? <Progress.Dots />
                             : (
                                 <>
-                                    {editMode ? "Save and close edit mode" : "Edit"}
+                                    {editMode ? "Close edit mode" : "Edit"}
                                     {" "}
                                     {!editMode && projectCase && "case"}
                                     {!editMode && !projectCase && "project"}

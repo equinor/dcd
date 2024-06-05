@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import Grid from "@mui/material/Grid"
 import styled from "styled-components"
+import { useQueryClient, useQuery } from "react-query"
 import CaseDescriptionTab from "../Components/Case/Tabs/CaseDescriptionTab"
 import CaseCostTab from "../Components/Case/Tabs/CaseCost/CaseCostTab"
 import CaseFacilitiesTab from "../Components/Case/Tabs/CaseFacilitiesTab"
@@ -38,6 +39,7 @@ const CaseView = () => {
         setIsLoading,
         updateFromServer,
         setUpdateFromServer,
+        setSnackBarMessage,
     } = useAppContext()
 
     const {
@@ -132,6 +134,40 @@ const CaseView = () => {
         "CO2 Emissions",
         "Summary",
     ]
+    const queryClient = useQueryClient()
+
+    useQuery(
+        [project.id, projectCase.id],
+        async () => {
+            const caseService = await GetCaseService()
+            return caseService.getCaseWithAssets(project.id, projectCase.id)
+        },
+        {
+            onSuccess: (result) => {
+                const caseData = result.case
+                const drainageStrategyData = result.drainageStrategy
+                const explorationData = result.exploration
+                const substructureData = result.substructure
+                const surfData = result.surf
+                const topsideData = result.topside
+                const transportData = result.transport
+                const wellProjectData = result.wellProject
+
+                queryClient.setQueryData([{ projectId: project.id, caseId: projectCase.id, resourceId: "" }], caseData)
+                queryClient.setQueryData([{ projectId: project.id, caseId: projectCase.id, resourceId: topsideData.id }], topsideData)
+                queryClient.setQueryData([{ projectId: project.id, caseId: projectCase.id, resourceId: surfData.id }], surfData)
+                queryClient.setQueryData([{ projectId: project.id, caseId: projectCase.id, resourceId: substructureData.id }], substructureData)
+                queryClient.setQueryData([{ projectId: project.id, caseId: projectCase.id, resourceId: transportData.id }], transportData)
+                queryClient.setQueryData([{ projectId: project.id, caseId: projectCase.id, resourceId: drainageStrategyData.id }], drainageStrategyData)
+                queryClient.setQueryData([{ projectId: project.id, caseId: projectCase.id, resourceId: explorationData.id }], explorationData)
+                queryClient.setQueryData([{ projectId: project.id, caseId: projectCase.id, resourceId: wellProjectData.id }], wellProjectData)
+            },
+            onError: (error: Error) => {
+                console.error("Error fetching data:", error)
+                setSnackBarMessage(error.message)
+            },
+        },
+    )
 
     // when the URL changes, set the active tab to the tab name in the URL
     useEffect(() => {
@@ -142,16 +178,6 @@ const CaseView = () => {
             }
         }
     }, [])
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const caseService = await GetCaseService()
-            const result = await caseService.getCaseWithAssets(project.id, projectCase.id)
-            console.log("Result: ", result)
-        }
-
-        fetchData()
-    }, [project.id, caseId]) // Don't forget the dependency array
 
     // when user navigates to a different tab, add the tab name to the URL
     useEffect(() => {
