@@ -116,7 +116,8 @@ const CasesAgGridTable = ({
         {
             field: "name",
             cellRenderer: nameWithReferenceCase,
-            minWidth: 100,
+            minWidth: 150,
+            maxWidth: 500,
             flex: 1,
         },
         {
