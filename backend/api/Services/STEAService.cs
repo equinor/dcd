@@ -31,7 +31,7 @@ public class STEAService : ISTEAService
         var projectDto = _mapper.Map<Project, ProjectDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
         foreach (Case c in project.Cases!)
         {
-            var caseDto = _mapper.Map<CaseDto>(c);
+            var caseDto = _mapper.Map<CaseWithProfilesDto>(c);
             if (projectDto == null || caseDto == null)
             {
                 _logger.LogError("Failed to map project or case to dto");

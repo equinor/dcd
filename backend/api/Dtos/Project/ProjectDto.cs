@@ -39,7 +39,7 @@ public class ProjectDto
     [Required]
     public DevelopmentOperationalWellCostsDto DevelopmentOperationalWellCosts { get; set; } = new DevelopmentOperationalWellCostsDto();
     [Required]
-    public ICollection<CaseDto> Cases { get; set; } = [];
+    public ICollection<CaseWithProfilesDto> Cases { get; set; } = [];
     [Required]
     public ICollection<WellDto> Wells { get; set; } = [];
     [Required]

@@ -10,6 +10,7 @@ public class CaseProfile : Profile
     public CaseProfile()
     {
         CreateMap<Case, CaseDto>();
+        CreateMap<Case, CaseWithProfilesDto>();
         CreateMap<CessationWellsCost, CessationWellsCostDto>();
         CreateMap<CessationWellsCostOverride, CessationWellsCostOverrideDto>();
         CreateMap<CessationOffshoreFacilitiesCost, CessationOffshoreFacilitiesCostDto>();
@@ -29,6 +30,7 @@ public class CaseProfile : Profile
         CreateMap<AdditionalOPEXCostProfile, AdditionalOPEXCostProfileDto>();
         CreateMap<Image, ImageDto>();
 
+        CreateMap<APIUpdateCaseWithProfilesDto, Case>();
         CreateMap<APIUpdateCaseDto, Case>();
         CreateMap<PROSPUpdateCaseDto, Case>();
         CreateMap<UpdateCessationWellsCostOverrideDto, CessationWellsCostOverride>();
@@ -39,9 +41,9 @@ public class CaseProfile : Profile
         CreateMap<UpdateTotalOtherStudies, TotalOtherStudies>();
         CreateMap<UpdateWellInterventionCostProfileOverrideDto, WellInterventionCostProfileOverride>();
         CreateMap<UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto, OffshoreFacilitiesOperationsCostProfileOverride>();
-        CreateMap<UpdateHistoricCostCostProfile, HistoricCostCostProfile>();
-        CreateMap<UpdateOnshoreRelatedOPEXCostProfile, OnshoreRelatedOPEXCostProfile>();
-        CreateMap<UpdateAdditionalOPEXCostProfile, AdditionalOPEXCostProfile>();
+        CreateMap<UpdateHistoricCostCostProfileDto, HistoricCostCostProfile>();
+        CreateMap<UpdateOnshoreRelatedOPEXCostProfileDto, OnshoreRelatedOPEXCostProfile>();
+        CreateMap<UpdateAdditionalOPEXCostProfileDto, AdditionalOPEXCostProfile>();
 
         CreateMap<CreateCaseDto, Case>();
 

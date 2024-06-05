@@ -16,6 +16,7 @@ import { GetSurfService } from "../Services/SurfService"
 import { GetSubstructureService } from "../Services/SubstructureService"
 import { GetTransportService } from "../Services/TransportService"
 import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
+import { useAppContext } from "../Context/AppContext"
 
 interface AddEditParams {
     newValue: string | number | undefined;
@@ -35,21 +36,15 @@ const useDataEdits = (): {
     undoEdit: () => void;
     redoEdit: () => void;
 } => {
+    const { setSnackBarMessage } = useAppContext()
     const {
         caseEdits,
         setCaseEdits,
         projectCase,
         editIndexes,
         setEditIndexes,
+        caseEditsBelongingToCurrentCase,
     } = useCaseContext()
-
-    const [caseEditsBelongingToCurrentCase, setCaseEditsBelongingToCurrentCase] = useState<EditInstance[]>([])
-
-    useEffect(() => {
-        if (projectCase) {
-            setCaseEditsBelongingToCurrentCase(caseEdits.filter((edit) => edit.caseId === projectCase.id))
-        }
-    }, [projectCase, caseEdits])
 
     const updateEditIndex = (newEditId: string) => {
         if (!projectCase) {
@@ -86,8 +81,9 @@ const useDataEdits = (): {
                 const { projectId, caseId, resourceId } = variables
                 queryClient.setQueryData([{ resourceId, projectId, caseId }], results)
             },
-            onError: (error) => {
+            onError: (error: any) => {
                 console.error("Failed to update data:", error)
+                setSnackBarMessage(error.message)
             },
         },
     )
@@ -215,10 +211,12 @@ const useDataEdits = (): {
     const updateCase = async (
         projectId: string,
         caseId: string,
+        resourcePropertyKey: ResourcePropertyKey,
         value: any,
     ) => {
+        const updatedData = { [resourcePropertyKey]: value }
         const caseService = await GetCaseService()
-        const serviceMethod = caseService.updateCase(projectId, caseId, value)
+        const serviceMethod = caseService.updateCase(projectId, caseId, updatedData)
 
         try {
             await mutation.mutateAsync({
@@ -248,7 +246,7 @@ const useDataEdits = (): {
         let sucess = false
         switch (resourceName) {
             case "case":
-                sucess = await updateCase(projectId, caseId, value)
+                sucess = await updateCase(projectId, caseId, resourcePropertyKey, value)
                 break
             case "topside":
                 sucess = await updateTopside(projectId, caseId, resourceId!, resourcePropertyKey, value)

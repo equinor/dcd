@@ -16,7 +16,7 @@ const CapexFactorFeedStudies: React.FC = () => {
         if (newCapexFactorFEEDStudies !== undefined) {
             newCase.capexFactorFEEDStudies = newCapexFactorFEEDStudies / 100
         } else { newCase.capexFactorFEEDStudies = 0 }
-        setProjectCaseEdited(newCase as Components.Schemas.CaseDto)
+        setProjectCaseEdited(newCase as Components.Schemas.CaseWithProfilesDto)
     }
 
     return (
