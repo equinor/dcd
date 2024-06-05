@@ -312,6 +312,10 @@ const useDataEdits = (): {
             return
         }
 
+        if (newValue === previousValue) {
+            return
+        }
+
         const editInstanceObject: EditInstance = {
             uuid: uuidv4(),
             timeStamp: new Date().getTime(),
