@@ -384,6 +384,7 @@ const CaseProductionProfilesTab = ({
                 <SwitchableDropdownInput
                     resourceName="drainageStrategy"
                     resourcePropertyKey="gasSolution"
+                    resourceId={drainageStrategy.id}
                     value={drainageStrategy.gasSolution}
                     options={gasSolutionOptions}
                     label="Gas solution"

@@ -49,7 +49,6 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         onChange(e)
-        console.log(value)
         addEdit({
             newValue: e.target.value,
             previousValue: value,
