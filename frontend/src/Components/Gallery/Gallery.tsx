@@ -59,7 +59,6 @@ const GalleryLabel = styled(Typography) <{ $warning: boolean }>`
     margin-right: 8px;
     color: ${({ $warning }) => ($warning ? "red" : "rgba(111, 111, 111, 1)")};
 `
-
 const Gallery = () => {
     const { editMode } = useAppContext()
     const [gallery, setGallery] = useState<string[]>([])

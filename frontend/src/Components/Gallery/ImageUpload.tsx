@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useEffect } from "react"
 import { Accept, FileRejection, useDropzone } from "react-dropzone"
 import { Box, Typography } from "@mui/material"
 import styled from "styled-components"

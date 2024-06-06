@@ -271,17 +271,6 @@ builder.Services.AddScoped(x => new BlobServiceClient(azureBlobStorageConnection
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 
-// builder.Services.AddScoped<IBlobStorageService>(serviceProvider =>
-// {
-//     var blobServiceClient = serviceProvider.GetRequiredService<BlobServiceClient>();
-//     var imageRepository = serviceProvider.GetRequiredService<IImageRepository>();
-//     var mapper = serviceProvider.GetRequiredService<IMapper>();
-//     var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-
-//     // Pass the fusionEnvironment to the BlobStorageService constructor
-//     return new BlobStorageService(blobServiceClient, imageRepository, configuration, mapper, fusionEnvironment);
-// });
-
 builder.Host.UseSerilog();
 
 var app = builder.Build();
