@@ -948,6 +948,39 @@ namespace api.Migrations
                     b.ToTable("HistoricCostCostProfile");
                 });
 
+            modelBuilder.Entity("api.Models.Image", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CaseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreateTime")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ProjectName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CaseId");
+
+                    b.ToTable("Images");
+                });
+
             modelBuilder.Entity("api.Models.ImportedElectricity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2826,6 +2859,15 @@ namespace api.Migrations
                     b.Navigation("Case");
                 });
 
+            modelBuilder.Entity("api.Models.Image", b =>
+                {
+                    b.HasOne("api.Models.Case", null)
+                        .WithMany("Images")
+                        .HasForeignKey("CaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("api.Models.ImportedElectricity", b =>
                 {
                     b.HasOne("api.Models.DrainageStrategy", "DrainageStrategy")
@@ -3339,6 +3381,8 @@ namespace api.Migrations
                     b.Navigation("CessationWellsCostOverride");
 
                     b.Navigation("HistoricCostCostProfile");
+
+                    b.Navigation("Images");
 
                     b.Navigation("OffshoreFacilitiesOperationsCostProfile");
 

@@ -9,6 +9,7 @@ using api.Services.FusionIntegration;
 using api.Services.GenerateCostProfiles;
 
 using Azure.Identity;
+using Azure.Storage.Blobs;
 
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -152,6 +153,16 @@ Log.Logger = new LoggerConfiguration()
     .CreateBootstrapLogger();
 builder.Services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);
 
+builder.Configuration.AddAzureAppConfiguration(options =>
+{
+    var azureAppConfigConnectionString = builder.Configuration["AppConfiguration:ConnectionString"];
+    options.Connect(azureAppConfigConnectionString)
+           .ConfigureKeyVault(kv =>
+           {
+               kv.SetCredential(new DefaultAzureCredential());
+           });
+});
+
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IFusionService, FusionService>();
 builder.Services.AddScoped<IDrainageStrategyService, DrainageStrategyService>();
@@ -170,7 +181,7 @@ builder.Services.AddScoped<IDuplicateCaseService, DuplicateCaseService>();
 builder.Services.AddScoped<IExplorationOperationalWellCostsService, ExplorationOperationalWellCostsService>();
 
 builder.Services.AddScoped<IDevelopmentOperationalWellCostsService, DevelopmentOperationalWellCostsService>();
-builder.Services.AddScoped<ICaseWithAssetsService, CaseWithAssetsService>();
+builder.Services.AddScoped<ICaseAndAssetsService, CaseAndAssetsService>();
 
 builder.Services.AddScoped<ITechnicalInputService, TechnicalInputService>();
 builder.Services.AddScoped<IGenerateOpexCostProfile, GenerateOpexCostProfile>();
@@ -196,6 +207,9 @@ builder.Services.AddScoped<IWellProjectRepository, WellProjectRepository>();
 builder.Services.AddScoped<IExplorationRepository, ExplorationRepository>();
 builder.Services.AddScoped<ITransportRepository, TransportRepository>();
 builder.Services.AddScoped<ISurfRepository, SurfRepository>();
+builder.Services.AddScoped<ICaseWithAssetsRepository, CaseWithAssetsRepository>();
+builder.Services.AddScoped<ICaseWithAssetsService, CaseWithAssetsService>();
+
 
 builder.Services.AddScoped<IMapperService, MapperService>();
 builder.Services.AddScoped<IConversionMapperService, ConversionMapperService>();
@@ -249,6 +263,13 @@ builder.Services.AddSwaggerGen(options =>
         },
     });
 });
+
+var azureBlobStorageConnectionString = builder.Configuration["AzureBlobStorageConnectionStringForImageUpload"];
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
+
+builder.Services.AddScoped(x => new BlobServiceClient(azureBlobStorageConnectionString));
+
+builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 
 
 builder.Host.UseSerilog();

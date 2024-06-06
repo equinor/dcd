@@ -25,17 +25,48 @@ declare namespace Components {
             dG2Date?: string; // date-time
             dG3Date?: string; // date-time
             dG4Date?: string; // date-time
+            capex?: number; // double
+            capexYear?: CapexYear;
+            sharepointFileId?: string | null;
+            sharepointFileName?: string | null;
+            sharepointFileUrl?: string | null;
+        }
+        export interface APIUpdateCaseWithProfilesDto {
+            name?: string | null;
+            description?: string | null;
+            referenceCase?: boolean | null;
+            artificialLift?: ArtificialLift /* int32 */;
+            productionStrategyOverview?: ProductionStrategyOverview /* int32 */;
+            producerCount?: number | null; // int32
+            gasInjectorCount?: number | null; // int32
+            waterInjectorCount?: number | null; // int32
+            facilitiesAvailability?: number | null; // double
+            capexFactorFeasibilityStudies?: number | null; // double
+            capexFactorFEEDStudies?: number | null; // double
+            npv?: number | null; // double
+            breakEven?: number | null; // double
+            host?: string | null;
+            dgaDate?: string; // date-time
+            dgbDate?: string; // date-time
+            dgcDate?: string; // date-time
+            apxDate?: string; // date-time
+            apzDate?: string; // date-time
+            dG0Date?: string; // date-time
+            dG1Date?: string; // date-time
+            dG2Date?: string; // date-time
+            dG3Date?: string; // date-time
+            dG4Date?: string; // date-time
             cessationWellsCostOverride?: UpdateCessationWellsCostOverrideDto;
             cessationOffshoreFacilitiesCostOverride?: UpdateCessationOffshoreFacilitiesCostOverrideDto;
             cessationOnshoreFacilitiesCostProfile?: UpdateCessationOnshoreFacilitiesCostProfileDto;
             totalFeasibilityAndConceptStudiesOverride?: UpdateTotalFeasibilityAndConceptStudiesOverrideDto;
             totalFEEDStudiesOverride?: UpdateTotalFEEDStudiesOverrideDto;
             totalOtherStudies?: UpdateTotalOtherStudies;
-            historicCostCostProfile?: UpdateHistoricCostCostProfile;
+            historicCostCostProfile?: UpdateHistoricCostCostProfileDto;
             wellInterventionCostProfileOverride?: UpdateWellInterventionCostProfileOverrideDto;
             offshoreFacilitiesOperationsCostProfileOverride?: UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto;
-            onshoreRelatedOPEXCostProfile?: UpdateOnshoreRelatedOPEXCostProfile;
-            additionalOPEXCostProfile?: UpdateAdditionalOPEXCostProfile;
+            onshoreRelatedOPEXCostProfile?: UpdateOnshoreRelatedOPEXCostProfileDto;
+            additionalOPEXCostProfile?: UpdateAdditionalOPEXCostProfileDto;
             capex?: number; // double
             capexYear?: CapexYear;
             sharepointFileId?: string | null;
@@ -241,6 +272,60 @@ declare namespace Components {
             dG4Date: string; // date-time
             createTime: string; // date-time
             modifyTime: string; // date-time
+            drainageStrategyLink: string; // uuid
+            wellProjectLink: string; // uuid
+            surfLink: string; // uuid
+            substructureLink: string; // uuid
+            topsideLink: string; // uuid
+            transportLink: string; // uuid
+            explorationLink: string; // uuid
+            capex: number; // double
+            capexYear?: CapexYear;
+            sharepointFileId?: string | null;
+            sharepointFileName?: string | null;
+            sharepointFileUrl?: string | null;
+        }
+        export interface CaseWithAssetsWrapperDto {
+            caseDto?: APIUpdateCaseWithProfilesDto;
+            drainageStrategyDto?: UpdateDrainageStrategyWithProfilesDto;
+            wellProjectDto?: UpdateWellProjectWithProfilesDto;
+            explorationDto?: UpdateExplorationWithProfilesDto;
+            surfDto?: APIUpdateSurfWithProfilesDto;
+            substructureDto?: APIUpdateSubstructureWithProfilesDto;
+            topsideDto?: APIUpdateTopsideWithProfilesDto;
+            transportDto?: APIUpdateTransportWithProfilesDto;
+            wellProjectWellDtos?: UpdateWellProjectWellDto[] | null;
+            explorationWellDto?: UpdateExplorationWellDto[] | null;
+        }
+        export interface CaseWithProfilesDto {
+            id: string; // uuid
+            projectId: string; // uuid
+            name: string;
+            description: string;
+            referenceCase: boolean;
+            artificialLift: ArtificialLift /* int32 */;
+            productionStrategyOverview: ProductionStrategyOverview /* int32 */;
+            producerCount: number; // int32
+            gasInjectorCount: number; // int32
+            waterInjectorCount: number; // int32
+            facilitiesAvailability: number; // double
+            capexFactorFeasibilityStudies: number; // double
+            capexFactorFEEDStudies: number; // double
+            npv: number; // double
+            breakEven: number; // double
+            host?: string | null;
+            dgaDate: string; // date-time
+            dgbDate: string; // date-time
+            dgcDate: string; // date-time
+            apxDate: string; // date-time
+            apzDate: string; // date-time
+            dG0Date: string; // date-time
+            dG1Date: string; // date-time
+            dG2Date: string; // date-time
+            dG3Date: string; // date-time
+            dG4Date: string; // date-time
+            createTime: string; // date-time
+            modifyTime: string; // date-time
             cessationWellsCost: CessationWellsCostDto;
             cessationWellsCostOverride: CessationWellsCostOverrideDto;
             cessationOffshoreFacilitiesCost: CessationOffshoreFacilitiesCostDto;
@@ -270,18 +355,6 @@ declare namespace Components {
             sharepointFileId?: string | null;
             sharepointFileName?: string | null;
             sharepointFileUrl?: string | null;
-        }
-        export interface CaseWithAssetsWrapperDto {
-            caseDto?: APIUpdateCaseDto;
-            drainageStrategyDto?: UpdateDrainageStrategyWithProfilesDto;
-            wellProjectDto?: UpdateWellProjectWithProfilesDto;
-            explorationDto?: UpdateExplorationWithProfilesDto;
-            surfDto?: APIUpdateSurfWithProfilesDto;
-            substructureDto?: APIUpdateSubstructureWithProfilesDto;
-            topsideDto?: APIUpdateTopsideWithProfilesDto;
-            transportDto?: APIUpdateTransportWithProfilesDto;
-            wellProjectWellDtos?: UpdateWellProjectWellDto[] | null;
-            explorationWellDto?: UpdateExplorationWellDto[] | null;
         }
         export interface CessationCostDto {
             id: string; // uuid
@@ -613,6 +686,15 @@ declare namespace Components {
             user?: Identity;
             "@odata.type"?: string | null;
         }
+        export interface ImageDto {
+            id: string; // uuid
+            url: string; // uri
+            createTime: string; // date-time
+            description?: string | null;
+            caseId: string; // uuid
+            projectName: string;
+            projectId: string; // uuid
+        }
         export interface ImportedElectricityDto {
             id: string; // uuid
             startYear: number; // int32
@@ -765,7 +847,7 @@ declare namespace Components {
             projectCategory: ProjectCategory /* int32 */;
             explorationOperationalWellCosts: ExplorationOperationalWellCostsDto;
             developmentOperationalWellCosts: DevelopmentOperationalWellCostsDto;
-            cases: CaseDto[];
+            cases: CaseWithProfilesDto[];
             wells: WellDto[];
             explorations: ExplorationWithProfilesDto[];
             surfs: SurfWithProfilesDto[];
@@ -1210,7 +1292,7 @@ declare namespace Components {
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
         }
-        export interface UpdateAdditionalOPEXCostProfile {
+        export interface UpdateAdditionalOPEXCostProfileDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
@@ -1340,7 +1422,7 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             override?: boolean;
         }
-        export interface UpdateHistoricCostCostProfile {
+        export interface UpdateHistoricCostCostProfileDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
@@ -1367,7 +1449,7 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             override?: boolean;
         }
-        export interface UpdateOnshoreRelatedOPEXCostProfile {
+        export interface UpdateOnshoreRelatedOPEXCostProfileDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
@@ -1740,7 +1822,25 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.APIUpdateCaseDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ProjectDto;
+                export type $200 = Components.Schemas.CaseDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdAdditionalOpexCostProfile$CostProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type CostProfileId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                costProfileId: Parameters.CostProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateAdditionalOPEXCostProfileDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.AdditionalOPEXCostProfileDto;
             }
         }
     }
@@ -1756,6 +1856,42 @@ declare namespace Paths {
             }
             namespace Responses {
                 export type $200 = Components.Schemas.CessationCostWrapperDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCessationOffshoreFacilitiesCostOverride$CostProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type CostProfileId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                costProfileId: Parameters.CostProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateCessationOffshoreFacilitiesCostOverrideDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCessationWellsCostOverride$CostProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type CostProfileId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                costProfileId: Parameters.CostProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateCessationWellsCostOverrideDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.CessationWellsCostOverrideDto;
             }
         }
     }
@@ -2080,6 +2216,99 @@ declare namespace Paths {
             }
         }
     }
+    namespace Projects$ProjectIdCases$CaseIdHistoricCostCostProfile$CostProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type CostProfileId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                costProfileId: Parameters.CostProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateHistoricCostCostProfileDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.HistoricCostCostProfileDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdImages {
+        namespace Get {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.ImageDto[];
+            }
+        }
+        namespace Post {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            export interface RequestBody {
+                projectName?: string;
+                ContentType?: string;
+                ContentDisposition?: string;
+                Headers?: {
+                    [name: string]: string[];
+                };
+                Length?: number; // int64
+                Name?: string;
+                FileName?: string;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.ImageDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdOffshoreFacilitiesOperationsCostProfileOverride$CostProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type CostProfileId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                costProfileId: Parameters.CostProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.OffshoreFacilitiesOperationsCostProfileOverrideDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdOnshoreRelatedOpexCostProfile$CostProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type CostProfileId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                costProfileId: Parameters.CostProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateOnshoreRelatedOPEXCostProfileDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.OnshoreRelatedOPEXCostProfileDto;
+            }
+        }
+    }
     namespace Projects$ProjectIdCases$CaseIdOpex {
         namespace Get {
             namespace Parameters {
@@ -2224,6 +2453,42 @@ declare namespace Paths {
             }
         }
     }
+    namespace Projects$ProjectIdCases$CaseIdTotalFeasibilityAndConceptStudiesOverride$CostProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type CostProfileId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                costProfileId: Parameters.CostProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateTotalFeasibilityAndConceptStudiesOverrideDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.TotalFeasibilityAndConceptStudiesOverrideDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdTotalFeedStudiesOverride$CostProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type CostProfileId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                costProfileId: Parameters.CostProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateTotalFEEDStudiesOverrideDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.TotalFEEDStudiesOverrideDto;
+            }
+        }
+    }
     namespace Projects$ProjectIdCases$CaseIdTransports$TransportId {
         namespace Put {
             namespace Parameters {
@@ -2259,6 +2524,40 @@ declare namespace Paths {
             export type RequestBody = Components.Schemas.UpdateTransportCostProfileOverrideDto;
             namespace Responses {
                 export type $200 = Components.Schemas.TransportCostProfileOverrideDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdUpdateCaseAndProfiles {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string;
+            }
+            export interface PathParameters {
+                caseId: Parameters.CaseId /* uuid */;
+                projectId: Parameters.ProjectId;
+            }
+            export type RequestBody = Components.Schemas.APIUpdateCaseWithProfilesDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.ProjectDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdWellInterventionCostProfileOverride$CostProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type CostProfileId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                costProfileId: Parameters.CostProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateWellInterventionCostProfileOverrideDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.WellInterventionCostProfileOverrideDto;
             }
         }
     }

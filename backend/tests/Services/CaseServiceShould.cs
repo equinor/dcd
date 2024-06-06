@@ -49,7 +49,7 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
         // Arrange
         var projectId = _caseServiceFixture.DbContext.Projects.First().Id;
 
-        var dto = new CaseDto
+        var dto = new CaseWithProfilesDto
         {
             Name = "NewCreateCase_CreateCaseFromMinimalDto_CaseCreated",
             Description = "Description for NewCreateCase_CreateCaseFromMinimalDto_CaseCreated",
@@ -86,7 +86,7 @@ public class CaseShould : IClassFixture<CaseServiceFixture>
         // Arrange
         var projectId = _caseServiceFixture.DbContext.Projects.First().Id;
 
-        var dto = new CaseDto
+        var dto = new CaseWithProfilesDto
         {
             ProjectId = projectId,
             Name = "NewCreateCase_CreateCaseFromDto_CaseCreated",

@@ -12,21 +12,22 @@ import {
 import { useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { AgGridReact } from "@ag-grid-community/react"
-import { bookmark_filled, more_vertical } from "@equinor/eds-icons"
-import { tokens } from "@equinor/eds-tokens"
+import { more_vertical } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
 import { casePath, productionStrategyOverviewToString } from "../../../Utils/common"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
+import { ReferenceCaseIcon } from "../Components/ReferenceCaseIcon"
 
-const StyledIcon = styled(Icon)`
-    color: ${tokens.colors.text.static_icons__secondary.rgba};
-    margin-left: 0.5rem;
-    margin-bottom: -0.2rem;
-`
 const AgTableContainer = styled.div`
     overflow: auto;
+`
+
+const Wrapper = styled.div`
+    justify-content: center;
+    align-items: center;
+    display: inline-flex;
 `
 
 interface TableCase {
@@ -101,28 +102,56 @@ const CasesAgGridTable = ({
     }
 
     const nameWithReferenceCase = (p: any) => (
-        <>
-            <Button as="span" variant="ghost" className="GhostButton" onClick={() => selectCase(p)}>{p.value}</Button>
-            {p.node.data.referenceCaseId === p.node.data.id && (
-                <Tooltip title="Reference case">
-                    <StyledIcon data={bookmark_filled} size={16} />
-                </Tooltip>
-            )}
-        </>
+        <Tooltip title={p.value} placement="bottom-start">
+            <Wrapper>
+                {p.node.data.referenceCaseId === p.node.data.id && (
+                    <ReferenceCaseIcon iconPlacement="casesTable" />
+                )}
+                <Button as="span" variant="ghost" className="GhostButton" onClick={() => selectCase(p)}>{p.value}</Button>
+            </Wrapper>
+        </Tooltip>
     )
 
     const [columnDefs] = useState<ColDef[]>([
-        { field: "name", cellRenderer: nameWithReferenceCase, flex: 1 },
+        {
+            field: "name",
+            cellRenderer: nameWithReferenceCase,
+            minWidth: 150,
+            maxWidth: 500,
+            flex: 1,
+        },
         {
             field: "productionStrategyOverview",
             headerName: "Production Strategy Overview",
+            headerTooltip: "Production Strategy Overview",
             cellRenderer: productionStrategyToString,
+            width: 280,
         },
-        { field: "producerCount", headerName: "Producers" },
-        { field: "gasInjectorCount", headerName: "Gas injectors" },
-        { field: "waterInjectorCount", headerName: "Water injectors" },
-        { field: "createdAt", headerName: "Created" },
-        { field: "Options", cellRenderer: menuButton, width: 100 },
+        {
+            field: "producerCount",
+            headerName: "Producers",
+            width: 130,
+        },
+        {
+            field: "gasInjectorCount",
+            headerName: "Gas injectors",
+            width: 155,
+        },
+        {
+            field: "waterInjectorCount",
+            headerName: "Water injectors",
+            width: 170,
+        },
+        {
+            field: "createdAt",
+            headerName: "Created",
+            width: 120,
+        },
+        {
+            field: "Options",
+            cellRenderer: menuButton,
+            width: 120,
+        },
     ])
 
     const casesToRowData = () => {

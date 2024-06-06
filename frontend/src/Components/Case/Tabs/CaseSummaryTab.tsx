@@ -279,7 +279,8 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
                 <SwitchableNumberInput
-                    objectKey={projectCase?.npv}
+                    resourceName="case"
+                    resourcePropertyKey="npv"
                     label="NPV before tax"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "npv", projectCase, setProjectCaseEdited)}
                     value={projectCase?.npv}
@@ -291,7 +292,8 @@ const CaseSummaryTab = (): React.ReactElement | null => {
             </Grid>
             <Grid item xs={12} md={6}>
                 <SwitchableNumberInput
-                    objectKey={projectCase?.breakEven}
+                    resourceName="case"
+                    resourcePropertyKey="breakEven"
                     label="B/E before tax"
                     onSubmit={(value: number) => setNonNegativeNumberState(value, "breakEven", projectCase, setProjectCaseEdited)}
                     value={projectCase?.breakEven}

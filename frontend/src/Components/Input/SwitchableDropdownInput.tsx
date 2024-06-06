@@ -3,11 +3,15 @@ import { NativeSelect } from "@equinor/eds-core-react"
 import InputSwitcher from "./Components/InputSwitcher"
 import useDataEdits from "../../Hooks/useDataEdits"
 import { useCaseContext } from "../../Context/CaseContext"
+import { useProjectContext } from "../../Context/ProjectContext"
+import { ResourcePropertyKey, ResourceName } from "../../Models/Interfaces"
 
 interface SwitchableDropdownInputProps {
     value: string | number;
     options: { [key: string]: string };
-    objectKey: number;
+    resourceName: ResourceName;
+    resourcePropertyKey: ResourcePropertyKey;
+    resourceId?: string;
     label: string;
     onSubmit: ChangeEventHandler<HTMLSelectElement>
 }
@@ -15,45 +19,44 @@ interface SwitchableDropdownInputProps {
 const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
     value,
     options,
-    objectKey,
+    resourceName,
+    resourcePropertyKey,
+    resourceId,
     label,
     onSubmit,
 }: SwitchableDropdownInputProps) => {
-    const { addEdit } = useDataEdits()
     const { projectCase } = useCaseContext()
+    const { project } = useProjectContext()
+    const { addEdit } = useDataEdits()
 
     const addToEditsAndSubmit: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if (!projectCase) {
-            console.log("Case not found")
-            return
-        }
-
-        const newValue = e.currentTarget.value
-        const level = "case"
-        const objectId = projectCase?.id
-
         onSubmit(e)
-        addEdit(
-            newValue,
-            value,
-            objectKey,
-            label,
-            level,
-            objectId,
-            options[newValue],
-            options[value],
-        )
+
+        if (!projectCase || !project) { return }
+
+        addEdit({
+            newValue: e.currentTarget.value,
+            previousValue: value,
+            inputLabel: label,
+            projectId: project.id,
+            resourceName,
+            resourcePropertyKey,
+            resourceId,
+            caseId: projectCase.id,
+            newDisplayValue: options[e.currentTarget.value],
+            previousDisplayValue: options[value],
+        })
     }
 
     return (
         <InputSwitcher
-            value={options[objectKey]}
+            value={options[value]}
             label={label}
         >
             <NativeSelect
                 label=""
                 id={label}
-                value={objectKey}
+                value={value}
                 onChange={addToEditsAndSubmit}
             >
                 {Object.entries(options).map(([key, val]) => (
