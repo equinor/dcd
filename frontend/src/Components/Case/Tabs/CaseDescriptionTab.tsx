@@ -21,7 +21,6 @@ const CaseDescriptionTab = () => {
 
     const caseId = projectCase.id
     const projectId = project.id
-    // const caseData = queryClient.getQueryData([{ projectId: project.id, caseId: projectCase.id, resourceId: "" }]) as Components.Schemas.CaseDto
 
     const { data: caseData } = useQuery<Components.Schemas.CaseDto | undefined>(
         [{ projectId, caseId, resourceId: "" }],

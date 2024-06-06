@@ -3,7 +3,6 @@ import { useEffect, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import Grid from "@mui/material/Grid"
 import styled from "styled-components"
-import { useQueryClient, useQuery } from "react-query"
 import CaseDescriptionTab from "../Components/Case/Tabs/CaseDescriptionTab"
 import CaseCostTab from "../Components/Case/Tabs/CaseCost/CaseCostTab"
 import CaseFacilitiesTab from "../Components/Case/Tabs/CaseFacilitiesTab"
@@ -19,7 +18,6 @@ import { useCaseContext } from "../Context/CaseContext"
 import { useAppContext } from "../Context/AppContext"
 import { mergeTimeseriesList } from "../Utils/common"
 import { ITimeSeries } from "../Models/ITimeSeries"
-import { GetCaseService } from "../Services/CaseService"
 
 const {
     List, Tab, Panels, Panel,
@@ -381,7 +379,7 @@ const CaseView = () => {
     }
 
     useEffect(() => {
-        saveProjectCase && handleCaseSave()
+        if (saveProjectCase) { handleCaseSave() }
     }, [saveProjectCase])
 
     if (isLoading) {

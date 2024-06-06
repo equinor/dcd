@@ -44,7 +44,7 @@ const NextValue = styled(Typography)`
 `
 
 interface CaseEditHistoryProps {
-    caseId: string;
+    caseId: string
 }
 
 const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
