@@ -117,19 +117,19 @@ else
 {
     builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlConnectionString));
 }
-var fusionEnvironment = environment switch
-{
-    "dev" => "CI",
-    "qa" => "FQA",
-    "prod" => "FPRD",
-    "radix-prod" => "FPRD",
-    "radix-qa" => "FQA",
-    "radix-dev" => "CI",
-    _ => "CI",
-};
+
 builder.Services.AddFusionIntegration(options =>
 {
-
+    var fusionEnvironment = environment switch
+    {
+        "dev" => "CI",
+        "qa" => "FQA",
+        "prod" => "FPRD",
+        "radix-prod" => "FPRD",
+        "radix-qa" => "FQA",
+        "radix-dev" => "CI",
+        _ => "CI",
+    };
 
     Console.WriteLine("Fusion environment: " + fusionEnvironment);
     options.UseServiceInformation("ConceptApp", fusionEnvironment);
