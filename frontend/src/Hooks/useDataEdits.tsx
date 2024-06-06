@@ -76,9 +76,18 @@ const useDataEdits = (): {
             serviceMethod: object,
         }) => serviceMethod,
         {
-            onSuccess: (results, variables) => {
-                const { projectId, caseId, resourceId } = variables
-                queryClient.setQueryData([{ resourceId, projectId, caseId }], results)
+            onSuccess: (
+                results: any,
+                variables,
+            ) => {
+                const { projectId, caseId } = variables
+                /* this should work but doesnt :(
+                const assetId = caseId === results.id ? "" : results.id
+                queryClient.setQueryData([{ caseId, projectId , assetId }], results)
+                */
+
+                // this makes the app refetch all data. We should only refetch the data that was updated in the future.
+                queryClient.invalidateQueries(["apiData", { projectId, caseId }])
             },
             onError: (error: any) => {
                 console.error("Failed to update data:", error)
@@ -221,12 +230,6 @@ const useDataEdits = (): {
         const caseService = await GetCaseService()
         const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: "" }])
         const updatedData = { ...existingDataInClient, [resourcePropertyKey]: value }
-        console.log("existingDataInClient: ", existingDataInClient)
-        console.log("projectId: ", projectId)
-        console.log("caseId: ", caseId)
-        console.log("resourcePropertyKey: ", resourcePropertyKey)
-        console.log("value: ", value)
-        console.log("updatedData: ", updatedData)
         const serviceMethod = caseService.updateCase(projectId, caseId, updatedData as Components.Schemas.APIUpdateCaseDto)
 
         try {

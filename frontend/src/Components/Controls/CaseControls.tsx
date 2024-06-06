@@ -40,7 +40,6 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
         ["apiData", { projectId, caseId }],
         fetchCaseData,
         {
-            enabled: !!projectId && !!caseId,
             onSuccess: (result) => {
                 const caseData = result.case
                 const drainageStrategyData = result.drainageStrategy
@@ -67,16 +66,6 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
         },
     )
 
-    /*
-    const { data: caseData } = useQuery(
-        [{ projectId, caseId, resourceId: "" }],
-        {
-            enabled: !!project && !!projectId,
-            initialData: () => queryClient.getQueryData([{ projectId: project?.id, caseId, resourceId: "" }]),
-        },
-    )
-    */
-
     const { data: caseData } = useQuery<Components.Schemas.CaseDto | undefined>(
         [{ projectId, caseId, resourceId: "" }],
         () => queryClient.getQueryData([{ projectId, caseId, resourceId: "" }]),
@@ -85,8 +74,6 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
             initialData: () => queryClient.getQueryData([{ projectId: project?.id, caseId, resourceId: "" }]) as Components.Schemas.CaseDto,
         },
     )
-
-    const [caseName, setCaseName] = useState(caseData?.name ?? "")
 
     const handleCaseNameChange = (name: string) => {
         if (caseData) {
@@ -100,7 +87,6 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
                 resourceId: "",
                 caseId,
             })
-            setCaseName(name)
         }
     }
 
@@ -119,11 +105,9 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
         }
     }
 
-    useEffect(() => {
-        if (caseData) {
-            setCaseName(caseData.name)
-        }
-    }, [caseData])
+    if (!caseData) {
+        return null
+    }
 
     return (
         <>
@@ -135,37 +119,37 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
                     <Icon data={arrow_back} />
                 </Button>
             </Grid>
-            {caseData && (
-                <Grid item xs display="flex" alignItems="center" gap={1}>
-                    {editMode
-                        ? (
-                            <>
-                                <ChooseReferenceCase
-                                    projectRefCaseId={project?.referenceCaseId}
-                                    projectCaseId={caseId}
-                                    handleReferenceCaseChange={() => handleReferenceCaseChange(caseId)}
-                                />
-                                <Input // todo: should not be allowed to be empty
-                                    ref={nameInput}
-                                    type="text"
-                                    defaultValue={caseName}
-                                    onBlur={() => handleCaseNameChange(nameInput.current.value)}
-                                />
-                            </>
-                        )
-                        : (
-                            <>
-                                {project?.referenceCaseId === caseId && (
-                                    <ReferenceCaseIcon />
-                                )}
-                                <Typography variant="h4">
-                                    {caseName}
-                                </Typography>
-                                <Classification />
-                            </>
-                        )}
-                </Grid>
-            )}
+
+            <Grid item xs display="flex" alignItems="center" gap={1}>
+                {editMode
+                    ? (
+                        <>
+                            <ChooseReferenceCase
+                                projectRefCaseId={project?.referenceCaseId}
+                                projectCaseId={caseId}
+                                handleReferenceCaseChange={() => handleReferenceCaseChange(caseId)}
+                            />
+                            <Input // todo: should not be allowed to be empty
+                                ref={nameInput}
+                                type="text"
+                                defaultValue={caseData.name}
+                                onBlur={() => handleCaseNameChange(nameInput.current.value)}
+                            />
+                        </>
+                    )
+                    : (
+                        <>
+                            {project?.referenceCaseId === caseId && (
+                                <ReferenceCaseIcon />
+                            )}
+                            <Typography variant="h4">
+                                {caseData.name}
+                            </Typography>
+                            <Classification />
+                        </>
+                    )}
+            </Grid>
+
         </>
     )
 }

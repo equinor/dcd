@@ -48,12 +48,6 @@ const CaseDescriptionTab = () => {
 
     function handleDescriptionChange(value: string) {
         if (caseData) {
-            console.log("newValue: ", value)
-            console.log("previousValue: ", caseData?.description)
-            console.log("inputLabel: ", "Description")
-            console.log("projectId: ", project!.id)
-            console.log("resourceName: ", "case")
-            console.log("resourcePropertyKey: ", "description")
             addEdit({
                 newValue: value,
                 previousValue: caseData.description,

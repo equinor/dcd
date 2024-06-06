@@ -118,7 +118,7 @@ const Controls = () => {
                 />
             )}
             <Grid item xs container spacing={1} alignItems="center" justifyContent="flex-end">
-                {editMode
+                {editMode && !caseId
                     && (
                         <Grid item>
                             <Button variant="outlined" onClick={handleCancel}>Cancel</Button>

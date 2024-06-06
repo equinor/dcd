@@ -45,16 +45,6 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
         }
         if (!projectCase || !project) { return }
 
-        console.log("newValue: ", insertedValue)
-        console.log("typeof newValue: ", typeof insertedValue)
-        console.log("previousValue: ", value)
-        console.log("inputLabel: ", label)
-        console.log("projectId: ", project.id)
-        console.log("resourceName: ", resourceName)
-        console.log("resourcePropertyKey: ", resourcePropertyKey)
-        console.log("resourceId: ", resourceId)
-        console.log("caseId: ", projectCase.id)
-
         addEdit({
             newValue: insertedValue,
             previousValue: value,
