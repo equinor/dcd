@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { Accept, FileRejection, useDropzone } from "react-dropzone"
 import { Box, Typography } from "@mui/material"
 import styled from "styled-components"
@@ -39,8 +39,8 @@ const UploadBox = styled(Box)`
 `
 
 interface ImageUploadProps {
-    setGallery: React.Dispatch<React.SetStateAction<string[]>>
-    gallery: string[]
+    setGallery: React.Dispatch<React.SetStateAction<Components.Schemas.ImageDto[]>>
+    gallery: Components.Schemas.ImageDto[]
     setExeededLimit: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -55,8 +55,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
                 try {
                     const imageService = await getImageService()
                     const imageDtos = await imageService.getImages(project.id, projectCase.id)
-                    const imageUrls = imageDtos.map((dto) => dto.url)
-                    setGallery(imageUrls)
+                    setGallery(imageDtos)
                 } catch (error) {
                     console.error("Error loading images:", error)
                 }
@@ -104,8 +103,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         try {
             const uploadedImageDtos = await Promise.all(uploadPromises)
             if (Array.isArray(uploadedImageDtos)) {
-                const uploadedImageUrls = uploadedImageDtos.map((dto) => dto.url)
-                setGallery((prevGallery) => [...prevGallery, ...uploadedImageUrls])
+                setGallery((prevGallery) => [...prevGallery, ...uploadedImageDtos])
             } else {
                 console.error("Received undefined response from uploadImage")
             }
