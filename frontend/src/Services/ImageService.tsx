@@ -19,7 +19,7 @@ export class ImageService extends __BaseService {
     }
 
     public async getImages(projectId: string, caseId: string): Promise < Components.Schemas.ImageDto[] > {
-    const response = await this.get(`projects/${projectId}/cases/${caseId}/images`)
+        const response = await this.get(`projects/${projectId}/cases/${caseId}/images`)
         return response
     }
 

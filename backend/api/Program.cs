@@ -8,8 +8,6 @@ using api.Services;
 using api.Services.FusionIntegration;
 using api.Services.GenerateCostProfiles;
 
-using AutoMapper;
-
 using Azure.Identity;
 using Azure.Storage.Blobs;
 

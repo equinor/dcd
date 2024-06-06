@@ -123,7 +123,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
 
     return (
         <UploadBox {...getRootProps()}>
-            {/* ... (existing code) */}
             <input {...getInputProps()} />
             <Icon data={add} size={48} />
             {isDragActive ? (

@@ -1,4 +1,5 @@
 using api.Dtos;
+using api.Exceptions;
 using api.Models;
 
 using AutoMapper;
@@ -18,6 +19,12 @@ public class BlobStorageService : IBlobStorageService
         _blobServiceClient = blobServiceClient;
         _imageRepository = imageRepository;
         _mapper = mapper;
+        _containerName = GetContainerName(configuration);
+
+    }
+    private string GetContainerName(IConfiguration configuration)
+    {
+
         var environment = Environment.GetEnvironmentVariable("AppConfiguration__Environment") ?? "default";
 
         var containerKey = environment switch
@@ -33,7 +40,7 @@ public class BlobStorageService : IBlobStorageService
             _ => throw new InvalidOperationException($"Unknown fusion environment: {environment}")
         };
 
-        _containerName = configuration[containerKey]
+        return configuration[containerKey]
                              ?? throw new InvalidOperationException($"Container name configuration for {environment} is missing.");
     }
     private string SanitizeBlobName(string name)
@@ -97,7 +104,7 @@ public class BlobStorageService : IBlobStorageService
         var image = await _imageRepository.GetImageById(imageId);
         if (image == null)
         {
-            throw new InvalidOperationException("Image not found.");
+            throw new NotFoundInDBException("Image not found.");
         }
 
         var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
