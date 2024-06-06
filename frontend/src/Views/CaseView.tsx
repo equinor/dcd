@@ -39,7 +39,6 @@ const CaseView = () => {
         setIsLoading,
         updateFromServer,
         setUpdateFromServer,
-        setSnackBarMessage,
     } = useAppContext()
 
     const {

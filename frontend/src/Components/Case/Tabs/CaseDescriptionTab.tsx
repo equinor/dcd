@@ -1,7 +1,7 @@
 import { Typography } from "@equinor/eds-core-react"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
-import { useQueryClient } from "react-query"
+import { useQueryClient, useQuery } from "react-query"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import Gallery from "../../Gallery/Gallery"
@@ -19,8 +19,18 @@ const CaseDescriptionTab = () => {
 
     if (!projectCase || !project) { return null }
 
-    const caseData = queryClient.getQueryData([{ projectId: project.id, caseId: projectCase.id, resourceId: "" }]) as Components.Schemas.CaseDto
+    const caseId = projectCase.id
+    const projectId = project.id
+    // const caseData = queryClient.getQueryData([{ projectId: project.id, caseId: projectCase.id, resourceId: "" }]) as Components.Schemas.CaseDto
 
+    const { data: caseData } = useQuery<Components.Schemas.CaseDto | undefined>(
+        [{ projectId, caseId, resourceId: "" }],
+        () => queryClient.getQueryData([{ projectId, caseId, resourceId: "" }]),
+        {
+            enabled: !!project && !!projectId,
+            initialData: () => queryClient.getQueryData([{ projectId: project?.id, caseId, resourceId: "" }]) as Components.Schemas.CaseDto,
+        },
+    )
     const productionStrategyOptions = {
         0: "Depletion",
         1: "Water injection",

@@ -1,4 +1,4 @@
-import React, { useRef } from "react"
+import React, { useRef, useState, useEffect } from "react"
 import { useQuery, useQueryClient } from "react-query"
 import {
     Icon,
@@ -31,12 +31,14 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
 
     const queryClient = useQueryClient()
 
+    const fetchCaseData = async () => {
+        const caseService = await GetCaseService()
+        return caseService.getCaseWithAssets(projectId, caseId)
+    }
+
     useQuery(
         ["apiData", { projectId, caseId }],
-        async () => {
-            const caseService = await GetCaseService()
-            return caseService.getCaseWithAssets(projectId, caseId)
-        },
+        fetchCaseData,
         {
             enabled: !!projectId && !!caseId,
             onSuccess: (result) => {
@@ -65,7 +67,26 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
         },
     )
 
-    const caseData = queryClient.getQueryData([{ projectId, caseId, resourceId: "" }]) as Components.Schemas.CaseDto
+    /*
+    const { data: caseData } = useQuery(
+        [{ projectId, caseId, resourceId: "" }],
+        {
+            enabled: !!project && !!projectId,
+            initialData: () => queryClient.getQueryData([{ projectId: project?.id, caseId, resourceId: "" }]),
+        },
+    )
+    */
+
+    const { data: caseData } = useQuery<Components.Schemas.CaseDto | undefined>(
+        [{ projectId, caseId, resourceId: "" }],
+        () => queryClient.getQueryData([{ projectId, caseId, resourceId: "" }]),
+        {
+            enabled: !!project && !!projectId,
+            initialData: () => queryClient.getQueryData([{ projectId: project?.id, caseId, resourceId: "" }]) as Components.Schemas.CaseDto,
+        },
+    )
+
+    const [caseName, setCaseName] = useState(caseData?.name ?? "")
 
     const handleCaseNameChange = (name: string) => {
         if (caseData) {
@@ -79,6 +100,7 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
                 resourceId: "",
                 caseId,
             })
+            setCaseName(name)
         }
     }
 
@@ -96,6 +118,12 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
             setProject(updateProject)
         }
     }
+
+    useEffect(() => {
+        if (caseData) {
+            setCaseName(caseData.name)
+        }
+    }, [caseData])
 
     return (
         <>
@@ -120,7 +148,7 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
                                 <Input // todo: should not be allowed to be empty
                                     ref={nameInput}
                                     type="text"
-                                    defaultValue={caseData.name ?? ""}
+                                    defaultValue={caseName}
                                     onBlur={() => handleCaseNameChange(nameInput.current.value)}
                                 />
                             </>
@@ -131,7 +159,7 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
                                     <ReferenceCaseIcon />
                                 )}
                                 <Typography variant="h4">
-                                    {caseData.name ?? ""}
+                                    {caseName}
                                 </Typography>
                                 <Classification />
                             </>
