@@ -77,7 +77,6 @@ const CasesAgGridTable = ({
     }
 
     const onMoreClick = (data: TableCase, target: HTMLElement) => {
-        console.log("onMoreClick", data)
         setSelectedCaseId(data.id)
         setMenuAnchorEl(target)
         setIsMenuOpen(!isMenuOpen)

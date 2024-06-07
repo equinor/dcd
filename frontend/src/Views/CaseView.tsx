@@ -18,7 +18,6 @@ import { useCaseContext } from "../Context/CaseContext"
 import { useAppContext } from "../Context/AppContext"
 import { mergeTimeseriesList } from "../Utils/common"
 import { ITimeSeries } from "../Models/ITimeSeries"
-import { GetCaseService } from "../Services/CaseService"
 
 const {
     List, Tab, Panels, Panel,
@@ -142,16 +141,6 @@ const CaseView = () => {
             }
         }
     }, [])
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const caseService = await GetCaseService()
-            const result = await caseService.getCaseWithAssets(project.id, projectCase.id)
-            console.log("Result: ", result)
-        }
-
-        fetchData()
-    }, [project.id, caseId]) // Don't forget the dependency array
 
     // when user navigates to a different tab, add the tab name to the URL
     useEffect(() => {
@@ -390,7 +379,7 @@ const CaseView = () => {
     }
 
     useEffect(() => {
-        saveProjectCase && handleCaseSave()
+        if (saveProjectCase) { handleCaseSave() }
     }, [saveProjectCase])
 
     if (isLoading) {
