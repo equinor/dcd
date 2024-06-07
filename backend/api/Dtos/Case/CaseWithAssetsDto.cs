@@ -56,16 +56,6 @@ public class CaseWithAssetsDto
 
 
     [Required]
-    public ExplorationDto Exploration { get; set; } = null!;
-    public ExplorationWellCostProfileDto? ExplorationWellCostProfile { get; set; }
-    public AppraisalWellCostProfileDto? AppraisalWellCostProfile { get; set; }
-    public SidetrackCostProfileDto? SidetrackCostProfile { get; set; }
-    public GAndGAdminCostDto? GAndGAdminCost { get; set; }
-    public SeismicAcquisitionAndProcessingDto? SeismicAcquisitionAndProcessing { get; set; }
-    public CountryOfficeCostDto? CountryOfficeCost { get; set; }
-
-
-    [Required]
     public SubstructureDto Substructure { get; set; } = null!;
     public SubstructureCostProfileDto? SubstructureCostProfile { get; set; }
     public SubstructureCostProfileOverrideDto? SubstructureCostProfileOverride { get; set; }
@@ -87,7 +77,19 @@ public class CaseWithAssetsDto
 
 
     [Required]
+    public ExplorationDto Exploration { get; set; } = null!;
+    public List<ExplorationWellDto> ExplorationWells { get; set; } = [];
+    public ExplorationWellCostProfileDto? ExplorationWellCostProfile { get; set; }
+    public AppraisalWellCostProfileDto? AppraisalWellCostProfile { get; set; }
+    public SidetrackCostProfileDto? SidetrackCostProfile { get; set; }
+    public GAndGAdminCostDto? GAndGAdminCost { get; set; }
+    public SeismicAcquisitionAndProcessingDto? SeismicAcquisitionAndProcessing { get; set; }
+    public CountryOfficeCostDto? CountryOfficeCost { get; set; }
+
+
+    [Required]
     public WellProjectDto WellProject { get; set; } = null!;
+    public List<WellProjectWellDto> WellProjectWells { get; set; } = [];
     public OilProducerCostProfileDto? OilProducerCostProfile { get; set; }
     public OilProducerCostProfileOverrideDto? OilProducerCostProfileOverride { get; set; }
     public GasProducerCostProfileDto? GasProducerCostProfile { get; set; }
@@ -96,5 +98,4 @@ public class CaseWithAssetsDto
     public WaterInjectorCostProfileOverrideDto? WaterInjectorCostProfileOverride { get; set; }
     public GasInjectorCostProfileDto? GasInjectorCostProfile { get; set; }
     public GasInjectorCostProfileOverrideDto? GasInjectorCostProfileOverride { get; set; }
-
 }
