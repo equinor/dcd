@@ -18,7 +18,7 @@ public class TransportRepository : BaseRepository, ITransportRepository
         return await Get<Transport>(transportId);
     }
 
-        public async Task<Transport?> GetTransportWithCostProfile(Guid transportId)
+    public async Task<Transport?> GetTransportWithCostProfile(Guid transportId)
     {
         return await _context.Transports
                         .Include(t => t.CostProfile)

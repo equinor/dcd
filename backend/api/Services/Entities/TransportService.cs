@@ -216,7 +216,7 @@ public class TransportService : ITransportService
         return newDto;
     }
 
-        private async Task<TDto> UpdateTransportTimeSeries<TProfile, TDto, TUpdateDto>(
+    private async Task<TDto> UpdateTransportTimeSeries<TProfile, TDto, TUpdateDto>(
         Guid caseId,
         Guid transportId,
         Guid profileId,

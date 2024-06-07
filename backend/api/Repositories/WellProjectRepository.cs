@@ -26,7 +26,7 @@ public class WellProjectRepository : BaseRepository, IWellProjectRepository
         return await Get<WellProjectWell>(wellId);
     }
 
-    public  WellProjectWell UpdateWellProjectWell(WellProjectWell wellProjectWell)
+    public WellProjectWell UpdateWellProjectWell(WellProjectWell wellProjectWell)
     {
         return Update(wellProjectWell);
     }
