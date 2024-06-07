@@ -4,24 +4,20 @@ using api.Models;
 
 namespace api.Repositories;
 
-public class WellRepository : IWellRepository
+public class WellRepository : BaseRepository, IWellRepository
 {
-    private readonly DcdDbContext _context;
 
-    public WellRepository(DcdDbContext context)
+    public WellRepository(DcdDbContext context) : base(context)
     {
-        _context = context;
     }
 
     public async Task<Well?> GetWell(Guid wellId)
     {
-        return await _context.Wells.FindAsync(wellId);
+        return await Get<Well>(wellId);
     }
 
-    public async Task<Well> UpdateWell(Well well)
+    public Well UpdateWell(Well well)
     {
-        _context.Wells.Update(well);
-        await _context.SaveChangesAsync();
-        return well;
+        return Update(well);
     }
 }

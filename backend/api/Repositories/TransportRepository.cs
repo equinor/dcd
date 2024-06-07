@@ -15,7 +15,7 @@ public class TransportRepository : BaseRepository, ITransportRepository
 
     public async Task<Transport?> GetTransport(Guid transportId)
     {
-        return await _context.Transports.FindAsync(transportId);
+        return await Get<Transport>(transportId);
     }
 
         public async Task<Transport?> GetTransportWithCostProfile(Guid transportId)
@@ -27,8 +27,7 @@ public class TransportRepository : BaseRepository, ITransportRepository
 
     public Transport UpdateTransport(Transport transport)
     {
-        _context.Transports.Update(transport);
-        return transport;
+        return Update(transport);
     }
 
     public TransportCostProfile CreateTransportCostProfile(TransportCostProfile transportCostProfile)
@@ -49,12 +48,11 @@ public class TransportRepository : BaseRepository, ITransportRepository
 
     public async Task<TransportCostProfileOverride?> GetTransportCostProfileOverride(Guid transportCostProfileOverrideId)
     {
-        return await _context.TransportCostProfileOverride.FindAsync(transportCostProfileOverrideId);
+        return await Get<TransportCostProfileOverride>(transportCostProfileOverrideId);
     }
 
     public TransportCostProfileOverride UpdateTransportCostProfileOverride(TransportCostProfileOverride transportCostProfileOverride)
     {
-        _context.TransportCostProfileOverride.Update(transportCostProfileOverride);
-        return transportCostProfileOverride;
+        return Update(transportCostProfileOverride);
     }
 }

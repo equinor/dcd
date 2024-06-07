@@ -2,8 +2,8 @@ using api.Models;
 
 namespace api.Repositories;
 
-public interface IWellRepository
+public interface IWellRepository : IBaseRepository
 {
     Task<Well?> GetWell(Guid wellId);
-    Task<Well> UpdateWell(Well well);
+    Well UpdateWell(Well well);
 }

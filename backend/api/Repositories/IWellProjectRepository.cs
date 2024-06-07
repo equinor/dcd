@@ -2,18 +2,18 @@ using api.Models;
 
 namespace api.Repositories;
 
-public interface IWellProjectRepository
+public interface IWellProjectRepository : IBaseRepository
 {
     Task<WellProject?> GetWellProject(Guid wellProjectId);
-    Task<WellProject> UpdateWellProject(WellProject wellProject);
+    WellProject UpdateWellProject(WellProject wellProject);
     Task<WellProjectWell?> GetWellProjectWell(Guid wellProjectId, Guid wellId);
-    Task<WellProjectWell> UpdateWellProjectWell(WellProjectWell wellProjectWell);
+    WellProjectWell UpdateWellProjectWell(WellProjectWell wellProjectWell);
     Task<OilProducerCostProfileOverride?> GetOilProducerCostProfileOverride(Guid profileId);
-    Task<OilProducerCostProfileOverride> UpdateOilProducerCostProfileOverride(OilProducerCostProfileOverride costProfile);
+    OilProducerCostProfileOverride UpdateOilProducerCostProfileOverride(OilProducerCostProfileOverride costProfile);
     Task<GasProducerCostProfileOverride?> GetGasProducerCostProfileOverride(Guid profileId);
-    Task<GasProducerCostProfileOverride> UpdateGasProducerCostProfileOverride(GasProducerCostProfileOverride costProfile);
+    GasProducerCostProfileOverride UpdateGasProducerCostProfileOverride(GasProducerCostProfileOverride costProfile);
     Task<WaterInjectorCostProfileOverride?> GetWaterInjectorCostProfileOverride(Guid profileId);
-    Task<WaterInjectorCostProfileOverride> UpdateWaterInjectorCostProfileOverride(WaterInjectorCostProfileOverride costProfile);
+    WaterInjectorCostProfileOverride UpdateWaterInjectorCostProfileOverride(WaterInjectorCostProfileOverride costProfile);
     Task<GasInjectorCostProfileOverride?> GetGasInjectorCostProfileOverride(Guid profileId);
-    Task<GasInjectorCostProfileOverride> UpdateGasInjectorCostProfileOverride(GasInjectorCostProfileOverride costProfile);
+    GasInjectorCostProfileOverride UpdateGasInjectorCostProfileOverride(GasInjectorCostProfileOverride costProfile);
 }

@@ -35,7 +35,8 @@ public class WellService : IWellService
         Well updatedWell;
         try
         {
-            updatedWell = await _repository.UpdateWell(existingWell);
+            updatedWell = _repository.UpdateWell(existingWell);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
