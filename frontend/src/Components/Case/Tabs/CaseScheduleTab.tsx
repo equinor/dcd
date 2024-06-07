@@ -122,12 +122,6 @@ const CaseScheduleTab = () => {
     }
 
     function handleDateChange(dateKey: string, dateValue: string) {
-        console.log("dateKey", dateKey)
-        console.log("dateValue", dateValue)
-
-        // turn dateValue into date object
-        const dateValueObject = dateFromString(dateValue)
-
         if (!caseData) { return }
 
         const newDate = Number.isNaN(new Date(dateValue).getTime())

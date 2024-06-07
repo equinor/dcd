@@ -110,7 +110,6 @@ const useDataEdits = (): {
         const service = await GetTopsideService()
         const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: topsideId }])
         const updatedData = resourceObject || { ...existingDataInClient, [resourcePropertyKey]: value }
-        console.log("submitting to api", updatedData)
         const serviceMethod = service.updateTopside(projectId, caseId, topsideId, updatedData)
 
         try {
@@ -137,7 +136,6 @@ const useDataEdits = (): {
         const service = await GetSurfService()
         const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: surfId }])
         const updatedData = resourceObject || { ...existingDataInClient, [resourcePropertyKey]: value }
-        console.log("submitting to api", updatedData)
         const serviceMethod = service.updateSurf(projectId, caseId, surfId, updatedData)
 
         try {
@@ -245,7 +243,6 @@ const useDataEdits = (): {
         const updatedData = resourceObject || { ...existingDataInClient, [resourcePropertyKey]: value }
         const serviceMethod = caseService.updateCase(projectId, caseId, updatedData as Components.Schemas.APIUpdateCaseDto)
 
-        console.log("submitting to api", updatedData)
         try {
             await mutation.mutateAsync({
                 projectId,
@@ -258,21 +255,6 @@ const useDataEdits = (): {
         }
     }
 
-    /**
-     *     const addEdit = async ({
-        newValue,
-        previousValue,
-        inputLabel,
-        projectId,
-        resourceName,
-        resourcePropertyKey,
-        resourceId,
-        caseId,
-        newDisplayValue,
-        previousDisplayValue,
-        newResourceObject,
-    }: AddEditParams) => {
-     */
     type SubmitToApiParams = {
         projectId: string,
         caseId: string,
