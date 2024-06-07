@@ -230,7 +230,8 @@ public class CaseService : ICaseService
         Case updatedCase;
         try
         {
-            updatedCase = await _repository.UpdateCase(existingCase);
+            updatedCase = _repository.UpdateCase(existingCase);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -402,7 +403,7 @@ public class CaseService : ICaseService
         Guid costProfileId,
         TUpdateDto updatedCostProfileDto,
         Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, Task<TProfile>> updateProfile
+        Func<TProfile, TProfile> updateProfile
     )
         where TProfile : class
         where TDto : class
@@ -416,7 +417,9 @@ public class CaseService : ICaseService
         TProfile updatedProfile;
         try
         {
-            updatedProfile = await updateProfile(existingProfile);
+            updatedProfile = updateProfile(existingProfile);
+            await _repository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -425,7 +428,6 @@ public class CaseService : ICaseService
             throw;
         }
 
-        await _repository.UpdateModifyTime(caseId);
 
         var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, costProfileId);
         return updatedDto;

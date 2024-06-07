@@ -6,138 +6,116 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories;
 
-public class CaseRepository : ICaseRepository
+public class CaseRepository : BaseRepository, ICaseRepository
 {
-    private readonly DcdDbContext _context;
     private readonly ILogger<CaseRepository> _logger;
 
     public CaseRepository(
         DcdDbContext context,
         ILogger<CaseRepository> logger
-        )
+        ) : base(context)
     {
-        _context = context;
         _logger = logger;
     }
 
     public async Task<Case?> GetCase(Guid caseId)
     {
-        return await _context.Cases.FindAsync(caseId);
+        return await Get<Case>(caseId);
     }
 
-    public async Task<Case> UpdateCase(Case updatedCase)
+    public Case UpdateCase(Case updatedCase)
     {
-        _context.Cases.Update(updatedCase);
-        await _context.SaveChangesAsync();
-        return updatedCase;
+        return Update(updatedCase);
     }
 
     public async Task<CessationWellsCostOverride?> GetCessationWellsCostOverride(Guid costProfileId)
     {
-        return await _context.CessationWellsCostOverride.FindAsync(costProfileId);
+        return await Get<CessationWellsCostOverride>(costProfileId);
     }
 
-    public async Task<CessationWellsCostOverride> UpdateCessationWellsCostOverride(CessationWellsCostOverride costProfile)
+    public CessationWellsCostOverride UpdateCessationWellsCostOverride(CessationWellsCostOverride costProfile)
     {
-        _context.CessationWellsCostOverride.Update(costProfile);
-        await _context.SaveChangesAsync();
-        return costProfile;
+        return Update(costProfile);
     }
 
     public async Task<CessationOffshoreFacilitiesCostOverride?> GetCessationOffshoreFacilitiesCostOverride(Guid costProfileId)
     {
-        return await _context.CessationOffshoreFacilitiesCostOverride.FindAsync(costProfileId);
+        return await Get<CessationOffshoreFacilitiesCostOverride>(costProfileId);
     }
 
-    public async Task<CessationOffshoreFacilitiesCostOverride> UpdateCessationOffshoreFacilitiesCostOverride(CessationOffshoreFacilitiesCostOverride costProfile)
+    public CessationOffshoreFacilitiesCostOverride UpdateCessationOffshoreFacilitiesCostOverride(CessationOffshoreFacilitiesCostOverride costProfile)
     {
-        _context.CessationOffshoreFacilitiesCostOverride.Update(costProfile);
-        await _context.SaveChangesAsync();
-        return costProfile;
+        return Update(costProfile);
     }
 
     public async Task<TotalFeasibilityAndConceptStudiesOverride?> GetTotalFeasibilityAndConceptStudiesOverride(Guid costProfileId)
     {
-        return await _context.TotalFeasibilityAndConceptStudiesOverride.FindAsync(costProfileId);
+        return await Get<TotalFeasibilityAndConceptStudiesOverride>(costProfileId);
     }
 
-    public async Task<TotalFeasibilityAndConceptStudiesOverride> UpdateTotalFeasibilityAndConceptStudiesOverride(TotalFeasibilityAndConceptStudiesOverride costProfile)
+    public TotalFeasibilityAndConceptStudiesOverride UpdateTotalFeasibilityAndConceptStudiesOverride(TotalFeasibilityAndConceptStudiesOverride costProfile)
     {
-        _context.TotalFeasibilityAndConceptStudiesOverride.Update(costProfile);
-        await _context.SaveChangesAsync();
-        return costProfile;
+        return Update(costProfile);
     }
 
     public async Task<TotalFEEDStudiesOverride?> GetTotalFEEDStudiesOverride(Guid costProfileId)
     {
-        return await _context.TotalFEEDStudiesOverride.FindAsync(costProfileId);
+        return await Get<TotalFEEDStudiesOverride>(costProfileId);
     }
 
-    public async Task<TotalFEEDStudiesOverride> UpdateTotalFEEDStudiesOverride(TotalFEEDStudiesOverride costProfile)
+    public TotalFEEDStudiesOverride UpdateTotalFEEDStudiesOverride(TotalFEEDStudiesOverride costProfile)
     {
-        _context.TotalFEEDStudiesOverride.Update(costProfile);
-        await _context.SaveChangesAsync();
-        return costProfile;
+        return Update(costProfile);
     }
 
     public async Task<HistoricCostCostProfile?> GetHistoricCostCostProfile(Guid costProfileId)
     {
-        return await _context.HistoricCostCostProfile.FindAsync(costProfileId);
+        return await Get<HistoricCostCostProfile>(costProfileId);
     }
 
-    public async Task<HistoricCostCostProfile> UpdateHistoricCostCostProfile(HistoricCostCostProfile costProfile)
+    public HistoricCostCostProfile UpdateHistoricCostCostProfile(HistoricCostCostProfile costProfile)
     {
-        _context.HistoricCostCostProfile.Update(costProfile);
-        await _context.SaveChangesAsync();
-        return costProfile;
+        return Update(costProfile);
     }
 
     public async Task<WellInterventionCostProfileOverride?> GetWellInterventionCostProfileOverride(Guid costProfileId)
     {
-        return await _context.WellInterventionCostProfileOverride.FindAsync(costProfileId);
+        return await Get<WellInterventionCostProfileOverride>(costProfileId);
     }
 
-    public async Task<WellInterventionCostProfileOverride> UpdateWellInterventionCostProfileOverride(WellInterventionCostProfileOverride costProfile)
+    public WellInterventionCostProfileOverride UpdateWellInterventionCostProfileOverride(WellInterventionCostProfileOverride costProfile)
     {
-        _context.WellInterventionCostProfileOverride.Update(costProfile);
-        await _context.SaveChangesAsync();
-        return costProfile;
+        return Update(costProfile);
     }
 
     public async Task<OffshoreFacilitiesOperationsCostProfileOverride?> GetOffshoreFacilitiesOperationsCostProfileOverride(Guid costProfileId)
     {
-        return await _context.OffshoreFacilitiesOperationsCostProfileOverride.FindAsync(costProfileId);
+        return await Get<OffshoreFacilitiesOperationsCostProfileOverride>(costProfileId);
     }
 
-    public async Task<OffshoreFacilitiesOperationsCostProfileOverride> UpdateOffshoreFacilitiesOperationsCostProfileOverride(OffshoreFacilitiesOperationsCostProfileOverride costProfile)
+    public OffshoreFacilitiesOperationsCostProfileOverride UpdateOffshoreFacilitiesOperationsCostProfileOverride(OffshoreFacilitiesOperationsCostProfileOverride costProfile)
     {
-        _context.OffshoreFacilitiesOperationsCostProfileOverride.Update(costProfile);
-        await _context.SaveChangesAsync();
-        return costProfile;
+        return Update(costProfile);
     }
 
     public async Task<OnshoreRelatedOPEXCostProfile?> GetOnshoreRelatedOPEXCostProfile(Guid costProfileId)
     {
-        return await _context.OnshoreRelatedOPEXCostProfile.FindAsync(costProfileId);
+        return await Get<OnshoreRelatedOPEXCostProfile>(costProfileId);
     }
 
-    public async Task<OnshoreRelatedOPEXCostProfile> UpdateOnshoreRelatedOPEXCostProfile(OnshoreRelatedOPEXCostProfile costProfile)
+    public OnshoreRelatedOPEXCostProfile UpdateOnshoreRelatedOPEXCostProfile(OnshoreRelatedOPEXCostProfile costProfile)
     {
-        _context.OnshoreRelatedOPEXCostProfile.Update(costProfile);
-        await _context.SaveChangesAsync();
-        return costProfile;
+        return Update(costProfile);
     }
 
     public async Task<AdditionalOPEXCostProfile?> GetAdditionalOPEXCostProfile(Guid costProfileId)
     {
-        return await _context.AdditionalOPEXCostProfile.FindAsync(costProfileId);
+        return await Get<AdditionalOPEXCostProfile>(costProfileId);
     }
 
-    public async Task<AdditionalOPEXCostProfile> UpdateAdditionalOPEXCostProfile(AdditionalOPEXCostProfile costProfile)
+    public AdditionalOPEXCostProfile UpdateAdditionalOPEXCostProfile(AdditionalOPEXCostProfile costProfile)
     {
-        _context.AdditionalOPEXCostProfile.Update(costProfile);
-        await _context.SaveChangesAsync();
-        return costProfile;
+        return Update(costProfile);
     }
 
     public async Task UpdateModifyTime(Guid caseId)
