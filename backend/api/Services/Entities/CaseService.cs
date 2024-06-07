@@ -83,7 +83,7 @@ public class CaseService : ICaseService
             Name = "Drainage strategy",
             Description = ""
         };
-        var drainageStrategy = await _drainageStrategyService.NewCreateDrainageStrategy(projectId, createdCase.Entity.Id, drainageStrategyDto);
+        var drainageStrategy = await _drainageStrategyService.CreateDrainageStrategy(projectId, createdCase.Entity.Id, drainageStrategyDto);
         caseItem.DrainageStrategyLink = drainageStrategy.Id;
 
         var topsideDto = new CreateTopsideDto

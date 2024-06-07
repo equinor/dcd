@@ -22,59 +22,6 @@ public class DrainageStrategyServiceShould : IDisposable
         fixture.Dispose();
     }
 
-    [Fact]
-    public async Task CreateNewDrainageStrategy()
-    {
-        // Arrange
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
-        var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
-        var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
-        var caseId = project.Cases.FirstOrDefault().Id;
-        var expectedStrategy = CreateTestDrainageStrategy(project);
-
-        // Act
-        var projectResult = await drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy, project.PhysicalUnit), caseId);
-
-        // Assert
-        var actualStrategy = projectResult.DrainageStrategies.FirstOrDefault(o => o.Name == expectedStrategy.Name);
-        Assert.NotNull(actualStrategy);
-        TestHelper.CompareDrainageStrategies(DrainageStrategyDtoAdapter.Convert(expectedStrategy, project.PhysicalUnit), actualStrategy);
-        var case_ = fixture.context.Cases.FirstOrDefault(o => o.Id == caseId);
-        Assert.Equal(actualStrategy.Id, case_.DrainageStrategyLink);
-    }
-
-    [Fact]
-    public async Task ThrowNotInDatabaseExceptionWhenCreatingDrainageStrategyWithBadProjectId()
-    {
-        // Arrange
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
-        var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
-        var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
-        var caseId = project.Cases.FirstOrDefault().Id;
-        var expectedStrategy = CreateTestDrainageStrategy(new Project { Id = new Guid() });
-
-        // Act, assert
-        await Assert.ThrowsAsync<NotFoundInDBException>(async () =>
-            await drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy, project.PhysicalUnit), caseId));
-    }
-
-    [Fact]
-    public async Task ThrowNotFoundInDatabaseExceptionWhenCreatingDrainageStrategyWithBadCaseId()
-    {
-        // Arrange
-        var loggerFactory = new LoggerFactory();
-        var projectService = new ProjectService(fixture.context, loggerFactory);
-        var drainageStrategyService = new DrainageStrategyService(fixture.context, projectService, loggerFactory);
-        var project = fixture.context.Projects.FirstOrDefault(o => o.Cases.Any());
-        var expectedStrategy = CreateTestDrainageStrategy(project);
-
-        // Act, assert
-        await Assert.ThrowsAsync<NotFoundInDBException>(async () =>
-            await drainageStrategyService.CreateDrainageStrategy(DrainageStrategyDtoAdapter.Convert(expectedStrategy, project.PhysicalUnit), new Guid()));
-    }
-
     private static DrainageStrategy CreateTestDrainageStrategy(Project project)
     {
         return new DrainageStrategyBuilder
