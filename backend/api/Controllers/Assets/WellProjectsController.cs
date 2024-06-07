@@ -51,36 +51,45 @@ public class WellProjectsController : ControllerBase
 
     [HttpPut("{wellProjectId}/gas-producer-cost-profile-override/{costProfileId}")]
     public async Task<GasProducerCostProfileOverrideDto> UpdateGasProducerCostProfileOverride(
-    [FromRoute] Guid projectId,
-    [FromRoute] Guid caseId,
-    [FromRoute] Guid wellProjectId,
-    [FromRoute] Guid costProfileId,
-    [FromBody] UpdateGasProducerCostProfileOverrideDto dto)
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid wellProjectId,
+        [FromRoute] Guid costProfileId,
+        [FromBody] UpdateGasProducerCostProfileOverrideDto dto)
     {
         return await _wellProjectService.UpdateGasProducerCostProfileOverride(caseId, wellProjectId, costProfileId, dto);
     }
 
     [HttpPut("{wellProjectId}/water-injector-cost-profile-override/{costProfileId}")]
     public async Task<WaterInjectorCostProfileOverrideDto> UpdateWaterInjectorCostProfileOverride(
-    [FromRoute] Guid projectId,
-    [FromRoute] Guid caseId,
-    [FromRoute] Guid wellProjectId,
-    [FromRoute] Guid costProfileId,
-    [FromBody] UpdateWaterInjectorCostProfileOverrideDto dto)
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid wellProjectId,
+        [FromRoute] Guid costProfileId,
+        [FromBody] UpdateWaterInjectorCostProfileOverrideDto dto)
     {
         return await _wellProjectService.UpdateWaterInjectorCostProfileOverride(caseId, wellProjectId, costProfileId, dto);
     }
 
     [HttpPut("{wellProjectId}/gas-injector-cost-profile-override/{costProfileId}")]
     public async Task<GasInjectorCostProfileOverrideDto> UpdateGasInjectorCostProfileOverride(
-    [FromRoute] Guid projectId,
-    [FromRoute] Guid caseId,
-    [FromRoute] Guid wellProjectId,
-    [FromRoute] Guid costProfileId,
-    [FromBody] UpdateGasInjectorCostProfileOverrideDto dto)
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid wellProjectId,
+        [FromRoute] Guid costProfileId,
+        [FromBody] UpdateGasInjectorCostProfileOverrideDto dto)
     {
         return await _wellProjectService.UpdateGasInjectorCostProfileOverride(caseId, wellProjectId, costProfileId, dto);
     }
 
-
+    [HttpPut("{wellProjectId}/well/{wellId}")]
+    public async Task<WellProjectWellDto> UpdateWellProjectWell(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid wellProjectId,
+        [FromRoute] Guid wellId,
+        [FromBody] UpdateWellProjectWellDto dto)
+    {
+        return await _wellProjectService.UpdateWellProjectWell(caseId, wellProjectId, wellId, dto);
+    }
 }

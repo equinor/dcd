@@ -16,6 +16,13 @@ public interface IExplorationService
         UpdateExplorationDto updatedExplorationDto
     );
 
+    Task<ExplorationWellDto> UpdateExplorationWell(
+        Guid caseId,
+        Guid explorationId,
+        Guid wellId,
+        UpdateExplorationWellDto updatedExplorationWellDto
+    );
+
     Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
         Guid caseId,
         Guid wellProjectId,

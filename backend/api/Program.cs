@@ -182,6 +182,7 @@ builder.Services.AddScoped<IExplorationOperationalWellCostsService, ExplorationO
 
 builder.Services.AddScoped<IDevelopmentOperationalWellCostsService, DevelopmentOperationalWellCostsService>();
 builder.Services.AddScoped<ICaseAndAssetsService, CaseAndAssetsService>();
+builder.Services.AddScoped<ICaseWithAssetsService, CaseWithAssetsService>();
 
 builder.Services.AddScoped<ITechnicalInputService, TechnicalInputService>();
 builder.Services.AddScoped<IGenerateOpexCostProfile, GenerateOpexCostProfile>();
@@ -207,8 +208,10 @@ builder.Services.AddScoped<IWellProjectRepository, WellProjectRepository>();
 builder.Services.AddScoped<IExplorationRepository, ExplorationRepository>();
 builder.Services.AddScoped<ITransportRepository, TransportRepository>();
 builder.Services.AddScoped<ISurfRepository, SurfRepository>();
+
+builder.Services.AddScoped<IWellRepository, WellRepository>();
 builder.Services.AddScoped<ICaseWithAssetsRepository, CaseWithAssetsRepository>();
-builder.Services.AddScoped<ICaseWithAssetsService, CaseWithAssetsService>();
+
 
 
 builder.Services.AddScoped<IMapperService, MapperService>();

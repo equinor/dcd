@@ -167,7 +167,9 @@ public class WellProjectService : IWellProjectService
         WellProject updatedWellProject;
         try
         {
-            updatedWellProject = await _repository.UpdateWellProject(existingWellProject);
+            updatedWellProject = _repository.UpdateWellProject(existingWellProject);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -175,9 +177,36 @@ public class WellProjectService : IWellProjectService
             throw;
         }
 
-        await _caseRepository.UpdateModifyTime(caseId);
-
         var dto = _mapperService.MapToDto<WellProject, WellProjectDto>(updatedWellProject, wellProjectId);
+        return dto;
+    }
+
+    public async Task<WellProjectWellDto> UpdateWellProjectWell(
+        Guid caseId,
+        Guid wellProjectId,
+        Guid wellId,
+        UpdateWellProjectWellDto updatedWellProjectWellDto
+    )
+    {
+        var existingWellProject = await _repository.GetWellProjectWell(wellProjectId, wellId)
+            ?? throw new NotFoundInDBException($"Well project well with id {wellProjectId} and ${wellId} not found.");
+
+        _mapperService.MapToEntity(updatedWellProjectWellDto, existingWellProject, wellProjectId);
+
+        WellProjectWell updatedWellProject;
+        try
+        {
+            updatedWellProject = _repository.UpdateWellProjectWell(existingWellProject);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to update well project well with id {wellProjectId} and well id {wellId}.", wellProjectId, wellId);
+            throw;
+        }
+
+        var dto = _mapperService.MapToDto<WellProjectWell, WellProjectWellDto>(updatedWellProject, wellProjectId);
         return dto;
     }
 
@@ -255,7 +284,7 @@ public class WellProjectService : IWellProjectService
         Guid profileId,
         TUpdateDto updatedProfileDto,
         Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, Task<TProfile>> updateProfile
+        Func<TProfile, TProfile> updateProfile
     )
         where TProfile : class, IWellProjectTimeSeries
         where TDto : class
@@ -269,7 +298,9 @@ public class WellProjectService : IWellProjectService
         TProfile updatedProfile;
         try
         {
-            updatedProfile = await updateProfile(existingProfile);
+            updatedProfile = updateProfile(existingProfile);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -277,8 +308,6 @@ public class WellProjectService : IWellProjectService
             _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
             throw;
         }
-
-        await _caseRepository.UpdateModifyTime(caseId);
 
         var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
         return updatedDto;

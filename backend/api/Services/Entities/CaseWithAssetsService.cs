@@ -86,14 +86,6 @@ public class CaseWithAssetsService : ICaseWithAssetsService
             TopsideCostProfileOverride = MapToDto<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>(topside.CostProfileOverride, topside.CostProfileOverride?.Id),
             TopsideCessationCostProfile = MapToDto<TopsideCessationCostProfile, TopsideCessationCostProfileDto>(topside.CessationCostProfile, topside.CessationCostProfile?.Id),
 
-            Exploration = _mapperService.MapToDto<Exploration, ExplorationDto>(exploration, exploration.Id),
-            ExplorationWellCostProfile = MapToDto<ExplorationWellCostProfile, ExplorationWellCostProfileDto>(exploration.ExplorationWellCostProfile, exploration.ExplorationWellCostProfile?.Id),
-            AppraisalWellCostProfile = MapToDto<AppraisalWellCostProfile, AppraisalWellCostProfileDto>(exploration.AppraisalWellCostProfile, exploration.AppraisalWellCostProfile?.Id),
-            SidetrackCostProfile = MapToDto<SidetrackCostProfile, SidetrackCostProfileDto>(exploration.SidetrackCostProfile, exploration.SidetrackCostProfile?.Id),
-            GAndGAdminCost = MapToDto<GAndGAdminCost, GAndGAdminCostDto>(exploration.GAndGAdminCost, exploration.GAndGAdminCost?.Id),
-            SeismicAcquisitionAndProcessing = MapToDto<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto>(exploration.SeismicAcquisitionAndProcessing, exploration.SeismicAcquisitionAndProcessing?.Id),
-            CountryOfficeCost = MapToDto<CountryOfficeCost, CountryOfficeCostDto>(exploration.CountryOfficeCost, exploration.CountryOfficeCost?.Id),
-
             Substructure = _mapperService.MapToDto<Substructure, SubstructureDto>(substructure, substructure.Id),
             SubstructureCostProfile = MapToDto<SubstructureCostProfile, SubstructureCostProfileDto>(substructure.CostProfile, substructure.CostProfile?.Id),
             SubstructureCostProfileOverride = MapToDto<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>(substructure.CostProfileOverride, substructure.CostProfileOverride?.Id),
@@ -109,7 +101,17 @@ public class CaseWithAssetsService : ICaseWithAssetsService
             TransportCostProfileOverride = MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(transport.CostProfileOverride, transport.CostProfileOverride?.Id),
             TransportCessationCostProfile = MapToDto<TransportCessationCostProfile, TransportCessationCostProfileDto>(transport.CessationCostProfile, transport.CessationCostProfile?.Id),
 
+            Exploration = _mapperService.MapToDto<Exploration, ExplorationDto>(exploration, exploration.Id),
+            ExplorationWells = exploration.ExplorationWells?.Select(w => _mapperService.MapToDto<ExplorationWell, ExplorationWellDto>(w, w.ExplorationId)).ToList() ?? new List<ExplorationWellDto>(),
+            ExplorationWellCostProfile = MapToDto<ExplorationWellCostProfile, ExplorationWellCostProfileDto>(exploration.ExplorationWellCostProfile, exploration.ExplorationWellCostProfile?.Id),
+            AppraisalWellCostProfile = MapToDto<AppraisalWellCostProfile, AppraisalWellCostProfileDto>(exploration.AppraisalWellCostProfile, exploration.AppraisalWellCostProfile?.Id),
+            SidetrackCostProfile = MapToDto<SidetrackCostProfile, SidetrackCostProfileDto>(exploration.SidetrackCostProfile, exploration.SidetrackCostProfile?.Id),
+            GAndGAdminCost = MapToDto<GAndGAdminCost, GAndGAdminCostDto>(exploration.GAndGAdminCost, exploration.GAndGAdminCost?.Id),
+            SeismicAcquisitionAndProcessing = MapToDto<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto>(exploration.SeismicAcquisitionAndProcessing, exploration.SeismicAcquisitionAndProcessing?.Id),
+            CountryOfficeCost = MapToDto<CountryOfficeCost, CountryOfficeCostDto>(exploration.CountryOfficeCost, exploration.CountryOfficeCost?.Id),
+
             WellProject = _mapperService.MapToDto<WellProject, WellProjectDto>(wellProject, wellProject.Id),
+            WellProjectWells = wellProject.WellProjectWells?.Select(w => _mapperService.MapToDto<WellProjectWell, WellProjectWellDto>(w, w.WellProjectId)).ToList() ?? new List<WellProjectWellDto>(),
             OilProducerCostProfile = MapToDto<OilProducerCostProfile, OilProducerCostProfileDto>(wellProject.OilProducerCostProfile, wellProject.OilProducerCostProfile?.Id),
             OilProducerCostProfileOverride = MapToDto<OilProducerCostProfileOverride, OilProducerCostProfileOverrideDto>(wellProject.OilProducerCostProfileOverride, wellProject.OilProducerCostProfileOverride?.Id),
             GasProducerCostProfile = MapToDto<GasProducerCostProfile, GasProducerCostProfileDto>(wellProject.GasProducerCostProfile, wellProject.GasProducerCostProfile?.Id),
