@@ -199,6 +199,7 @@ public class DrainageStrategyService : IDrainageStrategyService
         try
         {
             updatedDrainageStrategy = _repository.UpdateDrainageStrategy(existingDrainageStrategy);
+            await _caseRepository.UpdateModifyTime(caseId);
             await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
@@ -207,7 +208,6 @@ public class DrainageStrategyService : IDrainageStrategyService
             throw;
         }
 
-        await _caseRepository.UpdateModifyTime(caseId);
 
         var dto = _conversionMapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(updatedDrainageStrategy, drainageStrategyId, project.PhysicalUnit);
         return dto;
@@ -428,6 +428,7 @@ public class DrainageStrategyService : IDrainageStrategyService
         try
         {
             updatedProfile = updateProfile(existingProfile);
+            await _caseRepository.UpdateModifyTime(caseId);
             await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
@@ -437,7 +438,6 @@ public class DrainageStrategyService : IDrainageStrategyService
             throw;
         }
 
-        await _caseRepository.UpdateModifyTime(caseId);
 
         var updatedDto = _conversionMapperService.MapToDto<TProfile, TDto>(updatedProfile, productionProfileId, project.PhysicalUnit);
         return updatedDto;

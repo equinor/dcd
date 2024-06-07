@@ -92,12 +92,12 @@ public class ExplorationService : IExplorationService
         var project = await _projectService.GetProject(projectId);
         exploration.Project = project;
         var createdExploration = _context.Explorations!.Add(exploration);
+        SetCaseLink(exploration, sourceCaseId, project);
         await _context.SaveChangesAsync();
-        await SetCaseLink(exploration, sourceCaseId, project);
         return createdExploration.Entity;
     }
 
-    private async Task SetCaseLink(Exploration exploration, Guid sourceCaseId, Project project)
+    private static void SetCaseLink(Exploration exploration, Guid sourceCaseId, Project project)
     {
         var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
         if (case_ == null)
@@ -105,7 +105,6 @@ public class ExplorationService : IExplorationService
             throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
         }
         case_.ExplorationLink = exploration.Id;
-        await _context.SaveChangesAsync();
     }
 
     public async Task<ExplorationWithProfilesDto> UpdateExplorationAndCostProfiles(ExplorationWithProfilesDto updatedExplorationDto)
@@ -154,15 +153,15 @@ public class ExplorationService : IExplorationService
         Exploration updatedExploration;
         try
         {
-            updatedExploration = await _repository.UpdateExploration(existingExploration);
+            updatedExploration = _repository.UpdateExploration(existingExploration);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
             _logger.LogError(ex, "Failed to update exploration with id {explorationId} for case id {caseId}.", explorationId, caseId);
             throw;
         }
-
-        await _caseRepository.UpdateModifyTime(caseId);
 
         var dto = _mapperService.MapToDto<Exploration, ExplorationDto>(updatedExploration, explorationId);
         return dto;
@@ -183,15 +182,15 @@ public class ExplorationService : IExplorationService
         ExplorationWell updatedExplorationWell;
         try
         {
-            updatedExplorationWell = await _repository.UpdateExplorationWell(existingExplorationWell);
+            updatedExplorationWell = _repository.UpdateExplorationWell(existingExplorationWell);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
             _logger.LogError(ex, "Failed to update exploration with id {explorationId} and well id {wellId}.", explorationId, wellId);
             throw;
         }
-
-        await _caseRepository.UpdateModifyTime(caseId);
 
         var dto = _mapperService.MapToDto<ExplorationWell, ExplorationWellDto>(updatedExplorationWell, explorationId);
         return dto;
@@ -237,7 +236,7 @@ public class ExplorationService : IExplorationService
         Guid profileId,
         TUpdateDto updatedProfileDto,
         Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, Task<TProfile>> updateProfile
+        Func<TProfile, TProfile> updateProfile
     )
         where TProfile : class, IExplorationTimeSeries
         where TDto : class
@@ -251,7 +250,9 @@ public class ExplorationService : IExplorationService
         TProfile updatedProfile;
         try
         {
-            updatedProfile = await updateProfile(existingProfile);
+            updatedProfile = updateProfile(existingProfile);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -260,7 +261,6 @@ public class ExplorationService : IExplorationService
             throw;
         }
 
-        await _caseRepository.UpdateModifyTime(caseId);
 
         var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
         return updatedDto;
