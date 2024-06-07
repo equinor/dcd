@@ -25,6 +25,18 @@ public class ExplorationRepository : IExplorationRepository
         return exploration;
     }
 
+    public async Task<ExplorationWell?> GetExplorationWell(Guid explorationId, Guid wellId)
+    {
+        return await _context.ExplorationWell.FindAsync(explorationId, wellId);
+    }
+
+    public async Task<ExplorationWell> UpdateExplorationWell(ExplorationWell explorationWell)
+    {
+        _context.ExplorationWell.Update(explorationWell);
+        await _context.SaveChangesAsync();
+        return explorationWell;
+    }
+
     public async Task<SeismicAcquisitionAndProcessing?> GetSeismicAcquisitionAndProcessing(Guid seismicAcquisitionAndProcessingId)
     {
         return await _context.SeismicAcquisitionAndProcessing.FindAsync(seismicAcquisitionAndProcessingId);

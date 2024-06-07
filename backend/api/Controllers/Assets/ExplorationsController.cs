@@ -51,12 +51,23 @@ public class ExplorationsController : ControllerBase
 
     [HttpPut("{explorationId}/country-office-cost/{costProfileId}")]
     public async Task<CountryOfficeCostDto> UpdateCountryOfficeCost(
-    [FromRoute] Guid projectId,
-    [FromRoute] Guid caseId,
-    [FromRoute] Guid explorationId,
-    [FromRoute] Guid costProfileId,
-    [FromBody] UpdateCountryOfficeCostDto dto)
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid explorationId,
+        [FromRoute] Guid costProfileId,
+        [FromBody] UpdateCountryOfficeCostDto dto)
     {
         return await _explorationService.UpdateCountryOfficeCost(caseId, explorationId, costProfileId, dto);
+    }
+
+    [HttpPut("{explorationId}/well/{wellId}")]
+    public async Task<ExplorationWellDto> UpdateExplorationWell(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid explorationId,
+        [FromRoute] Guid wellId,
+        [FromBody] UpdateExplorationWellDto dto)
+    {
+        return await _explorationService.UpdateExplorationWell(caseId, explorationId, wellId, dto);
     }
 }

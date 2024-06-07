@@ -168,6 +168,35 @@ public class ExplorationService : IExplorationService
         return dto;
     }
 
+    public async Task<ExplorationWellDto> UpdateExplorationWell(
+        Guid caseId,
+        Guid explorationId,
+        Guid wellId,
+        UpdateExplorationWellDto updatedExplorationWellDto
+    )
+    {
+        var existingExplorationWell = await _repository.GetExplorationWell(explorationId, wellId)
+            ?? throw new NotFoundInDBException($"Exploration with id {explorationId} not found.");
+
+        _mapperService.MapToEntity(updatedExplorationWellDto, existingExplorationWell, explorationId);
+
+        ExplorationWell updatedExplorationWell;
+        try
+        {
+            updatedExplorationWell = await _repository.UpdateExplorationWell(existingExplorationWell);
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to update exploration with id {explorationId} and well id {wellId}.", explorationId, wellId);
+            throw;
+        }
+
+        await _caseRepository.UpdateModifyTime(caseId);
+
+        var dto = _mapperService.MapToDto<ExplorationWell, ExplorationWellDto>(updatedExplorationWell, explorationId);
+        return dto;
+    }
+
     public async Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
         Guid caseId,
         Guid wellProjectId,

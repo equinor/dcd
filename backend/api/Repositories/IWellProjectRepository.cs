@@ -6,6 +6,8 @@ public interface IWellProjectRepository
 {
     Task<WellProject?> GetWellProject(Guid wellProjectId);
     Task<WellProject> UpdateWellProject(WellProject wellProject);
+    Task<WellProjectWell?> GetWellProjectWell(Guid wellProjectId, Guid wellId);
+    Task<WellProjectWell> UpdateWellProjectWell(WellProjectWell wellProjectWell);
     Task<OilProducerCostProfileOverride?> GetOilProducerCostProfileOverride(Guid profileId);
     Task<OilProducerCostProfileOverride> UpdateOilProducerCostProfileOverride(OilProducerCostProfileOverride costProfile);
     Task<GasProducerCostProfileOverride?> GetGasProducerCostProfileOverride(Guid profileId);

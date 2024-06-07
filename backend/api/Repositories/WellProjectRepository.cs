@@ -25,6 +25,18 @@ public class WellProjectRepository : IWellProjectRepository
         return wellProject;
     }
 
+    public async Task<WellProjectWell?> GetWellProjectWell(Guid wellProjectId, Guid wellId)
+    {
+        return await _context.WellProjectWell.FindAsync(wellProjectId, wellId);
+    }
+
+    public async Task<WellProjectWell> UpdateWellProjectWell(WellProjectWell wellProjectWell)
+    {
+        _context.WellProjectWell.Update(wellProjectWell);
+        await _context.SaveChangesAsync();
+        return wellProjectWell;
+    }
+
     public async Task<OilProducerCostProfileOverride?> GetOilProducerCostProfileOverride(Guid profileId)
     {
         return await _context.OilProducerCostProfileOverride.FindAsync(profileId);

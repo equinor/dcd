@@ -181,6 +181,35 @@ public class WellProjectService : IWellProjectService
         return dto;
     }
 
+    public async Task<WellProjectWellDto> UpdateWellProjectWell(
+        Guid caseId,
+        Guid wellProjectId,
+        Guid wellId,
+        UpdateWellProjectWellDto updatedWellProjectWellDto
+    )
+    {
+        var existingWellProject = await _repository.GetWellProjectWell(wellProjectId, wellId)
+            ?? throw new NotFoundInDBException($"Well project well with id {wellProjectId} and ${wellId} not found.");
+
+        _mapperService.MapToEntity(updatedWellProjectWellDto, existingWellProject, wellProjectId);
+
+        WellProjectWell updatedWellProject;
+        try
+        {
+            updatedWellProject = await _repository.UpdateWellProjectWell(existingWellProject);
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to update well project well with id {wellProjectId} and well id {wellId}.", wellProjectId, wellId);
+            throw;
+        }
+
+        await _caseRepository.UpdateModifyTime(caseId);
+
+        var dto = _mapperService.MapToDto<WellProjectWell, WellProjectWellDto>(updatedWellProject, wellProjectId);
+        return dto;
+    }
+
     public async Task<OilProducerCostProfileOverrideDto> UpdateOilProducerCostProfileOverride(
         Guid caseId,
         Guid wellProjectId,
