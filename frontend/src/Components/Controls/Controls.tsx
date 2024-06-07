@@ -1,19 +1,17 @@
-import { useState, useRef } from "react"
-import { useNavigate } from "react-router-dom"
+import { useState, useEffect } from "react"
+import { useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
     Icon,
-    Typography,
     Button,
     Progress,
-    Input,
 } from "@equinor/eds-core-react"
 import {
     save,
     edit,
     keyboard_tab,
     more_vertical,
-    arrow_back,
+
 } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid"
 import { projectPath } from "../../Utils/common"
@@ -23,12 +21,9 @@ import { useModalContext } from "../../Context/ModalContext"
 import CaseDropMenu from "../Case/Components/CaseDropMenu"
 import { GetProjectService } from "../../Services/ProjectService"
 import { useAppContext } from "../../Context/AppContext"
-import useDataEdits from "../../Hooks/useDataEdits"
 import HistoryButton from "../Buttons/HistoryButton"
 import UndoControls from "./UndoControls"
-import { EMPTY_GUID } from "../../Utils/constants"
-import { ChooseReferenceCase, ReferenceCaseIcon } from "../Case/Components/ReferenceCaseIcon"
-import Classification from "./Classification"
+import CaseControls from "./CaseControls"
 
 const Controls = () => {
     const {
@@ -49,45 +44,10 @@ const Controls = () => {
     const { setTechnicalModalIsOpen } = useModalContext()
     const { currentContext } = useModuleCurrentContext()
     const { isSaving, editMode, setEditMode } = useAppContext()
-    const { addEdit } = useDataEdits()
-
-    const nameInput = useRef<any>(null)
+    const { caseId } = useParams()
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
-
-    const handleReferenceCaseChange = async (referenceCaseId: string) => {
-        if (project) {
-            const newProject = {
-                ...project,
-            }
-            if (newProject.referenceCaseId === referenceCaseId) {
-                newProject.referenceCaseId = EMPTY_GUID
-            } else {
-                newProject.referenceCaseId = referenceCaseId ?? ""
-            }
-            const updateProject = await (await GetProjectService()).updateProject(project.id, newProject)
-            setProject(updateProject)
-        }
-    }
-
-    const handleCaseNameChange = (name: string) => {
-        if (projectCase && project) {
-            const newCase = {
-                ...projectCase,
-            }
-            addEdit({
-                newValue: name,
-                previousValue: newCase.name,
-                inputLabel: "Name",
-                projectId: project.id,
-                resourceName: "case",
-                resourcePropertyKey: "name",
-            })
-            newCase.name = name
-            setProjectCaseEdited(newCase)
-        }
-    }
 
     const handleCancel = async () => {
         setEditMode(false)
@@ -132,7 +92,8 @@ const Controls = () => {
 
     const handleEdit = () => {
         if (projectCaseEdited) {
-            handleCaseSave()
+            // handleCaseSave() no longer needed with autosave
+            handleCancel()
         } else if (projectEdited) {
             handleProjectSave()
         } else if (projectCase) {
@@ -142,49 +103,22 @@ const Controls = () => {
         }
     }
 
+    // goes out of edit mode if case changes
+    useEffect(() => {
+        handleCancel()
+    }, [caseId])
+
     return (
         <Grid container spacing={1} justifyContent="space-between" alignItems="center">
-            {projectCase && (
-                <Grid item xs={0}>
-                    <Button
-                        onClick={backToProject}
-                        variant="ghost_icon"
-                    >
-                        <Icon data={arrow_back} />
-                    </Button>
-                </Grid>
+            {project && caseId && (
+                <CaseControls
+                    backToProject={backToProject}
+                    projectId={project?.id}
+                    caseId={caseId}
+                />
             )}
-            <Grid item xs display="flex" alignItems="center" gap={1}>
-                {editMode && projectCase
-                    ? (
-                        <>
-                            <ChooseReferenceCase
-                                projectRefCaseId={project?.referenceCaseId}
-                                projectCaseId={projectCase.id}
-                                handleReferenceCaseChange={() => handleReferenceCaseChange(projectCase.id)}
-                            />
-                            <Input // todo: should not be allowed to be empty
-                                ref={nameInput}
-                                type="text"
-                                defaultValue={projectCase && projectCase.name}
-                                onBlur={() => handleCaseNameChange(nameInput.current.value)}
-                            />
-                        </>
-                    )
-                    : (
-                        <>
-                            {project?.referenceCaseId === projectCase?.id && (
-                                <ReferenceCaseIcon />
-                            )}
-                            <Typography variant="h4">
-                                {projectCase ? projectCase.name : project?.name}
-                            </Typography>
-                            <Classification />
-                        </>
-                    )}
-            </Grid>
             <Grid item xs container spacing={1} alignItems="center" justifyContent="flex-end">
-                {editMode
+                {editMode && !caseId
                     && (
                         <Grid item>
                             <Button variant="outlined" onClick={handleCancel}>Cancel</Button>
@@ -196,7 +130,7 @@ const Controls = () => {
                             ? <Progress.Dots />
                             : (
                                 <>
-                                    {editMode ? "Save and close edit mode" : "Edit"}
+                                    {editMode ? "Close edit mode" : "Edit"}
                                     {" "}
                                     {!editMode && projectCase && "case"}
                                     {!editMode && !projectCase && "project"}
