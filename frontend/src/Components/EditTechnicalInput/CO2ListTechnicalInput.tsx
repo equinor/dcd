@@ -69,7 +69,7 @@ const CO2ListTechnicalInput = () => {
         },
         {
             profile: "Flared gas per produced volume",
-            unit: "Sm³/boe",
+            unit: "Sm³/Sm³",
             set: setFlaredGasPerProducedVolume,
             value: Math.round(flaredGasPerProducedVolume * 100) / 100,
         },
