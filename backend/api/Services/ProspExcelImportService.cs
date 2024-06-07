@@ -249,7 +249,8 @@ public class ProspExcelImportService
             PeakElectricityImported = peakElectricityImported,
         };
 
-        await _topsideService.UpdateTopsideAndCostProfiles(updateTopsideDto, topsideLink);
+        await _topsideService.UpdateTopside(sourceCaseId, topsideLink, updateTopsideDto);
+        await _topsideService.AddOrUpdateTopsideCostProfile(sourceCaseId, topsideLink, costProfile);
     }
 
     private async Task ImportSubstructure(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
@@ -455,12 +456,14 @@ public class ProspExcelImportService
         var topsideLink = caseItem.TopsideLink;
         var dto = new PROSPUpdateTopsideDto
         {
-            CostProfile = new UpdateTopsideCostProfileDto(),
             Source = Source.ConceptApp,
         };
 
+        var costProfileDto = new UpdateTopsideCostProfileDto();
 
-        _topsideService.UpdateTopsideAndCostProfiles(dto, topsideLink);
+
+        _topsideService.UpdateTopside(caseItem.Id, topsideLink, dto);
+        _topsideService.AddOrUpdateTopsideCostProfile(caseItem.Id, topsideLink, costProfileDto);
     }
 
     private void ClearImportedSubstructure(Case caseItem)

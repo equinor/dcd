@@ -152,21 +152,21 @@ public class CaseRepository : ICaseRepository
 
         caseItem.ModifyTime = DateTimeOffset.UtcNow;
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException ex)
-        {
-            _logger.LogWarning(ex, "Failed to update ModifyDate for Case with id {caseId}.", caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            _logger.LogWarning(ex, "An error occurred while updating ModifyDate for the Case with id {caseId}.", caseId);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "Failed to update modify time for case id {CaseId}, but operation continues.", caseId);
-        }
+        // try
+        // {
+        //     await _context.SaveChangesAsync();
+        // }
+        // catch (DbUpdateConcurrencyException ex)
+        // {
+        //     _logger.LogWarning(ex, "Failed to update ModifyDate for Case with id {caseId}.", caseId);
+        // }
+        // catch (DbUpdateException ex)
+        // {
+        //     _logger.LogWarning(ex, "An error occurred while updating ModifyDate for the Case with id {caseId}.", caseId);
+        // }
+        // catch (Exception ex)
+        // {
+        //     _logger.LogWarning(ex, "Failed to update modify time for case id {CaseId}, but operation continues.", caseId);
+        // }
     }
 }
