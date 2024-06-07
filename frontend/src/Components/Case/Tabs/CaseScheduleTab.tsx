@@ -12,7 +12,7 @@ import {
 } from "../../../Utils/common"
 import { useAppContext } from "../../../Context/AppContext"
 import SwitchableDateInput from "../../Input/SwitchableDateInput"
-import { ResourcePropertyKey } from "../../../Models/Interfaces"
+import { ResourceObject, ResourcePropertyKey } from "../../../Models/Interfaces"
 import useDataEdits from "../../../Hooks/useDataEdits"
 import { useProjectContext } from "../../../Context/ProjectContext"
 
@@ -90,97 +90,64 @@ const CaseScheduleTab = () => {
         },
     ]
 
-    function handleDG0Change(newDate: string) {
-        /*
-        if (!projectCaseEdited) { return }
+    const getDGOChangesObject = (newDate: Date): ResourceObject | undefined => {
+        const newCaseObject = caseData as Components.Schemas.CaseDto
 
-        const newCase = { ...projectCaseEdited }
+        if (!newCaseObject) { return undefined }
 
-        const newDate = new Date(dateValue)
-        if (Number.isNaN(newDate.getTime())) {
-            newCase.dG0Date = defaultDate().toISOString()
-            setProjectCaseEdited(newCase)
-            return
-        }
+        newCaseObject.dG0Date = new Date(newDate).toISOString()
 
-        newCase.dG0Date = new Date(newDate).toISOString()
-        if (newCase.dG1Date && isDefaultDateString(newCase.dG1Date)) {
-            const dg = new Date(newCase.dG0Date)
+        if (newCaseObject.dG1Date && isDefaultDateString(newCaseObject.dG1Date)) {
+            const dg = new Date(newCaseObject.dG0Date)
             dg.setMonth(dg.getMonth() + 12)
-            newCase.dG1Date = dg.toISOString()
+            newCaseObject.dG1Date = dg.toISOString()
         }
-        if (isDefaultDateString(newCase.dG2Date)) {
-            const dg = new Date(newCase.dG1Date)
+        if (isDefaultDateString(newCaseObject.dG2Date)) {
+            const dg = new Date(newCaseObject.dG1Date)
             dg.setMonth(dg.getMonth() + 12)
-            newCase.dG2Date = dg.toISOString()
+            newCaseObject.dG2Date = dg.toISOString()
         }
-        if (isDefaultDateString(newCase.dG3Date)) {
-            const dg = new Date(newCase.dG2Date)
+        if (isDefaultDateString(newCaseObject.dG3Date)) {
+            const dg = new Date(newCaseObject.dG2Date)
             dg.setMonth(dg.getMonth() + 12)
-            newCase.dG3Date = dg.toISOString()
+            newCaseObject.dG3Date = dg.toISOString()
         }
-        if (isDefaultDateString(newCase.dG4Date)) {
-            const dg = new Date(newCase.dG3Date)
+        if (isDefaultDateString(newCaseObject.dG4Date)) {
+            const dg = new Date(newCaseObject.dG3Date)
             dg.setMonth(dg.getMonth() + 36)
-            newCase.dG4Date = dg.toISOString()
+            newCaseObject.dG4Date = dg.toISOString()
         }
-        setProjectCaseEdited(newCase) */
+
+        return newCaseObject
     }
 
     function handleDateChange(dateKey: string, dateValue: string) {
         console.log("dateKey", dateKey)
         console.log("dateValue", dateValue)
 
+        // turn dateValue into date object
+        const dateValueObject = dateFromString(dateValue)
+
         if (!caseData) { return }
 
         const newDate = Number.isNaN(new Date(dateValue).getTime())
-            ? defaultDate().toISOString()
-            : new Date(dateValue).toISOString()
+            ? defaultDate()
+            : new Date(dateValue)
 
-        /*
-        const newDate = new Date(dateValue)
+        const caseDataObject = caseData as any
 
-        if (dateKey === "dG0Date") {
-            handleDG0Change(dateValue)
-        }
-
-        if (Number.isNaN(newDate.getTime())) {
-            console.log("1")
-            setProjectCaseEdited({
-                ...projectCaseEdited,
-                [dateKey]: defaultDate().toISOString(),
-            })
-        } else {
-            console.log("2")
-            setProjectCaseEdited({
-                ...projectCaseEdited,
-                [dateKey]: new Date(dateValue).toISOString(),
-            })
-        } */
-
-        if (dateKey === "dG0Date") {
-            handleDG0Change(newDate)
-        } else {
-            /*
-            setProjectCaseEdited({
-                ...projectCaseEdited,
-                [dateKey]: newDate,
-            })
-            */
-            const caseDataObject = caseData as any
-
-            addEdit({
-                newValue: newDate,
-                previousValue: caseDataObject[dateKey],
-                inputLabel: dateKey,
-                projectId: caseData.projectId,
-                resourceName: "case",
-                resourcePropertyKey: dateKey as ResourcePropertyKey,
-                caseId: caseData.id,
-                newDisplayValue: formatDate(newDate),
-                previousDisplayValue: formatDate(caseDataObject[dateKey]),
-            })
-        }
+        addEdit({
+            newValue: newDate.toISOString(),
+            previousValue: caseDataObject[dateKey],
+            inputLabel: dateKey,
+            projectId: caseData.projectId,
+            resourceName: "case",
+            resourcePropertyKey: dateKey as ResourcePropertyKey,
+            caseId: caseData.id,
+            newDisplayValue: formatDate(newDate.toISOString()),
+            previousDisplayValue: formatDate(caseDataObject[dateKey]),
+            newResourceObject: getDGOChangesObject(newDate),
+        })
     }
 
     const findMinDate = (dates: Date[]) => {

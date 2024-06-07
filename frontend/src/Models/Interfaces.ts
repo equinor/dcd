@@ -1,4 +1,12 @@
 export type ResourceName = "case" | "topside" | "surf" | "substructure" | "drainageStrategy" | "transport"
+export type ResourceObject =
+    Components.Schemas.TopsideDto |
+    Components.Schemas.SurfDto |
+    Components.Schemas.SubstructureDto |
+    Components.Schemas.TransportDto |
+    Components.Schemas.CaseDto |
+    Components.Schemas.DrainageStrategyDto
+
 export type ResourcePropertyKey =
     keyof Components.Schemas.TopsideDto |
     keyof Components.Schemas.SurfDto |
