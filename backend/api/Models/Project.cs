@@ -30,7 +30,7 @@ public class Project
     public string? SharepointSiteUrl { get; set; }
     public double CO2RemovedFromGas { get; set; }
     public double CO2EmissionFromFuelGas { get; set; } = 2.34;
-    public double FlaredGasPerProducedVolume { get; set; } = 1.321;
+    public double FlaredGasPerProducedVolume { get; set; } = 1.13;
     public double CO2EmissionsFromFlaredGas { get; set; } = 3.74;
     public double CO2Vented { get; set; } = 1.96;
     public double DailyEmissionFromDrillingRig { get; set; } = 100;
