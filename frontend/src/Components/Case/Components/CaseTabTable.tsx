@@ -8,7 +8,9 @@ import {
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { ColDef, GridReadyEvent } from "@ag-grid-community/core"
+import {
+    CellKeyDownEvent, ColDef, GridReadyEvent,
+} from "@ag-grid-community/core"
 import {
     isInteger,
     tableCellisEditable,
@@ -269,6 +271,34 @@ const CaseTabTable = ({
         params.api.setGridOption("rowData", generateRowData)
     }, [])
 
+    const clearCellsInRange = (start: any, end: any, columns: any) => {
+        Array.from({ length: end - start + 1 }, (_, i) => start + i).map((i) => {
+            const rowNode = gridRef.current?.api.getRowNode(i)
+            return columns.forEach((column: any) => {
+                rowNode.setDataValue(column, "")
+            })
+        })
+    }
+
+    const handleDeleteOnRange = useCallback((e: CellKeyDownEvent) => {
+        const keyboardEvent = e.event as unknown as KeyboardEvent
+        const { key } = keyboardEvent
+
+        if (key === "Backspace") {
+            const cellRanges = e.api.getCellRanges()
+            if (!cellRanges || cellRanges.length === 0) { return }
+            cellRanges?.forEach((cells) => {
+                if (cells.startRow && cells.endRow) {
+                    const colIds = cells.columns.map((col: any) => col.colId)
+                    const startRowIndex = Math.min(cells.startRow.rowIndex, cells.endRow.rowIndex)
+                    const endRowIndex = Math.max(cells.startRow.rowIndex, cells.endRow.rowIndex)
+                    clearCellsInRange(startRowIndex, endRowIndex, colIds)
+                    handleCellValueChange(e)
+                }
+            })
+        }
+    }, [])
+
     return (
         <>
             <OverrideTimeSeriesPrompt
@@ -303,6 +333,7 @@ const CaseTabTable = ({
                         suppressLastEmptyLineOnPaste
                         stopEditingWhenCellsLoseFocus
                         onGridReady={onGridReady}
+                        onCellKeyDown={editMode ? handleDeleteOnRange : undefined}
                     />
                 </div>
             </div>
