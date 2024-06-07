@@ -1,24 +1,38 @@
 import Grid from "@mui/material/Grid"
 import { v4 as uuidv4 } from "uuid"
+import { useParams } from "react-router"
+import { useQueryClient, useQuery } from "react-query"
 import {
     dateFromString,
     defaultDate,
     isDefaultDate,
     isDefaultDateString,
     toMonthDate,
+    formatDate,
 } from "../../../Utils/common"
-import { useCaseContext } from "../../../Context/CaseContext"
 import { useAppContext } from "../../../Context/AppContext"
 import SwitchableDateInput from "../../Input/SwitchableDateInput"
 import { ResourcePropertyKey } from "../../../Models/Interfaces"
+import useDataEdits from "../../../Hooks/useDataEdits"
+import { useProjectContext } from "../../../Context/ProjectContext"
 
 const CaseScheduleTab = () => {
-    const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
+    const { project } = useProjectContext()
+    const { addEdit } = useDataEdits()
+    const { caseId } = useParams()
+    const queryClient = useQueryClient()
+    const projectId = project?.id || null
 
-    if (!projectCase) { return null }
+    const { data: caseData } = useQuery<Components.Schemas.CaseDto | undefined>(
+        [{ projectId, caseId, resourceId: "" }],
+        () => queryClient.getQueryData([{ projectId, caseId, resourceId: "" }]),
+        {
+            enabled: !!project && !!projectId,
+            initialData: () => queryClient.getQueryData([{ projectId: project?.id, caseId, resourceId: "" }]) as Components.Schemas.CaseDto,
+        },
+    )
 
     const { editMode } = useAppContext()
-    if (!projectCase) { return null }
 
     const caseDateKeys = [
         {
@@ -76,16 +90,20 @@ const CaseScheduleTab = () => {
         },
     ]
 
-    function handleDG0Change(dateValue: string) {
+    function handleDG0Change(newDate: string) {
+        /*
         if (!projectCaseEdited) { return }
+
         const newCase = { ...projectCaseEdited }
+
         const newDate = new Date(dateValue)
         if (Number.isNaN(newDate.getTime())) {
             newCase.dG0Date = defaultDate().toISOString()
             setProjectCaseEdited(newCase)
             return
         }
-        newCase.dG0Date = new Date(dateValue).toISOString()
+
+        newCase.dG0Date = new Date(newDate).toISOString()
         if (newCase.dG1Date && isDefaultDateString(newCase.dG1Date)) {
             const dg = new Date(newCase.dG0Date)
             dg.setMonth(dg.getMonth() + 12)
@@ -106,25 +124,61 @@ const CaseScheduleTab = () => {
             dg.setMonth(dg.getMonth() + 36)
             newCase.dG4Date = dg.toISOString()
         }
-        setProjectCaseEdited(newCase)
+        setProjectCaseEdited(newCase) */
     }
 
     function handleDateChange(dateKey: string, dateValue: string) {
-        if (!projectCaseEdited) { return }
+        console.log("dateKey", dateKey)
+        console.log("dateValue", dateValue)
+
+        if (!caseData) { return }
+
+        const newDate = Number.isNaN(new Date(dateValue).getTime())
+            ? defaultDate().toISOString()
+            : new Date(dateValue).toISOString()
+
+        /*
         const newDate = new Date(dateValue)
+
         if (dateKey === "dG0Date") {
             handleDG0Change(dateValue)
-            return
         }
+
         if (Number.isNaN(newDate.getTime())) {
+            console.log("1")
             setProjectCaseEdited({
                 ...projectCaseEdited,
                 [dateKey]: defaultDate().toISOString(),
             })
         } else {
+            console.log("2")
             setProjectCaseEdited({
                 ...projectCaseEdited,
                 [dateKey]: new Date(dateValue).toISOString(),
+            })
+        } */
+
+        if (dateKey === "dG0Date") {
+            handleDG0Change(newDate)
+        } else {
+            /*
+            setProjectCaseEdited({
+                ...projectCaseEdited,
+                [dateKey]: newDate,
+            })
+            */
+            const caseDataObject = caseData as any
+
+            addEdit({
+                newValue: newDate,
+                previousValue: caseDataObject[dateKey],
+                inputLabel: dateKey,
+                projectId: caseData.projectId,
+                resourceName: "case",
+                resourcePropertyKey: dateKey as ResourcePropertyKey,
+                caseId: caseData.id,
+                newDisplayValue: formatDate(newDate),
+                previousDisplayValue: formatDate(caseDataObject[dateKey]),
             })
         }
     }
@@ -166,41 +220,44 @@ const CaseScheduleTab = () => {
     }
 
     const getDateValue = (dateKey: string) => {
-        if (projectCaseEdited) {
-            return toScheduleValue(projectCaseEdited[dateKey as keyof typeof projectCaseEdited])
-        }
-        if (!isDefaultDateString(String(projectCase[dateKey as keyof typeof projectCase]))) {
-            return toScheduleValue(projectCase[dateKey as keyof typeof projectCase])
+        if (!caseData) { return defaultDate().toISOString() }
+        const caseDataObject = caseData as any
+
+        if (!isDefaultDateString(String(caseDataObject[dateKey as keyof typeof caseDataObject]))) {
+            return toScheduleValue(caseDataObject[dateKey as keyof typeof caseDataObject])
         }
         return defaultDate().toISOString()
+    }
+
+    if (!caseData || !projectId) {
+        return (<p>Loading...</p>)
     }
 
     return (
         <Grid container spacing={2}>
             {caseDateKeys
-                .filter((caseDateKey) => Object.keys(projectCase)
+                .filter((caseDateKey) => Object.keys(caseData)
                     .filter((projectCaseKey) => caseDateKey.key === projectCaseKey))
                 .map((caseDate) => (
                     (caseDate.visible
                         || editMode
-                        || toScheduleValue(projectCase[caseDate.key as keyof typeof projectCase])
+                        || toScheduleValue(caseData[caseDate.key as keyof typeof caseData])
                     )
                         ? (
                             <Grid item xs={12} md={6} lg={6} key={uuidv4()}>
                                 <SwitchableDateInput
                                     value={getDateValue(caseDate.key)}
-                                    resourceName="case"
                                     resourcePropertyKey={caseDate.key as ResourcePropertyKey}
                                     label={caseDate.label}
                                     onChange={(e) => (handleDateChange(caseDate.key, e.target.value))}
                                     min={
-                                        (caseDate.min && projectCaseEdited)
-                                            ? findMinDate(getDatesFromStrings(caseDate.min.map((minDate) => projectCaseEdited[minDate as keyof typeof projectCaseEdited])))
+                                        (caseDate.min && caseData)
+                                            ? findMinDate(getDatesFromStrings(caseDate.min.map((minDate) => caseData[minDate as keyof typeof caseData])))
                                             : undefined
                                     }
                                     max={
-                                        (caseDate.max && projectCaseEdited)
-                                            ? findMaxDate(getDatesFromStrings(caseDate.max.map((maxDate) => projectCaseEdited[maxDate as keyof typeof projectCaseEdited])))
+                                        (caseDate.max && caseData)
+                                            ? findMaxDate(getDatesFromStrings(caseDate.max.map((maxDate) => caseData[maxDate as keyof typeof caseData])))
                                             : undefined
                                     }
                                 />
