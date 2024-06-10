@@ -1,23 +1,17 @@
-import { Typography, Input } from "@equinor/eds-core-react"
+import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useParams } from "react-router"
 import { useQueryClient, useQuery } from "react-query"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
-import InputSwitcher from "../../Input/Components/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
-import { useCaseContext } from "../../../Context/CaseContext"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import CaseFasilitiesTabSkeleton from "./LoadingSkeletons/CaseFacilitiesTabSkeleton"
 
 const CaseFacilitiesTab = () => {
     const queryClient = useQueryClient()
     const { project } = useProjectContext()
-    const { projectCase } = useCaseContext()
     const { caseId } = useParams()
-
     const projectId = project?.id || null
-
-    if (!projectCase) { return null }
 
     const platformConceptValues: { [key: number]: string } = {
         0: "No Concept",
@@ -60,7 +54,14 @@ const CaseFacilitiesTab = () => {
         },
     )
 
-    const caseData = apiData?.case
+    const { data: caseData } = useQuery<Components.Schemas.CaseDto | undefined>(
+        [{ projectId, caseId, resourceId: "" }],
+        () => queryClient.getQueryData([{ projectId, caseId, resourceId: "" }]),
+        {
+            enabled: !!project && !!projectId,
+            initialData: () => queryClient.getQueryData([{ projectId: project?.id, caseId, resourceId: "" }]) as Components.Schemas.CaseDto,
+        },
+    )
     const topsideData = apiData?.topside
     const surfData = apiData?.surf
     const transportData = apiData?.transport
@@ -84,16 +85,13 @@ const CaseFacilitiesTab = () => {
             </Grid>
             {substructureData.concept === 1 && (
                 <Grid item xs={12} md={4}>
-                    <InputSwitcher
-                        value={caseData.host ?? ""}
+                    <SwitchableNumberInput
+                        resourceName="case"
+                        resourcePropertyKey="host"
                         label="Host"
-                    >
-                        <Input
-                            id="NumberInput"
-                            value={caseData.host ?? ""}
-                            disabled={false}
-                        />
-                    </InputSwitcher>
+                        value={Number(caseData.host)}
+                        integer
+                    />
                 </Grid>
             )}
             <Grid item xs={12} md={4}>
@@ -141,7 +139,7 @@ const CaseFacilitiesTab = () => {
                     resourceName="case"
                     resourcePropertyKey="facilitiesAvailability"
                     label="Facilities availability"
-                    value={projectCase.facilitiesAvailability ?? 0 * 100}
+                    value={caseData.facilitiesAvailability ?? 0 * 100}
                     integer
                     disabled
                     unit="%"
