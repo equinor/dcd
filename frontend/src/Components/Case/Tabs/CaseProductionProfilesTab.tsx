@@ -108,6 +108,7 @@ const CaseProductionProfilesTab = ({
             || water === undefined
             || nGL === undefined
             || waterInjection === undefined
+            || importedElectricity === undefined
             || importedElectricityOverride === undefined
             || netSalesGasOverride === undefined
             || fuelFlaringAndLossesOverride === undefined
@@ -127,7 +128,6 @@ const CaseProductionProfilesTab = ({
         newDrainageStrategy.productionProfileWaterInjection = waterInjection
         newDrainageStrategy.deferredGasProduction = deferredGas
         newDrainageStrategy.deferredOilProduction = deferredOil
-
         newDrainageStrategy.importedElectricityOverride = importedElectricityOverride
         setDrainageStrategy(newDrainageStrategy)
     }
