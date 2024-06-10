@@ -342,7 +342,8 @@ const useDataEdits = (): {
             return
         }
 
-        if (newValue === previousValue) {
+        if (newValue === previousValue && !newResourceObject) {
+            console.log("No changes detected")
             return
         }
 
@@ -359,6 +360,7 @@ const useDataEdits = (): {
             caseId,
             newDisplayValue,
             previousDisplayValue,
+            newResourceObject,
         }
 
         const success = await submitToApi(
@@ -402,7 +404,7 @@ const useDataEdits = (): {
                     resourcePropertyKey: editThatWillBeUndone.resourcePropertyKey,
                     value: editThatWillBeUndone.previousValue as string,
                     resourceId: editThatWillBeUndone.resourceId,
-                    // resourceObject: editThatWillBeUndone.newValue, todo
+                    resourceObject: editThatWillBeUndone.newResourceObject as ResourceObject,
                 },
             )
         }
@@ -414,6 +416,7 @@ const useDataEdits = (): {
         if (currentEditIndex <= 0) {
             // If the current edit is the first one or not found, redo the last edit.
             const lastEdit = caseEditsBelongingToCurrentCase[caseEditsBelongingToCurrentCase.length - 1]
+
             if (lastEdit) {
                 updateEditIndex(lastEdit.uuid)
                 submitToApi(
@@ -424,7 +427,7 @@ const useDataEdits = (): {
                         resourcePropertyKey: lastEdit.resourcePropertyKey,
                         value: lastEdit.newValue as string,
                         resourceId: lastEdit.resourceId,
-                        // todo: resourceObject ?
+                        resourceObject: lastEdit.newResourceObject as ResourceObject,
                     },
                 )
             }
@@ -442,7 +445,7 @@ const useDataEdits = (): {
                         resourcePropertyKey: updatedEdit.resourcePropertyKey,
                         value: updatedEdit.newValue as string,
                         resourceId: updatedEdit.resourceId,
-                        // todo: resourceObject ?
+                        resourceObject: updatedEdit.newResourceObject as ResourceObject,
                     },
                 )
             }
