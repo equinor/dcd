@@ -266,14 +266,11 @@ builder.Services.AddSwaggerGen(options =>
         },
     });
 });
-
 var azureBlobStorageConnectionString = builder.Configuration["AzureBlobStorageConnectionStringForImageUpload"];
-builder.Services.AddScoped<IImageRepository, ImageRepository>();
-
 builder.Services.AddScoped(x => new BlobServiceClient(azureBlobStorageConnectionString));
 
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
-
 
 builder.Host.UseSerilog();
 

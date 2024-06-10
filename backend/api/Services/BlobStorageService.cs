@@ -1,4 +1,5 @@
 using api.Dtos;
+using api.Exceptions;
 using api.Models;
 
 using AutoMapper;
@@ -18,13 +19,29 @@ public class BlobStorageService : IBlobStorageService
         _blobServiceClient = blobServiceClient;
         _imageRepository = imageRepository;
         _mapper = mapper;
-        _containerName = configuration["azureStorageAccountImageContainerName"]
-                         ?? throw new InvalidOperationException("Container name configuration is missing.");
+        _containerName = GetContainerName(configuration);
 
-        if (string.IsNullOrEmpty(_containerName))
+    }
+    private string GetContainerName(IConfiguration configuration)
+    {
+
+        var environment = Environment.GetEnvironmentVariable("AppConfiguration__Environment") ?? "default";
+
+        var containerKey = environment switch
         {
-            throw new InvalidOperationException("Container name configuration is missing or empty.");
-        }
+            "localdev" => "AzureStorageAccountImageContainerCI",
+            "CI" => "AzureStorageAccountImageContainerCI",
+            "radix-dev" => "AzureStorageAccountImageContainerCI",
+            "dev" => "AzureStorageAccountImageContainerCI",
+            "qa" => "AzureStorageAccountImageContainerQA",
+            "radix-qa" => "AzureStorageAccountImageContainerQA",
+            "prod" => "AzureStorageAccountImageContainerProd",
+            "radix-prod" => "AzureStorageAccountImageContainerProd",
+            _ => throw new InvalidOperationException($"Unknown fusion environment: {environment}")
+        };
+
+        return configuration[containerKey]
+                             ?? throw new InvalidOperationException($"Container name configuration for {environment} is missing.");
     }
     private string SanitizeBlobName(string name)
     {
@@ -81,4 +98,24 @@ public class BlobStorageService : IBlobStorageService
         }
         return imageDtos;
     }
+
+    public async Task DeleteImage(Guid caseId, Guid imageId)
+    {
+        var image = await _imageRepository.GetImageById(imageId);
+        if (image == null)
+        {
+            throw new NotFoundInDBException("Image not found.");
+        }
+
+        var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+
+        var sanitizedProjectName = SanitizeBlobName(image.ProjectName);
+        var blobName = $"{sanitizedProjectName}/{image.CaseId}/{image.Id}";
+
+        var blobClient = containerClient.GetBlobClient(blobName);
+
+        await blobClient.DeleteIfExistsAsync();
+        await _imageRepository.DeleteImage(image);
+    }
+
 }
