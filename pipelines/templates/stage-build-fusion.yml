@@ -14,13 +14,6 @@ stages:
     jobs:
       - job: "Build_Fusion_App"
         steps:
-          - powershell: |
-              cd $(System.DefaultWorkingDirectory)
-              $last_tag =  & 'git' 'describe' '--tags' '--abbrev=0'
-              $modifiedTag = $last_tag.SubString(1)
-              Write-Host "Version is $($modifiedTag)"
-              Write-Host "##vso[task.setvariable variable=version;]$($modifiedTag)"
-            
           - task: FileTransform@1
             inputs:
               folderPath: '$(Build.SourcesDirectory)/frontend'
@@ -49,14 +42,14 @@ stages:
                 cd frontend
                 echo "$(jq '{
                   key: .name,
-                  name: .manifest.name, 
-                  shortName: .manifest.shortName, 
-                  description: .description, 
-                  type: .manifest.type, 
-                  entry: .main, 
+                  name: .manifest.name,
+                  shortName: .manifest.shortName,
+                  description: .description,
+                  type: .manifest.type,
+                  entry: .main,
                   version: {
-                      major: .version | split(".")[0], 
-                      minor: .version | split(".")[1], 
+                      major: .version | split(".")[0],
+                      minor: .version | split(".")[1],
                       patch: .version | split(".")[2]
                   }
                   }' package.json)" > ./dist/app-manifest.json
