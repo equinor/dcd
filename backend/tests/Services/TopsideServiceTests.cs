@@ -150,8 +150,9 @@ namespace api.Tests.Services
             var existingTopside = new Topside { Id = topsideId };
             _repository.GetTopsideWithCostProfile(topsideId).Returns(existingTopside);
 
-            var newCostProfile = new TopsideCostProfile { Id = profileId };
-            _mapperService.MapToEntity(updatedTopsideCostProfileDto, newCostProfile, topsideId).Returns(newCostProfile);
+            var newCostProfile = new TopsideCostProfile { Topside = existingTopside };
+            _mapperService.MapToEntity(Arg.Any<UpdateTopsideCostProfileDto>(), Arg.Any<TopsideCostProfile>(), Arg.Any<Guid>())
+                          .Returns(newCostProfile);
 
             _repository.CreateTopsideCostProfile(newCostProfile).Returns(newCostProfile);
 
