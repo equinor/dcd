@@ -117,7 +117,6 @@ const Controls = () => {
                     caseId={caseId}
                 />
             )}
-            <p>Hello world</p>
             <Grid item xs container spacing={1} alignItems="center" justifyContent="flex-end">
                 {editMode && !caseId
                     && (
