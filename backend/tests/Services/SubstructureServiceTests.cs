@@ -114,6 +114,7 @@ namespace api.Tests.Services
         [Fact]
         public async Task AddOrUpdateSubstructureCostProfile_ShouldUpdateSubstructureCostProfile_WhenGivenValidInputForExistingProfile()
         {
+
             // Arrange
             var caseId = Guid.NewGuid();
             var substructureId = Guid.NewGuid();
