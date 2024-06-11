@@ -7,12 +7,8 @@ using api.Services;
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 using NSubstitute;
-
-using System;
-using System.Threading.Tasks;
 
 using Xunit;
 
@@ -21,7 +17,7 @@ namespace api.Tests.Services
     public class TopsideServiceTests
     {
         private readonly TopsideService _topsideService;
-        private readonly DcdDbContext _context; // = Substitute.For<DcdDbContext>();
+        private readonly DcdDbContext _context;
         private readonly IProjectService _projectService = Substitute.For<IProjectService>();
         private readonly ILoggerFactory _loggerFactory = Substitute.For<ILoggerFactory>();
         private readonly IMapper _mapper = Substitute.For<IMapper>();
@@ -69,7 +65,7 @@ namespace api.Tests.Services
 
             // Assert
             Assert.Equal(updatedTopsideDtoResult, result);
-            await _repository.Received().SaveChangesAsync();
+            await _repository.Received(1).SaveChangesAsync();
         }
 
         [Fact]
@@ -112,7 +108,35 @@ namespace api.Tests.Services
 
             // Assert
             Assert.Equal(updatedTopsideCostProfileOverrideDtoResult, result);
-            await _repository.Received().SaveChangesAsync();
+            await _repository.Received(1).SaveChangesAsync();
+        }
+
+        [Fact]
+        public async Task AddOrUpdateTopsideCostProfile_ShouldAddOrUpdateTopsideCostProfile_WhenGivenValidInput()
+        {
+            // Arrange
+            var caseId = Guid.NewGuid();
+            var topsideId = Guid.NewGuid();
+            var profileId = Guid.NewGuid();
+            var updatedTopsideCostProfileDto = new UpdateTopsideCostProfileDto();
+
+            // var existingProfile = new TopsideCostProfile { Id = profileId };
+            var existingCostProfile = new TopsideCostProfile { Id = profileId };
+            var existingTopside = new Topside { Id = topsideId, CostProfile = existingCostProfile};
+            _repository.GetTopsideWithCostProfile(topsideId).Returns(existingTopside);
+
+            _repository.GetTopsideCostProfile(profileId).Returns(existingCostProfile);
+            _repository.UpdateTopsideCostProfile(existingCostProfile).Returns(existingCostProfile);
+
+            var updatedTopsideCostProfileDtoResult = new TopsideCostProfileDto(){ Id = profileId };
+            _mapperService.MapToDto<TopsideCostProfile, TopsideCostProfileDto>(existingCostProfile, existingCostProfile.Id).Returns(updatedTopsideCostProfileDtoResult);
+
+            // Act
+            var result = await _topsideService.AddOrUpdateTopsideCostProfile(caseId, topsideId, updatedTopsideCostProfileDto);
+
+            // Assert
+            Assert.Equal(updatedTopsideCostProfileDtoResult, result);
+            await _repository.Received(1).SaveChangesAsync();
         }
     }
 }
