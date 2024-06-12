@@ -121,8 +121,8 @@ const CaseProductionProfilesTab = ({
     )
 
     const drainageStrategyData = apiData?.drainageStrategy
-    const oilProductionData = apiData?.oilProducerCostProfile
-    const gasProductionData = apiData?.gasProducerCostProfile
+    const oilProductionData = apiData?.productionProfileOil
+    const gasProductionData = apiData?.productionProfileGas
     const waterProductionData = apiData?.productionProfileWater
     const waterInjectionData = apiData?.waterInjectorCostProfile
     const fuelFlaringAndLossesData = apiData?.fuelFlaringAndLosses
