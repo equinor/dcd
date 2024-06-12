@@ -841,6 +841,62 @@ const useDataEdits = (): {
                     sucess = await updateProductionProfileOil(projectId, caseId, resourceId!, resourceProfileId!, resourcePropertyKey, value, resourceObject)
                 }
                 break
+            case "productionProfileGas":
+                if (!resourceProfileId) {
+                    sucess = await createProductionProfileGas(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
+                } else {
+                    sucess = await updateProductionProfileGas(projectId, caseId, resourceId!, resourceProfileId!, resourcePropertyKey, value, resourceObject)
+                }
+                break
+            case "productionProfileWater":
+                if (!resourceProfileId) {
+                    sucess = await createProductionProfileWater(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
+                } else {
+                    sucess = await updateProductionProfileWater(projectId, caseId, resourceId!, resourceProfileId!, resourcePropertyKey, value, resourceObject)
+                }
+                break
+            case "productionProfileWaterInjection":
+                if (!resourceProfileId) {
+                    sucess = await createProductionProfileWaterInjection(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
+                } else {
+                    sucess = await updateProductionProfileWaterInjection(projectId, caseId, resourceId!, resourceProfileId!, resourcePropertyKey, value, resourceObject)
+                }
+                break
+            case "productionProfileFuelFlaringAndLossesOverride":
+                if (!resourceProfileId) {
+                    sucess = await createProductionProfileFuelFlaringAndLossesOverride(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
+                } else {
+                    sucess = await updateProductionProfileFuelFlaringAndLossesOverride(projectId, caseId, resourceId!, resourceProfileId!, resourcePropertyKey, value, resourceObject)
+                }
+                break
+            case "productionProfileNetSalesGasOverride":
+                if (!resourceProfileId) {
+                    sucess = await createProductionProfileNetSalesGasOverride(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
+                } else {
+                    sucess = await updateProductionProfileNetSalesGasOverride(projectId, caseId, resourceId!, resourceProfileId!, resourcePropertyKey, value, resourceObject)
+                }
+                break
+            case "productionProfileImportedElectricityOverride":
+                if (!resourceProfileId) {
+                    sucess = await createProductionProfileImportedElectricityOverride(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
+                } else {
+                    sucess = await updateProductionProfileImportedElectricityOverride(projectId, caseId, resourceId!, resourceProfileId!, resourcePropertyKey, value, resourceObject)
+                }
+                break
+            case "deferredOilProduction":
+                if (!resourceProfileId) {
+                    sucess = await createDeferredOilProduction(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
+                } else {
+                    sucess = await updateDeferredOilProduction(projectId, caseId, resourceId!, resourceProfileId!, resourcePropertyKey, value, resourceObject)
+                }
+                break
+            case "deferredGasProduction":
+                if (!resourceProfileId) {
+                    sucess = await createDeferredGasProduction(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
+                } else {
+                    sucess = await updateDeferredGasProduction(projectId, caseId, resourceId!, resourceProfileId!, resourcePropertyKey, value, resourceObject)
+                }
+                break
             default:
                 console.log("Service not found")
         }
