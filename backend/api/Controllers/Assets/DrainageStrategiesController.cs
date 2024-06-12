@@ -61,10 +61,10 @@ public class DrainageStrategiesController : ControllerBase
 
     [HttpPost("{drainageStrategyId}/production-profile-gas/")]
     public async Task<ProductionProfileGasDto> CreateProductionProfileGas(
-    [FromRoute] Guid projectId,
-    [FromRoute] Guid caseId,
-    [FromRoute] Guid drainageStrategyId,
-    [FromBody] CreateProductionProfileGasDto dto)
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromBody] CreateProductionProfileGasDto dto)
     {
         return await _drainageStrategyService.CreateProductionProfileGas(projectId, caseId, drainageStrategyId, dto);
     }
