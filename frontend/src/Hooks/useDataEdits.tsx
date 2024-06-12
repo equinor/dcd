@@ -291,6 +291,478 @@ const useDataEdits = (): {
         }
     }
 
+    const createProductionProfileGas = async (
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        resourcePropertyKey: ResourcePropertyKey,
+        value: any,
+        resourceObject?: object,
+
+    ) => {
+        const service = await GetDrainageStrategyService()
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        console.log(existingDataInClient)
+        const updatedData = resourceObject || { ...existingDataInClient }
+        const serviceMethod = service.createProductionProfileGas(projectId, caseId, drainageStrategyId, updatedData)
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: drainageStrategyId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    const updateProductionProfileGas = async (
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        productionProfileId: string,
+        resourcePropertyKey: ResourcePropertyKey,
+        value: any,
+        resourceObject?: object,
+
+    ) => {
+        const service = await GetDrainageStrategyService()
+        console.log(productionProfileId)
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        console.log(existingDataInClient)
+        const updatedData = resourceObject || { ...existingDataInClient }
+        const serviceMethod = service.updateProductionProfileGas(projectId, caseId, drainageStrategyId, productionProfileId, updatedData)
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: drainageStrategyId,
+                resourceProfileId: productionProfileId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    const createProductionProfileWater = async (
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        resourcePropertyKey: ResourcePropertyKey,
+        value: any,
+        resourceObject?: object,
+
+    ) => {
+        const service = await GetDrainageStrategyService()
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        console.log(existingDataInClient)
+        const updatedData = resourceObject || { ...existingDataInClient }
+        const serviceMethod = service.createProductionProfileWater(projectId, caseId, drainageStrategyId, updatedData)
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: drainageStrategyId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    const updateProductionProfileWater = async (
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        productionProfileId: string,
+        resourcePropertyKey: ResourcePropertyKey,
+        value: any,
+        resourceObject?: object,
+
+    ) => {
+        const service = await GetDrainageStrategyService()
+        console.log(productionProfileId)
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        console.log(existingDataInClient)
+        const updatedData = resourceObject || { ...existingDataInClient }
+        const serviceMethod = service.updateProductionProfileWater(projectId, caseId, drainageStrategyId, productionProfileId, updatedData)
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: drainageStrategyId,
+                resourceProfileId: productionProfileId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    const createProductionProfileWaterInjection = async (
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        resourcePropertyKey: ResourcePropertyKey,
+        value: any,
+        resourceObject?: object,
+
+    ) => {
+        const service = await GetDrainageStrategyService()
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        console.log(existingDataInClient)
+        const updatedData = resourceObject || { ...existingDataInClient }
+        const serviceMethod = service.createProductionProfileWaterInjection(projectId, caseId, drainageStrategyId, updatedData)
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: drainageStrategyId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    const updateProductionProfileWaterInjection = async (
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        productionProfileId: string,
+        resourcePropertyKey: ResourcePropertyKey,
+        value: any,
+        resourceObject?: object,
+
+    ) => {
+        const service = await GetDrainageStrategyService()
+        console.log(productionProfileId)
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        console.log(existingDataInClient)
+        const updatedData = resourceObject || { ...existingDataInClient }
+        const serviceMethod = service.updateProductionProfileWaterInjection(projectId, caseId, drainageStrategyId, productionProfileId, updatedData)
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: drainageStrategyId,
+                resourceProfileId: productionProfileId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    const createProductionProfileFuelFlaringAndLossesOverride = async (
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        resourcePropertyKey: ResourcePropertyKey,
+        value: any,
+        resourceObject?: object,
+
+    ) => {
+        const service = await GetDrainageStrategyService()
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        console.log(existingDataInClient)
+        const updatedData = resourceObject || { ...existingDataInClient }
+        const serviceMethod = service.createProductionProfileFuelFlaringAndLossesOverride(projectId, caseId, drainageStrategyId, updatedData)
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: drainageStrategyId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    const updateProductionProfileFuelFlaringAndLossesOverride = async (
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        productionProfileId: string,
+        resourcePropertyKey: ResourcePropertyKey,
+        value: any,
+        resourceObject?: object,
+
+    ) => {
+        const service = await GetDrainageStrategyService()
+        console.log(productionProfileId)
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        console.log(existingDataInClient)
+        const updatedData = resourceObject || { ...existingDataInClient }
+        const serviceMethod = service.updateProductionProfileFuelFlaringAndLossesOverride(projectId, caseId, drainageStrategyId, productionProfileId, updatedData)
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: drainageStrategyId,
+                resourceProfileId: productionProfileId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    const createProductionProfileNetSalesGasOverride = async (
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        resourcePropertyKey: ResourcePropertyKey,
+        value: any,
+        resourceObject?: object,
+
+    ) => {
+        const service = await GetDrainageStrategyService()
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        console.log(existingDataInClient)
+        const updatedData = resourceObject || { ...existingDataInClient }
+        const serviceMethod = service.createProductionProfileNetSalesGasOverride(projectId, caseId, drainageStrategyId, updatedData)
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: drainageStrategyId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    const updateProductionProfileNetSalesGasOverride = async (
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        productionProfileId: string,
+        resourcePropertyKey: ResourcePropertyKey,
+        value: any,
+        resourceObject?: object,
+
+    ) => {
+        const service = await GetDrainageStrategyService()
+        console.log(productionProfileId)
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        console.log(existingDataInClient)
+        const updatedData = resourceObject || { ...existingDataInClient }
+        const serviceMethod = service.updateProductionProfileNetSalesGasOverride(projectId, caseId, drainageStrategyId, productionProfileId, updatedData)
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: drainageStrategyId,
+                resourceProfileId: productionProfileId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    const createProductionProfileImportedElectricityOverride = async (
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        resourcePropertyKey: ResourcePropertyKey,
+        value: any,
+        resourceObject?: object,
+
+    ) => {
+        const service = await GetDrainageStrategyService()
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        console.log(existingDataInClient)
+        const updatedData = resourceObject || { ...existingDataInClient }
+        const serviceMethod = service.createProductionProfileImportedElectricityOverride(projectId, caseId, drainageStrategyId, updatedData)
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: drainageStrategyId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    const updateProductionProfileImportedElectricityOverride = async (
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        productionProfileId: string,
+        resourcePropertyKey: ResourcePropertyKey,
+        value: any,
+        resourceObject?: object,
+
+    ) => {
+        const service = await GetDrainageStrategyService()
+        console.log(productionProfileId)
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        console.log(existingDataInClient)
+        const updatedData = resourceObject || { ...existingDataInClient }
+        const serviceMethod = service.updateProductionProfileImportedElectricityOverride(projectId, caseId, drainageStrategyId, productionProfileId, updatedData)
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: drainageStrategyId,
+                resourceProfileId: productionProfileId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    const createDeferredOilProduction = async (
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        resourcePropertyKey: ResourcePropertyKey,
+        value: any,
+        resourceObject?: object,
+
+    ) => {
+        const service = await GetDrainageStrategyService()
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        console.log(existingDataInClient)
+        const updatedData = resourceObject || { ...existingDataInClient }
+        const serviceMethod = service.createDeferredOilProduction(projectId, caseId, drainageStrategyId, updatedData)
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: drainageStrategyId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    const updateDeferredOilProduction = async (
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        productionProfileId: string,
+        resourcePropertyKey: ResourcePropertyKey,
+        value: any,
+        resourceObject?: object,
+
+    ) => {
+        const service = await GetDrainageStrategyService()
+        console.log(productionProfileId)
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        console.log(existingDataInClient)
+        const updatedData = resourceObject || { ...existingDataInClient }
+        const serviceMethod = service.updateDeferredOilProduction(projectId, caseId, drainageStrategyId, productionProfileId, updatedData)
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: drainageStrategyId,
+                resourceProfileId: productionProfileId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    const createDeferredGasProduction = async (
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        resourcePropertyKey: ResourcePropertyKey,
+        value: any,
+        resourceObject?: object,
+
+    ) => {
+        const service = await GetDrainageStrategyService()
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        console.log(existingDataInClient)
+        const updatedData = resourceObject || { ...existingDataInClient }
+        const serviceMethod = service.createDeferredGasProduction(projectId, caseId, drainageStrategyId, updatedData)
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: drainageStrategyId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    const updateDeferredGasProduction = async (
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        productionProfileId: string,
+        resourcePropertyKey: ResourcePropertyKey,
+        value: any,
+        resourceObject?: object,
+
+    ) => {
+        const service = await GetDrainageStrategyService()
+        console.log(productionProfileId)
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        console.log(existingDataInClient)
+        const updatedData = resourceObject || { ...existingDataInClient }
+        const serviceMethod = service.updateDeferredGasProduction(projectId, caseId, drainageStrategyId, productionProfileId, updatedData)
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: drainageStrategyId,
+                resourceProfileId: productionProfileId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
     const updateCase = async (
         projectId: string,
         caseId: string,

@@ -124,7 +124,7 @@ const CaseProductionProfilesTab = ({
     const oilProductionData = apiData?.productionProfileOil
     const gasProductionData = apiData?.productionProfileGas
     const waterProductionData = apiData?.productionProfileWater
-    const waterInjectionData = apiData?.waterInjectorCostProfile
+    const waterInjectionData = apiData?.productionProfileWaterInjection
     const fuelFlaringAndLossesData = apiData?.fuelFlaringAndLosses
     const netSalesGasData = apiData?.netSalesGas
     const importedElectricityData = apiData?.importedElectricity
@@ -188,7 +188,11 @@ const CaseProductionProfilesTab = ({
         {
             profileName: "Net sales gas",
             unit: `${project?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
-            profile: netSalesGas,
+            profile: netSalesGasData,
+            resourceName: "netSalesGas",
+            resourceId: drainageStrategyData?.id,
+            resourceProfileId: netSalesGasData?.id,
+            resourcePropertyKey: "netSalesGas",
             overridable: true,
             overrideProfile: netSalesGasOverride,
             overrideProfileSet: setNetSalesGasOverride,
@@ -196,7 +200,11 @@ const CaseProductionProfilesTab = ({
         {
             profileName: "Imported electricity",
             unit: "GWh",
-            profile: importedElectricity,
+            profile: importedElectricityData,
+            resourceName: "importedElectricity",
+            resourceId: drainageStrategyData?.id,
+            resourceProfileId: importedElectricityData?.id,
+            resourcePropertyKey: "importedElectricity",
             overridable: true,
             overrideProfile: importedElectricityOverride,
             overrideProfileSet: setImportedElectricityOverride,
@@ -205,13 +213,21 @@ const CaseProductionProfilesTab = ({
             profileName: "Deferred oil production",
             unit: `${project?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
             set: setDeferredOil,
-            profile: deferredOil,
+            profile: deferredOilData,
+            resourceName: "deferredOilProduction",
+            resourceId: drainageStrategyData?.id,
+            resourceProfileId: deferredOilData?.id,
+            resourcePropertyKey: "deferredOilProduction",
         },
         {
             profileName: "Deferred gas production",
             unit: `${project?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
             set: setDeferredGas,
-            profile: deferredGas,
+            profile: deferredGasData,
+            resourceName: "deferredGasProduction",
+            resourceId: drainageStrategyData?.id,
+            resourceProfileId: deferredGasData?.id,
+            resourcePropertyKey: "deferredGasProduction",
         },
     ]
 
