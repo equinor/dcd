@@ -9,12 +9,15 @@ import {
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef, GridReadyEvent } from "@ag-grid-community/core"
+import { useQueryClient } from "react-query"
+import { useParams } from "react-router"
 import {
     isInteger,
     tableCellisEditable,
     numberValueParser,
     getCaseRowStyle,
     validateInput,
+    formatDate,
 } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../../Utils/constants"
@@ -23,6 +26,9 @@ import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
 import hideProfilesWithoutValues from "./HideProfilesWithoutValues"
+import useDataEdits from "../../../Hooks/useDataEdits"
+import { useProjectContext } from "../../../Context/ProjectContext"
+import { ResourceName, ResourcePropertyKey } from "../../../Models/Interfaces"
 
 interface Props {
     timeSeriesData: any[]
@@ -34,6 +40,9 @@ interface Props {
     includeFooter: boolean
     totalRowName?: string
     profilesToHideWithoutValues?: string[]
+    // resourceId?: string
+    // resourceName?: ResourceName
+    // resourcePropertyKey?: ResourcePropertyKey
 }
 
 const CaseTabTable = ({
@@ -46,9 +55,16 @@ const CaseTabTable = ({
     includeFooter,
     totalRowName,
     profilesToHideWithoutValues,
+    // resourceId,
+    // resourceName,
+    // resourcePropertyKey,
 }: Props) => {
     const { editMode } = useAppContext()
     const styles = useStyles()
+    const { project } = useProjectContext()
+    const { addEdit } = useDataEdits()
+    const { caseId } = useParams()
+    const queryClient = useQueryClient()
 
     const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
     const [overrideModalProfileName, setOverrideModalProfileName] = useState<string>("")
@@ -191,8 +207,6 @@ const CaseTabTable = ({
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
     const handleCellValueChange = (p: any) => {
-        /* helpers for finding right data to register in history tracker
-
         const cellName = p.colDef
         const columnName = p.colDef.headerName
 
@@ -200,7 +214,9 @@ const CaseTabTable = ({
         console.log(columnName)
         console.log(p.newValue)
         console.log(p.oldValue)
-        */
+        console.log(p)
+        console.log(timeSeriesData)
+
         const properties = Object.keys(p.data)
         const tableTimeSeriesValues: any[] = []
         properties.forEach((prop) => {
@@ -232,6 +248,20 @@ const CaseTabTable = ({
             newProfile.startYear = timeSeriesStartYear
             newProfile.values = values
             p.data.set(newProfile)
+
+            if (!caseId || !project) { return }
+            addEdit({
+                newValue: p.newValue,
+                previousValue: p.oldValue,
+                inputLabel: p.data.profileName,
+                projectId: project.id,
+                resourceName: timeSeriesData[0].resourceName,
+                resourcePropertyKey: timeSeriesData[0].resourcePropertyKey,
+                caseId,
+                resourceId: timeSeriesData[0].resourceId,
+                newResourceObject: newProfile,
+                resourceProfileId: timeSeriesData[0].resourceProfileId,
+            })
         }
     }
 
