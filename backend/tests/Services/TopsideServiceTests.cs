@@ -17,7 +17,6 @@ namespace api.Tests.Services
     public class TopsideServiceTests
     {
         private readonly TopsideService _topsideService;
-        private readonly DcdDbContext _context;
         private readonly IProjectService _projectService = Substitute.For<IProjectService>();
         private readonly ILoggerFactory _loggerFactory = Substitute.For<ILoggerFactory>();
         private readonly IMapper _mapper = Substitute.For<IMapper>();
@@ -31,9 +30,9 @@ namespace api.Tests.Services
                 .UseInMemoryDatabase(databaseName: "TestDb")
                 .Options;
 
-            _context = Substitute.For<DcdDbContext>(options);
+            var context = Substitute.For<DcdDbContext>(options);
             _topsideService = new TopsideService(
-                _context,
+                context,
                 _projectService,
                 _loggerFactory,
                 _mapper,
@@ -127,7 +126,7 @@ namespace api.Tests.Services
             _repository.GetTopsideCostProfile(profileId).Returns(existingCostProfile);
             _repository.UpdateTopsideCostProfile(existingCostProfile).Returns(existingCostProfile);
 
-            var updatedTopsideCostProfileDtoResult = new TopsideCostProfileDto() { Id = profileId };
+            var updatedTopsideCostProfileDtoResult = new TopsideCostProfileDto { Id = profileId };
             _mapperService.MapToDto<TopsideCostProfile, TopsideCostProfileDto>(existingCostProfile, existingCostProfile.Id).Returns(updatedTopsideCostProfileDtoResult);
 
             // Act

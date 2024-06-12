@@ -17,7 +17,6 @@ namespace api.Tests.Services
     public class SurfServiceTests
     {
         private readonly SurfService _surfService;
-        private readonly DcdDbContext _context;
         private readonly IProjectService _projectService = Substitute.For<IProjectService>();
         private readonly ILoggerFactory _loggerFactory = Substitute.For<ILoggerFactory>();
         private readonly IMapper _mapper = Substitute.For<IMapper>();
@@ -31,9 +30,9 @@ namespace api.Tests.Services
                 .UseInMemoryDatabase(databaseName: "TestDb")
                 .Options;
 
-            _context = Substitute.For<DcdDbContext>(options);
+            var context = Substitute.For<DcdDbContext>(options);
             _surfService = new SurfService(
-                _context,
+                context,
                 _projectService,
                 _loggerFactory,
                 _mapper,
@@ -127,7 +126,7 @@ namespace api.Tests.Services
             _repository.GetSurfCostProfile(profileId).Returns(existingCostProfile);
             _repository.UpdateSurfCostProfile(existingCostProfile).Returns(existingCostProfile);
 
-            var updatedSurfCostProfileDtoResult = new SurfCostProfileDto() { Id = profileId };
+            var updatedSurfCostProfileDtoResult = new SurfCostProfileDto { Id = profileId };
             _mapperService.MapToDto<SurfCostProfile, SurfCostProfileDto>(existingCostProfile, existingCostProfile.Id).Returns(updatedSurfCostProfileDtoResult);
 
             // Act

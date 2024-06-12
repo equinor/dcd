@@ -17,7 +17,6 @@ namespace api.Tests.Services
     public class SubstructureServiceTests
     {
         private readonly SubstructureService _substructureService;
-        private readonly DcdDbContext _context;
         private readonly IProjectService _projectService = Substitute.For<IProjectService>();
         private readonly ILoggerFactory _loggerFactory = Substitute.For<ILoggerFactory>();
         private readonly IMapper _mapper = Substitute.For<IMapper>();
@@ -31,9 +30,9 @@ namespace api.Tests.Services
                 .UseInMemoryDatabase(databaseName: "TestDb")
                 .Options;
 
-            _context = Substitute.For<DcdDbContext>(options);
+            var context = Substitute.For<DcdDbContext>(options);
             _substructureService = new SubstructureService(
-                _context,
+                context,
                 _projectService,
                 _loggerFactory,
                 _mapper,
@@ -127,7 +126,7 @@ namespace api.Tests.Services
             _repository.GetSubstructureCostProfile(profileId).Returns(existingCostProfile);
             _repository.UpdateSubstructureCostProfile(existingCostProfile).Returns(existingCostProfile);
 
-            var updatedSubstructureCostProfileDtoResult = new SubstructureCostProfileDto() { Id = profileId };
+            var updatedSubstructureCostProfileDtoResult = new SubstructureCostProfileDto { Id = profileId };
             _mapperService.MapToDto<SubstructureCostProfile, SubstructureCostProfileDto>(existingCostProfile, existingCostProfile.Id).Returns(updatedSubstructureCostProfileDtoResult);
 
             // Act
