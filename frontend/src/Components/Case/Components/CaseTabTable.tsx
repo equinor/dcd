@@ -63,6 +63,7 @@ const CaseTabTable = ({
     const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
     const [overrideProfile, setOverrideProfile] = useState<any>()
 
+    // todo: create another logic for "set"
     const profilesToRowData = () => {
         const tableRows: any[] = []
         timeSeriesData.forEach((ts) => {
@@ -240,7 +241,7 @@ const CaseTabTable = ({
             const newProfile = { ...p.data.profile }
             newProfile.startYear = timeSeriesStartYear
             newProfile.values = values
-            p.data.set(newProfile)
+            // p.data.set(newProfile)
 
             if (!caseId || !project) { return }
 

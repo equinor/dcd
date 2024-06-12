@@ -1,8 +1,5 @@
 import {
-    Dispatch,
-    SetStateAction,
     useState,
-    useEffect,
     useRef,
 } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
@@ -12,9 +9,7 @@ import { useParams } from "react-router"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import CaseTabTable from "../Components/CaseTabTable"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
-import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../AgGrid/AgChartsTimeseries"
-import { ITimeSeriesOverride } from "../../../Models/ITimeSeriesOverride"
 import InputSwitcher from "../../Input/Components/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
@@ -25,8 +20,6 @@ import CaseProductionProfilesTabSkeleton from "./LoadingSkeletons/CaseProduction
 interface ITimeSeriesData {
     profileName: string
     unit: string,
-    set?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
-    overrideProfileSet?: Dispatch<SetStateAction<ITimeSeriesOverride | undefined>>,
     profile: ITimeSeries | undefined
     overrideProfile?: ITimeSeries | undefined
     overridable?: boolean
@@ -35,44 +28,13 @@ interface ITimeSeriesData {
     resourceName?: string
     resourceProfileId?: string
 }
-interface Props {
-    drainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto,
-    setDrainageStrategy: Dispatch<SetStateAction<Components.Schemas.DrainageStrategyWithProfilesDto | undefined>>,
 
-    netSalesGas: Components.Schemas.NetSalesGasDto | undefined,
-    setNetSalesGas: Dispatch<SetStateAction<Components.Schemas.NetSalesGasDto | undefined>>,
-
-    fuelFlaringAndLosses: Components.Schemas.FuelFlaringAndLossesDto | undefined,
-    setFuelFlaringAndLosses: Dispatch<SetStateAction<Components.Schemas.FuelFlaringAndLossesDto | undefined>>,
-
-    importedElectricity: Components.Schemas.ImportedElectricityDto | undefined,
-    setImportedElectricity: Dispatch<SetStateAction<Components.Schemas.ImportedElectricityDto | undefined>>,
-}
-
-const CaseProductionProfilesTab = ({
-    drainageStrategy, setDrainageStrategy,
-    netSalesGas, setNetSalesGas,
-    fuelFlaringAndLosses, setFuelFlaringAndLosses,
-    importedElectricity, setImportedElectricity,
-}: Props) => {
+const CaseProductionProfilesTab = () => {
     const queryClient = useQueryClient()
     const { caseId } = useParams()
     const { project } = useProjectContext()
     const { projectCase, activeTabCase } = useCaseContext()
     const projectId = project?.id || null
-
-    const [gas, setGas] = useState<Components.Schemas.ProductionProfileGasDto>()
-    const [oil, setOil] = useState<Components.Schemas.ProductionProfileOilDto>()
-    const [water, setWater] = useState<Components.Schemas.ProductionProfileWaterDto>()
-    const [nGL, setNGL] = useState<Components.Schemas.ProductionProfileNGLDto>()
-    const [waterInjection, setWaterInjection] = useState<Components.Schemas.ProductionProfileWaterInjectionDto>()
-
-    const [netSalesGasOverride, setNetSalesGasOverride] = useState<Components.Schemas.NetSalesGasOverrideDto>()
-    const [fuelFlaringAndLossesOverride, setFuelFlaringAndLossesOverride] = useState<Components.Schemas.FuelFlaringAndLossesOverrideDto>()
-    const [importedElectricityOverride, setImportedElectricityOverride] = useState<Components.Schemas.ImportedElectricityOverrideDto>()
-
-    const [deferredGas, setDeferredGas] = useState<Components.Schemas.DeferredGasProductionDto>()
-    const [deferredOil, setDeferredOil] = useState<Components.Schemas.DeferredOilProductionDto>()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -126,8 +88,11 @@ const CaseProductionProfilesTab = ({
     const waterProductionData = apiData?.productionProfileWater
     const waterInjectionData = apiData?.productionProfileWaterInjection
     const fuelFlaringAndLossesData = apiData?.fuelFlaringAndLosses
+    const fuelFlaringAndLossesOverrideData = apiData?.fuelFlaringAndLossesOverride
     const netSalesGasData = apiData?.netSalesGas
+    const netSalesGasOverrideData = apiData?.netSalesGasOverride
     const importedElectricityData = apiData?.importedElectricity
+    const importedElectricityOverrideData = apiData?.importedElectricityOverride
     const deferredOilData = apiData?.deferredOilProduction
     const deferredGasData = apiData?.deferredGasProduction
     const caseData = apiData?.case
@@ -136,7 +101,6 @@ const CaseProductionProfilesTab = ({
         {
             profileName: "Oil production",
             unit: `${project?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
-            set: setOil,
             profile: oilProductionData,
             resourceName: "productionProfileOil",
             resourceId: drainageStrategyData?.id,
@@ -146,7 +110,6 @@ const CaseProductionProfilesTab = ({
         {
             profileName: "Gas production",
             unit: `${project?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
-            set: setGas,
             profile: gasProductionData,
             resourceName: "productionProfileGas",
             resourceId: drainageStrategyData?.id,
@@ -156,7 +119,6 @@ const CaseProductionProfilesTab = ({
         {
             profileName: "Water production",
             unit: `${project?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
-            set: setWater,
             profile: waterProductionData,
             resourceName: "productionProfileWater",
             resourceId: drainageStrategyData?.id,
@@ -166,7 +128,6 @@ const CaseProductionProfilesTab = ({
         {
             profileName: "Water injection",
             unit: `${project?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
-            set: setWaterInjection,
             profile: waterInjectionData,
             resourceName: "productionProfileWaterInjection",
             resourceId: drainageStrategyData?.id,
@@ -179,11 +140,10 @@ const CaseProductionProfilesTab = ({
             profile: fuelFlaringAndLossesData,
             resourceName: "productionProfileFuelFlaringAndLossesOverride",
             resourceId: drainageStrategyData?.id,
-            resourceProfileId: fuelFlaringAndLossesData?.id,
+            resourceProfileId: fuelFlaringAndLossesOverrideData?.id,
             resourcePropertyKey: "productionProfileFuelFlaringAndLossesOverride",
             overridable: true,
-            overrideProfile: fuelFlaringAndLossesOverride,
-            overrideProfileSet: setFuelFlaringAndLossesOverride,
+            overrideProfile: fuelFlaringAndLossesOverrideData,
         },
         {
             profileName: "Net sales gas",
@@ -191,11 +151,10 @@ const CaseProductionProfilesTab = ({
             profile: netSalesGasData,
             resourceName: "productionProfileNetSalesGasOverride",
             resourceId: drainageStrategyData?.id,
-            resourceProfileId: netSalesGasData?.id,
+            resourceProfileId: netSalesGasOverrideData?.id,
             resourcePropertyKey: "productionProfileNetSalesGasOverride",
             overridable: true,
-            overrideProfile: netSalesGasOverride,
-            overrideProfileSet: setNetSalesGasOverride,
+            overrideProfile: netSalesGasOverrideData,
         },
         {
             profileName: "Imported electricity",
@@ -203,16 +162,14 @@ const CaseProductionProfilesTab = ({
             profile: importedElectricityData,
             resourceName: "productionProfileImportedElectricityOverride",
             resourceId: drainageStrategyData?.id,
-            resourceProfileId: importedElectricityData?.id,
+            resourceProfileId: importedElectricityOverrideData?.id,
             resourcePropertyKey: "productionProfileImportedElectricityOverride",
             overridable: true,
-            overrideProfile: importedElectricityOverride,
-            overrideProfileSet: setImportedElectricityOverride,
+            overrideProfile: importedElectricityOverrideData,
         },
         {
             profileName: "Deferred oil production",
             unit: `${project?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
-            set: setDeferredOil,
             profile: deferredOilData,
             resourceName: "deferredOilProduction",
             resourceId: drainageStrategyData?.id,
@@ -222,7 +179,6 @@ const CaseProductionProfilesTab = ({
         {
             profileName: "Deferred gas production",
             unit: `${project?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
-            set: setDeferredGas,
             profile: deferredGasData,
             resourceName: "deferredGasProduction",
             resourceId: drainageStrategyData?.id,
@@ -241,9 +197,9 @@ const CaseProductionProfilesTab = ({
         for (let i = startYear; i <= endYear; i += 1) {
             dataArray.push({
                 year: i,
-                oilProduction: setValueToCorrespondingYear(oil, i, startYear, new Date(projectCase?.dG4Date).getFullYear()),
-                gasProduction: setValueToCorrespondingYear(gas, i, startYear, new Date(projectCase?.dG4Date).getFullYear()),
-                waterProduction: setValueToCorrespondingYear(water, i, startYear, new Date(projectCase?.dG4Date).getFullYear()),
+                oilProduction: setValueToCorrespondingYear(oilProductionData, i, startYear, new Date(projectCase?.dG4Date).getFullYear()),
+                gasProduction: setValueToCorrespondingYear(gasProductionData, i, startYear, new Date(projectCase?.dG4Date).getFullYear()),
+                waterProduction: setValueToCorrespondingYear(waterProductionData, i, startYear, new Date(projectCase?.dG4Date).getFullYear()),
             })
         }
         return dataArray
@@ -256,122 +212,11 @@ const CaseProductionProfilesTab = ({
             dataArray.push({
                 year: i,
                 waterInjection:
-                    setValueToCorrespondingYear(waterInjection, i, startYear, new Date(projectCase?.dG4Date).getFullYear()),
+                    setValueToCorrespondingYear(waterInjectionData, i, startYear, new Date(projectCase?.dG4Date).getFullYear()),
             })
         }
         return dataArray
     }
-
-    useEffect(() => {
-        (async () => {
-            try {
-                if (activeTabCase === 1 && projectCase?.dG4Date !== undefined) {
-                    setFuelFlaringAndLosses(drainageStrategy.fuelFlaringAndLosses)
-                    setNetSalesGas(drainageStrategy.netSalesGas)
-                    setImportedElectricity(drainageStrategy.importedElectricity)
-
-                    SetTableYearsFromProfiles([
-                        drainageStrategy.netSalesGas,
-                        drainageStrategy.fuelFlaringAndLosses,
-                        drainageStrategy.netSalesGasOverride,
-                        drainageStrategy.fuelFlaringAndLossesOverride,
-                        drainageStrategy.productionProfileGas,
-                        drainageStrategy.productionProfileOil,
-                        drainageStrategy.productionProfileWater,
-                        drainageStrategy.productionProfileNGL,
-                        drainageStrategy.productionProfileWaterInjection,
-                        drainageStrategy.importedElectricityOverride,
-                        drainageStrategy.co2EmissionsOverride,
-                        drainageStrategy.deferredGasProduction,
-                        drainageStrategy.deferredOilProduction,
-                    ], new Date(projectCase?.dG4Date).getFullYear(), setStartYear, setEndYear, setTableYears)
-                    setGas(drainageStrategy.productionProfileGas)
-                    setOil(drainageStrategy.productionProfileOil)
-                    setWater(drainageStrategy.productionProfileWater)
-                    setNGL(drainageStrategy.productionProfileNGL)
-                    setWaterInjection(drainageStrategy.productionProfileWaterInjection)
-
-                    setImportedElectricityOverride(drainageStrategy.importedElectricityOverride)
-                    setNetSalesGasOverride(drainageStrategy.netSalesGasOverride)
-                    setFuelFlaringAndLossesOverride(drainageStrategy.fuelFlaringAndLossesOverride)
-
-                    setDeferredGas(drainageStrategy.deferredGasProduction)
-                    setDeferredOil(drainageStrategy.deferredOilProduction)
-                }
-            } catch (error) {
-                console.error("[CaseView] Error while generating cost profile", error)
-            }
-        })()
-    }, [activeTabCase])
-
-    useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
-        if (!oil) { return }
-        newDrainageStrategy.productionProfileOil = oil
-        setDrainageStrategy(newDrainageStrategy)
-    }, [oil])
-
-    useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
-        if (!gas) { return }
-        newDrainageStrategy.productionProfileGas = gas
-        setDrainageStrategy(newDrainageStrategy)
-    }, [gas])
-
-    useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
-        if (!water) { return }
-        newDrainageStrategy.productionProfileWater = water
-        setDrainageStrategy(newDrainageStrategy)
-    }, [water])
-
-    useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
-        if (!waterInjection) { return }
-        newDrainageStrategy.productionProfileWaterInjection = waterInjection
-        setDrainageStrategy(newDrainageStrategy)
-    }, [waterInjection])
-
-    useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
-        if (!importedElectricityOverride) { return }
-        newDrainageStrategy.importedElectricityOverride = importedElectricityOverride
-        setDrainageStrategy(newDrainageStrategy)
-    }, [importedElectricityOverride])
-
-    useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
-        if (!fuelFlaringAndLossesOverride) { return }
-        newDrainageStrategy.fuelFlaringAndLossesOverride = fuelFlaringAndLossesOverride
-        setDrainageStrategy(newDrainageStrategy)
-    }, [fuelFlaringAndLossesOverride])
-
-    useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
-        if (!netSalesGasOverride) { return }
-        newDrainageStrategy.netSalesGasOverride = netSalesGasOverride
-        setDrainageStrategy(newDrainageStrategy)
-    }, [netSalesGasOverride])
-
-    useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
-        if (!deferredOil) { return }
-        newDrainageStrategy.deferredOilProduction = deferredOil
-        setDrainageStrategy(newDrainageStrategy)
-    }, [deferredOil])
-
-    useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
-        if (!deferredGas) { return }
-        newDrainageStrategy.deferredGasProduction = deferredGas
-        setDrainageStrategy(newDrainageStrategy)
-    }, [deferredGas])
-
-    useEffect(() => {
-        if (gridRef.current && gridRef.current.api && gridRef.current.api.refreshCells) {
-            gridRef.current.api.refreshCells()
-        }
-    }, [fuelFlaringAndLosses, netSalesGas, importedElectricity])
 
     if (activeTabCase !== 1) { return null }
 
@@ -397,7 +242,7 @@ const CaseProductionProfilesTab = ({
                 <SwitchableDropdownInput
                     resourceName="drainageStrategy"
                     resourcePropertyKey="gasSolution"
-                    resourceId={drainageStrategy.id}
+                    resourceId={drainageStrategyData.id}
                     value={drainageStrategyData.gasSolution}
                     options={gasSolutionOptions}
                     label="Gas solution"
@@ -490,7 +335,7 @@ const CaseProductionProfilesTab = ({
                 />
             </Grid>
             {
-                (waterInjection?.values && waterInjection.values?.length > 0)
+                (waterInjectionData?.values && waterInjectionData.values?.length > 0)
                 && (
                     <Grid item xs={12}>
                         <AgChartsTimeseries
