@@ -199,7 +199,7 @@ public class TopsideService : ITopsideService
         Topside topside
     )
     {
-        TopsideCostProfile topsideCostProfile = new TopsideCostProfile
+        TopsideCostProfile topsideCostProfile = new()
         {
             Topside = topside
         };
