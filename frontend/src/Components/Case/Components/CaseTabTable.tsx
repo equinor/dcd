@@ -261,12 +261,14 @@ const CaseTabTable = ({
                 return result
             }
 
+            console.log(timeSeriesDataIndex().profileName)
+
             addEdit({
                 newValue: p.newValue,
                 previousValue: p.oldValue,
                 inputLabel: p.data.profileName,
                 projectId: project.id,
-                resourceName: timeSeriesDataIndex()?.property,
+                resourceName: timeSeriesDataIndex()?.profileName,
                 resourcePropertyKey: timeSeriesDataIndex()?.resourcePropertyKey,
                 caseId,
                 resourceId: timeSeriesDataIndex()?.resourceId,
