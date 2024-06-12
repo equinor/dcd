@@ -81,22 +81,22 @@ const TotalStudyCosts: React.FC<CesationCostsProps> = ({ tableYears, studyGridRe
     }, [totalFeasibilityAndConceptStudies, totalFEEDStudies, totalOtherStudies])
 
     useEffect(() => {
-        if (projectCaseEdited && totalFeasibilityAndConceptStudiesOverride) {
+        if (projectCaseEdited && totalFeasibilityAndConceptStudiesOverride && projectCaseEdited.totalFeasibilityAndConceptStudiesOverride !== totalFeasibilityAndConceptStudiesOverride) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
         }
-    }, [totalFeasibilityAndConceptStudiesOverride])
+    }, [projectCaseEdited, totalFeasibilityAndConceptStudiesOverride])
 
     useEffect(() => {
-        if (projectCaseEdited && totalFEEDStudiesOverride) {
+        if (projectCaseEdited && totalFEEDStudiesOverride && projectCaseEdited.totalFEEDStudiesOverride !== totalFEEDStudiesOverride) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
         }
-    }, [totalFEEDStudiesOverride])
+    }, [projectCaseEdited, totalFEEDStudiesOverride])
 
     useEffect(() => {
-        if (projectCaseEdited && totalOtherStudies) {
+        if (projectCaseEdited && totalOtherStudies && projectCaseEdited.totalOtherStudies !== totalOtherStudies) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "totalOtherStudies", totalOtherStudies)
         }
-    }, [totalOtherStudies])
+    }, [projectCaseEdited, totalOtherStudies])
 
     return (
         <CaseTabTable

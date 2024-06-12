@@ -88,34 +88,34 @@ const OpexCosts: React.FC<OpexCostsProps> = ({ tableYears, opexGridRef, alignedG
     ])
 
     useEffect(() => {
-        if (projectCaseEdited && wellInterventionCostProfileOverride) {
+        if (projectCaseEdited && wellInterventionCostProfileOverride && projectCaseEdited.wellInterventionCostProfileOverride !== wellInterventionCostProfileOverride) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "wellInterventionCostProfileOverride", wellInterventionCostProfileOverride)
         }
-    }, [wellInterventionCostProfileOverride])
+    }, [projectCaseEdited, wellInterventionCostProfileOverride])
 
     useEffect(() => {
-        if (projectCaseEdited && offshoreFacilitiesOperationsCostProfileOverride) {
+        if (projectCaseEdited && offshoreFacilitiesOperationsCostProfileOverride && projectCaseEdited.offshoreFacilitiesOperationsCostProfileOverride !== offshoreFacilitiesOperationsCostProfileOverride) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "offshoreFacilitiesOperationsCostProfileOverride", offshoreFacilitiesOperationsCostProfileOverride)
         }
-    }, [offshoreFacilitiesOperationsCostProfileOverride])
+    }, [projectCaseEdited, offshoreFacilitiesOperationsCostProfileOverride])
 
     useEffect(() => {
-        if (projectCaseEdited && onshoreRelatedOPEXCostProfile) {
+        if (projectCaseEdited && onshoreRelatedOPEXCostProfile && projectCaseEdited.onshoreRelatedOPEXCostProfile !== onshoreRelatedOPEXCostProfile) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "onshoreRelatedOPEXCostProfile", onshoreRelatedOPEXCostProfile)
         }
-    }, [onshoreRelatedOPEXCostProfile])
+    }, [projectCaseEdited, onshoreRelatedOPEXCostProfile])
 
     useEffect(() => {
-        if (projectCaseEdited && historicCostCostProfile) {
+        if (projectCaseEdited && historicCostCostProfile && projectCaseEdited.historicCostCostProfile !== historicCostCostProfile) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "historicCostCostProfile", historicCostCostProfile)
         }
-    }, [historicCostCostProfile])
+    }, [projectCaseEdited, historicCostCostProfile])
 
     useEffect(() => {
-        if (projectCaseEdited && additionalOPEXCostProfile) {
+        if (projectCaseEdited && additionalOPEXCostProfile && projectCaseEdited.additionalOPEXCostProfile !== additionalOPEXCostProfile) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "additionalOPEXCostProfile", additionalOPEXCostProfile)
         }
-    }, [additionalOPEXCostProfile])
+    }, [projectCaseEdited, additionalOPEXCostProfile])
 
     useEffect(() => {
         if (activeTabCase === 5 && projectCase) {

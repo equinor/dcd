@@ -88,52 +88,52 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
     ]
 
     useEffect(() => {
-        if (surf && surfCostOverride) {
+        if (surf && surfCostOverride && surf.costProfileOverride !== surfCostOverride) {
             updateObject(surf, setSurf, "costProfileOverride", surfCostOverride)
         }
-    }, [surfCostOverride])
+    }, [surf, surfCostOverride])
 
     useEffect(() => {
-        if (topside && topsideCostOverride) {
+        if (topside && topsideCostOverride && topside.costProfileOverride !== topsideCostOverride) {
             updateObject(topside, setTopside, "costProfileOverride", topsideCostOverride)
         }
-    }, [topsideCostOverride])
+    }, [topside, topsideCostOverride])
 
     useEffect(() => {
-        if (substructure && substructureCostOverride) {
+        if (substructure && substructureCostOverride && substructure.costProfileOverride !== substructureCostOverride) {
             updateObject(substructure, setSubstructure, "costProfileOverride", substructureCostOverride)
         }
-    }, [substructureCostOverride])
+    }, [substructure, substructureCostOverride])
 
     useEffect(() => {
-        if (transport && transportCostOverride) {
+        if (transport && transportCostOverride && transport.costProfileOverride !== transportCostOverride) {
             updateObject(transport, setTransport, "costProfileOverride", transportCostOverride)
         }
-    }, [transportCostOverride])
+    }, [transport, transportCostOverride])
 
     useEffect(() => {
-        if (surf && surfCost) {
+        if (surf && surfCost && surf.costProfile !== surfCost) {
             updateObject(surf, setSurf, "costProfile", surfCost)
         }
-    }, [surfCost])
+    }, [surf, surfCost])
 
     useEffect(() => {
-        if (topside && topsideCost) {
+        if (topside && topsideCost && topside.costProfile !== topsideCost) {
             updateObject(topside, setTopside, "costProfile", topsideCost)
         }
-    }, [topsideCost])
+    }, [topside, topsideCost])
 
     useEffect(() => {
-        if (substructure && substructureCost) {
+        if (substructure && substructureCost && substructure.costProfile !== substructureCost) {
             updateObject(substructure, setSubstructure, "costProfile", substructureCost)
         }
-    }, [substructureCost])
+    }, [substructure, substructureCost])
 
     useEffect(() => {
-        if (transport && transportCost) {
+        if (transport && transportCost && transport.costProfile !== transportCost) {
             updateObject(transport, setTransport, "costProfile", transportCost)
         }
-    }, [transportCost])
+    }, [transport, transportCost])
 
     useEffect(() => {
         if (activeTabCase === 5) {
