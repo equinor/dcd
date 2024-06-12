@@ -252,7 +252,7 @@ const CaseTabTable = ({
             const timeSeriesDataIndex = () => {
                 const result = timeSeriesData
                     .map((v, i) => {
-                        if (v.profileName === p.profileName) {
+                        if (v.profileName === p.data.profileName) {
                             return timeSeriesData[i]
                         }
                         return undefined
@@ -261,20 +261,31 @@ const CaseTabTable = ({
                 return result
             }
 
-            console.log(timeSeriesDataIndex().profileName)
-
             addEdit({
                 newValue: p.newValue,
                 previousValue: p.oldValue,
                 inputLabel: p.data.profileName,
                 projectId: project.id,
-                resourceName: timeSeriesDataIndex()?.profileName,
+                resourceName: timeSeriesDataIndex()?.resourceName,
                 resourcePropertyKey: timeSeriesDataIndex()?.resourcePropertyKey,
                 caseId,
                 resourceId: timeSeriesDataIndex()?.resourceId,
                 newResourceObject: newProfile,
                 resourceProfileId: timeSeriesDataIndex()?.resourceProfileId,
             })
+
+            // addEdit({
+            //     newValue: p.newValue,
+            //     previousValue: p.oldValue,
+            //     inputLabel: p.data.profileName,
+            //     projectId: project.id,
+            //     resourceName: timeSeriesData[0].resourceName,
+            //     resourcePropertyKey: timeSeriesData[0].resourcePropertyKey,
+            //     caseId,
+            //     resourceId: timeSeriesData[0].resourceId,
+            //     newResourceObject: newProfile,
+            //     resourceProfileId: timeSeriesData[0].resourceProfileId,
+            // })
         }
     }
 

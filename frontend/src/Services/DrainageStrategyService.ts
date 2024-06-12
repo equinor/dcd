@@ -22,7 +22,7 @@ class DrainageStrategyService extends __BaseService {
         drainageStrategyId: string,
         dto: Components.Schemas.CreateProductionProfileOilDto,
     ): Promise<Components.Schemas.ProductionProfileOilDto> {
-        const res: Components.Schemas.ProductionProfileOilDto = await this.put(
+        const res: Components.Schemas.ProductionProfileOilDto = await this.post(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/production-profile-oil/`,
             { body: dto },
         )

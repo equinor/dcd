@@ -122,6 +122,14 @@ const CaseProductionProfilesTab = ({
 
     const drainageStrategyData = apiData?.drainageStrategy
     const oilProductionData = apiData?.oilProducerCostProfile
+    const gasProductionData = apiData?.gasProducerCostProfile
+    const waterProductionData = apiData?.productionProfileWater
+    const waterInjectionData = apiData?.waterInjectorCostProfile
+    const fuelFlaringAndLossesData = apiData?.fuelFlaringAndLosses
+    const netSalesGasData = apiData?.netSalesGas
+    const importedElectricityData = apiData?.importedElectricity
+    const deferredOilData = apiData?.deferredOilProduction
+    const deferredGasData = apiData?.deferredGasProduction
     const caseData = apiData?.case
 
     const timeSeriesData: ITimeSeriesData[] = [
@@ -139,24 +147,40 @@ const CaseProductionProfilesTab = ({
             profileName: "Gas production",
             unit: `${project?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
             set: setGas,
-            profile: gas,
+            profile: gasProductionData,
+            resourceName: "productionProfileGas",
+            resourceId: drainageStrategyData?.id,
+            resourceProfileId: gasProductionData?.id,
+            resourcePropertyKey: "productionProfileGas",
         },
         {
             profileName: "Water production",
             unit: `${project?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
             set: setWater,
-            profile: water,
+            profile: waterProductionData,
+            resourceName: "productionProfileWater",
+            resourceId: drainageStrategyData?.id,
+            resourceProfileId: waterProductionData?.id,
+            resourcePropertyKey: "productionProfileWater",
         },
         {
             profileName: "Water injection",
             unit: `${project?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
             set: setWaterInjection,
-            profile: waterInjection,
+            profile: waterInjectionData,
+            resourceName: "waterInjection",
+            resourceId: drainageStrategyData?.id,
+            resourceProfileId: waterInjectionData?.id,
+            resourcePropertyKey: "waterInjection",
         },
         {
             profileName: "Fuel, flaring and losses",
             unit: `${project?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
-            profile: fuelFlaringAndLosses,
+            profile: fuelFlaringAndLossesData,
+            resourceName: "fuelFlaringAndLosses",
+            resourceId: drainageStrategyData?.id,
+            resourceProfileId: fuelFlaringAndLossesData?.id,
+            resourcePropertyKey: "fuelFlaringAndLosses",
             overridable: true,
             overrideProfile: fuelFlaringAndLossesOverride,
             overrideProfileSet: setFuelFlaringAndLossesOverride,
