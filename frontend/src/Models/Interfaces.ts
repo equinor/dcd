@@ -25,6 +25,7 @@ export interface EditInstance {
     resourceName: ResourceName; // the asset being edited
     resourcePropertyKey: ResourcePropertyKey; // the key of the asset being edited
     resourceId?: string; // the id of the asset being edited
+    resourceProfileId?: string; // the id of the timeseries profile being edited
     caseId?: string; // the case id
     newDisplayValue?: string | number | undefined; // the displayed new value in case of when the value submitted is not what the user should see
     previousDisplayValue?: string | number | undefined; // the displayed previous value in case of when the value submitted is not what the user should see

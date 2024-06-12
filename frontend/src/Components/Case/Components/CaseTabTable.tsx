@@ -250,6 +250,8 @@ const CaseTabTable = ({
             p.data.set(newProfile)
 
             if (!caseId || !project) { return }
+
+            console.log(timeSeriesData[0].resourceProfileId)
             addEdit({
                 newValue: p.newValue,
                 previousValue: p.oldValue,
@@ -257,10 +259,10 @@ const CaseTabTable = ({
                 projectId: project.id,
                 resourceName: timeSeriesData[0].resourceName,
                 resourcePropertyKey: timeSeriesData[0].resourcePropertyKey,
-                caseId,
                 resourceId: timeSeriesData[0].resourceId,
-                newResourceObject: newProfile,
                 resourceProfileId: timeSeriesData[0].resourceProfileId,
+                caseId,
+                newResourceObject: newProfile,
             })
         }
     }

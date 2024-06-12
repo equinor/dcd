@@ -76,6 +76,7 @@ const useDataEdits = (): {
             projectId: string,
             caseId: string,
             resourceId?: string,
+            resourceProfileId?: string,
             serviceMethod: object,
         }) => serviceMethod,
         {
@@ -252,7 +253,8 @@ const useDataEdits = (): {
             await mutation.mutateAsync({
                 projectId,
                 caseId,
-                resourceId: productionProfileId,
+                resourceId: drainageStrategyId,
+                resourceProfileId: productionProfileId,
                 serviceMethod,
             })
             return true
@@ -332,6 +334,7 @@ const useDataEdits = (): {
                 sucess = await updateDrainageStrategy(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
                 break
             case "productionProfileOil":
+                console.log(resourceProfileId)
                 sucess = await updateProductionProfileOil(projectId, caseId, resourceId!, resourceProfileId!, resourcePropertyKey, value, resourceObject)
                 break
             default:
@@ -368,6 +371,7 @@ const useDataEdits = (): {
         resourceName,
         resourcePropertyKey,
         resourceId,
+        resourceProfileId,
         caseId,
         newDisplayValue,
         previousDisplayValue,
@@ -393,6 +397,7 @@ const useDataEdits = (): {
             resourceName,
             resourcePropertyKey,
             resourceId,
+            resourceProfileId,
             caseId,
             newDisplayValue,
             previousDisplayValue,
@@ -407,6 +412,7 @@ const useDataEdits = (): {
                 resourcePropertyKey,
                 value: newValue as string,
                 resourceId,
+                resourceProfileId,
                 resourceObject: newResourceObject as ResourceObject | undefined,
             },
         )
