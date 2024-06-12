@@ -133,6 +133,7 @@ public class Co2Intensity : TimeSeriesMass
 public interface IDrainageStrategyTimeSeries
 {
     DrainageStrategy DrainageStrategy { get; set; }
+    Guid Id { get; set; }
 }
 
 public class DeferredOilProduction : TimeSeriesVolume, IDrainageStrategyTimeSeries
