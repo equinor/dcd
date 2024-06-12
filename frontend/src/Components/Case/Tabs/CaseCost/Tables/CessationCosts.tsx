@@ -72,19 +72,19 @@ const CessationCosts: React.FC<CesationCostsProps> = ({ tableYears, cessationGri
     ])
 
     useEffect(() => {
-        if (projectCaseEdited) {
+        if (projectCaseEdited && cessationWellsCostOverride) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "cessationWellsCostOverride", cessationWellsCostOverride)
         }
     }, [cessationWellsCostOverride])
 
     useEffect(() => {
-        if (projectCaseEdited) {
+        if (projectCaseEdited && cessationOffshoreFacilitiesCostOverride) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "cessationOffshoreFacilitiesCostOverride", cessationOffshoreFacilitiesCostOverride)
         }
     }, [cessationOffshoreFacilitiesCostOverride])
 
     useEffect(() => {
-        if (projectCaseEdited) {
+        if (projectCaseEdited && cessationOnshoreFacilitiesCostProfile) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "cessationOnshoreFacilitiesCostProfile", cessationOnshoreFacilitiesCostProfile)
         }
     }, [cessationOnshoreFacilitiesCostProfile])

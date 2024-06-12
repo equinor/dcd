@@ -88,49 +88,49 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
     ]
 
     useEffect(() => {
-        if (surf) {
+        if (surf && surfCostOverride) {
             updateObject(surf, setSurf, "costProfileOverride", surfCostOverride)
         }
     }, [surfCostOverride])
 
     useEffect(() => {
-        if (topside) {
+        if (topside && topsideCostOverride) {
             updateObject(topside, setTopside, "costProfileOverride", topsideCostOverride)
         }
     }, [topsideCostOverride])
 
     useEffect(() => {
-        if (substructure) {
+        if (substructure && substructureCostOverride) {
             updateObject(substructure, setSubstructure, "costProfileOverride", substructureCostOverride)
         }
     }, [substructureCostOverride])
 
     useEffect(() => {
-        if (transport) {
+        if (transport && transportCostOverride) {
             updateObject(transport, setTransport, "costProfileOverride", transportCostOverride)
         }
     }, [transportCostOverride])
 
     useEffect(() => {
-        if (surf) {
+        if (surf && surfCost) {
             updateObject(surf, setSurf, "costProfile", surfCost)
         }
     }, [surfCost])
 
     useEffect(() => {
-        if (topside) {
+        if (topside && topsideCost) {
             updateObject(topside, setTopside, "costProfile", topsideCost)
         }
     }, [topsideCost])
 
     useEffect(() => {
-        if (substructure) {
+        if (substructure && substructureCost) {
             updateObject(substructure, setSubstructure, "costProfile", substructureCost)
         }
     }, [substructureCost])
 
     useEffect(() => {
-        if (transport) {
+        if (transport && transportCost) {
             updateObject(transport, setTransport, "costProfile", transportCost)
         }
     }, [transportCost])

@@ -93,31 +93,31 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
     }, [gAndGAdminCost])
 
     useEffect(() => {
-        if (exploration) {
+        if (exploration && explorationWellCostProfile) {
             updateObject(exploration, setExploration, "explorationWellCostProfile", explorationWellCostProfile)
         }
     }, [explorationWellCostProfile])
 
     useEffect(() => {
-        if (exploration) {
+        if (exploration && appraisalWellCostProfile) {
             updateObject(exploration, setExploration, "appraisalWellCostProfile", appraisalWellCostProfile)
         }
     }, [appraisalWellCostProfile])
 
     useEffect(() => {
-        if (exploration) {
+        if (exploration && sidetrackCostProfile) {
             updateObject(exploration, setExploration, "sidetrackCostProfile", sidetrackCostProfile)
         }
     }, [sidetrackCostProfile])
 
     useEffect(() => {
-        if (exploration) {
+        if (exploration && seismicAcquisitionAndProcessing) {
             updateObject(exploration, setExploration, "seismicAcquisitionAndProcessing", seismicAcquisitionAndProcessing)
         }
     }, [seismicAcquisitionAndProcessing])
 
     useEffect(() => {
-        if (exploration) {
+        if (exploration && countryOfficeCost) {
             updateObject(exploration, setExploration, "countryOfficeCost", countryOfficeCost)
         }
     }, [countryOfficeCost])

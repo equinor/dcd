@@ -72,49 +72,49 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
     ]
 
     useEffect(() => {
-        if (wellProject) {
+        if (wellProject && wellProjectOilProducerCost) {
             updateObject(wellProject, setWellProject, "oilProducerCostProfile", wellProjectOilProducerCost)
         }
     }, [wellProjectOilProducerCost])
 
     useEffect(() => {
-        if (wellProject) {
+        if (wellProject && wellProjectOilProducerCostOverride) {
             updateObject(wellProject, setWellProject, "oilProducerCostProfileOverride", wellProjectOilProducerCostOverride)
         }
     }, [wellProjectOilProducerCostOverride])
 
     useEffect(() => {
-        if (wellProject) {
+        if (wellProject && wellProjectGasProducerCost) {
             updateObject(wellProject, setWellProject, "gasProducerCostProfile", wellProjectGasProducerCost)
         }
     }, [wellProjectGasProducerCost])
 
     useEffect(() => {
-        if (wellProject) {
+        if (wellProject && wellProjectGasProducerCostOverride) {
             updateObject(wellProject, setWellProject, "gasProducerCostProfileOverride", wellProjectGasProducerCostOverride)
         }
     }, [wellProjectGasProducerCostOverride])
 
     useEffect(() => {
-        if (wellProject) {
+        if (wellProject && wellProjectWaterInjectorCost) {
             updateObject(wellProject, setWellProject, "waterInjectorCostProfile", wellProjectWaterInjectorCost)
         }
     }, [wellProjectWaterInjectorCost])
 
     useEffect(() => {
-        if (wellProject) {
+        if (wellProject && wellProjectWaterInjectorCostOverride) {
             updateObject(wellProject, setWellProject, "waterInjectorCostProfileOverride", wellProjectWaterInjectorCostOverride)
         }
     }, [wellProjectWaterInjectorCostOverride])
 
     useEffect(() => {
-        if (wellProject) {
+        if (wellProject && wellProjectGasInjectorCost) {
             updateObject(wellProject, setWellProject, "gasInjectorCostProfile", wellProjectGasInjectorCost)
         }
     }, [wellProjectGasInjectorCost])
 
     useEffect(() => {
-        if (wellProject) {
+        if (wellProject && wellProjectGasInjectorCostOverride) {
             updateObject(wellProject, setWellProject, "gasInjectorCostProfileOverride", wellProjectGasInjectorCostOverride)
         }
     }, [wellProjectGasInjectorCostOverride])

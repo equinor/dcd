@@ -61,32 +61,6 @@ const TotalStudyCosts: React.FC<CesationCostsProps> = ({ tableYears, studyGridRe
     ]
 
     useEffect(() => {
-        if (studyGridRef.current
-            && studyGridRef.current.api
-            && studyGridRef.current.api.refreshCells) {
-            studyGridRef.current.api.refreshCells()
-        }
-    }, [totalFeasibilityAndConceptStudies, totalFEEDStudies, totalOtherStudies])
-
-    useEffect(() => {
-        if (projectCaseEdited) {
-            updateObject(projectCaseEdited, setProjectCaseEdited, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
-        }
-    }, [totalFeasibilityAndConceptStudiesOverride])
-
-    useEffect(() => {
-        if (projectCaseEdited) {
-            updateObject(projectCaseEdited, setProjectCaseEdited, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
-        }
-    }, [totalFEEDStudiesOverride])
-
-    useEffect(() => {
-        if (projectCaseEdited) {
-            updateObject(projectCaseEdited, setProjectCaseEdited, "totalOtherStudies", totalOtherStudies)
-        }
-    }, [totalOtherStudies])
-
-    useEffect(() => {
         if (activeTabCase === 5 && projectCase) {
             setTotalOtherStudies(projectCase.totalOtherStudies)
 
@@ -97,6 +71,32 @@ const TotalStudyCosts: React.FC<CesationCostsProps> = ({ tableYears, studyGridRe
             setTotalFEEDStudiesOverride(projectCase.totalFEEDStudiesOverride)
         }
     }, [activeTabCase])
+
+    useEffect(() => {
+        if (studyGridRef.current
+            && studyGridRef.current.api
+            && studyGridRef.current.api.refreshCells) {
+            studyGridRef.current.api.refreshCells()
+        }
+    }, [totalFeasibilityAndConceptStudies, totalFEEDStudies, totalOtherStudies])
+
+    useEffect(() => {
+        if (projectCaseEdited && totalFeasibilityAndConceptStudiesOverride) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
+        }
+    }, [totalFeasibilityAndConceptStudiesOverride])
+
+    useEffect(() => {
+        if (projectCaseEdited && totalFEEDStudiesOverride) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
+        }
+    }, [totalFEEDStudiesOverride])
+
+    useEffect(() => {
+        if (projectCaseEdited && totalOtherStudies) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "totalOtherStudies", totalOtherStudies)
+        }
+    }, [totalOtherStudies])
 
     return (
         <CaseTabTable

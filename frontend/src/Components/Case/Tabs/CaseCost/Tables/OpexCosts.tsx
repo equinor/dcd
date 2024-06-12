@@ -88,31 +88,31 @@ const OpexCosts: React.FC<OpexCostsProps> = ({ tableYears, opexGridRef, alignedG
     ])
 
     useEffect(() => {
-        if (projectCaseEdited) {
+        if (projectCaseEdited && wellInterventionCostProfileOverride) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "wellInterventionCostProfileOverride", wellInterventionCostProfileOverride)
         }
     }, [wellInterventionCostProfileOverride])
 
     useEffect(() => {
-        if (projectCaseEdited) {
+        if (projectCaseEdited && offshoreFacilitiesOperationsCostProfileOverride) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "offshoreFacilitiesOperationsCostProfileOverride", offshoreFacilitiesOperationsCostProfileOverride)
         }
     }, [offshoreFacilitiesOperationsCostProfileOverride])
 
     useEffect(() => {
-        if (projectCaseEdited) {
+        if (projectCaseEdited && onshoreRelatedOPEXCostProfile) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "onshoreRelatedOPEXCostProfile", onshoreRelatedOPEXCostProfile)
         }
     }, [onshoreRelatedOPEXCostProfile])
 
     useEffect(() => {
-        if (projectCaseEdited) {
+        if (projectCaseEdited && historicCostCostProfile) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "historicCostCostProfile", historicCostCostProfile)
         }
     }, [historicCostCostProfile])
 
     useEffect(() => {
-        if (projectCaseEdited) {
+        if (projectCaseEdited && additionalOPEXCostProfile) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "additionalOPEXCostProfile", additionalOPEXCostProfile)
         }
     }, [additionalOPEXCostProfile])
