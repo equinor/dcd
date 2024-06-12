@@ -209,7 +209,6 @@ public class DrainageStrategyService : IDrainageStrategyService
             throw;
         }
 
-
         var dto = _conversionMapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(updatedDrainageStrategy, drainageStrategyId, project.PhysicalUnit);
         return dto;
     }
@@ -431,11 +430,11 @@ public class DrainageStrategyService : IDrainageStrategyService
     }
 
     public async Task<Co2EmissionsOverrideDto> CreateCo2EmissionsOverride(
-    Guid projectId,
-    Guid caseId,
-    Guid drainageStrategyId,
-    CreateCo2EmissionsOverrideDto createProfileDto
-)
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        CreateCo2EmissionsOverrideDto createProfileDto
+    )
     {
         return await CreateDrainageStrategyProfile<Co2EmissionsOverride, Co2EmissionsOverrideDto, CreateCo2EmissionsOverrideDto>(
             projectId,
@@ -609,22 +608,21 @@ public class DrainageStrategyService : IDrainageStrategyService
             throw;
         }
 
-
         var updatedDto = _conversionMapperService.MapToDto<TProfile, TDto>(updatedProfile, productionProfileId, project.PhysicalUnit);
         return updatedDto;
     }
 
     private async Task<TDto> CreateDrainageStrategyProfile<TProfile, TDto, TCreateDto>(
-    Guid projectId,
-    Guid caseId,
-    Guid drainageStrategyId,
-    TCreateDto createProductionProfileDto,
-    Func<TProfile, TProfile> createProfile,
-    DrainageStrategyProfileNames profileName
-)
-    where TProfile : class, IDrainageStrategyTimeSeries, new()
-    where TDto : class
-    where TCreateDto : class
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        TCreateDto createProductionProfileDto,
+        Func<TProfile, TProfile> createProfile,
+        DrainageStrategyProfileNames profileName
+    )
+        where TProfile : class, IDrainageStrategyTimeSeries, new()
+        where TDto : class
+        where TCreateDto : class
     {
         var drainageStrategy = await _repository.GetDrainageStrategy(drainageStrategyId)
             ?? throw new NotFoundInDBException($"Drainage strategy with id {drainageStrategyId} not found.");
@@ -658,7 +656,6 @@ public class DrainageStrategyService : IDrainageStrategyService
             _logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
             throw;
         }
-
 
         var updatedDto = _conversionMapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id, project.PhysicalUnit);
         return updatedDto;
