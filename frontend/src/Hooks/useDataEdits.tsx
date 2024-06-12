@@ -26,6 +26,7 @@ interface AddEditParams {
     resourceName: ResourceName;
     resourcePropertyKey: ResourcePropertyKey;
     resourceId?: string;
+    resourceProfileId?: string;
     caseId?: string;
     newDisplayValue?: string | number | undefined;
     previousDisplayValue?: string | number | undefined;
@@ -75,6 +76,7 @@ const useDataEdits = (): {
             projectId: string,
             caseId: string,
             resourceId?: string,
+            resourceProfileId?: string,
             serviceMethod: object,
         }) => serviceMethod,
         {
@@ -230,12 +232,44 @@ const useDataEdits = (): {
         }
     }
 
+    const updateProductionProfileOil = async (
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        productionProfileId: string,
+        resourcePropertyKey: ResourcePropertyKey,
+        value: any,
+        resourceObject?: object,
+
+    ) => {
+        const service = await GetDrainageStrategyService()
+        console.log(productionProfileId)
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        console.log(existingDataInClient)
+        const updatedData = resourceObject || { ...existingDataInClient }
+        const serviceMethod = service.updateProductionProfileOil(projectId, caseId, drainageStrategyId, productionProfileId, updatedData)
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: drainageStrategyId,
+                resourceProfileId: productionProfileId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
     const updateCase = async (
         projectId: string,
         caseId: string,
         resourcePropertyKey: ResourcePropertyKey,
         value: any,
         resourceObject?: ResourceObject,
+        resourceProfileId?: string,
 
     ) => {
         const caseService = await GetCaseService()
@@ -263,6 +297,7 @@ const useDataEdits = (): {
         value: string,
         resourceId?: string,
         resourceObject?: ResourceObject,
+        resourceProfileId?: string,
     }
 
     const submitToApi = async ({
@@ -273,6 +308,7 @@ const useDataEdits = (): {
         value,
         resourceId,
         resourceObject,
+        resourceProfileId,
     }: SubmitToApiParams): Promise<boolean> => {
         if (resourceName !== "case" && !resourceId) {
             console.log("asset id is required for this service")
@@ -297,6 +333,9 @@ const useDataEdits = (): {
                 break
             case "drainageStrategy":
                 sucess = await updateDrainageStrategy(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
+                break
+            case "productionProfileOil":
+                sucess = await updateProductionProfileOil(projectId, caseId, resourceId!, resourceProfileId!, resourcePropertyKey, value, resourceObject)
                 break
             default:
                 console.log("Service not found")
@@ -332,6 +371,7 @@ const useDataEdits = (): {
         resourceName,
         resourcePropertyKey,
         resourceId,
+        resourceProfileId,
         caseId,
         newDisplayValue,
         previousDisplayValue,
@@ -357,6 +397,7 @@ const useDataEdits = (): {
             resourceName,
             resourcePropertyKey,
             resourceId,
+            resourceProfileId,
             caseId,
             newDisplayValue,
             previousDisplayValue,
@@ -371,6 +412,7 @@ const useDataEdits = (): {
                 resourcePropertyKey,
                 value: newValue as string,
                 resourceId,
+                resourceProfileId,
                 resourceObject: newResourceObject as ResourceObject | undefined,
             },
         )

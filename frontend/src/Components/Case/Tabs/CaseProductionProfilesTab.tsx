@@ -30,6 +30,10 @@ interface ITimeSeriesData {
     profile: ITimeSeries | undefined
     overrideProfile?: ITimeSeries | undefined
     overridable?: boolean
+    resourceId?: string
+    resourcePropertyKey?: string
+    resourceName?: string
+    resourceProfileId?: string
 }
 interface Props {
     drainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto,
@@ -106,12 +110,30 @@ const CaseProductionProfilesTab = ({
         0: "Export",
         1: "Injection",
     }
+
+    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
+        ["apiData", { projectId, caseId }],
+        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        {
+            enabled: !!projectId && !!caseId,
+            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        },
+    )
+
+    const drainageStrategyData = apiData?.drainageStrategy
+    const oilProductionData = apiData?.oilProducerCostProfile
+    const caseData = apiData?.case
+
     const timeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Oil production",
             unit: `${project?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
             set: setOil,
-            profile: oil,
+            profile: oilProductionData,
+            resourceName: "productionProfileOil",
+            resourceId: drainageStrategyData?.id,
+            resourceProfileId: oilProductionData?.id,
+            resourcePropertyKey: "productionProfileOil",
         },
         {
             profileName: "Gas production",
@@ -310,18 +332,6 @@ const CaseProductionProfilesTab = ({
             gridRef.current.api.refreshCells()
         }
     }, [fuelFlaringAndLosses, netSalesGas, importedElectricity])
-
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
-
-    const drainageStrategyData = apiData?.drainageStrategy
-    const caseData = apiData?.case
 
     if (activeTabCase !== 1) { return null }
 

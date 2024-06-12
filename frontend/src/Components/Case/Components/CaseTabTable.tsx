@@ -9,6 +9,8 @@ import {
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef, GridReadyEvent } from "@ag-grid-community/core"
+import { useQueryClient } from "react-query"
+import { useParams } from "react-router"
 import {
     isInteger,
     tableCellisEditable,
@@ -23,6 +25,8 @@ import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
 import hideProfilesWithoutValues from "./HideProfilesWithoutValues"
+import { useProjectContext } from "../../../Context/ProjectContext"
+import useDataEdits from "../../../Hooks/useDataEdits"
 
 interface Props {
     timeSeriesData: any[]
@@ -49,6 +53,10 @@ const CaseTabTable = ({
 }: Props) => {
     const { editMode } = useAppContext()
     const styles = useStyles()
+    const { project } = useProjectContext()
+    const { addEdit } = useDataEdits()
+    const { caseId } = useParams()
+    const queryClient = useQueryClient()
 
     const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
     const [overrideModalProfileName, setOverrideModalProfileName] = useState<string>("")
@@ -214,6 +222,7 @@ const CaseTabTable = ({
                 })
             }
         })
+        console.log(properties)
         tableTimeSeriesValues.sort((a, b) => a.year - b.year)
         if (tableTimeSeriesValues.length > 0) {
             const tableTimeSeriesFirstYear = tableTimeSeriesValues[0].year
@@ -232,6 +241,38 @@ const CaseTabTable = ({
             newProfile.startYear = timeSeriesStartYear
             newProfile.values = values
             p.data.set(newProfile)
+
+            if (!caseId || !project) { return }
+
+            console.log(timeSeriesData[0].resourceProfileId)
+            console.log(p)
+            console.log(timeSeriesData)
+            console.log(Object.keys(timeSeriesData))
+
+            const timeSeriesDataIndex = () => {
+                const result = timeSeriesData
+                    .map((v, i) => {
+                        if (v.profileName === p.profileName) {
+                            return timeSeriesData[i]
+                        }
+                        return undefined
+                    })
+                    .find((v) => v !== undefined)
+                return result
+            }
+
+            addEdit({
+                newValue: p.newValue,
+                previousValue: p.oldValue,
+                inputLabel: p.data.profileName,
+                projectId: project.id,
+                resourceName: timeSeriesDataIndex()?.property,
+                resourcePropertyKey: timeSeriesDataIndex()?.resourcePropertyKey,
+                caseId,
+                resourceId: timeSeriesDataIndex()?.resourceId,
+                newResourceObject: newProfile,
+                resourceProfileId: timeSeriesDataIndex()?.resourceProfileId,
+            })
         }
     }
 
