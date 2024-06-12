@@ -232,6 +232,34 @@ const useDataEdits = (): {
         }
     }
 
+    const createProductionProfileOil = async (
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        resourcePropertyKey: ResourcePropertyKey,
+        value: any,
+        resourceObject?: object,
+
+    ) => {
+        const service = await GetDrainageStrategyService()
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        console.log(existingDataInClient)
+        const updatedData = resourceObject || { ...existingDataInClient }
+        const serviceMethod = service.createProductionProfileOil(projectId, caseId, drainageStrategyId, updatedData)
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: drainageStrategyId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
     const updateProductionProfileOil = async (
         projectId: string,
         caseId: string,
@@ -335,7 +363,11 @@ const useDataEdits = (): {
                 sucess = await updateDrainageStrategy(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
                 break
             case "productionProfileOil":
-                sucess = await updateProductionProfileOil(projectId, caseId, resourceId!, resourceProfileId!, resourcePropertyKey, value, resourceObject)
+                if (!resourceProfileId) {
+                    sucess = await createProductionProfileOil(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
+                } else {
+                    sucess = await updateProductionProfileOil(projectId, caseId, resourceId!, resourceProfileId!, resourcePropertyKey, value, resourceObject)
+                }
                 break
             default:
                 console.log("Service not found")

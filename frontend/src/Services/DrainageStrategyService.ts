@@ -16,6 +16,19 @@ class DrainageStrategyService extends __BaseService {
         return res
     }
 
+    public async createProductionProfileOil(
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        dto: Components.Schemas.CreateProductionProfileOilDto,
+    ): Promise<Components.Schemas.ProductionProfileOilDto> {
+        const res: Components.Schemas.ProductionProfileOilDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/production-profile-oil/`,
+            { body: dto },
+        )
+        return res
+    }
+
     public async updateProductionProfileOil(
         projectId: string,
         caseId: string,
