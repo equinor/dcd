@@ -2358,6 +2358,24 @@ declare namespace Paths {
             }
         }
     }
+    namespace Projects$ProjectIdCases$CaseIdImages$ImageId {
+        namespace Delete {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ImageId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                imageId: Parameters.ImageId /* uuid */;
+            }
+            namespace Responses {
+                export interface $200 {
+                }
+            }
+        }
+    }
     namespace Projects$ProjectIdCases$CaseIdOffshoreFacilitiesOperationsCostProfileOverride$CostProfileId {
         namespace Put {
             namespace Parameters {

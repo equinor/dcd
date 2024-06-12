@@ -7,17 +7,12 @@ import {
     isDefaultDate,
     toMonthDate,
 } from "../../Utils/common"
-import useDataEdits from "../../Hooks/useDataEdits"
-import { useCaseContext } from "../../Context/CaseContext"
-import { useProjectContext } from "../../Context/ProjectContext"
-import { ResourcePropertyKey, ResourceName } from "../../Models/Interfaces"
+import { ResourcePropertyKey } from "../../Models/Interfaces"
 
 interface SwitchableDateInputProps {
     value: string | undefined
     label: string
-    resourceName: ResourceName
     resourcePropertyKey: ResourcePropertyKey
-    resourceId?: string
     onChange: ChangeEventHandler<HTMLInputElement>
     min?: string
     max?: string
@@ -25,42 +20,17 @@ interface SwitchableDateInputProps {
 const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
     value,
     label,
-    resourceName,
     resourcePropertyKey,
-    resourceId,
     onChange,
     min,
     max,
 }) => {
-    const { projectCase } = useCaseContext()
-    const { project } = useProjectContext()
-
-    if (!projectCase || !project) { return null }
-
-    const { addEdit } = useDataEdits()
-
     const toScheduleValue = (date: string) => {
         const dateString = dateFromString(date)
         if (isDefaultDate(dateString)) {
             return undefined
         }
         return toMonthDate(dateString)
-    }
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onChange(e)
-        addEdit({
-            newValue: e.target.value,
-            previousValue: value,
-            inputLabel: label,
-            projectId: project.id,
-            resourceName,
-            resourcePropertyKey,
-            resourceId,
-            caseId: projectCase.id,
-            newDisplayValue: formatDate(e.target.value),
-            previousDisplayValue: value && formatDate((value) || ""),
-        })
     }
 
     return (
@@ -72,8 +42,8 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
                 type="month"
                 id={resourcePropertyKey}
                 name={resourcePropertyKey}
-                onChange={handleChange}
-                value={toScheduleValue(value || "")}
+                onChange={(e: any) => onChange(e)}
+                defaultValue={toScheduleValue(value || "")}
                 min={min}
                 max={max}
             />

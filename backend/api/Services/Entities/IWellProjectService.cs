@@ -14,6 +14,12 @@ public interface IWellProjectService
         Guid wellProjectId,
         UpdateWellProjectDto updatedWellProjectDto
     );
+    Task<WellProjectWellDto> UpdateWellProjectWell(
+        Guid caseId,
+        Guid wellProjectId,
+        Guid wellId,
+        UpdateWellProjectWellDto updatedWellProjectWellDto
+    );
 
     Task<OilProducerCostProfileOverrideDto> UpdateOilProducerCostProfileOverride(
         Guid caseId,

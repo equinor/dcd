@@ -1,39 +1,58 @@
 using api.Context;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 
 namespace api.Repositories;
 
-public class TransportRepository : ITransportRepository
+public class TransportRepository : BaseRepository, ITransportRepository
 {
-    private readonly DcdDbContext _context;
 
-    public TransportRepository(DcdDbContext context)
+    public TransportRepository(DcdDbContext context) : base(context)
     {
-        _context = context;
     }
 
     public async Task<Transport?> GetTransport(Guid transportId)
     {
-        return await _context.Transports.FindAsync(transportId);
+        return await Get<Transport>(transportId);
     }
 
-    public async Task<Transport> UpdateTransport(Transport transport)
+    public async Task<Transport?> GetTransportWithCostProfile(Guid transportId)
     {
-        _context.Transports.Update(transport);
-        await _context.SaveChangesAsync();
-        return transport;
+        return await _context.Transports
+                        .Include(t => t.CostProfile)
+                        .FirstOrDefaultAsync(t => t.Id == transportId);
+    }
+
+    public Transport UpdateTransport(Transport transport)
+    {
+        return Update(transport);
+    }
+
+    public TransportCostProfile CreateTransportCostProfile(TransportCostProfile transportCostProfile)
+    {
+        _context.TransportCostProfile.Add(transportCostProfile);
+        return transportCostProfile;
+    }
+
+    public async Task<TransportCostProfile?> GetTransportCostProfile(Guid transportCostProfileId)
+    {
+        return await Get<TransportCostProfile>(transportCostProfileId);
+    }
+
+    public TransportCostProfile UpdateTransportCostProfile(TransportCostProfile transportCostProfile)
+    {
+        return Update(transportCostProfile);
     }
 
     public async Task<TransportCostProfileOverride?> GetTransportCostProfileOverride(Guid transportCostProfileOverrideId)
     {
-        return await _context.TransportCostProfileOverride.FindAsync(transportCostProfileOverrideId);
+        return await Get<TransportCostProfileOverride>(transportCostProfileOverrideId);
     }
 
-    public async Task<TransportCostProfileOverride> UpdateTransportCostProfileOverride(TransportCostProfileOverride transportCostProfileOverride)
+    public TransportCostProfileOverride UpdateTransportCostProfileOverride(TransportCostProfileOverride transportCostProfileOverride)
     {
-        _context.TransportCostProfileOverride.Update(transportCostProfileOverride);
-        await _context.SaveChangesAsync();
-        return transportCostProfileOverride;
+        return Update(transportCostProfileOverride);
     }
 }

@@ -4,72 +4,70 @@ using api.Models;
 
 namespace api.Repositories;
 
-public class WellProjectRepository : IWellProjectRepository
+public class WellProjectRepository : BaseRepository, IWellProjectRepository
 {
-    private readonly DcdDbContext _context;
 
-    public WellProjectRepository(DcdDbContext context)
+    public WellProjectRepository(DcdDbContext context) : base(context)
     {
-        _context = context;
     }
 
     public async Task<WellProject?> GetWellProject(Guid wellProjectId)
     {
-        return await _context.WellProjects.FindAsync(wellProjectId);
+        return await Get<WellProject>(wellProjectId);
     }
 
-    public async Task<WellProject> UpdateWellProject(WellProject wellProject)
+    public WellProject UpdateWellProject(WellProject wellProject)
     {
-        _context.WellProjects.Update(wellProject);
-        await _context.SaveChangesAsync();
-        return wellProject;
+        return Update(wellProject);
+    }
+
+    public async Task<WellProjectWell?> GetWellProjectWell(Guid wellProjectId, Guid wellId)
+    {
+        return await Get<WellProjectWell>(wellId);
+    }
+
+    public WellProjectWell UpdateWellProjectWell(WellProjectWell wellProjectWell)
+    {
+        return Update(wellProjectWell);
     }
 
     public async Task<OilProducerCostProfileOverride?> GetOilProducerCostProfileOverride(Guid profileId)
     {
-        return await _context.OilProducerCostProfileOverride.FindAsync(profileId);
+        return await Get<OilProducerCostProfileOverride>(profileId);
     }
 
-    public async Task<OilProducerCostProfileOverride> UpdateOilProducerCostProfileOverride(OilProducerCostProfileOverride costProfile)
+    public OilProducerCostProfileOverride UpdateOilProducerCostProfileOverride(OilProducerCostProfileOverride costProfile)
     {
-        _context.OilProducerCostProfileOverride.Update(costProfile);
-        await _context.SaveChangesAsync();
-        return costProfile;
+        return Update(costProfile);
     }
 
     public async Task<GasProducerCostProfileOverride?> GetGasProducerCostProfileOverride(Guid profileId)
     {
-        return await _context.GasProducerCostProfileOverride.FindAsync(profileId);
+        return await Get<GasProducerCostProfileOverride>(profileId);
     }
 
-    public async Task<GasProducerCostProfileOverride> UpdateGasProducerCostProfileOverride(GasProducerCostProfileOverride costProfile)
+    public GasProducerCostProfileOverride UpdateGasProducerCostProfileOverride(GasProducerCostProfileOverride costProfile)
     {
-        _context.GasProducerCostProfileOverride.Update(costProfile);
-        await _context.SaveChangesAsync();
-        return costProfile;
+        return Update(costProfile);
     }
 
     public async Task<WaterInjectorCostProfileOverride?> GetWaterInjectorCostProfileOverride(Guid profileId)
     {
-        return await _context.WaterInjectorCostProfileOverride.FindAsync(profileId);
+        return await Get<WaterInjectorCostProfileOverride>(profileId);
     }
 
-    public async Task<WaterInjectorCostProfileOverride> UpdateWaterInjectorCostProfileOverride(WaterInjectorCostProfileOverride costProfile)
+    public WaterInjectorCostProfileOverride UpdateWaterInjectorCostProfileOverride(WaterInjectorCostProfileOverride costProfile)
     {
-        _context.WaterInjectorCostProfileOverride.Update(costProfile);
-        await _context.SaveChangesAsync();
-        return costProfile;
+        return Update(costProfile);
     }
 
     public async Task<GasInjectorCostProfileOverride?> GetGasInjectorCostProfileOverride(Guid profileId)
     {
-        return await _context.GasInjectorCostProfileOverride.FindAsync(profileId);
+        return await Get<GasInjectorCostProfileOverride>(profileId);
     }
 
-    public async Task<GasInjectorCostProfileOverride> UpdateGasInjectorCostProfileOverride(GasInjectorCostProfileOverride costProfile)
+    public GasInjectorCostProfileOverride UpdateGasInjectorCostProfileOverride(GasInjectorCostProfileOverride costProfile)
     {
-        _context.GasInjectorCostProfileOverride.Update(costProfile);
-        await _context.SaveChangesAsync();
-        return costProfile;
+        return Update(costProfile);
     }
 }

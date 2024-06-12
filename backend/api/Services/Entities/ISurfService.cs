@@ -6,7 +6,6 @@ namespace api.Services;
 public interface ISurfService
 {
     Task<SurfWithProfilesDto> CopySurf(Guid surfId, Guid sourceCaseId);
-    Task<ProjectDto> UpdateSurfAndCostProfiles<TDto>(TDto updatedSurfDto, Guid surfId) where TDto : BaseUpdateSurfDto;
     Task<Surf> GetSurf(Guid surfId);
     Task<Surf> CreateSurf(Guid projectId, Guid sourceCaseId, CreateSurfDto surfDto);
     Task<SurfDto> UpdateSurf<TDto>(
@@ -14,6 +13,12 @@ public interface ISurfService
         Guid surfId,
         TDto updatedSurfDto
     ) where TDto : BaseUpdateSurfDto;
+
+    Task<SurfCostProfileDto> AddOrUpdateSurfCostProfile(
+        Guid caseId,
+        Guid surfId,
+        UpdateSurfCostProfileDto dto
+    );
 
     Task<SurfCostProfileOverrideDto> UpdateSurfCostProfileOverride(
         Guid caseId,

@@ -7,6 +7,8 @@ import {
 } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
+import { useParams } from "react-router"
+import { useQueryClient, useQuery } from "react-query"
 import SwitchableNumberInput from "../../../Input/SwitchableNumberInput"
 import CaseTabTable from "../../Components/CaseTabTable"
 import { ITimeSeries } from "../../../../Models/ITimeSeries"
@@ -18,7 +20,6 @@ import { AgChartsPie } from "../../../AgGrid/AgChartsPie"
 import { ITimeSeriesOverride } from "../../../../Models/ITimeSeriesOverride"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
-import { setNonNegativeNumberState } from "../../../../Utils/common"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
 
 interface Props {
@@ -36,6 +37,9 @@ const CaseCO2Tab = ({
     co2Emissions, setCo2Emissions,
 }: Props) => {
     const { project } = useProjectContext()
+    const { caseId } = useParams()
+    const queryClient = useQueryClient()
+    const projectId = project?.id || null
     const {
         projectCase, activeTabCase,
     } = useCaseContext()
@@ -103,7 +107,7 @@ const CaseCO2Tab = ({
                     const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(project.id, projectCase.id)
                     const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(project.id, projectCase.id)
 
-                    setCo2Emissions(drainageStrategy.co2Emissions)
+                    // setCo2Emissions(drainageStrategy.co2Emissions) todo: use react query to update the drainage strategy
                     setCo2Intensity(await co2I)
                     setCo2IntensityTotal(Number(co2ITotal))
                     setCo2DrillingFlaringFuelTotals(co2DFFTotal)
@@ -200,7 +204,7 @@ const CaseCO2Tab = ({
         }
 
         newDrainageStrategy.co2EmissionsOverride = co2EmissionsOverride
-        setDrainageStrategy(newDrainageStrategy)
+        // setDrainageStrategy(newDrainageStrategy) todo: use react query to update the drainage strategy
     }, [co2EmissionsOverride])
 
     useEffect(() => {
@@ -208,6 +212,21 @@ const CaseCO2Tab = ({
             co2GridRef.current.api.refreshCells()
         }
     }, [co2Emissions])
+
+    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
+        ["apiData", { projectId, caseId }],
+        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        {
+            enabled: !!projectId && !!caseId,
+            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        },
+    )
+
+    const topsideData = apiData?.topside as Components.Schemas.TopsideWithProfilesDto
+
+    if (!topsideData) {
+        return <p>loading....</p>
+    }
 
     if (activeTabCase !== 6 || !projectCase) { return null }
 
@@ -220,18 +239,15 @@ const CaseCO2Tab = ({
                 <SwitchableNumberInput
                     resourceName="topside"
                     resourcePropertyKey="fuelConsumption"
-                    resourceId={topside?.id}
+                    resourceId={topsideData.id}
                     label="Fuel consumption"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "fuelConsumption", topside, setTopside)
-                    }}
-                    value={topside?.fuelConsumption}
+                    value={topsideData.fuelConsumption}
                     integer={false}
                     unit="million Sm³ gas/sd"
                 />
             </Grid>
             <Grid item xs={12}>
-                <CaseCO2DistributionTable topside={topside} />
+                <CaseCO2DistributionTable topside={topsideData} />
             </Grid>
             <Grid item xs={12} lg={8}>
                 <AgChartsTimeseries

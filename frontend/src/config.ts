@@ -12,9 +12,10 @@ import { MenuModule } from "@ag-grid-enterprise/menu"
 import { MultiFilterModule } from "@ag-grid-enterprise/multi-filter"
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection"
 import { SetFilterModule } from "@ag-grid-enterprise/set-filter"
-import { ExcelExportModule } from "@ag-grid-enterprise/excel-export";
+import { ExcelExportModule } from "@ag-grid-enterprise/excel-export"
 
 export const configure: AppModuleInitiator = (configurator, args) => {
+    const { agGridLicense } = (args.env.config?.environment as { agGridLicense?: string })
     const { basename } = args.env
     console.log("Configuring app with basename", basename)
 
@@ -30,7 +31,10 @@ export const configure: AppModuleInitiator = (configurator, args) => {
         GridChartsModule,
         ExcelExportModule,
     ])
-    enableAgGrid(configurator)
+
+    enableAgGrid(configurator, {
+        licenseKey: agGridLicense || "",
+    })
 
     configurator.useFrameworkServiceClient("portal")
 

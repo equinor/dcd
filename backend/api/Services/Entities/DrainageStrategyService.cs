@@ -43,23 +43,7 @@ public class DrainageStrategyService : IDrainageStrategyService
         _projectRepository = projectRepository;
     }
 
-    public async Task<ProjectDto> CreateDrainageStrategy(DrainageStrategyWithProfilesDto drainageStrategyDto, Guid sourceCaseId)
-    {
-        var unit = (await _projectService.GetProject(drainageStrategyDto.ProjectId)).PhysicalUnit;
-        var drainageStrategy = _mapper.Map<DrainageStrategy>(drainageStrategyDto);
-        if (drainageStrategy == null)
-        {
-            throw new Exception("Drainage stragegy null");
-        }
-        var project = await _projectService.GetProject(drainageStrategy.ProjectId);
-        drainageStrategy.Project = project;
-        _context.DrainageStrategies!.Add(drainageStrategy);
-        await _context.SaveChangesAsync();
-        await SetCaseLink(drainageStrategy, sourceCaseId, project);
-        return await _projectService.GetProjectDto(drainageStrategy.ProjectId);
-    }
-
-    public async Task<DrainageStrategy> NewCreateDrainageStrategy(Guid projectId, Guid sourceCaseId, CreateDrainageStrategyDto drainageStrategyDto)
+    public async Task<DrainageStrategy> CreateDrainageStrategy(Guid projectId, Guid sourceCaseId, CreateDrainageStrategyDto drainageStrategyDto)
     {
         var drainageStrategy = _mapper.Map<DrainageStrategy>(drainageStrategyDto);
         if (drainageStrategy == null)
@@ -214,7 +198,9 @@ public class DrainageStrategyService : IDrainageStrategyService
         DrainageStrategy updatedDrainageStrategy;
         try
         {
-            updatedDrainageStrategy = await _repository.UpdateDrainageStrategy(existingDrainageStrategy);
+            updatedDrainageStrategy = _repository.UpdateDrainageStrategy(existingDrainageStrategy);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -222,7 +208,6 @@ public class DrainageStrategyService : IDrainageStrategyService
             throw;
         }
 
-        await _caseRepository.UpdateModifyTime(caseId);
 
         var dto = _conversionMapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(updatedDrainageStrategy, drainageStrategyId, project.PhysicalUnit);
         return dto;
@@ -425,7 +410,7 @@ public class DrainageStrategyService : IDrainageStrategyService
         Guid productionProfileId,
         TUpdateDto updatedProductionProfileDto,
         Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, Task<TProfile>> updateProfile
+        Func<TProfile, TProfile> updateProfile
     )
         where TProfile : class, IDrainageStrategyTimeSeries
         where TDto : class
@@ -442,7 +427,9 @@ public class DrainageStrategyService : IDrainageStrategyService
         TProfile updatedProfile;
         try
         {
-            updatedProfile = await updateProfile(existingProfile);
+            updatedProfile = updateProfile(existingProfile);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -451,7 +438,6 @@ public class DrainageStrategyService : IDrainageStrategyService
             throw;
         }
 
-        await _caseRepository.UpdateModifyTime(caseId);
 
         var updatedDto = _conversionMapperService.MapToDto<TProfile, TDto>(updatedProfile, productionProfileId, project.PhysicalUnit);
         return updatedDto;

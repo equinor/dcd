@@ -40,6 +40,7 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
         ["apiData", { projectId, caseId }],
         fetchCaseData,
         {
+            enabled: !!projectId && !!caseId,
             onSuccess: (result) => {
                 const caseData = result.case
                 const drainageStrategyData = result.drainageStrategy
