@@ -155,7 +155,7 @@ namespace api.Tests.Services
 
             _repository.CreateSurfCostProfile(newCostProfile).Returns(newCostProfile);
 
-            var updatedSurfCostProfileDtoResult = new SurfCostProfileDto() { Id = profileId };
+            var updatedSurfCostProfileDtoResult = new SurfCostProfileDto { Id = profileId };
             _mapperService.MapToDto<SurfCostProfile, SurfCostProfileDto>(newCostProfile, newCostProfile.Id).Returns(updatedSurfCostProfileDtoResult);
 
             // Act

@@ -155,7 +155,7 @@ namespace api.Tests.Services
 
             _repository.CreateTopsideCostProfile(newCostProfile).Returns(newCostProfile);
 
-            var updatedTopsideCostProfileDtoResult = new TopsideCostProfileDto() { Id = profileId };
+            var updatedTopsideCostProfileDtoResult = new TopsideCostProfileDto { Id = profileId };
             _mapperService.MapToDto<TopsideCostProfile, TopsideCostProfileDto>(newCostProfile, newCostProfile.Id).Returns(updatedTopsideCostProfileDtoResult);
 
             // Act

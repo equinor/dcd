@@ -155,7 +155,7 @@ namespace api.Tests.Services
 
             _repository.CreateTransportCostProfile(newCostProfile).Returns(newCostProfile);
 
-            var updatedTransportCostProfileDtoResult = new TransportCostProfileDto() { Id = profileId };
+            var updatedTransportCostProfileDtoResult = new TransportCostProfileDto { Id = profileId };
             _mapperService.MapToDto<TransportCostProfile, TransportCostProfileDto>(newCostProfile, newCostProfile.Id).Returns(updatedTransportCostProfileDtoResult);
 
             // Act

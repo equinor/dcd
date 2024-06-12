@@ -155,7 +155,7 @@ namespace api.Tests.Services
 
             _repository.CreateSubstructureCostProfile(newCostProfile).Returns(newCostProfile);
 
-            var updatedSubstructureCostProfileDtoResult = new SubstructureCostProfileDto() { Id = profileId };
+            var updatedSubstructureCostProfileDtoResult = new SubstructureCostProfileDto { Id = profileId };
             _mapperService.MapToDto<SubstructureCostProfile, SubstructureCostProfileDto>(newCostProfile, newCostProfile.Id).Returns(updatedSubstructureCostProfileDtoResult);
 
             // Act
