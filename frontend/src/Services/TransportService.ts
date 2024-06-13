@@ -22,7 +22,7 @@ class TransportService extends __BaseService {
         transportId: string,
         dto: Components.Schemas.CreateTransportCostProfileOverrideDto,
     ): Promise<Components.Schemas.TransportCostProfileOverrideDto> {
-        const res: Components.Schemas.TransportCostProfileOverrideDto = await this.put(
+        const res: Components.Schemas.TransportCostProfileOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/transports/${transportId}/cost-profile-override/`,
             { body: dto },
         )

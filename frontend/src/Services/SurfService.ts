@@ -22,7 +22,7 @@ class SurfService extends __BaseService {
         surfId: string,
         dto: Components.Schemas.CreateSurfCostProfileOverrideDto,
     ): Promise<Components.Schemas.SurfCostProfileOverrideDto> {
-        const res: Components.Schemas.SurfCostProfileOverrideDto = await this.put(
+        const res: Components.Schemas.SurfCostProfileOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/surfs/${surfId}/cost-profile-override/`,
             { body: dto },
         )

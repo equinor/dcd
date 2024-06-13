@@ -22,7 +22,7 @@ class SubstructureService extends __BaseService {
         substructureId: string,
         dto: Components.Schemas.CreateSubstructureCostProfileOverrideDto,
     ): Promise<Components.Schemas.SubstructureCostProfileOverrideDto> {
-        const res: Components.Schemas.SubstructureCostProfileOverrideDto = await this.put(
+        const res: Components.Schemas.SubstructureCostProfileOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/substructures/${substructureId}/cost-profile-override/`,
             { body: dto },
         )

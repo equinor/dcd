@@ -22,7 +22,7 @@ class ExplorationService extends __BaseService {
         explorationId: string,
         dto: Components.Schemas.CreateSeismicAcquisitionAndProcessingDto,
     ): Promise<Components.Schemas.SeismicAcquisitionAndProcessingDto> {
-        const res: Components.Schemas.SeismicAcquisitionAndProcessingDto = await this.put(
+        const res: Components.Schemas.SeismicAcquisitionAndProcessingDto = await this.post(
             `projects/${projectId}/cases/${caseId}/explorations/${explorationId}/seismic-acquisition-and-processing/`,
             { body: dto },
         )
@@ -49,7 +49,7 @@ class ExplorationService extends __BaseService {
         topsideId: string,
         dto: Components.Schemas.CreateCountryOfficeCostDto,
     ): Promise<Components.Schemas.CountryOfficeCostDto> {
-        const res: Components.Schemas.CountryOfficeCostDto = await this.put(
+        const res: Components.Schemas.CountryOfficeCostDto = await this.post(
             `projects/${projectId}/cases/${caseId}/explorations/${topsideId}/country-office-cost/`,
             { body: dto },
         )

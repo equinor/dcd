@@ -22,7 +22,7 @@ class TopsideService extends __BaseService {
         topsideId: string,
         dto: Components.Schemas.CreateTopsideCostProfileOverrideDto,
     ): Promise<Components.Schemas.TopsideCostProfileOverrideDto> {
-        const res: Components.Schemas.TopsideCostProfileOverrideDto = await this.put(
+        const res: Components.Schemas.TopsideCostProfileOverrideDto = await this.post(
             `projects/${projectId}/cases/${caseId}/topsides/${topsideId}/cost-profile-override/`,
             { body: dto },
         )
