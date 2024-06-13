@@ -25,6 +25,12 @@ public class SubstructureRepository : BaseRepository, ISubstructureRepository
                         .FirstOrDefaultAsync(t => t.Id == substructureId);
     }
 
+    public async Task<bool> SubstructureHasCostProfileOverride(Guid substructureId)
+    {
+        return await _context.Substructures
+            .AnyAsync(t => t.Id == substructureId && t.CostProfileOverride != null);
+    }
+
     public Substructure UpdateSubstructure(Substructure substructure)
     {
         return Update(substructure);
@@ -44,6 +50,12 @@ public class SubstructureRepository : BaseRepository, ISubstructureRepository
     public SubstructureCostProfile UpdateSubstructureCostProfile(SubstructureCostProfile substructureCostProfile)
     {
         return Update(substructureCostProfile);
+    }
+
+    public SubstructureCostProfileOverride CreateSubstructureCostProfileOverride(SubstructureCostProfileOverride profile)
+    {
+        _context.SubstructureCostProfileOverride.Add(profile);
+        return profile;
     }
 
     public async Task<SubstructureCostProfileOverride?> GetSubstructureCostProfileOverride(Guid substructureCostProfileOverrideId)
