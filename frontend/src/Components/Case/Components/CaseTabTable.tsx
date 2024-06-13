@@ -27,6 +27,7 @@ import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
 import hideProfilesWithoutValues from "./HideProfilesWithoutValues"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import useDataEdits from "../../../Hooks/useDataEdits"
+import { ProfileNames } from "../../../Models/Interfaces"
 
 interface Props {
     timeSeriesData: any[]
@@ -59,7 +60,7 @@ const CaseTabTable = ({
     const queryClient = useQueryClient()
 
     const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
-    const [overrideModalProfileName, setOverrideModalProfileName] = useState<string>("")
+    const [overrideModalProfileName, setOverrideModalProfileName] = useState<ProfileNames>()
     const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
     const [overrideProfile, setOverrideProfile] = useState<any>()
 
@@ -76,6 +77,8 @@ const CaseTabTable = ({
             rowObject.set = isOverridden ? ts.overrideProfileSet : ts.set
             rowObject.profile = isOverridden ? ts.overrideProfile : ts.profile
             rowObject.override = ts.overrideProfile?.override === true
+            rowObject.resourceId = ts.resourceId
+            rowObject.resourceName = ts.resourceName
 
             rowObject.overrideProfileSet = ts.overrideProfileSet
             rowObject.overrideProfile = ts.overrideProfile ?? {
@@ -178,7 +181,7 @@ const CaseTabTable = ({
             yearDefs.push({
                 field: index.toString(),
                 flex: 1,
-                editable: (params: any) => tableCellisEditable(params, editMode),
+                editable: true, // (params: any) => tableCellisEditable(params, editMode),
                 minWidth: 100,
                 aggFunc: "sum",
                 cellRenderer: ErrorCellRenderer,

@@ -1,12 +1,16 @@
 import { Dispatch, SetStateAction, FunctionComponent } from "react"
 import { Button, Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
+import { useParams } from "react-router-dom"
 import Modal from "./Modal"
+import useDataEdits from "../../Hooks/useDataEdits"
+import { useProjectContext } from "../../Context/ProjectContext"
+import { ProfileNames } from "../../Models/Interfaces"
 
 type Props = {
     isOpen: boolean
     setIsOpen: Dispatch<SetStateAction<boolean>>
-    profileName: string;
+    profileName: ProfileNames | undefined;
     setProfile: Dispatch<SetStateAction<any>> | undefined
     profile: any
 }
@@ -18,15 +22,28 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
     setProfile,
     profile,
 }) => {
-    if (!isOpen) { return null }
+    const { addEdit } = useDataEdits()
+    const { project } = useProjectContext()
+    const { caseId } = useParams()
+
+    if (!isOpen || !project || !profileName) { return null }
     const toggleIsOpen = () => {
         setIsOpen(!isOpen)
     }
     const toggleLock = () => {
-        if (profile !== undefined && setProfile !== undefined) {
-            const newProfile = { ...profile }
-            newProfile.override = !profile.override
-            setProfile(newProfile)
+        if (profile !== undefined) {
+            addEdit({
+                newValue: (!profile.override).toString(),
+                previousValue: profile.override.toString(),
+                inputLabel: profileName,
+                projectId: project.id,
+                resourceName: profile.resourceName,
+                resourcePropertyKey: "override",
+                caseId,
+                resourceId: profile.resourceId,
+                newResourceObject: { ...profile, override: !profile.override },
+                resourceProfileId: profile.id,
+            })
         }
         setIsOpen(!isOpen)
     }

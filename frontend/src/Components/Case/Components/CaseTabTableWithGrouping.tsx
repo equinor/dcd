@@ -17,6 +17,7 @@ import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../../Utils/constants"
 import { useAppContext } from "../../../Context/AppContext"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
+import { ProfileNames } from "../../../Models/Interfaces"
 
 interface Props {
     allTimeSeriesData: any[]
@@ -37,7 +38,7 @@ const CaseTabTableWithGrouping = ({
 }: Props) => {
     const styles = useStyles()
     const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
-    const [overrideModalProfileName, setOverrideModalProfileName] = useState<string>("")
+    const [overrideModalProfileName, setOverrideModalProfileName] = useState<ProfileNames>()
     const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
     const [overrideProfile, setOverrideProfile] = useState<any>()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])

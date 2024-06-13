@@ -187,6 +187,8 @@ const CaseProductionProfilesTab = () => {
         },
     ]
 
+    console.log("Timeseriesdata: ", timeSeriesData)
+
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
     }
