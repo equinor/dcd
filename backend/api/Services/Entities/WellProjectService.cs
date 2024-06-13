@@ -280,14 +280,12 @@ public class WellProjectService : IWellProjectService
     }
 
     public async Task<OilProducerCostProfileOverrideDto> CreateOilProducerCostProfileOverride(
-        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         CreateOilProducerCostProfileOverrideDto createProfileDto
     )
     {
         return await CreateWellProjectProfile<OilProducerCostProfileOverride, OilProducerCostProfileOverrideDto, CreateOilProducerCostProfileOverrideDto>(
-            projectId,
             caseId,
             wellProjectId,
             createProfileDto,
@@ -297,14 +295,12 @@ public class WellProjectService : IWellProjectService
     }
 
     public async Task<GasProducerCostProfileOverrideDto> CreateGasProducerCostProfileOverride(
-        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         CreateGasProducerCostProfileOverrideDto createProfileDto
     )
     {
         return await CreateWellProjectProfile<GasProducerCostProfileOverride, GasProducerCostProfileOverrideDto, CreateGasProducerCostProfileOverrideDto>(
-            projectId,
             caseId,
             wellProjectId,
             createProfileDto,
@@ -314,14 +310,12 @@ public class WellProjectService : IWellProjectService
     }
 
     public async Task<WaterInjectorCostProfileOverrideDto> CreateWaterInjectorCostProfileOverride(
-        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         CreateWaterInjectorCostProfileOverrideDto createProfileDto
     )
     {
         return await CreateWellProjectProfile<WaterInjectorCostProfileOverride, WaterInjectorCostProfileOverrideDto, CreateWaterInjectorCostProfileOverrideDto>(
-            projectId,
             caseId,
             wellProjectId,
             createProfileDto,
@@ -331,14 +325,12 @@ public class WellProjectService : IWellProjectService
     }
 
     public async Task<GasInjectorCostProfileOverrideDto> CreateGasInjectorCostProfileOverride(
-        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         CreateGasInjectorCostProfileOverrideDto createProfileDto
     )
     {
         return await CreateWellProjectProfile<GasInjectorCostProfileOverride, GasInjectorCostProfileOverrideDto, CreateGasInjectorCostProfileOverrideDto>(
-            projectId,
             caseId,
             wellProjectId,
             createProfileDto,
@@ -383,7 +375,6 @@ public class WellProjectService : IWellProjectService
     }
 
     private async Task<TDto> CreateWellProjectProfile<TProfile, TDto, TCreateDto>(
-        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         TCreateDto createWellProjectProfileDto,

@@ -56,7 +56,7 @@ public class ExplorationsController : ControllerBase
         [FromRoute] Guid explorationId,
         [FromBody] CreateSeismicAcquisitionAndProcessingDto dto)
     {
-        return await _explorationService.CreateSeismicAcquisitionAndProcessing(projectId, caseId, explorationId, dto);
+        return await _explorationService.CreateSeismicAcquisitionAndProcessing(caseId, explorationId, dto);
     }
 
     [HttpPut("{explorationId}/country-office-cost/{costProfileId}")]
@@ -77,7 +77,7 @@ public class ExplorationsController : ControllerBase
         [FromRoute] Guid explorationId,
         [FromBody] CreateCountryOfficeCostDto dto)
     {
-        return await _explorationService.CreateCountryOfficeCost(projectId, caseId, explorationId, dto);
+        return await _explorationService.CreateCountryOfficeCost(caseId, explorationId, dto);
     }
 
     [HttpPut("{explorationId}/well/{wellId}")]

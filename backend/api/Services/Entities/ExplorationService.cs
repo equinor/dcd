@@ -232,14 +232,12 @@ public class ExplorationService : IExplorationService
     }
 
     public async Task<SeismicAcquisitionAndProcessingDto> CreateSeismicAcquisitionAndProcessing(
-        Guid projectId,
         Guid caseId,
         Guid explorationId,
         CreateSeismicAcquisitionAndProcessingDto createProfileDto
     )
     {
         return await CreateExplorationProfile<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto, CreateSeismicAcquisitionAndProcessingDto>(
-            projectId,
             caseId,
             explorationId,
             createProfileDto,
@@ -249,14 +247,12 @@ public class ExplorationService : IExplorationService
     }
 
     public async Task<CountryOfficeCostDto> CreateCountryOfficeCost(
-        Guid projectId,
         Guid caseId,
         Guid explorationId,
         CreateCountryOfficeCostDto createProfileDto
     )
     {
         return await CreateExplorationProfile<CountryOfficeCost, CountryOfficeCostDto, CreateCountryOfficeCostDto>(
-            projectId,
             caseId,
             explorationId,
             createProfileDto,
@@ -302,7 +298,6 @@ public class ExplorationService : IExplorationService
     }
 
     private async Task<TDto> CreateExplorationProfile<TProfile, TDto, TCreateDto>(
-            Guid projectId,
             Guid caseId,
             Guid explorationId,
             TCreateDto createExplorationProfileDto,

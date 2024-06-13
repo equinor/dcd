@@ -50,28 +50,24 @@ public interface IWellProjectService
     );
 
     Task<OilProducerCostProfileOverrideDto> CreateOilProducerCostProfileOverride(
-        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         CreateOilProducerCostProfileOverrideDto createProfileDto
     );
 
     Task<GasProducerCostProfileOverrideDto> CreateGasProducerCostProfileOverride(
-        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         CreateGasProducerCostProfileOverrideDto createProfileDto
     );
 
     Task<WaterInjectorCostProfileOverrideDto> CreateWaterInjectorCostProfileOverride(
-        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         CreateWaterInjectorCostProfileOverrideDto createProfileDto
     );
 
     Task<GasInjectorCostProfileOverrideDto> CreateGasInjectorCostProfileOverride(
-        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         CreateGasInjectorCostProfileOverrideDto createProfileDto

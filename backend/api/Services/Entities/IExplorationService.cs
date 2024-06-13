@@ -38,14 +38,12 @@ public interface IExplorationService
     );
 
     Task<SeismicAcquisitionAndProcessingDto> CreateSeismicAcquisitionAndProcessing(
-        Guid projectId,
         Guid caseId,
         Guid explorationId,
         CreateSeismicAcquisitionAndProcessingDto createProfileDto
     );
 
     Task<CountryOfficeCostDto> CreateCountryOfficeCost(
-        Guid projectId,
         Guid caseId,
         Guid explorationId,
         CreateCountryOfficeCostDto createProfileDto
