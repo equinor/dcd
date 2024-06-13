@@ -49,6 +49,16 @@ public class ExplorationsController : ControllerBase
         return await _explorationService.UpdateSeismicAcquisitionAndProcessing(caseId, explorationId, costProfileId, dto);
     }
 
+    [HttpPost("{explorationId}/seismic-acquisition-and-processing")]
+    public async Task<SeismicAcquisitionAndProcessingDto> CreateSeismicAcquisitionAndProcessing(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid explorationId,
+        [FromBody] CreateSeismicAcquisitionAndProcessingDto dto)
+    {
+        return await _explorationService.CreateSeismicAcquisitionAndProcessing(caseId, explorationId, dto);
+    }
+
     [HttpPut("{explorationId}/country-office-cost/{costProfileId}")]
     public async Task<CountryOfficeCostDto> UpdateCountryOfficeCost(
         [FromRoute] Guid projectId,
@@ -58,6 +68,16 @@ public class ExplorationsController : ControllerBase
         [FromBody] UpdateCountryOfficeCostDto dto)
     {
         return await _explorationService.UpdateCountryOfficeCost(caseId, explorationId, costProfileId, dto);
+    }
+
+    [HttpPost("{explorationId}/country-office-cost")]
+    public async Task<CountryOfficeCostDto> CreateCountryOfficeCost(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid explorationId,
+        [FromBody] CreateCountryOfficeCostDto dto)
+    {
+        return await _explorationService.CreateCountryOfficeCost(caseId, explorationId, dto);
     }
 
     [HttpPut("{explorationId}/well/{wellId}")]

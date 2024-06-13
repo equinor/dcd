@@ -204,6 +204,46 @@ public class SubstructureService : ISubstructureService
         return newDto;
     }
 
+    public async Task<SubstructureCostProfileOverrideDto> CreateSubstructureCostProfileOverride(
+        Guid caseId,
+        Guid substructureId,
+        CreateSubstructureCostProfileOverrideDto dto
+    )
+    {
+        var substructure = await _repository.GetSubstructure(substructureId)
+            ?? throw new NotFoundInDBException($"Substructure with id {substructureId} not found.");
+
+        var resourceHasProfile = await _repository.SubstructureHasCostProfileOverride(substructureId);
+
+        if (resourceHasProfile)
+        {
+            throw new ResourceAlreadyExistsException($"Substructure with id {substructureId} already has a profile of type {typeof(SubstructureCostProfileOverride).Name}.");
+        }
+
+        SubstructureCostProfileOverride profile = new()
+        {
+            Substructure = substructure,
+        };
+
+        var newProfile = _mapperService.MapToEntity(dto, profile, substructureId);
+
+        SubstructureCostProfileOverride createdProfile;
+        try
+        {
+            createdProfile = _repository.CreateSubstructureCostProfileOverride(newProfile);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to create profile SubstructureCostProfileOverride for case id {caseId}.", caseId);
+            throw;
+        }
+
+        var updatedDto = _mapperService.MapToDto<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>(createdProfile, createdProfile.Id);
+        return updatedDto;
+    }
+
     public async Task<SubstructureCostProfileOverrideDto> UpdateSubstructureCostProfileOverride(
         Guid caseId,
         Guid substructureId,

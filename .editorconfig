@@ -12,6 +12,12 @@ insert_final_newline = true
 dotnet_sort_system_directives_first = true
 dotnet_separate_import_directive_groups = true
 
+# CS8509: The switch expression does not handle all possible values of its input type (it is not exhaustive).
+dotnet_diagnostic.CS8509.severity = error
+
+# CS8524: The switch expression does not handle some values of its input type (it is not exhaustive) involving an unnamed enum value.
+dotnet_diagnostic.CS8524.severity = none
+
 [*.md]
 trim_trailing_whitespace = false
 

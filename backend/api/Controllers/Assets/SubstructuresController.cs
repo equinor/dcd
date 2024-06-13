@@ -38,6 +38,16 @@ public class SubstructuresController : ControllerBase
         return await _substructureService.UpdateSubstructure(caseId, substructureId, dto);
     }
 
+    [HttpPost("{substructureId}/cost-profile-override")]
+    public async Task<SubstructureCostProfileOverrideDto> CreateSubstructureCostProfileOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid substructureId,
+        [FromBody] CreateSubstructureCostProfileOverrideDto dto)
+    {
+        return await _substructureService.CreateSubstructureCostProfileOverride(caseId, substructureId, dto);
+    }
+
     [HttpPut("{substructureId}/cost-profile-override/{costProfileId}")]
     public async Task<SubstructureCostProfileOverrideDto> UpdateSubstructureCostProfileOverride(
         [FromRoute] Guid projectId,
@@ -48,6 +58,4 @@ public class SubstructuresController : ControllerBase
     {
         return await _substructureService.UpdateSubstructureCostProfileOverride(caseId, substructureId, costProfileId, dto);
     }
-
-
 }

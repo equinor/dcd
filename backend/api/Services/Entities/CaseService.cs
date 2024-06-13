@@ -1,5 +1,6 @@
 using api.Context;
 using api.Dtos;
+using api.Enums;
 using api.Exceptions;
 using api.Models;
 using api.Repositories;
@@ -379,6 +380,139 @@ public class CaseService : ICaseService
         );
     }
 
+    public async Task<OffshoreFacilitiesOperationsCostProfileOverrideDto> CreateOffshoreFacilitiesOperationsCostProfileOverride(
+        Guid projectId,
+        Guid caseId,
+        CreateOffshoreFacilitiesOperationsCostProfileOverrideDto createProfileDto
+    )
+    {
+        return await CreateCaseProfile<OffshoreFacilitiesOperationsCostProfileOverride, OffshoreFacilitiesOperationsCostProfileOverrideDto, CreateOffshoreFacilitiesOperationsCostProfileOverrideDto>(
+            projectId,
+            caseId,
+            createProfileDto,
+            _repository.CreateOffshoreFacilitiesOperationsCostProfileOverride,
+            CaseProfileNames.OffshoreFacilitiesOperationsCostProfileOverride
+        );
+    }
+    public async Task<CessationWellsCostOverrideDto> CreateCessationWellsCostOverride(
+        Guid projectId,
+        Guid caseId,
+        CreateCessationWellsCostOverrideDto createProfileDto
+    )
+    {
+        return await CreateCaseProfile<CessationWellsCostOverride, CessationWellsCostOverrideDto, CreateCessationWellsCostOverrideDto>(
+            projectId,
+            caseId,
+            createProfileDto,
+            _repository.CreateCessationWellsCostOverride,
+            CaseProfileNames.CessationWellsCostOverride
+        );
+    }
+
+    public async Task<CessationOffshoreFacilitiesCostOverrideDto> CreateCessationOffshoreFacilitiesCostOverride(
+        Guid projectId,
+        Guid caseId,
+        CreateCessationOffshoreFacilitiesCostOverrideDto createProfileDto
+    )
+    {
+        return await CreateCaseProfile<CessationOffshoreFacilitiesCostOverride, CessationOffshoreFacilitiesCostOverrideDto, CreateCessationOffshoreFacilitiesCostOverrideDto>(
+            projectId,
+            caseId,
+            createProfileDto,
+            _repository.CreateCessationOffshoreFacilitiesCostOverride,
+            CaseProfileNames.CessationOffshoreFacilitiesCostOverride
+        );
+    }
+
+    public async Task<TotalFeasibilityAndConceptStudiesOverrideDto> CreateTotalFeasibilityAndConceptStudiesOverride(
+        Guid projectId,
+        Guid caseId,
+        CreateTotalFeasibilityAndConceptStudiesOverrideDto createProfileDto
+    )
+    {
+        return await CreateCaseProfile<TotalFeasibilityAndConceptStudiesOverride, TotalFeasibilityAndConceptStudiesOverrideDto, CreateTotalFeasibilityAndConceptStudiesOverrideDto>(
+            projectId,
+            caseId,
+            createProfileDto,
+            _repository.CreateTotalFeasibilityAndConceptStudiesOverride,
+            CaseProfileNames.TotalFeasibilityAndConceptStudiesOverride
+        );
+    }
+
+    public async Task<TotalFEEDStudiesOverrideDto> CreateTotalFEEDStudiesOverride(
+        Guid projectId,
+        Guid caseId,
+        CreateTotalFEEDStudiesOverrideDto createProfileDto
+    )
+    {
+        return await CreateCaseProfile<TotalFEEDStudiesOverride, TotalFEEDStudiesOverrideDto, CreateTotalFEEDStudiesOverrideDto>(
+            projectId,
+            caseId,
+            createProfileDto,
+            _repository.CreateTotalFEEDStudiesOverride,
+            CaseProfileNames.TotalFEEDStudiesOverride
+        );
+    }
+
+    public async Task<HistoricCostCostProfileDto> CreateHistoricCostCostProfile(
+        Guid projectId,
+        Guid caseId,
+        CreateHistoricCostCostProfileDto createProfileDto
+    )
+    {
+        return await CreateCaseProfile<HistoricCostCostProfile, HistoricCostCostProfileDto, CreateHistoricCostCostProfileDto>(
+            projectId,
+            caseId,
+            createProfileDto,
+            _repository.CreateHistoricCostCostProfile,
+            CaseProfileNames.HistoricCostCostProfile
+        );
+    }
+
+    public async Task<WellInterventionCostProfileOverrideDto> CreateWellInterventionCostProfileOverride(
+        Guid projectId,
+        Guid caseId,
+        CreateWellInterventionCostProfileOverrideDto createProfileDto
+    )
+    {
+        return await CreateCaseProfile<WellInterventionCostProfileOverride, WellInterventionCostProfileOverrideDto, CreateWellInterventionCostProfileOverrideDto>(
+            projectId,
+            caseId,
+            createProfileDto,
+            _repository.CreateWellInterventionCostProfileOverride,
+            CaseProfileNames.WellInterventionCostProfileOverride
+        );
+    }
+
+    public async Task<OnshoreRelatedOPEXCostProfileDto> CreateOnshoreRelatedOPEXCostProfile(
+        Guid projectId,
+        Guid caseId,
+        CreateOnshoreRelatedOPEXCostProfileDto createProfileDto
+    )
+    {
+        return await CreateCaseProfile<OnshoreRelatedOPEXCostProfile, OnshoreRelatedOPEXCostProfileDto, CreateOnshoreRelatedOPEXCostProfileDto>(
+            projectId,
+            caseId,
+            createProfileDto,
+            _repository.CreateOnshoreRelatedOPEXCostProfile,
+            CaseProfileNames.OnshoreRelatedOPEXCostProfile
+        );
+    }
+
+    public async Task<AdditionalOPEXCostProfileDto> CreateAdditionalOPEXCostProfile(
+        Guid projectId,
+        Guid caseId,
+        CreateAdditionalOPEXCostProfileDto createProfileDto
+    )
+    {
+        return await CreateCaseProfile<AdditionalOPEXCostProfile, AdditionalOPEXCostProfileDto, CreateAdditionalOPEXCostProfileDto>(
+            projectId,
+            caseId,
+            createProfileDto,
+            _repository.CreateAdditionalOPEXCostProfile,
+            CaseProfileNames.AdditionalOPEXCostProfile
+        );
+    }
 
     public async Task<AdditionalOPEXCostProfileDto> UpdateAdditionalOPEXCostProfile(
         Guid projectId,
@@ -430,6 +564,51 @@ public class CaseService : ICaseService
 
 
         var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, costProfileId);
+        return updatedDto;
+    }
+
+    private async Task<TDto> CreateCaseProfile<TProfile, TDto, TCreateDto>(
+        Guid projectId,
+        Guid caseId,
+        TCreateDto createProfileDto,
+        Func<TProfile, TProfile> createProfile,
+        CaseProfileNames profileName
+    )
+        where TProfile : class, ICaseTimeSeries, new()
+        where TDto : class
+        where TCreateDto : class
+    {
+        var caseEntity = await _repository.GetCase(caseId)
+            ?? throw new NotFoundInDBException($"Case with id {caseId} not found.");
+
+        var resourceHasProfile = await _repository.CaseHasProfile(caseId, profileName);
+
+        if (resourceHasProfile)
+        {
+            throw new ResourceAlreadyExistsException($"Case with id {caseId} already has a profile of type {typeof(TProfile).Name}.");
+        }
+
+        TProfile profile = new()
+        {
+            Case = caseEntity,
+        };
+
+        var newProfile = _mapperService.MapToEntity(createProfileDto, profile, caseId);
+
+        TProfile createdProfile;
+        try
+        {
+            createdProfile = createProfile(newProfile);
+            await _repository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
+            throw;
+        }
+
+        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
         return updatedDto;
     }
 }

@@ -16,6 +16,11 @@ public interface ITransportService
         Guid transportId,
         UpdateTransportCostProfileDto dto
     );
+    Task<TransportCostProfileOverrideDto> CreateTransportCostProfileOverride(
+        Guid caseId,
+        Guid transportId,
+        CreateTransportCostProfileOverrideDto dto
+    );
     Task<TransportCostProfileOverrideDto> UpdateTransportCostProfileOverride(
         Guid caseId,
         Guid transportId,

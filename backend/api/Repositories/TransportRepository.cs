@@ -25,6 +25,12 @@ public class TransportRepository : BaseRepository, ITransportRepository
                         .FirstOrDefaultAsync(t => t.Id == transportId);
     }
 
+    public async Task<bool> TransportHasCostProfileOverride(Guid transportId)
+    {
+        return await _context.Transports
+            .AnyAsync(t => t.Id == transportId && t.CostProfileOverride != null);
+    }
+
     public Transport UpdateTransport(Transport transport)
     {
         return Update(transport);
@@ -45,6 +51,13 @@ public class TransportRepository : BaseRepository, ITransportRepository
     {
         return Update(transportCostProfile);
     }
+
+    public TransportCostProfileOverride CreateTransportCostProfileOverride(TransportCostProfileOverride profile)
+    {
+        _context.TransportCostProfileOverride.Add(profile);
+        return profile;
+    }
+
 
     public async Task<TransportCostProfileOverride?> GetTransportCostProfileOverride(Guid transportCostProfileOverrideId)
     {
