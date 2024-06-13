@@ -195,5 +195,6 @@ public class TotalOtherStudies : TimeSeriesCost, ICaseTimeSeries
 }
 public interface ICaseTimeSeries
 {
+    Guid Id { get; set; }
     Case Case { get; set; }
 }
