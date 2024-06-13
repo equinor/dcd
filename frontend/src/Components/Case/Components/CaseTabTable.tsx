@@ -312,7 +312,7 @@ const CaseTabTable = ({
         editable: true,
         onCellValueChanged: handleCellValueChange,
         suppressMenuButton: true,
-    }), [])
+    }), [timeSeriesData])
 
     useEffect(() => {
         const newColDefs = generateTableYearColDefs()
