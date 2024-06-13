@@ -27,6 +27,8 @@ public class ExplorationProfile : Profile
         CreateMap<UpdateAppraisalWellCostProfileDto, AppraisalWellCostProfile>();
         CreateMap<UpdateSidetrackCostProfileDto, SidetrackCostProfile>();
 
+        CreateMap<CreateSeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>();
+        CreateMap<CreateCountryOfficeCostDto, CountryOfficeCost>();
 
         CreateMap<CreateExplorationDto, Exploration>();
         CreateMap<ExplorationWithProfilesDto, UpdateExplorationWithProfilesDto>(); // Temp fix

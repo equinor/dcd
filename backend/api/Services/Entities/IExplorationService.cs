@@ -36,4 +36,18 @@ public interface IExplorationService
         Guid profileId,
         UpdateCountryOfficeCostDto updateDto
     );
+
+    Task<SeismicAcquisitionAndProcessingDto> CreateSeismicAcquisitionAndProcessing(
+        Guid projectId,
+        Guid caseId,
+        Guid explorationId,
+        CreateSeismicAcquisitionAndProcessingDto createProfileDto
+    );
+
+    Task<CountryOfficeCostDto> CreateCountryOfficeCost(
+        Guid projectId,
+        Guid caseId,
+        Guid explorationId,
+        CreateCountryOfficeCostDto createProfileDto
+    );
 }
