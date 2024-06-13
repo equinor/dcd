@@ -16,6 +16,19 @@ class WellProjectService extends __BaseService {
         return res
     }
 
+    public async createOilProducerCostProfileOverride(
+        projectId: string,
+        caseId: string,
+        wellProjectId: string,
+        dto: Components.Schemas.CreateOilProducerCostProfileOverrideDto,
+    ): Promise<Components.Schemas.OilProducerCostProfileOverrideDto> {
+        const res: Components.Schemas.OilProducerCostProfileOverrideDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/well-projects/${wellProjectId}/oil-producer-cost-profile-override/`,
+            { body: dto },
+        )
+        return res
+    }
+
     public async updateOilProducerCostProfileOverride(
         projectId: string,
         caseId: string,
@@ -25,6 +38,19 @@ class WellProjectService extends __BaseService {
     ): Promise<Components.Schemas.OilProducerCostProfileOverrideDto> {
         const res: Components.Schemas.OilProducerCostProfileOverrideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/well-projects/${wellProjectId}/oil-producer-cost-profile-override/${costProfileId}`,
+            { body: dto },
+        )
+        return res
+    }
+
+    public async createGasProducerCostProfileOverride(
+        projectId: string,
+        caseId: string,
+        wellProjectId: string,
+        dto: Components.Schemas.CreateGasProducerCostProfileOverrideDto,
+    ): Promise<Components.Schemas.GasProducerCostProfileOverrideDto> {
+        const res: Components.Schemas.GasProducerCostProfileOverrideDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/well-projects/${wellProjectId}/gas-producer-cost-profile-override/`,
             { body: dto },
         )
         return res
@@ -44,6 +70,19 @@ class WellProjectService extends __BaseService {
         return res
     }
 
+    public async createWaterInjectorCostProfileOverride(
+        projectId: string,
+        caseId: string,
+        wellProjectId: string,
+        dto: Components.Schemas.CreateWaterInjectorCostProfileOverrideDto,
+    ): Promise<Components.Schemas.WaterInjectorCostProfileOverrideDto> {
+        const res: Components.Schemas.WaterInjectorCostProfileOverrideDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/well-projects/${wellProjectId}/water-injector-cost-profile-override/`,
+            { body: dto },
+        )
+        return res
+    }
+
     public async updateWaterInjectorCostProfileOverride(
         projectId: string,
         caseId: string,
@@ -53,6 +92,19 @@ class WellProjectService extends __BaseService {
     ): Promise<Components.Schemas.WaterInjectorCostProfileOverrideDto> {
         const res: Components.Schemas.WaterInjectorCostProfileOverrideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/well-projects/${wellProjectId}/water-injector-cost-profile-override/${costProfileId}`,
+            { body: dto },
+        )
+        return res
+    }
+
+    public async createGasInjectorCostProfileOverride(
+        projectId: string,
+        caseId: string,
+        wellProjectId: string,
+        dto: Components.Schemas.CreateGasInjectorCostProfileOverrideDto,
+    ): Promise<Components.Schemas.GasInjectorCostProfileOverrideDto> {
+        const res: Components.Schemas.GasInjectorCostProfileOverrideDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/well-projects/${wellProjectId}/gas-injector-cost-profile-override/`,
             { body: dto },
         )
         return res

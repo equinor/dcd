@@ -16,6 +16,19 @@ class SurfService extends __BaseService {
         return res
     }
 
+    public async createSurfCostProfileOverride(
+        projectId: string,
+        caseId: string,
+        surfId: string,
+        dto: Components.Schemas.CreateSurfCostProfileOverrideDto,
+    ): Promise<Components.Schemas.SurfCostProfileOverrideDto> {
+        const res: Components.Schemas.SurfCostProfileOverrideDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/surfs/${surfId}/cost-profile-override/`,
+            { body: dto },
+        )
+        return res
+    }
+
     public async updateSurfCostProfileOverride(
         projectId: string,
         caseId: string,
