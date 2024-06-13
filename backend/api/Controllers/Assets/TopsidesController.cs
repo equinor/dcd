@@ -38,6 +38,16 @@ public class TopsidesController : ControllerBase
         return await _topsideService.UpdateTopside(caseId, topsideId, dto);
     }
 
+    [HttpPost("{topsideId}/cost-profile-override/")]
+    public async Task<TopsideCostProfileOverrideDto> CreateTopsideCostProfileOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid topsideId,
+        [FromBody] CreateTopsideCostProfileOverrideDto dto)
+    {
+        return await _topsideService.CreateTopsideCostProfileOverride(caseId, topsideId, dto);
+    }
+
     [HttpPut("{topsideId}/cost-profile-override/{costProfileId}")]
     public async Task<TopsideCostProfileOverrideDto> UpdateTopsideCostProfileOverride(
         [FromRoute] Guid projectId,
@@ -48,6 +58,4 @@ public class TopsidesController : ControllerBase
     {
         return await _topsideService.UpdateTopsideCostProfileOverride(caseId, topsideId, costProfileId, dto);
     }
-
-
 }

@@ -1,5 +1,10 @@
+using System.Linq.Expressions;
+
 using api.Context;
+using api.Enums;
 using api.Models;
+
+using Microsoft.EntityFrameworkCore;
 
 
 namespace api.Repositories;
@@ -15,6 +20,22 @@ public class WellProjectRepository : BaseRepository, IWellProjectRepository
     {
         return await Get<WellProject>(wellProjectId);
     }
+    public async Task<bool> WellProjectHasProfile(Guid WellProjectId, WellProjectProfileNames profileType)
+    {
+        Expression<Func<WellProject, bool>> profileExistsExpression = profileType switch
+        {
+            WellProjectProfileNames.OilProducerCostProfileOverride => d => d.OilProducerCostProfileOverride != null,
+            WellProjectProfileNames.GasProducerCostProfileOverride => d => d.GasProducerCostProfileOverride != null,
+            WellProjectProfileNames.WaterInjectorCostProfileOverride => d => d.WaterInjectorCostProfileOverride != null,
+            WellProjectProfileNames.GasInjectorCostProfileOverride => d => d.GasInjectorCostProfileOverride != null,
+        };
+
+        bool hasProfile = await _context.WellProjects
+            .Where(d => d.Id == WellProjectId)
+            .AnyAsync(profileExistsExpression);
+
+        return hasProfile;
+    }
 
     public WellProject UpdateWellProject(WellProject wellProject)
     {
@@ -29,6 +50,30 @@ public class WellProjectRepository : BaseRepository, IWellProjectRepository
     public WellProjectWell UpdateWellProjectWell(WellProjectWell wellProjectWell)
     {
         return Update(wellProjectWell);
+    }
+
+    public OilProducerCostProfileOverride CreateOilProducerCostProfileOverride(OilProducerCostProfileOverride profile)
+    {
+        _context.OilProducerCostProfileOverride.Add(profile);
+        return profile;
+    }
+
+    public GasProducerCostProfileOverride CreateGasProducerCostProfileOverride(GasProducerCostProfileOverride profile)
+    {
+        _context.GasProducerCostProfileOverride.Add(profile);
+        return profile;
+    }
+
+    public WaterInjectorCostProfileOverride CreateWaterInjectorCostProfileOverride(WaterInjectorCostProfileOverride profile)
+    {
+        _context.WaterInjectorCostProfileOverride.Add(profile);
+        return profile;
+    }
+
+    public GasInjectorCostProfileOverride CreateGasInjectorCostProfileOverride(GasInjectorCostProfileOverride profile)
+    {
+        _context.GasInjectorCostProfileOverride.Add(profile);
+        return profile;
     }
 
     public async Task<OilProducerCostProfileOverride?> GetOilProducerCostProfileOverride(Guid profileId)

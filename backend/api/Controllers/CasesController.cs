@@ -77,6 +77,96 @@ public class CasesController : ControllerBase
         return await _caseService.UpdateCessationOffshoreFacilitiesCostOverride(projectId, caseId, costProfileId, dto);
     }
 
+    [HttpPost("{caseId}/cessation-offshore-facilities-cost-override")]
+    public async Task<CessationOffshoreFacilitiesCostOverrideDto> CreateCessationOffshoreFacilitiesCostOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateCessationOffshoreFacilitiesCostOverrideDto dto
+    )
+    {
+        return await _caseService.CreateCessationOffshoreFacilitiesCostOverride(projectId, caseId, dto);
+    }
+
+    [HttpPost("{caseId}/cessation-wells-cost-override")]
+    public async Task<CessationWellsCostOverrideDto> CreateCessationWellsCostOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateCessationWellsCostOverrideDto dto
+    )
+    {
+        return await _caseService.CreateCessationWellsCostOverride(projectId, caseId, dto);
+    }
+
+    [HttpPost("{caseId}/total-feasibility-and-concept-studies-override")]
+    public async Task<TotalFeasibilityAndConceptStudiesOverrideDto> CreateTotalFeasibilityAndConceptStudiesOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateTotalFeasibilityAndConceptStudiesOverrideDto dto
+    )
+    {
+        return await _caseService.CreateTotalFeasibilityAndConceptStudiesOverride(projectId, caseId, dto);
+    }
+
+    [HttpPost("{caseId}/total-feed-studies-override")]
+    public async Task<TotalFEEDStudiesOverrideDto> CreateTotalFEEDStudiesOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateTotalFEEDStudiesOverrideDto dto
+    )
+    {
+        return await _caseService.CreateTotalFEEDStudiesOverride(projectId, caseId, dto);
+    }
+
+    [HttpPost("{caseId}/historic-cost-cost-profile")]
+    public async Task<HistoricCostCostProfileDto> CreateHistoricCostCostProfile(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateHistoricCostCostProfileDto dto
+    )
+    {
+        return await _caseService.CreateHistoricCostCostProfile(projectId, caseId, dto);
+    }
+
+    [HttpPost("{caseId}/well-intervention-cost-profile-override")]
+    public async Task<WellInterventionCostProfileOverrideDto> CreateWellInterventionCostProfileOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateWellInterventionCostProfileOverrideDto dto
+    )
+    {
+        return await _caseService.CreateWellInterventionCostProfileOverride(projectId, caseId, dto);
+    }
+
+    [HttpPost("{caseId}/offshore-facilities-operations-cost-profile-override")]
+    public async Task<OffshoreFacilitiesOperationsCostProfileOverrideDto> CreateOffshoreFacilitiesOperationsCostProfileOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateOffshoreFacilitiesOperationsCostProfileOverrideDto dto
+    )
+    {
+        return await _caseService.CreateOffshoreFacilitiesOperationsCostProfileOverride(projectId, caseId, dto);
+    }
+
+    [HttpPost("{caseId}/onshore-related-opex-cost-profile")]
+    public async Task<OnshoreRelatedOPEXCostProfileDto> CreateOnshoreRelatedOPEXCostProfile(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateOnshoreRelatedOPEXCostProfileDto dto
+    )
+    {
+        return await _caseService.CreateOnshoreRelatedOPEXCostProfile(projectId, caseId, dto);
+    }
+
+    [HttpPost("{caseId}/additional-opex-cost-profile")]
+    public async Task<AdditionalOPEXCostProfileDto> CreateAdditionalOPEXCostProfile(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateAdditionalOPEXCostProfileDto dto
+    )
+    {
+        return await _caseService.CreateAdditionalOPEXCostProfile(projectId, caseId, dto);
+    }
+
     [HttpPut("{caseId}/total-feasibility-and-concept-studies-override/{costProfileId}")]
     public async Task<TotalFeasibilityAndConceptStudiesOverrideDto> UpdateTotalFeasibilityAndConceptStudiesOverride(
         [FromRoute] Guid projectId,
