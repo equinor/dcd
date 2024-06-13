@@ -49,7 +49,7 @@ class CaseService extends __BaseService {
     public async getCaseWithAssets(
         projectId: string,
         caseId: string,
-    ): Promise<Components.Schemas.ProjectDto> {
+    ): Promise<Components.Schemas.CaseWithAssetsDto> {
         const res = await this.get(`projects/${projectId}/cases/${caseId}/case-with-assets`)
         return res
     }
