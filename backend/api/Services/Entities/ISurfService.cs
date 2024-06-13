@@ -14,6 +14,12 @@ public interface ISurfService
         TDto updatedSurfDto
     ) where TDto : BaseUpdateSurfDto;
 
+    Task<SurfCostProfileOverrideDto> CreateSurfCostProfileOverride(
+        Guid caseId,
+        Guid surfId,
+        CreateSurfCostProfileOverrideDto dto
+    );
+
     Task<SurfCostProfileDto> AddOrUpdateSurfCostProfile(
         Guid caseId,
         Guid surfId,

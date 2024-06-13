@@ -75,5 +75,6 @@ public class GasInjectorCostProfileOverride : TimeSeriesCost, IWellProjectTimeSe
 
 public interface IWellProjectTimeSeries
 {
+    Guid Id { get; set; }
     WellProject WellProject { get; set; }
 }

@@ -20,6 +20,7 @@ public class TopsideProfile : Profile
         CreateMap<PROSPUpdateTopsideDto, Topside>();
         CreateMap<UpdateTopsideCostProfileDto, TopsideCostProfile>();
         CreateMap<UpdateTopsideCostProfileOverrideDto, TopsideCostProfileOverride>();
+        CreateMap<CreateTopsideCostProfileOverrideDto, TopsideCostProfileOverride>();
 
         CreateMap<CreateTopsideDto, Topside>();
     }

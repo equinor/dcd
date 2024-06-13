@@ -58,5 +58,6 @@ public class CountryOfficeCost : TimeSeriesCost, IExplorationTimeSeries
 
 public interface IExplorationTimeSeries
 {
+    Guid Id { get; set; }
     Exploration Exploration { get; set; }
 }

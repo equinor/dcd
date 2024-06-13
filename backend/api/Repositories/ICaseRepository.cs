@@ -1,3 +1,4 @@
+using api.Enums;
 using api.Models;
 
 namespace api.Repositories;
@@ -7,6 +8,17 @@ public interface ICaseRepository : IBaseRepository
 {
     Task<Case?> GetCase(Guid caseId);
     Case UpdateCase(Case updatedCase);
+    Task<bool> CaseHasProfile(Guid caseId, CaseProfileNames profileType);
+    CessationWellsCostOverride CreateCessationWellsCostOverride(CessationWellsCostOverride profile);
+    CessationOffshoreFacilitiesCostOverride CreateCessationOffshoreFacilitiesCostOverride(CessationOffshoreFacilitiesCostOverride profile);
+    TotalFeasibilityAndConceptStudiesOverride CreateTotalFeasibilityAndConceptStudiesOverride(TotalFeasibilityAndConceptStudiesOverride profile);
+    TotalFEEDStudiesOverride CreateTotalFEEDStudiesOverride(TotalFEEDStudiesOverride profile);
+    HistoricCostCostProfile CreateHistoricCostCostProfile(HistoricCostCostProfile profile);
+    WellInterventionCostProfileOverride CreateWellInterventionCostProfileOverride(WellInterventionCostProfileOverride profile);
+    OffshoreFacilitiesOperationsCostProfileOverride CreateOffshoreFacilitiesOperationsCostProfileOverride(OffshoreFacilitiesOperationsCostProfileOverride profile);
+    OnshoreRelatedOPEXCostProfile CreateOnshoreRelatedOPEXCostProfile(OnshoreRelatedOPEXCostProfile profile);
+    AdditionalOPEXCostProfile CreateAdditionalOPEXCostProfile(AdditionalOPEXCostProfile profile);
+
     Task<CessationWellsCostOverride?> GetCessationWellsCostOverride(Guid costProfileId);
     CessationWellsCostOverride UpdateCessationWellsCostOverride(CessationWellsCostOverride costProfile);
     Task<CessationOffshoreFacilitiesCostOverride?> GetCessationOffshoreFacilitiesCostOverride(Guid costProfileId);

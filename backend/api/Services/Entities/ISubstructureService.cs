@@ -14,5 +14,10 @@ public interface ISubstructureService
         Guid substructureId,
         UpdateSubstructureCostProfileDto dto
     );
+    Task<SubstructureCostProfileOverrideDto> CreateSubstructureCostProfileOverride(
+        Guid caseId,
+        Guid substructureId,
+        CreateSubstructureCostProfileOverrideDto dto
+    );
     Task<SubstructureCostProfileOverrideDto> UpdateSubstructureCostProfileOverride(Guid caseId, Guid substructureId, Guid costProfileId, UpdateSubstructureCostProfileOverrideDto dto);
 }

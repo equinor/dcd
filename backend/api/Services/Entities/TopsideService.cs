@@ -141,6 +141,46 @@ public class TopsideService : ITopsideService
         return dto;
     }
 
+    public async Task<TopsideCostProfileOverrideDto> CreateTopsideCostProfileOverride(
+        Guid caseId,
+        Guid topsideId,
+        CreateTopsideCostProfileOverrideDto dto
+    )
+    {
+        var topside = await _repository.GetTopside(topsideId)
+            ?? throw new NotFoundInDBException($"Topside with id {topsideId} not found.");
+
+        var resourceHasProfile = await _repository.TopsideHasCostProfileOverride(topsideId);
+
+        if (resourceHasProfile)
+        {
+            throw new ResourceAlreadyExistsException($"Topside with id {topsideId} already has a profile of type {typeof(TopsideCostProfileOverride).Name}.");
+        }
+
+        TopsideCostProfileOverride profile = new()
+        {
+            Topside = topside,
+        };
+
+        var newProfile = _mapperService.MapToEntity(dto, profile, topsideId);
+
+        TopsideCostProfileOverride createdProfile;
+        try
+        {
+            createdProfile = _repository.CreateTopsideCostProfileOverride(newProfile);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to create profile TopsideCostProfileOverride for case id {caseId}.", caseId);
+            throw;
+        }
+
+        var updatedDto = _mapperService.MapToDto<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>(createdProfile, createdProfile.Id);
+        return updatedDto;
+    }
+
     public async Task<TopsideCostProfileOverrideDto> UpdateTopsideCostProfileOverride(
         Guid caseId,
         Guid topsideId,

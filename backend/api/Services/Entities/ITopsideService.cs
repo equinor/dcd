@@ -14,5 +14,10 @@ public interface ITopsideService
         Guid topsideId,
         UpdateTopsideCostProfileDto dto
     );
+    Task<TopsideCostProfileOverrideDto> CreateTopsideCostProfileOverride(
+        Guid caseId,
+        Guid topsideId,
+        CreateTopsideCostProfileOverrideDto dto
+    );
     Task<TopsideCostProfileOverrideDto> UpdateTopsideCostProfileOverride(Guid caseId, Guid topsideId, Guid costProfileId, UpdateTopsideCostProfileOverrideDto dto);
 }

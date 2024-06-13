@@ -1,4 +1,7 @@
+using System.Linq.Expressions;
+
 using api.Context;
+using api.Enums;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -23,9 +26,85 @@ public class CaseRepository : BaseRepository, ICaseRepository
         return await Get<Case>(caseId);
     }
 
+    public async Task<bool> CaseHasProfile(Guid caseId, CaseProfileNames profileType)
+    {
+        Expression<Func<Case, bool>> profileExistsExpression = profileType switch
+        {
+            CaseProfileNames.CessationWellsCostOverride => d => d.CessationWellsCostOverride != null,
+            CaseProfileNames.CessationOffshoreFacilitiesCostOverride => d => d.CessationOffshoreFacilitiesCostOverride != null,
+            CaseProfileNames.TotalFeasibilityAndConceptStudiesOverride => d => d.TotalFeasibilityAndConceptStudiesOverride != null,
+            CaseProfileNames.TotalFEEDStudiesOverride => d => d.TotalFEEDStudiesOverride != null,
+            CaseProfileNames.HistoricCostCostProfile => d => d.HistoricCostCostProfile != null,
+            CaseProfileNames.WellInterventionCostProfileOverride => d => d.WellInterventionCostProfileOverride != null,
+            CaseProfileNames.OffshoreFacilitiesOperationsCostProfileOverride => d => d.OffshoreFacilitiesOperationsCostProfileOverride != null,
+            CaseProfileNames.OnshoreRelatedOPEXCostProfile => d => d.OnshoreRelatedOPEXCostProfile != null,
+            CaseProfileNames.AdditionalOPEXCostProfile => d => d.AdditionalOPEXCostProfile != null,
+        };
+
+        bool hasProfile = await _context.Cases
+            .Where(d => d.Id == caseId)
+            .AnyAsync(profileExistsExpression);
+
+        return hasProfile;
+    }
+
     public Case UpdateCase(Case updatedCase)
     {
         return Update(updatedCase);
+    }
+
+    public CessationWellsCostOverride CreateCessationWellsCostOverride(CessationWellsCostOverride profile)
+    {
+        _context.CessationWellsCostOverride.Add(profile);
+        return profile;
+    }
+
+    public CessationOffshoreFacilitiesCostOverride CreateCessationOffshoreFacilitiesCostOverride(CessationOffshoreFacilitiesCostOverride profile)
+    {
+        _context.CessationOffshoreFacilitiesCostOverride.Add(profile);
+        return profile;
+    }
+
+    public TotalFeasibilityAndConceptStudiesOverride CreateTotalFeasibilityAndConceptStudiesOverride(TotalFeasibilityAndConceptStudiesOverride profile)
+    {
+        _context.TotalFeasibilityAndConceptStudiesOverride.Add(profile);
+        return profile;
+    }
+
+    public TotalFEEDStudiesOverride CreateTotalFEEDStudiesOverride(TotalFEEDStudiesOverride profile)
+    {
+        _context.TotalFEEDStudiesOverride.Add(profile);
+        return profile;
+    }
+
+    public HistoricCostCostProfile CreateHistoricCostCostProfile(HistoricCostCostProfile profile)
+    {
+        _context.HistoricCostCostProfile.Add(profile);
+        return profile;
+    }
+
+    public WellInterventionCostProfileOverride CreateWellInterventionCostProfileOverride(WellInterventionCostProfileOverride profile)
+    {
+        _context.WellInterventionCostProfileOverride.Add(profile);
+        return profile;
+    }
+
+    public OffshoreFacilitiesOperationsCostProfileOverride CreateOffshoreFacilitiesOperationsCostProfileOverride(OffshoreFacilitiesOperationsCostProfileOverride profile)
+    {
+        _context.OffshoreFacilitiesOperationsCostProfileOverride.Add(profile);
+        return profile;
+    }
+
+    public OnshoreRelatedOPEXCostProfile CreateOnshoreRelatedOPEXCostProfile(OnshoreRelatedOPEXCostProfile profile)
+    {
+        _context.OnshoreRelatedOPEXCostProfile.Add(profile);
+        return profile;
+    }
+
+    public AdditionalOPEXCostProfile CreateAdditionalOPEXCostProfile(AdditionalOPEXCostProfile profile)
+    {
+        _context.AdditionalOPEXCostProfile.Add(profile);
+        return profile;
     }
 
     public async Task<CessationWellsCostOverride?> GetCessationWellsCostOverride(Guid costProfileId)

@@ -25,6 +25,12 @@ public class TopsideRepository : BaseRepository, ITopsideRepository
                         .FirstOrDefaultAsync(t => t.Id == topsideId);
     }
 
+    public async Task<bool> TopsideHasCostProfileOverride(Guid topsideId)
+    {
+        return await _context.Topsides
+            .AnyAsync(t => t.Id == topsideId && t.CostProfileOverride != null);
+    }
+
     public Topside UpdateTopside(Topside topside)
     {
         return Update(topside);
@@ -44,6 +50,12 @@ public class TopsideRepository : BaseRepository, ITopsideRepository
     public TopsideCostProfile UpdateTopsideCostProfile(TopsideCostProfile topsideCostProfile)
     {
         return Update(topsideCostProfile);
+    }
+
+    public TopsideCostProfileOverride CreateTopsideCostProfileOverride(TopsideCostProfileOverride profile)
+    {
+        _context.TopsideCostProfileOverride.Add(profile);
+        return profile;
     }
 
     public async Task<TopsideCostProfileOverride?> GetTopsideCostProfileOverride(Guid topsideCostProfileOverrideId)

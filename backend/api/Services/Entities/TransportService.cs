@@ -136,6 +136,46 @@ public class TransportService : ITransportService
         return dto;
     }
 
+    public async Task<TransportCostProfileOverrideDto> CreateTransportCostProfileOverride(
+        Guid caseId,
+        Guid transportId,
+        CreateTransportCostProfileOverrideDto dto
+    )
+    {
+        var transport = await _repository.GetTransport(transportId)
+            ?? throw new NotFoundInDBException($"Transport with id {transportId} not found.");
+
+        var resourceHasProfile = await _repository.TransportHasCostProfileOverride(transportId);
+
+        if (resourceHasProfile)
+        {
+            throw new ResourceAlreadyExistsException($"Transport with id {transportId} already has a profile of type {typeof(TransportCostProfileOverride).Name}.");
+        }
+
+        TransportCostProfileOverride profile = new()
+        {
+            Transport = transport,
+        };
+
+        var newProfile = _mapperService.MapToEntity(dto, profile, transportId);
+
+        TransportCostProfileOverride createdProfile;
+        try
+        {
+            createdProfile = _repository.CreateTransportCostProfileOverride(newProfile);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to create profile TransportCostProfileOverride for case id {caseId}.", caseId);
+            throw;
+        }
+
+        var updatedDto = _mapperService.MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(createdProfile, createdProfile.Id);
+        return updatedDto;
+    }
+
     public async Task<TransportCostProfileOverrideDto> UpdateTransportCostProfileOverride(
         Guid caseId,
         Guid transportId,

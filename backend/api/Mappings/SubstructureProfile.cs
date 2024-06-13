@@ -20,6 +20,7 @@ public class SubstructureProfile : Profile
         CreateMap<PROSPUpdateSubstructureDto, Substructure>();
         CreateMap<UpdateSubstructureCostProfileDto, SubstructureCostProfile>();
         CreateMap<UpdateSubstructureCostProfileOverrideDto, SubstructureCostProfileOverride>();
+        CreateMap<CreateSubstructureCostProfileOverrideDto, SubstructureCostProfileOverride>();
 
         CreateMap<CreateSubstructureDto, Substructure>();
     }
