@@ -140,6 +140,46 @@ public class SurfService : ISurfService
         return dto;
     }
 
+    public async Task<SurfCostProfileOverrideDto> CreateSurfCostProfileOverride(
+        Guid caseId,
+        Guid surfId,
+        CreateSurfCostProfileOverrideDto dto
+    )
+    {
+        var surf = await _repository.GetSurf(surfId)
+            ?? throw new NotFoundInDBException($"Surf with id {surfId} not found.");
+
+        var resourceHasProfile = await _repository.SurfHasCostProfileOverride(surfId);
+
+        if (resourceHasProfile)
+        {
+            throw new ResourceAlreadyExistsException($"Surf with id {surfId} already has a profile of type {typeof(SurfCostProfileOverride).Name}.");
+        }
+
+        SurfCostProfileOverride profile = new()
+        {
+            Surf = surf,
+        };
+
+        var newProfile = _mapperService.MapToEntity(dto, profile, surfId);
+
+        SurfCostProfileOverride createdProfile;
+        try
+        {
+            createdProfile = _repository.CreateSurfCostProfileOverride(newProfile);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to create profile SurfCostProfileOverride for case id {caseId}.", caseId);
+            throw;
+        }
+
+        var updatedDto = _mapperService.MapToDto<SurfCostProfileOverride, SurfCostProfileOverrideDto>(createdProfile, createdProfile.Id);
+        return updatedDto;
+    }
+
     public async Task<SurfCostProfileDto> AddOrUpdateSurfCostProfile(
         Guid caseId,
         Guid surfId,

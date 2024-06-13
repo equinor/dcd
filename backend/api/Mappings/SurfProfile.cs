@@ -20,6 +20,7 @@ public class SurfProfile : Profile
         CreateMap<PROSPUpdateSurfDto, Surf>();
         CreateMap<UpdateSurfCostProfileDto, SurfCostProfile>();
         CreateMap<UpdateSurfCostProfileOverrideDto, SurfCostProfileOverride>();
+        CreateMap<CreateSurfCostProfileOverrideDto, SurfCostProfileOverride>();
 
         CreateMap<CreateSurfDto, Surf>();
     }

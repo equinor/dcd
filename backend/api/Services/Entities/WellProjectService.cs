@@ -1,5 +1,6 @@
 using api.Context;
 using api.Dtos;
+using api.Enums;
 using api.Exceptions;
 using api.Models;
 using api.Repositories;
@@ -278,6 +279,66 @@ public class WellProjectService : IWellProjectService
         );
     }
 
+    public async Task<OilProducerCostProfileOverrideDto> CreateOilProducerCostProfileOverride(
+        Guid caseId,
+        Guid wellProjectId,
+        CreateOilProducerCostProfileOverrideDto createProfileDto
+    )
+    {
+        return await CreateWellProjectProfile<OilProducerCostProfileOverride, OilProducerCostProfileOverrideDto, CreateOilProducerCostProfileOverrideDto>(
+            caseId,
+            wellProjectId,
+            createProfileDto,
+            _repository.CreateOilProducerCostProfileOverride,
+            WellProjectProfileNames.OilProducerCostProfileOverride
+        );
+    }
+
+    public async Task<GasProducerCostProfileOverrideDto> CreateGasProducerCostProfileOverride(
+        Guid caseId,
+        Guid wellProjectId,
+        CreateGasProducerCostProfileOverrideDto createProfileDto
+    )
+    {
+        return await CreateWellProjectProfile<GasProducerCostProfileOverride, GasProducerCostProfileOverrideDto, CreateGasProducerCostProfileOverrideDto>(
+            caseId,
+            wellProjectId,
+            createProfileDto,
+            _repository.CreateGasProducerCostProfileOverride,
+            WellProjectProfileNames.GasProducerCostProfileOverride
+        );
+    }
+
+    public async Task<WaterInjectorCostProfileOverrideDto> CreateWaterInjectorCostProfileOverride(
+        Guid caseId,
+        Guid wellProjectId,
+        CreateWaterInjectorCostProfileOverrideDto createProfileDto
+    )
+    {
+        return await CreateWellProjectProfile<WaterInjectorCostProfileOverride, WaterInjectorCostProfileOverrideDto, CreateWaterInjectorCostProfileOverrideDto>(
+            caseId,
+            wellProjectId,
+            createProfileDto,
+            _repository.CreateWaterInjectorCostProfileOverride,
+            WellProjectProfileNames.WaterInjectorCostProfileOverride
+        );
+    }
+
+    public async Task<GasInjectorCostProfileOverrideDto> CreateGasInjectorCostProfileOverride(
+        Guid caseId,
+        Guid wellProjectId,
+        CreateGasInjectorCostProfileOverrideDto createProfileDto
+    )
+    {
+        return await CreateWellProjectProfile<GasInjectorCostProfileOverride, GasInjectorCostProfileOverrideDto, CreateGasInjectorCostProfileOverrideDto>(
+            caseId,
+            wellProjectId,
+            createProfileDto,
+            _repository.CreateGasInjectorCostProfileOverride,
+            WellProjectProfileNames.GasInjectorCostProfileOverride
+        );
+    }
+
     private async Task<TDto> UpdateWellProjectCostProfile<TProfile, TDto, TUpdateDto>(
         Guid caseId,
         Guid wellProjectId,
@@ -310,6 +371,51 @@ public class WellProjectService : IWellProjectService
         }
 
         var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
+        return updatedDto;
+    }
+
+    private async Task<TDto> CreateWellProjectProfile<TProfile, TDto, TCreateDto>(
+        Guid caseId,
+        Guid wellProjectId,
+        TCreateDto createWellProjectProfileDto,
+        Func<TProfile, TProfile> createProfile,
+        WellProjectProfileNames profileName
+    )
+        where TProfile : class, IWellProjectTimeSeries, new()
+        where TDto : class
+        where TCreateDto : class
+    {
+        var wellProject = await _repository.GetWellProject(wellProjectId)
+            ?? throw new NotFoundInDBException($"Well project with id {wellProjectId} not found.");
+
+        var resourceHasProfile = await _repository.WellProjectHasProfile(wellProjectId, profileName);
+
+        if (resourceHasProfile)
+        {
+            throw new ResourceAlreadyExistsException($"Well project with id {wellProjectId} already has a profile of type {typeof(TProfile).Name}.");
+        }
+
+        TProfile profile = new()
+        {
+            WellProject = wellProject,
+        };
+
+        var newProfile = _mapperService.MapToEntity(createWellProjectProfileDto, profile, wellProjectId);
+
+        TProfile createdProfile;
+        try
+        {
+            createdProfile = createProfile(newProfile);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
+            throw;
+        }
+
+        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
         return updatedDto;
     }
 }
