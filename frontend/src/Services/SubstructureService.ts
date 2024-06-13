@@ -16,6 +16,19 @@ class SubstructureService extends __BaseService {
         return res
     }
 
+    public async createSubstructureCostProfileOverride(
+        projectId: string,
+        caseId: string,
+        substructureId: string,
+        dto: Components.Schemas.CreateSubstructureCostProfileOverrideDto,
+    ): Promise<Components.Schemas.SubstructureCostProfileOverrideDto> {
+        const res: Components.Schemas.SubstructureCostProfileOverrideDto = await this.post(
+            `projects/${projectId}/cases/${caseId}/substructures/${substructureId}/cost-profile-override/`,
+            { body: dto },
+        )
+        return res
+    }
+
     public async updateSubstructureCostProfileOverride(
         projectId: string,
         caseId: string,
