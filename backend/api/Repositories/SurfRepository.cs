@@ -25,6 +25,12 @@ public class SurfRepository : BaseRepository, ISurfRepository
                         .FirstOrDefaultAsync(t => t.Id == surfId);
     }
 
+    public async Task<bool> SurfHasCostProfileOverride(Guid surfId)
+    {
+        return await _context.Surfs
+            .AnyAsync(t => t.Id == surfId && t.CostProfileOverride != null);
+    }
+
     public Surf UpdateSurf(Surf surf)
     {
         return Update(surf);
@@ -44,6 +50,12 @@ public class SurfRepository : BaseRepository, ISurfRepository
     public SurfCostProfile UpdateSurfCostProfile(SurfCostProfile surfCostProfile)
     {
         return Update(surfCostProfile);
+    }
+
+    public SurfCostProfileOverride CreateSurfCostProfileOverride(SurfCostProfileOverride profile)
+    {
+        _context.SurfCostProfileOverride.Add(profile);
+        return profile;
     }
 
     public async Task<SurfCostProfileOverride?> GetSurfCostProfileOverride(Guid surfCostProfileOverrideId)
