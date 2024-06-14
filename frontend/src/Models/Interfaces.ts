@@ -13,7 +13,7 @@ export type ResourceName =
 
 export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFacilitiesCostOverride" | "totalFeasibilityAndConceptStudiesOverride" |
     "totalFEEDStudiesOverride" | "historicCostCostProfile" | "wellInterventionCostProfileOverride" | "offshoreFacilitiesOperationsCostProfileOverride" |
-    "onshoreRelatedOPEXCostProfile" | "additionalOPEXCostProfile" |
+    "onshoreRelatedOPEXCostProfile" | "additionalOPEXCostProfile" | "totalOtherStudies" |
     "topsideCostProfileOverride" |
     "surfCostProfileOverride" |
     "transportCostProfileOverride" |
@@ -133,10 +133,10 @@ export interface ITimeSeriesData {
     unit: string,
     profile: ITimeSeries | undefined
     overrideProfile?: ITimeSeries | undefined
-    overridable: boolean
-    editable: boolean
     resourceId: string
     resourcePropertyKey: string
     resourceName: ProfileNames
     resourceProfileId?: string
+    overridable: boolean
+    editable: boolean
 }

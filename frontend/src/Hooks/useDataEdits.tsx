@@ -80,6 +80,7 @@ const useDataEdits = (): {
             serviceMethod: object,
         }) => serviceMethod,
         {
+            // TODO: Consider adding optimistic updates
             onSuccess: (
                 results: any,
                 variables,
@@ -937,19 +938,6 @@ const useDataEdits = (): {
         previousDisplayValue,
         newResourceObject,
     }: AddEditParams) => {
-        console.log("addEdit")
-        console.log("newValue", newValue)
-        console.log("previousValue", previousValue)
-        console.log("inputLabel", inputLabel)
-        console.log("projectId", projectId)
-        console.log("resourceName", resourceName)
-        console.log("resourcePropertyKey", resourcePropertyKey)
-        console.log("resourceId", resourceId)
-        console.log("resourceProfileId", resourceProfileId)
-        console.log("caseId", caseId)
-        console.log("newDisplayValue", newDisplayValue)
-        console.log("previousDisplayValue", previousDisplayValue)
-        console.log("newResourceObject", newResourceObject)
         if (resourceName !== "case" && !resourceId) {
             console.log("asset id is required for this service")
             return
