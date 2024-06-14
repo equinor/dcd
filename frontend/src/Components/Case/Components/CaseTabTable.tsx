@@ -257,6 +257,7 @@ const CaseTabTable = ({
         editable: true,
         onCellValueChanged: handleCellValueChange,
         suppressMenuButton: true,
+        cellDataType: "number",
     }), [])
 
     useEffect(() => {

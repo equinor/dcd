@@ -164,7 +164,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             timeSeriesData={capexTimeSeriesData}
             dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
             tableYears={tableYears}
-            tableName="Offshore facilitiy cost"
+            tableName="Offshore facility cost"
             gridRef={capexGridRef}
             alignedGridsRef={alignedGridsRef}
             includeFooter
