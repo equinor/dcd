@@ -28,6 +28,8 @@ const LockIcon: React.FC<LockIconProps> = ({
                 ...params.data.overrideProfile,
                 resourceId: params.data.resourceId,
                 resourceName: params.data.resourceName,
+                overridable: params.data.overridable,
+                editable: params.data.editable,
             })
 
             params.api.redrawRows()
@@ -35,7 +37,7 @@ const LockIcon: React.FC<LockIconProps> = ({
         }
     }
 
-    if (clickedElement.data?.overrideProfile !== undefined) {
+    if (clickedElement.data?.overridable) {
         return (clickedElement.data.overrideProfile?.override) ? (
             <Icon
                 data={lock_open}
@@ -51,9 +53,6 @@ const LockIcon: React.FC<LockIconProps> = ({
                     onClick={() => handleLockIconClick(clickedElement)}
                 />
             )
-    }
-    if (clickedElement.data && !clickedElement?.data?.set) {
-        return <Icon data={lock} color="#007079" />
     }
     return null
 }

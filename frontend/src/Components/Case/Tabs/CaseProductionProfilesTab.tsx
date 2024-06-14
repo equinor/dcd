@@ -16,18 +16,7 @@ import { useCaseContext } from "../../../Context/CaseContext"
 import DateRangePicker from "../../Input/TableDateRangePicker"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import CaseProductionProfilesTabSkeleton from "./LoadingSkeletons/CaseProductionProfilesTabSkeleton"
-
-interface ITimeSeriesData {
-    profileName: string
-    unit: string,
-    profile: ITimeSeries | undefined
-    overrideProfile?: ITimeSeries | undefined
-    overridable?: boolean
-    resourceId?: string
-    resourcePropertyKey?: string
-    resourceName?: string
-    resourceProfileId?: string
-}
+import { ITimeSeriesData } from "../../../Models/Interfaces"
 
 const CaseProductionProfilesTab = () => {
     const queryClient = useQueryClient()
@@ -97,6 +86,8 @@ const CaseProductionProfilesTab = () => {
     const deferredGasData = apiData?.deferredGasProduction
     const caseData = apiData?.case
 
+    if (!projectCase || !drainageStrategyData) { return null }
+
     const timeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Oil production",
@@ -106,6 +97,8 @@ const CaseProductionProfilesTab = () => {
             resourceId: drainageStrategyData?.id,
             resourceProfileId: oilProductionData?.id,
             resourcePropertyKey: "productionProfileOil",
+            editable: true,
+            overridable: false,
         },
         {
             profileName: "Gas production",
@@ -115,6 +108,8 @@ const CaseProductionProfilesTab = () => {
             resourceId: drainageStrategyData?.id,
             resourceProfileId: gasProductionData?.id,
             resourcePropertyKey: "productionProfileGas",
+            editable: true,
+            overridable: false,
         },
         {
             profileName: "Water production",
@@ -124,6 +119,8 @@ const CaseProductionProfilesTab = () => {
             resourceId: drainageStrategyData?.id,
             resourceProfileId: waterProductionData?.id,
             resourcePropertyKey: "productionProfileWater",
+            editable: true,
+            overridable: false,
         },
         {
             profileName: "Water injection",
@@ -133,6 +130,8 @@ const CaseProductionProfilesTab = () => {
             resourceId: drainageStrategyData?.id,
             resourceProfileId: waterInjectionData?.id,
             resourcePropertyKey: "productionProfileWaterInjection",
+            editable: true,
+            overridable: false,
         },
         {
             profileName: "Fuel, flaring and losses",
@@ -142,8 +141,9 @@ const CaseProductionProfilesTab = () => {
             resourceId: drainageStrategyData?.id,
             resourceProfileId: fuelFlaringAndLossesOverrideData?.id,
             resourcePropertyKey: "productionProfileFuelFlaringAndLossesOverride",
-            overridable: true,
             overrideProfile: fuelFlaringAndLossesOverrideData,
+            editable: true,
+            overridable: true,
         },
         {
             profileName: "Net sales gas",
@@ -153,8 +153,9 @@ const CaseProductionProfilesTab = () => {
             resourceId: drainageStrategyData?.id,
             resourceProfileId: netSalesGasOverrideData?.id,
             resourcePropertyKey: "productionProfileNetSalesGasOverride",
-            overridable: true,
             overrideProfile: netSalesGasOverrideData,
+            editable: true,
+            overridable: true,
         },
         {
             profileName: "Imported electricity",
@@ -164,8 +165,9 @@ const CaseProductionProfilesTab = () => {
             resourceId: drainageStrategyData?.id,
             resourceProfileId: importedElectricityOverrideData?.id,
             resourcePropertyKey: "productionProfileImportedElectricityOverride",
-            overridable: true,
             overrideProfile: importedElectricityOverrideData,
+            editable: true,
+            overridable: true,
         },
         {
             profileName: "Deferred oil production",
@@ -175,6 +177,8 @@ const CaseProductionProfilesTab = () => {
             resourceId: drainageStrategyData?.id,
             resourceProfileId: deferredOilData?.id,
             resourcePropertyKey: "deferredOilProduction",
+            editable: true,
+            overridable: false,
         },
         {
             profileName: "Deferred gas production",
@@ -184,6 +188,8 @@ const CaseProductionProfilesTab = () => {
             resourceId: drainageStrategyData?.id,
             resourceProfileId: deferredGasData?.id,
             resourcePropertyKey: "deferredGasProduction",
+            editable: true,
+            overridable: false,
         },
     ]
 

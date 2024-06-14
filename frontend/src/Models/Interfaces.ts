@@ -1,3 +1,5 @@
+import { ITimeSeries } from "./ITimeSeries"
+
 export type ResourceName =
     "case" |
     "topside" |
@@ -16,7 +18,8 @@ export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFaci
     "surfCostProfileOverride" |
     "transportCostProfileOverride" |
     "substructureCostProfileOverride" |
-    "productionProfileOil" | "productionProfileGas" | "productionProfileWater" | "productionProfileWaterInjection" |
+    "productionProfileOil" | "productionProfileGas" | "productionProfileWater" | "productionProfileWaterInjection" | "productionProfileFuelFlaringAndLossesOverride" |
+    "productionProfileNetSalesGasOverride" | "productionProfileImportedElectricityOverride" | "deferredOilProduction" | "deferredGasProduction" |
     "netSalesGasOverride" | "co2EmissionsOverride" | "importedElectricityOverride" | "deferredOilProduction" | "deferredGasProduction" |
     "oilProducerCostProfileOverride" | "gasProducerCostProfileOverride" | "waterInjectorCostProfileOverride" | "gasInjectorCostProfileOverride" |
     "seismicAcquisitionAndProcessing" | "countryOfficeCost"
@@ -123,4 +126,17 @@ export interface EditInstance {
 export interface EditEntry {
     caseId: string;
     currentEditId: string;
+}
+
+export interface ITimeSeriesData {
+    profileName: string
+    unit: string,
+    profile: ITimeSeries | undefined
+    overrideProfile?: ITimeSeries | undefined
+    overridable: boolean
+    editable: boolean
+    resourceId: string
+    resourcePropertyKey: string
+    resourceName: ProfileNames
+    resourceProfileId?: string
 }

@@ -234,13 +234,10 @@ export function updateObject<T>(object: T | undefined, setObject: Dispatch<SetSt
 }
 
 export const tableCellisEditable = (params: any, editMode: boolean) => {
-    if (editMode && params.data?.overrideProfileSet === undefined && params.data?.set !== undefined) {
-        return true
+    if (params.data.overridable) {
+        return editMode && params.data.override
     }
-    if (editMode && params.data?.overrideProfile !== undefined && params.data?.overrideProfile.override) {
-        return true
-    }
-    return false
+    return editMode && params.data.editable
 }
 
 export const numberValueParser = (params: { newValue: any }) => {

@@ -79,6 +79,8 @@ const CaseTabTable = ({
             rowObject.override = ts.overrideProfile?.override === true
             rowObject.resourceId = ts.resourceId
             rowObject.resourceName = ts.resourceName
+            rowObject.overridable = ts.overridable
+            rowObject.editable = ts.editable
 
             rowObject.overrideProfileSet = ts.overrideProfileSet
             rowObject.overrideProfile = ts.overrideProfile ?? {
@@ -181,7 +183,7 @@ const CaseTabTable = ({
             yearDefs.push({
                 field: index.toString(),
                 flex: 1,
-                editable: true, // (params: any) => tableCellisEditable(params, editMode),
+                editable: (params: any) => tableCellisEditable(params, editMode),
                 minWidth: 100,
                 aggFunc: "sum",
                 cellRenderer: ErrorCellRenderer,
