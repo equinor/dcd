@@ -84,7 +84,7 @@ const CaseTabTable = ({
 
             rowObject.overrideProfileSet = ts.overrideProfileSet
             rowObject.overrideProfile = ts.overrideProfile ?? {
-                id: EMPTY_GUID, startYear: 0, values: [], override: false,
+                startYear: 0, values: [], override: false,
             }
 
             if (rowObject.profile && rowObject.profile.values?.length > 0) {
