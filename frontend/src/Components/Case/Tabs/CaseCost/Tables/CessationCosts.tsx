@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react"
-import { ITimeSeriesData } from "../../../../../Models/ITimeSeriesData"
+import { useQuery, useQueryClient } from "react-query"
+import { useParams } from "react-router"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../../Context/CaseContext"
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { updateObject } from "../../../../../Utils/common"
+import { ITimeSeriesData } from "../../../../../Models/Interfaces"
 
 interface CesationCostsProps {
     tableYears: [number, number]
@@ -11,95 +13,66 @@ interface CesationCostsProps {
     alignedGridsRef: any[]
 }
 const CessationCosts: React.FC<CesationCostsProps> = ({ tableYears, cessationGridRef, alignedGridsRef }) => {
+    const queryClient = useQueryClient()
+    const { caseId } = useParams()
     const { project } = useProjectContext()
-    const {
-        projectCase,
-        activeTabCase,
+    const { projectCase, activeTabCase } = useCaseContext()
+    const projectId = project?.id || null
 
-        projectCaseEdited,
-        setProjectCaseEdited,
+    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
+        ["apiData", { projectId, caseId }],
+        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        {
+            enabled: !!projectId && !!caseId,
+            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        },
+    )
 
-        cessationWellsCost,
-        setCessationWellsCost,
+    const cessationWellsCostData = apiData?.cessationWellsCost
+    const cessationWellsCostOverrideData = apiData?.cessationWellsCostOverride
+    const cessationOffshoreFacilitiesCostData = apiData?.cessationOffshoreFacilitiesCost
+    const cessationOffshoreFacilitiesCostOverrideData = apiData?.cessationOffshoreFacilitiesCostOverride
+    const cessationOnshoreFacilitiesCostProfileData = apiData?.cessationOnshoreFacilitiesCostProfile
 
-        cessationOffshoreFacilitiesCost,
-        setCessationOffshoreFacilitiesCost,
-
-        cessationOnshoreFacilitiesCostProfile,
-        setCessationOnshoreFacilitiesCostProfile,
-
-        cessationOffshoreFacilitiesCostOverride,
-        setCessationOffshoreFacilitiesCostOverride,
-    } = useCaseContext()
-
-    const [cessationWellsCostOverride, setCessationWellsCostOverride] = useState<Components.Schemas.CessationWellsCostOverrideDto>()
+    if (!projectCase) { return null }
 
     const cessationTimeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Cessation - Development wells",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationWellsCost,
+            profile: cessationWellsCostData,
+            resourceName: "cessationWellsCostOverride",
+            resourceId: projectCase.id,
+            resourceProfileId: cessationWellsCostOverrideData?.id,
+            resourcePropertyKey: "cessationWellsCostOverride",
             overridable: true,
-            overrideProfile: cessationWellsCostOverride,
-            overrideProfileSet: setCessationWellsCostOverride,
+            overrideProfile: cessationWellsCostOverrideData,
+            editable: true,
         },
         {
             profileName: "Cessation - Offshore facilities",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationOffshoreFacilitiesCost,
+            profile: cessationOffshoreFacilitiesCostData,
+            resourceName: "cessationOffshoreFacilitiesCostOverride",
+            resourceId: projectCase.id,
+            resourceProfileId: cessationOffshoreFacilitiesCostOverrideData?.id,
+            resourcePropertyKey: "cessationOffshoreFacilitiesCostOverride",
             overridable: true,
-            overrideProfile: cessationOffshoreFacilitiesCostOverride,
-            overrideProfileSet: setCessationOffshoreFacilitiesCostOverride,
+            overrideProfile: cessationOffshoreFacilitiesCostOverrideData,
+            editable: true,
         },
         {
             profileName: "CAPEX - Cessation - Onshore facilities",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationOnshoreFacilitiesCostProfile,
-            set: setCessationOnshoreFacilitiesCostProfile,
+            profile: cessationOnshoreFacilitiesCostProfileData,
+            resourceName: "cessationOnshoreFacilitiesCostProfile",
+            resourceId: projectCase.id,
+            resourceProfileId: cessationOnshoreFacilitiesCostProfileData?.id,
+            resourcePropertyKey: "cessationOnshoreFacilitiesCostProfile",
+            editable: true,
+            overridable: true,
         },
     ]
-
-    useEffect(() => {
-        if (cessationGridRef.current
-            && cessationGridRef.current.api
-            && cessationGridRef.current.api.refreshCells) {
-            cessationGridRef.current.api.refreshCells()
-        }
-    }, [
-        cessationWellsCost,
-        cessationOffshoreFacilitiesCost,
-        cessationOnshoreFacilitiesCostProfile,
-    ])
-
-    useEffect(() => {
-        if (projectCaseEdited) {
-            updateObject(projectCaseEdited, setProjectCaseEdited, "cessationWellsCostOverride", cessationWellsCostOverride)
-        }
-    }, [cessationWellsCostOverride])
-
-    useEffect(() => {
-        if (projectCaseEdited) {
-            updateObject(projectCaseEdited, setProjectCaseEdited, "cessationOffshoreFacilitiesCostOverride", cessationOffshoreFacilitiesCostOverride)
-        }
-    }, [cessationOffshoreFacilitiesCostOverride])
-
-    useEffect(() => {
-        if (projectCaseEdited) {
-            updateObject(projectCaseEdited, setProjectCaseEdited, "cessationOnshoreFacilitiesCostProfile", cessationOnshoreFacilitiesCostProfile)
-        }
-    }, [cessationOnshoreFacilitiesCostProfile])
-
-    useEffect(() => {
-        if (activeTabCase === 5 && projectCase) {
-            setCessationWellsCost(projectCase.cessationWellsCost)
-            setCessationWellsCostOverride(projectCase.cessationWellsCostOverride)
-
-            setCessationOffshoreFacilitiesCost(projectCase?.cessationOffshoreFacilitiesCost)
-            setCessationOffshoreFacilitiesCostOverride(projectCase.cessationOffshoreFacilitiesCostOverride)
-
-            setCessationOnshoreFacilitiesCostProfile(projectCase?.cessationOnshoreFacilitiesCostProfile)
-        }
-    }, [activeTabCase])
 
     return (
         <CaseTabTable

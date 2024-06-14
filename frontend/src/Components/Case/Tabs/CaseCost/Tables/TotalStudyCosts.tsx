@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react"
-import { ITimeSeriesData } from "../../../../../Models/ITimeSeriesData"
+import React, { } from "react"
+import { useQuery, useQueryClient } from "react-query"
+import { useParams } from "react-router"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../../Context/CaseContext"
 import CaseTabTable from "../../../Components/CaseTabTable"
-import { updateObject } from "../../../../../Utils/common"
+import { ITimeSeriesData } from "../../../../../Models/Interfaces"
 
 interface CesationCostsProps {
     tableYears: [number, number]
@@ -12,91 +13,66 @@ interface CesationCostsProps {
 }
 
 const TotalStudyCosts: React.FC<CesationCostsProps> = ({ tableYears, studyGridRef, alignedGridsRef }) => {
+    const queryClient = useQueryClient()
+    const { caseId } = useParams()
     const { project } = useProjectContext()
-    const {
-        projectCase,
-        activeTabCase,
-        projectCaseEdited,
-        setProjectCaseEdited,
+    const { projectCase, activeTabCase } = useCaseContext()
+    const projectId = project?.id || null
 
-        totalFeasibilityAndConceptStudiesOverride,
-        setTotalFeasibilityAndConceptStudiesOverride, // why is this in context while other overrides are local states?
+    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
+        ["apiData", { projectId, caseId }],
+        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        {
+            enabled: !!projectId && !!caseId,
+            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        },
+    )
 
-        totalFEEDStudiesOverride,
-        setTotalFEEDStudiesOverride,
+    const totalFeasibilityAndConceptStudiesData = apiData?.totalFeasibilityAndConceptStudies
+    const totalFeasibilityAndConceptStudiesOverrideData = apiData?.totalFeasibilityAndConceptStudiesOverride
+    const totalFEEDStudiesData = apiData?.totalFEEDStudies
+    const totalFEEDStudiesOverrideData = apiData?.totalFEEDStudiesOverride
+    const totalOtherStudiesData = apiData?.totalOtherStudies
 
-        totalFeasibilityAndConceptStudies,
-        setTotalFeasibilityAndConceptStudies,
-
-        totalFEEDStudies,
-        setTotalFEEDStudies,
-
-        totalOtherStudies,
-        setTotalOtherStudies,
-    } = useCaseContext()
+    if (!projectCase) { return null }
 
     const studyTimeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Feasibility & conceptual stud.",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalFeasibilityAndConceptStudies,
+            profile: totalFeasibilityAndConceptStudiesData,
+            resourceName: "totalFeasibilityAndConceptStudiesOverride",
+            resourceId: projectCase.id,
+            resourceProfileId: totalFeasibilityAndConceptStudiesOverrideData?.id,
+            resourcePropertyKey: "totalFeasibilityAndConceptStudiesOverride",
             overridable: true,
-            overrideProfile: totalFeasibilityAndConceptStudiesOverride,
-            overrideProfileSet: setTotalFeasibilityAndConceptStudiesOverride,
+            overrideProfile: totalFeasibilityAndConceptStudiesOverrideData,
+            editable: true,
         },
         {
             profileName: "FEED studies (DG2-DG3)",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalFEEDStudies,
+            profile: totalFEEDStudiesData,
+            resourceName: "totalFEEDStudiesOverride",
+            resourceId: projectCase.id,
+            resourceProfileId: totalFEEDStudiesOverrideData?.id,
+            resourcePropertyKey: "totalFEEDStudiesOverride",
             overridable: true,
-            overrideProfile: totalFEEDStudiesOverride,
-            overrideProfileSet: setTotalFEEDStudiesOverride,
+            overrideProfile: totalFEEDStudiesOverrideData,
+            editable: true,
         },
         {
             profileName: "Other studies",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalOtherStudies,
-            set: setTotalOtherStudies,
+            profile: totalOtherStudiesData,
+            resourceName: "productionProfileOil",
+            resourceId: projectCase?.id,
+            resourceProfileId: totalOtherStudiesData?.id,
+            resourcePropertyKey: "totalOtherStudies",
+            editable: true,
+            overridable: true,
         },
     ]
-
-    useEffect(() => {
-        if (studyGridRef.current
-            && studyGridRef.current.api
-            && studyGridRef.current.api.refreshCells) {
-            studyGridRef.current.api.refreshCells()
-        }
-    }, [totalFeasibilityAndConceptStudies, totalFEEDStudies, totalOtherStudies])
-
-    useEffect(() => {
-        if (projectCaseEdited) {
-            updateObject(projectCaseEdited, setProjectCaseEdited, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
-        }
-    }, [totalFeasibilityAndConceptStudiesOverride])
-
-    useEffect(() => {
-        if (projectCaseEdited) {
-            updateObject(projectCaseEdited, setProjectCaseEdited, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
-        }
-    }, [totalFEEDStudiesOverride])
-
-    useEffect(() => {
-        if (projectCaseEdited) {
-            updateObject(projectCaseEdited, setProjectCaseEdited, "totalOtherStudies", totalOtherStudies)
-        }
-    }, [totalOtherStudies])
-
-    useEffect(() => {
-        if (activeTabCase === 5 && projectCase) {
-            setTotalOtherStudies(projectCase.totalOtherStudies)
-
-            setTotalFeasibilityAndConceptStudies(projectCase.totalFeasibilityAndConceptStudies)
-            setTotalFeasibilityAndConceptStudiesOverride(projectCase.totalFeasibilityAndConceptStudiesOverride)
-
-            setTotalFEEDStudies(projectCase.totalFEEDStudies)
-            setTotalFEEDStudiesOverride(projectCase.totalFEEDStudiesOverride)
-        }
-    }, [activeTabCase])
 
     return (
         <CaseTabTable

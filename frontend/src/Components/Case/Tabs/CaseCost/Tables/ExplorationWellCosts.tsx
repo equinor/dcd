@@ -1,10 +1,12 @@
 import React, { useEffect } from "react"
-import { ITimeSeriesData } from "../../../../../Models/ITimeSeriesData"
+import { useQuery, useQueryClient } from "react-query"
+import { useParams } from "react-router"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../../Context/CaseContext"
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { updateObject } from "../../../../../Utils/common"
 import { useModalContext } from "../../../../../Context/ModalContext"
+import { ITimeSeriesData } from "../../../../../Models/Interfaces"
 
 interface ExplorationWellCostsProps {
     tableYears: [number, number]
@@ -17,121 +19,98 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
     explorationWellsGridRef,
     alignedGridsRef,
 }) => {
+    const queryClient = useQueryClient()
+    const { caseId } = useParams()
     const { project } = useProjectContext()
-    const {
-        exploration,
-        setExploration,
-    } = useModalContext()
-    const {
-        projectCase,
-        activeTabCase,
+    const { projectCase, activeTabCase } = useCaseContext()
+    const projectId = project?.id || null
 
-        explorationWellCostProfile,
-        setExplorationWellCostProfile,
+    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
+        ["apiData", { projectId, caseId }],
+        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        {
+            enabled: !!projectId && !!caseId,
+            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        },
+    )
 
-        gAndGAdminCost,
-        setGAndGAdminCost,
+    const gAndGAdminCostData = apiData?.gAndGAdminCost
+    const seismicAcquisitionAndProcessingData = apiData?.seismicAcquisitionAndProcessing
+    const countryOfficeCostData = apiData?.countryOfficeCost
+    const explorationWellCostProfileData = apiData?.explorationWellCostProfile
+    const appraisalWellCostProfileData = apiData?.appraisalWellCostProfile
+    const sidetrackCostProfileData = apiData?.sidetrackCostProfile
 
-        seismicAcquisitionAndProcessing,
-        setSeismicAcquisitionAndProcessing,
-
-        sidetrackCostProfile,
-        setSidetrackCostProfile,
-
-        appraisalWellCostProfile,
-        setAppraisalWellCostProfile,
-
-        countryOfficeCost,
-        setCountryOfficeCost,
-    } = useCaseContext()
+    if (!projectCase) { return null }
 
     const explorationTimeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "G&G and admin",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: gAndGAdminCost,
-            set: setGAndGAdminCost,
+            profile: gAndGAdminCostData,
+            resourceName: "gAndGAdminCost",
+            resourceId: projectCase.id,
+            resourceProfileId: gAndGAdminCostData?.id,
+            resourcePropertyKey: "gAndGAdminCost",
+            editable: true,
+            overridable: true,
         },
         {
             profileName: "Seismic acquisition and processing",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: seismicAcquisitionAndProcessing,
-            set: setSeismicAcquisitionAndProcessing,
+            profile: seismicAcquisitionAndProcessingData,
+            resourceName: "seismicAcquisitionAndProcessing",
+            resourceId: projectCase.id,
+            resourceProfileId: seismicAcquisitionAndProcessingData?.id,
+            resourcePropertyKey: "seismicAcquisitionAndProcessing",
+            editable: true,
+            overridable: true,
         },
         {
             profileName: "Country office",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: countryOfficeCost,
-            set: setCountryOfficeCost,
+            profile: countryOfficeCostData,
+            resourceName: "countryOfficeCost",
+            resourceId: projectCase.id,
+            resourceProfileId: countryOfficeCostData?.id,
+            resourcePropertyKey: "countryOfficeCost",
+            editable: true,
+            overridable: true,
         },
         {
             profileName: "Exploration well",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: explorationWellCostProfile,
-            set: setExplorationWellCostProfile,
+            profile: explorationWellCostProfileData,
+            resourceName: "explorationWellCostProfile",
+            resourceId: projectCase.id,
+            resourceProfileId: explorationWellCostProfileData?.id,
+            resourcePropertyKey: "explorationWellCostProfile",
+            editable: true,
+            overridable: true,
         },
         {
             profileName: "Appraisal well",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: appraisalWellCostProfile,
-            set: setAppraisalWellCostProfile,
+            profile: appraisalWellCostProfileData,
+            resourceName: "appraisalWellCostProfile",
+            resourceId: projectCase.id,
+            resourceProfileId: appraisalWellCostProfileData?.id,
+            resourcePropertyKey: "appraisalWellCostProfile",
+            editable: true,
+            overridable: true,
         },
         {
             profileName: "Sidetrack well",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: sidetrackCostProfile,
-            set: setSidetrackCostProfile,
+            profile: sidetrackCostProfileData,
+            resourceName: "sidetrackCostProfile",
+            resourceId: projectCase.id,
+            resourceProfileId: sidetrackCostProfileData?.id,
+            resourcePropertyKey: "sidetrackCostProfile",
+            editable: true,
+            overridable: true,
         },
     ]
-
-    useEffect(() => {
-        if (explorationWellsGridRef.current
-            && explorationWellsGridRef.current.api
-            && explorationWellsGridRef.current.api.refreshCells) {
-            explorationWellsGridRef.current.api.refreshCells()
-        }
-    }, [gAndGAdminCost])
-
-    useEffect(() => {
-        if (exploration) {
-            updateObject(exploration, setExploration, "explorationWellCostProfile", explorationWellCostProfile)
-        }
-    }, [explorationWellCostProfile])
-
-    useEffect(() => {
-        if (exploration) {
-            updateObject(exploration, setExploration, "appraisalWellCostProfile", appraisalWellCostProfile)
-        }
-    }, [appraisalWellCostProfile])
-
-    useEffect(() => {
-        if (exploration) {
-            updateObject(exploration, setExploration, "sidetrackCostProfile", sidetrackCostProfile)
-        }
-    }, [sidetrackCostProfile])
-
-    useEffect(() => {
-        if (exploration) {
-            updateObject(exploration, setExploration, "seismicAcquisitionAndProcessing", seismicAcquisitionAndProcessing)
-        }
-    }, [seismicAcquisitionAndProcessing])
-
-    useEffect(() => {
-        if (exploration) {
-            updateObject(exploration, setExploration, "countryOfficeCost", countryOfficeCost)
-        }
-    }, [countryOfficeCost])
-
-    useEffect(() => {
-        if (activeTabCase === 5 && exploration) {
-            setSeismicAcquisitionAndProcessing(exploration.seismicAcquisitionAndProcessing)
-            setExplorationWellCostProfile(exploration.explorationWellCostProfile)
-            setAppraisalWellCostProfile(exploration.appraisalWellCostProfile)
-            setSidetrackCostProfile(exploration.sidetrackCostProfile)
-            setCountryOfficeCost(exploration.countryOfficeCost)
-            setGAndGAdminCost(exploration.gAndGAdminCost)
-        }
-    }, [activeTabCase])
 
     return (
         <CaseTabTable

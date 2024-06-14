@@ -11,7 +11,9 @@ export type ResourceName =
     "wellProject" |
     "exploration" | ProfileNames
 
-export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFacilitiesCostOverride" | "totalFeasibilityAndConceptStudiesOverride" |
+export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFacilitiesCostOverride" | "cessationOnshoreFacilitiesCostProfile" |
+    "totalFeasibilityAndConceptStudiesOverride" | "wellProjectOilProducerCostOverride" | "wellProjectGasProducerCostOverride" |
+    "wellProjectWaterInjectorCostOverride" | "wellProjectGasInjectorCostOverride" | "gAndGAdminCost" |
     "totalFEEDStudiesOverride" | "historicCostCostProfile" | "wellInterventionCostProfileOverride" | "offshoreFacilitiesOperationsCostProfileOverride" |
     "onshoreRelatedOPEXCostProfile" | "additionalOPEXCostProfile" | "totalOtherStudies" |
     "topsideCostProfileOverride" |
@@ -22,7 +24,8 @@ export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFaci
     "productionProfileNetSalesGasOverride" | "productionProfileImportedElectricityOverride" | "deferredOilProduction" | "deferredGasProduction" |
     "netSalesGasOverride" | "co2EmissionsOverride" | "importedElectricityOverride" | "deferredOilProduction" | "deferredGasProduction" |
     "oilProducerCostProfileOverride" | "gasProducerCostProfileOverride" | "waterInjectorCostProfileOverride" | "gasInjectorCostProfileOverride" |
-    "seismicAcquisitionAndProcessing" | "countryOfficeCost"
+    "seismicAcquisitionAndProcessing" | "countryOfficeCost" | "explorationWellCostProfile" | "appraisalWellCostProfile" |
+    "sidetrackCostProfile" | "surfCostOverride" | "topsideCostOverride" | "substructureCostOverride" | "transportCostOverride"
 
 export type ResourceObject =
     Components.Schemas.TopsideDto |
