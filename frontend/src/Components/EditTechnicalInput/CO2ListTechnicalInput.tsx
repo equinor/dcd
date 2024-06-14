@@ -139,7 +139,7 @@ const CO2ListTechnicalInput = () => {
         filter: true,
         resizable: true,
         onCellValueChanged: handleCellValueChange,
-        suppressMenuButton: true,
+        suppressHeaderMenuButton: true,
     }), [])
 
     const switchRow = () => {
