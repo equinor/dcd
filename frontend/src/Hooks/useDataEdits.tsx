@@ -17,6 +17,7 @@ import { GetSubstructureService } from "../Services/SubstructureService"
 import { GetTransportService } from "../Services/TransportService"
 import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
 import { useAppContext } from "../Context/AppContext"
+import { GetWellProjectService } from "../Services/WellProjectService"
 
 interface AddEditParams {
     newValue: string | number | undefined;
@@ -225,6 +226,30 @@ const useDataEdits = (): {
                 projectId,
                 caseId,
                 resourceId: drainageStrategyId,
+                serviceMethod,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    const createOrUpdateTimeSeriesProfile = async (
+        projectId: string,
+        caseId: string,
+        assetId: string,
+        profileId: string,
+        getService: any,
+
+    ) => {
+        const serviceMethod = await getService()
+
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: assetId,
+                resourceProfileId: profileId,
                 serviceMethod,
             })
             return true
@@ -811,6 +836,9 @@ const useDataEdits = (): {
         resourceObject,
         resourceProfileId,
     }: SubmitToApiParams): Promise<boolean> => {
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId }])
+        const updatedData = resourceObject || { ...existingDataInClient }
+
         if (resourceName !== "case" && !resourceId) {
             console.log("asset id is required for this service")
             return false
@@ -896,6 +924,329 @@ const useDataEdits = (): {
                     sucess = await createDeferredGasProduction(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
                 } else {
                     sucess = await updateDeferredGasProduction(projectId, caseId, resourceId!, resourceProfileId!, resourcePropertyKey, value, resourceObject)
+                }
+                break
+            case "totalFeasibilityAndConceptStudiesOverride":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).createTotalFeasibilityAndConceptStudiesOverride(projectId, caseId, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).updateTotalFeasibilityAndConceptStudiesOverride(projectId, caseId, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "totalFEEDStudiesOverride":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).createTotalFEEDStudiesOverride(projectId, caseId, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).updateTotalFEEDStudiesOverride(projectId, caseId, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "historicCostCostProfile":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).createHistoricCostCostProfile(projectId, caseId, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).updateHistoricCostCostProfile(projectId, caseId, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "wellInterventionCostProfileOverride":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).createWellInterventionCostProfileOverride(projectId, caseId, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).updateWellInterventionCostProfileOverride(projectId, caseId, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "offshoreFacilitiesOperationsCostProfileOverride":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).createOffshoreFacilitiesOperationsCostProfileOverride(projectId, caseId, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).updateOffshoreFacilitiesOperationsCostProfileOverride(projectId, caseId, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "onshoreRelatedOPEXCostProfile":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).createOnshoreRelatedOPEXCostProfile(projectId, caseId, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).updateOnshoreRelatedOPEXCostProfile(projectId, caseId, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "additionalOPEXCostProfile":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).createAdditionalOPEXCostProfile(projectId, caseId, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).updateAdditionalOPEXCostProfile(projectId, caseId, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "cessationWellsCostOverride":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).createCessationWellsCostOverride(projectId, caseId, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).updateCessationWellsCostOverride(projectId, caseId, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "cessationOffshoreFacilitiesCostOverride":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).createCessationOffshoreFacilitiesCostOverride(projectId, caseId, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).updateCessationOffshoreFacilitiesCostOverride(projectId, caseId, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "surfCostOverride":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetSurfService()).createSurfCostProfileOverride(projectId, caseId, resourceId!, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetSurfService()).updateSurfCostProfileOverride(projectId, caseId, resourceId!, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "topsideCostOverride":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetTopsideService()).createTopsideCostProfileOverride(projectId, caseId, resourceId!, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetTopsideService()).updateTopsideCostProfileOverride(projectId, caseId, resourceId!, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "substructureCostOverride":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetSubstructureService()).createSubstructureCostProfileOverride(projectId, caseId, resourceId!, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetSubstructureService()).updateSubstructureCostProfileOverride(projectId, caseId, resourceId!, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "transportCostOverride":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetTransportService()).createTransportCostProfileOverride(projectId, caseId, resourceId!, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetTransportService()).updateTransportCostProfileOverride(projectId, caseId, resourceId!, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "wellProjectOilProducerCostOverride":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetWellProjectService()).createOilProducerCostProfileOverride(projectId, caseId, resourceId!, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetWellProjectService()).updateOilProducerCostProfileOverride(projectId, caseId, resourceId!, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "wellProjectGasProducerCostOverride":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetWellProjectService()).createGasProducerCostProfileOverride(projectId, caseId, resourceId!, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetWellProjectService()).updateGasProducerCostProfileOverride(projectId, caseId, resourceId!, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "wellProjectWaterInjectorCostOverride":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetWellProjectService()).createWaterInjectorCostProfileOverride(projectId, caseId, resourceId!, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetWellProjectService()).updateWaterInjectorCostProfileOverride(projectId, caseId, resourceId!, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "wellProjectGasInjectorCostOverride":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetWellProjectService()).createGasInjectorCostProfileOverride(projectId, caseId, resourceId!, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetWellProjectService()).updateGasInjectorCostProfileOverride(projectId, caseId, resourceId!, resourceProfileId!, updatedData!),
+                    )
                 }
                 break
             default:
