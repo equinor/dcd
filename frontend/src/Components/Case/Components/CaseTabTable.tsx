@@ -316,8 +316,8 @@ const CaseTabTable = ({
         resizable: true,
         editable: true,
         onCellValueChanged: handleCellValueChange,
-        suppressMenuButton: true,
-    }), [timeSeriesData])
+        suppressHeaderMenuButton: true,
+    }), [])
 
     useEffect(() => {
         const newColDefs = generateTableYearColDefs()

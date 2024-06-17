@@ -193,7 +193,7 @@ const CaseTabTableWithGrouping = ({
         resizable: true,
         editable: true,
         onCellValueChanged: handleCellValueChange,
-        suppressMenuButton: true,
+        suppressHeaderMenuButton: true,
     }), [])
 
     const gridRefArrayToAlignedGrid = () => {

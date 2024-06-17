@@ -86,25 +86,28 @@ export const useProjectChartData = () => {
         if (project) {
             const tableCompareCases: TableCompareCase[] = []
             if (compareCasesTotals) {
-                project.cases.forEach((c, i) => {
-                    const tableCase: TableCompareCase = {
-                        id: c.id!,
-                        cases: c.name ?? "",
-                        description: c.description ?? "",
-                        npv: Math.round(c.npv ?? 0 * 1) / 1 ?? 0,
-                        breakEven: Math.round(c.breakEven ?? 0 * 1) / 1 ?? 0,
-                        oilProduction: Math.round(compareCasesTotals[i]?.totalOilProduction * 10) / 10,
-                        gasProduction: Math.round(compareCasesTotals[i]?.totalGasProduction * 10) / 10,
-                        totalExportedVolumes: Math.round(compareCasesTotals[i]?.totalExportedVolumes * 10) / 10,
-                        studyCostsPlusOpex: Math.round(compareCasesTotals[i]?.totalStudyCostsPlusOpex * 1) / 1,
-                        cessationCosts: Math.round(compareCasesTotals[i]?.totalCessationCosts * 1) / 1,
-                        offshorePlusOnshoreFacilityCosts: Math.round(compareCasesTotals[i]?.offshorePlusOnshoreFacilityCosts * 1) / 1,
-                        developmentCosts: Math.round(compareCasesTotals[i]?.developmentWellCosts * 1) / 1,
-                        explorationWellCosts: Math.round(compareCasesTotals[i]?.explorationWellCosts * 1) / 1,
-                        totalCO2Emissions: Math.round(compareCasesTotals[i]?.totalCo2Emissions * 10) / 10,
-                        cO2Intensity: Math.round(compareCasesTotals[i]?.co2Intensity * 10) / 10,
+                project.cases.forEach((c) => {
+                    const matchingCase = compareCasesTotals.find((checkMatchingCase: any) => checkMatchingCase.caseId === c.id)
+                    if (matchingCase) {
+                        const tableCase: TableCompareCase = {
+                            id: c.id!,
+                            cases: c.name ?? "",
+                            description: c.description ?? "",
+                            npv: Math.round(c.npv ?? 0 * 1) / 1 ?? 0,
+                            breakEven: Math.round(c.breakEven ?? 0 * 1) / 1 ?? 0,
+                            oilProduction: Math.round(matchingCase.totalOilProduction * 10) / 10,
+                            gasProduction: Math.round(matchingCase.totalGasProduction * 10) / 10,
+                            totalExportedVolumes: Math.round(matchingCase.totalExportedVolumes * 10) / 10,
+                            studyCostsPlusOpex: Math.round(matchingCase.totalStudyCostsPlusOpex * 1) / 1,
+                            cessationCosts: Math.round(matchingCase.totalCessationCosts * 1) / 1,
+                            offshorePlusOnshoreFacilityCosts: Math.round(matchingCase.offshorePlusOnshoreFacilityCosts * 1) / 1,
+                            developmentCosts: Math.round(matchingCase.developmentWellCosts * 1) / 1,
+                            explorationWellCosts: Math.round(matchingCase.explorationWellCosts * 1) / 1,
+                            totalCO2Emissions: Math.round(matchingCase.totalCo2Emissions * 10) / 10,
+                            cO2Intensity: Math.round(matchingCase.co2Intensity * 10) / 10,
+                        }
+                        tableCompareCases.push(tableCase)
                     }
-                    tableCompareCases.push(tableCase)
                 })
             }
             setRowData(tableCompareCases)
