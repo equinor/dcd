@@ -18,6 +18,7 @@ import { GetTransportService } from "../Services/TransportService"
 import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
 import { useAppContext } from "../Context/AppContext"
 import { GetWellProjectService } from "../Services/WellProjectService"
+import { GetExplorationService } from "../Services/ExplorationService"
 
 interface AddEditParams {
     newValue: string | number | undefined;
@@ -1246,6 +1247,44 @@ const useDataEdits = (): {
                         resourceId!,
                         resourceProfileId!,
                         await (await GetWellProjectService()).updateGasInjectorCostProfileOverride(projectId, caseId, resourceId!, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "seismicAcquisitionAndProcessing":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetExplorationService()).createSeismicAcquisitionAndProcessing(projectId, caseId, resourceId!, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetExplorationService()).updateSeismicAcquisitionAndProcessing(projectId, caseId, resourceId!, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "countryOfficeCost":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetExplorationService()).createCountryOfficeCost(projectId, caseId, resourceId!, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetExplorationService()).updateCountryOfficeCost(projectId, caseId, resourceId!, resourceProfileId!, updatedData!),
                     )
                 }
                 break
