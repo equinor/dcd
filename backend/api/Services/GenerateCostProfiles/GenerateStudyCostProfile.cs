@@ -53,14 +53,35 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         var newFeasibility = CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
         var newFeed = CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
 
+        TotalFeasibilityAndConceptStudies feasibility;
+        if (caseItem.TotalFeasibilityAndConceptStudiesOverride != null)
+        {
+            feasibility = new TotalFeasibilityAndConceptStudies
+            {
+                StartYear = caseItem.TotalFeasibilityAndConceptStudiesOverride.StartYear,
+                Values = caseItem.TotalFeasibilityAndConceptStudiesOverride.Values,
+                Currency = caseItem.TotalFeasibilityAndConceptStudiesOverride.Currency
+            };
+        }
+        else
+        {
+            feasibility = newFeasibility;
+        }
 
-        var feasibility = caseItem.TotalFeasibilityAndConceptStudies ?? newFeasibility;
-        feasibility.StartYear = newFeasibility.StartYear;
-        feasibility.Values = newFeasibility.Values;
-
-        var feed = caseItem.TotalFEEDStudies ?? newFeed;
-        feed.StartYear = newFeed.StartYear;
-        feed.Values = newFeed.Values;
+        TotalFEEDStudies feed;
+        if (caseItem.TotalFEEDStudiesOverride != null)
+        {
+            feed = new TotalFEEDStudies
+            {
+                StartYear = caseItem.TotalFEEDStudiesOverride.StartYear,
+                Values = caseItem.TotalFEEDStudiesOverride.Values,
+                Currency = caseItem.TotalFEEDStudiesOverride.Currency
+            };
+        }
+        else
+        {
+            feed = newFeed;
+        }
 
         var otherStudies = caseItem.TotalOtherStudies ?? new TotalOtherStudies();
 
@@ -71,12 +92,13 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         var feedDto = _mapper.Map<TotalFEEDStudiesDto>(feed);
         var otherStudiesDto = _mapper.Map<TotalOtherStudiesDto>(otherStudies);
 
-
         result.TotalFeasibilityAndConceptStudiesDto = feasibilityDto;
         result.TotalFEEDStudiesDto = feedDto;
         result.TotalOtherStudiesDto = otherStudiesDto;
 
-        if (feasibility.Values.Length == 0 && feed.Values.Length == 0 && otherStudies.Values.Length == 0)
+        if ((feasibility.Values == null || feasibility.Values.Length == 0) &&
+            (feed.Values == null || feed.Values.Length == 0) &&
+            (otherStudies.Values == null || otherStudies.Values.Length == 0))
         {
             return new StudyCostProfileWrapperDto();
         }
@@ -88,10 +110,15 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
             StartYear = cost.StartYear,
             Values = cost.Values
         };
+
         var study = _mapper.Map<StudyCostProfileDto>(studyCost);
         result.StudyCostProfileDto = study;
+
         return result;
     }
+
+
+
 
     private async Task<int> UpdateCaseAndSave(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies, TotalOtherStudies totalOtherStudies)
     {
@@ -144,7 +171,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
 
     public TotalFEEDStudies CalculateTotalFEEDStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
     {
-        var totalFeasibilityAndConceptStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFEEDStudies;
+        var totalFeedStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFEEDStudies;
 
         var dg2 = caseItem.DG2Date;
         var dg3 = caseItem.DG3Date;
@@ -172,15 +199,15 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         }
         percentageOfYearList.Add(lastYearPercentage);
 
-        var valuesList = percentageOfYearList.ConvertAll(x => x * totalFeasibilityAndConceptStudies);
+        var valuesList = percentageOfYearList.ConvertAll(x => x * totalFeedStudies);
 
-        var feasibilityAndConceptStudiesCost = new TotalFEEDStudies
+        var totalFeedStudiesCost = new TotalFEEDStudies
         {
             StartYear = dg2.Year - caseItem.DG4Date.Year,
             Values = valuesList.ToArray()
         };
 
-        return feasibilityAndConceptStudiesCost;
+        return totalFeedStudiesCost;
     }
 
     public async Task<double> SumAllCostFacility(Case caseItem)
