@@ -60,7 +60,6 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
             {
                 StartYear = caseItem.TotalFeasibilityAndConceptStudiesOverride.StartYear,
                 Values = caseItem.TotalFeasibilityAndConceptStudiesOverride.Values,
-                Currency = caseItem.TotalFeasibilityAndConceptStudiesOverride.Currency
             };
         }
         else
@@ -75,7 +74,6 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
             {
                 StartYear = caseItem.TotalFEEDStudiesOverride.StartYear,
                 Values = caseItem.TotalFEEDStudiesOverride.Values,
-                Currency = caseItem.TotalFEEDStudiesOverride.Currency
             };
         }
         else

@@ -64,7 +64,6 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
             {
                 StartYear = caseItem.WellInterventionCostProfileOverride.StartYear,
                 Values = caseItem.WellInterventionCostProfileOverride.Values,
-                Currency = caseItem.WellInterventionCostProfileOverride.Currency
             };
         }
         else
@@ -79,7 +78,6 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
             {
                 StartYear = caseItem.OffshoreFacilitiesOperationsCostProfileOverride.StartYear,
                 Values = caseItem.OffshoreFacilitiesOperationsCostProfileOverride.Values,
-                Currency = caseItem.OffshoreFacilitiesOperationsCostProfileOverride.Currency
             };
         }
         else
