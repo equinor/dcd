@@ -10,6 +10,7 @@ interface ExplorationWellCostsProps {
     explorationWellsGridRef: React.MutableRefObject<any>
     alignedGridsRef: any[]
     caseData: Components.Schemas.CaseDto
+    apiData: Components.Schemas.CaseWithAssetsDto | undefined
 }
 
 const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
@@ -17,20 +18,9 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
     explorationWellsGridRef,
     alignedGridsRef,
     caseData,
+    apiData,
 }) => {
-    const queryClient = useQueryClient()
-    const { caseId } = useParams()
     const { project } = useProjectContext()
-    const projectId = project?.id || null
-
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
 
     const gAndGAdminCostData = apiData?.gAndGAdminCost
     const seismicAcquisitionAndProcessingData = apiData?.seismicAcquisitionAndProcessing

@@ -252,8 +252,6 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
 
     const caseData = apiData?.case
 
-    console.log("CaseData", caseData)
-
     const handleCaseNameChange = (name: string) => {
         if (caseData) {
             addEdit({

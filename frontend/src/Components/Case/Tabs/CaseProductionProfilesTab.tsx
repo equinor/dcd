@@ -8,7 +8,6 @@ import { useQueryClient, useQuery } from "react-query"
 import { useParams } from "react-router"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import CaseTabTable from "../Components/CaseTabTable"
-import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../AgGrid/AgChartsTimeseries"
 import InputSwitcher from "../../Input/Components/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
@@ -192,8 +191,6 @@ const CaseProductionProfilesTab = () => {
             overridable: false,
         },
     ]
-
-    console.log("Timeseriesdata: ", timeSeriesData)
 
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])

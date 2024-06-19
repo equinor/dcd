@@ -10,24 +10,13 @@ interface OpexCostsProps {
     opexGridRef: React.MutableRefObject<any>
     alignedGridsRef: any[]
     caseData: Components.Schemas.CaseDto
+    apiData: Components.Schemas.CaseWithAssetsDto | undefined
 }
 
 const OpexCosts: React.FC<OpexCostsProps> = ({
-    tableYears, opexGridRef, alignedGridsRef, caseData,
+    tableYears, opexGridRef, alignedGridsRef, caseData, apiData,
 }) => {
-    const queryClient = useQueryClient()
-    const { caseId } = useParams()
     const { project } = useProjectContext()
-    const projectId = project?.id || null
-
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
 
     const historicCostCostProfileData = apiData?.historicCostCostProfile
     const wellInterventionCostProfileData = apiData?.wellInterventionCostProfile

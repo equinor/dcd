@@ -133,7 +133,7 @@ const CaseTabTable = ({
         return tableRows
     }
 
-    const gridRowData = gridRef.current?.api?.setGridOption("rowData", profilesToRowData())
+    const gridRowData = useMemo(() => gridRef.current?.api?.setGridOption("rowData", profilesToRowData()), [timeSeriesData])
 
     const lockIconRenderer = (params: any) => (
         <ClickableLockIcon
@@ -205,16 +205,6 @@ const CaseTabTable = ({
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
     const handleCellValueChange = (p: any) => {
-        /* helpers for finding right data to register in history tracker
-
-        const cellName = p.colDef
-        const columnName = p.colDef.headerName
-
-        console.log(cellName)
-        console.log(columnName)
-        console.log(p.newValue)
-        console.log(p.oldValue)
-        */
         const properties = Object.keys(p.data)
         const tableTimeSeriesValues: any[] = []
         properties.forEach((prop) => {
@@ -279,19 +269,6 @@ const CaseTabTable = ({
                 newResourceObject: newProfile,
                 resourceProfileId: timeSeriesDataIndex()?.resourceProfileId,
             })
-
-            // addEdit({
-            //     newValue: p.newValue,
-            //     previousValue: p.oldValue,
-            //     inputLabel: p.data.profileName,
-            //     projectId: project.id,
-            //     resourceName: timeSeriesData[0].resourceName,
-            //     resourcePropertyKey: timeSeriesData[0].resourcePropertyKey,
-            //     caseId,
-            //     resourceId: timeSeriesData[0].resourceId,
-            //     newResourceObject: newProfile,
-            //     resourceProfileId: timeSeriesData[0].resourceProfileId,
-            // })
         }
     }
 

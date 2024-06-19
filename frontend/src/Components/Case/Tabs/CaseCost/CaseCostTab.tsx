@@ -120,7 +120,7 @@ const CaseCostTab = (): React.ReactElement | null => {
 
     if (activeTabCase !== 5) { return null }
 
-    if (!caseData || !surfData) {
+    if (!caseData || !surfData || !apiData) {
         return <p>loading....</p>
     }
 
@@ -141,6 +141,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                     studyGridRef={studyGridRef}
                     alignedGridsRef={alignedGridsRef}
                     caseData={caseData}
+                    apiData={apiData}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -149,6 +150,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                     opexGridRef={opexGridRef}
                     alignedGridsRef={alignedGridsRef}
                     caseData={caseData}
+                    apiData={apiData}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -157,6 +159,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                     cessationGridRef={cessationGridRef}
                     alignedGridsRef={alignedGridsRef}
                     caseData={caseData}
+                    apiData={apiData}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -165,6 +168,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                     capexGridRef={capexGridRef}
                     alignedGridsRef={alignedGridsRef}
                     caseData={caseData}
+                    apiData={apiData}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -173,6 +177,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                     developmentWellsGridRef={developmentWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
                     caseData={caseData}
+                    apiData={apiData}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -181,6 +186,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                     explorationWellsGridRef={explorationWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
                     caseData={caseData}
+                    apiData={apiData}
                 />
             </Grid>
         </Grid>
