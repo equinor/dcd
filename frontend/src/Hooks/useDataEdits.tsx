@@ -240,18 +240,16 @@ const useDataEdits = (): {
         caseId: string,
         assetId: string,
         profileId: string,
-        getService: any,
+        createOrUpdateFunction: any,
 
     ) => {
-        const serviceMethod = await getService()
-
         try {
             await mutation.mutateAsync({
                 projectId,
                 caseId,
                 resourceId: assetId,
                 resourceProfileId: profileId,
-                serviceMethod,
+                serviceMethod: createOrUpdateFunction,
             })
             return true
         } catch (error) {

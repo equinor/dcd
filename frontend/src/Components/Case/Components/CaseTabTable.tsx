@@ -250,10 +250,10 @@ const CaseTabTable = ({
 
             if (!caseId || !project) { return }
 
-            console.log(timeSeriesData[0].resourceProfileId)
-            console.log(p)
-            console.log(timeSeriesData)
-            console.log(Object.keys(timeSeriesData))
+            console.log("timeSeriesData[0].resourceProfileId", timeSeriesData[0].resourceProfileId)
+            console.log("p", p)
+            console.log("timeSeriesData", timeSeriesData)
+            console.log("Object.keys(timeSeriesData)", Object.keys(timeSeriesData))
 
             const timeSeriesDataIndex = () => {
                 const result = timeSeriesData
@@ -317,7 +317,7 @@ const CaseTabTable = ({
         editable: true,
         onCellValueChanged: handleCellValueChange,
         suppressHeaderMenuButton: true,
-    }), [])
+    }), [timeSeriesData])
 
     useEffect(() => {
         const newColDefs = generateTableYearColDefs()
