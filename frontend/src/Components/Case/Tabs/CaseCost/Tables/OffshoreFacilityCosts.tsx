@@ -1,26 +1,25 @@
-import React, { useState, useEffect } from "react"
+import React, { } from "react"
 import { useQuery, useQueryClient } from "react-query"
 import { useParams } from "react-router"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
-import { useCaseContext } from "../../../../../Context/CaseContext"
 import CaseTabTable from "../../../Components/CaseTabTable"
-import { updateObject } from "../../../../../Utils/common"
 import { ITimeSeriesData } from "../../../../../Models/Interfaces"
 
 interface OffshoreFacillityCostsProps {
     tableYears: [number, number]
     capexGridRef: React.MutableRefObject<any>
     alignedGridsRef: any[]
+    caseData: Components.Schemas.CaseDto
 }
 const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
     tableYears,
     capexGridRef,
     alignedGridsRef,
+    caseData,
 }) => {
     const queryClient = useQueryClient()
     const { caseId } = useParams()
     const { project } = useProjectContext()
-    const { projectCase, activeTabCase } = useCaseContext()
     const projectId = project?.id || null
 
     const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
@@ -41,15 +40,13 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
     const transportCostData = apiData?.transportCostProfile
     const transportCostOverrideData = apiData?.transportCostProfileOverride
 
-    if (!projectCase) { return null }
-
     const capexTimeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Subsea production system",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: surfCostData,
             resourceName: "surfCostOverride",
-            resourceId: projectCase.id,
+            resourceId: caseData.id,
             resourceProfileId: surfCostOverrideData?.id,
             resourcePropertyKey: "surfCostOverride",
             overridable: true,
@@ -61,7 +58,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: topsideCostData,
             resourceName: "topsideCostOverride",
-            resourceId: projectCase.id,
+            resourceId: caseData.id,
             resourceProfileId: topsideCostOverrideData?.id,
             resourcePropertyKey: "topsideCostOverride",
             overridable: true,
@@ -73,7 +70,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: substructureCostData,
             resourceName: "substructureCostOverride",
-            resourceId: projectCase.id,
+            resourceId: caseData.id,
             resourceProfileId: substructureCostOverrideData?.id,
             resourcePropertyKey: "substructureCostOverride",
             overridable: true,
@@ -85,7 +82,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: transportCostData,
             resourceName: "transportCostOverride",
-            resourceId: projectCase.id,
+            resourceId: caseData.id,
             resourceProfileId: transportCostOverrideData?.id,
             resourcePropertyKey: "transportCostOverride",
             overridable: true,
@@ -97,7 +94,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
     return (
         <CaseTabTable
             timeSeriesData={capexTimeSeriesData}
-            dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
+            dg4Year={caseData?.dG4Date ? new Date(caseData?.dG4Date).getFullYear() : 2030}
             tableYears={tableYears}
             tableName="Offshore facilitiy cost"
             gridRef={capexGridRef}

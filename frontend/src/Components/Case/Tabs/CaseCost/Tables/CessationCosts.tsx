@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from "react"
+import React, { } from "react"
 import { useQuery, useQueryClient } from "react-query"
 import { useParams } from "react-router"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
-import { useCaseContext } from "../../../../../Context/CaseContext"
 import CaseTabTable from "../../../Components/CaseTabTable"
-import { updateObject } from "../../../../../Utils/common"
 import { ITimeSeriesData } from "../../../../../Models/Interfaces"
 
 interface CesationCostsProps {
     tableYears: [number, number]
     cessationGridRef: React.MutableRefObject<any>
     alignedGridsRef: any[]
+    caseData: Components.Schemas.CaseDto
 }
-const CessationCosts: React.FC<CesationCostsProps> = ({ tableYears, cessationGridRef, alignedGridsRef }) => {
+const CessationCosts: React.FC<CesationCostsProps> = ({
+    tableYears, cessationGridRef, alignedGridsRef, caseData,
+}) => {
     const queryClient = useQueryClient()
     const { caseId } = useParams()
     const { project } = useProjectContext()
-    const { projectCase, activeTabCase } = useCaseContext()
     const projectId = project?.id || null
 
     const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
@@ -34,15 +34,13 @@ const CessationCosts: React.FC<CesationCostsProps> = ({ tableYears, cessationGri
     const cessationOffshoreFacilitiesCostOverrideData = apiData?.cessationOffshoreFacilitiesCostOverride
     const cessationOnshoreFacilitiesCostProfileData = apiData?.cessationOnshoreFacilitiesCostProfile
 
-    if (!projectCase) { return null }
-
     const cessationTimeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Cessation - Development wells",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: cessationWellsCostData,
             resourceName: "cessationWellsCostOverride",
-            resourceId: projectCase.id,
+            resourceId: caseData.id,
             resourceProfileId: cessationWellsCostOverrideData?.id,
             resourcePropertyKey: "cessationWellsCostOverride",
             overridable: true,
@@ -54,7 +52,7 @@ const CessationCosts: React.FC<CesationCostsProps> = ({ tableYears, cessationGri
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: cessationOffshoreFacilitiesCostData,
             resourceName: "cessationOffshoreFacilitiesCostOverride",
-            resourceId: projectCase.id,
+            resourceId: caseData.id,
             resourceProfileId: cessationOffshoreFacilitiesCostOverrideData?.id,
             resourcePropertyKey: "cessationOffshoreFacilitiesCostOverride",
             overridable: true,
@@ -66,7 +64,7 @@ const CessationCosts: React.FC<CesationCostsProps> = ({ tableYears, cessationGri
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: cessationOnshoreFacilitiesCostProfileData,
             resourceName: "cessationOnshoreFacilitiesCostProfile",
-            resourceId: projectCase.id,
+            resourceId: caseData.id,
             resourceProfileId: cessationOnshoreFacilitiesCostProfileData?.id,
             resourcePropertyKey: "cessationOnshoreFacilitiesCostProfile",
             editable: true,
@@ -77,7 +75,7 @@ const CessationCosts: React.FC<CesationCostsProps> = ({ tableYears, cessationGri
     return (
         <CaseTabTable
             timeSeriesData={cessationTimeSeriesData}
-            dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
+            dg4Year={caseData?.dG4Date ? new Date(caseData?.dG4Date).getFullYear() : 2030}
             tableYears={tableYears}
             tableName="Cessation cost"
             gridRef={cessationGridRef}
