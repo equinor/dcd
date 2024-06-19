@@ -234,6 +234,11 @@ export function updateObject<T>(object: T | undefined, setObject: Dispatch<SetSt
 }
 
 export const tableCellisEditable = (params: any, editMode: boolean) => {
+    if (!params.data) {
+        console.log("No data in params")
+        return false
+    }
+
     if (params.data.overridable) {
         return editMode && params.data.override
     }
