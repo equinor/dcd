@@ -69,7 +69,7 @@ const CaseDescriptionTab = () => {
                                     projectId,
                                     resourceName: "case",
                                     resourcePropertyKey: "description",
-                                    resourceId: "",
+                                    resourceId: "0",
                                     caseId: caseData.id,
                                 })
                             }}

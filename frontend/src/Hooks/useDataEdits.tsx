@@ -113,7 +113,9 @@ const useDataEdits = (): {
 
     ) => {
         const service = await GetTopsideService()
-        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: topsideId }])
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{
+            projectId, caseId, resourceId: topsideId, resourceProfileId: "0",
+        }])
         const updatedData = resourceObject || { ...existingDataInClient, [resourcePropertyKey]: value }
         const serviceMethod = service.updateTopside(projectId, caseId, topsideId, updatedData)
 
@@ -139,7 +141,9 @@ const useDataEdits = (): {
         resourceObject?: object,
     ) => {
         const service = await GetSurfService()
-        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: surfId }])
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{
+            projectId, caseId, resourceId: surfId, resourceProfileId: "0",
+        }])
         const updatedData = resourceObject || { ...existingDataInClient, [resourcePropertyKey]: value }
         const serviceMethod = service.updateSurf(projectId, caseId, surfId, updatedData)
 
@@ -165,7 +169,9 @@ const useDataEdits = (): {
         resourceObject?: object,
     ) => {
         const service = await GetSubstructureService()
-        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: substructureId }])
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{
+            projectId, caseId, resourceId: substructureId, resourceProfileId: "0",
+        }])
         const updatedData = resourceObject || { ...existingDataInClient, [resourcePropertyKey]: value }
         const serviceMethod = service.updateSubstructure(projectId, caseId, substructureId, updatedData)
 
@@ -191,7 +197,9 @@ const useDataEdits = (): {
         resourceObject?: object,
     ) => {
         const service = await GetTransportService()
-        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: transportId }])
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{
+            projectId, caseId, resourceId: transportId, resourceProfileId: "0",
+        }])
         const updatedData = resourceObject || { ...existingDataInClient, [resourcePropertyKey]: value }
         const serviceMethod = service.updateTransport(projectId, caseId, transportId, updatedData)
 
@@ -265,7 +273,9 @@ const useDataEdits = (): {
         resourceObject?: ResourceObject,
     ) => {
         const caseService = await GetCaseService()
-        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: "0" }])
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{
+            projectId, caseId, resourceId: "0", resourceProfileId: "0",
+        }])
         const updatedData = resourceObject || { ...existingDataInClient, [resourcePropertyKey]: value }
         const serviceMethod = caseService.updateCase(projectId, caseId, updatedData as Components.Schemas.CaseDto)
 
@@ -302,7 +312,9 @@ const useDataEdits = (): {
         resourceObject,
         resourceProfileId,
     }: SubmitToApiParams): Promise<boolean> => {
-        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId }])
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{
+            projectId, caseId, resourceId, resourceProfileId: "0",
+        }])
         const updatedData = resourceObject || { ...existingDataInClient }
 
         if (resourceName !== "case" && !resourceId) {
