@@ -48,7 +48,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         var result = new CessationCostWrapperDto();
         var caseItem = await _caseService.GetCase(caseId);
         var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
-        
+
         var cessationWellsCost = await GetCessationWellsCost(caseItem, project);
         var cessationOffshoreFacilitiesCost = await GetCessationOffshoreFacilitiesCost(caseItem);
         var cessationOnshoreFacilitiesCostProfile = caseItem.CessationOnshoreFacilitiesCostProfile ?? new CessationOnshoreFacilitiesCostProfile();
