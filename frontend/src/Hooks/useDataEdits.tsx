@@ -263,13 +263,11 @@ const useDataEdits = (): {
         resourcePropertyKey: ResourcePropertyKey,
         value: any,
         resourceObject?: ResourceObject,
-        resourceProfileId?: string,
-
     ) => {
         const caseService = await GetCaseService()
-        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: "" }])
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: "0" }])
         const updatedData = resourceObject || { ...existingDataInClient, [resourcePropertyKey]: value }
-        const serviceMethod = caseService.updateCase(projectId, caseId, updatedData as Components.Schemas.APIUpdateCaseDto)
+        const serviceMethod = caseService.updateCase(projectId, caseId, updatedData as Components.Schemas.CaseDto)
 
         try {
             await mutation.mutateAsync({

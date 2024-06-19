@@ -92,7 +92,7 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
                 const deferredGasProductionData = result.deferredGasProduction
 
                 // Assets
-                queryClient.setQueryData([{ projectId, caseId, resourceId: "" }], caseData)
+                queryClient.setQueryData([{ projectId, caseId, resourceId: "0" }], caseData)
                 queryClient.setQueryData([{ projectId, caseId, resourceId: topsideData.id }], topsideData)
                 queryClient.setQueryData([{ projectId, caseId, resourceId: surfData.id }], surfData)
                 queryClient.setQueryData([{ projectId, caseId, resourceId: substructureData.id }], substructureData)
