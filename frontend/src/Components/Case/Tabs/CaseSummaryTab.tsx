@@ -278,16 +278,18 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         })()
     }, [activeTabCase])
 
-    const { data: caseData } = useQuery<Components.Schemas.CaseDto | undefined>(
-        [{ projectId, caseId, resourceId: "" }],
-        () => queryClient.getQueryData([{ projectId, caseId, resourceId: "" }]),
+    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
+        ["apiData", { projectId, caseId }],
+        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
         {
-            enabled: !!project && !!projectId,
-            initialData: () => queryClient.getQueryData([{ projectId: project?.id, caseId, resourceId: "" }]) as Components.Schemas.CaseDto,
+            enabled: !!projectId && !!caseId,
+            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
         },
     )
 
-    if (!caseData) { return null }
+    const caseData = apiData?.case
+
+    if (!caseData) { return <p>loading</p> }
 
     if (activeTabCase !== 7) { return null }
 
