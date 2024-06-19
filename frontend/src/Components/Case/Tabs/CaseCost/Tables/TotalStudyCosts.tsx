@@ -64,7 +64,7 @@ const TotalStudyCosts: React.FC<CesationCostsProps> = ({
             profileName: "Other studies",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: totalOtherStudiesData,
-            resourceName: "productionProfileOil",
+            resourceName: "totalOtherStudies",
             resourceId: caseData?.id,
             resourceProfileId: totalOtherStudiesData?.id,
             resourcePropertyKey: "totalOtherStudies",
