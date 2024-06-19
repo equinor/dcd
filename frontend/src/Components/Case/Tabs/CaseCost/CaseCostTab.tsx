@@ -106,15 +106,6 @@ const CaseCostTab = (): React.ReactElement | null => {
         })()
     }, [activeTabCase])
 
-    const { data: caseData } = useQuery<Components.Schemas.CaseDto | undefined>(
-        [{ projectId, caseId, resourceId: "" }],
-        () => queryClient.getQueryData([{ projectId, caseId, resourceId: "" }]),
-        {
-            enabled: !!project && !!projectId,
-            initialData: () => queryClient.getQueryData([{ projectId: project?.id, caseId, resourceId: "" }]) as Components.Schemas.CaseDto,
-        },
-    )
-
     const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
         ["apiData", { projectId, caseId }],
         () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
@@ -125,6 +116,7 @@ const CaseCostTab = (): React.ReactElement | null => {
     )
 
     const surfData = apiData?.surf as Components.Schemas.SurfWithProfilesDto
+    const caseData = apiData?.case as Components.Schemas.CaseDto
 
     if (activeTabCase !== 5) { return null }
 
