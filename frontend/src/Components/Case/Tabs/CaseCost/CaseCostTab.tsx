@@ -140,9 +140,10 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     studyGridRef={studyGridRef}
                     alignedGridsRef={alignedGridsRef}
+                    caseData={caseData}
                 />
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
                 <OpexCosts
                     tableYears={tableYears}
                     opexGridRef={opexGridRef}
@@ -176,7 +177,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                     explorationWellsGridRef={explorationWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
                 />
-            </Grid>
+            </Grid> */}
         </Grid>
     )
 }

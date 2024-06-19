@@ -2,7 +2,6 @@ import React, { } from "react"
 import { useQuery, useQueryClient } from "react-query"
 import { useParams } from "react-router"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
-import { useCaseContext } from "../../../../../Context/CaseContext"
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { ITimeSeriesData } from "../../../../../Models/Interfaces"
 
@@ -10,13 +9,15 @@ interface OpexCostsProps {
     tableYears: [number, number]
     opexGridRef: React.MutableRefObject<any>
     alignedGridsRef: any[]
+    caseData: Components.Schemas.CaseDto
 }
 
-const OpexCosts: React.FC<OpexCostsProps> = ({ tableYears, opexGridRef, alignedGridsRef }) => {
+const OpexCosts: React.FC<OpexCostsProps> = ({
+    tableYears, opexGridRef, alignedGridsRef, caseData,
+}) => {
     const queryClient = useQueryClient()
     const { caseId } = useParams()
     const { project } = useProjectContext()
-    const { projectCase, activeTabCase } = useCaseContext()
     const projectId = project?.id || null
 
     const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
@@ -36,15 +37,13 @@ const OpexCosts: React.FC<OpexCostsProps> = ({ tableYears, opexGridRef, alignedG
     const onshoreRelatedOPEXCostProfileData = apiData?.onshoreRelatedOPEXCostProfile
     const additionalOPEXCostProfileData = apiData?.additionalOPEXCostProfile
 
-    if (!projectCase) { return null }
-
     const opexTimeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Historic cost",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: historicCostCostProfileData,
             resourceName: "historicCostCostProfile",
-            resourceId: projectCase.id,
+            resourceId: caseData.id,
             resourceProfileId: historicCostCostProfileData?.id,
             resourcePropertyKey: "historicCostCostProfile",
             editable: true,
@@ -55,7 +54,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({ tableYears, opexGridRef, alignedG
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: wellInterventionCostProfileData,
             resourceName: "wellInterventionCostProfileOverride",
-            resourceId: projectCase.id,
+            resourceId: caseData.id,
             resourceProfileId: wellInterventionCostProfileOverrideData?.id,
             resourcePropertyKey: "wellInterventionCostProfileOverride",
             overridable: true,
@@ -67,7 +66,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({ tableYears, opexGridRef, alignedG
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: offshoreFacilitiesOperationsCostProfileData,
             resourceName: "offshoreFacilitiesOperationsCostProfileOverride",
-            resourceId: projectCase.id,
+            resourceId: caseData.id,
             resourceProfileId: offshoreFacilitiesOperationsCostProfileOverrideData?.id,
             resourcePropertyKey: "offshoreFacilitiesOperationsCostProfileOverride",
             overridable: true,
@@ -79,7 +78,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({ tableYears, opexGridRef, alignedG
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: onshoreRelatedOPEXCostProfileData,
             resourceName: "onshoreRelatedOPEXCostProfile",
-            resourceId: projectCase.id,
+            resourceId: caseData.id,
             resourceProfileId: onshoreRelatedOPEXCostProfileData?.id,
             resourcePropertyKey: "onshoreRelatedOPEXCostProfile",
             editable: true,
@@ -90,7 +89,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({ tableYears, opexGridRef, alignedG
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: additionalOPEXCostProfileData,
             resourceName: "additionalOPEXCostProfile",
-            resourceId: projectCase.id,
+            resourceId: caseData.id,
             resourceProfileId: additionalOPEXCostProfileData?.id,
             resourcePropertyKey: "additionalOPEXCostProfile",
             editable: true,
@@ -101,7 +100,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({ tableYears, opexGridRef, alignedG
     return (
         <CaseTabTable
             timeSeriesData={opexTimeSeriesData}
-            dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
+            dg4Year={caseData?.dG4Date ? new Date(caseData?.dG4Date).getFullYear() : 2030}
             tableYears={tableYears}
             tableName="OPEX cost"
             gridRef={opexGridRef}

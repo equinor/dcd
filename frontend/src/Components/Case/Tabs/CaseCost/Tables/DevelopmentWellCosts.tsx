@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from "react"
+import React, { } from "react"
 import { useQuery, useQueryClient } from "react-query"
 import { useParams } from "react-router"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
-import { useCaseContext } from "../../../../../Context/CaseContext"
-import { useModalContext } from "../../../../../Context/ModalContext"
-import { updateObject } from "../../../../../Utils/common"
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { ITimeSeriesData } from "../../../../../Models/Interfaces"
 
@@ -12,17 +9,18 @@ interface DevelopmentWellCostsProps {
     tableYears: [number, number]
     developmentWellsGridRef: React.MutableRefObject<any>
     alignedGridsRef: any[]
+    caseData: Components.Schemas.CaseDto
 }
 
 const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
     tableYears,
     developmentWellsGridRef,
     alignedGridsRef,
+    caseData,
 }) => {
     const queryClient = useQueryClient()
     const { caseId } = useParams()
     const { project } = useProjectContext()
-    const { projectCase, activeTabCase } = useCaseContext()
     const projectId = project?.id || null
 
     const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
@@ -43,15 +41,13 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
     const wellProjectGasInjectorCostData = apiData?.gasInjectorCostProfile
     const wellProjectGasInjectorCostOverrideData = apiData?.gasInjectorCostProfileOverride
 
-    if (!projectCase) { return null }
-
     const developmentTimeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Oil producer",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: wellProjectOilProducerCostData,
             resourceName: "wellProjectOilProducerCostOverride",
-            resourceId: projectCase.id,
+            resourceId: caseData.id,
             resourceProfileId: wellProjectOilProducerCostOverrideData?.id,
             resourcePropertyKey: "wellProjectOilProducerCostOverride",
             overridable: true,
@@ -63,7 +59,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: wellProjectGasProducerCostData,
             resourceName: "wellProjectGasProducerCostOverride",
-            resourceId: projectCase.id,
+            resourceId: caseData.id,
             resourceProfileId: wellProjectGasProducerCostOverrideData?.id,
             resourcePropertyKey: "wellProjectGasProducerCostOverride",
             overridable: true,
@@ -75,7 +71,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: wellProjectWaterInjectorCostData,
             resourceName: "wellProjectWaterInjectorCostOverride",
-            resourceId: projectCase.id,
+            resourceId: caseData.id,
             resourceProfileId: wellProjectWaterInjectorCostOverrideData?.id,
             resourcePropertyKey: "wellProjectWaterInjectorCostOverride",
             overridable: true,
@@ -87,7 +83,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: wellProjectGasInjectorCostData,
             resourceName: "wellProjectGasInjectorCostOverride",
-            resourceId: projectCase.id,
+            resourceId: caseData.id,
             resourceProfileId: wellProjectGasInjectorCostOverrideData?.id,
             resourcePropertyKey: "wellProjectGasInjectorCostOverride",
             overridable: true,
@@ -99,7 +95,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
     return (
         <CaseTabTable
             timeSeriesData={developmentTimeSeriesData}
-            dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
+            dg4Year={caseData?.dG4Date ? new Date(caseData?.dG4Date).getFullYear() : 2030}
             tableYears={tableYears}
             tableName="Development well cost"
             gridRef={developmentWellsGridRef}
