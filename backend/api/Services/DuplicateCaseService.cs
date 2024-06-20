@@ -63,74 +63,23 @@ public class DuplicateCaseService : IDuplicateCaseService
         caseItem.ModifyTime = DateTimeOffset.UtcNow;
         caseItem.Id = new Guid();
 
-        if (caseItem.TotalFeasibilityAndConceptStudies != null)
-        {
-            caseItem.TotalFeasibilityAndConceptStudies.Id = Guid.Empty;
-        }
-        if (caseItem.TotalFeasibilityAndConceptStudiesOverride != null)
-        {
-            caseItem.TotalFeasibilityAndConceptStudiesOverride.Id = Guid.Empty;
-        }
-        if (caseItem.TotalFEEDStudies != null)
-        {
-            caseItem.TotalFEEDStudies.Id = Guid.Empty;
-        }
-        if (caseItem.TotalFEEDStudiesOverride != null)
-        {
-            caseItem.TotalFEEDStudiesOverride.Id = Guid.Empty;
-        }
-        if (caseItem.TotalOtherStudies != null)
-        {
-            caseItem.TotalOtherStudies.Id = Guid.Empty;
-        }
-        if (caseItem.CessationWellsCost != null)
-        {
-            caseItem.CessationWellsCost.Id = Guid.Empty;
-        }
-        if (caseItem.CessationWellsCostOverride != null)
-        {
-            caseItem.CessationWellsCostOverride.Id = Guid.Empty;
-        }
-        if (caseItem.CessationOffshoreFacilitiesCost != null)
-        {
-            caseItem.CessationOffshoreFacilitiesCost.Id = Guid.Empty;
-        }
-        if (caseItem.CessationOffshoreFacilitiesCostOverride != null)
-        {
-            caseItem.CessationOffshoreFacilitiesCostOverride.Id = Guid.Empty;
-        }
-        if (caseItem.CessationOnshoreFacilitiesCostProfile != null)
-        {
-            caseItem.CessationOnshoreFacilitiesCostProfile.Id = Guid.Empty;
-        }
-        if (caseItem.WellInterventionCostProfile != null)
-        {
-            caseItem.WellInterventionCostProfile.Id = Guid.Empty;
-        }
-        if (caseItem.WellInterventionCostProfileOverride != null)
-        {
-            caseItem.WellInterventionCostProfileOverride.Id = Guid.Empty;
-        }
-        if (caseItem.OffshoreFacilitiesOperationsCostProfile != null)
-        {
-            caseItem.OffshoreFacilitiesOperationsCostProfile.Id = Guid.Empty;
-        }
-        if (caseItem.OffshoreFacilitiesOperationsCostProfileOverride != null)
-        {
-            caseItem.OffshoreFacilitiesOperationsCostProfileOverride.Id = Guid.Empty;
-        }
-        if (caseItem.HistoricCostCostProfile != null)
-        {
-            caseItem.HistoricCostCostProfile.Id = Guid.Empty;
-        }
-        if (caseItem.OnshoreRelatedOPEXCostProfile != null)
-        {
-            caseItem.OnshoreRelatedOPEXCostProfile.Id = Guid.Empty;
-        }
-        if (caseItem.AdditionalOPEXCostProfile != null)
-        {
-            caseItem.AdditionalOPEXCostProfile.Id = Guid.Empty;
-        }
+        SetNewGuidTimeSeries(caseItem.TotalFeasibilityAndConceptStudies);
+        SetNewGuidTimeSeries(caseItem.TotalFeasibilityAndConceptStudiesOverride);
+        SetNewGuidTimeSeries(caseItem.TotalFEEDStudies);
+        SetNewGuidTimeSeries(caseItem.TotalFEEDStudiesOverride);
+        SetNewGuidTimeSeries(caseItem.TotalOtherStudies);
+        SetNewGuidTimeSeries(caseItem.CessationWellsCost);
+        SetNewGuidTimeSeries(caseItem.CessationWellsCostOverride);
+        SetNewGuidTimeSeries(caseItem.CessationOffshoreFacilitiesCost);
+        SetNewGuidTimeSeries(caseItem.CessationOffshoreFacilitiesCostOverride);
+        SetNewGuidTimeSeries(caseItem.CessationOnshoreFacilitiesCostProfile);
+        SetNewGuidTimeSeries(caseItem.WellInterventionCostProfile);
+        SetNewGuidTimeSeries(caseItem.WellInterventionCostProfileOverride);
+        SetNewGuidTimeSeries(caseItem.OffshoreFacilitiesOperationsCostProfile);
+        SetNewGuidTimeSeries(caseItem.OffshoreFacilitiesOperationsCostProfileOverride);
+        SetNewGuidTimeSeries(caseItem.HistoricCostCostProfile);
+        SetNewGuidTimeSeries(caseItem.OnshoreRelatedOPEXCostProfile);
+        SetNewGuidTimeSeries(caseItem.AdditionalOPEXCostProfile);
 
         var project = await _projectService.GetProject(caseItem.ProjectId);
         caseItem.Project = project;
@@ -172,10 +121,8 @@ public class DuplicateCaseService : IDuplicateCaseService
         foreach (var explorationWell in sourceExplorationWells)
         {
             explorationWell.ExplorationId = targetExplorationId;
-            if (explorationWell.DrillingSchedule != null)
-            {
-                explorationWell.DrillingSchedule.Id = Guid.NewGuid();
-            }
+            SetNewGuidTimeSeries(explorationWell.DrillingSchedule);
+
             _context.ExplorationWell.Add(explorationWell);
         }
         return sourceExplorationWells;
@@ -197,10 +144,8 @@ public class DuplicateCaseService : IDuplicateCaseService
         foreach (var wellProjectWell in sourceWellProjectWells)
         {
             wellProjectWell.WellProjectId = targetWellProjectId;
-            if (wellProjectWell.DrillingSchedule != null)
-            {
-                wellProjectWell.DrillingSchedule.Id = Guid.NewGuid();
-            }
+            SetNewGuidTimeSeries(wellProjectWell.DrillingSchedule);
+
             _context.WellProjectWell.Add(wellProjectWell);
         }
         return sourceWellProjectWells;
@@ -215,92 +160,17 @@ public class DuplicateCaseService : IDuplicateCaseService
             .ToListAsync();
     }
 
-    private async Task<DrainageStrategy> CopyDrainageStrategy(Guid guid)
-    {
-        var newDrainageStrategy = await GetDrainageStrategyNoTracking(guid);
-        newDrainageStrategy.Id = Guid.NewGuid();
 
-        if (newDrainageStrategy.ProductionProfileOil != null)
-        {
-            newDrainageStrategy.ProductionProfileOil.Id = Guid.NewGuid();
-        }
-        if (newDrainageStrategy.ProductionProfileGas != null)
-        {
-            newDrainageStrategy.ProductionProfileGas.Id = Guid.NewGuid();
-        }
-        if (newDrainageStrategy.ProductionProfileWater != null)
-        {
-            newDrainageStrategy.ProductionProfileWater.Id = Guid.NewGuid();
-        }
-        if (newDrainageStrategy.ProductionProfileWaterInjection != null)
-        {
-            newDrainageStrategy.ProductionProfileWaterInjection.Id = Guid.NewGuid();
-        }
-        if (newDrainageStrategy.FuelFlaringAndLosses != null)
-        {
-            newDrainageStrategy.FuelFlaringAndLosses.Id = Guid.NewGuid();
-        }
-        if (newDrainageStrategy.FuelFlaringAndLossesOverride != null)
-        {
-            newDrainageStrategy.FuelFlaringAndLossesOverride.Id = Guid.NewGuid();
-        }
-        if (newDrainageStrategy.NetSalesGas != null)
-        {
-            newDrainageStrategy.NetSalesGas.Id = Guid.NewGuid();
-        }
-        if (newDrainageStrategy.NetSalesGasOverride != null)
-        {
-            newDrainageStrategy.NetSalesGasOverride.Id = Guid.NewGuid();
-        }
-        if (newDrainageStrategy.Co2Emissions != null)
-        {
-            newDrainageStrategy.Co2Emissions.Id = Guid.NewGuid();
-        }
-        if (newDrainageStrategy.Co2EmissionsOverride != null)
-        {
-            newDrainageStrategy.Co2EmissionsOverride.Id = Guid.NewGuid();
-        }
-        if (newDrainageStrategy.ProductionProfileNGL != null)
-        {
-            newDrainageStrategy.ProductionProfileNGL.Id = Guid.NewGuid();
-        }
-        if (newDrainageStrategy.ImportedElectricity != null)
-        {
-            newDrainageStrategy.ImportedElectricity.Id = Guid.NewGuid();
-        }
-        if (newDrainageStrategy.ImportedElectricityOverride != null)
-        {
-            newDrainageStrategy.ImportedElectricityOverride.Id = Guid.NewGuid();
-        }
-        if (newDrainageStrategy.DeferredOilProduction != null)
-        {
-            newDrainageStrategy.DeferredOilProduction.Id = Guid.NewGuid();
-        }
-        if (newDrainageStrategy.DeferredGasProduction != null)
-        {
-            newDrainageStrategy.DeferredGasProduction.Id = Guid.NewGuid();
-        }
-        _context.DrainageStrategies.Add(newDrainageStrategy);
-        return newDrainageStrategy;
-    }
 
     private async Task<Topside> CopyTopside(Guid guid)
     {
         var newTopside = await GetTopsideNoTracking(guid);
         newTopside.Id = Guid.NewGuid();
 
-        if (newTopside.CostProfile != null)
-        {
-            newTopside.CostProfile.Id = Guid.NewGuid();
-        }
-        if (newTopside.CostProfileOverride != null)
-        {
-            newTopside.CostProfileOverride.Id = Guid.NewGuid();
-        }
-        if (newTopside.CessationCostProfile != null)
-        {
-            newTopside.CessationCostProfile.Id = Guid.NewGuid();
-        }
+        SetNewGuidTimeSeries(newTopside.CostProfile);
+        SetNewGuidTimeSeries(newTopside.CostProfileOverride);
+        SetNewGuidTimeSeries(newTopside.CessationCostProfile);
+
         _context.Topsides.Add(newTopside);
         return newTopside;
     }
@@ -325,18 +195,10 @@ public class DuplicateCaseService : IDuplicateCaseService
         var newTransport = await GetTransportNoTracking(guid);
         newTransport.Id = Guid.NewGuid();
 
-        if (newTransport.CostProfile != null)
-        {
-            newTransport.CostProfile.Id = Guid.NewGuid();
-        }
-        if (newTransport.CostProfileOverride != null)
-        {
-            newTransport.CostProfileOverride.Id = Guid.NewGuid();
-        }
-        if (newTransport.CessationCostProfile != null)
-        {
-            newTransport.CessationCostProfile.Id = Guid.NewGuid();
-        }
+        SetNewGuidTimeSeries(newTransport.CostProfile);
+        SetNewGuidTimeSeries(newTransport.CostProfileOverride);
+        SetNewGuidTimeSeries(newTransport.CessationCostProfile);
+
         _context.Transports.Add(newTransport);
         return newTransport;
     }
@@ -361,18 +223,10 @@ public class DuplicateCaseService : IDuplicateCaseService
         var newSubstructure = await GetSubstructureNoTracking(guid);
         newSubstructure.Id = Guid.NewGuid();
 
-        if (newSubstructure.CostProfile != null)
-        {
-            newSubstructure.CostProfile.Id = Guid.NewGuid();
-        }
-        if (newSubstructure.CostProfileOverride != null)
-        {
-            newSubstructure.CostProfileOverride.Id = Guid.NewGuid();
-        }
-        if (newSubstructure.CessationCostProfile != null)
-        {
-            newSubstructure.CessationCostProfile.Id = Guid.NewGuid();
-        }
+        SetNewGuidTimeSeries(newSubstructure.CostProfile);
+        SetNewGuidTimeSeries(newSubstructure.CostProfileOverride);
+        SetNewGuidTimeSeries(newSubstructure.CessationCostProfile);
+
         _context.Substructures.Add(newSubstructure);
         return newSubstructure;
     }
@@ -397,18 +251,10 @@ public class DuplicateCaseService : IDuplicateCaseService
         var newSurf = await GetSurfNoTracking(guid);
         newSurf.Id = Guid.NewGuid();
 
-        if (newSurf.CostProfile != null)
-        {
-            newSurf.CostProfile.Id = Guid.NewGuid();
-        }
-        if (newSurf.CostProfileOverride != null)
-        {
-            newSurf.CostProfileOverride.Id = Guid.NewGuid();
-        }
-        if (newSurf.CessationCostProfile != null)
-        {
-            newSurf.CessationCostProfile.Id = Guid.NewGuid();
-        }
+        SetNewGuidTimeSeries(newSurf.CostProfile);
+        SetNewGuidTimeSeries(newSurf.CostProfileOverride);
+        SetNewGuidTimeSeries(newSurf.CessationCostProfile);
+
         _context.Surfs.Add(newSurf);
         return newSurf;
     }
@@ -426,6 +272,31 @@ public class DuplicateCaseService : IDuplicateCaseService
             throw new ArgumentException(string.Format("Surf {0} not found.", surfId));
         }
         return surf;
+    }
+
+    private async Task<DrainageStrategy> CopyDrainageStrategy(Guid guid)
+    {
+        var newDrainageStrategy = await GetDrainageStrategyNoTracking(guid);
+        newDrainageStrategy.Id = Guid.NewGuid();
+
+        SetNewGuidTimeSeries(newDrainageStrategy.ProductionProfileOil);
+        SetNewGuidTimeSeries(newDrainageStrategy.ProductionProfileGas);
+        SetNewGuidTimeSeries(newDrainageStrategy.ProductionProfileWater);
+        SetNewGuidTimeSeries(newDrainageStrategy.ProductionProfileWaterInjection);
+        SetNewGuidTimeSeries(newDrainageStrategy.FuelFlaringAndLosses);
+        SetNewGuidTimeSeries(newDrainageStrategy.FuelFlaringAndLossesOverride);
+        SetNewGuidTimeSeries(newDrainageStrategy.NetSalesGas);
+        SetNewGuidTimeSeries(newDrainageStrategy.NetSalesGasOverride);
+        SetNewGuidTimeSeries(newDrainageStrategy.Co2Emissions);
+        SetNewGuidTimeSeries(newDrainageStrategy.Co2EmissionsOverride);
+        SetNewGuidTimeSeries(newDrainageStrategy.ProductionProfileNGL);
+        SetNewGuidTimeSeries(newDrainageStrategy.ImportedElectricity);
+        SetNewGuidTimeSeries(newDrainageStrategy.ImportedElectricityOverride);
+        SetNewGuidTimeSeries(newDrainageStrategy.DeferredOilProduction);
+        SetNewGuidTimeSeries(newDrainageStrategy.DeferredGasProduction);
+
+        _context.DrainageStrategies.Add(newDrainageStrategy);
+        return newDrainageStrategy;
     }
 
     private async Task<DrainageStrategy> GetDrainageStrategyNoTracking(Guid drainageStrategyId)
@@ -460,30 +331,13 @@ public class DuplicateCaseService : IDuplicateCaseService
         var newExploration = await GetExplorationNoTracking(explorationId);
         newExploration.Id = Guid.NewGuid();
 
-        if (newExploration.ExplorationWellCostProfile != null)
-        {
-            newExploration.ExplorationWellCostProfile.Id = Guid.NewGuid();
-        }
-        if (newExploration.AppraisalWellCostProfile != null)
-        {
-            newExploration.AppraisalWellCostProfile.Id = Guid.NewGuid();
-        }
-        if (newExploration.SidetrackCostProfile != null)
-        {
-            newExploration.SidetrackCostProfile.Id = Guid.NewGuid();
-        }
-        if (newExploration.GAndGAdminCost != null)
-        {
-            newExploration.GAndGAdminCost.Id = Guid.NewGuid();
-        }
-        if (newExploration.SeismicAcquisitionAndProcessing != null)
-        {
-            newExploration.SeismicAcquisitionAndProcessing.Id = Guid.NewGuid();
-        }
-        if (newExploration.CountryOfficeCost != null)
-        {
-            newExploration.CountryOfficeCost.Id = Guid.NewGuid();
-        }
+        SetNewGuidTimeSeries(newExploration.ExplorationWellCostProfile);
+        SetNewGuidTimeSeries(newExploration.AppraisalWellCostProfile);
+        SetNewGuidTimeSeries(newExploration.SidetrackCostProfile);
+        SetNewGuidTimeSeries(newExploration.GAndGAdminCost);
+        SetNewGuidTimeSeries(newExploration.SeismicAcquisitionAndProcessing);
+        SetNewGuidTimeSeries(newExploration.CountryOfficeCost);
+
         _context.Explorations!.Add(newExploration);
         return newExploration;
     }
@@ -511,41 +365,20 @@ public class DuplicateCaseService : IDuplicateCaseService
         var newWellProject = await GetWellProjectNoTracking(guid);
         newWellProject.Id = Guid.NewGuid();
 
-        if (newWellProject.OilProducerCostProfile != null)
-        {
-            newWellProject.OilProducerCostProfile.Id = Guid.NewGuid();
-        }
-        if (newWellProject.OilProducerCostProfileOverride != null)
-        {
-            newWellProject.OilProducerCostProfileOverride.Id = Guid.NewGuid();
-        }
-        if (newWellProject.GasProducerCostProfile != null)
-        {
-            newWellProject.GasProducerCostProfile.Id = Guid.NewGuid();
-        }
-        if (newWellProject.GasProducerCostProfileOverride != null)
-        {
-            newWellProject.GasProducerCostProfileOverride.Id = Guid.NewGuid();
-        }
-        if (newWellProject.WaterInjectorCostProfile != null)
-        {
-            newWellProject.WaterInjectorCostProfile.Id = Guid.NewGuid();
-        }
-        if (newWellProject.WaterInjectorCostProfileOverride != null)
-        {
-            newWellProject.WaterInjectorCostProfileOverride.Id = Guid.NewGuid();
-        }
-        if (newWellProject.GasInjectorCostProfile != null)
-        {
-            newWellProject.GasInjectorCostProfile.Id = Guid.NewGuid();
-        }
-        if (newWellProject.GasInjectorCostProfileOverride != null)
-        {
-            newWellProject.GasInjectorCostProfileOverride.Id = Guid.NewGuid();
-        }
+        SetNewGuidTimeSeries(newWellProject.OilProducerCostProfile);
+        SetNewGuidTimeSeries(newWellProject.OilProducerCostProfileOverride);
+        SetNewGuidTimeSeries(newWellProject.GasProducerCostProfile);
+        SetNewGuidTimeSeries(newWellProject.GasProducerCostProfileOverride);
+        SetNewGuidTimeSeries(newWellProject.WaterInjectorCostProfile);
+        SetNewGuidTimeSeries(newWellProject.WaterInjectorCostProfileOverride);
+        SetNewGuidTimeSeries(newWellProject.GasInjectorCostProfile);
+        SetNewGuidTimeSeries(newWellProject.GasInjectorCostProfileOverride);
+
         _context.WellProjects.Add(newWellProject);
         return newWellProject;
     }
+
+
 
     private async Task<WellProject> GetWellProjectNoTracking(Guid wellProjectId)
     {
@@ -565,6 +398,22 @@ public class DuplicateCaseService : IDuplicateCaseService
             throw new ArgumentException(string.Format("Well project {0} not found.", wellProjectId));
         }
         return wellProject;
+    }
+
+    private static void SetNewGuidTimeSeries(TimeSeries<double>? timeSeries)
+    {
+        if (timeSeries != null)
+        {
+            timeSeries.Id = Guid.NewGuid();
+        }
+    }
+
+    private static void SetNewGuidTimeSeries(TimeSeries<int>? timeSeries)
+    {
+        if (timeSeries != null)
+        {
+            timeSeries.Id = Guid.NewGuid();
+        }
     }
 
     private string GetUniqueCopyName(IEnumerable<Case> cases, string originalName)
