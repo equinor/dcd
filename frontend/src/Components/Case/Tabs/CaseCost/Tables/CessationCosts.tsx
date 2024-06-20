@@ -57,7 +57,7 @@ const CessationCosts: React.FC<CesationCostsProps> = ({
             resourceProfileId: cessationOnshoreFacilitiesCostProfileData?.id,
             resourcePropertyKey: "cessationOnshoreFacilitiesCostProfile",
             editable: true,
-            overridable: true,
+            overridable: false,
         },
     ]
 
