@@ -41,9 +41,6 @@ public class ExplorationService : IExplorationService
         _mapperService = mapperService;
     }
 
-
-
-
     public async Task<Exploration> CreateExploration(Guid projectId, Guid sourceCaseId, CreateExplorationDto explorationDto)
     {
         var exploration = _mapper.Map<Exploration>(explorationDto);
@@ -67,21 +64,6 @@ public class ExplorationService : IExplorationService
             throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
         }
         case_.ExplorationLink = exploration.Id;
-    }
-
-    public async Task<ExplorationWithProfilesDto> UpdateExplorationAndCostProfiles(ExplorationWithProfilesDto updatedExplorationDto)
-    {
-        var existing = await GetExploration(updatedExplorationDto.Id);
-        _mapper.Map(updatedExplorationDto, existing);
-
-        var updatedExploration = _context.Explorations!.Update(existing);
-        await _context.SaveChangesAsync();
-        var explorationDto = _mapper.Map<ExplorationWithProfilesDto>(updatedExploration.Entity);
-        if (explorationDto == null)
-        {
-            throw new ArgumentNullException(nameof(explorationDto));
-        }
-        return explorationDto;
     }
 
     public async Task<Exploration> GetExploration(Guid explorationId)

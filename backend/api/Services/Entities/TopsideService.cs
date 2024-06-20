@@ -39,36 +39,6 @@ public class TopsideService : ITopsideService
         _mapperService = mapperService;
     }
 
-    public async Task<TopsideWithProfilesDto> CopyTopside(Guid topsideId, Guid sourceCaseId)
-    {
-        var source = await GetTopside(topsideId);
-        var newTopsideDto = _mapper.Map<TopsideWithProfilesDto>(source);
-        if (newTopsideDto == null)
-        {
-            _logger.LogError("Failed to map topside to dto");
-            throw new Exception("Failed to map topside to dto");
-        }
-        newTopsideDto.Id = Guid.Empty;
-        if (newTopsideDto.CostProfile != null)
-        {
-            newTopsideDto.CostProfile.Id = Guid.Empty;
-        }
-        if (newTopsideDto.CostProfileOverride != null)
-        {
-            newTopsideDto.CostProfileOverride.Id = Guid.Empty;
-        }
-        if (newTopsideDto.CessationCostProfile != null)
-        {
-            newTopsideDto.CessationCostProfile.Id = Guid.Empty;
-        }
-
-        // var topside = await NewCreateTopside(newTopsideDto, sourceCaseId);
-        // var dto = TopsideDtoAdapter.Convert(topside);
-
-        // return dto;
-        return newTopsideDto;
-    }
-
     public async Task<Topside> CreateTopside(Guid projectId, Guid sourceCaseId, CreateTopsideDto topsideDto)
     {
         var topside = _mapper.Map<Topside>(topsideDto);

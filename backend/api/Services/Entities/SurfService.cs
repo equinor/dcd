@@ -38,37 +38,6 @@ public class SurfService : ISurfService
         _mapperService = mapperService;
     }
 
-    public async Task<SurfWithProfilesDto> CopySurf(Guid surfId, Guid sourceCaseId)
-    {
-        var source = await GetSurf(surfId);
-        var newSurfDto = _mapper.Map<SurfWithProfilesDto>(source);
-        if (newSurfDto == null)
-        {
-            _logger.LogError("Failed to map surf to dto");
-            throw new Exception("Failed to map surf to dto");
-        }
-        newSurfDto.Id = Guid.Empty;
-        if (newSurfDto.CostProfile != null)
-        {
-            newSurfDto.CostProfile.Id = Guid.Empty;
-        }
-        if (newSurfDto.CostProfileOverride != null)
-        {
-            newSurfDto.CostProfileOverride.Id = Guid.Empty;
-        }
-        if (newSurfDto.CessationCostProfile != null)
-        {
-            newSurfDto.CessationCostProfile.Id = Guid.Empty;
-        }
-
-        // var surf = await NewCreateSurf(newSurfDto, sourceCaseId);
-        // var dto = SurfDtoAdapter.Convert(surf);
-
-        // return dto;
-        return newSurfDto;
-    }
-
-
     public async Task<Surf> GetSurf(Guid surfId)
     {
         var surf = await _context.Surfs!
