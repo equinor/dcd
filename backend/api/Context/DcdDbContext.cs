@@ -16,6 +16,17 @@ public class DcdDbContext : DbContext
     public DbSet<DevelopmentOperationalWellCosts> DevelopmentOperationalWellCosts { get; set; } = null!;
 
     public DbSet<Case> Cases { get; set; } = null!;
+    public DbSet<CessationWellsCostOverride> CessationWellsCostOverride { get; set; } = null!;
+    public DbSet<CessationOffshoreFacilitiesCostOverride> CessationOffshoreFacilitiesCostOverride { get; set; } = null!;
+    public DbSet<TotalFeasibilityAndConceptStudiesOverride> TotalFeasibilityAndConceptStudiesOverride { get; set; } = null!;
+    public DbSet<TotalFEEDStudiesOverride> TotalFEEDStudiesOverride { get; set; } = null!;
+    public DbSet<HistoricCostCostProfile> HistoricCostCostProfile { get; set; } = null!;
+    public DbSet<WellInterventionCostProfileOverride> WellInterventionCostProfileOverride { get; set; } = null!;
+    public DbSet<OffshoreFacilitiesOperationsCostProfileOverride> OffshoreFacilitiesOperationsCostProfileOverride { get; set; } = null!;
+    public DbSet<OnshoreRelatedOPEXCostProfile> OnshoreRelatedOPEXCostProfile { get; set; } = null!;
+    public DbSet<AdditionalOPEXCostProfile> AdditionalOPEXCostProfile { get; set; } = null!;
+    public DbSet<Image> Images { get; set; } = null!;
+
     public DbSet<Well> Wells { get; set; } = null!;
     public DbSet<WellProjectWell> WellProjectWell { get; set; } = null!;
     public DbSet<ExplorationWell> ExplorationWell { get; set; } = null!;
@@ -28,11 +39,9 @@ public class DcdDbContext : DbContext
     public DbSet<Substructure> Substructures { get; set; } = null!;
     public DbSet<SubstructureCostProfile> SubstructureCostProfiles { get; set; } = null!;
     public DbSet<SubstructureCostProfileOverride> SubstructureCostProfileOverride { get; set; } = null!;
-
     public DbSet<SubstructureCessationCostProfile> SubstructureCessationCostProfiles { get; set; } = null!;
 
     public DbSet<Topside> Topsides { get; set; } = null!;
-
     public DbSet<TopsideCostProfile> TopsideCostProfiles { get; set; } = null!;
     public DbSet<TopsideCostProfileOverride> TopsideCostProfileOverride { get; set; } = null!;
     public DbSet<TopsideCessationCostProfile> TopsideCessationCostProfiles { get; set; } = null!;
@@ -77,7 +86,6 @@ public class DcdDbContext : DbContext
     public DbSet<GAndGAdminCost> GAndGAdminCost { get; set; } = null!;
     public DbSet<SeismicAcquisitionAndProcessing> SeismicAcquisitionAndProcessing { get; set; } = null!;
     public DbSet<CountryOfficeCost> CountryOfficeCost { get; set; } = null!;
-    public DbSet<Image> Images { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

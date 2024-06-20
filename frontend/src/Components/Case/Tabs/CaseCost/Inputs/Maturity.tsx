@@ -1,14 +1,17 @@
-import React, { ChangeEventHandler } from "react"
+import React from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
+import { useParams } from "react-router"
 import InputSwitcher from "../../../../Input/Components/InputSwitcher"
-import { useCaseContext } from "../../../../../Context/CaseContext"
+import useDataEdits from "../../../../../Hooks/useDataEdits"
 
-const Maturity: React.FC = () => {
-    const {
-        surf,
-        setSurf,
-        surfCost,
-    } = useCaseContext()
+interface props {
+    surfData: Components.Schemas.SurfWithProfilesDto
+    projectId: string
+}
+
+const Maturity: React.FC<props> = ({ surfData, projectId }) => {
+    const { addEdit } = useDataEdits()
+    const { caseId } = useParams()
 
     const maturityOptions: { [key: string]: string } = {
         0: "A",
@@ -17,30 +20,24 @@ const Maturity: React.FC = () => {
         3: "D",
     }
 
-    const updatedAndSetSurf = (surfItem: Components.Schemas.SurfWithProfilesDto) => {
-        const newSurf: Components.Schemas.SurfWithProfilesDto = { ...surfItem }
-        if (surfCost) {
-            newSurf.costProfile = surfCost
-        }
-        setSurf(newSurf)
-    }
-
-    const handleSurfMaturityChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1) {
-            const newMaturity: Components.Schemas.Maturity = Number(e.currentTarget.value) as Components.Schemas.Maturity
-            const newSurf = { ...surf }
-            newSurf.maturity = newMaturity
-            updatedAndSetSurf(newSurf as Components.Schemas.SurfWithProfilesDto)
-        }
-    }
-
     return (
-        <InputSwitcher value={maturityOptions[surf?.maturity ?? "defaultKey"]} label="Maturity">
+        <InputSwitcher value={maturityOptions[surfData.maturity]} label="Maturity">
             <NativeSelect
                 id="maturity"
                 label=""
-                onChange={handleSurfMaturityChange}
-                value={surf?.maturity ?? ""}
+                value={surfData.maturity}
+                onChange={(e) => {
+                    addEdit({
+                        newValue: Number(e.currentTarget.value),
+                        previousValue: surfData.maturity,
+                        inputLabel: "Maturity",
+                        projectId,
+                        resourceName: "surf",
+                        resourcePropertyKey: "maturity",
+                        resourceId: surfData.id,
+                        caseId,
+                    })
+                }}
             >
                 {Object.keys(maturityOptions).map((key) => (
                     <option key={key} value={key}>{maturityOptions[key]}</option>

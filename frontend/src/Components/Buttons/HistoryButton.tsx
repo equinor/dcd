@@ -13,12 +13,11 @@ interface props {
 }
 
 const HistoryButton: React.FC<props> = ({ size }) => {
-    const { setEditHistoryIsActive, setSidebarOpen } = useAppContext()
+    const { setSidebarOpen } = useAppContext()
     const { projectCase } = useCaseContext()
     if (!projectCase) { return null }
 
     const openHistory = () => {
-        setEditHistoryIsActive(true)
         setSidebarOpen(true)
     }
 

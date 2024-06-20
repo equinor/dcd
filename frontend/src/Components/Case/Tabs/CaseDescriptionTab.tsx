@@ -1,21 +1,23 @@
-import { ChangeEventHandler } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
+import { useQueryClient, useQuery } from "react-query"
+import { useParams } from "react-router"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import Gallery from "../../Gallery/Gallery"
-import { useCaseContext } from "../../../Context/CaseContext"
 import { useAppContext } from "../../../Context/AppContext"
-import { setNonNegativeNumberState } from "../../../Utils/common"
+import { useProjectContext } from "../../../Context/ProjectContext"
 import useDataEdits from "../../../Hooks/useDataEdits"
+import CaseDescriptionTabSkeleton from "./LoadingSkeletons/CaseDescriptionTabSkeleton"
 
 const CaseDescriptionTab = () => {
-    const { projectCase, projectCaseEdited, setProjectCaseEdited } = useCaseContext()
+    const { project } = useProjectContext()
     const { editMode } = useAppContext()
     const { addEdit } = useDataEdits()
-
-    if (!projectCase) { return null }
+    const { caseId } = useParams()
+    const queryClient = useQueryClient()
+    const projectId = project?.id || null
 
     const productionStrategyOptions = {
         0: "Depletion",
@@ -32,54 +34,18 @@ const CaseDescriptionTab = () => {
         3: "Subsea booster pumps",
     }
 
-    function handleDescriptionChange(value: string) {
-        if (projectCaseEdited) {
-            const updatedProjectCase = { ...projectCaseEdited, description: value }
-            setProjectCaseEdited(updatedProjectCase)
-            addEdit(value, projectCaseEdited.description, "description", "Description", "case", projectCaseEdited.id)
-        }
-    }
+    const { data: caseData } = useQuery<Components.Schemas.CaseDto | undefined>(
+        [{ projectId, caseId, resourceId: "" }],
+        () => queryClient.getQueryData([{ projectId, caseId, resourceId: "" }]),
+        {
+            enabled: !!project && !!projectId,
+            initialData: () => queryClient.getQueryData([{ projectId: project?.id, caseId, resourceId: "" }]) as Components.Schemas.CaseDto,
+        },
+    )
 
-    const handleFacilitiesAvailabilityChange = (value: number): void => {
-        const newCase = { ...projectCase }
-        const newfacilitiesAvailability = value > 0
-            ? Math.min(Math.max(value, 0), 100) : undefined
-        if (newfacilitiesAvailability !== undefined) {
-            newCase.facilitiesAvailability = newfacilitiesAvailability / 100
-        } else { newCase.facilitiesAvailability = 0 }
-        setProjectCaseEdited(newCase)
+    if (!caseData || !projectId) {
+        return (<CaseDescriptionTabSkeleton />)
     }
-
-    const handleProductionStrategyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1, 2, 3, 4].indexOf(Number(e.currentTarget.value)) !== -1) {
-            const newProductionStrategy: Components.Schemas.ProductionStrategyOverview = Number(e.currentTarget.value) as Components.Schemas.ProductionStrategyOverview
-            const newCase = { ...projectCase }
-            newCase.productionStrategyOverview = newProductionStrategy
-            setProjectCaseEdited(newCase)
-        }
-    }
-
-    const handleArtificialLiftChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1) {
-            const newArtificialLift: Components.Schemas.ArtificialLift = Number(e.currentTarget.value) as Components.Schemas.ArtificialLift
-            const newCase = { ...projectCase }
-            newCase.artificialLift = newArtificialLift
-            setProjectCaseEdited(newCase)
-        }
-    }
-
-    const getFacilitiesAvailabilityDefaultValue = () => {
-        if (projectCaseEdited) {
-            return projectCaseEdited.facilitiesAvailability !== undefined
-                ? projectCaseEdited.facilitiesAvailability * 100
-                : undefined
-        }
-        return projectCase?.facilitiesAvailability !== undefined
-            ? projectCase.facilitiesAvailability * 100
-            : undefined
-    }
-
-    const defaultValue = getFacilitiesAvailabilityDefaultValue()
 
     return (
         <Grid container spacing={2}>
@@ -93,32 +59,43 @@ const CaseDescriptionTab = () => {
                             onBlur={(markdown) => {
                                 // eslint-disable-next-line no-underscore-dangle
                                 const value = (markdown as any).target._value
-                                handleDescriptionChange(value)
+
+                                addEdit({
+                                    newValue: value,
+                                    previousValue: caseData.description,
+                                    inputLabel: "Description",
+                                    projectId,
+                                    resourceName: "case",
+                                    resourcePropertyKey: "description",
+                                    resourceId: "",
+                                    caseId: caseData.id,
+                                })
                             }}
                         >
-                            {projectCaseEdited ? projectCaseEdited.description : projectCase?.description ?? ""}
+                            {caseData.description ?? ""}
                         </MarkdownEditor>
                     )
-                    : <MarkdownViewer value={projectCase.description} />}
+                    : <MarkdownViewer value={caseData.description ?? ""} />}
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    objectKey={projectCaseEdited?.producerCount}
+                    resourceName="case"
+                    resourcePropertyKey="producerCount"
                     label="Production wells"
-                    onSubmit={(value) => setNonNegativeNumberState(value, "producerCount", projectCaseEdited, setProjectCaseEdited)}
-                    value={projectCaseEdited ? projectCaseEdited.producerCount : projectCase?.producerCount}
+                    value={caseData.producerCount ?? 0}
                     integer
                     min={0}
                     max={100000}
                 />
+
             </Grid>
             <Grid item xs={12} md={4}>
 
                 <SwitchableNumberInput
-                    objectKey={projectCaseEdited?.waterInjectorCount}
+                    resourceName="case"
+                    resourcePropertyKey="waterInjectorCount"
                     label="Water injector wells"
-                    onSubmit={(value) => setNonNegativeNumberState(value, "waterInjectorCount", projectCaseEdited, setProjectCaseEdited)}
-                    value={projectCaseEdited ? projectCaseEdited.waterInjectorCount : projectCase?.waterInjectorCount}
+                    value={caseData.waterInjectorCount ?? 0}
                     integer
                     disabled={false}
                     min={0}
@@ -127,10 +104,10 @@ const CaseDescriptionTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    objectKey={projectCaseEdited?.gasInjectorCount}
+                    resourceName="case"
+                    resourcePropertyKey="gasInjectorCount"
                     label="Gas injector wells"
-                    onSubmit={(value) => setNonNegativeNumberState(value, "gasInjectorCount", projectCaseEdited, setProjectCaseEdited)}
-                    value={projectCaseEdited ? projectCaseEdited.gasInjectorCount : projectCase?.gasInjectorCount}
+                    value={caseData.gasInjectorCount ?? 0}
                     integer
                     min={0}
                     max={100000}
@@ -138,28 +115,28 @@ const CaseDescriptionTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableDropdownInput
-                    value={projectCase.productionStrategyOverview}
+                    value={caseData.productionStrategyOverview ?? 0}
+                    resourceName="case"
+                    resourcePropertyKey="productionStrategyOverview"
                     options={productionStrategyOptions}
-                    objectKey={projectCaseEdited ? projectCaseEdited.productionStrategyOverview : projectCase.productionStrategyOverview}
                     label="Production strategy overview"
-                    onSubmit={handleProductionStrategyChange}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableDropdownInput
-                    value={projectCase.artificialLift}
+                    value={caseData.artificialLift ?? 0}
+                    resourceName="case"
+                    resourcePropertyKey="artificialLift"
                     options={artificialLiftOptions}
-                    objectKey={projectCaseEdited ? projectCaseEdited.artificialLift : projectCase.artificialLift}
                     label="Artificial lift"
-                    onSubmit={handleArtificialLiftChange}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    objectKey={projectCase.facilitiesAvailability}
+                    resourceName="case"
+                    resourcePropertyKey="facilitiesAvailability"
                     label="Facilities availability"
-                    onSubmit={handleFacilitiesAvailabilityChange}
-                    value={defaultValue}
+                    value={caseData.facilitiesAvailability ?? 0}
                     integer={false}
                     unit="%"
                     min={0}

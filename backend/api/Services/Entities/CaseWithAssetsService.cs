@@ -4,8 +4,10 @@ using System.Runtime.CompilerServices;
 using api.Adapters;
 using api.Context;
 using api.Dtos;
+using api.Exceptions;
 using api.Mappings;
 using api.Models;
+using api.Repositories;
 using api.Services.GenerateCostProfiles;
 
 using AutoMapper;
@@ -16,410 +18,128 @@ namespace api.Services;
 
 public class CaseWithAssetsService : ICaseWithAssetsService
 {
-    private readonly DcdDbContext _context;
-    private readonly IProjectService _projectService;
-    private readonly ICaseService _caseService;
-    private readonly IDrainageStrategyService _drainageStrategyService;
-    private readonly IWellProjectService _wellProjectService;
-    private readonly IExplorationService _explorationService;
-    private readonly ISurfService _surfService;
-    private readonly ISubstructureService _substructureService;
-    private readonly ITransportService _transportService;
-    private readonly ITopsideService _topsideService;
-    private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
-    private readonly ILogger<CaseWithAssetsService> _logger;
-    private readonly IGenerateStudyCostProfile _generateStudyCostProfile;
-    private readonly IGenerateOpexCostProfile _generateOpexCostProfile;
-    private readonly IGenerateCessationCostProfile _generateCessationCostProfile;
-    private readonly IGenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
-    private readonly IGenerateGAndGAdminCostProfile _generateGAndGAdminCostProfile;
-    private readonly IGenerateImportedElectricityProfile _generateImportedElectricityProfile;
-    private readonly IGenerateFuelFlaringLossesProfile _generateFuelFlaringLossesProfile;
-    private readonly IGenerateNetSaleGasProfile _generateNetSaleGasProfile;
-    private readonly IMapper _mapper;
 
+    private readonly ICaseWithAssetsRepository _repository;
+    private readonly IProjectRepository _projectRepository;
+    private readonly IMapperService _mapperService;
+    private readonly IConversionMapperService _conversionMapperService;
     public CaseWithAssetsService(
-        DcdDbContext context,
-        IProjectService projectService,
-        ICaseService caseService,
-        IDrainageStrategyService drainageStrategyService,
-        IWellProjectService wellProjectService,
-        IExplorationService explorationService,
-        ISurfService surfService,
-        ISubstructureService substructureService,
-        ITransportService transportService,
-        ITopsideService topsideService,
-        ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
-        ILoggerFactory loggerFactory,
-        IGenerateStudyCostProfile generateStudyCostProfile,
-        IGenerateOpexCostProfile generateOpexCostProfile,
-        IGenerateCessationCostProfile generateCessationCostProfile,
-        IGenerateCo2EmissionsProfile generateCo2EmissionsProfile,
-        IGenerateGAndGAdminCostProfile generateGAndGAdminCostProfile,
-        IGenerateImportedElectricityProfile generateImportedElectricityProfile,
-        IGenerateFuelFlaringLossesProfile generateFuelFlaringLossesProfile,
-        IGenerateNetSaleGasProfile generateNetSaleGasProfile,
-        IMapper mapper
+        ICaseWithAssetsRepository repository,
+        IProjectRepository projectRepository,
+        IMapperService mapperService,
+        IConversionMapperService conversionMapperService
     )
     {
-        _context = context;
-
-        _projectService = projectService;
-        _caseService = caseService;
-
-        _drainageStrategyService = drainageStrategyService;
-        _wellProjectService = wellProjectService;
-        _explorationService = explorationService;
-        _surfService = surfService;
-        _substructureService = substructureService;
-        _transportService = transportService;
-        _topsideService = topsideService;
-
-        _costProfileFromDrillingScheduleHelper = costProfileFromDrillingScheduleHelper;
-
-        _logger = loggerFactory.CreateLogger<CaseWithAssetsService>();
-        _mapper = mapper;
-
-        _generateStudyCostProfile = generateStudyCostProfile;
-        _generateOpexCostProfile = generateOpexCostProfile;
-        _generateCessationCostProfile = generateCessationCostProfile;
-        _generateCo2EmissionsProfile = generateCo2EmissionsProfile;
-        _generateGAndGAdminCostProfile = generateGAndGAdminCostProfile;
-        _generateImportedElectricityProfile = generateImportedElectricityProfile;
-        _generateFuelFlaringLossesProfile = generateFuelFlaringLossesProfile;
-        _generateNetSaleGasProfile = generateNetSaleGasProfile;
+        _repository = repository;
+        _projectRepository = projectRepository;
+        _mapperService = mapperService;
+        _conversionMapperService = conversionMapperService;
     }
 
-    public class ProfilesToGenerate
+    public async Task<CaseWithAssetsDto> GetCaseWithAssets(Guid projectId, Guid caseId)
     {
-        public bool StudyCost { get; set; }
-        public bool CessationCost { get; set; }
-        public bool OpexCost { get; set; }
-        public bool Co2Emissions { get; set; }
-        public bool GAndGAdminCost { get; set; }
-        public bool ImportedElectricity { get; set; }
-        public bool FuelFlaringAndLosses { get; set; }
-        public bool NetSalesGas { get; set; }
-    }
+        var project = await _projectRepository.GetProject(projectId) ?? throw new NotFoundInDBException($"Project with id {projectId} not found");
 
-    public async Task<ProjectWithGeneratedProfilesDto> UpdateCaseWithAssets(Guid projectId, Guid caseId, CaseWithAssetsWrapperDto wrapper)
-    {
-        var project = await _projectService.GetProjectWithoutAssets(projectId);
+        var (caseItem, drainageStrategy, topside, exploration, substructure, surf, transport, wellProject) = await _repository.GetCaseWithAssets(caseId);
 
-        var profilesToGenerate = new ProfilesToGenerate();
-
-        var updatedCaseDto = await UpdateCase(caseId, wrapper.CaseDto, profilesToGenerate);
-
-        await UpdateDrainageStrategy(updatedCaseDto.DrainageStrategyLink, wrapper.DrainageStrategyDto, project.PhysicalUnit, profilesToGenerate);
-        await UpdateWellProject(updatedCaseDto.WellProjectLink, wrapper.WellProjectDto, profilesToGenerate);
-        await UpdateExploration(updatedCaseDto.ExplorationLink, wrapper.ExplorationDto, profilesToGenerate);
-        await UpdateSurf(updatedCaseDto.SurfLink, wrapper.SurfDto, profilesToGenerate);
-        await UpdateSubstructure(updatedCaseDto.SubstructureLink, wrapper.SubstructureDto, profilesToGenerate);
-        await UpdateTransport(updatedCaseDto.TransportLink, wrapper.TransportDto, profilesToGenerate);
-        await UpdateTopside(updatedCaseDto.TopsideLink, wrapper.TopsideDto, profilesToGenerate);
-
-        if (wrapper.ExplorationWellDto?.Length > 0)
+        var caseWithAssetsDto = new CaseWithAssetsDto
         {
-            await CreateAndUpdateExplorationWells(wrapper.ExplorationWellDto, updatedCaseDto.Id, profilesToGenerate);
-        }
-        if (wrapper.WellProjectWellDtos?.Length > 0)
-        {
-            await CreateAndUpdateWellProjectWells(wrapper.WellProjectWellDtos, updatedCaseDto.Id, profilesToGenerate);
-        }
+            Case = _mapperService.MapToDto<Case, CaseDto>(caseItem, caseItem.Id),
+            CessationWellsCost = MapToDto<CessationWellsCost, CessationWellsCostDto>(caseItem.CessationWellsCost, caseItem.CessationWellsCost?.Id),
+            CessationWellsCostOverride = MapToDto<CessationWellsCostOverride, CessationWellsCostOverrideDto>(caseItem.CessationWellsCostOverride, caseItem.CessationWellsCostOverride?.Id),
+            CessationOffshoreFacilitiesCost = MapToDto<CessationOffshoreFacilitiesCost, CessationOffshoreFacilitiesCostDto>(caseItem.CessationOffshoreFacilitiesCost, caseItem.CessationOffshoreFacilitiesCost?.Id),
+            CessationOffshoreFacilitiesCostOverride = MapToDto<CessationOffshoreFacilitiesCostOverride, CessationOffshoreFacilitiesCostOverrideDto>(caseItem.CessationOffshoreFacilitiesCostOverride, caseItem.CessationOffshoreFacilitiesCostOverride?.Id),
+            CessationOnshoreFacilitiesCostProfile = MapToDto<CessationOnshoreFacilitiesCostProfile, CessationOnshoreFacilitiesCostProfileDto>(caseItem.CessationOnshoreFacilitiesCostProfile, caseItem.CessationOnshoreFacilitiesCostProfile?.Id),
+            TotalFeasibilityAndConceptStudies = MapToDto<TotalFeasibilityAndConceptStudies, TotalFeasibilityAndConceptStudiesDto>(caseItem.TotalFeasibilityAndConceptStudies, caseItem.TotalFeasibilityAndConceptStudies?.Id),
+            TotalFeasibilityAndConceptStudiesOverride = MapToDto<TotalFeasibilityAndConceptStudiesOverride, TotalFeasibilityAndConceptStudiesOverrideDto>(caseItem.TotalFeasibilityAndConceptStudiesOverride, caseItem.TotalFeasibilityAndConceptStudiesOverride?.Id),
+            TotalFEEDStudies = MapToDto<TotalFEEDStudies, TotalFEEDStudiesDto>(caseItem.TotalFEEDStudies, caseItem.TotalFEEDStudies?.Id),
+            TotalFEEDStudiesOverride = MapToDto<TotalFEEDStudiesOverride, TotalFEEDStudiesOverrideDto>(caseItem.TotalFEEDStudiesOverride, caseItem.TotalFEEDStudiesOverride?.Id),
+            TotalOtherStudies = MapToDto<TotalOtherStudies, TotalOtherStudiesDto>(caseItem.TotalOtherStudies, caseItem.TotalOtherStudies?.Id),
+            HistoricCostCostProfile = MapToDto<HistoricCostCostProfile, HistoricCostCostProfileDto>(caseItem.HistoricCostCostProfile, caseItem.HistoricCostCostProfile?.Id),
+            WellInterventionCostProfile = MapToDto<WellInterventionCostProfile, WellInterventionCostProfileDto>(caseItem.WellInterventionCostProfile, caseItem.WellInterventionCostProfile?.Id),
+            WellInterventionCostProfileOverride = MapToDto<WellInterventionCostProfileOverride, WellInterventionCostProfileOverrideDto>(caseItem.WellInterventionCostProfileOverride, caseItem.WellInterventionCostProfileOverride?.Id),
+            OffshoreFacilitiesOperationsCostProfile = MapToDto<OffshoreFacilitiesOperationsCostProfile, OffshoreFacilitiesOperationsCostProfileDto>(caseItem.OffshoreFacilitiesOperationsCostProfile, caseItem.OffshoreFacilitiesOperationsCostProfile?.Id),
+            OffshoreFacilitiesOperationsCostProfileOverride = MapToDto<OffshoreFacilitiesOperationsCostProfileOverride, OffshoreFacilitiesOperationsCostProfileOverrideDto>(caseItem.OffshoreFacilitiesOperationsCostProfileOverride, caseItem.OffshoreFacilitiesOperationsCostProfileOverride?.Id),
+            OnshoreRelatedOPEXCostProfile = MapToDto<OnshoreRelatedOPEXCostProfile, OnshoreRelatedOPEXCostProfileDto>(caseItem.OnshoreRelatedOPEXCostProfile, caseItem.OnshoreRelatedOPEXCostProfile?.Id),
+            AdditionalOPEXCostProfile = MapToDto<AdditionalOPEXCostProfile, AdditionalOPEXCostProfileDto>(caseItem.AdditionalOPEXCostProfile, caseItem.AdditionalOPEXCostProfile?.Id),
 
-        await _context.SaveChangesAsync();
+            DrainageStrategy = _conversionMapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(drainageStrategy, drainageStrategy.Id, project.PhysicalUnit),
+            ProductionProfileOil = ConversionMapToDto<ProductionProfileOil, ProductionProfileOilDto>(drainageStrategy?.ProductionProfileOil, drainageStrategy?.ProductionProfileOil?.Id, project.PhysicalUnit),
+            ProductionProfileGas = ConversionMapToDto<ProductionProfileGas, ProductionProfileGasDto>(drainageStrategy?.ProductionProfileGas, drainageStrategy?.ProductionProfileGas?.Id, project.PhysicalUnit),
+            ProductionProfileWater = ConversionMapToDto<ProductionProfileWater, ProductionProfileWaterDto>(drainageStrategy?.ProductionProfileWater, drainageStrategy?.ProductionProfileWater?.Id, project.PhysicalUnit),
+            ProductionProfileWaterInjection = ConversionMapToDto<ProductionProfileWaterInjection, ProductionProfileWaterInjectionDto>(drainageStrategy?.ProductionProfileWaterInjection, drainageStrategy?.ProductionProfileWaterInjection?.Id, project.PhysicalUnit),
+            FuelFlaringAndLosses = ConversionMapToDto<FuelFlaringAndLosses, FuelFlaringAndLossesDto>(drainageStrategy?.FuelFlaringAndLosses, drainageStrategy?.FuelFlaringAndLosses?.Id, project.PhysicalUnit),
+            FuelFlaringAndLossesOverride = ConversionMapToDto<FuelFlaringAndLossesOverride, FuelFlaringAndLossesOverrideDto>(drainageStrategy?.FuelFlaringAndLossesOverride, drainageStrategy?.FuelFlaringAndLossesOverride?.Id, project.PhysicalUnit),
+            NetSalesGas = ConversionMapToDto<NetSalesGas, NetSalesGasDto>(drainageStrategy?.NetSalesGas, drainageStrategy?.NetSalesGas?.Id, project.PhysicalUnit),
+            NetSalesGasOverride = ConversionMapToDto<NetSalesGasOverride, NetSalesGasOverrideDto>(drainageStrategy?.NetSalesGasOverride, drainageStrategy?.NetSalesGasOverride?.Id, project.PhysicalUnit),
+            Co2Emissions = ConversionMapToDto<Co2Emissions, Co2EmissionsDto>(drainageStrategy?.Co2Emissions, drainageStrategy?.Co2Emissions?.Id, project.PhysicalUnit),
+            Co2EmissionsOverride = ConversionMapToDto<Co2EmissionsOverride, Co2EmissionsOverrideDto>(drainageStrategy?.Co2EmissionsOverride, drainageStrategy?.Co2EmissionsOverride?.Id, project.PhysicalUnit),
+            ProductionProfileNGL = ConversionMapToDto<ProductionProfileNGL, ProductionProfileNGLDto>(drainageStrategy?.ProductionProfileNGL, drainageStrategy?.ProductionProfileNGL?.Id, project.PhysicalUnit),
+            ImportedElectricity = ConversionMapToDto<ImportedElectricity, ImportedElectricityDto>(drainageStrategy?.ImportedElectricity, drainageStrategy?.ImportedElectricity?.Id, project.PhysicalUnit),
+            ImportedElectricityOverride = ConversionMapToDto<ImportedElectricityOverride, ImportedElectricityOverrideDto>(drainageStrategy?.ImportedElectricityOverride, drainageStrategy?.ImportedElectricityOverride?.Id, project.PhysicalUnit),
+            // Co2Intensity = ConversionMapToDto<Co2Intensity, Co2IntensityDto>(drainageStrategy?.Co2Intensity, drainageStrategy?.Co2Intensity?.Id, project.PhysicalUnit),
+            DeferredOilProduction = ConversionMapToDto<DeferredOilProduction, DeferredOilProductionDto>(drainageStrategy?.DeferredOilProduction, drainageStrategy?.DeferredOilProduction?.Id, project.PhysicalUnit),
+            DeferredGasProduction = ConversionMapToDto<DeferredGasProduction, DeferredGasProductionDto>(drainageStrategy?.DeferredGasProduction, drainageStrategy?.DeferredGasProduction?.Id, project.PhysicalUnit),
 
-        var generatedProfiles = await GenerateProfiles(profilesToGenerate, caseId);
+            Topside = _mapperService.MapToDto<Topside, TopsideDto>(topside, topside.Id),
+            TopsideCostProfile = MapToDto<TopsideCostProfile, TopsideCostProfileDto>(topside.CostProfile, topside.CostProfile?.Id),
+            TopsideCostProfileOverride = MapToDto<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>(topside.CostProfileOverride, topside.CostProfileOverride?.Id),
+            TopsideCessationCostProfile = MapToDto<TopsideCessationCostProfile, TopsideCessationCostProfileDto>(topside.CessationCostProfile, topside.CessationCostProfile?.Id),
 
-        var projectDto = await _projectService.GetProjectDto(updatedCaseDto.ProjectId);
+            Substructure = _mapperService.MapToDto<Substructure, SubstructureDto>(substructure, substructure.Id),
+            SubstructureCostProfile = MapToDto<SubstructureCostProfile, SubstructureCostProfileDto>(substructure.CostProfile, substructure.CostProfile?.Id),
+            SubstructureCostProfileOverride = MapToDto<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>(substructure.CostProfileOverride, substructure.CostProfileOverride?.Id),
+            SubstructureCessationCostProfile = MapToDto<SubstructureCessationCostProfile, SubstructureCessationCostProfileDto>(substructure.CessationCostProfile, substructure.CessationCostProfile?.Id),
 
-        var result = new ProjectWithGeneratedProfilesDto
-        {
-            GeneratedProfilesDto = generatedProfiles,
-            ProjectDto = projectDto
+            Surf = _mapperService.MapToDto<Surf, SurfDto>(surf, surf.Id),
+            SurfCostProfile = MapToDto<SurfCostProfile, SurfCostProfileDto>(surf.CostProfile, surf.CostProfile?.Id),
+            SurfCostProfileOverride = MapToDto<SurfCostProfileOverride, SurfCostProfileOverrideDto>(surf.CostProfileOverride, surf.CostProfileOverride?.Id),
+            SurfCessationCostProfile = MapToDto<SurfCessationCostProfile, SurfCessationCostProfileDto>(surf.CessationCostProfile, surf.CessationCostProfile?.Id),
+
+            Transport = _mapperService.MapToDto<Transport, TransportDto>(transport, transport.Id),
+            TransportCostProfile = MapToDto<TransportCostProfile, TransportCostProfileDto>(transport.CostProfile, transport.CostProfile?.Id),
+            TransportCostProfileOverride = MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(transport.CostProfileOverride, transport.CostProfileOverride?.Id),
+            TransportCessationCostProfile = MapToDto<TransportCessationCostProfile, TransportCessationCostProfileDto>(transport.CessationCostProfile, transport.CessationCostProfile?.Id),
+
+            Exploration = _mapperService.MapToDto<Exploration, ExplorationDto>(exploration, exploration.Id),
+            ExplorationWells = exploration.ExplorationWells?.Select(w => _mapperService.MapToDto<ExplorationWell, ExplorationWellDto>(w, w.ExplorationId)).ToList() ?? new List<ExplorationWellDto>(),
+            ExplorationWellCostProfile = MapToDto<ExplorationWellCostProfile, ExplorationWellCostProfileDto>(exploration.ExplorationWellCostProfile, exploration.ExplorationWellCostProfile?.Id),
+            AppraisalWellCostProfile = MapToDto<AppraisalWellCostProfile, AppraisalWellCostProfileDto>(exploration.AppraisalWellCostProfile, exploration.AppraisalWellCostProfile?.Id),
+            SidetrackCostProfile = MapToDto<SidetrackCostProfile, SidetrackCostProfileDto>(exploration.SidetrackCostProfile, exploration.SidetrackCostProfile?.Id),
+            GAndGAdminCost = MapToDto<GAndGAdminCost, GAndGAdminCostDto>(exploration.GAndGAdminCost, exploration.GAndGAdminCost?.Id),
+            SeismicAcquisitionAndProcessing = MapToDto<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto>(exploration.SeismicAcquisitionAndProcessing, exploration.SeismicAcquisitionAndProcessing?.Id),
+            CountryOfficeCost = MapToDto<CountryOfficeCost, CountryOfficeCostDto>(exploration.CountryOfficeCost, exploration.CountryOfficeCost?.Id),
+
+            WellProject = _mapperService.MapToDto<WellProject, WellProjectDto>(wellProject, wellProject.Id),
+            WellProjectWells = wellProject.WellProjectWells?.Select(w => _mapperService.MapToDto<WellProjectWell, WellProjectWellDto>(w, w.WellProjectId)).ToList() ?? new List<WellProjectWellDto>(),
+            OilProducerCostProfile = MapToDto<OilProducerCostProfile, OilProducerCostProfileDto>(wellProject.OilProducerCostProfile, wellProject.OilProducerCostProfile?.Id),
+            OilProducerCostProfileOverride = MapToDto<OilProducerCostProfileOverride, OilProducerCostProfileOverrideDto>(wellProject.OilProducerCostProfileOverride, wellProject.OilProducerCostProfileOverride?.Id),
+            GasProducerCostProfile = MapToDto<GasProducerCostProfile, GasProducerCostProfileDto>(wellProject.GasProducerCostProfile, wellProject.GasProducerCostProfile?.Id),
+            GasProducerCostProfileOverride = MapToDto<GasProducerCostProfileOverride, GasProducerCostProfileOverrideDto>(wellProject.GasProducerCostProfileOverride, wellProject.GasProducerCostProfileOverride?.Id),
+            WaterInjectorCostProfile = MapToDto<WaterInjectorCostProfile, WaterInjectorCostProfileDto>(wellProject.WaterInjectorCostProfile, wellProject.WaterInjectorCostProfile?.Id),
+            WaterInjectorCostProfileOverride = MapToDto<WaterInjectorCostProfileOverride, WaterInjectorCostProfileOverrideDto>(wellProject.WaterInjectorCostProfileOverride, wellProject.WaterInjectorCostProfileOverride?.Id),
+            GasInjectorCostProfile = MapToDto<GasInjectorCostProfile, GasInjectorCostProfileDto>(wellProject.GasInjectorCostProfile, wellProject.GasInjectorCostProfile?.Id),
+            GasInjectorCostProfileOverride = MapToDto<GasInjectorCostProfileOverride, GasInjectorCostProfileOverrideDto>(wellProject.GasInjectorCostProfileOverride, wellProject.GasInjectorCostProfileOverride?.Id),
         };
 
-        return result;
+        return caseWithAssetsDto;
     }
 
-    public class GeneratedProfilesDto
+    private TDto? MapToDto<T, TDto>(T? source, Guid? id) where T : class where TDto : class
     {
-        public StudyCostProfileWrapperDto? StudyCostProfileWrapperDto { get; set; }
-        public OpexCostProfileWrapperDto? OpexCostProfileWrapperDto { get; set; }
-        public CessationCostWrapperDto? CessationCostWrapperDto { get; set; }
-        public Co2EmissionsDto? Co2EmissionsDto { get; set; }
-        public GAndGAdminCostDto? GAndGAdminCostDto { get; set; }
-        public ImportedElectricityDto? ImportedElectricityDto { get; set; }
-        public FuelFlaringAndLossesDto? FuelFlaringAndLossesDto { get; set; }
-        public NetSalesGasDto? NetSalesGasDto { get; set; }
-    }
-
-    private async Task<GeneratedProfilesDto> GenerateProfiles(ProfilesToGenerate profilesToGenerate, Guid caseId)
-    {
-        var generatedProfiles = new GeneratedProfilesDto();
-
-        if (profilesToGenerate.StudyCost)
+        if (source == null || id == null)
         {
-            await AddStudyCost(caseId, generatedProfiles);
+            return null;
         }
-        if (profilesToGenerate.OpexCost)
+        return _mapperService.MapToDto<T, TDto>(source, (Guid)id);
+    }
+
+    private TDto? ConversionMapToDto<T, TDto>(T? source, Guid? id, PhysUnit physUnit) where T : class where TDto : class
+    {
+        if (source == null || id == null)
         {
-            await AddOpexCost(caseId, generatedProfiles);
+            return null;
         }
-        if (profilesToGenerate.CessationCost)
-        {
-            await AddCessationCost(caseId, generatedProfiles);
-        }
-        if (profilesToGenerate.Co2Emissions)
-        {
-            await AddCo2EmissionsCost(caseId, generatedProfiles);
-        }
-        if (profilesToGenerate.GAndGAdminCost)
-        {
-            await AddGAndGAdminCost(caseId, generatedProfiles);
-        }
-        if (profilesToGenerate.ImportedElectricity)
-        {
-            await AddImportedElectricity(caseId, generatedProfiles);
-        }
-        if (profilesToGenerate.FuelFlaringAndLosses)
-        {
-            await AddFuelFlaringAndLosses(caseId, generatedProfiles);
-            profilesToGenerate.NetSalesGas = true;
-        }
-        if (profilesToGenerate.NetSalesGas)
-        {
-            await AddNetSalesGas(caseId, generatedProfiles);
-        }
-
-        return generatedProfiles;
-    }
-
-    private async Task AddStudyCost(Guid caseId, GeneratedProfilesDto generatedProfiles)
-    {
-        var dtoWrapper = await _generateStudyCostProfile.Generate(caseId);
-        generatedProfiles.StudyCostProfileWrapperDto = dtoWrapper;
-    }
-
-    private async Task AddOpexCost(Guid caseId, GeneratedProfilesDto generatedProfiles)
-    {
-        var dtoWrapper = await _generateOpexCostProfile.Generate(caseId);
-        generatedProfiles.OpexCostProfileWrapperDto = dtoWrapper;
-    }
-
-    private async Task AddCessationCost(Guid caseId, GeneratedProfilesDto generatedProfiles)
-    {
-        var dtoWrapper = await _generateCessationCostProfile.Generate(caseId);
-        generatedProfiles.CessationCostWrapperDto = dtoWrapper;
-    }
-
-    private async Task AddCo2EmissionsCost(Guid caseId, GeneratedProfilesDto generatedProfiles)
-    {
-        var dtoWrapper = await _generateCo2EmissionsProfile.Generate(caseId);
-        generatedProfiles.Co2EmissionsDto = dtoWrapper;
-    }
-
-    private async Task AddGAndGAdminCost(Guid caseId, GeneratedProfilesDto generatedProfiles)
-    {
-        var dtoWrapper = await _generateGAndGAdminCostProfile.Generate(caseId);
-        generatedProfiles.GAndGAdminCostDto = dtoWrapper;
-    }
-
-    private async Task AddImportedElectricity(Guid caseId, GeneratedProfilesDto generatedProfiles)
-    {
-        var dtoWrapper = await _generateImportedElectricityProfile.Generate(caseId);
-        generatedProfiles.ImportedElectricityDto = dtoWrapper;
-    }
-
-    private async Task AddFuelFlaringAndLosses(Guid caseId, GeneratedProfilesDto generatedProfiles)
-    {
-        var dtoWrapper = await _generateFuelFlaringLossesProfile.Generate(caseId);
-        generatedProfiles.FuelFlaringAndLossesDto = dtoWrapper;
-    }
-
-    private async Task AddNetSalesGas(Guid caseId, GeneratedProfilesDto generatedProfiles)
-    {
-        var dtoWrapper = await _generateNetSaleGasProfile.Generate(caseId);
-        generatedProfiles.NetSalesGasDto = dtoWrapper;
-    }
-
-    public async Task CreateAndUpdateExplorationWells(UpdateExplorationWellDto[] explorationWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate)
-    {
-        foreach (var explorationWellDto in explorationWellDtos)
-        {
-            var existingExplorationWell = await _context.ExplorationWell!
-                .Include(wpw => wpw.DrillingSchedule)
-                .FirstOrDefaultAsync(w => w.WellId == explorationWellDto.WellId && w.ExplorationId == explorationWellDto.ExplorationId);
-            if (existingExplorationWell != null)
-            {
-                _mapper.Map(explorationWellDto, existingExplorationWell);
-                if (explorationWellDto.DrillingSchedule == null && existingExplorationWell.DrillingSchedule != null)
-                {
-                    _context.DrillingSchedule!.Remove(existingExplorationWell.DrillingSchedule);
-                }
-            }
-            else
-            {
-                var explorationWell = _mapper.Map<ExplorationWell>(explorationWellDto);
-                if (explorationWell == null)
-                {
-                    throw new Exception("Failed to map exploration well");
-                }
-                _context.ExplorationWell!.Add(explorationWell);
-            }
-        }
-
-        await _context.SaveChangesAsync();
-        var wellProject = await _costProfileFromDrillingScheduleHelper.UpdateExplorationCostProfilesForCase(caseId);
-    }
-
-    public async Task CreateAndUpdateWellProjectWells(UpdateWellProjectWellDto[] wellProjectWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate)
-    {
-        foreach (var wellProjectWellDto in wellProjectWellDtos)
-        {
-            var existingWellProjectWell = await _context.WellProjectWell!
-                .Include(wpw => wpw.DrillingSchedule)
-                .FirstOrDefaultAsync(w => w.WellId == wellProjectWellDto.WellId && w.WellProjectId == wellProjectWellDto.WellProjectId);
-
-            if (existingWellProjectWell != null)
-            {
-                _mapper.Map(wellProjectWellDto, existingWellProjectWell);
-                if (wellProjectWellDto.DrillingSchedule == null && existingWellProjectWell.DrillingSchedule != null)
-                {
-                    _context.DrillingSchedule!.Remove(existingWellProjectWell.DrillingSchedule);
-                }
-            }
-            else
-            {
-                var wellProjectWell = _mapper.Map<WellProjectWell>(wellProjectWellDto);
-                if (wellProjectWell == null)
-                {
-                    throw new Exception("Failed to map WellProjectWell");
-                }
-                _context.WellProjectWell!.Add(wellProjectWell);
-            }
-        }
-
-        await _context.SaveChangesAsync();
-        var wellProject = await _costProfileFromDrillingScheduleHelper.UpdateWellProjectCostProfilesForCase(caseId);
-    }
-
-    public async Task<CaseDto> UpdateCase(Guid caseId, APIUpdateCaseDto updatedDto, ProfilesToGenerate profilesToGenerate)
-    {
-        profilesToGenerate.StudyCost = true;
-        profilesToGenerate.Co2Emissions = true;
-        profilesToGenerate.GAndGAdminCost = true;
-        profilesToGenerate.FuelFlaringAndLosses = true;
-        profilesToGenerate.ImportedElectricity = true;
-
-        var item = await _caseService.GetCase(caseId);
-        _mapper.Map(updatedDto, item);
-        var updatedItem = _context.Cases!.Update(item);
-        var caseDto = _mapper.Map<CaseDto>(updatedItem.Entity);
-        if (caseDto == null)
-        {
-            throw new Exception("Failed to update case");
-        }
-        return caseDto;
-    }
-
-    public async Task<DrainageStrategyWithProfilesDto?> UpdateDrainageStrategy(
-        Guid drainageStrategyId,
-        UpdateDrainageStrategyWithProfilesDto updatedDto,
-        PhysUnit unit,
-        ProfilesToGenerate profilesToGenerate
-        )
-    {
-        profilesToGenerate.OpexCost = true;
-        profilesToGenerate.CessationCost = true;
-        profilesToGenerate.Co2Emissions = true;
-        profilesToGenerate.FuelFlaringAndLosses = true;
-        profilesToGenerate.ImportedElectricity = true;
-
-        var item = await _drainageStrategyService.GetDrainageStrategy(drainageStrategyId);
-
-        _mapper.Map(updatedDto, item, opts => opts.Items["ConversionUnit"] = unit.ToString());
-
-        var updatedItem = _context.DrainageStrategies!.Update(item);
-
-        var destination = _mapper.Map<DrainageStrategy, DrainageStrategyWithProfilesDto>(updatedItem.Entity, opts => opts.Items["ConversionUnit"] = unit.ToString());
-
-        return destination;
-    }
-
-    public async Task<WellProjectWithProfilesDto?> UpdateWellProject(Guid wellProjectLink, UpdateWellProjectWithProfilesDto updatedDto, ProfilesToGenerate profilesToGenerate)
-    {
-        profilesToGenerate.StudyCost = true;
-
-        var item = await _wellProjectService.GetWellProject(wellProjectLink);
-
-        _mapper.Map(updatedDto, item);
-
-        var updatedItem = _context.WellProjects!.Update(item);
-        return _mapper.Map<WellProjectWithProfilesDto>(updatedItem.Entity);
-    }
-
-    public async Task<ExplorationWithProfilesDto?> UpdateExploration(Guid explorationLink, UpdateExplorationWithProfilesDto updatedDto, ProfilesToGenerate profilesToGenerate)
-    {
-        profilesToGenerate.GAndGAdminCost = true;
-
-        var item = await _explorationService.GetExploration(explorationLink);
-
-        _mapper.Map(updatedDto, item);
-
-        var updatedItem = _context.Explorations!.Update(item);
-        return _mapper.Map<ExplorationWithProfilesDto>(updatedItem.Entity);
-    }
-
-    public async Task<SurfWithProfilesDto?> UpdateSurf(Guid surfLink, APIUpdateSurfWithProfilesDto updatedDto, ProfilesToGenerate profilesToGenerate)
-    {
-        profilesToGenerate.StudyCost = true;
-        profilesToGenerate.CessationCost = true;
-
-        var item = await _surfService.GetSurf(surfLink);
-
-        _mapper.Map(updatedDto, item);
-
-        var updatedItem = _context.Surfs!.Update(item);
-        return _mapper.Map<SurfWithProfilesDto>(updatedItem.Entity);
-    }
-
-    public async Task<SubstructureWithProfilesDto?> UpdateSubstructure(Guid substructureLink, APIUpdateSubstructureWithProfilesDto updatedDto, ProfilesToGenerate profilesToGenerate)
-    {
-        profilesToGenerate.StudyCost = true;
-
-        var item = await _substructureService.GetSubstructure(substructureLink);
-
-        _mapper.Map(updatedDto, item);
-
-        var updatedItem = _context.Substructures!.Update(item);
-        return _mapper.Map<SubstructureWithProfilesDto>(updatedItem.Entity);
-    }
-
-    public async Task<TransportWithProfilesDto?> UpdateTransport(Guid transportLink, APIUpdateTransportWithProfilesDto updatedDto, ProfilesToGenerate profilesToGenerate)
-    {
-        profilesToGenerate.StudyCost = true;
-
-        var item = await _transportService.GetTransport(transportLink);
-
-        _mapper.Map(updatedDto, item);
-
-        var updatedItem = _context.Transports!.Update(item);
-        return _mapper.Map<TransportWithProfilesDto>(updatedItem.Entity);
-    }
-    public async Task<TopsideWithProfilesDto?> UpdateTopside(Guid topsideLink, APIUpdateTopsideWithProfilesDto updatedDto, ProfilesToGenerate profilesToGenerate)
-    {
-        profilesToGenerate.StudyCost = true;
-        profilesToGenerate.OpexCost = true;
-        profilesToGenerate.Co2Emissions = true;
-        profilesToGenerate.FuelFlaringAndLosses = true;
-        profilesToGenerate.ImportedElectricity = true;
-
-        var item = await _topsideService.GetTopside(topsideLink);
-
-        _mapper.Map(updatedDto, item);
-
-        var updatedItem = _context.Topsides!.Update(item);
-        return _mapper.Map<TopsideWithProfilesDto>(updatedItem.Entity);
+        return _conversionMapperService.MapToDto<T, TDto>(source, (Guid)id, physUnit);
     }
 }

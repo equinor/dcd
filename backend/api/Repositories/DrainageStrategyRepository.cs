@@ -1,147 +1,217 @@
+using System.Linq.Expressions;
+
 using api.Context;
+using api.Enums;
 using api.Models;
+
+using Microsoft.EntityFrameworkCore;
 
 
 namespace api.Repositories;
 
-public class DrainageStrategyRepository : IDrainageStrategyRepository
+public class DrainageStrategyRepository : BaseRepository, IDrainageStrategyRepository
 {
-    private readonly DcdDbContext _context;
 
-    public DrainageStrategyRepository(DcdDbContext context)
+    public DrainageStrategyRepository(DcdDbContext context) : base(context)
     {
-        _context = context;
     }
 
     public async Task<DrainageStrategy?> GetDrainageStrategy(Guid drainageStrategyId)
     {
-        return await _context.DrainageStrategies.FindAsync(drainageStrategyId);
+        return await Get<DrainageStrategy>(drainageStrategyId);
     }
 
-    public async Task<DrainageStrategy> UpdateDrainageStrategy(DrainageStrategy drainageStrategy)
+    public async Task<bool> DrainageStrategyHasProfile(Guid drainageStrategyId, DrainageStrategyProfileNames profileType)
     {
-        _context.DrainageStrategies.Update(drainageStrategy);
-        await _context.SaveChangesAsync();
-        return drainageStrategy;
+        Expression<Func<DrainageStrategy, bool>> profileExistsExpression = profileType switch
+        {
+            DrainageStrategyProfileNames.ProductionProfileOil => d => d.ProductionProfileOil != null,
+            DrainageStrategyProfileNames.ProductionProfileGas => d => d.ProductionProfileGas != null,
+            DrainageStrategyProfileNames.ProductionProfileWater => d => d.ProductionProfileWater != null,
+            DrainageStrategyProfileNames.ProductionProfileWaterInjection => d => d.ProductionProfileWaterInjection != null,
+            DrainageStrategyProfileNames.FuelFlaringAndLossesOverride => d => d.FuelFlaringAndLossesOverride != null,
+            DrainageStrategyProfileNames.NetSalesGasOverride => d => d.NetSalesGasOverride != null,
+            DrainageStrategyProfileNames.Co2EmissionsOverride => d => d.Co2EmissionsOverride != null,
+            DrainageStrategyProfileNames.ImportedElectricityOverride => d => d.ImportedElectricityOverride != null,
+            DrainageStrategyProfileNames.DeferredOilProduction => d => d.DeferredOilProduction != null,
+            DrainageStrategyProfileNames.DeferredGasProduction => d => d.DeferredGasProduction != null,
+        };
+
+        bool hasProfile = await _context.DrainageStrategies
+            .Where(d => d.Id == drainageStrategyId)
+            .AnyAsync(profileExistsExpression);
+
+        return hasProfile;
+    }
+
+    public DrainageStrategy UpdateDrainageStrategy(DrainageStrategy drainageStrategy)
+    {
+        return Update(drainageStrategy);
+    }
+
+    public ProductionProfileOil CreateProductionProfileOil(ProductionProfileOil productionProfileOil)
+    {
+        _context.ProductionProfileOil.Add(productionProfileOil);
+        return productionProfileOil;
     }
 
     public async Task<ProductionProfileOil?> GetProductionProfileOil(Guid productionProfileOilId)
     {
-        return await _context.ProductionProfileOil.FindAsync(productionProfileOilId);
+        return await Get<ProductionProfileOil>(productionProfileOilId);
     }
 
-    public async Task<ProductionProfileOil> UpdateProductionProfileOil(ProductionProfileOil productionProfileOil)
+    public ProductionProfileOil UpdateProductionProfileOil(ProductionProfileOil productionProfileOil)
     {
-        _context.ProductionProfileOil.Update(productionProfileOil);
-        await _context.SaveChangesAsync();
-        return productionProfileOil;
+        return Update(productionProfileOil);
+    }
+
+    public ProductionProfileGas CreateProductionProfileGas(ProductionProfileGas profile)
+    {
+        _context.ProductionProfileGas.Add(profile);
+        return profile;
     }
 
     public async Task<ProductionProfileGas?> GetProductionProfileGas(Guid productionProfileId)
     {
-        return await _context.ProductionProfileGas.FindAsync(productionProfileId);
+        return await Get<ProductionProfileGas>(productionProfileId);
     }
 
-    public async Task<ProductionProfileGas> UpdateProductionProfileGas(ProductionProfileGas productionProfile)
+    public ProductionProfileGas UpdateProductionProfileGas(ProductionProfileGas productionProfile)
     {
-        _context.ProductionProfileGas.Update(productionProfile);
-        await _context.SaveChangesAsync();
-        return productionProfile;
+        return Update(productionProfile);
+    }
+
+    public ProductionProfileWater CreateProductionProfileWater(ProductionProfileWater profile)
+    {
+        _context.ProductionProfileWater.Add(profile);
+        return profile;
     }
 
     public async Task<ProductionProfileWater?> GetProductionProfileWater(Guid productionProfileId)
     {
-        return await _context.ProductionProfileWater.FindAsync(productionProfileId);
+        return await Get<ProductionProfileWater>(productionProfileId);
     }
 
-    public async Task<ProductionProfileWater> UpdateProductionProfileWater(ProductionProfileWater productionProfile)
+    public ProductionProfileWater UpdateProductionProfileWater(ProductionProfileWater productionProfile)
     {
-        _context.ProductionProfileWater.Update(productionProfile);
-        await _context.SaveChangesAsync();
-        return productionProfile;
+        return Update(productionProfile);
     }
 
+    public ProductionProfileWaterInjection CreateProductionProfileWaterInjection(ProductionProfileWaterInjection profile)
+    {
+        _context.ProductionProfileWaterInjection.Add(profile);
+        return profile;
+    }
     public async Task<ProductionProfileWaterInjection?> GetProductionProfileWaterInjection(Guid productionProfileId)
     {
-        return await _context.ProductionProfileWaterInjection.FindAsync(productionProfileId);
+        return await Get<ProductionProfileWaterInjection>(productionProfileId);
     }
 
-    public async Task<ProductionProfileWaterInjection> UpdateProductionProfileWaterInjection(ProductionProfileWaterInjection productionProfile)
+
+    public ProductionProfileWaterInjection UpdateProductionProfileWaterInjection(ProductionProfileWaterInjection productionProfile)
     {
-        _context.ProductionProfileWaterInjection.Update(productionProfile);
-        await _context.SaveChangesAsync();
-        return productionProfile;
+        return Update(productionProfile);
+    }
+
+    public FuelFlaringAndLossesOverride CreateFuelFlaringAndLossesOverride(FuelFlaringAndLossesOverride profile)
+    {
+        _context.FuelFlaringAndLossesOverride.Add(profile);
+        return profile;
     }
 
     public async Task<FuelFlaringAndLossesOverride?> GetFuelFlaringAndLossesOverride(Guid profileId)
     {
-        return await _context.FuelFlaringAndLossesOverride.FindAsync(profileId);
+        return await Get<FuelFlaringAndLossesOverride>(profileId);
     }
 
-    public async Task<FuelFlaringAndLossesOverride> UpdateFuelFlaringAndLossesOverride(FuelFlaringAndLossesOverride profileId)
+
+    public FuelFlaringAndLossesOverride UpdateFuelFlaringAndLossesOverride(FuelFlaringAndLossesOverride profile)
     {
-        _context.FuelFlaringAndLossesOverride.Update(profileId);
-        await _context.SaveChangesAsync();
-        return profileId;
+        return Update(profile);
+    }
+
+    public NetSalesGasOverride CreateNetSalesGasOverride(NetSalesGasOverride profile)
+    {
+        _context.NetSalesGasOverride.Add(profile);
+        return profile;
     }
 
     public async Task<NetSalesGasOverride?> GetNetSalesGasOverride(Guid profileId)
     {
-        return await _context.NetSalesGasOverride.FindAsync(profileId);
+        return await Get<NetSalesGasOverride>(profileId);
     }
 
-    public async Task<NetSalesGasOverride> UpdateNetSalesGasOverride(NetSalesGasOverride profileId)
+
+    public NetSalesGasOverride UpdateNetSalesGasOverride(NetSalesGasOverride profile)
     {
-        _context.NetSalesGasOverride.Update(profileId);
-        await _context.SaveChangesAsync();
-        return profileId;
+        return Update(profile);
+    }
+
+    public Co2EmissionsOverride CreateCo2EmissionsOverride(Co2EmissionsOverride profile)
+    {
+        _context.Co2EmissionsOverride.Add(profile);
+        return profile;
     }
 
     public async Task<Co2EmissionsOverride?> GetCo2EmissionsOverride(Guid profileId)
     {
-        return await _context.Co2EmissionsOverride.FindAsync(profileId);
+        return await Get<Co2EmissionsOverride>(profileId);
     }
 
-    public async Task<Co2EmissionsOverride> UpdateCo2EmissionsOverride(Co2EmissionsOverride profileId)
+
+    public Co2EmissionsOverride UpdateCo2EmissionsOverride(Co2EmissionsOverride profile)
     {
-        _context.Co2EmissionsOverride.Update(profileId);
-        await _context.SaveChangesAsync();
-        return profileId;
+        return Update(profile);
+    }
+
+    public ImportedElectricityOverride CreateImportedElectricityOverride(ImportedElectricityOverride profile)
+    {
+        _context.ImportedElectricityOverride.Add(profile);
+        return profile;
     }
 
     public async Task<ImportedElectricityOverride?> GetImportedElectricityOverride(Guid profileId)
     {
-        return await _context.ImportedElectricityOverride.FindAsync(profileId);
+        return await Get<ImportedElectricityOverride>(profileId);
     }
 
-    public async Task<ImportedElectricityOverride> UpdateImportedElectricityOverride(ImportedElectricityOverride profileId)
+
+    public ImportedElectricityOverride UpdateImportedElectricityOverride(ImportedElectricityOverride profile)
     {
-        _context.ImportedElectricityOverride.Update(profileId);
-        await _context.SaveChangesAsync();
-        return profileId;
+        return Update(profile);
+    }
+
+    public DeferredOilProduction CreateDeferredOilProduction(DeferredOilProduction profile)
+    {
+        _context.DeferredOilProduction.Add(profile);
+        return profile;
     }
 
     public async Task<DeferredOilProduction?> GetDeferredOilProduction(Guid productionProfileId)
     {
-        return await _context.DeferredOilProduction.FindAsync(productionProfileId);
+        return await Get<DeferredOilProduction>(productionProfileId);
     }
 
-    public async Task<DeferredOilProduction> UpdateDeferredOilProduction(DeferredOilProduction productionProfile)
+
+    public DeferredOilProduction UpdateDeferredOilProduction(DeferredOilProduction productionProfile)
     {
-        _context.DeferredOilProduction.Update(productionProfile);
-        await _context.SaveChangesAsync();
-        return productionProfile;
+        return Update(productionProfile);
+    }
+
+    public DeferredGasProduction CreateDeferredGasProduction(DeferredGasProduction profile)
+    {
+        _context.DeferredGasProduction.Add(profile);
+        return profile;
     }
 
     public async Task<DeferredGasProduction?> GetDeferredGasProduction(Guid productionProfileId)
     {
-        return await _context.DeferredGasProduction.FindAsync(productionProfileId);
+        return await Get<DeferredGasProduction>(productionProfileId);
     }
 
-    public async Task<DeferredGasProduction> UpdateDeferredGasProduction(DeferredGasProduction productionProfile)
+
+    public DeferredGasProduction UpdateDeferredGasProduction(DeferredGasProduction productionProfile)
     {
-        _context.DeferredGasProduction.Update(productionProfile);
-        await _context.SaveChangesAsync();
-        return productionProfile;
+        return Update(productionProfile);
     }
 }

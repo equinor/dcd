@@ -25,4 +25,15 @@ public class ImageRepository : IImageRepository
             .ToListAsync();
         return images;
     }
+
+    public async Task DeleteImage(Image image)
+    {
+        _context.Images.Remove(image);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<Image?> GetImageById(Guid imageId)
+    {
+        return await _context.Images.FindAsync(imageId);
+    }
 }

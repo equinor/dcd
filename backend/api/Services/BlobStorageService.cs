@@ -1,18 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-
 using api.Dtos;
+using api.Exceptions;
 using api.Models;
 
 using AutoMapper;
 
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 
 public class BlobStorageService : IBlobStorageService
 {
@@ -26,19 +19,43 @@ public class BlobStorageService : IBlobStorageService
         _blobServiceClient = blobServiceClient;
         _imageRepository = imageRepository;
         _mapper = mapper;
-        _containerName = configuration["azureStorageAccountImageContainerName"]
-                         ?? throw new InvalidOperationException("Container name configuration is missing.");
+        _containerName = GetContainerName(configuration);
 
-        if (string.IsNullOrEmpty(_containerName))
-        {
-            throw new InvalidOperationException("Container name configuration is missing or empty.");
-        }
     }
-
-    public async Task<ImageDto> SaveImage(IFormFile image, Guid caseId)
+    private string GetContainerName(IConfiguration configuration)
     {
+
+        var environment = Environment.GetEnvironmentVariable("AppConfiguration__Environment") ?? "default";
+
+        var containerKey = environment switch
+        {
+            "localdev" => "AzureStorageAccountImageContainerCI",
+            "CI" => "AzureStorageAccountImageContainerCI",
+            "radix-dev" => "AzureStorageAccountImageContainerCI",
+            "dev" => "AzureStorageAccountImageContainerCI",
+            "qa" => "AzureStorageAccountImageContainerQA",
+            "radix-qa" => "AzureStorageAccountImageContainerQA",
+            "prod" => "AzureStorageAccountImageContainerProd",
+            "radix-prod" => "AzureStorageAccountImageContainerProd",
+            _ => throw new InvalidOperationException($"Unknown fusion environment: {environment}")
+        };
+
+        return configuration[containerKey]
+                             ?? throw new InvalidOperationException($"Container name configuration for {environment} is missing.");
+    }
+    private string SanitizeBlobName(string name)
+    {
+        return name.Replace(" ", "-").Replace("/", "-").Replace("\\", "-");
+    }
+    public async Task<ImageDto> SaveImage(Guid projectId, string projectName, IFormFile image, Guid caseId)
+    {
+        var sanitizedProjectName = SanitizeBlobName(projectName);
         var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
-        var blobClient = containerClient.GetBlobClient($"{caseId}/{image.FileName}");
+
+        var imageId = Guid.NewGuid();
+        var blobName = $"{sanitizedProjectName}/{caseId}/{imageId}";
+        var blobClient = containerClient.GetBlobClient(blobName);
+
 
         await using var stream = image.OpenReadStream();
         await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = image.ContentType });
@@ -48,9 +65,13 @@ public class BlobStorageService : IBlobStorageService
 
         var imageEntity = new Image
         {
+            Id = imageId,
             Url = imageUrl,
             CreateTime = createTime,
             CaseId = caseId,
+            ProjectId = projectId,
+            ProjectName = sanitizedProjectName
+
         };
 
         await _imageRepository.AddImage(imageEntity);
@@ -77,4 +98,24 @@ public class BlobStorageService : IBlobStorageService
         }
         return imageDtos;
     }
+
+    public async Task DeleteImage(Guid caseId, Guid imageId)
+    {
+        var image = await _imageRepository.GetImageById(imageId);
+        if (image == null)
+        {
+            throw new NotFoundInDBException("Image not found.");
+        }
+
+        var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+
+        var sanitizedProjectName = SanitizeBlobName(image.ProjectName);
+        var blobName = $"{sanitizedProjectName}/{image.CaseId}/{image.Id}";
+
+        var blobClient = containerClient.GetBlobClient(blobName);
+
+        await blobClient.DeleteIfExistsAsync();
+        await _imageRepository.DeleteImage(image);
+    }
+
 }

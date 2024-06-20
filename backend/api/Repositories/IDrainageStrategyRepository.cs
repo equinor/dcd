@@ -1,29 +1,41 @@
+using api.Enums;
 using api.Models;
 
 namespace api.Repositories;
 
-public interface IDrainageStrategyRepository
+public interface IDrainageStrategyRepository : IBaseRepository
 {
     Task<DrainageStrategy?> GetDrainageStrategy(Guid drainageStrategyId);
-    Task<DrainageStrategy> UpdateDrainageStrategy(DrainageStrategy drainageStrategy);
+    Task<bool> DrainageStrategyHasProfile(Guid drainageStrategyId, DrainageStrategyProfileNames profileType);
+    DrainageStrategy UpdateDrainageStrategy(DrainageStrategy drainageStrategy);
+    ProductionProfileOil CreateProductionProfileOil(ProductionProfileOil productionProfileOil);
     Task<ProductionProfileOil?> GetProductionProfileOil(Guid productionProfileOilId);
-    Task<ProductionProfileOil> UpdateProductionProfileOil(ProductionProfileOil productionProfileOil);
+    ProductionProfileOil UpdateProductionProfileOil(ProductionProfileOil productionProfileOil);
+    ProductionProfileGas CreateProductionProfileGas(ProductionProfileGas profile);
     Task<ProductionProfileGas?> GetProductionProfileGas(Guid productionProfileId);
-    Task<ProductionProfileGas> UpdateProductionProfileGas(ProductionProfileGas productionProfile);
+    ProductionProfileGas UpdateProductionProfileGas(ProductionProfileGas productionProfile);
+    ProductionProfileWater CreateProductionProfileWater(ProductionProfileWater profile);
     Task<ProductionProfileWater?> GetProductionProfileWater(Guid productionProfileId);
-    Task<ProductionProfileWater> UpdateProductionProfileWater(ProductionProfileWater productionProfile);
+    ProductionProfileWater UpdateProductionProfileWater(ProductionProfileWater productionProfile);
+    ProductionProfileWaterInjection CreateProductionProfileWaterInjection(ProductionProfileWaterInjection profile);
     Task<ProductionProfileWaterInjection?> GetProductionProfileWaterInjection(Guid productionProfileId);
-    Task<ProductionProfileWaterInjection> UpdateProductionProfileWaterInjection(ProductionProfileWaterInjection productionProfile);
+    ProductionProfileWaterInjection UpdateProductionProfileWaterInjection(ProductionProfileWaterInjection productionProfile);
+    FuelFlaringAndLossesOverride CreateFuelFlaringAndLossesOverride(FuelFlaringAndLossesOverride profile);
     Task<FuelFlaringAndLossesOverride?> GetFuelFlaringAndLossesOverride(Guid profileId);
-    Task<FuelFlaringAndLossesOverride> UpdateFuelFlaringAndLossesOverride(FuelFlaringAndLossesOverride profileId);
+    FuelFlaringAndLossesOverride UpdateFuelFlaringAndLossesOverride(FuelFlaringAndLossesOverride profile);
+    NetSalesGasOverride CreateNetSalesGasOverride(NetSalesGasOverride profile);
     Task<NetSalesGasOverride?> GetNetSalesGasOverride(Guid profileId);
-    Task<NetSalesGasOverride> UpdateNetSalesGasOverride(NetSalesGasOverride profileId);
+    NetSalesGasOverride UpdateNetSalesGasOverride(NetSalesGasOverride profile);
+    Co2EmissionsOverride CreateCo2EmissionsOverride(Co2EmissionsOverride profile);
     Task<Co2EmissionsOverride?> GetCo2EmissionsOverride(Guid profileId);
-    Task<Co2EmissionsOverride> UpdateCo2EmissionsOverride(Co2EmissionsOverride profileId);
+    Co2EmissionsOverride UpdateCo2EmissionsOverride(Co2EmissionsOverride profile);
+    ImportedElectricityOverride CreateImportedElectricityOverride(ImportedElectricityOverride profile);
     Task<ImportedElectricityOverride?> GetImportedElectricityOverride(Guid profileId);
-    Task<ImportedElectricityOverride> UpdateImportedElectricityOverride(ImportedElectricityOverride profileId);
+    ImportedElectricityOverride UpdateImportedElectricityOverride(ImportedElectricityOverride profile);
+    DeferredOilProduction CreateDeferredOilProduction(DeferredOilProduction profile);
     Task<DeferredOilProduction?> GetDeferredOilProduction(Guid productionProfileId);
-    Task<DeferredOilProduction> UpdateDeferredOilProduction(DeferredOilProduction productionProfile);
+    DeferredOilProduction UpdateDeferredOilProduction(DeferredOilProduction productionProfile);
+    DeferredGasProduction CreateDeferredGasProduction(DeferredGasProduction profile);
     Task<DeferredGasProduction?> GetDeferredGasProduction(Guid productionProfileId);
-    Task<DeferredGasProduction> UpdateDeferredGasProduction(DeferredGasProduction productionProfile);
+    DeferredGasProduction UpdateDeferredGasProduction(DeferredGasProduction productionProfile);
 }

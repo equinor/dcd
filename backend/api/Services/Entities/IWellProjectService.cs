@@ -14,6 +14,12 @@ public interface IWellProjectService
         Guid wellProjectId,
         UpdateWellProjectDto updatedWellProjectDto
     );
+    Task<WellProjectWellDto> UpdateWellProjectWell(
+        Guid caseId,
+        Guid wellProjectId,
+        Guid wellId,
+        UpdateWellProjectWellDto updatedWellProjectWellDto
+    );
 
     Task<OilProducerCostProfileOverrideDto> UpdateOilProducerCostProfileOverride(
         Guid caseId,
@@ -41,5 +47,29 @@ public interface IWellProjectService
         Guid wellProjectId,
         Guid profileId,
         UpdateGasInjectorCostProfileOverrideDto updateDto
+    );
+
+    Task<OilProducerCostProfileOverrideDto> CreateOilProducerCostProfileOverride(
+        Guid caseId,
+        Guid wellProjectId,
+        CreateOilProducerCostProfileOverrideDto createProfileDto
+    );
+
+    Task<GasProducerCostProfileOverrideDto> CreateGasProducerCostProfileOverride(
+        Guid caseId,
+        Guid wellProjectId,
+        CreateGasProducerCostProfileOverrideDto createProfileDto
+    );
+
+    Task<WaterInjectorCostProfileOverrideDto> CreateWaterInjectorCostProfileOverride(
+        Guid caseId,
+        Guid wellProjectId,
+        CreateWaterInjectorCostProfileOverrideDto createProfileDto
+    );
+
+    Task<GasInjectorCostProfileOverrideDto> CreateGasInjectorCostProfileOverride(
+        Guid caseId,
+        Guid wellProjectId,
+        CreateGasInjectorCostProfileOverrideDto createProfileDto
     );
 }

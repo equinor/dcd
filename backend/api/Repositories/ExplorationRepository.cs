@@ -1,51 +1,85 @@
+using System.Linq.Expressions;
+
 using api.Context;
+using api.Enums;
 using api.Models;
+
+using Microsoft.EntityFrameworkCore;
 
 
 namespace api.Repositories;
 
-public class ExplorationRepository : IExplorationRepository
+public class ExplorationRepository : BaseRepository, IExplorationRepository
 {
-    private readonly DcdDbContext _context;
 
-    public ExplorationRepository(DcdDbContext context)
+    public ExplorationRepository(DcdDbContext context) : base(context)
     {
-        _context = context;
     }
 
     public async Task<Exploration?> GetExploration(Guid explorationId)
     {
-        return await _context.Explorations.FindAsync(explorationId);
+        return await Get<Exploration>(explorationId);
     }
 
-    public async Task<Exploration> UpdateExploration(Exploration exploration)
+    public async Task<bool> ExplorationHasProfile(Guid ExplorationId, ExplorationProfileNames profileType)
     {
-        _context.Explorations.Update(exploration);
-        await _context.SaveChangesAsync();
-        return exploration;
+        Expression<Func<Exploration, bool>> profileExistsExpression = profileType switch
+        {
+            ExplorationProfileNames.SeismicAcquisitionAndProcessing => d => d.SeismicAcquisitionAndProcessing != null,
+            ExplorationProfileNames.CountryOfficeCost => d => d.CountryOfficeCost != null,
+        };
+
+        bool hasProfile = await _context.Explorations
+            .Where(d => d.Id == ExplorationId)
+            .AnyAsync(profileExistsExpression);
+
+        return hasProfile;
+    }
+
+    public Exploration UpdateExploration(Exploration exploration)
+    {
+        return Update(exploration);
+    }
+
+    public async Task<ExplorationWell?> GetExplorationWell(Guid explorationId, Guid wellId)
+    {
+        return await _context.ExplorationWell.FindAsync(explorationId, wellId);
+    }
+
+    public ExplorationWell UpdateExplorationWell(ExplorationWell explorationWell)
+    {
+        return Update(explorationWell);
     }
 
     public async Task<SeismicAcquisitionAndProcessing?> GetSeismicAcquisitionAndProcessing(Guid seismicAcquisitionAndProcessingId)
     {
-        return await _context.SeismicAcquisitionAndProcessing.FindAsync(seismicAcquisitionAndProcessingId);
+        return await Get<SeismicAcquisitionAndProcessing>(seismicAcquisitionAndProcessingId);
     }
 
-    public async Task<SeismicAcquisitionAndProcessing> UpdateSeismicAcquisitionAndProcessing(SeismicAcquisitionAndProcessing seismicAcquisitionAndProcessing)
+    public SeismicAcquisitionAndProcessing CreateSeismicAcquisitionAndProcessing(SeismicAcquisitionAndProcessing profile)
     {
-        _context.SeismicAcquisitionAndProcessing.Update(seismicAcquisitionAndProcessing);
-        await _context.SaveChangesAsync();
-        return seismicAcquisitionAndProcessing;
+        _context.SeismicAcquisitionAndProcessing.Add(profile);
+        return profile;
+    }
+
+    public CountryOfficeCost CreateCountryOfficeCost(CountryOfficeCost profile)
+    {
+        _context.CountryOfficeCost.Add(profile);
+        return profile;
+    }
+
+    public SeismicAcquisitionAndProcessing UpdateSeismicAcquisitionAndProcessing(SeismicAcquisitionAndProcessing seismicAcquisitionAndProcessing)
+    {
+        return Update(seismicAcquisitionAndProcessing);
     }
 
     public async Task<CountryOfficeCost?> GetCountryOfficeCost(Guid countryOfficeCostId)
     {
-        return await _context.CountryOfficeCost.FindAsync(countryOfficeCostId);
+        return await Get<CountryOfficeCost>(countryOfficeCostId);
     }
 
-    public async Task<CountryOfficeCost> UpdateCountryOfficeCost(CountryOfficeCost countryOfficeCost)
+    public CountryOfficeCost UpdateCountryOfficeCost(CountryOfficeCost countryOfficeCost)
     {
-        _context.CountryOfficeCost.Update(countryOfficeCost);
-        await _context.SaveChangesAsync();
-        return countryOfficeCost;
+        return Update(countryOfficeCost);
     }
 }

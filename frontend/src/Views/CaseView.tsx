@@ -379,7 +379,7 @@ const CaseView = () => {
     }
 
     useEffect(() => {
-        saveProjectCase && handleCaseSave()
+        if (saveProjectCase) { handleCaseSave() }
     }, [saveProjectCase])
 
     if (isLoading) {
@@ -436,16 +436,7 @@ const CaseView = () => {
                             />
                         </CasePanel>
                         <CasePanel>
-                            <CaseFacilitiesTab
-                                topside={topside}
-                                setTopside={setTopside}
-                                surf={surf}
-                                setSurf={setSurf}
-                                substructure={substructure}
-                                setSubstrucutre={setSubstructure}
-                                transport={transport}
-                                setTransport={setTransport}
-                            />
+                            <CaseFacilitiesTab />
                         </CasePanel>
                         <CasePanel>
                             <CaseCostTab />

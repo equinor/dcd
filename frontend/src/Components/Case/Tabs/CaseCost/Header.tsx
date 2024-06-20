@@ -11,6 +11,8 @@ interface HeaderProps {
     endYear: number;
     setEndYear: (endYear: number) => void;
     setTableYears: (years: [number, number]) => void;
+    caseData: Components.Schemas.CaseDto;
+    surfData: Components.Schemas.SurfWithProfilesDto
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -19,8 +21,11 @@ const Header: React.FC<HeaderProps> = ({
     endYear,
     setEndYear,
     setTableYears,
+    caseData,
+    surfData,
 }) => {
     const { project } = useProjectContext()
+    const projectId = project?.id || null
 
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
@@ -34,16 +39,28 @@ const Header: React.FC<HeaderProps> = ({
         }
         return ""
     })()
+
+    if (!projectId) {
+        return null
+    }
+
     return (
         <>
             <Grid item xs={12} md={4}>
-                <CapexFactorFeasibilityStudies />
+                <CapexFactorFeasibilityStudies
+                    caseData={caseData}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <CapexFactorFeedStudies />
+                <CapexFactorFeedStudies
+                    caseData={caseData}
+                />
             </Grid>
             <Grid item xs={12} md={4}>
-                <Maturity />
+                <Maturity
+                    surfData={surfData}
+                    projectId={projectId}
+                />
             </Grid>
             <DateRangePicker
                 startYear={startYear}

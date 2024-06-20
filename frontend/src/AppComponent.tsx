@@ -1,5 +1,7 @@
 import { FC } from "react"
 import { createGlobalStyle } from "styled-components"
+import { QueryClient, QueryClientProvider } from "react-query"
+import { ReactQueryDevtools } from "react-query/devtools"
 import { APP_VERSION } from "./version"
 import AppRouter from "./Router"
 import { resolveConfiguration } from "./Utils/config"
@@ -22,20 +24,7 @@ const GlobalStyle = createGlobalStyle`
 `
 
 const AppComponent: FC = () => {
-    const suppressConsoleError = (shouldBeHidden: ((message: string) => boolean)[]) => {
-        const err = console.error
-        console.error = (message?: any, ...optionalParams: any[]) => {
-            if (typeof message === "string" && shouldBeHidden.some((func) => func(message))) {
-                return
-            }
-            err(message, ...optionalParams)
-        }
-    }
-
-    suppressConsoleError([
-        (m) => m.startsWith("Warning: Invalid aria prop"),
-        (m) => m.startsWith("*"),
-    ])
+    const queryClient = new QueryClient()
 
     const config = resolveConfiguration(EnvironmentVariables.ENVIRONMENT)
 
@@ -46,16 +35,19 @@ const AppComponent: FC = () => {
     console.log("Concept App version: ", APP_VERSION)
 
     return (
-        <AppContextProvider>
-            <ProjectContextProvider>
-                <CaseContextProvider>
-                    <ModalContextProvider>
-                        <GlobalStyle />
-                        <AppRouter />
-                    </ModalContextProvider>
-                </CaseContextProvider>
-            </ProjectContextProvider>
-        </AppContextProvider>
+        <QueryClientProvider client={queryClient}>
+            <ReactQueryDevtools />
+            <AppContextProvider>
+                <ProjectContextProvider>
+                    <CaseContextProvider>
+                        <ModalContextProvider>
+                            <GlobalStyle />
+                            <AppRouter />
+                        </ModalContextProvider>
+                    </CaseContextProvider>
+                </ProjectContextProvider>
+            </AppContextProvider>
+        </QueryClientProvider>
     )
 }
 

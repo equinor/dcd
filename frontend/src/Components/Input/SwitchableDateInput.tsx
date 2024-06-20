@@ -1,56 +1,49 @@
 import React, { ChangeEventHandler } from "react"
 import { Input } from "@equinor/eds-core-react"
 import InputSwitcher from "../Input/Components/InputSwitcher"
-import { formatDate } from "../../Utils/common"
-import useDataEdits from "../../Hooks/useDataEdits"
-import { useCaseContext } from "../../Context/CaseContext"
+import {
+    formatDate,
+    dateFromString,
+    isDefaultDate,
+    toMonthDate,
+} from "../../Utils/common"
+import { ResourcePropertyKey } from "../../Models/Interfaces"
 
 interface SwitchableDateInputProps {
-    objectKey: string
     value: string | undefined
     label: string
+    resourcePropertyKey: ResourcePropertyKey
     onChange: ChangeEventHandler<HTMLInputElement>
     min?: string
     max?: string
 }
 const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
     value,
-    objectKey,
     label,
+    resourcePropertyKey,
     onChange,
     min,
     max,
 }) => {
-    const { addEdit } = useDataEdits()
-    const { projectCase } = useCaseContext()
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (!projectCase) { return }
-
-        onChange(e)
-
-        addEdit(
-            e.target.value,
-            value,
-            objectKey,
-            label,
-            "case",
-            projectCase.id,
-            formatDate(e.target.value),
-            value && formatDate(value),
-        )
+    const toScheduleValue = (date: string) => {
+        const dateString = dateFromString(date)
+        if (isDefaultDate(dateString)) {
+            return undefined
+        }
+        return toMonthDate(dateString)
     }
+
     return (
         <InputSwitcher
-            value={formatDate(objectKey)}
+            value={value ? formatDate(value) : ""}
             label={label}
         >
             <Input
                 type="month"
-                id="dgaDate"
-                name="dgaDate"
-                onChange={handleChange}
-                value={value}
+                id={resourcePropertyKey}
+                name={resourcePropertyKey}
+                onChange={(e: any) => onChange(e)}
+                defaultValue={toScheduleValue(value || "")}
                 min={min}
                 max={max}
             />

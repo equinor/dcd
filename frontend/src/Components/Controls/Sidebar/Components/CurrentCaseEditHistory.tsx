@@ -1,7 +1,6 @@
 import React from "react"
 import styled from "styled-components"
-import { Typography, Icon, Button } from "@equinor/eds-core-react"
-import { arrow_drop_down, arrow_drop_up } from "@equinor/eds-icons"
+import { Typography, Tooltip } from "@equinor/eds-core-react"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import { useAppContext } from "../../../../Context/AppContext"
 import HistoryButton from "../../../Buttons/HistoryButton"
@@ -12,7 +11,7 @@ const Header = styled.div`
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-    margin-bottom: 5px;
+    margin: 15px 0;
 `
 
 const Container = styled.div<{ $sidebarOpen: boolean }>`
@@ -41,28 +40,22 @@ const NextValue = styled(Typography)`
 `
 
 const CurrentCaseEditHistory: React.FC = () => {
-    const { caseEdits, projectCase } = useCaseContext()
-    const editsBelongingToCurrentCase = projectCase && caseEdits.filter((edit) => edit.objectId === projectCase.id)
+    const { projectCase, caseEditsBelongingToCurrentCase } = useCaseContext()
 
-    const {
-        editHistoryIsActive,
-        setEditHistoryIsActive,
-        sidebarOpen,
-    } = useAppContext()
-    if (!projectCase) { return null }
+    const { sidebarOpen } = useAppContext()
+
     return (
         <Container $sidebarOpen={sidebarOpen}>
             {!sidebarOpen ? <HistoryButton /> : (
-                <Header>
-                    <Typography variant="overline">Edit history</Typography>
-                    <Button variant="ghost_icon" onClick={() => setEditHistoryIsActive(!editHistoryIsActive)}>
-                        <Icon size={16} data={editHistoryIsActive ? arrow_drop_up : arrow_drop_down} />
-                    </Button>
-                </Header>
+                <Tooltip title="Displays all edits you made to the case in the past hour" placement="right">
+                    <Header>
+                        <Typography variant="overline">Edit history</Typography>
+                    </Header>
+                </Tooltip>
             )}
             <Content>
-                {sidebarOpen && projectCase && editHistoryIsActive && <CaseEditHistory caseId={projectCase.id} />}
-                {editHistoryIsActive && editsBelongingToCurrentCase?.length === 0 && <NextValue>No recent edits..</NextValue>}
+                {sidebarOpen && projectCase && <CaseEditHistory caseId={projectCase.id} />}
+                {caseEditsBelongingToCurrentCase?.length === 0 && <NextValue>No recent edits..</NextValue>}
             </Content>
         </Container>
     )

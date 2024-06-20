@@ -51,9 +51,19 @@ public class SubstructureService : ISubstructureService
         substructure.Project = project;
         substructure.LastChangedDate = DateTimeOffset.UtcNow;
         var createdSubstructure = _context.Substructures!.Add(substructure);
+        SetCaseLink(substructure, sourceCaseId, project);
         await _context.SaveChangesAsync();
-        await SetCaseLink(substructure, sourceCaseId, project);
         return createdSubstructure.Entity;
+    }
+
+    private static void SetCaseLink(Substructure substructure, Guid sourceCaseId, Project project)
+    {
+        var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
+        if (case_ == null)
+        {
+            throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
+        }
+        case_.SubstructureLink = substructure.Id;
     }
 
     public async Task<SubstructureWithProfilesDto> CopySubstructure(Guid substructureId, Guid sourceCaseId)
@@ -83,31 +93,6 @@ public class SubstructureService : ISubstructureService
 
         // return dto;
         return newSubstructureDto;
-    }
-
-    private async Task SetCaseLink(Substructure substructure, Guid sourceCaseId, Project project)
-    {
-        var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
-        if (case_ == null)
-        {
-            throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
-        }
-        case_.SubstructureLink = substructure.Id;
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task<SubstructureWithProfilesDto> UpdateSubstructureAndCostProfiles<TDto>(TDto updatedSubstructureDto, Guid substructureId)
-        where TDto : BaseUpdateSubstructureDto
-    {
-        var existing = await GetSubstructure(substructureId);
-
-        _mapper.Map(updatedSubstructureDto, existing);
-
-        existing.LastChangedDate = DateTimeOffset.UtcNow;
-        _context.Substructures!.Update(existing);
-        await _context.SaveChangesAsync();
-        var dto = _mapper.Map<SubstructureWithProfilesDto>(existing);
-        return dto ?? throw new ArgumentNullException(nameof(dto));
     }
 
     public async Task<Substructure> GetSubstructure(Guid substructureId)
@@ -140,7 +125,9 @@ public class SubstructureService : ISubstructureService
         Substructure updatedSubstructure;
         try
         {
-            updatedSubstructure = await _repository.UpdateSubstructure(existingSubstructure);
+            updatedSubstructure = _repository.UpdateSubstructure(existingSubstructure);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -148,11 +135,113 @@ public class SubstructureService : ISubstructureService
             throw;
         }
 
-        await _caseRepository.UpdateModifyTime(caseId);
-
         var dto = _mapperService.MapToDto<Substructure, SubstructureDto>(updatedSubstructure, substructureId);
 
         return dto;
+    }
+
+    public async Task<SubstructureCostProfileDto> AddOrUpdateSubstructureCostProfile(
+        Guid caseId,
+        Guid substructureId,
+        UpdateSubstructureCostProfileDto dto
+    )
+    {
+        var substructure = await _repository.GetSubstructureWithCostProfile(substructureId)
+            ?? throw new NotFoundInDBException($"Substructure with id {substructureId} not found.");
+
+        if (substructure.CostProfile != null)
+        {
+            return await UpdateSubstructureCostProfile(caseId, substructureId, substructure.CostProfile.Id, dto);
+        }
+
+        return await CreateSubstructureCostProfile(caseId, substructureId, dto, substructure);
+    }
+
+    private async Task<SubstructureCostProfileDto> UpdateSubstructureCostProfile(
+        Guid caseId,
+        Guid substructureId,
+        Guid profileId,
+        UpdateSubstructureCostProfileDto dto
+    )
+    {
+        return await UpdateSubstructureTimeSeries<SubstructureCostProfile, SubstructureCostProfileDto, UpdateSubstructureCostProfileDto>(
+            caseId,
+            substructureId,
+            profileId,
+            dto,
+            _repository.GetSubstructureCostProfile,
+            _repository.UpdateSubstructureCostProfile
+        );
+    }
+
+    private async Task<SubstructureCostProfileDto> CreateSubstructureCostProfile(
+        Guid caseId,
+        Guid substructureId,
+        UpdateSubstructureCostProfileDto dto,
+        Substructure substructure
+    )
+    {
+        SubstructureCostProfile substructureCostProfile = new SubstructureCostProfile
+        {
+            Substructure = substructure
+        };
+
+        var newProfile = _mapperService.MapToEntity(dto, substructureCostProfile, substructureId);
+
+        try
+        {
+            _repository.CreateSubstructureCostProfile(newProfile);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to create cost profile for substructure with id {substructureId} for case id {caseId}.", substructureId, caseId);
+            throw;
+        }
+
+        var newDto = _mapperService.MapToDto<SubstructureCostProfile, SubstructureCostProfileDto>(newProfile, newProfile.Id);
+        return newDto;
+    }
+
+    public async Task<SubstructureCostProfileOverrideDto> CreateSubstructureCostProfileOverride(
+        Guid caseId,
+        Guid substructureId,
+        CreateSubstructureCostProfileOverrideDto dto
+    )
+    {
+        var substructure = await _repository.GetSubstructure(substructureId)
+            ?? throw new NotFoundInDBException($"Substructure with id {substructureId} not found.");
+
+        var resourceHasProfile = await _repository.SubstructureHasCostProfileOverride(substructureId);
+
+        if (resourceHasProfile)
+        {
+            throw new ResourceAlreadyExistsException($"Substructure with id {substructureId} already has a profile of type {typeof(SubstructureCostProfileOverride).Name}.");
+        }
+
+        SubstructureCostProfileOverride profile = new()
+        {
+            Substructure = substructure,
+        };
+
+        var newProfile = _mapperService.MapToEntity(dto, profile, substructureId);
+
+        SubstructureCostProfileOverride createdProfile;
+        try
+        {
+            createdProfile = _repository.CreateSubstructureCostProfileOverride(newProfile);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to create profile SubstructureCostProfileOverride for case id {caseId}.", caseId);
+            throw;
+        }
+
+        var updatedDto = _mapperService.MapToDto<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>(createdProfile, createdProfile.Id);
+        return updatedDto;
     }
 
     public async Task<SubstructureCostProfileOverrideDto> UpdateSubstructureCostProfileOverride(
@@ -162,26 +251,48 @@ public class SubstructureService : ISubstructureService
         UpdateSubstructureCostProfileOverrideDto dto
     )
     {
-        var existingCostProfile = await _repository.GetSubstructureCostProfileOverride(costProfileId)
-            ?? throw new NotFoundInDBException($"Cost profile override with id {costProfileId} not found.");
+        return await UpdateSubstructureTimeSeries<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto, UpdateSubstructureCostProfileOverrideDto>(
+        caseId,
+        substructureId,
+        costProfileId,
+        dto,
+        _repository.GetSubstructureCostProfileOverride,
+        _repository.UpdateSubstructureCostProfileOverride
+);
+    }
 
-        _mapperService.MapToEntity(dto, existingCostProfile, costProfileId);
+    private async Task<TDto> UpdateSubstructureTimeSeries<TProfile, TDto, TUpdateDto>(
+    Guid caseId,
+    Guid substructureId,
+    Guid profileId,
+    TUpdateDto updatedProfileDto,
+    Func<Guid, Task<TProfile?>> getProfile,
+    Func<TProfile, TProfile> updateProfile
+)
+    where TProfile : class
+    where TDto : class
+    where TUpdateDto : class
+    {
+        var existingProfile = await getProfile(profileId)
+            ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
 
-        SubstructureCostProfileOverride updatedCostProfile;
+        _mapperService.MapToEntity(updatedProfileDto, existingProfile, substructureId);
+
+        TProfile updatedProfile;
         try
         {
-            updatedCostProfile = await _repository.UpdateSubstructureCostProfileOverride(existingCostProfile);
+            updatedProfile = updateProfile(existingProfile);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update cost profile override with id {CostProfileId} for substructure id {SubstructureId} for case id {CaseId}.", costProfileId, substructureId, caseId);
+            var profileName = typeof(TProfile).Name;
+            _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
             throw;
         }
 
-        await _caseRepository.UpdateModifyTime(caseId);
-
-        var updatedDto = _mapperService.MapToDto<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>(updatedCostProfile, costProfileId);
-
+        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
         return updatedDto;
     }
 }

@@ -1,16 +1,16 @@
 import { useState } from "react"
 import { Typography } from "@equinor/eds-core-react"
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
+import Tabs from "@mui/material/Tabs"
+import Tab from "@mui/material/Tab"
 import Grid from "@mui/material/Grid"
+import styled from "styled-components"
+import Box from "@mui/material/Box"
 import Kpis from "./Tabs/Kpis"
 import ProductionProfiles from "./Tabs/ProductionProfiles"
 import InvestmentProfiles from "./Tabs/InvestmentProfiles"
 import Co2Emissions from "./Tabs/Co2Emissions"
 import { useProjectChartData } from "../../../Hooks/useProjectChartData"
 import ProjectAgGridTable from "./ProjectAgGridTable"
-import styled from "styled-components";
-
 
 const MuiTabs = styled(Tabs)`
     &.MuiTabs-vertical {
@@ -56,33 +56,32 @@ interface TabPanelProps {
     children?: React.ReactNode;
     index: number;
     value: number;
-  }
-  
-export const TabPanel = (props: TabPanelProps) => {
-    const { children, value, index, ...other } = props;
-  
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`vertical-tabpanel-${index}`}
-        aria-labelledby={`vertical-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-            <Typography>{children}</Typography>
-        )}
-      </div>
-    );
-  }
+}
 
+export const TabPanel = (props: TabPanelProps) => {
+    const {
+        children, value, index, ...other
+    } = props
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`vertical-tabpanel-${index}`}
+            aria-labelledby={`vertical-tab-${index}`}
+            {...other}
+        >
+            {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+        </div>
+    )
+}
 
 function a11yProps(index: number) {
     return {
-      id: `vertical-tab-${index}`,
-      'aria-controls': `vertical-tabpanel-${index}`,
-    };
-  }
+        id: `vertical-tab-${index}`,
+        "aria-controls": `vertical-tabpanel-${index}`,
+    }
+}
 
 const ProjectCompareCasesTab = () => {
     const {
@@ -95,11 +94,11 @@ const ProjectCompareCasesTab = () => {
         co2IntensityChartData,
     } = useProjectChartData()
 
-    const [value, setValue] = useState(0);
-  
+    const [value, setValue] = useState(0)
+
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-      setValue(newValue);
-    };
+        setValue(newValue)
+    }
 
     return (
         <Grid container spacing={6}>
@@ -109,11 +108,11 @@ const ProjectCompareCasesTab = () => {
                         orientation="vertical"
                         value={value}
                         onChange={handleChange}
-                        sx={{ borderRight: 1, borderColor: 'divider' }}
+                        sx={{ borderRight: 1, borderColor: "divider" }}
                         TabIndicatorProps={{
-                          style: {
-                            backgroundColor: "rgba(0,112,121,1)",
-                          }
+                            style: {
+                                backgroundColor: "rgba(0,112,121,1)",
+                            },
                         }}
                     >
                         <MuiTab label="KPIs" {...a11yProps(0)} />

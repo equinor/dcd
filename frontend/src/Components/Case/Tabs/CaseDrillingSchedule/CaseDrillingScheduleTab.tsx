@@ -36,7 +36,7 @@ const CaseDrillingScheduleTab = ({
 }: Props) => {
     const { project } = useProjectContext()
     const { projectCase, activeTabCase } = useCaseContext()
-    if (!projectCase) { return null }
+
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
@@ -101,12 +101,12 @@ const CaseDrillingScheduleTab = ({
     }
 
     useEffect(() => {
-        if (activeTabCase === 3 && projectCase.dG4Date !== undefined) {
+        if (activeTabCase === 3 && projectCase!.dG4Date !== undefined) {
             const explorationDrillingSchedule = explorationWells?.map((ew) => ew.drillingSchedule) ?? []
             const wellProjectDrillingSchedule = wellProjectWells?.map((ew) => ew.drillingSchedule) ?? []
             SetTableYearsFromProfiles(
                 [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
-                new Date(projectCase.dG4Date).getFullYear(),
+                new Date(projectCase!.dG4Date).getFullYear(),
                 setStartYear,
                 setEndYear,
                 setTableYears,
@@ -126,7 +126,7 @@ const CaseDrillingScheduleTab = ({
         }
     }, [wells, explorationWells, wellProjectWells, activeTabCase])
 
-    if (activeTabCase !== 3) { return null }
+    if (activeTabCase !== 3 || !projectCase) { return null }
 
     return (
         <Grid container spacing={2}>
@@ -135,6 +135,8 @@ const CaseDrillingScheduleTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    resourceName="case"
+                    resourcePropertyKey="producerCount" // dummy just to display swithable number input
                     label="Exploration wells"
                     value={explorationWellCount}
                     integer
@@ -143,6 +145,8 @@ const CaseDrillingScheduleTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    resourceName="case"
+                    resourcePropertyKey="producerCount" // dummy just to display swithable number input
                     label="Appraisal wells"
                     value={appraisalWellCount}
                     integer
@@ -151,6 +155,8 @@ const CaseDrillingScheduleTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    resourceName="case"
+                    resourcePropertyKey="producerCount" // dummy just to display disabled number input
                     label="Oil producer wells"
                     value={oilProducerCount}
                     integer
@@ -159,6 +165,8 @@ const CaseDrillingScheduleTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    resourceName="case"
+                    resourcePropertyKey="producerCount" // dummy just to display disabled number input
                     label="Gas producer wells"
                     value={gasProducerCount}
                     integer
@@ -167,6 +175,8 @@ const CaseDrillingScheduleTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    resourceName="case"
+                    resourcePropertyKey="producerCount" // dummy just to display disabled number input
                     label="Water injector wells"
                     value={waterInjectorCount}
                     integer
@@ -175,6 +185,8 @@ const CaseDrillingScheduleTab = ({
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    resourceName="case"
+                    resourcePropertyKey="producerCount" // dummy just to display disabled number input
                     label="Gas injector wells"
                     value={gasInjectorCount}
                     integer
@@ -197,7 +209,7 @@ const CaseDrillingScheduleTab = ({
                     setAssetWells={setExplorationWells}
                     tableName="Exploration wells"
                     tableYears={tableYears}
-                    assetId={exploration.id}
+                    resourceId={exploration.id}
                     wells={wells}
                     isExplorationTable
                     gridRef={explorationWellsGridRef}
@@ -211,7 +223,7 @@ const CaseDrillingScheduleTab = ({
                     setAssetWells={setWellProjectWells}
                     tableName="Development wells"
                     tableYears={tableYears}
-                    assetId={wellProject.id}
+                    resourceId={wellProject.id}
                     wells={wells}
                     isExplorationTable={false}
                     gridRef={wellProjectWellsGridRef}

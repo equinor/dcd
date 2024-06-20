@@ -38,6 +38,16 @@ public class TransportsController : ControllerBase
         return await _transportService.UpdateTransport(caseId, transportId, dto);
     }
 
+    [HttpPost("{transportId}/cost-profile-override")]
+    public async Task<TransportCostProfileOverrideDto> CreateTransportCostProfileOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid transportId,
+        [FromBody] CreateTransportCostProfileOverrideDto dto)
+    {
+        return await _transportService.CreateTransportCostProfileOverride(caseId, transportId, dto);
+    }
+
     [HttpPut("{transportId}/cost-profile-override/{costProfileId}")]
     public async Task<TransportCostProfileOverrideDto> UpdateTransportCostProfileOverride(
         [FromRoute] Guid projectId,
@@ -48,6 +58,4 @@ public class TransportsController : ControllerBase
     {
         return await _transportService.UpdateTransportCostProfileOverride(caseId, transportId, costProfileId, dto);
     }
-
-
 }

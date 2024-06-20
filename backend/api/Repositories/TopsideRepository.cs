@@ -1,39 +1,70 @@
 using api.Context;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 
 namespace api.Repositories;
 
-public class TopsideRepository : ITopsideRepository
+public class TopsideRepository : BaseRepository, ITopsideRepository
 {
-    private readonly DcdDbContext _context;
 
-    public TopsideRepository(DcdDbContext context)
+    public TopsideRepository(DcdDbContext context) : base(context)
     {
-        _context = context;
     }
 
     public async Task<Topside?> GetTopside(Guid topsideId)
     {
-        return await _context.Topsides.FindAsync(topsideId);
+        return await Get<Topside>(topsideId);
     }
 
-    public async Task<Topside> UpdateTopside(Topside topside)
+    public async Task<Topside?> GetTopsideWithCostProfile(Guid topsideId)
     {
-        _context.Topsides.Update(topside);
-        await _context.SaveChangesAsync();
-        return topside;
+        return await _context.Topsides
+                        .Include(t => t.CostProfile)
+                        .FirstOrDefaultAsync(t => t.Id == topsideId);
+    }
+
+    public async Task<bool> TopsideHasCostProfileOverride(Guid topsideId)
+    {
+        return await _context.Topsides
+            .AnyAsync(t => t.Id == topsideId && t.CostProfileOverride != null);
+    }
+
+    public Topside UpdateTopside(Topside topside)
+    {
+        return Update(topside);
+    }
+
+    public async Task<TopsideCostProfile?> GetTopsideCostProfile(Guid topsideCostProfileId)
+    {
+        return await Get<TopsideCostProfile>(topsideCostProfileId);
+    }
+
+    public TopsideCostProfile CreateTopsideCostProfile(TopsideCostProfile topsideCostProfile)
+    {
+        _context.TopsideCostProfiles.Add(topsideCostProfile);
+        return topsideCostProfile;
+    }
+
+    public TopsideCostProfile UpdateTopsideCostProfile(TopsideCostProfile topsideCostProfile)
+    {
+        return Update(topsideCostProfile);
+    }
+
+    public TopsideCostProfileOverride CreateTopsideCostProfileOverride(TopsideCostProfileOverride profile)
+    {
+        _context.TopsideCostProfileOverride.Add(profile);
+        return profile;
     }
 
     public async Task<TopsideCostProfileOverride?> GetTopsideCostProfileOverride(Guid topsideCostProfileOverrideId)
     {
-        return await _context.TopsideCostProfileOverride.FindAsync(topsideCostProfileOverrideId);
+        return await Get<TopsideCostProfileOverride>(topsideCostProfileOverrideId);
     }
 
-    public async Task<TopsideCostProfileOverride> UpdateTopsideCostProfileOverride(TopsideCostProfileOverride topsideCostProfileOverride)
+    public TopsideCostProfileOverride UpdateTopsideCostProfileOverride(TopsideCostProfileOverride topsideCostProfileOverride)
     {
-        _context.TopsideCostProfileOverride.Update(topsideCostProfileOverride);
-        await _context.SaveChangesAsync();
-        return topsideCostProfileOverride;
+        return Update(topsideCostProfileOverride);
     }
 }

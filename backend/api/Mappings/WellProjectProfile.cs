@@ -28,6 +28,11 @@ public class WellProjectProfile : Profile
         CreateMap<UpdateWaterInjectorCostProfileOverrideDto, WaterInjectorCostProfileOverride>();
         CreateMap<UpdateGasInjectorCostProfileOverrideDto, GasInjectorCostProfileOverride>();
 
+        CreateMap<CreateOilProducerCostProfileOverrideDto, OilProducerCostProfileOverride>();
+        CreateMap<CreateGasProducerCostProfileOverrideDto, GasProducerCostProfileOverride>();
+        CreateMap<CreateWaterInjectorCostProfileOverrideDto, WaterInjectorCostProfileOverride>();
+        CreateMap<CreateGasInjectorCostProfileOverrideDto, GasInjectorCostProfileOverride>();
+
         CreateMap<CreateWellProjectDto, WellProject>();
         CreateMap<WellProjectWithProfilesDto, UpdateWellProjectWithProfilesDto>(); // Temp fix
     }

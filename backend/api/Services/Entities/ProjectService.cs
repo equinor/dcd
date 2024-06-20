@@ -76,7 +76,7 @@ public class ProjectService : IProjectService
         project.DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCosts();
 
         project.CO2EmissionFromFuelGas = 2.34;
-        project.FlaredGasPerProducedVolume = 1.321;
+        project.FlaredGasPerProducedVolume = 1.13;
         project.CO2EmissionsFromFlaredGas = 3.74;
         project.CO2Vented = 1.96;
         project.DailyEmissionFromDrillingRig = 100;

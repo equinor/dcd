@@ -1,5 +1,6 @@
 using api.Context;
 using api.Dtos;
+using api.Enums;
 using api.Exceptions;
 using api.Models;
 using api.Repositories;
@@ -92,12 +93,12 @@ public class ExplorationService : IExplorationService
         var project = await _projectService.GetProject(projectId);
         exploration.Project = project;
         var createdExploration = _context.Explorations!.Add(exploration);
+        SetCaseLink(exploration, sourceCaseId, project);
         await _context.SaveChangesAsync();
-        await SetCaseLink(exploration, sourceCaseId, project);
         return createdExploration.Entity;
     }
 
-    private async Task SetCaseLink(Exploration exploration, Guid sourceCaseId, Project project)
+    private static void SetCaseLink(Exploration exploration, Guid sourceCaseId, Project project)
     {
         var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
         if (case_ == null)
@@ -105,7 +106,6 @@ public class ExplorationService : IExplorationService
             throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
         }
         case_.ExplorationLink = exploration.Id;
-        await _context.SaveChangesAsync();
     }
 
     public async Task<ExplorationWithProfilesDto> UpdateExplorationAndCostProfiles(ExplorationWithProfilesDto updatedExplorationDto)
@@ -154,7 +154,9 @@ public class ExplorationService : IExplorationService
         Exploration updatedExploration;
         try
         {
-            updatedExploration = await _repository.UpdateExploration(existingExploration);
+            updatedExploration = _repository.UpdateExploration(existingExploration);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -162,9 +164,36 @@ public class ExplorationService : IExplorationService
             throw;
         }
 
-        await _caseRepository.UpdateModifyTime(caseId);
-
         var dto = _mapperService.MapToDto<Exploration, ExplorationDto>(updatedExploration, explorationId);
+        return dto;
+    }
+
+    public async Task<ExplorationWellDto> UpdateExplorationWell(
+        Guid caseId,
+        Guid explorationId,
+        Guid wellId,
+        UpdateExplorationWellDto updatedExplorationWellDto
+    )
+    {
+        var existingExplorationWell = await _repository.GetExplorationWell(explorationId, wellId)
+            ?? throw new NotFoundInDBException($"Exploration with id {explorationId} not found.");
+
+        _mapperService.MapToEntity(updatedExplorationWellDto, existingExplorationWell, explorationId);
+
+        ExplorationWell updatedExplorationWell;
+        try
+        {
+            updatedExplorationWell = _repository.UpdateExplorationWell(existingExplorationWell);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to update exploration with id {explorationId} and well id {wellId}.", explorationId, wellId);
+            throw;
+        }
+
+        var dto = _mapperService.MapToDto<ExplorationWell, ExplorationWellDto>(updatedExplorationWell, explorationId);
         return dto;
     }
 
@@ -202,13 +231,43 @@ public class ExplorationService : IExplorationService
         );
     }
 
+    public async Task<SeismicAcquisitionAndProcessingDto> CreateSeismicAcquisitionAndProcessing(
+        Guid caseId,
+        Guid explorationId,
+        CreateSeismicAcquisitionAndProcessingDto createProfileDto
+    )
+    {
+        return await CreateExplorationProfile<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto, CreateSeismicAcquisitionAndProcessingDto>(
+            caseId,
+            explorationId,
+            createProfileDto,
+            _repository.CreateSeismicAcquisitionAndProcessing,
+            ExplorationProfileNames.SeismicAcquisitionAndProcessing
+        );
+    }
+
+    public async Task<CountryOfficeCostDto> CreateCountryOfficeCost(
+        Guid caseId,
+        Guid explorationId,
+        CreateCountryOfficeCostDto createProfileDto
+    )
+    {
+        return await CreateExplorationProfile<CountryOfficeCost, CountryOfficeCostDto, CreateCountryOfficeCostDto>(
+            caseId,
+            explorationId,
+            createProfileDto,
+            _repository.CreateCountryOfficeCost,
+            ExplorationProfileNames.CountryOfficeCost
+        );
+    }
+
     private async Task<TDto> UpdateExplorationCostProfile<TProfile, TDto, TUpdateDto>(
         Guid caseId,
         Guid explorationId,
         Guid profileId,
         TUpdateDto updatedProfileDto,
         Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, Task<TProfile>> updateProfile
+        Func<TProfile, TProfile> updateProfile
     )
         where TProfile : class, IExplorationTimeSeries
         where TDto : class
@@ -222,7 +281,9 @@ public class ExplorationService : IExplorationService
         TProfile updatedProfile;
         try
         {
-            updatedProfile = await updateProfile(existingProfile);
+            updatedProfile = updateProfile(existingProfile);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -231,9 +292,53 @@ public class ExplorationService : IExplorationService
             throw;
         }
 
-        await _caseRepository.UpdateModifyTime(caseId);
 
         var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
+        return updatedDto;
+    }
+
+    private async Task<TDto> CreateExplorationProfile<TProfile, TDto, TCreateDto>(
+            Guid caseId,
+            Guid explorationId,
+            TCreateDto createExplorationProfileDto,
+            Func<TProfile, TProfile> createProfile,
+            ExplorationProfileNames profileName
+        )
+            where TProfile : class, IExplorationTimeSeries, new()
+            where TDto : class
+            where TCreateDto : class
+    {
+        var exploration = await _repository.GetExploration(explorationId)
+            ?? throw new NotFoundInDBException($"Exploration with id {explorationId} not found.");
+
+        var resourceHasProfile = await _repository.ExplorationHasProfile(explorationId, profileName);
+
+        if (resourceHasProfile)
+        {
+            throw new ResourceAlreadyExistsException($"Exploration with id {explorationId} already has a profile of type {typeof(TProfile).Name}.");
+        }
+
+        TProfile profile = new()
+        {
+            Exploration = exploration,
+        };
+
+        var newProfile = _mapperService.MapToEntity(createExplorationProfileDto, profile, explorationId);
+
+        TProfile createdProfile;
+        try
+        {
+            createdProfile = createProfile(newProfile);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
+            throw;
+        }
+
+        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
         return updatedDto;
     }
 }

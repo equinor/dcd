@@ -20,7 +20,7 @@ interface Props {
     assetWells: Components.Schemas.ExplorationWellDto[] | Components.Schemas.WellProjectWellDto[]
     setAssetWells: (assetWell: any[]) => void
     wells: Components.Schemas.WellDto[] | undefined
-    assetId: string
+    resourceId: string
     isExplorationTable: boolean
 }
 
@@ -29,7 +29,7 @@ const CaseDrillingScheduleTabTable = ({
     tableYears, tableName,
     alignedGridsRef, gridRef,
     assetWells, setAssetWells,
-    wells, assetId, isExplorationTable,
+    wells, resourceId, isExplorationTable,
 }: Props) => {
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([])
@@ -42,7 +42,7 @@ const CaseDrillingScheduleTabTable = ({
                 const explorationWell = assetWell.find((ew) => ew.wellId === w.id)
                 if (!explorationWell) {
                     const newExplorationWell = {
-                        explorationId: assetId,
+                        explorationId: resourceId,
                         wellId: w.id,
                         drillingSchedule: {
                             id: EMPTY_GUID,
@@ -58,7 +58,7 @@ const CaseDrillingScheduleTabTable = ({
                 const wellProjectWell = assetWell.find((wpw) => wpw.wellId === w.id)
                 if (!wellProjectWell) {
                     const newWellProjectWell = {
-                        wellProjectId: assetId,
+                        wellProjectId: resourceId,
                         wellId: w.id,
                         drillingSchedule: {
                             id: EMPTY_GUID,
@@ -180,7 +180,7 @@ const CaseDrillingScheduleTabTable = ({
         resizable: true,
         editable: true,
         onCellValueChanged: handleCellValueChange,
-        suppressMenuButton: true,
+        suppressHeaderMenuButton: true,
     }), [])
 
     const gridRefArrayToAlignedGrid = () => {

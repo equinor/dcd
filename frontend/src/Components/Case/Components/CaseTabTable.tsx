@@ -54,7 +54,6 @@ const CaseTabTable = ({
     const [overrideModalProfileName, setOverrideModalProfileName] = useState<string>("")
     const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
     const [overrideProfile, setOverrideProfile] = useState<any>()
-    const [gridApi, setGridApi] = useState(null)
 
     const profilesToRowData = () => {
         const tableRows: any[] = []
@@ -192,6 +191,16 @@ const CaseTabTable = ({
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
     const handleCellValueChange = (p: any) => {
+        /* helpers for finding right data to register in history tracker
+
+        const cellName = p.colDef
+        const columnName = p.colDef.headerName
+
+        console.log(cellName)
+        console.log(columnName)
+        console.log(p.newValue)
+        console.log(p.oldValue)
+        */
         const properties = Object.keys(p.data)
         const tableTimeSeriesValues: any[] = []
         properties.forEach((prop) => {
@@ -247,7 +256,7 @@ const CaseTabTable = ({
         resizable: true,
         editable: true,
         onCellValueChanged: handleCellValueChange,
-        suppressMenuButton: true,
+        suppressHeaderMenuButton: true,
     }), [])
 
     useEffect(() => {

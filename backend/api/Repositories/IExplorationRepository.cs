@@ -1,13 +1,19 @@
+using api.Enums;
 using api.Models;
 
 namespace api.Repositories;
 
-public interface IExplorationRepository
+public interface IExplorationRepository : IBaseRepository
 {
     Task<Exploration?> GetExploration(Guid explorationId);
-    Task<Exploration> UpdateExploration(Exploration exploration);
+    Task<bool> ExplorationHasProfile(Guid ExplorationId, ExplorationProfileNames profileType);
+    Exploration UpdateExploration(Exploration exploration);
+    Task<ExplorationWell?> GetExplorationWell(Guid explorationId, Guid wellId);
+    ExplorationWell UpdateExplorationWell(ExplorationWell explorationWell);
     Task<SeismicAcquisitionAndProcessing?> GetSeismicAcquisitionAndProcessing(Guid seismicAcquisitionAndProcessingId);
-    Task<SeismicAcquisitionAndProcessing> UpdateSeismicAcquisitionAndProcessing(SeismicAcquisitionAndProcessing seismicAcquisitionAndProcessing);
+    SeismicAcquisitionAndProcessing UpdateSeismicAcquisitionAndProcessing(SeismicAcquisitionAndProcessing seismicAcquisitionAndProcessing);
     Task<CountryOfficeCost?> GetCountryOfficeCost(Guid countryOfficeCostId);
-    Task<CountryOfficeCost> UpdateCountryOfficeCost(CountryOfficeCost countryOfficeCost);
+    CountryOfficeCost UpdateCountryOfficeCost(CountryOfficeCost countryOfficeCost);
+    SeismicAcquisitionAndProcessing CreateSeismicAcquisitionAndProcessing(SeismicAcquisitionAndProcessing profile);
+    CountryOfficeCost CreateCountryOfficeCost(CountryOfficeCost profile);
 }

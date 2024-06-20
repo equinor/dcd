@@ -38,6 +38,16 @@ public class SurfsController : ControllerBase
         return await _surfService.UpdateSurf(caseId, surfId, dto);
     }
 
+    [HttpPost("{surfId}/cost-profile-override/")]
+    public async Task<SurfCostProfileOverrideDto> CreateSurfCostProfileOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid surfId,
+        [FromBody] CreateSurfCostProfileOverrideDto dto)
+    {
+        return await _surfService.CreateSurfCostProfileOverride(caseId, surfId, dto);
+    }
+
     [HttpPut("{surfId}/cost-profile-override/{costProfileId}")]
     public async Task<SurfCostProfileOverrideDto> UpdateSurfCostProfileOverride(
         [FromRoute] Guid projectId,

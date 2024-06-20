@@ -77,8 +77,8 @@ public class TransportService : ITransportService
             newTransportDto.CessationCostProfile.Id = Guid.Empty;
         }
 
-        // var topside = await NewCreateTransport(newTransportDto, sourceCaseId);
-        // var dto = TransportDtoAdapter.Convert(topside);
+        // var transport = await NewCreateTransport(newTransportDto, sourceCaseId);
+        // var dto = TransportDtoAdapter.Convert(transport);
 
         // return dto;
         return newTransportDto;
@@ -109,19 +109,6 @@ public class TransportService : ITransportService
         return transport;
     }
 
-    public async Task<ProjectDto> UpdateTransportAndCostProfiles<TDto>(TDto updatedTransportDto, Guid transportId)
-        where TDto : BaseUpdateTransportDto
-    {
-        var existing = await GetTransport(transportId);
-
-        _mapper.Map(updatedTransportDto, existing);
-
-        existing.LastChangedDate = DateTimeOffset.UtcNow;
-        _context.Transports!.Update(existing);
-        await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDto(existing.ProjectId);
-    }
-
     public async Task<TransportDto> UpdateTransport<TDto>(Guid caseId, Guid transportId, TDto updatedTransportDto)
         where TDto : BaseUpdateTransportDto
     {
@@ -134,7 +121,9 @@ public class TransportService : ITransportService
         Transport updatedTransport;
         try
         {
-            updatedTransport = await _repository.UpdateTransport(existing);
+            updatedTransport = _repository.UpdateTransport(existing);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException ex)
         {
@@ -142,10 +131,49 @@ public class TransportService : ITransportService
             throw;
         }
 
-        await _caseRepository.UpdateModifyTime(caseId);
 
         var dto = _mapperService.MapToDto<Transport, TransportDto>(updatedTransport, transportId);
         return dto;
+    }
+
+    public async Task<TransportCostProfileOverrideDto> CreateTransportCostProfileOverride(
+        Guid caseId,
+        Guid transportId,
+        CreateTransportCostProfileOverrideDto dto
+    )
+    {
+        var transport = await _repository.GetTransport(transportId)
+            ?? throw new NotFoundInDBException($"Transport with id {transportId} not found.");
+
+        var resourceHasProfile = await _repository.TransportHasCostProfileOverride(transportId);
+
+        if (resourceHasProfile)
+        {
+            throw new ResourceAlreadyExistsException($"Transport with id {transportId} already has a profile of type {typeof(TransportCostProfileOverride).Name}.");
+        }
+
+        TransportCostProfileOverride profile = new()
+        {
+            Transport = transport,
+        };
+
+        var newProfile = _mapperService.MapToEntity(dto, profile, transportId);
+
+        TransportCostProfileOverride createdProfile;
+        try
+        {
+            createdProfile = _repository.CreateTransportCostProfileOverride(newProfile);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to create profile TransportCostProfileOverride for case id {caseId}.", caseId);
+            throw;
+        }
+
+        var updatedDto = _mapperService.MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(createdProfile, createdProfile.Id);
+        return updatedDto;
     }
 
     public async Task<TransportCostProfileOverrideDto> UpdateTransportCostProfileOverride(
@@ -154,26 +182,112 @@ public class TransportService : ITransportService
         Guid costProfileId,
         UpdateTransportCostProfileOverrideDto dto)
     {
-        var existingCostProfile = await _repository.GetTransportCostProfileOverride(costProfileId)
-            ?? throw new NotFoundInDBException($"Transport cost profile override with id {costProfileId} not found.");
+        return await UpdateTransportTimeSeries<TransportCostProfileOverride, TransportCostProfileOverrideDto, UpdateTransportCostProfileOverrideDto>(
+            caseId,
+            transportId,
+            costProfileId,
+            dto,
+            _repository.GetTransportCostProfileOverride,
+            _repository.UpdateTransportCostProfileOverride
+        );
+    }
 
-        _mapperService.MapToEntity(dto, existingCostProfile, costProfileId);
+    public async Task<TransportCostProfileDto> AddOrUpdateTransportCostProfile(
+        Guid caseId,
+        Guid transportId,
+        UpdateTransportCostProfileDto dto
+    )
+    {
+        var transport = await _repository.GetTransportWithCostProfile(transportId)
+            ?? throw new NotFoundInDBException($"Transport with id {transportId} not found.");
 
-        TransportCostProfileOverride updatedCostProfile;
+        if (transport.CostProfile != null)
+        {
+            return await UpdateTransportCostProfile(caseId, transportId, transport.CostProfile.Id, dto);
+        }
+
+        return await CreateTransportCostProfile(caseId, transportId, dto, transport);
+    }
+
+    private async Task<TransportCostProfileDto> UpdateTransportCostProfile(
+        Guid caseId,
+        Guid transportId,
+        Guid profileId,
+        UpdateTransportCostProfileDto dto
+    )
+    {
+        return await UpdateTransportTimeSeries<TransportCostProfile, TransportCostProfileDto, UpdateTransportCostProfileDto>(
+            caseId,
+            transportId,
+            profileId,
+            dto,
+            _repository.GetTransportCostProfile,
+            _repository.UpdateTransportCostProfile
+        );
+    }
+
+    private async Task<TransportCostProfileDto> CreateTransportCostProfile(
+        Guid caseId,
+        Guid transportId,
+        UpdateTransportCostProfileDto dto,
+        Transport transport
+    )
+    {
+        TransportCostProfile transportCostProfile = new TransportCostProfile
+        {
+            Transport = transport
+        };
+
+        var newProfile = _mapperService.MapToEntity(dto, transportCostProfile, transportId);
+
         try
         {
-            updatedCostProfile = await _repository.UpdateTransportCostProfileOverride(existingCostProfile);
+            _repository.CreateTransportCostProfile(newProfile);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
         }
-        catch (DbUpdateConcurrencyException ex)
+        catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to update transport cost profile override with id {costProfileId} for transport id {transportId}.", costProfileId, transportId);
+            _logger.LogError(ex, "Failed to create cost profile for transport with id {transportId} for case id {caseId}.", transportId, caseId);
             throw;
         }
 
-        await _caseRepository.UpdateModifyTime(caseId);
+        var newDto = _mapperService.MapToDto<TransportCostProfile, TransportCostProfileDto>(newProfile, newProfile.Id);
+        return newDto;
+    }
 
-        var updatedDto = _mapperService.MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(updatedCostProfile, costProfileId);
+    private async Task<TDto> UpdateTransportTimeSeries<TProfile, TDto, TUpdateDto>(
+        Guid caseId,
+        Guid transportId,
+        Guid profileId,
+        TUpdateDto updatedProfileDto,
+        Func<Guid, Task<TProfile?>> getProfile,
+        Func<TProfile, TProfile> updateProfile
+    )
+        where TProfile : class
+        where TDto : class
+        where TUpdateDto : class
+    {
+        var existingProfile = await getProfile(profileId)
+            ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
 
+        _mapperService.MapToEntity(updatedProfileDto, existingProfile, transportId);
+
+        TProfile updatedProfile;
+        try
+        {
+            updatedProfile = updateProfile(existingProfile);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            var profileName = typeof(TProfile).Name;
+            _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
+            throw;
+        }
+
+        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
         return updatedDto;
     }
 }

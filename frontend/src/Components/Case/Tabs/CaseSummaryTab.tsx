@@ -2,6 +2,8 @@ import {
     Dispatch, SetStateAction, useEffect, useState,
 } from "react"
 import Grid from "@mui/material/Grid"
+import { useQueryClient, useQuery } from "react-query"
+import { useParams } from "react-router"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
@@ -72,7 +74,10 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         exploration,
     } = useModalContext()
 
+    const queryClient = useQueryClient()
     const { project } = useProjectContext()
+    const { caseId } = useParams()
+    const projectId = project?.id || null
 
     // TODO: this is wrong we are using setters but never using the values
     const [, setStartYear] = useState<number>(2020)
@@ -273,16 +278,27 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         })()
     }, [activeTabCase])
 
+    const { data: caseData } = useQuery<Components.Schemas.CaseDto | undefined>(
+        [{ projectId, caseId, resourceId: "" }],
+        () => queryClient.getQueryData([{ projectId, caseId, resourceId: "" }]),
+        {
+            enabled: !!project && !!projectId,
+            initialData: () => queryClient.getQueryData([{ projectId: project?.id, caseId, resourceId: "" }]) as Components.Schemas.CaseDto,
+        },
+    )
+
+    if (!caseData) { return null }
+
     if (activeTabCase !== 7) { return null }
 
     return (
         <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
                 <SwitchableNumberInput
-                    objectKey={projectCase?.npv}
+                    resourceName="case"
+                    resourcePropertyKey="npv"
                     label="NPV before tax"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "npv", projectCase, setProjectCaseEdited)}
-                    value={projectCase?.npv}
+                    value={caseData.npv}
                     integer={false}
                     allowNegative
                     min={0}
@@ -291,10 +307,10 @@ const CaseSummaryTab = (): React.ReactElement | null => {
             </Grid>
             <Grid item xs={12} md={6}>
                 <SwitchableNumberInput
-                    objectKey={projectCase?.breakEven}
+                    resourceName="case"
+                    resourcePropertyKey="breakEven"
                     label="B/E before tax"
-                    onSubmit={(value: number) => setNonNegativeNumberState(value, "breakEven", projectCase, setProjectCaseEdited)}
-                    value={projectCase?.breakEven}
+                    value={caseData.breakEven}
                     integer={false}
                     min={0}
                     max={1000000}
