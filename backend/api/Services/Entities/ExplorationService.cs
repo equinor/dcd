@@ -42,46 +42,7 @@ public class ExplorationService : IExplorationService
     }
 
 
-    public async Task<ExplorationWithProfilesDto> CopyExploration(Guid explorationId, Guid sourceCaseId)
-    {
-        var source = await GetExploration(explorationId);
-        var newExplorationDto = _mapper.Map<ExplorationWithProfilesDto>(source);
-        if (newExplorationDto == null)
-        {
-            throw new ArgumentNullException(nameof(newExplorationDto));
-        }
-        newExplorationDto.Id = Guid.Empty;
 
-        if (newExplorationDto.ExplorationWellCostProfile != null)
-        {
-            newExplorationDto.ExplorationWellCostProfile.Id = Guid.Empty;
-        }
-        if (newExplorationDto.AppraisalWellCostProfile != null)
-        {
-            newExplorationDto.AppraisalWellCostProfile.Id = Guid.Empty;
-        }
-        if (newExplorationDto.SidetrackCostProfile != null)
-        {
-            newExplorationDto.SidetrackCostProfile.Id = Guid.Empty;
-        }
-        if (newExplorationDto.SeismicAcquisitionAndProcessing != null)
-        {
-            newExplorationDto.SeismicAcquisitionAndProcessing.Id = Guid.Empty;
-        }
-        if (newExplorationDto.CountryOfficeCost != null)
-        {
-            newExplorationDto.CountryOfficeCost.Id = Guid.Empty;
-        }
-        if (newExplorationDto.GAndGAdminCost != null)
-        {
-            newExplorationDto.GAndGAdminCost.Id = Guid.Empty;
-        }
-
-        // var wellProject = await NewCreateExploration(newExplorationDto, sourceCaseId);
-        // var dto = ExplorationDtoAdapter.Convert(wellProject);
-        // return dto;
-        return newExplorationDto;
-    }
 
     public async Task<Exploration> CreateExploration(Guid projectId, Guid sourceCaseId, CreateExplorationDto explorationDto)
     {
