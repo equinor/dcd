@@ -148,8 +148,8 @@ public class DuplicateCaseService : IDuplicateCaseService
         var newWellProject = await CopyWellProject(caseItem.WellProjectLink);
         var newExploration = await CopyExploration(caseItem.ExplorationLink);
 
-        // await _wellProjectWellService.CopyWellProjectWell(sourceWellProjectId, newWellProject.Id);
-        // await _explorationWellService.CopyExplorationWell(sourceExplorationId, newExploration.Id);
+        await CopyWellProjectWell(sourceWellProjectId, newWellProject.Id);
+        await CopyExplorationWell(sourceExplorationId, newExploration.Id);
 
         caseItem.DrainageStrategyLink = newDrainageStrategy.Id;
         caseItem.TopsideLink = newTopside.Id;
@@ -163,6 +163,56 @@ public class DuplicateCaseService : IDuplicateCaseService
 
         await _context.SaveChangesAsync();
         return await _projectService.GetProjectDto(project.Id);
+    }
+
+    private async Task<List<ExplorationWell>> CopyExplorationWell(Guid sourceExplorationId, Guid targetExplorationId)
+    {
+        var sourceExplorationWells = await GetAllExplorationWellForExplorationNoTracking(sourceExplorationId);
+
+        foreach (var explorationWell in sourceExplorationWells)
+        {
+            explorationWell.ExplorationId = targetExplorationId;
+            if (explorationWell.DrillingSchedule != null)
+            {
+                explorationWell.DrillingSchedule.Id = Guid.NewGuid();
+            }
+            _context.ExplorationWell.Add(explorationWell);
+        }
+        return sourceExplorationWells;
+    }
+
+    private async Task<List<ExplorationWell>> GetAllExplorationWellForExplorationNoTracking(Guid guid)
+    {
+        return await _context.ExplorationWell
+                   .AsNoTracking()
+                   .Where(ew => ew.ExplorationId == guid)
+                   .Include(ew => ew.DrillingSchedule)
+                   .ToListAsync();
+    }
+
+    private async Task<List<WellProjectWell>> CopyWellProjectWell(Guid sourceWellProjectId, Guid targetWellProjectId)
+    {
+        var sourceWellProjectWells = await GetAllWellProjectWellForWellProjectNoTracking(sourceWellProjectId);
+
+        foreach (var wellProjectWell in sourceWellProjectWells)
+        {
+            wellProjectWell.WellProjectId = targetWellProjectId;
+            if (wellProjectWell.DrillingSchedule != null)
+            {
+                wellProjectWell.DrillingSchedule.Id = Guid.NewGuid();
+            }
+            _context.WellProjectWell.Add(wellProjectWell);
+        }
+        return sourceWellProjectWells;
+    }
+
+    private async Task<List<WellProjectWell>> GetAllWellProjectWellForWellProjectNoTracking(Guid guid)
+    {
+        return await _context.WellProjectWell
+            .AsNoTracking()
+            .Where(wpw => wpw.WellProjectId == guid)
+            .Include(wpw => wpw.DrillingSchedule)
+            .ToListAsync();
     }
 
     private async Task<DrainageStrategy> CopyDrainageStrategy(Guid guid)
