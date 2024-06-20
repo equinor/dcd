@@ -33,11 +33,23 @@ const EditTechnicalInputModal = () => {
     const [activeTab, setActiveTab] = useState<number>(0)
     const [deletedWells, setDeletedWells] = useState<string[]>([])
 
-    const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(project?.explorationOperationalWellCosts)
-    const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(project?.developmentOperationalWellCosts)
+    const [
+        explorationOperationalWellCosts,
+        setExplorationOperationalWellCosts,
+    ] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(project?.explorationOperationalWellCosts)
+    const [
+        developmentOperationalWellCosts,
+        setDevelopmentOperationalWellCosts,
+    ] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(project?.developmentOperationalWellCosts)
 
-    const [originalExplorationOperationalWellCosts, setOriginalExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(project?.explorationOperationalWellCosts)
-    const [originalDevelopmentOperationalWellCosts, setOriginalDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(project?.developmentOperationalWellCosts)
+    const [
+        originalExplorationOperationalWellCosts,
+        setOriginalExplorationOperationalWellCosts,
+    ] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(project?.explorationOperationalWellCosts)
+    const [
+        originalDevelopmentOperationalWellCosts,
+        setOriginalDevelopmentOperationalWellCosts,
+    ] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(project?.developmentOperationalWellCosts)
 
     const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => !isExplorationWell(w)) ?? [])
     const [explorationWells, setExplorationWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => isExplorationWell(w)) ?? [])
@@ -153,7 +165,6 @@ const EditTechnicalInputModal = () => {
         <Modal
             isOpen={technicalModalIsOpen}
             title="Technical Input"
-            fullWidth
         >
             <Grid container spacing={2}>
                 <Grid item xs={12}>

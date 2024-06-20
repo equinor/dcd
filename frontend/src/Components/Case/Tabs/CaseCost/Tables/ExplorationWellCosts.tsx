@@ -93,34 +93,40 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
     }, [gAndGAdminCost])
 
     useEffect(() => {
-        if (exploration) {
+        if (exploration && explorationWellCostProfile && exploration.explorationWellCostProfile !== explorationWellCostProfile) {
             updateObject(exploration, setExploration, "explorationWellCostProfile", explorationWellCostProfile)
         }
-    }, [explorationWellCostProfile])
+    }, [exploration, explorationWellCostProfile])
 
     useEffect(() => {
-        if (exploration) {
+        if (exploration && appraisalWellCostProfile && exploration.appraisalWellCostProfile !== appraisalWellCostProfile) {
             updateObject(exploration, setExploration, "appraisalWellCostProfile", appraisalWellCostProfile)
         }
-    }, [appraisalWellCostProfile])
+    }, [exploration, appraisalWellCostProfile])
 
     useEffect(() => {
-        if (exploration) {
+        if (exploration && sidetrackCostProfile && exploration.sidetrackCostProfile !== sidetrackCostProfile) {
             updateObject(exploration, setExploration, "sidetrackCostProfile", sidetrackCostProfile)
         }
-    }, [sidetrackCostProfile])
+    }, [exploration, sidetrackCostProfile])
 
     useEffect(() => {
-        if (exploration) {
+        if (exploration && seismicAcquisitionAndProcessing && exploration.seismicAcquisitionAndProcessing !== seismicAcquisitionAndProcessing) {
             updateObject(exploration, setExploration, "seismicAcquisitionAndProcessing", seismicAcquisitionAndProcessing)
         }
-    }, [seismicAcquisitionAndProcessing])
+    }, [exploration, seismicAcquisitionAndProcessing])
 
     useEffect(() => {
-        if (exploration) {
+        if (exploration && countryOfficeCost && exploration.countryOfficeCost !== countryOfficeCost) {
             updateObject(exploration, setExploration, "countryOfficeCost", countryOfficeCost)
         }
-    }, [countryOfficeCost])
+    }, [exploration, countryOfficeCost])
+
+    useEffect(() => {
+        if (exploration && gAndGAdminCost && exploration.gAndGAdminCost !== gAndGAdminCost) {
+            updateObject(exploration, setExploration, "gAndGAdminCost", gAndGAdminCost)
+        }
+    }, [exploration, gAndGAdminCost])
 
     useEffect(() => {
         if (activeTabCase === 5 && exploration) {

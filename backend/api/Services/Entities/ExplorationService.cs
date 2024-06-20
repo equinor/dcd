@@ -1,5 +1,6 @@
 using api.Context;
 using api.Dtos;
+using api.Enums;
 using api.Exceptions;
 using api.Models;
 using api.Repositories;
@@ -230,6 +231,36 @@ public class ExplorationService : IExplorationService
         );
     }
 
+    public async Task<SeismicAcquisitionAndProcessingDto> CreateSeismicAcquisitionAndProcessing(
+        Guid caseId,
+        Guid explorationId,
+        CreateSeismicAcquisitionAndProcessingDto createProfileDto
+    )
+    {
+        return await CreateExplorationProfile<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto, CreateSeismicAcquisitionAndProcessingDto>(
+            caseId,
+            explorationId,
+            createProfileDto,
+            _repository.CreateSeismicAcquisitionAndProcessing,
+            ExplorationProfileNames.SeismicAcquisitionAndProcessing
+        );
+    }
+
+    public async Task<CountryOfficeCostDto> CreateCountryOfficeCost(
+        Guid caseId,
+        Guid explorationId,
+        CreateCountryOfficeCostDto createProfileDto
+    )
+    {
+        return await CreateExplorationProfile<CountryOfficeCost, CountryOfficeCostDto, CreateCountryOfficeCostDto>(
+            caseId,
+            explorationId,
+            createProfileDto,
+            _repository.CreateCountryOfficeCost,
+            ExplorationProfileNames.CountryOfficeCost
+        );
+    }
+
     private async Task<TDto> UpdateExplorationCostProfile<TProfile, TDto, TUpdateDto>(
         Guid caseId,
         Guid explorationId,
@@ -263,6 +294,51 @@ public class ExplorationService : IExplorationService
 
 
         var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
+        return updatedDto;
+    }
+
+    private async Task<TDto> CreateExplorationProfile<TProfile, TDto, TCreateDto>(
+            Guid caseId,
+            Guid explorationId,
+            TCreateDto createExplorationProfileDto,
+            Func<TProfile, TProfile> createProfile,
+            ExplorationProfileNames profileName
+        )
+            where TProfile : class, IExplorationTimeSeries, new()
+            where TDto : class
+            where TCreateDto : class
+    {
+        var exploration = await _repository.GetExploration(explorationId)
+            ?? throw new NotFoundInDBException($"Exploration with id {explorationId} not found.");
+
+        var resourceHasProfile = await _repository.ExplorationHasProfile(explorationId, profileName);
+
+        if (resourceHasProfile)
+        {
+            throw new ResourceAlreadyExistsException($"Exploration with id {explorationId} already has a profile of type {typeof(TProfile).Name}.");
+        }
+
+        TProfile profile = new()
+        {
+            Exploration = exploration,
+        };
+
+        var newProfile = _mapperService.MapToEntity(createExplorationProfileDto, profile, explorationId);
+
+        TProfile createdProfile;
+        try
+        {
+            createdProfile = createProfile(newProfile);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
+            throw;
+        }
+
+        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
         return updatedDto;
     }
 }

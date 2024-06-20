@@ -66,7 +66,7 @@ const CasesAgGridTable = ({
         sortable: true,
         filter: true,
         resizable: true,
-        suppressMenuButton: true,
+        suppressHeaderMenuButton: true,
     }), [])
 
     if (!project) { return <p>project not found</p> }

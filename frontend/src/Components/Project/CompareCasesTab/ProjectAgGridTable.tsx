@@ -202,6 +202,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
     const [columnDefs] = useState(columns())
     const onGridReady = (params: any) => {
         gridRef.current = params.api
+        params.api.showLoadingOverlay()
     }
 
     const defaultColDef = useMemo(() => ({
@@ -209,7 +210,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
         filter: true,
         resizable: true,
         editable: false,
-        suppressMenuButton: true,
+        suppressHeaderMenuButton: true,
     }), [])
 
     return (
