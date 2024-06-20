@@ -9,7 +9,7 @@ public class UpdateExplorationWithProfilesDto
     public string Name { get; set; } = string.Empty;
     public double RigMobDemob { get; set; }
     public Currency Currency { get; set; }
-
+    public UpdateGAndGAdminCostDto? GAndGAdminCost { get; set; }
     public UpdateSeismicAcquisitionAndProcessingDto? SeismicAcquisitionAndProcessing { get; set; }
     public UpdateCountryOfficeCostDto? CountryOfficeCost { get; set; }
     public UpdateExplorationWellCostProfileDto? ExplorationWellCostProfile { get; set; }
@@ -17,6 +17,9 @@ public class UpdateExplorationWithProfilesDto
     public UpdateSidetrackCostProfileDto? SidetrackCostProfile { get; set; }
 }
 
+public class UpdateGAndGAdminCostDto : UpdateTimeSeriesCostDto
+{
+}
 public class UpdateSeismicAcquisitionAndProcessingDto : UpdateTimeSeriesCostDto
 {
 }

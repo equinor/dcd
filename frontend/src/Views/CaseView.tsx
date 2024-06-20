@@ -172,7 +172,7 @@ const CaseView = () => {
                 exploration.sidetrackCostProfile,
                 exploration.seismicAcquisitionAndProcessing,
                 exploration.countryOfficeCost,
-                // gAndGAdminCost // Missing implementation, uncomment when gAndGAdminCost is fixed
+                exploration.gAndGAdminCost, // Missing implementation, uncomment when gAndGAdminCost is fixed
             ]))
         }
     }

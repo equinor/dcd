@@ -49,7 +49,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         // Exploration
         totalExplorationCost,
         explorationWellCostProfile,
-        // gAndGAdminCost,// missing implementation
+        gAndGAdminCost, // missing implementation
         seismicAcquisitionAndProcessing,
 
         // Study cost
@@ -268,6 +268,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                             gasInjectorCostProfile,
                             explorationWellCostProfile,
                             seismicAcquisitionAndProcessing,
+                            gAndGAdminCost,
                             totalDrillingCost,
                         ], projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
                     }

@@ -21,6 +21,7 @@ public class ExplorationProfile : Profile
 
         CreateMap<UpdateExplorationDto, Exploration>();
         CreateMap<UpdateExplorationWithProfilesDto, Exploration>();
+        CreateMap<UpdateGAndGAdminCostDto, GAndGAdminCost>();
         CreateMap<UpdateSeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>();
         CreateMap<UpdateCountryOfficeCostDto, CountryOfficeCost>();
         CreateMap<UpdateExplorationWellCostProfileDto, ExplorationWellCostProfile>();
