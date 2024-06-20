@@ -1,6 +1,4 @@
 import React, { } from "react"
-import { useQuery, useQueryClient } from "react-query"
-import { useParams } from "react-router"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { ITimeSeriesData } from "../../../../../Models/Interfaces"
