@@ -23,7 +23,6 @@ const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } }
     "2.0.0": {
         "New Features": [
             { description: "All input fields Auto-save on change" },
-            { description: "Edit history overview in the sidebar displays all changes made to each case in the past hour" },
             { description: "Undo/redo edits" },
             { description: "Upload photos in the case description tab" },
             { description: "Set the classification level of the project in the settings tab" },
@@ -38,6 +37,13 @@ const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } }
             { description: "Improved loading indicators" },
         ],
     },
+    /*
+    "2.1.0": {
+        "New Features": [
+            { description: "Edit history overview in the sidebar displays all changes made to each case in the past hour" },
+        ],
+    },
+    */
 }
 
 const versions = Object.keys(whatsNewUpdates).sort((a, b) => {
