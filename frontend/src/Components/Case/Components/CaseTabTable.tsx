@@ -9,7 +9,6 @@ import {
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef, GridReadyEvent } from "@ag-grid-community/core"
-import { useQueryClient } from "react-query"
 import { useParams } from "react-router"
 import {
     isInteger,
@@ -19,7 +18,6 @@ import {
     validateInput,
 } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
-import { EMPTY_GUID } from "../../../Utils/constants"
 import { useAppContext } from "../../../Context/AppContext"
 import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
@@ -57,14 +55,12 @@ const CaseTabTable = ({
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
     const { caseId } = useParams()
-    const queryClient = useQueryClient()
 
     const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
     const [overrideModalProfileName, setOverrideModalProfileName] = useState<ProfileNames>()
     const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
     const [overrideProfile, setOverrideProfile] = useState<any>()
 
-    // todo: create another logic for "set"
     const profilesToRowData = () => {
         const tableRows: any[] = []
         timeSeriesData.forEach((ts) => {
@@ -218,7 +214,6 @@ const CaseTabTable = ({
                 })
             }
         })
-        console.log(properties)
         tableTimeSeriesValues.sort((a, b) => a.year - b.year)
         if (tableTimeSeriesValues.length > 0) {
             const tableTimeSeriesFirstYear = tableTimeSeriesValues[0].year
@@ -236,14 +231,8 @@ const CaseTabTable = ({
             const newProfile = { ...p.data.profile }
             newProfile.startYear = timeSeriesStartYear
             newProfile.values = values
-            // p.data.set(newProfile)
 
             if (!caseId || !project) { return }
-
-            console.log("timeSeriesData[0].resourceProfileId", timeSeriesData[0].resourceProfileId)
-            console.log("p", p)
-            console.log("timeSeriesData", timeSeriesData)
-            console.log("Object.keys(timeSeriesData)", Object.keys(timeSeriesData))
 
             const timeSeriesDataIndex = () => {
                 const result = timeSeriesData

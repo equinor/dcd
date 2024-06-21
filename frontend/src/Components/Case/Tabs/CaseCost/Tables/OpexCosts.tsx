@@ -1,6 +1,4 @@
 import React, { } from "react"
-import { useQuery, useQueryClient } from "react-query"
-import { useParams } from "react-router"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { ITimeSeriesData } from "../../../../../Models/Interfaces"
@@ -36,7 +34,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             resourceProfileId: historicCostCostProfileData?.id,
             resourcePropertyKey: "historicCostCostProfile",
             editable: true,
-            overridable: true,
+            overridable: false,
         },
         {
             profileName: "Well intervention",
@@ -71,7 +69,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             resourceProfileId: onshoreRelatedOPEXCostProfileData?.id,
             resourcePropertyKey: "onshoreRelatedOPEXCostProfile",
             editable: true,
-            overridable: true,
+            overridable: false,
         },
         {
             profileName: "Additional OPEX (input req.)",
@@ -82,7 +80,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             resourceProfileId: additionalOPEXCostProfileData?.id,
             resourcePropertyKey: "additionalOPEXCostProfile",
             editable: true,
-            overridable: true,
+            overridable: false,
         },
     ]
 

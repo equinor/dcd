@@ -1,6 +1,4 @@
 import React, { } from "react"
-import { useQuery, useQueryClient } from "react-query"
-import { useParams } from "react-router"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { ITimeSeriesData } from "../../../../../Models/Interfaces"
@@ -57,7 +55,7 @@ const CessationCosts: React.FC<CesationCostsProps> = ({
             resourceProfileId: cessationOnshoreFacilitiesCostProfileData?.id,
             resourcePropertyKey: "cessationOnshoreFacilitiesCostProfile",
             editable: true,
-            overridable: true,
+            overridable: false,
         },
     ]
 
