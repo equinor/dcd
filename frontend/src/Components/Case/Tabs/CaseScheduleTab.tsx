@@ -118,6 +118,8 @@ const CaseScheduleTab = () => {
             newCaseObject.dG4Date = dg.toISOString()
         }
 
+        console.log("new case object after adding edits", newCaseObject)
+
         return newCaseObject
     }
 
@@ -127,11 +129,12 @@ const CaseScheduleTab = () => {
         const newDate = Number.isNaN(new Date(dateValue).getTime())
             ? defaultDate()
             : new Date(dateValue)
+        console.log("previous object", caseData)
+
         const dg0Object = dateKey === "dG0Date" ? getDGOChangesObject(newDate) : undefined
         const caseDataObject = caseData as any
         const newInputValue = newDate.toISOString()
         const previousValue = caseDataObject[dateKey]
-
         addEdit({
             newValue: newInputValue,
             previousValue,
@@ -142,7 +145,11 @@ const CaseScheduleTab = () => {
             caseId: caseData.id,
             newDisplayValue: formatDate(newDate.toISOString()),
             previousDisplayValue: formatDate(caseDataObject[dateKey]),
-            newResourceObject: dg0Object,
+            newResourceObject: dg0Object || {
+                ...caseData,
+                [dateKey]: newInputValue,
+            },
+            previousResourceObject: caseData,
         })
     }
 

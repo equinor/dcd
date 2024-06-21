@@ -44,6 +44,11 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
             caseId: projectCase.id,
             newDisplayValue: options[e.currentTarget.value],
             previousDisplayValue: options[value],
+            newResourceObject: {
+                ...projectCase,
+                [resourcePropertyKey]: Number(e.currentTarget.value),
+            },
+            previousResourceObject: projectCase,
         })
     }
 
