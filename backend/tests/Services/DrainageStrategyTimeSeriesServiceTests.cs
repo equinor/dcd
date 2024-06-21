@@ -14,7 +14,7 @@ using NSubstitute;
 
 using Xunit;
 
-namespace api.Tests.Services
+namespace tests.Services
 {
     public class DrainageStrategyTimeSeriesServiceTests
     {
