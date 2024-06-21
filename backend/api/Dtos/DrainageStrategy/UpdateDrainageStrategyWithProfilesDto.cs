@@ -20,6 +20,8 @@ public class UpdateDrainageStrategyWithProfilesDto
     public UpdateProductionProfileWaterInjectionDto? ProductionProfileWaterInjection { get; set; }
     public UpdateFuelFlaringAndLossesOverrideDto? FuelFlaringAndLossesOverride { get; set; }
     public UpdateNetSalesGasOverrideDto? NetSalesGasOverride { get; set; }
+    public UpdateImportedElectricityOverrideDto? ImportedelectricityOverride { get; set; }
+
     public UpdateCo2EmissionsOverrideDto? Co2EmissionsOverride { get; set; }
     public UpdateDeferredOilProductionDto? DeferredOilProduction { get; set; }
     public UpdateDeferredGasProductionDto? DeferredGasProduction { get; set; }
