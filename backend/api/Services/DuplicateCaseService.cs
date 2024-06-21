@@ -17,16 +17,17 @@ public class DuplicateCaseService : IDuplicateCaseService
         DcdDbContext context,
         IProjectService projectService,
         ILoggerFactory loggerFactory
-        )
+    )
     {
         _context = context;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<DuplicateCaseService>();
     }
 
-    public async Task<Case> GetCaseNoTracking(Guid caseId)
+    private async Task<Case> GetCaseNoTracking(Guid caseId)
     {
-        var caseItem = await _context.Cases!.AsNoTracking()
+        var caseItem = await _context.Cases
+            .AsNoTracking()
             .Include(c => c.TotalFeasibilityAndConceptStudies)
             .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)
@@ -108,7 +109,8 @@ public class DuplicateCaseService : IDuplicateCaseService
 
         caseItem.WellProjectLink = newWellProject.Id;
         caseItem.ExplorationLink = newExploration.Id;
-        _context.Cases!.Add(caseItem);
+
+        _context.Cases.Add(caseItem);
 
         await _context.SaveChangesAsync();
         return await _projectService.GetProjectDto(project.Id);
@@ -185,7 +187,7 @@ public class DuplicateCaseService : IDuplicateCaseService
             .FirstOrDefaultAsync(o => o.Id == topsideId);
         if (topside == null)
         {
-            throw new ArgumentException(string.Format("Topside {0} not found.", topsideId));
+            throw new NotFoundInDBException(string.Format("Topside {0} not found.", topsideId));
         }
         return topside;
     }
@@ -213,7 +215,7 @@ public class DuplicateCaseService : IDuplicateCaseService
             .FirstOrDefaultAsync(c => c.Id == transportId);
         if (transport == null)
         {
-            throw new ArgumentException(string.Format("Transport {0} not found.", transportId));
+            throw new NotFoundInDBException(string.Format("Transport {0} not found.", transportId));
         }
         return transport;
     }
@@ -231,7 +233,7 @@ public class DuplicateCaseService : IDuplicateCaseService
         return newSubstructure;
     }
 
-    public async Task<Substructure> GetSubstructureNoTracking(Guid substructureId)
+    private async Task<Substructure> GetSubstructureNoTracking(Guid substructureId)
     {
         var substructure = await _context.Substructures
             .AsNoTracking()
@@ -241,7 +243,7 @@ public class DuplicateCaseService : IDuplicateCaseService
             .FirstOrDefaultAsync(o => o.Id == substructureId);
         if (substructure == null)
         {
-            throw new ArgumentException(string.Format("Substructure {0} not found.", substructureId));
+            throw new NotFoundInDBException(string.Format("Substructure {0} not found.", substructureId));
         }
         return substructure;
     }
@@ -269,7 +271,7 @@ public class DuplicateCaseService : IDuplicateCaseService
             .FirstOrDefaultAsync(o => o.Id == surfId);
         if (surf == null)
         {
-            throw new ArgumentException(string.Format("Surf {0} not found.", surfId));
+            throw new NotFoundInDBException(string.Format("Surf {0} not found.", surfId));
         }
         return surf;
     }
@@ -301,7 +303,7 @@ public class DuplicateCaseService : IDuplicateCaseService
 
     private async Task<DrainageStrategy> GetDrainageStrategyNoTracking(Guid drainageStrategyId)
     {
-        var drainageStrategy = await _context.DrainageStrategies!
+        var drainageStrategy = await _context.DrainageStrategies
             .AsNoTracking()
             .Include(c => c.ProductionProfileOil)
             .Include(c => c.ProductionProfileGas)
@@ -321,7 +323,7 @@ public class DuplicateCaseService : IDuplicateCaseService
             .FirstOrDefaultAsync(o => o.Id == drainageStrategyId);
         if (drainageStrategy == null)
         {
-            throw new ArgumentException(string.Format("Drainage strategy {0} not found.", drainageStrategyId));
+            throw new NotFoundInDBException(string.Format("Drainage strategy {0} not found.", drainageStrategyId));
         }
         return drainageStrategy;
     }
@@ -338,13 +340,13 @@ public class DuplicateCaseService : IDuplicateCaseService
         SetNewGuidTimeSeries(newExploration.SeismicAcquisitionAndProcessing);
         SetNewGuidTimeSeries(newExploration.CountryOfficeCost);
 
-        _context.Explorations!.Add(newExploration);
+        _context.Explorations.Add(newExploration);
         return newExploration;
     }
 
     private async Task<Exploration> GetExplorationNoTracking(Guid explorationId)
     {
-        var exploration = await _context.Explorations!
+        var exploration = await _context.Explorations
             .AsNoTracking()
             .Include(c => c.ExplorationWellCostProfile)
             .Include(c => c.AppraisalWellCostProfile)
@@ -355,7 +357,7 @@ public class DuplicateCaseService : IDuplicateCaseService
             .FirstOrDefaultAsync(o => o.Id == explorationId);
         if (exploration == null)
         {
-            throw new ArgumentException(string.Format("Exploration {0} not found.", explorationId));
+            throw new NotFoundInDBException(string.Format("Exploration {0} not found.", explorationId));
         }
         return exploration;
     }
@@ -395,7 +397,7 @@ public class DuplicateCaseService : IDuplicateCaseService
             .FirstOrDefaultAsync(o => o.Id == wellProjectId);
         if (wellProject == null)
         {
-            throw new ArgumentException(string.Format("Well project {0} not found.", wellProjectId));
+            throw new NotFoundInDBException(string.Format("Well project {0} not found.", wellProjectId));
         }
         return wellProject;
     }

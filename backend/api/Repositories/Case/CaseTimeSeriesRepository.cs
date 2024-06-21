@@ -9,48 +9,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories;
 
-public class CaseRepository : BaseRepository, ICaseRepository
+public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepository
 {
     private readonly ILogger<CaseRepository> _logger;
 
-    public CaseRepository(
+    public CaseTimeSeriesRepository(
         DcdDbContext context,
         ILogger<CaseRepository> logger
         ) : base(context)
     {
         _logger = logger;
-    }
-
-    public async Task<Case?> GetCase(Guid caseId)
-    {
-        return await Get<Case>(caseId);
-    }
-
-    public async Task<bool> CaseHasProfile(Guid caseId, CaseProfileNames profileType)
-    {
-        Expression<Func<Case, bool>> profileExistsExpression = profileType switch
-        {
-            CaseProfileNames.CessationWellsCostOverride => d => d.CessationWellsCostOverride != null,
-            CaseProfileNames.CessationOffshoreFacilitiesCostOverride => d => d.CessationOffshoreFacilitiesCostOverride != null,
-            CaseProfileNames.TotalFeasibilityAndConceptStudiesOverride => d => d.TotalFeasibilityAndConceptStudiesOverride != null,
-            CaseProfileNames.TotalFEEDStudiesOverride => d => d.TotalFEEDStudiesOverride != null,
-            CaseProfileNames.HistoricCostCostProfile => d => d.HistoricCostCostProfile != null,
-            CaseProfileNames.WellInterventionCostProfileOverride => d => d.WellInterventionCostProfileOverride != null,
-            CaseProfileNames.OffshoreFacilitiesOperationsCostProfileOverride => d => d.OffshoreFacilitiesOperationsCostProfileOverride != null,
-            CaseProfileNames.OnshoreRelatedOPEXCostProfile => d => d.OnshoreRelatedOPEXCostProfile != null,
-            CaseProfileNames.AdditionalOPEXCostProfile => d => d.AdditionalOPEXCostProfile != null,
-        };
-
-        bool hasProfile = await _context.Cases
-            .Where(d => d.Id == caseId)
-            .AnyAsync(profileExistsExpression);
-
-        return hasProfile;
-    }
-
-    public Case UpdateCase(Case updatedCase)
-    {
-        return Update(updatedCase);
     }
 
     public CessationWellsCostOverride CreateCessationWellsCostOverride(CessationWellsCostOverride profile)
@@ -195,35 +163,5 @@ public class CaseRepository : BaseRepository, ICaseRepository
     public AdditionalOPEXCostProfile UpdateAdditionalOPEXCostProfile(AdditionalOPEXCostProfile costProfile)
     {
         return Update(costProfile);
-    }
-
-    public async Task UpdateModifyTime(Guid caseId)
-    {
-        if (caseId == Guid.Empty)
-        {
-            throw new ArgumentException("The case id cannot be empty.", nameof(caseId));
-        }
-
-        var caseItem = await _context.Cases.SingleOrDefaultAsync(c => c.Id == caseId)
-            ?? throw new KeyNotFoundException($"Case with id {caseId} not found.");
-
-        caseItem.ModifyTime = DateTimeOffset.UtcNow;
-
-        // try
-        // {
-        //     await _context.SaveChangesAsync();
-        // }
-        // catch (DbUpdateConcurrencyException ex)
-        // {
-        //     _logger.LogWarning(ex, "Failed to update ModifyDate for Case with id {caseId}.", caseId);
-        // }
-        // catch (DbUpdateException ex)
-        // {
-        //     _logger.LogWarning(ex, "An error occurred while updating ModifyDate for the Case with id {caseId}.", caseId);
-        // }
-        // catch (Exception ex)
-        // {
-        //     _logger.LogWarning(ex, "Failed to update modify time for case id {CaseId}, but operation continues.", caseId);
-        // }
     }
 }

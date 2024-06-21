@@ -3,11 +3,8 @@ using api.Models;
 
 namespace api.Services;
 
-public interface IDrainageStrategyService
+public interface IDrainageStrategyTimeSeriesService
 {
-    Task<DrainageStrategy> CreateDrainageStrategy(Guid projectId, Guid sourceCaseId, CreateDrainageStrategyDto drainageStrategyDto);
-    Task<DrainageStrategy> GetDrainageStrategy(Guid drainageStrategyId);
-    Task<DrainageStrategyDto> UpdateDrainageStrategy(Guid projectId, Guid caseId, Guid drainageStrategyId, UpdateDrainageStrategyDto updatedDrainageStrategyDto);
     Task<ProductionProfileOilDto> CreateProductionProfileOil(Guid projectId, Guid caseId, Guid drainageStrategyId, CreateProductionProfileOilDto createProductionProfileOilDto);
     Task<ProductionProfileOilDto> UpdateProductionProfileOil(Guid projectId, Guid caseId, Guid drainageStrategyId, Guid productionProfileOilId, UpdateProductionProfileOilDto updatedProductionProfileOilDto);
     Task<ProductionProfileGasDto> CreateProductionProfileGas(Guid projectId, Guid caseId, Guid drainageStrategyId, CreateProductionProfileGasDto createProfileDto);

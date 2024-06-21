@@ -3,11 +3,8 @@ using api.Models;
 
 namespace api.Repositories;
 
-public interface IDrainageStrategyRepository : IBaseRepository
+public interface IDrainageStrategyTimeSeriesRepository : IBaseRepository
 {
-    Task<DrainageStrategy?> GetDrainageStrategy(Guid drainageStrategyId);
-    Task<bool> DrainageStrategyHasProfile(Guid drainageStrategyId, DrainageStrategyProfileNames profileType);
-    DrainageStrategy UpdateDrainageStrategy(DrainageStrategy drainageStrategy);
     ProductionProfileOil CreateProductionProfileOil(ProductionProfileOil productionProfileOil);
     Task<ProductionProfileOil?> GetProductionProfileOil(Guid productionProfileOilId);
     ProductionProfileOil UpdateProductionProfileOil(ProductionProfileOil productionProfileOil);

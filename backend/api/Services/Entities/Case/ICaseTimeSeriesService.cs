@@ -3,14 +3,8 @@ using api.Models;
 
 namespace api.Services;
 
-public interface ICaseService
+public interface ICaseTimeSeriesService
 {
-    Task<ProjectDto> CreateCase(Guid projectId, CreateCaseDto createCaseDto);
-    Task<ProjectDto> UpdateCaseAndProfiles<TDto>(Guid caseId, TDto updatedCaseDto) where TDto : BaseUpdateCaseDto;
-    Task<ProjectDto> DeleteCase(Guid caseId);
-    Task<Case> GetCase(Guid caseId);
-    Task<IEnumerable<Case>> GetAll();
-    Task<CaseDto> UpdateCase<TDto>(Guid caseId, TDto updatedCaseDto) where TDto : BaseUpdateCaseDto;
     Task<CessationWellsCostOverrideDto> UpdateCessationWellsCostOverride(Guid projectId, Guid caseId, Guid costProfileId, UpdateCessationWellsCostOverrideDto updatedCostProfileDto);
     Task<CessationOffshoreFacilitiesCostOverrideDto> UpdateCessationOffshoreFacilitiesCostOverride(Guid projectId, Guid caseId, Guid costProfileId, UpdateCessationOffshoreFacilitiesCostOverrideDto updatedCostProfileDto);
     Task<TotalFeasibilityAndConceptStudiesOverrideDto> UpdateTotalFeasibilityAndConceptStudiesOverride(Guid projectId, Guid caseId, Guid costProfileId, UpdateTotalFeasibilityAndConceptStudiesOverrideDto updatedCostProfileDto);
