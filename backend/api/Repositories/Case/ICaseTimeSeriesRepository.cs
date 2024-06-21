@@ -4,11 +4,8 @@ using api.Models;
 namespace api.Repositories;
 
 
-public interface ICaseRepository : IBaseRepository
+public interface ICaseTimeSeriesRepository : IBaseRepository
 {
-    Task<Case?> GetCase(Guid caseId);
-    Case UpdateCase(Case updatedCase);
-    Task<bool> CaseHasProfile(Guid caseId, CaseProfileNames profileType);
     CessationWellsCostOverride CreateCessationWellsCostOverride(CessationWellsCostOverride profile);
     CessationOffshoreFacilitiesCostOverride CreateCessationOffshoreFacilitiesCostOverride(CessationOffshoreFacilitiesCostOverride profile);
     TotalFeasibilityAndConceptStudiesOverride CreateTotalFeasibilityAndConceptStudiesOverride(TotalFeasibilityAndConceptStudiesOverride profile);
@@ -37,5 +34,4 @@ public interface ICaseRepository : IBaseRepository
     OnshoreRelatedOPEXCostProfile UpdateOnshoreRelatedOPEXCostProfile(OnshoreRelatedOPEXCostProfile costProfile);
     Task<AdditionalOPEXCostProfile?> GetAdditionalOPEXCostProfile(Guid costProfileId);
     AdditionalOPEXCostProfile UpdateAdditionalOPEXCostProfile(AdditionalOPEXCostProfile costProfile);
-    Task UpdateModifyTime(Guid caseId);
 }

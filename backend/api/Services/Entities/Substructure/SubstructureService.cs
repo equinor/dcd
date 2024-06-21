@@ -66,35 +66,6 @@ public class SubstructureService : ISubstructureService
         case_.SubstructureLink = substructure.Id;
     }
 
-    public async Task<SubstructureWithProfilesDto> CopySubstructure(Guid substructureId, Guid sourceCaseId)
-    {
-        var source = await GetSubstructure(substructureId);
-        var newSubstructureDto = _mapper.Map<SubstructureWithProfilesDto>(source);
-        if (newSubstructureDto == null)
-        {
-            throw new ArgumentNullException(nameof(newSubstructureDto));
-        }
-        newSubstructureDto.Id = Guid.Empty;
-        if (newSubstructureDto.CostProfile != null)
-        {
-            newSubstructureDto.CostProfile.Id = Guid.Empty;
-        }
-        if (newSubstructureDto.CostProfileOverride != null)
-        {
-            newSubstructureDto.CostProfileOverride.Id = Guid.Empty;
-        }
-        if (newSubstructureDto.CessationCostProfile != null)
-        {
-            newSubstructureDto.CessationCostProfile.Id = Guid.Empty;
-        }
-
-        // var topside = await NewCreateSubstructure(newSubstructureDto, sourceCaseId);
-        // var dto = SubstructureDtoAdapter.Convert(topside);
-
-        // return dto;
-        return newSubstructureDto;
-    }
-
     public async Task<Substructure> GetSubstructure(Guid substructureId)
     {
         var substructure = await _context.Substructures!
