@@ -22,9 +22,9 @@ import { useModalContext } from "../../Context/ModalContext"
 import CaseDropMenu from "../Case/Components/CaseDropMenu"
 import { GetProjectService } from "../../Services/ProjectService"
 import { useAppContext } from "../../Context/AppContext"
-import HistoryButton from "../Buttons/HistoryButton"
 import UndoControls from "./UndoControls"
 import CaseControls from "./CaseControls"
+import WhatsNewModal from "../Modal/WhatsNewModal"
 
 const Controls = () => {
     const {
@@ -111,6 +111,7 @@ const Controls = () => {
 
     return (
         <Grid container spacing={1} justifyContent="space-between" alignItems="center">
+            <WhatsNewModal />
             {project && caseId && (
                 <CaseControls
                     backToProject={backToProject}
