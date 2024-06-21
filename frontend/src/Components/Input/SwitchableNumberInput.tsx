@@ -54,6 +54,11 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
             resourcePropertyKey,
             resourceId,
             caseId: projectCase.id,
+            newResourceObject: {
+                ...projectCase,
+                [resourcePropertyKey]: insertedValue,
+            },
+            previousResourceObject: projectCase,
         })
     }
 

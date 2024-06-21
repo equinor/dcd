@@ -3,6 +3,7 @@ import { Grid } from "@mui/material"
 import {
     Tooltip,
     Typography,
+    Divider,
     Icon,
 } from "@equinor/eds-core-react"
 import { useNavigate } from "react-router-dom"
@@ -68,7 +69,7 @@ const ProjectDetails: React.FC = () => {
                                 >
                                     {sidebarOpen
                                         ? "Case edit history"
-                                    : <Tooltip title="Case edit history" placement="right"><Icon data={settings} /></Tooltip>}
+                                        : <Tooltip title="Case edit history" placement="right"><Icon data={settings} /></Tooltip>}
                                 </TimelineElement>
                             </Grid>
                             <Grid item>
@@ -82,8 +83,11 @@ const ProjectDetails: React.FC = () => {
                                         : <Tooltip title="Settings" placement="right"><Icon data={settings} /></Tooltip>}
                                 </TimelineElement>
                             </Grid>
-                        </Timeline>
 
+                        </Timeline>
+                        <Grid item xs={12}>
+                            <Divider />
+                        </Grid>
                     </Grid>
                 )}
         </div>

@@ -36,6 +36,10 @@ const Maturity: React.FC<props> = ({ surfData, projectId }) => {
                         resourcePropertyKey: "maturity",
                         resourceId: surfData.id,
                         caseId,
+                        newResourceObject: {
+                            ...surfData, maturity: Number(e.currentTarget.value) as Components.Schemas.Maturity,
+                        },
+                        previousResourceObject: surfData,
                     })
                 }}
             >

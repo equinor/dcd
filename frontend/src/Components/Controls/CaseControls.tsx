@@ -5,6 +5,7 @@ import {
 } from "@equinor/eds-core-react"
 import { arrow_back } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid"
+import { useNavigate } from "react-router-dom" // Import useNavigate
 import { useProjectContext } from "../../Context/ProjectContext"
 import { GetCaseService } from "../../Services/CaseService"
 import { useAppContext } from "../../Context/AppContext"
@@ -25,6 +26,7 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
     const { project, setProject } = useProjectContext()
     const { setSnackBarMessage, editMode } = useAppContext()
     const { addEdit } = useDataEdits()
+    const navigate = useNavigate()
 
     const queryClient = useQueryClient()
 
@@ -235,7 +237,8 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
             },
             onError: (error: Error) => {
                 console.error("Error fetching data:", error)
-                setSnackBarMessage(error.message)
+                setSnackBarMessage("Case data not found. Redirecting back to project")
+                navigate("/")
             },
         },
     )
@@ -268,6 +271,11 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
                 resourcePropertyKey: "name",
                 resourceId: EMPTY_GUID,
                 caseId,
+                newResourceObject: {
+                    ...caseData,
+                    name,
+                },
+                previousResourceObject: caseData,
             })
         }
     }

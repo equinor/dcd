@@ -34,6 +34,7 @@ interface AddEditParams {
     newDisplayValue?: string | number | undefined;
     previousDisplayValue?: string | number | undefined;
     newResourceObject?: ResourceObject;
+    previousResourceObject?: ResourceObject;
 }
 
 const useDataEdits = (): {
@@ -89,11 +90,6 @@ const useDataEdits = (): {
                 variables,
             ) => {
                 const { projectId, caseId } = variables
-                /* this should work but doesnt :(
-                const assetId = caseId === results.id ? "" : results.id
-                queryClient.setQueryData([{ caseId, projectId , assetId }], results)
-                */
-
                 // this makes the app refetch all data. We should only refetch the data that was updated in the future.
                 queryClient.invalidateQueries(["apiData", { projectId, caseId }])
             },
@@ -913,6 +909,7 @@ const useDataEdits = (): {
         newDisplayValue,
         previousDisplayValue,
         newResourceObject,
+        previousResourceObject,
     }: AddEditParams) => {
         if (resourceName !== "case" && !resourceId) {
             console.log("asset id is required for this service")
@@ -939,6 +936,7 @@ const useDataEdits = (): {
             newDisplayValue,
             previousDisplayValue,
             newResourceObject,
+            previousResourceObject,
         }
 
         const success = await submitToApi(
@@ -984,8 +982,9 @@ const useDataEdits = (): {
                     resourcePropertyKey: editThatWillBeUndone.resourcePropertyKey,
                     value: editThatWillBeUndone.previousValue as string,
                     resourceId: editThatWillBeUndone.resourceId,
-                    resourceObject: editThatWillBeUndone.resourceProfileId
-                    ? updatedEdit?.newResourceObject as ResourceObject : editThatWillBeUndone.newResourceObject as ResourceObject,
+                    resourceObject: editThatWillBeUndone.previousResourceObject as ResourceObject,
+                    // editThatWillBeUndone.resourceProfileId
+                    // ? updatedEdit?.newResourceObject as ResourceObject : editThatWillBeUndone.newResourceObject as ResourceObject,
                 },
             )
         }

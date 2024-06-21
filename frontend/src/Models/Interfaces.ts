@@ -124,6 +124,7 @@ export interface EditInstance {
     newDisplayValue?: string | number | undefined; // the displayed new value in case of when the value submitted is not what the user should see
     previousDisplayValue?: string | number | undefined; // the displayed previous value in case of when the value submitted is not what the user should see
     newResourceObject?: ResourceObject; // this is used to replace the whole asset object. used if the edit should change multiple values in the same assets
+    previousResourceObject?: ResourceObject; // used to revert the asset object to its previous state during undo
 }
 
 export interface EditEntry {

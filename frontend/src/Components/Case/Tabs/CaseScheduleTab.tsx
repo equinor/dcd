@@ -103,11 +103,13 @@ const CaseScheduleTab = () => {
             const dg = new Date(newCaseObject.dG0Date)
             dg.setMonth(dg.getMonth() + 12)
             newCaseObject.dG1Date = dg.toISOString()
+            console.log("new case object after adding dG1", newCaseObject)
         }
         if (isDefaultDateString(newCaseObject.dG2Date)) {
             const dg = new Date(newCaseObject.dG1Date)
             dg.setMonth(dg.getMonth() + 12)
             newCaseObject.dG2Date = dg.toISOString()
+            console.log("new case object after adding dG2", newCaseObject)
         }
         if (isDefaultDateString(newCaseObject.dG3Date)) {
             const dg = new Date(newCaseObject.dG2Date)
@@ -118,22 +120,25 @@ const CaseScheduleTab = () => {
             const dg = new Date(newCaseObject.dG3Date)
             dg.setMonth(dg.getMonth() + 36)
             newCaseObject.dG4Date = dg.toISOString()
+            console.log("new case object after adding dG4", newCaseObject)
         }
+
+        console.log("new case object after adding edits", newCaseObject)
 
         return newCaseObject
     }
 
     function handleDateChange(dateKey: string, dateValue: string) {
         if (!caseData) { return }
-
+        console.log("previous object", caseData)
         const newDate = Number.isNaN(new Date(dateValue).getTime())
             ? defaultDate()
             : new Date(dateValue)
+
         const dg0Object = dateKey === "dG0Date" ? getDGOChangesObject(newDate) : undefined
         const caseDataObject = caseData as any
         const newInputValue = newDate.toISOString()
         const previousValue = caseDataObject[dateKey]
-
         addEdit({
             newValue: newInputValue,
             previousValue,
@@ -144,7 +149,11 @@ const CaseScheduleTab = () => {
             caseId: caseData.id,
             newDisplayValue: formatDate(newDate.toISOString()),
             previousDisplayValue: formatDate(caseDataObject[dateKey]),
-            newResourceObject: dg0Object,
+            newResourceObject: dg0Object || {
+                ...caseData,
+                [dateKey]: newInputValue,
+            },
+            previousResourceObject: caseData,
         })
     }
 
