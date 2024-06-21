@@ -227,6 +227,15 @@ public class DrainageStrategyProfile : Profile
                     nameof(NetSalesGasOverride)
                     )
                     ));
+        CreateMap<UpdateImportedElectricityOverrideDto, ImportedElectricityOverride>()
+            .ForMember(
+                dest => dest.Values,
+                opt => opt.MapFrom((src, dest, destMember, context) =>
+                    ConvertValuesFromDTO(src.Values,
+                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    nameof(ImportedElectricityOverride)
+                    )
+                    ));
         CreateMap<UpdateCo2EmissionsOverrideDto, Co2EmissionsOverride>()
             .ForMember(
                 dest => dest.Values,
