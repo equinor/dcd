@@ -9,8 +9,6 @@ import {
 
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { lock, lock_open } from "@equinor/eds-icons"
-import { Icon } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
 import { isInteger, tableCellisEditable } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"

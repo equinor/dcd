@@ -93,145 +93,145 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
 
                 // Assets
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: "0",
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: EMPTY_GUID,
                 }], caseData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: topsideData.id, resourceProfileId: "0",
+                    projectId, caseId, resourceId: topsideData.id, resourceProfileId: EMPTY_GUID,
                 }], topsideData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: surfData.id, resourceProfileId: "0",
+                    projectId, caseId, resourceId: surfData.id, resourceProfileId: EMPTY_GUID,
                 }], surfData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: substructureData.id, resourceProfileId: "0",
+                    projectId, caseId, resourceId: substructureData.id, resourceProfileId: EMPTY_GUID,
                 }], substructureData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: transportData.id, resourceProfileId: "0",
+                    projectId, caseId, resourceId: transportData.id, resourceProfileId: EMPTY_GUID,
                 }], transportData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: drainageStrategyData.id, resourceProfileId: "0",
+                    projectId, caseId, resourceId: drainageStrategyData.id, resourceProfileId: EMPTY_GUID,
                 }], drainageStrategyData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: explorationData.id, resourceProfileId: "0",
+                    projectId, caseId, resourceId: explorationData.id, resourceProfileId: EMPTY_GUID,
                 }], explorationData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: wellProjectData.id, resourceProfileId: "0",
+                    projectId, caseId, resourceId: wellProjectData.id, resourceProfileId: EMPTY_GUID,
                 }], wellProjectData)
 
                 // Case
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: cessationWellsCostData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: cessationWellsCostData?.id,
                 }], cessationWellsCostData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: cessationWellsCostOverrideData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: cessationWellsCostOverrideData?.id,
                 }], cessationWellsCostOverrideData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: cessationOffshoreFacilitiesCostData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: cessationOffshoreFacilitiesCostData?.id,
                 }], cessationOffshoreFacilitiesCostData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: cessationOffshoreFacilitiesCostOverrideData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: cessationOffshoreFacilitiesCostOverrideData?.id,
                 }], cessationOffshoreFacilitiesCostOverrideData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: cessationOnshoreFacilitiesCostProfileData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: cessationOnshoreFacilitiesCostProfileData?.id,
                 }], cessationOnshoreFacilitiesCostProfileData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: totalFeasibilityAndConceptStudiesData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: totalFeasibilityAndConceptStudiesData?.id,
                 }], totalFeasibilityAndConceptStudiesData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: totalFeasibilityAndConceptStudiesOverrideData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: totalFeasibilityAndConceptStudiesOverrideData?.id,
                 }], totalFeasibilityAndConceptStudiesOverrideData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: totalFEEDStudiesData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: totalFEEDStudiesData?.id,
                 }], totalFEEDStudiesData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: totalFEEDStudiesOverrideData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: totalFEEDStudiesOverrideData?.id,
                 }], totalFEEDStudiesOverrideData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: totalOtherStudiesData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: totalOtherStudiesData?.id,
                 }], totalOtherStudiesData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: historicCostCostProfileData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: historicCostCostProfileData?.id,
                 }], historicCostCostProfileData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: wellInterventionCostProfileData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: wellInterventionCostProfileData?.id,
                 }], wellInterventionCostProfileData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: wellInterventionCostProfileOverrideData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: wellInterventionCostProfileOverrideData?.id,
                 }], wellInterventionCostProfileOverrideData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: offshoreFacilitiesOperationsCostProfileData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: offshoreFacilitiesOperationsCostProfileData?.id,
                 }], offshoreFacilitiesOperationsCostProfileData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: offshoreFacilitiesOperationsCostProfileOverrideData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: offshoreFacilitiesOperationsCostProfileOverrideData?.id,
                 }], offshoreFacilitiesOperationsCostProfileOverrideData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: onshoreRelatedOPEXCostProfileData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: onshoreRelatedOPEXCostProfileData?.id,
                 }], onshoreRelatedOPEXCostProfileData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: additionalOPEXCostProfileData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: additionalOPEXCostProfileData?.id,
                 }], additionalOPEXCostProfileData)
 
                 // Prosp assets
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: topsideCostProfileOverrideData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: topsideCostProfileOverrideData?.id,
                 }], topsideCostProfileOverrideData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: surfCostProfileOverrideData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: surfCostProfileOverrideData?.id,
                 }], surfCostProfileOverrideData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: transportCostProfileOverrideData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: transportCostProfileOverrideData?.id,
                 }], transportCostProfileOverrideData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: substructureCostProfileOverrideData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: substructureCostProfileOverrideData?.id,
                 }], substructureCostProfileOverrideData)
 
                 // Drainage strategy
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: productionProfileOilData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: productionProfileOilData?.id,
                 }], productionProfileOilData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: productionProfileGasData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: productionProfileGasData?.id,
                 }], productionProfileGasData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: productionProfileWaterData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: productionProfileWaterData?.id,
                 }], productionProfileWaterData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: productionProfileWaterInjectionData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: productionProfileWaterInjectionData?.id,
                 }], productionProfileWaterInjectionData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: fuelFlaringAndLossesData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: fuelFlaringAndLossesData?.id,
                 }], fuelFlaringAndLossesData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: fuelFlaringAndLossesOverrideData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: fuelFlaringAndLossesOverrideData?.id,
                 }], fuelFlaringAndLossesOverrideData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: netSalesGasData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: netSalesGasData?.id,
                 }], netSalesGasData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: netSalesGasOverrideData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: netSalesGasOverrideData?.id,
                 }], netSalesGasOverrideData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: co2EmissionsData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: co2EmissionsData?.id,
                 }], co2EmissionsData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: co2EmissionsOverrideData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: co2EmissionsOverrideData?.id,
                 }], co2EmissionsOverrideData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: productionProfileNGLData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: productionProfileNGLData?.id,
                 }], productionProfileNGLData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: importedElectricityData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: importedElectricityData?.id,
                 }], importedElectricityData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: importedElectricityOverrideData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: importedElectricityOverrideData?.id,
                 }], importedElectricityOverrideData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: co2IntensityData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: co2IntensityData?.id,
                 }], co2IntensityData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: deferredOilProductionData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: deferredOilProductionData?.id,
                 }], deferredOilProductionData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: "0", resourceProfileId: deferredGasProductionData?.id,
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: deferredGasProductionData?.id,
                 }], deferredGasProductionData)
             },
             onError: (error: Error) => {
@@ -261,7 +261,7 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
                 projectId,
                 resourceName: "case",
                 resourcePropertyKey: "name",
-                resourceId: "0",
+                resourceId: EMPTY_GUID,
                 caseId,
             })
         }

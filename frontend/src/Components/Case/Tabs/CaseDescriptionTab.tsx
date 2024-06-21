@@ -10,6 +10,7 @@ import { useAppContext } from "../../../Context/AppContext"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import useDataEdits from "../../../Hooks/useDataEdits"
 import CaseDescriptionTabSkeleton from "./LoadingSkeletons/CaseDescriptionTabSkeleton"
+import { EMPTY_GUID } from "../../../Utils/constants"
 
 const CaseDescriptionTab = () => {
     const { project } = useProjectContext()
@@ -69,7 +70,7 @@ const CaseDescriptionTab = () => {
                                     projectId,
                                     resourceName: "case",
                                     resourcePropertyKey: "description",
-                                    resourceId: "0",
+                                    resourceId: EMPTY_GUID,
                                     caseId: caseData.id,
                                 })
                             }}
