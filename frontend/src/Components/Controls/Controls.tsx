@@ -151,7 +151,7 @@ const Controls = () => {
                 </Grid>
             </Grid>
             <Grid item>
-                <UndoControls />
+                {editMode && <UndoControls />}
             </Grid>
             {projectCase && (
                 <Grid item>
