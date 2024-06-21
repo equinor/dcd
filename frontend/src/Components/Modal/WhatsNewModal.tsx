@@ -26,12 +26,12 @@ const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } }
             { description: "Edit history overview in the sidebar displays all changes made to each case in the past hour" },
             { description: "Undo/redo edits" },
             { description: "Upload photos in the case description tab" },
-            { description: "set the classification level of the project in the settings tab" },
+            { description: "Set the classification level of the project in the settings tab" },
             { description: "View the projects and cases in either edit or view mode" },
 
         ],
         "UI Improvements": [
-            { description: "the current case tab is saved in the URL for sharing" },
+            { description: "The current case tab is saved in the URL for sharing" },
             { description: "Case and project description input text can now have formatting" },
             { description: "Improved grid and responsiveness" },
             { description: "Improved project selection landing page" },
