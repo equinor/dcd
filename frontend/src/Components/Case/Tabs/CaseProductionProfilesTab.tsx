@@ -1,13 +1,14 @@
 import {
     Dispatch,
     SetStateAction,
-    ChangeEventHandler,
     useState,
     useEffect,
     useRef,
 } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
+import { useQueryClient, useQuery } from "react-query"
+import { useParams } from "react-router"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import CaseTabTable from "../Components/CaseTabTable"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
@@ -19,6 +20,7 @@ import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import DateRangePicker from "../../Input/TableDateRangePicker"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
+import CaseProductionProfilesTabSkeleton from "./LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 
 interface ITimeSeriesData {
     profileName: string
@@ -49,10 +51,11 @@ const CaseProductionProfilesTab = ({
     fuelFlaringAndLosses, setFuelFlaringAndLosses,
     importedElectricity, setImportedElectricity,
 }: Props) => {
+    const queryClient = useQueryClient()
+    const { caseId } = useParams()
     const { project } = useProjectContext()
-    const {
-        projectCase, projectCaseEdited, setProjectCaseEdited, activeTabCase,
-    } = useCaseContext()
+    const { projectCase, activeTabCase } = useCaseContext()
+    const projectId = project?.id || null
 
     const [gas, setGas] = useState<Components.Schemas.ProductionProfileGasDto>()
     const [oil, setOil] = useState<Components.Schemas.ProductionProfileOilDto>()
@@ -98,59 +101,6 @@ const CaseProductionProfilesTab = ({
     })()
 
     const gridRef = useRef<any>(null)
-
-    const updateAndSetDraiangeStrategy = (drainage: Components.Schemas.DrainageStrategyWithProfilesDto) => {
-        if (drainageStrategy === undefined) { return }
-        if (netSalesGas === undefined
-            || fuelFlaringAndLosses === undefined
-            || gas === undefined
-            || oil === undefined
-            || water === undefined
-            || nGL === undefined
-            || waterInjection === undefined
-            || importedElectricityOverride === undefined
-            || netSalesGasOverride === undefined
-            || fuelFlaringAndLossesOverride === undefined
-            || deferredGas === undefined
-            || deferredOil === undefined) {
-            return
-        }
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainage }
-        newDrainageStrategy.netSalesGas = netSalesGas
-        newDrainageStrategy.netSalesGasOverride = netSalesGasOverride
-        newDrainageStrategy.fuelFlaringAndLosses = fuelFlaringAndLosses
-        newDrainageStrategy.fuelFlaringAndLossesOverride = fuelFlaringAndLossesOverride
-        newDrainageStrategy.productionProfileGas = gas
-        newDrainageStrategy.productionProfileOil = oil
-        newDrainageStrategy.productionProfileWater = water
-        newDrainageStrategy.productionProfileNGL = nGL
-        newDrainageStrategy.productionProfileWaterInjection = waterInjection
-        newDrainageStrategy.deferredGasProduction = deferredGas
-        newDrainageStrategy.deferredOilProduction = deferredOil
-
-        newDrainageStrategy.importedElectricityOverride = importedElectricityOverride
-        setDrainageStrategy(newDrainageStrategy)
-    }
-
-    // todo: the value is manipulated before submition. find out how to handle that with the service implementation
-    const handleCaseFacilitiesAvailabilityChange = (value: number): void => {
-        const newCase = { ...projectCaseEdited }
-        const newfacilitiesAvailability = value > 0
-            ? Math.min(Math.max(value, 0), 100) : undefined
-        if (newfacilitiesAvailability !== undefined) {
-            newCase.facilitiesAvailability = newfacilitiesAvailability / 100
-        } else { newCase.facilitiesAvailability = 0 }
-        setProjectCaseEdited(newCase as Components.Schemas.CaseWithProfilesDto)
-    }
-
-    const handleDrainageStrategyGasSolutionChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1) {
-            const newGasSolution: Components.Schemas.GasSolution = Number(e.currentTarget.value) as Components.Schemas.GasSolution
-            const newDrainageStrategy = { ...drainageStrategy }
-            newDrainageStrategy.gasSolution = newGasSolution
-            updateAndSetDraiangeStrategy(newDrainageStrategy)
-        }
-    }
 
     const gasSolutionOptions = {
         0: "Export",
@@ -361,7 +311,23 @@ const CaseProductionProfilesTab = ({
         }
     }, [fuelFlaringAndLosses, netSalesGas, importedElectricity])
 
+    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
+        ["apiData", { projectId, caseId }],
+        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        {
+            enabled: !!projectId && !!caseId,
+            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        },
+    )
+
+    const drainageStrategyData = apiData?.drainageStrategy
+    const caseData = apiData?.case
+
     if (activeTabCase !== 1) { return null }
+
+    if (!caseData || !drainageStrategyData || !projectId) {
+        return (<CaseProductionProfilesTabSkeleton />)
+    }
 
     return (
         <Grid container spacing={2}>
@@ -370,10 +336,7 @@ const CaseProductionProfilesTab = ({
                     resourceName="case"
                     resourcePropertyKey="facilitiesAvailability"
                     label="Facilities availability"
-                    onSubmit={handleCaseFacilitiesAvailabilityChange}
-                    value={projectCase?.facilitiesAvailability
-                        ? projectCase.facilitiesAvailability * 100
-                        : undefined}
+                    value={caseData.facilitiesAvailability}
                     integer={false}
                     unit="%"
                     min={0}
@@ -384,23 +347,22 @@ const CaseProductionProfilesTab = ({
                 <SwitchableDropdownInput
                     resourceName="drainageStrategy"
                     resourcePropertyKey="gasSolution"
-                    value={drainageStrategy.gasSolution}
+                    resourceId={drainageStrategy.id}
+                    value={drainageStrategyData.gasSolution}
                     options={gasSolutionOptions}
                     label="Gas solution"
-                    onSubmit={handleDrainageStrategyGasSolutionChange}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <InputSwitcher
-                    value={productionStrategyOptions[projectCase!.productionStrategyOverview]}
+                    value={productionStrategyOptions[caseData.productionStrategyOverview]}
                     label="Production strategy overview"
                 >
                     <NativeSelect
                         id="productionStrategy"
                         label=""
-                        onChange={() => { }}
                         disabled
-                        value={projectCase?.productionStrategyOverview}
+                        value={caseData.productionStrategyOverview}
                     >
                         {Object.entries(productionStrategyOptions).map(([value, label]) => (
                             <option key={value} value={value}>{label}</option>
@@ -410,15 +372,14 @@ const CaseProductionProfilesTab = ({
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <InputSwitcher
-                    value={artificialLiftOptions[projectCase!.artificialLift]}
+                    value={artificialLiftOptions[caseData.artificialLift]}
                     label="Artificial lift"
                 >
                     <NativeSelect
                         id="artificialLift"
                         label=""
-                        onChange={() => { }}
                         disabled
-                        value={projectCase?.artificialLift}
+                        value={caseData.artificialLift}
                     >
                         {Object.entries(artificialLiftOptions).map(([value, label]) => (
                             <option key={value} value={value}>{label}</option>
@@ -431,8 +392,7 @@ const CaseProductionProfilesTab = ({
                     resourceName="case"
                     resourcePropertyKey="producerCount"
                     label="Oil producer wells"
-                    onSubmit={() => { }}
-                    value={projectCase?.producerCount}
+                    value={caseData.producerCount}
                     integer
                     disabled
                 />
@@ -442,8 +402,7 @@ const CaseProductionProfilesTab = ({
                     resourceName="case"
                     resourcePropertyKey="waterInjectorCount"
                     label="Water injector wells"
-                    onSubmit={() => { }}
-                    value={projectCase?.waterInjectorCount}
+                    value={caseData.waterInjectorCount}
                     integer
                     disabled
                 />
@@ -453,8 +412,7 @@ const CaseProductionProfilesTab = ({
                     resourceName="case"
                     resourcePropertyKey="gasInjectorCount"
                     label="Gas injector wells"
-                    onSubmit={() => { }}
-                    value={projectCase?.gasInjectorCount}
+                    value={caseData.gasInjectorCount}
                     integer
                     disabled
                 />
@@ -499,7 +457,7 @@ const CaseProductionProfilesTab = ({
             <Grid item xs={12}>
                 <CaseTabTable
                     timeSeriesData={timeSeriesData}
-                    dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
+                    dg4Year={caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
                     tableName="Production profiles"
                     includeFooter={false}

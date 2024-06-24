@@ -124,7 +124,7 @@ const CreateCaseModal = () => {
                 newCase.gasInjectorCount = gasInjectorCount
                 newCase.waterInjectorCount = waterInjectorCount
                 newCase.productionStrategyOverview = productionStrategy ?? 0
-                console.log("submitting for edit: ", newCase)
+
                 projectResult = await (await GetCaseService()).updateCaseAndProfiles(
                     project.id,
                     projectCase.id,
@@ -160,7 +160,6 @@ const CreateCaseModal = () => {
         <Modal
             isOpen={caseModalIsOpen}
             title={caseModalEditMode ? "Edit case" : "Add new case"}
-            fullWidth
         >
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>

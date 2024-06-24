@@ -165,7 +165,10 @@ builder.Configuration.AddAzureAppConfiguration(options =>
 
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IFusionService, FusionService>();
+builder.Services.AddScoped<ICaseService, CaseService>();
+builder.Services.AddScoped<ICaseTimeSeriesService, CaseTimeSeriesService>();
 builder.Services.AddScoped<IDrainageStrategyService, DrainageStrategyService>();
+builder.Services.AddScoped<IDrainageStrategyTimeSeriesService, DrainageStrategyTimeSeriesService>();
 builder.Services.AddScoped<IWellProjectService, WellProjectService>();
 builder.Services.AddScoped<IExplorationService, ExplorationService>();
 builder.Services.AddScoped<ISurfService, SurfService>();
@@ -176,12 +179,12 @@ builder.Services.AddScoped<IWellProjectWellService, WellProjectWellService>();
 builder.Services.AddScoped<IExplorationWellService, ExplorationWellService>();
 builder.Services.AddScoped<ICostProfileFromDrillingScheduleHelper, CostProfileFromDrillingScheduleHelper>();
 builder.Services.AddScoped<ITransportService, TransportService>();
-builder.Services.AddScoped<ICaseService, CaseService>();
 builder.Services.AddScoped<IDuplicateCaseService, DuplicateCaseService>();
 builder.Services.AddScoped<IExplorationOperationalWellCostsService, ExplorationOperationalWellCostsService>();
 
 builder.Services.AddScoped<IDevelopmentOperationalWellCostsService, DevelopmentOperationalWellCostsService>();
 builder.Services.AddScoped<ICaseAndAssetsService, CaseAndAssetsService>();
+builder.Services.AddScoped<ICaseWithAssetsService, CaseWithAssetsService>();
 
 builder.Services.AddScoped<ITechnicalInputService, TechnicalInputService>();
 builder.Services.AddScoped<IGenerateOpexCostProfile, GenerateOpexCostProfile>();
@@ -200,15 +203,19 @@ builder.Services.AddScoped<ISTEAService, STEAService>();
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<ICaseRepository, CaseRepository>();
+builder.Services.AddScoped<ICaseTimeSeriesRepository, CaseTimeSeriesRepository>();
 builder.Services.AddScoped<ISubstructureRepository, SubstructureRepository>();
 builder.Services.AddScoped<ITopsideRepository, TopsideRepository>();
 builder.Services.AddScoped<IDrainageStrategyRepository, DrainageStrategyRepository>();
+builder.Services.AddScoped<IDrainageStrategyTimeSeriesRepository, DrainageStrategyTimeSeriesRepository>();
 builder.Services.AddScoped<IWellProjectRepository, WellProjectRepository>();
 builder.Services.AddScoped<IExplorationRepository, ExplorationRepository>();
 builder.Services.AddScoped<ITransportRepository, TransportRepository>();
 builder.Services.AddScoped<ISurfRepository, SurfRepository>();
+
+builder.Services.AddScoped<IWellRepository, WellRepository>();
 builder.Services.AddScoped<ICaseWithAssetsRepository, CaseWithAssetsRepository>();
-builder.Services.AddScoped<ICaseWithAssetsService, CaseWithAssetsService>();
+
 
 
 builder.Services.AddScoped<IMapperService, MapperService>();
@@ -263,14 +270,11 @@ builder.Services.AddSwaggerGen(options =>
         },
     });
 });
-
 var azureBlobStorageConnectionString = builder.Configuration["AzureBlobStorageConnectionStringForImageUpload"];
-builder.Services.AddScoped<IImageRepository, ImageRepository>();
-
 builder.Services.AddScoped(x => new BlobServiceClient(azureBlobStorageConnectionString));
 
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
-
 
 builder.Host.UseSerilog();
 

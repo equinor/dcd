@@ -72,22 +72,34 @@ const CessationCosts: React.FC<CesationCostsProps> = ({ tableYears, cessationGri
     ])
 
     useEffect(() => {
-        if (projectCaseEdited) {
+        if (projectCaseEdited && cessationWellsCost && projectCaseEdited.cessationWellsCost !== cessationWellsCost) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "cessationWellsCost", cessationWellsCost)
+        }
+    }, [projectCaseEdited, cessationWellsCost])
+
+    useEffect(() => {
+        if (projectCaseEdited && cessationWellsCostOverride && projectCaseEdited.cessationWellsCostOverride !== cessationWellsCostOverride) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "cessationWellsCostOverride", cessationWellsCostOverride)
         }
-    }, [cessationWellsCostOverride])
+    }, [projectCaseEdited, cessationWellsCostOverride])
 
     useEffect(() => {
-        if (projectCaseEdited) {
+        if (projectCaseEdited && cessationOffshoreFacilitiesCost && projectCaseEdited.cessationOffshoreFacilitiesCost !== cessationOffshoreFacilitiesCost) {
+            updateObject(projectCaseEdited, setProjectCaseEdited, "cessationOffshoreFacilitiesCost", cessationOffshoreFacilitiesCost)
+        }
+    }, [projectCaseEdited, cessationOffshoreFacilitiesCost])
+
+    useEffect(() => {
+        if (projectCaseEdited && cessationOffshoreFacilitiesCostOverride && projectCaseEdited.cessationOffshoreFacilitiesCostOverride !== cessationOffshoreFacilitiesCostOverride) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "cessationOffshoreFacilitiesCostOverride", cessationOffshoreFacilitiesCostOverride)
         }
-    }, [cessationOffshoreFacilitiesCostOverride])
+    }, [projectCaseEdited, cessationOffshoreFacilitiesCostOverride])
 
     useEffect(() => {
-        if (projectCaseEdited) {
+        if (projectCaseEdited && cessationOnshoreFacilitiesCostProfile && projectCaseEdited.cessationOnshoreFacilitiesCostProfile !== cessationOnshoreFacilitiesCostProfile) {
             updateObject(projectCaseEdited, setProjectCaseEdited, "cessationOnshoreFacilitiesCostProfile", cessationOnshoreFacilitiesCostProfile)
         }
-    }, [cessationOnshoreFacilitiesCostProfile])
+    }, [projectCaseEdited, cessationOnshoreFacilitiesCostProfile])
 
     useEffect(() => {
         if (activeTabCase === 5 && projectCase) {

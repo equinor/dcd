@@ -20,12 +20,15 @@ namespace api.Controllers;
 public class DrainageStrategiesController : ControllerBase
 {
     private readonly IDrainageStrategyService _drainageStrategyService;
+    private readonly IDrainageStrategyTimeSeriesService _drainageStrategyTimeSeriesService;
 
     public DrainageStrategiesController(
-        IDrainageStrategyService drainageStrategyService
+        IDrainageStrategyService drainageStrategyService,
+        IDrainageStrategyTimeSeriesService drainageStrategyTimeSeriesService
     )
     {
         _drainageStrategyService = drainageStrategyService;
+        _drainageStrategyTimeSeriesService = drainageStrategyTimeSeriesService;
     }
 
     [HttpPut("{drainageStrategyId}")]
@@ -38,6 +41,16 @@ public class DrainageStrategiesController : ControllerBase
         return await _drainageStrategyService.UpdateDrainageStrategy(projectId, caseId, drainageStrategyId, dto);
     }
 
+    [HttpPost("{drainageStrategyId}/production-profile-oil/")]
+    public async Task<ProductionProfileOilDto> CreateProductionProfileOil(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromBody] CreateProductionProfileOilDto dto)
+    {
+        return await _drainageStrategyTimeSeriesService.CreateProductionProfileOil(projectId, caseId, drainageStrategyId, dto);
+    }
+
     [HttpPut("{drainageStrategyId}/production-profile-oil/{profileId}")]
     public async Task<ProductionProfileOilDto> UpdateProductionProfileOil(
         [FromRoute] Guid projectId,
@@ -46,7 +59,17 @@ public class DrainageStrategiesController : ControllerBase
         [FromRoute] Guid profileId,
         [FromBody] UpdateProductionProfileOilDto dto)
     {
-        return await _drainageStrategyService.UpdateProductionProfileOil(projectId, caseId, drainageStrategyId, profileId, dto);
+        return await _drainageStrategyTimeSeriesService.UpdateProductionProfileOil(projectId, caseId, drainageStrategyId, profileId, dto);
+    }
+
+    [HttpPost("{drainageStrategyId}/production-profile-gas/")]
+    public async Task<ProductionProfileGasDto> CreateProductionProfileGas(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromBody] CreateProductionProfileGasDto dto)
+    {
+        return await _drainageStrategyTimeSeriesService.CreateProductionProfileGas(projectId, caseId, drainageStrategyId, dto);
     }
 
     [HttpPut("{drainageStrategyId}/production-profile-gas/{profileId}")]
@@ -57,7 +80,17 @@ public class DrainageStrategiesController : ControllerBase
         [FromRoute] Guid profileId,
         [FromBody] UpdateProductionProfileGasDto dto)
     {
-        return await _drainageStrategyService.UpdateProductionProfileGas(projectId, caseId, drainageStrategyId, profileId, dto);
+        return await _drainageStrategyTimeSeriesService.UpdateProductionProfileGas(projectId, caseId, drainageStrategyId, profileId, dto);
+    }
+
+    [HttpPost("{drainageStrategyId}/production-profile-water/")]
+    public async Task<ProductionProfileWaterDto> CreateProductionProfileWater(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromBody] CreateProductionProfileWaterDto dto)
+    {
+        return await _drainageStrategyTimeSeriesService.CreateProductionProfileWater(projectId, caseId, drainageStrategyId, dto);
     }
 
     [HttpPut("{drainageStrategyId}/production-profile-water/{profileId}")]
@@ -68,7 +101,17 @@ public class DrainageStrategiesController : ControllerBase
         [FromRoute] Guid profileId,
         [FromBody] UpdateProductionProfileWaterDto dto)
     {
-        return await _drainageStrategyService.UpdateProductionProfileWater(projectId, caseId, drainageStrategyId, profileId, dto);
+        return await _drainageStrategyTimeSeriesService.UpdateProductionProfileWater(projectId, caseId, drainageStrategyId, profileId, dto);
+    }
+
+    [HttpPost("{drainageStrategyId}/production-profile-water-injection/")]
+    public async Task<ProductionProfileWaterInjectionDto> CreateProductionProfileWaterInjection(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromBody] CreateProductionProfileWaterInjectionDto dto)
+    {
+        return await _drainageStrategyTimeSeriesService.CreateProductionProfileWaterInjection(projectId, caseId, drainageStrategyId, dto);
     }
 
     [HttpPut("{drainageStrategyId}/production-profile-water-injection/{profileId}")]
@@ -79,7 +122,17 @@ public class DrainageStrategiesController : ControllerBase
         [FromRoute] Guid profileId,
         [FromBody] UpdateProductionProfileWaterInjectionDto dto)
     {
-        return await _drainageStrategyService.UpdateProductionProfileWaterInjection(projectId, caseId, drainageStrategyId, profileId, dto);
+        return await _drainageStrategyTimeSeriesService.UpdateProductionProfileWaterInjection(projectId, caseId, drainageStrategyId, profileId, dto);
+    }
+
+    [HttpPost("{drainageStrategyId}/fuel-flaring-and-losses-override/")]
+    public async Task<FuelFlaringAndLossesOverrideDto> CreateFuelFlaringAndLossesOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromBody] CreateFuelFlaringAndLossesOverrideDto dto)
+    {
+        return await _drainageStrategyTimeSeriesService.CreateFuelFlaringAndLossesOverride(projectId, caseId, drainageStrategyId, dto);
     }
 
     [HttpPut("{drainageStrategyId}/fuel-flaring-and-losses-override/{profileId}")]
@@ -90,7 +143,17 @@ public class DrainageStrategiesController : ControllerBase
         [FromRoute] Guid profileId,
         [FromBody] UpdateFuelFlaringAndLossesOverrideDto dto)
     {
-        return await _drainageStrategyService.UpdateFuelFlaringAndLossesOverride(projectId, caseId, drainageStrategyId, profileId, dto);
+        return await _drainageStrategyTimeSeriesService.UpdateFuelFlaringAndLossesOverride(projectId, caseId, drainageStrategyId, profileId, dto);
+    }
+
+    [HttpPost("{drainageStrategyId}/net-sales-gas-override/")]
+    public async Task<NetSalesGasOverrideDto> CreateNetSalesGasOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromBody] CreateNetSalesGasOverrideDto dto)
+    {
+        return await _drainageStrategyTimeSeriesService.CreateNetSalesGasOverride(projectId, caseId, drainageStrategyId, dto);
     }
 
     [HttpPut("{drainageStrategyId}/net-sales-gas-override/{profileId}")]
@@ -101,7 +164,17 @@ public class DrainageStrategiesController : ControllerBase
         [FromRoute] Guid profileId,
         [FromBody] UpdateNetSalesGasOverrideDto dto)
     {
-        return await _drainageStrategyService.UpdateNetSalesGasOverride(projectId, caseId, drainageStrategyId, profileId, dto);
+        return await _drainageStrategyTimeSeriesService.UpdateNetSalesGasOverride(projectId, caseId, drainageStrategyId, profileId, dto);
+    }
+
+    [HttpPost("{drainageStrategyId}/co2-emissions-override/")]
+    public async Task<Co2EmissionsOverrideDto> CreateCo2EmissionsOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromBody] CreateCo2EmissionsOverrideDto dto)
+    {
+        return await _drainageStrategyTimeSeriesService.CreateCo2EmissionsOverride(projectId, caseId, drainageStrategyId, dto);
     }
 
     [HttpPut("{drainageStrategyId}/co2-emissions-override/{profileId}")]
@@ -112,7 +185,17 @@ public class DrainageStrategiesController : ControllerBase
         [FromRoute] Guid profileId,
         [FromBody] UpdateCo2EmissionsOverrideDto dto)
     {
-        return await _drainageStrategyService.UpdateCo2EmissionsOverride(projectId, caseId, drainageStrategyId, profileId, dto);
+        return await _drainageStrategyTimeSeriesService.UpdateCo2EmissionsOverride(projectId, caseId, drainageStrategyId, profileId, dto);
+    }
+
+    [HttpPost("{drainageStrategyId}/imported-electricity-override/")]
+    public async Task<ImportedElectricityOverrideDto> CreateImportedElectricityOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromBody] CreateImportedElectricityOverrideDto dto)
+    {
+        return await _drainageStrategyTimeSeriesService.CreateImportedElectricityOverride(projectId, caseId, drainageStrategyId, dto);
     }
 
     [HttpPut("{drainageStrategyId}/imported-electricity-override/{profileId}")]
@@ -123,7 +206,17 @@ public class DrainageStrategiesController : ControllerBase
         [FromRoute] Guid profileId,
         [FromBody] UpdateImportedElectricityOverrideDto dto)
     {
-        return await _drainageStrategyService.UpdateImportedElectricityOverride(projectId, caseId, drainageStrategyId, profileId, dto);
+        return await _drainageStrategyTimeSeriesService.UpdateImportedElectricityOverride(projectId, caseId, drainageStrategyId, profileId, dto);
+    }
+
+    [HttpPost("{drainageStrategyId}/deferred-oil-production/")]
+    public async Task<DeferredOilProductionDto> CreateDeferredOilProduction(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromBody] CreateDeferredOilProductionDto dto)
+    {
+        return await _drainageStrategyTimeSeriesService.CreateDeferredOilProduction(projectId, caseId, drainageStrategyId, dto);
     }
 
     [HttpPut("{drainageStrategyId}/deferred-oil-production/{profileId}")]
@@ -134,7 +227,17 @@ public class DrainageStrategiesController : ControllerBase
         [FromRoute] Guid profileId,
         [FromBody] UpdateDeferredOilProductionDto dto)
     {
-        return await _drainageStrategyService.UpdateDeferredOilProduction(projectId, caseId, drainageStrategyId, profileId, dto);
+        return await _drainageStrategyTimeSeriesService.UpdateDeferredOilProduction(projectId, caseId, drainageStrategyId, profileId, dto);
+    }
+
+    [HttpPost("{drainageStrategyId}/deferred-gas-production/")]
+    public async Task<DeferredGasProductionDto> CreateDeferredGasProduction(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromBody] CreateDeferredGasProductionDto dto)
+    {
+        return await _drainageStrategyTimeSeriesService.CreateDeferredGasProduction(projectId, caseId, drainageStrategyId, dto);
     }
 
     [HttpPut("{drainageStrategyId}/deferred-gas-production/{profileId}")]
@@ -145,6 +248,6 @@ public class DrainageStrategiesController : ControllerBase
         [FromRoute] Guid profileId,
         [FromBody] UpdateDeferredGasProductionDto dto)
     {
-        return await _drainageStrategyService.UpdateDeferredGasProduction(projectId, caseId, drainageStrategyId, profileId, dto);
+        return await _drainageStrategyTimeSeriesService.UpdateDeferredGasProduction(projectId, caseId, drainageStrategyId, profileId, dto);
     }
 }

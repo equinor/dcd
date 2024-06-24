@@ -59,9 +59,10 @@ const GalleryLabel = styled(Typography) <{ $warning: boolean }>`
     margin-right: 8px;
     color: ${({ $warning }) => ($warning ? "red" : "rgba(111, 111, 111, 1)")};
 `
+
 const Gallery = () => {
     const { editMode } = useAppContext()
-    const [gallery, setGallery] = useState<string[]>([])
+    const [gallery, setGallery] = useState<Components.Schemas.ImageDto[]>([])
     const [modalOpen, setModalOpen] = useState(false)
     const [expandedImage, setExpandedImage] = useState("")
     const [exeededLimit, setExeededLimit] = useState(false)
@@ -74,12 +75,7 @@ const Gallery = () => {
                 try {
                     const imageService = await getImageService()
                     const imageDtos = await imageService.getImages(project.id, projectCase.id)
-                    if (imageDtos) {
-                        const imageUrls = imageDtos.map((dto) => dto.url)
-                        setGallery(imageUrls)
-                    } else {
-                        console.error("Received undefined response from getImages")
-                    }
+                    setGallery(imageDtos)
                 } catch (error) {
                     console.error("Error loading images:", error)
                 }
@@ -87,59 +83,60 @@ const Gallery = () => {
         }
 
         loadImages()
-    }, [project?.id, projectCase?.id, setGallery])
+    }, [project?.id, projectCase?.id])
 
-    const handleDelete = (image: string) => {
-        setGallery(gallery.filter((item) => item !== image))
-        setExeededLimit(false)
+    const handleDelete = async (imageUrl: string) => {
+        try {
+            if (project?.id && projectCase?.id) {
+                const imageService = await getImageService()
+                const image = gallery.find((img) => img.url === imageUrl)
+                if (image) {
+                    await imageService.deleteImage(project.id, projectCase.id, image.id)
+                    setGallery(gallery.filter((img) => img.url !== imageUrl))
+                    setExeededLimit(false)
+                } else {
+                    console.error("Image not found for the provided URL:", imageUrl)
+                }
+            }
+        } catch (error) {
+            console.error("Error deleting image:", error)
+        }
     }
 
     const handleExpand = (image: string) => {
         setExpandedImage(image)
         setModalOpen(true)
     }
-    return gallery.length > 0 || editMode
-        ? (
-            <Grid item xs={12}>
-                <ImageModal
-                    image={expandedImage}
-                    modalOpen={modalOpen}
-                    setModalOpen={setModalOpen}
-                />
-                <GalleryLabel $warning={exeededLimit}>
-                    {gallery.length > 0 && !editMode && "Gallery"}
-                    {editMode && `Gallery (${gallery.length} / 4)`}
-                </GalleryLabel>
-                <Wrapper>
-                    {gallery.map((image, index) => (
-                        <ImageWithHover key={`menu - item - ${index + 1} `}>
-                            <img src={image} alt={`upload #${index + 1} `} />
-                            <Controls>
-                                {editMode && (
-                                    <Button variant="contained_icon" color="danger" onClick={() => handleDelete(image)}>
-                                        <Icon size={18} data={delete_to_trash} />
-                                    </Button>
-                                )}
-                                <Button variant="contained_icon" color="secondary" onClick={() => handleExpand(image)}>
-                                    <Icon size={18} data={expand_screen} />
+
+    return gallery.length > 0 || editMode ? (
+        <Grid item xs={12}>
+            <ImageModal image={expandedImage} modalOpen={modalOpen} setModalOpen={setModalOpen} />
+            <GalleryLabel $warning={exeededLimit}>
+                {gallery.length > 0 && !editMode && "Gallery"}
+                {editMode && `Gallery (${gallery.length} / 4)`}
+            </GalleryLabel>
+            <Wrapper>
+                {gallery.map((image, index) => (
+                    <ImageWithHover key={`menu-item-${index + 1}`}>
+                        <img src={image.url} alt={`upload #${index + 1}`} />
+                        <Controls>
+                            {editMode && (
+                                <Button variant="contained_icon" color="danger" onClick={() => handleDelete(image.url)}>
+                                    <Icon size={18} data={delete_to_trash} />
                                 </Button>
-                            </Controls>
-                        </ImageWithHover>
-                    ))}
-                    {
-                        editMode && gallery.length < 4
-                    && (
-                        <ImageUpload
-                            gallery={gallery}
-                            setGallery={setGallery}
-                            setExeededLimit={setExeededLimit}
-                        />
-                    )
-                    }
-                </Wrapper>
-            </Grid>
-        )
-        : null
+                            )}
+                            <Button variant="contained_icon" color="secondary" onClick={() => handleExpand(image.url)}>
+                                <Icon size={18} data={expand_screen} />
+                            </Button>
+                        </Controls>
+                    </ImageWithHover>
+                ))}
+                {editMode && gallery.length < 4 && (
+                    <ImageUpload gallery={gallery} setGallery={setGallery} setExeededLimit={setExeededLimit} />
+                )}
+            </Wrapper>
+        </Grid>
+    ) : null
 }
 
 export default Gallery

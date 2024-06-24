@@ -1,7 +1,7 @@
-using api.Adapters;
-using api.Context;
 using api.Dtos;
+using api.Exceptions;
 using api.Models;
+using api.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -9,27 +9,42 @@ namespace api.Services;
 
 public class WellService : IWellService
 {
-    private readonly DcdDbContext _context;
-    private readonly IProjectService _projectService;
+    private readonly IWellRepository _repository;
     private readonly ILogger<WellService> _logger;
+    private readonly IMapperService _mapperService;
 
-    public WellService(DcdDbContext context, IProjectService projectService, ILoggerFactory loggerFactory)
+    public WellService(
+        ILoggerFactory loggerFactory,
+        IWellRepository repository,
+        IMapperService mapperService
+        )
     {
-        _context = context;
-        _projectService = projectService;
         _logger = loggerFactory.CreateLogger<WellService>();
+        _repository = repository;
+        _mapperService = mapperService;
     }
 
-    public async Task<Well> GetWell(Guid wellId)
+    public async Task<WellDto> UpdateWell(Guid wellId, UpdateWellDto updatedWellDto)
     {
-        var well = await _context.Wells!
-            .Include(e => e.WellProjectWells)
-            .Include(e => e.ExplorationWells)
-            .FirstOrDefaultAsync(w => w.Id == wellId);
-        if (well == null)
+        var existingWell = await _repository.GetWell(wellId)
+            ?? throw new NotFoundInDBException($"Well with id {wellId} not found");
+
+        _mapperService.MapToEntity(updatedWellDto, existingWell, wellId);
+
+        // TODO: Update project last changed date
+        Well updatedWell;
+        try
         {
-            throw new ArgumentException(string.Format("Well {0} not found.", wellId));
+            updatedWell = _repository.UpdateWell(existingWell);
+            await _repository.SaveChangesAsync();
         }
-        return well;
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to update well with id {wellId}", wellId);
+            throw;
+        }
+
+        var dto = _mapperService.MapToDto<Well, WellDto>(updatedWell, wellId);
+        return dto;
     }
 }

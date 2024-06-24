@@ -19,9 +19,13 @@ export class ImageService extends __BaseService {
     }
 
     public async getImages(projectId: string, caseId: string): Promise < Components.Schemas.ImageDto[] > {
-    const response = await this.get(`projects/${projectId}/cases/${caseId}/images`)
+        const response = await this.get(`projects/${projectId}/cases/${caseId}/images`)
         return response
-}
+    }
+
+    public async deleteImage(projectId: string, caseId: string, imageId: string): Promise<void> {
+        await this.delete(`projects/${projectId}/cases/${caseId}/images/${imageId}`)
+    }
 }
 
 export const getImageService = async () => new ImageService({

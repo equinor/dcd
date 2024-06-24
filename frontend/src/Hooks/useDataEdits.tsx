@@ -1,6 +1,5 @@
 /* eslint-disable indent */
 import { v4 as uuidv4 } from "uuid"
-import { useEffect, useState } from "react"
 import { useMutation, useQueryClient } from "react-query"
 import { useCaseContext } from "../Context/CaseContext"
 import {
@@ -8,6 +7,7 @@ import {
     EditEntry,
     ResourceName,
     ResourcePropertyKey,
+    ResourceObject,
 } from "../Models/Interfaces"
 import { getCurrentEditId } from "../Utils/common"
 import { GetCaseService } from "../Services/CaseService"
@@ -29,6 +29,7 @@ interface AddEditParams {
     caseId?: string;
     newDisplayValue?: string | number | undefined;
     previousDisplayValue?: string | number | undefined;
+    newResourceObject?: ResourceObject;
 }
 
 const useDataEdits = (): {
@@ -77,9 +78,18 @@ const useDataEdits = (): {
             serviceMethod: object,
         }) => serviceMethod,
         {
-            onSuccess: (results, variables) => {
-                const { projectId, caseId, resourceId } = variables
-                queryClient.setQueryData([{ resourceId, projectId, caseId }], results)
+            onSuccess: (
+                results: any,
+                variables,
+            ) => {
+                const { projectId, caseId } = variables
+                /* this should work but doesnt :(
+                const assetId = caseId === results.id ? "" : results.id
+                queryClient.setQueryData([{ caseId, projectId , assetId }], results)
+                */
+
+                // this makes the app refetch all data. We should only refetch the data that was updated in the future.
+                queryClient.invalidateQueries(["apiData", { projectId, caseId }])
             },
             onError: (error: any) => {
                 console.error("Failed to update data:", error)
@@ -94,9 +104,12 @@ const useDataEdits = (): {
         topsideId: string,
         resourcePropertyKey: ResourcePropertyKey,
         value: string | number | undefined,
+        resourceObject?: ResourceObject,
+
     ) => {
-        const updatedData = { [resourcePropertyKey]: value }
         const service = await GetTopsideService()
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: topsideId }])
+        const updatedData = resourceObject || { ...existingDataInClient, [resourcePropertyKey]: value }
         const serviceMethod = service.updateTopside(projectId, caseId, topsideId, updatedData)
 
         try {
@@ -118,11 +131,13 @@ const useDataEdits = (): {
         surfId: string,
         resourcePropertyKey: ResourcePropertyKey,
         value: string | number | undefined,
+        resourceObject?: ResourceObject,
     ) => {
-        const updatedData = { [resourcePropertyKey]: value }
         const service = await GetSurfService()
-
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: surfId }])
+        const updatedData = resourceObject || { ...existingDataInClient, [resourcePropertyKey]: value }
         const serviceMethod = service.updateSurf(projectId, caseId, surfId, updatedData)
+
         try {
             await mutation.mutateAsync({
                 projectId,
@@ -142,9 +157,11 @@ const useDataEdits = (): {
         substructureId: string,
         resourcePropertyKey: ResourcePropertyKey,
         value: string | number | undefined,
+        resourceObject?: object,
     ) => {
-        const updatedData = { [resourcePropertyKey]: value }
         const service = await GetSubstructureService()
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: substructureId }])
+        const updatedData = resourceObject || { ...existingDataInClient, [resourcePropertyKey]: value }
         const serviceMethod = service.updateSubstructure(projectId, caseId, substructureId, updatedData)
 
         try {
@@ -166,9 +183,11 @@ const useDataEdits = (): {
         transportId: string,
         resourcePropertyKey: ResourcePropertyKey,
         value: string | number | undefined,
+        resourceObject?: object,
     ) => {
-        const updatedData = { [resourcePropertyKey]: value }
         const service = await GetTransportService()
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: transportId }])
+        const updatedData = resourceObject || { ...existingDataInClient, [resourcePropertyKey]: value }
         const serviceMethod = service.updateTransport(projectId, caseId, transportId, updatedData)
 
         try {
@@ -190,9 +209,12 @@ const useDataEdits = (): {
         drainageStrategyId: string,
         resourcePropertyKey: ResourcePropertyKey,
         value: any,
+        resourceObject?: object,
+
     ) => {
-        const updatedData = { [resourcePropertyKey]: value }
         const service = await GetDrainageStrategyService()
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: drainageStrategyId }])
+        const updatedData = resourceObject || { ...existingDataInClient, [resourcePropertyKey]: value }
         const serviceMethod = service.updateDrainageStrategy(projectId, caseId, drainageStrategyId, updatedData)
 
         try {
@@ -213,10 +235,13 @@ const useDataEdits = (): {
         caseId: string,
         resourcePropertyKey: ResourcePropertyKey,
         value: any,
+        resourceObject?: ResourceObject,
+
     ) => {
-        const updatedData = { [resourcePropertyKey]: value }
         const caseService = await GetCaseService()
-        const serviceMethod = caseService.updateCase(projectId, caseId, updatedData)
+        const existingDataInClient: object | undefined = queryClient.getQueryData([{ projectId, caseId, resourceId: "" }])
+        const updatedData = resourceObject || { ...existingDataInClient, [resourcePropertyKey]: value }
+        const serviceMethod = caseService.updateCase(projectId, caseId, updatedData as Components.Schemas.APIUpdateCaseDto)
 
         try {
             await mutation.mutateAsync({
@@ -230,38 +255,48 @@ const useDataEdits = (): {
         }
     }
 
-    const submitToApi = async (
+    type SubmitToApiParams = {
         projectId: string,
         caseId: string,
-        resourceName: ResourceName,
+        resourceName: string,
         resourcePropertyKey: ResourcePropertyKey,
-        value: any,
+        value: string,
         resourceId?: string,
-    ): Promise<boolean> => {
+        resourceObject?: ResourceObject,
+    }
+
+    const submitToApi = async ({
+        projectId,
+        caseId,
+        resourceName,
+        resourcePropertyKey,
+        value,
+        resourceId,
+        resourceObject,
+    }: SubmitToApiParams): Promise<boolean> => {
         if (resourceName !== "case" && !resourceId) {
             console.log("asset id is required for this service")
             return false
         }
-
         let sucess = false
         switch (resourceName) {
             case "case":
-                sucess = await updateCase(projectId, caseId, resourcePropertyKey, value)
+                sucess = await updateCase(projectId, caseId, resourcePropertyKey, value, resourceObject)
                 break
             case "topside":
-                sucess = await updateTopside(projectId, caseId, resourceId!, resourcePropertyKey, value)
+                sucess = await updateTopside(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
                 break
             case "surf":
-                sucess = await updateSurf(projectId, caseId, resourceId!, resourcePropertyKey, value)
+                sucess = await updateSurf(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
                 break
             case "substructure":
-                sucess = await updateSubstructure(projectId, caseId, resourceId!, resourcePropertyKey, value)
+                sucess = await updateSubstructure(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
                 break
             case "transport":
-                sucess = await updateTransport(projectId, caseId, resourceId!, resourcePropertyKey, value)
+                sucess = await updateTransport(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
                 break
             case "drainageStrategy":
-                sucess = await updateDrainageStrategy(projectId, caseId, resourceId!, resourcePropertyKey, value)
+                sucess = await updateDrainageStrategy(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
                 break
             default:
                 console.log("Service not found")
@@ -300,9 +335,15 @@ const useDataEdits = (): {
         caseId,
         newDisplayValue,
         previousDisplayValue,
+        newResourceObject,
     }: AddEditParams) => {
         if (resourceName !== "case" && !resourceId) {
             console.log("asset id is required for this service")
+            return
+        }
+
+        if (newValue === previousValue && !newResourceObject) {
+            console.log("No changes detected")
             return
         }
 
@@ -319,9 +360,20 @@ const useDataEdits = (): {
             caseId,
             newDisplayValue,
             previousDisplayValue,
+            newResourceObject,
         }
 
-        const success = await submitToApi(projectId, caseId!, resourceName, resourcePropertyKey, newValue, resourceId)
+        const success = await submitToApi(
+            {
+                projectId,
+                caseId: caseId!,
+                resourceName,
+                resourcePropertyKey,
+                value: newValue as string,
+                resourceId,
+                resourceObject: newResourceObject as ResourceObject | undefined,
+            },
+        )
 
         if (success && caseId) {
             addToHistoryTracker(editInstanceObject, caseId)
@@ -345,12 +397,15 @@ const useDataEdits = (): {
 
         if (editThatWillBeUndone) {
             submitToApi(
-                editThatWillBeUndone.projectId,
-                editThatWillBeUndone.caseId!,
-                editThatWillBeUndone.resourceName,
-                editThatWillBeUndone.resourcePropertyKey,
-                editThatWillBeUndone.previousValue,
-                editThatWillBeUndone.resourceId,
+                {
+                    projectId: editThatWillBeUndone.projectId,
+                    caseId: editThatWillBeUndone.caseId!,
+                    resourceName: editThatWillBeUndone.resourceName,
+                    resourcePropertyKey: editThatWillBeUndone.resourcePropertyKey,
+                    value: editThatWillBeUndone.previousValue as string,
+                    resourceId: editThatWillBeUndone.resourceId,
+                    resourceObject: editThatWillBeUndone.newResourceObject as ResourceObject,
+                },
             )
         }
     }
@@ -361,15 +416,19 @@ const useDataEdits = (): {
         if (currentEditIndex <= 0) {
             // If the current edit is the first one or not found, redo the last edit.
             const lastEdit = caseEditsBelongingToCurrentCase[caseEditsBelongingToCurrentCase.length - 1]
+
             if (lastEdit) {
                 updateEditIndex(lastEdit.uuid)
                 submitToApi(
-                    lastEdit.projectId,
-                    lastEdit.caseId!,
-                    lastEdit.resourceName,
-                    lastEdit.resourcePropertyKey,
-                    lastEdit.newValue,
-                    lastEdit.resourceId,
+                    {
+                        projectId: lastEdit.projectId,
+                        caseId: lastEdit.caseId!,
+                        resourceName: lastEdit.resourceName,
+                        resourcePropertyKey: lastEdit.resourcePropertyKey,
+                        value: lastEdit.newValue as string,
+                        resourceId: lastEdit.resourceId,
+                        resourceObject: lastEdit.newResourceObject as ResourceObject,
+                    },
                 )
             }
         } else {
@@ -379,12 +438,15 @@ const useDataEdits = (): {
 
             if (updatedEdit) {
                 submitToApi(
-                    updatedEdit.projectId,
-                    updatedEdit.caseId!,
-                    updatedEdit.resourceName,
-                    updatedEdit.resourcePropertyKey,
-                    updatedEdit.newValue,
-                    updatedEdit.resourceId,
+                    {
+                        projectId: updatedEdit.projectId,
+                        caseId: updatedEdit.caseId!,
+                        resourceName: updatedEdit.resourceName,
+                        resourcePropertyKey: updatedEdit.resourcePropertyKey,
+                        value: updatedEdit.newValue as string,
+                        resourceId: updatedEdit.resourceId,
+                        resourceObject: updatedEdit.newResourceObject as ResourceObject,
+                    },
                 )
             }
         }

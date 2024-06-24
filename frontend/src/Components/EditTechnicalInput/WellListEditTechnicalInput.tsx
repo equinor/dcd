@@ -154,7 +154,7 @@ const WellListEditTechnicalInput = ({
         resizable: true,
         editable: true,
         onCellValueChanged: updateWells,
-        suppressMenuButton: true,
+        suppressHeaderMenuButton: true,
         cellClass: editMode ? "editableCell" : undefined,
     }), [])
 
