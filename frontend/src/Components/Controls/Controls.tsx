@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import styled from "styled-components"
 import {
     Icon,
     Button,
     Progress,
 } from "@equinor/eds-core-react"
 import {
-    save,
+    visibility,
     edit,
     keyboard_tab,
     more_vertical,
@@ -127,20 +126,24 @@ const Controls = () => {
                         </Grid>
                     )}
                 <Grid item>
+                    {editMode && <UndoControls />}
+                </Grid>
+                <Grid item>
                     <Button onClick={handleEdit} variant={editMode ? "outlined" : "contained"}>
                         {isSaving
                             ? <Progress.Dots />
                             : (
                                 <>
-                                    {editMode ? "Close edit mode" : "Edit"}
+                                    {editMode ? "View" : "Edit"}
                                     {" "}
                                     {!editMode && projectCase && "case"}
                                     {!editMode && !projectCase && "project"}
-                                    <Icon data={editMode ? save : edit} />
+                                    <Icon data={editMode ? visibility : edit} />
                                 </>
                             )}
                     </Button>
                 </Grid>
+
                 <Grid item>
                     <Button
                         onClick={() => setTechnicalModalIsOpen(true)}
@@ -150,9 +153,6 @@ const Controls = () => {
                         {`${editMode ? "Edit" : "Open"} technical input`}
                     </Button>
                 </Grid>
-            </Grid>
-            <Grid item>
-                {editMode && <UndoControls />}
             </Grid>
             {projectCase && (
                 <Grid item>
