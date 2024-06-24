@@ -8,7 +8,7 @@ using AutoMapper;
 
 namespace api.Services.GenerateCostProfiles;
 
-public class GenerateNetSaleGasProfile : IGenerateNetSaleGasProfile
+public class NetSaleGasProfileService : INetSaleGasProfileService
 {
     private readonly ICaseService _caseService;
     private readonly IDrainageStrategyService _drainageStrategyService;
@@ -17,7 +17,7 @@ public class GenerateNetSaleGasProfile : IGenerateNetSaleGasProfile
     private readonly DcdDbContext _context;
     private readonly IMapper _mapper;
 
-    public GenerateNetSaleGasProfile(
+    public NetSaleGasProfileService(
         DcdDbContext context,
         ICaseService caseService,
         IProjectService projectService,

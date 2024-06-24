@@ -3,7 +3,7 @@ using api.Models;
 
 namespace api.Services
 {
-    public interface IGenerateOpexCostProfile
+    public interface IOpexCostProfileService
     {
         Task<OpexCostProfileWrapperDto> Generate(Guid caseId);
         Task<WellInterventionCostProfile> CalculateWellInterventionCostProfile(Case caseItem, Project project, DrainageStrategy drainageStrategy);

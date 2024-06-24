@@ -29,14 +29,14 @@ public class CaseAndAssetsService : ICaseAndAssetsService
     private readonly ITopsideService _topsideService;
     private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
     private readonly ILogger<CaseAndAssetsService> _logger;
-    private readonly IGenerateStudyCostProfile _generateStudyCostProfile;
-    private readonly IGenerateOpexCostProfile _generateOpexCostProfile;
-    private readonly IGenerateCessationCostProfile _generateCessationCostProfile;
-    private readonly IGenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
+    private readonly IStudyCostProfileService _generateStudyCostProfile;
+    private readonly IOpexCostProfileService _generateOpexCostProfile;
+    private readonly ICessationCostProfileService _generateCessationCostProfile;
+    private readonly ICo2EmissionsProfileService _generateCo2EmissionsProfile;
     private readonly IGenerateGAndGAdminCostProfile _generateGAndGAdminCostProfile;
-    private readonly IGenerateImportedElectricityProfile _generateImportedElectricityProfile;
-    private readonly IGenerateFuelFlaringLossesProfile _generateFuelFlaringLossesProfile;
-    private readonly IGenerateNetSaleGasProfile _generateNetSaleGasProfile;
+    private readonly IImportedElectricityProfileService _generateImportedElectricityProfile;
+    private readonly IFuelFlaringLossesProfileService _generateFuelFlaringLossesProfile;
+    private readonly INetSaleGasProfileService _generateNetSaleGasProfile;
     private readonly IMapper _mapper;
 
     public CaseAndAssetsService(
@@ -52,14 +52,14 @@ public class CaseAndAssetsService : ICaseAndAssetsService
         ITopsideService topsideService,
         ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
         ILoggerFactory loggerFactory,
-        IGenerateStudyCostProfile generateStudyCostProfile,
-        IGenerateOpexCostProfile generateOpexCostProfile,
-        IGenerateCessationCostProfile generateCessationCostProfile,
-        IGenerateCo2EmissionsProfile generateCo2EmissionsProfile,
+        IStudyCostProfileService generateStudyCostProfile,
+        IOpexCostProfileService generateOpexCostProfile,
+        ICessationCostProfileService generateCessationCostProfile,
+        ICo2EmissionsProfileService generateCo2EmissionsProfile,
         IGenerateGAndGAdminCostProfile generateGAndGAdminCostProfile,
-        IGenerateImportedElectricityProfile generateImportedElectricityProfile,
-        IGenerateFuelFlaringLossesProfile generateFuelFlaringLossesProfile,
-        IGenerateNetSaleGasProfile generateNetSaleGasProfile,
+        IImportedElectricityProfileService generateImportedElectricityProfile,
+        IFuelFlaringLossesProfileService generateFuelFlaringLossesProfile,
+        INetSaleGasProfileService generateNetSaleGasProfile,
         IMapper mapper
     )
     {

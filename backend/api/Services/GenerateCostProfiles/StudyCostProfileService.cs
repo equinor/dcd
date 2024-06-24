@@ -9,10 +9,10 @@ using AutoMapper;
 
 namespace api.Services;
 
-public class GenerateStudyCostProfile : IGenerateStudyCostProfile
+public class StudyCostProfileService : IStudyCostProfileService, ICaseObserver
 {
     private readonly ICaseService _caseService;
-    private readonly ILogger<GenerateStudyCostProfile> _logger;
+    private readonly ILogger<StudyCostProfileService> _logger;
     private readonly IWellProjectService _wellProjectService;
     private readonly ITopsideService _topsideService;
     private readonly ISubstructureService _substructureService;
@@ -21,7 +21,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
     private readonly DcdDbContext _context;
     private readonly IMapper _mapper;
 
-    public GenerateStudyCostProfile(
+    public StudyCostProfileService(
         DcdDbContext context,
         ILoggerFactory loggerFactory,
         ICaseService caseService,
@@ -33,7 +33,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         IMapper mapper)
     {
         _context = context;
-        _logger = loggerFactory.CreateLogger<GenerateStudyCostProfile>();
+        _logger = loggerFactory.CreateLogger<StudyCostProfileService>();
         _caseService = caseService;
         _wellProjectService = wellProjectService;
         _topsideService = topsideService;
@@ -41,6 +41,11 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         _surfService = surfService;
         _transportService = transportService;
         _mapper = mapper;
+    }
+
+    public void Update(Case caseEntity, string propertyName, object oldValue, object newValue)
+    {
+        Console.WriteLine("GenerateStudyCostPfile: Property {0} changed from {1} to {2}", propertyName, oldValue, newValue);
     }
 
     public async Task<StudyCostProfileWrapperDto> Generate(Guid caseId)

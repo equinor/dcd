@@ -9,10 +9,10 @@ using AutoMapper;
 
 namespace api.Services;
 
-public class GenerateCessationCostProfile : IGenerateCessationCostProfile
+public class CessationCostProfileService : ICessationCostProfileService
 {
     private readonly ICaseService _caseService;
-    private readonly ILogger<GenerateCessationCostProfile> _logger;
+    private readonly ILogger<CessationCostProfileService> _logger;
     private readonly IDrainageStrategyService _drainageStrategyService;
     private readonly IWellProjectService _wellProjectService;
     private readonly IWellProjectWellService _wellProjectWellService;
@@ -21,7 +21,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
     private readonly DcdDbContext _context;
     private readonly IMapper _mapper;
 
-    public GenerateCessationCostProfile(
+    public CessationCostProfileService(
         DcdDbContext context,
         ILoggerFactory loggerFactory,
         ICaseService caseService,
@@ -33,7 +33,7 @@ public class GenerateCessationCostProfile : IGenerateCessationCostProfile
         IMapper mapper)
     {
         _context = context;
-        _logger = loggerFactory.CreateLogger<GenerateCessationCostProfile>();
+        _logger = loggerFactory.CreateLogger<CessationCostProfileService>();
         _caseService = caseService;
         _drainageStrategyService = drainageStrategyService;
         _wellProjectService = wellProjectService;

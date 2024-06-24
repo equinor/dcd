@@ -3,7 +3,7 @@ using api.Models;
 
 namespace api.Services
 {
-    public interface IGenerateStudyCostProfile
+    public interface IStudyCostProfileService
     {
         Task<StudyCostProfileWrapperDto> Generate(Guid caseId);
         TotalFeasibilityAndConceptStudies CalculateTotalFeasibilityAndConceptStudies(Case caseItem, double sumFacilityCost, double sumWellCost);

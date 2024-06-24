@@ -8,7 +8,7 @@ using AutoMapper;
 
 namespace api.Services.GenerateCostProfiles;
 
-public class GenerateImportedElectricityProfile : IGenerateImportedElectricityProfile
+public class ImportedElectricityProfileService : IImportedElectricityProfileService
 {
     private readonly ICaseService _caseService;
     private readonly IDrainageStrategyService _drainageStrategyService;
@@ -17,7 +17,7 @@ public class GenerateImportedElectricityProfile : IGenerateImportedElectricityPr
     private readonly DcdDbContext _context;
     private readonly IMapper _mapper;
 
-    public GenerateImportedElectricityProfile(
+    public ImportedElectricityProfileService(
         DcdDbContext context,
         ICaseService caseService,
         IProjectService projectService,

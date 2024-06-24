@@ -8,7 +8,7 @@ using AutoMapper;
 
 namespace api.Services.GenerateCostProfiles;
 
-public class GenerateFuelFlaringLossesProfile : IGenerateFuelFlaringLossesProfile
+public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
 {
     private readonly ICaseService _caseService;
     private readonly IDrainageStrategyService _drainageStrategyService;
@@ -17,7 +17,7 @@ public class GenerateFuelFlaringLossesProfile : IGenerateFuelFlaringLossesProfil
     private readonly DcdDbContext _context;
     private readonly IMapper _mapper;
 
-    public GenerateFuelFlaringLossesProfile(
+    public FuelFlaringLossesProfileService(
         DcdDbContext context,
         ICaseService caseService,
         IProjectService projectService,
