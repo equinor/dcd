@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { ITimeSeriesData } from "../../../../../Models/ITimeSeriesData"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../../Context/CaseContext"
@@ -45,12 +45,16 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
         setCountryOfficeCost,
     } = useCaseContext()
 
+    const [explorationGAndGAdminCostOverride, setExplorationGAndGAdminCostOverride] = useState<Components.Schemas.GAndGAdminCostOverrideDto>()
+
     const explorationTimeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "G&G and admin",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: gAndGAdminCost,
-            set: setGAndGAdminCost,
+            overridable: true,
+            overrideProfile: explorationGAndGAdminCostOverride,
+            overrideProfileSet: setExplorationGAndGAdminCostOverride,
         },
         {
             profileName: "Seismic acquisition and processing",
@@ -91,6 +95,12 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             explorationWellsGridRef.current.api.refreshCells()
         }
     }, [gAndGAdminCost])
+
+    useEffect(() => {
+        if (exploration && explorationGAndGAdminCostOverride && exploration.gAndGAdminCostOverride !== explorationGAndGAdminCostOverride) {
+            updateObject(exploration, setExploration, "gAndGAdminCostOverride", explorationGAndGAdminCostOverride)
+        }
+    }, [exploration, explorationGAndGAdminCostOverride])
 
     useEffect(() => {
         if (exploration && explorationWellCostProfile && exploration.explorationWellCostProfile !== explorationWellCostProfile) {
@@ -136,6 +146,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             setSidetrackCostProfile(exploration.sidetrackCostProfile)
             setCountryOfficeCost(exploration.countryOfficeCost)
             setGAndGAdminCost(exploration.gAndGAdminCost)
+            setGAndGAdminCost(exploration.gAndGAdminCostOverride)
         }
     }, [activeTabCase])
 

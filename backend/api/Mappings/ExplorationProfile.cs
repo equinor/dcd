@@ -15,6 +15,7 @@ public class ExplorationProfile : Profile
         CreateMap<AppraisalWellCostProfile, AppraisalWellCostProfileDto>();
         CreateMap<SidetrackCostProfile, SidetrackCostProfileDto>();
         CreateMap<GAndGAdminCost, GAndGAdminCostDto>();
+        CreateMap<GAndGAdminCostOverride, GAndGAdminCostOverrideDto>();
         CreateMap<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto>();
         CreateMap<CountryOfficeCost, CountryOfficeCostDto>();
         CreateMap<ExplorationWell, ExplorationWellDto>().ReverseMap();
@@ -28,6 +29,7 @@ public class ExplorationProfile : Profile
         CreateMap<UpdateAppraisalWellCostProfileDto, AppraisalWellCostProfile>();
         CreateMap<UpdateSidetrackCostProfileDto, SidetrackCostProfile>();
 
+        CreateMap<CreateGAndGAdminCostOverrideDto, GAndGAdminCostOverride>();
         CreateMap<CreateSeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>();
         CreateMap<CreateCountryOfficeCostDto, CountryOfficeCost>();
 

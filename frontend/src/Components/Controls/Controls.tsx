@@ -93,7 +93,7 @@ const Controls = () => {
 
     const handleEdit = () => {
         if (projectCaseEdited) {
-            // handleCaseSave() no longer needed with autosave
+            handleCaseSave() // no longer needed with autosave
             handleCancel()
         } else if (projectEdited) {
             handleProjectSave()

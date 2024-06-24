@@ -49,7 +49,8 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         // Exploration
         totalExplorationCost,
         explorationWellCostProfile,
-        gAndGAdminCost, // missing implementation
+        gAndGAdminCost,
+        setGAndGAdminCost,
         seismicAcquisitionAndProcessing,
 
         // Study cost
@@ -243,6 +244,11 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                         const gasInjectorCostProfile = wellProject?.gasInjectorCostProfileOverride?.override
                             ? wellProject.gasInjectorCostProfileOverride
                             : wellProject?.gasInjectorCostProfile
+
+                        // Exploration cost
+                        setGAndGAdminCost(exploration?.gAndGAdminCostOverride?.override
+                            ? exploration.gAndGAdminCostOverride
+                            : exploration?.gAndGAdminCost)
 
                         SetTableYearsFromProfiles([
                             projectCase, wellProject, totalExplorationCost, totalOtherStudies, totalFeasibilityAndConceptStudies, totalFEEDStudiesOverride, historicCostCostProfile,

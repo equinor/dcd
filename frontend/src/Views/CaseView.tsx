@@ -165,6 +165,10 @@ const CaseView = () => {
     }
 
     const handleTotalExplorationCost = () => {
+        const gAndGAdminCost = exploration?.gAndGAdminCostOverride?.override
+            ? exploration.gAndGAdminCostOverride
+            : exploration?.gAndGAdminCost
+
         if (exploration) {
             setTotalExplorationCost(mergeTimeseriesList([
                 exploration.explorationWellCostProfile,
@@ -172,7 +176,8 @@ const CaseView = () => {
                 exploration.sidetrackCostProfile,
                 exploration.seismicAcquisitionAndProcessing,
                 exploration.countryOfficeCost,
-                exploration.gAndGAdminCost, // Missing implementation, uncomment when gAndGAdminCost is fixed
+                gAndGAdminCost,
+
             ]))
         }
     }

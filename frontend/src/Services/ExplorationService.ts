@@ -16,6 +16,33 @@ class ExplorationService extends __BaseService {
         return res
     }
 
+    public async createGAndGAdminCostOverride(
+        projectId: string,
+        caseId: string,
+        explorationId: string,
+        dto: Components.Schemas.CreateGAndGAdminCostOverrideDto,
+    ): Promise<Components.Schemas.GAndGAdminCostOverrideDto> {
+        const res: Components.Schemas.GAndGAdminCostOverrideDto = await this.post(
+            `projects/${projectId}/cases/${caseId}/explorations/${explorationId}/g-and-g-and-admin-cost-override/`,
+            { body: dto },
+        )
+        return res
+    }
+
+    public async updateGAndGAdminCostOverride(
+        projectId: string,
+        caseId: string,
+        explorationId: string,
+        costProfileId: string,
+        dto: Components.Schemas.UpdateGAndGAdminCostOverrideDto,
+    ): Promise<Components.Schemas.GAndGAdminCostOverrideDto> {
+        const res: Components.Schemas.GAndGAdminCostOverrideDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/explorations/${explorationId}/g-and-g-and-admin-cost-override/${costProfileId}`,
+            { body: dto },
+        )
+        return res
+    }
+
     public async createSeismicAcquisitionAndProcessing(
         projectId: string,
         caseId: string,

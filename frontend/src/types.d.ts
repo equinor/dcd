@@ -343,6 +343,7 @@ declare namespace Components {
             appraisalWellCostProfile?: AppraisalWellCostProfileDto;
             sidetrackCostProfile?: SidetrackCostProfileDto;
             gAndGAdminCost?: GAndGAdminCostDto;
+            gAndGAdminCostOverride?: GAndGAdminCostOverrideDto;
             seismicAcquisitionAndProcessing?: SeismicAcquisitionAndProcessingDto;
             countryOfficeCost?: CountryOfficeCostDto;
             wellProject: WellProjectDto;
@@ -578,6 +579,12 @@ declare namespace Components {
             values?: number /* double */[] | null;
             override?: boolean;
         }
+        export interface CreateGAndGAdminCostOverrideDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            currency?: Currency /* int32 */;
+            override?: boolean;
+        }
         export interface CreateGasInjectorCostProfileOverrideDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -803,7 +810,7 @@ declare namespace Components {
             sum?: number; // double
             epaVersion: string;
             currency: Currency /* int32 */;
-        }
+        }F
         export interface ExplorationWellDto {
             drillingSchedule: DrillingScheduleDto;
             explorationId: string; // uuid
@@ -817,6 +824,7 @@ declare namespace Components {
             appraisalWellCostProfile: AppraisalWellCostProfileDto;
             sidetrackCostProfile: SidetrackCostProfileDto;
             gAndGAdminCost: GAndGAdminCostDto;
+            gAndGAdminCostOverride: GAndGAdminCostOverrideDto;
             seismicAcquisitionAndProcessing: SeismicAcquisitionAndProcessingDto;
             countryOfficeCost: CountryOfficeCostDto;
             rigMobDemob: number; // double
@@ -843,6 +851,15 @@ declare namespace Components {
             sum?: number; // double
             epaVersion: string;
             currency: Currency /* int32 */;
+        }
+        export interface GAndGAdminCostOverrideDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
         }
         export interface GasInjectorCostProfileDto {
             id: string; // uuid
@@ -1590,6 +1607,7 @@ declare namespace Components {
             productionProfileWaterInjection?: UpdateProductionProfileWaterInjectionDto;
             fuelFlaringAndLossesOverride?: UpdateFuelFlaringAndLossesOverrideDto;
             netSalesGasOverride?: UpdateNetSalesGasOverrideDto;
+            importedelectricityOverride?: UpdateImportedElectricityOverrideDto;
             co2EmissionsOverride?: UpdateCo2EmissionsOverrideDto;
             deferredOilProduction?: UpdateDeferredOilProductionDto;
             deferredGasProduction?: UpdateDeferredGasProductionDto;
@@ -1623,6 +1641,7 @@ declare namespace Components {
             name?: string | null;
             rigMobDemob?: number; // double
             currency?: Currency /* int32 */;
+            gAndGAdminCostOverride?: UpdateGAndGAdminCostOverrideDto;
             seismicAcquisitionAndProcessing?: UpdateSeismicAcquisitionAndProcessingDto;
             countryOfficeCost?: UpdateCountryOfficeCostDto;
             explorationWellCostProfile?: UpdateExplorationWellCostProfileDto;
@@ -1632,6 +1651,12 @@ declare namespace Components {
         export interface UpdateFuelFlaringAndLossesOverrideDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
+            override?: boolean;
+        }
+        export interface UpdateGAndGAdminCostOverrideDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            currency?: Currency /* int32 */;
             override?: boolean;
         }
         export interface UpdateGasInjectorCostProfileOverrideDto {
@@ -2677,6 +2702,44 @@ declare namespace Paths {
             export type RequestBody = Components.Schemas.UpdateCountryOfficeCostDto;
             namespace Responses {
                 export type $200 = Components.Schemas.CountryOfficeCostDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdExplorations$ExplorationIdGAndGAndAdminCostOverride {
+        namespace Post {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ExplorationId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                explorationId: Parameters.ExplorationId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.CreateGAndGAdminCostOverrideDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.GAndGAdminCostOverrideDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdExplorations$ExplorationIdGAndGAndAdminCostOverride$CostProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type CostProfileId = string; // uuid
+                export type ExplorationId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                explorationId: Parameters.ExplorationId /* uuid */;
+                costProfileId: Parameters.CostProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateGAndGAdminCostOverrideDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.GAndGAdminCostOverrideDto;
             }
         }
     }

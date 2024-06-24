@@ -83,6 +83,8 @@ public class CaseWithAssetsDto
     public AppraisalWellCostProfileDto? AppraisalWellCostProfile { get; set; }
     public SidetrackCostProfileDto? SidetrackCostProfile { get; set; }
     public GAndGAdminCostDto? GAndGAdminCost { get; set; }
+    public GAndGAdminCostOverrideDto? GAndGAdminCostOverride { get; set; }
+
     public SeismicAcquisitionAndProcessingDto? SeismicAcquisitionAndProcessing { get; set; }
     public CountryOfficeCostDto? CountryOfficeCost { get; set; }
 

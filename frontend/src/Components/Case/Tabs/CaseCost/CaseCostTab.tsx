@@ -97,6 +97,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                             exploration.seismicAcquisitionAndProcessing,
                             exploration.countryOfficeCost,
                             exploration?.gAndGAdminCost,
+                            exploration?.gAndGAdminCostOverride,
                         ], projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
                     }
                 }

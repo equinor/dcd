@@ -86,6 +86,7 @@ public class DcdDbContext : DbContext
     public DbSet<GAndGAdminCost> GAndGAdminCost { get; set; } = null!;
     public DbSet<SeismicAcquisitionAndProcessing> SeismicAcquisitionAndProcessing { get; set; } = null!;
     public DbSet<CountryOfficeCost> CountryOfficeCost { get; set; } = null!;
+    public DbSet<GAndGAdminCostOverride> GAndGAdminCostOverride { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

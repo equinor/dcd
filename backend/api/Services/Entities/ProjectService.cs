@@ -420,6 +420,7 @@ public class ProjectService : IProjectService
                 .Include(c => c.AppraisalWellCostProfile)
                 .Include(c => c.SidetrackCostProfile)
                 .Include(c => c.GAndGAdminCost)
+                .Include(c => c.GAndGAdminCostOverride)
                 .Include(c => c.SeismicAcquisitionAndProcessing)
                 .Include(c => c.CountryOfficeCost)
                 .Include(c => c.ExplorationWells!).ThenInclude(ew => ew.DrillingSchedule)
