@@ -20,12 +20,15 @@ namespace api.Controllers;
 public class TransportsController : ControllerBase
 {
     private readonly ITransportService _transportService;
+    private readonly ITransportTimeSeriesService _transportTimeSeriesService;
 
     public TransportsController(
-        ITransportService transportService
+        ITransportService transportService,
+        ITransportTimeSeriesService transportTimeSeriesService
     )
     {
         _transportService = transportService;
+        _transportTimeSeriesService = transportTimeSeriesService;
     }
 
     [HttpPut("{transportId}")]
@@ -45,7 +48,7 @@ public class TransportsController : ControllerBase
         [FromRoute] Guid transportId,
         [FromBody] CreateTransportCostProfileOverrideDto dto)
     {
-        return await _transportService.CreateTransportCostProfileOverride(caseId, transportId, dto);
+        return await _transportTimeSeriesService.CreateTransportCostProfileOverride(caseId, transportId, dto);
     }
 
     [HttpPut("{transportId}/cost-profile-override/{costProfileId}")]
@@ -56,6 +59,6 @@ public class TransportsController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateTransportCostProfileOverrideDto dto)
     {
-        return await _transportService.UpdateTransportCostProfileOverride(caseId, transportId, costProfileId, dto);
+        return await _transportTimeSeriesService.UpdateTransportCostProfileOverride(caseId, transportId, costProfileId, dto);
     }
 }

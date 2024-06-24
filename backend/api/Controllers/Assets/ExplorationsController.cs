@@ -20,12 +20,15 @@ namespace api.Controllers;
 public class ExplorationsController : ControllerBase
 {
     private readonly IExplorationService _explorationService;
+    private readonly IExplorationTimeSeriesService _explorationTimeSeriesService;
 
     public ExplorationsController(
-        IExplorationService explorationService
+        IExplorationService explorationService,
+        IExplorationTimeSeriesService explorationTimeSeriesService
     )
     {
         _explorationService = explorationService;
+        _explorationTimeSeriesService = explorationTimeSeriesService;
     }
 
     [HttpPut("{explorationId}")]
@@ -46,7 +49,7 @@ public class ExplorationsController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateSeismicAcquisitionAndProcessingDto dto)
     {
-        return await _explorationService.UpdateSeismicAcquisitionAndProcessing(caseId, explorationId, costProfileId, dto);
+        return await _explorationTimeSeriesService.UpdateSeismicAcquisitionAndProcessing(caseId, explorationId, costProfileId, dto);
     }
 
     [HttpPost("{explorationId}/seismic-acquisition-and-processing")]
@@ -56,7 +59,7 @@ public class ExplorationsController : ControllerBase
         [FromRoute] Guid explorationId,
         [FromBody] CreateSeismicAcquisitionAndProcessingDto dto)
     {
-        return await _explorationService.CreateSeismicAcquisitionAndProcessing(caseId, explorationId, dto);
+        return await _explorationTimeSeriesService.CreateSeismicAcquisitionAndProcessing(caseId, explorationId, dto);
     }
 
     [HttpPut("{explorationId}/country-office-cost/{costProfileId}")]
@@ -67,7 +70,7 @@ public class ExplorationsController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateCountryOfficeCostDto dto)
     {
-        return await _explorationService.UpdateCountryOfficeCost(caseId, explorationId, costProfileId, dto);
+        return await _explorationTimeSeriesService.UpdateCountryOfficeCost(caseId, explorationId, costProfileId, dto);
     }
 
     [HttpPost("{explorationId}/country-office-cost")]
@@ -77,7 +80,7 @@ public class ExplorationsController : ControllerBase
         [FromRoute] Guid explorationId,
         [FromBody] CreateCountryOfficeCostDto dto)
     {
-        return await _explorationService.CreateCountryOfficeCost(caseId, explorationId, dto);
+        return await _explorationTimeSeriesService.CreateCountryOfficeCost(caseId, explorationId, dto);
     }
 
     [HttpPut("{explorationId}/well/{wellId}")]

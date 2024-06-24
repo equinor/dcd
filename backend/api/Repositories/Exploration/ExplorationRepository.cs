@@ -50,36 +50,4 @@ public class ExplorationRepository : BaseRepository, IExplorationRepository
     {
         return Update(explorationWell);
     }
-
-    public async Task<SeismicAcquisitionAndProcessing?> GetSeismicAcquisitionAndProcessing(Guid seismicAcquisitionAndProcessingId)
-    {
-        return await Get<SeismicAcquisitionAndProcessing>(seismicAcquisitionAndProcessingId);
-    }
-
-    public SeismicAcquisitionAndProcessing CreateSeismicAcquisitionAndProcessing(SeismicAcquisitionAndProcessing profile)
-    {
-        _context.SeismicAcquisitionAndProcessing.Add(profile);
-        return profile;
-    }
-
-    public CountryOfficeCost CreateCountryOfficeCost(CountryOfficeCost profile)
-    {
-        _context.CountryOfficeCost.Add(profile);
-        return profile;
-    }
-
-    public SeismicAcquisitionAndProcessing UpdateSeismicAcquisitionAndProcessing(SeismicAcquisitionAndProcessing seismicAcquisitionAndProcessing)
-    {
-        return Update(seismicAcquisitionAndProcessing);
-    }
-
-    public async Task<CountryOfficeCost?> GetCountryOfficeCost(Guid countryOfficeCostId)
-    {
-        return await Get<CountryOfficeCost>(countryOfficeCostId);
-    }
-
-    public CountryOfficeCost UpdateCountryOfficeCost(CountryOfficeCost countryOfficeCost)
-    {
-        return Update(countryOfficeCost);
-    }
 }
