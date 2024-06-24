@@ -234,10 +234,10 @@ export function updateObject<T>(object: T | undefined, setObject: Dispatch<SetSt
 }
 
 export const tableCellisEditable = (params: any, editMode: boolean) => {
-    if (params.data.overridable) {
+    if (!params.node.footer && params.data.overridable) {
         return editMode && params.data.override
     }
-    return editMode && params.data.editable
+    return editMode && !params.node.footer && params.data.editable
 }
 
 export const numberValueParser = (params: { newValue: any }) => {

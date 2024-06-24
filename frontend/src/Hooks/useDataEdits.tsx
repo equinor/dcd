@@ -979,6 +979,7 @@ const useDataEdits = (): {
                 {
                     projectId: editThatWillBeUndone.projectId,
                     caseId: editThatWillBeUndone.caseId!,
+                    resourceProfileId: editThatWillBeUndone.resourceProfileId,
                     resourceName: editThatWillBeUndone.resourceName,
                     resourcePropertyKey: editThatWillBeUndone.resourcePropertyKey,
                     value: editThatWillBeUndone.previousValue as string,
@@ -1002,6 +1003,7 @@ const useDataEdits = (): {
                     {
                         projectId: lastEdit.projectId,
                         caseId: lastEdit.caseId!,
+                        resourceProfileId: lastEdit.resourceProfileId,
                         resourceName: lastEdit.resourceName,
                         resourcePropertyKey: lastEdit.resourcePropertyKey,
                         value: lastEdit.newValue as string,
@@ -1020,6 +1022,7 @@ const useDataEdits = (): {
                     {
                         projectId: updatedEdit.projectId,
                         caseId: updatedEdit.caseId!,
+                        resourceProfileId: updatedEdit.resourceProfileId,
                         resourceName: updatedEdit.resourceName,
                         resourcePropertyKey: updatedEdit.resourcePropertyKey,
                         value: updatedEdit.newValue as string,
