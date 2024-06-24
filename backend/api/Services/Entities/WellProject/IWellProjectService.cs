@@ -5,9 +5,7 @@ namespace api.Services;
 
 public interface IWellProjectService
 {
-    Task<WellProjectWithProfilesDto> CopyWellProject(Guid wellProjectId, Guid sourceCaseId);
     Task<WellProject> CreateWellProject(Guid projectId, Guid sourceCaseId, CreateWellProjectDto wellProjectDto);
-    Task<WellProjectWithProfilesDto> UpdateWellProjectAndCostProfiles(WellProjectWithProfilesDto updatedWellProjectDto);
     Task<WellProject> GetWellProject(Guid wellProjectId);
     Task<WellProjectDto> UpdateWellProject(
         Guid caseId,

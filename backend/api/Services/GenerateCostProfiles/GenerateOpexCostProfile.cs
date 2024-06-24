@@ -57,13 +57,33 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         var newWellInterventionCost = await CalculateWellInterventionCostProfile(caseItem, project, drainageStrategy);
         var newOffshoreFacilitiesOperationsCost = await CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, drainageStrategy);
 
-        var wellInterventionCost = caseItem.WellInterventionCostProfile ?? new WellInterventionCostProfile();
-        wellInterventionCost.StartYear = newWellInterventionCost.StartYear;
-        wellInterventionCost.Values = newWellInterventionCost.Values;
+        WellInterventionCostProfile wellInterventionCost;
+        if (caseItem.WellInterventionCostProfileOverride != null)
+        {
+            wellInterventionCost = new WellInterventionCostProfile
+            {
+                StartYear = caseItem.WellInterventionCostProfileOverride.StartYear,
+                Values = caseItem.WellInterventionCostProfileOverride.Values,
+            };
+        }
+        else
+        {
+            wellInterventionCost = newWellInterventionCost;
+        }
 
-        var offshoreFacilitiesOperationsCost = caseItem.OffshoreFacilitiesOperationsCostProfile ?? new OffshoreFacilitiesOperationsCostProfile();
-        offshoreFacilitiesOperationsCost.StartYear = newOffshoreFacilitiesOperationsCost.StartYear;
-        offshoreFacilitiesOperationsCost.Values = newOffshoreFacilitiesOperationsCost.Values;
+        OffshoreFacilitiesOperationsCostProfile offshoreFacilitiesOperationsCost;
+        if (caseItem.OffshoreFacilitiesOperationsCostProfileOverride != null)
+        {
+            offshoreFacilitiesOperationsCost = new OffshoreFacilitiesOperationsCostProfile
+            {
+                StartYear = caseItem.OffshoreFacilitiesOperationsCostProfileOverride.StartYear,
+                Values = caseItem.OffshoreFacilitiesOperationsCostProfileOverride.Values,
+            };
+        }
+        else
+        {
+            offshoreFacilitiesOperationsCost = newOffshoreFacilitiesOperationsCost;
+        }
 
         var historicCost = caseItem.HistoricCostCostProfile ?? new HistoricCostCostProfile();
         var onshoreRelatedOPEXCost = caseItem.OnshoreRelatedOPEXCostProfile ?? new OnshoreRelatedOPEXCostProfile();
@@ -84,22 +104,25 @@ public class GenerateOpexCostProfile : IGenerateOpexCostProfile
         result.AdditionalOPEXCostProfileDto = additionalOPEXCostDto;
 
         var OPEX = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> {
-            wellInterventionCost,
-            offshoreFacilitiesOperationsCost,
-            historicCost,
-            onshoreRelatedOPEXCost,
-            additionalOPEXCost});
+        wellInterventionCost,
+        offshoreFacilitiesOperationsCost,
+        historicCost,
+        onshoreRelatedOPEXCost,
+        additionalOPEXCost
+    });
 
         var opexCostProfile = new OpexCostProfile
         {
             StartYear = OPEX.StartYear,
             Values = OPEX.Values
         };
+
         var opexDto = _mapper.Map<OpexCostProfileDto>(opexCostProfile);
 
         result.OpexCostProfileDto = opexDto;
         return result;
     }
+
 
     private async Task<int> UpdateCaseAndSave(
         Case caseItem,

@@ -21,34 +21,39 @@ interface ProjectClassification {
     label: string,
     description: string,
     icon: IconData,
-    color: "default" | "active" | "error" | undefined
+    color: "default" | "active" | "error" | undefined,
+    warn: boolean
 }
 
 export const PROJECT_CLASSIFICATION: { [key: number]: ProjectClassification } = {
     0: {
         label: "Open",
-        description: "This project is open. There are no consequences if information is made available for unauthorized persons.",
+        description: "This project is open.\nThere are no consequences if information is made available for unauthorized persons.",
         icon: visibility,
         color: "active",
+        warn: false,
     },
     1: {
         label: "Internal",
-        description: "This project is classified as internal and its information is restricted to Equinor personnel. External sharing requires the project leader's approval.",
+        description: "This project is internal.\nInformation here is restricted to Equinor personnel. External sharing requires the project leader's approval.",
         icon: visibility,
         color: "active",
+        warn: false,
     },
     2: {
         label: "Restricted",
         // eslint-disable-next-line max-len
-        description: "This project is restricted. Information here is not allowed to be shared with unauthrized persons and screenshots should be stored safly and handled according to this classification.",
+        description: "This project is restricted.\nInformation here is not allowed to be shared with unauthorized persons and screenshots should be stored safely and handled according to this classification.",
         icon: lock,
         color: "error",
+        warn: true,
     },
     3: {
         label: "Confidential",
         // eslint-disable-next-line max-len
-        description: "This project is confidential. Information here is not allowed to be shared with unauthrized persons and screenshots should be stored safly and handled according to this classification.",
+        description: "This project is confidential.\nInformation here is not allowed to be shared with unauthorized persons and screenshots should be stored safely and handled according to this classification.",
         icon: lock,
         color: "error",
+        warn: true,
     },
 }

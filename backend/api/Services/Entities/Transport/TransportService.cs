@@ -55,35 +55,6 @@ public class TransportService : ITransportService
         return createdTransport.Entity;
     }
 
-    public async Task<TransportWithProfilesDto> CopyTransport(Guid transportId, Guid sourceCaseId)
-    {
-        var source = await GetTransport(transportId);
-        var newTransportDto = _mapper.Map<TransportWithProfilesDto>(source);
-        if (newTransportDto == null)
-        {
-            throw new ArgumentNullException(nameof(newTransportDto));
-        }
-        newTransportDto.Id = Guid.Empty;
-        if (newTransportDto.CostProfile != null)
-        {
-            newTransportDto.CostProfile.Id = Guid.Empty;
-        }
-        if (newTransportDto.CostProfileOverride != null)
-        {
-            newTransportDto.CostProfileOverride.Id = Guid.Empty;
-        }
-        if (newTransportDto.CessationCostProfile != null)
-        {
-            newTransportDto.CessationCostProfile.Id = Guid.Empty;
-        }
-
-        // var transport = await NewCreateTransport(newTransportDto, sourceCaseId);
-        // var dto = TransportDtoAdapter.Convert(transport);
-
-        // return dto;
-        return newTransportDto;
-    }
-
     private async Task SetCaseLink(Transport transport, Guid sourceCaseId, Project project)
     {
         var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);

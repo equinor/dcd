@@ -5,7 +5,6 @@ namespace api.Services;
 
 public interface ISurfService
 {
-    Task<SurfWithProfilesDto> CopySurf(Guid surfId, Guid sourceCaseId);
     Task<Surf> GetSurf(Guid surfId);
     Task<Surf> CreateSurf(Guid projectId, Guid sourceCaseId, CreateSurfDto surfDto);
     Task<SurfDto> UpdateSurf<TDto>(

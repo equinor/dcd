@@ -40,59 +40,6 @@ public class WellProjectService : IWellProjectService
         _mapperService = mapperService;
     }
 
-    public async Task<WellProjectWithProfilesDto> CopyWellProject(Guid wellProjectId, Guid sourceCaseId)
-    {
-        var source = await GetWellProject(wellProjectId);
-        var newWellProjectDto = _mapper.Map<WellProjectWithProfilesDto>(source);
-        if (newWellProjectDto == null)
-        {
-            _logger.LogError("Failed to map well project to dto");
-            throw new Exception("Failed to map well project to dto");
-        }
-        newWellProjectDto.Id = Guid.Empty;
-
-        if (newWellProjectDto.OilProducerCostProfile != null)
-        {
-            newWellProjectDto.OilProducerCostProfile.Id = Guid.Empty;
-        }
-        if (newWellProjectDto.OilProducerCostProfileOverride != null)
-        {
-            newWellProjectDto.OilProducerCostProfileOverride.Id = Guid.Empty;
-        }
-
-        if (newWellProjectDto.GasProducerCostProfile != null)
-        {
-            newWellProjectDto.GasProducerCostProfile.Id = Guid.Empty;
-        }
-        if (newWellProjectDto.GasProducerCostProfileOverride != null)
-        {
-            newWellProjectDto.GasProducerCostProfileOverride.Id = Guid.Empty;
-        }
-
-        if (newWellProjectDto.WaterInjectorCostProfile != null)
-        {
-            newWellProjectDto.WaterInjectorCostProfile.Id = Guid.Empty;
-        }
-        if (newWellProjectDto.WaterInjectorCostProfileOverride != null)
-        {
-            newWellProjectDto.WaterInjectorCostProfileOverride.Id = Guid.Empty;
-        }
-
-        if (newWellProjectDto.GasInjectorCostProfile != null)
-        {
-            newWellProjectDto.GasInjectorCostProfile.Id = Guid.Empty;
-        }
-        if (newWellProjectDto.GasInjectorCostProfileOverride != null)
-        {
-            newWellProjectDto.GasInjectorCostProfileOverride.Id = Guid.Empty;
-        }
-
-        // var wellProject = await NewCreateWellProject(newWellProjectDto, sourceCaseId);
-        // var dto = WellProjectDtoAdapter.Convert(wellProject);
-        // return dto;
-        return newWellProjectDto;
-    }
-
     public async Task<WellProject> CreateWellProject(Guid projectId, Guid sourceCaseId, CreateWellProjectDto wellProjectDto)
     {
         var wellProject = _mapper.Map<WellProject>(wellProjectDto);
@@ -117,22 +64,6 @@ public class WellProjectService : IWellProjectService
         }
         case_.WellProjectLink = wellProject.Id;
         await _context.SaveChangesAsync();
-    }
-
-    public async Task<WellProjectWithProfilesDto> UpdateWellProjectAndCostProfiles(WellProjectWithProfilesDto updatedWellProjectDto)
-    {
-        var existing = await GetWellProject(updatedWellProjectDto.Id);
-        _mapper.Map(updatedWellProjectDto, existing);
-
-        var updatedWellProject = _context.WellProjects!.Update(existing);
-        await _context.SaveChangesAsync();
-        var dto = _mapper.Map<WellProjectWithProfilesDto>(updatedWellProject);
-        if (dto == null)
-        {
-            _logger.LogError("Failed to map well project to dto");
-            throw new Exception("Failed to map well project to dto");
-        }
-        return dto;
     }
 
     public async Task<WellProject> GetWellProject(Guid wellProjectId)

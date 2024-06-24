@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import styled from "styled-components"
 import {
     Icon,
     Button,
@@ -150,7 +151,7 @@ const Controls = () => {
                 </Grid>
             </Grid>
             <Grid item>
-                <UndoControls />
+                {editMode && <UndoControls />}
             </Grid>
             {projectCase && (
                 <Grid item>
