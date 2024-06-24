@@ -20,12 +20,15 @@ namespace api.Controllers;
 public class SurfsController : ControllerBase
 {
     private readonly ISurfService _surfService;
+    private readonly ISurfTimeSeriesService _surfTimeSeriesService;
 
     public SurfsController(
-        ISurfService surfService
+        ISurfService surfService,
+        ISurfTimeSeriesService surfTimeSeriesService
     )
     {
         _surfService = surfService;
+        _surfTimeSeriesService = surfTimeSeriesService;
     }
 
     [HttpPut("{surfId}")]
@@ -45,7 +48,7 @@ public class SurfsController : ControllerBase
         [FromRoute] Guid surfId,
         [FromBody] CreateSurfCostProfileOverrideDto dto)
     {
-        return await _surfService.CreateSurfCostProfileOverride(caseId, surfId, dto);
+        return await _surfTimeSeriesService.CreateSurfCostProfileOverride(caseId, surfId, dto);
     }
 
     [HttpPut("{surfId}/cost-profile-override/{costProfileId}")]
@@ -56,6 +59,6 @@ public class SurfsController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateSurfCostProfileOverrideDto dto)
     {
-        return await _surfService.UpdateSurfCostProfileOverride(caseId, surfId, costProfileId, dto);
+        return await _surfTimeSeriesService.UpdateSurfCostProfileOverride(caseId, surfId, costProfileId, dto);
     }
 }
