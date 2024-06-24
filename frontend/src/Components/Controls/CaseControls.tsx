@@ -1,10 +1,7 @@
-import React, { useRef } from "react"
+import React, { useRef, useEffect, useState } from "react"
 import { useQuery, useQueryClient } from "react-query"
 import {
-    Icon,
-    Button,
-    Input,
-    Typography,
+    Icon, Button, Input, Typography,
 } from "@equinor/eds-core-react"
 import { arrow_back } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid"
@@ -18,18 +15,20 @@ import { GetProjectService } from "../../Services/ProjectService"
 import useDataEdits from "../../Hooks/useDataEdits"
 
 interface props {
-    backToProject: () => void
-    projectId: string
-    caseId: string
+    backToProject: () => void;
+    projectId: string;
+    caseId: string;
 }
 
 const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => {
-    const nameInput = useRef<any>(null)
+    const nameInputRef = useRef<HTMLInputElement>(null)
     const { project, setProject } = useProjectContext()
     const { setSnackBarMessage, editMode } = useAppContext()
     const { addEdit } = useDataEdits()
 
     const queryClient = useQueryClient()
+
+    const [caseName, setCaseName] = useState("")
 
     const fetchCaseData = async () => {
         const caseService = await GetCaseService()
@@ -252,6 +251,12 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
 
     const caseData = apiData?.case
 
+    useEffect(() => {
+        if (caseData?.name) {
+            setCaseName(caseData.name)
+        }
+    }, [caseData?.name])
+
     const handleCaseNameChange = (name: string) => {
         if (caseData) {
             addEdit({
@@ -289,44 +294,35 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
     return (
         <>
             <Grid item xs={0}>
-                <Button
-                    onClick={backToProject}
-                    variant="ghost_icon"
-                >
+                <Button onClick={backToProject} variant="ghost_icon">
                     <Icon data={arrow_back} />
                 </Button>
             </Grid>
 
             <Grid item xs display="flex" alignItems="center" gap={1}>
-                {editMode
-                    ? (
-                        <>
-                            <ChooseReferenceCase
-                                projectRefCaseId={project?.referenceCaseId}
-                                projectCaseId={caseId}
-                                handleReferenceCaseChange={() => handleReferenceCaseChange(caseId)}
-                            />
-                            <Input // todo: should not be allowed to be empty
-                                ref={nameInput}
-                                type="text"
-                                defaultValue={caseData.name}
-                                onBlur={() => handleCaseNameChange(nameInput.current.value)}
-                            />
-                        </>
-                    )
-                    : (
-                        <>
-                            {project?.referenceCaseId === caseId && (
-                                <ReferenceCaseIcon />
-                            )}
-                            <Typography variant="h4">
-                                {caseData.name}
-                            </Typography>
-                            <Classification />
-                        </>
-                    )}
+                {editMode ? (
+                    <>
+                        <ChooseReferenceCase
+                            projectRefCaseId={project?.referenceCaseId}
+                            projectCaseId={caseId}
+                            handleReferenceCaseChange={() => handleReferenceCaseChange(caseId)}
+                        />
+                        <Input
+                            ref={nameInputRef}
+                            type="text"
+                            value={caseName}
+                            onChange={(e: any) => setCaseName(e.target.value)}
+                            onBlur={() => handleCaseNameChange(nameInputRef.current?.value || "")}
+                        />
+                    </>
+                ) : (
+                    <>
+                        {project?.referenceCaseId === caseId && <ReferenceCaseIcon />}
+                        <Typography variant="h4">{caseData.name}</Typography>
+                        <Classification />
+                    </>
+                )}
             </Grid>
-
         </>
     )
 }
