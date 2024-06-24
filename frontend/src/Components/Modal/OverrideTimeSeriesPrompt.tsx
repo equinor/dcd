@@ -48,38 +48,45 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
         setIsOpen(!isOpen)
     }
     return (
-        <Modal isOpen={isOpen} title="Warning">
-            <Grid container spacing={1}>
-                <Grid item xs={12}>
-                    <Typography>
-                        Are you sure you want to
-                        {profile.override ? " lock " : " unlock "}
-                        <br />
-                        {profileName.toLowerCase()}
-                        ?
-                        The time series will
-                        <br />
-                        {profile.override ? "be " : "no longer be "}
-                        calculated automatically
-                    </Typography>
+        <Modal
+            isOpen={isOpen}
+            title="Warning"
+            content={(
+                <Grid container spacing={1}>
+                    <Grid item xs={12}>
+                        <Typography>
+                            Are you sure you want to
+                            {profile.override ? " lock " : " unlock "}
+                            <br />
+                            {profileName.toLowerCase()}
+                            ?
+                            The time series will
+                            <br />
+                            {profile.override ? "be " : "no longer be "}
+                            calculated automatically
+                        </Typography>
+                    </Grid>
                 </Grid>
-            </Grid>
-            <Grid container spacing={1} justifyContent="flex-end">
-                <Grid item>
-                    <Button
-                        type="button"
-                        variant="outlined"
-                        onClick={toggleIsOpen}
-                    >
-                        No, cancel
-                    </Button>
+            )}
+            actions={(
+                <Grid container spacing={1} justifyContent="flex-end">
+                    <Grid item>
+                        <Button
+                            type="button"
+                            variant="outlined"
+                            onClick={toggleIsOpen}
+                        >
+                            No, cancel
+                        </Button>
+                    </Grid>
+                    <Grid item>
+                        <Button onClick={toggleLock}>
+                            {`Yes, ${profile.override ? "lock" : "unlock"}`}
+                        </Button>
+                    </Grid>
                 </Grid>
-                <Grid item>
-                    <Button onClick={toggleLock}>
-                        {`Yes, ${profile.override ? "lock" : "unlock"}`}
-                    </Button>
-                </Grid>
-            </Grid>
-        </Modal>
+            )}
+        />
+
     )
 }

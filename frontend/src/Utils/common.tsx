@@ -242,7 +242,7 @@ export const tableCellisEditable = (params: any, editMode: boolean) => {
 
 export const numberValueParser = (params: { newValue: any }) => {
     const { newValue } = params
-    if (typeof newValue === "string") {
+    if (typeof newValue === "string" && newValue !== "") {
         const processedValue = newValue.replace(/\s/g, "").replace(/,/g, ".")
         const numberValue = Number(processedValue)
         if (!Number.isNaN(numberValue)) {

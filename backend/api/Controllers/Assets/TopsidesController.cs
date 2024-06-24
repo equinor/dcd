@@ -20,12 +20,15 @@ namespace api.Controllers;
 public class TopsidesController : ControllerBase
 {
     private readonly ITopsideService _topsideService;
+    private readonly ITopsideTimeSeriesService _topsideTimeSeriesService;
 
     public TopsidesController(
-        ITopsideService topsideService
+        ITopsideService topsideService,
+        ITopsideTimeSeriesService topsideTimeSeriesService
     )
     {
         _topsideService = topsideService;
+        _topsideTimeSeriesService = topsideTimeSeriesService;
     }
 
     [HttpPut("{topsideId}")]
@@ -45,7 +48,7 @@ public class TopsidesController : ControllerBase
         [FromRoute] Guid topsideId,
         [FromBody] CreateTopsideCostProfileOverrideDto dto)
     {
-        return await _topsideService.CreateTopsideCostProfileOverride(caseId, topsideId, dto);
+        return await _topsideTimeSeriesService.CreateTopsideCostProfileOverride(caseId, topsideId, dto);
     }
 
     [HttpPut("{topsideId}/cost-profile-override/{costProfileId}")]
@@ -56,6 +59,6 @@ public class TopsidesController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateTopsideCostProfileOverrideDto dto)
     {
-        return await _topsideService.UpdateTopsideCostProfileOverride(caseId, topsideId, costProfileId, dto);
+        return await _topsideTimeSeriesService.UpdateTopsideCostProfileOverride(caseId, topsideId, costProfileId, dto);
     }
 }
