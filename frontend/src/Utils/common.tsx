@@ -260,7 +260,6 @@ export const getCaseRowStyle = (params: any) => {
 }
 
 export const validateInput = (params: any, editMode: boolean) => {
-    console.log(params)
     const { value, data } = params
     if (tableCellisEditable(params, editMode) && editMode && value) {
         const rule = TABLE_VALIDATION_RULES[data.profileName]
