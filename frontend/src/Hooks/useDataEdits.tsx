@@ -984,7 +984,8 @@ const useDataEdits = (): {
                     resourcePropertyKey: editThatWillBeUndone.resourcePropertyKey,
                     value: editThatWillBeUndone.previousValue as string,
                     resourceId: editThatWillBeUndone.resourceId,
-                    resourceObject: editThatWillBeUndone.newResourceObject as ResourceObject,
+                    resourceObject: editThatWillBeUndone.resourceProfileId
+                    ? updatedEdit?.newResourceObject as ResourceObject : editThatWillBeUndone.newResourceObject as ResourceObject,
                 },
             )
         }
