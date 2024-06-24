@@ -22,7 +22,7 @@ public class ExplorationProfile : Profile
 
         CreateMap<UpdateExplorationDto, Exploration>();
         CreateMap<UpdateExplorationWithProfilesDto, Exploration>();
-        CreateMap<UpdateGAndGAdminCostDto, GAndGAdminCost>();
+        CreateMap<UpdateGAndGAdminCostOverrideDto, GAndGAdminCostOverride>();
         CreateMap<UpdateSeismicAcquisitionAndProcessingDto, SeismicAcquisitionAndProcessing>();
         CreateMap<UpdateCountryOfficeCostDto, CountryOfficeCost>();
         CreateMap<UpdateExplorationWellCostProfileDto, ExplorationWellCostProfile>();

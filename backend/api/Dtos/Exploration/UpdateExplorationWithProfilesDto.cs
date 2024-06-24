@@ -21,9 +21,7 @@ public class UpdateGAndGAdminCostOverrideDto : UpdateTimeSeriesCostDto
 {
     public bool Override { get; set; }
 }
-public class UpdateGAndGAdminCostDto : UpdateTimeSeriesCostDto
-{
-}
+
 public class UpdateSeismicAcquisitionAndProcessingDto : UpdateTimeSeriesCostDto
 {
 }
