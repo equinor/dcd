@@ -185,7 +185,7 @@ const CaseTabTable = ({
                 cellRenderer: ErrorCellRenderer,
                 cellRendererParams: (params: any) => ({
                     value: params.value,
-                    errorMsg: validateInput(params, editMode),
+                    errorMsg: !params.node.footer && validateInput(params, editMode),
                 }),
                 cellStyle: {
                     padding: "0px",
