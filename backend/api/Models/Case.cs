@@ -1,12 +1,39 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
+using api.Services.Observers;
+
 namespace api.Models;
 
 public class Case
 {
+    private List<ICaseObserver> _observers = new List<ICaseObserver>();
+
+    public void RegisterObserver(ICaseObserver observer) => _observers.Add(observer);
+    public void UnregisterObserver(ICaseObserver observer) => _observers.Remove(observer);
+
+    private void NotifyObservers(string propertyName, object oldValue, object newValue)
+    {
+        foreach (var observer in _observers)
+        {
+            observer.Update(this, propertyName, oldValue, newValue);
+        }
+    }
+
     public Guid Id { get; set; }
     public Guid ProjectId { get; set; }
-    public string Name { get; set; } = string.Empty!;
+    private string _name = string.Empty;
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            if (_name != value)
+            {
+                NotifyObservers(nameof(Name), _name, value);
+                _name = value;
+            }
+        }
+    }
     public string Description { get; set; } = string.Empty!;
     public bool ReferenceCase { get; set; }
 

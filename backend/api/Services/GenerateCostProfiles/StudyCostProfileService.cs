@@ -9,7 +9,7 @@ using AutoMapper;
 
 namespace api.Services;
 
-public class StudyCostProfileService : IStudyCostProfileService, ICaseObserver
+public class StudyCostProfileService : IStudyCostProfileService
 {
     private readonly ICaseService _caseService;
     private readonly ILogger<StudyCostProfileService> _logger;
@@ -41,11 +41,6 @@ public class StudyCostProfileService : IStudyCostProfileService, ICaseObserver
         _surfService = surfService;
         _transportService = transportService;
         _mapper = mapper;
-    }
-
-    public void Update(Case caseEntity, string propertyName, object oldValue, object newValue)
-    {
-        Console.WriteLine("GenerateStudyCostPfile: Property {0} changed from {1} to {2}", propertyName, oldValue, newValue);
     }
 
     public async Task<StudyCostProfileWrapperDto> Generate(Guid caseId)
