@@ -14,33 +14,32 @@ using NSubstitute;
 
 using Xunit;
 
-namespace api.Tests.Services
+namespace tests.Services
 {
-    public class DrainageStrategyServiceTests
+    public class DrainageStrategyTimeSeriesServiceTests
     {
-        private readonly IDrainageStrategyService _drainageStrategyService;
+        private readonly IDrainageStrategyTimeSeriesService _drainageStrategyTimeSeriesService;
         private readonly IProjectService _projectService = Substitute.For<IProjectService>();
         private readonly ILoggerFactory _loggerFactory = Substitute.For<ILoggerFactory>();
         private readonly IMapper _mapper = Substitute.For<IMapper>();
-        private readonly IDrainageStrategyRepository _repository = Substitute.For<IDrainageStrategyRepository>();
+        private readonly IDrainageStrategyTimeSeriesRepository _repository = Substitute.For<IDrainageStrategyTimeSeriesRepository>();
+        private readonly IDrainageStrategyRepository _drainageStrategyRepository = Substitute.For<IDrainageStrategyRepository>();
         private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
         private readonly IConversionMapperService _conversionMapperService = Substitute.For<IConversionMapperService>();
         private readonly IProjectRepository _projectRepository = Substitute.For<IProjectRepository>();
 
-        public DrainageStrategyServiceTests()
+        public DrainageStrategyTimeSeriesServiceTests()
         {
             var options = new DbContextOptionsBuilder<DcdDbContext>()
                 .UseInMemoryDatabase(databaseName: "TestDb")
                 .Options;
 
             var context = Substitute.For<DcdDbContext>(options);
-            _drainageStrategyService = new DrainageStrategyService(
-                context,
-                _projectService,
+            _drainageStrategyTimeSeriesService = new DrainageStrategyTimeSeriesService(
                 _loggerFactory,
-                _mapper,
                 _caseRepository,
                 _repository,
+                _drainageStrategyRepository,
                 _conversionMapperService,
                 _projectRepository
             );
@@ -56,9 +55,9 @@ namespace api.Tests.Services
             var createProfileDto = new CreateDeferredGasProductionDto();
 
             var drainageStrategy = new DrainageStrategy();
-            _repository.GetDrainageStrategy(drainageStrategyId).Returns(drainageStrategy);
+            _drainageStrategyRepository.GetDrainageStrategy(drainageStrategyId).Returns(drainageStrategy);
 
-            _repository.DrainageStrategyHasProfile(drainageStrategyId, DrainageStrategyProfileNames.DeferredGasProduction).Returns(false);
+            _drainageStrategyRepository.DrainageStrategyHasProfile(drainageStrategyId, DrainageStrategyProfileNames.DeferredGasProduction).Returns(false);
 
             var project = new Project();
             _projectRepository.GetProject(projectId).Returns(project);
@@ -70,7 +69,7 @@ namespace api.Tests.Services
             _conversionMapperService.MapToDto<DeferredGasProduction, DeferredGasProductionDto>(createdProfile, createdProfile.Id, project.PhysicalUnit).Returns(expectedDto);
 
             // Act
-            var result = await _drainageStrategyService.CreateDeferredGasProduction(projectId, caseId, drainageStrategyId, createProfileDto);
+            var result = await _drainageStrategyTimeSeriesService.CreateDeferredGasProduction(projectId, caseId, drainageStrategyId, createProfileDto);
 
             // Assert
             Assert.Equal(expectedDto, result);
@@ -86,9 +85,9 @@ namespace api.Tests.Services
             var createProfileDto = new CreateDeferredGasProductionDto();
 
             var drainageStrategy = new DrainageStrategy();
-            _repository.GetDrainageStrategy(drainageStrategyId).Returns(drainageStrategy);
+            _drainageStrategyRepository.GetDrainageStrategy(drainageStrategyId).Returns(drainageStrategy);
 
-            _repository.DrainageStrategyHasProfile(drainageStrategyId, DrainageStrategyProfileNames.DeferredGasProduction).Returns(true);
+            _drainageStrategyRepository.DrainageStrategyHasProfile(drainageStrategyId, DrainageStrategyProfileNames.DeferredGasProduction).Returns(true);
 
             var project = new Project();
             _projectRepository.GetProject(projectId).Returns(project);
@@ -100,7 +99,7 @@ namespace api.Tests.Services
             _conversionMapperService.MapToDto<DeferredGasProduction, DeferredGasProductionDto>(createdProfile, createdProfile.Id, project.PhysicalUnit).Returns(expectedDto);
 
             // Act & Assert
-            await Assert.ThrowsAsync<ResourceAlreadyExistsException>(() => _drainageStrategyService.CreateDeferredGasProduction(projectId, caseId, drainageStrategyId, createProfileDto));
+            await Assert.ThrowsAsync<ResourceAlreadyExistsException>(() => _drainageStrategyTimeSeriesService.CreateDeferredGasProduction(projectId, caseId, drainageStrategyId, createProfileDto));
         }
     }
 }

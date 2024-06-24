@@ -5,9 +5,7 @@ namespace api.Services;
 
 public interface IExplorationService
 {
-    Task<ExplorationWithProfilesDto> CopyExploration(Guid explorationId, Guid sourceCaseId);
     Task<Exploration> CreateExploration(Guid projectId, Guid sourceCaseId, CreateExplorationDto explorationDto);
-    Task<ExplorationWithProfilesDto> UpdateExplorationAndCostProfiles(ExplorationWithProfilesDto updatedExplorationDto);
     Task<Exploration> GetExploration(Guid explorationId);
 
     Task<ExplorationDto> UpdateExploration(
