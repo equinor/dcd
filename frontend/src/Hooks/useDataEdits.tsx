@@ -874,6 +874,25 @@ const useDataEdits = (): {
                     )
                 }
                 break
+            case "co2EmissionsOverride":
+                if (!resourceProfileId) {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetDrainageStrategyService()).createProductionProfileCo2EmissionsOverride(projectId, caseId, resourceId!, updatedData!),
+                    )
+                } else {
+                    sucess = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetDrainageStrategyService()).updateProductionProfileCo2EmissionsOverride(projectId, caseId, resourceId!, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
             default:
                 console.log("Service not found")
         }
@@ -985,7 +1004,7 @@ const useDataEdits = (): {
                     value: editThatWillBeUndone.previousValue as string,
                     resourceId: editThatWillBeUndone.resourceId,
                     resourceObject: editThatWillBeUndone.resourceProfileId
-                    ? updatedEdit?.newResourceObject as ResourceObject : editThatWillBeUndone.newResourceObject as ResourceObject,
+                        ? updatedEdit?.newResourceObject as ResourceObject : editThatWillBeUndone.newResourceObject as ResourceObject,
                 },
             )
         }
