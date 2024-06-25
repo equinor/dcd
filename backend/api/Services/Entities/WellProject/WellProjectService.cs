@@ -113,32 +113,79 @@ public class WellProjectService : IWellProjectService
         return dto;
     }
 
-    public async Task<WellProjectWellDto> UpdateWellProjectWell(
+    public async Task<DrillingScheduleDto> UpdateWellProjectWellDrillingSchedule(
         Guid caseId,
         Guid wellProjectId,
         Guid wellId,
-        UpdateWellProjectWellDto updatedWellProjectWellDto
+        Guid drillingScheduleId,
+        UpdateDrillingScheduleDto updatedWellProjectWellDto
     )
     {
-        var existingWellProject = await _repository.GetWellProjectWell(wellProjectId, wellId)
-            ?? throw new NotFoundInDBException($"Well project well with id {wellProjectId} and ${wellId} not found.");
+        var existingDrillingSchedule = await _repository.GetWellProjectWellDrillingSchedule(drillingScheduleId)
+            ?? throw new NotFoundInDBException($"Drilling schedule with {drillingScheduleId} not found.");
 
-        _mapperService.MapToEntity(updatedWellProjectWellDto, existingWellProject, wellProjectId);
+        _mapperService.MapToEntity(updatedWellProjectWellDto, existingDrillingSchedule, drillingScheduleId);
 
-        WellProjectWell updatedWellProject;
+        DrillingSchedule updatedDrillingSchedule;
         try
         {
-            updatedWellProject = _repository.UpdateWellProjectWell(existingWellProject);
+            updatedDrillingSchedule = _repository.UpdateWellProjectWellDrillingSchedule(existingDrillingSchedule);
             await _caseRepository.UpdateModifyTime(caseId);
             await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update well project well with id {wellProjectId} and well id {wellId}.", wellProjectId, wellId);
+            _logger.LogError(ex, "Failed to update drilling schedule with id {drillingScheduleId}", drillingScheduleId);
             throw;
         }
 
-        var dto = _mapperService.MapToDto<WellProjectWell, WellProjectWellDto>(updatedWellProject, wellProjectId);
+        var dto = _mapperService.MapToDto<DrillingSchedule, DrillingScheduleDto>(updatedDrillingSchedule, drillingScheduleId);
+        return dto;
+    }
+
+    public async Task<DrillingScheduleDto> CreateWellProjectWellDrillingSchedule(
+        Guid caseId,
+        Guid wellProjectId,
+        Guid wellId,
+        CreateDrillingScheduleDto updatedWellProjectWellDto
+    )
+    {
+        var existingWellProject = await _repository.GetWellProject(wellProjectId)
+            ?? throw new NotFoundInDBException($"Well project with {wellProjectId} not found.");
+
+        var exsitingWell = await _repository.GetWell(wellId)
+            ?? throw new NotFoundInDBException($"Well with {wellId} not found.");
+
+        DrillingSchedule drillingSchedule = new();
+        var newDrillingSchedule = _mapperService.MapToEntity(updatedWellProjectWellDto, drillingSchedule, wellProjectId);
+
+        WellProjectWell newWellProjectWell = new()
+        {
+            Well = exsitingWell,
+            WellProject = existingWellProject,
+            DrillingSchedule = newDrillingSchedule
+        };
+
+        WellProjectWell createdWellProjectWell;
+        try
+        {
+            createdWellProjectWell = _repository.CreateWellProjectWellDrillingSchedule(newWellProjectWell);
+            await _caseRepository.UpdateModifyTime(caseId);
+            await _repository.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to update drilling schedule with id {drillingScheduleId}", wellProjectId);
+            throw;
+        }
+
+        if (createdWellProjectWell.DrillingSchedule == null)
+        {
+            // TODO: use a more specific exception
+            throw new Exception(nameof(createdWellProjectWell.DrillingSchedule));
+        }
+
+        var dto = _mapperService.MapToDto<DrillingSchedule, DrillingScheduleDto>(createdWellProjectWell.DrillingSchedule, wellProjectId);
         return dto;
     }
 }

@@ -41,6 +41,29 @@ public class WellProjectsController : ControllerBase
         return await _wellProjectService.UpdateWellProject(caseId, wellProjectId, dto);
     }
 
+    [HttpPut("{wellProjectId}/well/{wellId}/drilling-schedule/{drillingScheduleId}")]
+    public async Task<DrillingScheduleDto> UpdateWellProjectWell(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid wellProjectId,
+        [FromRoute] Guid wellId,
+        [FromRoute] Guid drillingScheduleId,
+        [FromBody] UpdateDrillingScheduleDto dto)
+    {
+        return await _wellProjectService.UpdateWellProjectWellDrillingSchedule(caseId, wellProjectId, wellId, drillingScheduleId, dto);
+    }
+
+    [HttpPost("{wellProjectId}/well/{wellId}/drilling-schedule")]
+    public async Task<DrillingScheduleDto> CreateWellProjectWellDrillingSchedule(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid wellProjectId,
+        [FromRoute] Guid wellId,
+        [FromBody] CreateDrillingScheduleDto dto)
+    {
+        return await _wellProjectService.CreateWellProjectWellDrillingSchedule(caseId, wellProjectId, wellId, dto);
+    }
+
     [HttpPut("{wellProjectId}/oil-producer-cost-profile-override/{costProfileId}")]
     public async Task<OilProducerCostProfileOverrideDto> UpdateOilProducerCostProfileOverride(
         [FromRoute] Guid projectId,
@@ -83,17 +106,6 @@ public class WellProjectsController : ControllerBase
         [FromBody] UpdateGasInjectorCostProfileOverrideDto dto)
     {
         return await _wellProjectTimeSeriesService.UpdateGasInjectorCostProfileOverride(caseId, wellProjectId, costProfileId, dto);
-    }
-
-    [HttpPut("{wellProjectId}/well/{wellId}")]
-    public async Task<WellProjectWellDto> UpdateWellProjectWell(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid wellProjectId,
-        [FromRoute] Guid wellId,
-        [FromBody] UpdateWellProjectWellDto dto)
-    {
-        return await _wellProjectService.UpdateWellProjectWell(caseId, wellProjectId, wellId, dto);
     }
 
     [HttpPost("{wellProjectId}/oil-producer-cost-profile-override")]
