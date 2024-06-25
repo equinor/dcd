@@ -11,7 +11,6 @@ import { useAppContext } from "../../../Context/AppContext"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import useDataEdits from "../../../Hooks/useDataEdits"
 import CaseDescriptionTabSkeleton from "./LoadingSkeletons/CaseDescriptionTabSkeleton"
-import { EMPTY_GUID } from "../../../Utils/constants"
 
 const CaseDescriptionTab = () => {
     const { project } = useProjectContext()
