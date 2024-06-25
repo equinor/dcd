@@ -20,6 +20,12 @@ public class WellProjectRepository : BaseRepository, IWellProjectRepository
     {
         return await Get<WellProject>(wellProjectId);
     }
+
+    public async Task<Well?> GetWell(Guid wellId)
+    {
+        return await Get<Well>(wellId);
+    }
+
     public async Task<bool> WellProjectHasProfile(Guid WellProjectId, WellProjectProfileNames profileType)
     {
         Expression<Func<WellProject, bool>> profileExistsExpression = profileType switch
@@ -42,13 +48,19 @@ public class WellProjectRepository : BaseRepository, IWellProjectRepository
         return Update(wellProject);
     }
 
-    public async Task<WellProjectWell?> GetWellProjectWell(Guid wellProjectId, Guid wellId)
+    public async Task<DrillingSchedule?> GetWellProjectWellDrillingSchedule(Guid drillingScheduleId)
     {
-        return await Get<WellProjectWell>(wellId);
+        return await Get<DrillingSchedule>(drillingScheduleId);
     }
 
-    public WellProjectWell UpdateWellProjectWell(WellProjectWell wellProjectWell)
+    public DrillingSchedule UpdateWellProjectWellDrillingSchedule(DrillingSchedule drillingSchedule)
     {
-        return Update(wellProjectWell);
+        return Update(drillingSchedule);
+    }
+
+    public WellProjectWell CreateWellProjectWellDrillingSchedule(WellProjectWell wellProjectWellWithDrillingSchedule)
+    {
+        _context.WellProjectWell.Add(wellProjectWellWithDrillingSchedule);
+        return wellProjectWellWithDrillingSchedule;
     }
 }
