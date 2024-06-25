@@ -1,6 +1,7 @@
 
 using api.Models;
 using api.Services;
+using api.Services.GenerateCostProfiles;
 
 namespace api.Services.Observers;
 
@@ -13,11 +14,26 @@ public interface ICaseObserver
 public class CaseObserver : ICaseObserver
 {
     private readonly Lazy<IStudyCostProfileService> _studyCostProfileService;
-    
+    private readonly Lazy<ICo2EmissionsProfileService> _co2EmissionsProfileService;
+    private readonly Lazy<IGenerateGAndGAdminCostProfile> _gAndGAdminCostProfileService;
+    private readonly Lazy<IFuelFlaringLossesProfileService> _fuelFlaringLossesProfileService;
+    private readonly Lazy<IImportedElectricityProfileService> _importedElectricityProfileService;
 
-    public CaseObserver(Lazy<IStudyCostProfileService> studyCostProfileService)
+
+
+    public CaseObserver(
+        Lazy<IStudyCostProfileService> studyCostProfileService,
+        Lazy<ICo2EmissionsProfileService> co2EmissionsProfileService,
+        Lazy<IGenerateGAndGAdminCostProfile> gAndGAdminCostProfileService,
+        Lazy<IFuelFlaringLossesProfileService> fuelFlaringLossesProfileService,
+        Lazy<IImportedElectricityProfileService> importedElectricityProfileService
+        )
     {
         _studyCostProfileService = studyCostProfileService;
+        _co2EmissionsProfileService = co2EmissionsProfileService;
+        _gAndGAdminCostProfileService = gAndGAdminCostProfileService;
+        _fuelFlaringLossesProfileService = fuelFlaringLossesProfileService;
+        _importedElectricityProfileService = importedElectricityProfileService;
     }
 
     public void Update(Case caseEntity, string propertyName, object oldValue, object newValue)
