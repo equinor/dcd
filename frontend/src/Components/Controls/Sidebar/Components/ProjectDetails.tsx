@@ -4,6 +4,7 @@ import {
     Tooltip,
     Typography,
     Icon,
+    Divider,
 } from "@equinor/eds-core-react"
 import { useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
@@ -68,7 +69,7 @@ const ProjectDetails: React.FC = () => {
                                 >
                                     {sidebarOpen
                                         ? "Case edit history"
-                                    : <Tooltip title="Case edit history" placement="right"><Icon data={settings} /></Tooltip>}
+                                        : <Tooltip title="Case edit history" placement="right"><Icon data={settings} /></Tooltip>}
                                 </TimelineElement>
                             </Grid>
                             <Grid item>
@@ -83,7 +84,9 @@ const ProjectDetails: React.FC = () => {
                                 </TimelineElement>
                             </Grid>
                         </Timeline>
-
+                        <Grid item xs={12}>
+                            <Divider />
+                        </Grid>
                     </Grid>
                 )}
         </div>
