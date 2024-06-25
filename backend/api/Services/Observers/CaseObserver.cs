@@ -13,6 +13,7 @@ public interface ICaseObserver
 public class CaseObserver : ICaseObserver
 {
     private readonly Lazy<IStudyCostProfileService> _studyCostProfileService;
+    
 
     public CaseObserver(Lazy<IStudyCostProfileService> studyCostProfileService)
     {
@@ -26,7 +27,7 @@ public class CaseObserver : ICaseObserver
         // Assuming you want to recalculate StudyCost when the Name property changes
         if (propertyName == nameof(Case.Name))
         {
-            _studyCostProfileService.Value.Generate(caseEntity.Id);
+            _studyCostProfileService.Value.Generate(caseEntity);
         }
     }
 }

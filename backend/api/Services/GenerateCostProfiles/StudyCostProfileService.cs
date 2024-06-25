@@ -46,6 +46,11 @@ public class StudyCostProfileService : IStudyCostProfileService
     public async Task<StudyCostProfileWrapperDto> Generate(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
+        return await Generate(caseItem);
+    }
+
+    public async Task<StudyCostProfileWrapperDto> Generate(Case caseItem)
+    {
 
         var sumFacilityCost = await SumAllCostFacility(caseItem);
         var sumWellCost = await SumWellCost(caseItem);
