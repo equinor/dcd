@@ -157,6 +157,12 @@ const CaseTabTable = ({
                 aggFunc: () => totalRowName ?? "Total",
             },
             {
+                field: "unit",
+                headerName: "Unit",
+                hide: true,
+                width: 100,
+            },
+            {
                 field: "total",
                 flex: 2,
                 editable: false,
@@ -299,7 +305,7 @@ const CaseTabTable = ({
 
     const defaultExcelExportParams = useMemo(() => {
         const yearColumnKeys = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => (tableYears[0] + i).toString())
-        const columnKeys = ["profileName", ...yearColumnKeys, "total"]
+        const columnKeys = ["profileName", "unit", ...yearColumnKeys, "total"]
         return {
             columnKeys,
             fileName: "export.xlsx",
