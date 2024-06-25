@@ -415,16 +415,7 @@ const CaseView = () => {
                             <CaseDescriptionTab />
                         </CasePanel>
                         <CasePanel>
-                            <CaseProductionProfilesTab
-                                drainageStrategy={drainageStrategy}
-                                setDrainageStrategy={setDrainageStrategy}
-                                fuelFlaringAndLosses={fuelFlaringAndLosses}
-                                setFuelFlaringAndLosses={setFuelFlaringAndLosses}
-                                netSalesGas={netSalesGas}
-                                setNetSalesGas={setNetSalesGas}
-                                importedElectricity={importedElectricity}
-                                setImportedElectricity={setImportedElectricity}
-                            />
+                            <CaseProductionProfilesTab />
                         </CasePanel>
                         <CasePanel>
                             <CaseScheduleTab />

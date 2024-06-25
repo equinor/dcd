@@ -140,10 +140,15 @@ const Overview = () => {
                     isOpen={projectClassificationWarning}
                     size="sm"
                     title={`Attention - ${PROJECT_CLASSIFICATION[project.classification].label} project`}
-                >
-                    <Typography>{PROJECT_CLASSIFICATION[project.classification].description}</Typography>
-                    <Button onClick={() => addVisitedProject()}>OK</Button>
-                </Modal>
+                    content={(
+                        <Typography key="text">
+                            {PROJECT_CLASSIFICATION[project.classification].description}
+                        </Typography>
+                    )}
+                    actions={
+                        <Button key="ok" onClick={() => addVisitedProject()}>OK</Button>
+                    }
+                />
             )}
         </>
     )

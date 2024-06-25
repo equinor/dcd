@@ -50,6 +50,27 @@ public class ExplorationsController : ControllerBase
         [FromBody] UpdateGAndGAdminCostOverrideDto dto)
     {
         return await _explorationTimeSeriesService.UpdateGAndGAdminCostOverride(caseId, explorationId, costProfileId, dto);
+    [HttpPut("{explorationId}/wells/{wellId}/drilling-schedule/{drillingScheduleId}")]
+    public async Task<DrillingScheduleDto> UpdateExplorationWellDrillingSchedule(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid explorationId,
+        [FromRoute] Guid wellId,
+        [FromRoute] Guid drillingScheduleId,
+        [FromBody] UpdateDrillingScheduleDto dto)
+    {
+        return await _explorationService.UpdateExplorationWellDrillingSchedule(caseId, explorationId, wellId, drillingScheduleId, dto);
+    }
+
+    [HttpPost("{explorationId}/wells/{wellId}/drilling-schedule")]
+    public async Task<DrillingScheduleDto> CreateExplorationWellDrillingSchedule(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid explorationId,
+        [FromRoute] Guid wellId,
+        [FromBody] CreateDrillingScheduleDto dto)
+    {
+        return await _explorationService.CreateExplorationWellDrillingSchedule(caseId, explorationId, wellId, dto);
     }
 
     [HttpPut("{explorationId}/seismic-acquisition-and-processing/{costProfileId}")]
@@ -102,16 +123,5 @@ public class ExplorationsController : ControllerBase
         [FromBody] CreateCountryOfficeCostDto dto)
     {
         return await _explorationTimeSeriesService.CreateCountryOfficeCost(caseId, explorationId, dto);
-    }
-
-    [HttpPut("{explorationId}/well/{wellId}")]
-    public async Task<ExplorationWellDto> UpdateExplorationWell(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid explorationId,
-        [FromRoute] Guid wellId,
-        [FromBody] UpdateExplorationWellDto dto)
-    {
-        return await _explorationService.UpdateExplorationWell(caseId, explorationId, wellId, dto);
     }
 }

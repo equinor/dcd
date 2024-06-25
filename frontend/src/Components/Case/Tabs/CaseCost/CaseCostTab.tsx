@@ -107,15 +107,6 @@ const CaseCostTab = (): React.ReactElement | null => {
         })()
     }, [activeTabCase])
 
-    const { data: caseData } = useQuery<Components.Schemas.CaseDto | undefined>(
-        [{ projectId, caseId, resourceId: "" }],
-        () => queryClient.getQueryData([{ projectId, caseId, resourceId: "" }]),
-        {
-            enabled: !!project && !!projectId,
-            initialData: () => queryClient.getQueryData([{ projectId: project?.id, caseId, resourceId: "" }]) as Components.Schemas.CaseDto,
-        },
-    )
-
     const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
         ["apiData", { projectId, caseId }],
         () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
@@ -126,10 +117,11 @@ const CaseCostTab = (): React.ReactElement | null => {
     )
 
     const surfData = apiData?.surf as Components.Schemas.SurfWithProfilesDto
+    const caseData = apiData?.case as Components.Schemas.CaseDto
 
     if (activeTabCase !== 5) { return null }
 
-    if (!caseData || !surfData) {
+    if (!caseData || !surfData || !apiData) {
         return <p>loading....</p>
     }
 
@@ -149,6 +141,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     studyGridRef={studyGridRef}
                     alignedGridsRef={alignedGridsRef}
+                    caseData={caseData}
+                    apiData={apiData}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -156,6 +150,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     opexGridRef={opexGridRef}
                     alignedGridsRef={alignedGridsRef}
+                    caseData={caseData}
+                    apiData={apiData}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -163,6 +159,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     cessationGridRef={cessationGridRef}
                     alignedGridsRef={alignedGridsRef}
+                    caseData={caseData}
+                    apiData={apiData}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -170,6 +168,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     capexGridRef={capexGridRef}
                     alignedGridsRef={alignedGridsRef}
+                    caseData={caseData}
+                    apiData={apiData}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -177,6 +177,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     developmentWellsGridRef={developmentWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
+                    caseData={caseData}
+                    apiData={apiData}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -184,6 +186,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     explorationWellsGridRef={explorationWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
+                    caseData={caseData}
+                    apiData={apiData}
                 />
             </Grid>
         </Grid>

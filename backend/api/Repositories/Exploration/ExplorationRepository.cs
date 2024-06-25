@@ -21,6 +21,11 @@ public class ExplorationRepository : BaseRepository, IExplorationRepository
         return await Get<Exploration>(explorationId);
     }
 
+    public async Task<Well?> GetWell(Guid wellId)
+    {
+        return await Get<Well>(wellId);
+    }
+
     public async Task<bool> ExplorationHasProfile(Guid ExplorationId, ExplorationProfileNames profileType)
     {
         Expression<Func<Exploration, bool>> profileExistsExpression = profileType switch
@@ -47,8 +52,19 @@ public class ExplorationRepository : BaseRepository, IExplorationRepository
         return await _context.ExplorationWell.FindAsync(explorationId, wellId);
     }
 
-    public ExplorationWell UpdateExplorationWell(ExplorationWell explorationWell)
+    public async Task<DrillingSchedule?> GetExplorationWellDrillingSchedule(Guid drillingScheduleId)
     {
-        return Update(explorationWell);
+        return await Get<DrillingSchedule>(drillingScheduleId);
+    }
+
+    public DrillingSchedule UpdateExplorationWellDrillingSchedule(DrillingSchedule drillingSchedule)
+    {
+        return Update(drillingSchedule);
+    }
+
+    public ExplorationWell CreateExplorationWellDrillingSchedule(ExplorationWell explorationWellWithDrillingSchedule)
+    {
+        _context.ExplorationWell.Add(explorationWellWithDrillingSchedule);
+        return explorationWellWithDrillingSchedule;
     }
 }
