@@ -1,11 +1,12 @@
 import React, { Dispatch, SetStateAction } from "react"
 import { lock, lock_open } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
+import { ProfileNames } from "../../../Models/Interfaces"
 
 interface LockIconProps {
     clickedElement: any
     setOverrideModalOpen: Dispatch<SetStateAction<boolean>>
-    setOverrideModalProfileName: Dispatch<SetStateAction<string>>
+    setOverrideModalProfileName: Dispatch<SetStateAction<ProfileNames | undefined>>
     setOverrideModalProfileSet: Dispatch<SetStateAction<any | undefined>>
     setOverrideProfile: Dispatch<SetStateAction<any | undefined>>
 }
@@ -22,14 +23,20 @@ const LockIcon: React.FC<LockIconProps> = ({
             setOverrideModalOpen(true)
             setOverrideModalProfileName(params.data.profileName)
             setOverrideModalProfileSet(() => params.data.overrideProfileSet)
-            setOverrideProfile(params.data.overrideProfile)
+            setOverrideProfile({
+                ...params.data.overrideProfile,
+                resourceId: params.data.resourceId,
+                resourceName: params.data.resourceName,
+                overridable: params.data.overridable,
+                editable: params.data.editable,
+            })
 
             params.api.redrawRows()
             params.api.refreshCells()
         }
     }
 
-    if (clickedElement.data?.overrideProfileSet !== undefined) {
+    if (clickedElement.data?.overridable) {
         return (clickedElement.data.overrideProfile?.override) ? (
             <Icon
                 data={lock_open}
@@ -45,9 +52,6 @@ const LockIcon: React.FC<LockIconProps> = ({
                     onClick={() => handleLockIconClick(clickedElement)}
                 />
             )
-    }
-    if (clickedElement.data && !clickedElement?.data?.set) {
-        return <Icon data={lock} color="#007079" />
     }
     return null
 }
