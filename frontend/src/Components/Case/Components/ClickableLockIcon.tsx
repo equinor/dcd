@@ -19,7 +19,6 @@ const LockIcon: React.FC<LockIconProps> = ({
     setOverrideProfile,
 }) => {
     const handleLockIconClick = (params: any) => {
-        console.log("params: ", params)
         if (params?.data?.override !== undefined) {
             setOverrideModalOpen(true)
             setOverrideModalProfileName(params.data.profileName)
