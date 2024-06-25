@@ -125,6 +125,8 @@ const CaseScheduleTab = () => {
 
         console.log("new case object after adding edits", newCaseObject)
 
+        console.log("new case object after adding edits", newCaseObject)
+
         return newCaseObject
     }
 
@@ -134,6 +136,7 @@ const CaseScheduleTab = () => {
         const newDate = Number.isNaN(new Date(dateValue).getTime())
             ? defaultDate()
             : new Date(dateValue)
+        console.log("previous object", caseData)
 
         const dg0Object = dateKey === "dG0Date" ? getDGOChangesObject(newDate) : undefined
         const caseDataObject = caseData as any

@@ -35,6 +35,7 @@ interface AddEditParams {
     previousDisplayValue?: string | number | undefined;
     newResourceObject?: ResourceObject;
     previousResourceObject?: ResourceObject;
+    previousResourceObject?: ResourceObject;
 }
 
 const useDataEdits = (): {
