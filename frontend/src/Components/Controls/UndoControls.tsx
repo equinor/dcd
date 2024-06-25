@@ -106,7 +106,7 @@ const UndoControls: React.FC = () => {
         }
     }, [undoEdit, redoEdit, canUndo, canRedo])
 
-    if (!caseEditsBelongingToCurrentCase || caseEditsBelongingToCurrentCase.length === 0) { return null }
+    // if (!caseEditsBelongingToCurrentCase || caseEditsBelongingToCurrentCase.length === 0) { return null }
     return (
         <Container>
             {
@@ -126,7 +126,7 @@ const UndoControls: React.FC = () => {
                         </Tooltip>
                     )
             }
-            <Tooltip title="Undo">
+            <Tooltip title={canUndo() ? "Undo" : "No changes to undo"}>
                 <Button
                     variant="ghost_icon"
                     onClick={undoEdit}
@@ -135,7 +135,7 @@ const UndoControls: React.FC = () => {
                     <Icon data={undo} />
                 </Button>
             </Tooltip>
-            <Tooltip title="Redo">
+            <Tooltip title={canRedo() ? "Redo" : "No changes to redo"}>
                 <Button
                     variant="ghost_icon"
                     onClick={redoEdit}
