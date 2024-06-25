@@ -6,7 +6,7 @@ namespace api.Dtos;
 public class ExplorationWellDto
 {
     [Required]
-    public DrillingScheduleDto? DrillingSchedule { get; set; }
+    public DrillingScheduleDto DrillingSchedule { get; set; } = new DrillingScheduleDto();
     [Required]
     public Guid ExplorationId { get; set; } = Guid.Empty!;
     [Required]
