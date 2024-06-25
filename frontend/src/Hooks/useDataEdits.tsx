@@ -35,7 +35,6 @@ interface AddEditParams {
     previousDisplayValue?: string | number | undefined;
     newResourceObject?: ResourceObject;
     previousResourceObject?: ResourceObject;
-    previousResourceObject?: ResourceObject;
 }
 
 const useDataEdits = (): {
@@ -983,9 +982,9 @@ const useDataEdits = (): {
                     resourcePropertyKey: editThatWillBeUndone.resourcePropertyKey,
                     value: editThatWillBeUndone.previousValue as string,
                     resourceId: editThatWillBeUndone.resourceId,
-                    resourceObject: editThatWillBeUndone.previousResourceObject as ResourceObject,
-                    // editThatWillBeUndone.resourceProfileId
-                    // ? updatedEdit?.newResourceObject as ResourceObject : editThatWillBeUndone.newResourceObject as ResourceObject,
+                    // resourceObject: editThatWillBeUndone.previousResourceObject as ResourceObject,
+                    resourceObject: editThatWillBeUndone.resourceProfileId
+                        ? updatedEdit?.newResourceObject as ResourceObject : editThatWillBeUndone.newResourceObject as ResourceObject,
                 },
             )
         }
