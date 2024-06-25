@@ -41,6 +41,8 @@ const CaseCO2Tab = () => {
     const co2EmissionsOverrideData = apiData?.co2EmissionsOverride
     const co2EmissionsData = apiData?.co2Emissions as Components.Schemas.Co2EmissionsDto
 
+    if (!caseData || !drainageStrategyData || !topsideData) { return null }
+
     // todo: get co2Intensity, co2IntensityTotal and co2DrillingFlaringFuelTotals stored in backend
     const [co2Intensity, setCo2Intensity] = useState<Components.Schemas.Co2IntensityDto>()
     const [co2IntensityTotal, setCo2IntensityTotal] = useState<number>(0)
@@ -147,7 +149,7 @@ const CaseCO2Tab = () => {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-    }, [activeTabCase, co2Intensity])
+    }, [activeTabCase])
 
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
