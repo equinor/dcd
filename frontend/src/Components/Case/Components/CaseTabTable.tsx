@@ -190,29 +190,16 @@ const CaseTabTable = ({
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
-    const onBtnExport = useCallback(() => {
-        // Generate an array of year strings based on the tableYears range
-        const yearColumnKeys = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => (tableYears[0] + i).toString())
-
-        // Include 'profileName' and 'total' along with the year columns
-        const columnKeys = ["profileName", ...yearColumnKeys, "total"]
-
-        gridRef.current.api.exportDataAsExcel({
-            columnKeys,
-            fileName: "export.xlsx",
-        })
-    }, [tableYears])
-
     const handleCellValueChange = (p: any) => {
         /* helpers for finding right data to register in history tracker
 
-        const cellName = p.colDef
-        const columnName = p.colDef.headerName
+        const cellName = p.colDef;
+        const columnName = p.colDef.headerName;
 
-        console.log(cellName)
-        console.log(columnName)
-        console.log(p.newValue)
-        console.log(p.oldValue)
+        console.log(cellName);
+        console.log(columnName);
+        console.log(p.newValue);
+        console.log(p.oldValue);
         */
         const properties = Object.keys(p.data)
         const tableTimeSeriesValues: any[] = []
@@ -282,6 +269,15 @@ const CaseTabTable = ({
         params.api.setGridOption("rowData", generateRowData)
     }, [])
 
+    const defaultExcelExportParams = useMemo(() => {
+        const yearColumnKeys = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => (tableYears[0] + i).toString())
+        const columnKeys = ["profileName", ...yearColumnKeys, "total"]
+        return {
+            columnKeys,
+            fileName: "export.xlsx",
+        }
+    }, [tableYears])
+
     return (
         <>
             <OverrideTimeSeriesPrompt
@@ -297,8 +293,6 @@ const CaseTabTable = ({
                         display: "flex", flexDirection: "column", width: "100%",
                     }}
                 >
-                    <button type="button" onClick={onBtnExport}>Export to Excel</button>
-
                     <AgGridReact
                         ref={gridRef}
                         rowData={gridRowData}
@@ -318,6 +312,7 @@ const CaseTabTable = ({
                         suppressLastEmptyLineOnPaste
                         stopEditingWhenCellsLoseFocus
                         onGridReady={onGridReady}
+                        defaultExcelExportParams={defaultExcelExportParams}
                     />
                 </div>
             </div>
