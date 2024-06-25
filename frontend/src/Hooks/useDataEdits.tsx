@@ -322,29 +322,29 @@ const useDataEdits = (): {
             console.log("asset id is required for this service")
             return false
         }
-        let sucess = false
+        let success = false
         switch (resourceName) {
             case "case":
-                sucess = await updateCase(projectId, caseId, resourcePropertyKey, value, resourceObject)
+                success = await updateCase(projectId, caseId, resourcePropertyKey, value, resourceObject)
                 break
             case "topside":
-                sucess = await updateTopside(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
+                success = await updateTopside(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
                 break
             case "surf":
-                sucess = await updateSurf(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
+                success = await updateSurf(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
                 break
             case "substructure":
-                sucess = await updateSubstructure(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
+                success = await updateSubstructure(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
                 break
             case "transport":
-                sucess = await updateTransport(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
+                success = await updateTransport(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
                 break
             case "drainageStrategy":
-                sucess = await updateDrainageStrategy(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
+                success = await updateDrainageStrategy(projectId, caseId, resourceId!, resourcePropertyKey, value, resourceObject)
                 break
             case "productionProfileOil":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -352,7 +352,7 @@ const useDataEdits = (): {
                         await (await GetDrainageStrategyService()).createProductionProfileOil(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -363,7 +363,7 @@ const useDataEdits = (): {
                 break
             case "productionProfileGas":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -371,7 +371,7 @@ const useDataEdits = (): {
                         await (await GetDrainageStrategyService()).createProductionProfileGas(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -382,7 +382,7 @@ const useDataEdits = (): {
                 break
             case "productionProfileWater":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -390,7 +390,7 @@ const useDataEdits = (): {
                         await (await GetDrainageStrategyService()).createProductionProfileWater(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -401,7 +401,7 @@ const useDataEdits = (): {
                 break
             case "productionProfileWaterInjection":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -409,7 +409,7 @@ const useDataEdits = (): {
                         await (await GetDrainageStrategyService()).createProductionProfileWaterInjection(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -420,7 +420,7 @@ const useDataEdits = (): {
                 break
             case "productionProfileFuelFlaringAndLossesOverride":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -428,7 +428,7 @@ const useDataEdits = (): {
                         await (await GetDrainageStrategyService()).createProductionProfileFuelFlaringAndLossesOverride(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -439,7 +439,7 @@ const useDataEdits = (): {
                 break
             case "productionProfileNetSalesGasOverride":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -447,7 +447,7 @@ const useDataEdits = (): {
                         await (await GetDrainageStrategyService()).createProductionProfileNetSalesGasOverride(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -458,7 +458,7 @@ const useDataEdits = (): {
                 break
             case "productionProfileImportedElectricityOverride":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -466,7 +466,7 @@ const useDataEdits = (): {
                         await (await GetDrainageStrategyService()).createProductionProfileImportedElectricityOverride(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -477,7 +477,7 @@ const useDataEdits = (): {
                 break
             case "deferredOilProduction":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -485,7 +485,7 @@ const useDataEdits = (): {
                         await (await GetDrainageStrategyService()).createDeferredOilProduction(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -496,7 +496,7 @@ const useDataEdits = (): {
                 break
             case "deferredGasProduction":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -504,7 +504,7 @@ const useDataEdits = (): {
                         await (await GetDrainageStrategyService()).createDeferredGasProduction(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -515,7 +515,7 @@ const useDataEdits = (): {
                 break
             case "totalFeasibilityAndConceptStudiesOverride":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -523,7 +523,7 @@ const useDataEdits = (): {
                         await (await GetCaseService()).createTotalFeasibilityAndConceptStudiesOverride(projectId, caseId, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -534,7 +534,7 @@ const useDataEdits = (): {
                 break
             case "totalFEEDStudiesOverride":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -542,7 +542,7 @@ const useDataEdits = (): {
                         await (await GetCaseService()).createTotalFEEDStudiesOverride(projectId, caseId, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -553,7 +553,7 @@ const useDataEdits = (): {
                 break
             case "historicCostCostProfile":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -561,7 +561,7 @@ const useDataEdits = (): {
                         await (await GetCaseService()).createHistoricCostCostProfile(projectId, caseId, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -572,7 +572,7 @@ const useDataEdits = (): {
                 break
             case "wellInterventionCostProfileOverride":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -580,7 +580,7 @@ const useDataEdits = (): {
                         await (await GetCaseService()).createWellInterventionCostProfileOverride(projectId, caseId, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -591,7 +591,7 @@ const useDataEdits = (): {
                 break
             case "offshoreFacilitiesOperationsCostProfileOverride":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -599,7 +599,7 @@ const useDataEdits = (): {
                         await (await GetCaseService()).createOffshoreFacilitiesOperationsCostProfileOverride(projectId, caseId, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -610,7 +610,7 @@ const useDataEdits = (): {
                 break
             case "onshoreRelatedOPEXCostProfile":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -618,7 +618,7 @@ const useDataEdits = (): {
                         await (await GetCaseService()).createOnshoreRelatedOPEXCostProfile(projectId, caseId, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -629,7 +629,7 @@ const useDataEdits = (): {
                 break
             case "additionalOPEXCostProfile":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -637,7 +637,7 @@ const useDataEdits = (): {
                         await (await GetCaseService()).createAdditionalOPEXCostProfile(projectId, caseId, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -648,7 +648,7 @@ const useDataEdits = (): {
                 break
             case "cessationWellsCostOverride":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -656,7 +656,7 @@ const useDataEdits = (): {
                         await (await GetCaseService()).createCessationWellsCostOverride(projectId, caseId, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -667,7 +667,7 @@ const useDataEdits = (): {
                 break
             case "cessationOffshoreFacilitiesCostOverride":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -675,7 +675,7 @@ const useDataEdits = (): {
                         await (await GetCaseService()).createCessationOffshoreFacilitiesCostOverride(projectId, caseId, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -686,7 +686,7 @@ const useDataEdits = (): {
                 break
             case "surfCostOverride":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -694,7 +694,7 @@ const useDataEdits = (): {
                         await (await GetSurfService()).createSurfCostProfileOverride(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -705,7 +705,7 @@ const useDataEdits = (): {
                 break
             case "topsideCostOverride":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -713,7 +713,7 @@ const useDataEdits = (): {
                         await (await GetTopsideService()).createTopsideCostProfileOverride(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -724,7 +724,7 @@ const useDataEdits = (): {
                 break
             case "substructureCostOverride":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -732,7 +732,7 @@ const useDataEdits = (): {
                         await (await GetSubstructureService()).createSubstructureCostProfileOverride(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -743,7 +743,7 @@ const useDataEdits = (): {
                 break
             case "transportCostOverride":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -751,7 +751,7 @@ const useDataEdits = (): {
                         await (await GetTransportService()).createTransportCostProfileOverride(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -762,7 +762,7 @@ const useDataEdits = (): {
                 break
             case "wellProjectOilProducerCostOverride":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -770,7 +770,7 @@ const useDataEdits = (): {
                         await (await GetWellProjectService()).createOilProducerCostProfileOverride(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -781,7 +781,7 @@ const useDataEdits = (): {
                 break
             case "wellProjectGasProducerCostOverride":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -789,7 +789,7 @@ const useDataEdits = (): {
                         await (await GetWellProjectService()).createGasProducerCostProfileOverride(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -800,7 +800,7 @@ const useDataEdits = (): {
                 break
             case "wellProjectWaterInjectorCostOverride":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -808,7 +808,7 @@ const useDataEdits = (): {
                         await (await GetWellProjectService()).createWaterInjectorCostProfileOverride(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -819,7 +819,7 @@ const useDataEdits = (): {
                 break
             case "wellProjectGasInjectorCostOverride":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -827,7 +827,7 @@ const useDataEdits = (): {
                         await (await GetWellProjectService()).createGasInjectorCostProfileOverride(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -838,7 +838,7 @@ const useDataEdits = (): {
                 break
             case "seismicAcquisitionAndProcessing":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -846,7 +846,7 @@ const useDataEdits = (): {
                         await (await GetExplorationService()).createSeismicAcquisitionAndProcessing(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -857,7 +857,7 @@ const useDataEdits = (): {
                 break
             case "countryOfficeCost":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -865,7 +865,7 @@ const useDataEdits = (): {
                         await (await GetExplorationService()).createCountryOfficeCost(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -876,7 +876,7 @@ const useDataEdits = (): {
                 break
             case "co2EmissionsOverride":
                 if (!resourceProfileId) {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -884,7 +884,7 @@ const useDataEdits = (): {
                         await (await GetDrainageStrategyService()).createProductionProfileCo2EmissionsOverride(projectId, caseId, resourceId!, updatedData!),
                     )
                 } else {
-                    sucess = await createOrUpdateTimeSeriesProfile(
+                    success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
                         resourceId!,
@@ -897,7 +897,7 @@ const useDataEdits = (): {
                 console.log("Service not found")
         }
 
-        return sucess
+        return success
     }
 
     const addToHistoryTracker = async (editInstanceObject: EditInstance, caseId: string) => {
