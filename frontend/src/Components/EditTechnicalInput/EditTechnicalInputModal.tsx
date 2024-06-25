@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react"
 import {
-    Button, Progress, Tabs,
+    Button,
+    Progress,
+    Tabs,
+    Typography,
 } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
+import Dialog from "@mui/material/Dialog"
+import DialogTitle from "@mui/material/DialogTitle"
+import DialogContent from "@mui/material/DialogContent"
+import DialogActions from "@mui/material/DialogActions"
 import WellCostsTab from "./WellCostsTab"
 import PROSPTab from "./PROSPTab"
 import { EMPTY_GUID } from "../../Utils/constants"
@@ -11,7 +18,6 @@ import CO2Tab from "./CO2Tab"
 import { GetTechnicalInputService } from "../../Services/TechnicalInputService"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { useModalContext } from "../../Context/ModalContext"
-import Modal from "../Modal/Modal"
 import { useAppContext } from "../../Context/AppContext"
 
 const {
@@ -33,11 +39,23 @@ const EditTechnicalInputModal = () => {
     const [activeTab, setActiveTab] = useState<number>(0)
     const [deletedWells, setDeletedWells] = useState<string[]>([])
 
-    const [explorationOperationalWellCosts, setExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(project?.explorationOperationalWellCosts)
-    const [developmentOperationalWellCosts, setDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(project?.developmentOperationalWellCosts)
+    const [
+        explorationOperationalWellCosts,
+        setExplorationOperationalWellCosts,
+    ] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(project?.explorationOperationalWellCosts)
+    const [
+        developmentOperationalWellCosts,
+        setDevelopmentOperationalWellCosts,
+    ] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(project?.developmentOperationalWellCosts)
 
-    const [originalExplorationOperationalWellCosts, setOriginalExplorationOperationalWellCosts] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(project?.explorationOperationalWellCosts)
-    const [originalDevelopmentOperationalWellCosts, setOriginalDevelopmentOperationalWellCosts] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(project?.developmentOperationalWellCosts)
+    const [
+        originalExplorationOperationalWellCosts,
+        setOriginalExplorationOperationalWellCosts,
+    ] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(project?.explorationOperationalWellCosts)
+    const [
+        originalDevelopmentOperationalWellCosts,
+        setOriginalDevelopmentOperationalWellCosts,
+    ] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(project?.developmentOperationalWellCosts)
 
     const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => !isExplorationWell(w)) ?? [])
     const [explorationWells, setExplorationWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => isExplorationWell(w)) ?? [])
@@ -150,78 +168,83 @@ const EditTechnicalInputModal = () => {
     }, [technicalModalIsOpen, setTechnicalModalIsOpen])
 
     return (
-        <Modal
-            isOpen={technicalModalIsOpen}
-            title="Technical Input"
+        <Dialog
+            open={technicalModalIsOpen}
             fullWidth
+            maxWidth="lg"
+            className="ConceptApp ag-theme-alpine-fusion"
         >
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <Tabs activeTab={activeTab} onChange={setActiveTab}>
-                        <List>
-                            <Tab>Well Costs</Tab>
-                            <Tab>PROSP</Tab>
-                            <Tab>CO2</Tab>
-                        </List>
-                        <Panels>
-                            <Panel>
-                                <WellCostsTab
-                                    developmentOperationalWellCosts={developmentOperationalWellCosts}
-                                    setDevelopmentOperationalWellCosts={setDevelopmentOperationalWellCosts}
-                                    explorationOperationalWellCosts={explorationOperationalWellCosts}
-                                    setExplorationOperationalWellCosts={setExplorationOperationalWellCosts}
-                                    explorationWells={explorationWells}
-                                    setExplorationWells={setExplorationWells}
-                                    wellProjectWells={wellProjectWells}
-                                    setWellProjectWells={setWellProjectWells}
-                                    setDeletedWells={setDeletedWells}
-                                />
-                            </Panel>
-                            <Panel>
-                                <PROSPTab />
-                            </Panel>
-                            <Panel>
-                                <CO2Tab />
-                            </Panel>
-                        </Panels>
-                    </Tabs>
+            <DialogTitle><Typography variant="h2" as="p">Technical Input</Typography></DialogTitle>
+            <DialogContent>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <Tabs activeTab={activeTab} onChange={setActiveTab}>
+                            <List>
+                                <Tab>Well Costs</Tab>
+                                <Tab>PROSP</Tab>
+                                <Tab>CO2</Tab>
+                            </List>
+                            <Panels>
+                                <Panel>
+                                    <WellCostsTab
+                                        developmentOperationalWellCosts={developmentOperationalWellCosts}
+                                        setDevelopmentOperationalWellCosts={setDevelopmentOperationalWellCosts}
+                                        explorationOperationalWellCosts={explorationOperationalWellCosts}
+                                        setExplorationOperationalWellCosts={setExplorationOperationalWellCosts}
+                                        explorationWells={explorationWells}
+                                        setExplorationWells={setExplorationWells}
+                                        wellProjectWells={wellProjectWells}
+                                        setWellProjectWells={setWellProjectWells}
+                                        setDeletedWells={setDeletedWells}
+                                    />
+                                </Panel>
+                                <Panel>
+                                    <PROSPTab />
+                                </Panel>
+                                <Panel>
+                                    <CO2Tab />
+                                </Panel>
+                            </Panels>
+                        </Tabs>
+                    </Grid>
                 </Grid>
-            </Grid>
-            <Grid container spacing={1} justifyContent="flex-end">
-                <Grid item>
-                    <Button
-                        type="button"
-                        variant="outlined"
-                        onClick={handleCancel}
-                    >
-                        {(editMode || editTechnicalInput) ? "Cancel" : "Close"}
-                    </Button>
-                </Grid>
-                {(editMode || editTechnicalInput) && !isSaving && (
-                    <>
-                        <Grid item>
-                            <Button onClick={handleSave}>Save</Button>
-                        </Grid>
-                        <Grid item>
-                            <Button onClick={handleSaveAndClose}>Save and Close</Button>
-                        </Grid>
-                    </>
-                )}
-                {(editMode || editTechnicalInput) && isSaving && (
+            </DialogContent>
+            <DialogActions>
+                <Grid container spacing={1} justifyContent="flex-end">
                     <Grid item>
-                        <Button>
-                            <Progress.Dots />
+                        <Button
+                            type="button"
+                            variant="outlined"
+                            onClick={handleCancel}
+                        >
+                            {(editMode || editTechnicalInput) ? "Cancel" : "Close"}
                         </Button>
                     </Grid>
-                )}
-                {!(editMode || editTechnicalInput) && (
-                    <Grid item>
-                        <Button onClick={() => setEditTechnicalInput(true)}>Edit</Button>
-                    </Grid>
-                )}
-            </Grid>
-
-        </Modal>
+                    {(editMode || editTechnicalInput) && !isSaving && (
+                        <>
+                            <Grid item>
+                                <Button onClick={handleSave}>Save</Button>
+                            </Grid>
+                            <Grid item>
+                                <Button onClick={handleSaveAndClose}>Save and Close</Button>
+                            </Grid>
+                        </>
+                    )}
+                    {(editMode || editTechnicalInput) && isSaving && (
+                        <Grid item>
+                            <Button>
+                                <Progress.Dots />
+                            </Button>
+                        </Grid>
+                    )}
+                    {!(editMode || editTechnicalInput) && (
+                        <Grid item>
+                            <Button onClick={() => setEditTechnicalInput(true)}>Edit</Button>
+                        </Grid>
+                    )}
+                </Grid>
+            </DialogActions>
+        </Dialog>
     )
 }
 

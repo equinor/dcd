@@ -8,7 +8,10 @@ import {
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { ColDef, GridReadyEvent } from "@ag-grid-community/core"
+import { useParams } from "react-router"
+import {
+    CellKeyDownEvent, ColDef, GridReadyEvent,
+} from "@ag-grid-community/core"
 import {
     isInteger,
     tableCellisEditable,
@@ -17,12 +20,14 @@ import {
     validateInput,
 } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
-import { EMPTY_GUID } from "../../../Utils/constants"
 import { useAppContext } from "../../../Context/AppContext"
 import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
 import hideProfilesWithoutValues from "./HideProfilesWithoutValues"
+import { useProjectContext } from "../../../Context/ProjectContext"
+import useDataEdits from "../../../Hooks/useDataEdits"
+import { ProfileNames } from "../../../Models/Interfaces"
 
 interface Props {
     timeSeriesData: any[]
@@ -49,9 +54,12 @@ const CaseTabTable = ({
 }: Props) => {
     const { editMode } = useAppContext()
     const styles = useStyles()
+    const { project } = useProjectContext()
+    const { addEdit } = useDataEdits()
+    const { caseId } = useParams()
 
     const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
-    const [overrideModalProfileName, setOverrideModalProfileName] = useState<string>("")
+    const [overrideModalProfileName, setOverrideModalProfileName] = useState<ProfileNames>()
     const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
     const [overrideProfile, setOverrideProfile] = useState<any>()
 
@@ -67,10 +75,14 @@ const CaseTabTable = ({
             rowObject.set = isOverridden ? ts.overrideProfileSet : ts.set
             rowObject.profile = isOverridden ? ts.overrideProfile : ts.profile
             rowObject.override = ts.overrideProfile?.override === true
+            rowObject.resourceId = ts.resourceId
+            rowObject.resourceName = ts.resourceName
+            rowObject.overridable = ts.overridable
+            rowObject.editable = ts.editable
 
             rowObject.overrideProfileSet = ts.overrideProfileSet
             rowObject.overrideProfile = ts.overrideProfile ?? {
-                id: EMPTY_GUID, startYear: 0, values: [], override: false,
+                startYear: 0, values: [], override: false,
             }
 
             if (rowObject.profile && rowObject.profile.values?.length > 0) {
@@ -119,7 +131,7 @@ const CaseTabTable = ({
         return tableRows
     }
 
-    const gridRowData = gridRef.current?.api?.setGridOption("rowData", profilesToRowData())
+    const gridRowData = useMemo(() => gridRef.current?.api?.setGridOption("rowData", profilesToRowData()), [timeSeriesData])
 
     const lockIconRenderer = (params: any) => (
         <ClickableLockIcon
@@ -175,7 +187,7 @@ const CaseTabTable = ({
                 cellRenderer: ErrorCellRenderer,
                 cellRendererParams: (params: any) => ({
                     value: params.value,
-                    errorMsg: validateInput(params, editMode),
+                    errorMsg: !params.node.footer && validateInput(params, editMode),
                 }),
                 cellStyle: {
                     padding: "0px",
@@ -191,16 +203,6 @@ const CaseTabTable = ({
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
     const handleCellValueChange = (p: any) => {
-        /* helpers for finding right data to register in history tracker
-
-        const cellName = p.colDef
-        const columnName = p.colDef.headerName
-
-        console.log(cellName)
-        console.log(columnName)
-        console.log(p.newValue)
-        console.log(p.oldValue)
-        */
         const properties = Object.keys(p.data)
         const tableTimeSeriesValues: any[] = []
         properties.forEach((prop) => {
@@ -231,7 +233,33 @@ const CaseTabTable = ({
             const newProfile = { ...p.data.profile }
             newProfile.startYear = timeSeriesStartYear
             newProfile.values = values
-            p.data.set(newProfile)
+
+            if (!caseId || !project) { return }
+
+            const timeSeriesDataIndex = () => {
+                const result = timeSeriesData
+                    .map((v, i) => {
+                        if (v.profileName === p.data.profileName) {
+                            return timeSeriesData[i]
+                        }
+                        return undefined
+                    })
+                    .find((v) => v !== undefined)
+                return result
+            }
+
+            addEdit({
+                newValue: p.newValue,
+                previousValue: p.oldValue,
+                inputLabel: p.data.profileName,
+                projectId: project.id,
+                resourceName: timeSeriesDataIndex()?.resourceName,
+                resourcePropertyKey: timeSeriesDataIndex()?.resourcePropertyKey,
+                caseId,
+                resourceId: timeSeriesDataIndex()?.resourceId,
+                newResourceObject: newProfile,
+                resourceProfileId: timeSeriesDataIndex()?.resourceProfileId,
+            })
         }
     }
 
@@ -256,8 +284,8 @@ const CaseTabTable = ({
         resizable: true,
         editable: true,
         onCellValueChanged: handleCellValueChange,
-        suppressMenuButton: true,
-    }), [])
+        suppressHeaderMenuButton: true,
+    }), [timeSeriesData])
 
     useEffect(() => {
         const newColDefs = generateTableYearColDefs()
@@ -267,6 +295,34 @@ const CaseTabTable = ({
     const onGridReady = useCallback((params: GridReadyEvent) => {
         const generateRowData = profilesToRowData()
         params.api.setGridOption("rowData", generateRowData)
+    }, [])
+
+    const clearCellsInRange = (start: any, end: any, columns: any) => {
+        Array.from({ length: end - start + 1 }, (_, i) => start + i).map((i) => {
+            const rowNode = gridRef.current?.api.getRowNode(i)
+            return columns.forEach((column: any) => {
+                rowNode.setDataValue(column, "")
+            })
+        })
+    }
+
+    const handleDeleteOnRange = useCallback((e: CellKeyDownEvent) => {
+        const keyboardEvent = e.event as unknown as KeyboardEvent
+        const { key } = keyboardEvent
+
+        if (key === "Backspace") {
+            const cellRanges = e.api.getCellRanges()
+            if (!cellRanges || cellRanges.length === 0) { return }
+            cellRanges?.forEach((cells) => {
+                if (cells.startRow && cells.endRow) {
+                    const colIds = cells.columns.map((col: any) => col.colId)
+                    const startRowIndex = Math.min(cells.startRow.rowIndex, cells.endRow.rowIndex)
+                    const endRowIndex = Math.max(cells.startRow.rowIndex, cells.endRow.rowIndex)
+                    clearCellsInRange(startRowIndex, endRowIndex, colIds)
+                    handleCellValueChange(e)
+                }
+            })
+        }
     }, [])
 
     return (
@@ -303,6 +359,7 @@ const CaseTabTable = ({
                         suppressLastEmptyLineOnPaste
                         stopEditingWhenCellsLoseFocus
                         onGridReady={onGridReady}
+                        onCellKeyDown={editMode ? handleDeleteOnRange : undefined}
                     />
                 </div>
             </div>

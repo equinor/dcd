@@ -54,14 +54,7 @@ const CaseFacilitiesTab = () => {
         },
     )
 
-    const { data: caseData } = useQuery<Components.Schemas.CaseDto | undefined>(
-        [{ projectId, caseId, resourceId: "" }],
-        () => queryClient.getQueryData([{ projectId, caseId, resourceId: "" }]),
-        {
-            enabled: !!project && !!projectId,
-            initialData: () => queryClient.getQueryData([{ projectId: project?.id, caseId, resourceId: "" }]) as Components.Schemas.CaseDto,
-        },
-    )
+    const caseData = apiData?.case
     const topsideData = apiData?.topside
     const surfData = apiData?.surf
     const transportData = apiData?.transport

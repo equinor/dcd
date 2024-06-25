@@ -1,5 +1,5 @@
 import { InputWrapper, Input, Icon } from "@equinor/eds-core-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { error_filled } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { preventNonDigitInput, isWithinRange } from "../../../Utils/common"
@@ -45,6 +45,10 @@ const NumberInputWithValidation = ({
     const [inputValue, setInputValue] = useState(defaultValue)
     const [helperText, setHelperText] = useState("\u200B")
 
+    useEffect(() => {
+        setInputValue(defaultValue)
+    }, [defaultValue])
+
     const inputIsValid = (newValue: number) => {
         setInputValue(newValue)
         if (min !== undefined && max !== undefined) {
@@ -83,13 +87,14 @@ const NumberInputWithValidation = ({
         >
             <StyledInput
                 type="number"
-                defaultValue={inputValue}
+                value={inputValue}
                 disabled={disabled}
                 onBlur={handleBlur}
                 min={allowNegative ? undefined : 0}
                 onInput={(event: React.FormEvent<HTMLInputElement>) => checkInput(event as unknown as React.KeyboardEvent<HTMLInputElement>)}
                 rightAdornments={[unit, hasError ? <ErrorIcon size={16} data={error_filled} /> : undefined]}
                 variant={hasError ? "error" : undefined}
+                onChange={(e: any) => setInputValue(Number(e.target.value))}
             />
         </InputWrapper>
     )

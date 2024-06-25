@@ -7,7 +7,7 @@ import {
     Progress,
 } from "@equinor/eds-core-react"
 import {
-    save,
+    visibility,
     edit,
     keyboard_tab,
     more_vertical,
@@ -21,9 +21,9 @@ import { useModalContext } from "../../Context/ModalContext"
 import CaseDropMenu from "../Case/Components/CaseDropMenu"
 import { GetProjectService } from "../../Services/ProjectService"
 import { useAppContext } from "../../Context/AppContext"
-import HistoryButton from "../Buttons/HistoryButton"
 import UndoControls from "./UndoControls"
 import CaseControls from "./CaseControls"
+import WhatsNewModal from "../Modal/WhatsNewModal"
 
 const Controls = () => {
     const {
@@ -110,6 +110,7 @@ const Controls = () => {
 
     return (
         <Grid container spacing={1} justifyContent="space-between" alignItems="center">
+            <WhatsNewModal />
             {project && caseId && (
                 <CaseControls
                     backToProject={backToProject}
@@ -125,20 +126,24 @@ const Controls = () => {
                         </Grid>
                     )}
                 <Grid item>
+                    {editMode && <UndoControls />}
+                </Grid>
+                <Grid item>
                     <Button onClick={handleEdit} variant={editMode ? "outlined" : "contained"}>
                         {isSaving
                             ? <Progress.Dots />
                             : (
                                 <>
-                                    {editMode ? "Close edit mode" : "Edit"}
+                                    {editMode ? "View" : "Edit"}
                                     {" "}
                                     {!editMode && projectCase && "case"}
                                     {!editMode && !projectCase && "project"}
-                                    <Icon data={editMode ? save : edit} />
+                                    <Icon data={editMode ? visibility : edit} />
                                 </>
                             )}
                     </Button>
                 </Grid>
+
                 <Grid item>
                     <Button
                         onClick={() => setTechnicalModalIsOpen(true)}
@@ -148,9 +153,6 @@ const Controls = () => {
                         {`${editMode ? "Edit" : "Open"} technical input`}
                     </Button>
                 </Grid>
-            </Grid>
-            <Grid item>
-                <UndoControls />
             </Grid>
             {projectCase && (
                 <Grid item>

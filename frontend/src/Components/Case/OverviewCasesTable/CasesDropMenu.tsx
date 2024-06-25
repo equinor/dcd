@@ -60,15 +60,18 @@ const CasesDropMenu = ({
             <Modal
                 title="Delete Case?"
                 isOpen={confirmDelete}
-            >
-                <Typography variant="body_short">
-                    Are you sure you want to delete this case?
-                </Typography>
-                <div>
-                    <Button variant="ghost" onClick={() => setConfirmDelete(false)}>Cancel</Button>
-                    <Button onClick={handleDelete}>Delete</Button>
-                </div>
-            </Modal>
+                content={[
+                    <Typography variant="body_short">
+                        Are you sure you want to delete this case?
+                    </Typography>,
+                ]}
+                actions={(
+                    <div>
+                        <Button variant="ghost" onClick={() => setConfirmDelete(false)}>Cancel</Button>
+                        <Button onClick={handleDelete}>Delete</Button>
+                    </div>
+                )}
+            />
             <Menu
                 id="menu-complex"
                 open={isMenuOpen}

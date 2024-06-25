@@ -8,7 +8,7 @@ interface KpisProps {
 }
 
 const Kpis: React.FC<KpisProps> = ({ npvChartData, breakEvenChartData }) => {
-    if (!npvChartData || !breakEvenChartData) return <div>No data available</div>
+    if (!npvChartData || !breakEvenChartData) { return <div>No data available</div> }
 
     return (
         <Grid container spacing={2}>

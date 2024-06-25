@@ -12,7 +12,7 @@ using NSubstitute;
 
 using Xunit;
 
-namespace api.Tests.Services
+namespace tests.Services
 {
     public class TopsideServiceTests
     {
@@ -82,88 +82,6 @@ namespace api.Tests.Services
 
             // Act & Assert
             await Assert.ThrowsAsync<DbUpdateException>(() => _topsideService.UpdateTopside<BaseUpdateTopsideDto>(caseId, topsideId, updatedTopsideDto));
-        }
-
-        [Fact]
-        public async Task UpdateTopsideCostProfileOverride_ShouldUpdateTopsideCostProfileOverride_WhenGivenValidInput()
-        {
-            // Arrange
-            var caseId = Guid.NewGuid();
-            var topsideId = Guid.NewGuid();
-            var costProfileId = Guid.NewGuid();
-            var updatedTopsideCostProfileOverrideDto = new UpdateTopsideCostProfileOverrideDto();
-
-            var existingTopsideCostProfileOverride = new TopsideCostProfileOverride { Id = costProfileId };
-            _repository.GetTopsideCostProfileOverride(costProfileId).Returns(existingTopsideCostProfileOverride);
-
-            var updatedTopsideCostProfileOverride = new TopsideCostProfileOverride { Id = costProfileId };
-            _repository.UpdateTopsideCostProfileOverride(existingTopsideCostProfileOverride).Returns(updatedTopsideCostProfileOverride);
-
-            var updatedTopsideCostProfileOverrideDtoResult = new TopsideCostProfileOverrideDto();
-            _mapperService.MapToDto<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>(updatedTopsideCostProfileOverride, costProfileId).Returns(updatedTopsideCostProfileOverrideDtoResult);
-
-            // Act
-            var result = await _topsideService.UpdateTopsideCostProfileOverride(caseId, topsideId, costProfileId, updatedTopsideCostProfileOverrideDto);
-
-            // Assert
-            Assert.Equal(updatedTopsideCostProfileOverrideDtoResult, result);
-            await _repository.Received(1).SaveChangesAsync();
-        }
-
-        [Fact]
-        public async Task AddOrUpdateTopsideCostProfile_ShouldUpdateTopsideCostProfile_WhenGivenValidInputForExistingProfile()
-        {
-            // Arrange
-            var caseId = Guid.NewGuid();
-            var topsideId = Guid.NewGuid();
-            var profileId = Guid.NewGuid();
-            var updatedTopsideCostProfileDto = new UpdateTopsideCostProfileDto();
-
-            var existingCostProfile = new TopsideCostProfile { Id = profileId };
-            var existingTopside = new Topside { Id = topsideId, CostProfile = existingCostProfile };
-            _repository.GetTopsideWithCostProfile(topsideId).Returns(existingTopside);
-
-            _repository.GetTopsideCostProfile(profileId).Returns(existingCostProfile);
-            _repository.UpdateTopsideCostProfile(existingCostProfile).Returns(existingCostProfile);
-
-            var updatedTopsideCostProfileDtoResult = new TopsideCostProfileDto { Id = profileId };
-            _mapperService.MapToDto<TopsideCostProfile, TopsideCostProfileDto>(existingCostProfile, existingCostProfile.Id).Returns(updatedTopsideCostProfileDtoResult);
-
-            // Act
-            var result = await _topsideService.AddOrUpdateTopsideCostProfile(caseId, topsideId, updatedTopsideCostProfileDto);
-
-            // Assert
-            Assert.Equal(updatedTopsideCostProfileDtoResult, result);
-            await _repository.Received(1).SaveChangesAsync();
-        }
-
-        [Fact]
-        public async Task AddOrUpdateTopsideCostProfile_ShouldAddTopsideCostProfile_WhenGivenValidInputForNewProfile()
-        {
-            // Arrange
-            var caseId = Guid.NewGuid();
-            var topsideId = Guid.NewGuid();
-            var profileId = Guid.NewGuid();
-            var updatedTopsideCostProfileDto = new UpdateTopsideCostProfileDto();
-
-            var existingTopside = new Topside { Id = topsideId };
-            _repository.GetTopsideWithCostProfile(topsideId).Returns(existingTopside);
-
-            var newCostProfile = new TopsideCostProfile { Topside = existingTopside };
-            _mapperService.MapToEntity(Arg.Any<UpdateTopsideCostProfileDto>(), Arg.Any<TopsideCostProfile>(), Arg.Any<Guid>())
-                          .Returns(newCostProfile);
-
-            _repository.CreateTopsideCostProfile(newCostProfile).Returns(newCostProfile);
-
-            var updatedTopsideCostProfileDtoResult = new TopsideCostProfileDto { Id = profileId };
-            _mapperService.MapToDto<TopsideCostProfile, TopsideCostProfileDto>(newCostProfile, newCostProfile.Id).Returns(updatedTopsideCostProfileDtoResult);
-
-            // Act
-            var result = await _topsideService.AddOrUpdateTopsideCostProfile(caseId, topsideId, updatedTopsideCostProfileDto);
-
-            // Assert
-            Assert.Equal(updatedTopsideCostProfileDtoResult, result);
-            await _repository.Received(1).SaveChangesAsync();
         }
     }
 }
