@@ -190,6 +190,19 @@ const CaseTabTable = ({
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
+    const onBtnExport = useCallback(() => {
+        // Generate an array of year strings based on the tableYears range
+        const yearColumnKeys = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => (tableYears[0] + i).toString())
+
+        // Include 'profileName' and 'total' along with the year columns
+        const columnKeys = ["profileName", ...yearColumnKeys, "total"]
+
+        gridRef.current.api.exportDataAsExcel({
+            columnKeys,
+            fileName: "export.xlsx",
+        })
+    }, [tableYears])
+
     const handleCellValueChange = (p: any) => {
         /* helpers for finding right data to register in history tracker
 
@@ -284,6 +297,8 @@ const CaseTabTable = ({
                         display: "flex", flexDirection: "column", width: "100%",
                     }}
                 >
+                    <button type="button" onClick={onBtnExport}>Export to Excel</button>
+
                     <AgGridReact
                         ref={gridRef}
                         rowData={gridRowData}
