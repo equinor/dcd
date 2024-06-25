@@ -151,7 +151,7 @@ public class ExplorationService : IExplorationService
         var existingExploration = await _repository.GetExploration(explorationId)
             ?? throw new NotFoundInDBException($"Well project with {explorationId} not found.");
 
-        var exsitingWell = await _repository.GetWell(wellId)
+        var existingWell = await _repository.GetWell(wellId)
             ?? throw new NotFoundInDBException($"Well with {wellId} not found.");
 
         DrillingSchedule drillingSchedule = new();
@@ -159,7 +159,7 @@ public class ExplorationService : IExplorationService
 
         ExplorationWell newExplorationWell = new()
         {
-            Well = exsitingWell,
+            Well = existingWell,
             Exploration = existingExploration,
             DrillingSchedule = newDrillingSchedule
         };
