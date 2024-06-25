@@ -1,5 +1,5 @@
 import {
-    Dispatch, SetStateAction, useEffect, useState,
+    Dispatch, SetStateAction, useState,
 } from "react"
 import Grid from "@mui/material/Grid"
 import { useQueryClient, useQuery } from "react-query"
@@ -11,272 +11,35 @@ import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
 import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
-import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
-import { useModalContext } from "../../../Context/ModalContext"
-import { setNonNegativeNumberState } from "../../../Utils/common"
+import { mergeTimeseriesList } from "../../../Utils/common"
+
+interface ITimeSeriesData {
+    group?: string
+    profileName: string
+    unit: string,
+    set?: Dispatch<SetStateAction<ITimeSeriesCost | undefined>>,
+    overrideProfileSet?: Dispatch<SetStateAction<ITimeSeriesCostOverride | undefined>>,
+    profile: ITimeSeries | undefined
+    overrideProfile?: ITimeSeries | undefined
+    overridable?: boolean
+}
 
 const CaseSummaryTab = (): React.ReactElement | null => {
     const {
         projectCase,
-        setProjectCaseEdited,
         activeTabCase,
-        topside,
-        setTopsideCost,
-        surf,
-        setSurfCost,
-        substructure,
-        setSubstructureCost,
-        transport,
-        setTransportCost,
-
-        // CAPEX
-        totalDrillingCost,
-        cessationOffshoreFacilitiesCost,
-        setCessationOffshoreFacilitiesCost,
-        cessationOffshoreFacilitiesCostOverride,
-        setCessationOffshoreFacilitiesCostOverride,
-        cessationOnshoreFacilitiesCostProfile,
-        setCessationOnshoreFacilitiesCostProfile,
-
-        // OPEX
-        historicCostCostProfile,
-        setHistoricCostCostProfile,
-        onshoreRelatedOPEXCostProfile,
-        setOnshoreRelatedOPEXCostProfile,
-        additionalOPEXCostProfile,
-        setAdditionalOPEXCostProfile,
-
-        // Exploration
-        totalExplorationCost,
-        explorationWellCostProfile,
-        // gAndGAdminCost,// missing implementation
-        seismicAcquisitionAndProcessing,
-
-        // Study cost
-        totalFeasibilityAndConceptStudies,
-        setTotalFeasibilityAndConceptStudies,
-        totalFeasibilityAndConceptStudiesOverride,
-        setTotalFeasibilityAndConceptStudiesOverride,
-        totalFEEDStudies,
-        setTotalFEEDStudies,
-        totalFEEDStudiesOverride,
-        setTotalFEEDStudiesOverride,
-        totalOtherStudies,
-        setTotalOtherStudies,
-
-        offshoreFacilitiesCost,
-
-        offshoreOpexPlussWellIntervention,
     } = useCaseContext()
-
-    const {
-        wellProject,
-        exploration,
-    } = useModalContext()
 
     const queryClient = useQueryClient()
     const { project } = useProjectContext()
     const { caseId } = useParams()
     const projectId = project?.id || null
 
-    // TODO: this is wrong we are using setters but never using the values
-    const [, setStartYear] = useState<number>(2020)
-    const [, setEndYear] = useState<number>(2030)
-
-    const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
-
-    interface ITimeSeriesData {
-        group?: string
-        profileName: string
-        unit: string,
-        set?: Dispatch<SetStateAction<ITimeSeriesCost | undefined>>,
-        overrideProfileSet?: Dispatch<SetStateAction<ITimeSeriesCostOverride | undefined>>,
-        profile: ITimeSeries | undefined
-        overrideProfile?: ITimeSeries | undefined
-        overridable?: boolean
+    if (!project) {
+        return (<>Loading...</>)
     }
 
-    const explorationTimeSeriesData: ITimeSeriesData[] = [
-        {
-            profileName: "Exploration cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalExplorationCost,
-            group: "Exploration",
-        },
-
-    ]
-
-    const capexTimeSeriesData: ITimeSeriesData[] = [
-        {
-            profileName: "Drilling",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalDrillingCost,
-            group: "CAPEX",
-        },
-        {
-            profileName: "Offshore facilities",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: offshoreFacilitiesCost,
-            group: "CAPEX",
-        },
-        {
-            profileName: "Cessation - offshore facilities",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationOffshoreFacilitiesCostOverride?.override ? cessationOffshoreFacilitiesCostOverride : cessationOffshoreFacilitiesCost,
-            group: "CAPEX",
-        },
-        {
-            profileName: "Cessation - onshore facilities",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: cessationOnshoreFacilitiesCostProfile,
-            group: "CAPEX",
-        },
-
-    ]
-
-    const studycostTimeSeriesData: ITimeSeriesData[] = [
-        {
-            profileName: "Feasibility & Conceptual studies",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalFeasibilityAndConceptStudiesOverride?.override ? totalFeasibilityAndConceptStudiesOverride : totalFeasibilityAndConceptStudies,
-            group: "Study cost",
-        },
-        {
-            profileName: "FEED studies (DG2-DG3",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalFEEDStudiesOverride?.override ? totalFEEDStudiesOverride : totalFEEDStudies,
-            group: "Study cost",
-        },
-        {
-            profileName: "Other studies",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalOtherStudies,
-            group: "Study cost",
-        },
-
-    ]
-
-    const opexTimeSeriesData: ITimeSeriesData[] = [
-        {
-            profileName: "Historic cost",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: historicCostCostProfile,
-            group: "OPEX",
-        },
-        {
-            profileName: "Offshore related OPEX, incl. well intervention",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: offshoreOpexPlussWellIntervention,
-            group: "OPEX",
-        },
-        {
-            profileName: "Onshore related OPEX",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: onshoreRelatedOPEXCostProfile,
-            group: "OPEX",
-        },
-        {
-            profileName: "Additional OPEX",
-            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: additionalOPEXCostProfile,
-            group: "OPEX",
-        },
-    ]
-
-    const allTimeSeriesData = [
-        explorationTimeSeriesData,
-        capexTimeSeriesData,
-        studycostTimeSeriesData,
-        opexTimeSeriesData,
-    ]
-
-    useEffect(() => {
-        (async () => {
-            try {
-                if (projectCase && project && topside && surf && substructure && transport && wellProject && exploration) {
-                    if (activeTabCase === 7 && projectCase?.id) {
-                        setTotalFeasibilityAndConceptStudies(projectCase.totalFeasibilityAndConceptStudies)
-                        setTotalFeasibilityAndConceptStudiesOverride(projectCase.totalFeasibilityAndConceptStudiesOverride)
-                        setTotalFEEDStudies(projectCase.totalFEEDStudies)
-                        setTotalFEEDStudiesOverride(projectCase.totalFEEDStudiesOverride)
-                        setTotalOtherStudies(projectCase.totalOtherStudies)
-
-                        setHistoricCostCostProfile(projectCase.historicCostCostProfile)
-                        setOnshoreRelatedOPEXCostProfile(projectCase.onshoreRelatedOPEXCostProfile)
-                        setAdditionalOPEXCostProfile(projectCase.additionalOPEXCostProfile)
-
-                        setCessationOffshoreFacilitiesCost(projectCase.cessationOffshoreFacilitiesCost)
-                        setCessationOffshoreFacilitiesCostOverride(projectCase.cessationOffshoreFacilitiesCostOverride)
-
-                        setCessationOnshoreFacilitiesCostProfile(projectCase.cessationOnshoreFacilitiesCostProfile)
-
-                        // CAPEX
-                        const topsideCostProfile = topside.costProfileOverride?.override
-                            ? topside.costProfileOverride : topside.costProfile
-                        setTopsideCost(topsideCostProfile)
-
-                        const surfCostProfile = surf.costProfileOverride?.override
-                            ? surf.costProfileOverride : surf.costProfile
-                        setSurfCost(surfCostProfile)
-
-                        const substructureCostProfile = substructure.costProfileOverride?.override
-                            ? substructure.costProfileOverride : substructure.costProfile
-                        setSubstructureCost(substructureCostProfile)
-
-                        const transportCostProfile = transport.costProfileOverride?.override
-                            ? transport.costProfileOverride : transport.costProfile
-                        setTransportCost(transportCostProfile)
-
-                        // Drilling cost
-                        const oilProducerCostProfile = wellProject?.oilProducerCostProfileOverride?.override
-                            ? wellProject.oilProducerCostProfileOverride
-                            : wellProject?.oilProducerCostProfile
-
-                        const gasProducerCostProfile = wellProject?.gasProducerCostProfileOverride?.override
-                            ? wellProject.gasProducerCostProfileOverride
-                            : wellProject?.gasProducerCostProfile
-
-                        const waterInjectorCostProfile = wellProject?.waterInjectorCostProfileOverride?.override
-                            ? wellProject.waterInjectorCostProfileOverride
-                            : wellProject?.waterInjectorCostProfile
-
-                        const gasInjectorCostProfile = wellProject?.gasInjectorCostProfileOverride?.override
-                            ? wellProject.gasInjectorCostProfileOverride
-                            : wellProject?.gasInjectorCostProfile
-
-                        SetTableYearsFromProfiles([
-                            projectCase, wellProject, totalExplorationCost, totalOtherStudies, totalFeasibilityAndConceptStudies, totalFEEDStudiesOverride, historicCostCostProfile,
-                            additionalOPEXCostProfile, onshoreRelatedOPEXCostProfile, offshoreOpexPlussWellIntervention, projectCase?.totalFeasibilityAndConceptStudies,
-                            projectCase?.totalFEEDStudies,
-                            projectCase?.wellInterventionCostProfile,
-                            projectCase?.offshoreFacilitiesOperationsCostProfile,
-                            projectCase?.cessationWellsCost,
-                            projectCase?.cessationOffshoreFacilitiesCost,
-                            projectCase?.cessationOnshoreFacilitiesCostProfile,
-                            projectCase?.totalFeasibilityAndConceptStudiesOverride,
-                            projectCase?.wellInterventionCostProfileOverride,
-                            projectCase?.offshoreFacilitiesOperationsCostProfileOverride,
-                            projectCase?.cessationWellsCostOverride,
-                            projectCase?.cessationOffshoreFacilitiesCostOverride,
-                            surfCostProfile,
-                            topsideCostProfile,
-                            substructureCostProfile,
-                            transportCostProfile,
-                            oilProducerCostProfile,
-                            gasProducerCostProfile,
-                            waterInjectorCostProfile,
-                            gasInjectorCostProfile,
-                            explorationWellCostProfile,
-                            seismicAcquisitionAndProcessing,
-                            totalDrillingCost,
-                        ], projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
-                    }
-                }
-            } catch (error) {
-                console.error("[CaseView] Error while generating cost profile", error)
-            }
-        })()
-    }, [activeTabCase])
+    const [tableYears] = useState<[number, number]>([2020, 2030])
 
     const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
         ["apiData", { projectId, caseId }],
@@ -287,7 +50,209 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         },
     )
 
+    const handleOffshoreFacilitiesCost = () => mergeTimeseriesList([
+        (apiData?.surfCostProfileOverride?.override === true
+            ? apiData?.surfCostProfileOverride
+            : apiData?.surfCostProfile),
+        (apiData?.substructureCostProfileOverride?.override === true
+            ? apiData?.substructureCostProfileOverride
+            : apiData?.substructureCostProfile),
+        (apiData?.transportCostProfileOverride?.override === true
+            ? apiData?.transportCostProfileOverride
+            : apiData?.transportCostProfile),
+    ])
+
+    const handleOffshoreOpexPlussWellIntervention = () => mergeTimeseriesList([
+        (apiData?.wellInterventionCostProfileOverride?.override === true
+            ? apiData?.wellInterventionCostProfileOverride
+            : apiData?.wellInterventionCostProfile),
+        (apiData?.offshoreFacilitiesOperationsCostProfileOverride?.override === true
+            ? apiData?.offshoreFacilitiesOperationsCostProfileOverride
+            : apiData?.offshoreFacilitiesOperationsCostProfile),
+    ])
+
+    const handleTotalExplorationCost = () => mergeTimeseriesList([
+        apiData?.explorationWellCostProfile,
+        apiData?.appraisalWellCostProfile,
+        apiData?.sidetrackCostProfile,
+        apiData?.seismicAcquisitionAndProcessing,
+        apiData?.countryOfficeCost,
+        apiData?.gAndGAdminCost,
+    ])
+
+    const handleDrilling = () => {
+        const oilProducerCostProfile = apiData?.oilProducerCostProfileOverride?.override
+            ? apiData.oilProducerCostProfileOverride
+            : apiData?.oilProducerCostProfile
+
+        const gasProducerCostProfile = apiData?.gasProducerCostProfileOverride?.override
+            ? apiData.gasProducerCostProfileOverride
+            : apiData?.gasProducerCostProfile
+
+        const waterInjectorCostProfile = apiData?.waterInjectorCostProfileOverride?.override
+            ? apiData.waterInjectorCostProfileOverride
+            : apiData?.waterInjectorCostProfile
+
+        const gasInjectorCostProfile = apiData?.gasInjectorCostProfileOverride?.override
+            ? apiData.gasInjectorCostProfileOverride
+            : apiData?.gasInjectorCostProfile
+
+        const startYears = [
+            oilProducerCostProfile,
+            gasProducerCostProfile,
+            waterInjectorCostProfile,
+            gasInjectorCostProfile,
+        ].map((series) => series?.startYear).filter((startYear) => startYear !== undefined) as number[]
+
+        const minStartYear = startYears.length > 0 ? Math.min(...startYears) : 2020
+
+        let drillingCostSeriesList: (ITimeSeries | undefined)[] = [
+            oilProducerCostProfile,
+            gasProducerCostProfile,
+            waterInjectorCostProfile,
+            gasInjectorCostProfile,
+        ]
+
+        const rigUpgradingCost = project.developmentOperationalWellCosts.rigUpgrading
+        const rigMobDemobCost = project.developmentOperationalWellCosts.rigMobDemob
+        const sumOfRigAndMobDemob = rigUpgradingCost + rigMobDemobCost
+
+        if (sumOfRigAndMobDemob > 0) {
+            interface ITimeSeriesWithCostProfile extends ITimeSeries {
+                developmentRigUpgradingAndMobDemobCostProfile?: number[] | null;
+            }
+
+            const timeSeriesWithCostProfile: ITimeSeriesWithCostProfile = {
+                id: "developmentRigUpgradingAndMobDemob",
+                startYear: minStartYear,
+                name: "Development Rig Upgrading and Mob/Demob Costs",
+                values: [sumOfRigAndMobDemob],
+                sum: sumOfRigAndMobDemob,
+            }
+
+            if (
+                drillingCostSeriesList.every((series) => !series || !series.values || series.values.length === 0)
+                && timeSeriesWithCostProfile?.values && timeSeriesWithCostProfile.values.length > 0
+            ) {
+                drillingCostSeriesList = [timeSeriesWithCostProfile]
+            }
+            if (!drillingCostSeriesList.includes(timeSeriesWithCostProfile)) {
+                drillingCostSeriesList.push(timeSeriesWithCostProfile)
+            }
+        }
+        return mergeTimeseriesList(drillingCostSeriesList)
+    }
+
     const caseData = apiData?.case
+    const totalExplorationCostData = handleTotalExplorationCost()
+    const totalDrillingCostData = handleDrilling()
+    const offshoreFacilitiesCostData = handleOffshoreFacilitiesCost()
+    const cessationOffshoreFacilitiesCostOverrideData = apiData?.cessationOffshoreFacilitiesCostOverride
+    const cessationOffshoreFacilitiesCostData = apiData?.cessationOffshoreFacilitiesCost
+    const cessationOnshoreFacilitiesCostProfileData = apiData?.cessationOnshoreFacilitiesCostProfile
+    const totalFeasibilityAndConceptStudiesOverrideData = apiData?.totalFeasibilityAndConceptStudiesOverride
+    const totalFeasibilityAndConceptStudiesData = apiData?.totalFeasibilityAndConceptStudies
+    const totalFEEDStudiesOverrideData = apiData?.totalFEEDStudiesOverride
+    const totalFEEDStudiesData = apiData?.totalFEEDStudies
+    const totalOtherStudiesData = apiData?.totalOtherStudies
+    const historicCostCostProfileData = apiData?.historicCostCostProfile
+    const offshoreOpexPlussWellInterventionData = handleOffshoreOpexPlussWellIntervention()
+    const onshoreRelatedOPEXCostProfileData = apiData?.onshoreRelatedOPEXCostProfile
+    const additionalOPEXCostProfileData = apiData?.additionalOPEXCostProfile
+
+    const explorationTimeSeriesData: ITimeSeriesData[] = [
+        {
+            profileName: "Exploration cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: totalExplorationCostData,
+            group: "Exploration",
+        },
+
+    ]
+
+    const capexTimeSeriesData: ITimeSeriesData[] = [
+        {
+            profileName: "Drilling",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: totalDrillingCostData,
+            group: "CAPEX",
+        },
+        {
+            profileName: "Offshore facilities",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: offshoreFacilitiesCostData,
+            group: "CAPEX",
+        },
+        {
+            profileName: "Cessation - offshore facilities",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: cessationOffshoreFacilitiesCostOverrideData?.override ? cessationOffshoreFacilitiesCostOverrideData : cessationOffshoreFacilitiesCostData,
+            group: "CAPEX",
+        },
+        {
+            profileName: "Cessation - onshore facilities",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: cessationOnshoreFacilitiesCostProfileData,
+            group: "CAPEX",
+        },
+
+    ]
+
+    const studycostTimeSeriesData: ITimeSeriesData[] = [
+        {
+            profileName: "Feasibility & Conceptual studies",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: totalFeasibilityAndConceptStudiesOverrideData?.override ? totalFeasibilityAndConceptStudiesOverrideData : totalFeasibilityAndConceptStudiesData,
+            group: "Study cost",
+        },
+        {
+            profileName: "FEED studies (DG2-DG3",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: totalFEEDStudiesOverrideData?.override ? totalFEEDStudiesOverrideData : totalFEEDStudiesData,
+            group: "Study cost",
+        },
+        {
+            profileName: "Other studies",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: totalOtherStudiesData,
+            group: "Study cost",
+        },
+
+    ]
+
+    const opexTimeSeriesData: ITimeSeriesData[] = [
+        {
+            profileName: "Historic cost",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: historicCostCostProfileData,
+            group: "OPEX",
+        },
+        {
+            profileName: "Offshore related OPEX, incl. well intervention",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: offshoreOpexPlussWellInterventionData,
+            group: "OPEX",
+        },
+        {
+            profileName: "Onshore related OPEX",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: onshoreRelatedOPEXCostProfileData,
+            group: "OPEX",
+        },
+        {
+            profileName: "Additional OPEX",
+            unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+            profile: additionalOPEXCostProfileData,
+            group: "OPEX",
+        },
+    ]
+
+    const allTimeSeriesData = [
+        explorationTimeSeriesData,
+        capexTimeSeriesData,
+        studycostTimeSeriesData,
+        opexTimeSeriesData,
+    ]
 
     if (!caseData) { return <p>loading</p> }
 

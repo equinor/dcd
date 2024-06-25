@@ -1,7 +1,5 @@
 /* eslint-disable camelcase */
 import {
-    Dispatch,
-    SetStateAction,
     useMemo,
     useState,
     useEffect,
@@ -11,11 +9,9 @@ import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import { isInteger, tableCellisEditable } from "../../../Utils/common"
-import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
 import { EMPTY_GUID } from "../../../Utils/constants"
 import { useAppContext } from "../../../Context/AppContext"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
-import { ProfileNames } from "../../../Models/Interfaces"
 
 interface Props {
     allTimeSeriesData: any[]
@@ -35,10 +31,6 @@ const CaseTabTableWithGrouping = ({
     includeFooter, totalRowName,
 }: Props) => {
     const styles = useStyles()
-    const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
-    const [overrideModalProfileName, setOverrideModalProfileName] = useState<ProfileNames>()
-    const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
-    const [overrideProfile, setOverrideProfile] = useState<any>()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
     const { editMode } = useAppContext()
 
@@ -210,45 +202,36 @@ const CaseTabTableWithGrouping = ({
     }
 
     return (
-        <>
-            <OverrideTimeSeriesPrompt
-                isOpen={overrideModalOpen}
-                setIsOpen={setOverrideModalOpen}
-                profileName={overrideModalProfileName}
-                setProfile={overrideModalProfileSet}
-                profile={overrideProfile}
-            />
-            <div className={styles.root}>
-                <div
-                    style={{
-                        display: "flex", flexDirection: "column", width: "100%",
-                    }}
-                    className="ag-theme-alpine-fusion"
-                >
-                    <AgGridReact
-                        ref={gridRef}
-                        rowData={rowData}
-                        columnDefs={columnDefs}
-                        defaultColDef={defaultColDef}
-                        animateRows
-                        domLayout="autoHeight"
-                        enableCellChangeFlash
-                        rowSelection="multiple"
-                        enableRangeSelection
-                        suppressCopySingleCellRanges
-                        suppressMovableColumns
-                        suppressAggFuncInHeader
-                        enableCharts
-                        alignedGrids={gridRefArrayToAlignedGrid()}
-                        groupIncludeTotalFooter={includeFooter}
-                        getRowStyle={getRowStyle}
-                        suppressLastEmptyLineOnPaste
-                        groupDefaultExpanded={groupDefaultExpanded}
-                        stopEditingWhenCellsLoseFocus
-                    />
-                </div>
+        <div className={styles.root}>
+            <div
+                style={{
+                    display: "flex", flexDirection: "column", width: "100%",
+                }}
+                className="ag-theme-alpine-fusion"
+            >
+                <AgGridReact
+                    ref={gridRef}
+                    rowData={rowData}
+                    columnDefs={columnDefs}
+                    defaultColDef={defaultColDef}
+                    animateRows
+                    domLayout="autoHeight"
+                    enableCellChangeFlash
+                    rowSelection="multiple"
+                    enableRangeSelection
+                    suppressCopySingleCellRanges
+                    suppressMovableColumns
+                    suppressAggFuncInHeader
+                    enableCharts
+                    alignedGrids={gridRefArrayToAlignedGrid()}
+                    groupIncludeTotalFooter={includeFooter}
+                    getRowStyle={getRowStyle}
+                    suppressLastEmptyLineOnPaste
+                    groupDefaultExpanded={groupDefaultExpanded}
+                    stopEditingWhenCellsLoseFocus
+                />
             </div>
-        </>
+        </div>
     )
 }
 
