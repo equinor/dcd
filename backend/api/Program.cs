@@ -165,20 +165,31 @@ builder.Configuration.AddAzureAppConfiguration(options =>
 
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IFusionService, FusionService>();
+builder.Services.AddScoped<ICaseService, CaseService>();
 builder.Services.AddScoped<IDrainageStrategyService, DrainageStrategyService>();
 builder.Services.AddScoped<IWellProjectService, WellProjectService>();
 builder.Services.AddScoped<IExplorationService, ExplorationService>();
 builder.Services.AddScoped<ISurfService, SurfService>();
 builder.Services.AddScoped<ISubstructureService, SubstructureService>();
 builder.Services.AddScoped<ITopsideService, TopsideService>();
+builder.Services.AddScoped<ITransportService, TransportService>();
+
 builder.Services.AddScoped<IWellService, WellService>();
 builder.Services.AddScoped<IWellProjectWellService, WellProjectWellService>();
 builder.Services.AddScoped<IExplorationWellService, ExplorationWellService>();
 builder.Services.AddScoped<ICostProfileFromDrillingScheduleHelper, CostProfileFromDrillingScheduleHelper>();
-builder.Services.AddScoped<ITransportService, TransportService>();
-builder.Services.AddScoped<ICaseService, CaseService>();
 builder.Services.AddScoped<IDuplicateCaseService, DuplicateCaseService>();
 builder.Services.AddScoped<IExplorationOperationalWellCostsService, ExplorationOperationalWellCostsService>();
+
+builder.Services.AddScoped<ICaseTimeSeriesService, CaseTimeSeriesService>();
+builder.Services.AddScoped<IDrainageStrategyTimeSeriesService, DrainageStrategyTimeSeriesService>();
+builder.Services.AddScoped<IWellProjectTimeSeriesService, WellProjectTimeSeriesService>();
+builder.Services.AddScoped<IExplorationTimeSeriesService, ExplorationTimeSeriesService>();
+builder.Services.AddScoped<ISurfTimeSeriesService, SurfTimeSeriesService>();
+builder.Services.AddScoped<ISubstructureTimeSeriesService, SubstructureTimeSeriesService>();
+builder.Services.AddScoped<ITopsideTimeSeriesService, TopsideTimeSeriesService>();
+builder.Services.AddScoped<ITransportTimeSeriesService, TransportTimeSeriesService>();
+
 
 builder.Services.AddScoped<IDevelopmentOperationalWellCostsService, DevelopmentOperationalWellCostsService>();
 builder.Services.AddScoped<ICaseAndAssetsService, CaseAndAssetsService>();
@@ -208,6 +219,16 @@ builder.Services.AddScoped<IWellProjectRepository, WellProjectRepository>();
 builder.Services.AddScoped<IExplorationRepository, ExplorationRepository>();
 builder.Services.AddScoped<ITransportRepository, TransportRepository>();
 builder.Services.AddScoped<ISurfRepository, SurfRepository>();
+
+builder.Services.AddScoped<ICaseTimeSeriesRepository, CaseTimeSeriesRepository>();
+builder.Services.AddScoped<IDrainageStrategyTimeSeriesRepository, DrainageStrategyTimeSeriesRepository>();
+builder.Services.AddScoped<ISubstructureTimeSeriesRepository, SubstructureTimeSeriesRepository>();
+builder.Services.AddScoped<ITopsideTimeSeriesRepository, TopsideTimeSeriesRepository>();
+builder.Services.AddScoped<IWellProjectTimeSeriesRepository, WellProjectTimeSeriesRepository>();
+builder.Services.AddScoped<IExplorationTimeSeriesRepository, ExplorationTimeSeriesRepository>();
+builder.Services.AddScoped<ITransportTimeSeriesRepository, TransportTimeSeriesRepository>();
+builder.Services.AddScoped<ISurfTimeSeriesRepository, SurfTimeSeriesRepository>();
+
 
 builder.Services.AddScoped<IWellRepository, WellRepository>();
 builder.Services.AddScoped<ICaseWithAssetsRepository, CaseWithAssetsRepository>();

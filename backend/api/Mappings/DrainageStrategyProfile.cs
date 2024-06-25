@@ -127,6 +127,15 @@ public class DrainageStrategyProfile : Profile
         CreateMap<UpdateDrainageStrategyDto, DrainageStrategy>();
         CreateMap<UpdateDrainageStrategyWithProfilesDto, DrainageStrategy>();
 
+        CreateMap<CreateImportedElectricityOverrideDto, ImportedElectricityOverride>()
+            .ForMember(
+                dest => dest.Values,
+                opt => opt.MapFrom((src, dest, destMember, context) =>
+                    ConvertValuesFromDTO(src.Values,
+                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    nameof(ImportedElectricityOverride)
+                    )
+                    ));
         CreateMap<CreateFuelFlaringAndLossesOverrideDto, FuelFlaringAndLossesOverride>()
             .ForMember(
                 dest => dest.Values,
@@ -209,6 +218,15 @@ public class DrainageStrategyProfile : Profile
                     )
                     ));
 
+        CreateMap<UpdateImportedElectricityOverrideDto, ImportedElectricityOverride>()
+            .ForMember(
+                dest => dest.Values,
+                opt => opt.MapFrom((src, dest, destMember, context) =>
+                    ConvertValuesFromDTO(src.Values,
+                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    nameof(ImportedElectricityOverride)
+                    )
+                    ));
         CreateMap<UpdateFuelFlaringAndLossesOverrideDto, FuelFlaringAndLossesOverride>()
             .ForMember(
                 dest => dest.Values,
@@ -225,6 +243,15 @@ public class DrainageStrategyProfile : Profile
                     ConvertValuesFromDTO(src.Values,
                     (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
                     nameof(NetSalesGasOverride)
+                    )
+                    ));
+        CreateMap<UpdateImportedElectricityOverrideDto, ImportedElectricityOverride>()
+            .ForMember(
+                dest => dest.Values,
+                opt => opt.MapFrom((src, dest, destMember, context) =>
+                    ConvertValuesFromDTO(src.Values,
+                    (PhysUnit)Enum.Parse(typeof(PhysUnit), context.Items["ConversionUnit"].ToString() ?? throw new InvalidOperationException()),
+                    nameof(ImportedElectricityOverride)
                     )
                     ));
         CreateMap<UpdateCo2EmissionsOverrideDto, Co2EmissionsOverride>()
