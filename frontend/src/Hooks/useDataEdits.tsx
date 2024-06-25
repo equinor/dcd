@@ -30,6 +30,8 @@ interface AddEditParams {
     resourcePropertyKey: ResourcePropertyKey;
     resourceId?: string;
     resourceProfileId?: string;
+    wellId?: string;
+    drillingScheduleId?: string;
     caseId?: string;
     newDisplayValue?: string | number | undefined;
     previousDisplayValue?: string | number | undefined;
@@ -80,6 +82,8 @@ const useDataEdits = (): {
             caseId: string,
             resourceId?: string,
             resourceProfileId?: string,
+            wellId?: string,
+            drillingScheduleId?: string,
             serviceMethod: object,
         }) => serviceMethod,
         {
@@ -266,6 +270,30 @@ const useDataEdits = (): {
         }
     }
 
+    const createOrUpdateDrillingSchedule = async (
+        projectId: string,
+        caseId: string,
+        assetId: string,
+        wellId: string,
+        drillingScheduleId: string,
+        createOrUpdateFunction: any,
+
+    ) => {
+        try {
+            await mutation.mutateAsync({
+                projectId,
+                caseId,
+                resourceId: assetId,
+                wellId,
+                drillingScheduleId,
+                serviceMethod: createOrUpdateFunction,
+            })
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
     const updateCase = async (
         projectId: string,
         caseId: string,
@@ -301,6 +329,8 @@ const useDataEdits = (): {
         resourceId?: string,
         resourceObject?: ResourceObject,
         resourceProfileId?: string,
+        wellId?: string,
+        drillingScheduleId?: string,
     }
 
     const submitToApi = async ({
@@ -312,6 +342,8 @@ const useDataEdits = (): {
         resourceId,
         resourceObject,
         resourceProfileId,
+        wellId,
+        drillingScheduleId,
     }: SubmitToApiParams): Promise<boolean> => {
         const existingDataInClient: object | undefined = queryClient.getQueryData([{
             projectId, caseId, resourceId, resourceProfileId: EMPTY_GUID,
@@ -890,6 +922,48 @@ const useDataEdits = (): {
                         resourceId!,
                         resourceProfileId!,
                         await (await GetDrainageStrategyService()).updateProductionProfileCo2EmissionsOverride(projectId, caseId, resourceId!, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "explorationWellDrillingSchedule":
+                if (!wellId && !drillingScheduleId) {
+                    sucess = await createOrUpdateDrillingSchedule(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        wellId!,
+                        drillingScheduleId!,
+                        await (await GetExplorationService()).createExplorationWellDrillingSchedule(projectId, caseId, resourceId!, wellId!, updatedData!),
+                    )
+                } else if (!wellId && drillingScheduleId) {
+                    sucess = await createOrUpdateDrillingSchedule(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        wellId!,
+                        drillingScheduleId!,
+                        await (await GetExplorationService()).updateExplorationWellDrillingSchedule(projectId, caseId, resourceId!, wellId!, drillingScheduleId!, updatedData!),
+                    )
+                }
+                break
+            case "wellProjectWellDrillingSchedule":
+                if (!wellId && !drillingScheduleId) {
+                    sucess = await createOrUpdateDrillingSchedule(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        wellId!,
+                        drillingScheduleId!,
+                        await (await GetWellProjectService()).createWellProjectWellDrillingSchedule(projectId, caseId, resourceId!, wellId!, updatedData!),
+                    )
+                } else if (!wellId && drillingScheduleId) {
+                    sucess = await createOrUpdateDrillingSchedule(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        wellId!,
+                        drillingScheduleId!,
+                        await (await GetWellProjectService()).updateWellProjectWellDrillingSchedule(projectId, caseId, resourceId!, wellId!, drillingScheduleId!, updatedData!),
                     )
                 }
                 break

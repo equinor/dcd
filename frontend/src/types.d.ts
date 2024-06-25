@@ -365,7 +365,7 @@ declare namespace Components {
             substructureDto?: APIUpdateSubstructureWithProfilesDto;
             topsideDto?: APIUpdateTopsideWithProfilesDto;
             transportDto?: APIUpdateTransportWithProfilesDto;
-            wellProjectWellDtos?: UpdateWellProjectWellDto[] | null;
+            wellProjectWellDtos?: UpdateWellProjectWellWithScheduleDto[] | null;
             explorationWellDto?: UpdateExplorationWellDto[] | null;
         }
         export interface CaseWithProfilesDto {
@@ -572,6 +572,10 @@ declare namespace Components {
         export interface CreateDeferredOilProductionDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
+        }
+        export interface CreateDrillingScheduleDto {
+            startYear?: number; // int32
+            values?: number /* int32 */[] | null;
         }
         export interface CreateFuelFlaringAndLossesOverrideDto {
             startYear?: number; // int32
@@ -1590,6 +1594,7 @@ declare namespace Components {
             productionProfileWaterInjection?: UpdateProductionProfileWaterInjectionDto;
             fuelFlaringAndLossesOverride?: UpdateFuelFlaringAndLossesOverrideDto;
             netSalesGasOverride?: UpdateNetSalesGasOverrideDto;
+            importedelectricityOverride?: UpdateImportedElectricityOverrideDto;
             co2EmissionsOverride?: UpdateCo2EmissionsOverrideDto;
             deferredOilProduction?: UpdateDeferredOilProductionDto;
             deferredGasProduction?: UpdateDeferredGasProductionDto;
@@ -1803,7 +1808,7 @@ declare namespace Components {
             artificialLift?: ArtificialLift /* int32 */;
             currency?: Currency /* int32 */;
         }
-        export interface UpdateWellProjectWellDto {
+        export interface UpdateWellProjectWellWithScheduleDto {
             drillingSchedule?: DrillingScheduleDto;
             wellProjectId: string; // uuid
             wellId: string; // uuid
@@ -2718,8 +2723,8 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdExplorations$ExplorationIdWell$WellId {
-        namespace Put {
+    namespace Projects$ProjectIdCases$CaseIdExplorations$ExplorationIdWells$WellIdDrillingSchedule {
+        namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type ExplorationId = string; // uuid
@@ -2732,9 +2737,31 @@ declare namespace Paths {
                 explorationId: Parameters.ExplorationId /* uuid */;
                 wellId: Parameters.WellId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateExplorationWellDto;
+            export type RequestBody = Components.Schemas.CreateDrillingScheduleDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ExplorationWellDto;
+                export type $200 = Components.Schemas.DrillingScheduleDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdExplorations$ExplorationIdWells$WellIdDrillingSchedule$DrillingScheduleId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type DrillingScheduleId = string; // uuid
+                export type ExplorationId = string; // uuid
+                export type ProjectId = string; // uuid
+                export type WellId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                explorationId: Parameters.ExplorationId /* uuid */;
+                wellId: Parameters.WellId /* uuid */;
+                drillingScheduleId: Parameters.DrillingScheduleId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateDrillingScheduleDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.DrillingScheduleDto;
             }
         }
     }
@@ -3439,8 +3466,8 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdCases$CaseIdWellProjects$WellProjectIdWell$WellId {
-        namespace Put {
+    namespace Projects$ProjectIdCases$CaseIdWellProjects$WellProjectIdWells$WellIdDrillingSchedule {
+        namespace Post {
             namespace Parameters {
                 export type CaseId = string; // uuid
                 export type ProjectId = string; // uuid
@@ -3453,9 +3480,31 @@ declare namespace Paths {
                 wellProjectId: Parameters.WellProjectId /* uuid */;
                 wellId: Parameters.WellId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateWellProjectWellDto;
+            export type RequestBody = Components.Schemas.CreateDrillingScheduleDto;
             namespace Responses {
-                export type $200 = Components.Schemas.WellProjectWellDto;
+                export type $200 = Components.Schemas.DrillingScheduleDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdWellProjects$WellProjectIdWells$WellIdDrillingSchedule$DrillingScheduleId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type DrillingScheduleId = string; // uuid
+                export type ProjectId = string; // uuid
+                export type WellId = string; // uuid
+                export type WellProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                wellProjectId: Parameters.WellProjectId /* uuid */;
+                wellId: Parameters.WellId /* uuid */;
+                drillingScheduleId: Parameters.DrillingScheduleId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateDrillingScheduleDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.DrillingScheduleDto;
             }
         }
     }
