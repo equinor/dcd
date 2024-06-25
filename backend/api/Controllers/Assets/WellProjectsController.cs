@@ -41,8 +41,8 @@ public class WellProjectsController : ControllerBase
         return await _wellProjectService.UpdateWellProject(caseId, wellProjectId, dto);
     }
 
-    [HttpPut("{wellProjectId}/well/{wellId}/drilling-schedule/{drillingScheduleId}")]
-    public async Task<DrillingScheduleDto> UpdateWellProjectWell(
+    [HttpPut("{wellProjectId}/wells/{wellId}/drilling-schedule/{drillingScheduleId}")]
+    public async Task<DrillingScheduleDto> UpdateWellProjectWellDrillingSchedule(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid wellProjectId,
@@ -53,7 +53,7 @@ public class WellProjectsController : ControllerBase
         return await _wellProjectService.UpdateWellProjectWellDrillingSchedule(caseId, wellProjectId, wellId, drillingScheduleId, dto);
     }
 
-    [HttpPost("{wellProjectId}/well/{wellId}/drilling-schedule")]
+    [HttpPost("{wellProjectId}/wells/{wellId}/drilling-schedule")]
     public async Task<DrillingScheduleDto> CreateWellProjectWellDrillingSchedule(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
