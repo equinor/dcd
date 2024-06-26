@@ -7,7 +7,6 @@ using api.SampleData.Generators;
 using api.Services;
 using api.Services.FusionIntegration;
 using api.Services.GenerateCostProfiles;
-using api.Services.Observers;
 
 using Azure.Identity;
 using Azure.Storage.Blobs;
@@ -69,7 +68,6 @@ if (string.IsNullOrEmpty(sqlConnectionString) || string.IsNullOrEmpty(_sqlConnec
 
         using DcdDbContext context = new(dBbuilder.Options);
         context.Database.EnsureCreated();
-        SaveSampleDataToDB.PopulateDb(context);
     }
     else
     {
@@ -190,9 +188,6 @@ builder.Services.AddScoped<ISurfTimeSeriesService, SurfTimeSeriesService>();
 builder.Services.AddScoped<ISubstructureTimeSeriesService, SubstructureTimeSeriesService>();
 builder.Services.AddScoped<ITopsideTimeSeriesService, TopsideTimeSeriesService>();
 builder.Services.AddScoped<ITransportTimeSeriesService, TransportTimeSeriesService>();
-
-builder.Services.AddScoped<ICaseObserver, CaseObserver>();
-builder.Services.AddScoped(provider => new Lazy<IStudyCostProfileService>(() => provider.GetService<IStudyCostProfileService>() ?? throw new InvalidOperationException()));
 
 builder.Services.AddScoped<IDevelopmentOperationalWellCostsService, DevelopmentOperationalWellCostsService>();
 builder.Services.AddScoped<ICaseAndAssetsService, CaseAndAssetsService>();

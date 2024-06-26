@@ -51,15 +51,15 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
         fuelFlaringLosses.StartYear = total.StartYear;
         fuelFlaringLosses.Values = total.Values;
 
-        await UpdateDrainageStrategyAndSave(drainageStrategy, fuelFlaringLosses);
+        UpdateDrainageStrategyAndSave(drainageStrategy, fuelFlaringLosses);
 
         var dto = _mapper.Map<FuelFlaringAndLossesDto>(fuelFlaringLosses, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
         return dto ?? new FuelFlaringAndLossesDto();
     }
 
-    private async Task<int> UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, FuelFlaringAndLosses fuelFlaringAndLosses)
+    private void UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, FuelFlaringAndLosses fuelFlaringAndLosses)
     {
         drainageStrategy.FuelFlaringAndLosses = fuelFlaringAndLosses;
-        return await _context.SaveChangesAsync();
+        // return await _context.SaveChangesAsync();
     }
 }

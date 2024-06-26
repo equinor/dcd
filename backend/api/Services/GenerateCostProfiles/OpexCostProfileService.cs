@@ -89,7 +89,7 @@ public class OpexCostProfileService : IOpexCostProfileService
         var onshoreRelatedOPEXCost = caseItem.OnshoreRelatedOPEXCostProfile ?? new OnshoreRelatedOPEXCostProfile();
         var additionalOPEXCost = caseItem.AdditionalOPEXCostProfile ?? new AdditionalOPEXCostProfile();
 
-        await UpdateCaseAndSave(caseItem, wellInterventionCost, offshoreFacilitiesOperationsCost, historicCost, onshoreRelatedOPEXCost, additionalOPEXCost);
+        UpdateCaseAndSave(caseItem, wellInterventionCost, offshoreFacilitiesOperationsCost, historicCost, onshoreRelatedOPEXCost, additionalOPEXCost);
 
         var wellInterventionCostDto = _mapper.Map<WellInterventionCostProfileDto>(wellInterventionCost);
         var offshoreFacilitiesOperationsCostDto = _mapper.Map<OffshoreFacilitiesOperationsCostProfileDto>(offshoreFacilitiesOperationsCost);
@@ -124,7 +124,7 @@ public class OpexCostProfileService : IOpexCostProfileService
     }
 
 
-    private async Task<int> UpdateCaseAndSave(
+    private void UpdateCaseAndSave(
         Case caseItem,
         WellInterventionCostProfile wellInterventionCostProfile,
         OffshoreFacilitiesOperationsCostProfile offshoreFacilitiesOperationsCostProfile,
@@ -137,7 +137,7 @@ public class OpexCostProfileService : IOpexCostProfileService
         caseItem.HistoricCostCostProfile = historicCostCostProfile;
         caseItem.OnshoreRelatedOPEXCostProfile = onshoreRelatedOPEXCostProfile;
         caseItem.AdditionalOPEXCostProfile = additionalOPEXCostProfile;
-        return await _context.SaveChangesAsync();
+        // return await _context.SaveChangesAsync();
     }
 
     public async Task<WellInterventionCostProfile> CalculateWellInterventionCostProfile(Case caseItem, Project project, DrainageStrategy drainageStrategy)

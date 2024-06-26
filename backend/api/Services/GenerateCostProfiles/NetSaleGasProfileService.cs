@@ -51,17 +51,18 @@ public class NetSaleGasProfileService : INetSaleGasProfileService
         netSaleGas.StartYear = calculateNetSaleGas.StartYear;
         netSaleGas.Values = calculateNetSaleGas.Values;
 
-        await UpdateDrainageStrategyAndSave(drainageStrategy, netSaleGas);
+        UpdateDrainageStrategyAndSave(drainageStrategy, netSaleGas);
 
         var dto = _mapper.Map<NetSalesGasDto>(netSaleGas, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 
         return dto ?? new NetSalesGasDto();
     }
 
-    private async Task<int> UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, NetSalesGas netSalesGas)
+    private void UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, NetSalesGas netSalesGas)
     {
         drainageStrategy.NetSalesGas = netSalesGas;
-        return await _context.SaveChangesAsync();
+        return;
+        // return await _context.SaveChangesAsync();
     }
 
     private static TimeSeries<double> CalculateNetSaleGas(DrainageStrategy drainageStrategy,

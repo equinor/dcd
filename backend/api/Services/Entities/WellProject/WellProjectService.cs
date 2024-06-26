@@ -96,12 +96,12 @@ public class WellProjectService : IWellProjectService
 
         _mapperService.MapToEntity(updatedWellProjectDto, existingWellProject, wellProjectId);
 
-        WellProject updatedWellProject;
+        // WellProject updatedWellProject;
         try
         {
-            updatedWellProject = _repository.UpdateWellProject(existingWellProject);
+            // updatedWellProject = _repository.UpdateWellProject(existingWellProject);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -109,7 +109,7 @@ public class WellProjectService : IWellProjectService
             throw;
         }
 
-        var dto = _mapperService.MapToDto<WellProject, WellProjectDto>(updatedWellProject, wellProjectId);
+        var dto = _mapperService.MapToDto<WellProject, WellProjectDto>(existingWellProject, wellProjectId);
         return dto;
     }
 
@@ -131,7 +131,7 @@ public class WellProjectService : IWellProjectService
         {
             updatedDrillingSchedule = _repository.UpdateWellProjectWellDrillingSchedule(existingDrillingSchedule);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -171,7 +171,7 @@ public class WellProjectService : IWellProjectService
         {
             createdWellProjectWell = _repository.CreateWellProjectWellDrillingSchedule(newWellProjectWell);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

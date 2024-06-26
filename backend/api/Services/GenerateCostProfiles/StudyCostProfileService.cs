@@ -51,7 +51,6 @@ public class StudyCostProfileService : IStudyCostProfileService
 
     public async Task<StudyCostProfileWrapperDto> Generate(Case caseItem)
     {
-
         var sumFacilityCost = await SumAllCostFacility(caseItem);
         var sumWellCost = await SumWellCost(caseItem);
 
@@ -88,7 +87,7 @@ public class StudyCostProfileService : IStudyCostProfileService
 
         var otherStudies = caseItem.TotalOtherStudies ?? new TotalOtherStudies();
 
-        await UpdateCaseAndSave(caseItem, feasibility, feed, otherStudies);
+        UpdateCaseAndSave(caseItem, feasibility, feed, otherStudies);
 
         var result = new StudyCostProfileWrapperDto();
         var feasibilityDto = _mapper.Map<TotalFeasibilityAndConceptStudiesDto>(feasibility);
@@ -123,12 +122,12 @@ public class StudyCostProfileService : IStudyCostProfileService
 
 
 
-    private async Task<int> UpdateCaseAndSave(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies, TotalOtherStudies totalOtherStudies)
+    private void UpdateCaseAndSave(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies, TotalOtherStudies totalOtherStudies)
     {
         caseItem.TotalFeasibilityAndConceptStudies = totalFeasibilityAndConceptStudies;
         caseItem.TotalFEEDStudies = totalFEEDStudies;
         caseItem.TotalOtherStudies = totalOtherStudies;
-        return await _context.SaveChangesAsync();
+        // return await _context.SaveChangesAsync();
     }
 
     public TotalFeasibilityAndConceptStudies CalculateTotalFeasibilityAndConceptStudies(Case caseItem, double sumFacilityCost, double sumWellCost)

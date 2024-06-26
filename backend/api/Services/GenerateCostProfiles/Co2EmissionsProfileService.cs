@@ -71,17 +71,17 @@ public class Co2EmissionsProfileService : ICo2EmissionsProfileService
         co2Emission.StartYear = totalProfile.StartYear;
         co2Emission.Values = totalProfile.Values;
 
-        await UpdateDrainageStrategyAndSave(drainageStrategy, co2Emission);
+        UpdateDrainageStrategyAndSave(drainageStrategy, co2Emission);
 
         var dto = _mapper.Map<Co2EmissionsDto>(co2Emission, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 
         return dto ?? new Co2EmissionsDto();
     }
 
-    private async Task<int> UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, Co2Emissions co2Emissions)
+    private void UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, Co2Emissions co2Emissions)
     {
         drainageStrategy.Co2Emissions = co2Emissions;
-        return await _context.SaveChangesAsync();
+        // return await _context.SaveChangesAsync();
     }
 
     private static TimeSeriesVolume GetLossesProfile(Project project, DrainageStrategy drainageStrategy)

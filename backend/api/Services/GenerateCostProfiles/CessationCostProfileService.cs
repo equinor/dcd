@@ -62,7 +62,7 @@ public class CessationCostProfileService : ICessationCostProfileService
         var cessationOnshoreFacilitiesCostProfileDto = _mapper.Map<CessationOnshoreFacilitiesCostProfileDto>(caseItem.CessationOnshoreFacilitiesCostProfile ?? new CessationOnshoreFacilitiesCostProfile());
         result.CessationOnshoreFacilitiesCostProfileDto = cessationOnshoreFacilitiesCostProfileDto;
 
-        await UpdateCaseAndSave(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCostProfile);
+        UpdateCaseAndSave(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCostProfile);
 
         var cessationTimeSeries = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCostProfile });
         var cessation = new CessationCost
@@ -129,12 +129,12 @@ public class CessationCostProfileService : ICessationCostProfileService
         }
     }
 
-    private async Task<int> UpdateCaseAndSave(Case caseItem, CessationWellsCost cessationWellsCost, CessationOffshoreFacilitiesCost cessationOffshoreFacilitiesCost, CessationOnshoreFacilitiesCostProfile CessationOnshoreFacilitiesCostProfile)
+    private void UpdateCaseAndSave(Case caseItem, CessationWellsCost cessationWellsCost, CessationOffshoreFacilitiesCost cessationOffshoreFacilitiesCost, CessationOnshoreFacilitiesCostProfile CessationOnshoreFacilitiesCostProfile)
     {
         caseItem.CessationWellsCost = cessationWellsCost;
         caseItem.CessationOffshoreFacilitiesCost = cessationOffshoreFacilitiesCost;
         caseItem.CessationOnshoreFacilitiesCostProfile = CessationOnshoreFacilitiesCostProfile;
-        return await _context.SaveChangesAsync();
+        // return await _context.SaveChangesAsync();
     }
 
     private async Task<CessationWellsCost> GenerateCessationWellsCost(WellProject wellProject, Project project, int lastYear, CessationWellsCost cessationWells)

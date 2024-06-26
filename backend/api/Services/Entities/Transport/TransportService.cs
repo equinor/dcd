@@ -89,12 +89,12 @@ public class TransportService : ITransportService
         _mapperService.MapToEntity(updatedTransportDto, existing, transportId);
         existing.LastChangedDate = DateTimeOffset.UtcNow;
 
-        Transport updatedTransport;
+        // Transport updatedTransport;
         try
         {
-            updatedTransport = _repository.UpdateTransport(existing);
+            // updatedTransport = _repository.UpdateTransport(existing);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateConcurrencyException ex)
         {
@@ -103,7 +103,7 @@ public class TransportService : ITransportService
         }
 
 
-        var dto = _mapperService.MapToDto<Transport, TransportDto>(updatedTransport, transportId);
+        var dto = _mapperService.MapToDto<Transport, TransportDto>(existing, transportId);
         return dto;
     }
 }

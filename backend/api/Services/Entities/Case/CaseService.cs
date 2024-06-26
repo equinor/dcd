@@ -4,7 +4,6 @@ using api.Enums;
 using api.Exceptions;
 using api.Models;
 using api.Repositories;
-using api.Services.Observers;
 
 using AutoMapper;
 
@@ -27,7 +26,6 @@ public class CaseService : ICaseService
     private readonly IMapper _mapper;
     private readonly IMapperService _mapperService;
     private readonly ICaseRepository _repository;
-    private readonly ICaseObserver _caseObserver;
 
     public CaseService(
         DcdDbContext context,
@@ -42,7 +40,6 @@ public class CaseService : ICaseService
         IWellProjectService wellProjectService,
         ICaseRepository repository,
         IMapperService mapperService,
-        ICaseObserver caseObserver,
         IMapper mapper
         )
     {
@@ -59,7 +56,6 @@ public class CaseService : ICaseService
         _mapper = mapper;
         _mapperService = mapperService;
         _repository = repository;
-        _caseObserver = caseObserver;
     }
 
     public async Task<ProjectDto> CreateCase(Guid projectId, CreateCaseDto createCaseDto)
@@ -229,17 +225,17 @@ public class CaseService : ICaseService
         var existingCase = await _repository.GetCase(caseId)
             ?? throw new NotFoundInDBException($"Case with id {caseId} not found.");
 
-        existingCase.RegisterObserver(_caseObserver);
 
         _mapperService.MapToEntity(updatedCaseDto, existingCase, caseId);
 
         existingCase.ModifyTime = DateTimeOffset.UtcNow;
 
-        Case updatedCase;
+        // Case updatedCase;
         try
         {
-            updatedCase = _repository.UpdateCase(existingCase);
-            await _repository.SaveChangesAsync();
+            // TODO: This breaks EF Core's change tracking
+            // updatedCase = _repository.UpdateCase(existingCase);
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -247,7 +243,7 @@ public class CaseService : ICaseService
             throw;
         }
 
-        var dto = _mapperService.MapToDto<Case, CaseDto>(updatedCase, caseId);
+        var dto = _mapperService.MapToDto<Case, CaseDto>(existingCase, caseId);
         return dto;
     }
 }

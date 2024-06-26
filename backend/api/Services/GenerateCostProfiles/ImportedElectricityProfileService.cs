@@ -38,7 +38,6 @@ public class ImportedElectricityProfileService : IImportedElectricityProfileServ
     {
         var caseItem = await _caseService.GetCase(caseId);
         var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
-        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
         var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
         var facilitiesAvailability = caseItem.FacilitiesAvailability;
@@ -53,17 +52,17 @@ public class ImportedElectricityProfileService : IImportedElectricityProfileServ
         importedElectricity.StartYear = calculateImportedElectricity.StartYear;
         importedElectricity.Values = calculateImportedElectricity.Values;
 
-        await UpdateDrainageStrategyAndSave(drainageStrategy, importedElectricity);
+        UpdateDrainageStrategyAndSave(drainageStrategy, importedElectricity);
 
         var dto = _mapper.Map<ImportedElectricityDto>(importedElectricity);
 
         return dto ?? new ImportedElectricityDto();
     }
 
-    private async Task<int> UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, ImportedElectricity importedElectricity)
+    private void UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, ImportedElectricity importedElectricity)
     {
         drainageStrategy.ImportedElectricity = importedElectricity;
-        return await _context.SaveChangesAsync();
+        // return await _context.SaveChangesAsync();
     }
 
     private static TimeSeries<double> CalculateImportedElectricity(double peakElectricityImported, double facilityAvailability,
