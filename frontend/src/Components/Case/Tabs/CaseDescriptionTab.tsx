@@ -58,10 +58,12 @@ const CaseDescriptionTab = () => {
         return <CaseDescriptionTabSkeleton />
     }
 
-    const handleBlur = (markdown: any) => {
-        const { value } = markdown.target
+    const handleBlur = (e: any) => {
+        // eslint-disable-next-line no-underscore-dangle
+        const newValue = e.target._value
+
         addEdit({
-            newValue: value,
+            newValue,
             previousValue: caseData.description,
             inputLabel: "Description",
             projectId,
@@ -70,12 +72,7 @@ const CaseDescriptionTab = () => {
             resourceId: "",
             caseId: caseData.id,
         })
-        setDescription(value)
-    }
-
-    const handleChange = (event: any) => {
-        const { value } = event.currentTarget
-        setDescription(value)
+        setDescription(newValue)
     }
 
     return (
@@ -87,8 +84,7 @@ const CaseDescriptionTab = () => {
                     <MarkdownEditor
                         menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
                         value={description}
-                        onBlur={handleBlur}
-                        onChange={handleChange}
+                        onBlur={(e) => handleBlur(e)}
                     />
                 ) : (
                     <MarkdownViewer value={caseData.description ?? ""} />

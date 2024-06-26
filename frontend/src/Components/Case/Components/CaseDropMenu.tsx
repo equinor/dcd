@@ -49,6 +49,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
         <>
             <Modal
                 title="Delete Case?"
+                size="sm"
                 isOpen={confirmDelete}
                 content={(
                     <Typography variant="body_short">
@@ -58,7 +59,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                 actions={(
                     <div>
                         <Button variant="ghost" onClick={() => setConfirmDelete(false)}>Cancel</Button>
-                        <Button onClick={deleteAndGoToProject}>Delete</Button>
+                        <Button onClick={deleteAndGoToProject} color="danger"> Delete </Button>
                     </div>
                 )}
             />
