@@ -185,6 +185,8 @@ const CaseDrillingScheduleTabTable = ({
                     const { explorationId } = p.data.assetWell
                     const { wellProjectId } = p.data.assetWell
 
+                    console.log(updatedWell.wellId)
+
                     const resourceName = explorationId ? "explorationWellDrillingSchedule" : "wellProjectWellDrillingSchedule"
 
                     addEdit({
@@ -193,7 +195,7 @@ const CaseDrillingScheduleTabTable = ({
                         inputLabel: p.data.profileName,
                         projectId: project.id,
                         resourceName,
-                        resourcePropertyKey: resourceName, // unsure about property key in this instance
+                        resourcePropertyKey: "drillingSchedule",
                         caseId,
                         resourceId: explorationId || wellProjectId,
                         newResourceObject: newProfile,

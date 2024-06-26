@@ -346,7 +346,7 @@ const useDataEdits = (): {
         drillingScheduleId,
     }: SubmitToApiParams): Promise<boolean> => {
         const existingDataInClient: object | undefined = queryClient.getQueryData([{
-            projectId, caseId, resourceId, resourceProfileId: EMPTY_GUID,
+            projectId, caseId, resourceId, resourceProfileId: EMPTY_GUID, wellId, drillingScheduleId,
         }])
         const updatedData = resourceObject || { ...existingDataInClient }
 
@@ -926,7 +926,7 @@ const useDataEdits = (): {
                 }
                 break
             case "explorationWellDrillingSchedule":
-                if (!wellId && !drillingScheduleId) {
+                if (!drillingScheduleId) {
                     success = await createOrUpdateDrillingSchedule(
                         projectId,
                         caseId,
@@ -935,7 +935,7 @@ const useDataEdits = (): {
                         drillingScheduleId!,
                         await (await GetExplorationService()).createExplorationWellDrillingSchedule(projectId, caseId, resourceId!, wellId!, updatedData!),
                     )
-                } else if (!wellId && drillingScheduleId) {
+                } else {
                     success = await createOrUpdateDrillingSchedule(
                         projectId,
                         caseId,
@@ -947,7 +947,7 @@ const useDataEdits = (): {
                 }
                 break
             case "wellProjectWellDrillingSchedule":
-                if (!wellId && !drillingScheduleId) {
+                if (!drillingScheduleId) {
                     success = await createOrUpdateDrillingSchedule(
                         projectId,
                         caseId,
@@ -956,7 +956,7 @@ const useDataEdits = (): {
                         drillingScheduleId!,
                         await (await GetWellProjectService()).createWellProjectWellDrillingSchedule(projectId, caseId, resourceId!, wellId!, updatedData!),
                     )
-                } else if (!wellId && drillingScheduleId) {
+                } else {
                     success = await createOrUpdateDrillingSchedule(
                         projectId,
                         caseId,
@@ -1002,6 +1002,8 @@ const useDataEdits = (): {
         resourcePropertyKey,
         resourceId,
         resourceProfileId,
+        wellId,
+        drillingScheduleId,
         caseId,
         newDisplayValue,
         previousDisplayValue,
@@ -1028,6 +1030,8 @@ const useDataEdits = (): {
             resourcePropertyKey,
             resourceId,
             resourceProfileId,
+            wellId,
+            drillingScheduleId,
             caseId,
             newDisplayValue,
             previousDisplayValue,
@@ -1043,6 +1047,8 @@ const useDataEdits = (): {
                 value: newValue as string,
                 resourceId,
                 resourceProfileId,
+                wellId,
+                drillingScheduleId,
                 resourceObject: newResourceObject as ResourceObject | undefined,
             },
         )
