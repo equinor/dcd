@@ -50,78 +50,79 @@ public class ExplorationsController : ControllerBase
         [FromBody] UpdateGAndGAdminCostOverrideDto dto)
     {
         return await _explorationTimeSeriesService.UpdateGAndGAdminCostOverride(caseId, explorationId, costProfileId, dto);
-    [HttpPut("{explorationId}/wells/{wellId}/drilling-schedule/{drillingScheduleId}")]
-    public async Task<DrillingScheduleDto> UpdateExplorationWellDrillingSchedule(
+        [HttpPut("{explorationId}/wells/{wellId}/drilling-schedule/{drillingScheduleId}")]
+        public async Task<DrillingScheduleDto> UpdateExplorationWellDrillingSchedule(
+            [FromRoute] Guid projectId,
+            [FromRoute] Guid caseId,
+            [FromRoute] Guid explorationId,
+            [FromRoute] Guid wellId,
+            [FromRoute] Guid drillingScheduleId,
+            [FromBody] UpdateDrillingScheduleDto dto)
+        {
+            return await _explorationService.UpdateExplorationWellDrillingSchedule(caseId, explorationId, wellId, drillingScheduleId, dto);
+        }
+
+        [HttpPost("{explorationId}/wells/{wellId}/drilling-schedule")]
+        public async Task<DrillingScheduleDto> CreateExplorationWellDrillingSchedule(
+            [FromRoute] Guid projectId,
+            [FromRoute] Guid caseId,
+            [FromRoute] Guid explorationId,
+            [FromRoute] Guid wellId,
+            [FromBody] CreateDrillingScheduleDto dto)
+        {
+            return await _explorationService.CreateExplorationWellDrillingSchedule(caseId, explorationId, wellId, dto);
+        }
+
+        [HttpPut("{explorationId}/seismic-acquisition-and-processing/{costProfileId}")]
+        public async Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
+            [FromRoute] Guid projectId,
+            [FromRoute] Guid caseId,
+            [FromRoute] Guid explorationId,
+            [FromRoute] Guid costProfileId,
+            [FromBody] UpdateSeismicAcquisitionAndProcessingDto dto)
+        {
+            return await _explorationTimeSeriesService.UpdateSeismicAcquisitionAndProcessing(caseId, explorationId, costProfileId, dto);
+        }
+
+        [HttpPost("{explorationId}/g-and-g-and-admin-cost-override")]
+        public async Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
         [FromRoute] Guid explorationId,
-        [FromRoute] Guid wellId,
-        [FromRoute] Guid drillingScheduleId,
-        [FromBody] UpdateDrillingScheduleDto dto)
-    {
-        return await _explorationService.UpdateExplorationWellDrillingSchedule(caseId, explorationId, wellId, drillingScheduleId, dto);
-    }
+        [FromBody] CreateGAndGAdminCostOverrideDto dto)
+        {
+            return await _explorationTimeSeriesService.CreateGAndGAdminCostOverride(caseId, explorationId, dto);
+        }
 
-    [HttpPost("{explorationId}/wells/{wellId}/drilling-schedule")]
-    public async Task<DrillingScheduleDto> CreateExplorationWellDrillingSchedule(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid explorationId,
-        [FromRoute] Guid wellId,
-        [FromBody] CreateDrillingScheduleDto dto)
-    {
-        return await _explorationService.CreateExplorationWellDrillingSchedule(caseId, explorationId, wellId, dto);
-    }
+        [HttpPost("{explorationId}/seismic-acquisition-and-processing")]
+        public async Task<SeismicAcquisitionAndProcessingDto> CreateSeismicAcquisitionAndProcessing(
+            [FromRoute] Guid projectId,
+            [FromRoute] Guid caseId,
+            [FromRoute] Guid explorationId,
+            [FromBody] CreateSeismicAcquisitionAndProcessingDto dto)
+        {
+            return await _explorationTimeSeriesService.CreateSeismicAcquisitionAndProcessing(caseId, explorationId, dto);
+        }
 
-    [HttpPut("{explorationId}/seismic-acquisition-and-processing/{costProfileId}")]
-    public async Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid explorationId,
-        [FromRoute] Guid costProfileId,
-        [FromBody] UpdateSeismicAcquisitionAndProcessingDto dto)
-    {
-        return await _explorationTimeSeriesService.UpdateSeismicAcquisitionAndProcessing(caseId, explorationId, costProfileId, dto);
-    }
+        [HttpPut("{explorationId}/country-office-cost/{costProfileId}")]
+        public async Task<CountryOfficeCostDto> UpdateCountryOfficeCost(
+            [FromRoute] Guid projectId,
+            [FromRoute] Guid caseId,
+            [FromRoute] Guid explorationId,
+            [FromRoute] Guid costProfileId,
+            [FromBody] UpdateCountryOfficeCostDto dto)
+        {
+            return await _explorationTimeSeriesService.UpdateCountryOfficeCost(caseId, explorationId, costProfileId, dto);
+        }
 
-    [HttpPost("{explorationId}/g-and-g-and-admin-cost-override")]
-    public async Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
-    [FromRoute] Guid projectId,
-    [FromRoute] Guid caseId,
-    [FromRoute] Guid explorationId,
-    [FromBody] CreateGAndGAdminCostOverrideDto dto)
-    {
-        return await _explorationTimeSeriesService.CreateGAndGAdminCostOverride(caseId, explorationId, dto);
-    }
-
-    [HttpPost("{explorationId}/seismic-acquisition-and-processing")]
-    public async Task<SeismicAcquisitionAndProcessingDto> CreateSeismicAcquisitionAndProcessing(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid explorationId,
-        [FromBody] CreateSeismicAcquisitionAndProcessingDto dto)
-    {
-        return await _explorationTimeSeriesService.CreateSeismicAcquisitionAndProcessing(caseId, explorationId, dto);
-    }
-
-    [HttpPut("{explorationId}/country-office-cost/{costProfileId}")]
-    public async Task<CountryOfficeCostDto> UpdateCountryOfficeCost(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid explorationId,
-        [FromRoute] Guid costProfileId,
-        [FromBody] UpdateCountryOfficeCostDto dto)
-    {
-        return await _explorationTimeSeriesService.UpdateCountryOfficeCost(caseId, explorationId, costProfileId, dto);
-    }
-
-    [HttpPost("{explorationId}/country-office-cost")]
-    public async Task<CountryOfficeCostDto> CreateCountryOfficeCost(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromRoute] Guid explorationId,
-        [FromBody] CreateCountryOfficeCostDto dto)
-    {
-        return await _explorationTimeSeriesService.CreateCountryOfficeCost(caseId, explorationId, dto);
+        [HttpPost("{explorationId}/country-office-cost")]
+        public async Task<CountryOfficeCostDto> CreateCountryOfficeCost(
+            [FromRoute] Guid projectId,
+            [FromRoute] Guid caseId,
+            [FromRoute] Guid explorationId,
+            [FromBody] CreateCountryOfficeCostDto dto)
+        {
+            return await _explorationTimeSeriesService.CreateCountryOfficeCost(caseId, explorationId, dto);
+        }
     }
 }
