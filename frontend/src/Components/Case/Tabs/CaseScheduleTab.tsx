@@ -123,7 +123,7 @@ const CaseScheduleTab = () => {
     }
 
     function handleDateChange(dateKey: string, dateValue: string) {
-        const oldCaseReference: any = { ...caseData }
+        const caseDataCopy: any = { ...caseData }
 
         if (!caseData) { return }
 
@@ -134,16 +134,16 @@ const CaseScheduleTab = () => {
 
         addEdit({
             newValue: newDate.toISOString(),
-            previousValue: oldCaseReference[dateKey],
+            previousValue: caseDataCopy[dateKey],
             inputLabel: dateKey,
             projectId: caseData.projectId,
             resourceName: "case",
             resourcePropertyKey: dateKey as ResourcePropertyKey,
             caseId: caseData.id,
             newDisplayValue: formatDate(newDate.toISOString()),
-            previousDisplayValue: formatDate(oldCaseReference[dateKey]),
+            previousDisplayValue: formatDate(caseDataCopy[dateKey]),
             newResourceObject: dg0Object,
-            previousResourceObject: dg0Object && oldCaseReference,
+            previousResourceObject: dg0Object && caseDataCopy,
         })
     }
 
