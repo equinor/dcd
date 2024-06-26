@@ -5,12 +5,56 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Context;
 
+public class DomainEvent
+{
+    public string EventType { get; set; }
+    public object Data { get; set; }
+}
+
+public interface IDomainEventDispatcher
+{
+    void Dispatch(DomainEvent domainEvent);
+}
+
 public class DcdDbContext : DbContext
 {
-    public DcdDbContext(DbContextOptions<DcdDbContext> options) : base(options)
-    {
+    private readonly IDomainEventDispatcher _domainEventDispatcher;
 
+    public DcdDbContext(
+        DbContextOptions<DcdDbContext> options,
+        IDomainEventDispatcher domainEventDispatcher
+        ) : base(options)
+    {
+        _domainEventDispatcher = domainEventDispatcher;
     }
+
+    public override int SaveChanges()
+    {
+        DetectChanges();
+        return base.SaveChanges();
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        DetectChanges();
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+private void DetectChanges()
+{
+    var changeTracker = ChangeTracker.Entries<Case>();
+
+    bool shouldNotify = changeTracker.Any(e =>
+        e.State == EntityState.Modified &&
+        (e.Property("DG3Date").IsModified || e.Property("DG4Date").IsModified));
+
+    if (shouldNotify)
+    {
+        var domainEvent = new DomainEvent { EventType = "CaseChanged", Data = null /* Add relevant data */ };
+        _domainEventDispatcher.Dispatch(domainEvent);
+    }
+}
+
     public DbSet<Project> Projects { get; set; } = null!;
     public DbSet<ExplorationOperationalWellCosts> ExplorationOperationalWellCosts { get; set; } = null!;
     public DbSet<DevelopmentOperationalWellCosts> DevelopmentOperationalWellCosts { get; set; } = null!;

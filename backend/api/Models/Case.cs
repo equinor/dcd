@@ -44,11 +44,59 @@ public class Case
     public DateTimeOffset DGCDate { get; set; }
     public DateTimeOffset APXDate { get; set; }
     public DateTimeOffset APZDate { get; set; }
-    public DateTimeOffset DG0Date { get; set; }
+    private DateTimeOffset _DG0Date;
+    public DateTimeOffset DG0Date
+    {
+        get => _DG0Date;
+        set
+        {
+            if (_DG0Date != value)
+            {
+                NotifyObservers(nameof(DG0Date), _DG0Date, value);
+                _DG0Date = value;
+            }
+        }
+    }
     public DateTimeOffset DG1Date { get; set; }
-    public DateTimeOffset DG2Date { get; set; }
-    public DateTimeOffset DG3Date { get; set; }
-    public DateTimeOffset DG4Date { get; set; }
+    private DateTimeOffset _DG2Date;
+    public DateTimeOffset DG2Date
+    {
+        get => _DG2Date;
+        set
+        {
+            if (_DG2Date != value)
+            {
+                NotifyObservers(nameof(DG2Date), _DG2Date, value);
+                _DG2Date = value;
+            }
+        }
+    }
+    private DateTimeOffset _DG3Date;
+    public DateTimeOffset DG3Date
+    {
+        get => _DG3Date;
+        set
+        {
+            if (_DG3Date != value)
+            {
+                NotifyObservers(nameof(DG3Date), _DG3Date, value);
+                _DG3Date = value;
+            }
+        }
+    }
+    private DateTimeOffset _DG4Date;
+    public DateTimeOffset DG4Date
+    {
+        get => _DG4Date;
+        set
+        {
+            if (_DG4Date != value)
+            {
+                NotifyObservers(nameof(DG4Date), _DG4Date, value);
+                _DG4Date = value;
+            }
+        }
+    }
 
     public Project Project { get; set; } = null!;
     public ArtificialLift ArtificialLift { get; set; }
