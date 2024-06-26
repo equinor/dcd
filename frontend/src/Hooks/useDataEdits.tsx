@@ -34,6 +34,7 @@ interface AddEditParams {
     newDisplayValue?: string | number | undefined;
     previousDisplayValue?: string | number | undefined;
     newResourceObject?: ResourceObject;
+    previousResourceObject?: ResourceObject;
 }
 
 const useDataEdits = (): {
@@ -913,6 +914,7 @@ const useDataEdits = (): {
         newDisplayValue,
         previousDisplayValue,
         newResourceObject,
+        previousResourceObject,
     }: AddEditParams) => {
         if (resourceName !== "case" && !resourceId) {
             console.log("asset id is required for this service")
@@ -939,6 +941,7 @@ const useDataEdits = (): {
             newDisplayValue,
             previousDisplayValue,
             newResourceObject,
+            previousResourceObject,
         }
 
         const success = await submitToApi(
@@ -985,7 +988,7 @@ const useDataEdits = (): {
                     value: editThatWillBeUndone.previousValue as string,
                     resourceId: editThatWillBeUndone.resourceId,
                     resourceObject: editThatWillBeUndone.resourceProfileId
-                    ? updatedEdit?.newResourceObject as ResourceObject : editThatWillBeUndone.newResourceObject as ResourceObject,
+                    ? updatedEdit?.newResourceObject as ResourceObject : editThatWillBeUndone.previousResourceObject as ResourceObject,
                 },
             )
         }

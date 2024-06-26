@@ -21,6 +21,7 @@ const CaseScheduleTab = () => {
     const { addEdit } = useDataEdits()
     const { caseId } = useParams()
     const queryClient = useQueryClient()
+    const { editMode } = useAppContext()
     const projectId = project?.id || null
 
     const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
@@ -33,8 +34,6 @@ const CaseScheduleTab = () => {
     )
 
     const caseData = apiData?.case
-
-    const { editMode } = useAppContext()
 
     const caseDateKeys = [
         {
@@ -122,8 +121,20 @@ const CaseScheduleTab = () => {
 
         return newCaseObject
     }
-
+    /*
+    const handleDateChange = (dateKey: string, dateValue: string) => {
+        console.log("caseData", caseData)
+        console.log("dateKey", dateKey)
+        console.log("dateValue", dateValue)
+    }
+  */
     function handleDateChange(dateKey: string, dateValue: string) {
+        const oldCaseReference: any = { ...caseData }
+        console.log("newCase", oldCaseReference)
+        console.log("caseData", caseData)
+
+        console.log("dg1 in caseData", caseData!.dG1Date)
+        console.log("dg1 in newCase", oldCaseReference.dG1Date)
         if (!caseData) { return }
 
         const newDate = Number.isNaN(new Date(dateValue).getTime())
@@ -131,20 +142,32 @@ const CaseScheduleTab = () => {
             : new Date(dateValue)
         const dg0Object = dateKey === "dG0Date" ? getDGOChangesObject(newDate) : undefined
         const caseDataObject = caseData as any
-        const newInputValue = newDate.toISOString()
-        const previousValue = caseDataObject[dateKey]
+
+        /*
+        console.log("newValue", newInputValue)
+        console.log("previousValue", previousValue)
+        console.log("inputLabel", dateKey)
+        console.log("projectId", caseData.projectId)
+        console.log("resourceName", "case")
+        console.log("resourcePropertyKey", dateKey)
+        console.log("caseId", caseData.id)
+        console.log("newDisplayValue", formatDate(newDate.toISOString()))
+        console.log("previousDisplayValue", formatDate(caseDataObject[dateKey]))
+        console.log("newResourceObject", dg0Object)
+        */
 
         addEdit({
-            newValue: newInputValue,
-            previousValue,
+            newValue: newDate.toISOString(),
+            previousValue: oldCaseReference[dateKey],
             inputLabel: dateKey,
             projectId: caseData.projectId,
             resourceName: "case",
             resourcePropertyKey: dateKey as ResourcePropertyKey,
             caseId: caseData.id,
             newDisplayValue: formatDate(newDate.toISOString()),
-            previousDisplayValue: formatDate(caseDataObject[dateKey]),
+            previousDisplayValue: formatDate(oldCaseReference[dateKey]),
             newResourceObject: dg0Object,
+            previousResourceObject: dg0Object && oldCaseReference,
         })
     }
 
@@ -214,7 +237,10 @@ const CaseScheduleTab = () => {
                                     value={getDateValue(caseDate.key)}
                                     resourcePropertyKey={caseDate.key as ResourcePropertyKey}
                                     label={caseDate.label}
-                                    onChange={(e) => (handleDateChange(caseDate.key, e.target.value))}
+                                    onChange={(e) => {
+                                        console.log("casedata onchange", caseData)
+                                        handleDateChange(caseDate.key, e.target.value)
+                                    }}
                                     min={
                                         (caseDate.min && caseData)
                                             ? findMinDate(getDatesFromStrings(caseDate.min.map((minDate) => caseData[minDate as keyof typeof caseData])))
