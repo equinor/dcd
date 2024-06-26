@@ -125,6 +125,7 @@ const UndoControls: React.FC = () => {
                         </Tooltip>
                     )
             }
+            {/* uncomment for next release
             <Tooltip title={canUndo() ? "Undo" : "No changes to undo"}>
                 <Button
                     variant="ghost_icon"
@@ -143,6 +144,7 @@ const UndoControls: React.FC = () => {
                     <Icon data={redo} />
                 </Button>
             </Tooltip>
+            */}
         </Container>
     )
 }
