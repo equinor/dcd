@@ -12,10 +12,18 @@ public interface IWellProjectService
         Guid wellProjectId,
         UpdateWellProjectDto updatedWellProjectDto
     );
-    Task<WellProjectWellDto> UpdateWellProjectWell(
+    Task<DrillingScheduleDto> UpdateWellProjectWellDrillingSchedule(
+            Guid caseId,
+            Guid wellProjectId,
+            Guid wellId,
+            Guid drillingScheduleId,
+            UpdateDrillingScheduleDto updatedWellProjectWellDto
+        );
+
+    Task<DrillingScheduleDto> CreateWellProjectWellDrillingSchedule(
         Guid caseId,
         Guid wellProjectId,
         Guid wellId,
-        UpdateWellProjectWellDto updatedWellProjectWellDto
+        CreateDrillingScheduleDto updatedWellProjectWellDto
     );
 }

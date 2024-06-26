@@ -410,16 +410,7 @@ const CaseView = () => {
                             <CaseDescriptionTab />
                         </CasePanel>
                         <CasePanel>
-                            <CaseProductionProfilesTab
-                                drainageStrategy={drainageStrategy}
-                                setDrainageStrategy={setDrainageStrategy}
-                                fuelFlaringAndLosses={fuelFlaringAndLosses}
-                                setFuelFlaringAndLosses={setFuelFlaringAndLosses}
-                                netSalesGas={netSalesGas}
-                                setNetSalesGas={setNetSalesGas}
-                                importedElectricity={importedElectricity}
-                                setImportedElectricity={setImportedElectricity}
-                            />
+                            <CaseProductionProfilesTab />
                         </CasePanel>
                         <CasePanel>
                             <CaseScheduleTab />
@@ -442,14 +433,7 @@ const CaseView = () => {
                             <CaseCostTab />
                         </CasePanel>
                         <CasePanel>
-                            <CaseCO2Tab
-                                topside={topside}
-                                setTopside={setTopside}
-                                drainageStrategy={drainageStrategy}
-                                setDrainageStrategy={setDrainageStrategy}
-                                co2Emissions={co2Emissions}
-                                setCo2Emissions={setCo2Emissions}
-                            />
+                            <CaseCO2Tab />
                         </CasePanel>
                         <CasePanel>
                             <CaseSummaryTab />

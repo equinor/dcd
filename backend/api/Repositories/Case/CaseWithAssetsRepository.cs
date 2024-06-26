@@ -68,21 +68,6 @@ public class CaseWithAssetsRepository : ICaseWithAssetsRepository
             ?? throw new NotFoundInDBException($"Case with id {id} not found.");
     }
 
-    private async Task<WellProject> GetWellProject(Guid id)
-    {
-        return await _context.WellProjects
-                .Include(c => c.OilProducerCostProfile)
-                .Include(c => c.OilProducerCostProfileOverride)
-                .Include(c => c.GasProducerCostProfile)
-                .Include(c => c.GasProducerCostProfileOverride)
-                .Include(c => c.WaterInjectorCostProfile)
-                .Include(c => c.WaterInjectorCostProfileOverride)
-                .Include(c => c.GasInjectorCostProfile)
-                .Include(c => c.GasInjectorCostProfileOverride)
-                .FirstOrDefaultAsync(o => o.Id == id)
-            ?? throw new NotFoundInDBException($"WellProject with id {id} not found.");
-    }
-
     private async Task<Transport> GetTransport(Guid id)
     {
         return await _context.Transports
@@ -145,9 +130,26 @@ public class CaseWithAssetsRepository : ICaseWithAssetsRepository
             ?? throw new NotFoundInDBException($"Topside with id {id} not found.");
     }
 
+    private async Task<WellProject> GetWellProject(Guid id)
+    {
+        return await _context.WellProjects
+                .Include(c => c.WellProjectWells)!.ThenInclude(c => c.DrillingSchedule)
+                .Include(c => c.OilProducerCostProfile)
+                .Include(c => c.OilProducerCostProfileOverride)
+                .Include(c => c.GasProducerCostProfile)
+                .Include(c => c.GasProducerCostProfileOverride)
+                .Include(c => c.WaterInjectorCostProfile)
+                .Include(c => c.WaterInjectorCostProfileOverride)
+                .Include(c => c.GasInjectorCostProfile)
+                .Include(c => c.GasInjectorCostProfileOverride)
+                .FirstOrDefaultAsync(o => o.Id == id)
+            ?? throw new NotFoundInDBException($"WellProject with id {id} not found.");
+    }
+
     private async Task<Exploration> GetExploration(Guid id)
     {
         return await _context.Explorations
+                .Include(c => c.ExplorationWells)!.ThenInclude(c => c.DrillingSchedule)
                 .Include(c => c.ExplorationWellCostProfile)
                 .Include(c => c.AppraisalWellCostProfile)
                 .Include(c => c.SidetrackCostProfile)

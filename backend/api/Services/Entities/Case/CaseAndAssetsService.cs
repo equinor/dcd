@@ -274,7 +274,7 @@ public class CaseAndAssetsService : ICaseAndAssetsService
         var wellProject = await _costProfileFromDrillingScheduleHelper.UpdateExplorationCostProfilesForCase(caseId);
     }
 
-    private async Task CreateAndUpdateWellProjectWells(UpdateWellProjectWellDto[] wellProjectWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate)
+    private async Task CreateAndUpdateWellProjectWells(UpdateWellProjectWellWithScheduleDto[] wellProjectWellDtos, Guid caseId, ProfilesToGenerate profilesToGenerate)
     {
         foreach (var wellProjectWellDto in wellProjectWellDtos)
         {

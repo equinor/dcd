@@ -14,10 +14,18 @@ public interface IExplorationService
         UpdateExplorationDto updatedExplorationDto
     );
 
-    Task<ExplorationWellDto> UpdateExplorationWell(
+    Task<DrillingScheduleDto> UpdateExplorationWellDrillingSchedule(
         Guid caseId,
         Guid explorationId,
         Guid wellId,
-        UpdateExplorationWellDto updatedExplorationWellDto
+        Guid drillingScheduleId,
+        UpdateDrillingScheduleDto updatedExplorationWellDto
+    );
+
+    Task<DrillingScheduleDto> CreateExplorationWellDrillingSchedule(
+        Guid caseId,
+        Guid explorationId,
+        Guid wellId,
+        CreateDrillingScheduleDto updatedExplorationWellDto
     );
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace api.Dtos;
 
-public class CreateWellProjectWellDto
+public class UpdateWellProjectWellWithScheduleDto
 {
     public DrillingScheduleDto DrillingSchedule { get; set; } = new DrillingScheduleDto();
     [Required]
