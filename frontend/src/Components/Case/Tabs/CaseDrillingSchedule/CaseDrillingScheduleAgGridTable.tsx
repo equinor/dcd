@@ -184,7 +184,7 @@ const CaseDrillingScheduleTabTable = ({
                     addEdit({
                         newValue: p.newValue,
                         previousValue: p.oldValue,
-                        inputLabel: p.data.profileName,
+                        inputLabel: p.data.name,
                         projectId: project.id,
                         resourceName,
                         resourcePropertyKey: "drillingSchedule",
