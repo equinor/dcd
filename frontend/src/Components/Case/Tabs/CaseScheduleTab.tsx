@@ -121,40 +121,16 @@ const CaseScheduleTab = () => {
 
         return newCaseObject
     }
-    /*
-    const handleDateChange = (dateKey: string, dateValue: string) => {
-        console.log("caseData", caseData)
-        console.log("dateKey", dateKey)
-        console.log("dateValue", dateValue)
-    }
-  */
+
     function handleDateChange(dateKey: string, dateValue: string) {
         const oldCaseReference: any = { ...caseData }
-        console.log("newCase", oldCaseReference)
-        console.log("caseData", caseData)
 
-        console.log("dg1 in caseData", caseData!.dG1Date)
-        console.log("dg1 in newCase", oldCaseReference.dG1Date)
         if (!caseData) { return }
 
         const newDate = Number.isNaN(new Date(dateValue).getTime())
             ? defaultDate()
             : new Date(dateValue)
         const dg0Object = dateKey === "dG0Date" ? getDGOChangesObject(newDate) : undefined
-        const caseDataObject = caseData as any
-
-        /*
-        console.log("newValue", newInputValue)
-        console.log("previousValue", previousValue)
-        console.log("inputLabel", dateKey)
-        console.log("projectId", caseData.projectId)
-        console.log("resourceName", "case")
-        console.log("resourcePropertyKey", dateKey)
-        console.log("caseId", caseData.id)
-        console.log("newDisplayValue", formatDate(newDate.toISOString()))
-        console.log("previousDisplayValue", formatDate(caseDataObject[dateKey]))
-        console.log("newResourceObject", dg0Object)
-        */
 
         addEdit({
             newValue: newDate.toISOString(),
@@ -237,10 +213,7 @@ const CaseScheduleTab = () => {
                                     value={getDateValue(caseDate.key)}
                                     resourcePropertyKey={caseDate.key as ResourcePropertyKey}
                                     label={caseDate.label}
-                                    onChange={(e) => {
-                                        console.log("casedata onchange", caseData)
-                                        handleDateChange(caseDate.key, e.target.value)
-                                    }}
+                                    onChange={(e) => handleDateChange(caseDate.key, e.target.value)}
                                     min={
                                         (caseDate.min && caseData)
                                             ? findMinDate(getDatesFromStrings(caseDate.min.map((minDate) => caseData[minDate as keyof typeof caseData])))
