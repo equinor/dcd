@@ -41,8 +41,6 @@ const CaseCO2Tab = () => {
     const co2EmissionsOverrideData = apiData?.co2EmissionsOverride
     const co2EmissionsData = apiData?.co2Emissions as Components.Schemas.Co2EmissionsDto
 
-    if (!caseData || !drainageStrategyData || !topsideData) { return null }
-
     // todo: get co2Intensity, co2IntensityTotal and co2DrillingFlaringFuelTotals stored in backend
     const [co2Intensity, setCo2Intensity] = useState<Components.Schemas.Co2IntensityDto>()
     const [co2IntensityTotal, setCo2IntensityTotal] = useState<number>(0)
@@ -89,6 +87,32 @@ const CaseCO2Tab = () => {
         },
     ]
 
+    useEffect(() => {
+        (async () => {
+            try {
+                if (caseData && project && activeTabCase === 6 && caseData.id) {
+                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(project.id, caseData.id)
+                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(project.id, caseData.id)
+                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(project.id, caseData.id)
+
+                    setCo2Intensity(await co2I)
+                    setCo2IntensityTotal(Number(co2ITotal))
+                    setCo2DrillingFlaringFuelTotals(co2DFFTotal)
+
+                    SetTableYearsFromProfiles(
+                        [co2EmissionsData, await co2I, co2EmissionsOverrideData?.override ? co2EmissionsOverrideData : undefined],
+                        caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030,
+                        setStartYear,
+                        setEndYear,
+                        setTableYears,
+                    )
+                }
+            } catch (error) {
+                console.error("[CaseView] Error while generating cost profile", error)
+            }
+        })()
+    }, [activeTabCase])
+
     const datePickerValue = (() => {
         if (project?.physicalUnit === 0) {
             return "SI"
@@ -97,6 +121,8 @@ const CaseCO2Tab = () => {
         }
         return ""
     })()
+
+    if (!caseData || !drainageStrategyData || !topsideData) { return null }
 
     const timeSeriesData: ITimeSeriesData[] = [
         {
@@ -124,32 +150,6 @@ const CaseCO2Tab = () => {
             resourcePropertyKey: "co2Intensity",
         },
     ]
-
-    useEffect(() => {
-        (async () => {
-            try {
-                if (caseData && project && activeTabCase === 6 && caseData.id) {
-                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(project.id, caseData.id)
-                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(project.id, caseData.id)
-                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(project.id, caseData.id)
-
-                    setCo2Intensity(await co2I)
-                    setCo2IntensityTotal(Number(co2ITotal))
-                    setCo2DrillingFlaringFuelTotals(co2DFFTotal)
-
-                    SetTableYearsFromProfiles(
-                        [co2EmissionsData, await co2I, co2EmissionsOverrideData?.override ? co2EmissionsOverrideData : undefined],
-                        caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030,
-                        setStartYear,
-                        setEndYear,
-                        setTableYears,
-                    )
-                }
-            } catch (error) {
-                console.error("[CaseView] Error while generating cost profile", error)
-            }
-        })()
-    }, [activeTabCase])
 
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
