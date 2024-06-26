@@ -175,17 +175,9 @@ const CaseDrillingScheduleTabTable = ({
                     updatedWell.drillingSchedule = newProfile
                     const updatedWells: any[] = [...rowWells]
                     updatedWells[index] = updatedWell
-                    setAssetWells(updatedWells) // remove after addEdit works
-
-                    console.log(updatedWell)
-                    console.log(updatedWells)
-                    console.log(p)
-                    console.log(p.data.assetWell.explorationId)
 
                     const { explorationId } = p.data.assetWell
                     const { wellProjectId } = p.data.assetWell
-
-                    console.log(updatedWell.wellId)
 
                     const resourceName = explorationId ? "explorationWellDrillingSchedule" : "wellProjectWellDrillingSchedule"
 

@@ -55,7 +55,6 @@ const CaseDrillingScheduleTab = ({
         },
     )
 
-    const caseData = apiData?.case
     const wellProjectWellsData = apiData?.wellProjectWells
     const explorationWellsData = apiData?.explorationWells
 
@@ -86,16 +85,28 @@ const CaseDrillingScheduleTab = ({
         setTableYears([startYear, endYear])
     }
 
-    if (!projectCase || !explorationWellsData || !wellProjectWellsData) { return null }
+    useEffect(() => {
+        if (activeTabCase === 3 && projectCase!.dG4Date !== undefined) {
+            const explorationDrillingSchedule = explorationWellsData?.map((ew) => ew.drillingSchedule) ?? []
+            const wellProjectDrillingSchedule = wellProjectWellsData?.map((ew) => ew.drillingSchedule) ?? []
+            SetTableYearsFromProfiles(
+                [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
+                new Date(projectCase!.dG4Date).getFullYear(),
+                setStartYear,
+                setEndYear,
+                setTableYears,
+            )
+        }
+    }, [activeTabCase])
 
     const sumWellsForWellCategory = (category: Components.Schemas.WellCategory): number => {
         if (wells && wells.length > 0) {
             if (category >= 4) {
-                const filteredExplorationWells = explorationWellsData.filter((ew) => ew.explorationId === exploration.id)
+                const filteredExplorationWells = explorationWellsData?.filter((ew) => ew.explorationId === exploration.id)
                 const filteredWells = wells.filter((w) => w.wellCategory === category)
                 let sum = 0
                 filteredWells.forEach((fw) => {
-                    filteredExplorationWells.filter((few) => few.wellId === fw.id).forEach((ew) => {
+                    filteredExplorationWells?.filter((few) => few.wellId === fw.id).forEach((ew) => {
                         if (ew.drillingSchedule
                             && ew.drillingSchedule.values
                             && ew.drillingSchedule.values.length > 0) {
@@ -105,11 +116,11 @@ const CaseDrillingScheduleTab = ({
                 })
                 return sum
             }
-            const filteredWellProjectWells = wellProjectWellsData.filter((wpw) => wpw.wellProjectId === wellProject.id)
+            const filteredWellProjectWells = wellProjectWellsData?.filter((wpw) => wpw.wellProjectId === wellProject.id)
             const filteredWells = wells.filter((w) => w.wellCategory === category)
             let sum = 0
             filteredWells.forEach((fw) => {
-                filteredWellProjectWells.filter((fwpw) => fwpw.wellId === fw.id).forEach((ew) => {
+                filteredWellProjectWells?.filter((fwpw) => fwpw.wellId === fw.id).forEach((ew) => {
                     if (ew.drillingSchedule && ew.drillingSchedule.values && ew.drillingSchedule.values.length > 0) {
                         sum += ew.drillingSchedule.values.reduce((a, b) => a + b, 0)
                     }
@@ -146,7 +157,7 @@ const CaseDrillingScheduleTab = ({
         }
     }, [wells, explorationWellsData, wellProjectWellsData, activeTabCase])
 
-    if (activeTabCase !== 3 || !projectCase) { return null }
+    if (activeTabCase !== 3 || !projectCase || !explorationWellsData || !wellProjectWellsData) { return null }
 
     return (
         <Grid container spacing={2}>
