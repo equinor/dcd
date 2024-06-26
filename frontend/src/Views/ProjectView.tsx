@@ -13,11 +13,6 @@ const {
     List, Tab, Panels, Panel,
 } = Tabs
 
-const ScrollablePanel = styled(Panel)`
-    height: calc(100vh - 210px);
-    overflow: auto;
-`
-
 const ProjectView = () => {
     const { activeTabProject, setActiveTabProject } = useProjectContext()
     const location = useLocation()
@@ -38,18 +33,18 @@ const ProjectView = () => {
                         <Tab>Settings</Tab>
                     </List>
                     <Panels>
-                        <ScrollablePanel>
+                        <Panel>
                             <ProjectOverviewTab />
-                        </ScrollablePanel>
-                        <ScrollablePanel>
+                        </Panel>
+                        <Panel>
                             <ProjectCompareCasesTab />
-                        </ScrollablePanel>
-                        <ScrollablePanel>
+                        </Panel>
+                        <Panel>
                             <EditHistoryOverviewTab />
-                        </ScrollablePanel>
-                        <ScrollablePanel>
+                        </Panel>
+                        <Panel>
                             <ProjectSettingsTab />
-                        </ScrollablePanel>
+                        </Panel>
                     </Panels>
                 </Tabs>
             </Grid>
