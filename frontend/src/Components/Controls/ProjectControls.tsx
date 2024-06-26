@@ -1,8 +1,7 @@
-import React from "react"
 import styled from "styled-components"
-import { Switch, Typography } from "@equinor/eds-core-react"
-import { useAppContext } from "../../Context/AppContext"
-import { useProjectContext } from "../../Context/ProjectContext"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { Typography } from "@equinor/eds-core-react"
+import Classification from "./Classification"
 
 const Wrapper = styled.div`
     background-color: white;
@@ -14,29 +13,15 @@ const Wrapper = styled.div`
     justify-content: space-between;
 `
 
-const Controls = styled.div`
-    display: flex;
-    flex-direction: row;
-    gap: 5px;
-    align-items: center;
-`
-
 const ProjectControls = () => {
-    const { editMode, setEditMode } = useAppContext()
-    const { project } = useProjectContext()
+    const { currentContext } = useModuleCurrentContext()
 
     return (
         <Wrapper>
             <Typography variant="h4">
-                {project?.name}
+                {currentContext?.title}
             </Typography>
-            <Controls>
-                <Switch
-                    label="Edit mode"
-                    checked={editMode}
-                    onChange={() => setEditMode(!editMode)}
-                />
-            </Controls>
+            <Classification />
         </Wrapper>
     )
 }
