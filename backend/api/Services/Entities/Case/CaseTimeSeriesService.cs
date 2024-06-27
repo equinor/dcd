@@ -65,12 +65,12 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
         );
     }
 
-        public async Task<CessationOnshoreFacilitiesCostProfileDto> UpdateCessationOnshoreFacilitiesCostProfile(
-        Guid projectId,
-        Guid caseId,
-        Guid costProfileId,
-        UpdateCessationOnshoreFacilitiesCostProfileDto updatedCostProfileDto
-    )
+    public async Task<CessationOnshoreFacilitiesCostProfileDto> UpdateCessationOnshoreFacilitiesCostProfile(
+    Guid projectId,
+    Guid caseId,
+    Guid costProfileId,
+    UpdateCessationOnshoreFacilitiesCostProfileDto updatedCostProfileDto
+)
     {
         return await UpdateCaseCostProfile<CessationOnshoreFacilitiesCostProfile, CessationOnshoreFacilitiesCostProfileDto, UpdateCessationOnshoreFacilitiesCostProfileDto>(
             projectId,
@@ -245,11 +245,11 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
         );
     }
 
-        public async Task<CessationOnshoreFacilitiesCostProfileDto> CreateCessationOnshoreFacilitiesCostProfile(
-        Guid projectId,
-        Guid caseId,
-        CreateCessationOnshoreFacilitiesCostProfileDto createProfileDto
-    )
+    public async Task<CessationOnshoreFacilitiesCostProfileDto> CreateCessationOnshoreFacilitiesCostProfile(
+    Guid projectId,
+    Guid caseId,
+    CreateCessationOnshoreFacilitiesCostProfileDto createProfileDto
+)
     {
         return await CreateCaseProfile<CessationOnshoreFacilitiesCostProfile, CessationOnshoreFacilitiesCostProfileDto, CreateCessationOnshoreFacilitiesCostProfileDto>(
             projectId,
