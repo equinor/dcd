@@ -20,6 +20,7 @@ public class TransportProfile : Profile
         CreateMap<PROSPUpdateTransportDto, Transport>();
         CreateMap<UpdateTransportCostProfileDto, TransportCostProfile>();
         CreateMap<UpdateTransportCostProfileOverrideDto, TransportCostProfileOverride>();
+        CreateMap<CreateTransportCostProfileOverrideDto, TransportCostProfileOverride>();
 
         CreateMap<CreateTransportDto, Transport>();
     }

@@ -22,11 +22,17 @@ namespace api.Controllers;
 public class CasesController : ControllerBase
 {
     private readonly ICaseService _caseService;
+    private readonly ICaseTimeSeriesService _caseTimeSeriesService;
     private readonly IDuplicateCaseService _duplicateCaseService;
 
-    public CasesController(ICaseService caseService, IDuplicateCaseService duplicateCaseService)
+    public CasesController(
+        ICaseService caseService,
+        ICaseTimeSeriesService caseTimeSeriesService,
+        IDuplicateCaseService duplicateCaseService
+        )
     {
         _caseService = caseService;
+        _caseTimeSeriesService = caseTimeSeriesService;
         _duplicateCaseService = duplicateCaseService;
     }
 
@@ -55,6 +61,13 @@ public class CasesController : ControllerBase
         return await _caseService.UpdateCase(caseId, caseDto);
     }
 
+
+    [HttpDelete("{caseId}")]
+    public async Task<ProjectDto> DeleteCase(Guid caseId)
+    {
+        return await _caseService.DeleteCase(caseId);
+    }
+
     [HttpPut("{caseId}/cessation-wells-cost-override/{costProfileId}")]
     public async Task<CessationWellsCostOverrideDto> UpdateCessationWellsCostOverride(
         [FromRoute] Guid projectId,
@@ -63,7 +76,7 @@ public class CasesController : ControllerBase
         [FromBody] UpdateCessationWellsCostOverrideDto dto
     )
     {
-        return await _caseService.UpdateCessationWellsCostOverride(projectId, caseId, costProfileId, dto);
+        return await _caseTimeSeriesService.UpdateCessationWellsCostOverride(projectId, caseId, costProfileId, dto);
     }
 
     [HttpPut("{caseId}/cessation-offshore-facilities-cost-override/{costProfileId}")]
@@ -74,7 +87,97 @@ public class CasesController : ControllerBase
         [FromBody] UpdateCessationOffshoreFacilitiesCostOverrideDto dto
     )
     {
-        return await _caseService.UpdateCessationOffshoreFacilitiesCostOverride(projectId, caseId, costProfileId, dto);
+        return await _caseTimeSeriesService.UpdateCessationOffshoreFacilitiesCostOverride(projectId, caseId, costProfileId, dto);
+    }
+
+    [HttpPost("{caseId}/cessation-offshore-facilities-cost-override")]
+    public async Task<CessationOffshoreFacilitiesCostOverrideDto> CreateCessationOffshoreFacilitiesCostOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateCessationOffshoreFacilitiesCostOverrideDto dto
+    )
+    {
+        return await _caseTimeSeriesService.CreateCessationOffshoreFacilitiesCostOverride(projectId, caseId, dto);
+    }
+
+    [HttpPost("{caseId}/cessation-wells-cost-override")]
+    public async Task<CessationWellsCostOverrideDto> CreateCessationWellsCostOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateCessationWellsCostOverrideDto dto
+    )
+    {
+        return await _caseTimeSeriesService.CreateCessationWellsCostOverride(projectId, caseId, dto);
+    }
+
+    [HttpPost("{caseId}/total-feasibility-and-concept-studies-override")]
+    public async Task<TotalFeasibilityAndConceptStudiesOverrideDto> CreateTotalFeasibilityAndConceptStudiesOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateTotalFeasibilityAndConceptStudiesOverrideDto dto
+    )
+    {
+        return await _caseTimeSeriesService.CreateTotalFeasibilityAndConceptStudiesOverride(projectId, caseId, dto);
+    }
+
+    [HttpPost("{caseId}/total-feed-studies-override")]
+    public async Task<TotalFEEDStudiesOverrideDto> CreateTotalFEEDStudiesOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateTotalFEEDStudiesOverrideDto dto
+    )
+    {
+        return await _caseTimeSeriesService.CreateTotalFEEDStudiesOverride(projectId, caseId, dto);
+    }
+
+    [HttpPost("{caseId}/historic-cost-cost-profile")]
+    public async Task<HistoricCostCostProfileDto> CreateHistoricCostCostProfile(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateHistoricCostCostProfileDto dto
+    )
+    {
+        return await _caseTimeSeriesService.CreateHistoricCostCostProfile(projectId, caseId, dto);
+    }
+
+    [HttpPost("{caseId}/well-intervention-cost-profile-override")]
+    public async Task<WellInterventionCostProfileOverrideDto> CreateWellInterventionCostProfileOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateWellInterventionCostProfileOverrideDto dto
+    )
+    {
+        return await _caseTimeSeriesService.CreateWellInterventionCostProfileOverride(projectId, caseId, dto);
+    }
+
+    [HttpPost("{caseId}/offshore-facilities-operations-cost-profile-override")]
+    public async Task<OffshoreFacilitiesOperationsCostProfileOverrideDto> CreateOffshoreFacilitiesOperationsCostProfileOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateOffshoreFacilitiesOperationsCostProfileOverrideDto dto
+    )
+    {
+        return await _caseTimeSeriesService.CreateOffshoreFacilitiesOperationsCostProfileOverride(projectId, caseId, dto);
+    }
+
+    [HttpPost("{caseId}/onshore-related-opex-cost-profile")]
+    public async Task<OnshoreRelatedOPEXCostProfileDto> CreateOnshoreRelatedOPEXCostProfile(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateOnshoreRelatedOPEXCostProfileDto dto
+    )
+    {
+        return await _caseTimeSeriesService.CreateOnshoreRelatedOPEXCostProfile(projectId, caseId, dto);
+    }
+
+    [HttpPost("{caseId}/additional-opex-cost-profile")]
+    public async Task<AdditionalOPEXCostProfileDto> CreateAdditionalOPEXCostProfile(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateAdditionalOPEXCostProfileDto dto
+    )
+    {
+        return await _caseTimeSeriesService.CreateAdditionalOPEXCostProfile(projectId, caseId, dto);
     }
 
     [HttpPut("{caseId}/total-feasibility-and-concept-studies-override/{costProfileId}")]
@@ -85,7 +188,7 @@ public class CasesController : ControllerBase
         [FromBody] UpdateTotalFeasibilityAndConceptStudiesOverrideDto dto
     )
     {
-        return await _caseService.UpdateTotalFeasibilityAndConceptStudiesOverride(projectId, caseId, costProfileId, dto);
+        return await _caseTimeSeriesService.UpdateTotalFeasibilityAndConceptStudiesOverride(projectId, caseId, costProfileId, dto);
     }
 
     [HttpPut("{caseId}/total-feed-studies-override/{costProfileId}")]
@@ -96,7 +199,7 @@ public class CasesController : ControllerBase
         [FromBody] UpdateTotalFEEDStudiesOverrideDto dto
     )
     {
-        return await _caseService.UpdateTotalFEEDStudiesOverride(projectId, caseId, costProfileId, dto);
+        return await _caseTimeSeriesService.UpdateTotalFEEDStudiesOverride(projectId, caseId, costProfileId, dto);
     }
 
     [HttpPut("{caseId}/historic-cost-cost-profile/{costProfileId}")]
@@ -107,7 +210,7 @@ public class CasesController : ControllerBase
         [FromBody] UpdateHistoricCostCostProfileDto dto
     )
     {
-        return await _caseService.UpdateHistoricCostCostProfile(projectId, caseId, costProfileId, dto);
+        return await _caseTimeSeriesService.UpdateHistoricCostCostProfile(projectId, caseId, costProfileId, dto);
     }
 
     [HttpPut("{caseId}/well-intervention-cost-profile-override/{costProfileId}")]
@@ -118,7 +221,7 @@ public class CasesController : ControllerBase
         [FromBody] UpdateWellInterventionCostProfileOverrideDto dto
     )
     {
-        return await _caseService.UpdateWellInterventionCostProfileOverride(projectId, caseId, costProfileId, dto);
+        return await _caseTimeSeriesService.UpdateWellInterventionCostProfileOverride(projectId, caseId, costProfileId, dto);
     }
 
     [HttpPut("{caseId}/offshore-facilities-operations-cost-profile-override/{costProfileId}")]
@@ -129,7 +232,7 @@ public class CasesController : ControllerBase
         [FromBody] UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto dto
     )
     {
-        return await _caseService.UpdateOffshoreFacilitiesOperationsCostProfileOverride(projectId, caseId, costProfileId, dto);
+        return await _caseTimeSeriesService.UpdateOffshoreFacilitiesOperationsCostProfileOverride(projectId, caseId, costProfileId, dto);
     }
 
     [HttpPut("{caseId}/onshore-related-opex-cost-profile/{costProfileId}")]
@@ -140,7 +243,7 @@ public class CasesController : ControllerBase
         [FromBody] UpdateOnshoreRelatedOPEXCostProfileDto dto
     )
     {
-        return await _caseService.UpdateOnshoreRelatedOPEXCostProfile(projectId, caseId, costProfileId, dto);
+        return await _caseTimeSeriesService.UpdateOnshoreRelatedOPEXCostProfile(projectId, caseId, costProfileId, dto);
     }
 
     [HttpPut("{caseId}/additional-opex-cost-profile/{costProfileId}")]
@@ -151,12 +254,6 @@ public class CasesController : ControllerBase
         [FromBody] UpdateAdditionalOPEXCostProfileDto dto
     )
     {
-        return await _caseService.UpdateAdditionalOPEXCostProfile(projectId, caseId, costProfileId, dto);
-    }
-
-    [HttpDelete("{caseId}")]
-    public async Task<ProjectDto> DeleteCase(Guid caseId)
-    {
-        return await _caseService.DeleteCase(caseId);
+        return await _caseTimeSeriesService.UpdateAdditionalOPEXCostProfile(projectId, caseId, costProfileId, dto);
     }
 }

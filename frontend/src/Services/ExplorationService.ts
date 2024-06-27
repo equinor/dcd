@@ -16,6 +16,19 @@ class ExplorationService extends __BaseService {
         return res
     }
 
+    public async createSeismicAcquisitionAndProcessing(
+        projectId: string,
+        caseId: string,
+        explorationId: string,
+        dto: Components.Schemas.CreateSeismicAcquisitionAndProcessingDto,
+    ): Promise<Components.Schemas.SeismicAcquisitionAndProcessingDto> {
+        const res: Components.Schemas.SeismicAcquisitionAndProcessingDto = await this.post(
+            `projects/${projectId}/cases/${caseId}/explorations/${explorationId}/seismic-acquisition-and-processing/`,
+            { body: dto },
+        )
+        return res
+    }
+
     public async updateSeismicAcquisitionAndProcessing(
         projectId: string,
         caseId: string,
@@ -30,6 +43,19 @@ class ExplorationService extends __BaseService {
         return res
     }
 
+    public async createCountryOfficeCost(
+        projectId: string,
+        caseId: string,
+        topsideId: string,
+        dto: Components.Schemas.CreateCountryOfficeCostDto,
+    ): Promise<Components.Schemas.CountryOfficeCostDto> {
+        const res: Components.Schemas.CountryOfficeCostDto = await this.post(
+            `projects/${projectId}/cases/${caseId}/explorations/${topsideId}/country-office-cost/`,
+            { body: dto },
+        )
+        return res
+    }
+
     public async updateCountryOfficeCost(
         projectId: string,
         caseId: string,
@@ -39,6 +65,35 @@ class ExplorationService extends __BaseService {
     ): Promise<Components.Schemas.CountryOfficeCostDto> {
         const res: Components.Schemas.CountryOfficeCostDto = await this.put(
             `projects/${projectId}/cases/${caseId}/explorations/${topsideId}/country-office-cost/${costProfileId}`,
+            { body: dto },
+        )
+        return res
+    }
+
+    public async createExplorationWellDrillingSchedule(
+        projectId: string,
+        caseId: string,
+        explorationId: string,
+        wellId: string,
+        dto: Components.Schemas.CreateDrillingScheduleDto,
+    ): Promise<Components.Schemas.DrillingScheduleDto> {
+        const res: Components.Schemas.CountryOfficeCostDto = await this.post(
+            `projects/${projectId}/cases/${caseId}/explorations/${explorationId}/wells/${wellId}/drilling-schedule/`,
+            { body: dto },
+        )
+        return res
+    }
+
+    public async updateExplorationWellDrillingSchedule(
+        projectId: string,
+        caseId: string,
+        explorationId: string,
+        wellId: string,
+        drillingScheuleId: string,
+        dto: Components.Schemas.UpdateDrillingScheduleDto,
+    ): Promise<Components.Schemas.DrillingScheduleDto> {
+        const res: Components.Schemas.CountryOfficeCostDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/explorations/${explorationId}/wells/${wellId}/drilling-schedule/${drillingScheuleId}`,
             { body: dto },
         )
         return res

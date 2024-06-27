@@ -1,49 +1,50 @@
 import {
-    Dispatch,
-    SetStateAction,
     useState,
     useEffect,
     useRef,
 } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
+import { useParams } from "react-router"
+import { useQueryClient, useQuery } from "react-query"
 import SwitchableNumberInput from "../../../Input/SwitchableNumberInput"
 import CaseTabTable from "../../Components/CaseTabTable"
-import { ITimeSeries } from "../../../../Models/ITimeSeries"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
 import { GetGenerateProfileService } from "../../../../Services/CaseGeneratedProfileService"
 import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../../AgGrid/AgChartsTimeseries"
 import { AgChartsPie } from "../../../AgGrid/AgChartsPie"
-import { ITimeSeriesOverride } from "../../../../Models/ITimeSeriesOverride"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
-import { setNonNegativeNumberState } from "../../../../Utils/common"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
+import { ITimeSeriesData } from "../../../../Models/Interfaces"
 
-interface Props {
-    topside: Components.Schemas.TopsideWithProfilesDto,
-    setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideWithProfilesDto | undefined>>,
-    drainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto,
-    setDrainageStrategy: Dispatch<SetStateAction<Components.Schemas.DrainageStrategyWithProfilesDto | undefined>>,
-    co2Emissions: Components.Schemas.Co2EmissionsDto | undefined,
-    setCo2Emissions: Dispatch<SetStateAction<Components.Schemas.Co2EmissionsDto | undefined>>,
-}
-
-const CaseCO2Tab = ({
-    topside, setTopside,
-    drainageStrategy, setDrainageStrategy,
-    co2Emissions, setCo2Emissions,
-}: Props) => {
+const CaseCO2Tab = () => {
     const { project } = useProjectContext()
-    const {
-        projectCase, activeTabCase,
-    } = useCaseContext()
+    const { caseId } = useParams()
+    const queryClient = useQueryClient()
+    const projectId = project?.id || null
+    const { activeTabCase } = useCaseContext()
 
+    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
+        ["apiData", { projectId, caseId }],
+        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        {
+            enabled: !!projectId && !!caseId,
+            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        },
+    )
+
+    const caseData = apiData?.case
+    const topsideData = apiData?.topside as Components.Schemas.TopsideWithProfilesDto
+    const drainageStrategyData = apiData?.drainageStrategy as Components.Schemas.DrainageStrategyWithProfilesDto
+    const co2EmissionsOverrideData = apiData?.co2EmissionsOverride
+    const co2EmissionsData = apiData?.co2Emissions as Components.Schemas.Co2EmissionsDto
+
+    // todo: get co2Intensity, co2IntensityTotal and co2DrillingFlaringFuelTotals stored in backend
     const [co2Intensity, setCo2Intensity] = useState<Components.Schemas.Co2IntensityDto>()
     const [co2IntensityTotal, setCo2IntensityTotal] = useState<number>(0)
     const [co2DrillingFlaringFuelTotals, setCo2DrillingFlaringFuelTotals] = useState<Components.Schemas.Co2DrillingFlaringFuelTotalsDto>()
-    const [co2EmissionsOverride, setCo2EmissionsOverride] = useState<Components.Schemas.Co2EmissionsOverrideDto>()
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
@@ -86,6 +87,32 @@ const CaseCO2Tab = ({
         },
     ]
 
+    useEffect(() => {
+        (async () => {
+            try {
+                if (caseData && project && activeTabCase === 6 && caseData.id) {
+                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(project.id, caseData.id)
+                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(project.id, caseData.id)
+                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(project.id, caseData.id)
+
+                    setCo2Intensity(await co2I)
+                    setCo2IntensityTotal(Number(co2ITotal))
+                    setCo2DrillingFlaringFuelTotals(co2DFFTotal)
+
+                    SetTableYearsFromProfiles(
+                        [co2EmissionsData, await co2I, co2EmissionsOverrideData?.override ? co2EmissionsOverrideData : undefined],
+                        caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030,
+                        setStartYear,
+                        setEndYear,
+                        setTableYears,
+                    )
+                }
+            } catch (error) {
+                console.error("[CaseView] Error while generating cost profile", error)
+            }
+        })()
+    }, [activeTabCase])
+
     const datePickerValue = (() => {
         if (project?.physicalUnit === 0) {
             return "SI"
@@ -95,59 +122,32 @@ const CaseCO2Tab = ({
         return ""
     })()
 
-    useEffect(() => {
-        (async () => {
-            try {
-                if (projectCase && project && activeTabCase === 6 && projectCase.id) {
-                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(project.id, projectCase.id)
-                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(project.id, projectCase.id)
-                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(project.id, projectCase.id)
-
-                    setCo2Emissions(drainageStrategy.co2Emissions)
-                    setCo2Intensity(await co2I)
-                    setCo2IntensityTotal(Number(co2ITotal))
-                    setCo2DrillingFlaringFuelTotals(co2DFFTotal)
-
-                    SetTableYearsFromProfiles(
-                        [drainageStrategy.co2Emissions, await co2I, drainageStrategy.co2EmissionsOverride?.override ? drainageStrategy.co2EmissionsOverride : undefined],
-                        projectCase.dG4Date ? new Date(projectCase.dG4Date).getFullYear() : 2030,
-                        setStartYear,
-                        setEndYear,
-                        setTableYears,
-                    )
-                    setCo2EmissionsOverride(drainageStrategy.co2EmissionsOverride)
-                }
-            } catch (error) {
-                console.error("[CaseView] Error while generating cost profile", error)
-            }
-        })()
-    }, [activeTabCase])
-
-    interface ITimeSeriesData {
-        profileName: string
-        unit: string,
-        set?: Dispatch<SetStateAction<ITimeSeries | undefined>>,
-        overrideProfileSet?: Dispatch<SetStateAction<ITimeSeriesOverride | undefined>>,
-        profile: ITimeSeries | undefined
-        total?: string
-        overrideProfile?: ITimeSeries | undefined
-        overridable?: boolean
-    }
+    if (!caseData || !drainageStrategyData || !topsideData) { return null }
 
     const timeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Annual CO2 emissions",
             unit: `${project?.physicalUnit === 0 ? "MTPA" : "MTPA"}`,
-            profile: co2Emissions,
+            profile: co2EmissionsData,
             overridable: true,
-            overrideProfile: co2EmissionsOverride,
-            overrideProfileSet: setCo2EmissionsOverride,
+            editable: true,
+            overrideProfile: co2EmissionsOverrideData,
+            resourceName: "co2EmissionsOverride",
+            resourceId: drainageStrategyData.id,
+            resourceProfileId: co2EmissionsOverrideData?.id,
+            resourcePropertyKey: "co2EmissionsOverride",
         },
         {
             profileName: "Year-by-year CO2 intensity",
             unit: `${project?.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
             profile: co2Intensity,
             total: co2IntensityTotal?.toString(),
+            overridable: false,
+            editable: false,
+            resourceName: "co2Intensity",
+            resourceId: drainageStrategyData.id,
+            resourceProfileId: co2Intensity?.id,
+            resourcePropertyKey: "co2Intensity",
         },
     ]
 
@@ -157,23 +157,23 @@ const CaseCO2Tab = ({
 
     const co2EmissionsChartData = () => {
         const dataArray = []
-        const useOverride = co2EmissionsOverride && co2EmissionsOverride.override
+        const useOverride = co2EmissionsOverrideData && co2EmissionsOverrideData.override
         for (let i = startYear; i <= endYear; i += 1) {
             dataArray.push({
                 year: i,
                 co2Emissions:
                     setValueToCorrespondingYear(
-                        useOverride ? co2EmissionsOverride : co2Emissions,
+                        useOverride ? co2EmissionsOverrideData : co2EmissionsData,
                         i,
                         startYear,
-                        projectCase!.dG4Date ? new Date(projectCase!.dG4Date).getFullYear() : 2030,
+                        caseData!.dG4Date ? new Date(caseData!.dG4Date).getFullYear() : 2030,
                     ),
                 co2Intensity:
                     setValueToCorrespondingYear(
                         co2Intensity,
                         i,
                         startYear,
-                        projectCase!.dG4Date ? new Date(projectCase!.dG4Date).getFullYear() : 2030,
+                        caseData!.dG4Date ? new Date(caseData!.dG4Date).getFullYear() : 2030,
                     ),
             })
         }
@@ -181,8 +181,8 @@ const CaseCO2Tab = ({
     }
 
     const co2EmissionsTotalString = () => {
-        if (co2Emissions) {
-            return (Math.round(co2Emissions.sum! * 10) / 10).toString()
+        if (co2EmissionsData) {
+            return (Math.round(co2EmissionsData.sum! * 10) / 10).toString()
         }
         return "0"
     }
@@ -193,23 +193,11 @@ const CaseCO2Tab = ({
         { profile: "Fuel", value: co2DrillingFlaringFuelTotals?.co2Fuel },
     ]
 
-    useEffect(() => {
-        const newDrainageStrategy: Components.Schemas.DrainageStrategyWithProfilesDto = { ...drainageStrategy }
-        if (!co2EmissionsOverride) {
-            return
-        }
+    if (!topsideData) {
+        return <p>loading....</p>
+    }
 
-        newDrainageStrategy.co2EmissionsOverride = co2EmissionsOverride
-        setDrainageStrategy(newDrainageStrategy)
-    }, [co2EmissionsOverride])
-
-    useEffect(() => {
-        if (co2GridRef.current && co2GridRef.current.api && co2GridRef.current.api.refreshCells) {
-            co2GridRef.current.api.refreshCells()
-        }
-    }, [co2Emissions])
-
-    if (activeTabCase !== 6 || !projectCase) { return null }
+    if (activeTabCase !== 6 || !caseData) { return null }
 
     return (
         <Grid container spacing={2}>
@@ -220,18 +208,15 @@ const CaseCO2Tab = ({
                 <SwitchableNumberInput
                     resourceName="topside"
                     resourcePropertyKey="fuelConsumption"
-                    resourceId={topside?.id}
+                    resourceId={topsideData.id}
                     label="Fuel consumption"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "fuelConsumption", topside, setTopside)
-                    }}
-                    value={topside?.fuelConsumption}
+                    value={topsideData.fuelConsumption}
                     integer={false}
                     unit="million Sm³ gas/sd"
                 />
             </Grid>
             <Grid item xs={12}>
-                <CaseCO2DistributionTable topside={topside} />
+                <CaseCO2DistributionTable topside={topsideData} />
             </Grid>
             <Grid item xs={12} lg={8}>
                 <AgChartsTimeseries
@@ -280,7 +265,7 @@ const CaseCO2Tab = ({
             <Grid item xs={12}>
                 <CaseTabTable
                     timeSeriesData={timeSeriesData}
-                    dg4Year={projectCase.dG4Date ? new Date(projectCase.dG4Date).getFullYear() : 2030}
+                    dg4Year={caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
                     tableName="CO2 emissions"
                     includeFooter={false}

@@ -20,12 +20,15 @@ namespace api.Controllers;
 public class TransportsController : ControllerBase
 {
     private readonly ITransportService _transportService;
+    private readonly ITransportTimeSeriesService _transportTimeSeriesService;
 
     public TransportsController(
-        ITransportService transportService
+        ITransportService transportService,
+        ITransportTimeSeriesService transportTimeSeriesService
     )
     {
         _transportService = transportService;
+        _transportTimeSeriesService = transportTimeSeriesService;
     }
 
     [HttpPut("{transportId}")]
@@ -38,6 +41,16 @@ public class TransportsController : ControllerBase
         return await _transportService.UpdateTransport(caseId, transportId, dto);
     }
 
+    [HttpPost("{transportId}/cost-profile-override")]
+    public async Task<TransportCostProfileOverrideDto> CreateTransportCostProfileOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid transportId,
+        [FromBody] CreateTransportCostProfileOverrideDto dto)
+    {
+        return await _transportTimeSeriesService.CreateTransportCostProfileOverride(caseId, transportId, dto);
+    }
+
     [HttpPut("{transportId}/cost-profile-override/{costProfileId}")]
     public async Task<TransportCostProfileOverrideDto> UpdateTransportCostProfileOverride(
         [FromRoute] Guid projectId,
@@ -46,8 +59,6 @@ public class TransportsController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateTransportCostProfileOverrideDto dto)
     {
-        return await _transportService.UpdateTransportCostProfileOverride(caseId, transportId, costProfileId, dto);
+        return await _transportTimeSeriesService.UpdateTransportCostProfileOverride(caseId, transportId, costProfileId, dto);
     }
-
-
 }

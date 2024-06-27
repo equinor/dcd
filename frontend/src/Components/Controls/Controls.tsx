@@ -1,21 +1,21 @@
-import { useState, useRef } from "react"
-import { useNavigate } from "react-router-dom"
+import { useState, useEffect } from "react"
+import { useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
     Icon,
-    Typography,
     Button,
     Progress,
-    Input,
 } from "@equinor/eds-core-react"
 import {
-    save,
+    visibility,
     edit,
     keyboard_tab,
     more_vertical,
-    arrow_back,
+    save,
+
 } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid"
+import { Typography } from "@mui/material"
 import { projectPath } from "../../Utils/common"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { useCaseContext } from "../../Context/CaseContext"
@@ -23,12 +23,11 @@ import { useModalContext } from "../../Context/ModalContext"
 import CaseDropMenu from "../Case/Components/CaseDropMenu"
 import { GetProjectService } from "../../Services/ProjectService"
 import { useAppContext } from "../../Context/AppContext"
-import useDataEdits from "../../Hooks/useDataEdits"
-import HistoryButton from "../Buttons/HistoryButton"
 import UndoControls from "./UndoControls"
-import { EMPTY_GUID } from "../../Utils/constants"
-import { ChooseReferenceCase, ReferenceCaseIcon } from "../Case/Components/ReferenceCaseIcon"
-import Classification from "./Classification"
+import CaseControls from "./CaseControls"
+import WhatsNewModal from "../Modal/WhatsNewModal"
+import Modal from "../Modal/Modal"
+import ProjectControls from "./ProjectControls"
 
 const Controls = () => {
     const {
@@ -49,50 +48,17 @@ const Controls = () => {
     const { setTechnicalModalIsOpen } = useModalContext()
     const { currentContext } = useModuleCurrentContext()
     const { isSaving, editMode, setEditMode } = useAppContext()
-    const { addEdit } = useDataEdits()
-
-    const nameInput = useRef<any>(null)
+    const { caseId } = useParams()
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
-
-    const handleReferenceCaseChange = async (referenceCaseId: string) => {
-        if (project) {
-            const newProject = {
-                ...project,
-            }
-            if (newProject.referenceCaseId === referenceCaseId) {
-                newProject.referenceCaseId = EMPTY_GUID
-            } else {
-                newProject.referenceCaseId = referenceCaseId ?? ""
-            }
-            const updateProject = await (await GetProjectService()).updateProject(project.id, newProject)
-            setProject(updateProject)
-        }
-    }
-
-    const handleCaseNameChange = (name: string) => {
-        if (projectCase && project) {
-            const newCase = {
-                ...projectCase,
-            }
-            addEdit({
-                newValue: name,
-                previousValue: newCase.name,
-                inputLabel: "Name",
-                projectId: project.id,
-                resourceName: "case",
-                resourcePropertyKey: "name",
-            })
-            newCase.name = name
-            setProjectCaseEdited(newCase)
-        }
-    }
+    const [isCanceling, setIsCanceling] = useState<boolean>(false)
 
     const handleCancel = async () => {
         setEditMode(false)
         setProjectEdited(undefined)
         setProjectCaseEdited(undefined)
+        setIsCanceling(false)
     }
 
     const handleProjectSave = async () => {
@@ -132,7 +98,8 @@ const Controls = () => {
 
     const handleEdit = () => {
         if (projectCaseEdited) {
-            handleCaseSave()
+            // handleCaseSave() no longer needed with autosave
+            handleCancel()
         } else if (projectEdited) {
             handleProjectSave()
         } else if (projectCase) {
@@ -142,52 +109,69 @@ const Controls = () => {
         }
     }
 
+    // goes out of edit mode if case changes
+    useEffect(() => {
+        handleCancel()
+    }, [caseId])
+
     return (
         <Grid container spacing={1} justifyContent="space-between" alignItems="center">
-            {projectCase && (
-                <Grid item xs={0}>
-                    <Button
-                        onClick={backToProject}
-                        variant="ghost_icon"
-                    >
-                        <Icon data={arrow_back} />
-                    </Button>
-                </Grid>
+            <WhatsNewModal />
+            <Modal
+                isOpen={isCanceling}
+                title="Are you sure you want to cancel?"
+                size="sm"
+                content={(
+                    <Typography>
+                        All unsaved changes will be lost. This action cannot be undone.
+                    </Typography>
+
+                )}
+                actions={(
+                    <>
+                        <Button
+                            onClick={() => setIsCanceling(false)}
+                            variant="outlined"
+                        >
+                            Continue editing
+                        </Button>
+                        <Button
+                            onClick={handleCancel}
+                            variant="contained"
+                            color="danger"
+                        >
+                            Discard changes
+                        </Button>
+                    </>
+                )}
+
+            />
+            {project && caseId && (
+                <CaseControls
+                    backToProject={backToProject}
+                    projectId={project?.id}
+                    caseId={caseId}
+                />
             )}
-            <Grid item xs display="flex" alignItems="center" gap={1}>
-                {editMode && projectCase
-                    ? (
-                        <>
-                            <ChooseReferenceCase
-                                projectRefCaseId={project?.referenceCaseId}
-                                projectCaseId={projectCase.id}
-                                handleReferenceCaseChange={() => handleReferenceCaseChange(projectCase.id)}
-                            />
-                            <Input // todo: should not be allowed to be empty
-                                ref={nameInput}
-                                type="text"
-                                defaultValue={projectCase && projectCase.name}
-                                onBlur={() => handleCaseNameChange(nameInput.current.value)}
-                            />
-                        </>
-                    )
-                    : (
-                        <>
-                            {project?.referenceCaseId === projectCase?.id && (
-                                <ReferenceCaseIcon />
-                            )}
-                            <Typography variant="h4">
-                                {projectCase ? projectCase.name : project?.name}
-                            </Typography>
-                            <Classification />
-                        </>
-                    )}
-            </Grid>
+            {project && !caseId && (
+                <ProjectControls />
+            )}
+
             <Grid item xs container spacing={1} alignItems="center" justifyContent="flex-end">
-                {editMode
+                <Grid item>
+                    {editMode && projectCase && <UndoControls />}
+                </Grid>
+                {editMode && !caseId
                     && (
                         <Grid item>
-                            <Button variant="outlined" onClick={handleCancel}>Cancel</Button>
+                            <Button
+                                variant="outlined"
+                                onClick={
+                                    () => setIsCanceling(true)
+                                }
+                            >
+                                Cancel
+                            </Button>
                         </Grid>
                     )}
                 <Grid item>
@@ -196,15 +180,26 @@ const Controls = () => {
                             ? <Progress.Dots />
                             : (
                                 <>
-                                    {editMode ? "Save and close edit mode" : "Edit"}
-                                    {" "}
-                                    {!editMode && projectCase && "case"}
-                                    {!editMode && !projectCase && "project"}
-                                    <Icon data={editMode ? save : edit} />
+                                    {
+                                        editMode && (
+                                            <>
+                                                <Icon data={projectCase ? visibility : save} />
+                                                <span>{projectCase ? "View" : "Save"}</span>
+                                            </>
+                                        )
+                                    }
+                                    {!editMode && (
+                                        <>
+                                            <Icon data={edit} />
+                                            <span>Edit</span>
+                                        </>
+                                    )}
+
                                 </>
                             )}
                     </Button>
                 </Grid>
+
                 <Grid item>
                     <Button
                         onClick={() => setTechnicalModalIsOpen(true)}
@@ -214,12 +209,6 @@ const Controls = () => {
                         {`${editMode ? "Edit" : "Open"} technical input`}
                     </Button>
                 </Grid>
-            </Grid>
-            <Grid item>
-                <UndoControls />
-            </Grid>
-            <Grid item>
-                <HistoryButton size={24} />
             </Grid>
             {projectCase && (
                 <Grid item>

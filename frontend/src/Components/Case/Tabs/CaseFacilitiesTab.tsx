@@ -1,38 +1,17 @@
-import {
-    Dispatch,
-    SetStateAction,
-    ChangeEventHandler,
-} from "react"
-import { Typography, Input } from "@equinor/eds-core-react"
+import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
+import { useParams } from "react-router"
+import { useQueryClient, useQuery } from "react-query"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
-import InputSwitcher from "../../Input/Components/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
-import { useCaseContext } from "../../../Context/CaseContext"
-import { setNonNegativeNumberState } from "../../../Utils/common"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
+import CaseFasilitiesTabSkeleton from "./LoadingSkeletons/CaseFacilitiesTabSkeleton"
 
-interface Props {
-    topside: Components.Schemas.TopsideWithProfilesDto,
-    setTopside: Dispatch<SetStateAction<Components.Schemas.TopsideWithProfilesDto | undefined>>,
-    surf: Components.Schemas.SurfWithProfilesDto,
-    setSurf: Dispatch<SetStateAction<Components.Schemas.SurfWithProfilesDto | undefined>>,
-    substructure: Components.Schemas.SubstructureWithProfilesDto,
-    setSubstrucutre: Dispatch<SetStateAction<Components.Schemas.SubstructureWithProfilesDto | undefined>>,
-    transport: Components.Schemas.TransportWithProfilesDto,
-    setTransport: Dispatch<SetStateAction<Components.Schemas.TransportWithProfilesDto | undefined>>,
-}
-
-const CaseFacilitiesTab = ({
-    topside, setTopside,
-    surf, setSurf,
-    substructure, setSubstrucutre,
-    transport, setTransport,
-}: Props) => {
+const CaseFacilitiesTab = () => {
+    const queryClient = useQueryClient()
     const { project } = useProjectContext()
-    const { projectCase, setProjectCaseEdited } = useCaseContext()
-
-    if (!projectCase) { return null }
+    const { caseId } = useParams()
+    const projectId = project?.id || null
 
     const platformConceptValues: { [key: number]: string } = {
         0: "No Concept",
@@ -66,40 +45,23 @@ const CaseFacilitiesTab = ({
         13: "HDPE lined CS (Water injection only)",
     }
 
-    const handleProductionFlowlineChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].indexOf(Number(e.currentTarget.value)) !== -1) {
-            const newProductionFlowline: Components.Schemas.ProductionFlowline = Number(e.currentTarget.value) as Components.Schemas.ProductionFlowline
-            const newSurf = { ...surf }
-            newSurf.productionFlowline = newProductionFlowline
-            setSurf(newSurf)
-            // updateSurf("productionFlowline", newProductionFlowline)
-        }
-    }
-    // todo: the value here is calculated before submission. find out how to handle that with the service implementation
-    const handleSubstructureDryweightChange = (value: number): void => {
-        const newSubstructure = { ...substructure }
-        newSubstructure.dryWeight = value > 0 ? Math.max(value, 0) : 0
-        setSubstrucutre(newSubstructure)
-    }
+    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
+        ["apiData", { projectId, caseId }],
+        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        {
+            enabled: !!projectId && !!caseId,
+            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        },
+    )
 
-    const handleSubstructureConceptChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].indexOf(Number(e.currentTarget.value)) !== -1) {
-            const newConcept: Components.Schemas.Concept = Number(e.currentTarget.value) as Components.Schemas.Concept
-            const newSubstructure = { ...substructure }
-            newSubstructure.concept = newConcept
-            if (newConcept !== 1) {
-                const newCase = { ...projectCase }
-                newCase.host = ""
-                setProjectCaseEdited(newCase)
-            }
-            setSubstrucutre(newSubstructure)
-        }
-    }
+    const caseData = apiData?.case
+    const topsideData = apiData?.topside
+    const surfData = apiData?.surf
+    const transportData = apiData?.transport
+    const substructureData = apiData?.substructure
 
-    const handleHostChange = (value: number): void => {
-        const newCase = { ...projectCase }
-        newCase.host = value > 0 ? value.toString() : ""
-        setProjectCaseEdited(newCase)
+    if (!caseData || !topsideData || !surfData || !transportData || !substructureData) {
+        return (<CaseFasilitiesTabSkeleton />)
     }
 
     return (
@@ -108,26 +70,21 @@ const CaseFacilitiesTab = ({
                 <SwitchableDropdownInput
                     resourceName="substructure"
                     resourcePropertyKey="concept"
-                    resourceId={substructure.id}
-                    value={substructure?.concept}
+                    resourceId={substructureData.id}
+                    value={substructureData.concept}
                     options={platformConceptValues}
                     label="Platform concept"
-                    onSubmit={handleSubstructureConceptChange}
                 />
             </Grid>
-            {substructure.concept === 1 && (
+            {substructureData.concept === 1 && (
                 <Grid item xs={12} md={4}>
-                    <InputSwitcher
-                        value={projectCase.host ?? ""}
+                    <SwitchableNumberInput
+                        resourceName="case"
+                        resourcePropertyKey="host"
                         label="Host"
-                    >
-                        <Input
-                            id="NumberInput"
-                            value={projectCase.host ?? ""}
-                            disabled={false}
-                            onChange={handleHostChange}
-                        />
-                    </InputSwitcher>
+                        value={Number(caseData.host)}
+                        integer
+                    />
                 </Grid>
             )}
             <Grid item xs={12} md={4}>
@@ -135,12 +92,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="topside"
                     resourcePropertyKey="facilityOpex"
-                    resourceId={topside.id}
+                    resourceId={topsideData.id}
                     label="Facility opex"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "facilityOpex", topside, setTopside)
-                    }}
-                    value={Math.round(Number(topside?.facilityOpex) * 10) / 10}
+                    value={Math.round(Number(topsideData.facilityOpex) * 10) / 10}
                     integer={false}
                     unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
                 />
@@ -150,12 +104,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourcePropertyKey="cessationCost"
                     resourceName="surf"
-                    resourceId={surf.id}
+                    resourceId={surfData.id}
                     label="Cessation cost"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "cessationCost", surf, setSurf)
-                    }}
-                    value={Math.round(Number(surf?.cessationCost) * 10) / 10}
+                    value={Math.round(Number(surfData?.cessationCost) * 10) / 10}
                     integer={false}
                     unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
                 />
@@ -167,12 +118,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="topside"
                     resourcePropertyKey="dryWeight"
-                    resourceId={topside.id}
+                    resourceId={topsideData.id}
                     label="Topside dry weight"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "dryWeight", topside, setTopside)
-                    }}
-                    value={Math.round(Number(topside?.dryWeight) * 1) / 1}
+                    value={Math.round(Number(topsideData.dryWeight) * 1) / 1}
                     integer
                     unit="tonnes"
                     min={0}
@@ -184,7 +132,7 @@ const CaseFacilitiesTab = ({
                     resourceName="case"
                     resourcePropertyKey="facilitiesAvailability"
                     label="Facilities availability"
-                    value={projectCase.facilitiesAvailability ?? 0 * 100}
+                    value={caseData.facilitiesAvailability ?? 0 * 100}
                     integer
                     disabled
                     unit="%"
@@ -196,12 +144,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="topside"
                     resourcePropertyKey="peakElectricityImported"
-                    resourceId={topside.id}
+                    resourceId={topsideData.id}
                     label="Peak electricity imported"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "peakElectricityImported", topside, setTopside)
-                    }}
-                    value={Math.round(Number(topside?.peakElectricityImported) * 10) / 10}
+                    value={Math.round(Number(topsideData.peakElectricityImported) * 10) / 10}
                     integer={false}
                     unit="MW"
                     min={0}
@@ -213,12 +158,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="topside"
                     resourcePropertyKey="oilCapacity"
-                    resourceId={topside.id}
+                    resourceId={topsideData.id}
                     label="Oil capacity"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "oilCapacity", topside, setTopside)
-                    }}
-                    value={Math.round(Number(topside?.oilCapacity) * 1) / 1}
+                    value={Math.round(Number(topsideData.oilCapacity) * 1) / 1}
                     integer
                     unit="Sm³/sd"
                     min={0}
@@ -229,12 +171,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="topside"
                     resourcePropertyKey="gasCapacity"
-                    resourceId={topside.id}
+                    resourceId={topsideData.id}
                     label="Gas capacity"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "gasCapacity", topside, setTopside)
-                    }}
-                    value={Math.round(Number(topside?.gasCapacity) * 10) / 10}
+                    value={Math.round(Number(topsideData.gasCapacity) * 10) / 10}
                     integer={false}
                     unit="MSm³/sd"
                     min={0}
@@ -245,12 +184,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="topside"
                     resourcePropertyKey="waterInjectionCapacity"
-                    resourceId={topside.id}
+                    resourceId={topsideData.id}
                     label="Water injection capacity"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "waterInjectionCapacity", topside, setTopside)
-                    }}
-                    value={Math.round(Number(topside?.waterInjectionCapacity) * 1) / 1}
+                    value={Math.round(Number(topsideData.waterInjectionCapacity) * 1) / 1}
                     integer
                     unit="MSm³/sd"
                 />
@@ -262,12 +198,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="topside"
                     resourcePropertyKey="producerCount"
-                    resourceId={topside.id}
+                    resourceId={topsideData.id}
                     label="Producer count"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "producerCount", topside, setTopside)
-                    }}
-                    value={topside?.producerCount}
+                    value={topsideData.producerCount}
                     integer
                     min={0}
                     max={1000000}
@@ -277,12 +210,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="topside"
                     resourcePropertyKey="gasInjectorCount"
-                    resourceId={topside.id}
+                    resourceId={topsideData.id}
                     label="Gas injector count"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "gasInjectorCount", topside, setTopside)
-                    }}
-                    value={topside?.gasInjectorCount}
+                    value={topsideData.gasInjectorCount}
                     integer
                     min={0}
                     max={1000000}
@@ -292,12 +222,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="topside"
                     resourcePropertyKey="waterInjectorCount"
-                    resourceId={topside.id}
+                    resourceId={topsideData.id}
                     label="Water injector count"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "waterInjectorCount", topside, setTopside)
-                    }}
-                    value={topside?.waterInjectorCount}
+                    value={topsideData.waterInjectorCount}
                     integer
                     min={0}
                     max={1000000}
@@ -310,12 +237,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="surf"
                     resourcePropertyKey="templateCount"
-                    resourceId={surf.id}
+                    resourceId={surfData.id}
                     label="Templates"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "templateCount", surf, setSurf)
-                    }}
-                    value={surf?.templateCount}
+                    value={surfData.templateCount}
                     integer
                     min={0}
                     max={1000000}
@@ -325,12 +249,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="surf"
                     resourcePropertyKey="riserCount"
-                    resourceId={surf.id}
+                    resourceId={surfData.id}
                     label="Risers"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "riserCount", surf, setSurf)
-                    }}
-                    value={surf?.riserCount}
+                    value={surfData.riserCount}
                     integer
                     min={0}
                     max={1000000}
@@ -340,12 +261,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="surf"
                     resourcePropertyKey="infieldPipelineSystemLength"
-                    resourceId={surf.id}
+                    resourceId={surfData.id}
                     label="Production lines length"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "infieldPipelineSystemLength", surf, setSurf)
-                    }}
-                    value={Math.round(Number(surf?.infieldPipelineSystemLength) * 10) / 10}
+                    value={Math.round(Number(surfData.infieldPipelineSystemLength) * 10) / 10}
                     integer={false}
                     unit="km"
                     min={0}
@@ -356,12 +274,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="surf"
                     resourcePropertyKey="umbilicalSystemLength"
-                    resourceId={surf.id}
+                    resourceId={surfData.id}
                     label="Umbilical system length"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "umbilicalSystemLength", surf, setSurf)
-                    }}
-                    value={Math.round(Number(surf?.umbilicalSystemLength) * 10) / 10}
+                    value={Math.round(Number(surfData.umbilicalSystemLength) * 10) / 10}
                     integer={false}
                     unit="km"
                     min={0}
@@ -372,11 +287,10 @@ const CaseFacilitiesTab = ({
                 <SwitchableDropdownInput
                     resourceName="surf"
                     resourcePropertyKey="productionFlowline"
-                    resourceId={surf.id}
-                    value={surf.productionFlowline}
+                    resourceId={surfData.id}
+                    value={surfData.productionFlowline}
                     options={productionFlowlineValues}
                     label="Production flowline"
-                    onSubmit={handleProductionFlowlineChange}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -386,12 +300,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="surf"
                     resourcePropertyKey="producerCount"
-                    resourceId={surf.id}
+                    resourceId={surfData.id}
                     label="Producer count"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "producerCount", surf, setSurf)
-                    }}
-                    value={surf?.producerCount}
+                    value={surfData.producerCount}
                     integer
                 />
             </Grid>
@@ -399,12 +310,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="surf"
                     resourcePropertyKey="gasInjectorCount"
-                    resourceId={surf.id}
+                    resourceId={surfData.id}
                     label="Gas injector count"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "gasInjectorCount", surf, setSurf)
-                    }}
-                    value={surf?.gasInjectorCount}
+                    value={surfData.gasInjectorCount}
                     integer
                     min={0}
                     max={1000000}
@@ -414,12 +322,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="surf"
                     resourcePropertyKey="waterInjectorCount"
-                    resourceId={surf.id}
+                    resourceId={surfData.id}
                     label="Water injector count"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "waterInjectorCount", surf, setSurf)
-                    }}
-                    value={surf?.waterInjectorCount}
+                    value={surfData.waterInjectorCount}
                     integer
                     min={0}
                     max={1000000}
@@ -432,12 +337,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="transport"
                     resourcePropertyKey="oilExportPipelineLength"
-                    resourceId={transport.id}
+                    resourceId={transportData.id}
                     label="Oil export pipeline length"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "oilExportPipelineLength", transport, setTransport)
-                    }}
-                    value={Math.round(Number(transport?.oilExportPipelineLength) * 10) / 10}
+                    value={Math.round(Number(transportData.oilExportPipelineLength) * 10) / 10}
                     integer={false}
                     unit="km"
                     min={0}
@@ -448,12 +350,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="transport"
                     resourcePropertyKey="gasExportPipelineLength"
-                    resourceId={transport.id}
+                    resourceId={transportData.id}
                     label="Gas export pipeline length"
-                    onSubmit={(value: number) => {
-                        setNonNegativeNumberState(value, "gasExportPipelineLength", transport, setTransport)
-                    }}
-                    value={Math.round(Number(transport?.gasExportPipelineLength) * 10) / 10}
+                    value={Math.round(Number(transportData.gasExportPipelineLength) * 10) / 10}
                     integer={false}
                     unit="km"
                     min={0}
@@ -467,10 +366,9 @@ const CaseFacilitiesTab = ({
                 <SwitchableNumberInput
                     resourceName="substructure"
                     resourcePropertyKey="dryWeight"
-                    resourceId={substructure.id}
+                    resourceId={substructureData.id}
                     label="Substructure dry weight"
-                    onSubmit={handleSubstructureDryweightChange}
-                    value={Math.round(Number(substructure?.dryWeight) * 1) / 1}
+                    value={Math.round(Number(substructureData.dryWeight) * 1) / 1}
                     integer
                     unit="tonnes"
                     min={0}

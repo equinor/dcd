@@ -1,5 +1,5 @@
-import React, { useEffect } from "react"
-import { useDropzone } from "react-dropzone"
+import React, { useEffect, useState } from "react"
+import { Accept, FileRejection, useDropzone } from "react-dropzone"
 import { Box, Typography } from "@mui/material"
 import styled from "styled-components"
 import { Icon } from "@equinor/eds-core-react"
@@ -8,6 +8,7 @@ import { tokens } from "@equinor/eds-tokens"
 import { getImageService } from "../../Services/ImageService"
 import { useCaseContext } from "../../Context/CaseContext"
 import { useProjectContext } from "../../Context/ProjectContext"
+import { useAppContext } from "../../Context/AppContext"
 
 const UploadBox = styled(Box)`
     display: flex;
@@ -38,14 +39,15 @@ const UploadBox = styled(Box)`
 `
 
 interface ImageUploadProps {
-    setGallery: React.Dispatch<React.SetStateAction<string[]>>
-    gallery: string[]
+    setGallery: React.Dispatch<React.SetStateAction<Components.Schemas.ImageDto[]>>
+    gallery: Components.Schemas.ImageDto[]
     setExeededLimit: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeededLimit }) => {
     const { projectCase } = useCaseContext()
     const { project } = useProjectContext()
+    const { setSnackBarMessage } = useAppContext()
 
     useEffect(() => {
         const loadImages = async () => {
@@ -53,8 +55,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
                 try {
                     const imageService = await getImageService()
                     const imageDtos = await imageService.getImages(project.id, projectCase.id)
-                    const imageUrls = imageDtos.map((dto) => dto.url)
-                    setGallery(imageUrls)
+                    setGallery(imageDtos)
                 } catch (error) {
                     console.error("Error loading images:", error)
                 }
@@ -63,8 +64,29 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         loadImages()
     }, [setGallery, project?.id, projectCase?.id])
 
-    const onDrop = async (acceptedFiles: File[]) => {
-        if (gallery.length + acceptedFiles.length > 4) {
+    const MAX_FILE_SIZE = 5 * 1024 * 1024
+    const MAX_FILES = 4
+    const ACCEPTED_FILE_TYPES: Accept = {
+        "image/jpeg": [".jpeg", ".jpg"],
+        "image/png": [".png"],
+        "image/gif": [".gif"],
+    }
+
+    const onDrop = async (acceptedFiles: File[], fileRejections: FileRejection[]) => {
+        setSnackBarMessage("")
+
+        fileRejections.forEach((rejection) => {
+            const { file, errors } = rejection
+            errors.forEach((error: { code: string }) => {
+                if (error.code === "file-too-large") {
+                    setSnackBarMessage(`File ${file.name} is too large. Maximum size is 5MB.`)
+                } else if (error.code === "file-invalid-type") {
+                    setSnackBarMessage(`File ${file.name} is not an accepted image type.`)
+                }
+            })
+        })
+
+        if (gallery.length + acceptedFiles.length > MAX_FILES) {
             setExeededLimit(true)
             return
         }
@@ -81,8 +103,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         try {
             const uploadedImageDtos = await Promise.all(uploadPromises)
             if (Array.isArray(uploadedImageDtos)) {
-                const uploadedImageUrls = uploadedImageDtos.map((dto) => dto.url)
-                setGallery((prevGallery) => [...prevGallery, ...uploadedImageUrls])
+                setGallery((prevGallery) => [...prevGallery, ...uploadedImageDtos])
             } else {
                 console.error("Received undefined response from uploadImage")
             }
@@ -91,7 +112,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         }
     }
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop,
+        accept: ACCEPTED_FILE_TYPES,
+        maxSize: MAX_FILE_SIZE,
+        maxFiles: MAX_FILES,
+    })
 
     return (
         <UploadBox {...getRootProps()}>

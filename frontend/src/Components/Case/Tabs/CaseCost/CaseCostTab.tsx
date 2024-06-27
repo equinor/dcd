@@ -5,6 +5,8 @@ import {
     useMemo,
 } from "react"
 import Grid from "@mui/material/Grid"
+import { useParams } from "react-router"
+import { useQueryClient, useQuery } from "react-query"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
@@ -33,6 +35,9 @@ const CaseCostTab = (): React.ReactElement | null => {
         wellProject,
         exploration,
     } = useModalContext()
+    const { caseId } = useParams()
+    const queryClient = useQueryClient()
+    const projectId = project?.id || null
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -101,7 +106,23 @@ const CaseCostTab = (): React.ReactElement | null => {
         })()
     }, [activeTabCase])
 
+    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
+        ["apiData", { projectId, caseId }],
+        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        {
+            enabled: !!projectId && !!caseId,
+            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        },
+    )
+
+    const surfData = apiData?.surf as Components.Schemas.SurfWithProfilesDto
+    const caseData = apiData?.case as Components.Schemas.CaseDto
+
     if (activeTabCase !== 5) { return null }
+
+    if (!caseData || !surfData || !apiData) {
+        return <p>loading....</p>
+    }
 
     return (
         <Grid container spacing={3}>
@@ -111,12 +132,16 @@ const CaseCostTab = (): React.ReactElement | null => {
                 setStartYear={setStartYear}
                 setEndYear={setEndYear}
                 setTableYears={setTableYears}
+                caseData={caseData}
+                surfData={surfData}
             />
             <Grid item xs={12}>
                 <TotalStudyCosts
                     tableYears={tableYears}
                     studyGridRef={studyGridRef}
                     alignedGridsRef={alignedGridsRef}
+                    caseData={caseData}
+                    apiData={apiData}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -124,6 +149,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     opexGridRef={opexGridRef}
                     alignedGridsRef={alignedGridsRef}
+                    caseData={caseData}
+                    apiData={apiData}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -131,6 +158,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     cessationGridRef={cessationGridRef}
                     alignedGridsRef={alignedGridsRef}
+                    caseData={caseData}
+                    apiData={apiData}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -138,6 +167,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     capexGridRef={capexGridRef}
                     alignedGridsRef={alignedGridsRef}
+                    caseData={caseData}
+                    apiData={apiData}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -145,6 +176,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     developmentWellsGridRef={developmentWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
+                    caseData={caseData}
+                    apiData={apiData}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -152,6 +185,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     explorationWellsGridRef={explorationWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
+                    caseData={caseData}
+                    apiData={apiData}
                 />
             </Grid>
         </Grid>

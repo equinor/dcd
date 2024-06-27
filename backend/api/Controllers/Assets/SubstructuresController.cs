@@ -20,12 +20,15 @@ namespace api.Controllers;
 public class SubstructuresController : ControllerBase
 {
     private readonly ISubstructureService _substructureService;
+    private readonly ISubstructureTimeSeriesService _substructureTimeSeriesService;
 
     public SubstructuresController(
-        ISubstructureService substructureService
+        ISubstructureService substructureService,
+        ISubstructureTimeSeriesService substructureTimeSeriesService
     )
     {
         _substructureService = substructureService;
+        _substructureTimeSeriesService = substructureTimeSeriesService;
     }
 
     [HttpPut("{substructureId}")]
@@ -38,6 +41,16 @@ public class SubstructuresController : ControllerBase
         return await _substructureService.UpdateSubstructure(caseId, substructureId, dto);
     }
 
+    [HttpPost("{substructureId}/cost-profile-override")]
+    public async Task<SubstructureCostProfileOverrideDto> CreateSubstructureCostProfileOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid substructureId,
+        [FromBody] CreateSubstructureCostProfileOverrideDto dto)
+    {
+        return await _substructureTimeSeriesService.CreateSubstructureCostProfileOverride(caseId, substructureId, dto);
+    }
+
     [HttpPut("{substructureId}/cost-profile-override/{costProfileId}")]
     public async Task<SubstructureCostProfileOverrideDto> UpdateSubstructureCostProfileOverride(
         [FromRoute] Guid projectId,
@@ -46,8 +59,6 @@ public class SubstructuresController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateSubstructureCostProfileOverrideDto dto)
     {
-        return await _substructureService.UpdateSubstructureCostProfileOverride(caseId, substructureId, costProfileId, dto);
+        return await _substructureTimeSeriesService.UpdateSubstructureCostProfileOverride(caseId, substructureId, costProfileId, dto);
     }
-
-
 }

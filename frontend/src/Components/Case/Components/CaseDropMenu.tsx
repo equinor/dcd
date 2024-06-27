@@ -49,16 +49,20 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
         <>
             <Modal
                 title="Delete Case?"
+                size="sm"
                 isOpen={confirmDelete}
-            >
-                <Typography variant="body_short">
-                    Are you sure you want to delete this case?
-                </Typography>
-                <div>
-                    <Button variant="ghost" onClick={() => setConfirmDelete(false)}>Cancel</Button>
-                    <Button onClick={deleteAndGoToProject}>Delete</Button>
-                </div>
-            </Modal>
+                content={(
+                    <Typography variant="body_short">
+                        Are you sure you want to delete this case?
+                    </Typography>
+                )}
+                actions={(
+                    <div>
+                        <Button variant="ghost" onClick={() => setConfirmDelete(false)}>Cancel</Button>
+                        <Button onClick={deleteAndGoToProject} color="danger"> Delete </Button>
+                    </div>
+                )}
+            />
             <Menu
                 id="menu-complex"
                 open={isMenuOpen}
