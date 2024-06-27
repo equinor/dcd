@@ -856,6 +856,25 @@ const useDataEdits = (): {
                     )
                 }
                 break
+            case "gAndGAdminCost":
+                if (!resourceProfileId) {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetExplorationService()).createGAndGAdminCostOverride(projectId, caseId, resourceId!, updatedData!),
+                    )
+                } else {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetExplorationService()).updateGAndGAdminCostOverride(projectId, caseId, resourceId!, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
             case "seismicAcquisitionAndProcessing":
                 if (!resourceProfileId) {
                     success = await createOrUpdateTimeSeriesProfile(

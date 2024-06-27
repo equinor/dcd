@@ -43,6 +43,20 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
         _explorationRepository = explorationRepository;
         _mapperService = mapperService;
     }
+    public async Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
+            Guid caseId,
+            Guid explorationId,
+            CreateGAndGAdminCostOverrideDto createProfileDto
+        )
+    {
+        return await CreateExplorationProfile<GAndGAdminCostOverride, GAndGAdminCostOverrideDto, CreateGAndGAdminCostOverrideDto>(
+            caseId,
+            explorationId,
+            createProfileDto,
+            _repository.CreateGAndGAdminCostOverride,
+            ExplorationProfileNames.GAndGAdminCostOverride
+        );
+    }
     public async Task<GAndGAdminCostOverrideDto> UpdateGAndGAdminCostOverride(
         Guid caseId,
         Guid wellProjectId,
@@ -93,26 +107,11 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
         );
     }
 
-    public async Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
-            Guid caseId,
-            Guid explorationId,
-            CreateGAndGAdminCostOverrideDto createProfileDto
-        )
-    {
-        return await CreateExplorationProfile<GAndGAdminCostOverride, GAndGAdminCostOverrideDto, CreateGAndGAdminCostOverrideDto>(
-            caseId,
-            explorationId,
-            createProfileDto,
-            _repository.CreateGAndGAdminCostOverride,
-            ExplorationProfileNames.GAndGAdminCostOverride
-        );
-    }
-
     public async Task<SeismicAcquisitionAndProcessingDto> CreateSeismicAcquisitionAndProcessing(
-        Guid caseId,
-        Guid explorationId,
-        CreateSeismicAcquisitionAndProcessingDto createProfileDto
-    )
+    Guid caseId,
+    Guid explorationId,
+    CreateSeismicAcquisitionAndProcessingDto createProfileDto
+)
     {
         return await CreateExplorationProfile<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto, CreateSeismicAcquisitionAndProcessingDto>(
             caseId,

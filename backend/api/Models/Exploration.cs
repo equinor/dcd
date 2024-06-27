@@ -48,6 +48,8 @@ public class GAndGAdminCostOverride : TimeSeriesCost, IExplorationTimeSeries
 {
     [ForeignKey("Exploration.Id")]
     public Exploration Exploration { get; set; } = null!;
+    public bool Override { get; set; }
+
 }
 
 public class SeismicAcquisitionAndProcessing : TimeSeriesCost, IExplorationTimeSeries

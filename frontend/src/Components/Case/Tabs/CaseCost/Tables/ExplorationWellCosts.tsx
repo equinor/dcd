@@ -22,13 +22,14 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
 
     const exploration = apiData?.exploration
     const gAndGAdminCostData = apiData?.gAndGAdminCost
+    const explorationGAndGAdminCostOverrideData = apiData?.gAndGAdminCostOverride
+
     const seismicAcquisitionAndProcessingData = apiData?.seismicAcquisitionAndProcessing
     const countryOfficeCostData = apiData?.countryOfficeCost
     const explorationWellCostProfileData = apiData?.explorationWellCostProfile
     const appraisalWellCostProfileData = apiData?.appraisalWellCostProfile
     const sidetrackCostProfileData = apiData?.sidetrackCostProfile
 
-    const [explorationGAndGAdminCostOverride, setExplorationGAndGAdminCostOverride] = useState<Components.Schemas.GAndGAdminCostOverrideDto>()
     if (!exploration) { return null }
 
     const explorationTimeSeriesData: ITimeSeriesData[] = [
@@ -38,11 +39,11 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             profile: gAndGAdminCostData,
             resourceName: "gAndGAdminCost",
             resourceId: exploration.id,
-            resourceProfileId: gAndGAdminCostData?.id,
+            resourceProfileId: explorationGAndGAdminCostOverrideData?.id,
             resourcePropertyKey: "gAndGAdminCost",
             editable: true,
             overridable: true,
-            overrideProfile: explorationGAndGAdminCostOverride,
+            overrideProfile: explorationGAndGAdminCostOverrideData,
         },
         {
             profileName: "Seismic acquisition and processing",
