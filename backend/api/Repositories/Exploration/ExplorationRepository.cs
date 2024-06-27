@@ -21,6 +21,11 @@ public class ExplorationRepository : BaseRepository, IExplorationRepository
         return await Get<Exploration>(explorationId);
     }
 
+    public async Task<Well?> GetWell(Guid wellId)
+    {
+        return await Get<Well>(wellId);
+    }
+
     public async Task<bool> ExplorationHasProfile(Guid ExplorationId, ExplorationProfileNames profileType)
     {
         Expression<Func<Exploration, bool>> profileExistsExpression = profileType switch
@@ -46,40 +51,19 @@ public class ExplorationRepository : BaseRepository, IExplorationRepository
         return await _context.ExplorationWell.FindAsync(explorationId, wellId);
     }
 
-    public ExplorationWell UpdateExplorationWell(ExplorationWell explorationWell)
+    public async Task<DrillingSchedule?> GetExplorationWellDrillingSchedule(Guid drillingScheduleId)
     {
-        return Update(explorationWell);
+        return await Get<DrillingSchedule>(drillingScheduleId);
     }
 
-    public async Task<SeismicAcquisitionAndProcessing?> GetSeismicAcquisitionAndProcessing(Guid seismicAcquisitionAndProcessingId)
+    public DrillingSchedule UpdateExplorationWellDrillingSchedule(DrillingSchedule drillingSchedule)
     {
-        return await Get<SeismicAcquisitionAndProcessing>(seismicAcquisitionAndProcessingId);
+        return Update(drillingSchedule);
     }
 
-    public SeismicAcquisitionAndProcessing CreateSeismicAcquisitionAndProcessing(SeismicAcquisitionAndProcessing profile)
+    public ExplorationWell CreateExplorationWellDrillingSchedule(ExplorationWell explorationWellWithDrillingSchedule)
     {
-        _context.SeismicAcquisitionAndProcessing.Add(profile);
-        return profile;
-    }
-
-    public CountryOfficeCost CreateCountryOfficeCost(CountryOfficeCost profile)
-    {
-        _context.CountryOfficeCost.Add(profile);
-        return profile;
-    }
-
-    public SeismicAcquisitionAndProcessing UpdateSeismicAcquisitionAndProcessing(SeismicAcquisitionAndProcessing seismicAcquisitionAndProcessing)
-    {
-        return Update(seismicAcquisitionAndProcessing);
-    }
-
-    public async Task<CountryOfficeCost?> GetCountryOfficeCost(Guid countryOfficeCostId)
-    {
-        return await Get<CountryOfficeCost>(countryOfficeCostId);
-    }
-
-    public CountryOfficeCost UpdateCountryOfficeCost(CountryOfficeCost countryOfficeCost)
-    {
-        return Update(countryOfficeCost);
+        _context.ExplorationWell.Add(explorationWellWithDrillingSchedule);
+        return explorationWellWithDrillingSchedule;
     }
 }

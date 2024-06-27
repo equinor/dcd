@@ -20,6 +20,12 @@ public class WellProjectRepository : BaseRepository, IWellProjectRepository
     {
         return await Get<WellProject>(wellProjectId);
     }
+
+    public async Task<Well?> GetWell(Guid wellId)
+    {
+        return await Get<Well>(wellId);
+    }
+
     public async Task<bool> WellProjectHasProfile(Guid WellProjectId, WellProjectProfileNames profileType)
     {
         Expression<Func<WellProject, bool>> profileExistsExpression = profileType switch
@@ -42,77 +48,19 @@ public class WellProjectRepository : BaseRepository, IWellProjectRepository
         return Update(wellProject);
     }
 
-    public async Task<WellProjectWell?> GetWellProjectWell(Guid wellProjectId, Guid wellId)
+    public async Task<DrillingSchedule?> GetWellProjectWellDrillingSchedule(Guid drillingScheduleId)
     {
-        return await Get<WellProjectWell>(wellId);
+        return await Get<DrillingSchedule>(drillingScheduleId);
     }
 
-    public WellProjectWell UpdateWellProjectWell(WellProjectWell wellProjectWell)
+    public DrillingSchedule UpdateWellProjectWellDrillingSchedule(DrillingSchedule drillingSchedule)
     {
-        return Update(wellProjectWell);
+        return Update(drillingSchedule);
     }
 
-    public OilProducerCostProfileOverride CreateOilProducerCostProfileOverride(OilProducerCostProfileOverride profile)
+    public WellProjectWell CreateWellProjectWellDrillingSchedule(WellProjectWell wellProjectWellWithDrillingSchedule)
     {
-        _context.OilProducerCostProfileOverride.Add(profile);
-        return profile;
-    }
-
-    public GasProducerCostProfileOverride CreateGasProducerCostProfileOverride(GasProducerCostProfileOverride profile)
-    {
-        _context.GasProducerCostProfileOverride.Add(profile);
-        return profile;
-    }
-
-    public WaterInjectorCostProfileOverride CreateWaterInjectorCostProfileOverride(WaterInjectorCostProfileOverride profile)
-    {
-        _context.WaterInjectorCostProfileOverride.Add(profile);
-        return profile;
-    }
-
-    public GasInjectorCostProfileOverride CreateGasInjectorCostProfileOverride(GasInjectorCostProfileOverride profile)
-    {
-        _context.GasInjectorCostProfileOverride.Add(profile);
-        return profile;
-    }
-
-    public async Task<OilProducerCostProfileOverride?> GetOilProducerCostProfileOverride(Guid profileId)
-    {
-        return await Get<OilProducerCostProfileOverride>(profileId);
-    }
-
-    public OilProducerCostProfileOverride UpdateOilProducerCostProfileOverride(OilProducerCostProfileOverride costProfile)
-    {
-        return Update(costProfile);
-    }
-
-    public async Task<GasProducerCostProfileOverride?> GetGasProducerCostProfileOverride(Guid profileId)
-    {
-        return await Get<GasProducerCostProfileOverride>(profileId);
-    }
-
-    public GasProducerCostProfileOverride UpdateGasProducerCostProfileOverride(GasProducerCostProfileOverride costProfile)
-    {
-        return Update(costProfile);
-    }
-
-    public async Task<WaterInjectorCostProfileOverride?> GetWaterInjectorCostProfileOverride(Guid profileId)
-    {
-        return await Get<WaterInjectorCostProfileOverride>(profileId);
-    }
-
-    public WaterInjectorCostProfileOverride UpdateWaterInjectorCostProfileOverride(WaterInjectorCostProfileOverride costProfile)
-    {
-        return Update(costProfile);
-    }
-
-    public async Task<GasInjectorCostProfileOverride?> GetGasInjectorCostProfileOverride(Guid profileId)
-    {
-        return await Get<GasInjectorCostProfileOverride>(profileId);
-    }
-
-    public GasInjectorCostProfileOverride UpdateGasInjectorCostProfileOverride(GasInjectorCostProfileOverride costProfile)
-    {
-        return Update(costProfile);
+        _context.WellProjectWell.Add(wellProjectWellWithDrillingSchedule);
+        return wellProjectWellWithDrillingSchedule;
     }
 }

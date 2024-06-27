@@ -49,11 +49,14 @@ const Overview = () => {
         }
     }
 
+    function fetchPV() {
+        setWarnedProjects(JSON.parse(String(localStorage.getItem("pv"))))
+        // NOTE: pv stands for "projects visited". It's been abbreviated to avoid disclosing the classification of the project's ID
+    }
+
     useEffect(() => {
-        window.addEventListener("storage", () => {
-            setWarnedProjects(JSON.parse(localStorage.getItem("pv") || "null"))
-            // NOTE: pv stands for "projects visited". It's been abbreviated to avoid disclosing the classification of the project's ID
-        })
+        fetchPV()
+        window.addEventListener("storage", () => fetchPV())
     }, [])
 
     useEffect(() => {
@@ -140,10 +143,15 @@ const Overview = () => {
                     isOpen={projectClassificationWarning}
                     size="sm"
                     title={`Attention - ${PROJECT_CLASSIFICATION[project.classification].label} project`}
-                >
-                    <Typography>{PROJECT_CLASSIFICATION[project.classification].description}</Typography>
-                    <Button onClick={() => addVisitedProject()}>OK</Button>
-                </Modal>
+                    content={(
+                        <Typography key="text">
+                            {PROJECT_CLASSIFICATION[project.classification].description}
+                        </Typography>
+                    )}
+                    actions={
+                        <Button key="ok" onClick={() => addVisitedProject()}>OK</Button>
+                    }
+                />
             )}
         </>
     )

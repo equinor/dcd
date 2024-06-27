@@ -96,12 +96,12 @@ public class WellProjectService : IWellProjectService
 
         _mapperService.MapToEntity(updatedWellProjectDto, existingWellProject, wellProjectId);
 
-        WellProject updatedWellProject;
+        // WellProject updatedWellProject;
         try
         {
-            updatedWellProject = _repository.UpdateWellProject(existingWellProject);
+            // updatedWellProject = _repository.UpdateWellProject(existingWellProject);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -109,244 +109,83 @@ public class WellProjectService : IWellProjectService
             throw;
         }
 
-        var dto = _mapperService.MapToDto<WellProject, WellProjectDto>(updatedWellProject, wellProjectId);
+        var dto = _mapperService.MapToDto<WellProject, WellProjectDto>(existingWellProject, wellProjectId);
         return dto;
     }
 
-    public async Task<WellProjectWellDto> UpdateWellProjectWell(
+    public async Task<DrillingScheduleDto> UpdateWellProjectWellDrillingSchedule(
         Guid caseId,
         Guid wellProjectId,
         Guid wellId,
-        UpdateWellProjectWellDto updatedWellProjectWellDto
+        Guid drillingScheduleId,
+        UpdateDrillingScheduleDto updatedWellProjectWellDto
     )
     {
-        var existingWellProject = await _repository.GetWellProjectWell(wellProjectId, wellId)
-            ?? throw new NotFoundInDBException($"Well project well with id {wellProjectId} and ${wellId} not found.");
+        var existingDrillingSchedule = await _repository.GetWellProjectWellDrillingSchedule(drillingScheduleId)
+            ?? throw new NotFoundInDBException($"Drilling schedule with {drillingScheduleId} not found.");
 
-        _mapperService.MapToEntity(updatedWellProjectWellDto, existingWellProject, wellProjectId);
+        _mapperService.MapToEntity(updatedWellProjectWellDto, existingDrillingSchedule, drillingScheduleId);
 
-        WellProjectWell updatedWellProject;
+        DrillingSchedule updatedDrillingSchedule;
         try
         {
-            updatedWellProject = _repository.UpdateWellProjectWell(existingWellProject);
+            updatedDrillingSchedule = _repository.UpdateWellProjectWellDrillingSchedule(existingDrillingSchedule);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update well project well with id {wellProjectId} and well id {wellId}.", wellProjectId, wellId);
+            _logger.LogError(ex, "Failed to update drilling schedule with id {drillingScheduleId}", drillingScheduleId);
             throw;
         }
 
-        var dto = _mapperService.MapToDto<WellProjectWell, WellProjectWellDto>(updatedWellProject, wellProjectId);
+        var dto = _mapperService.MapToDto<DrillingSchedule, DrillingScheduleDto>(updatedDrillingSchedule, drillingScheduleId);
         return dto;
     }
 
-    public async Task<OilProducerCostProfileOverrideDto> UpdateOilProducerCostProfileOverride(
+    public async Task<DrillingScheduleDto> CreateWellProjectWellDrillingSchedule(
         Guid caseId,
         Guid wellProjectId,
-        Guid profileId,
-        UpdateOilProducerCostProfileOverrideDto updateDto
+        Guid wellId,
+        CreateDrillingScheduleDto updatedWellProjectWellDto
     )
     {
-        return await UpdateWellProjectCostProfile<OilProducerCostProfileOverride, OilProducerCostProfileOverrideDto, UpdateOilProducerCostProfileOverrideDto>(
-            caseId,
-            wellProjectId,
-            profileId,
-            updateDto,
-            _repository.GetOilProducerCostProfileOverride,
-            _repository.UpdateOilProducerCostProfileOverride
-        );
-    }
+        var existingWellProject = await _repository.GetWellProject(wellProjectId)
+            ?? throw new NotFoundInDBException($"Well project with {wellProjectId} not found.");
 
-    public async Task<GasProducerCostProfileOverrideDto> UpdateGasProducerCostProfileOverride(
-        Guid caseId,
-        Guid wellProjectId,
-        Guid profileId,
-        UpdateGasProducerCostProfileOverrideDto updateDto
-    )
-    {
-        return await UpdateWellProjectCostProfile<GasProducerCostProfileOverride, GasProducerCostProfileOverrideDto, UpdateGasProducerCostProfileOverrideDto>(
-            caseId,
-            wellProjectId,
-            profileId,
-            updateDto,
-            _repository.GetGasProducerCostProfileOverride,
-            _repository.UpdateGasProducerCostProfileOverride
-        );
-    }
+        var existingWell = await _repository.GetWell(wellId)
+            ?? throw new NotFoundInDBException($"Well with {wellId} not found.");
 
-    public async Task<WaterInjectorCostProfileOverrideDto> UpdateWaterInjectorCostProfileOverride(
-        Guid caseId,
-        Guid wellProjectId,
-        Guid profileId,
-        UpdateWaterInjectorCostProfileOverrideDto updateDto
-    )
-    {
-        return await UpdateWellProjectCostProfile<WaterInjectorCostProfileOverride, WaterInjectorCostProfileOverrideDto, UpdateWaterInjectorCostProfileOverrideDto>(
-            caseId,
-            wellProjectId,
-            profileId,
-            updateDto,
-            _repository.GetWaterInjectorCostProfileOverride,
-            _repository.UpdateWaterInjectorCostProfileOverride
-        );
-    }
+        DrillingSchedule drillingSchedule = new();
+        var newDrillingSchedule = _mapperService.MapToEntity(updatedWellProjectWellDto, drillingSchedule, wellProjectId);
 
-    public async Task<GasInjectorCostProfileOverrideDto> UpdateGasInjectorCostProfileOverride(
-        Guid caseId,
-        Guid wellProjectId,
-        Guid profileId,
-        UpdateGasInjectorCostProfileOverrideDto updateDto
-    )
-    {
-        return await UpdateWellProjectCostProfile<GasInjectorCostProfileOverride, GasInjectorCostProfileOverrideDto, UpdateGasInjectorCostProfileOverrideDto>(
-            caseId,
-            wellProjectId,
-            profileId,
-            updateDto,
-            _repository.GetGasInjectorCostProfileOverride,
-            _repository.UpdateGasInjectorCostProfileOverride
-        );
-    }
-
-    public async Task<OilProducerCostProfileOverrideDto> CreateOilProducerCostProfileOverride(
-        Guid caseId,
-        Guid wellProjectId,
-        CreateOilProducerCostProfileOverrideDto createProfileDto
-    )
-    {
-        return await CreateWellProjectProfile<OilProducerCostProfileOverride, OilProducerCostProfileOverrideDto, CreateOilProducerCostProfileOverrideDto>(
-            caseId,
-            wellProjectId,
-            createProfileDto,
-            _repository.CreateOilProducerCostProfileOverride,
-            WellProjectProfileNames.OilProducerCostProfileOverride
-        );
-    }
-
-    public async Task<GasProducerCostProfileOverrideDto> CreateGasProducerCostProfileOverride(
-        Guid caseId,
-        Guid wellProjectId,
-        CreateGasProducerCostProfileOverrideDto createProfileDto
-    )
-    {
-        return await CreateWellProjectProfile<GasProducerCostProfileOverride, GasProducerCostProfileOverrideDto, CreateGasProducerCostProfileOverrideDto>(
-            caseId,
-            wellProjectId,
-            createProfileDto,
-            _repository.CreateGasProducerCostProfileOverride,
-            WellProjectProfileNames.GasProducerCostProfileOverride
-        );
-    }
-
-    public async Task<WaterInjectorCostProfileOverrideDto> CreateWaterInjectorCostProfileOverride(
-        Guid caseId,
-        Guid wellProjectId,
-        CreateWaterInjectorCostProfileOverrideDto createProfileDto
-    )
-    {
-        return await CreateWellProjectProfile<WaterInjectorCostProfileOverride, WaterInjectorCostProfileOverrideDto, CreateWaterInjectorCostProfileOverrideDto>(
-            caseId,
-            wellProjectId,
-            createProfileDto,
-            _repository.CreateWaterInjectorCostProfileOverride,
-            WellProjectProfileNames.WaterInjectorCostProfileOverride
-        );
-    }
-
-    public async Task<GasInjectorCostProfileOverrideDto> CreateGasInjectorCostProfileOverride(
-        Guid caseId,
-        Guid wellProjectId,
-        CreateGasInjectorCostProfileOverrideDto createProfileDto
-    )
-    {
-        return await CreateWellProjectProfile<GasInjectorCostProfileOverride, GasInjectorCostProfileOverrideDto, CreateGasInjectorCostProfileOverrideDto>(
-            caseId,
-            wellProjectId,
-            createProfileDto,
-            _repository.CreateGasInjectorCostProfileOverride,
-            WellProjectProfileNames.GasInjectorCostProfileOverride
-        );
-    }
-
-    private async Task<TDto> UpdateWellProjectCostProfile<TProfile, TDto, TUpdateDto>(
-        Guid caseId,
-        Guid wellProjectId,
-        Guid profileId,
-        TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, TProfile> updateProfile
-    )
-        where TProfile : class, IWellProjectTimeSeries
-        where TDto : class
-        where TUpdateDto : class
-    {
-        var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
-
-        _mapperService.MapToEntity(updatedProfileDto, existingProfile, wellProjectId);
-
-        TProfile updatedProfile;
-        try
+        WellProjectWell newWellProjectWell = new()
         {
-            updatedProfile = updateProfile(existingProfile);
-            await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
-        }
-        catch (DbUpdateException ex)
-        {
-            var profileName = typeof(TProfile).Name;
-            _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
-            throw;
-        }
-
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
-        return updatedDto;
-    }
-
-    private async Task<TDto> CreateWellProjectProfile<TProfile, TDto, TCreateDto>(
-        Guid caseId,
-        Guid wellProjectId,
-        TCreateDto createWellProjectProfileDto,
-        Func<TProfile, TProfile> createProfile,
-        WellProjectProfileNames profileName
-    )
-        where TProfile : class, IWellProjectTimeSeries, new()
-        where TDto : class
-        where TCreateDto : class
-    {
-        var wellProject = await _repository.GetWellProject(wellProjectId)
-            ?? throw new NotFoundInDBException($"Well project with id {wellProjectId} not found.");
-
-        var resourceHasProfile = await _repository.WellProjectHasProfile(wellProjectId, profileName);
-
-        if (resourceHasProfile)
-        {
-            throw new ResourceAlreadyExistsException($"Well project with id {wellProjectId} already has a profile of type {typeof(TProfile).Name}.");
-        }
-
-        TProfile profile = new()
-        {
-            WellProject = wellProject,
+            Well = existingWell,
+            WellProject = existingWellProject,
+            DrillingSchedule = newDrillingSchedule
         };
 
-        var newProfile = _mapperService.MapToEntity(createWellProjectProfileDto, profile, wellProjectId);
-
-        TProfile createdProfile;
+        WellProjectWell createdWellProjectWell;
         try
         {
-            createdProfile = createProfile(newProfile);
+            createdWellProjectWell = _repository.CreateWellProjectWellDrillingSchedule(newWellProjectWell);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
+            _logger.LogError(ex, "Failed to update drilling schedule with id {drillingScheduleId}", wellProjectId);
             throw;
         }
 
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
-        return updatedDto;
+        if (createdWellProjectWell.DrillingSchedule == null)
+        {
+            // TODO: use a more specific exception
+            throw new Exception(nameof(createdWellProjectWell.DrillingSchedule));
+        }
+
+        var dto = _mapperService.MapToDto<DrillingSchedule, DrillingScheduleDto>(createdWellProjectWell.DrillingSchedule, wellProjectId);
+        return dto;
     }
 }

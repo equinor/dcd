@@ -13,6 +13,9 @@ public class WellProfile : Profile
 
         CreateMap<CreateWellDto, Well>();
         CreateMap<UpdateWellDto, Well>();
+
         CreateMap<DrillingScheduleDto, DrillingSchedule>().ReverseMap();
+        CreateMap<CreateDrillingScheduleDto, DrillingSchedule>();
+        CreateMap<UpdateDrillingScheduleDto, DrillingSchedule>();
     }
 }

@@ -94,12 +94,12 @@ public class ExplorationService : IExplorationService
 
         _mapperService.MapToEntity(updatedExplorationDto, existingExploration, explorationId);
 
-        Exploration updatedExploration;
+        // Exploration updatedExploration;
         try
         {
-            updatedExploration = _repository.UpdateExploration(existingExploration);
+            // updatedExploration = _repository.UpdateExploration(existingExploration);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -107,181 +107,83 @@ public class ExplorationService : IExplorationService
             throw;
         }
 
-        var dto = _mapperService.MapToDto<Exploration, ExplorationDto>(updatedExploration, explorationId);
+        var dto = _mapperService.MapToDto<Exploration, ExplorationDto>(existingExploration, explorationId);
         return dto;
     }
 
-    public async Task<ExplorationWellDto> UpdateExplorationWell(
+    public async Task<DrillingScheduleDto> UpdateExplorationWellDrillingSchedule(
         Guid caseId,
         Guid explorationId,
         Guid wellId,
-        UpdateExplorationWellDto updatedExplorationWellDto
+        Guid drillingScheduleId,
+        UpdateDrillingScheduleDto updatedExplorationWellDto
     )
     {
-        var existingExplorationWell = await _repository.GetExplorationWell(explorationId, wellId)
-            ?? throw new NotFoundInDBException($"Exploration with id {explorationId} not found.");
+        var existingDrillingSchedule = await _repository.GetExplorationWellDrillingSchedule(drillingScheduleId)
+            ?? throw new NotFoundInDBException($"Drilling schedule with {drillingScheduleId} not found.");
 
-        _mapperService.MapToEntity(updatedExplorationWellDto, existingExplorationWell, explorationId);
+        _mapperService.MapToEntity(updatedExplorationWellDto, existingDrillingSchedule, drillingScheduleId);
 
-        ExplorationWell updatedExplorationWell;
+        // DrillingSchedule updatedDrillingSchedule;
         try
         {
-            updatedExplorationWell = _repository.UpdateExplorationWell(existingExplorationWell);
+            // updatedDrillingSchedule = _repository.UpdateExplorationWellDrillingSchedule(existingDrillingSchedule);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update exploration with id {explorationId} and well id {wellId}.", explorationId, wellId);
+            _logger.LogError(ex, "Failed to update drilling schedule with id {drillingScheduleId}", drillingScheduleId);
             throw;
         }
 
-        var dto = _mapperService.MapToDto<ExplorationWell, ExplorationWellDto>(updatedExplorationWell, explorationId);
+        var dto = _mapperService.MapToDto<DrillingSchedule, DrillingScheduleDto>(existingDrillingSchedule, drillingScheduleId);
         return dto;
     }
 
-    public async Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
-        Guid caseId,
-        Guid wellProjectId,
-        Guid profileId,
-        UpdateSeismicAcquisitionAndProcessingDto updateDto
-    )
-    {
-        return await UpdateExplorationCostProfile<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto, UpdateSeismicAcquisitionAndProcessingDto>(
-            caseId,
-            wellProjectId,
-            profileId,
-            updateDto,
-            _repository.GetSeismicAcquisitionAndProcessing,
-            _repository.UpdateSeismicAcquisitionAndProcessing
-        );
-    }
-
-    public async Task<CountryOfficeCostDto> UpdateCountryOfficeCost(
-        Guid caseId,
-        Guid wellProjectId,
-        Guid profileId,
-        UpdateCountryOfficeCostDto updateDto
-    )
-    {
-        return await UpdateExplorationCostProfile<CountryOfficeCost, CountryOfficeCostDto, UpdateCountryOfficeCostDto>(
-            caseId,
-            wellProjectId,
-            profileId,
-            updateDto,
-            _repository.GetCountryOfficeCost,
-            _repository.UpdateCountryOfficeCost
-        );
-    }
-
-    public async Task<SeismicAcquisitionAndProcessingDto> CreateSeismicAcquisitionAndProcessing(
+    public async Task<DrillingScheduleDto> CreateExplorationWellDrillingSchedule(
         Guid caseId,
         Guid explorationId,
-        CreateSeismicAcquisitionAndProcessingDto createProfileDto
+        Guid wellId,
+        CreateDrillingScheduleDto updatedExplorationWellDto
     )
     {
-        return await CreateExplorationProfile<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto, CreateSeismicAcquisitionAndProcessingDto>(
-            caseId,
-            explorationId,
-            createProfileDto,
-            _repository.CreateSeismicAcquisitionAndProcessing,
-            ExplorationProfileNames.SeismicAcquisitionAndProcessing
-        );
-    }
+        var existingExploration = await _repository.GetExploration(explorationId)
+            ?? throw new NotFoundInDBException($"Well project with {explorationId} not found.");
 
-    public async Task<CountryOfficeCostDto> CreateCountryOfficeCost(
-        Guid caseId,
-        Guid explorationId,
-        CreateCountryOfficeCostDto createProfileDto
-    )
-    {
-        return await CreateExplorationProfile<CountryOfficeCost, CountryOfficeCostDto, CreateCountryOfficeCostDto>(
-            caseId,
-            explorationId,
-            createProfileDto,
-            _repository.CreateCountryOfficeCost,
-            ExplorationProfileNames.CountryOfficeCost
-        );
-    }
+        var existingWell = await _repository.GetWell(wellId)
+            ?? throw new NotFoundInDBException($"Well with {wellId} not found.");
 
-    private async Task<TDto> UpdateExplorationCostProfile<TProfile, TDto, TUpdateDto>(
-        Guid caseId,
-        Guid explorationId,
-        Guid profileId,
-        TUpdateDto updatedProfileDto,
-        Func<Guid, Task<TProfile?>> getProfile,
-        Func<TProfile, TProfile> updateProfile
-    )
-        where TProfile : class, IExplorationTimeSeries
-        where TDto : class
-        where TUpdateDto : class
-    {
-        var existingProfile = await getProfile(profileId)
-            ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
+        DrillingSchedule drillingSchedule = new();
+        var newDrillingSchedule = _mapperService.MapToEntity(updatedExplorationWellDto, drillingSchedule, explorationId);
 
-        _mapperService.MapToEntity(updatedProfileDto, existingProfile, explorationId);
-
-        TProfile updatedProfile;
-        try
+        ExplorationWell newExplorationWell = new()
         {
-            updatedProfile = updateProfile(existingProfile);
-            await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
-        }
-        catch (DbUpdateException ex)
-        {
-            var profileName = typeof(TProfile).Name;
-            _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
-            throw;
-        }
-
-
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
-        return updatedDto;
-    }
-
-    private async Task<TDto> CreateExplorationProfile<TProfile, TDto, TCreateDto>(
-            Guid caseId,
-            Guid explorationId,
-            TCreateDto createExplorationProfileDto,
-            Func<TProfile, TProfile> createProfile,
-            ExplorationProfileNames profileName
-        )
-            where TProfile : class, IExplorationTimeSeries, new()
-            where TDto : class
-            where TCreateDto : class
-    {
-        var exploration = await _repository.GetExploration(explorationId)
-            ?? throw new NotFoundInDBException($"Exploration with id {explorationId} not found.");
-
-        var resourceHasProfile = await _repository.ExplorationHasProfile(explorationId, profileName);
-
-        if (resourceHasProfile)
-        {
-            throw new ResourceAlreadyExistsException($"Exploration with id {explorationId} already has a profile of type {typeof(TProfile).Name}.");
-        }
-
-        TProfile profile = new()
-        {
-            Exploration = exploration,
+            Well = existingWell,
+            Exploration = existingExploration,
+            DrillingSchedule = newDrillingSchedule
         };
 
-        var newProfile = _mapperService.MapToEntity(createExplorationProfileDto, profile, explorationId);
-
-        TProfile createdProfile;
+        ExplorationWell createdExplorationWell;
         try
         {
-            createdProfile = createProfile(newProfile);
+            createdExplorationWell = _repository.CreateExplorationWellDrillingSchedule(newExplorationWell);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
+            _logger.LogError(ex, "Failed to update drilling schedule with id {drillingScheduleId}", explorationId);
             throw;
         }
 
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
-        return updatedDto;
+        if (createdExplorationWell.DrillingSchedule == null)
+        {
+            // TODO: use a more specific exception
+            throw new Exception(nameof(createdExplorationWell.DrillingSchedule));
+        }
+
+        var dto = _mapperService.MapToDto<DrillingSchedule, DrillingScheduleDto>(createdExplorationWell.DrillingSchedule, explorationId);
+        return dto;
     }
 }

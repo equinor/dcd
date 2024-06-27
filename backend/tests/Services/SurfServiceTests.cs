@@ -57,14 +57,14 @@ namespace tests.Services
             _repository.UpdateSurf(existingSurf).Returns(updatedSurf);
 
             var updatedSurfDtoResult = new SurfDto();
-            _mapperService.MapToDto<Surf, SurfDto>(updatedSurf, surfId).Returns(updatedSurfDtoResult);
+            _mapperService.MapToDto<Surf, SurfDto>(existingSurf, surfId).Returns(updatedSurfDtoResult);
 
             // Act
             var result = await _surfService.UpdateSurf<BaseUpdateSurfDto>(caseId, surfId, updatedSurfDto);
 
             // Assert
             Assert.Equal(updatedSurfDtoResult, result);
-            await _repository.Received(1).SaveChangesAsync();
+            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
         }
 
         [Fact]
@@ -78,92 +78,10 @@ namespace tests.Services
             var existingSurf = new Surf { Id = surfId };
             _repository.GetSurf(surfId).Returns(existingSurf);
 
-            _repository.When(r => r.UpdateSurf(existingSurf)).Do(x => throw new DbUpdateException());
+            _repository.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(x => throw new DbUpdateException());
 
             // Act & Assert
             await Assert.ThrowsAsync<DbUpdateException>(() => _surfService.UpdateSurf<BaseUpdateSurfDto>(caseId, surfId, updatedSurfDto));
-        }
-
-        [Fact]
-        public async Task UpdateSurfCostProfileOverride_ShouldUpdateSurfCostProfileOverride_WhenGivenValidInput()
-        {
-            // Arrange
-            var caseId = Guid.NewGuid();
-            var surfId = Guid.NewGuid();
-            var costProfileId = Guid.NewGuid();
-            var updatedSurfCostProfileOverrideDto = new UpdateSurfCostProfileOverrideDto();
-
-            var existingSurfCostProfileOverride = new SurfCostProfileOverride { Id = costProfileId };
-            _repository.GetSurfCostProfileOverride(costProfileId).Returns(existingSurfCostProfileOverride);
-
-            var updatedSurfCostProfileOverride = new SurfCostProfileOverride { Id = costProfileId };
-            _repository.UpdateSurfCostProfileOverride(existingSurfCostProfileOverride).Returns(updatedSurfCostProfileOverride);
-
-            var updatedSurfCostProfileOverrideDtoResult = new SurfCostProfileOverrideDto();
-            _mapperService.MapToDto<SurfCostProfileOverride, SurfCostProfileOverrideDto>(updatedSurfCostProfileOverride, costProfileId).Returns(updatedSurfCostProfileOverrideDtoResult);
-
-            // Act
-            var result = await _surfService.UpdateSurfCostProfileOverride(caseId, surfId, costProfileId, updatedSurfCostProfileOverrideDto);
-
-            // Assert
-            Assert.Equal(updatedSurfCostProfileOverrideDtoResult, result);
-            await _repository.Received(1).SaveChangesAsync();
-        }
-
-        [Fact]
-        public async Task AddOrUpdateSurfCostProfile_ShouldUpdateSurfCostProfile_WhenGivenValidInputForExistingProfile()
-        {
-            // Arrange
-            var caseId = Guid.NewGuid();
-            var surfId = Guid.NewGuid();
-            var profileId = Guid.NewGuid();
-            var updatedSurfCostProfileDto = new UpdateSurfCostProfileDto();
-
-            var existingCostProfile = new SurfCostProfile { Id = profileId };
-            var existingSurf = new Surf { Id = surfId, CostProfile = existingCostProfile };
-            _repository.GetSurfWithCostProfile(surfId).Returns(existingSurf);
-
-            _repository.GetSurfCostProfile(profileId).Returns(existingCostProfile);
-            _repository.UpdateSurfCostProfile(existingCostProfile).Returns(existingCostProfile);
-
-            var updatedSurfCostProfileDtoResult = new SurfCostProfileDto { Id = profileId };
-            _mapperService.MapToDto<SurfCostProfile, SurfCostProfileDto>(existingCostProfile, existingCostProfile.Id).Returns(updatedSurfCostProfileDtoResult);
-
-            // Act
-            var result = await _surfService.AddOrUpdateSurfCostProfile(caseId, surfId, updatedSurfCostProfileDto);
-
-            // Assert
-            Assert.Equal(updatedSurfCostProfileDtoResult, result);
-            await _repository.Received(1).SaveChangesAsync();
-        }
-
-        [Fact]
-        public async Task AddOrUpdateSurfCostProfile_ShouldAddSurfCostProfile_WhenGivenValidInputForNewProfile()
-        {
-            // Arrange
-            var caseId = Guid.NewGuid();
-            var surfId = Guid.NewGuid();
-            var profileId = Guid.NewGuid();
-            var updatedSurfCostProfileDto = new UpdateSurfCostProfileDto();
-
-            var existingSurf = new Surf { Id = surfId };
-            _repository.GetSurfWithCostProfile(surfId).Returns(existingSurf);
-
-            var newCostProfile = new SurfCostProfile { Surf = existingSurf };
-            _mapperService.MapToEntity(Arg.Any<UpdateSurfCostProfileDto>(), Arg.Any<SurfCostProfile>(), Arg.Any<Guid>())
-                          .Returns(newCostProfile);
-
-            _repository.CreateSurfCostProfile(newCostProfile).Returns(newCostProfile);
-
-            var updatedSurfCostProfileDtoResult = new SurfCostProfileDto { Id = profileId };
-            _mapperService.MapToDto<SurfCostProfile, SurfCostProfileDto>(newCostProfile, newCostProfile.Id).Returns(updatedSurfCostProfileDtoResult);
-
-            // Act
-            var result = await _surfService.AddOrUpdateSurfCostProfile(caseId, surfId, updatedSurfCostProfileDto);
-
-            // Assert
-            Assert.Equal(updatedSurfCostProfileDtoResult, result);
-            await _repository.Received(1).SaveChangesAsync();
         }
     }
 }

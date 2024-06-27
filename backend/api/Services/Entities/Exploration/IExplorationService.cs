@@ -14,36 +14,18 @@ public interface IExplorationService
         UpdateExplorationDto updatedExplorationDto
     );
 
-    Task<ExplorationWellDto> UpdateExplorationWell(
+    Task<DrillingScheduleDto> UpdateExplorationWellDrillingSchedule(
         Guid caseId,
         Guid explorationId,
         Guid wellId,
-        UpdateExplorationWellDto updatedExplorationWellDto
+        Guid drillingScheduleId,
+        UpdateDrillingScheduleDto updatedExplorationWellDto
     );
 
-    Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
-        Guid caseId,
-        Guid wellProjectId,
-        Guid profileId,
-        UpdateSeismicAcquisitionAndProcessingDto updateDto
-    );
-
-    Task<CountryOfficeCostDto> UpdateCountryOfficeCost(
-        Guid caseId,
-        Guid wellProjectId,
-        Guid profileId,
-        UpdateCountryOfficeCostDto updateDto
-    );
-
-    Task<SeismicAcquisitionAndProcessingDto> CreateSeismicAcquisitionAndProcessing(
+    Task<DrillingScheduleDto> CreateExplorationWellDrillingSchedule(
         Guid caseId,
         Guid explorationId,
-        CreateSeismicAcquisitionAndProcessingDto createProfileDto
-    );
-
-    Task<CountryOfficeCostDto> CreateCountryOfficeCost(
-        Guid caseId,
-        Guid explorationId,
-        CreateCountryOfficeCostDto createProfileDto
+        Guid wellId,
+        CreateDrillingScheduleDto updatedExplorationWellDto
     );
 }
