@@ -464,6 +464,7 @@ public class DcdDbContext : DbContext
     public DbSet<Case> Cases { get; set; } = null!;
     public DbSet<CessationWellsCostOverride> CessationWellsCostOverride { get; set; } = null!;
     public DbSet<CessationOffshoreFacilitiesCostOverride> CessationOffshoreFacilitiesCostOverride { get; set; } = null!;
+    public DbSet<CessationOnshoreFacilitiesCostProfile> CessationOnshoreFacilitiesCostProfile { get; set; } = null!;
     public DbSet<TotalFeasibilityAndConceptStudiesOverride> TotalFeasibilityAndConceptStudiesOverride { get; set; } = null!;
     public DbSet<TotalFEEDStudiesOverride> TotalFEEDStudiesOverride { get; set; } = null!;
     public DbSet<TotalOtherStudiesCostProfile> TotalOtherStudiesCostProfile { get; set; } = null!;

@@ -736,6 +736,25 @@ const useDataEdits = (): {
                     )
                 }
                 break
+            case "cessationOnshoreFacilitiesCostProfile":
+                if (!resourceProfileId) {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).createCessationOnshoreFacilitiesCostProfile(projectId, caseId, updatedData!),
+                    )
+                } else {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).updateCessationOnshoreFacilitiesCostProfile(projectId, caseId, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
             case "surfCostOverride":
                 if (!resourceProfileId) {
                     success = await createOrUpdateTimeSeriesProfile(

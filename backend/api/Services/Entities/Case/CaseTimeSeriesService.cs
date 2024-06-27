@@ -65,6 +65,23 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
         );
     }
 
+        public async Task<CessationOnshoreFacilitiesCostProfileDto> UpdateCessationOnshoreFacilitiesCostProfile(
+        Guid projectId,
+        Guid caseId,
+        Guid costProfileId,
+        UpdateCessationOnshoreFacilitiesCostProfileDto updatedCostProfileDto
+    )
+    {
+        return await UpdateCaseCostProfile<CessationOnshoreFacilitiesCostProfile, CessationOnshoreFacilitiesCostProfileDto, UpdateCessationOnshoreFacilitiesCostProfileDto>(
+            projectId,
+            caseId,
+            costProfileId,
+            updatedCostProfileDto,
+            _repository.GetCessationOnshoreFacilitiesCostProfile,
+            _repository.UpdateCessationOnshoreFacilitiesCostProfile
+        );
+    }
+
     public async Task<TotalFeasibilityAndConceptStudiesOverrideDto> UpdateTotalFeasibilityAndConceptStudiesOverride(
         Guid projectId,
         Guid caseId,
@@ -225,6 +242,21 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             createProfileDto,
             _repository.CreateCessationOffshoreFacilitiesCostOverride,
             CaseProfileNames.CessationOffshoreFacilitiesCostOverride
+        );
+    }
+
+        public async Task<CessationOnshoreFacilitiesCostProfileDto> CreateCessationOnshoreFacilitiesCostProfile(
+        Guid projectId,
+        Guid caseId,
+        CreateCessationOnshoreFacilitiesCostProfileDto createProfileDto
+    )
+    {
+        return await CreateCaseProfile<CessationOnshoreFacilitiesCostProfile, CessationOnshoreFacilitiesCostProfileDto, CreateCessationOnshoreFacilitiesCostProfileDto>(
+            projectId,
+            caseId,
+            createProfileDto,
+            _repository.CreateCessationOnshoreFacilitiesCostProfile,
+            CaseProfileNames.CessationOnshoreFacilitiesCostProfile
         );
     }
 

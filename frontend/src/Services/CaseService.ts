@@ -126,6 +126,31 @@ class CaseService extends __BaseService {
         return res
     }
 
+    public async createCessationOnshoreFacilitiesCostProfile(
+        projectId: string,
+        caseId: string,
+        dto: Components.Schemas.CreateCessationOnshoreFacilitiesCostProfileDto,
+    ): Promise<Components.Schemas.CessationOnshoreFacilitiesCostProfileDto> {
+        const res: Components.Schemas.CessationOnshoreFacilitiesCostProfileDto = await this.post(
+            `projects/${projectId}/cases/${caseId}/cessation-onshore-facilities-cost-profile/`,
+            { body: dto },
+        )
+        return res
+    }
+
+    public async updateCessationOnshoreFacilitiesCostProfile(
+        projectId: string,
+        caseId: string,
+        costProfileId: string,
+        dto: Components.Schemas.CreateCessationOnshoreFacilitiesCostProfileDto,
+    ): Promise<Components.Schemas.CessationOnshoreFacilitiesCostProfileDto> {
+        const res: Components.Schemas.CessationOnshoreFacilitiesCostProfileDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/cessation-onshore-facilities-cost-profile/${costProfileId}`,
+            { body: dto },
+        )
+        return res
+    }
+
     public async createTotalFeasibilityAndConceptStudiesOverride(
         projectId: string,
         caseId: string,

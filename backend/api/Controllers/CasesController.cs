@@ -100,6 +100,27 @@ public class CasesController : ControllerBase
         return await _caseTimeSeriesService.CreateCessationOffshoreFacilitiesCostOverride(projectId, caseId, dto);
     }
 
+        [HttpPut("{caseId}/cessation-onshore-facilities-cost-profile/{costProfileId}")]
+    public async Task<CessationOnshoreFacilitiesCostProfileDto> UpdateCessationOnshoreFacilitiesCostProfile(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid costProfileId,
+        [FromBody] UpdateCessationOnshoreFacilitiesCostProfileDto dto
+    )
+    {
+        return await _caseTimeSeriesService.UpdateCessationOnshoreFacilitiesCostProfile(projectId, caseId, costProfileId, dto);
+    }
+
+    [HttpPost("{caseId}/cessation-onshore-facilities-cost-Profile")]
+    public async Task<CessationOnshoreFacilitiesCostProfileDto> CreateCessationOnshoreFacilitiesCostProfile(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateCessationOnshoreFacilitiesCostProfileDto dto
+    )
+    {
+        return await _caseTimeSeriesService.CreateCessationOnshoreFacilitiesCostProfile(projectId, caseId, dto);
+    }
+
     [HttpPost("{caseId}/cessation-wells-cost-override")]
     public async Task<CessationWellsCostOverrideDto> CreateCessationWellsCostOverride(
         [FromRoute] Guid projectId,

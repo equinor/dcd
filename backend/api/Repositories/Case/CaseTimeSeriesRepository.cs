@@ -33,6 +33,12 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
         return profile;
     }
 
+    public CessationOnshoreFacilitiesCostProfile CreateCessationOnshoreFacilitiesCostProfile(CessationOnshoreFacilitiesCostProfile profile)
+    {
+        _context.CessationOnshoreFacilitiesCostProfile.Add(profile);
+        return profile;
+    }
+
     public TotalFeasibilityAndConceptStudiesOverride CreateTotalFeasibilityAndConceptStudiesOverride(TotalFeasibilityAndConceptStudiesOverride profile)
     {
         _context.TotalFeasibilityAndConceptStudiesOverride.Add(profile);
@@ -97,6 +103,15 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
     }
 
     public CessationOffshoreFacilitiesCostOverride UpdateCessationOffshoreFacilitiesCostOverride(CessationOffshoreFacilitiesCostOverride costProfile)
+    {
+        return Update(costProfile);
+    }
+    public async Task<CessationOnshoreFacilitiesCostProfile?> GetCessationOnshoreFacilitiesCostProfile(Guid costProfileId)
+    {
+        return await Get<CessationOnshoreFacilitiesCostProfile>(costProfileId);
+    }
+
+    public CessationOnshoreFacilitiesCostProfile UpdateCessationOnshoreFacilitiesCostProfile(CessationOnshoreFacilitiesCostProfile costProfile)
     {
         return Update(costProfile);
     }

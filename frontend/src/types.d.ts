@@ -550,6 +550,11 @@ declare namespace Components {
             currency?: Currency /* int32 */;
             override?: boolean;
         }
+        export interface CreateCessationOnshoreFacilitiesCostProfileDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            currency?: Currency /* int32 */;
+        }
         export interface CreateCessationWellsCostOverrideDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -2178,6 +2183,40 @@ declare namespace Paths {
             export type RequestBody = Components.Schemas.UpdateCessationOffshoreFacilitiesCostOverrideDto;
             namespace Responses {
                 export type $200 = Components.Schemas.CessationOffshoreFacilitiesCostOverrideDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCessationOnshoreFacilitiesCostProfile {
+        namespace Post {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.CreateCessationOnshoreFacilitiesCostProfileDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.CessationOnshoreFacilitiesCostProfileDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCessationOnshoreFacilitiesCostProfile$CostProfileId {
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type CostProfileId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                costProfileId: Parameters.CostProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateCessationOnshoreFacilitiesCostProfileDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.CessationOnshoreFacilitiesCostProfileDto;
             }
         }
     }

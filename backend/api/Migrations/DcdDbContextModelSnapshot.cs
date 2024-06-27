@@ -807,6 +807,9 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Override")
+                        .HasColumnType("bit");
+
                     b.Property<int>("StartYear")
                         .HasColumnType("int");
 
@@ -2192,7 +2195,7 @@ namespace api.Migrations
                     b.ToTable("TotalFeasibilityAndConceptStudiesOverride");
                 });
 
-            modelBuilder.Entity("api.Models.TotalOtherStudies", b =>
+            modelBuilder.Entity("api.Models.TotalOtherStudiesCostProfile", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -2220,7 +2223,7 @@ namespace api.Migrations
                     b.HasIndex("Case.Id")
                         .IsUnique();
 
-                    b.ToTable("TotalOtherStudies");
+                    b.ToTable("TotalOtherStudiesCostProfile");
                 });
 
             modelBuilder.Entity("api.Models.Transport", b =>
@@ -3262,11 +3265,11 @@ namespace api.Migrations
                     b.Navigation("Case");
                 });
 
-            modelBuilder.Entity("api.Models.TotalOtherStudies", b =>
+            modelBuilder.Entity("api.Models.TotalOtherStudiesCostProfile", b =>
                 {
                     b.HasOne("api.Models.Case", "Case")
-                        .WithOne("TotalOtherStudies")
-                        .HasForeignKey("api.Models.TotalOtherStudies", "Case.Id")
+                        .WithOne("TotalOtherStudiesCostProfile")
+                        .HasForeignKey("api.Models.TotalOtherStudiesCostProfile", "Case.Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -3440,7 +3443,7 @@ namespace api.Migrations
 
                     b.Navigation("TotalFeasibilityAndConceptStudiesOverride");
 
-                    b.Navigation("TotalOtherStudies");
+                    b.Navigation("TotalOtherStudiesCostProfile");
 
                     b.Navigation("WellInterventionCostProfile");
 

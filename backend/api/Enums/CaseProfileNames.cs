@@ -4,6 +4,7 @@ public enum CaseProfileNames
 {
     CessationWellsCostOverride,
     CessationOffshoreFacilitiesCostOverride,
+    CessationOnshoreFacilitiesCostProfile,
     TotalFeasibilityAndConceptStudiesOverride,
     TotalFEEDStudiesOverride,
     TotalOtherStudiesCostProfile,
