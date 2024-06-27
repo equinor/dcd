@@ -6,6 +6,7 @@ public enum CaseProfileNames
     CessationOffshoreFacilitiesCostOverride,
     TotalFeasibilityAndConceptStudiesOverride,
     TotalFEEDStudiesOverride,
+    TotalOtherStudiesCostProfile,
     HistoricCostCostProfile,
     WellInterventionCostProfileOverride,
     OffshoreFacilitiesOperationsCostProfileOverride,

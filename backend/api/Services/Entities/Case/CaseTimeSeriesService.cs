@@ -99,6 +99,23 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
         );
     }
 
+    public async Task<TotalOtherStudiesCostProfileDto> UpdateTotalOtherStudiesCostProfile(
+    Guid projectId,
+    Guid caseId,
+    Guid costProfileId,
+    UpdateTotalOtherStudiesCostProfileDto updatedCostProfileDto
+)
+    {
+        return await UpdateCaseCostProfile<TotalOtherStudiesCostProfile, TotalOtherStudiesCostProfileDto, UpdateTotalOtherStudiesCostProfileDto>(
+            projectId,
+            caseId,
+            costProfileId,
+            updatedCostProfileDto,
+            _repository.GetTotalOtherStudiesCostProfile,
+            _repository.UpdateTotalOtherStudiesCostProfile
+        );
+    }
+
     public async Task<HistoricCostCostProfileDto> UpdateHistoricCostCostProfile(
         Guid projectId,
         Guid caseId,
@@ -238,6 +255,21 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             createProfileDto,
             _repository.CreateTotalFEEDStudiesOverride,
             CaseProfileNames.TotalFEEDStudiesOverride
+        );
+    }
+
+    public async Task<TotalOtherStudiesCostProfileDto> CreateTotalOtherStudiesCostProfile(
+        Guid projectId,
+        Guid caseId,
+        CreateTotalOtherStudiesCostProfileDto createProfileDto
+    )
+    {
+        return await CreateCaseProfile<TotalOtherStudiesCostProfile, TotalOtherStudiesCostProfileDto, CreateTotalOtherStudiesCostProfileDto>(
+            projectId,
+            caseId,
+            createProfileDto,
+            _repository.CreateTotalOtherStudiesCostProfile,
+            CaseProfileNames.TotalOtherStudiesCostProfile
         );
     }
 

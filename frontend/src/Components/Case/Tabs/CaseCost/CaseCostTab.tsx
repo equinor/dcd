@@ -66,6 +66,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                         SetTableYearsFromProfiles([
                             projectCase.totalFeasibilityAndConceptStudies,
                             projectCase.totalFEEDStudies,
+                            projectCase.totalOtherStudiesCostProfile,
                             projectCase.wellInterventionCostProfile,
                             projectCase.offshoreFacilitiesOperationsCostProfile,
                             projectCase.cessationWellsCost,

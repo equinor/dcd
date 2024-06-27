@@ -130,6 +130,16 @@ public class CasesController : ControllerBase
         return await _caseTimeSeriesService.CreateTotalFEEDStudiesOverride(projectId, caseId, dto);
     }
 
+    [HttpPost("{caseId}/total-other-studies-cost-profile")]
+    public async Task<TotalOtherStudiesCostProfileDto> CreateTotalOtherStudiesCostProfile(
+    [FromRoute] Guid projectId,
+    [FromRoute] Guid caseId,
+    [FromBody] CreateTotalOtherStudiesCostProfileDto dto
+)
+    {
+        return await _caseTimeSeriesService.CreateTotalOtherStudiesCostProfile(projectId, caseId, dto);
+    }
+
     [HttpPost("{caseId}/historic-cost-cost-profile")]
     public async Task<HistoricCostCostProfileDto> CreateHistoricCostCostProfile(
         [FromRoute] Guid projectId,
@@ -200,6 +210,17 @@ public class CasesController : ControllerBase
     )
     {
         return await _caseTimeSeriesService.UpdateTotalFEEDStudiesOverride(projectId, caseId, costProfileId, dto);
+    }
+
+    [HttpPut("{caseId}/total-other-studies-cost-profile/{costProfileId}")]
+    public async Task<TotalOtherStudiesCostProfileDto> UpdateTotalOtherStudiesCostProfile(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid costProfileId,
+        [FromBody] UpdateTotalOtherStudiesCostProfileDto dto
+    )
+    {
+        return await _caseTimeSeriesService.UpdateTotalOtherStudiesCostProfile(projectId, caseId, costProfileId, dto);
     }
 
     [HttpPut("{caseId}/historic-cost-cost-profile/{costProfileId}")]

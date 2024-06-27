@@ -51,7 +51,7 @@ public class CaseWithAssetsRepository : ICaseWithAssetsRepository
                 .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
                 .Include(c => c.TotalFEEDStudies)
                 .Include(c => c.TotalFEEDStudiesOverride)
-                .Include(c => c.TotalOtherStudies)
+                .Include(c => c.TotalOtherStudiesCostProfile)
                 .Include(c => c.HistoricCostCostProfile)
                 .Include(c => c.WellInterventionCostProfile)
                 .Include(c => c.WellInterventionCostProfileOverride)

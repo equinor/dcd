@@ -176,6 +176,31 @@ class CaseService extends __BaseService {
         return res
     }
 
+    public async createTotalOtherStudiesCostProfile(
+        projectId: string,
+        caseId: string,
+        dto: Components.Schemas.CreateTotalOtherStudiesCostProfileDto,
+    ): Promise<Components.Schemas.TotalOtherStudiesCostProfileDto> {
+        const res: Components.Schemas.TotalOtherStudiesCostProfileDto = await this.post(
+            `projects/${projectId}/cases/${caseId}/total-other-studies-cost-profile/`,
+            { body: dto },
+        )
+        return res
+    }
+
+    public async updateTotalOtherStudiesCostProfile(
+        projectId: string,
+        caseId: string,
+        costProfileId: string,
+        dto: Components.Schemas.UpdateTotalOtherStudiesCostProfileDto,
+    ): Promise<Components.Schemas.TotalOtherStudiesCostProfileDto> {
+        const res: Components.Schemas.TotalOtherStudiesCostProfileDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/total-other-studies-cost-profile/${costProfileId}`,
+            { body: dto },
+        )
+        return res
+    }
+
     public async createHistoricCostCostProfile(
         projectId: string,
         caseId: string,

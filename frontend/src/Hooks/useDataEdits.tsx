@@ -552,6 +552,25 @@ const useDataEdits = (): {
                     )
                 }
                 break
+            case "totalOtherStudiesCostProfile":
+                if (!resourceProfileId) {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).createTotalOtherStudiesCostProfile(projectId, caseId, updatedData!),
+                    )
+                } else {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).updateTotalOtherStudiesCostProfile(projectId, caseId, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
             case "historicCostCostProfile":
                 if (!resourceProfileId) {
                     success = await createOrUpdateTimeSeriesProfile(

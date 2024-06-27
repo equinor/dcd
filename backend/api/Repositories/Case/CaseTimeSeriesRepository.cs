@@ -45,6 +45,12 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
         return profile;
     }
 
+    public TotalOtherStudiesCostProfile CreateTotalOtherStudiesCostProfile(TotalOtherStudiesCostProfile profile)
+    {
+        _context.TotalOtherStudiesCostProfile.Add(profile);
+        return profile;
+    }
+
     public HistoricCostCostProfile CreateHistoricCostCostProfile(HistoricCostCostProfile profile)
     {
         _context.HistoricCostCostProfile.Add(profile);
@@ -111,6 +117,16 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
     }
 
     public TotalFEEDStudiesOverride UpdateTotalFEEDStudiesOverride(TotalFEEDStudiesOverride costProfile)
+    {
+        return Update(costProfile);
+    }
+
+    public async Task<TotalOtherStudiesCostProfile?> GetTotalOtherStudiesCostProfile(Guid costProfileId)
+    {
+        return await Get<TotalOtherStudiesCostProfile>(costProfileId);
+    }
+
+    public TotalOtherStudiesCostProfile UpdateTotalOtherStudiesCostProfile(TotalOtherStudiesCostProfile costProfile)
     {
         return Update(costProfile);
     }

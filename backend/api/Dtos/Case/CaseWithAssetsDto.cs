@@ -18,7 +18,7 @@ public class CaseWithAssetsDto
     public TotalFeasibilityAndConceptStudiesOverrideDto? TotalFeasibilityAndConceptStudiesOverride { get; set; }
     public TotalFEEDStudiesDto? TotalFEEDStudies { get; set; }
     public TotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
-    public TotalOtherStudiesDto? TotalOtherStudies { get; set; }
+    public TotalOtherStudiesCostProfileDto? TotalOtherStudiesCostProfile { get; set; }
     public HistoricCostCostProfileDto? HistoricCostCostProfile { get; set; }
     public WellInterventionCostProfileDto? WellInterventionCostProfile { get; set; }
     public WellInterventionCostProfileOverrideDto? WellInterventionCostProfileOverride { get; set; }

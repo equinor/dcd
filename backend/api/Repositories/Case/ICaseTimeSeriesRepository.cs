@@ -10,6 +10,7 @@ public interface ICaseTimeSeriesRepository : IBaseRepository
     CessationOffshoreFacilitiesCostOverride CreateCessationOffshoreFacilitiesCostOverride(CessationOffshoreFacilitiesCostOverride profile);
     TotalFeasibilityAndConceptStudiesOverride CreateTotalFeasibilityAndConceptStudiesOverride(TotalFeasibilityAndConceptStudiesOverride profile);
     TotalFEEDStudiesOverride CreateTotalFEEDStudiesOverride(TotalFEEDStudiesOverride profile);
+    TotalOtherStudiesCostProfile CreateTotalOtherStudiesCostProfile(TotalOtherStudiesCostProfile profile);
     HistoricCostCostProfile CreateHistoricCostCostProfile(HistoricCostCostProfile profile);
     WellInterventionCostProfileOverride CreateWellInterventionCostProfileOverride(WellInterventionCostProfileOverride profile);
     OffshoreFacilitiesOperationsCostProfileOverride CreateOffshoreFacilitiesOperationsCostProfileOverride(OffshoreFacilitiesOperationsCostProfileOverride profile);
@@ -24,6 +25,8 @@ public interface ICaseTimeSeriesRepository : IBaseRepository
     TotalFeasibilityAndConceptStudiesOverride UpdateTotalFeasibilityAndConceptStudiesOverride(TotalFeasibilityAndConceptStudiesOverride costProfile);
     Task<TotalFEEDStudiesOverride?> GetTotalFEEDStudiesOverride(Guid costProfileId);
     TotalFEEDStudiesOverride UpdateTotalFEEDStudiesOverride(TotalFEEDStudiesOverride costProfile);
+    Task<TotalOtherStudiesCostProfile?> GetTotalOtherStudiesCostProfile(Guid costProfileId);
+    TotalOtherStudiesCostProfile UpdateTotalOtherStudiesCostProfile(TotalOtherStudiesCostProfile costProfile);
     Task<HistoricCostCostProfile?> GetHistoricCostCostProfile(Guid costProfileId);
     HistoricCostCostProfile UpdateHistoricCostCostProfile(HistoricCostCostProfile costProfile);
     Task<WellInterventionCostProfileOverride?> GetWellInterventionCostProfileOverride(Guid costProfileId);

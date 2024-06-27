@@ -20,6 +20,7 @@ public class DcdDbContext : DbContext
     public DbSet<CessationOffshoreFacilitiesCostOverride> CessationOffshoreFacilitiesCostOverride { get; set; } = null!;
     public DbSet<TotalFeasibilityAndConceptStudiesOverride> TotalFeasibilityAndConceptStudiesOverride { get; set; } = null!;
     public DbSet<TotalFEEDStudiesOverride> TotalFEEDStudiesOverride { get; set; } = null!;
+    public DbSet<TotalOtherStudiesCostProfile> TotalOtherStudiesCostProfile { get; set; } = null!;
     public DbSet<HistoricCostCostProfile> HistoricCostCostProfile { get; set; } = null!;
     public DbSet<WellInterventionCostProfileOverride> WellInterventionCostProfileOverride { get; set; } = null!;
     public DbSet<OffshoreFacilitiesOperationsCostProfileOverride> OffshoreFacilitiesOperationsCostProfileOverride { get; set; } = null!;
@@ -87,6 +88,10 @@ public class DcdDbContext : DbContext
     public DbSet<SeismicAcquisitionAndProcessing> SeismicAcquisitionAndProcessing { get; set; } = null!;
     public DbSet<CountryOfficeCost> CountryOfficeCost { get; set; } = null!;
     public DbSet<GAndGAdminCostOverride> GAndGAdminCostOverride { get; set; } = null!;
+    public DbSet<ExplorationWellCostProfile> ExplorationWellCostProfile { get; set; } = null!;
+    public DbSet<AppraisalWellCostProfile> AppraisalWellCostProfile { get; set; } = null!;
+    public DbSet<SidetrackCostProfile> SidetrackCostProfile { get; set; } = null!;
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
