@@ -810,7 +810,7 @@ declare namespace Components {
             sum?: number; // double
             epaVersion: string;
             currency: Currency /* int32 */;
-        }F
+        }
         export interface ExplorationWellDto {
             drillingSchedule: DrillingScheduleDto;
             explorationId: string; // uuid
