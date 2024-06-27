@@ -50,6 +50,7 @@ public class CaseProfile : Profile
         CreateMap<CreateCessationOnshoreFacilitiesCostProfileDto, CessationOnshoreFacilitiesCostProfile>();
         CreateMap<CreateTotalFeasibilityAndConceptStudiesOverrideDto, TotalFeasibilityAndConceptStudiesOverride>();
         CreateMap<CreateTotalFEEDStudiesOverrideDto, TotalFEEDStudiesOverride>();
+        CreateMap<CreateTotalOtherStudiesCostProfileDto, TotalOtherStudiesCostProfile>();
         CreateMap<CreateWellInterventionCostProfileOverrideDto, WellInterventionCostProfileOverride>();
         CreateMap<CreateOffshoreFacilitiesOperationsCostProfileOverrideDto, OffshoreFacilitiesOperationsCostProfileOverride>();
         CreateMap<CreateHistoricCostCostProfileDto, HistoricCostCostProfile>();
