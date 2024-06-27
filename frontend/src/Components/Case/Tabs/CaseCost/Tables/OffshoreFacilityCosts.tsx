@@ -19,6 +19,10 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
 }) => {
     const { project } = useProjectContext()
 
+    const surf = apiData?.surf
+    const topside = apiData?.topside
+    const transport = apiData?.transport
+    const substructure = apiData?.substructure
     const surfCostData = apiData?.surfCostProfile
     const surfCostOverrideData = apiData?.surfCostProfileOverride
     const topsideCostData = apiData?.topsideCostProfile
@@ -28,13 +32,15 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
     const transportCostData = apiData?.transportCostProfile
     const transportCostOverrideData = apiData?.transportCostProfileOverride
 
+    if (!surf || !topside || !substructure || !transport) { return null }
+
     const capexTimeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Subsea production system",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: surfCostData,
             resourceName: "surfCostOverride",
-            resourceId: caseData.id,
+            resourceId: surf.id,
             resourceProfileId: surfCostOverrideData?.id,
             resourcePropertyKey: "surfCostOverride",
             overridable: true,
@@ -46,7 +52,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: topsideCostData,
             resourceName: "topsideCostOverride",
-            resourceId: caseData.id,
+            resourceId: topside.id,
             resourceProfileId: topsideCostOverrideData?.id,
             resourcePropertyKey: "topsideCostOverride",
             overridable: true,
@@ -58,7 +64,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: substructureCostData,
             resourceName: "substructureCostOverride",
-            resourceId: caseData.id,
+            resourceId: substructure.id,
             resourceProfileId: substructureCostOverrideData?.id,
             resourcePropertyKey: "substructureCostOverride",
             overridable: true,
@@ -70,7 +76,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: transportCostData,
             resourceName: "transportCostOverride",
-            resourceId: caseData.id,
+            resourceId: transport.id,
             resourceProfileId: transportCostOverrideData?.id,
             resourcePropertyKey: "transportCostOverride",
             overridable: true,
@@ -84,7 +90,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             timeSeriesData={capexTimeSeriesData}
             dg4Year={caseData?.dG4Date ? new Date(caseData?.dG4Date).getFullYear() : 2030}
             tableYears={tableYears}
-            tableName="Offshore facilitiy cost"
+            tableName="Offshore facility cost"
             gridRef={capexGridRef}
             alignedGridsRef={alignedGridsRef}
             includeFooter

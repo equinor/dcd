@@ -13,7 +13,7 @@ const SubHeader = styled(Typography)`
 
 type Version = `${number}.${number}.${number}`;
 
-type Category = "New Features" | "UI Improvements" | "Bugfixes" | "Other";
+type Category = "New Functionalities" | "UI Improvements" | "Bugfixes" | "Other";
 
 type UpdateEntry = {
     description: string;
@@ -21,25 +21,44 @@ type UpdateEntry = {
 
 const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } } = {
     "2.0.0": {
-        "New Features": [
+        "New Functionalities": [
             { description: "All input fields Auto-save on change" },
-            { description: "Undo/redo edits" },
             { description: "Upload photos in the case description tab" },
             { description: "Set the classification level of the project in the settings tab" },
             { description: "View the projects and cases in either edit or view mode" },
-
+            { description: "The current case tab is saved in the URL for sharing" },
+            { description: "Allow inserting 4 decimals instead of 2 in production profile table" },
+            { description: "Navigate the project and add new cases in the sidebar" },
+            { description: "A modal box appears with information about all changes whenever there is a new release" },
+            { description: "View 'Export to stea' data in each case summary tab" },
+            { description: "Added new production profile 'Deferred oil production' & 'Deferred gas production'" },
+            { description: "Added input validation with descriptive error messages" },
         ],
         "UI Improvements": [
-            { description: "The current case tab is saved in the URL for sharing" },
             { description: "Case and project description input text can now have formatting" },
             { description: "Improved grid and responsiveness" },
             { description: "Improved project selection landing page" },
             { description: "Improved loading indicators" },
+            { description: "Improved sidebar styling" },
+            { description: "Added case deletion confirmation prompt" },
+            { description: "Added table description to Well costs" },
+            { description: "When creating a new case, user is no longer automatically redireted to it" },
+            { description: "Removed send feedback button" },
+            { description: "Open cases directly from the Case overview table" },
+            { description: "Combined title and unit into a single column to save space" },
+            { description: "Show only relevant DG dates in Scehdule tab" },
+        ],
+        Bugfixes: [
+            { description: "Technical input window does not appear in project 'chloris'" },
+            { description: "Removed 'Expected Ream MNOK'21 from STEA export" },
+            { description: "Pasting numbers from Excel to tables puts all inserted values into a single cell" },
+            { description: "Unable to add numbers to tables if they have custom format from Excel" },
         ],
     },
     /*
     "2.1.0": {
         "New Features": [
+            { description: "Undo/redo edits" },
             { description: "Edit history overview in the sidebar displays all changes made to each case in the past hour" },
         ],
     },

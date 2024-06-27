@@ -9,7 +9,9 @@ export type ResourceName =
     "drainageStrategy" |
     "fuelFlaringAndLossesOverride" |
     "wellProject" |
-    "exploration" | ProfileNames
+    "exploration" |
+    "explorationWellDrillingSchedule" |
+    "wellProjectWellDrillingSchedule" | ProfileNames
 
 export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFacilitiesCostOverride" | "cessationOnshoreFacilitiesCostProfile" |
     "totalFeasibilityAndConceptStudiesOverride" | "wellProjectOilProducerCostOverride" | "wellProjectGasProducerCostOverride" |
@@ -78,6 +80,9 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.DrainageStrategyDto |
     keyof Components.Schemas.WellProjectDto |
     keyof Components.Schemas.ExplorationDto |
+    keyof Components.Schemas.WellProjectWellDto |
+    keyof Components.Schemas.ExplorationWellDto |
+    keyof Components.Schemas.DrillingScheduleDto |
     ProfilePropertyKey
 
 export type ProfilePropertyKey =
@@ -121,10 +126,13 @@ export interface EditInstance {
     resourcePropertyKey: ResourcePropertyKey; // the key of the asset being edited
     resourceId?: string; // the id of the asset being edited
     resourceProfileId?: string; // the id of the timeseries profile being edited
+    wellId?: string // the id of the asset well
+    drillingScheduleId?: string // the id of the drilling schedule
     caseId?: string; // the case id
     newDisplayValue?: string | number | undefined; // the displayed new value in case of when the value submitted is not what the user should see
     previousDisplayValue?: string | number | undefined; // the displayed previous value in case of when the value submitted is not what the user should see
     newResourceObject?: ResourceObject; // this is used to replace the whole asset object. used if the edit should change multiple values in the same assets
+    previousResourceObject?: ResourceObject; // used to revert the asset object to its previous state during undo
 }
 
 export interface EditEntry {

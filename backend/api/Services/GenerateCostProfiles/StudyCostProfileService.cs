@@ -9,10 +9,10 @@ using AutoMapper;
 
 namespace api.Services;
 
-public class GenerateStudyCostProfile : IGenerateStudyCostProfile
+public class StudyCostProfileService : IStudyCostProfileService
 {
     private readonly ICaseService _caseService;
-    private readonly ILogger<GenerateStudyCostProfile> _logger;
+    private readonly ILogger<StudyCostProfileService> _logger;
     private readonly IWellProjectService _wellProjectService;
     private readonly ITopsideService _topsideService;
     private readonly ISubstructureService _substructureService;
@@ -21,7 +21,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
     private readonly DcdDbContext _context;
     private readonly IMapper _mapper;
 
-    public GenerateStudyCostProfile(
+    public StudyCostProfileService(
         DcdDbContext context,
         ILoggerFactory loggerFactory,
         ICaseService caseService,
@@ -33,7 +33,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
         IMapper mapper)
     {
         _context = context;
-        _logger = loggerFactory.CreateLogger<GenerateStudyCostProfile>();
+        _logger = loggerFactory.CreateLogger<StudyCostProfileService>();
         _caseService = caseService;
         _wellProjectService = wellProjectService;
         _topsideService = topsideService;
@@ -46,7 +46,11 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
     public async Task<StudyCostProfileWrapperDto> Generate(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
+        return await Generate(caseItem);
+    }
 
+    public async Task<StudyCostProfileWrapperDto> Generate(Case caseItem)
+    {
         var sumFacilityCost = await SumAllCostFacility(caseItem);
         var sumWellCost = await SumWellCost(caseItem);
 
@@ -83,7 +87,7 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
 
         var otherStudies = caseItem.TotalOtherStudies ?? new TotalOtherStudies();
 
-        await UpdateCaseAndSave(caseItem, feasibility, feed, otherStudies);
+        UpdateCaseAndSave(caseItem, feasibility, feed, otherStudies);
 
         var result = new StudyCostProfileWrapperDto();
         var feasibilityDto = _mapper.Map<TotalFeasibilityAndConceptStudiesDto>(feasibility);
@@ -118,12 +122,12 @@ public class GenerateStudyCostProfile : IGenerateStudyCostProfile
 
 
 
-    private async Task<int> UpdateCaseAndSave(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies, TotalOtherStudies totalOtherStudies)
+    private void UpdateCaseAndSave(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies, TotalOtherStudies totalOtherStudies)
     {
         caseItem.TotalFeasibilityAndConceptStudies = totalFeasibilityAndConceptStudies;
         caseItem.TotalFEEDStudies = totalFEEDStudies;
         caseItem.TotalOtherStudies = totalOtherStudies;
-        return await _context.SaveChangesAsync();
+        // return await _context.SaveChangesAsync();
     }
 
     public TotalFeasibilityAndConceptStudies CalculateTotalFeasibilityAndConceptStudies(Case caseItem, double sumFacilityCost, double sumWellCost)

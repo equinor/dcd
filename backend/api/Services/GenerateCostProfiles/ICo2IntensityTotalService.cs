@@ -1,6 +1,6 @@
 namespace api.Services.GenerateCostProfiles
 {
-    public interface IGenerateCo2IntensityTotal
+    public interface ICo2IntensityTotalService
     {
         Task<double> Calculate(Guid caseId);
     }

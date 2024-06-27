@@ -60,6 +60,7 @@ const CasesDropMenu = ({
             <Modal
                 title="Delete Case?"
                 isOpen={confirmDelete}
+                size="sm"
                 content={[
                     <Typography variant="body_short">
                         Are you sure you want to delete this case?
@@ -68,7 +69,7 @@ const CasesDropMenu = ({
                 actions={(
                     <div>
                         <Button variant="ghost" onClick={() => setConfirmDelete(false)}>Cancel</Button>
-                        <Button onClick={handleDelete}>Delete</Button>
+                        <Button onClick={handleDelete} color="danger"> Delete </Button>
                     </div>
                 )}
             />
