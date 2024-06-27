@@ -70,7 +70,7 @@ public class TopsideTimeSeriesService : ITopsideTimeSeriesService
         {
             createdProfile = _repository.CreateTopsideCostProfileOverride(newProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -151,7 +151,7 @@ public class TopsideTimeSeriesService : ITopsideTimeSeriesService
         {
             _repository.CreateTopsideCostProfile(newProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (Exception ex)
         {
@@ -180,12 +180,12 @@ public class TopsideTimeSeriesService : ITopsideTimeSeriesService
 
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, topsideId);
 
-        TProfile updatedProfile;
+        // TProfile updatedProfile;
         try
         {
-            updatedProfile = updateProfile(existingProfile);
+            // updatedProfile = updateProfile(existingProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -194,7 +194,7 @@ public class TopsideTimeSeriesService : ITopsideTimeSeriesService
             throw;
         }
 
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
+        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
         return updatedDto;
     }
 }

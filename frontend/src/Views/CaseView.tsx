@@ -2,7 +2,6 @@ import { Tabs } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import Grid from "@mui/material/Grid"
-import styled from "styled-components"
 import CaseDescriptionTab from "../Components/Case/Tabs/CaseDescriptionTab"
 import CaseCostTab from "../Components/Case/Tabs/CaseCost/CaseCostTab"
 import CaseFacilitiesTab from "../Components/Case/Tabs/CaseFacilitiesTab"
@@ -23,11 +22,6 @@ import CaseDescriptionTabSkeleton from "../Components/Case/Tabs/LoadingSkeletons
 const {
     List, Tab, Panels, Panel,
 } = Tabs
-
-const CasePanel = styled(Panel)`
-    height: calc(100vh - 210px);
-    overflow: auto;
-`
 
 const CaseView = () => {
     const { caseId, tab } = useParams()
@@ -408,16 +402,16 @@ const CaseView = () => {
                         {tabNames.map((tabName) => <Tab key={tabName}>{tabName}</Tab>)}
                     </List>
                     <Panels>
-                        <CasePanel>
+                        <Panel>
                             <CaseDescriptionTab />
-                        </CasePanel>
-                        <CasePanel>
+                        </Panel>
+                        <Panel>
                             <CaseProductionProfilesTab />
-                        </CasePanel>
-                        <CasePanel>
+                        </Panel>
+                        <Panel>
                             <CaseScheduleTab />
-                        </CasePanel>
-                        <CasePanel>
+                        </Panel>
+                        <Panel>
                             <CaseDrillingScheduleTab
                                 explorationWells={explorationWells}
                                 setExplorationWells={setExplorationWells}
@@ -427,19 +421,19 @@ const CaseView = () => {
                                 exploration={exploration}
                                 wellProject={wellProject}
                             />
-                        </CasePanel>
-                        <CasePanel>
+                        </Panel>
+                        <Panel>
                             <CaseFacilitiesTab />
-                        </CasePanel>
-                        <CasePanel>
+                        </Panel>
+                        <Panel>
                             <CaseCostTab />
-                        </CasePanel>
-                        <CasePanel>
+                        </Panel>
+                        <Panel>
                             <CaseCO2Tab />
-                        </CasePanel>
-                        <CasePanel>
+                        </Panel>
+                        <Panel>
                             <CaseSummaryTab />
-                        </CasePanel>
+                        </Panel>
                     </Panels>
                 </Tabs>
             </Grid>

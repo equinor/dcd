@@ -159,7 +159,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
         {
             updatedProfile = updateProfile(existingProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -167,7 +167,6 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
             _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
             throw;
         }
-
 
         var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
         return updatedDto;
@@ -206,7 +205,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
         {
             createdProfile = createProfile(newProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

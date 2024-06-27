@@ -2,7 +2,7 @@ using api.Dtos;
 
 namespace api.Services.GenerateCostProfiles
 {
-    public interface IGenerateFuelFlaringLossesProfile
+    public interface IFuelFlaringLossesProfileService
     {
         Task<FuelFlaringAndLossesDto> Generate(Guid caseId);
     }

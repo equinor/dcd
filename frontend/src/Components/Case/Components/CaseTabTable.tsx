@@ -285,6 +285,7 @@ const CaseTabTable = ({
         editable: true,
         onCellValueChanged: handleCellValueChange,
         suppressHeaderMenuButton: true,
+        cellDataType: "number",
     }), [timeSeriesData])
 
     useEffect(() => {

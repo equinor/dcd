@@ -61,14 +61,14 @@ namespace tests.Services
             _repository.UpdateSubstructureCostProfileOverride(existingSubstructureCostProfileOverride).Returns(updatedSubstructureCostProfileOverride);
 
             var updatedSubstructureCostProfileOverrideDtoResult = new SubstructureCostProfileOverrideDto();
-            _mapperService.MapToDto<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>(updatedSubstructureCostProfileOverride, costProfileId).Returns(updatedSubstructureCostProfileOverrideDtoResult);
+            _mapperService.MapToDto<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>(existingSubstructureCostProfileOverride, costProfileId).Returns(updatedSubstructureCostProfileOverrideDtoResult);
 
             // Act
             var result = await _substructureService.UpdateSubstructureCostProfileOverride(caseId, substructureId, costProfileId, updatedSubstructureCostProfileOverrideDto);
 
             // Assert
             Assert.Equal(updatedSubstructureCostProfileOverrideDtoResult, result);
-            await _repository.Received(1).SaveChangesAsync();
+            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
         }
 
         [Fact]
@@ -95,7 +95,7 @@ namespace tests.Services
 
             // Assert
             Assert.Equal(updatedSubstructureCostProfileDtoResult, result);
-            await _repository.Received(1).SaveChangesAsync();
+            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
         }
 
         [Fact]
@@ -124,7 +124,7 @@ namespace tests.Services
 
             // Assert
             Assert.Equal(updatedSubstructureCostProfileDtoResult, result);
-            await _repository.Received(1).SaveChangesAsync();
+            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
         }
     }
 }

@@ -367,12 +367,12 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
 
         _mapperService.MapToEntity(updatedCostProfileDto, existingProfile, caseId);
 
-        TProfile updatedProfile;
+        // TProfile updatedProfile;
         try
         {
-            updatedProfile = updateProfile(existingProfile);
+            // updatedProfile = updateProfile(existingProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -382,7 +382,7 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
         }
 
 
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, costProfileId);
+        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(existingProfile, costProfileId);
         return updatedDto;
     }
 
@@ -419,7 +419,7 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
         {
             createdProfile = createProfile(newProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

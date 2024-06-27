@@ -95,12 +95,12 @@ public class ExplorationService : IExplorationService
 
         _mapperService.MapToEntity(updatedExplorationDto, existingExploration, explorationId);
 
-        Exploration updatedExploration;
+        // Exploration updatedExploration;
         try
         {
-            updatedExploration = _repository.UpdateExploration(existingExploration);
+            // updatedExploration = _repository.UpdateExploration(existingExploration);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -108,7 +108,7 @@ public class ExplorationService : IExplorationService
             throw;
         }
 
-        var dto = _mapperService.MapToDto<Exploration, ExplorationDto>(updatedExploration, explorationId);
+        var dto = _mapperService.MapToDto<Exploration, ExplorationDto>(existingExploration, explorationId);
         return dto;
     }
 
@@ -125,12 +125,12 @@ public class ExplorationService : IExplorationService
 
         _mapperService.MapToEntity(updatedExplorationWellDto, existingDrillingSchedule, drillingScheduleId);
 
-        DrillingSchedule updatedDrillingSchedule;
+        // DrillingSchedule updatedDrillingSchedule;
         try
         {
-            updatedDrillingSchedule = _repository.UpdateExplorationWellDrillingSchedule(existingDrillingSchedule);
+            // updatedDrillingSchedule = _repository.UpdateExplorationWellDrillingSchedule(existingDrillingSchedule);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -138,7 +138,7 @@ public class ExplorationService : IExplorationService
             throw;
         }
 
-        var dto = _mapperService.MapToDto<DrillingSchedule, DrillingScheduleDto>(updatedDrillingSchedule, drillingScheduleId);
+        var dto = _mapperService.MapToDto<DrillingSchedule, DrillingScheduleDto>(existingDrillingSchedule, drillingScheduleId);
         return dto;
     }
 
@@ -170,7 +170,7 @@ public class ExplorationService : IExplorationService
         {
             createdExplorationWell = _repository.CreateExplorationWellDrillingSchedule(newExplorationWell);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

@@ -69,7 +69,7 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
         {
             createdProfile = _repository.CreateSurfCostProfileOverride(newProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -133,7 +133,7 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
         {
             _repository.CreateSurfCostProfile(newProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (Exception ex)
         {
@@ -179,12 +179,12 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
 
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, surfId);
 
-        TProfile updatedProfile;
+        // TProfile updatedProfile;
         try
         {
-            updatedProfile = updateProfile(existingProfile);
+            // updatedProfile = updateProfile(existingProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -193,7 +193,7 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
             throw;
         }
 
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
+        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
         return updatedDto;
     }
 }
