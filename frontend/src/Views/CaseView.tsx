@@ -18,6 +18,7 @@ import { useCaseContext } from "../Context/CaseContext"
 import { useAppContext } from "../Context/AppContext"
 import { mergeTimeseriesList } from "../Utils/common"
 import { ITimeSeries } from "../Models/ITimeSeries"
+import CaseDescriptionTabSkeleton from "../Components/Case/Tabs/LoadingSkeletons/CaseDescriptionTabSkeleton"
 
 const {
     List, Tab, Panels, Panel,
@@ -97,8 +98,8 @@ const CaseView = () => {
         setOffshoreOpexPlussWellIntervention,
     } = useCaseContext()
 
-    if (!projectCase || !project) {
-        return (<>Loading...</>)
+    if (!projectCase || !project || isLoading) {
+        return <CaseDescriptionTabSkeleton />
     }
 
     const {
@@ -386,10 +387,6 @@ const CaseView = () => {
     useEffect(() => {
         if (saveProjectCase) { handleCaseSave() }
     }, [saveProjectCase])
-
-    if (isLoading) {
-        return (<>Loading...</>)
-    }
 
     if (!drainageStrategy
         || !exploration

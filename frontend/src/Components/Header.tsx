@@ -10,7 +10,7 @@ import EditTechnicalInputModal from "./EditTechnicalInput/EditTechnicalInputModa
 import { useAppContext } from "../Context/AppContext"
 
 const RouteCoordinator = (): JSX.Element => {
-    const { setIsCreating, setIsLoading } = useAppContext()
+    const { setIsCreating, setIsLoading, setSnackBarMessage } = useAppContext()
     const { setProject } = useProjectContext()
     const { currentContext } = useModuleCurrentContext()
 
@@ -46,6 +46,7 @@ const RouteCoordinator = (): JSX.Element => {
 
                 if (!fetchedProject || fetchedProject.id === "") {
                     setIsCreating(true)
+                    setSnackBarMessage("No project found for this search. Creating new.")
                     fetchedProject = await projectService.createProject(currentContext.id)
                 }
 
@@ -56,6 +57,7 @@ const RouteCoordinator = (): JSX.Element => {
                 }
             } catch (error) {
                 console.error("Error fetching or setting project in context:", error)
+                setSnackBarMessage("Error fetching or setting project in context")
             }
         }
 
