@@ -10,20 +10,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services.GenerateCostProfiles;
 
-public class GenerateCo2IntensityTotal : IGenerateCo2IntensityTotal
+public class Co2IntensityTotalService : ICo2IntensityTotalService
 {
     private readonly ICaseService _caseService;
     private readonly IProjectService _projectService;
-    private readonly ILogger<GenerateCo2IntensityTotal> _logger;
+    private readonly ILogger<Co2IntensityTotalService> _logger;
     private readonly IDrainageStrategyService _drainageStrategyService;
-    private readonly IGenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
+    private readonly ICo2EmissionsProfileService _generateCo2EmissionsProfile;
 
-    public GenerateCo2IntensityTotal(IProjectService projectService, ILoggerFactory loggerFactory, ICaseService caseService, IDrainageStrategyService drainageStrategyService,
-        IGenerateCo2EmissionsProfile generateCo2EmissionsProfile)
+    public Co2IntensityTotalService(IProjectService projectService, ILoggerFactory loggerFactory, ICaseService caseService, IDrainageStrategyService drainageStrategyService,
+        ICo2EmissionsProfileService generateCo2EmissionsProfile)
     {
         _caseService = caseService;
         _projectService = projectService;
-        _logger = loggerFactory.CreateLogger<GenerateCo2IntensityTotal>();
+        _logger = loggerFactory.CreateLogger<Co2IntensityTotalService>();
         _drainageStrategyService = drainageStrategyService;
         _generateCo2EmissionsProfile = generateCo2EmissionsProfile;
     }

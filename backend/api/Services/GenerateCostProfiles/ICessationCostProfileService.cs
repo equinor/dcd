@@ -2,7 +2,7 @@ using api.Dtos;
 
 namespace api.Services
 {
-    public interface IGenerateCessationCostProfile
+    public interface ICessationCostProfileService
     {
         Task<CessationCostWrapperDto> Generate(Guid caseId);
     }
