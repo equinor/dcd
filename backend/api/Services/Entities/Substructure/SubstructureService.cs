@@ -93,12 +93,12 @@ public class SubstructureService : ISubstructureService
         _mapperService.MapToEntity(updatedSubstructureDto, existingSubstructure, substructureId);
         existingSubstructure.LastChangedDate = DateTimeOffset.UtcNow;
 
-        Substructure updatedSubstructure;
+        // Substructure updatedSubstructure;
         try
         {
-            updatedSubstructure = _repository.UpdateSubstructure(existingSubstructure);
+            // updatedSubstructure = _repository.UpdateSubstructure(existingSubstructure);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -106,7 +106,7 @@ public class SubstructureService : ISubstructureService
             throw;
         }
 
-        var dto = _mapperService.MapToDto<Substructure, SubstructureDto>(updatedSubstructure, substructureId);
+        var dto = _mapperService.MapToDto<Substructure, SubstructureDto>(existingSubstructure, substructureId);
 
         return dto;
     }
