@@ -190,7 +190,6 @@ builder.Services.AddScoped<ITopsideTimeSeriesService, TopsideTimeSeriesService>(
 builder.Services.AddScoped<ITransportTimeSeriesService, TransportTimeSeriesService>();
 
 builder.Services.AddScoped<IDevelopmentOperationalWellCostsService, DevelopmentOperationalWellCostsService>();
-builder.Services.AddScoped<ICaseAndAssetsService, CaseAndAssetsService>();
 builder.Services.AddScoped<ICaseWithAssetsService, CaseWithAssetsService>();
 
 builder.Services.AddScoped<ITechnicalInputService, TechnicalInputService>();
