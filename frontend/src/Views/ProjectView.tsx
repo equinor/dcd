@@ -44,9 +44,11 @@ const ProjectView = () => {
                         <ScrollablePanel>
                             <ProjectCompareCasesTab />
                         </ScrollablePanel>
+                        {/* uncomment for next release
                         <ScrollablePanel>
                             <EditHistoryOverviewTab />
                         </ScrollablePanel>
+                        */}
                         <ScrollablePanel>
                             <ProjectSettingsTab />
                         </ScrollablePanel>
