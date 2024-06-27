@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactNode, Children } from "react"
+import { FunctionComponent, ReactNode } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import Dialog from "@mui/material/Dialog"
 import DialogTitle from "@mui/material/DialogTitle"
@@ -8,19 +8,32 @@ import DialogActions from "@mui/material/DialogActions"
 type Props = {
     title: string;
     isOpen: boolean;
-    children: ReactNode;
-    fullWidth?: boolean;
+    size?: false | "xs" | "sm" | "md" | "lg" | "xl" | undefined;
+    onClose?: () => void;
+    content: ReactNode;
+    actions?: ReactNode;
 }
 
 const Modal: FunctionComponent<Props> = ({
-    isOpen, title, children, fullWidth,
+    isOpen,
+    title,
+    size,
+    onClose,
+    content,
+    actions,
 }) => {
     if (!isOpen) { return null }
     return (
-        <Dialog open={isOpen} fullWidth={fullWidth} maxWidth="lg" className="ConceptApp ag-theme-alpine-fusion">
-            {title && <DialogTitle><Typography variant="h2" as="p">{title}</Typography></DialogTitle>}
-            {Children.map(children, (child, index) => (index === 0 && <DialogContent>{child}</DialogContent>))}
-            {Children.map(children, (child, index) => (index === 1 && <DialogActions>{child}</DialogActions>))}
+        <Dialog
+            open={isOpen}
+            fullWidth
+            maxWidth={size || "lg"}
+            className="ConceptApp ag-theme-alpine-fusion"
+            onClose={onClose}
+        >
+            <DialogTitle><Typography variant="h2" as="p">{title}</Typography></DialogTitle>
+            <DialogContent>{content}</DialogContent>
+            {actions && <DialogActions>{actions}</DialogActions>}
         </Dialog>
     )
 }

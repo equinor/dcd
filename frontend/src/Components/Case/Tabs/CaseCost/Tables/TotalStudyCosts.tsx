@@ -1,107 +1,68 @@
-import React, { useState, useEffect } from "react"
-import { ITimeSeriesData } from "../../../../../Models/ITimeSeriesData"
+import React, { } from "react"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
-import { useCaseContext } from "../../../../../Context/CaseContext"
 import CaseTabTable from "../../../Components/CaseTabTable"
-import { updateObject } from "../../../../../Utils/common"
+import { ITimeSeriesData } from "../../../../../Models/Interfaces"
 
 interface CesationCostsProps {
     tableYears: [number, number]
     studyGridRef: React.MutableRefObject<any>
     alignedGridsRef: any[]
+    caseData: Components.Schemas.CaseDto
+    apiData: Components.Schemas.CaseWithAssetsDto | undefined
 }
 
-const TotalStudyCosts: React.FC<CesationCostsProps> = ({ tableYears, studyGridRef, alignedGridsRef }) => {
+const TotalStudyCosts: React.FC<CesationCostsProps> = ({
+    tableYears, studyGridRef, alignedGridsRef, caseData, apiData,
+}) => {
     const { project } = useProjectContext()
-    const {
-        projectCase,
-        activeTabCase,
-        projectCaseEdited,
-        setProjectCaseEdited,
-
-        totalFeasibilityAndConceptStudiesOverride,
-        setTotalFeasibilityAndConceptStudiesOverride, // why is this in context while other overrides are local states?
-
-        totalFEEDStudiesOverride,
-        setTotalFEEDStudiesOverride,
-
-        totalFeasibilityAndConceptStudies,
-        setTotalFeasibilityAndConceptStudies,
-
-        totalFEEDStudies,
-        setTotalFEEDStudies,
-
-        totalOtherStudies,
-        setTotalOtherStudies,
-    } = useCaseContext()
+    const totalFeasibilityAndConceptStudiesData = apiData?.totalFeasibilityAndConceptStudies
+    const totalFeasibilityAndConceptStudiesOverrideData = apiData?.totalFeasibilityAndConceptStudiesOverride
+    const totalFEEDStudiesData = apiData?.totalFEEDStudies
+    const totalFEEDStudiesOverrideData = apiData?.totalFEEDStudiesOverride
+    const totalOtherStudiesData = apiData?.totalOtherStudies
 
     const studyTimeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Feasibility & conceptual stud.",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalFeasibilityAndConceptStudies,
+            profile: totalFeasibilityAndConceptStudiesData,
+            resourceName: "totalFeasibilityAndConceptStudiesOverride",
+            resourceId: caseData.id,
+            resourceProfileId: totalFeasibilityAndConceptStudiesOverrideData?.id,
+            resourcePropertyKey: "totalFeasibilityAndConceptStudiesOverride",
             overridable: true,
-            overrideProfile: totalFeasibilityAndConceptStudiesOverride,
-            overrideProfileSet: setTotalFeasibilityAndConceptStudiesOverride,
+            overrideProfile: totalFeasibilityAndConceptStudiesOverrideData,
+            editable: true,
         },
         {
             profileName: "FEED studies (DG2-DG3)",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalFEEDStudies,
+            profile: totalFEEDStudiesData,
+            resourceName: "totalFEEDStudiesOverride",
+            resourceId: caseData.id,
+            resourceProfileId: totalFEEDStudiesOverrideData?.id,
+            resourcePropertyKey: "totalFEEDStudiesOverride",
             overridable: true,
-            overrideProfile: totalFEEDStudiesOverride,
-            overrideProfileSet: setTotalFEEDStudiesOverride,
+            overrideProfile: totalFEEDStudiesOverrideData,
+            editable: true,
         },
         {
             profileName: "Other studies",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalOtherStudies,
-            set: setTotalOtherStudies,
+            profile: totalOtherStudiesData,
+            resourceName: "totalOtherStudies",
+            resourceId: caseData?.id,
+            resourceProfileId: totalOtherStudiesData?.id,
+            resourcePropertyKey: "totalOtherStudies",
+            editable: true,
+            overridable: false,
         },
     ]
-
-    useEffect(() => {
-        if (studyGridRef.current
-            && studyGridRef.current.api
-            && studyGridRef.current.api.refreshCells) {
-            studyGridRef.current.api.refreshCells()
-        }
-    }, [totalFeasibilityAndConceptStudies, totalFEEDStudies, totalOtherStudies])
-
-    useEffect(() => {
-        if (projectCaseEdited) {
-            updateObject(projectCaseEdited, setProjectCaseEdited, "totalFeasibilityAndConceptStudiesOverride", totalFeasibilityAndConceptStudiesOverride)
-        }
-    }, [totalFeasibilityAndConceptStudiesOverride])
-
-    useEffect(() => {
-        if (projectCaseEdited) {
-            updateObject(projectCaseEdited, setProjectCaseEdited, "totalFEEDStudiesOverride", totalFEEDStudiesOverride)
-        }
-    }, [totalFEEDStudiesOverride])
-
-    useEffect(() => {
-        if (projectCaseEdited) {
-            updateObject(projectCaseEdited, setProjectCaseEdited, "totalOtherStudies", totalOtherStudies)
-        }
-    }, [totalOtherStudies])
-
-    useEffect(() => {
-        if (activeTabCase === 5 && projectCase) {
-            setTotalOtherStudies(projectCase.totalOtherStudies)
-
-            setTotalFeasibilityAndConceptStudies(projectCase.totalFeasibilityAndConceptStudies)
-            setTotalFeasibilityAndConceptStudiesOverride(projectCase.totalFeasibilityAndConceptStudiesOverride)
-
-            setTotalFEEDStudies(projectCase.totalFEEDStudies)
-            setTotalFEEDStudiesOverride(projectCase.totalFEEDStudiesOverride)
-        }
-    }, [activeTabCase])
 
     return (
         <CaseTabTable
             timeSeriesData={studyTimeSeriesData}
-            dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
+            dg4Year={caseData?.dG4Date ? new Date(caseData?.dG4Date).getFullYear() : 2030}
             tableYears={tableYears}
             tableName="Total study cost"
             gridRef={studyGridRef}

@@ -234,18 +234,15 @@ export function updateObject<T>(object: T | undefined, setObject: Dispatch<SetSt
 }
 
 export const tableCellisEditable = (params: any, editMode: boolean) => {
-    if (editMode && params.data?.overrideProfileSet === undefined && params.data?.set !== undefined) {
-        return true
+    if (!params.node.footer && params.data.overridable) {
+        return editMode && params.data.override
     }
-    if (editMode && params.data?.overrideProfile !== undefined && params.data?.overrideProfile.override) {
-        return true
-    }
-    return false
+    return editMode && !params.node.footer && params.data.editable
 }
 
 export const numberValueParser = (params: { newValue: any }) => {
     const { newValue } = params
-    if (typeof newValue === "string") {
+    if (typeof newValue === "string" && newValue !== "") {
         const processedValue = newValue.replace(/\s/g, "").replace(/,/g, ".")
         const numberValue = Number(processedValue)
         if (!Number.isNaN(numberValue)) {

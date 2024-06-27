@@ -160,137 +160,138 @@ const CreateCaseModal = () => {
         <Modal
             isOpen={caseModalIsOpen}
             title={caseModalEditMode ? "Edit case" : "Add new case"}
-            fullWidth
-        >
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={8}>
-                    <InputWrapper labelProps={{ label: "Name" }}>
-                        <TextField
-                            id="name"
-                            name="name"
-                            placeholder="Enter a name"
-                            onChange={handleNameChange}
-                            value={caseName}
-                        />
-                    </InputWrapper>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                    <InputWrapper labelProps={{ label: "DG4" }}>
-                        <Input
-                            type="month"
-                            id="dgDate"
-                            name="dgDate"
-                            value={getDG4Value()}
-                            onChange={handleDG4Change}
-                        />
-                    </InputWrapper>
-                </Grid>
-                <Grid item xs={12}>
-                    <InputWrapper labelProps={{ label: "Description" }}>
-                        <MarkdownEditor
-                            minHeight="100px"
-                            value={description}
-                            menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
-                            onInput={(markdown) => {
-                                // eslint-disable-next-line no-underscore-dangle
-                                const value = (markdown as any).target._value
-                                handleDescriptionChange(value)
-                            }}
-                        />
-                    </InputWrapper>
-                </Grid>
-                <Grid item xs={12}>
-                    <NativeSelect
-                        id="productionStrategy"
-                        label="Production strategy overview"
-                        onChange={handleProductionStrategyChange}
-                        value={productionStrategy}
-                    >
-                        <option key={undefined} value={undefined} aria-label="None"> </option>
-                        <option key={0} value={0}>Depletion</option>
-                        <option key={1} value={1}>Water injection</option>
-                        <option key={2} value={2}>Gas injection</option>
-                        <option key={3} value={3}>WAG</option>
-                        <option key={4} value={4}>Mixed</option>
-                    </NativeSelect>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                    <InputWrapper labelProps={{ label: "Producer wells" }}>
-                        <Input
-                            id="producerWells"
-                            type="number"
-                            value={producerCount}
-                            disabled={false}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProducerWells(Number(e.currentTarget.value))}
-                            onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                if (!/\d/.test(e.key)) {
-                                    e.preventDefault()
-                                }
-                            }}
-                        />
-                    </InputWrapper>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                    <InputWrapper labelProps={{ label: "Gas injector wells" }}>
-                        <Input
-                            id="gasInjector"
-                            type="number"
-                            value={gasInjectorCount}
-                            disabled={false}
-                            onChange={(e: any) => setGasInjectorWells(Number(e.currentTarget.value))}
-                            onKeyPress={(e: any) => {
-                                if (!/\d/.test(e.key)) {
-                                    e.preventDefault()
-                                }
-                            }}
-                        />
-                    </InputWrapper>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                    <InputWrapper labelProps={{ label: "Water injector wells" }}>
-                        <Input
-                            id="waterInjector"
-                            type="number"
-                            value={waterInjectorCount}
-                            disabled={false}
-                            onChange={(e: any) => setWaterInjectorWells(Number(e.currentTarget.value))}
-                            onKeyPress={(e: any) => {
-                                if (!/\d/.test(e.key)) {
-                                    e.preventDefault()
-                                }
-                            }}
-                        />
-                    </InputWrapper>
-                </Grid>
-            </Grid>
-            {/* ModalActions */}
-            <Grid container spacing={1} justifyContent="flex-end">
-                <Grid item>
-                    <Button
-                        type="button"
-                        variant="outlined"
-                        onClick={() => setCaseModalIsOpen(false)}
-                    >
-                        Cancel
-                    </Button>
-                </Grid>
-                <Grid item>
-                    {isLoading ? (
-                        <Button>
-                            <Progress.Dots />
-                        </Button>
-                    ) : (
-                        <Button
-                            type="submit"
-                            onClick={submitCaseForm}
-                            disabled={!disableCreateButton()}
+            content={(
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={8}>
+                        <InputWrapper labelProps={{ label: "Name" }}>
+                            <TextField
+                                id="name"
+                                name="name"
+                                placeholder="Enter a name"
+                                onChange={handleNameChange}
+                                value={caseName}
+                            />
+                        </InputWrapper>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <InputWrapper labelProps={{ label: "DG4" }}>
+                            <Input
+                                type="month"
+                                id="dgDate"
+                                name="dgDate"
+                                value={getDG4Value()}
+                                onChange={handleDG4Change}
+                            />
+                        </InputWrapper>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <InputWrapper labelProps={{ label: "Description" }}>
+                            <MarkdownEditor
+                                minHeight="100px"
+                                value={description}
+                                menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
+                                onInput={(markdown) => {
+                                    // eslint-disable-next-line no-underscore-dangle
+                                    const value = (markdown as any).target._value
+                                    handleDescriptionChange(value)
+                                }}
+                            />
+                        </InputWrapper>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <NativeSelect
+                            id="productionStrategy"
+                            label="Production strategy overview"
+                            onChange={handleProductionStrategyChange}
+                            value={productionStrategy}
                         >
-                            {caseModalEditMode ? "Save changes" : "Create case"}
-                        </Button>
-                    )}
+                            <option key={undefined} value={undefined} aria-label="None"> </option>
+                            <option key={0} value={0}>Depletion</option>
+                            <option key={1} value={1}>Water injection</option>
+                            <option key={2} value={2}>Gas injection</option>
+                            <option key={3} value={3}>WAG</option>
+                            <option key={4} value={4}>Mixed</option>
+                        </NativeSelect>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <InputWrapper labelProps={{ label: "Producer wells" }}>
+                            <Input
+                                id="producerWells"
+                                type="number"
+                                value={producerCount}
+                                disabled={false}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProducerWells(Number(e.currentTarget.value))}
+                                onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                    if (!/\d/.test(e.key)) {
+                                        e.preventDefault()
+                                    }
+                                }}
+                            />
+                        </InputWrapper>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <InputWrapper labelProps={{ label: "Gas injector wells" }}>
+                            <Input
+                                id="gasInjector"
+                                type="number"
+                                value={gasInjectorCount}
+                                disabled={false}
+                                onChange={(e: any) => setGasInjectorWells(Number(e.currentTarget.value))}
+                                onKeyPress={(e: any) => {
+                                    if (!/\d/.test(e.key)) {
+                                        e.preventDefault()
+                                    }
+                                }}
+                            />
+                        </InputWrapper>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <InputWrapper labelProps={{ label: "Water injector wells" }}>
+                            <Input
+                                id="waterInjector"
+                                type="number"
+                                value={waterInjectorCount}
+                                disabled={false}
+                                onChange={(e: any) => setWaterInjectorWells(Number(e.currentTarget.value))}
+                                onKeyPress={(e: any) => {
+                                    if (!/\d/.test(e.key)) {
+                                        e.preventDefault()
+                                    }
+                                }}
+                            />
+                        </InputWrapper>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </Modal>
+            )}
+            actions={(
+                <Grid container spacing={1} justifyContent="flex-end">
+                    <Grid item>
+                        <Button
+                            type="button"
+                            variant="outlined"
+                            onClick={() => setCaseModalIsOpen(false)}
+                        >
+                            Cancel
+                        </Button>
+                    </Grid>
+                    <Grid item>
+                        {isLoading ? (
+                            <Button>
+                                <Progress.Dots />
+                            </Button>
+                        ) : (
+                            <Button
+                                type="submit"
+                                onClick={submitCaseForm}
+                                disabled={!disableCreateButton()}
+                            >
+                                {caseModalEditMode ? "Save changes" : "Create case"}
+                            </Button>
+                        )}
+                    </Grid>
+                </Grid>
+            )}
+        />
     )
 }
 

@@ -12,8 +12,6 @@ public class WellProjectWellProfile : Profile
         CreateMap<WellProjectWell, WellProjectWellDto>();
         CreateMap<DrillingSchedule, DrillingScheduleDto>();
 
-        CreateMap<UpdateWellProjectWellDto, WellProjectWell>();
-        CreateMap<CreateWellProjectWellDto, WellProjectWell>();
-        CreateMap<WellProjectWell, CreateWellProjectWellDto>();
+        CreateMap<UpdateWellProjectWellWithScheduleDto, WellProjectWell>();
     }
 }

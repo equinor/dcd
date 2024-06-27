@@ -12,6 +12,6 @@ public class CaseWithAssetsWrapperDto
     public APIUpdateSubstructureWithProfilesDto SubstructureDto { get; set; } = null!;
     public APIUpdateTopsideWithProfilesDto TopsideDto { get; set; } = null!;
     public APIUpdateTransportWithProfilesDto TransportDto { get; set; } = null!;
-    public UpdateWellProjectWellDto[]? WellProjectWellDtos { get; set; }
+    public UpdateWellProjectWellWithScheduleDto[]? WellProjectWellDtos { get; set; }
     public UpdateExplorationWellDto[]? ExplorationWellDto { get; set; }
 }

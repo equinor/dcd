@@ -1,168 +1,94 @@
-import React, { useState, useEffect } from "react"
-import { ITimeSeriesData } from "../../../../../Models/ITimeSeriesData"
+import React, { } from "react"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
-import { useCaseContext } from "../../../../../Context/CaseContext"
 import CaseTabTable from "../../../Components/CaseTabTable"
-import { updateObject } from "../../../../../Utils/common"
+import { ITimeSeriesData } from "../../../../../Models/Interfaces"
 
 interface OffshoreFacillityCostsProps {
     tableYears: [number, number]
     capexGridRef: React.MutableRefObject<any>
     alignedGridsRef: any[]
+    caseData: Components.Schemas.CaseDto
+    apiData: Components.Schemas.CaseWithAssetsDto | undefined
 }
 const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
     tableYears,
     capexGridRef,
     alignedGridsRef,
+    caseData,
+    apiData,
 }) => {
     const { project } = useProjectContext()
-    const {
-        projectCase,
-        activeTabCase,
 
-        surfCost,
-        setSurfCost,
+    const surf = apiData?.surf
+    const topside = apiData?.topside
+    const transport = apiData?.transport
+    const substructure = apiData?.substructure
+    const surfCostData = apiData?.surfCostProfile
+    const surfCostOverrideData = apiData?.surfCostProfileOverride
+    const topsideCostData = apiData?.topsideCostProfile
+    const topsideCostOverrideData = apiData?.topsideCostProfileOverride
+    const substructureCostData = apiData?.substructureCostProfile
+    const substructureCostOverrideData = apiData?.substructureCostProfileOverride
+    const transportCostData = apiData?.transportCostProfile
+    const transportCostOverrideData = apiData?.transportCostProfileOverride
 
-        topsideCost,
-        setTopsideCost,
-
-        substructureCost,
-        setSubstructureCost,
-
-        transportCost,
-        setTransportCost,
-
-        surf,
-        setSurf,
-
-        topside,
-        setTopside,
-
-        substructure,
-        setSubstructure,
-
-        transport,
-        setTransport,
-
-    } = useCaseContext()
-
-    // CAPEX
-    const [topsideCostOverride, setTopsideCostOverride] = useState<Components.Schemas.TopsideCostProfileOverrideDto>()
-    const [surfCostOverride, setSurfCostOverride] = useState<Components.Schemas.SurfCostProfileOverrideDto>()
-    const [substructureCostOverride, setSubstructureCostOverride] = useState<Components.Schemas.SubstructureCostProfileOverrideDto>()
-    const [transportCostOverride, setTransportCostOverride] = useState<Components.Schemas.TransportCostProfileOverrideDto>()
+    if (!surf || !topside || !substructure || !transport) { return null }
 
     const capexTimeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "Subsea production system",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: surfCost,
+            profile: surfCostData,
+            resourceName: "surfCostOverride",
+            resourceId: surf.id,
+            resourceProfileId: surfCostOverrideData?.id,
+            resourcePropertyKey: "surfCostOverride",
             overridable: true,
-            overrideProfile: surfCostOverride,
-            overrideProfileSet: setSurfCostOverride,
+            overrideProfile: surfCostOverrideData,
+            editable: true,
         },
         {
             profileName: "Topside",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: topsideCost,
+            profile: topsideCostData,
+            resourceName: "topsideCostOverride",
+            resourceId: topside.id,
+            resourceProfileId: topsideCostOverrideData?.id,
+            resourcePropertyKey: "topsideCostOverride",
             overridable: true,
-            overrideProfile: topsideCostOverride,
-            overrideProfileSet: setTopsideCostOverride,
+            overrideProfile: topsideCostOverrideData,
+            editable: true,
         },
         {
             profileName: "Substructure",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: substructureCost,
+            profile: substructureCostData,
+            resourceName: "substructureCostOverride",
+            resourceId: substructure.id,
+            resourceProfileId: substructureCostOverrideData?.id,
+            resourcePropertyKey: "substructureCostOverride",
             overridable: true,
-            overrideProfile: substructureCostOverride,
-            overrideProfileSet: setSubstructureCostOverride,
+            overrideProfile: substructureCostOverrideData,
+            editable: true,
         },
         {
             profileName: "Transport system",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: transportCost,
+            profile: transportCostData,
+            resourceName: "transportCostOverride",
+            resourceId: transport.id,
+            resourceProfileId: transportCostOverrideData?.id,
+            resourcePropertyKey: "transportCostOverride",
             overridable: true,
-            overrideProfile: transportCostOverride,
-            overrideProfileSet: setTransportCostOverride,
+            overrideProfile: transportCostOverrideData,
+            editable: true,
         },
     ]
-
-    useEffect(() => {
-        if (surf) {
-            updateObject(surf, setSurf, "costProfileOverride", surfCostOverride)
-        }
-    }, [surfCostOverride])
-
-    useEffect(() => {
-        if (topside) {
-            updateObject(topside, setTopside, "costProfileOverride", topsideCostOverride)
-        }
-    }, [topsideCostOverride])
-
-    useEffect(() => {
-        if (substructure) {
-            updateObject(substructure, setSubstructure, "costProfileOverride", substructureCostOverride)
-        }
-    }, [substructureCostOverride])
-
-    useEffect(() => {
-        if (transport) {
-            updateObject(transport, setTransport, "costProfileOverride", transportCostOverride)
-        }
-    }, [transportCostOverride])
-
-    useEffect(() => {
-        if (surf) {
-            updateObject(surf, setSurf, "costProfile", surfCost)
-        }
-    }, [surfCost])
-
-    useEffect(() => {
-        if (topside) {
-            updateObject(topside, setTopside, "costProfile", topsideCost)
-        }
-    }, [topsideCost])
-
-    useEffect(() => {
-        if (substructure) {
-            updateObject(substructure, setSubstructure, "costProfile", substructureCost)
-        }
-    }, [substructureCost])
-
-    useEffect(() => {
-        if (transport) {
-            updateObject(transport, setTransport, "costProfile", transportCost)
-        }
-    }, [transportCost])
-
-    useEffect(() => {
-        if (activeTabCase === 5) {
-            if (topside) {
-                setTopsideCost(topside.costProfile)
-                setTopsideCostOverride(topside.costProfileOverride)
-            }
-
-            if (surf) {
-                setSurfCost(surf.costProfile)
-                setSurfCostOverride(surf.costProfileOverride)
-            }
-
-            if (substructure) {
-                setSubstructureCost(substructure.costProfile)
-                setSubstructureCostOverride(substructure.costProfileOverride)
-            }
-
-            if (transport) {
-                setTransportCost(transport.costProfile)
-                setTransportCostOverride(transport.costProfileOverride)
-            }
-        }
-    }, [activeTabCase])
 
     return (
         <CaseTabTable
             timeSeriesData={capexTimeSeriesData}
-            dg4Year={projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030}
+            dg4Year={caseData?.dG4Date ? new Date(caseData?.dG4Date).getFullYear() : 2030}
             tableYears={tableYears}
             tableName="Offshore facility cost"
             gridRef={capexGridRef}

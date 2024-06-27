@@ -12,7 +12,7 @@ using NSubstitute;
 
 using Xunit;
 
-namespace api.Tests.Services
+namespace tests.Services
 {
     public class SubstructureServiceTests
     {
@@ -57,14 +57,14 @@ namespace api.Tests.Services
             _repository.UpdateSubstructure(existingSubstructure).Returns(updatedSubstructure);
 
             var updatedSubstructureDtoResult = new SubstructureDto();
-            _mapperService.MapToDto<Substructure, SubstructureDto>(updatedSubstructure, substructureId).Returns(updatedSubstructureDtoResult);
+            _mapperService.MapToDto<Substructure, SubstructureDto>(existingSubstructure, substructureId).Returns(updatedSubstructureDtoResult);
 
             // Act
             var result = await _substructureService.UpdateSubstructure<BaseUpdateSubstructureDto>(caseId, substructureId, updatedSubstructureDto);
 
             // Assert
             Assert.Equal(updatedSubstructureDtoResult, result);
-            await _repository.Received(1).SaveChangesAsync();
+            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
         }
 
         [Fact]
@@ -78,92 +78,10 @@ namespace api.Tests.Services
             var existingSubstructure = new Substructure { Id = substructureId };
             _repository.GetSubstructure(substructureId).Returns(existingSubstructure);
 
-            _repository.When(r => r.UpdateSubstructure(existingSubstructure)).Do(x => throw new DbUpdateException());
+            _repository.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(x => throw new DbUpdateException());
 
             // Act & Assert
             await Assert.ThrowsAsync<DbUpdateException>(() => _substructureService.UpdateSubstructure<BaseUpdateSubstructureDto>(caseId, substructureId, updatedSubstructureDto));
-        }
-
-        [Fact]
-        public async Task UpdateSubstructureCostProfileOverride_ShouldUpdateSubstructureCostProfileOverride_WhenGivenValidInput()
-        {
-            // Arrange
-            var caseId = Guid.NewGuid();
-            var substructureId = Guid.NewGuid();
-            var costProfileId = Guid.NewGuid();
-            var updatedSubstructureCostProfileOverrideDto = new UpdateSubstructureCostProfileOverrideDto();
-
-            var existingSubstructureCostProfileOverride = new SubstructureCostProfileOverride { Id = costProfileId };
-            _repository.GetSubstructureCostProfileOverride(costProfileId).Returns(existingSubstructureCostProfileOverride);
-
-            var updatedSubstructureCostProfileOverride = new SubstructureCostProfileOverride { Id = costProfileId };
-            _repository.UpdateSubstructureCostProfileOverride(existingSubstructureCostProfileOverride).Returns(updatedSubstructureCostProfileOverride);
-
-            var updatedSubstructureCostProfileOverrideDtoResult = new SubstructureCostProfileOverrideDto();
-            _mapperService.MapToDto<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>(updatedSubstructureCostProfileOverride, costProfileId).Returns(updatedSubstructureCostProfileOverrideDtoResult);
-
-            // Act
-            var result = await _substructureService.UpdateSubstructureCostProfileOverride(caseId, substructureId, costProfileId, updatedSubstructureCostProfileOverrideDto);
-
-            // Assert
-            Assert.Equal(updatedSubstructureCostProfileOverrideDtoResult, result);
-            await _repository.Received(1).SaveChangesAsync();
-        }
-
-        [Fact]
-        public async Task AddOrUpdateSubstructureCostProfile_ShouldUpdateSubstructureCostProfile_WhenGivenValidInputForExistingProfile()
-        {
-            // Arrange
-            var caseId = Guid.NewGuid();
-            var substructureId = Guid.NewGuid();
-            var profileId = Guid.NewGuid();
-            var updatedSubstructureCostProfileDto = new UpdateSubstructureCostProfileDto();
-
-            var existingCostProfile = new SubstructureCostProfile { Id = profileId };
-            var existingSubstructure = new Substructure { Id = substructureId, CostProfile = existingCostProfile };
-            _repository.GetSubstructureWithCostProfile(substructureId).Returns(existingSubstructure);
-
-            _repository.GetSubstructureCostProfile(profileId).Returns(existingCostProfile);
-            _repository.UpdateSubstructureCostProfile(existingCostProfile).Returns(existingCostProfile);
-
-            var updatedSubstructureCostProfileDtoResult = new SubstructureCostProfileDto { Id = profileId };
-            _mapperService.MapToDto<SubstructureCostProfile, SubstructureCostProfileDto>(existingCostProfile, existingCostProfile.Id).Returns(updatedSubstructureCostProfileDtoResult);
-
-            // Act
-            var result = await _substructureService.AddOrUpdateSubstructureCostProfile(caseId, substructureId, updatedSubstructureCostProfileDto);
-
-            // Assert
-            Assert.Equal(updatedSubstructureCostProfileDtoResult, result);
-            await _repository.Received(1).SaveChangesAsync();
-        }
-
-        [Fact]
-        public async Task AddOrUpdateSubstructureCostProfile_ShouldAddSubstructureCostProfile_WhenGivenValidInputForNewProfile()
-        {
-            // Arrange
-            var caseId = Guid.NewGuid();
-            var substructureId = Guid.NewGuid();
-            var profileId = Guid.NewGuid();
-            var updatedSubstructureCostProfileDto = new UpdateSubstructureCostProfileDto();
-
-            var existingSubstructure = new Substructure { Id = substructureId };
-            _repository.GetSubstructureWithCostProfile(substructureId).Returns(existingSubstructure);
-
-            var newCostProfile = new SubstructureCostProfile { Substructure = existingSubstructure };
-            _mapperService.MapToEntity(Arg.Any<UpdateSubstructureCostProfileDto>(), Arg.Any<SubstructureCostProfile>(), Arg.Any<Guid>())
-                          .Returns(newCostProfile);
-
-            _repository.CreateSubstructureCostProfile(newCostProfile).Returns(newCostProfile);
-
-            var updatedSubstructureCostProfileDtoResult = new SubstructureCostProfileDto { Id = profileId };
-            _mapperService.MapToDto<SubstructureCostProfile, SubstructureCostProfileDto>(newCostProfile, newCostProfile.Id).Returns(updatedSubstructureCostProfileDtoResult);
-
-            // Act
-            var result = await _substructureService.AddOrUpdateSubstructureCostProfile(caseId, substructureId, updatedSubstructureCostProfileDto);
-
-            // Assert
-            Assert.Equal(updatedSubstructureCostProfileDtoResult, result);
-            await _repository.Received(1).SaveChangesAsync();
         }
     }
 }
