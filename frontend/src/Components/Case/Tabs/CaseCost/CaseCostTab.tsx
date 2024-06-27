@@ -51,12 +51,13 @@ const CaseCostTab = (): React.ReactElement | null => {
     const explorationWellsGridRef = useRef<any>(null)
 
     const alignedGridsRef = useMemo(() => [
+        studyGridRef,
         opexGridRef,
         cessationGridRef,
         capexGridRef,
         developmentWellsGridRef,
         explorationWellsGridRef,
-    ], [opexGridRef, cessationGridRef, capexGridRef, developmentWellsGridRef, explorationWellsGridRef])
+    ], [studyGridRef, opexGridRef, cessationGridRef, capexGridRef, developmentWellsGridRef, explorationWellsGridRef])
 
     useEffect(() => {
         (async () => {
