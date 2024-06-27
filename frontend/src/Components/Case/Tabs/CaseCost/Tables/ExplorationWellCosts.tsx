@@ -20,6 +20,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
 }) => {
     const { project } = useProjectContext()
 
+    const exploration = apiData?.exploration
     const gAndGAdminCostData = apiData?.gAndGAdminCost
     const seismicAcquisitionAndProcessingData = apiData?.seismicAcquisitionAndProcessing
     const countryOfficeCostData = apiData?.countryOfficeCost
@@ -27,13 +28,15 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
     const appraisalWellCostProfileData = apiData?.appraisalWellCostProfile
     const sidetrackCostProfileData = apiData?.sidetrackCostProfile
 
+    if (!exploration) { return null }
+
     const explorationTimeSeriesData: ITimeSeriesData[] = [
         {
             profileName: "G&G and admin",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: gAndGAdminCostData,
             resourceName: "gAndGAdminCost",
-            resourceId: caseData.id,
+            resourceId: exploration.id,
             resourceProfileId: gAndGAdminCostData?.id,
             resourcePropertyKey: "gAndGAdminCost",
             editable: true,
@@ -44,7 +47,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: seismicAcquisitionAndProcessingData,
             resourceName: "seismicAcquisitionAndProcessing",
-            resourceId: caseData.id,
+            resourceId: exploration.id,
             resourceProfileId: seismicAcquisitionAndProcessingData?.id,
             resourcePropertyKey: "seismicAcquisitionAndProcessing",
             editable: true,
@@ -55,7 +58,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: countryOfficeCostData,
             resourceName: "countryOfficeCost",
-            resourceId: caseData.id,
+            resourceId: exploration.id,
             resourceProfileId: countryOfficeCostData?.id,
             resourcePropertyKey: "countryOfficeCost",
             editable: true,
@@ -66,7 +69,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: explorationWellCostProfileData,
             resourceName: "explorationWellCostProfile",
-            resourceId: caseData.id,
+            resourceId: exploration.id,
             resourceProfileId: explorationWellCostProfileData?.id,
             resourcePropertyKey: "explorationWellCostProfile",
             editable: true,
@@ -77,7 +80,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: appraisalWellCostProfileData,
             resourceName: "appraisalWellCostProfile",
-            resourceId: caseData.id,
+            resourceId: exploration.id,
             resourceProfileId: appraisalWellCostProfileData?.id,
             resourcePropertyKey: "appraisalWellCostProfile",
             editable: true,
@@ -88,7 +91,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
             profile: sidetrackCostProfileData,
             resourceName: "sidetrackCostProfile",
-            resourceId: caseData.id,
+            resourceId: exploration.id,
             resourceProfileId: sidetrackCostProfileData?.id,
             resourcePropertyKey: "sidetrackCostProfile",
             editable: true,

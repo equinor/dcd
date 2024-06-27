@@ -15,7 +15,6 @@ const StyledSidebar = styled(SideBar)`
     overflow: hidden;
     display: grid;
     grid-template-rows: auto 80px;
-    z-index: 5;
     &[open] {
         grid-template-rows: auto 60px;
     }
@@ -50,7 +49,6 @@ export const Timeline = styled(Grid)`
             }
             &[data-timeline-active="true"],
             &:not(.GhostItem):hover {
-                z-index: 100;
                 border-left: 2px solid #007079;
             }
         }
@@ -93,14 +91,11 @@ const Sidebar = () => {
             <StyledSidebarContent>
                 <Grid container justifyContent="center">
                     <ProjectDetails />
-                    <Grid item xs={12}>
-                        <Divider />
-                    </Grid>
                     <CasesDetails />
                     <Grid item xs={12}>
                         <Divider />
                     </Grid>
-                    <CurrentCaseEditHistory />
+                    {/* uncomment for next release <CurrentCaseEditHistory /> */}
                 </Grid>
             </StyledSidebarContent>
             <SidebarFooter>
