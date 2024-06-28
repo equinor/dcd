@@ -33,7 +33,12 @@ public class DcdDbContext : DbContext
 
     private async Task DetectChangesAndCalculateEntities(Guid caseId)
     {
-        if (CalculateExplorationAndWellProjectCost())
+        var (wellIds, drillingScheduleIds) = CalculateExplorationAndWellProjectCost();
+        if (wellIds.Count != 0 || drillingScheduleIds.Count != 0)
+        {
+            await _serviceProvider.GetRequiredService<ICostProfileFromDrillingScheduleHelper>().UpdateCostProfilesForWellsFromDrillingSchedules(drillingScheduleIds);
+            await _serviceProvider.GetRequiredService<ICostProfileFromDrillingScheduleHelper>().UpdateCostProfilesForWells(wellIds);
+        }
         {
 
         }
@@ -78,7 +83,7 @@ public class DcdDbContext : DbContext
         }
     }
 
-    private bool CalculateExplorationAndWellProjectCost()
+    private (List<Guid> wellIds, List<Guid> drillingScheduleIds) CalculateExplorationAndWellProjectCost()
     {
         /* Well costs, drilling schedule */
         // This will fetch all entries for the Well entity that have been modified.
@@ -94,7 +99,7 @@ public class DcdDbContext : DbContext
 
         var modifiedDrillingScheduleIds = modifiedDrillingSchedules.Select(e => e.Entity.Id).ToList();
 
-        
+        return (modifiedWellIds, modifiedDrillingScheduleIds);
     }
 
     private bool CalculateCo2Emissions()
