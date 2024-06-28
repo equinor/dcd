@@ -32,9 +32,13 @@ export const configure: AppModuleInitiator = (configurator, args) => {
         ExcelExportModule,
     ])
 
-    enableAgGrid(configurator, {
-        licenseKey: agGridLicense || "",
-    })
+    if (agGridLicense && agGridLicense.length > 0) {
+        enableAgGrid(configurator, {
+            licenseKey: agGridLicense || "",
+        })
+    } else {
+        enableAgGrid(configurator)
+    }
 
     configurator.useFrameworkServiceClient("portal")
 
