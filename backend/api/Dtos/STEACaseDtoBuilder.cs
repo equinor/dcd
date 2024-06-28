@@ -87,9 +87,9 @@ public static class STEACaseDtoBuilder
         {
             costProfileDtos.Add(caseDto.TotalFEEDStudies);
         }
-        if (caseDto.TotalOtherStudies?.Values.Length > 0)
+        if (caseDto.TotalOtherStudiesCostProfile?.Values.Length > 0)
         {
-            costProfileDtos.Add(caseDto.TotalOtherStudies);
+            costProfileDtos.Add(caseDto.TotalOtherStudiesCostProfile);
         }
 
         var costProfile = TimeSeriesCostDto.MergeCostProfilesList(costProfileDtos);
@@ -365,7 +365,11 @@ public static class STEACaseDtoBuilder
                 {
                     costProfileDtos.Add(exploration.SidetrackCostProfile);
                 }
-                if (exploration.GAndGAdminCost?.Values.Length > 0)
+                if (exploration.GAndGAdminCostOverride?.Override == true)
+                {
+                    costProfileDtos.Add(exploration.GAndGAdminCostOverride);
+                }
+                else if (exploration.GAndGAdminCost != null)
                 {
                     costProfileDtos.Add(exploration.GAndGAdminCost);
                 }

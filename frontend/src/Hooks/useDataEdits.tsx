@@ -584,6 +584,25 @@ const useDataEdits = (): {
                     )
                 }
                 break
+            case "totalOtherStudiesCostProfile":
+                if (!resourceProfileId) {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).createTotalOtherStudiesCostProfile(projectId, caseId, updatedData!),
+                    )
+                } else {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).updateTotalOtherStudiesCostProfile(projectId, caseId, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
             case "historicCostCostProfile":
                 if (!resourceProfileId) {
                     success = await createOrUpdateTimeSeriesProfile(
@@ -714,6 +733,25 @@ const useDataEdits = (): {
                         resourceId!,
                         resourceProfileId!,
                         await (await GetCaseService()).updateCessationOffshoreFacilitiesCostOverride(projectId, caseId, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "cessationOnshoreFacilitiesCostProfile":
+                if (!resourceProfileId) {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).createCessationOnshoreFacilitiesCostProfile(projectId, caseId, updatedData!),
+                    )
+                } else {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).updateCessationOnshoreFacilitiesCostProfile(projectId, caseId, resourceProfileId!, updatedData!),
                     )
                 }
                 break
@@ -866,6 +904,25 @@ const useDataEdits = (): {
                         resourceId!,
                         resourceProfileId!,
                         await (await GetWellProjectService()).updateGasInjectorCostProfileOverride(projectId, caseId, resourceId!, resourceProfileId!, updatedData!),
+                    )
+                }
+                break
+            case "gAndGAdminCost":
+                if (!resourceProfileId) {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetExplorationService()).createGAndGAdminCostOverride(projectId, caseId, resourceId!, updatedData!),
+                    )
+                } else {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetExplorationService()).updateGAndGAdminCostOverride(projectId, caseId, resourceId!, resourceProfileId!, updatedData!),
                     )
                 }
                 break

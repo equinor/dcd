@@ -32,7 +32,9 @@ public class CreateTotalFEEDStudiesOverrideDto : CreateTimeSeriesCostDto, ITimeS
 {
     public bool Override { get; set; }
 }
-
+public class CreateTotalOtherStudiesCostProfileDto : CreateTimeSeriesCostDto
+{
+}
 public class CreateHistoricCostCostProfileDto : CreateTimeSeriesCostDto
 {
 }

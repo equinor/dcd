@@ -81,8 +81,8 @@ interface CaseContextType {
     totalFEEDStudiesOverride: Components.Schemas.TotalFEEDStudiesOverrideDto | undefined
     setTotalFEEDStudiesOverride: Dispatch<SetStateAction<Components.Schemas.TotalFEEDStudiesOverrideDto | undefined>>
 
-    totalOtherStudies: Components.Schemas.TotalOtherStudiesDto | undefined,
-    setTotalOtherStudies: Dispatch<SetStateAction<Components.Schemas.TotalOtherStudiesDto | undefined>>
+    totalOtherStudiesCostProfile: Components.Schemas.TotalOtherStudiesCostProfileDto | undefined,
+    setTotalOtherStudiesCostProfile: Dispatch<SetStateAction<Components.Schemas.TotalOtherStudiesCostProfileDto | undefined>>
 
     // OPEX
     historicCostCostProfile: Components.Schemas.HistoricCostCostProfileDto | undefined,
@@ -170,7 +170,7 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
 
     const [totalFEEDStudies, setTotalFEEDStudies] = useState<Components.Schemas.TotalFEEDStudiesDto | undefined>()
     const [totalFEEDStudiesOverride, setTotalFEEDStudiesOverride] = useState<Components.Schemas.TotalFEEDStudiesOverrideDto | undefined>()
-    const [totalOtherStudies, setTotalOtherStudies] = useState<Components.Schemas.TotalOtherStudiesDto | undefined>()
+    const [totalOtherStudiesCostProfile, setTotalOtherStudiesCostProfile] = useState<Components.Schemas.TotalOtherStudiesCostProfileDto | undefined>()
 
     // OPEX
     const [historicCostCostProfile, setHistoricCostCostProfile] = useState<Components.Schemas.HistoricCostCostProfileDto | undefined>()
@@ -257,8 +257,8 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setTotalFEEDStudies,
         totalFEEDStudiesOverride,
         setTotalFEEDStudiesOverride,
-        totalOtherStudies,
-        setTotalOtherStudies,
+        totalOtherStudiesCostProfile,
+        setTotalOtherStudiesCostProfile,
 
         // OPEX
         historicCostCostProfile,
@@ -334,7 +334,7 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         totalFeasibilityAndConceptStudiesOverride,
         totalFEEDStudies,
         totalFEEDStudiesOverride,
-        totalOtherStudies,
+        totalOtherStudiesCostProfile,
 
         // OPEX
         historicCostCostProfile,

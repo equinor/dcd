@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Context;
 
@@ -11,9 +12,11 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    partial class DcdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240625075212_GAndGAdminCostOverride-migration")]
+    partial class GAndGAdminCostOverridemigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -806,9 +809,6 @@ namespace api.Migrations
                     b.Property<string>("InternalData")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Override")
-                        .HasColumnType("bit");
 
                     b.Property<int>("StartYear")
                         .HasColumnType("int");
@@ -2195,7 +2195,7 @@ namespace api.Migrations
                     b.ToTable("TotalFeasibilityAndConceptStudiesOverride");
                 });
 
-            modelBuilder.Entity("api.Models.TotalOtherStudiesCostProfile", b =>
+            modelBuilder.Entity("api.Models.TotalOtherStudies", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -2223,7 +2223,7 @@ namespace api.Migrations
                     b.HasIndex("Case.Id")
                         .IsUnique();
 
-                    b.ToTable("TotalOtherStudiesCostProfile");
+                    b.ToTable("TotalOtherStudies");
                 });
 
             modelBuilder.Entity("api.Models.Transport", b =>
@@ -3265,11 +3265,11 @@ namespace api.Migrations
                     b.Navigation("Case");
                 });
 
-            modelBuilder.Entity("api.Models.TotalOtherStudiesCostProfile", b =>
+            modelBuilder.Entity("api.Models.TotalOtherStudies", b =>
                 {
                     b.HasOne("api.Models.Case", "Case")
-                        .WithOne("TotalOtherStudiesCostProfile")
-                        .HasForeignKey("api.Models.TotalOtherStudiesCostProfile", "Case.Id")
+                        .WithOne("TotalOtherStudies")
+                        .HasForeignKey("api.Models.TotalOtherStudies", "Case.Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -3443,7 +3443,7 @@ namespace api.Migrations
 
                     b.Navigation("TotalFeasibilityAndConceptStudiesOverride");
 
-                    b.Navigation("TotalOtherStudiesCostProfile");
+                    b.Navigation("TotalOtherStudies");
 
                     b.Navigation("WellInterventionCostProfile");
 
