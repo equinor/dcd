@@ -36,11 +36,8 @@ public class DcdDbContext : DbContext
         var (wellIds, drillingScheduleIds) = CalculateExplorationAndWellProjectCost();
         if (wellIds.Count != 0 || drillingScheduleIds.Count != 0)
         {
-            await _serviceProvider.GetRequiredService<ICostProfileFromDrillingScheduleHelper>().UpdateCostProfilesForWellsFromDrillingSchedules(drillingScheduleIds);
-            await _serviceProvider.GetRequiredService<ICostProfileFromDrillingScheduleHelper>().UpdateCostProfilesForWells(wellIds);
-        }
-        {
-
+            await _serviceProvider.GetRequiredService<IWellCostProfileService>().UpdateCostProfilesForWellsFromDrillingSchedules(drillingScheduleIds);
+            await _serviceProvider.GetRequiredService<IWellCostProfileService>().UpdateCostProfilesForWells(wellIds);
         }
         if (CalculateStudyCost())
         {
@@ -88,7 +85,8 @@ public class DcdDbContext : DbContext
         /* Well costs, drilling schedule */
         // This will fetch all entries for the Well entity that have been modified.
         var modifiedWellsWithCostChange = ChangeTracker.Entries<Well>()
-            .Where(e => e.State == EntityState.Modified && e.Property(nameof(Well.WellCost)).IsModified);
+            .Where(e => e.State == EntityState.Modified && e.Property(nameof(Well.WellCost)).IsModified
+            || e.Property(nameof(Well.WellCategory)).IsModified);
 
         // Extract and return the IDs of these modified wells.
         var modifiedWellIds = modifiedWellsWithCostChange.Select(e => e.Entity.Id).ToList();
