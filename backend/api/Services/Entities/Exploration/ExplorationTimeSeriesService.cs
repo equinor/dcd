@@ -43,7 +43,36 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
         _explorationRepository = explorationRepository;
         _mapperService = mapperService;
     }
-
+    public async Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
+            Guid caseId,
+            Guid explorationId,
+            CreateGAndGAdminCostOverrideDto createProfileDto
+        )
+    {
+        return await CreateExplorationProfile<GAndGAdminCostOverride, GAndGAdminCostOverrideDto, CreateGAndGAdminCostOverrideDto>(
+            caseId,
+            explorationId,
+            createProfileDto,
+            _repository.CreateGAndGAdminCostOverride,
+            ExplorationProfileNames.GAndGAdminCostOverride
+        );
+    }
+    public async Task<GAndGAdminCostOverrideDto> UpdateGAndGAdminCostOverride(
+        Guid caseId,
+        Guid wellProjectId,
+        Guid profileId,
+        UpdateGAndGAdminCostOverrideDto updateDto
+    )
+    {
+        return await UpdateExplorationCostProfile<GAndGAdminCostOverride, GAndGAdminCostOverrideDto, UpdateGAndGAdminCostOverrideDto>(
+            caseId,
+            wellProjectId,
+            profileId,
+            updateDto,
+            _repository.GetGAndGAdminCostOverride,
+            _repository.UpdateGAndGAdminCostOverride
+        );
+    }
     public async Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
         Guid caseId,
         Guid wellProjectId,

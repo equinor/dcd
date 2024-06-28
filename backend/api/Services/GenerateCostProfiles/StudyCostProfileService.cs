@@ -85,18 +85,18 @@ public class StudyCostProfileService : IStudyCostProfileService
             feed = newFeed;
         }
 
-        var otherStudies = caseItem.TotalOtherStudies ?? new TotalOtherStudies();
+        var otherStudies = caseItem.TotalOtherStudiesCostProfile ?? new TotalOtherStudiesCostProfile();
 
         UpdateCaseAndSave(caseItem, feasibility, feed, otherStudies);
 
         var result = new StudyCostProfileWrapperDto();
         var feasibilityDto = _mapper.Map<TotalFeasibilityAndConceptStudiesDto>(feasibility);
         var feedDto = _mapper.Map<TotalFEEDStudiesDto>(feed);
-        var otherStudiesDto = _mapper.Map<TotalOtherStudiesDto>(otherStudies);
+        var otherStudiesDto = _mapper.Map<TotalOtherStudiesCostProfileDto>(otherStudies);
 
         result.TotalFeasibilityAndConceptStudiesDto = feasibilityDto;
         result.TotalFEEDStudiesDto = feedDto;
-        result.TotalOtherStudiesDto = otherStudiesDto;
+        result.TotalOtherStudiesCostProfileDto = otherStudiesDto;
 
         if ((feasibility.Values == null || feasibility.Values.Length == 0) &&
             (feed.Values == null || feed.Values.Length == 0) &&
@@ -122,11 +122,11 @@ public class StudyCostProfileService : IStudyCostProfileService
 
 
 
-    private void UpdateCaseAndSave(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies, TotalOtherStudies totalOtherStudies)
+    private void UpdateCaseAndSave(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies, TotalOtherStudiesCostProfile totalOtherStudiesCostProfile)
     {
         caseItem.TotalFeasibilityAndConceptStudies = totalFeasibilityAndConceptStudies;
         caseItem.TotalFEEDStudies = totalFEEDStudies;
-        caseItem.TotalOtherStudies = totalOtherStudies;
+        caseItem.TotalOtherStudiesCostProfile = totalOtherStudiesCostProfile;
         // return await _context.SaveChangesAsync();
     }
 
