@@ -75,7 +75,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             resourceId: exploration.id,
             resourceProfileId: explorationWellCostProfileData?.id,
             resourcePropertyKey: "explorationWellCostProfile",
-            editable: true,
+            editable: false,
             overridable: false,
         },
         {
@@ -86,7 +86,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             resourceId: exploration.id,
             resourceProfileId: appraisalWellCostProfileData?.id,
             resourcePropertyKey: "appraisalWellCostProfile",
-            editable: true,
+            editable: false,
             overridable: false,
         },
         {
@@ -97,7 +97,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             resourceId: exploration.id,
             resourceProfileId: sidetrackCostProfileData?.id,
             resourcePropertyKey: "sidetrackCostProfile",
-            editable: true,
+            editable: false,
             overridable: false,
         },
     ]
