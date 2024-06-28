@@ -65,13 +65,13 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     )
     {
         return await UpdateExplorationCostProfile<GAndGAdminCostOverride, GAndGAdminCostOverrideDto, UpdateGAndGAdminCostOverrideDto>(
-    caseId,
-    wellProjectId,
-    profileId,
-    updateDto,
-    _repository.GetGAndGAdminCostOverride,
-    _repository.UpdateGAndGAdminCostOverride
-);
+            caseId,
+            wellProjectId,
+            profileId,
+            updateDto,
+            _repository.GetGAndGAdminCostOverride,
+            _repository.UpdateGAndGAdminCostOverride
+        );
     }
     public async Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
         Guid caseId,
@@ -108,10 +108,10 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     }
 
     public async Task<SeismicAcquisitionAndProcessingDto> CreateSeismicAcquisitionAndProcessing(
-    Guid caseId,
-    Guid explorationId,
-    CreateSeismicAcquisitionAndProcessingDto createProfileDto
-)
+        Guid caseId,
+        Guid explorationId,
+        CreateSeismicAcquisitionAndProcessingDto createProfileDto
+    )
     {
         return await CreateExplorationProfile<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto, CreateSeismicAcquisitionAndProcessingDto>(
             caseId,

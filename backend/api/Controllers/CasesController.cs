@@ -111,7 +111,7 @@ public class CasesController : ControllerBase
         return await _caseTimeSeriesService.UpdateCessationOnshoreFacilitiesCostProfile(projectId, caseId, costProfileId, dto);
     }
 
-    [HttpPost("{caseId}/cessation-onshore-facilities-cost-Profile")]
+    [HttpPost("{caseId}/cessation-onshore-facilities-cost-profile")]
     public async Task<CessationOnshoreFacilitiesCostProfileDto> CreateCessationOnshoreFacilitiesCostProfile(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId,
