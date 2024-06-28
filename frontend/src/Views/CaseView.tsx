@@ -54,7 +54,7 @@ const CaseView = () => {
         // Study cost
         setTotalFeasibilityAndConceptStudies,
         setTotalFEEDStudies,
-        setTotalOtherStudies,
+        setTotalOtherStudiesCostProfile,
 
         topside,
         setTopside,
@@ -160,6 +160,10 @@ const CaseView = () => {
     }
 
     const handleTotalExplorationCost = () => {
+        const gAndGAdminCost = exploration?.gAndGAdminCostOverride?.override
+            ? exploration.gAndGAdminCostOverride
+            : exploration?.gAndGAdminCost
+
         if (exploration) {
             setTotalExplorationCost(mergeTimeseriesList([
                 exploration.explorationWellCostProfile,
@@ -167,7 +171,8 @@ const CaseView = () => {
                 exploration.sidetrackCostProfile,
                 exploration.seismicAcquisitionAndProcessing,
                 exploration.countryOfficeCost,
-                // gAndGAdminCost // Missing implementation, uncomment when gAndGAdminCost is fixed
+                gAndGAdminCost,
+
             ]))
         }
     }
@@ -349,7 +354,7 @@ const CaseView = () => {
 
             setIfNotNull(result.generatedProfilesDto?.studyCostProfileWrapperDto?.totalFeasibilityAndConceptStudiesDto, setTotalFeasibilityAndConceptStudies)
             setIfNotNull(result.generatedProfilesDto?.studyCostProfileWrapperDto?.totalFEEDStudiesDto, setTotalFEEDStudies)
-            setIfNotNull(result.generatedProfilesDto?.studyCostProfileWrapperDto?.totalOtherStudiesDto, setTotalOtherStudies)
+            setIfNotNull(result.generatedProfilesDto?.studyCostProfileWrapperDto?.totalOtherStudiesCostProfileDto, setTotalOtherStudiesCostProfile)
             setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.offshoreFacilitiesOperationsCostProfileDto, setOffshoreFacilitiesOperationsCostProfile)
             setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.wellInterventionCostProfileDto, setWellInterventionCostProfile)
             setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.historicCostCostProfileDto, setHistoricCostCostProfile)

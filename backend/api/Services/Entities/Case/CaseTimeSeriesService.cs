@@ -65,6 +65,23 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
         );
     }
 
+    public async Task<CessationOnshoreFacilitiesCostProfileDto> UpdateCessationOnshoreFacilitiesCostProfile(
+    Guid projectId,
+    Guid caseId,
+    Guid costProfileId,
+    UpdateCessationOnshoreFacilitiesCostProfileDto updatedCostProfileDto
+)
+    {
+        return await UpdateCaseCostProfile<CessationOnshoreFacilitiesCostProfile, CessationOnshoreFacilitiesCostProfileDto, UpdateCessationOnshoreFacilitiesCostProfileDto>(
+            projectId,
+            caseId,
+            costProfileId,
+            updatedCostProfileDto,
+            _repository.GetCessationOnshoreFacilitiesCostProfile,
+            _repository.UpdateCessationOnshoreFacilitiesCostProfile
+        );
+    }
+
     public async Task<TotalFeasibilityAndConceptStudiesOverrideDto> UpdateTotalFeasibilityAndConceptStudiesOverride(
         Guid projectId,
         Guid caseId,
@@ -96,6 +113,23 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             updatedCostProfileDto,
             _repository.GetTotalFEEDStudiesOverride,
             _repository.UpdateTotalFEEDStudiesOverride
+        );
+    }
+
+    public async Task<TotalOtherStudiesCostProfileDto> UpdateTotalOtherStudiesCostProfile(
+    Guid projectId,
+    Guid caseId,
+    Guid costProfileId,
+    UpdateTotalOtherStudiesCostProfileDto updatedCostProfileDto
+)
+    {
+        return await UpdateCaseCostProfile<TotalOtherStudiesCostProfile, TotalOtherStudiesCostProfileDto, UpdateTotalOtherStudiesCostProfileDto>(
+            projectId,
+            caseId,
+            costProfileId,
+            updatedCostProfileDto,
+            _repository.GetTotalOtherStudiesCostProfile,
+            _repository.UpdateTotalOtherStudiesCostProfile
         );
     }
 
@@ -211,6 +245,21 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
         );
     }
 
+    public async Task<CessationOnshoreFacilitiesCostProfileDto> CreateCessationOnshoreFacilitiesCostProfile(
+    Guid projectId,
+    Guid caseId,
+    CreateCessationOnshoreFacilitiesCostProfileDto createProfileDto
+)
+    {
+        return await CreateCaseProfile<CessationOnshoreFacilitiesCostProfile, CessationOnshoreFacilitiesCostProfileDto, CreateCessationOnshoreFacilitiesCostProfileDto>(
+            projectId,
+            caseId,
+            createProfileDto,
+            _repository.CreateCessationOnshoreFacilitiesCostProfile,
+            CaseProfileNames.CessationOnshoreFacilitiesCostProfile
+        );
+    }
+
     public async Task<TotalFeasibilityAndConceptStudiesOverrideDto> CreateTotalFeasibilityAndConceptStudiesOverride(
         Guid projectId,
         Guid caseId,
@@ -238,6 +287,21 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             createProfileDto,
             _repository.CreateTotalFEEDStudiesOverride,
             CaseProfileNames.TotalFEEDStudiesOverride
+        );
+    }
+
+    public async Task<TotalOtherStudiesCostProfileDto> CreateTotalOtherStudiesCostProfile(
+        Guid projectId,
+        Guid caseId,
+        CreateTotalOtherStudiesCostProfileDto createProfileDto
+    )
+    {
+        return await CreateCaseProfile<TotalOtherStudiesCostProfile, TotalOtherStudiesCostProfileDto, CreateTotalOtherStudiesCostProfileDto>(
+            projectId,
+            caseId,
+            createProfileDto,
+            _repository.CreateTotalOtherStudiesCostProfile,
+            CaseProfileNames.TotalOtherStudiesCostProfile
         );
     }
 

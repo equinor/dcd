@@ -177,6 +177,10 @@ public class CompareCasesService : ICompareCasesService
 
         try
         {
+            if (exploration?.GAndGAdminCost != null)
+            {
+                sumExplorationWellCost += exploration.GAndGAdminCost.Values.Sum();
+            }
             if (exploration?.CountryOfficeCost != null)
             {
                 sumExplorationWellCost += exploration.CountryOfficeCost.Values.Sum();

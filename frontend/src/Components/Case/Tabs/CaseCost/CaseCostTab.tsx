@@ -67,6 +67,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                         SetTableYearsFromProfiles([
                             projectCase.totalFeasibilityAndConceptStudies,
                             projectCase.totalFEEDStudies,
+                            projectCase.totalOtherStudiesCostProfile,
                             projectCase.wellInterventionCostProfile,
                             projectCase.offshoreFacilitiesOperationsCostProfile,
                             projectCase.cessationWellsCost,
@@ -98,6 +99,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                             exploration.seismicAcquisitionAndProcessing,
                             exploration.countryOfficeCost,
                             exploration?.gAndGAdminCost,
+                            exploration?.gAndGAdminCostOverride,
                         ], projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
                     }
                 }
