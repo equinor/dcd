@@ -15,7 +15,6 @@ import { SetFilterModule } from "@ag-grid-enterprise/set-filter"
 import { ExcelExportModule } from "@ag-grid-enterprise/excel-export"
 
 export const configure: AppModuleInitiator = (configurator, args) => {
-    const { agGridLicense } = (args.env.config?.environment as { agGridLicense?: string })
     const { basename } = args.env
     console.log("Configuring app with basename", basename)
 
@@ -32,9 +31,7 @@ export const configure: AppModuleInitiator = (configurator, args) => {
         ExcelExportModule,
     ])
 
-    enableAgGrid(configurator, {
-        licenseKey: agGridLicense || "",
-    })
+    enableAgGrid(configurator)
 
     configurator.useFrameworkServiceClient("portal")
 

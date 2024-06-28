@@ -16,6 +16,21 @@ import Styles from "./styles"
 const AppComponent: FC = () => {
     const queryClient = new QueryClient()
 
+    const suppressConsoleError = (shouldBeHidden: ((message: string) => boolean)[]) => {
+        const err = console.error
+        console.error = (message?: any, ...optionalParams: any[]) => {
+            if (typeof message === "string" && shouldBeHidden.some((func) => func(message))) {
+                return
+            }
+            err(message, ...optionalParams)
+        }
+    }
+
+    suppressConsoleError([
+        (m) => m.startsWith("Warning: Invalid aria prop"),
+        (m) => m.startsWith("*"),
+    ])
+
     const config = resolveConfiguration(EnvironmentVariables.ENVIRONMENT)
 
     buildConfig(config.REACT_APP_API_BASE_URL)
