@@ -15,6 +15,20 @@ public class ExplorationTimeSeriesRepository : BaseRepository, IExplorationTimeS
     public ExplorationTimeSeriesRepository(DcdDbContext context) : base(context)
     {
     }
+    public GAndGAdminCostOverride CreateGAndGAdminCostOverride(GAndGAdminCostOverride profile)
+    {
+        _context.GAndGAdminCostOverride.Add(profile);
+        return profile;
+    }
+    public async Task<GAndGAdminCostOverride?> GetGAndGAdminCostOverride(Guid profileId)
+    {
+        return await Get<GAndGAdminCostOverride>(profileId);
+    }
+
+    public GAndGAdminCostOverride UpdateGAndGAdminCostOverride(GAndGAdminCostOverride costProfile)
+    {
+        return Update(costProfile);
+    }
 
     public async Task<SeismicAcquisitionAndProcessing?> GetSeismicAcquisitionAndProcessing(Guid seismicAcquisitionAndProcessingId)
     {
