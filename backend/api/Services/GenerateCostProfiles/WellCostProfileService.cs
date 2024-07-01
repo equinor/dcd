@@ -42,10 +42,68 @@ public class WellCostProfileService : IWellCostProfileService
     public async Task UpdateCostProfilesForWells(List<Guid> wellIds)
     {
         var explorationWells = await GetAllExplorationWells().Where(ew => wellIds.Contains(ew.WellId)).ToListAsync();
-        Console.WriteLine("ExplorationWells count " + explorationWells.Count);
-        var wellProjectWells = GetAllWellProjectWells().Where(wpw => wellIds.Contains(wpw.WellId));
+        var wellProjectWells = await GetAllWellProjectWells().Where(wpw => wellIds.Contains(wpw.WellId)).ToListAsync();
 
         await UpdateExplorationCostProfiles(explorationWells);
+        await UpdateWellProjectCostProfiles(wellProjectWells);
+    }
+
+    private async Task UpdateWellProjectCostProfiles(List<WellProjectWell> wellProjectWells)
+    {
+        var wellProjects = wellProjectWells.Select(wpw => wpw.WellProject).Distinct();
+
+        foreach (var wellProject in wellProjects)
+        {
+            var connectedWellProjectWells = await GetAllWellProjectWellsForWellProject(wellProject.Id);
+
+            var connectedWellProjectCategoryWells = connectedWellProjectWells
+                .Where(wpw => wpw.Well.WellCategory == WellCategory.Oil_Producer);
+            var wellProjectWellCostProfileValues = GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(connectedWellProjectCategoryWells);
+
+            wellProject.OilProducerCostProfile ??= new OilProducerCostProfile
+            {
+                WellProject = wellProject
+            };
+
+            wellProject.OilProducerCostProfile.Values = wellProjectWellCostProfileValues.Values;
+            wellProject.OilProducerCostProfile.StartYear = wellProjectWellCostProfileValues.StartYear;
+
+            var connectedGasProducerWells = connectedWellProjectWells
+                .Where(wpw => wpw.Well.WellCategory == WellCategory.Gas_Producer);
+            var gasProducerCostProfileValues = GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(connectedGasProducerWells);
+
+            wellProject.GasProducerCostProfile ??= new GasProducerCostProfile
+            {
+                WellProject = wellProject
+            };
+
+            wellProject.GasProducerCostProfile.Values = gasProducerCostProfileValues.Values;
+            wellProject.GasProducerCostProfile.StartYear = gasProducerCostProfileValues.StartYear;
+
+            var connectedWaterInjectorWells = connectedWellProjectWells
+                .Where(wpw => wpw.Well.WellCategory == WellCategory.Water_Injector);
+            var waterInjectorCostProfileValues = GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(connectedWaterInjectorWells);
+
+            wellProject.WaterInjectorCostProfile ??= new WaterInjectorCostProfile
+            {
+                WellProject = wellProject
+            };
+
+            wellProject.WaterInjectorCostProfile.Values = waterInjectorCostProfileValues.Values;
+            wellProject.WaterInjectorCostProfile.StartYear = waterInjectorCostProfileValues.StartYear;
+
+            var connectedGasInjectorWells = connectedWellProjectWells
+                .Where(wpw => wpw.Well.WellCategory == WellCategory.Gas_Injector);
+            var gasInjectorCostProfileValues = GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(connectedGasInjectorWells);
+
+            wellProject.GasInjectorCostProfile ??= new GasInjectorCostProfile
+            {
+                WellProject = wellProject
+            };
+
+            wellProject.GasInjectorCostProfile.Values = gasInjectorCostProfileValues.Values;
+            wellProject.GasInjectorCostProfile.StartYear = gasInjectorCostProfileValues.StartYear;
+        }
     }
 
     private async Task UpdateExplorationCostProfiles(List<ExplorationWell> explorationWells)
@@ -60,29 +118,39 @@ public class WellCostProfileService : IWellCostProfileService
                 .Where(ew => ew.Well.WellCategory == WellCategory.Exploration_Well);
             var explorationWellCostProfileValues = GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(connectedExplorationCategoryWells);
 
-            if (exploration.ExplorationWellCostProfile != null)
+            exploration.ExplorationWellCostProfile ??= new ExplorationWellCostProfile
             {
-                exploration.ExplorationWellCostProfile.Values = explorationWellCostProfileValues.Values;
-                exploration.ExplorationWellCostProfile.StartYear = explorationWellCostProfileValues.StartYear;
-            }
-            else
+                Exploration = exploration
+            };
+
+            exploration.ExplorationWellCostProfile.Values = explorationWellCostProfileValues.Values;
+            exploration.ExplorationWellCostProfile.StartYear = explorationWellCostProfileValues.StartYear;
+
+            var connectedAppraisalWells = connectedExplorationWells
+                .Where(ew => ew.Well.WellCategory == WellCategory.Appraisal_Well);
+            var appraisalWellCostProfileValues = GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(connectedAppraisalWells);
+
+            exploration.AppraisalWellCostProfile ??= new AppraisalWellCostProfile
             {
-                var explorationWellCostProfile = new ExplorationWellCostProfile
-                {
-                    Exploration = exploration,
-                    Values = explorationWellCostProfileValues.Values,
-                    StartYear = explorationWellCostProfileValues.StartYear,
-                };
-                Console.WriteLine("Exploration well costs values: " + explorationWellCostProfile.Values);
-                foreach (var value in explorationWellCostProfile.Values)
-                {
-                    Console.WriteLine(value);
-                }
-                exploration.ExplorationWellCostProfile = explorationWellCostProfile;
-            }
+                Exploration = exploration
+            };
+
+            exploration.AppraisalWellCostProfile.Values = appraisalWellCostProfileValues.Values;
+            exploration.AppraisalWellCostProfile.StartYear = appraisalWellCostProfileValues.StartYear;
+
+            var connectedSidetrackWells = connectedExplorationWells
+                .Where(ew => ew.Well.WellCategory == WellCategory.Sidetrack);
+            var sidetrackCostProfileValues = GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(connectedSidetrackWells);
+
+            exploration.SidetrackCostProfile ??= new SidetrackCostProfile
+            {
+                Exploration = exploration
+            };
+
+            exploration.SidetrackCostProfile.Values = sidetrackCostProfileValues.Values;
+            exploration.SidetrackCostProfile.StartYear = sidetrackCostProfileValues.StartYear;
         }
     }
-
 
     private static TimeSeries<double> GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(IEnumerable<ExplorationWell> explorationWells)
     {
@@ -97,6 +165,28 @@ public class WellCostProfileService : IWellCostProfileService
                 {
                     Values = values,
                     StartYear = explorationWell.DrillingSchedule.StartYear,
+                };
+                costProfilesList.Add(costProfile);
+            }
+        }
+
+        var mergedCostProfile = TimeSeriesCost.MergeCostProfilesList(costProfilesList);
+        return mergedCostProfile;
+    }
+
+    private static TimeSeries<double> GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(IEnumerable<WellProjectWell> wellProjectWells)
+    {
+        var costProfilesList = new List<TimeSeries<double>>();
+        foreach (var wellProjectWell in wellProjectWells)
+        {
+            if (wellProjectWell?.DrillingSchedule?.Values?.Length > 0)
+            {
+                var well = wellProjectWell.Well;
+                var values = wellProjectWell.DrillingSchedule.Values.Select(ds => ds * well.WellCost).ToArray();
+                var costProfile = new TimeSeries<double>
+                {
+                    Values = values,
+                    StartYear = wellProjectWell.DrillingSchedule.StartYear,
                 };
                 costProfilesList.Add(costProfile);
             }
@@ -125,14 +215,28 @@ public class WellCostProfileService : IWellCostProfileService
                 .ThenInclude(e => e.AppraisalWellCostProfile)
             .Include(ew => ew.Exploration)
                 .ThenInclude(e => e.SidetrackCostProfile);
+    }
 
+    private async Task<List<WellProjectWell>> GetAllWellProjectWellsForWellProject(Guid wellProjectId)
+    {
+        return await _context.WellProjectWell
+            .Include(ew => ew.DrillingSchedule)
+            .Include(ew => ew.Well)
+            .Where(ew => ew.WellProjectId == wellProjectId).ToListAsync();
     }
 
     private IQueryable<WellProjectWell> GetAllWellProjectWells()
     {
         return _context.WellProjectWell
-            .Include(wpw => wpw.DrillingSchedule)
-            .Include(wpw => wpw.WellProject)
-            .Include(wpw => wpw.Well);
+            .Include(ew => ew.DrillingSchedule)
+            .Include(ew => ew.Well)
+            .Include(ew => ew.WellProject)
+                .ThenInclude(e => e.OilProducerCostProfile)
+            .Include(ew => ew.WellProject)
+                .ThenInclude(e => e.GasProducerCostProfile)
+            .Include(ew => ew.WellProject)
+                .ThenInclude(e => e.WaterInjectorCostProfile)
+            .Include(ew => ew.WellProject)
+                .ThenInclude(e => e.GasInjectorCostProfile);
     }
 }
