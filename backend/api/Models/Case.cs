@@ -47,7 +47,7 @@ public class Case
     public TotalFeasibilityAndConceptStudiesOverride? TotalFeasibilityAndConceptStudiesOverride { get; set; }
     public TotalFEEDStudies? TotalFEEDStudies { get; set; }
     public TotalFEEDStudiesOverride? TotalFEEDStudiesOverride { get; set; }
-    public TotalOtherStudiesCostProfile? TotalOtherStudiesCostProfile { get; set; }
+    public TotalOtherStudies? TotalOtherStudies { get; set; }
     public HistoricCostCostProfile? HistoricCostCostProfile { get; set; }
     public WellInterventionCostProfile? WellInterventionCostProfile { get; set; }
     public WellInterventionCostProfileOverride? WellInterventionCostProfileOverride { get; set; }
@@ -188,7 +188,7 @@ public class TotalFEEDStudiesOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSe
 
 }
 
-public class TotalOtherStudiesCostProfile : TimeSeriesCost, ICaseTimeSeries
+public class TotalOtherStudies : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
     public Case Case { get; set; } = null!;

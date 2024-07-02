@@ -154,7 +154,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
     const totalFeasibilityAndConceptStudiesData = apiData?.totalFeasibilityAndConceptStudies
     const totalFEEDStudiesOverrideData = apiData?.totalFEEDStudiesOverride
     const totalFEEDStudiesData = apiData?.totalFEEDStudies
-    const totalOtherStudiesCostProfileData = apiData?.totalOtherStudiesCostProfile
+    const totalOtherStudiesData = apiData?.totalOtherStudies
     const historicCostCostProfileData = apiData?.historicCostCostProfile
     const offshoreOpexPlussWellInterventionData = handleOffshoreOpexPlussWellIntervention()
     const onshoreRelatedOPEXCostProfileData = apiData?.onshoreRelatedOPEXCostProfile
@@ -214,7 +214,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
         {
             profileName: "Other studies",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalOtherStudiesCostProfileData,
+            profile: totalOtherStudiesData,
             group: "Study cost",
         },
 

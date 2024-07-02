@@ -27,7 +27,6 @@ import UndoControls from "./UndoControls"
 import CaseControls from "./CaseControls"
 import WhatsNewModal from "../Modal/WhatsNewModal"
 import Modal from "../Modal/Modal"
-import ProjectControls from "./ProjectControls"
 
 const Controls = () => {
     const {
@@ -152,9 +151,6 @@ const Controls = () => {
                     projectId={project?.id}
                     caseId={caseId}
                 />
-            )}
-            {project && !caseId && (
-                <ProjectControls />
             )}
 
             <Grid item xs container spacing={1} alignItems="center" justifyContent="flex-end">

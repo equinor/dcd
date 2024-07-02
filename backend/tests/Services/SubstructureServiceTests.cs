@@ -57,14 +57,14 @@ namespace tests.Services
             _repository.UpdateSubstructure(existingSubstructure).Returns(updatedSubstructure);
 
             var updatedSubstructureDtoResult = new SubstructureDto();
-            _mapperService.MapToDto<Substructure, SubstructureDto>(existingSubstructure, substructureId).Returns(updatedSubstructureDtoResult);
+            _mapperService.MapToDto<Substructure, SubstructureDto>(updatedSubstructure, substructureId).Returns(updatedSubstructureDtoResult);
 
             // Act
             var result = await _substructureService.UpdateSubstructure<BaseUpdateSubstructureDto>(caseId, substructureId, updatedSubstructureDto);
 
             // Assert
             Assert.Equal(updatedSubstructureDtoResult, result);
-            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+            await _repository.Received(1).SaveChangesAsync();
         }
 
         [Fact]
@@ -78,7 +78,7 @@ namespace tests.Services
             var existingSubstructure = new Substructure { Id = substructureId };
             _repository.GetSubstructure(substructureId).Returns(existingSubstructure);
 
-            _repository.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(x => throw new DbUpdateException());
+            _repository.When(r => r.UpdateSubstructure(existingSubstructure)).Do(x => throw new DbUpdateException());
 
             // Act & Assert
             await Assert.ThrowsAsync<DbUpdateException>(() => _substructureService.UpdateSubstructure<BaseUpdateSubstructureDto>(caseId, substructureId, updatedSubstructureDto));

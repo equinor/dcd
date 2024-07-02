@@ -7,19 +7,19 @@ using AutoMapper;
 
 namespace api.Services.GenerateCostProfiles;
 
-public class Co2IntensityProfileService : ICo2IntensityProfileService
+public class GenerateCo2IntensityProfile : IGenerateCo2IntensityProfile
 {
     private readonly ICaseService _caseService;
     private readonly IDrainageStrategyService _drainageStrategyService;
     private readonly IProjectService _projectService;
-    private readonly ICo2EmissionsProfileService _generateCo2EmissionsProfile;
+    private readonly IGenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
     private readonly IMapper _mapper;
 
-    public Co2IntensityProfileService(
+    public GenerateCo2IntensityProfile(
         ICaseService caseService,
         IDrainageStrategyService drainageStrategyService,
         IProjectService projectService,
-        ICo2EmissionsProfileService generateCo2EmissionsProfile,
+        IGenerateCo2EmissionsProfile generateCo2EmissionsProfile,
         IMapper mapper
         )
     {

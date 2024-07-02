@@ -36,7 +36,7 @@ public class APIUpdateCaseWithProfilesDto : BaseUpdateCaseDto
 
     public UpdateTotalFeasibilityAndConceptStudiesOverrideDto? TotalFeasibilityAndConceptStudiesOverride { get; set; }
     public UpdateTotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
-    public UpdateTotalOtherStudiesCostProfileDto? TotalOtherStudiesCostProfile { get; set; }
+    public UpdateTotalOtherStudies? TotalOtherStudies { get; set; }
 
     public UpdateHistoricCostCostProfileDto? HistoricCostCostProfile { get; set; }
     public UpdateWellInterventionCostProfileOverrideDto? WellInterventionCostProfileOverride { get; set; }
@@ -85,7 +85,7 @@ public class UpdateTotalFEEDStudiesOverrideDto : UpdateTimeSeriesCostDto, ITimeS
     public bool Override { get; set; }
 }
 
-public class UpdateTotalOtherStudiesCostProfileDto : UpdateTimeSeriesCostDto
+public class UpdateTotalOtherStudies : UpdateTimeSeriesCostDto
 {
 }
 

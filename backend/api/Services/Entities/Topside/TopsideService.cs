@@ -94,12 +94,12 @@ public class TopsideService : ITopsideService
         _mapperService.MapToEntity(updatedTopsideDto, existingTopside, topsideId);
         existingTopside.LastChangedDate = DateTimeOffset.UtcNow;
 
-        // Topside updatedTopside;
+        Topside updatedTopside;
         try
         {
-            // updatedTopside = _repository.UpdateTopside(existingTopside);
+            updatedTopside = _repository.UpdateTopside(existingTopside);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -107,7 +107,7 @@ public class TopsideService : ITopsideService
             throw;
         }
 
-        var dto = _mapperService.MapToDto<Topside, TopsideDto>(existingTopside, topsideId);
+        var dto = _mapperService.MapToDto<Topside, TopsideDto>(updatedTopside, topsideId);
         return dto;
     }
 }

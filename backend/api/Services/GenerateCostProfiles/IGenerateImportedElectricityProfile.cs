@@ -2,7 +2,7 @@ using api.Dtos;
 
 namespace api.Services.GenerateCostProfiles
 {
-    public interface IImportedElectricityProfileService
+    public interface IGenerateImportedElectricityProfile
     {
         Task<ImportedElectricityDto> Generate(Guid caseId);
     }

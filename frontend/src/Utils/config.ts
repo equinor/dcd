@@ -1,7 +1,5 @@
 export const resolveConfiguration = (env: string) => {
     switch (env) {
-    case "PRD":
-    case "PROD":
     case "FPRD":
         return {
             REACT_APP_API_BASE_URL:
@@ -11,7 +9,6 @@ export const resolveConfiguration = (env: string) => {
             ],
             APP_ID: "81bd7b7f-4096-4c4f-b0c2-ebef7d05c0e6",
         }
-    case "QA":
     case "FQA":
         return {
             REACT_APP_API_BASE_URL:

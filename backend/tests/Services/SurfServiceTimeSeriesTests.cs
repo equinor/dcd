@@ -60,14 +60,14 @@ namespace tests.Services
             _repository.UpdateSurfCostProfileOverride(existingSurfCostProfileOverride).Returns(updatedSurfCostProfileOverride);
 
             var updatedSurfCostProfileOverrideDtoResult = new SurfCostProfileOverrideDto();
-            _mapperService.MapToDto<SurfCostProfileOverride, SurfCostProfileOverrideDto>(existingSurfCostProfileOverride, costProfileId).Returns(updatedSurfCostProfileOverrideDtoResult);
+            _mapperService.MapToDto<SurfCostProfileOverride, SurfCostProfileOverrideDto>(updatedSurfCostProfileOverride, costProfileId).Returns(updatedSurfCostProfileOverrideDtoResult);
 
             // Act
             var result = await _surfService.UpdateSurfCostProfileOverride(caseId, surfId, costProfileId, updatedSurfCostProfileOverrideDto);
 
             // Assert
             Assert.Equal(updatedSurfCostProfileOverrideDtoResult, result);
-            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+            await _repository.Received(1).SaveChangesAsync();
         }
 
         [Fact]
@@ -94,7 +94,7 @@ namespace tests.Services
 
             // Assert
             Assert.Equal(updatedSurfCostProfileDtoResult, result);
-            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+            await _repository.Received(1).SaveChangesAsync();
         }
 
         [Fact]
@@ -123,7 +123,7 @@ namespace tests.Services
 
             // Assert
             Assert.Equal(updatedSurfCostProfileDtoResult, result);
-            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+            await _repository.Received(1).SaveChangesAsync();
         }
     }
 }

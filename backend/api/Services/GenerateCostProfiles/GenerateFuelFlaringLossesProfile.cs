@@ -8,7 +8,7 @@ using AutoMapper;
 
 namespace api.Services.GenerateCostProfiles;
 
-public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
+public class GenerateFuelFlaringLossesProfile : IGenerateFuelFlaringLossesProfile
 {
     private readonly ICaseService _caseService;
     private readonly IDrainageStrategyService _drainageStrategyService;
@@ -17,7 +17,7 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
     private readonly DcdDbContext _context;
     private readonly IMapper _mapper;
 
-    public FuelFlaringLossesProfileService(
+    public GenerateFuelFlaringLossesProfile(
         DcdDbContext context,
         ICaseService caseService,
         IProjectService projectService,
@@ -51,15 +51,15 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
         fuelFlaringLosses.StartYear = total.StartYear;
         fuelFlaringLosses.Values = total.Values;
 
-        UpdateDrainageStrategyAndSave(drainageStrategy, fuelFlaringLosses);
+        await UpdateDrainageStrategyAndSave(drainageStrategy, fuelFlaringLosses);
 
         var dto = _mapper.Map<FuelFlaringAndLossesDto>(fuelFlaringLosses, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
         return dto ?? new FuelFlaringAndLossesDto();
     }
 
-    private void UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, FuelFlaringAndLosses fuelFlaringAndLosses)
+    private async Task<int> UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, FuelFlaringAndLosses fuelFlaringAndLosses)
     {
         drainageStrategy.FuelFlaringAndLosses = fuelFlaringAndLosses;
-        // return await _context.SaveChangesAsync();
+        return await _context.SaveChangesAsync();
     }
 }

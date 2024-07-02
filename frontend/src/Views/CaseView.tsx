@@ -2,6 +2,7 @@ import { Tabs } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import Grid from "@mui/material/Grid"
+import styled from "styled-components"
 import CaseDescriptionTab from "../Components/Case/Tabs/CaseDescriptionTab"
 import CaseCostTab from "../Components/Case/Tabs/CaseCost/CaseCostTab"
 import CaseFacilitiesTab from "../Components/Case/Tabs/CaseFacilitiesTab"
@@ -22,6 +23,11 @@ import CaseDescriptionTabSkeleton from "../Components/Case/Tabs/LoadingSkeletons
 const {
     List, Tab, Panels, Panel,
 } = Tabs
+
+const CasePanel = styled(Panel)`
+    height: calc(100vh - 210px);
+    overflow: auto;
+`
 
 const CaseView = () => {
     const { caseId, tab } = useParams()
@@ -54,7 +60,7 @@ const CaseView = () => {
         // Study cost
         setTotalFeasibilityAndConceptStudies,
         setTotalFEEDStudies,
-        setTotalOtherStudiesCostProfile,
+        setTotalOtherStudies,
 
         topside,
         setTopside,
@@ -160,10 +166,6 @@ const CaseView = () => {
     }
 
     const handleTotalExplorationCost = () => {
-        const gAndGAdminCost = exploration?.gAndGAdminCostOverride?.override
-            ? exploration.gAndGAdminCostOverride
-            : exploration?.gAndGAdminCost
-
         if (exploration) {
             setTotalExplorationCost(mergeTimeseriesList([
                 exploration.explorationWellCostProfile,
@@ -171,8 +173,7 @@ const CaseView = () => {
                 exploration.sidetrackCostProfile,
                 exploration.seismicAcquisitionAndProcessing,
                 exploration.countryOfficeCost,
-                gAndGAdminCost,
-
+                // gAndGAdminCost // Missing implementation, uncomment when gAndGAdminCost is fixed
             ]))
         }
     }
@@ -354,7 +355,7 @@ const CaseView = () => {
 
             setIfNotNull(result.generatedProfilesDto?.studyCostProfileWrapperDto?.totalFeasibilityAndConceptStudiesDto, setTotalFeasibilityAndConceptStudies)
             setIfNotNull(result.generatedProfilesDto?.studyCostProfileWrapperDto?.totalFEEDStudiesDto, setTotalFEEDStudies)
-            setIfNotNull(result.generatedProfilesDto?.studyCostProfileWrapperDto?.totalOtherStudiesCostProfileDto, setTotalOtherStudiesCostProfile)
+            setIfNotNull(result.generatedProfilesDto?.studyCostProfileWrapperDto?.totalOtherStudiesDto, setTotalOtherStudies)
             setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.offshoreFacilitiesOperationsCostProfileDto, setOffshoreFacilitiesOperationsCostProfile)
             setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.wellInterventionCostProfileDto, setWellInterventionCostProfile)
             setIfNotNull(result.generatedProfilesDto?.opexCostProfileWrapperDto?.historicCostCostProfileDto, setHistoricCostCostProfile)
@@ -402,16 +403,16 @@ const CaseView = () => {
                         {tabNames.map((tabName) => <Tab key={tabName}>{tabName}</Tab>)}
                     </List>
                     <Panels>
-                        <Panel>
+                        <CasePanel>
                             <CaseDescriptionTab />
-                        </Panel>
-                        <Panel>
+                        </CasePanel>
+                        <CasePanel>
                             <CaseProductionProfilesTab />
-                        </Panel>
-                        <Panel>
+                        </CasePanel>
+                        <CasePanel>
                             <CaseScheduleTab />
-                        </Panel>
-                        <Panel>
+                        </CasePanel>
+                        <CasePanel>
                             <CaseDrillingScheduleTab
                                 explorationWells={explorationWells}
                                 setExplorationWells={setExplorationWells}
@@ -421,19 +422,19 @@ const CaseView = () => {
                                 exploration={exploration}
                                 wellProject={wellProject}
                             />
-                        </Panel>
-                        <Panel>
+                        </CasePanel>
+                        <CasePanel>
                             <CaseFacilitiesTab />
-                        </Panel>
-                        <Panel>
+                        </CasePanel>
+                        <CasePanel>
                             <CaseCostTab />
-                        </Panel>
-                        <Panel>
+                        </CasePanel>
+                        <CasePanel>
                             <CaseCO2Tab />
-                        </Panel>
-                        <Panel>
+                        </CasePanel>
+                        <CasePanel>
                             <CaseSummaryTab />
-                        </Panel>
+                        </CasePanel>
                     </Panels>
                 </Tabs>
             </Grid>

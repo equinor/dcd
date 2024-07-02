@@ -112,12 +112,12 @@ public class DrainageStrategyService : IDrainageStrategyService
 
         _conversionMapperService.MapToEntity(updatedDrainageStrategyDto, existingDrainageStrategy, drainageStrategyId, project.PhysicalUnit);
 
-        // DrainageStrategy updatedDrainageStrategy;
+        DrainageStrategy updatedDrainageStrategy;
         try
         {
-            // updatedDrainageStrategy = _repository.UpdateDrainageStrategy(existingDrainageStrategy);
+            updatedDrainageStrategy = _repository.UpdateDrainageStrategy(existingDrainageStrategy);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -125,7 +125,7 @@ public class DrainageStrategyService : IDrainageStrategyService
             throw;
         }
 
-        var dto = _conversionMapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(existingDrainageStrategy, drainageStrategyId, project.PhysicalUnit);
+        var dto = _conversionMapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(updatedDrainageStrategy, drainageStrategyId, project.PhysicalUnit);
         return dto;
     }
 }

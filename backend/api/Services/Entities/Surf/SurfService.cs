@@ -91,12 +91,12 @@ public class SurfService : ISurfService
         _mapperService.MapToEntity(updatedSurfDto, existingSurf, surfId);
         existingSurf.LastChangedDate = DateTimeOffset.UtcNow;
 
-        // Surf updatedSurf;
+        Surf updatedSurf;
         try
         {
-            // updatedSurf = _repository.UpdateSurf(existingSurf);
+            updatedSurf = _repository.UpdateSurf(existingSurf);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -105,7 +105,7 @@ public class SurfService : ISurfService
         }
 
 
-        var dto = _mapperService.MapToDto<Surf, SurfDto>(existingSurf, surfId);
+        var dto = _mapperService.MapToDto<Surf, SurfDto>(updatedSurf, surfId);
         return dto;
     }
 }

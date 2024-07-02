@@ -19,7 +19,7 @@ const TotalStudyCosts: React.FC<CesationCostsProps> = ({
     const totalFeasibilityAndConceptStudiesOverrideData = apiData?.totalFeasibilityAndConceptStudiesOverride
     const totalFEEDStudiesData = apiData?.totalFEEDStudies
     const totalFEEDStudiesOverrideData = apiData?.totalFEEDStudiesOverride
-    const totalOtherStudiesCostProfileData = apiData?.totalOtherStudiesCostProfile
+    const totalOtherStudiesData = apiData?.totalOtherStudies
 
     const studyTimeSeriesData: ITimeSeriesData[] = [
         {
@@ -49,11 +49,11 @@ const TotalStudyCosts: React.FC<CesationCostsProps> = ({
         {
             profileName: "Other studies",
             unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-            profile: totalOtherStudiesCostProfileData,
-            resourceName: "totalOtherStudiesCostProfile",
+            profile: totalOtherStudiesData,
+            resourceName: "totalOtherStudies",
             resourceId: caseData?.id,
-            resourceProfileId: totalOtherStudiesCostProfileData?.id,
-            resourcePropertyKey: "totalOtherStudiesCostProfile",
+            resourceProfileId: totalOtherStudiesData?.id,
+            resourcePropertyKey: "totalOtherStudies",
             editable: true,
             overridable: false,
         },

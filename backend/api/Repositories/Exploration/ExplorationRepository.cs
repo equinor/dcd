@@ -30,7 +30,6 @@ public class ExplorationRepository : BaseRepository, IExplorationRepository
     {
         Expression<Func<Exploration, bool>> profileExistsExpression = profileType switch
         {
-            ExplorationProfileNames.GAndGAdminCostOverride => d => d.GAndGAdminCostOverride != null,
             ExplorationProfileNames.SeismicAcquisitionAndProcessing => d => d.SeismicAcquisitionAndProcessing != null,
             ExplorationProfileNames.CountryOfficeCost => d => d.CountryOfficeCost != null,
         };

@@ -57,14 +57,14 @@ namespace tests.Services
             _repository.UpdateTopside(existingTopside).Returns(updatedTopside);
 
             var updatedTopsideDtoResult = new TopsideDto();
-            _mapperService.MapToDto<Topside, TopsideDto>(existingTopside, topsideId).Returns(updatedTopsideDtoResult);
+            _mapperService.MapToDto<Topside, TopsideDto>(updatedTopside, topsideId).Returns(updatedTopsideDtoResult);
 
             // Act
             var result = await _topsideService.UpdateTopside<BaseUpdateTopsideDto>(caseId, topsideId, updatedTopsideDto);
 
             // Assert
             Assert.Equal(updatedTopsideDtoResult, result);
-            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+            await _repository.Received(1).SaveChangesAsync();
         }
 
         [Fact]
@@ -78,7 +78,7 @@ namespace tests.Services
             var existingTopside = new Topside { Id = topsideId };
             _repository.GetTopside(topsideId).Returns(existingTopside);
 
-            _repository.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(x => throw new DbUpdateException());
+            _repository.When(r => r.UpdateTopside(existingTopside)).Do(x => throw new DbUpdateException());
 
             // Act & Assert
             await Assert.ThrowsAsync<DbUpdateException>(() => _topsideService.UpdateTopside<BaseUpdateTopsideDto>(caseId, topsideId, updatedTopsideDto));

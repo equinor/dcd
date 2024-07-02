@@ -16,15 +16,15 @@ public class CompareCasesService : ICompareCasesService
     private readonly ILogger<CompareCasesService> _logger;
     private readonly IExplorationService _explorationService;
     private readonly IDrainageStrategyService _drainageStrategyService;
-    private readonly ICessationCostProfileService _generateCessationCostProfile;
-    private readonly ICo2EmissionsProfileService _generateCo2EmissionsProfile;
+    private readonly IGenerateCessationCostProfile _generateCessationCostProfile;
+    private readonly IGenerateCo2EmissionsProfile _generateCo2EmissionsProfile;
     private readonly IGenerateGAndGAdminCostProfile _generateGAndGAdminCostProfile;
-    private readonly IOpexCostProfileService _generateOpexCostProfile;
-    private readonly IStudyCostProfileService _generateStudyCostProfile;
+    private readonly IGenerateOpexCostProfile _generateOpexCostProfile;
+    private readonly IGenerateStudyCostProfile _generateStudyCostProfile;
 
     public CompareCasesService(IProjectService projectService, ILoggerFactory loggerFactory, IExplorationService explorationService, IDrainageStrategyService drainageStrategyService,
-    IGenerateGAndGAdminCostProfile generateGAndGAdminCostProfile, IStudyCostProfileService generateStudyCostProfile, IOpexCostProfileService generateOpexCostProfile,
-    ICessationCostProfileService generateCessationCostProfile, ICo2EmissionsProfileService generateCo2EmissionsProfile)
+    IGenerateGAndGAdminCostProfile generateGAndGAdminCostProfile, IGenerateStudyCostProfile generateStudyCostProfile, IGenerateOpexCostProfile generateOpexCostProfile,
+    IGenerateCessationCostProfile generateCessationCostProfile, IGenerateCo2EmissionsProfile generateCo2EmissionsProfile)
     {
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<CompareCasesService>();
@@ -177,10 +177,6 @@ public class CompareCasesService : ICompareCasesService
 
         try
         {
-            if (exploration?.GAndGAdminCost != null)
-            {
-                sumExplorationWellCost += exploration.GAndGAdminCost.Values.Sum();
-            }
             if (exploration?.CountryOfficeCost != null)
             {
                 sumExplorationWellCost += exploration.CountryOfficeCost.Values.Sum();

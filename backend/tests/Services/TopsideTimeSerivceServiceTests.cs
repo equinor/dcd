@@ -60,14 +60,14 @@ namespace tests.Services
             _repository.UpdateTopsideCostProfileOverride(existingTopsideCostProfileOverride).Returns(updatedTopsideCostProfileOverride);
 
             var updatedTopsideCostProfileOverrideDtoResult = new TopsideCostProfileOverrideDto();
-            _mapperService.MapToDto<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>(existingTopsideCostProfileOverride, costProfileId).Returns(updatedTopsideCostProfileOverrideDtoResult);
+            _mapperService.MapToDto<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>(updatedTopsideCostProfileOverride, costProfileId).Returns(updatedTopsideCostProfileOverrideDtoResult);
 
             // Act
             var result = await _topsideService.UpdateTopsideCostProfileOverride(caseId, topsideId, costProfileId, updatedTopsideCostProfileOverrideDto);
 
             // Assert
             Assert.Equal(updatedTopsideCostProfileOverrideDtoResult, result);
-            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+            await _repository.Received(1).SaveChangesAsync();
         }
 
         [Fact]
@@ -94,7 +94,7 @@ namespace tests.Services
 
             // Assert
             Assert.Equal(updatedTopsideCostProfileDtoResult, result);
-            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+            await _repository.Received(1).SaveChangesAsync();
         }
 
         [Fact]
@@ -123,7 +123,7 @@ namespace tests.Services
 
             // Assert
             Assert.Equal(updatedTopsideCostProfileDtoResult, result);
-            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+            await _repository.Received(1).SaveChangesAsync();
         }
     }
 }

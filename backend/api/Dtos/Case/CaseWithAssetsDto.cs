@@ -18,7 +18,7 @@ public class CaseWithAssetsDto
     public TotalFeasibilityAndConceptStudiesOverrideDto? TotalFeasibilityAndConceptStudiesOverride { get; set; }
     public TotalFEEDStudiesDto? TotalFEEDStudies { get; set; }
     public TotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
-    public TotalOtherStudiesCostProfileDto? TotalOtherStudiesCostProfile { get; set; }
+    public TotalOtherStudiesDto? TotalOtherStudies { get; set; }
     public HistoricCostCostProfileDto? HistoricCostCostProfile { get; set; }
     public WellInterventionCostProfileDto? WellInterventionCostProfile { get; set; }
     public WellInterventionCostProfileOverrideDto? WellInterventionCostProfileOverride { get; set; }
@@ -83,8 +83,6 @@ public class CaseWithAssetsDto
     public AppraisalWellCostProfileDto? AppraisalWellCostProfile { get; set; }
     public SidetrackCostProfileDto? SidetrackCostProfile { get; set; }
     public GAndGAdminCostDto? GAndGAdminCost { get; set; }
-    public GAndGAdminCostOverrideDto? GAndGAdminCostOverride { get; set; }
-
     public SeismicAcquisitionAndProcessingDto? SeismicAcquisitionAndProcessing { get; set; }
     public CountryOfficeCostDto? CountryOfficeCost { get; set; }
 

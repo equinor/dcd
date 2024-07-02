@@ -126,31 +126,6 @@ class CaseService extends __BaseService {
         return res
     }
 
-    public async createCessationOnshoreFacilitiesCostProfile(
-        projectId: string,
-        caseId: string,
-        dto: Components.Schemas.CreateCessationOnshoreFacilitiesCostProfileDto,
-    ): Promise<Components.Schemas.CessationOnshoreFacilitiesCostProfileDto> {
-        const res: Components.Schemas.CessationOnshoreFacilitiesCostProfileDto = await this.post(
-            `projects/${projectId}/cases/${caseId}/cessation-onshore-facilities-cost-profile/`,
-            { body: dto },
-        )
-        return res
-    }
-
-    public async updateCessationOnshoreFacilitiesCostProfile(
-        projectId: string,
-        caseId: string,
-        costProfileId: string,
-        dto: Components.Schemas.CreateCessationOnshoreFacilitiesCostProfileDto,
-    ): Promise<Components.Schemas.CessationOnshoreFacilitiesCostProfileDto> {
-        const res: Components.Schemas.CessationOnshoreFacilitiesCostProfileDto = await this.put(
-            `projects/${projectId}/cases/${caseId}/cessation-onshore-facilities-cost-profile/${costProfileId}`,
-            { body: dto },
-        )
-        return res
-    }
-
     public async createTotalFeasibilityAndConceptStudiesOverride(
         projectId: string,
         caseId: string,
@@ -196,31 +171,6 @@ class CaseService extends __BaseService {
     ): Promise<Components.Schemas.TotalFEEDStudiesOverrideDto> {
         const res: Components.Schemas.TotalFEEDStudiesOverrideDto = await this.put(
             `projects/${projectId}/cases/${caseId}/total-feed-studies-override/${costProfileId}`,
-            { body: dto },
-        )
-        return res
-    }
-
-    public async createTotalOtherStudiesCostProfile(
-        projectId: string,
-        caseId: string,
-        dto: Components.Schemas.CreateTotalOtherStudiesCostProfileDto,
-    ): Promise<Components.Schemas.TotalOtherStudiesCostProfileDto> {
-        const res: Components.Schemas.TotalOtherStudiesCostProfileDto = await this.post(
-            `projects/${projectId}/cases/${caseId}/total-other-studies-cost-profile/`,
-            { body: dto },
-        )
-        return res
-    }
-
-    public async updateTotalOtherStudiesCostProfile(
-        projectId: string,
-        caseId: string,
-        costProfileId: string,
-        dto: Components.Schemas.UpdateTotalOtherStudiesCostProfileDto,
-    ): Promise<Components.Schemas.TotalOtherStudiesCostProfileDto> {
-        const res: Components.Schemas.TotalOtherStudiesCostProfileDto = await this.put(
-            `projects/${projectId}/cases/${caseId}/total-other-studies-cost-profile/${costProfileId}`,
             { body: dto },
         )
         return res

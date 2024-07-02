@@ -188,12 +188,12 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
 
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, wellProjectId);
 
-        // TProfile updatedProfile;
+        TProfile updatedProfile;
         try
         {
-            // updatedProfile = updateProfile(existingProfile);
+            updatedProfile = updateProfile(existingProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -202,7 +202,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
             throw;
         }
 
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
+        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
         return updatedDto;
     }
 
@@ -239,7 +239,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
         {
             createdProfile = createProfile(newProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {

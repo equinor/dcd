@@ -9,10 +9,10 @@ using AutoMapper;
 
 namespace api.Services;
 
-public class StudyCostProfileService : IStudyCostProfileService
+public class GenerateStudyCostProfile : IGenerateStudyCostProfile
 {
     private readonly ICaseService _caseService;
-    private readonly ILogger<StudyCostProfileService> _logger;
+    private readonly ILogger<GenerateStudyCostProfile> _logger;
     private readonly IWellProjectService _wellProjectService;
     private readonly ITopsideService _topsideService;
     private readonly ISubstructureService _substructureService;
@@ -21,7 +21,7 @@ public class StudyCostProfileService : IStudyCostProfileService
     private readonly DcdDbContext _context;
     private readonly IMapper _mapper;
 
-    public StudyCostProfileService(
+    public GenerateStudyCostProfile(
         DcdDbContext context,
         ILoggerFactory loggerFactory,
         ICaseService caseService,
@@ -33,7 +33,7 @@ public class StudyCostProfileService : IStudyCostProfileService
         IMapper mapper)
     {
         _context = context;
-        _logger = loggerFactory.CreateLogger<StudyCostProfileService>();
+        _logger = loggerFactory.CreateLogger<GenerateStudyCostProfile>();
         _caseService = caseService;
         _wellProjectService = wellProjectService;
         _topsideService = topsideService;
@@ -46,11 +46,7 @@ public class StudyCostProfileService : IStudyCostProfileService
     public async Task<StudyCostProfileWrapperDto> Generate(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
-        return await Generate(caseItem);
-    }
 
-    public async Task<StudyCostProfileWrapperDto> Generate(Case caseItem)
-    {
         var sumFacilityCost = await SumAllCostFacility(caseItem);
         var sumWellCost = await SumWellCost(caseItem);
 
@@ -85,18 +81,18 @@ public class StudyCostProfileService : IStudyCostProfileService
             feed = newFeed;
         }
 
-        var otherStudies = caseItem.TotalOtherStudiesCostProfile ?? new TotalOtherStudiesCostProfile();
+        var otherStudies = caseItem.TotalOtherStudies ?? new TotalOtherStudies();
 
-        UpdateCaseAndSave(caseItem, feasibility, feed, otherStudies);
+        await UpdateCaseAndSave(caseItem, feasibility, feed, otherStudies);
 
         var result = new StudyCostProfileWrapperDto();
         var feasibilityDto = _mapper.Map<TotalFeasibilityAndConceptStudiesDto>(feasibility);
         var feedDto = _mapper.Map<TotalFEEDStudiesDto>(feed);
-        var otherStudiesDto = _mapper.Map<TotalOtherStudiesCostProfileDto>(otherStudies);
+        var otherStudiesDto = _mapper.Map<TotalOtherStudiesDto>(otherStudies);
 
         result.TotalFeasibilityAndConceptStudiesDto = feasibilityDto;
         result.TotalFEEDStudiesDto = feedDto;
-        result.TotalOtherStudiesCostProfileDto = otherStudiesDto;
+        result.TotalOtherStudiesDto = otherStudiesDto;
 
         if ((feasibility.Values == null || feasibility.Values.Length == 0) &&
             (feed.Values == null || feed.Values.Length == 0) &&
@@ -122,12 +118,12 @@ public class StudyCostProfileService : IStudyCostProfileService
 
 
 
-    private void UpdateCaseAndSave(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies, TotalOtherStudiesCostProfile totalOtherStudiesCostProfile)
+    private async Task<int> UpdateCaseAndSave(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies, TotalOtherStudies totalOtherStudies)
     {
         caseItem.TotalFeasibilityAndConceptStudies = totalFeasibilityAndConceptStudies;
         caseItem.TotalFEEDStudies = totalFEEDStudies;
-        caseItem.TotalOtherStudiesCostProfile = totalOtherStudiesCostProfile;
-        // return await _context.SaveChangesAsync();
+        caseItem.TotalOtherStudies = totalOtherStudies;
+        return await _context.SaveChangesAsync();
     }
 
     public TotalFeasibilityAndConceptStudies CalculateTotalFeasibilityAndConceptStudies(Case caseItem, double sumFacilityCost, double sumWellCost)

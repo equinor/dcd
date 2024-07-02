@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { ITimeSeriesData } from "../../../../../Models/Interfaces"
@@ -22,8 +22,6 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
 
     const exploration = apiData?.exploration
     const gAndGAdminCostData = apiData?.gAndGAdminCost
-    const explorationGAndGAdminCostOverrideData = apiData?.gAndGAdminCostOverride
-
     const seismicAcquisitionAndProcessingData = apiData?.seismicAcquisitionAndProcessing
     const countryOfficeCostData = apiData?.countryOfficeCost
     const explorationWellCostProfileData = apiData?.explorationWellCostProfile
@@ -39,11 +37,10 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             profile: gAndGAdminCostData,
             resourceName: "gAndGAdminCost",
             resourceId: exploration.id,
-            resourceProfileId: explorationGAndGAdminCostOverrideData?.id,
+            resourceProfileId: gAndGAdminCostData?.id,
             resourcePropertyKey: "gAndGAdminCost",
             editable: true,
-            overridable: true,
-            overrideProfile: explorationGAndGAdminCostOverrideData,
+            overridable: false,
         },
         {
             profileName: "Seismic acquisition and processing",
@@ -75,7 +72,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             resourceId: exploration.id,
             resourceProfileId: explorationWellCostProfileData?.id,
             resourcePropertyKey: "explorationWellCostProfile",
-            editable: false,
+            editable: true,
             overridable: false,
         },
         {
@@ -86,7 +83,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             resourceId: exploration.id,
             resourceProfileId: appraisalWellCostProfileData?.id,
             resourcePropertyKey: "appraisalWellCostProfile",
-            editable: false,
+            editable: true,
             overridable: false,
         },
         {
@@ -97,7 +94,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             resourceId: exploration.id,
             resourceProfileId: sidetrackCostProfileData?.id,
             resourcePropertyKey: "sidetrackCostProfile",
-            editable: false,
+            editable: true,
             overridable: false,
         },
     ]

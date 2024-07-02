@@ -14,7 +14,6 @@ public class Exploration
     public SeismicAcquisitionAndProcessing? SeismicAcquisitionAndProcessing { get; set; }
     public CountryOfficeCost? CountryOfficeCost { get; set; }
     public GAndGAdminCost? GAndGAdminCost { get; set; }
-    public GAndGAdminCostOverride? GAndGAdminCostOverride { get; set; }
     public double RigMobDemob { get; set; }
     public Currency Currency { get; set; }
     public ICollection<ExplorationWell>? ExplorationWells { get; set; }
@@ -43,13 +42,6 @@ public class GAndGAdminCost : TimeSeriesCost, IExplorationTimeSeries
 {
     [ForeignKey("Exploration.Id")]
     public Exploration Exploration { get; set; } = null!;
-}
-public class GAndGAdminCostOverride : TimeSeriesCost, IExplorationTimeSeries
-{
-    [ForeignKey("Exploration.Id")]
-    public Exploration Exploration { get; set; } = null!;
-    public bool Override { get; set; }
-
 }
 
 public class SeismicAcquisitionAndProcessing : TimeSeriesCost, IExplorationTimeSeries

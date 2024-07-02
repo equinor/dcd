@@ -43,36 +43,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
         _explorationRepository = explorationRepository;
         _mapperService = mapperService;
     }
-    public async Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
-            Guid caseId,
-            Guid explorationId,
-            CreateGAndGAdminCostOverrideDto createProfileDto
-        )
-    {
-        return await CreateExplorationProfile<GAndGAdminCostOverride, GAndGAdminCostOverrideDto, CreateGAndGAdminCostOverrideDto>(
-            caseId,
-            explorationId,
-            createProfileDto,
-            _repository.CreateGAndGAdminCostOverride,
-            ExplorationProfileNames.GAndGAdminCostOverride
-        );
-    }
-    public async Task<GAndGAdminCostOverrideDto> UpdateGAndGAdminCostOverride(
-        Guid caseId,
-        Guid wellProjectId,
-        Guid profileId,
-        UpdateGAndGAdminCostOverrideDto updateDto
-    )
-    {
-        return await UpdateExplorationCostProfile<GAndGAdminCostOverride, GAndGAdminCostOverrideDto, UpdateGAndGAdminCostOverrideDto>(
-            caseId,
-            wellProjectId,
-            profileId,
-            updateDto,
-            _repository.GetGAndGAdminCostOverride,
-            _repository.UpdateGAndGAdminCostOverride
-        );
-    }
+
     public async Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
         Guid caseId,
         Guid wellProjectId,
@@ -159,7 +130,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
         {
             updatedProfile = updateProfile(existingProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -167,6 +138,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
             _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
             throw;
         }
+
 
         var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
         return updatedDto;
@@ -205,7 +177,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
         {
             createdProfile = createProfile(newProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {

@@ -32,7 +32,7 @@ public class DuplicateCaseService : IDuplicateCaseService
             .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)
             .Include(c => c.TotalFEEDStudiesOverride)
-            .Include(c => c.TotalOtherStudiesCostProfile)
+            .Include(c => c.TotalOtherStudies)
             .Include(c => c.HistoricCostCostProfile)
             .Include(c => c.WellInterventionCostProfile)
             .Include(c => c.WellInterventionCostProfileOverride)
@@ -68,7 +68,7 @@ public class DuplicateCaseService : IDuplicateCaseService
         SetNewGuidTimeSeries(caseItem.TotalFeasibilityAndConceptStudiesOverride);
         SetNewGuidTimeSeries(caseItem.TotalFEEDStudies);
         SetNewGuidTimeSeries(caseItem.TotalFEEDStudiesOverride);
-        SetNewGuidTimeSeries(caseItem.TotalOtherStudiesCostProfile);
+        SetNewGuidTimeSeries(caseItem.TotalOtherStudies);
         SetNewGuidTimeSeries(caseItem.CessationWellsCost);
         SetNewGuidTimeSeries(caseItem.CessationWellsCostOverride);
         SetNewGuidTimeSeries(caseItem.CessationOffshoreFacilitiesCost);
@@ -337,7 +337,6 @@ public class DuplicateCaseService : IDuplicateCaseService
         SetNewGuidTimeSeries(newExploration.AppraisalWellCostProfile);
         SetNewGuidTimeSeries(newExploration.SidetrackCostProfile);
         SetNewGuidTimeSeries(newExploration.GAndGAdminCost);
-        SetNewGuidTimeSeries(newExploration.GAndGAdminCostOverride);
         SetNewGuidTimeSeries(newExploration.SeismicAcquisitionAndProcessing);
         SetNewGuidTimeSeries(newExploration.CountryOfficeCost);
 
@@ -353,7 +352,6 @@ public class DuplicateCaseService : IDuplicateCaseService
             .Include(c => c.AppraisalWellCostProfile)
             .Include(c => c.SidetrackCostProfile)
             .Include(c => c.GAndGAdminCost)
-            .Include(c => c.GAndGAdminCostOverride)
             .Include(c => c.SeismicAcquisitionAndProcessing)
             .Include(c => c.CountryOfficeCost)
             .FirstOrDefaultAsync(o => o.Id == explorationId);

@@ -70,7 +70,7 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
         {
             createdProfile = _repository.CreateTransportCostProfileOverride(newProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -150,7 +150,7 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
         {
             _repository.CreateTransportCostProfile(newProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (Exception ex)
         {
@@ -179,12 +179,12 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
 
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, transportId);
 
-        // TProfile updatedProfile;
+        TProfile updatedProfile;
         try
         {
-            // updatedProfile = updateProfile(existingProfile);
+            updatedProfile = updateProfile(existingProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -193,7 +193,7 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
             throw;
         }
 
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
+        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
         return updatedDto;
     }
 }

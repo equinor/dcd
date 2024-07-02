@@ -83,7 +83,7 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
                 values.Add(countryCost * percentageOfLastYear);
                 gAndGAdminCost.Values = values.ToArray();
 
-                UpdateExplorationAndSave(exploration, gAndGAdminCost);
+                await UpdateExplorationAndSave(exploration, gAndGAdminCost);
 
                 var dto = _mapper.Map<GAndGAdminCostDto>(gAndGAdminCost);
 
@@ -93,10 +93,10 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
         return new GAndGAdminCostDto();
     }
 
-    private void UpdateExplorationAndSave(Exploration exploration, GAndGAdminCost gAndGAdminCost)
+    private async Task<int> UpdateExplorationAndSave(Exploration exploration, GAndGAdminCost gAndGAdminCost)
     {
         exploration.GAndGAdminCost = gAndGAdminCost;
-        // return await _context.SaveChangesAsync();
+        return await _context.SaveChangesAsync();
     }
 
     private static double MapCountry(string country)

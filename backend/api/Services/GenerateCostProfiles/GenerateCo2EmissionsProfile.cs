@@ -1,11 +1,14 @@
 using api.Adapters;
+using api.Context;
 using api.Dtos;
 using api.Helpers;
 using api.Models;
 
+using AutoMapper;
+
 namespace api.Services.GenerateCostProfiles;
 
-public class Co2DrillingFlaringFuelTotalsService : ICo2DrillingFlaringFuelTotalsService
+public class GenerateCo2EmissionsProfile : IGenerateCo2EmissionsProfile
 {
     private readonly ICaseService _caseService;
     private readonly IDrainageStrategyService _drainageStrategyService;
@@ -13,25 +16,31 @@ public class Co2DrillingFlaringFuelTotalsService : ICo2DrillingFlaringFuelTotals
     private readonly ITopsideService _topsideService;
     private readonly IWellProjectService _wellProjectService;
     private readonly IWellProjectWellService _wellProjectWellService;
+    private readonly DcdDbContext _context;
+    private readonly IMapper _mapper;
 
-    public Co2DrillingFlaringFuelTotalsService(
+    public GenerateCo2EmissionsProfile(
+        DcdDbContext context,
         ICaseService caseService,
+        IDrainageStrategyService drainageStrategyService,
         IProjectService projectService,
         ITopsideService topsideService,
-        IDrainageStrategyService drainageStrategyService,
         IWellProjectService wellProjectService,
-        IWellProjectWellService wellProjectWellService
+        IWellProjectWellService wellProjectWellService,
+        IMapper mapper
         )
     {
+        _context = context;
         _caseService = caseService;
         _projectService = projectService;
         _topsideService = topsideService;
         _drainageStrategyService = drainageStrategyService;
         _wellProjectService = wellProjectService;
         _wellProjectWellService = wellProjectWellService;
+        _mapper = mapper;
     }
 
-    public async Task<Co2DrillingFlaringFuelTotalsDto> Generate(Guid caseId)
+    public async Task<Co2EmissionsDto> Generate(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
         var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
@@ -39,21 +48,55 @@ public class Co2DrillingFlaringFuelTotalsService : ICo2DrillingFlaringFuelTotals
         var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
         var wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
 
-        var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(project, caseItem, topside, drainageStrategy);
-        var flaringsTotal = GetFlaringsProfileTotal(project, drainageStrategy);
-        var drillingEmissionsTotal = await CalculateDrillingEmissionsTotal(project, wellProject);
+        var fuelConsumptionsProfile = GetFuelConsumptionsProfile(project, caseItem, topside, drainageStrategy);
+        var flaringsProfile = GetFlaringsProfile(project, drainageStrategy);
+        var lossesProfile = GetLossesProfile(project, drainageStrategy);
 
-        var co2DrillingFlaringFuelTotals = new Co2DrillingFlaringFuelTotalsDto
+        var tempProfile = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { fuelConsumptionsProfile, flaringsProfile, lossesProfile });
+
+        var convertedValues = tempProfile.Values.Select(v => v / 1000);
+
+        var newProfile = new TimeSeries<double>
         {
-            Co2Drilling = drillingEmissionsTotal,
-            Co2Flaring = flaringsTotal,
-            Co2Fuel = fuelConsumptionsTotal,
+            StartYear = tempProfile.StartYear,
+            Values = convertedValues.ToArray(),
         };
 
-        return co2DrillingFlaringFuelTotals ?? new Co2DrillingFlaringFuelTotalsDto();
+        var drillingEmissionsProfile = await CalculateDrillingEmissions(project, wellProject);
+
+        var totalProfile =
+            TimeSeriesCost.MergeCostProfiles(newProfile, drillingEmissionsProfile);
+        var co2Emission = drainageStrategy.Co2Emissions ?? new Co2Emissions();
+
+        co2Emission.StartYear = totalProfile.StartYear;
+        co2Emission.Values = totalProfile.Values;
+
+        await UpdateDrainageStrategyAndSave(drainageStrategy, co2Emission);
+
+        var dto = _mapper.Map<Co2EmissionsDto>(co2Emission, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+
+        return dto ?? new Co2EmissionsDto();
     }
 
-    private static double GetFlaringsProfileTotal(Project project, DrainageStrategy drainageStrategy)
+    private async Task<int> UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, Co2Emissions co2Emissions)
+    {
+        drainageStrategy.Co2Emissions = co2Emissions;
+        return await _context.SaveChangesAsync();
+    }
+
+    private static TimeSeriesVolume GetLossesProfile(Project project, DrainageStrategy drainageStrategy)
+    {
+        var losses = EmissionCalculationHelper.CalculateLosses(project, drainageStrategy);
+
+        var lossesProfile = new TimeSeriesVolume
+        {
+            StartYear = losses.StartYear,
+            Values = losses.Values.Select(loss => loss * project.CO2Vented).ToArray(),
+        };
+        return lossesProfile;
+    }
+
+    private static TimeSeriesVolume GetFlaringsProfile(Project project, DrainageStrategy drainageStrategy)
     {
         var flarings = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
 
@@ -62,10 +105,10 @@ public class Co2DrillingFlaringFuelTotalsService : ICo2DrillingFlaringFuelTotals
             StartYear = flarings.StartYear,
             Values = flarings.Values.Select(flare => flare * project.CO2EmissionsFromFlaredGas).ToArray(),
         };
-        return flaringsProfile.Values.Sum() / 1000;
+        return flaringsProfile;
     }
 
-    private static double GetFuelConsumptionsProfileTotal(Project project, Case caseItem, Topside topside,
+    private static TimeSeriesVolume GetFuelConsumptionsProfile(Project project, Case caseItem, Topside topside,
         DrainageStrategy drainageStrategy)
     {
         var fuelConsumptions =
@@ -76,15 +119,15 @@ public class Co2DrillingFlaringFuelTotalsService : ICo2DrillingFlaringFuelTotals
             StartYear = fuelConsumptions.StartYear,
             Values = fuelConsumptions.Values.Select(fuel => fuel * project.CO2EmissionFromFuelGas).ToArray(),
         };
-        return fuelConsumptionsProfile.Values.Sum() / 1000;
+        return fuelConsumptionsProfile;
     }
 
-    private async Task<double> CalculateDrillingEmissionsTotal(Project project, WellProject wellProject)
+    private async Task<TimeSeriesVolume> CalculateDrillingEmissions(Project project, WellProject wellProject)
     {
         var linkedWells = await _wellProjectWellService.GetWellProjectWellsForWellProject(wellProject.Id);
         if (linkedWells == null)
         {
-            return 0.0;
+            return new TimeSeriesVolume();
         }
 
         var wellDrillingSchedules = new TimeSeries<double>();
@@ -111,6 +154,6 @@ public class Co2DrillingFlaringFuelTotalsService : ICo2DrillingFlaringFuelTotals
                 .ToArray(),
         };
 
-        return drillingEmission.Values.Sum();
+        return drillingEmission;
     }
 }

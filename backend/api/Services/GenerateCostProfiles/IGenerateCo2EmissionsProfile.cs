@@ -2,7 +2,7 @@ using api.Dtos;
 
 namespace api.Services.GenerateCostProfiles
 {
-    public interface ICo2EmissionsProfileService
+    public interface IGenerateCo2EmissionsProfile
     {
         Task<Co2EmissionsDto> Generate(Guid caseId);
     }

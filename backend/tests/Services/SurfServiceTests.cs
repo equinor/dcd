@@ -57,14 +57,14 @@ namespace tests.Services
             _repository.UpdateSurf(existingSurf).Returns(updatedSurf);
 
             var updatedSurfDtoResult = new SurfDto();
-            _mapperService.MapToDto<Surf, SurfDto>(existingSurf, surfId).Returns(updatedSurfDtoResult);
+            _mapperService.MapToDto<Surf, SurfDto>(updatedSurf, surfId).Returns(updatedSurfDtoResult);
 
             // Act
             var result = await _surfService.UpdateSurf<BaseUpdateSurfDto>(caseId, surfId, updatedSurfDto);
 
             // Assert
             Assert.Equal(updatedSurfDtoResult, result);
-            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+            await _repository.Received(1).SaveChangesAsync();
         }
 
         [Fact]
@@ -78,7 +78,7 @@ namespace tests.Services
             var existingSurf = new Surf { Id = surfId };
             _repository.GetSurf(surfId).Returns(existingSurf);
 
-            _repository.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(x => throw new DbUpdateException());
+            _repository.When(r => r.UpdateSurf(existingSurf)).Do(x => throw new DbUpdateException());
 
             // Act & Assert
             await Assert.ThrowsAsync<DbUpdateException>(() => _surfService.UpdateSurf<BaseUpdateSurfDto>(caseId, surfId, updatedSurfDto));

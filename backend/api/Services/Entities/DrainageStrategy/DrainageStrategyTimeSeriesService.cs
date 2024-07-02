@@ -419,12 +419,12 @@ public class DrainageStrategyTimeSeriesService : IDrainageStrategyTimeSeriesServ
 
         _conversionMapperService.MapToEntity(updatedProductionProfileDto, existingProfile, drainageStrategyId, project.PhysicalUnit);
 
-        // TProfile updatedProfile;
+        TProfile updatedProfile;
         try
         {
-            // updatedProfile = updateProfile(existingProfile);
+            updatedProfile = updateProfile(existingProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -433,7 +433,7 @@ public class DrainageStrategyTimeSeriesService : IDrainageStrategyTimeSeriesServ
             throw;
         }
 
-        var updatedDto = _conversionMapperService.MapToDto<TProfile, TDto>(existingProfile, productionProfileId, project.PhysicalUnit);
+        var updatedDto = _conversionMapperService.MapToDto<TProfile, TDto>(updatedProfile, productionProfileId, project.PhysicalUnit);
         return updatedDto;
     }
 
@@ -474,7 +474,7 @@ public class DrainageStrategyTimeSeriesService : IDrainageStrategyTimeSeriesServ
         {
             createdProfile = createProfile(newProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {

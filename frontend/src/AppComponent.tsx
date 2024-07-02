@@ -1,4 +1,5 @@
 import { FC } from "react"
+import { createGlobalStyle } from "styled-components"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { ReactQueryDevtools } from "react-query/devtools"
 import { APP_VERSION } from "./version"
@@ -11,7 +12,16 @@ import { ModalContextProvider } from "./Context/ModalContext"
 import { ProjectContextProvider } from "./Context/ProjectContext"
 import { CaseContextProvider } from "./Context/CaseContext"
 import { AppContextProvider } from "./Context/AppContext"
-import Styles from "./styles"
+
+const GlobalStyle = createGlobalStyle`
+    .ag-aria-description-container {
+    display: none !important;
+  }
+
+  .red-cell {
+    background-color: #FFC0C1 !important;
+}
+`
 
 const AppComponent: FC = () => {
     const queryClient = new QueryClient()
@@ -31,7 +41,7 @@ const AppComponent: FC = () => {
                 <ProjectContextProvider>
                     <CaseContextProvider>
                         <ModalContextProvider>
-                            <Styles />
+                            <GlobalStyle />
                             <AppRouter />
                         </ModalContextProvider>
                     </CaseContextProvider>

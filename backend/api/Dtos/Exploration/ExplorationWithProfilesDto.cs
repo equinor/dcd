@@ -21,8 +21,6 @@ public class ExplorationWithProfilesDto
     [Required]
     public GAndGAdminCostDto GAndGAdminCost { get; set; } = new GAndGAdminCostDto();
     [Required]
-    public GAndGAdminCostOverrideDto GAndGAdminCostOverride { get; set; } = new GAndGAdminCostOverrideDto();
-    [Required]
     public SeismicAcquisitionAndProcessingDto SeismicAcquisitionAndProcessing { get; set; } = new SeismicAcquisitionAndProcessingDto();
     [Required]
     public CountryOfficeCostDto CountryOfficeCost { get; set; } = new CountryOfficeCostDto();
@@ -49,11 +47,6 @@ public class SidetrackCostProfileDto : TimeSeriesCostDto
 public class GAndGAdminCostDto : TimeSeriesCostDto
 {
 
-}
-public class GAndGAdminCostOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
-{
-    [Required]
-    public bool Override { get; set; }
 }
 public class SeismicAcquisitionAndProcessingDto : TimeSeriesCostDto
 {

@@ -48,9 +48,9 @@ stages:
                   type: .manifest.type,
                   entry: .main,
                   version: {
-                      major: "1",
-                      minor: "0",
-                      patch: "0"
+                      major: .version | split(".")[0],
+                      minor: .version | split(".")[1],
+                      patch: .version | split(".")[2]
                   }
                   }' package.json)" > ./dist/app-manifest.json
           - task: Bash@3

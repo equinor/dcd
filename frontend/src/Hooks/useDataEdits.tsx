@@ -30,8 +30,6 @@ interface AddEditParams {
     resourcePropertyKey: ResourcePropertyKey;
     resourceId?: string;
     resourceProfileId?: string;
-    wellId?: string;
-    drillingScheduleId?: string;
     caseId?: string;
     newDisplayValue?: string | number | undefined;
     previousDisplayValue?: string | number | undefined;
@@ -83,8 +81,6 @@ const useDataEdits = (): {
             caseId: string,
             resourceId?: string,
             resourceProfileId?: string,
-            wellId?: string,
-            drillingScheduleId?: string,
             serviceMethod: object,
         }) => serviceMethod,
         {
@@ -271,30 +267,6 @@ const useDataEdits = (): {
         }
     }
 
-    const createOrUpdateDrillingSchedule = async (
-        projectId: string,
-        caseId: string,
-        assetId: string,
-        wellId: string,
-        drillingScheduleId: string,
-        createOrUpdateFunction: any,
-
-    ) => {
-        try {
-            await mutation.mutateAsync({
-                projectId,
-                caseId,
-                resourceId: assetId,
-                wellId,
-                drillingScheduleId,
-                serviceMethod: createOrUpdateFunction,
-            })
-            return true
-        } catch (error) {
-            return false
-        }
-    }
-
     const updateCase = async (
         projectId: string,
         caseId: string,
@@ -330,8 +302,6 @@ const useDataEdits = (): {
         resourceId?: string,
         resourceObject?: ResourceObject,
         resourceProfileId?: string,
-        wellId?: string,
-        drillingScheduleId?: string,
     }
 
     const submitToApi = async ({
@@ -343,11 +313,9 @@ const useDataEdits = (): {
         resourceId,
         resourceObject,
         resourceProfileId,
-        wellId,
-        drillingScheduleId,
     }: SubmitToApiParams): Promise<boolean> => {
         const existingDataInClient: object | undefined = queryClient.getQueryData([{
-            projectId, caseId, resourceId, resourceProfileId: EMPTY_GUID, wellId, drillingScheduleId,
+            projectId, caseId, resourceId, resourceProfileId: EMPTY_GUID,
         }])
         const updatedData = resourceObject || { ...existingDataInClient }
 
@@ -584,25 +552,6 @@ const useDataEdits = (): {
                     )
                 }
                 break
-            case "totalOtherStudiesCostProfile":
-                if (!resourceProfileId) {
-                    success = await createOrUpdateTimeSeriesProfile(
-                        projectId,
-                        caseId,
-                        resourceId!,
-                        resourceProfileId!,
-                        await (await GetCaseService()).createTotalOtherStudiesCostProfile(projectId, caseId, updatedData!),
-                    )
-                } else {
-                    success = await createOrUpdateTimeSeriesProfile(
-                        projectId,
-                        caseId,
-                        resourceId!,
-                        resourceProfileId!,
-                        await (await GetCaseService()).updateTotalOtherStudiesCostProfile(projectId, caseId, resourceProfileId!, updatedData!),
-                    )
-                }
-                break
             case "historicCostCostProfile":
                 if (!resourceProfileId) {
                     success = await createOrUpdateTimeSeriesProfile(
@@ -733,25 +682,6 @@ const useDataEdits = (): {
                         resourceId!,
                         resourceProfileId!,
                         await (await GetCaseService()).updateCessationOffshoreFacilitiesCostOverride(projectId, caseId, resourceProfileId!, updatedData!),
-                    )
-                }
-                break
-            case "cessationOnshoreFacilitiesCostProfile":
-                if (!resourceProfileId) {
-                    success = await createOrUpdateTimeSeriesProfile(
-                        projectId,
-                        caseId,
-                        resourceId!,
-                        resourceProfileId!,
-                        await (await GetCaseService()).createCessationOnshoreFacilitiesCostProfile(projectId, caseId, updatedData!),
-                    )
-                } else {
-                    success = await createOrUpdateTimeSeriesProfile(
-                        projectId,
-                        caseId,
-                        resourceId!,
-                        resourceProfileId!,
-                        await (await GetCaseService()).updateCessationOnshoreFacilitiesCostProfile(projectId, caseId, resourceProfileId!, updatedData!),
                     )
                 }
                 break
@@ -907,25 +837,6 @@ const useDataEdits = (): {
                     )
                 }
                 break
-            case "gAndGAdminCost":
-                if (!resourceProfileId) {
-                    success = await createOrUpdateTimeSeriesProfile(
-                        projectId,
-                        caseId,
-                        resourceId!,
-                        resourceProfileId!,
-                        await (await GetExplorationService()).createGAndGAdminCostOverride(projectId, caseId, resourceId!, updatedData!),
-                    )
-                } else {
-                    success = await createOrUpdateTimeSeriesProfile(
-                        projectId,
-                        caseId,
-                        resourceId!,
-                        resourceProfileId!,
-                        await (await GetExplorationService()).updateGAndGAdminCostOverride(projectId, caseId, resourceId!, resourceProfileId!, updatedData!),
-                    )
-                }
-                break
             case "seismicAcquisitionAndProcessing":
                 if (!resourceProfileId) {
                     success = await createOrUpdateTimeSeriesProfile(
@@ -983,48 +894,6 @@ const useDataEdits = (): {
                     )
                 }
                 break
-            case "explorationWellDrillingSchedule":
-                if (drillingScheduleId === EMPTY_GUID) {
-                    success = await createOrUpdateDrillingSchedule(
-                        projectId,
-                        caseId,
-                        resourceId!,
-                        wellId!,
-                        drillingScheduleId!,
-                        await (await GetExplorationService()).createExplorationWellDrillingSchedule(projectId, caseId, resourceId!, wellId!, updatedData!),
-                    )
-                } else {
-                    success = await createOrUpdateDrillingSchedule(
-                        projectId,
-                        caseId,
-                        resourceId!,
-                        wellId!,
-                        drillingScheduleId!,
-                        await (await GetExplorationService()).updateExplorationWellDrillingSchedule(projectId, caseId, resourceId!, wellId!, drillingScheduleId!, updatedData!),
-                    )
-                }
-                break
-            case "wellProjectWellDrillingSchedule":
-                if (drillingScheduleId === EMPTY_GUID) {
-                    success = await createOrUpdateDrillingSchedule(
-                        projectId,
-                        caseId,
-                        resourceId!,
-                        wellId!,
-                        drillingScheduleId!,
-                        await (await GetWellProjectService()).createWellProjectWellDrillingSchedule(projectId, caseId, resourceId!, wellId!, updatedData!),
-                    )
-                } else {
-                    success = await createOrUpdateDrillingSchedule(
-                        projectId,
-                        caseId,
-                        resourceId!,
-                        wellId!,
-                        drillingScheduleId!,
-                        await (await GetWellProjectService()).updateWellProjectWellDrillingSchedule(projectId, caseId, resourceId!, wellId!, drillingScheduleId!, updatedData!),
-                    )
-                }
-                break
             default:
                 console.log("Service not found")
         }
@@ -1060,8 +929,6 @@ const useDataEdits = (): {
         resourcePropertyKey,
         resourceId,
         resourceProfileId,
-        wellId,
-        drillingScheduleId,
         caseId,
         newDisplayValue,
         previousDisplayValue,
@@ -1089,8 +956,6 @@ const useDataEdits = (): {
             resourcePropertyKey,
             resourceId,
             resourceProfileId,
-            wellId,
-            drillingScheduleId,
             caseId,
             newDisplayValue,
             previousDisplayValue,
@@ -1107,8 +972,6 @@ const useDataEdits = (): {
                 value: newValue as string,
                 resourceId,
                 resourceProfileId,
-                wellId,
-                drillingScheduleId,
                 resourceObject: newResourceObject as ResourceObject | undefined,
             },
         )

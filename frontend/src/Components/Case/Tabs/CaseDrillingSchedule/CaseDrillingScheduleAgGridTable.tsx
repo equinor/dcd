@@ -7,12 +7,9 @@ import {
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
-import { useParams } from "react-router"
 import { isExplorationWell, isInteger } from "../../../../Utils/common"
 import { EMPTY_GUID } from "../../../../Utils/constants"
 import { useAppContext } from "../../../../Context/AppContext"
-import { useProjectContext } from "../../../../Context/ProjectContext"
-import useDataEdits from "../../../../Hooks/useDataEdits"
 
 interface Props {
     dg4Year: number
@@ -37,9 +34,6 @@ const CaseDrillingScheduleTabTable = ({
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([])
     const { editMode } = useAppContext()
-    const { project } = useProjectContext()
-    const { addEdit } = useDataEdits()
-    const { caseId } = useParams()
 
     const createMissingAssetWellsFromWells = (assetWell: any[]) => {
         const newAssetWells: (Components.Schemas.ExplorationWellDto | Components.Schemas.WellProjectWellDto)[] = [...assetWells]
@@ -134,7 +128,6 @@ const CaseDrillingScheduleTabTable = ({
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
     const handleCellValueChange = (p: any) => {
-        if (!caseId || !project) { return }
         const properties = Object.keys(p.data)
         const tableTimeSeriesValues: any[] = []
         properties.forEach((prop) => {
@@ -175,25 +168,7 @@ const CaseDrillingScheduleTabTable = ({
                     updatedWell.drillingSchedule = newProfile
                     const updatedWells: any[] = [...rowWells]
                     updatedWells[index] = updatedWell
-
-                    const { explorationId } = p.data.assetWell
-                    const { wellProjectId } = p.data.assetWell
-
-                    const resourceName = explorationId ? "explorationWellDrillingSchedule" : "wellProjectWellDrillingSchedule"
-
-                    addEdit({
-                        newValue: p.newValue,
-                        previousValue: p.oldValue,
-                        inputLabel: p.data.name,
-                        projectId: project.id,
-                        resourceName,
-                        resourcePropertyKey: "drillingSchedule",
-                        caseId,
-                        resourceId: explorationId || wellProjectId,
-                        newResourceObject: newProfile,
-                        wellId: updatedWell.wellId,
-                        drillingScheduleId: newProfile.id,
-                    })
+                    setAssetWells(updatedWells)
                 }
             }
         }

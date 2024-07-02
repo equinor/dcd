@@ -22,6 +22,7 @@ type UpdateEntry = {
 const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } } = {
     "2.0.0": {
         "New Functionalities": [
+            { description: "Toggle Edit/view mode" },
             { description: "All input fields Auto-save on change" },
             { description: "Upload photos in the case description tab" },
             { description: "Set the classification level of the project in the settings tab" },
@@ -29,6 +30,7 @@ const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } }
             { description: "The current case tab is saved in the URL for sharing" },
             { description: "Allow inserting 4 decimals instead of 2 in production profile table" },
             { description: "Navigate the project and add new cases in the sidebar" },
+            { description: "Set the classification level of a project in the settings tab" },
             { description: "A modal box appears with information about all changes whenever there is a new release" },
             { description: "View 'Export to stea' data in each case summary tab" },
             { description: "Added new production profile 'Deferred oil production' & 'Deferred gas production'" },
@@ -42,7 +44,7 @@ const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } }
             { description: "Improved sidebar styling" },
             { description: "Added case deletion confirmation prompt" },
             { description: "Added table description to Well costs" },
-            { description: "When creating a new case, user is no longer automatically redireted to it" },
+            { description: "when creating a new case, user is no longer automatically redireted to it" },
             { description: "Removed send feedback button" },
             { description: "Open cases directly from the Case overview table" },
             { description: "Combined title and unit into a single column to save space" },

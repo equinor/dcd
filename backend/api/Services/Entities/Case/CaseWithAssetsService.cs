@@ -54,7 +54,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
             TotalFeasibilityAndConceptStudiesOverride = MapToDto<TotalFeasibilityAndConceptStudiesOverride, TotalFeasibilityAndConceptStudiesOverrideDto>(caseItem.TotalFeasibilityAndConceptStudiesOverride, caseItem.TotalFeasibilityAndConceptStudiesOverride?.Id),
             TotalFEEDStudies = MapToDto<TotalFEEDStudies, TotalFEEDStudiesDto>(caseItem.TotalFEEDStudies, caseItem.TotalFEEDStudies?.Id),
             TotalFEEDStudiesOverride = MapToDto<TotalFEEDStudiesOverride, TotalFEEDStudiesOverrideDto>(caseItem.TotalFEEDStudiesOverride, caseItem.TotalFEEDStudiesOverride?.Id),
-            TotalOtherStudiesCostProfile = MapToDto<TotalOtherStudiesCostProfile, TotalOtherStudiesCostProfileDto>(caseItem.TotalOtherStudiesCostProfile, caseItem.TotalOtherStudiesCostProfile?.Id),
+            TotalOtherStudies = MapToDto<TotalOtherStudies, TotalOtherStudiesDto>(caseItem.TotalOtherStudies, caseItem.TotalOtherStudies?.Id),
             HistoricCostCostProfile = MapToDto<HistoricCostCostProfile, HistoricCostCostProfileDto>(caseItem.HistoricCostCostProfile, caseItem.HistoricCostCostProfile?.Id),
             WellInterventionCostProfile = MapToDto<WellInterventionCostProfile, WellInterventionCostProfileDto>(caseItem.WellInterventionCostProfile, caseItem.WellInterventionCostProfile?.Id),
             WellInterventionCostProfileOverride = MapToDto<WellInterventionCostProfileOverride, WellInterventionCostProfileOverrideDto>(caseItem.WellInterventionCostProfileOverride, caseItem.WellInterventionCostProfileOverride?.Id),
@@ -107,7 +107,6 @@ public class CaseWithAssetsService : ICaseWithAssetsService
             AppraisalWellCostProfile = MapToDto<AppraisalWellCostProfile, AppraisalWellCostProfileDto>(exploration.AppraisalWellCostProfile, exploration.AppraisalWellCostProfile?.Id),
             SidetrackCostProfile = MapToDto<SidetrackCostProfile, SidetrackCostProfileDto>(exploration.SidetrackCostProfile, exploration.SidetrackCostProfile?.Id),
             GAndGAdminCost = MapToDto<GAndGAdminCost, GAndGAdminCostDto>(exploration.GAndGAdminCost, exploration.GAndGAdminCost?.Id),
-            GAndGAdminCostOverride = MapToDto<GAndGAdminCostOverride, GAndGAdminCostOverrideDto>(exploration.GAndGAdminCostOverride, exploration.GAndGAdminCostOverride?.Id),
             SeismicAcquisitionAndProcessing = MapToDto<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto>(exploration.SeismicAcquisitionAndProcessing, exploration.SeismicAcquisitionAndProcessing?.Id),
             CountryOfficeCost = MapToDto<CountryOfficeCost, CountryOfficeCostDto>(exploration.CountryOfficeCost, exploration.CountryOfficeCost?.Id),
 

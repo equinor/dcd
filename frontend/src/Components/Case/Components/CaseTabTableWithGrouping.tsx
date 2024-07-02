@@ -8,7 +8,7 @@ import {
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
-import { formatColumnSum, isInteger, tableCellisEditable } from "../../../Utils/common"
+import { isInteger, tableCellisEditable } from "../../../Utils/common"
 import { EMPTY_GUID } from "../../../Utils/constants"
 import { useAppContext } from "../../../Context/AppContext"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
@@ -107,12 +107,18 @@ const CaseTabTableWithGrouping = ({
                 // aggFunc: () => totalRowName,
             },
             {
+                field: "unit",
+                headerName: "Unit",
+                hide: true,
+                width: 100,
+            },
+            {
                 field: "total",
                 flex: 2,
                 editable: false,
                 pinned: "right",
                 width: 100,
-                aggFunc: formatColumnSum,
+                aggFunc: "sum",
                 cellStyle: { fontWeight: "bold" },
             },
 
@@ -125,7 +131,7 @@ const CaseTabTableWithGrouping = ({
                 flex: 1,
                 editable: (params: any) => tableCellisEditable(params, editMode),
                 minWidth: 100,
-                aggFunc: formatColumnSum,
+                aggFunc: "sum",
                 cellClass: (params: any) => (editMode && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
                 cellStyle: { fontWeight: "bold" },
             })
@@ -201,6 +207,15 @@ const CaseTabTableWithGrouping = ({
         return undefined
     }
 
+    const defaultExcelExportParams = useMemo(() => {
+        const yearColumnKeys = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => (tableYears[0] + i).toString())
+        const columnKeys = ["profileName", "unit", ...yearColumnKeys, "total"]
+        return {
+            columnKeys,
+            fileName: "export.xlsx",
+        }
+    }, [tableYears])
+
     return (
         <div className={styles.root}>
             <div
@@ -229,6 +244,7 @@ const CaseTabTableWithGrouping = ({
                     suppressLastEmptyLineOnPaste
                     groupDefaultExpanded={groupDefaultExpanded}
                     stopEditingWhenCellsLoseFocus
+                    defaultExcelExportParams={defaultExcelExportParams}
                 />
             </div>
         </div>

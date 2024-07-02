@@ -5,12 +5,6 @@ namespace api.Services;
 
 public interface IExplorationTimeSeriesService
 {
-    Task<GAndGAdminCostOverrideDto> UpdateGAndGAdminCostOverride(
-        Guid caseId,
-        Guid wellProjectId,
-        Guid profileId,
-        UpdateGAndGAdminCostOverrideDto updateDto
-    );
     Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
         Guid caseId,
         Guid wellProjectId,
@@ -23,12 +17,6 @@ public interface IExplorationTimeSeriesService
         Guid wellProjectId,
         Guid profileId,
         UpdateCountryOfficeCostDto updateDto
-    );
-
-    Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
-        Guid caseId,
-        Guid explorationId,
-        CreateGAndGAdminCostOverrideDto createProfileDto
     );
 
     Task<SeismicAcquisitionAndProcessingDto> CreateSeismicAcquisitionAndProcessing(

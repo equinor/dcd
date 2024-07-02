@@ -40,8 +40,7 @@ public class CaseService : ICaseService
         IWellProjectService wellProjectService,
         ICaseRepository repository,
         IMapperService mapperService,
-        IMapper mapper
-        )
+        IMapper mapper)
     {
         _context = context;
         _projectService = projectService;
@@ -164,7 +163,7 @@ public class CaseService : ICaseService
             .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)
             .Include(c => c.TotalFEEDStudiesOverride)
-            .Include(c => c.TotalOtherStudiesCostProfile)
+            .Include(c => c.TotalOtherStudies)
             .Include(c => c.HistoricCostCostProfile)
             .Include(c => c.WellInterventionCostProfile)
             .Include(c => c.WellInterventionCostProfileOverride)
@@ -194,7 +193,7 @@ public class CaseService : ICaseService
                     .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
                     .Include(c => c.TotalFEEDStudies)
                     .Include(c => c.TotalFEEDStudiesOverride)
-                    .Include(c => c.TotalOtherStudiesCostProfile)
+                    .Include(c => c.TotalOtherStudies)
                     .Include(c => c.HistoricCostCostProfile)
                     .Include(c => c.WellInterventionCostProfile)
                     .Include(c => c.WellInterventionCostProfileOverride)
@@ -225,17 +224,15 @@ public class CaseService : ICaseService
         var existingCase = await _repository.GetCase(caseId)
             ?? throw new NotFoundInDBException($"Case with id {caseId} not found.");
 
-
         _mapperService.MapToEntity(updatedCaseDto, existingCase, caseId);
 
         existingCase.ModifyTime = DateTimeOffset.UtcNow;
 
-        // Case updatedCase;
+        Case updatedCase;
         try
         {
-            // TODO: This breaks EF Core's change tracking
-            // updatedCase = _repository.UpdateCase(existingCase);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            updatedCase = _repository.UpdateCase(existingCase);
+            await _repository.SaveChangesAsync();
         }
         catch (DbUpdateException ex)
         {
@@ -243,7 +240,7 @@ public class CaseService : ICaseService
             throw;
         }
 
-        var dto = _mapperService.MapToDto<Case, CaseDto>(existingCase, caseId);
+        var dto = _mapperService.MapToDto<Case, CaseDto>(updatedCase, caseId);
         return dto;
     }
 }

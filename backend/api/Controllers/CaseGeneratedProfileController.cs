@@ -23,17 +23,17 @@ namespace api.Controllers;
 )]
 public class CaseGeneratedProfileController : ControllerBase
 {
-    private readonly ICessationCostProfileService _generateCessationCostProfile;
-    private readonly IOpexCostProfileService _generateOpexCostProfile;
-    private readonly IStudyCostProfileService _generateStudyCostProfile;
-    private readonly ICo2IntensityProfileService _generateCo2IntensityProfile;
-    private readonly ICo2IntensityTotalService _generateCo2IntensityTotal;
-    private readonly ICo2DrillingFlaringFuelTotalsService _generateCo2DrillingFlaringFuelTotals;
+    private readonly IGenerateCessationCostProfile _generateCessationCostProfile;
+    private readonly IGenerateOpexCostProfile _generateOpexCostProfile;
+    private readonly IGenerateStudyCostProfile _generateStudyCostProfile;
+    private readonly IGenerateCo2IntensityProfile _generateCo2IntensityProfile;
+    private readonly IGenerateCo2IntensityTotal _generateCo2IntensityTotal;
+    private readonly IGenerateCo2DrillingFlaringFuelTotals _generateCo2DrillingFlaringFuelTotals;
 
-    public CaseGeneratedProfileController(IStudyCostProfileService generateStudyCostProfile,
-        IOpexCostProfileService generateOpexCostProfile, ICessationCostProfileService generateCessationCostProfile,
-        ICo2IntensityProfileService generateCo2IntensityProfile, ICo2IntensityTotalService generateCo2IntensityTotal,
-        ICo2DrillingFlaringFuelTotalsService generateCo2DrillingFlaringFuelTotals)
+    public CaseGeneratedProfileController(IGenerateStudyCostProfile generateStudyCostProfile,
+        IGenerateOpexCostProfile generateOpexCostProfile, IGenerateCessationCostProfile generateCessationCostProfile,
+        IGenerateCo2IntensityProfile generateCo2IntensityProfile, IGenerateCo2IntensityTotal generateCo2IntensityTotal,
+        IGenerateCo2DrillingFlaringFuelTotals generateCo2DrillingFlaringFuelTotals)
     {
         _generateStudyCostProfile = generateStudyCostProfile;
         _generateOpexCostProfile = generateOpexCostProfile;

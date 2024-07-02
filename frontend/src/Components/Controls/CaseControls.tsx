@@ -60,7 +60,7 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
                 const totalFeasibilityAndConceptStudiesOverrideData = result.totalFeasibilityAndConceptStudiesOverride
                 const totalFEEDStudiesData = result.totalFEEDStudies
                 const totalFEEDStudiesOverrideData = result.totalFEEDStudiesOverride
-                const totalOtherStudiesCostProfileData = result.totalOtherStudiesCostProfile
+                const totalOtherStudiesData = result.totalOtherStudies
                 const historicCostCostProfileData = result.historicCostCostProfile
                 const wellInterventionCostProfileData = result.wellInterventionCostProfile
                 const wellInterventionCostProfileOverrideData = result.wellInterventionCostProfileOverride
@@ -146,8 +146,8 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
                     projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: totalFEEDStudiesOverrideData?.id,
                 }], totalFEEDStudiesOverrideData)
                 queryClient.setQueryData([{
-                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: totalOtherStudiesCostProfileData?.id,
-                }], totalOtherStudiesCostProfileData)
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: totalOtherStudiesData?.id,
+                }], totalOtherStudiesData)
                 queryClient.setQueryData([{
                     projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: historicCostCostProfileData?.id,
                 }], historicCostCostProfileData)

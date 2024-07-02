@@ -68,6 +68,7 @@ if (string.IsNullOrEmpty(sqlConnectionString) || string.IsNullOrEmpty(_sqlConnec
 
         using DcdDbContext context = new(dBbuilder.Options);
         context.Database.EnsureCreated();
+        SaveSampleDataToDB.PopulateDb(context);
     }
     else
     {
@@ -189,23 +190,24 @@ builder.Services.AddScoped<ISubstructureTimeSeriesService, SubstructureTimeSerie
 builder.Services.AddScoped<ITopsideTimeSeriesService, TopsideTimeSeriesService>();
 builder.Services.AddScoped<ITransportTimeSeriesService, TransportTimeSeriesService>();
 
+
 builder.Services.AddScoped<IDevelopmentOperationalWellCostsService, DevelopmentOperationalWellCostsService>();
 builder.Services.AddScoped<ICaseAndAssetsService, CaseAndAssetsService>();
 builder.Services.AddScoped<ICaseWithAssetsService, CaseWithAssetsService>();
 
 builder.Services.AddScoped<ITechnicalInputService, TechnicalInputService>();
-builder.Services.AddScoped<IOpexCostProfileService, OpexCostProfileService>();
-builder.Services.AddScoped<IStudyCostProfileService, StudyCostProfileService>();
-builder.Services.AddScoped<ICo2EmissionsProfileService, Co2EmissionsProfileService>();
+builder.Services.AddScoped<IGenerateOpexCostProfile, GenerateOpexCostProfile>();
+builder.Services.AddScoped<IGenerateStudyCostProfile, GenerateStudyCostProfile>();
+builder.Services.AddScoped<IGenerateCo2EmissionsProfile, GenerateCo2EmissionsProfile>();
 builder.Services.AddScoped<IGenerateGAndGAdminCostProfile, GenerateGAndGAdminCostProfile>();
-builder.Services.AddScoped<ICessationCostProfileService, CessationCostProfileService>();
-builder.Services.AddScoped<IImportedElectricityProfileService, ImportedElectricityProfileService>();
-builder.Services.AddScoped<IFuelFlaringLossesProfileService, FuelFlaringLossesProfileService>();
-builder.Services.AddScoped<INetSaleGasProfileService, NetSaleGasProfileService>();
-builder.Services.AddScoped<ICo2IntensityProfileService, Co2IntensityProfileService>();
-builder.Services.AddScoped<ICo2IntensityTotalService, Co2IntensityTotalService>();
+builder.Services.AddScoped<IGenerateCessationCostProfile, GenerateCessationCostProfile>();
+builder.Services.AddScoped<IGenerateImportedElectricityProfile, GenerateImportedElectricityProfile>();
+builder.Services.AddScoped<IGenerateFuelFlaringLossesProfile, GenerateFuelFlaringLossesProfile>();
+builder.Services.AddScoped<IGenerateNetSaleGasProfile, GenerateNetSaleGasProfile>();
+builder.Services.AddScoped<IGenerateCo2IntensityProfile, GenerateCo2IntensityProfile>();
+builder.Services.AddScoped<IGenerateCo2IntensityTotal, GenerateCo2IntensityTotal>();
 builder.Services.AddScoped<ICompareCasesService, CompareCasesService>();
-builder.Services.AddScoped<ICo2DrillingFlaringFuelTotalsService, Co2DrillingFlaringFuelTotalsService>();
+builder.Services.AddScoped<IGenerateCo2DrillingFlaringFuelTotals, GenerateCo2DrillingFlaringFuelTotals>();
 builder.Services.AddScoped<ISTEAService, STEAService>();
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
