@@ -9,18 +9,12 @@ import {
     useMemo,
     useEffect,
 } from "react"
+import { useParams } from "react-router"
 import { EditInstance } from "../Models/Interfaces"
-import { useAppContext } from "../Context/AppContext"
 
 interface CaseContextType {
-    projectCase: Components.Schemas.CaseWithProfilesDto | undefined;
-    setProjectCase: Dispatch<SetStateAction<Components.Schemas.CaseWithProfilesDto | undefined>>,
-    projectCaseEdited: Components.Schemas.CaseWithProfilesDto | undefined; // todo: replace with caseEdits
-    setProjectCaseEdited: Dispatch<SetStateAction<Components.Schemas.CaseWithProfilesDto | undefined>>, // todo: replace with caseEdits
     caseEdits: EditInstance[];
     setCaseEdits: Dispatch<SetStateAction<EditInstance[]>>,
-    saveProjectCase: boolean,
-    setSaveProjectCase: Dispatch<SetStateAction<boolean>>,
     activeTabCase: number;
     setActiveTabCase: Dispatch<SetStateAction<number>>,
     editIndexes: any[]
@@ -43,23 +37,14 @@ const getFilteredEdits = () => {
 }
 
 const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [projectCase, setProjectCase] = useState<Components.Schemas.CaseWithProfilesDto | undefined>()
     const [caseEdits, setCaseEdits] = useState<EditInstance[]>(getFilteredEdits())
-    const [projectCaseEdited, setProjectCaseEdited] = useState<Components.Schemas.CaseWithProfilesDto | undefined>()
-    const [saveProjectCase, setSaveProjectCase] = useState<boolean>(false)
     const [activeTabCase, setActiveTabCase] = useState<number>(0)
     const [editIndexes, setEditIndexes] = useState<any[]>([])
     const [caseEditsBelongingToCurrentCase, setCaseEditsBelongingToCurrentCase] = useState<EditInstance[]>([])
 
     const value = useMemo(() => ({
-        projectCase,
-        setProjectCase,
         caseEdits,
         setCaseEdits,
-        projectCaseEdited,
-        setProjectCaseEdited,
-        saveProjectCase,
-        setSaveProjectCase,
         activeTabCase,
         setActiveTabCase,
         editIndexes,
@@ -68,14 +53,8 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setCaseEditsBelongingToCurrentCase,
 
     }), [
-        projectCase,
-        setProjectCase,
         caseEdits,
         setCaseEdits,
-        projectCaseEdited,
-        setProjectCaseEdited,
-        saveProjectCase,
-        setSaveProjectCase,
         activeTabCase,
         setActiveTabCase,
         editIndexes,
@@ -84,23 +63,17 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setCaseEditsBelongingToCurrentCase,
     ])
 
-    const { editMode } = useAppContext()
+    const { caseId } = useParams()
 
     useEffect(() => {
         localStorage.setItem("caseEdits", JSON.stringify(caseEdits))
     }, [caseEdits])
 
     useEffect(() => {
-        if (projectCase) {
-            setCaseEditsBelongingToCurrentCase(caseEdits.filter((edit) => edit.caseId === projectCase.id))
+        if (caseId) {
+            setCaseEditsBelongingToCurrentCase(caseEdits.filter((edit) => edit.caseId === caseId))
         }
-    }, [projectCase, caseEdits])
-
-    useEffect(() => {
-        if (editMode && projectCase && !projectCaseEdited) {
-            setProjectCaseEdited(projectCase)
-        }
-    }, [editMode, projectCaseEdited])
+    }, [caseId, caseEdits])
 
     useEffect(() => {
         const storedCaseEdits = localStorage.getItem("caseEdits")

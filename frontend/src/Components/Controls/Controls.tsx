@@ -36,10 +36,6 @@ const Controls = () => {
         projectEdited,
         setProjectEdited,
     } = useProjectContext()
-    const {
-        setProjectCase,
-        setProjectCaseEdited,
-    } = useCaseContext()
 
     const navigate = useNavigate()
     const { setTechnicalModalIsOpen } = useModalContext()
@@ -54,7 +50,6 @@ const Controls = () => {
     const cancelEdit = async () => {
         setEditMode(false)
         setProjectEdited(undefined)
-        setProjectCaseEdited(undefined)
         setIsCanceling(false)
     }
 
@@ -83,7 +78,6 @@ const Controls = () => {
 
     const backToProject = async () => {
         cancelEdit()
-        setProjectCase(undefined)
         navigate(projectPath(currentContext?.id!))
     }
 
