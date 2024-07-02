@@ -100,6 +100,27 @@ public class CasesController : ControllerBase
         return await _caseTimeSeriesService.CreateCessationOffshoreFacilitiesCostOverride(projectId, caseId, dto);
     }
 
+    [HttpPut("{caseId}/cessation-onshore-facilities-cost-profile/{costProfileId}")]
+    public async Task<CessationOnshoreFacilitiesCostProfileDto> UpdateCessationOnshoreFacilitiesCostProfile(
+    [FromRoute] Guid projectId,
+    [FromRoute] Guid caseId,
+    [FromRoute] Guid costProfileId,
+    [FromBody] UpdateCessationOnshoreFacilitiesCostProfileDto dto
+)
+    {
+        return await _caseTimeSeriesService.UpdateCessationOnshoreFacilitiesCostProfile(projectId, caseId, costProfileId, dto);
+    }
+
+    [HttpPost("{caseId}/cessation-onshore-facilities-cost-profile")]
+    public async Task<CessationOnshoreFacilitiesCostProfileDto> CreateCessationOnshoreFacilitiesCostProfile(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] CreateCessationOnshoreFacilitiesCostProfileDto dto
+    )
+    {
+        return await _caseTimeSeriesService.CreateCessationOnshoreFacilitiesCostProfile(projectId, caseId, dto);
+    }
+
     [HttpPost("{caseId}/cessation-wells-cost-override")]
     public async Task<CessationWellsCostOverrideDto> CreateCessationWellsCostOverride(
         [FromRoute] Guid projectId,
@@ -128,6 +149,16 @@ public class CasesController : ControllerBase
     )
     {
         return await _caseTimeSeriesService.CreateTotalFEEDStudiesOverride(projectId, caseId, dto);
+    }
+
+    [HttpPost("{caseId}/total-other-studies-cost-profile")]
+    public async Task<TotalOtherStudiesCostProfileDto> CreateTotalOtherStudiesCostProfile(
+    [FromRoute] Guid projectId,
+    [FromRoute] Guid caseId,
+    [FromBody] CreateTotalOtherStudiesCostProfileDto dto
+)
+    {
+        return await _caseTimeSeriesService.CreateTotalOtherStudiesCostProfile(projectId, caseId, dto);
     }
 
     [HttpPost("{caseId}/historic-cost-cost-profile")]
@@ -200,6 +231,17 @@ public class CasesController : ControllerBase
     )
     {
         return await _caseTimeSeriesService.UpdateTotalFEEDStudiesOverride(projectId, caseId, costProfileId, dto);
+    }
+
+    [HttpPut("{caseId}/total-other-studies-cost-profile/{costProfileId}")]
+    public async Task<TotalOtherStudiesCostProfileDto> UpdateTotalOtherStudiesCostProfile(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid costProfileId,
+        [FromBody] UpdateTotalOtherStudiesCostProfileDto dto
+    )
+    {
+        return await _caseTimeSeriesService.UpdateTotalOtherStudiesCostProfile(projectId, caseId, costProfileId, dto);
     }
 
     [HttpPut("{caseId}/historic-cost-cost-profile/{costProfileId}")]

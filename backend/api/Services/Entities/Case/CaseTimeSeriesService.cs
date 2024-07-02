@@ -65,6 +65,23 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
         );
     }
 
+    public async Task<CessationOnshoreFacilitiesCostProfileDto> UpdateCessationOnshoreFacilitiesCostProfile(
+    Guid projectId,
+    Guid caseId,
+    Guid costProfileId,
+    UpdateCessationOnshoreFacilitiesCostProfileDto updatedCostProfileDto
+)
+    {
+        return await UpdateCaseCostProfile<CessationOnshoreFacilitiesCostProfile, CessationOnshoreFacilitiesCostProfileDto, UpdateCessationOnshoreFacilitiesCostProfileDto>(
+            projectId,
+            caseId,
+            costProfileId,
+            updatedCostProfileDto,
+            _repository.GetCessationOnshoreFacilitiesCostProfile,
+            _repository.UpdateCessationOnshoreFacilitiesCostProfile
+        );
+    }
+
     public async Task<TotalFeasibilityAndConceptStudiesOverrideDto> UpdateTotalFeasibilityAndConceptStudiesOverride(
         Guid projectId,
         Guid caseId,
@@ -96,6 +113,23 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             updatedCostProfileDto,
             _repository.GetTotalFEEDStudiesOverride,
             _repository.UpdateTotalFEEDStudiesOverride
+        );
+    }
+
+    public async Task<TotalOtherStudiesCostProfileDto> UpdateTotalOtherStudiesCostProfile(
+    Guid projectId,
+    Guid caseId,
+    Guid costProfileId,
+    UpdateTotalOtherStudiesCostProfileDto updatedCostProfileDto
+)
+    {
+        return await UpdateCaseCostProfile<TotalOtherStudiesCostProfile, TotalOtherStudiesCostProfileDto, UpdateTotalOtherStudiesCostProfileDto>(
+            projectId,
+            caseId,
+            costProfileId,
+            updatedCostProfileDto,
+            _repository.GetTotalOtherStudiesCostProfile,
+            _repository.UpdateTotalOtherStudiesCostProfile
         );
     }
 
@@ -211,6 +245,21 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
         );
     }
 
+    public async Task<CessationOnshoreFacilitiesCostProfileDto> CreateCessationOnshoreFacilitiesCostProfile(
+    Guid projectId,
+    Guid caseId,
+    CreateCessationOnshoreFacilitiesCostProfileDto createProfileDto
+)
+    {
+        return await CreateCaseProfile<CessationOnshoreFacilitiesCostProfile, CessationOnshoreFacilitiesCostProfileDto, CreateCessationOnshoreFacilitiesCostProfileDto>(
+            projectId,
+            caseId,
+            createProfileDto,
+            _repository.CreateCessationOnshoreFacilitiesCostProfile,
+            CaseProfileNames.CessationOnshoreFacilitiesCostProfile
+        );
+    }
+
     public async Task<TotalFeasibilityAndConceptStudiesOverrideDto> CreateTotalFeasibilityAndConceptStudiesOverride(
         Guid projectId,
         Guid caseId,
@@ -238,6 +287,21 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             createProfileDto,
             _repository.CreateTotalFEEDStudiesOverride,
             CaseProfileNames.TotalFEEDStudiesOverride
+        );
+    }
+
+    public async Task<TotalOtherStudiesCostProfileDto> CreateTotalOtherStudiesCostProfile(
+        Guid projectId,
+        Guid caseId,
+        CreateTotalOtherStudiesCostProfileDto createProfileDto
+    )
+    {
+        return await CreateCaseProfile<TotalOtherStudiesCostProfile, TotalOtherStudiesCostProfileDto, CreateTotalOtherStudiesCostProfileDto>(
+            projectId,
+            caseId,
+            createProfileDto,
+            _repository.CreateTotalOtherStudiesCostProfile,
+            CaseProfileNames.TotalOtherStudiesCostProfile
         );
     }
 
@@ -335,12 +399,12 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
 
         _mapperService.MapToEntity(updatedCostProfileDto, existingProfile, caseId);
 
-        TProfile updatedProfile;
+        // TProfile updatedProfile;
         try
         {
-            updatedProfile = updateProfile(existingProfile);
+            // updatedProfile = updateProfile(existingProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -350,7 +414,7 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
         }
 
 
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, costProfileId);
+        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(existingProfile, costProfileId);
         return updatedDto;
     }
 
@@ -387,7 +451,7 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
         {
             createdProfile = createProfile(newProfile);
             await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

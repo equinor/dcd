@@ -8,7 +8,7 @@ using AutoMapper;
 
 namespace api.Services.GenerateCostProfiles;
 
-public class GenerateNetSaleGasProfile : IGenerateNetSaleGasProfile
+public class NetSaleGasProfileService : INetSaleGasProfileService
 {
     private readonly ICaseService _caseService;
     private readonly IDrainageStrategyService _drainageStrategyService;
@@ -17,7 +17,7 @@ public class GenerateNetSaleGasProfile : IGenerateNetSaleGasProfile
     private readonly DcdDbContext _context;
     private readonly IMapper _mapper;
 
-    public GenerateNetSaleGasProfile(
+    public NetSaleGasProfileService(
         DcdDbContext context,
         ICaseService caseService,
         IProjectService projectService,
@@ -51,17 +51,18 @@ public class GenerateNetSaleGasProfile : IGenerateNetSaleGasProfile
         netSaleGas.StartYear = calculateNetSaleGas.StartYear;
         netSaleGas.Values = calculateNetSaleGas.Values;
 
-        await UpdateDrainageStrategyAndSave(drainageStrategy, netSaleGas);
+        UpdateDrainageStrategyAndSave(drainageStrategy, netSaleGas);
 
         var dto = _mapper.Map<NetSalesGasDto>(netSaleGas, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 
         return dto ?? new NetSalesGasDto();
     }
 
-    private async Task<int> UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, NetSalesGas netSalesGas)
+    private void UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, NetSalesGas netSalesGas)
     {
         drainageStrategy.NetSalesGas = netSalesGas;
-        return await _context.SaveChangesAsync();
+        return;
+        // return await _context.SaveChangesAsync();
     }
 
     private static TimeSeries<double> CalculateNetSaleGas(DrainageStrategy drainageStrategy,

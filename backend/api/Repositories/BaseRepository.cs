@@ -30,6 +30,11 @@ public class BaseRepository : IBaseRepository
         return updated;
     }
 
+    public async Task SaveChangesAndRecalculateAsync(Guid caseId)
+    {
+        await _context.SaveChangesAndRecalculateAsync(caseId);
+    }
+
     public async Task SaveChangesAsync()
     {
         await _context.SaveChangesAsync();

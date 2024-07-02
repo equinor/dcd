@@ -57,14 +57,14 @@ namespace tests.Services
             _repository.UpdateTransport(existingTransport).Returns(updatedTransport);
 
             var updatedTransportDtoResult = new TransportDto();
-            _mapperService.MapToDto<Transport, TransportDto>(updatedTransport, transportId).Returns(updatedTransportDtoResult);
+            _mapperService.MapToDto<Transport, TransportDto>(existingTransport, transportId).Returns(updatedTransportDtoResult);
 
             // Act
             var result = await _transportService.UpdateTransport<BaseUpdateTransportDto>(caseId, transportId, updatedTransportDto);
 
             // Assert
             Assert.Equal(updatedTransportDtoResult, result);
-            await _repository.Received(1).SaveChangesAsync();
+            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
         }
 
         [Fact]
@@ -78,7 +78,7 @@ namespace tests.Services
             var existingTransport = new Transport { Id = transportId };
             _repository.GetTransport(transportId).Returns(existingTransport);
 
-            _repository.When(r => r.UpdateTransport(existingTransport)).Do(x => throw new DbUpdateException());
+            _repository.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(x => throw new DbUpdateException());
 
             // Act & Assert
             await Assert.ThrowsAsync<DbUpdateException>(() => _transportService.UpdateTransport<BaseUpdateTransportDto>(caseId, transportId, updatedTransportDto));

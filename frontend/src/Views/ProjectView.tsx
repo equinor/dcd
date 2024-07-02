@@ -2,7 +2,6 @@ import { useEffect } from "react"
 import { Tabs } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useLocation } from "react-router-dom"
-import styled from "styled-components"
 import ProjectOverviewTab from "../Components/Project/ProjectOverviewTab"
 import ProjectCompareCasesTab from "../Components/Project/CompareCasesTab/CompareCasesTabOverview"
 import ProjectSettingsTab from "../Components/Project/ProjectSettingsTab"
@@ -12,11 +11,6 @@ import { useProjectContext } from "../Context/ProjectContext"
 const {
     List, Tab, Panels, Panel,
 } = Tabs
-
-const ScrollablePanel = styled(Panel)`
-    height: calc(100vh - 210px);
-    overflow: auto;
-`
 
 const ProjectView = () => {
     const { activeTabProject, setActiveTabProject } = useProjectContext()
@@ -38,20 +32,20 @@ const ProjectView = () => {
                         <Tab>Settings</Tab>
                     </List>
                     <Panels>
-                        <ScrollablePanel>
+                        <Panel>
                             <ProjectOverviewTab />
-                        </ScrollablePanel>
-                        <ScrollablePanel>
+                        </Panel>
+                        <Panel>
                             <ProjectCompareCasesTab />
-                        </ScrollablePanel>
+                        </Panel>
                         {/* uncomment for next release
-                        <ScrollablePanel>
+                        <Panel>
                             <EditHistoryOverviewTab />
-                        </ScrollablePanel>
+                        </Panel>
                         */}
-                        <ScrollablePanel>
+                        <Panel>
                             <ProjectSettingsTab />
-                        </ScrollablePanel>
+                        </Panel>
                     </Panels>
                 </Tabs>
             </Grid>
