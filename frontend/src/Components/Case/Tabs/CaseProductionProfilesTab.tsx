@@ -21,7 +21,7 @@ const CaseProductionProfilesTab = () => {
     const queryClient = useQueryClient()
     const { caseId } = useParams()
     const { project } = useProjectContext()
-    const { projectCase, activeTabCase } = useCaseContext()
+    const { activeTabCase } = useCaseContext()
     const projectId = project?.id || null
 
     const [startYear, setStartYear] = useState<number>(2020)
@@ -85,7 +85,7 @@ const CaseProductionProfilesTab = () => {
     const deferredGasData = apiData?.deferredGasProduction
     const caseData = apiData?.case
 
-    if (!projectCase || !drainageStrategyData) { return null }
+    if (!caseData || !drainageStrategyData) { return null }
 
     const timeSeriesData: ITimeSeriesData[] = [
         {
@@ -198,13 +198,13 @@ const CaseProductionProfilesTab = () => {
 
     const productionProfilesChartData = () => {
         const dataArray: object[] = []
-        if (projectCase?.dG4Date === undefined) { return dataArray }
+        if (caseData.dG4Date === undefined) { return dataArray }
         for (let i = startYear; i <= endYear; i += 1) {
             dataArray.push({
                 year: i,
-                oilProduction: setValueToCorrespondingYear(oilProductionData, i, startYear, new Date(projectCase?.dG4Date).getFullYear()),
-                gasProduction: setValueToCorrespondingYear(gasProductionData, i, startYear, new Date(projectCase?.dG4Date).getFullYear()),
-                waterProduction: setValueToCorrespondingYear(waterProductionData, i, startYear, new Date(projectCase?.dG4Date).getFullYear()),
+                oilProduction: setValueToCorrespondingYear(oilProductionData, i, startYear, new Date(caseData.dG4Date).getFullYear()),
+                gasProduction: setValueToCorrespondingYear(gasProductionData, i, startYear, new Date(caseData.dG4Date).getFullYear()),
+                waterProduction: setValueToCorrespondingYear(waterProductionData, i, startYear, new Date(caseData.dG4Date).getFullYear()),
             })
         }
         return dataArray
@@ -212,12 +212,12 @@ const CaseProductionProfilesTab = () => {
 
     const injectionProfilesChartData = () => {
         const dataArray: object[] = []
-        if (projectCase?.dG4Date === undefined) { return dataArray }
+        if (caseData.dG4Date === undefined) { return dataArray }
         for (let i = startYear; i <= endYear; i += 1) {
             dataArray.push({
                 year: i,
                 waterInjection:
-                    setValueToCorrespondingYear(waterInjectionData, i, startYear, new Date(projectCase?.dG4Date).getFullYear()),
+                    setValueToCorrespondingYear(waterInjectionData, i, startYear, new Date(caseData.dG4Date).getFullYear()),
             })
         }
         return dataArray

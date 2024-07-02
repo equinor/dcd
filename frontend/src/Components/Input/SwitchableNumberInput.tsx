@@ -1,8 +1,8 @@
 import React from "react"
+import { useParams } from "react-router-dom"
 import NumberInputWithValidation from "./Components/NumberInputWithValidation"
 import InputSwitcher from "./Components/InputSwitcher"
 import useDataEdits from "../../Hooks/useDataEdits"
-import { useCaseContext } from "../../Context/CaseContext"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { ResourcePropertyKey, ResourceName } from "../../Models/Interfaces"
 
@@ -36,14 +36,14 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
     max,
 }: CaseEditInputProps) => {
     const { addEdit } = useDataEdits()
-    const { projectCase } = useCaseContext()
     const { project } = useProjectContext()
+    const { caseId } = useParams()
 
     const addToEditsAndSubmit = (insertedValue: number) => {
         if (onSubmit) {
             onSubmit(insertedValue) // this will be obsolete when we introduce autosave.
         }
-        if (!projectCase || !project) { return }
+        if (!caseId || !project) { return }
 
         addEdit({
             newValue: insertedValue,
@@ -53,7 +53,7 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
             resourceName,
             resourcePropertyKey,
             resourceId,
-            caseId: projectCase.id,
+            caseId,
         })
     }
 

@@ -20,12 +20,9 @@ const CasesList: React.FC = () => {
 
     const location = useLocation()
     const navigate = useNavigate()
-    const { setProjectCase } = useCaseContext()
 
     const selectCase = (caseId: string) => {
         if (!currentContext || !caseId) { return null }
-        const caseResult = project.cases.find((o) => o.id === caseId)
-        setProjectCase(caseResult)
         navigate(casePath(currentContext.id, caseId))
         return null
     }
