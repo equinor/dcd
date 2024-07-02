@@ -134,22 +134,17 @@ const EditTechnicalInputModal = () => {
     }
 
     useEffect(() => {
-        if (project?.wells) {
-            setWellProjectWells(project?.wells.filter((w) => !isExplorationWell(w)))
-            setExplorationWells(project?.wells.filter((w) => isExplorationWell(w)))
-
-            const originalWellProjectWellsResult = structuredClone(project?.wells.filter((w) => !isExplorationWell(w)))
-            setOriginalWellProjectWells(originalWellProjectWellsResult)
-            const originalExplorationWellsResult = structuredClone(project?.wells.filter((w) => isExplorationWell(w)))
-            setOriginalExplorationWells(originalExplorationWellsResult)
+        if (technicalModalIsOpen) {
+            setExplorationOperationalWellCosts(structuredClone(project?.explorationOperationalWellCosts))
+            setDevelopmentOperationalWellCosts(structuredClone(project?.developmentOperationalWellCosts))
+            setOriginalExplorationOperationalWellCosts(structuredClone(project?.explorationOperationalWellCosts))
+            setOriginalDevelopmentOperationalWellCosts(structuredClone(project?.developmentOperationalWellCosts))
+            setWellProjectWells(structuredClone(project?.wells?.filter((w) => !isExplorationWell(w)) ?? []))
+            setExplorationWells(structuredClone(project?.wells?.filter((w) => isExplorationWell(w)) ?? []))
+            setOriginalWellProjectWells(structuredClone(project?.wells?.filter((w) => !isExplorationWell(w)) ?? []))
+            setOriginalExplorationWells(structuredClone(project?.wells?.filter((w) => isExplorationWell(w)) ?? []))
         }
-        if (project && !developmentOperationalWellCosts && !explorationOperationalWellCosts) {
-            setDevelopmentOperationalWellCosts(project?.developmentOperationalWellCosts)
-            setExplorationOperationalWellCosts(project?.explorationOperationalWellCosts)
-            setOriginalDevelopmentOperationalWellCosts(project?.developmentOperationalWellCosts)
-            setOriginalExplorationOperationalWellCosts(project?.explorationOperationalWellCosts)
-        }
-    }, [project])
+    }, [technicalModalIsOpen])
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
