@@ -25,14 +25,11 @@ interface ITimeSeriesData {
 }
 
 const CaseSummaryTab = (): React.ReactElement | null => {
-    const {
-        projectCase,
-        activeTabCase,
-    } = useCaseContext()
-
-    const queryClient = useQueryClient()
+    const { activeTabCase } = useCaseContext()
     const { project } = useProjectContext()
     const { caseId } = useParams()
+
+    const queryClient = useQueryClient()
     const projectId = project?.id || null
 
     if (!project) {
@@ -286,7 +283,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
             <Grid item xs={12}>
                 <CaseTabTableWithGrouping
                     allTimeSeriesData={allTimeSeriesData}
-                    dg4Year={projectCase?.dG4Date ? new Date(projectCase.dG4Date).getFullYear() : 2030}
+                    dg4Year={caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
                     includeFooter={false}
                 />

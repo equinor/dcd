@@ -1033,7 +1033,7 @@ const useDataEdits = (): {
     }
 
     const addToHistoryTracker = async (editInstanceObject: EditInstance, caseId: string) => {
-        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, projectCase))
+        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, projectCase?.id))
         const caseEditsNotBelongingToCurrentCase = caseEdits.filter((edit) => edit.caseId !== caseId)
 
         let edits = caseEditsBelongingToCurrentCase
@@ -1119,7 +1119,7 @@ const useDataEdits = (): {
     }
 
     const undoEdit = () => {
-        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, projectCase))
+        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, projectCase?.id))
         const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
         const updatedEditIndex = currentEditIndex + 1
         const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
@@ -1152,7 +1152,7 @@ const useDataEdits = (): {
     }
 
     const redoEdit = () => {
-        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, projectCase))
+        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, projectCase?.id))
 
         if (currentEditIndex <= 0) {
             // If the current edit is the first one or not found, redo the last edit.

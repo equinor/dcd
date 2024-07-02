@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import { Accept, FileRejection, useDropzone } from "react-dropzone"
 import { Box, Typography } from "@mui/material"
 import styled from "styled-components"
 import { Icon } from "@equinor/eds-core-react"
 import { add } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
+import { useParams } from "react-router-dom"
 import { getImageService } from "../../Services/ImageService"
-import { useCaseContext } from "../../Context/CaseContext"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { useAppContext } from "../../Context/AppContext"
 
@@ -45,16 +45,16 @@ interface ImageUploadProps {
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeededLimit }) => {
-    const { projectCase } = useCaseContext()
+    const { caseId } = useParams()
     const { project } = useProjectContext()
     const { setSnackBarMessage } = useAppContext()
 
     useEffect(() => {
         const loadImages = async () => {
-            if (project?.id && projectCase?.id) {
+            if (project?.id && caseId) {
                 try {
                     const imageService = await getImageService()
-                    const imageDtos = await imageService.getImages(project.id, projectCase.id)
+                    const imageDtos = await imageService.getImages(project.id, caseId)
                     setGallery(imageDtos)
                 } catch (error) {
                     console.error("Error loading images:", error)
@@ -62,7 +62,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
             }
         }
         loadImages()
-    }, [setGallery, project?.id, projectCase?.id])
+    }, [setGallery, project?.id, caseId])
 
     const MAX_FILE_SIZE = 5 * 1024 * 1024
     const MAX_FILES = 4
@@ -92,14 +92,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         }
         setExeededLimit(false)
 
-        if (!project?.id || !projectCase?.id) {
+        if (!project?.id || !caseId) {
             console.error("Project ID or Case ID is missing.")
             return
         }
 
         const imageService = await getImageService()
 
-        const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(project.id, project.name, projectCase.id, file))
+        const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(project.id, project.name, caseId, file))
         try {
             const uploadedImageDtos = await Promise.all(uploadPromises)
             if (Array.isArray(uploadedImageDtos)) {

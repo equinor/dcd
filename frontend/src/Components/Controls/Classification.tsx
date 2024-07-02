@@ -1,11 +1,7 @@
 import styled from "styled-components"
-import {
-    Icon,
-    Chip,
-    Tooltip,
-} from "@equinor/eds-core-react"
+import { Icon, Chip, Tooltip } from "@equinor/eds-core-react"
+import { useParams } from "react-router-dom"
 import { useProjectContext } from "../../Context/ProjectContext"
-import { useCaseContext } from "../../Context/CaseContext"
 import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
 
 const StyledChip = styled(Chip)`
@@ -42,15 +38,11 @@ const SmallTooltip = styled(Tooltip)`
 `
 
 const Classification = () => {
-    const {
-        project,
-    } = useProjectContext()
-    const {
-        projectCase,
-    } = useCaseContext()
+    const { project } = useProjectContext()
+    const { caseId } = useParams()
 
     return (
-        project && !projectCase
+        project && !caseId
             ? (
                 <SmallTooltip placement="bottom-start" title={PROJECT_CLASSIFICATION[project?.classification].description}>
                     <StyledChip

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react"
 import {
-    Typography, Button, Icon, Tooltip, CircularProgress,
+    Typography, Icon, Tooltip, CircularProgress,
 } from "@equinor/eds-core-react"
-import { redo, undo, check_circle_outlined } from "@equinor/eds-icons"
+import { check_circle_outlined } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { useIsMutating } from "react-query"
+import { useParams } from "react-router-dom"
 import useDataEdits from "../../Hooks/useDataEdits"
 import { useCaseContext } from "../../Context/CaseContext"
 import { getCurrentEditId } from "../../Utils/common"
@@ -24,16 +25,16 @@ const Status = styled.div`
 
 const UndoControls: React.FC = () => {
     const {
-        projectCase,
         editIndexes,
         caseEditsBelongingToCurrentCase,
     } = useCaseContext()
+    const { caseId } = useParams()
 
     const isMutating = useIsMutating()
 
     const { undoEdit, redoEdit } = useDataEdits()
 
-    const currentEditId = getCurrentEditId(editIndexes, projectCase)
+    const currentEditId = getCurrentEditId(editIndexes, caseId)
 
     const canUndo = () => {
         if (isMutating) {

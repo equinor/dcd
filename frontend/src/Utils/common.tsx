@@ -297,8 +297,8 @@ export const formatTime = (timestamp: number): string => {
     return `${formattedHours}:${formattedMinutes}`
 }
 
-export const getCurrentEditId = (editIndexes: EditEntry[], projectCase: Components.Schemas.CaseDto | undefined): string | undefined => {
-    const currentCaseEditId = editIndexes.find((entry: EditEntry) => entry.caseId === projectCase?.id && entry.currentEditId)
+export const getCurrentEditId = (editIndexes: EditEntry[], caseId: string | undefined): string | undefined => {
+    const currentCaseEditId = editIndexes.find((entry: EditEntry) => entry.caseId === caseId && entry.currentEditId)
     return (currentCaseEditId as unknown as EditEntry)?.currentEditId
 }
 

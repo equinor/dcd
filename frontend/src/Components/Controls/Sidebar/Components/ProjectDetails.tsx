@@ -6,7 +6,7 @@ import {
     Icon,
     Divider,
 } from "@equinor/eds-core-react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
 import {
@@ -15,7 +15,6 @@ import {
 import { projectPath } from "../../../../Utils/common"
 import { TimelineElement, Timeline } from "../Sidebar"
 import { useAppContext } from "../../../../Context/AppContext"
-import { useCaseContext } from "../../../../Context/CaseContext"
 
 const ProjectTitle = styled(Typography)`
     line-break: anywhere;
@@ -23,13 +22,14 @@ const ProjectTitle = styled(Typography)`
 
 const ProjectDetails: React.FC = () => {
     const { sidebarOpen } = useAppContext()
-    const { projectCase } = useCaseContext()
     const { currentContext } = useModuleCurrentContext()
+    const { caseId } = useParams()
+
     const navigate = useNavigate()
 
     return (
         <div>
-            {projectCase
+            {caseId
                 && (
                     <Grid item container justifyContent="center">
                         <Grid item xs={12} container alignItems="center" justifyContent={sidebarOpen ? "space-between" : "center"}>

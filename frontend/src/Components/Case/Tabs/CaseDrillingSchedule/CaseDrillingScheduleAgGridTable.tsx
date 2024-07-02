@@ -21,7 +21,6 @@ interface Props {
     alignedGridsRef?: any[]
     gridRef?: any
     assetWells: Components.Schemas.ExplorationWellDto[] | Components.Schemas.WellProjectWellDto[]
-    setAssetWells: (assetWell: any[]) => void
     wells: Components.Schemas.WellDto[] | undefined
     resourceId: string
     isExplorationTable: boolean
@@ -31,7 +30,7 @@ const CaseDrillingScheduleTabTable = ({
     dg4Year,
     tableYears, tableName,
     alignedGridsRef, gridRef,
-    assetWells, setAssetWells,
+    assetWells,
     wells, resourceId, isExplorationTable,
 }: Props) => {
     const styles = useStyles()
