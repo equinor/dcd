@@ -158,6 +158,12 @@ const CaseTabTable = ({
                 aggFunc: () => totalRowName ?? "Total",
             },
             {
+                field: "unit",
+                headerName: "Unit",
+                hide: true,
+                width: 100,
+            },
+            {
                 field: "total",
                 flex: 2,
                 editable: false,
@@ -286,7 +292,6 @@ const CaseTabTable = ({
         editable: true,
         onCellValueChanged: handleCellValueChange,
         suppressHeaderMenuButton: true,
-        cellDataType: "number",
     }), [timeSeriesData])
 
     useEffect(() => {
@@ -298,6 +303,15 @@ const CaseTabTable = ({
         const generateRowData = profilesToRowData()
         params.api.setGridOption("rowData", generateRowData)
     }, [])
+
+    const defaultExcelExportParams = useMemo(() => {
+        const yearColumnKeys = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => (tableYears[0] + i).toString())
+        const columnKeys = ["profileName", "unit", ...yearColumnKeys, "total"]
+        return {
+            columnKeys,
+            fileName: "export.xlsx",
+        }
+    }, [tableYears])
 
     const clearCellsInRange = (start: any, end: any, columns: any) => {
         Array.from({ length: end - start + 1 }, (_, i) => start + i).map((i) => {
@@ -361,6 +375,7 @@ const CaseTabTable = ({
                         suppressLastEmptyLineOnPaste
                         stopEditingWhenCellsLoseFocus
                         onGridReady={onGridReady}
+                        defaultExcelExportParams={defaultExcelExportParams}
                         onCellKeyDown={editMode ? handleDeleteOnRange : undefined}
                     />
                 </div>
