@@ -187,33 +187,25 @@ public class CaseService : ICaseService
 
     public async Task<IEnumerable<Case>> GetAll()
     {
-        if (_context.Cases != null)
-        {
-            return await _context.Cases
-                    .Include(c => c.TotalFeasibilityAndConceptStudies)
-                    .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
-                    .Include(c => c.TotalFEEDStudies)
-                    .Include(c => c.TotalFEEDStudiesOverride)
-                    .Include(c => c.TotalOtherStudiesCostProfile)
-                    .Include(c => c.HistoricCostCostProfile)
-                    .Include(c => c.WellInterventionCostProfile)
-                    .Include(c => c.WellInterventionCostProfileOverride)
-                    .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
-                    .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
-                    .Include(c => c.OnshoreRelatedOPEXCostProfile)
-                    .Include(c => c.AdditionalOPEXCostProfile)
-                    .Include(c => c.CessationWellsCost)
-                    .Include(c => c.CessationWellsCostOverride)
-                    .Include(c => c.CessationOffshoreFacilitiesCost)
-                    .Include(c => c.CessationOffshoreFacilitiesCostOverride)
-                    .Include(c => c.CessationOnshoreFacilitiesCostProfile)
-                    .ToListAsync();
-        }
-        else
-        {
-            _logger.LogInformation("No cases exists");
-            return new List<Case>();
-        }
+        return await _context.Cases
+                .Include(c => c.TotalFeasibilityAndConceptStudies)
+                .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
+                .Include(c => c.TotalFEEDStudies)
+                .Include(c => c.TotalFEEDStudiesOverride)
+                .Include(c => c.TotalOtherStudiesCostProfile)
+                .Include(c => c.HistoricCostCostProfile)
+                .Include(c => c.WellInterventionCostProfile)
+                .Include(c => c.WellInterventionCostProfileOverride)
+                .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
+                .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+                .Include(c => c.OnshoreRelatedOPEXCostProfile)
+                .Include(c => c.AdditionalOPEXCostProfile)
+                .Include(c => c.CessationWellsCost)
+                .Include(c => c.CessationWellsCostOverride)
+                .Include(c => c.CessationOffshoreFacilitiesCost)
+                .Include(c => c.CessationOffshoreFacilitiesCostOverride)
+                .Include(c => c.CessationOnshoreFacilitiesCostProfile)
+                .ToListAsync();
     }
 
     public async Task<CaseDto> UpdateCase<TDto>(

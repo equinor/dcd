@@ -33,6 +33,12 @@ public class DcdDbContext : DbContext
 
     private async Task DetectChangesAndCalculateEntities(Guid caseId)
     {
+        var (wellIds, drillingScheduleIds) = CalculateExplorationAndWellProjectCost();
+        if (wellIds.Count != 0 || drillingScheduleIds.Count != 0)
+        {
+            await _serviceProvider.GetRequiredService<IWellCostProfileService>().UpdateCostProfilesForWellsFromDrillingSchedules(drillingScheduleIds);
+            await _serviceProvider.GetRequiredService<IWellCostProfileService>().UpdateCostProfilesForWells(wellIds);
+        }
         if (CalculateStudyCost())
         {
             await _serviceProvider.GetRequiredService<IStudyCostProfileService>().Generate(caseId);
@@ -72,6 +78,23 @@ public class DcdDbContext : DbContext
         {
             await _serviceProvider.GetRequiredService<ICo2EmissionsProfileService>().Generate(caseId);
         }
+    }
+
+    private (List<Guid> wellIds, List<Guid> drillingScheduleIds) CalculateExplorationAndWellProjectCost()
+    {
+        var modifiedWellsWithCostChange = ChangeTracker.Entries<Well>()
+            .Where(e => e.State == EntityState.Modified && e.Property(nameof(Well.WellCost)).IsModified
+            || e.Property(nameof(Well.WellCategory)).IsModified);
+
+        var modifiedWellIds = modifiedWellsWithCostChange.Select(e => e.Entity.Id).ToList();
+
+        var modifiedDrillingSchedules = ChangeTracker.Entries<DrillingSchedule>()
+            .Where(e => e.State == EntityState.Modified && e.Property(nameof(Models.DrillingSchedule.InternalData)).IsModified
+            || e.Property(nameof(Models.DrillingSchedule.StartYear)).IsModified);
+
+        var modifiedDrillingScheduleIds = modifiedDrillingSchedules.Select(e => e.Entity.Id).ToList();
+
+        return (modifiedWellIds, modifiedDrillingScheduleIds);
     }
 
     private bool CalculateCo2Emissions()

@@ -190,7 +190,6 @@ builder.Services.AddScoped<ITopsideTimeSeriesService, TopsideTimeSeriesService>(
 builder.Services.AddScoped<ITransportTimeSeriesService, TransportTimeSeriesService>();
 
 builder.Services.AddScoped<IDevelopmentOperationalWellCostsService, DevelopmentOperationalWellCostsService>();
-builder.Services.AddScoped<ICaseAndAssetsService, CaseAndAssetsService>();
 builder.Services.AddScoped<ICaseWithAssetsService, CaseWithAssetsService>();
 
 builder.Services.AddScoped<ITechnicalInputService, TechnicalInputService>();
@@ -206,6 +205,8 @@ builder.Services.AddScoped<ICo2IntensityProfileService, Co2IntensityProfileServi
 builder.Services.AddScoped<ICo2IntensityTotalService, Co2IntensityTotalService>();
 builder.Services.AddScoped<ICompareCasesService, CompareCasesService>();
 builder.Services.AddScoped<ICo2DrillingFlaringFuelTotalsService, Co2DrillingFlaringFuelTotalsService>();
+builder.Services.AddScoped<IWellCostProfileService, WellCostProfileService>();
+
 builder.Services.AddScoped<ISTEAService, STEAService>();
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
