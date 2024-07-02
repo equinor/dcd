@@ -20,7 +20,7 @@ public class CaseProfile : Profile
         CreateMap<TotalFeasibilityAndConceptStudiesOverride, TotalFeasibilityAndConceptStudiesOverrideDto>();
         CreateMap<TotalFEEDStudies, TotalFEEDStudiesDto>();
         CreateMap<TotalFEEDStudiesOverride, TotalFEEDStudiesOverrideDto>();
-        CreateMap<TotalOtherStudies, TotalOtherStudiesDto>();
+        CreateMap<TotalOtherStudiesCostProfile, TotalOtherStudiesCostProfileDto>();
         CreateMap<WellInterventionCostProfile, WellInterventionCostProfileDto>();
         CreateMap<WellInterventionCostProfileOverride, WellInterventionCostProfileOverrideDto>();
         CreateMap<OffshoreFacilitiesOperationsCostProfile, OffshoreFacilitiesOperationsCostProfileDto>();
@@ -38,7 +38,7 @@ public class CaseProfile : Profile
         CreateMap<UpdateCessationOnshoreFacilitiesCostProfileDto, CessationOnshoreFacilitiesCostProfile>();
         CreateMap<UpdateTotalFeasibilityAndConceptStudiesOverrideDto, TotalFeasibilityAndConceptStudiesOverride>();
         CreateMap<UpdateTotalFEEDStudiesOverrideDto, TotalFEEDStudiesOverride>();
-        CreateMap<UpdateTotalOtherStudies, TotalOtherStudies>();
+        CreateMap<UpdateTotalOtherStudiesCostProfileDto, TotalOtherStudiesCostProfile>();
         CreateMap<UpdateWellInterventionCostProfileOverrideDto, WellInterventionCostProfileOverride>();
         CreateMap<UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto, OffshoreFacilitiesOperationsCostProfileOverride>();
         CreateMap<UpdateHistoricCostCostProfileDto, HistoricCostCostProfile>();
@@ -50,6 +50,7 @@ public class CaseProfile : Profile
         CreateMap<CreateCessationOnshoreFacilitiesCostProfileDto, CessationOnshoreFacilitiesCostProfile>();
         CreateMap<CreateTotalFeasibilityAndConceptStudiesOverrideDto, TotalFeasibilityAndConceptStudiesOverride>();
         CreateMap<CreateTotalFEEDStudiesOverrideDto, TotalFEEDStudiesOverride>();
+        CreateMap<CreateTotalOtherStudiesCostProfileDto, TotalOtherStudiesCostProfile>();
         CreateMap<CreateWellInterventionCostProfileOverrideDto, WellInterventionCostProfileOverride>();
         CreateMap<CreateOffshoreFacilitiesOperationsCostProfileOverrideDto, OffshoreFacilitiesOperationsCostProfileOverride>();
         CreateMap<CreateHistoricCostCostProfileDto, HistoricCostCostProfile>();

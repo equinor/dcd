@@ -49,11 +49,14 @@ const Overview = () => {
         }
     }
 
+    function fetchPV() {
+        setWarnedProjects(JSON.parse(String(localStorage.getItem("pv"))))
+        // NOTE: pv stands for "projects visited". It's been abbreviated to avoid disclosing the classification of the project's ID
+    }
+
     useEffect(() => {
-        window.addEventListener("storage", () => {
-            setWarnedProjects(JSON.parse(localStorage.getItem("pv") || "null"))
-            // NOTE: pv stands for "projects visited". It's been abbreviated to avoid disclosing the classification of the project's ID
-        })
+        fetchPV()
+        window.addEventListener("storage", () => fetchPV())
     }, [])
 
     useEffect(() => {

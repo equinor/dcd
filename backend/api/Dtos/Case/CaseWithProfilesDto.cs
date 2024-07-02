@@ -83,7 +83,7 @@ public class CaseWithProfilesDto
     [Required]
     public TotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
     [Required]
-    public TotalOtherStudiesDto? TotalOtherStudies { get; set; } = new TotalOtherStudiesDto();
+    public TotalOtherStudiesCostProfileDto? TotalOtherStudiesCostProfile { get; set; } = new TotalOtherStudiesCostProfileDto();
     [Required]
     public HistoricCostCostProfileDto? HistoricCostCostProfile { get; set; } = new HistoricCostCostProfileDto();
     [Required]
@@ -200,7 +200,7 @@ public class TotalFEEDStudiesOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrid
     [Required]
     public bool Override { get; set; }
 }
-public class TotalOtherStudiesDto : TimeSeriesCostDto
+public class TotalOtherStudiesCostProfileDto : TimeSeriesCostDto
 {
 }
 
@@ -230,7 +230,7 @@ public class StudyCostProfileWrapperDto
     public StudyCostProfileDto? StudyCostProfileDto { get; set; }
     public TotalFeasibilityAndConceptStudiesDto? TotalFeasibilityAndConceptStudiesDto { get; set; }
     public TotalFEEDStudiesDto? TotalFEEDStudiesDto { get; set; }
-    public TotalOtherStudiesDto? TotalOtherStudiesDto { get; set; }
+    public TotalOtherStudiesCostProfileDto? TotalOtherStudiesCostProfileDto { get; set; }
 }
 
 public class CapexYear

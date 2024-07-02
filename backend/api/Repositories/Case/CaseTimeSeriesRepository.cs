@@ -33,6 +33,12 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
         return profile;
     }
 
+    public CessationOnshoreFacilitiesCostProfile CreateCessationOnshoreFacilitiesCostProfile(CessationOnshoreFacilitiesCostProfile profile)
+    {
+        _context.CessationOnshoreFacilitiesCostProfile.Add(profile);
+        return profile;
+    }
+
     public TotalFeasibilityAndConceptStudiesOverride CreateTotalFeasibilityAndConceptStudiesOverride(TotalFeasibilityAndConceptStudiesOverride profile)
     {
         _context.TotalFeasibilityAndConceptStudiesOverride.Add(profile);
@@ -42,6 +48,12 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
     public TotalFEEDStudiesOverride CreateTotalFEEDStudiesOverride(TotalFEEDStudiesOverride profile)
     {
         _context.TotalFEEDStudiesOverride.Add(profile);
+        return profile;
+    }
+
+    public TotalOtherStudiesCostProfile CreateTotalOtherStudiesCostProfile(TotalOtherStudiesCostProfile profile)
+    {
+        _context.TotalOtherStudiesCostProfile.Add(profile);
         return profile;
     }
 
@@ -94,6 +106,15 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
     {
         return Update(costProfile);
     }
+    public async Task<CessationOnshoreFacilitiesCostProfile?> GetCessationOnshoreFacilitiesCostProfile(Guid costProfileId)
+    {
+        return await Get<CessationOnshoreFacilitiesCostProfile>(costProfileId);
+    }
+
+    public CessationOnshoreFacilitiesCostProfile UpdateCessationOnshoreFacilitiesCostProfile(CessationOnshoreFacilitiesCostProfile costProfile)
+    {
+        return Update(costProfile);
+    }
 
     public async Task<TotalFeasibilityAndConceptStudiesOverride?> GetTotalFeasibilityAndConceptStudiesOverride(Guid costProfileId)
     {
@@ -111,6 +132,16 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
     }
 
     public TotalFEEDStudiesOverride UpdateTotalFEEDStudiesOverride(TotalFEEDStudiesOverride costProfile)
+    {
+        return Update(costProfile);
+    }
+
+    public async Task<TotalOtherStudiesCostProfile?> GetTotalOtherStudiesCostProfile(Guid costProfileId)
+    {
+        return await Get<TotalOtherStudiesCostProfile>(costProfileId);
+    }
+
+    public TotalOtherStudiesCostProfile UpdateTotalOtherStudiesCostProfile(TotalOtherStudiesCostProfile costProfile)
     {
         return Update(costProfile);
     }

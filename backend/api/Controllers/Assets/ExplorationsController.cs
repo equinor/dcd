@@ -64,6 +64,29 @@ public class ExplorationsController : ControllerBase
         return await _explorationService.CreateExplorationWellDrillingSchedule(caseId, explorationId, wellId, dto);
     }
 
+
+
+    [HttpPut("{explorationId}/g-and-g-and-admin-cost-override/{costProfileId}")]
+    public async Task<GAndGAdminCostOverrideDto> UpdateGAndGAdminCostOverride(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid explorationId,
+        [FromRoute] Guid costProfileId,
+        [FromBody] UpdateGAndGAdminCostOverrideDto dto)
+    {
+        return await _explorationTimeSeriesService.UpdateGAndGAdminCostOverride(caseId, explorationId, costProfileId, dto);
+    }
+
+    [HttpPost("{explorationId}/g-and-g-and-admin-cost-override")]
+    public async Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
+    [FromRoute] Guid projectId,
+    [FromRoute] Guid caseId,
+    [FromRoute] Guid explorationId,
+    [FromBody] CreateGAndGAdminCostOverrideDto dto)
+    {
+        return await _explorationTimeSeriesService.CreateGAndGAdminCostOverride(caseId, explorationId, dto);
+    }
+
     [HttpPut("{explorationId}/seismic-acquisition-and-processing/{costProfileId}")]
     public async Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
         [FromRoute] Guid projectId,
