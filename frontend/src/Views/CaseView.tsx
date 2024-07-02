@@ -47,7 +47,6 @@ const CaseView = () => {
         "Summary",
     ]
 
-    // when the URL changes, set the active tab to the tab name in the URL
     useEffect(() => {
         if (tab) {
             const tabIndex = tabNames.indexOf(tab)
@@ -55,16 +54,12 @@ const CaseView = () => {
                 setActiveTabCase(tabIndex)
             }
         }
-    }, [])
+    }, [tab])
 
-    // when user navigates to a different tab, add the tab name to the URL
-    useEffect(() => {
-        if (activeTabCase !== undefined) {
-            const tabName = tabNames[activeTabCase]
-            const projectUrl = location.pathname.split("/case")[0]
-            navigate(`${projectUrl}/case/${caseId}/${tabName}`)
-        }
-    }, [activeTabCase])
+    const handleTabChange = (index: number) => {
+        const projectUrl = location.pathname.split("/case")[0]
+        navigate(`${projectUrl}/case/${caseId}/${tabNames[index]}`)
+    }
 
     const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
         ["apiData", { projectId, caseId }],
@@ -82,7 +77,7 @@ const CaseView = () => {
     return (
         <Grid container spacing={1} alignSelf="flex-start">
             <Grid item xs={12}>
-                <Tabs activeTab={activeTabCase} onChange={setActiveTabCase} scrollable>
+                <Tabs activeTab={activeTabCase} onChange={handleTabChange} scrollable>
                     <List>
                         {tabNames.map((tabName) => <Tab key={tabName}>{tabName}</Tab>)}
                     </List>
