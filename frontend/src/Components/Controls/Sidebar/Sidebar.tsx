@@ -95,7 +95,7 @@ const Sidebar = () => {
                     <Grid item xs={12}>
                         <Divider />
                     </Grid>
-                    <CurrentCaseEditHistory />
+                    {/* uncomment for next release <CurrentCaseEditHistory /> */}
                 </Grid>
             </StyledSidebarContent>
             <SidebarFooter>
