@@ -97,7 +97,6 @@ const Sidebar = () => {
                     </Grid>
                     {/* comment out for qa release */}
                     <CurrentCaseEditHistory />
-                    {/* comment out for qa release */}
                 </Grid>
             </StyledSidebarContent>
             <SidebarFooter>
