@@ -48,6 +48,7 @@ const CaseCO2Tab = () => {
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+    const [timeSeriesData, setTimeSeriesData] = useState<ITimeSeriesData[]>([])
 
     const co2GridRef = useRef<any>(null)
 
@@ -113,43 +114,35 @@ const CaseCO2Tab = () => {
         })()
     }, [activeTabCase])
 
-    const datePickerValue = (() => {
-        if (project?.physicalUnit === 0) {
-            return "SI"
-        } if (project?.physicalUnit === 1) {
-            return "Oil field"
-        }
-        return ""
-    })()
-
-    if (!caseData || !drainageStrategyData || !topsideData) { return null }
-
-    const timeSeriesData: ITimeSeriesData[] = [
-        {
-            profileName: "Annual CO2 emissions",
-            unit: `${project?.physicalUnit === 0 ? "MTPA" : "MTPA"}`,
-            profile: co2EmissionsData,
-            overridable: true,
-            editable: true,
-            overrideProfile: co2EmissionsOverrideData,
-            resourceName: "co2EmissionsOverride",
-            resourceId: drainageStrategyData.id,
-            resourceProfileId: co2EmissionsOverrideData?.id,
-            resourcePropertyKey: "co2EmissionsOverride",
-        },
-        {
-            profileName: "Year-by-year CO2 intensity",
-            unit: `${project?.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
-            profile: co2Intensity,
-            total: co2IntensityTotal?.toString(),
-            overridable: false,
-            editable: false,
-            resourceName: "co2Intensity",
-            resourceId: drainageStrategyData.id,
-            resourceProfileId: co2Intensity?.id,
-            resourcePropertyKey: "co2Intensity",
-        },
-    ]
+    useEffect(() => {
+        const newTimeSeriesData: ITimeSeriesData[] = [
+            {
+                profileName: "Annual CO2 emissions",
+                unit: `${project?.physicalUnit === 0 ? "MTPA" : "MTPA"}`,
+                profile: co2EmissionsData,
+                overridable: true,
+                editable: true,
+                overrideProfile: co2EmissionsOverrideData,
+                resourceName: "co2EmissionsOverride",
+                resourceId: drainageStrategyData.id,
+                resourceProfileId: co2EmissionsOverrideData?.id,
+                resourcePropertyKey: "co2EmissionsOverride",
+            },
+            {
+                profileName: "Year-by-year CO2 intensity",
+                unit: `${project?.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
+                profile: co2Intensity,
+                total: co2IntensityTotal?.toString(),
+                overridable: false,
+                editable: false,
+                resourceName: "co2Intensity",
+                resourceId: drainageStrategyData.id,
+                resourceProfileId: co2Intensity?.id,
+                resourcePropertyKey: "co2Intensity",
+            },
+        ]
+        setTimeSeriesData(newTimeSeriesData)
+    }, [apiData])
 
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
@@ -179,6 +172,15 @@ const CaseCO2Tab = () => {
         }
         return dataArray
     }
+
+    const datePickerValue = (() => {
+        if (project?.physicalUnit === 0) {
+            return "SI"
+        } if (project?.physicalUnit === 1) {
+            return "Oil field"
+        }
+        return ""
+    })()
 
     const co2EmissionsTotalString = () => {
         if (co2EmissionsData) {
