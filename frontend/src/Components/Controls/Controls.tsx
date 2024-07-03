@@ -83,16 +83,12 @@ const Controls = () => {
 
     const handleEdit = () => {
         if (editMode && caseId) { // user is going out of edit mode in case
-            console.log("cancelEdit")
             cancelEdit()
         } else if (projectEdited) { // user is saving project
-            console.log("handleProjectSave")
             handleProjectSave()
         } else if (!editMode && caseId) { // user is going into edit mode in case
-            console.log("handleCaseEdit")
             handleCaseEdit()
         } else { // user is going into edit mode in project
-            console.log("handleProjectEdit")
             handleProjectEdit()
         }
     }
