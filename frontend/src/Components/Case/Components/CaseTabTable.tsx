@@ -322,24 +322,63 @@ const CaseTabTable = ({
         })
     }
 
-    const handleDeleteOnRange = useCallback((e: CellKeyDownEvent) => {
-        const keyboardEvent = e.event as unknown as KeyboardEvent
-        const { key } = keyboardEvent
+    const handleDeleteOnRange = useCallback(
+        (e: CellKeyDownEvent) => {
+            const keyboardEvent = e.event as unknown as KeyboardEvent
+            const { key } = keyboardEvent
 
-        if (key === "Backspace") {
-            const cellRanges = e.api.getCellRanges()
-            if (!cellRanges || cellRanges.length === 0) { return }
-            cellRanges?.forEach((cells) => {
-                if (cells.startRow && cells.endRow) {
-                    const colIds = cells.columns.map((col: any) => col.colId)
-                    const startRowIndex = Math.min(cells.startRow.rowIndex, cells.endRow.rowIndex)
-                    const endRowIndex = Math.max(cells.startRow.rowIndex, cells.endRow.rowIndex)
-                    clearCellsInRange(startRowIndex, endRowIndex, colIds)
-                    handleCellValueChange(e)
+            if (key === "Backspace") {
+                const cellRanges = e.api.getCellRanges()
+                if (!cellRanges || cellRanges.length === 0) {
+                    return
                 }
-            })
-        }
-    }, [])
+
+                cellRanges.forEach((cells) => {
+                    if (cells.startRow && cells.endRow) {
+                        const focusedCell = e.api.getFocusedCell()
+                        const isCellFocused = focusedCell
+                            && focusedCell.rowIndex === cells.startRow.rowIndex
+                            && focusedCell.column.getColDef().field
+                            === cells.columns[0]?.getColDef().field
+
+                        if (isCellFocused) {
+                            // Remove decimal or last character if cell is active
+                            const startRowIndex = cells.startRow.rowIndex.toString()
+                            const colId = cells.columns[0]?.getColDef().field
+                            if (!colId) {
+                                return // Handle undefined colId
+                            }
+
+                            const rowNode = e.api.getRowNode(startRowIndex)
+                            if (rowNode) {
+                                let cellValue = rowNode.data[colId] as string // Cast to string if necessary
+                                if (typeof cellValue === "string" && cellValue !== "") {
+                                    cellValue = cellValue.slice(0, -1) // Remove last character
+                                    rowNode.setDataValue(colId, cellValue)
+                                }
+                            }
+                        } else {
+                            // Delete entire cell content if cell is not active
+                            const colIds = cells.columns.map(
+                                (col: any) => col.getColDef().field,
+                            )
+                            const startRowIndex = Math.min(
+                                cells.startRow.rowIndex,
+                                cells.endRow.rowIndex,
+                            )
+                            const endRowIndex = Math.max(
+                                cells.startRow.rowIndex,
+                                cells.endRow.rowIndex,
+                            )
+                            clearCellsInRange(startRowIndex, endRowIndex, colIds)
+                            handleCellValueChange(e)
+                        }
+                    }
+                })
+            }
+        },
+        [clearCellsInRange, handleCellValueChange],
+    )
 
     return (
         <>
