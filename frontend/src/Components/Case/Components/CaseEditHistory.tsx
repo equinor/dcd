@@ -48,14 +48,14 @@ interface CaseEditHistoryProps {
 }
 
 const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
-    const { caseEdits, projectCase, editIndexes } = useCaseContext()
+    const { caseEdits, editIndexes } = useCaseContext()
     const [activeEdit, setActiveEdit] = useState<string | undefined>(undefined)
     const activeRef = useRef<HTMLDivElement | null>(null)
 
     useEffect(() => {
-        const currentEditId = getCurrentEditId(editIndexes, projectCase)
+        const currentEditId = getCurrentEditId(editIndexes, caseId)
         setActiveEdit(currentEditId)
-    }, [caseEdits, editIndexes, projectCase])
+    }, [caseEdits, editIndexes, caseId])
 
     useEffect(() => {
         if (activeRef.current) {

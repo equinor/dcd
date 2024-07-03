@@ -18,29 +18,15 @@ import { useCaseContext } from "../../../../Context/CaseContext"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
 
 interface Props {
-    explorationWells: Components.Schemas.ExplorationWellDto[],
-    setExplorationWells: Dispatch<SetStateAction<Components.Schemas.ExplorationWellDto[] | undefined>>,
-    wellProjectWells: Components.Schemas.WellProjectWellDto[],
-    setWellProjectWells: Dispatch<SetStateAction<Components.Schemas.WellProjectWellDto[] | undefined>>,
-    wells: Components.Schemas.WellDto[] | undefined
-    exploration: Components.Schemas.ExplorationWithProfilesDto,
-    wellProject: Components.Schemas.WellProjectWithProfilesDto,
 }
 
-const CaseDrillingScheduleTab = ({
-    explorationWells,
-    setExplorationWells,
-    wellProjectWells,
-    setWellProjectWells,
-    wells,
-    exploration,
-    wellProject,
-}: Props) => {
+const CaseDrillingScheduleTab = () => {
     const { project } = useProjectContext()
-    const { projectCase, activeTabCase } = useCaseContext()
+    const { activeTabCase } = useCaseContext()
     const queryClient = useQueryClient()
     const { caseId } = useParams()
     const projectId = project?.id || null
+    const wells = project?.wells
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -57,6 +43,9 @@ const CaseDrillingScheduleTab = ({
 
     const wellProjectWellsData = apiData?.wellProjectWells
     const explorationWellsData = apiData?.explorationWells
+    const explorationData = apiData?.exploration
+    const wellProjectData = apiData?.wellProject
+    const caseData = apiData?.case
 
     const datePickerValue = (() => {
         if (project?.currency === 1) {
@@ -86,12 +75,12 @@ const CaseDrillingScheduleTab = ({
     }
 
     useEffect(() => {
-        if (activeTabCase === 3 && projectCase!.dG4Date !== undefined) {
+        if (activeTabCase === 3 && caseData!.dG4Date !== undefined) {
             const explorationDrillingSchedule = explorationWellsData?.map((ew) => ew.drillingSchedule) ?? []
             const wellProjectDrillingSchedule = wellProjectWellsData?.map((ew) => ew.drillingSchedule) ?? []
             SetTableYearsFromProfiles(
                 [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
-                new Date(projectCase!.dG4Date).getFullYear(),
+                new Date(caseData!.dG4Date).getFullYear(),
                 setStartYear,
                 setEndYear,
                 setTableYears,
@@ -102,7 +91,7 @@ const CaseDrillingScheduleTab = ({
     const sumWellsForWellCategory = (category: Components.Schemas.WellCategory): number => {
         if (wells && wells.length > 0) {
             if (category >= 4) {
-                const filteredExplorationWells = explorationWellsData?.filter((ew) => ew.explorationId === exploration.id)
+                const filteredExplorationWells = explorationWellsData?.filter((ew) => ew.explorationId === explorationData?.id)
                 const filteredWells = wells.filter((w) => w.wellCategory === category)
                 let sum = 0
                 filteredWells.forEach((fw) => {
@@ -116,7 +105,7 @@ const CaseDrillingScheduleTab = ({
                 })
                 return sum
             }
-            const filteredWellProjectWells = wellProjectWellsData?.filter((wpw) => wpw.wellProjectId === wellProject.id)
+            const filteredWellProjectWells = wellProjectWellsData?.filter((wpw) => wpw.wellProjectId === wellProjectData?.id)
             const filteredWells = wells.filter((w) => w.wellCategory === category)
             let sum = 0
             filteredWells.forEach((fw) => {
@@ -132,12 +121,12 @@ const CaseDrillingScheduleTab = ({
     }
 
     useEffect(() => {
-        if (activeTabCase === 3 && projectCase!.dG4Date !== undefined) {
+        if (activeTabCase === 3 && caseData!.dG4Date !== undefined) {
             const explorationDrillingSchedule = explorationWellsData?.map((ew) => ew.drillingSchedule) ?? []
             const wellProjectDrillingSchedule = wellProjectWellsData?.map((ew) => ew.drillingSchedule) ?? []
             SetTableYearsFromProfiles(
                 [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
-                new Date(projectCase!.dG4Date).getFullYear(),
+                new Date(caseData!.dG4Date).getFullYear(),
                 setStartYear,
                 setEndYear,
                 setTableYears,
@@ -157,7 +146,14 @@ const CaseDrillingScheduleTab = ({
         }
     }, [wells, explorationWellsData, wellProjectWellsData, activeTabCase])
 
-    if (activeTabCase !== 3 || !projectCase || !explorationWellsData || !wellProjectWellsData) { return null }
+    if (
+        activeTabCase !== 3
+        || !explorationWellsData
+        || !caseData
+        || !wellProjectWellsData
+        || !explorationData
+        || !wellProjectData
+    ) { return null }
 
     return (
         <Grid container spacing={2}>
@@ -236,11 +232,10 @@ const CaseDrillingScheduleTab = ({
             <Grid item xs={12}>
                 <CaseDrillingScheduleTabTable
                     assetWells={explorationWellsData}
-                    dg4Year={projectCase.dG4Date !== undefined ? new Date(projectCase.dG4Date).getFullYear() : 2030}
-                    setAssetWells={setExplorationWells}
+                    dg4Year={caseData.dG4Date !== undefined ? new Date(caseData.dG4Date).getFullYear() : 2030}
                     tableName="Exploration wells"
                     tableYears={tableYears}
-                    resourceId={exploration.id}
+                    resourceId={explorationData.id}
                     wells={wells}
                     isExplorationTable
                     gridRef={explorationWellsGridRef}
@@ -250,11 +245,10 @@ const CaseDrillingScheduleTab = ({
             <Grid item xs={12}>
                 <CaseDrillingScheduleTabTable
                     assetWells={wellProjectWellsData}
-                    dg4Year={projectCase.dG4Date !== undefined ? new Date(projectCase.dG4Date).getFullYear() : 2030}
-                    setAssetWells={setWellProjectWells}
+                    dg4Year={caseData.dG4Date !== undefined ? new Date(caseData.dG4Date).getFullYear() : 2030}
                     tableName="Development wells"
                     tableYears={tableYears}
-                    resourceId={wellProject.id}
+                    resourceId={wellProjectData.id}
                     wells={wells}
                     isExplorationTable={false}
                     gridRef={wellProjectWellsGridRef}

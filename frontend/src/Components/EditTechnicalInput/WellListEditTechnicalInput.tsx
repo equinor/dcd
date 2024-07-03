@@ -7,7 +7,7 @@ import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid"
-import { customUnitHeaderTemplate } from "../../AgGridUnitInHeader"
+import CustomHeaderForSecondaryHeader from "../../CustomHeaderForSecondaryHeader"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { useModalContext } from "../../Context/ModalContext"
 import { useAppContext } from "../../Context/AppContext"
@@ -174,11 +174,13 @@ const WellListEditTechnicalInput = ({
         },
         {
             field: "wellCost",
-            headerName: "",
+            headerName: `Cost (${project?.currency === 1 ? "mill NOK" : "mill USD"})`,
             width: 90,
             flex: 1,
+            headerComponent: CustomHeaderForSecondaryHeader,
             headerComponentParams: {
-                template: customUnitHeaderTemplate("Cost", `${project?.currency === 1 ? "mill NOK" : "mill USD"}`),
+                columnHeader: "Cost",
+                unit: project?.currency === 1 ? "mill NOK" : "mill USD",
             },
         },
         {
