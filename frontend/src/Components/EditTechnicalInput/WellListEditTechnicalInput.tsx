@@ -1,5 +1,7 @@
-import { Button, Icon, NativeSelect } from "@equinor/eds-core-react"
-import { add, delete_to_trash } from "@equinor/eds-icons"
+import {
+    Button, Icon, NativeSelect, Typography,
+} from "@equinor/eds-core-react"
+import { delete_to_trash } from "@equinor/eds-icons"
 import {
     ChangeEvent, Dispatch, SetStateAction, useEffect, useMemo, useRef, useState,
 } from "react"
@@ -9,8 +11,8 @@ import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid"
 import CustomHeaderForSecondaryHeader from "../../CustomHeaderForSecondaryHeader"
 import { useProjectContext } from "../../Context/ProjectContext"
-import { useModalContext } from "../../Context/ModalContext"
 import { useAppContext } from "../../Context/AppContext"
+import Modal from "../Modal/Modal"
 
 interface Props {
     wells: Components.Schemas.WellDto[] | undefined
@@ -37,8 +39,8 @@ const WellListEditTechnicalInput = ({
 }: Props) => {
     const { editMode } = useAppContext()
     const { project } = useProjectContext()
-    const { editTechnicalInput } = useModalContext()
     const [rowData, setRowData] = useState<TableWell[]>()
+    const [wellStagedForDeletion, setWellStagedForDeletion] = useState<any | undefined>()
 
     const gridRef = useRef(null)
     const styles = useStyles()
@@ -140,10 +142,11 @@ const WellListEditTechnicalInput = ({
                 })
             }
         }
+        setWellStagedForDeletion(undefined)
     }
 
     const deleteWellRenderer = (p: any) => (
-        <Button variant="ghost_icon" onClick={() => handleDeleteWell(p)}>
+        <Button variant="ghost_icon" onClick={() => setWellStagedForDeletion(p)}>
             <Icon data={delete_to_trash} />
         </Button>
     )
@@ -160,7 +163,8 @@ const WellListEditTechnicalInput = ({
 
     const [columnDefs] = useState<ColDef[]>([
         {
-            field: "name", width: 110,
+            field: "name",
+            width: 110,
         },
         {
             field: "wellCategory",
@@ -170,7 +174,10 @@ const WellListEditTechnicalInput = ({
             editable: false,
         },
         {
-            field: "drillingDays", headerName: "Drilling days", width: 110, flex: 1,
+            field: "drillingDays",
+            headerName: "Drilling days",
+            width: 110,
+            flex: 1,
         },
         {
             field: "wellCost",
@@ -187,41 +194,47 @@ const WellListEditTechnicalInput = ({
             field: "delete",
             headerName: "",
             cellRenderer: deleteWellRenderer,
+            editable: false,
         },
     ])
-
-    const CreateWell = async () => {
-        const newWell: any = {
-            wellCategory: !explorationWells ? 0 : 4,
-            name: "New well",
-            projectId: project?.id,
-        }
-        if (wells) {
-            const newWells = [...wells, newWell]
-            setWells(newWells)
-        } else {
-            setWells([newWell])
-        }
-    }
 
     useEffect(() => {
         wellsToRowData()
     }, [wells])
 
     return (
-        <Grid container spacing={1}>
-            <Grid item xs={12} className={styles.root}>
-                <div
-                    style={{
-                        display: "flex", flexDirection: "column", width: "100%",
-                    }}
-                >
-                    {/* Hardcoded title and description using Typography */}
-                    {/* <Title variant="h1">Well Costs</Title>
-                    <Description variant="body_long">
-                        This input is used to calculate each case's well costs based on their drilling schedules.
-                    </Description> */}
+        <>
+            <Modal
+                isOpen={!!wellStagedForDeletion}
+                title="Delete well"
+                size="sm"
+                content={(
+                    <Typography>
+                        Are you sure you want to delete this well? This action cannot be undone.
+                    </Typography>
 
+                )}
+                actions={(
+                    <>
+                        <Button
+                            onClick={() => setWellStagedForDeletion(undefined)}
+                            variant="outlined"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={() => handleDeleteWell(wellStagedForDeletion)}
+                            variant="contained"
+                            color="danger"
+                        >
+                            Delete well
+                        </Button>
+                    </>
+                )}
+
+            />
+            <Grid item xs={12} className={styles.root}>
+                <div>
                     <AgGridReact
                         ref={gridRef}
                         rowData={rowData}
@@ -232,20 +245,11 @@ const WellListEditTechnicalInput = ({
                         onGridReady={onGridReady}
                         stopEditingWhenCellsLoseFocus
                         singleClickEdit={editMode}
+                        suppressRowClickSelection
                     />
                 </div>
             </Grid>
-            {(editMode || editTechnicalInput) && (
-                <Grid item>
-                    <Button onClick={CreateWell} variant="outlined">
-                        <Icon data={add} />
-                        {explorationWells
-                            ? "Add new exploration well type"
-                            : "Add new development/drilling well type"}
-                    </Button>
-                </Grid>
-            )}
-        </Grid>
+        </>
     )
 }
 export default WellListEditTechnicalInput

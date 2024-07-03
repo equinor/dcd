@@ -1,8 +1,8 @@
 import React, { useEffect } from "react"
 import { Accept, FileRejection, useDropzone } from "react-dropzone"
-import { Box, Typography } from "@mui/material"
+import { Box } from "@mui/material"
 import styled from "styled-components"
-import { Icon } from "@equinor/eds-core-react"
+import { Icon, Typography } from "@equinor/eds-core-react"
 import { add } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { useParams } from "react-router-dom"
@@ -124,9 +124,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
             <input {...getInputProps()} />
             <Icon data={add} size={48} />
             {isDragActive ? (
-                <Typography variant="body1">Drop the images here...</Typography>
+                <Typography>Drop the images here...</Typography>
             ) : (
-                <Typography variant="body1">Click or drag and drop images here to upload</Typography>
+                <Typography>Click or drag and drop images here to upload</Typography>
             )}
         </UploadBox>
     )
