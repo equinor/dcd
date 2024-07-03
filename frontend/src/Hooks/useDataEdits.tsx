@@ -1,6 +1,7 @@
 /* eslint-disable indent */
 import { v4 as uuidv4 } from "uuid"
 import { useMutation, useQueryClient } from "react-query"
+import { useParams } from "react-router"
 import { useCaseContext } from "../Context/CaseContext"
 import {
     EditInstance,
@@ -48,22 +49,23 @@ const useDataEdits = (): {
     const {
         caseEdits,
         setCaseEdits,
-        projectCase,
         editIndexes,
         setEditIndexes,
         caseEditsBelongingToCurrentCase,
     } = useCaseContext()
 
+    const { caseId: caseIdFromParams } = useParams()
+
     const updateEditIndex = (newEditId: string) => {
-        if (!projectCase) {
+        if (!caseIdFromParams) {
             console.log("you are not in a project case")
             return
         }
 
-        const editEntry: EditEntry = { caseId: projectCase.id, currentEditId: newEditId }
+        const editEntry: EditEntry = { caseId: caseIdFromParams, currentEditId: newEditId }
         const storedEditIndexes = localStorage.getItem("editIndexes")
         const editIndexesArray = storedEditIndexes ? JSON.parse(storedEditIndexes) : []
-        const currentCasesEditIndex = editIndexesArray.findIndex((entry: { caseId: string }) => entry.caseId === projectCase.id)
+        const currentCasesEditIndex = editIndexesArray.findIndex((entry: { caseId: string }) => entry.caseId === caseIdFromParams)
 
         if (currentCasesEditIndex !== -1) {
             editIndexesArray[currentCasesEditIndex].currentEditId = newEditId
@@ -1033,7 +1035,7 @@ const useDataEdits = (): {
     }
 
     const addToHistoryTracker = async (editInstanceObject: EditInstance, caseId: string) => {
-        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, projectCase))
+        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams))
         const caseEditsNotBelongingToCurrentCase = caseEdits.filter((edit) => edit.caseId !== caseId)
 
         let edits = caseEditsBelongingToCurrentCase
@@ -1119,7 +1121,7 @@ const useDataEdits = (): {
     }
 
     const undoEdit = () => {
-        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, projectCase))
+        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams))
         const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
         const updatedEditIndex = currentEditIndex + 1
         const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
@@ -1152,7 +1154,7 @@ const useDataEdits = (): {
     }
 
     const redoEdit = () => {
-        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, projectCase))
+        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams))
 
         if (currentEditIndex <= 0) {
             // If the current edit is the first one or not found, redo the last edit.

@@ -36,13 +36,6 @@ const Controls = () => {
         projectEdited,
         setProjectEdited,
     } = useProjectContext()
-    const {
-        projectCase,
-        setProjectCase,
-        projectCaseEdited,
-        setProjectCaseEdited,
-        setSaveProjectCase,
-    } = useCaseContext()
 
     const navigate = useNavigate()
     const { setTechnicalModalIsOpen } = useModalContext()
@@ -54,10 +47,9 @@ const Controls = () => {
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
     const [isCanceling, setIsCanceling] = useState<boolean>(false)
 
-    const handleCancel = async () => {
+    const cancelEdit = async () => {
         setEditMode(false)
         setProjectEdited(undefined)
-        setProjectCaseEdited(undefined)
         setIsCanceling(false)
     }
 
@@ -84,34 +76,29 @@ const Controls = () => {
         setEditMode(true)
     }
 
-    const handleCaseSave = async () => {
-        setProjectCase(projectCaseEdited)
-        setSaveProjectCase(true)
-        handleCancel()
-    }
-
     const backToProject = async () => {
-        handleCancel()
-        setProjectCase(undefined)
+        cancelEdit()
         navigate(projectPath(currentContext?.id!))
     }
 
     const handleEdit = () => {
-        if (projectCaseEdited) {
-            // handleCaseSave() no longer needed with autosave
-            handleCancel()
-        } else if (projectEdited) {
+        if (editMode && caseId) { // user is going out of edit mode in case
+            console.log("cancelEdit")
+            cancelEdit()
+        } else if (projectEdited) { // user is saving project
+            console.log("handleProjectSave")
             handleProjectSave()
-        } else if (projectCase) {
+        } else if (!editMode && caseId) { // user is going into edit mode in case
+            console.log("handleCaseEdit")
             handleCaseEdit()
-        } else {
+        } else { // user is going into edit mode in project
+            console.log("handleProjectEdit")
             handleProjectEdit()
         }
     }
 
-    // goes out of edit mode if case changes
     useEffect(() => {
-        handleCancel()
+        cancelEdit()
     }, [caseId])
 
     return (
@@ -136,7 +123,7 @@ const Controls = () => {
                             Continue editing
                         </Button>
                         <Button
-                            onClick={handleCancel}
+                            onClick={cancelEdit}
                             variant="contained"
                             color="danger"
                         >
@@ -159,7 +146,7 @@ const Controls = () => {
 
             <Grid item xs container spacing={1} alignItems="center" justifyContent="flex-end">
                 <Grid item>
-                    {editMode && projectCase && <UndoControls />}
+                    {editMode && caseId && <UndoControls />}
                 </Grid>
                 {editMode && !caseId
                     && (
@@ -183,8 +170,8 @@ const Controls = () => {
                                     {
                                         editMode && (
                                             <>
-                                                <Icon data={projectCase ? visibility : save} />
-                                                <span>{projectCase ? "View" : "Save"}</span>
+                                                <Icon data={caseId ? visibility : save} />
+                                                <span>{caseId ? "View" : "Save"}</span>
                                             </>
                                         )
                                     }
@@ -210,7 +197,7 @@ const Controls = () => {
                     </Button>
                 </Grid>
             </Grid>
-            {projectCase && (
+            {caseId && (
                 <Grid item>
                     <Button
                         variant="ghost_icon"
@@ -224,7 +211,7 @@ const Controls = () => {
                         isMenuOpen={isMenuOpen}
                         setIsMenuOpen={setIsMenuOpen}
                         menuAnchorEl={menuAnchorEl}
-                        projectCase={projectCase}
+                        caseId={caseId}
                     />
                 </Grid>
             )}

@@ -3,10 +3,10 @@ import { Box, Grid } from "@mui/material"
 import styled from "styled-components"
 import { Icon, Button, Typography } from "@equinor/eds-core-react"
 import { delete_to_trash, expand_screen } from "@equinor/eds-icons"
+import { useParams } from "react-router-dom"
 import ImageUpload from "./ImageUpload"
 import ImageModal from "./ImageModal"
 import { useAppContext } from "../../Context/AppContext"
-import { useCaseContext } from "../../Context/CaseContext"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { getImageService } from "../../Services/ImageService"
 
@@ -66,15 +66,15 @@ const Gallery = () => {
     const [modalOpen, setModalOpen] = useState(false)
     const [expandedImage, setExpandedImage] = useState("")
     const [exeededLimit, setExeededLimit] = useState(false)
-    const { projectCase } = useCaseContext()
+    const { caseId } = useParams()
     const { project } = useProjectContext()
 
     useEffect(() => {
         const loadImages = async () => {
-            if (project?.id && projectCase?.id) {
+            if (project?.id && caseId) {
                 try {
                     const imageService = await getImageService()
-                    const imageDtos = await imageService.getImages(project.id, projectCase.id)
+                    const imageDtos = await imageService.getImages(project.id, caseId)
                     setGallery(imageDtos)
                 } catch (error) {
                     console.error("Error loading images:", error)
@@ -83,15 +83,15 @@ const Gallery = () => {
         }
 
         loadImages()
-    }, [project?.id, projectCase?.id])
+    }, [project?.id, caseId])
 
     const handleDelete = async (imageUrl: string) => {
         try {
-            if (project?.id && projectCase?.id) {
+            if (project?.id && caseId) {
                 const imageService = await getImageService()
                 const image = gallery.find((img) => img.url === imageUrl)
                 if (image) {
-                    await imageService.deleteImage(project.id, projectCase.id, image.id)
+                    await imageService.deleteImage(project.id, caseId, image.id)
                     setGallery(gallery.filter((img) => img.url !== imageUrl))
                     setExeededLimit(false)
                 } else {

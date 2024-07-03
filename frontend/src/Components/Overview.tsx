@@ -31,7 +31,6 @@ const Overview = () => {
         setSnackBarMessage,
     } = useAppContext()
     const { project } = useProjectContext()
-    const { setProjectCase } = useCaseContext()
     const { caseId } = useParams()
     const [warnedProjects, setWarnedProjects] = useState<WarnedProjectInterface | null>(null)
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
@@ -58,15 +57,6 @@ const Overview = () => {
         fetchPV()
         window.addEventListener("storage", () => fetchPV())
     }, [])
-
-    useEffect(() => {
-        if (project && !editMode && caseId) {
-            const foundCase = project.cases.find((c) => c.id === caseId)
-            setProjectCase(foundCase)
-        } else if (!caseId) {
-            setProjectCase(undefined)
-        }
-    }, [project, caseId, editMode])
 
     useEffect(() => {
         if (currentUser && (!currentUserId || currentUser.localAccountId !== currentUserId)) {
