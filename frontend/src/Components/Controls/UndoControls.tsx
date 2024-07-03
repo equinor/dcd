@@ -145,7 +145,6 @@ const UndoControls: React.FC = () => {
                 </Button>
             </Tooltip>
             */}
-
         </Container>
     )
 }
