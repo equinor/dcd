@@ -7,15 +7,13 @@ interface CesationCostsProps {
     tableYears: [number, number];
     studyGridRef: React.MutableRefObject<any>;
     alignedGridsRef: any[];
-    caseData: Components.Schemas.CaseDto;
-    apiData: Components.Schemas.CaseWithAssetsDto | undefined;
+    apiData: Components.Schemas.CaseWithAssetsDto;
 }
 
 const TotalStudyCosts: React.FC<CesationCostsProps> = ({
     tableYears,
     studyGridRef,
     alignedGridsRef,
-    caseData,
     apiData,
 }) => {
     const { project } = useProjectContext()
@@ -23,11 +21,12 @@ const TotalStudyCosts: React.FC<CesationCostsProps> = ({
     const [studyTimeSeriesData, setStudyTimeSeriesData] = useState<ITimeSeriesData[]>([])
 
     useEffect(() => {
-        const totalFeasibilityAndConceptStudiesData = apiData?.totalFeasibilityAndConceptStudies
-        const totalFeasibilityAndConceptStudiesOverrideData = apiData?.totalFeasibilityAndConceptStudiesOverride
-        const totalFEEDStudiesData = apiData?.totalFEEDStudies
-        const totalFEEDStudiesOverrideData = apiData?.totalFEEDStudiesOverride
-        const totalOtherStudiesCostProfileData = apiData?.totalOtherStudiesCostProfile
+        const totalFeasibilityAndConceptStudiesData = apiData.totalFeasibilityAndConceptStudies
+        const totalFeasibilityAndConceptStudiesOverrideData = apiData.totalFeasibilityAndConceptStudiesOverride
+        const totalFEEDStudiesData = apiData.totalFEEDStudies
+        const totalFEEDStudiesOverrideData = apiData.totalFEEDStudiesOverride
+        const totalOtherStudiesCostProfileData = apiData.totalOtherStudiesCostProfile
+        const caseData = apiData.case
 
         const newStudyTimeSeriesData: ITimeSeriesData[] = [
             {
@@ -59,7 +58,7 @@ const TotalStudyCosts: React.FC<CesationCostsProps> = ({
                 unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: totalOtherStudiesCostProfileData,
                 resourceName: "totalOtherStudiesCostProfile",
-                resourceId: caseData?.id,
+                resourceId: caseData.id,
                 resourceProfileId: totalOtherStudiesCostProfileData?.id,
                 resourcePropertyKey: "totalOtherStudiesCostProfile",
                 editable: true,
@@ -68,12 +67,12 @@ const TotalStudyCosts: React.FC<CesationCostsProps> = ({
         ]
 
         setStudyTimeSeriesData(newStudyTimeSeriesData)
-    }, [apiData, project, caseData])
+    }, [apiData, project])
 
     return (
         <CaseTabTable
             timeSeriesData={studyTimeSeriesData}
-            dg4Year={caseData?.dG4Date ? new Date(caseData?.dG4Date).getFullYear() : 2030}
+            dg4Year={apiData.case.dG4Date ? new Date(apiData.case.dG4Date).getFullYear() : 2030}
             tableYears={tableYears}
             tableName="Total study cost"
             gridRef={studyGridRef}

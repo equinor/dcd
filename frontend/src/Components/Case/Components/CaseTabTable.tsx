@@ -255,8 +255,6 @@ const CaseTabTable = ({
                 return result
             }
 
-            console.log("adding table edit with prodileid:", timeSeriesDataIndex()?.resourceProfileId)
-
             addEdit({
                 newValue: p.newValue,
                 previousValue: p.oldValue,
