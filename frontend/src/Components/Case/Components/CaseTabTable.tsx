@@ -255,6 +255,8 @@ const CaseTabTable = ({
                 return result
             }
 
+            console.log("adding table edit with prodileid:", timeSeriesDataIndex()?.resourceProfileId)
+
             addEdit({
                 newValue: p.newValue,
                 previousValue: p.oldValue,
@@ -297,7 +299,7 @@ const CaseTabTable = ({
     useEffect(() => {
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
-    }, [timeSeriesData, tableYears, editMode])
+    }, [tableYears, editMode])
 
     const onGridReady = useCallback((params: GridReadyEvent) => {
         const generateRowData = profilesToRowData()

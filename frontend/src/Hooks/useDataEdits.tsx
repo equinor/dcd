@@ -353,6 +353,9 @@ const useDataEdits = (): {
         }])
         const updatedData = resourceObject || { ...existingDataInClient }
 
+        console.log("updatedData", updatedData)
+        console.log("profiled id in added edit:", resourceProfileId)
+
         if (resourceName !== "case" && !resourceId) {
             console.log("asset id is required for this service")
             return false
