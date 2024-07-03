@@ -140,7 +140,6 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     studyGridRef={studyGridRef}
                     alignedGridsRef={alignedGridsRef}
-                    caseData={caseData}
                     apiData={apiData}
                 />
             </Grid>
@@ -149,7 +148,6 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     opexGridRef={opexGridRef}
                     alignedGridsRef={alignedGridsRef}
-                    caseData={caseData}
                     apiData={apiData}
                 />
             </Grid>
@@ -158,7 +156,6 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     cessationGridRef={cessationGridRef}
                     alignedGridsRef={alignedGridsRef}
-                    caseData={caseData}
                     apiData={apiData}
                 />
             </Grid>
@@ -167,7 +164,6 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     capexGridRef={capexGridRef}
                     alignedGridsRef={alignedGridsRef}
-                    caseData={caseData}
                     apiData={apiData}
                 />
             </Grid>
@@ -176,7 +172,6 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     developmentWellsGridRef={developmentWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
-                    caseData={caseData}
                     apiData={apiData}
                 />
             </Grid>
@@ -185,7 +180,6 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     explorationWellsGridRef={explorationWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
-                    caseData={caseData}
                     apiData={apiData}
                 />
             </Grid>
