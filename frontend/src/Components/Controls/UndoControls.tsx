@@ -144,7 +144,7 @@ const UndoControls: React.FC = () => {
                     <Icon data={redo} />
                 </Button>
             </Tooltip>
-                        */}
+            */}
 
         </Container>
     )

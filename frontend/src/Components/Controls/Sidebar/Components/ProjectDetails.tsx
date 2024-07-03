@@ -62,7 +62,6 @@ const ProjectDetails: React.FC = () => {
                                 </TimelineElement>
                             </Grid>
                             {/* uncomment for next release
-
                             <Grid item>
                                 <TimelineElement
                                     variant="ghost"

@@ -39,12 +39,10 @@ const ProjectView = () => {
                             <ProjectCompareCasesTab />
                         </Panel>
                         {/* uncomment for next release
-
                         <Panel>
                             <EditHistoryOverviewTab />
                         </Panel>
                         */}
-
                         <Panel>
                             <ProjectSettingsTab />
                         </Panel>
