@@ -61,6 +61,7 @@ const ProjectDetails: React.FC = () => {
                                         : <Tooltip title="Compare Cases" placement="right"><Icon data={compare} /></Tooltip>}
                                 </TimelineElement>
                             </Grid>
+                            {/* comment out for qa release */}
                             <Grid item>
                                 <TimelineElement
                                     variant="ghost"
@@ -72,6 +73,7 @@ const ProjectDetails: React.FC = () => {
                                         : <Tooltip title="Case edit history" placement="right"><Icon data={settings} /></Tooltip>}
                                 </TimelineElement>
                             </Grid>
+                            {/* comment out for qa release */}
                             <Grid item>
                                 <TimelineElement
                                     variant="ghost"
