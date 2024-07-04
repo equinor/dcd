@@ -314,32 +314,49 @@ const CaseTabTable = ({
     }, [tableYears])
 
     const clearCellsInRange = (start: any, end: any, columns: any) => {
-        Array.from({ length: end - start + 1 }, (_, i) => start + i).map((i) => {
+        Array.from({ length: end - start + 1 }, (_, i) => start + i).forEach((i) => {
             const rowNode = gridRef.current?.api.getRowNode(i)
-            return columns.forEach((column: any) => {
-                rowNode.setDataValue(column, "")
-            })
+            if (rowNode) {
+                columns.forEach((column: any) => {
+                    rowNode.setDataValue(column, "")
+                })
+            }
         })
     }
 
-    const handleDeleteOnRange = useCallback((e: CellKeyDownEvent) => {
-        const keyboardEvent = e.event as unknown as KeyboardEvent
-        const { key } = keyboardEvent
+    const handleDeleteOnRange = useCallback(
+        (e: CellKeyDownEvent) => {
+            const keyboardEvent = e.event as unknown as KeyboardEvent
+            const { key } = keyboardEvent
 
-        if (key === "Backspace") {
-            const cellRanges = e.api.getCellRanges()
-            if (!cellRanges || cellRanges.length === 0) { return }
-            cellRanges?.forEach((cells) => {
-                if (cells.startRow && cells.endRow) {
-                    const colIds = cells.columns.map((col: any) => col.colId)
-                    const startRowIndex = Math.min(cells.startRow.rowIndex, cells.endRow.rowIndex)
-                    const endRowIndex = Math.max(cells.startRow.rowIndex, cells.endRow.rowIndex)
-                    clearCellsInRange(startRowIndex, endRowIndex, colIds)
-                    handleCellValueChange(e)
+            if (key === "Backspace") {
+                const cellRanges = e.api.getCellRanges()
+                if (!cellRanges || cellRanges.length === 0) {
+                    return
                 }
-            })
-        }
-    }, [])
+
+                cellRanges.forEach((cells) => {
+                    if (cells.startRow && cells.endRow) {
+                        const startRowIndex = Math.min(
+                            cells.startRow.rowIndex,
+                            cells.endRow.rowIndex,
+                        )
+                        const endRowIndex = Math.max(
+                            cells.startRow.rowIndex,
+                            cells.endRow.rowIndex,
+                        )
+
+                        const colIds = cells.columns.map(
+                            (col: any) => col.getColDef().field,
+                        )
+
+                        clearCellsInRange(startRowIndex, endRowIndex, colIds)
+                    }
+                })
+            }
+        },
+        [clearCellsInRange],
+    )
 
     return (
         <>
