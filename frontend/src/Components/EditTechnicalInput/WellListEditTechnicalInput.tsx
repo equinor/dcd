@@ -146,7 +146,17 @@ const WellListEditTechnicalInput = ({
     }
 
     const deleteWellRenderer = (p: any) => (
-        <Button variant="ghost_icon" onClick={() => setWellStagedForDeletion(p)}>
+        <Button
+            variant="ghost_icon"
+            onClick={() => {
+                const wellIsInUse = true // todo: check if well is in use
+                if (wellIsInUse) {
+                    setWellStagedForDeletion(p)
+                } else {
+                    handleDeleteWell(p)
+                }
+            }}
+        >
             <Icon data={delete_to_trash} />
         </Button>
     )
@@ -210,7 +220,7 @@ const WellListEditTechnicalInput = ({
                 size="sm"
                 content={(
                     <Typography>
-                        Are you sure you want to delete this well? This action cannot be undone.
+                        This well is currently in use in a case. Are you sure you want to delete it?
                     </Typography>
 
                 )}
