@@ -102,7 +102,9 @@ const CaseDrillingScheduleTabTable = ({
                         tableWell.total = tableWell.drillingSchedule.values.reduce((x: number, y: number) => x + y)
                     }
                 }
-                tableWells.push(tableWell)
+                if ((!editMode && tableWell.total > 0) || editMode) {
+                    tableWells.push(tableWell)
+                }
             })
             setRowData(tableWells)
         }
