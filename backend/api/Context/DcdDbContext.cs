@@ -33,11 +33,12 @@ public class DcdDbContext : DbContext
 
     private async Task DetectChangesAndCalculateEntities(Guid caseId)
     {
-        var (wellIds, drillingScheduleIds) = CalculateExplorationAndWellProjectCost();
-        if (wellIds.Count != 0 || drillingScheduleIds.Count != 0)
+        var (wells, drillingScheduleIds) = CalculateExplorationAndWellProjectCost();
+        if (wells.Count != 0 || drillingScheduleIds.Count != 0)
         {
+            await base.SaveChangesAsync(); // TODO: This is a hack to find the asset wells from the wells and drilling schedules in EF
             await _serviceProvider.GetRequiredService<IWellCostProfileService>().UpdateCostProfilesForWellsFromDrillingSchedules(drillingScheduleIds);
-            await _serviceProvider.GetRequiredService<IWellCostProfileService>().UpdateCostProfilesForWells(wellIds);
+            await _serviceProvider.GetRequiredService<IWellCostProfileService>().UpdateCostProfilesForWells(wells);
         }
         if (CalculateStudyCost())
         {
@@ -80,19 +81,24 @@ public class DcdDbContext : DbContext
         }
     }
 
-    private (List<Guid> wellIds, List<Guid> drillingScheduleIds) CalculateExplorationAndWellProjectCost()
+    private (List<Well> wells, List<Guid> drillingScheduleIds) CalculateExplorationAndWellProjectCost()
     {
         var modifiedWellsWithCostChange = ChangeTracker.Entries<Well>()
-            .Where(e => e.State == EntityState.Modified && e.Property(nameof(Well.WellCost)).IsModified
-            || e.Property(nameof(Well.WellCategory)).IsModified);
+            .Where(e => (e.State == EntityState.Modified)
+                        && (e.Property(nameof(Well.WellCost)).IsModified || e.Property(nameof(Well.WellCategory)).IsModified));
 
-        var modifiedWellIds = modifiedWellsWithCostChange.Select(e => e.Entity.Id).ToList();
+        var modifiedWellIds = modifiedWellsWithCostChange.Select(e => e.Entity).ToList();
 
         var modifiedDrillingSchedules = ChangeTracker.Entries<DrillingSchedule>()
-            .Where(e => e.State == EntityState.Modified && e.Property(nameof(Models.DrillingSchedule.InternalData)).IsModified
-            || e.Property(nameof(Models.DrillingSchedule.StartYear)).IsModified);
+            .Where(e => (e.State == EntityState.Modified)
+                && (e.Property(nameof(Models.DrillingSchedule.InternalData)).IsModified
+                || e.Property(nameof(Models.DrillingSchedule.StartYear)).IsModified));
 
-        var modifiedDrillingScheduleIds = modifiedDrillingSchedules.Select(e => e.Entity.Id).ToList();
+        var addedDrillingSchedules = ChangeTracker.Entries<DrillingSchedule>()
+            .Where(e => e.State == EntityState.Added);
+
+        var modifiedDrillingScheduleIds = modifiedDrillingSchedules.Select(e => e.Entity.Id)
+                                            .Union(addedDrillingSchedules.Select(e => e.Entity.Id)).ToList();
 
         return (modifiedWellIds, modifiedDrillingScheduleIds);
     }

@@ -34,15 +34,19 @@ public class WellCostProfileService : IWellCostProfileService
         var wellProjectWells = GetAllWellProjectWells()
             .Where(wpw => wpw.DrillingScheduleId.HasValue && drillingScheduleIds.Contains(wpw.DrillingScheduleId.Value));
 
-        var wellIds = explorationWells.Select(ew => ew.WellId).Union(wellProjectWells.Select(wpw => wpw.WellId)).Distinct();
-
-        await UpdateCostProfilesForWells(wellIds.ToList());
+        await UpdateWellProjectCostProfiles(wellProjectWells.ToList());
+        await UpdateExplorationCostProfiles(explorationWells.ToList());
     }
 
-    public async Task UpdateCostProfilesForWells(List<Guid> wellIds)
+    public async Task UpdateCostProfilesForWells(List<Well> wells)
     {
-        var explorationWells = await GetAllExplorationWells().Where(ew => wellIds.Contains(ew.WellId)).ToListAsync();
-        var wellProjectWells = await GetAllWellProjectWells().Where(wpw => wellIds.Contains(wpw.WellId)).ToListAsync();
+        if (wells.Count == 0)
+        {
+            return;
+        }
+
+        var explorationWells = await GetAllExplorationWells().Where(ew => wells.Contains(ew.Well)).ToListAsync();
+        var wellProjectWells = await GetAllWellProjectWells().Where(wpw => wells.Contains(wpw.Well)).ToListAsync();
 
         await UpdateExplorationCostProfiles(explorationWells);
         await UpdateWellProjectCostProfiles(wellProjectWells);
