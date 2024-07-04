@@ -986,7 +986,7 @@ const useDataEdits = (): {
                 }
                 break
             case "explorationWellDrillingSchedule":
-                if (drillingScheduleId === EMPTY_GUID) {
+                if (!drillingScheduleId) {
                     success = await createOrUpdateDrillingSchedule(
                         projectId,
                         caseId,
@@ -1007,7 +1007,7 @@ const useDataEdits = (): {
                 }
                 break
             case "wellProjectWellDrillingSchedule":
-                if (drillingScheduleId === EMPTY_GUID) {
+                if (!drillingScheduleId) {
                     success = await createOrUpdateDrillingSchedule(
                         projectId,
                         caseId,
