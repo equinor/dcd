@@ -27,6 +27,12 @@ const CaseDrillingScheduleTab = () => {
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
+    const [wellProjectWellsData, setWellProjectWellsData] = useState<Components.Schemas.WellProjectWellDto[] | undefined | null>(undefined)
+    const [explorationWellsData, setExplorationWellsData] = useState<Components.Schemas.ExplorationWellDto[] | undefined | null>(undefined)
+    const [explorationData, setExplorationData] = useState<Components.Schemas.ExplorationDto | undefined | null>(undefined)
+    const [wellProjectData, setWellProjectData] = useState<Components.Schemas.WellProjectDto | undefined | null>(undefined)
+    const [caseData, setCaseData] = useState<Components.Schemas.CaseDto | undefined | null>(undefined)
+
     // WellProjectWell
     const [oilProducerCount, setOilProducerCount] = useState<number>(0)
     const [gasProducerCount, setGasProducerCount] = useState<number>(0)
@@ -50,11 +56,13 @@ const CaseDrillingScheduleTab = () => {
         },
     )
 
-    const wellProjectWellsData = apiData?.wellProjectWells
-    const explorationWellsData = apiData?.explorationWells
-    const explorationData = apiData?.exploration
-    const wellProjectData = apiData?.wellProject
-    const caseData = apiData?.case
+    useEffect(() => {
+        setWellProjectWellsData(apiData?.wellProjectWells)
+        setExplorationWellsData(apiData?.explorationWells)
+        setExplorationData(apiData?.exploration)
+        setWellProjectData(apiData?.wellProject)
+        setCaseData(apiData?.case)
+    }, [apiData, project])
 
     useEffect(() => {
         if (activeTabCase === 3 && caseData) {
