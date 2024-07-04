@@ -351,10 +351,11 @@ const CaseTabTable = ({
                         )
 
                         clearCellsInRange(startRowIndex, endRowIndex, colIds)
+                        handleCellValueChange(e)
                     }
                 })
 
-                e.api.refreshCells()
+                // e.api.refreshCells()
             }
         },
         [clearCellsInRange],
