@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react"
 import {
-    Typography, Icon, Tooltip, CircularProgress,
-    Button,
+    Typography, Icon, Tooltip, CircularProgress, Button,
 } from "@equinor/eds-core-react"
-import { check_circle_outlined, redo, undo } from "@equinor/eds-icons"
+import { check_circle_outlined, undo, redo } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { useIsMutating } from "react-query"
 import { useParams } from "react-router-dom"
@@ -127,6 +126,7 @@ const UndoControls: React.FC = () => {
                         </Tooltip>
                     )
             }
+            {/* comment out for qa release */}
             <Tooltip title={canUndo() ? "Undo" : "No changes to undo"}>
                 <Button
                     variant="ghost_icon"
@@ -145,6 +145,7 @@ const UndoControls: React.FC = () => {
                     <Icon data={redo} />
                 </Button>
             </Tooltip>
+            {/* comment out for qa release */}
         </Container>
     )
 }

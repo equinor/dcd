@@ -9,7 +9,6 @@ import {
     useMemo,
     useEffect,
 } from "react"
-import { useParams } from "react-router"
 import { EditInstance } from "../Models/Interfaces"
 
 interface CaseContextType {
@@ -62,18 +61,6 @@ const CaseContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         caseEditsBelongingToCurrentCase,
         setCaseEditsBelongingToCurrentCase,
     ])
-
-    const { caseId } = useParams()
-
-    useEffect(() => {
-        localStorage.setItem("caseEdits", JSON.stringify(caseEdits))
-    }, [caseEdits])
-
-    useEffect(() => {
-        if (caseId) {
-            setCaseEditsBelongingToCurrentCase(caseEdits.filter((edit) => edit.caseId === caseId))
-        }
-    }, [caseId, caseEdits])
 
     useEffect(() => {
         const storedCaseEdits = localStorage.getItem("caseEdits")
