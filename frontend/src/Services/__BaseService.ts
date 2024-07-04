@@ -43,14 +43,14 @@ export class __BaseService {
     }
 
     private async request(path: string, options?: RequestOptions): Promise<any> {
-        const data = await this.client.request({
+        const { data } = await this.client.request({
             method: options?.method,
             headers: options?.headers,
             withCredentials: options?.credentials === "include",
             url: path,
             data: options?.body,
         })
-        return data.data
+        return data
     }
 
     private async requestExcel(path: string, responseType?: ResponseType, options?: RequestOptions): Promise<any> {
