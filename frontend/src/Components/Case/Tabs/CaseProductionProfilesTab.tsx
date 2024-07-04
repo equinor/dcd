@@ -7,7 +7,6 @@ import Grid from "@mui/material/Grid"
 import { useQueryClient, useQuery } from "react-query"
 import { useParams } from "react-router"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
-import CaseTabTable from "../Components/CaseTabTable"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../AgGrid/AgChartsTimeseries"
 import InputSwitcher from "../../Input/Components/InputSwitcher"
 import { useProjectContext } from "../../../Context/ProjectContext"
@@ -15,7 +14,7 @@ import { useCaseContext } from "../../../Context/CaseContext"
 import DateRangePicker from "../../Input/TableDateRangePicker"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import CaseProductionProfilesTabSkeleton from "./LoadingSkeletons/CaseProductionProfilesTabSkeleton"
-import { ITimeSeriesData } from "../../../Models/Interfaces"
+import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
 
 const CaseProductionProfilesTab = () => {
     const queryClient = useQueryClient()
@@ -75,122 +74,9 @@ const CaseProductionProfilesTab = () => {
     const gasProductionData = apiData?.productionProfileGas
     const waterProductionData = apiData?.productionProfileWater
     const waterInjectionData = apiData?.productionProfileWaterInjection
-    const fuelFlaringAndLossesData = apiData?.fuelFlaringAndLosses
-    const fuelFlaringAndLossesOverrideData = apiData?.fuelFlaringAndLossesOverride
-    const netSalesGasData = apiData?.netSalesGas
-    const netSalesGasOverrideData = apiData?.netSalesGasOverride
-    const importedElectricityData = apiData?.importedElectricity
-    const importedElectricityOverrideData = apiData?.importedElectricityOverride
-    const deferredOilData = apiData?.deferredOilProduction
-    const deferredGasData = apiData?.deferredGasProduction
     const caseData = apiData?.case
 
-    if (!caseData || !drainageStrategyData) { return null }
-
-    const timeSeriesData: ITimeSeriesData[] = [
-        {
-            profileName: "Oil production",
-            unit: `${project?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
-            profile: oilProductionData,
-            resourceName: "productionProfileOil",
-            resourceId: drainageStrategyData?.id,
-            resourceProfileId: oilProductionData?.id,
-            resourcePropertyKey: "productionProfileOil",
-            editable: true,
-            overridable: false,
-        },
-        {
-            profileName: "Gas production",
-            unit: `${project?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
-            profile: gasProductionData,
-            resourceName: "productionProfileGas",
-            resourceId: drainageStrategyData?.id,
-            resourceProfileId: gasProductionData?.id,
-            resourcePropertyKey: "productionProfileGas",
-            editable: true,
-            overridable: false,
-        },
-        {
-            profileName: "Water production",
-            unit: `${project?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
-            profile: waterProductionData,
-            resourceName: "productionProfileWater",
-            resourceId: drainageStrategyData?.id,
-            resourceProfileId: waterProductionData?.id,
-            resourcePropertyKey: "productionProfileWater",
-            editable: true,
-            overridable: false,
-        },
-        {
-            profileName: "Water injection",
-            unit: `${project?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
-            profile: waterInjectionData,
-            resourceName: "productionProfileWaterInjection",
-            resourceId: drainageStrategyData?.id,
-            resourceProfileId: waterInjectionData?.id,
-            resourcePropertyKey: "productionProfileWaterInjection",
-            editable: true,
-            overridable: false,
-        },
-        {
-            profileName: "Fuel, flaring and losses",
-            unit: `${project?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
-            profile: fuelFlaringAndLossesData,
-            resourceName: "productionProfileFuelFlaringAndLossesOverride",
-            resourceId: drainageStrategyData?.id,
-            resourceProfileId: fuelFlaringAndLossesOverrideData?.id,
-            resourcePropertyKey: "productionProfileFuelFlaringAndLossesOverride",
-            overrideProfile: fuelFlaringAndLossesOverrideData,
-            editable: true,
-            overridable: true,
-        },
-        {
-            profileName: "Net sales gas",
-            unit: `${project?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
-            profile: netSalesGasData,
-            resourceName: "productionProfileNetSalesGasOverride",
-            resourceId: drainageStrategyData?.id,
-            resourceProfileId: netSalesGasOverrideData?.id,
-            resourcePropertyKey: "productionProfileNetSalesGasOverride",
-            overrideProfile: netSalesGasOverrideData,
-            editable: true,
-            overridable: true,
-        },
-        {
-            profileName: "Imported electricity",
-            unit: "GWh",
-            profile: importedElectricityData,
-            resourceName: "productionProfileImportedElectricityOverride",
-            resourceId: drainageStrategyData?.id,
-            resourceProfileId: importedElectricityOverrideData?.id,
-            resourcePropertyKey: "productionProfileImportedElectricityOverride",
-            overrideProfile: importedElectricityOverrideData,
-            editable: true,
-            overridable: true,
-        },
-        {
-            profileName: "Deferred oil production",
-            unit: `${project?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
-            profile: deferredOilData,
-            resourceName: "deferredOilProduction",
-            resourceId: drainageStrategyData?.id,
-            resourceProfileId: deferredOilData?.id,
-            resourcePropertyKey: "deferredOilProduction",
-            editable: true,
-            overridable: false,
-        },
-        {
-            profileName: "Deferred gas production",
-            unit: `${project?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
-            profile: deferredGasData,
-            resourceName: "deferredGasProduction",
-            resourceId: drainageStrategyData?.id,
-            resourceProfileId: deferredGasData?.id,
-            resourcePropertyKey: "deferredGasProduction",
-            editable: true,
-            overridable: false,
-        },
-    ]
+    if (!caseData || !drainageStrategyData || activeTabCase !== 1) { return null }
 
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
@@ -222,8 +108,6 @@ const CaseProductionProfilesTab = () => {
         }
         return dataArray
     }
-
-    if (activeTabCase !== 1) { return null }
 
     if (!caseData || !drainageStrategyData || !projectId) {
         return (<CaseProductionProfilesTabSkeleton />)
@@ -355,13 +239,10 @@ const CaseProductionProfilesTab = () => {
                 )
             }
             <Grid item xs={12}>
-                <CaseTabTable
-                    timeSeriesData={timeSeriesData}
-                    dg4Year={caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030}
+                <CaseProductionProfiles
+                    apiData={apiData}
                     tableYears={tableYears}
-                    tableName="Production profiles"
-                    includeFooter={false}
-                    gridRef={gridRef}
+                    alignedGridsRef={gridRef}
                     profilesToHideWithoutValues={profilesToHideWithoutValues}
                 />
             </Grid>

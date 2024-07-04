@@ -25,13 +25,11 @@ const Overview = () => {
     const {
         isCreating,
         isLoading,
-        editMode,
         sidebarOpen,
         snackBarMessage,
         setSnackBarMessage,
     } = useAppContext()
     const { project } = useProjectContext()
-    const { caseId } = useParams()
     const [warnedProjects, setWarnedProjects] = useState<WarnedProjectInterface | null>(null)
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
