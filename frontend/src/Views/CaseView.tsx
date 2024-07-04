@@ -29,6 +29,8 @@ const CaseView = () => {
     const {
         activeTabCase,
         setActiveTabCase,
+        caseEdits,
+        setCaseEditsBelongingToCurrentCase,
     } = useCaseContext()
 
     const navigate = useNavigate()
@@ -55,6 +57,16 @@ const CaseView = () => {
             }
         }
     }, [tab])
+
+    useEffect(() => {
+        localStorage.setItem("caseEdits", JSON.stringify(caseEdits))
+    }, [caseEdits])
+
+    useEffect(() => {
+        if (caseId) {
+            setCaseEditsBelongingToCurrentCase(caseEdits.filter((edit) => edit.caseId === caseId))
+        }
+    }, [caseId, caseEdits])
 
     const handleTabChange = (index: number) => {
         const projectUrl = location.pathname.split("/case")[0]

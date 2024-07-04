@@ -61,19 +61,19 @@ const ProjectDetails: React.FC = () => {
                                         : <Tooltip title="Compare Cases" placement="right"><Icon data={compare} /></Tooltip>}
                                 </TimelineElement>
                             </Grid>
-                            {/* uncomment for next release
+                            {/* comment out for qa release */}
                             <Grid item>
-                                    <TimelineElement
-                                        variant="ghost"
-                                        className="GhostButton"
-                                        onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 2 } })}
-                                    >
-                                        {sidebarOpen
-                                            ? "Case edit history"
-                                            : <Tooltip title="Case edit history" placement="right"><Icon data={settings} /></Tooltip>}
-                                    </TimelineElement>
+                                <TimelineElement
+                                    variant="ghost"
+                                    className="GhostButton"
+                                    onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 2 } })}
+                                >
+                                    {sidebarOpen
+                                        ? "Case edit history"
+                                        : <Tooltip title="Case edit history" placement="right"><Icon data={settings} /></Tooltip>}
+                                </TimelineElement>
                             </Grid>
-                        */}
+                            {/* comment out for qa release */}
                             <Grid item>
                                 <TimelineElement
                                     variant="ghost"

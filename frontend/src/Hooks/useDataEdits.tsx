@@ -128,15 +128,14 @@ const useDataEdits = (): {
         const serviceMethod = service.updateTopside(projectId, caseId, topsideId, updatedData)
 
         try {
-            await mutation.mutateAsync({
+            return await mutation.mutateAsync({
                 projectId,
                 caseId,
                 resourceId: topsideId,
                 serviceMethod,
             })
-            return true
         } catch (error) {
-            return false
+            return error
         }
     }
 
@@ -156,13 +155,12 @@ const useDataEdits = (): {
         const serviceMethod = service.updateSurf(projectId, caseId, surfId, updatedData)
 
         try {
-            await mutation.mutateAsync({
+            return await mutation.mutateAsync({
                 projectId,
                 caseId,
                 resourceId: surfId,
                 serviceMethod,
             })
-            return true
         } catch (error) {
             return false
         }
@@ -184,13 +182,12 @@ const useDataEdits = (): {
         const serviceMethod = service.updateSubstructure(projectId, caseId, substructureId, updatedData)
 
         try {
-            await mutation.mutateAsync({
+            return await mutation.mutateAsync({
                 projectId,
                 caseId,
                 resourceId: substructureId,
                 serviceMethod,
             })
-            return true
         } catch (error) {
             return false
         }
@@ -212,13 +209,12 @@ const useDataEdits = (): {
         const serviceMethod = service.updateTransport(projectId, caseId, transportId, updatedData)
 
         try {
-            await mutation.mutateAsync({
+            return await mutation.mutateAsync({
                 projectId,
                 caseId,
                 resourceId: transportId,
                 serviceMethod,
             })
-            return true
         } catch (error) {
             return false
         }
@@ -239,13 +235,12 @@ const useDataEdits = (): {
         const serviceMethod = service.updateDrainageStrategy(projectId, caseId, drainageStrategyId, updatedData)
 
         try {
-            await mutation.mutateAsync({
+            return await mutation.mutateAsync({
                 projectId,
                 caseId,
                 resourceId: drainageStrategyId,
                 serviceMethod,
             })
-            return true
         } catch (error) {
             return false
         }
@@ -260,16 +255,17 @@ const useDataEdits = (): {
 
     ) => {
         try {
-            await mutation.mutateAsync({
+            const result = await mutation.mutateAsync({
                 projectId,
                 caseId,
                 resourceId: assetId,
                 resourceProfileId: profileId,
                 serviceMethod: createOrUpdateFunction,
             })
-            return true
+            const returnValue = { ...result, resourceProfileId: result.id }
+            return returnValue
         } catch (error) {
-            return false
+            return error
         }
     }
 
@@ -312,12 +308,11 @@ const useDataEdits = (): {
         const serviceMethod = caseService.updateCase(projectId, caseId, updatedData as Components.Schemas.CaseDto)
 
         try {
-            await mutation.mutateAsync({
+            return await mutation.mutateAsync({
                 projectId,
                 caseId,
                 serviceMethod,
             })
-            return true
         } catch (error) {
             return false
         }
@@ -347,7 +342,7 @@ const useDataEdits = (): {
         resourceProfileId,
         wellId,
         drillingScheduleId,
-    }: SubmitToApiParams): Promise<boolean> => {
+    }: SubmitToApiParams): Promise<any> => {
         const existingDataInClient: object | undefined = queryClient.getQueryData([{
             projectId, caseId, resourceId, resourceProfileId: EMPTY_GUID, wellId, drillingScheduleId,
         }])
@@ -355,9 +350,9 @@ const useDataEdits = (): {
 
         if (resourceName !== "case" && !resourceId) {
             console.log("asset id is required for this service")
-            return false
+            throw Error()
         }
-        let success = false
+        let success = {}
         switch (resourceName) {
             case "case":
                 success = await updateCase(projectId, caseId, resourcePropertyKey, value, resourceObject)
@@ -1116,6 +1111,7 @@ const useDataEdits = (): {
         )
 
         if (success && caseId) {
+            editInstanceObject.resourceProfileId = success.resourceProfileId
             addToHistoryTracker(editInstanceObject, caseId)
         }
     }
@@ -1123,6 +1119,7 @@ const useDataEdits = (): {
     const undoEdit = () => {
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams))
         const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
+
         const updatedEditIndex = currentEditIndex + 1
         const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
 
