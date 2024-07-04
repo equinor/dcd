@@ -261,7 +261,6 @@ const CaseDrillingScheduleTabTable = ({
                     suppressMovableColumns
                     enableCharts
                     alignedGrids={gridRefArrayToAlignedGrid()}
-                    singleClickEdit={editMode}
                     stopEditingWhenCellsLoseFocus
                 />
             </div>
