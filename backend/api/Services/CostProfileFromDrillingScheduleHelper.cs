@@ -74,7 +74,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
 
         UpdateWellProjects(updatedWellProjectDtoList.ToArray());
 
-        // await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
     }
 
     private WellProjectWithProfilesDto[] UpdateWellProjects(WellProject[] updatedWellProjects)
