@@ -149,7 +149,7 @@ const WellListEditTechnicalInput = ({
         <Button
             variant="ghost_icon"
             onClick={() => {
-                const wellIsInUse = true // todo: check if well is in use
+                const wellIsInUse = false // todo: check if well is in use
                 if (wellIsInUse) {
                     setWellStagedForDeletion(p)
                 } else {
