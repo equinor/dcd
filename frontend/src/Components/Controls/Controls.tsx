@@ -5,6 +5,7 @@ import {
     Icon,
     Button,
     Progress,
+    Typography,
 } from "@equinor/eds-core-react"
 import {
     visibility,
@@ -15,10 +16,8 @@ import {
 
 } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid"
-import { Typography } from "@mui/material"
 import { projectPath } from "../../Utils/common"
 import { useProjectContext } from "../../Context/ProjectContext"
-import { useCaseContext } from "../../Context/CaseContext"
 import { useModalContext } from "../../Context/ModalContext"
 import CaseDropMenu from "../Case/Components/CaseDropMenu"
 import { GetProjectService } from "../../Services/ProjectService"

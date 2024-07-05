@@ -102,7 +102,7 @@ const useDataEdits = (): {
                 */
 
                 // this makes the app refetch all data. We should only refetch the data that was updated in the future.
-                queryClient.invalidateQueries(["apiData", { projectId, caseId }])
+                queryClient.fetchQuery(["apiData", { projectId, caseId }])
             },
             onError: (error: any) => {
                 console.error("Failed to update data:", error)
@@ -981,7 +981,7 @@ const useDataEdits = (): {
                 }
                 break
             case "explorationWellDrillingSchedule":
-                if (drillingScheduleId === EMPTY_GUID) {
+                if (!drillingScheduleId) {
                     success = await createOrUpdateDrillingSchedule(
                         projectId,
                         caseId,
@@ -1002,7 +1002,7 @@ const useDataEdits = (): {
                 }
                 break
             case "wellProjectWellDrillingSchedule":
-                if (drillingScheduleId === EMPTY_GUID) {
+                if (!drillingScheduleId) {
                     success = await createOrUpdateDrillingSchedule(
                         projectId,
                         caseId,

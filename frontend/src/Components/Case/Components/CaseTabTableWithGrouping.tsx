@@ -119,7 +119,7 @@ const CaseTabTableWithGrouping = ({
                 pinned: "right",
                 width: 100,
                 aggFunc: formatColumnSum,
-                cellStyle: { fontWeight: "bold" },
+                cellStyle: { fontWeight: "bold", textAlign: "right" },
             },
 
         ]
@@ -133,7 +133,7 @@ const CaseTabTableWithGrouping = ({
                 minWidth: 100,
                 aggFunc: formatColumnSum,
                 cellClass: (params: any) => (editMode && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
-                cellStyle: { fontWeight: "bold" },
+                cellStyle: { fontWeight: "bold", textAlign: "right" },
             })
         }
         return columnPinned.concat([...yearDefs])
