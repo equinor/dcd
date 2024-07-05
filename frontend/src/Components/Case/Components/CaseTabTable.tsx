@@ -170,7 +170,7 @@ const CaseTabTable = ({
                 pinned: "right",
                 width: 100,
                 aggFunc: formatColumnSum,
-                cellStyle: { fontWeight: "bold" },
+                cellStyle: { fontWeight: "bold", textAlign: "right" },
             },
             {
                 headerName: "",

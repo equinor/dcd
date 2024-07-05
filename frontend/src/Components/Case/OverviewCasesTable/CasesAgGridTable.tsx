@@ -15,7 +15,7 @@ import { AgGridReact } from "@ag-grid-community/react"
 import { more_vertical } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
-import { casePath, productionStrategyOverviewToString } from "../../../Utils/common"
+import { casePath, productionStrategyOverviewToString, cellStyleRightAlign } from "../../../Utils/common"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import { ReferenceCaseIcon } from "../Components/ReferenceCaseIcon"
 
@@ -126,16 +126,19 @@ const CasesAgGridTable = ({
             field: "producerCount",
             headerName: "Producers",
             width: 130,
+            cellStyle: cellStyleRightAlign,
         },
         {
             field: "gasInjectorCount",
             headerName: "Gas injectors",
             width: 155,
+            cellStyle: cellStyleRightAlign,
         },
         {
             field: "waterInjectorCount",
             headerName: "Water injectors",
             width: 170,
+            cellStyle: cellStyleRightAlign,
         },
         {
             field: "createdAt",

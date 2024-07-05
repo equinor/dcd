@@ -8,7 +8,7 @@ import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import { useParams } from "react-router"
-import { isExplorationWell, isInteger } from "../../../../Utils/common"
+import { isExplorationWell, isInteger, cellStyleRightAlign } from "../../../../Utils/common"
 import { useAppContext } from "../../../../Context/AppContext"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import useDataEdits from "../../../../Hooks/useDataEdits"
@@ -129,7 +129,7 @@ const CaseDrillingScheduleTabTable = ({
                 field: "name", headerName: tableName, width: 250, editable: false, pinned: "left",
             },
             {
-                field: "total", flex: 2, editable: false, pinned: "right", width: 100,
+                field: "total", flex: 2, editable: false, pinned: "right", width: 100, cellStyle: { fontWeight: "bold", textAlign: "right" },
             },
         ]
         const yearDefs: any[] = []
@@ -140,6 +140,7 @@ const CaseDrillingScheduleTabTable = ({
                 minWidth: 100,
                 editable: editMode,
                 cellClass: editMode ? "editableCell" : undefined,
+                cellStyle: cellStyleRightAlign,
             })
         }
         return columnPinned.concat([...yearDefs])
