@@ -1,6 +1,4 @@
 import {
-    Dispatch,
-    SetStateAction,
     useState,
     useEffect,
     useRef,
@@ -17,9 +15,6 @@ import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
 
-interface Props {
-}
-
 const CaseDrillingScheduleTab = () => {
     const { project } = useProjectContext()
     const { activeTabCase } = useCaseContext()
@@ -31,6 +26,20 @@ const CaseDrillingScheduleTab = () => {
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+
+    // WellProjectWell
+    const [oilProducerCount, setOilProducerCount] = useState<number>(0)
+    const [gasProducerCount, setGasProducerCount] = useState<number>(0)
+    const [waterInjectorCount, setWaterInjectorCount] = useState<number>(0)
+    const [gasInjectorCount, setGasInjectorCount] = useState<number>(0)
+
+    // ExplorationWell
+    const [explorationWellCount, setExplorationWellCount] = useState<number>(0)
+    const [appraisalWellCount, setAppraisalWellCount] = useState<number>(0)
+
+    const [, setSidetrackCount] = useState<number>(0)
+    const wellProjectWellsGridRef = useRef(null)
+    const explorationWellsGridRef = useRef(null)
 
     const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
         ["apiData", { projectId, caseId }],
@@ -47,40 +56,13 @@ const CaseDrillingScheduleTab = () => {
     const wellProjectData = apiData?.wellProject
     const caseData = apiData?.case
 
-    const datePickerValue = (() => {
-        if (project?.currency === 1) {
-            return "MNOK"
-        } if (project?.currency === 2) {
-            return "MUSD"
-        }
-        return ""
-    })()
-
-    const wellProjectWellsGridRef = useRef(null)
-    const explorationWellsGridRef = useRef(null)
-
-    // WellProjectWell
-    const [oilProducerCount, setOilProducerCount] = useState<number>(0)
-    const [gasProducerCount, setGasProducerCount] = useState<number>(0)
-    const [waterInjectorCount, setWaterInjectorCount] = useState<number>(0)
-    const [gasInjectorCount, setGasInjectorCount] = useState<number>(0)
-
-    // ExplorationWell
-    const [explorationWellCount, setExplorationWellCount] = useState<number>(0)
-    const [appraisalWellCount, setAppraisalWellCount] = useState<number>(0)
-    const [, setSidetrackCount] = useState<number>(0)
-
-    const handleTableYearsClick = () => {
-        setTableYears([startYear, endYear])
-    }
-
     useEffect(() => {
-        if (activeTabCase === 3 && caseData!.dG4Date !== undefined) {
+        if (activeTabCase === 3 && caseData) {
             const explorationDrillingSchedule = explorationWellsData?.map((ew) => ew.drillingSchedule) ?? []
             const wellProjectDrillingSchedule = wellProjectWellsData?.map((ew) => ew.drillingSchedule) ?? []
             SetTableYearsFromProfiles(
                 [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
-                new Date(caseData!.dG4Date).getFullYear(),
+                new Date(caseData.dG4Date).getFullYear(),
                 setStartYear,
                 setEndYear,
                 setTableYears,
@@ -121,20 +103,6 @@ const CaseDrillingScheduleTab = () => {
     }
 
     useEffect(() => {
-        if (activeTabCase === 3 && caseData!.dG4Date !== undefined) {
-            const explorationDrillingSchedule = explorationWellsData?.map((ew) => ew.drillingSchedule) ?? []
-            const wellProjectDrillingSchedule = wellProjectWellsData?.map((ew) => ew.drillingSchedule) ?? []
-            SetTableYearsFromProfiles(
-                [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
-                new Date(caseData!.dG4Date).getFullYear(),
-                setStartYear,
-                setEndYear,
-                setTableYears,
-            )
-        }
-    }, [activeTabCase])
-
-    useEffect(() => {
         if (activeTabCase === 3) {
             setOilProducerCount(sumWellsForWellCategory(0))
             setGasProducerCount(sumWellsForWellCategory(1))
@@ -154,6 +122,19 @@ const CaseDrillingScheduleTab = () => {
         || !explorationData
         || !wellProjectData
     ) { return null }
+
+    const handleTableYearsClick = () => {
+        setTableYears([startYear, endYear])
+    }
+
+    const datePickerValue = (() => {
+        if (project?.currency === 1) {
+            return "MNOK"
+        } if (project?.currency === 2) {
+            return "MUSD"
+        }
+        return ""
+    })()
 
     return (
         <Grid container spacing={2}>
