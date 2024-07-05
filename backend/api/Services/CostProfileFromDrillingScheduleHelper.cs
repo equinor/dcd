@@ -28,6 +28,19 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         _mapper = mapper;
     }
 
+    public async Task UpdateCostProfilesForWellsFromDrillingSchedules(List<Guid> drillingScheduleIds)
+    {
+        var explorationWells = GetAllExplorationWells()
+            .Where(ew => ew.DrillingScheduleId.HasValue && drillingScheduleIds.Contains(ew.DrillingScheduleId.Value));
+
+        var wellProjectWells = GetAllWellProjectWells()
+            .Where(wpw => wpw.DrillingScheduleId.HasValue && drillingScheduleIds.Contains(wpw.DrillingScheduleId.Value));
+
+        var wellIds = explorationWells.Select(ew => ew.WellId).Union(wellProjectWells.Select(wpw => wpw.WellId)).Distinct();
+
+        await UpdateCostProfilesForWells(wellIds.ToList());
+    }
+
     public async Task UpdateCostProfilesForWells(List<Guid> wellIds)
     {
         var explorationWells = GetAllExplorationWells().Where(ew => wellIds.Contains(ew.WellId));
@@ -294,27 +307,13 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         }
     }
 
-    private IEnumerable<ExplorationWell> GetAllExplorationWells()
+    private IQueryable<ExplorationWell> GetAllExplorationWells()
     {
-        if (_context.ExplorationWell != null)
-        {
-            return _context.ExplorationWell.Include(ew => ew.DrillingSchedule);
-        }
-        else
-        {
-            return new List<ExplorationWell>();
-        }
+        return _context.ExplorationWell.Include(ew => ew.DrillingSchedule);
     }
 
-    private IEnumerable<WellProjectWell> GetAllWellProjectWells()
+    private IQueryable<WellProjectWell> GetAllWellProjectWells()
     {
-        if (_context.WellProjectWell != null)
-        {
-            return _context.WellProjectWell.Include(wpw => wpw.DrillingSchedule);
-        }
-        else
-        {
-            return new List<WellProjectWell>();
-        }
+        return _context.WellProjectWell.Include(wpw => wpw.DrillingSchedule);
     }
 }

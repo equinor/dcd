@@ -23,69 +23,18 @@ namespace api.Controllers;
 )]
 public class CaseGeneratedProfileController : ControllerBase
 {
-    private readonly ICessationCostProfileService _generateCessationCostProfile;
-    private readonly IOpexCostProfileService _generateOpexCostProfile;
-    private readonly IStudyCostProfileService _generateStudyCostProfile;
     private readonly ICo2IntensityProfileService _generateCo2IntensityProfile;
     private readonly ICo2IntensityTotalService _generateCo2IntensityTotal;
     private readonly ICo2DrillingFlaringFuelTotalsService _generateCo2DrillingFlaringFuelTotals;
 
-    public CaseGeneratedProfileController(IStudyCostProfileService generateStudyCostProfile,
-        IOpexCostProfileService generateOpexCostProfile, ICessationCostProfileService generateCessationCostProfile,
-        ICo2IntensityProfileService generateCo2IntensityProfile, ICo2IntensityTotalService generateCo2IntensityTotal,
+    public CaseGeneratedProfileController(
+        ICo2IntensityProfileService generateCo2IntensityProfile,
+        ICo2IntensityTotalService generateCo2IntensityTotal,
         ICo2DrillingFlaringFuelTotalsService generateCo2DrillingFlaringFuelTotals)
     {
-        _generateStudyCostProfile = generateStudyCostProfile;
-        _generateOpexCostProfile = generateOpexCostProfile;
-        _generateCessationCostProfile = generateCessationCostProfile;
         _generateCo2IntensityProfile = generateCo2IntensityProfile;
         _generateCo2IntensityTotal = generateCo2IntensityTotal;
         _generateCo2DrillingFlaringFuelTotals = generateCo2DrillingFlaringFuelTotals;
-    }
-
-    [HttpGet("opex")]
-    [ProducesResponseType(typeof(OpexCostProfileWrapperDto), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<OpexCostProfileWrapperDto>> GenerateOPEX(Guid caseId)
-    {
-        try
-        {
-            var dto = await _generateOpexCostProfile.Generate(caseId);
-            return Ok(dto);
-        }
-        catch (NotFoundInDBException)
-        {
-            return NotFound();
-        }
-    }
-
-    [HttpGet("study")]
-    [ProducesResponseType(typeof(StudyCostProfileWrapperDto), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<StudyCostProfileWrapperDto>> GenerateStudy(Guid caseId)
-    {
-        try
-        {
-            var dto = await _generateStudyCostProfile.Generate(caseId);
-            return Ok(dto);
-        }
-        catch (NotFoundInDBException)
-        {
-            return NotFound();
-        }
-    }
-
-    [HttpGet("cessation")]
-    [ProducesResponseType(typeof(CessationCostWrapperDto), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<CessationCostWrapperDto>> GenerateCessation(Guid caseId)
-    {
-        try
-        {
-            var dto = await _generateCessationCostProfile.Generate(caseId);
-            return Ok(dto);
-        }
-        catch (NotFoundInDBException)
-        {
-            return NotFound();
-        }
     }
 
     [HttpGet("co2Intensity")]

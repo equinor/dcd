@@ -33,6 +33,13 @@ public class DcdDbContext : DbContext
 
     private async Task DetectChangesAndCalculateEntities(Guid caseId)
     {
+        var (wells, drillingScheduleIds) = CalculateExplorationAndWellProjectCost();
+        if (wells.Count != 0 || drillingScheduleIds.Count != 0)
+        {
+            await base.SaveChangesAsync(); // TODO: This is a hack to find the asset wells from the wells and drilling schedules in EF
+            await _serviceProvider.GetRequiredService<IWellCostProfileService>().UpdateCostProfilesForWellsFromDrillingSchedules(drillingScheduleIds);
+            await _serviceProvider.GetRequiredService<IWellCostProfileService>().UpdateCostProfilesForWells(wells);
+        }
         if (CalculateStudyCost())
         {
             await _serviceProvider.GetRequiredService<IStudyCostProfileService>().Generate(caseId);
@@ -72,6 +79,28 @@ public class DcdDbContext : DbContext
         {
             await _serviceProvider.GetRequiredService<ICo2EmissionsProfileService>().Generate(caseId);
         }
+    }
+
+    private (List<Well> wells, List<Guid> drillingScheduleIds) CalculateExplorationAndWellProjectCost()
+    {
+        var modifiedWellsWithCostChange = ChangeTracker.Entries<Well>()
+            .Where(e => (e.State == EntityState.Modified)
+                        && (e.Property(nameof(Well.WellCost)).IsModified || e.Property(nameof(Well.WellCategory)).IsModified));
+
+        var modifiedWellIds = modifiedWellsWithCostChange.Select(e => e.Entity).ToList();
+
+        var modifiedDrillingSchedules = ChangeTracker.Entries<DrillingSchedule>()
+            .Where(e => (e.State == EntityState.Modified)
+                && (e.Property(nameof(Models.DrillingSchedule.InternalData)).IsModified
+                || e.Property(nameof(Models.DrillingSchedule.StartYear)).IsModified));
+
+        var addedDrillingSchedules = ChangeTracker.Entries<DrillingSchedule>()
+            .Where(e => e.State == EntityState.Added);
+
+        var modifiedDrillingScheduleIds = modifiedDrillingSchedules.Select(e => e.Entity.Id)
+                                            .Union(addedDrillingSchedules.Select(e => e.Entity.Id)).ToList();
+
+        return (modifiedWellIds, modifiedDrillingScheduleIds);
     }
 
     private bool CalculateCo2Emissions()
