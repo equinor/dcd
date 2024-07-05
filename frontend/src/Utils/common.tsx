@@ -259,6 +259,8 @@ export const getCaseRowStyle = (params: any) => {
     return undefined
 }
 
+export const cellStyleRightAlign = { textAlign: "right" }
+
 export const validateInput = (params: any, editMode: boolean) => {
     const { value, data } = params
     if (tableCellisEditable(params, editMode) && editMode && value) {

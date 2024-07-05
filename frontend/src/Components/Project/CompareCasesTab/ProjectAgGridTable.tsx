@@ -7,6 +7,7 @@ import styled from "styled-components"
 import { tokens } from "@equinor/eds-tokens"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import CustomHeaderForSecondaryHeader from "../../../CustomHeaderForSecondaryHeader"
+import { cellStyleRightAlign } from "../../../Utils/common"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
@@ -60,6 +61,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                             columnHeader: "NPV",
                             unit: "mill USD",
                         },
+                        cellStyle: cellStyleRightAlign,
                     },
                     {
                         field: "breakEven",
@@ -71,6 +73,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                             columnHeader: "Break even",
                             unit: "USD/bbl",
                         },
+                        cellStyle: cellStyleRightAlign,
                     },
                 ],
             },
@@ -87,6 +90,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                             columnHeader: "Oil production",
                             unit: project?.physicalUnit === 0 ? "MSm3" : "mill bbl",
                         },
+                        cellStyle: cellStyleRightAlign,
                     },
                     {
                         field: "gasProduction",
@@ -98,6 +102,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                             columnHeader: "Gas production",
                             unit: project?.physicalUnit === 0 ? "GSm3" : "Bscf",
                         },
+                        cellStyle: cellStyleRightAlign,
                     },
                     {
                         field: "totalExportedVolumes",
@@ -109,6 +114,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                             columnHeader: "Total exported volumes",
                             unit: project?.physicalUnit === 0 ? "mill Sm3" : "mill boe",
                         },
+                        cellStyle: cellStyleRightAlign,
                     },
                 ],
             },
@@ -125,6 +131,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                             columnHeader: "Study costs + OPEX",
                             unit: project?.currency === 1 ? "mill NOK" : "mill USD",
                         },
+                        cellStyle: cellStyleRightAlign,
                     },
                     {
                         field: "cessationCosts",
@@ -136,6 +143,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                             columnHeader: "Cessation costs",
                             unit: project?.currency === 1 ? "mill NOK" : "mill USD",
                         },
+                        cellStyle: cellStyleRightAlign,
                     },
                 ],
             },
@@ -152,6 +160,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                             columnHeader: "Offshore + Onshore facility costs",
                             unit: project?.currency === 1 ? "mill NOK" : "mill USD",
                         },
+                        cellStyle: cellStyleRightAlign,
                     },
                     {
                         field: "developmentCosts",
@@ -163,6 +172,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                             columnHeader: "Development well costs",
                             unit: project?.currency === 1 ? "mill NOK" : "mill USD",
                         },
+                        cellStyle: cellStyleRightAlign,
                     },
                     {
                         field: "explorationWellCosts",
@@ -174,6 +184,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                             columnHeader: "Exploration well costs",
                             unit: project?.currency === 1 ? "mill NOK" : "mill USD",
                         },
+                        cellStyle: cellStyleRightAlign,
                     },
                 ],
             },
@@ -190,6 +201,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                             columnHeader: "Total CO2 emissions",
                             unit: "mill tonnes",
                         },
+                        cellStyle: cellStyleRightAlign,
                     },
                     {
                         field: "cO2Intensity",
@@ -201,6 +213,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                             columnHeader: "CO2 intensity",
                             unit: "kg CO2/boe",
                         },
+                        cellStyle: cellStyleRightAlign,
                     },
                 ],
             },

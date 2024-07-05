@@ -13,6 +13,7 @@ import CustomHeaderForSecondaryHeader from "../../CustomHeaderForSecondaryHeader
 import { useProjectContext } from "../../Context/ProjectContext"
 import { useAppContext } from "../../Context/AppContext"
 import Modal from "../Modal/Modal"
+import { cellStyleRightAlign } from "../../Utils/common"
 
 interface Props {
     wells: Components.Schemas.WellDto[] | undefined
@@ -188,6 +189,7 @@ const WellListEditTechnicalInput = ({
             headerName: "Drilling days",
             width: 110,
             flex: 1,
+            cellStyle: cellStyleRightAlign,
         },
         {
             field: "wellCost",
@@ -199,12 +201,14 @@ const WellListEditTechnicalInput = ({
                 columnHeader: "Cost",
                 unit: project?.currency === 1 ? "mill NOK" : "mill USD",
             },
+            cellStyle: cellStyleRightAlign,
         },
         {
             field: "delete",
             headerName: "",
             cellRenderer: deleteWellRenderer,
             editable: false,
+            width: 90,
         },
     ])
 
