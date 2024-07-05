@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { Typography } from "@mui/material"
+import { Typography } from "@equinor/eds-core-react"
 import CaseEditHistory from "../Case/Components/CaseEditHistory"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { useCaseContext } from "../../Context/CaseContext"
