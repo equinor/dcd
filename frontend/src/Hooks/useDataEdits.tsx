@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 import { v4 as uuidv4 } from "uuid"
-import { useMutation, useQueryClient } from "react-query"
+import { useIsMutating, useMutation, useQueryClient } from "react-query"
 import { useParams } from "react-router"
 import { useCaseContext } from "../Context/CaseContext"
 import {
@@ -126,8 +126,9 @@ const useDataEdits = (): {
         }])
         const updatedData = resourceObject || { ...existingDataInClient, [resourcePropertyKey]: value }
         const serviceMethod = service.updateTopside(projectId, caseId, topsideId, updatedData)
-
         try {
+            console.log("muttern4", mutation.status)
+
             return await mutation.mutateAsync({
                 projectId,
                 caseId,
@@ -155,6 +156,8 @@ const useDataEdits = (): {
         const serviceMethod = service.updateSurf(projectId, caseId, surfId, updatedData)
 
         try {
+            console.log("muttern5", mutation.status)
+
             return await mutation.mutateAsync({
                 projectId,
                 caseId,
@@ -182,6 +185,8 @@ const useDataEdits = (): {
         const serviceMethod = service.updateSubstructure(projectId, caseId, substructureId, updatedData)
 
         try {
+            console.log("muttern6", mutation.status)
+
             return await mutation.mutateAsync({
                 projectId,
                 caseId,
@@ -209,6 +214,8 @@ const useDataEdits = (): {
         const serviceMethod = service.updateTransport(projectId, caseId, transportId, updatedData)
 
         try {
+            console.log("muttern7", mutation.status)
+
             return await mutation.mutateAsync({
                 projectId,
                 caseId,
@@ -235,6 +242,8 @@ const useDataEdits = (): {
         const serviceMethod = service.updateDrainageStrategy(projectId, caseId, drainageStrategyId, updatedData)
 
         try {
+            console.log("muttern8", mutation.status)
+
             return await mutation.mutateAsync({
                 projectId,
                 caseId,
@@ -245,6 +254,7 @@ const useDataEdits = (): {
             return false
         }
     }
+    const isMutating = useIsMutating()
 
     const createOrUpdateTimeSeriesProfile = async (
         projectId: string,
@@ -252,17 +262,25 @@ const useDataEdits = (): {
         assetId: string,
         profileId: string,
         createOrUpdateFunction: any,
-
     ) => {
         try {
-            const result = await mutation.mutateAsync({
+            console.log("muttern1", mutation.status)
+
+            const resultPromise = mutation.mutateAsync({
                 projectId,
                 caseId,
                 resourceId: assetId,
                 resourceProfileId: profileId,
                 serviceMethod: createOrUpdateFunction,
             })
+
+            console.log("muttern2", mutation)
+
+            console.log("muttern3", isMutating)
+
+            const result = await resultPromise
             const returnValue = { ...result, resourceProfileId: result.id }
+            console.log("muttern4", mutation.status)
             return returnValue
         } catch (error) {
             return error
@@ -279,6 +297,8 @@ const useDataEdits = (): {
 
     ) => {
         try {
+            console.log("muttern9", mutation.status)
+
             await mutation.mutateAsync({
                 projectId,
                 caseId,
@@ -308,12 +328,16 @@ const useDataEdits = (): {
         const serviceMethod = caseService.updateCase(projectId, caseId, updatedData as Components.Schemas.CaseDto)
 
         try {
+            console.log("Case1", mutation.status)
+
             return await mutation.mutateAsync({
                 projectId,
                 caseId,
                 serviceMethod,
             })
         } catch (error) {
+            console.log("Case2", mutation.status)
+
             return false
         }
     }
@@ -430,6 +454,8 @@ const useDataEdits = (): {
                 }
                 break
             case "productionProfileWaterInjection":
+                console.log("water1", isMutating)
+
                 if (!resourceProfileId) {
                     success = await createOrUpdateTimeSeriesProfile(
                         projectId,
@@ -438,7 +464,10 @@ const useDataEdits = (): {
                         resourceProfileId!,
                         await (await GetDrainageStrategyService()).createProductionProfileWaterInjection(projectId, caseId, resourceId!, updatedData!),
                     )
+                    console.log("water2", isMutating)
                 } else {
+                    console.log("water3", isMutating)
+
                     success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
@@ -446,6 +475,7 @@ const useDataEdits = (): {
                         resourceProfileId!,
                         await (await GetDrainageStrategyService()).updateProductionProfileWaterInjection(projectId, caseId, resourceId!, resourceProfileId!, updatedData!),
                     )
+                    console.log("water4", isMutating)
                 }
                 break
             case "productionProfileFuelFlaringAndLossesOverride":
@@ -564,6 +594,8 @@ const useDataEdits = (): {
                 break
             case "totalFEEDStudiesOverride":
                 if (!resourceProfileId) {
+                    console.log("123123", updatedData)
+
                     success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
@@ -572,6 +604,8 @@ const useDataEdits = (): {
                         await (await GetCaseService()).createTotalFEEDStudiesOverride(projectId, caseId, updatedData!),
                     )
                 } else {
+                    console.log("123123", updatedData)
+
                     success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
@@ -583,6 +617,8 @@ const useDataEdits = (): {
                 break
             case "totalOtherStudiesCostProfile":
                 if (!resourceProfileId) {
+                    console.log("321321", updatedData)
+
                     success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
@@ -591,6 +627,8 @@ const useDataEdits = (): {
                         await (await GetCaseService()).createTotalOtherStudiesCostProfile(projectId, caseId, updatedData!),
                     )
                 } else {
+                    console.log("321321", updatedData)
+
                     success = await createOrUpdateTimeSeriesProfile(
                         projectId,
                         caseId,
@@ -1044,6 +1082,7 @@ const useDataEdits = (): {
         }
 
         edits = [editInstanceObject, ...edits, ...caseEditsNotBelongingToCurrentCase]
+        console.log("edits", edits)
         setCaseEdits(edits)
         updateEditIndex(editInstanceObject.uuid)
     }
@@ -1118,10 +1157,13 @@ const useDataEdits = (): {
 
     const undoEdit = () => {
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams))
+        console.log("currentEditIndex", currentEditIndex)
         const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
+        console.log("editThatWillBeUndone", editThatWillBeUndone)
 
         const updatedEditIndex = currentEditIndex + 1
         const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
+        console.log("updatedEdit", updatedEdit)
 
         if (currentEditIndex === -1) {
             return

@@ -37,21 +37,29 @@ const UndoControls: React.FC = () => {
     const currentEditId = getCurrentEditId(editIndexes, caseId)
 
     const canUndo = () => {
-        if (isMutating) {
-            return false
-        }
         if (!currentEditId || !caseEditsBelongingToCurrentCase) {
+            // console.log("currentEditId")
             return false
         }
+        // console.log("canUndo", isMutating)
+
+        // if (isMutating) {
+        //     // console.log("ismutating")
+        //     return false
+        // }
 
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === currentEditId)
+        console.log("tester", currentEditIndex < caseEditsBelongingToCurrentCase.length && currentEditIndex > -1)
+        console.log("currentEditIndex", currentEditIndex)
+        console.log("caseEditsBelongingToCurrentCase.length", caseEditsBelongingToCurrentCase.length)
+
         return currentEditIndex < caseEditsBelongingToCurrentCase.length && currentEditIndex > -1
     }
 
     const canRedo = () => {
-        if (isMutating) {
-            return false
-        }
+        // if (isMutating) {
+        //     return false
+        // }
 
         if (!caseEditsBelongingToCurrentCase) {
             return false
@@ -70,11 +78,13 @@ const UndoControls: React.FC = () => {
         setSaving(true)
         setTimeout(() => {
             setSaving(false)
-        }, 500)
+        }, 1000)
     }
 
     useEffect(() => {
-        if (isMutating) {
+        if (isMutating > 0) {
+            // console.log("ismutating2")
+
             startCountDown()
         }
     }, [isMutating])
