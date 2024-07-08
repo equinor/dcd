@@ -203,7 +203,7 @@ const PROSPCaseList = ({
 
     const handleFileChange = (event: ChangeEvent<HTMLSelectElement>, p: any) => {
         const value = { ...p.value }
-        value[1] = event.currentTarget.selectedOptions[0].value || "" // Ensure selected value is not null
+        value[1] = event.currentTarget.selectedOptions[0].value || ""
         updateFileLink(p.node?.data.id, value[1])
         const rowNode = gridRef.current?.getRowNode(p.node?.data.id)
         if (value[1] === rowNode.data.sharePointFileId) {
@@ -216,8 +216,8 @@ const PROSPCaseList = ({
     }
 
     const fileSelectorRenderer = (p: any) => {
-        const fileId = p.value[1] || "" // Ensure fileId is not null
-        const items: DriveItem[] = p.value[0] || [] // Ensure items array is defined
+        const fileId = p.value[1] || ""
+        const items: DriveItem[] = p.value[0] || []
 
         return (
             <NativeSelect
