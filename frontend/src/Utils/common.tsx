@@ -240,15 +240,15 @@ export function updateObject<T>(object: T | undefined, setObject: Dispatch<SetSt
  * @returns A boolean indicating if the cell is editable.
  * */
 export const tableCellisEditable = (params: any, editMode: boolean): boolean => {
-    if (!params || !params.node || !params.data) { // necessary properties are not present
+    if (!params || !params.node || !params.data) {
         return false
     }
 
-    if (params.node.footer) { // Footer cells are not editable
+    if (params.node.footer) {
         return false
     }
 
-    if (params.data.overridable) { // Overridable cells are editable
+    if (params.data.overridable) {
         return editMode && params.data.override
     }
 
