@@ -25,7 +25,6 @@ import { useAppContext } from "../../../Context/AppContext"
 import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
-import hideProfilesWithoutValues from "./HideProfilesWithoutValues"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import useDataEdits from "../../../Hooks/useDataEdits"
 import { ProfileNames } from "../../../Models/Interfaces"
@@ -39,7 +38,6 @@ interface Props {
     gridRef?: any
     includeFooter: boolean
     totalRowName?: string
-    profilesToHideWithoutValues?: string[]
 }
 
 const CaseTabTable = ({
@@ -51,7 +49,6 @@ const CaseTabTable = ({
     gridRef,
     includeFooter,
     totalRowName,
-    profilesToHideWithoutValues,
 }: Props) => {
     const { editMode } = useAppContext()
     const styles = useStyles()
@@ -80,6 +77,7 @@ const CaseTabTable = ({
             rowObject.resourceName = ts.resourceName
             rowObject.overridable = ts.overridable
             rowObject.editable = ts.editable
+            rowObject.hideIfEmpty = ts.hideIfEmpty
 
             rowObject.overrideProfileSet = ts.overrideProfileSet
             rowObject.overrideProfile = ts.overrideProfile ?? {
@@ -118,21 +116,16 @@ const CaseTabTable = ({
                 }
             }
 
-            tableRows.push(rowObject)
+            if (editMode || !rowObject.hideIfEmpty
+                || (rowObject.hideIfEmpty && rowObject.profile?.values.length > 0)) {
+                tableRows.push(rowObject)
+            }
         })
-
-        if (profilesToHideWithoutValues !== undefined) {
-            return hideProfilesWithoutValues(
-                editMode,
-                profilesToHideWithoutValues,
-                tableRows,
-            )
-        }
 
         return tableRows
     }
 
-    const gridRowData = useMemo(() => gridRef.current?.api?.setGridOption("rowData", profilesToRowData()), [timeSeriesData])
+    const gridRowData = useMemo(() => gridRef.current?.api?.setGridOption("rowData", profilesToRowData()), [timeSeriesData, editMode])
 
     const lockIconRenderer = (params: any) => (
         <ClickableLockIcon
