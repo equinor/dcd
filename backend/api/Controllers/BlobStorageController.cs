@@ -1,15 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using api.Dtos; // Adjust this namespace as per your project structure
+using api.Dtos;
 
 [Authorize]
 [ApiController]
+[Route("projects/{projectId}")]
 public class ImageController : ControllerBase
 {
     private readonly IBlobStorageService _blobStorageService;
@@ -19,7 +14,7 @@ public class ImageController : ControllerBase
         _blobStorageService = blobStorageService;
     }
 
-    private async Task<ActionResult<ImageDto>> UploadImageCore(Guid projectId, string projectName, Guid? caseId, IFormFile image)
+    private async Task<ActionResult<ImageDto>> UploadImage(Guid projectId, string projectName, Guid? caseId, IFormFile image)
     {
         const int maxFileSize = 5 * 1024 * 1024; // 5MB
         string[] permittedExtensions = { ".jpg", ".jpeg", ".png", ".gif" };
@@ -59,13 +54,13 @@ public class ImageController : ControllerBase
         }
     }
 
-    [HttpPost("projects/{projectId}/cases/{caseId}/images")]
-    public Task<ActionResult<ImageDto>> UploadImage(Guid projectId, [FromForm] string projectName, Guid caseId, [FromForm] IFormFile image)
+    [HttpPost("cases/{caseId}/images")]
+    public Task<ActionResult<ImageDto>> UploadCaseImage(Guid projectId, [FromForm] string projectName, Guid caseId, [FromForm] IFormFile image)
     {
-        return UploadImageCore(projectId, projectName, caseId, image);
+        return UploadImage(projectId, projectName, caseId, image);
     }
 
-    [HttpGet("projects/{projectId}/cases/{caseId}/images")]
+    [HttpGet("cases/{caseId}/images")]
     public async Task<ActionResult<List<ImageDto>>> GetImages(Guid projectId, Guid caseId)
     {
         try
@@ -79,7 +74,7 @@ public class ImageController : ControllerBase
         }
     }
 
-    [HttpDelete("projects/{projectId}/cases/{caseId}/images/{imageId}")]
+    [HttpDelete("cases/{caseId}/images/{imageId}")]
     public async Task<ActionResult> DeleteImage(Guid projectId, Guid caseId, Guid imageId)
     {
         try
@@ -93,13 +88,13 @@ public class ImageController : ControllerBase
         }
     }
 
-    [HttpPost("projects/{projectId}/images")]
+    [HttpPost("images")]
     public Task<ActionResult<ImageDto>> UploadProjectImage(Guid projectId, [FromForm] string projectName, [FromForm] IFormFile image)
     {
-        return UploadImageCore(projectId, projectName, null, image);
+        return UploadImage(projectId, projectName, null, image);
     }
 
-    [HttpGet("projects/{projectId}/images")]
+    [HttpGet("images")]
     public async Task<ActionResult<List<ImageDto>>> GetProjectImages(Guid projectId)
     {
         try
