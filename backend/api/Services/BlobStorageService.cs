@@ -7,6 +7,7 @@ using AutoMapper;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
+
 public class BlobStorageService : IBlobStorageService
 {
     private readonly BlobServiceClient _blobServiceClient;
@@ -53,6 +54,12 @@ public class BlobStorageService : IBlobStorageService
         var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
 
         var imageId = Guid.NewGuid();
+
+        if (projectId == Guid.Empty || caseId == Guid.Empty)
+        {
+            throw new ArgumentException("ProjectId and/or CaseId cannot be empty.");
+        }
+
         var blobName = caseId.HasValue
             ? $"{sanitizedProjectName}/cases/{caseId}/{imageId}"
             : $"{sanitizedProjectName}/projects/{projectId}/{imageId}";
