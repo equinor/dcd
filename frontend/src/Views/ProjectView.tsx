@@ -28,7 +28,7 @@ const ProjectView = () => {
                     <List>
                         <Tab>Overview </Tab>
                         <Tab>Compare cases</Tab>
-                        <Tab>Case edit history</Tab>
+                        {/* comment out for qa release <Tab>Case edit history</Tab> */}
                         <Tab>Settings</Tab>
                     </List>
                     <Panels>
