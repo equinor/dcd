@@ -116,8 +116,10 @@ const CaseTabTable = ({
                 }
             }
 
-            if (editMode || !rowObject.hideIfEmpty
-                || (rowObject.hideIfEmpty && rowObject.profile?.values.length > 0)) {
+            const isNotHidden = !rowObject.hideIfEmpty
+            const hasProfileValues = rowObject.hideIfEmpty && rowObject.profile?.values.length > 0
+
+            if (editMode || isNotHidden || hasProfileValues) {
                 tableRows.push(rowObject)
             }
         })
