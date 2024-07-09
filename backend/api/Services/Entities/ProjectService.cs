@@ -37,7 +37,7 @@ public class ProjectService : IProjectService
         _mapper = mapper;
     }
 
-    public async Task<ProjectDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto)
+    public async Task<ProjectWithAssetsDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto)
     {
         var existingProject = await GetProject(projectId);
 
@@ -48,7 +48,7 @@ public class ProjectService : IProjectService
         return await GetProjectDto(existingProject.Id);
     }
 
-    public async Task<ProjectDto> UpdateProjectFromProjectMaster(ProjectDto projectDto)
+    public async Task<ProjectWithAssetsDto> UpdateProjectFromProjectMaster(ProjectWithAssetsDto projectDto)
     {
         var existingProject = await GetProject(projectDto.Id);
 
@@ -59,7 +59,7 @@ public class ProjectService : IProjectService
         return await GetProjectDto(existingProject.Id);
     }
 
-    public async Task<ProjectDto> CreateProject(Project project)
+    public async Task<ProjectWithAssetsDto> CreateProject(Project project)
     {
         project.CreateDate = DateTimeOffset.UtcNow;
         project.Cases = new List<Case>();
@@ -131,15 +131,15 @@ public class ProjectService : IProjectService
         return new List<Project>();
     }
 
-    public async Task<IEnumerable<ProjectDto>> GetAllDtos()
+    public async Task<IEnumerable<ProjectWithAssetsDto>> GetAllDtos()
     {
         var projects = await GetAll();
         if (projects != null)
         {
-            var projectDtos = new List<ProjectDto>();
+            var projectDtos = new List<ProjectWithAssetsDto>();
             foreach (var project in projects)
             {
-                var projectDto = _mapper.Map<ProjectDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+                var projectDto = _mapper.Map<ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
                 if (projectDto != null)
                 {
                     projectDtos.Add(projectDto);
@@ -155,7 +155,7 @@ public class ProjectService : IProjectService
             return projectDtos;
         }
 
-        return new List<ProjectDto>();
+        return new List<ProjectWithAssetsDto>();
     }
 
     public async Task<Project> GetProjectWithoutAssets(Guid projectId)
@@ -311,11 +311,11 @@ public class ProjectService : IProjectService
         throw new NotFoundInDBException("The database contains no projects");
     }
 
-    public async Task<ProjectDto> GetProjectDto(Guid projectId)
+    public async Task<ProjectWithAssetsDto> GetProjectDto(Guid projectId)
     {
         var project = await GetProject(projectId);
 
-        var destination = _mapper.Map<Project, ProjectDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+        var destination = _mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 
         var projectDto = destination;
 
@@ -358,14 +358,14 @@ public class ProjectService : IProjectService
             numberOfDeviations, totalNumberOfProjects);
     }
 
-    private async Task<ProjectDto> GetProjectDtoFromProjectMaster(Guid projectGuid)
+    private async Task<ProjectWithAssetsDto> GetProjectDtoFromProjectMaster(Guid projectGuid)
     {
         if (_fusionService != null)
         {
             var projectMaster = await _fusionService.ProjectMasterAsync(projectGuid);
             // var category = CommonLibraryProjectDtoAdapter.ConvertCategory(projectMaster.ProjectCategory ?? "");
             // var phase = CommonLibraryProjectDtoAdapter.ConvertPhase(projectMaster.Phase ?? "");
-            ProjectDto projectDto = new()
+            ProjectWithAssetsDto projectDto = new()
             {
                 Name = projectMaster.Description ?? "",
                 CommonLibraryName = projectMaster.Description ?? "",

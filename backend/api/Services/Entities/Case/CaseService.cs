@@ -58,7 +58,7 @@ public class CaseService : ICaseService
         _repository = repository;
     }
 
-    public async Task<ProjectDto> CreateCase(Guid projectId, CreateCaseDto createCaseDto)
+    public async Task<ProjectWithAssetsDto> CreateCase(Guid projectId, CreateCaseDto createCaseDto)
     {
         var caseItem = _mapper.Map<Case>(createCaseDto);
         if (caseItem == null)
@@ -137,7 +137,7 @@ public class CaseService : ICaseService
         return await _projectService.GetProjectDto(project.Id);
     }
 
-    public async Task<ProjectDto> UpdateCaseAndProfiles<TDto>(Guid caseId, TDto updatedCaseDto)
+    public async Task<ProjectWithAssetsDto> UpdateCaseAndProfiles<TDto>(Guid caseId, TDto updatedCaseDto)
         where TDto : BaseUpdateCaseDto
     {
         var caseItem = await GetCase(caseId);
@@ -149,7 +149,7 @@ public class CaseService : ICaseService
         return await _projectService.GetProjectDto(caseItem.ProjectId);
     }
 
-    public async Task<ProjectDto> DeleteCase(Guid caseId)
+    public async Task<ProjectWithAssetsDto> DeleteCase(Guid caseId)
     {
         var caseItem = await GetCase(caseId);
         _context.Cases!.Remove(caseItem);

@@ -4,7 +4,7 @@ using api.Models;
 
 namespace api.Dtos;
 
-public class ProjectDto
+public class ProjectWithAssetsDto
 {
     [Required]
     public ProjectClassification Classification { get; set; }
@@ -35,6 +35,27 @@ public class ProjectDto
     [Required]
     public ProjectCategory ProjectCategory { get; set; }
     [Required]
+    public ExplorationOperationalWellCostsDto ExplorationOperationalWellCosts { get; set; } = new ExplorationOperationalWellCostsDto();
+    [Required]
+    public DevelopmentOperationalWellCostsDto DevelopmentOperationalWellCosts { get; set; } = new DevelopmentOperationalWellCostsDto();
+    [Required]
+    public ICollection<CaseWithProfilesDto> Cases { get; set; } = [];
+    [Required]
+    public ICollection<WellDto> Wells { get; set; } = [];
+    [Required]
+    public ICollection<ExplorationWithProfilesDto> Explorations { get; set; } = [];
+    [Required]
+    public ICollection<SurfWithProfilesDto> Surfs { get; set; } = [];
+    [Required]
+    public ICollection<SubstructureWithProfilesDto> Substructures { get; set; } = [];
+    [Required]
+    public ICollection<TopsideWithProfilesDto> Topsides { get; set; } = [];
+    [Required]
+    public ICollection<TransportWithProfilesDto> Transports { get; set; } = [];
+    [Required]
+    public ICollection<DrainageStrategyWithProfilesDto> DrainageStrategies { get; set; } = [];
+    [Required]
+    public ICollection<WellProjectWithProfilesDto>? WellProjects { get; set; } = [];
     public string? SharepointSiteUrl { get; set; }
     [Required]
     public double CO2RemovedFromGas { get; set; }

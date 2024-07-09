@@ -7,7 +7,7 @@ public class TechnicalInputDto
     public DevelopmentOperationalWellCostsDto DevelopmentOperationalWellCostsDto { get; set; } = null!;
     public ExplorationOperationalWellCostsDto ExplorationOperationalWellCostsDto { get; set; } = null!;
     public WellDto[]? WellDtos { get; set; }
-    public ProjectDto ProjectDto { get; set; } = null!;
+    public ProjectWithAssetsDto ProjectDto { get; set; } = null!;
     public ExplorationWithProfilesDto? ExplorationDto { get; set; }
     public WellProjectWithProfilesDto? WellProjectDto { get; set; }
 }

@@ -164,9 +164,9 @@ public class ProspSharepointImportService
             : null;
     }
 
-    public async Task<ProjectDto> ConvertSharepointFilesToProjectDto(Guid projectId, SharePointImportDto[] dtos)
+    public async Task<ProjectWithAssetsDto> ConvertSharepointFilesToProjectDto(Guid projectId, SharePointImportDto[] dtos)
     {
-        var projectDto = new ProjectDto();
+        var projectDto = new ProjectWithAssetsDto();
         if (string.IsNullOrWhiteSpace(dtos.FirstOrDefault()?.SharePointSiteUrl))
         {
             return projectDto;

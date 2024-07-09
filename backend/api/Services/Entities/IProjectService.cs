@@ -5,15 +5,15 @@ namespace api.Services;
 
 public interface IProjectService
 {
-    Task<ProjectDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto);
-    Task<ProjectDto> UpdateProjectFromProjectMaster(ProjectDto projectDto);
-    Task<ProjectDto> CreateProject(Project project);
+    Task<ProjectWithAssetsDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto);
+    Task<ProjectWithAssetsDto> UpdateProjectFromProjectMaster(ProjectWithAssetsDto projectDto);
+    Task<ProjectWithAssetsDto> CreateProject(Project project);
     Task<IEnumerable<Project>> GetAll();
-    Task<IEnumerable<ProjectDto>> GetAllDtos();
+    Task<IEnumerable<ProjectWithAssetsDto>> GetAllDtos();
     Task<Project> GetProjectWithoutAssets(Guid projectId);
     Task<Project> GetProjectWithoutAssetsNoTracking(Guid projectId);
     Task<Project> GetProject(Guid projectId);
-    Task<ProjectDto> GetProjectDto(Guid projectId);
+    Task<ProjectWithAssetsDto> GetProjectDto(Guid projectId);
     Task UpdateProjectFromProjectMaster();
     Task<IEnumerable<Well>> GetWells(Guid projectId);
     Task<IEnumerable<Exploration>> GetExplorations(Guid projectId);

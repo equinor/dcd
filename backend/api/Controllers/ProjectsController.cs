@@ -46,7 +46,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpGet("{projectId}")]
-    public async Task<ProjectDto?> Get(Guid projectId)
+    public async Task<ProjectWithAssetsDto?> Get(Guid projectId)
     {
         try
         {
@@ -59,7 +59,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ProjectDto> CreateProject([FromQuery] Guid contextId)
+    public async Task<ProjectWithAssetsDto> CreateProject([FromQuery] Guid contextId)
     {
         var projectMaster = await _fusionService.ProjectMasterAsync(contextId);
         if (projectMaster != null)
@@ -76,11 +76,11 @@ public class ProjectsController : ControllerBase
             return await _projectService.CreateProject(project);
         }
 
-        return new ProjectDto();
+        return new ProjectWithAssetsDto();
     }
 
     [HttpPut("{projectId}")]
-    public async Task<ProjectDto> UpdateProject([FromRoute] Guid projectId, [FromBody] UpdateProjectDto projectDto)
+    public async Task<ProjectWithAssetsDto> UpdateProject([FromRoute] Guid projectId, [FromBody] UpdateProjectDto projectDto)
     {
         return await _projectService.UpdateProject(projectId, projectDto);
     }

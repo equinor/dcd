@@ -53,7 +53,7 @@ public class DuplicateCaseService : IDuplicateCaseService
         return caseItem;
     }
 
-    public async Task<ProjectDto> DuplicateCase(Guid caseId)
+    public async Task<ProjectWithAssetsDto> DuplicateCase(Guid caseId)
     {
         var caseItem = await GetCaseNoTracking(caseId);
 
