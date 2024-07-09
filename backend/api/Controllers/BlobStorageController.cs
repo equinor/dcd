@@ -75,11 +75,11 @@ public class BlobStorageController : ControllerBase
     }
 
     [HttpDelete("cases/{caseId}/images/{imageId}")]
-    public async Task<ActionResult> DeleteImage(Guid projectId, Guid caseId, Guid imageId)
+    public async Task<ActionResult> DeleteCaseImage(Guid imageId)
     {
         try
         {
-            await _blobStorageService.DeleteImage(caseId, imageId);
+            await _blobStorageService.DeleteImage(imageId);
             return NoContent();
         }
         catch (Exception)
@@ -109,11 +109,11 @@ public class BlobStorageController : ControllerBase
     }
 
     [HttpDelete("images/{imageId}")]
-    public async Task<ActionResult> DeleteProjectImage(Guid projectId, Guid imageId)
+    public async Task<ActionResult> DeleteProjectImage(Guid imageId)
     {
         try
         {
-            await _blobStorageService.DeleteImage(projectId, imageId);
+            await _blobStorageService.DeleteImage(imageId);
             return NoContent();
         }
         catch (Exception)

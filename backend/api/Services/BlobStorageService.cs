@@ -120,7 +120,7 @@ public class BlobStorageService : IBlobStorageService
         return imageDtos;
     }
 
-    public async Task DeleteImage(Guid caseId, Guid imageId)
+    public async Task DeleteImage(Guid imageId)
     {
         var image = await _imageRepository.GetImageById(imageId);
         if (image == null)

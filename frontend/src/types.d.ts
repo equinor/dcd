@@ -2785,14 +2785,14 @@ declare namespace Paths {
     namespace Projects$ProjectIdCases$CaseIdImages$ImageId {
         namespace Delete {
             namespace Parameters {
-                export type CaseId = string; // uuid
+                export type CaseId = string;
                 export type ImageId = string; // uuid
-                export type ProjectId = string; // uuid
+                export type ProjectId = string;
             }
             export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
                 imageId: Parameters.ImageId /* uuid */;
+                projectId: Parameters.ProjectId;
+                caseId: Parameters.CaseId;
             }
             namespace Responses {
                 export interface $200 {
@@ -3495,11 +3495,11 @@ declare namespace Paths {
         namespace Delete {
             namespace Parameters {
                 export type ImageId = string; // uuid
-                export type ProjectId = string; // uuid
+                export type ProjectId = string;
             }
             export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
                 imageId: Parameters.ImageId /* uuid */;
+                projectId: Parameters.ProjectId;
             }
             namespace Responses {
                 export interface $200 {
