@@ -14,6 +14,7 @@ import CaseCO2Tab from "../Components/Case/Tabs/Co2Emissions/CaseCO2Tab"
 import { useProjectContext } from "../Context/ProjectContext"
 import { useCaseContext } from "../Context/CaseContext"
 import CaseDescriptionTabSkeleton from "../Components/Case/Tabs/LoadingSkeletons/CaseDescriptionTabSkeleton"
+import { tabNames } from "../Utils/constants"
 
 const {
     List, Tab, Panels, Panel,
@@ -38,17 +39,6 @@ const CaseView = () => {
     const queryClient = useQueryClient()
     const projectId = project?.id || null
 
-    const tabNames = [
-        "Description",
-        "Production Profiles",
-        "Schedule",
-        "Drilling Schedule",
-        "Facilities",
-        "Cost",
-        "CO2 Emissions",
-        "Summary",
-    ]
-
     useEffect(() => {
         if (tab) {
             const tabIndex = tabNames.indexOf(tab)
@@ -57,6 +47,19 @@ const CaseView = () => {
             }
         }
     }, [tab])
+
+    // navigates to the default tab (description) if none is provided in the url
+    useEffect(() => {
+        if (!tab && caseId) {
+            const projectUrl = location.pathname.split("/case")[0]
+            navigate(`${projectUrl}/case/${caseId}/${tabNames[0]}`, { replace: true })
+        } else if (tab) {
+            const tabIndex = tabNames.indexOf(tab)
+            if (activeTabCase !== tabIndex) {
+                setActiveTabCase(tabIndex)
+            }
+        }
+    }, [caseId])
 
     useEffect(() => {
         localStorage.setItem("caseEdits", JSON.stringify(caseEdits))
