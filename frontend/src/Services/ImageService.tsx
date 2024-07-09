@@ -31,9 +31,15 @@ export class ImageService extends __BaseService {
     }
 
     public async deleteImage(projectId: string, imageId: string, caseId?: string): Promise<void> {
-        console.log("level:", caseId ? "case" : "project")
-        console.log("url:", caseId ? `${caseUrl(projectId, caseId)}/${imageId}` : `${projectUrl(projectId)}/${imageId}`)
-        await this.delete(caseId ? `${caseUrl(projectId, caseId)}/${imageId}` : `${projectUrl(projectId)}/${imageId}`)
+        try {
+            if (caseId) {
+                await this.delete(`projects/${projectId}/cases/${caseId}/images/${imageId}`)
+            } else {
+                await this.delete(`projects/${projectId}/images/${imageId}`)
+            }
+        } catch (error) {
+            throw new Error(`Error deleting image: ${error}`)
+        }
     }
 
     public async uploadProjectImage(projectId: string, projectName: string, file: File): Promise<Components.Schemas.ImageDto> {
@@ -55,10 +61,6 @@ export class ImageService extends __BaseService {
     public async getProjectImages(projectId: string): Promise<Components.Schemas.ImageDto[]> {
         const response = await this.get(projectUrl(projectId))
         return response
-    }
-
-    public async deleteProjectImage(projectId: string, imageId: string): Promise<void> {
-        await this.delete(`${projectUrl(projectId)}/${imageId}`)
     }
 }
 
