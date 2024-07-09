@@ -6,6 +6,7 @@ import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import CaseFasilitiesTabSkeleton from "./LoadingSkeletons/CaseFacilitiesTabSkeleton"
+import SwitchableStringInput from "../../Input/SwitchableStringInput"
 
 const CaseFacilitiesTab = () => {
     const queryClient = useQueryClient()
@@ -78,12 +79,11 @@ const CaseFacilitiesTab = () => {
             </Grid>
             {substructureData.concept === 1 && (
                 <Grid item xs={12} md={4}>
-                    <SwitchableNumberInput
+                    <SwitchableStringInput
+                        label="Host"
                         resourceName="case"
                         resourcePropertyKey="host"
-                        label="Host"
-                        value={Number(caseData.host)}
-                        integer
+                        value={caseData.host || ""}
                     />
                 </Grid>
             )}

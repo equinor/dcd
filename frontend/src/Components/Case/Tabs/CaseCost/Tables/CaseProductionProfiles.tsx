@@ -7,11 +7,10 @@ interface CaseProductionProfilesProps {
     apiData: Components.Schemas.CaseWithAssetsDto,
     tableYears: [number, number],
     alignedGridsRef: any,
-    profilesToHideWithoutValues: string[]
 }
 
 const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
-    apiData, tableYears, alignedGridsRef, profilesToHideWithoutValues,
+    apiData, tableYears, alignedGridsRef,
 }) => {
     const { project } = useProjectContext()
     const [CaseProductionProfilesData, setCaseProductionProfilesData] = useState<ITimeSeriesData[]>([])
@@ -122,6 +121,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 resourcePropertyKey: "deferredOilProduction",
                 editable: true,
                 overridable: false,
+                hideIfEmpty: true,
             },
             {
                 profileName: "Deferred gas production",
@@ -133,6 +133,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 resourcePropertyKey: "deferredGasProduction",
                 editable: true,
                 overridable: false,
+                hideIfEmpty: true,
             },
         ]
 
@@ -147,7 +148,6 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             tableName="Production profiles"
             includeFooter={false}
             gridRef={alignedGridsRef}
-            profilesToHideWithoutValues={profilesToHideWithoutValues}
         />
     )
 }
