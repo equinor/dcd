@@ -19,8 +19,8 @@ interface DateRangePickerProps {
     setEndYear: (endYear: number) => void
     startYear: number
     endYear: number
-    labelText: string
-    labelValue: string | undefined | number
+    labelText?: string | undefined
+    labelValue?: string | undefined | number
     handleTableYearsClick: () => void
 }
 
@@ -53,14 +53,18 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
     return (
         <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="baseline" marginTop={6}>
-            <Helper>
-                <Typography variant="meta">
-                    {labelText}
-                </Typography>
-                <Typography variant="caption">
-                    {labelValue}
-                </Typography>
-            </Helper>
+            {labelText && labelValue && (
+                <Helper>
+                    <>
+                        <Typography variant="meta">
+                            {labelText}
+                        </Typography>
+                        <Typography variant="caption">
+                            {labelValue}
+                        </Typography>
+                    </>
+                </Helper>
+            )}
             <Grid item>
                 <Typography variant="caption">Start year</Typography>
                 <CaseNumberInput

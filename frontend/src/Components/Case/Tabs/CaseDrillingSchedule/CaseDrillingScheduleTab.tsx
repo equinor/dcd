@@ -127,15 +127,6 @@ const CaseDrillingScheduleTab = () => {
         setTableYears([startYear, endYear])
     }
 
-    const datePickerValue = (() => {
-        if (project?.currency === 1) {
-            return "MNOK"
-        } if (project?.currency === 2) {
-            return "MUSD"
-        }
-        return ""
-    })()
-
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -206,8 +197,6 @@ const CaseDrillingScheduleTab = () => {
                 setEndYear={setEndYear}
                 startYear={startYear}
                 endYear={endYear}
-                labelText="Currency"
-                labelValue={datePickerValue}
                 handleTableYearsClick={handleTableYearsClick}
             />
             <Grid item xs={12}>
