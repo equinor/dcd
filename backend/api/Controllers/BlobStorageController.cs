@@ -5,11 +5,11 @@ using api.Dtos;
 [Authorize]
 [ApiController]
 [Route("projects/{projectId}")]
-public class ImageController : ControllerBase
+public class BlobStorageController : ControllerBase
 {
     private readonly IBlobStorageService _blobStorageService;
 
-    public ImageController(IBlobStorageService blobStorageService)
+    public BlobStorageController(IBlobStorageService blobStorageService)
     {
         _blobStorageService = blobStorageService;
     }
