@@ -53,10 +53,10 @@ public class BlobStorageService : IBlobStorageService
         var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
 
         var imageId = Guid.NewGuid();
-        var blobName = caseId.HasValue 
-            ? $"{sanitizedProjectName}/cases/{caseId}/{imageId}" 
+        var blobName = caseId.HasValue
+            ? $"{sanitizedProjectName}/cases/{caseId}/{imageId}"
             : $"{sanitizedProjectName}/projects/{projectId}/{imageId}";
-        
+
         var blobClient = containerClient.GetBlobClient(blobName);
 
         await using var stream = image.OpenReadStream();
