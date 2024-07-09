@@ -10,24 +10,22 @@ import { useAppContext } from "../../Context/AppContext"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { getImageService } from "../../Services/ImageService"
 
-const Wrapper = styled(Grid)`
-    padding: 2px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(calc(25% - 20px), 1fr));
+const Wrapper = styled.div`
+    display: flex;
     justify-content: start;
     gap: 10px;
-    overflow: hidden;
     margin-bottom: 30px; 
+    width: 100%;
+    flex-wrap: wrap;
 `
 
 const ImageWithHover = styled(Box)`
     position: relative;
+    height: 240px;
+    border-radius: 5px;
+    border: 1px solid lightgray;
     & img {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-        border-radius: 5px;
-        border: 1px solid lightgray;
+        height: 100%;
     }
     &:hover {
         img {
@@ -37,11 +35,11 @@ const ImageWithHover = styled(Box)`
     }
 `
 
-const Controls = styled(Box)`
+const Controls = styled.div`
     display: none;
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 0;
+    right: 0;
     padding: 10px;
     gap: 5px;
     
@@ -91,7 +89,7 @@ const Gallery = () => {
                 const imageService = await getImageService()
                 const image = gallery.find((img) => img.url === imageUrl)
                 if (image) {
-                    await imageService.deleteImage(project.id, caseId, image.id)
+                    await imageService.deleteImage(project.id, image.id, caseId)
                     setGallery(gallery.filter((img) => img.url !== imageUrl))
                     setExeededLimit(false)
                 } else {
