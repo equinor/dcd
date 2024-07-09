@@ -10,6 +10,7 @@ import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { useAppContext } from "../../Context/AppContext"
+import { cellStyleRightAlign } from "../../Utils/common"
 
 const CO2ListTechnicalInput = () => {
     const gridRef = useRef<any>(null)
@@ -51,6 +52,7 @@ const CO2ListTechnicalInput = () => {
             flex: 1,
             editable: editMode,
             cellClass: editMode ? "editableCell" : undefined,
+            cellStyle: cellStyleRightAlign,
         },
     ])
 
@@ -117,12 +119,12 @@ const CO2ListTechnicalInput = () => {
         (node: any): boolean => {
             if (node.data) {
                 switch (cO2VentedRow) {
-                case true:
-                    return node.data.profile === "CO2 vented"
-                case false:
-                    return node.data.profile !== "CO2 vented"
-                default:
-                    return true
+                    case true:
+                        return node.data.profile === "CO2 vented"
+                    case false:
+                        return node.data.profile !== "CO2 vented"
+                    default:
+                        return true
                 }
             }
             return true

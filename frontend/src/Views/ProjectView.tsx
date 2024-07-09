@@ -38,7 +38,7 @@ const ProjectView = () => {
                         <Panel>
                             <ProjectCompareCasesTab />
                         </Panel>
-                        {/* comment out for qa release */}
+                        {/* comment out for qa release
                         <Panel>
                             <EditHistoryOverviewTab />
                         </Panel>
