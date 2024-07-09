@@ -57,3 +57,14 @@ export const PROJECT_CLASSIFICATION: { [key: number]: ProjectClassification } = 
         warn: true,
     },
 }
+
+export const tabNames = [
+    "Description",
+    "Production Profiles",
+    "Schedule",
+    "Drilling Schedule",
+    "Facilities",
+    "Cost",
+    "CO2 Emissions",
+    "Summary",
+]
