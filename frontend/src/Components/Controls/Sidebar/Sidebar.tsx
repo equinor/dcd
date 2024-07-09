@@ -95,8 +95,8 @@ const Sidebar = () => {
                     <Grid item xs={12}>
                         <Divider />
                     </Grid>
-                    {/* comment out for qa release
-                    <CurrentCaseEditHistory /> */}
+                    {/* comment out for qa release */}
+                    <CurrentCaseEditHistory />
                 </Grid>
             </StyledSidebarContent>
             <SidebarFooter>
