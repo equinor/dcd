@@ -131,7 +131,9 @@ public class BlobStorageService : IBlobStorageService
         var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
 
         var sanitizedProjectName = SanitizeBlobName(image.ProjectName);
-        var blobName = $"{sanitizedProjectName}/{(image.CaseId.HasValue ? $"cases/{image.CaseId}" : $"projects/{image.ProjectId}")}/{image.Id}";
+        var blobName = image.CaseId.HasValue
+            ? $"{sanitizedProjectName}/cases/{image.CaseId}/{image.Id}"
+            : $"{sanitizedProjectName}/projects/{image.ProjectId}/{image.Id}";
 
         var blobClient = containerClient.GetBlobClient(blobName);
 

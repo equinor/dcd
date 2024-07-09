@@ -89,14 +89,14 @@ const Gallery = () => {
 
     const handleDelete = async (imageUrl: string) => {
         try {
-            if (project?.id && caseId) {
+            if (project?.id) {
                 const imageService = await getImageService()
                 const image = gallery.find((img) => img.url === imageUrl)
                 if (image) {
                     if (caseId) {
                         await imageService.deleteImage(project.id, image.id, caseId)
                     } else {
-                        await imageService.deleteProjectImage(project.id, image.id)
+                        await imageService.deleteImage(project.id, image.id)
                     }
                     setGallery(gallery.filter((img) => img.url !== imageUrl))
                     setExeededLimit(false)

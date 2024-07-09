@@ -3491,6 +3491,22 @@ declare namespace Paths {
             }
         }
     }
+    namespace Projects$ProjectIdImages$ImageId {
+        namespace Delete {
+            namespace Parameters {
+                export type ImageId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                imageId: Parameters.ImageId /* uuid */;
+            }
+            namespace Responses {
+                export interface $200 {
+                }
+            }
+        }
+    }
     namespace Projects$ProjectIdTechnicalInput {
         namespace Put {
             namespace Parameters {
