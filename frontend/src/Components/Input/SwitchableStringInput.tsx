@@ -54,7 +54,7 @@ const SwitchableStringInput: React.FC<CaseEditInputProps> = ({
             <Input
                 label={label}
                 value={inputValue}
-                onChange={(e: any) => setInputValue(e.target.value)} // Update local state on change
+                onChange={(e: any) => setInputValue(e.target.value)}
                 onBlur={(e: any) => addToEditsAndSubmit(e.target.value)}
             />
         </InputSwitcher>
