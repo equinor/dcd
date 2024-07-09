@@ -3,6 +3,7 @@ import { Button, Typography, List } from "@equinor/eds-core-react"
 import { v4 as uuidv4 } from "uuid"
 import styled from "styled-components"
 import Modal from "./Modal"
+import { useModalContext } from "../../Context/ModalContext"
 
 const Header = styled(Typography)`
     margin: 20px 0 10px 0;
@@ -75,7 +76,7 @@ const versions = Object.keys(whatsNewUpdates).sort((a, b) => {
 }) as Version[]
 
 const WhatsNewModal: React.FC = () => {
-    const [isOpen, setIsOpen] = useState(false)
+    const { featuresModalIsOpen, setFeaturesModalIsOpen } = useModalContext()
     const [unseenVersions, setUnseenVersions] = useState<Version[]>([])
 
     useEffect(() => {
@@ -95,18 +96,18 @@ const WhatsNewModal: React.FC = () => {
 
         if (unseen.length > 0) {
             setUnseenVersions(unseen)
-            setIsOpen(true)
+            setFeaturesModalIsOpen(true)
         }
     }, [])
 
     const onClose = () => {
         localStorage.setItem("lastSeenWhatsNewVersion", versions[0])
-        setIsOpen(false)
+        setFeaturesModalIsOpen(false)
     }
 
     return (
         <Modal
-            isOpen={isOpen}
+            isOpen={featuresModalIsOpen}
             title="What's New"
             size="sm"
             content={unseenVersions.map((version) => (

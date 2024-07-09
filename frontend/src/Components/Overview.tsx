@@ -15,6 +15,7 @@ import { useProjectContext } from "../Context/ProjectContext"
 import { useCaseContext } from "../Context/CaseContext"
 import Modal from "./Modal/Modal"
 import { PROJECT_CLASSIFICATION } from "../Utils/constants"
+import { useModalContext } from "../Context/ModalContext"
 
 interface WarnedProjectInterface {
     [key: string]: string[]
@@ -30,6 +31,7 @@ const Overview = () => {
         setSnackBarMessage,
     } = useAppContext()
     const { project } = useProjectContext()
+    const { featuresModalIsOpen } = useModalContext()
     const [warnedProjects, setWarnedProjects] = useState<WarnedProjectInterface | null>(null)
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
@@ -79,13 +81,15 @@ const Overview = () => {
                     || !warnedProjects
                 )
             ) {
-                setProjectClassificationWarning(true)
+                if (!featuresModalIsOpen) {
+                    setProjectClassificationWarning(true)
+                }
             }
             if (warnedProjects && warnedProjects[currentUserId].some((vp: string) => vp === project.id)) {
                 setProjectClassificationWarning(false)
             }
         }
-    }, [project, currentUserId, warnedProjects])
+    }, [project, currentUserId, warnedProjects, featuresModalIsOpen])
 
     return (
         <>
