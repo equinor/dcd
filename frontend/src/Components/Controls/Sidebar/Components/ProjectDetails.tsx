@@ -61,7 +61,7 @@ const ProjectDetails: React.FC = () => {
                                         : <Tooltip title="Compare Cases" placement="right"><Icon data={compare} /></Tooltip>}
                                 </TimelineElement>
                             </Grid>
-                            {/* comment out for qa release */}
+                            {/* comment out for qa release
                             <Grid item>
                                 <TimelineElement
                                     variant="ghost"
