@@ -20,13 +20,11 @@ public class BlobStorageService : IBlobStorageService
         _imageRepository = imageRepository;
         _mapper = mapper;
         _containerName = GetContainerName(configuration);
-
     }
+
     private string GetContainerName(IConfiguration configuration)
     {
-
         var environment = Environment.GetEnvironmentVariable("AppConfiguration__Environment") ?? "default";
-
         var containerKey = environment switch
         {
             "localdev" => "AzureStorageAccountImageContainerCI",
@@ -43,19 +41,23 @@ public class BlobStorageService : IBlobStorageService
         return configuration[containerKey]
                              ?? throw new InvalidOperationException($"Container name configuration for {environment} is missing.");
     }
+
     private string SanitizeBlobName(string name)
     {
         return name.Replace(" ", "-").Replace("/", "-").Replace("\\", "-");
     }
-    public async Task<ImageDto> SaveImage(Guid projectId, string projectName, IFormFile image, Guid caseId)
+
+    public async Task<ImageDto> SaveImage(Guid projectId, string projectName, IFormFile image, Guid? caseId = null)
     {
         var sanitizedProjectName = SanitizeBlobName(projectName);
         var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
 
         var imageId = Guid.NewGuid();
-        var blobName = $"{sanitizedProjectName}/{caseId}/{imageId}";
+        var blobName = caseId.HasValue 
+            ? $"{sanitizedProjectName}/cases/{caseId}/{imageId}" 
+            : $"{sanitizedProjectName}/projects/{projectId}/{imageId}";
+        
         var blobClient = containerClient.GetBlobClient(blobName);
-
 
         await using var stream = image.OpenReadStream();
         await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = image.ContentType });
@@ -71,7 +73,6 @@ public class BlobStorageService : IBlobStorageService
             CaseId = caseId,
             ProjectId = projectId,
             ProjectName = sanitizedProjectName
-
         };
 
         await _imageRepository.AddImage(imageEntity);
@@ -99,6 +100,19 @@ public class BlobStorageService : IBlobStorageService
         return imageDtos;
     }
 
+    public async Task<List<ImageDto>> GetProjectImages(Guid projectId)
+    {
+        var images = await _imageRepository.GetImagesByProjectId(projectId);
+
+        var imageDtos = _mapper.Map<List<ImageDto>>(images);
+
+        if (imageDtos == null)
+        {
+            throw new InvalidOperationException("Image mapping failed.");
+        }
+        return imageDtos;
+    }
+
     public async Task DeleteImage(Guid caseId, Guid imageId)
     {
         var image = await _imageRepository.GetImageById(imageId);
@@ -110,12 +124,11 @@ public class BlobStorageService : IBlobStorageService
         var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
 
         var sanitizedProjectName = SanitizeBlobName(image.ProjectName);
-        var blobName = $"{sanitizedProjectName}/{image.CaseId}/{image.Id}";
+        var blobName = $"{sanitizedProjectName}/{(image.CaseId.HasValue ? $"cases/{image.CaseId}" : $"projects/{image.ProjectId}")}/{image.Id}";
 
         var blobClient = containerClient.GetBlobClient(blobName);
 
         await blobClient.DeleteIfExistsAsync();
         await _imageRepository.DeleteImage(image);
     }
-
 }

@@ -35,6 +35,31 @@ export class ImageService extends __BaseService {
         console.log("url:", caseId ? `${caseUrl(projectId, caseId)}/${imageId}` : `${projectUrl(projectId)}/${imageId}`)
         await this.delete(caseId ? `${caseUrl(projectId, caseId)}/${imageId}` : `${projectUrl(projectId)}/${imageId}`)
     }
+
+    public async uploadProjectImage(projectId: string, projectName: string, file: File): Promise<Components.Schemas.ImageDto> {
+        const formData = new FormData()
+        formData.append("image", file)
+        formData.append("projectName", projectName)
+
+        const response = await this.post(projectUrl(projectId), {
+            body: formData,
+        })
+
+        if (response) {
+            return response
+        }
+
+        throw new Error("Upload project image response data is undefined")
+    }
+
+    public async getProjectImages(projectId: string): Promise<Components.Schemas.ImageDto[]> {
+        const response = await this.get(projectUrl(projectId))
+        return response
+    }
+
+    public async deleteProjectImage(projectId: string, imageId: string): Promise<void> {
+        await this.delete(`${projectUrl(projectId)}/${imageId}`)
+    }
 }
 
 export const getImageService = async () => new ImageService({

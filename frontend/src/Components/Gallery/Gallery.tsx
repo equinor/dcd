@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Box, Grid } from "@mui/material"
 import styled from "styled-components"
 import { Icon, Button, Typography } from "@equinor/eds-core-react"
@@ -43,7 +43,6 @@ const Controls = styled.div`
     padding: 10px;
     gap: 5px;
     
-
     ${ImageWithHover}:hover & {
         display: flex;
     }
@@ -69,11 +68,16 @@ const Gallery = () => {
 
     useEffect(() => {
         const loadImages = async () => {
-            if (project?.id && caseId) {
+            if (project?.id) {
                 try {
                     const imageService = await getImageService()
-                    const imageDtos = await imageService.getImages(project.id, caseId)
-                    setGallery(imageDtos)
+                    if (caseId) {
+                        const imageDtos = await imageService.getImages(project.id, caseId)
+                        setGallery(imageDtos)
+                    } else {
+                        const imageDtos = await imageService.getProjectImages(project.id)
+                        setGallery(imageDtos)
+                    }
                 } catch (error) {
                     console.error("Error loading images:", error)
                 }
@@ -89,7 +93,11 @@ const Gallery = () => {
                 const imageService = await getImageService()
                 const image = gallery.find((img) => img.url === imageUrl)
                 if (image) {
-                    await imageService.deleteImage(project.id, image.id, caseId)
+                    if (caseId) {
+                        await imageService.deleteImage(project.id, image.id, caseId)
+                    } else {
+                        await imageService.deleteProjectImage(project.id, image.id)
+                    }
                     setGallery(gallery.filter((img) => img.url !== imageUrl))
                     setExeededLimit(false)
                 } else {
