@@ -25,10 +25,8 @@ const SwitchableStringInput: React.FC<CaseEditInputProps> = ({
     const { project } = useProjectContext()
     const { caseId } = useParams()
 
-    // Local state to manage input value
     const [inputValue, setInputValue] = useState(value || "")
 
-    // Update local state when value prop changes
     useEffect(() => {
         setInputValue(value || "")
     }, [value])
