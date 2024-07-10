@@ -27,8 +27,6 @@ const CaseProductionProfilesTab = () => {
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
 
-    const profilesToHideWithoutValues = ["Deferred oil production", "Deferred gas production"]
-
     const productionStrategyOptions = {
         0: "Depletion",
         1: "Water injection",
@@ -243,7 +241,6 @@ const CaseProductionProfilesTab = () => {
                     apiData={apiData}
                     tableYears={tableYears}
                     alignedGridsRef={gridRef}
-                    profilesToHideWithoutValues={profilesToHideWithoutValues}
                 />
             </Grid>
         </Grid>

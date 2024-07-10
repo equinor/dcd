@@ -152,4 +152,5 @@ export interface ITimeSeriesData {
     overridable: boolean
     editable: boolean
     total?: string
+    hideIfEmpty?: boolean
 }

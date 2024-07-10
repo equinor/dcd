@@ -14,6 +14,7 @@ import { useProjectContext } from "../../Context/ProjectContext"
 import CasesTable from "../Case/OverviewCasesTable/CasesTable"
 import { useModalContext } from "../../Context/ModalContext"
 import { useAppContext } from "../../Context/AppContext"
+import Gallery from "../Gallery/Gallery"
 
 const ProjectOverviewTab = () => {
     const { editMode } = useAppContext()
@@ -54,6 +55,7 @@ const ProjectOverviewTab = () => {
 
     return (
         <Grid container columnSpacing={2} rowSpacing={3}>
+            <Gallery />
             <Grid item xs={12} container spacing={1} justifyContent="space-between">
                 <Grid item>
                     <Typography group="input" variant="label">Project Phase</Typography>

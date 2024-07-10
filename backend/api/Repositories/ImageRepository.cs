@@ -20,10 +20,16 @@ public class ImageRepository : IImageRepository
 
     public async Task<List<Image>> GetImagesByCaseId(Guid caseId)
     {
-        var images = await _context.Images
+        return await _context.Images
             .Where(img => img.CaseId == caseId)
             .ToListAsync();
-        return images;
+    }
+
+    public async Task<List<Image>> GetImagesByProjectId(Guid projectId)
+    {
+        return await _context.Images
+            .Where(img => img.ProjectId == projectId && img.CaseId == null)
+            .ToListAsync();
     }
 
     public async Task DeleteImage(Image image)
