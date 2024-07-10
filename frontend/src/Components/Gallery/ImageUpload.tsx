@@ -13,19 +13,18 @@ import { useAppContext } from "../../Context/AppContext"
 const UploadBox = styled(Box)`
     display: flex;
     align-items: center;
+    justify-content: center;
     flex-direction: column;
-    width: calc(100% - 40px);
-    height: 160px;
+    width: 240px;
+    height: 240px;
     border: 1px dashed ${tokens.colors.interactive.primary__resting.rgba};
     border-radius: 5px;
     cursor: pointer;
-    padding: 20px;
     transition: 0.3s;
     gap: 10px;
 
     & svg {
         fill: ${tokens.colors.interactive.primary__resting.rgba};
-        margin-top: 20px;
     }
 
     &:hover {
@@ -58,6 +57,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
                     setGallery(imageDtos)
                 } catch (error) {
                     console.error("Error loading images:", error)
+                    setSnackBarMessage("Error loading images")
                 }
             }
         }
@@ -73,8 +73,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
     }
 
     const onDrop = async (acceptedFiles: File[], fileRejections: FileRejection[]) => {
-        setSnackBarMessage("")
-
         fileRejections.forEach((rejection) => {
             const { file, errors } = rejection
             errors.forEach((error: { code: string }) => {
@@ -92,14 +90,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         }
         setExeededLimit(false)
 
-        if (!project?.id || !caseId) {
-            console.error("Project ID or Case ID is missing.")
+        if (!project?.id) {
+            console.error("Project ID is missing.")
             return
         }
 
         const imageService = await getImageService()
 
-        const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(project.id, project.name, caseId, file))
+        const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(project.id, project.name, file, caseId))
         try {
             const uploadedImageDtos = await Promise.all(uploadPromises)
             if (Array.isArray(uploadedImageDtos)) {
@@ -109,6 +107,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
             }
         } catch (error) {
             console.error("Error uploading images:", error)
+            setSnackBarMessage("Error uploading images")
         }
     }
 

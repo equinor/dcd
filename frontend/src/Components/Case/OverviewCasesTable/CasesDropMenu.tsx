@@ -62,7 +62,7 @@ const CasesDropMenu = ({
                 isOpen={confirmDelete}
                 size="sm"
                 content={[
-                    <Typography variant="body_short">
+                    <Typography key="modal-content" variant="body_short">
                         Are you sure you want to delete this case?
                     </Typography>,
                 ]}
@@ -73,6 +73,7 @@ const CasesDropMenu = ({
                     </div>
                 )}
             />
+
             <Menu
                 id="menu-complex"
                 open={isMenuOpen}

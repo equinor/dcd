@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Box, Grid } from "@mui/material"
 import styled from "styled-components"
 import { Icon, Button, Typography } from "@equinor/eds-core-react"
@@ -10,24 +10,22 @@ import { useAppContext } from "../../Context/AppContext"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { getImageService } from "../../Services/ImageService"
 
-const Wrapper = styled(Grid)`
-    padding: 2px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(calc(25% - 20px), 1fr));
+const Wrapper = styled.div`
+    display: flex;
     justify-content: start;
     gap: 10px;
-    overflow: hidden;
     margin-bottom: 30px; 
+    width: 100%;
+    flex-wrap: wrap;
 `
 
 const ImageWithHover = styled(Box)`
     position: relative;
+    height: 240px;
+    border-radius: 5px;
+    border: 1px solid lightgray;
     & img {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-        border-radius: 5px;
-        border: 1px solid lightgray;
+        height: 100%;
     }
     &:hover {
         img {
@@ -37,15 +35,14 @@ const ImageWithHover = styled(Box)`
     }
 `
 
-const Controls = styled(Box)`
+const Controls = styled.div`
     display: none;
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 0;
+    right: 0;
     padding: 10px;
     gap: 5px;
     
-
     ${ImageWithHover}:hover & {
         display: flex;
     }
@@ -71,11 +68,16 @@ const Gallery = () => {
 
     useEffect(() => {
         const loadImages = async () => {
-            if (project?.id && caseId) {
+            if (project?.id) {
                 try {
                     const imageService = await getImageService()
-                    const imageDtos = await imageService.getImages(project.id, caseId)
-                    setGallery(imageDtos)
+                    if (caseId) {
+                        const imageDtos = await imageService.getImages(project.id, caseId)
+                        setGallery(imageDtos)
+                    } else {
+                        const imageDtos = await imageService.getProjectImages(project.id)
+                        setGallery(imageDtos)
+                    }
                 } catch (error) {
                     console.error("Error loading images:", error)
                 }
@@ -87,11 +89,15 @@ const Gallery = () => {
 
     const handleDelete = async (imageUrl: string) => {
         try {
-            if (project?.id && caseId) {
+            if (project?.id) {
                 const imageService = await getImageService()
                 const image = gallery.find((img) => img.url === imageUrl)
                 if (image) {
-                    await imageService.deleteImage(project.id, caseId, image.id)
+                    if (caseId) {
+                        await imageService.deleteImage(project.id, image.id, caseId)
+                    } else {
+                        await imageService.deleteImage(project.id, image.id)
+                    }
                     setGallery(gallery.filter((img) => img.url !== imageUrl))
                     setExeededLimit(false)
                 } else {
