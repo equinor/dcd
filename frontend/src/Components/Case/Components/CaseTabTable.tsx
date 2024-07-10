@@ -60,6 +60,13 @@ const CaseTabTable = ({
     const [overrideModalProfileName, setOverrideModalProfileName] = useState<ProfileNames>()
     const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
     const [overrideProfile, setOverrideProfile] = useState<any>()
+    const [stagedEdit, setStagedEdit] = useState<any>()
+
+    useEffect(() => {
+        if (stagedEdit) {
+            addEdit(stagedEdit)
+        }
+    }, [stagedEdit])
 
     const profilesToRowData = () => {
         const tableRows: any[] = []
@@ -250,7 +257,7 @@ const CaseTabTable = ({
                 return result
             }
 
-            addEdit({
+            setStagedEdit({
                 newValue: p.newValue,
                 previousValue: p.oldValue,
                 inputLabel: p.data.profileName,
