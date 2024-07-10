@@ -13,9 +13,9 @@ import {
     keyboard_tab,
     more_vertical,
     save,
-
 } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid"
+import { useQuery, useQueryClient } from "react-query"
 import { projectPath } from "../../Utils/common"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { useModalContext } from "../../Context/ModalContext"
@@ -45,6 +45,7 @@ const Controls = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
     const [isCanceling, setIsCanceling] = useState<boolean>(false)
+    const [modifyTime, setModifyTime] = useState<string>("")
 
     const cancelEdit = async () => {
         setEditMode(false)
@@ -57,7 +58,10 @@ const Controls = () => {
             const updatedProject = {
                 ...projectEdited,
             }
-            const result = await (await GetProjectService()).updateProject(project.id, updatedProject)
+            const result = await (await GetProjectService()).updateProject(
+                project.id,
+                updatedProject,
+            )
             setProject(result)
             setProjectEdited(undefined)
             setEditMode(false)
@@ -91,6 +95,39 @@ const Controls = () => {
             handleProjectEdit()
         }
     }
+
+    const projectId = project?.id || null
+
+    const queryClient = useQueryClient()
+    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
+        ["apiData", { projectId, caseId }],
+        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        {
+            enabled: !!projectId && !!caseId,
+            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        },
+    )
+
+    const caseData = apiData?.case
+
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString)
+        const options: Intl.DateTimeFormatOptions = {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+        }
+        return new Intl.DateTimeFormat("en-GB", options).format(date).replace(",", "")
+    }
+
+    useEffect(() => {
+        if (editMode || caseId) {
+            setModifyTime(caseData?.modifyTime ?? "")
+        }
+    }, [editMode, caseId, caseData])
 
     useEffect(() => {
         cancelEdit()
@@ -126,7 +163,6 @@ const Controls = () => {
                         </Button>
                     </>
                 )}
-
             />
             {project && caseId && (
                 <CaseControls
@@ -138,47 +174,57 @@ const Controls = () => {
             {project && !caseId && (
                 <ProjectControls />
             )}
-
-            <Grid item xs container spacing={1} alignItems="center" justifyContent="flex-end">
+            <Grid
+                item
+                xs
+                container
+                spacing={1}
+                alignItems="center"
+                justifyContent="flex-end"
+            >
                 <Grid item>
                     {editMode && caseId && <UndoControls />}
                 </Grid>
-                {editMode && !caseId
-                    && (
-                        <Grid item>
-                            <Button
-                                variant="outlined"
-                                onClick={
-                                    () => setIsCanceling(true)
-                                }
-                            >
-                                Cancel
-                            </Button>
-                        </Grid>
-                    )}
+                {editMode && !caseId && (
+                    <Grid item>
+                        <Button
+                            variant="outlined"
+                            onClick={() => setIsCanceling(true)}
+                        >
+                            Cancel
+                        </Button>
+                    </Grid>
+                )}
+                {!editMode && modifyTime && (
+                    <Typography variant="caption">
+                        Last updated:
+                        {" "}
+                        {formatDate(modifyTime)}
+                    </Typography>
+                )}
                 <Grid item>
-                    <Button onClick={handleEdit} variant={editMode ? "outlined" : "contained"}>
-                        {isSaving
-                            ? <Progress.Dots />
-                            : (
-                                <>
-                                    {
-                                        editMode && (
-                                            <>
-                                                <Icon data={caseId ? visibility : save} />
-                                                <span>{caseId ? "View" : "Save"}</span>
-                                            </>
-                                        )
-                                    }
-                                    {!editMode && (
-                                        <>
-                                            <Icon data={edit} />
-                                            <span>Edit</span>
-                                        </>
-                                    )}
-
-                                </>
-                            )}
+                    <Button
+                        onClick={handleEdit}
+                        variant={editMode ? "outlined" : "contained"}
+                    >
+                        {isSaving ? (
+                            <Progress.Dots />
+                        ) : (
+                            <>
+                                {editMode && (
+                                    <>
+                                        <Icon data={caseId ? visibility : save} />
+                                        <span>{caseId ? "View" : "Save"}</span>
+                                    </>
+                                )}
+                                {!editMode && (
+                                    <>
+                                        <Icon data={edit} />
+                                        <span>Edit</span>
+                                    </>
+                                )}
+                            </>
+                        )}
                     </Button>
                 </Grid>
 
