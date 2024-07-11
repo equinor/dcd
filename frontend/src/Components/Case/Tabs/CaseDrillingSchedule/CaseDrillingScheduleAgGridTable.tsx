@@ -115,11 +115,11 @@ const CaseDrillingScheduleTabTable = ({
                     })
                     tableWell.total = tableWell.drillingSchedule.values.reduce((acc: any, val: any) => acc + val, 0)
                 }
-
-                return tableWell
+                if ((!editMode && tableWell.total > 0) || editMode) {
+                    return tableWell
+                }
             })
-
-            setRowData(tableWells)
+            setRowData(tableWells.filter(tw => tw !== undefined))
         }
     }
 
