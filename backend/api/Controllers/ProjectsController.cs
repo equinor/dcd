@@ -80,7 +80,7 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPut("{projectId}")]
-    public async Task<ProjectWithAssetsDto> UpdateProject([FromRoute] Guid projectId, [FromBody] UpdateProjectDto projectDto)
+    public async Task<ProjectDto> UpdateProject([FromRoute] Guid projectId, [FromBody] UpdateProjectDto projectDto)
     {
         return await _projectService.UpdateProject(projectId, projectDto);
     }

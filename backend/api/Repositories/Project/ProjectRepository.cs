@@ -6,22 +6,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories;
 
-public class ProjectRepository : IProjectRepository
+public class ProjectRepository : BaseRepository, IProjectRepository
 {
-    private readonly DcdDbContext _context;
     private readonly ILogger<ProjectRepository> _logger;
 
     public ProjectRepository(
         DcdDbContext context,
         ILogger<ProjectRepository> logger
-    )
+    ) : base(context)
     {
-        _context = context;
         _logger = logger;
     }
 
     public async Task<Project?> GetProject(Guid projectId)
     {
-        return await _context.Projects.FindAsync(projectId);
+        return await Get<Project>(projectId);
+    }
+
+    public Project UpdateProject(Project updatedProject)
+    {
+        return Update(updatedProject);
     }
 }

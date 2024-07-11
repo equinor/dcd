@@ -5,7 +5,7 @@ namespace api.Services;
 
 public interface IProjectService
 {
-    Task<ProjectWithAssetsDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto);
+    Task<ProjectDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto);
     Task<ProjectWithAssetsDto> UpdateProjectFromProjectMaster(ProjectWithAssetsDto projectDto);
     Task<ProjectWithAssetsDto> CreateProject(Project project);
     Task<IEnumerable<Project>> GetAll();

@@ -6,7 +6,7 @@ using api.Dtos;
 using api.Exceptions;
 using api.Mappings;
 using api.Models;
-
+using api.Repositories;
 using api.Services.FusionIntegration;
 
 using AutoMapper;
@@ -23,11 +23,15 @@ public class ProjectService : IProjectService
     private readonly IFusionService? _fusionService;
     private readonly ILogger<ProjectService> _logger;
     private readonly IMapper _mapper;
+    private readonly IMapperService _mapperService;
+    private readonly IProjectRepository _projectRepository;
 
     public ProjectService(
         DcdDbContext context,
         ILoggerFactory loggerFactory,
         IMapper mapper,
+        IProjectRepository projectRepository,
+        IMapperService mapperService,
         FusionService? fusionService = null
         )
     {
@@ -35,17 +39,28 @@ public class ProjectService : IProjectService
         _logger = loggerFactory.CreateLogger<ProjectService>();
         _fusionService = fusionService;
         _mapper = mapper;
+        _projectRepository = projectRepository;
+        _mapperService = mapperService;
     }
 
-    public async Task<ProjectWithAssetsDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto)
+    public async Task<ProjectDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto)
     {
-        var existingProject = await GetProject(projectId);
+        var existingProject = await _projectRepository.GetProject(projectId)
+            ?? throw new NotFoundInDBException($"Project {projectId} not found");
 
-        _mapper.Map(projectDto, existingProject);
+        _mapperService.MapToEntity(projectDto, existingProject, projectId);
 
-        _context.Projects!.Update(existingProject);
-        await _context.SaveChangesAsync();
-        return await GetProjectDto(existingProject.Id);
+        try {
+            await _projectRepository.SaveChangesAsync();
+        }
+        catch (DbUpdateException e)
+        {
+            _logger.LogError(e, "Failed to update project {projectId}", projectId);
+            throw;
+        }
+
+        var dto = _mapperService.MapToDto<Project, ProjectDto>(existingProject, projectId);
+        return dto;
     }
 
     public async Task<ProjectWithAssetsDto> UpdateProjectFromProjectMaster(ProjectWithAssetsDto projectDto)
