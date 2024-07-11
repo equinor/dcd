@@ -8,7 +8,7 @@ import {
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
-import { formatColumnSum, isInteger, tableCellisEditable } from "../../../Utils/common"
+import { formatColumnSum, tableCellisEditable } from "../../../Utils/common"
 import { EMPTY_GUID } from "../../../Utils/constants"
 import { useAppContext } from "../../../Context/AppContext"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
@@ -148,47 +148,11 @@ const CaseTabTableWithGrouping = ({
         setColumnDefs(newColDefs)
     }, [])
 
-    const handleCellValueChange = (p: any) => {
-        const properties = Object.keys(p.data)
-        const tableTimeSeriesValues: any[] = []
-        properties.forEach((prop) => {
-            if (isInteger(prop)
-                && p.data[prop] !== ""
-                && p.data[prop] !== null
-                && !Number.isNaN(Number(p.data[prop].toString().replace(/,/g, ".")))) {
-                tableTimeSeriesValues.push({
-                    year: parseInt(prop, 10),
-                    value: Number(p.data[prop].toString().replace(/,/g, ".")),
-                })
-            }
-        })
-        tableTimeSeriesValues.sort((a, b) => a.year - b.year)
-        if (tableTimeSeriesValues.length > 0) {
-            const tableTimeSeriesFirstYear = tableTimeSeriesValues[0].year
-            const tableTimeSerieslastYear = tableTimeSeriesValues.at(-1).year
-            const timeSeriesStartYear = tableTimeSeriesFirstYear - dg4Year
-            const values: number[] = []
-            for (let i = tableTimeSeriesFirstYear; i <= tableTimeSerieslastYear; i += 1) {
-                const tableTimeSeriesValue = tableTimeSeriesValues.find((v) => v.year === i)
-                if (tableTimeSeriesValue) {
-                    values.push(tableTimeSeriesValue.value)
-                } else {
-                    values.push(0)
-                }
-            }
-            const newProfile = { ...p.data.profile }
-            newProfile.startYear = timeSeriesStartYear
-            newProfile.values = values
-            p.data.set(newProfile)
-        }
-    }
-
     const defaultColDef = useMemo(() => ({
         sortable: true,
         filter: true,
         resizable: true,
         editable: true,
-        onCellValueChanged: handleCellValueChange,
         suppressHeaderMenuButton: true,
     }), [])
 

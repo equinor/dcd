@@ -330,3 +330,61 @@ export const formatColumnSum = (params: { values: any[] }) => {
     })
     return sum > 0 ? parseFloat(sum.toFixed(10)) : ""
 }
+
+/**
+ * Extracts the values from a table time series object and returns an array of objects with year and value properties.
+ * @param data The table time series object.
+ * @returns An array of objects with year and value properties.
+ *
+ * @example
+ * data = {
+ *   "2019": 100,
+ *   "2020": 200,
+ *   "2021": 300,
+ * }
+ *
+ * Returns [{ year: 2019, value: 100 }, { year: 2020, value: 200 }, { year: 2021, value: 300 }]
+ * */
+export const parseAgGridData = (data: Record<string, any>): any[] => {
+    const properties = Object.keys(data)
+    const tableTimeSeriesValues: any[] = []
+
+    const parsedValue = (value: any): string => value.toString().replace(/,/g, ".")
+    const isValidNumber = (value: any): boolean => value && !Number.isNaN(Number(parsedValue(value)))
+    const convertToNumber = (value: any): number => Number(parsedValue(value))
+
+    properties.forEach((prop) => {
+        if (isInteger(prop) && isValidNumber(data[prop])) {
+            tableTimeSeriesValues.push({
+                year: parseInt(prop, 10),
+                value: convertToNumber(data[prop]),
+            })
+        }
+    })
+
+    const valuesSortedByYear = tableTimeSeriesValues.sort((a, b) => a.year - b.year)
+    return valuesSortedByYear
+}
+/**
+ * Generates an array of values for a table time series object based on the provided time series values and year range.
+ * it inserts 0 for years that are not present in the time series values.
+ *
+ * @param timeSeriesValues The time series values to generate the table values from.
+ * @param firstYear The first year of the range.
+ * @param lastYear The last year of the range.
+ * @returns An array of values for the table time series object.
+ */
+export const generateTableValues = (p: any): number[] => {
+    const timeSeriesValues = parseAgGridData(p.data)
+
+    const values: number[] = []
+    const firstYear = timeSeriesValues[0].year
+    const lastYear = timeSeriesValues.at(-1).year
+
+    for (let year = firstYear; year <= lastYear; year += 1) {
+        const yearValue = timeSeriesValues.find((v) => v.year === year)?.value || 0
+        values.push(yearValue)
+    }
+
+    return values
+}

@@ -13,12 +13,13 @@ import {
     CellKeyDownEvent, ColDef, GridReadyEvent,
 } from "@ag-grid-community/core"
 import {
-    isInteger,
+    generateTableValues,
     tableCellisEditable,
     numberValueParser,
     getCaseRowStyle,
     validateInput,
     formatColumnSum,
+    parseAgGridData,
 } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
 import { useAppContext } from "../../../Context/AppContext"
@@ -212,62 +213,35 @@ const CaseTabTable = ({
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
     const handleCellValueChange = (p: any) => {
-        const properties = Object.keys(p.data)
-        const tableTimeSeriesValues: any[] = []
-        properties.forEach((prop) => {
-            if (isInteger(prop)
-                && p.data[prop] !== ""
-                && p.data[prop] !== null
-                && !Number.isNaN(Number(p.data[prop].toString().replace(/,/g, ".")))) {
-                tableTimeSeriesValues.push({
-                    year: parseInt(prop, 10),
-                    value: Number(p.data[prop].toString().replace(/,/g, ".")),
-                })
-            }
-        })
-        tableTimeSeriesValues.sort((a, b) => a.year - b.year)
+        if (!caseId || !project) { return } // is this necessary?
+
+        const tableTimeSeriesValues = parseAgGridData(p.data)
+
         if (tableTimeSeriesValues.length > 0) {
-            const tableTimeSeriesFirstYear = tableTimeSeriesValues[0].year
-            const tableTimeSerieslastYear = tableTimeSeriesValues.at(-1).year
-            const timeSeriesStartYear = tableTimeSeriesFirstYear - dg4Year
-            const values: number[] = []
-            for (let i = tableTimeSeriesFirstYear; i <= tableTimeSerieslastYear; i += 1) {
-                const tableTimeSeriesValue = tableTimeSeriesValues.find((v) => v.year === i)
-                if (tableTimeSeriesValue) {
-                    values.push(tableTimeSeriesValue.value)
-                } else {
-                    values.push(0)
-                }
-            }
+            const values = generateTableValues(p.data)
+
+            const firstYear = tableTimeSeriesValues[0].year
+            const startYear = firstYear - dg4Year
+
             const newProfile = { ...p.data.profile }
-            newProfile.startYear = timeSeriesStartYear
+            newProfile.startYear = startYear
             newProfile.values = values
 
-            if (!caseId || !project) { return }
-
-            const timeSeriesDataIndex = () => {
-                const result = timeSeriesData
-                    .map((v, i) => {
-                        if (v.profileName === p.data.profileName) {
-                            return timeSeriesData[i]
-                        }
-                        return undefined
-                    })
-                    .find((v) => v !== undefined)
-                return result
-            }
+            const getCurrentTimeSeriesData = () => timeSeriesData.find((v) => v.profileName === p.data.profileName)
+            const currentTimeSeriesData: any = getCurrentTimeSeriesData()
 
             setStagedEdit({
                 newValue: p.newValue,
                 previousValue: p.oldValue,
                 inputLabel: p.data.profileName,
                 projectId: project.id,
-                resourceName: timeSeriesDataIndex()?.resourceName,
-                resourcePropertyKey: timeSeriesDataIndex()?.resourcePropertyKey,
+                resourceName: currentTimeSeriesData.resourceName,
+                resourcePropertyKey: currentTimeSeriesData.resourcePropertyKey,
                 caseId,
-                resourceId: timeSeriesDataIndex()?.resourceId,
+                resourceId: currentTimeSeriesData.resourceId,
                 newResourceObject: newProfile,
-                resourceProfileId: timeSeriesDataIndex()?.resourceProfileId,
+                previousResourceObject: p.data.profile,
+                resourceProfileId: currentTimeSeriesData.resourceProfileId,
             })
         }
     }
