@@ -24,8 +24,6 @@ export class ImageService extends __BaseService {
     }
 
     public async getImages(projectId: string, caseId?: string): Promise<Components.Schemas.ImageDto[]> {
-        console.log("level:", caseId ? "case" : "project")
-        console.log("url:", caseId ? caseUrl(projectId, caseId) : projectUrl(projectId))
         const response = await this.get(caseId ? caseUrl(projectId, caseId) : projectUrl(projectId))
         return response
     }

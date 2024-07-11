@@ -96,12 +96,7 @@ const useDataEdits = (): {
                 variables,
             ) => {
                 const { projectId, caseId } = variables
-                /* this should work but doesnt :(
-                const assetId = caseId === results.id ? "" : results.id
-                queryClient.setQueryData([{ caseId, projectId , assetId }], results)
-                */
 
-                // this makes the app refetch all data. We should only refetch the data that was updated in the future.
                 queryClient.fetchQuery(["apiData", { projectId, caseId }])
             },
             onError: (error: any) => {

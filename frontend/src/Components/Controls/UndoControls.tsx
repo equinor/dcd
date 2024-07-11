@@ -4,7 +4,7 @@ import {
 } from "@equinor/eds-core-react"
 import { check_circle_outlined, undo, redo } from "@equinor/eds-icons"
 import styled from "styled-components"
-import { useIsMutating } from "react-query"
+import { useIsFetching } from "react-query"
 import { useParams } from "react-router-dom"
 import useDataEdits from "../../Hooks/useDataEdits"
 import { useCaseContext } from "../../Context/CaseContext"
@@ -30,14 +30,14 @@ const UndoControls: React.FC = () => {
     } = useCaseContext()
     const { caseId } = useParams()
 
-    const isMutating = useIsMutating()
+    const isFetching = useIsFetching()
 
     const { undoEdit, redoEdit } = useDataEdits()
 
     const currentEditId = getCurrentEditId(editIndexes, caseId)
 
     const canUndo = () => {
-        if (isMutating) {
+        if (isFetching) {
             return false
         }
         if (!currentEditId || !caseEditsBelongingToCurrentCase) {
@@ -49,7 +49,7 @@ const UndoControls: React.FC = () => {
     }
 
     const canRedo = () => {
-        if (isMutating) {
+        if (isFetching) {
             return false
         }
 
@@ -74,10 +74,10 @@ const UndoControls: React.FC = () => {
     }
 
     useEffect(() => {
-        if (isMutating) {
+        if (isFetching) {
             startCountDown()
         }
-    }, [isMutating])
+    }, [isFetching])
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -126,7 +126,8 @@ const UndoControls: React.FC = () => {
                         </Tooltip>
                     )
             }
-            {/* comment out for qa release
+            {/* comment out for qa release */}
+
             <Tooltip title={canUndo() ? "Undo" : "No changes to undo"}>
                 <Button
                     variant="ghost_icon"

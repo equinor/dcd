@@ -124,7 +124,7 @@ const CaseCO2Tab = () => {
                 editable: true,
                 overrideProfile: co2EmissionsOverrideData,
                 resourceName: "co2EmissionsOverride",
-                resourceId: drainageStrategyData.id,
+                resourceId: drainageStrategyData?.id,
                 resourceProfileId: co2EmissionsOverrideData?.id,
                 resourcePropertyKey: "co2EmissionsOverride",
             },
@@ -136,7 +136,7 @@ const CaseCO2Tab = () => {
                 overridable: false,
                 editable: false,
                 resourceName: "co2Intensity",
-                resourceId: drainageStrategyData.id,
+                resourceId: drainageStrategyData?.id,
                 resourceProfileId: co2Intensity?.id,
                 resourcePropertyKey: "co2Intensity",
             },
@@ -260,8 +260,6 @@ const CaseCO2Tab = () => {
                 endYear={endYear}
                 setStartYear={setStartYear}
                 setEndYear={setEndYear}
-                labelText="Units"
-                labelValue={datePickerValue}
                 handleTableYearsClick={handleTableYearsClick}
             />
             <Grid item xs={12}>
