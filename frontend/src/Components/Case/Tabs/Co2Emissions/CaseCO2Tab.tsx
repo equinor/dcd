@@ -260,8 +260,6 @@ const CaseCO2Tab = () => {
                 endYear={endYear}
                 setStartYear={setStartYear}
                 setEndYear={setEndYear}
-                labelText="Units"
-                labelValue={datePickerValue}
                 handleTableYearsClick={handleTableYearsClick}
             />
             <Grid item xs={12}>
