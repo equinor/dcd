@@ -209,7 +209,7 @@ const Controls = () => {
                         </Button>
                     </Grid>
                 )}
-                {!editMode && modifyTime && (
+                {!editMode && modifyTime && location.pathname.includes("case") && (
                     <Typography variant="caption">
                         Last updated:
                         {" "}

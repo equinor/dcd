@@ -146,6 +146,8 @@ public class CaseService : ICaseService
 
         _context.Cases!.Update(caseItem);
         await _context.SaveChangesAsync();
+        await _repository.UpdateModifyTime(caseId);
+
         return await _projectService.GetProjectDto(caseItem.ProjectId);
     }
 
