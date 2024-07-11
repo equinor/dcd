@@ -1012,6 +1012,7 @@ declare namespace Components {
             cO2Vented: number; // double
             dailyEmissionFromDrillingRig: number; // double
             averageDevelopmentDrillingDays: number; // double
+            modifyTime: string; // date-time
         }
         export type ProjectPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
         export interface STEACaseDto {

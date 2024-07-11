@@ -66,5 +66,15 @@ public class CaseRepository : BaseRepository, ICaseRepository
             ?? throw new KeyNotFoundException($"Case with id {caseId} not found.");
 
         caseItem.ModifyTime = DateTimeOffset.UtcNow;
+
+        var projectItem = await _context.Projects.SingleOrDefaultAsync(p => p.Id == caseItem.ProjectId)
+            ?? throw new KeyNotFoundException($"Project with id {caseItem.ProjectId} not found.");
+
+        projectItem.ModifyTime = DateTimeOffset.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+
     }
+
 }

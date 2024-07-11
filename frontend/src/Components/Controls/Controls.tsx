@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams, useLocation } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
     Icon,
@@ -37,6 +37,7 @@ const Controls = () => {
     } = useProjectContext()
 
     const navigate = useNavigate()
+    const location = useLocation()
     const { setTechnicalModalIsOpen } = useModalContext()
     const { currentContext } = useModuleCurrentContext()
     const { isSaving, editMode, setEditMode } = useAppContext()
@@ -124,14 +125,28 @@ const Controls = () => {
     }
 
     useEffect(() => {
-        if (editMode || caseId) {
+        if (location.pathname.includes("/case/")) {
             setModifyTime(caseData?.modifyTime ?? "")
+        } else {
+            setModifyTime(project?.modifyTime ?? "")
         }
-    }, [editMode, caseId, caseData])
+    }, [editMode, location.pathname, caseData, project])
 
     useEffect(() => {
         cancelEdit()
     }, [caseId])
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (location.pathname.includes("/case/") && project?.id && caseId) {
+                const projectService = await GetProjectService()
+                const projectData = await projectService.getProject(project.id)
+                setProject(projectData)
+            }
+        }
+
+        fetchData()
+    }, [location.pathname, project?.id, caseId, setProject])
 
     return (
         <Grid container spacing={1} justifyContent="space-between" alignItems="center">
@@ -144,7 +159,6 @@ const Controls = () => {
                     <Typography>
                         All unsaved changes will be lost. This action cannot be undone.
                     </Typography>
-
                 )}
                 actions={(
                     <>

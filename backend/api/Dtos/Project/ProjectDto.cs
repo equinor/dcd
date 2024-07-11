@@ -71,6 +71,8 @@ public class ProjectDto
     public double DailyEmissionFromDrillingRig { get; set; }
     [Required]
     public double AverageDevelopmentDrillingDays { get; set; }
+    [Required]
+    public DateTimeOffset ModifyTime { get; set; }
 
     public bool Equals(ProjectDto projectDto)
     {
