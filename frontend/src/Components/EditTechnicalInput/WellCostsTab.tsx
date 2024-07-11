@@ -22,10 +22,10 @@ const SectionHeader = styled.div`
     justify-content: space-between;
 `
 interface Props {
-    developmentOperationalWellCosts: Components.Schemas.DevelopmentOperationalWellCostsDto | undefined
+    developmentOperationalWellCosts: Components.Schemas.DevelopmentOperationalWellCostsDto
     setDevelopmentOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>>
 
-    explorationOperationalWellCosts: Components.Schemas.ExplorationOperationalWellCostsDto | undefined
+    explorationOperationalWellCosts: Components.Schemas.ExplorationOperationalWellCostsDto
     setExplorationOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>>
 
     wellProjectWells: Components.Schemas.WellDto[]
