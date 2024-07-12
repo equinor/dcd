@@ -162,6 +162,8 @@ const EditTechnicalInputModal = () => {
         }
     }, [technicalModalIsOpen, setTechnicalModalIsOpen])
 
+    if (!explorationOperationalWellCosts || !developmentOperationalWellCosts) { return null }
+
     return (
         <Dialog
             open={technicalModalIsOpen}
