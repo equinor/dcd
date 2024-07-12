@@ -162,7 +162,7 @@ const EditTechnicalInputModal = () => {
         }
     }, [technicalModalIsOpen, setTechnicalModalIsOpen])
 
-    if (!explorationOperationalWellCosts || !developmentOperationalWellCosts) { return }
+    if (!explorationOperationalWellCosts || !developmentOperationalWellCosts) { return null }
 
     return (
         <Dialog
