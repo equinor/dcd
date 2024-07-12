@@ -216,6 +216,11 @@ const CaseTabTable = ({
         const tableTimeSeriesValues = extractTableTimeSeriesValues(p.data)
         const newProfile = generateProfile(tableTimeSeriesValues, p.data.profile, dg4Year)
 
+        const startYear = tableTimeSeriesValues[0].year - dg4Year
+        const existingProfile = p.data.profile ? { ...p.data.profile }
+            : { startYear, values: [] }
+
+
         if (!newProfile || !caseId || !project) { return }
 
         const timeSeriesDataIndex = () => timeSeriesData
@@ -232,6 +237,7 @@ const CaseTabTable = ({
             caseId,
             resourceId: timeSeriesDataIndex()?.resourceId,
             newResourceObject: newProfile,
+            previousResourceObject: existingProfile,
             resourceProfileId: timeSeriesDataIndex()?.resourceProfileId,
         })
     }

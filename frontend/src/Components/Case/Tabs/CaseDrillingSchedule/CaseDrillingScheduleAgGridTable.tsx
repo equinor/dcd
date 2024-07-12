@@ -165,12 +165,17 @@ const CaseDrillingScheduleTabTable = ({
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
     const handleCellValueChange = (p: any) => {
-        if (!caseId || !project) { return }
-
         const tableTimeSeriesValues = extractTableTimeSeriesValues(p.data)
         const newProfile = generateProfile(tableTimeSeriesValues, p.data.drillingSchedule, dg4Year)
+        const startYear = tableTimeSeriesValues[0].year - dg4Year
+        const existingProfile = p.data.drillingSchedule ? { ...p.data.drillingSchedule, id: resourceId }
+            : {
+                startYear,
+                values: [],
+                id: resourceId,
+            }
 
-        if (!newProfile) { return }
+        if (!caseId || !project || !newProfile) { return }
 
         const rowWells = p.data.assetWells
         if (rowWells) {
@@ -182,7 +187,6 @@ const CaseDrillingScheduleTabTable = ({
                 updatedWells[index] = updatedWell
 
                 const resourceName = isExplorationTable ? "explorationWellDrillingSchedule" : "wellProjectWellDrillingSchedule"
-
                 setStagedEdit({
                     newValue: p.newValue,
                     previousValue: p.oldValue,
@@ -193,6 +197,7 @@ const CaseDrillingScheduleTabTable = ({
                     caseId,
                     resourceId,
                     newResourceObject: newProfile,
+                    previousResourceObject: existingProfile,
                     wellId: updatedWell.wellId,
                     drillingScheduleId: newProfile.id,
                 })
