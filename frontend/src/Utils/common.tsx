@@ -330,3 +330,41 @@ export const formatColumnSum = (params: { values: any[] }) => {
     })
     return sum > 0 ? parseFloat(sum.toFixed(10)) : ""
 }
+
+export const extractTableTimeSeriesValues = (data: any) => {
+    const properties = Object.keys(data)
+    const tableTimeSeriesValues: any[] = []
+    properties.forEach((prop) => {
+        if (isInteger(prop)
+            && data[prop] !== ""
+            && data[prop] !== null
+            && !Number.isNaN(Number(data[prop].toString().replace(/,/g, ".")))) {
+            tableTimeSeriesValues.push({
+                year: parseInt(prop, 10),
+                value: Number(data[prop].toString().replace(/,/g, ".")),
+            })
+        }
+    })
+    tableTimeSeriesValues.sort((a, b) => a.year - b.year)
+    return tableTimeSeriesValues
+}
+
+export const generateProfile = (tableTimeSeriesValues: any[], profile: any, startYearOffset: number) => {
+    if (tableTimeSeriesValues.length === 0) { return null }
+
+    const tableTimeSeriesFirstYear = tableTimeSeriesValues[0].year
+    const tableTimeSeriesLastYear = tableTimeSeriesValues.at(-1).year
+    const timeSeriesStartYear = tableTimeSeriesFirstYear - startYearOffset
+    const values: number[] = []
+
+    for (let i = tableTimeSeriesFirstYear; i <= tableTimeSeriesLastYear; i += 1) {
+        const tableTimeSeriesValue = tableTimeSeriesValues.find((v) => v.year === i)
+        values.push(tableTimeSeriesValue ? tableTimeSeriesValue.value : 0)
+    }
+
+    const newProfile = { ...profile }
+    newProfile.startYear = timeSeriesStartYear
+    newProfile.values = values
+
+    return newProfile
+}
