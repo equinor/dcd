@@ -332,39 +332,49 @@ export const formatColumnSum = (params: { values: any[] }) => {
 }
 
 export const extractTableTimeSeriesValues = (data: any) => {
-    const properties = Object.keys(data)
-    const tableTimeSeriesValues: any[] = []
-    properties.forEach((prop) => {
-        if (isInteger(prop)
-            && data[prop] !== ""
-            && data[prop] !== null
-            && !Number.isNaN(Number(data[prop].toString().replace(/,/g, ".")))) {
+    const tableTimeSeriesValues: { year: number, value: number }[] = []
+
+    Object.keys(data).forEach((prop) => {
+        const value = data[prop]
+
+        if (
+            isInteger(prop)
+            && value
+            && !Number.isNaN(Number(value.toString().replace(/,/g, ".")))
+        ) {
             tableTimeSeriesValues.push({
                 year: parseInt(prop, 10),
-                value: Number(data[prop].toString().replace(/,/g, ".")),
+                value: Number(value.toString().replace(/,/g, ".")),
             })
         }
     })
-    tableTimeSeriesValues.sort((a, b) => a.year - b.year)
-    return tableTimeSeriesValues
+
+    return tableTimeSeriesValues.sort((a, b) => a.year - b.year)
 }
 
-export const generateProfile = (tableTimeSeriesValues: any[], profile: any, startYearOffset: number) => {
-    if (tableTimeSeriesValues.length === 0) { return null }
+export const generateProfile = (
+    tableTimeSeriesValues: { year: number, value: number }[],
+    profile: any,
+    startYearOffset: number,
+) => {
+    if (tableTimeSeriesValues.length === 0) {
+        return null
+    }
 
-    const tableTimeSeriesFirstYear = tableTimeSeriesValues[0].year
-    const tableTimeSeriesLastYear = tableTimeSeriesValues.at(-1).year
-    const timeSeriesStartYear = tableTimeSeriesFirstYear - startYearOffset
+    const firstYear = tableTimeSeriesValues[0].year
+    const lastYear = tableTimeSeriesValues[tableTimeSeriesValues.length - 1].year
+
+    const startYear = firstYear - startYearOffset
     const values: number[] = []
 
-    for (let i = tableTimeSeriesFirstYear; i <= tableTimeSeriesLastYear; i += 1) {
-        const tableTimeSeriesValue = tableTimeSeriesValues.find((v) => v.year === i)
+    for (let year = firstYear; year <= lastYear; year += 1) {
+        const tableTimeSeriesValue = tableTimeSeriesValues.find((v) => v.year === year)
         values.push(tableTimeSeriesValue ? tableTimeSeriesValue.value : 0)
     }
 
-    const newProfile = { ...profile }
-    newProfile.startYear = timeSeriesStartYear
-    newProfile.values = values
-
-    return newProfile
+    return {
+        ...profile,
+        startYear,
+        values,
+    }
 }

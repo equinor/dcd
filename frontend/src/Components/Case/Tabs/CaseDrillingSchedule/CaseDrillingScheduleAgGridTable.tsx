@@ -113,8 +113,11 @@ const CaseDrillingScheduleTabTable = ({
                     assetWells: existingAndNewAssetWells,
                     drillingSchedule: w.drillingSchedule,
                 }
-
-                if (tableWell.drillingSchedule.values && tableWell.drillingSchedule.values.length > 0
+                if ((!editMode && tableWell.total > 0) || editMode) {
+                    return tableWell
+                }
+                if (tableWell.drillingSchedule.values
+                    && tableWell.drillingSchedule.values.length > 0
                     && tableWell.drillingSchedule.startYear !== undefined) {
                     tableWell.drillingSchedule.values.forEach((value: any, index: any) => {
                         const yearKey = (dg4Year + tableWell.drillingSchedule.startYear + index).toString()
@@ -122,9 +125,7 @@ const CaseDrillingScheduleTabTable = ({
                     })
                     tableWell.total = tableWell.drillingSchedule.values.reduce((acc: any, val: any) => acc + val, 0)
                 }
-                if ((!editMode && tableWell.total > 0) || editMode) {
-                    return tableWell
-                }
+                return tableWell
             })
             setRowData(tableWells.filter((tw) => tw !== undefined))
         }
@@ -133,10 +134,19 @@ const CaseDrillingScheduleTabTable = ({
     const generateTableYearColDefs = () => {
         const columnPinned: any[] = [
             {
-                field: "name", headerName: tableName, width: 250, editable: false, pinned: "left",
+                field: "name",
+                headerName: tableName,
+                width: 250,
+                editable: false,
+                pinned: "left",
             },
             {
-                field: "total", flex: 2, editable: false, pinned: "right", width: 100, cellStyle: { fontWeight: "bold", textAlign: "right" },
+                field: "total",
+                flex: 2,
+                editable: false,
+                pinned: "right",
+                width: 100,
+                cellStyle: { fontWeight: "bold", textAlign: "right" },
             },
         ]
         const yearDefs: any[] = []
