@@ -113,11 +113,8 @@ const CaseDrillingScheduleTabTable = ({
                     assetWells: existingAndNewAssetWells,
                     drillingSchedule: w.drillingSchedule,
                 }
-                if ((!editMode && tableWell.total > 0) || editMode) {
-                    return tableWell
-                }
-                if (tableWell.drillingSchedule.values
-                    && tableWell.drillingSchedule.values.length > 0
+
+                if (tableWell.drillingSchedule.values && tableWell.drillingSchedule.values.length > 0
                     && tableWell.drillingSchedule.startYear !== undefined) {
                     tableWell.drillingSchedule.values.forEach((value: any, index: any) => {
                         const yearKey = (dg4Year + tableWell.drillingSchedule.startYear + index).toString()
@@ -125,7 +122,9 @@ const CaseDrillingScheduleTabTable = ({
                     })
                     tableWell.total = tableWell.drillingSchedule.values.reduce((acc: any, val: any) => acc + val, 0)
                 }
-                return tableWell
+                if ((!editMode && tableWell.total > 0) || editMode) {
+                    return tableWell
+                }
             })
             setRowData(tableWells.filter((tw) => tw !== undefined))
         }

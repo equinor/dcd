@@ -339,7 +339,8 @@ export const extractTableTimeSeriesValues = (data: any) => {
 
         if (
             isInteger(prop)
-            && value
+            && value !== ""
+            && value !== null
             && !Number.isNaN(Number(value.toString().replace(/,/g, ".")))
         ) {
             tableTimeSeriesValues.push({

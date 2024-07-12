@@ -1070,6 +1070,9 @@ const useDataEdits = (): {
             return
         }
 
+        console.log("new resource object", newResourceObject)
+        console.log("previous resource object", previousResourceObject)
+
         const editInstanceObject: EditInstance = {
             uuid: uuidv4(),
             timeStamp: new Date().getTime(),
