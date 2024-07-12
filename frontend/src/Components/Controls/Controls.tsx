@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { useNavigate, useParams, useLocation } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
@@ -46,7 +46,8 @@ const Controls = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLButtonElement | null>(null)
     const [isCanceling, setIsCanceling] = useState<boolean>(false)
-    const [modifyTime, setModifyTime] = useState<string>("")
+    const [projectLastUpdated, setProjectLastUpdated] = useState<string>("")
+    const [caseLastUpdated, setCaseLastUpdated] = useState<string>("")
 
     const cancelEdit = async () => {
         setEditMode(false)
@@ -56,9 +57,7 @@ const Controls = () => {
 
     const handleProjectSave = async () => {
         if (project && projectEdited) {
-            const updatedProject = {
-                ...projectEdited,
-            }
+            const updatedProject = { ...projectEdited }
             const result = await (await GetProjectService()).updateProject(
                 project.id,
                 updatedProject,
@@ -66,6 +65,7 @@ const Controls = () => {
             setProject(result)
             setProjectEdited(undefined)
             setEditMode(false)
+            setProjectLastUpdated(result.modifyTime)
             return result
         }
         return null
@@ -100,7 +100,9 @@ const Controls = () => {
     const projectId = project?.id || null
 
     const queryClient = useQueryClient()
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
+    const { data: apiData } = useQuery<
+        Components.Schemas.CaseWithAssetsDto | undefined
+    >(
         ["apiData", { projectId, caseId }],
         () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
         {
@@ -111,7 +113,8 @@ const Controls = () => {
 
     const caseData = apiData?.case
 
-    const formatDate = (dateString: string) => {
+    const formatDate = (dateString: string | undefined | null) => {
+        if (!dateString) { return "" }
         const date = new Date(dateString)
         const options: Intl.DateTimeFormatOptions = {
             day: "2-digit",
@@ -121,27 +124,34 @@ const Controls = () => {
             minute: "2-digit",
             hour12: false,
         }
-        return new Intl.DateTimeFormat("en-GB", options).format(date).replace(",", "")
+        return new Intl.DateTimeFormat("en-GB", options)
+            .format(date)
+            .replace(",", "")
     }
 
     useEffect(() => {
-        if (location.pathname.includes("/case/")) {
-            setModifyTime(caseData?.modifyTime ?? "")
+        if (location.pathname.includes("case")) {
+            setCaseLastUpdated(caseData?.modifyTime ?? "")
         } else {
-            setModifyTime(project?.modifyTime ?? "")
+            setProjectLastUpdated(project?.modifyTime ?? "")
         }
-    }, [editMode, location.pathname, caseData, project])
+    }, [location.pathname, caseData, project])
 
     useEffect(() => {
         cancelEdit()
     }, [caseId])
 
     useEffect(() => {
+        setProjectLastUpdated(project?.modifyTime ?? "")
+    }, [caseData, project])
+
+    useEffect(() => {
         const fetchData = async () => {
-            if (location.pathname.includes("/case/") && project?.id && caseId) {
+            if (location.pathname.includes("case") && project?.id && caseId) {
                 const projectService = await GetProjectService()
                 const projectData = await projectService.getProject(project.id)
                 setProject(projectData)
+                setProjectLastUpdated(projectData.modifyTime)
             }
         }
 
@@ -155,24 +165,13 @@ const Controls = () => {
                 isOpen={isCanceling}
                 title="Are you sure you want to cancel?"
                 size="sm"
-                content={(
-                    <Typography>
-                        All unsaved changes will be lost. This action cannot be undone.
-                    </Typography>
-                )}
+                content={<Typography>All unsaved changes will be lost. This action cannot be undone.</Typography>}
                 actions={(
                     <>
-                        <Button
-                            onClick={() => setIsCanceling(false)}
-                            variant="outlined"
-                        >
+                        <Button onClick={() => setIsCanceling(false)} variant="outlined">
                             Continue editing
                         </Button>
-                        <Button
-                            onClick={cancelEdit}
-                            variant="contained"
-                            color="danger"
-                        >
+                        <Button onClick={cancelEdit} variant="contained" color="danger">
                             Discard changes
                         </Button>
                     </>
@@ -181,46 +180,33 @@ const Controls = () => {
             {project && caseId && (
                 <CaseControls
                     backToProject={backToProject}
-                    projectId={project?.id}
+                    projectId={project.id}
                     caseId={caseId}
                 />
             )}
-            {project && !caseId && (
-                <ProjectControls />
-            )}
-            <Grid
-                item
-                xs
-                container
-                spacing={1}
-                alignItems="center"
-                justifyContent="flex-end"
-            >
+            {project && !caseId && <ProjectControls />}
+            <Grid item xs container spacing={1} alignItems="center" justifyContent="flex-end">
                 <Grid item>
                     {editMode && caseId && <UndoControls />}
                 </Grid>
                 {editMode && !caseId && (
                     <Grid item>
-                        <Button
-                            variant="outlined"
-                            onClick={() => setIsCanceling(true)}
-                        >
+                        <Button variant="outlined" onClick={() => setIsCanceling(true)}>
                             Cancel
                         </Button>
                     </Grid>
                 )}
-                {!editMode && modifyTime && location.pathname.includes("case") && (
-                    <Typography variant="caption">
-                        Last updated:
-                        {" "}
-                        {formatDate(modifyTime)}
-                    </Typography>
+                {!editMode && (
+                    <Grid item>
+                        <Typography variant="caption">
+                            {caseId ? "Case last updated:" : "Project last updated:"}
+                            {" "}
+                            {caseId ? formatDate(caseLastUpdated) : formatDate(projectLastUpdated)}
+                        </Typography>
+                    </Grid>
                 )}
                 <Grid item>
-                    <Button
-                        onClick={handleEdit}
-                        variant={editMode ? "outlined" : "contained"}
-                    >
+                    <Button onClick={handleEdit} variant={editMode ? "outlined" : "contained"}>
                         {isSaving ? (
                             <Progress.Dots />
                         ) : (
@@ -241,12 +227,8 @@ const Controls = () => {
                         )}
                     </Button>
                 </Grid>
-
                 <Grid item>
-                    <Button
-                        onClick={() => setTechnicalModalIsOpen(true)}
-                        variant="outlined"
-                    >
+                    <Button onClick={() => setTechnicalModalIsOpen(true)} variant="outlined">
                         <Icon data={keyboard_tab} />
                         {`${editMode ? "Edit" : "Open"} technical input`}
                     </Button>
@@ -254,12 +236,7 @@ const Controls = () => {
             </Grid>
             {caseId && (
                 <Grid item>
-                    <Button
-                        variant="ghost_icon"
-                        aria-label="case menu"
-                        ref={setMenuAnchorEl}
-                        onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    >
+                    <Button variant="ghost_icon" aria-label="case menu" ref={setMenuAnchorEl} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                         <Icon data={more_vertical} />
                     </Button>
                     <CaseDropMenu
