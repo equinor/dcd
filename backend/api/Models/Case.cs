@@ -11,7 +11,7 @@ public class Case
     public bool ReferenceCase { get; set; }
 
     public DateTimeOffset CreateTime { get; set; }
-    public DateTimeOffset ModifyTime { get; set; }  = DateTimeOffset.UtcNow;
+    public DateTimeOffset ModifyTime { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset DGADate { get; set; }
     public DateTimeOffset DGBDate { get; set; }
     public DateTimeOffset DGCDate { get; set; }
