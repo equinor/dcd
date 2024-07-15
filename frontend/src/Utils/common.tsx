@@ -356,17 +356,19 @@ export const extractTableTimeSeriesValues = (data: any) => {
 export const generateProfile = (
     tableTimeSeriesValues: { year: number, value: number }[],
     profile: any,
-    startYearOffset: number,
+    startYear: number,
+    firstYear: number,
+    lastYear: number,
 ) => {
-    if (tableTimeSeriesValues.length === 0) {
-        return null
-    }
-
-    const firstYear = tableTimeSeriesValues[0].year
-    const lastYear = tableTimeSeriesValues[tableTimeSeriesValues.length - 1].year
-
-    const startYear = firstYear - startYearOffset
     const values: number[] = []
+
+    if (tableTimeSeriesValues.length === 0) {
+        return {
+            ...profile,
+            startYear,
+            values: [],
+        }
+    }
 
     for (let year = firstYear; year <= lastYear; year += 1) {
         const tableTimeSeriesValue = tableTimeSeriesValues.find((v) => v.year === year)

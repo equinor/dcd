@@ -5,6 +5,7 @@ import {
     useState,
     useEffect,
     useCallback,
+    useRef,
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
@@ -62,7 +63,8 @@ const CaseTabTable = ({
     const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
     const [overrideProfile, setOverrideProfile] = useState<any>()
     const [stagedEdit, setStagedEdit] = useState<any>()
-
+    const firstTriggerRef = useRef<boolean>(true)
+    const timerRef = useRef<NodeJS.Timeout | null>(null)
     useEffect(() => {
         if (stagedEdit) {
             addEdit(stagedEdit)
@@ -212,25 +214,36 @@ const CaseTabTable = ({
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
-    const handleCellValueChange = (p: any) => {
-        const tableTimeSeriesValues = extractTableTimeSeriesValues(p.data)
-        const newProfile = generateProfile(tableTimeSeriesValues, p.data.profile, dg4Year)
+    const stageEdit = (params: any) => {
+        const tableTimeSeriesValues = extractTableTimeSeriesValues(params.data)
+        const existingProfile = params.data.profile ? structuredClone(params.data.profile) : {
+            startYear: 0, values: [],
+        }
+        let newProfile
+        if (tableTimeSeriesValues.length > 0) {
+            const firstYear = tableTimeSeriesValues[0].year
+            const lastYear = tableTimeSeriesValues[tableTimeSeriesValues.length - 1].year
+            const startYear = firstYear - dg4Year
+            newProfile = generateProfile(tableTimeSeriesValues, params.data.profile, startYear, firstYear, lastYear)
+        } else {
+            newProfile = structuredClone(existingProfile)
+            newProfile.values = []
+        }
 
-        const startYear = tableTimeSeriesValues[0].year - dg4Year
-        const existingProfile = p.data.profile ? { ...p.data.profile }
-            : { startYear, values: [] }
-
-
-        if (!newProfile || !caseId || !project) { return }
+        if (!newProfile || !caseId || !project) {
+            return
+        }
 
         const timeSeriesDataIndex = () => timeSeriesData
-            .map((v, i) => (v.profileName === p.data.profileName ? timeSeriesData[i] : undefined))
+            .map((v, i) => (v.profileName === params.data.profileName ? timeSeriesData[i] : undefined))
             .find((v) => v !== undefined)
 
         setStagedEdit({
-            newValue: p.newValue,
-            previousValue: p.oldValue,
-            inputLabel: p.data.profileName,
+            newDisplayValue: newProfile.values.join(" - "),
+            previousDisplayValue: existingProfile.values.join(" - "),
+            newValue: params.newValue,
+            previousValue: params.oldValue,
+            inputLabel: params.data.profileName,
             projectId: project.id,
             resourceName: timeSeriesDataIndex()?.resourceName,
             resourcePropertyKey: timeSeriesDataIndex()?.resourcePropertyKey,
@@ -241,6 +254,21 @@ const CaseTabTable = ({
             resourceProfileId: timeSeriesDataIndex()?.resourceProfileId,
         })
     }
+
+    const handleCellValueChange = useCallback((params: any) => {
+        if (firstTriggerRef.current) {
+            firstTriggerRef.current = false
+            stageEdit(params)
+
+            if (timerRef.current) {
+                clearTimeout(timerRef.current)
+            }
+
+            timerRef.current = setTimeout(() => {
+                firstTriggerRef.current = true
+            }, 500)
+        }
+    }, [stageEdit, timeSeriesData, dg4Year, project, caseId])
 
     const gridRefArrayToAlignedGrid = () => {
         if (alignedGridsRef && alignedGridsRef.length > 0) {
