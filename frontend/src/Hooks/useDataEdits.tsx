@@ -96,12 +96,7 @@ const useDataEdits = (): {
                 variables,
             ) => {
                 const { projectId, caseId } = variables
-                /* this should work but doesnt :(
-                const assetId = caseId === results.id ? "" : results.id
-                queryClient.setQueryData([{ caseId, projectId , assetId }], results)
-                */
 
-                // this makes the app refetch all data. We should only refetch the data that was updated in the future.
                 queryClient.fetchQuery(["apiData", { projectId, caseId }])
             },
             onError: (error: any) => {
@@ -279,7 +274,7 @@ const useDataEdits = (): {
 
     ) => {
         try {
-            await mutation.mutateAsync({
+            const result = await mutation.mutateAsync({
                 projectId,
                 caseId,
                 resourceId: assetId,
@@ -287,9 +282,10 @@ const useDataEdits = (): {
                 drillingScheduleId,
                 serviceMethod: createOrUpdateFunction,
             })
-            return true
+            const returnValue = { ...result, resourceProfileId: result.id, }
+            return returnValue
         } catch (error) {
-            return false
+            return error
         }
     }
 
@@ -1094,7 +1090,6 @@ const useDataEdits = (): {
             newResourceObject,
             previousResourceObject,
         }
-
         const success = await submitToApi(
             {
                 projectId,
@@ -1112,6 +1107,7 @@ const useDataEdits = (): {
 
         if (success && caseId) {
             editInstanceObject.resourceProfileId = success.resourceProfileId
+            editInstanceObject.drillingScheduleId = success.resourceProfileId
             addToHistoryTracker(editInstanceObject, caseId)
         }
     }
@@ -1142,9 +1138,9 @@ const useDataEdits = (): {
                     resourcePropertyKey: editThatWillBeUndone.resourcePropertyKey,
                     value: editThatWillBeUndone.previousValue as string,
                     resourceId: editThatWillBeUndone.resourceId,
-                    resourceObject: editThatWillBeUndone.resourceProfileId
-                        ? updatedEdit?.newResourceObject as ResourceObject : editThatWillBeUndone.previousResourceObject as ResourceObject,
-
+                    resourceObject: editThatWillBeUndone.previousResourceObject as ResourceObject,
+                    wellId: editThatWillBeUndone.wellId,
+                    drillingScheduleId: editThatWillBeUndone.drillingScheduleId,
                 },
             )
         }
@@ -1169,6 +1165,8 @@ const useDataEdits = (): {
                         value: lastEdit.newValue as string,
                         resourceId: lastEdit.resourceId,
                         resourceObject: lastEdit.newResourceObject as ResourceObject,
+                        wellId: lastEdit.wellId,
+                        drillingScheduleId: lastEdit.drillingScheduleId,
                     },
                 )
             }
@@ -1188,6 +1186,8 @@ const useDataEdits = (): {
                         value: updatedEdit.newValue as string,
                         resourceId: updatedEdit.resourceId,
                         resourceObject: updatedEdit.newResourceObject as ResourceObject,
+                        wellId: updatedEdit.wellId,
+                        drillingScheduleId: updatedEdit.drillingScheduleId,
                     },
                 )
             }

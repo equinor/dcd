@@ -8,7 +8,12 @@ import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import { useParams } from "react-router"
-import { isExplorationWell, isInteger, cellStyleRightAlign } from "../../../../Utils/common"
+import {
+    isExplorationWell,
+    cellStyleRightAlign,
+    extractTableTimeSeriesValues,
+    generateProfile,
+} from "../../../../Utils/common"
 import { useAppContext } from "../../../../Context/AppContext"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import useDataEdits from "../../../../Hooks/useDataEdits"
@@ -48,6 +53,8 @@ const CaseDrillingScheduleTabTable = ({
 }: Props) => {
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([])
+    const [stagedEdit, setStagedEdit] = useState<any>()
+
     const { editMode } = useAppContext()
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
@@ -115,21 +122,30 @@ const CaseDrillingScheduleTabTable = ({
                     })
                     tableWell.total = tableWell.drillingSchedule.values.reduce((acc: any, val: any) => acc + val, 0)
                 }
-
-                return tableWell
+                if ((!editMode && tableWell.total > 0) || editMode) {
+                    return tableWell
+                }
             })
-
-            setRowData(tableWells)
+            setRowData(tableWells.filter((tw) => tw !== undefined))
         }
     }
 
     const generateTableYearColDefs = () => {
         const columnPinned: any[] = [
             {
-                field: "name", headerName: tableName, width: 250, editable: false, pinned: "left",
+                field: "name",
+                headerName: tableName,
+                width: 250,
+                editable: false,
+                pinned: "left",
             },
             {
-                field: "total", flex: 2, editable: false, pinned: "right", width: 100, cellStyle: { fontWeight: "bold", textAlign: "right" },
+                field: "total",
+                flex: 2,
+                editable: false,
+                pinned: "right",
+                width: 100,
+                cellStyle: { fontWeight: "bold", textAlign: "right" },
             },
         ]
         const yearDefs: any[] = []
@@ -149,64 +165,42 @@ const CaseDrillingScheduleTabTable = ({
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
     const handleCellValueChange = (p: any) => {
-        if (!caseId || !project) { return }
-        const properties = Object.keys(p.data)
-        const tableTimeSeriesValues: any[] = []
-        properties.forEach((prop) => {
-            if (isInteger(prop)
-                && p.data[prop] !== ""
-                && p.data[prop] !== null
-                && !Number.isNaN(Number(p.data[prop].toString().replace(/,/g, ".")))) {
-                tableTimeSeriesValues.push({
-                    year: parseInt(prop, 10),
-                    value: Number(p.data[prop].toString().replace(/,/g, ".")),
+        const tableTimeSeriesValues = extractTableTimeSeriesValues(p.data)
+        const newProfile = generateProfile(tableTimeSeriesValues, p.data.drillingSchedule, dg4Year)
+        const startYear = tableTimeSeriesValues[0].year - dg4Year
+        const existingProfile = p.data.drillingSchedule ? { ...p.data.drillingSchedule, id: resourceId }
+            : {
+                startYear,
+                values: [],
+                id: resourceId,
+            }
+
+        if (!caseId || !project || !newProfile) { return }
+
+        const rowWells = p.data.assetWells
+        if (rowWells) {
+            const index = rowWells.findIndex((w: any) => w === p.data.assetWell)
+            if (index > -1) {
+                const well = rowWells[index]
+                const updatedWell = { ...well, drillingSchedule: newProfile }
+                const updatedWells = [...rowWells]
+                updatedWells[index] = updatedWell
+
+                const resourceName = isExplorationTable ? "explorationWellDrillingSchedule" : "wellProjectWellDrillingSchedule"
+                setStagedEdit({
+                    newValue: p.newValue,
+                    previousValue: p.oldValue,
+                    inputLabel: p.data.name,
+                    projectId: project.id,
+                    resourceName,
+                    resourcePropertyKey: "drillingSchedule",
+                    caseId,
+                    resourceId,
+                    newResourceObject: newProfile,
+                    previousResourceObject: existingProfile,
+                    wellId: updatedWell.wellId,
+                    drillingScheduleId: newProfile.id,
                 })
-            }
-        })
-        tableTimeSeriesValues.sort((a, b) => a.year - b.year)
-        if (tableTimeSeriesValues.length > 0) {
-            const tableTimeSeriesFirstYear = tableTimeSeriesValues[0].year
-            const tableTimeSerieslastYear = tableTimeSeriesValues.at(-1).year
-            const timeSeriesStartYear = tableTimeSeriesFirstYear - dg4Year
-            const values: number[] = []
-            for (let i = tableTimeSeriesFirstYear; i <= tableTimeSerieslastYear; i += 1) {
-                const tableTimeSeriesValue = tableTimeSeriesValues.find((v) => v.year === i)
-                if (tableTimeSeriesValue) {
-                    values.push(tableTimeSeriesValue.value)
-                } else {
-                    values.push(0)
-                }
-            }
-            const newProfile = { ...p.data.drillingSchedule }
-            newProfile.startYear = timeSeriesStartYear
-            newProfile.values = values
-            const rowWells: Components.Schemas.ExplorationWellDto[] | Components.Schemas.WellProjectWellDto[] = p.data.assetWells
-
-            if (rowWells) {
-                const index = rowWells.findIndex((w) => w === p.data.assetWell)
-                if (index > -1) {
-                    const well = rowWells[index]
-                    const updatedWell = well
-                    updatedWell.drillingSchedule = newProfile
-                    const updatedWells: any[] = [...rowWells]
-                    updatedWells[index] = updatedWell
-
-                    const resourceName = isExplorationTable ? "explorationWellDrillingSchedule" : "wellProjectWellDrillingSchedule"
-
-                    addEdit({
-                        newValue: p.newValue,
-                        previousValue: p.oldValue,
-                        inputLabel: p.data.name,
-                        projectId: project.id,
-                        resourceName,
-                        resourcePropertyKey: "drillingSchedule",
-                        caseId,
-                        resourceId,
-                        newResourceObject: newProfile,
-                        wellId: updatedWell.wellId,
-                        drillingScheduleId: newProfile.id,
-                    })
-                }
             }
         }
     }
@@ -240,6 +234,12 @@ const CaseDrillingScheduleTabTable = ({
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
     }, [assetWells, tableYears, wells, editMode])
+
+    useEffect(() => {
+        if (stagedEdit) {
+            addEdit(stagedEdit)
+        }
+    }, [stagedEdit])
 
     return (
         <div className={styles.root}>

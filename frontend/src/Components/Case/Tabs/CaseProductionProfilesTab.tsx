@@ -204,8 +204,6 @@ const CaseProductionProfilesTab = () => {
                 setEndYear={setEndYear}
                 startYear={startYear}
                 endYear={endYear}
-                labelText="Units"
-                labelValue={datePickerValue}
                 handleTableYearsClick={handleTableYearsClick}
             />
             <Grid item xs={12}>
