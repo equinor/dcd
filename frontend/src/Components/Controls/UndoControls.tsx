@@ -126,8 +126,7 @@ const UndoControls: React.FC = () => {
                         </Tooltip>
                     )
             }
-            {/* comment out for qa release
-
+            {/* comment out for qa release */}
             <Tooltip title={canUndo() ? "Undo" : "No changes to undo"}>
                 <Button
                     variant="ghost_icon"
