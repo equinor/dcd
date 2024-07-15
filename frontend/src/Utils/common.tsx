@@ -330,3 +330,52 @@ export const formatColumnSum = (params: { values: any[] }) => {
     })
     return sum > 0 ? parseFloat(sum.toFixed(10)) : ""
 }
+
+export const extractTableTimeSeriesValues = (data: any) => {
+    const tableTimeSeriesValues: { year: number, value: number }[] = []
+
+    Object.keys(data).forEach((prop) => {
+        const value = data[prop]
+
+        if (
+            isInteger(prop)
+            && value !== ""
+            && value !== null
+            && !Number.isNaN(Number(value.toString().replace(/,/g, ".")))
+        ) {
+            tableTimeSeriesValues.push({
+                year: parseInt(prop, 10),
+                value: Number(value.toString().replace(/,/g, ".")),
+            })
+        }
+    })
+
+    return tableTimeSeriesValues.sort((a, b) => a.year - b.year)
+}
+
+export const generateProfile = (
+    tableTimeSeriesValues: { year: number, value: number }[],
+    profile: any,
+    startYearOffset: number,
+) => {
+    if (tableTimeSeriesValues.length === 0) {
+        return null
+    }
+
+    const firstYear = tableTimeSeriesValues[0].year
+    const lastYear = tableTimeSeriesValues[tableTimeSeriesValues.length - 1].year
+
+    const startYear = firstYear - startYearOffset
+    const values: number[] = []
+
+    for (let year = firstYear; year <= lastYear; year += 1) {
+        const tableTimeSeriesValue = tableTimeSeriesValues.find((v) => v.year === year)
+        values.push(tableTimeSeriesValue ? tableTimeSeriesValue.value : 0)
+    }
+
+    return {
+        ...profile,
+        startYear,
+        values,
+    }
+}
