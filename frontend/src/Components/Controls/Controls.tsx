@@ -132,8 +132,9 @@ const Controls = () => {
     useEffect(() => {
         if (location.pathname.includes("case")) {
             setCaseLastUpdated(caseData?.modifyTime ?? "")
+            setProjectLastUpdated(caseData?.modifyTime ?? "")
         } else {
-            setProjectLastUpdated(project?.modifyTime ?? "")
+            setProjectLastUpdated(caseData?.modifyTime ?? "")
         }
     }, [location.pathname, caseData, project])
 
@@ -154,7 +155,6 @@ const Controls = () => {
                 setProjectLastUpdated(projectData.modifyTime)
             }
         }
-
         fetchData()
     }, [location.pathname, project?.id, caseId, setProject])
 

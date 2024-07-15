@@ -24,4 +24,17 @@ public class ProjectRepository : IProjectRepository
     {
         return await _context.Projects.FindAsync(projectId);
     }
+
+    public async Task UpdateModifyTime(Guid projectId)
+    {
+
+        var projectItem = await _context.Projects.SingleOrDefaultAsync(p => p.Id == projectId)
+            ?? throw new KeyNotFoundException($"Project with id {projectId} not found.");
+
+        projectItem.ModifyTime = DateTimeOffset.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+
+    }
 }

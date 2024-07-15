@@ -223,6 +223,8 @@ public class CaseService : ICaseService
         _mapperService.MapToEntity(updatedCaseDto, existingCase, caseId);
 
         existingCase.ModifyTime = DateTimeOffset.UtcNow;
+        var project = await _projectService.GetProject(existingCase.ProjectId);
+        project.ModifyTime = DateTimeOffset.UtcNow;
 
         // Case updatedCase;
         try
@@ -230,6 +232,7 @@ public class CaseService : ICaseService
             // TODO: This breaks EF Core's change tracking
             // updatedCase = _repository.UpdateCase(existingCase);
             await _repository.SaveChangesAndRecalculateAsync(caseId);
+
         }
         catch (DbUpdateException ex)
         {
@@ -238,6 +241,8 @@ public class CaseService : ICaseService
         }
 
         var dto = _mapperService.MapToDto<Case, CaseDto>(existingCase, caseId);
+        await _repository.UpdateModifyTime(caseId);
+        dto.ModifyTime = DateTimeOffset.UtcNow;
         return dto;
     }
 }

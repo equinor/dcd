@@ -1,24 +1,24 @@
 using System.Linq.Expressions;
-
 using api.Context;
 using api.Enums;
 using api.Models;
-
 using Microsoft.EntityFrameworkCore;
-
 
 namespace api.Repositories;
 
 public class CaseRepository : BaseRepository, ICaseRepository
 {
     private readonly ILogger<CaseRepository> _logger;
+    private readonly IProjectRepository _projectRepository;
 
     public CaseRepository(
         DcdDbContext context,
-        ILogger<CaseRepository> logger
-        ) : base(context)
+        ILogger<CaseRepository> logger,
+        IProjectRepository projectRepository
+    ) : base(context)
     {
         _logger = logger;
+        _projectRepository = projectRepository;
     }
 
     public async Task<Case?> GetCase(Guid caseId)
@@ -67,14 +67,9 @@ public class CaseRepository : BaseRepository, ICaseRepository
 
         caseItem.ModifyTime = DateTimeOffset.UtcNow;
 
-        var projectItem = await _context.Projects.SingleOrDefaultAsync(p => p.Id == caseItem.ProjectId)
-            ?? throw new KeyNotFoundException($"Project with id {caseItem.ProjectId} not found.");
-
-        projectItem.ModifyTime = DateTimeOffset.UtcNow;
+        await _projectRepository.UpdateModifyTime(caseItem.ProjectId);
 
         await _context.SaveChangesAsync();
-
-
     }
 
 }

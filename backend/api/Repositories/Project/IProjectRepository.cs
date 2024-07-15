@@ -5,4 +5,6 @@ namespace api.Repositories;
 public interface IProjectRepository
 {
     Task<Project?> GetProject(Guid projectId);
+    Task UpdateModifyTime(Guid projectId);
+
 }
