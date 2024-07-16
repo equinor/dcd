@@ -6,7 +6,7 @@ using api.Dtos;
 using api.Exceptions;
 using api.Mappings;
 using api.Models;
-
+using api.Repositories;
 using api.Services.FusionIntegration;
 
 using AutoMapper;
@@ -23,11 +23,13 @@ public class ProjectService : IProjectService
     private readonly IFusionService? _fusionService;
     private readonly ILogger<ProjectService> _logger;
     private readonly IMapper _mapper;
+    private readonly IProjectRepository _repository;
 
     public ProjectService(
         DcdDbContext context,
         ILoggerFactory loggerFactory,
         IMapper mapper,
+        IProjectRepository repository,
         FusionService? fusionService = null
         )
     {
@@ -35,6 +37,7 @@ public class ProjectService : IProjectService
         _logger = loggerFactory.CreateLogger<ProjectService>();
         _fusionService = fusionService;
         _mapper = mapper;
+        _repository = repository;
     }
 
     public async Task<ProjectDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto)
@@ -45,6 +48,8 @@ public class ProjectService : IProjectService
 
         _context.Projects!.Update(existingProject);
         await _context.SaveChangesAsync();
+        await _repository.UpdateModifyTime(projectId);
+
         return await GetProjectDto(existingProject.Id);
     }
 
