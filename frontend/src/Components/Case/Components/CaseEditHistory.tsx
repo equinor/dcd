@@ -32,8 +32,7 @@ const ChangeView = styled.div`
 
 const PreviousValue = styled(Typography)`
     color: red;
-    text-decoration: line-through;
-    opacity: 0.5;
+    opacity: 0.8;
     max-width: 100px;
     font-size: 12px;
 `
@@ -41,6 +40,7 @@ const PreviousValue = styled(Typography)`
 const NextValue = styled(Typography)`
     max-width: 100px;
     font-size: 12px;
+    font-weight: bold;
 `
 
 interface CaseEditHistoryProps {

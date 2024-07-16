@@ -8,7 +8,7 @@ import {
 
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { ColDef } from "@ag-grid-community/core"
+import { ColDef, CellKeyDownEvent } from "@ag-grid-community/core"
 import { useParams } from "react-router"
 import {
     isExplorationWell,
@@ -260,6 +260,51 @@ const CaseDrillingScheduleTabTable = ({
         return undefined
     }
 
+    const clearCellsInRange = (start: any, end: any, columns: any) => {
+        Array.from({ length: end - start + 1 }, (_, i) => start + i).forEach((i) => {
+            const rowNode = gridRef.current?.api.getRowNode(i)
+            if (rowNode) {
+                columns.forEach((column: any) => {
+                    rowNode.setDataValue(column, "")
+                })
+            }
+        })
+    }
+
+    const handleDeleteOnRange = useCallback(
+        (e: CellKeyDownEvent) => {
+            const keyboardEvent = e.event as unknown as KeyboardEvent
+            const { key } = keyboardEvent
+
+            if (key === "Backspace") {
+                const cellRanges = e.api.getCellRanges()
+                if (!cellRanges || cellRanges.length === 0) {
+                    return
+                }
+
+                cellRanges.forEach((cells) => {
+                    if (cells.startRow && cells.endRow) {
+                        const startRowIndex = Math.min(
+                            cells.startRow.rowIndex,
+                            cells.endRow.rowIndex,
+                        )
+                        const endRowIndex = Math.max(
+                            cells.startRow.rowIndex,
+                            cells.endRow.rowIndex,
+                        )
+
+                        const colIds = cells.columns.map(
+                            (col: any) => col.getColDef().field,
+                        )
+
+                        clearCellsInRange(startRowIndex, endRowIndex, colIds)
+                    }
+                })
+            }
+        },
+        [clearCellsInRange],
+    )
+
     useEffect(() => {
         wellsToRowData()
         const newColDefs = generateTableYearColDefs()
@@ -294,6 +339,7 @@ const CaseDrillingScheduleTabTable = ({
                     enableCharts
                     alignedGrids={gridRefArrayToAlignedGrid()}
                     stopEditingWhenCellsLoseFocus
+                    onCellKeyDown={editMode ? handleDeleteOnRange : undefined}
                 />
             </div>
         </div>
