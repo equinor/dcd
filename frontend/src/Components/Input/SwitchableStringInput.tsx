@@ -23,7 +23,7 @@ const SwitchableStringInput: React.FC<CaseEditInputProps> = ({
 }: CaseEditInputProps) => {
     const { addEdit } = useDataEdits()
     const { project } = useProjectContext()
-    const { caseId } = useParams()
+    const { caseId, tab } = useParams()
 
     const [inputValue, setInputValue] = useState(value || "")
 
@@ -43,6 +43,8 @@ const SwitchableStringInput: React.FC<CaseEditInputProps> = ({
             resourcePropertyKey,
             resourceId,
             caseId,
+            tabName: tab, // Include current tab name
+            fieldId: `${resourceName}-${resourcePropertyKey}-${resourceId}`, // Generate a unique field ID
         })
     }
 

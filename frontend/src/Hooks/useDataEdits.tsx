@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 import { v4 as uuidv4 } from "uuid"
 import { useMutation, useQueryClient } from "react-query"
-import { useParams } from "react-router"
+import { useLocation, useNavigate, useParams } from "react-router"
 import { useCaseContext } from "../Context/CaseContext"
 import {
     EditInstance,
@@ -38,13 +38,16 @@ interface AddEditParams {
     previousDisplayValue?: string | number | undefined;
     newResourceObject?: ResourceObject;
     previousResourceObject?: ResourceObject;
+    tabName?: string; // Add tabName
+    fieldId?: string; // Add fieldId
 }
 
-const useDataEdits = (): {
+interface UseDataEditsProps {
     addEdit: (params: AddEditParams) => void;
-    undoEdit: () => void;
+    undoEdit: (scrollIntoViewCallback: (rowId: string) => void) => void;
     redoEdit: () => void;
-} => {
+}
+const useDataEdits = (): UseDataEditsProps => {
     const { setSnackBarMessage } = useAppContext()
     const {
         caseEdits,
@@ -55,6 +58,8 @@ const useDataEdits = (): {
     } = useCaseContext()
 
     const { caseId: caseIdFromParams } = useParams()
+    const location = useLocation()
+    const navigate = useNavigate()
 
     const updateEditIndex = (newEditId: string) => {
         if (!caseIdFromParams) {
@@ -1059,6 +1064,8 @@ const useDataEdits = (): {
         previousDisplayValue,
         newResourceObject,
         previousResourceObject,
+        tabName, // Add tabName
+        fieldId, // Add fieldId
     }: AddEditParams) => {
         if (resourceName !== "case" && !resourceId) {
             console.log("asset id is required for this service")
@@ -1088,6 +1095,8 @@ const useDataEdits = (): {
             previousDisplayValue,
             newResourceObject,
             previousResourceObject,
+            tabName, // Add tabName
+            fieldId, // Add fieldId
         }
 
         const success = await submitToApi(
@@ -1111,10 +1120,11 @@ const useDataEdits = (): {
         }
     }
 
-    const undoEdit = () => {
+    const { caseId, tab } = useParams()
+
+    const undoEdit = (scrollIntoViewCallback: (rowId: string) => void) => {
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams))
         const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
-
         const updatedEditIndex = currentEditIndex + 1
         const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
 
@@ -1128,6 +1138,29 @@ const useDataEdits = (): {
         }
 
         if (editThatWillBeUndone) {
+            // Navigate to the correct tab
+
+            const projectUrl = location.pathname.split("/case")[0]
+            console.log("1", projectUrl)
+            // navigate(`/yourBaseURL/${editThatWillBeUndone.tabName ?? ""}`)
+            navigate(`${projectUrl}/case/${caseId}/${editThatWillBeUndone.tabName ?? ""}`)
+            const path = (`${projectUrl}/case/${caseId}/${editThatWillBeUndone.tabName ?? ""}`)
+            console.log("2", path)
+            console.log("3", editThatWillBeUndone.tabName)
+            console.log("4", editThatWillBeUndone.resourcePropertyKey)
+
+            setTimeout(() => {
+                const rowWhereCellWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex].resourcePropertyKey
+                console.log("6", rowWhereCellWillBeUndone)
+
+                if (rowWhereCellWillBeUndone) {
+                    scrollIntoViewCallback(rowWhereCellWillBeUndone)
+                    console.log("Tried to scroll")
+                } else {
+                    console.error(`Element with id ${rowWhereCellWillBeUndone} not found`)
+                }
+            }, 500) // Increased timeout
+
             submitToApi(
                 {
                     projectId: editThatWillBeUndone.projectId,
@@ -1139,7 +1172,6 @@ const useDataEdits = (): {
                     resourceId: editThatWillBeUndone.resourceId,
                     resourceObject: editThatWillBeUndone.resourceProfileId
                         ? updatedEdit?.newResourceObject as ResourceObject : editThatWillBeUndone.previousResourceObject as ResourceObject,
-
                 },
             )
         }

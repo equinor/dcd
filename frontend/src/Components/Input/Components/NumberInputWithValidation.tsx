@@ -7,6 +7,7 @@ import { preventNonDigitInput, isWithinRange } from "../../../Utils/common"
 const ErrorIcon = styled(Icon)`
     margin-left: 8px;
 `
+
 const StyledInput = styled(Input)`
     && input[type='number']::-webkit-outer-spin-button,
     && input[type='number']::-webkit-inner-spin-button {
@@ -21,17 +22,19 @@ const StyledInput = styled(Input)`
 `
 
 interface Props {
-    onSubmit: (value: number) => void
-    defaultValue: number | undefined
-    integer: boolean
-    disabled?: boolean
-    unit?: string
-    allowNegative?: boolean
-    min?: number
-    max?: number
+    id: string;
+    onSubmit: (value: number) => void;
+    defaultValue: number | undefined;
+    integer: boolean;
+    disabled?: boolean;
+    unit?: string;
+    allowNegative?: boolean;
+    min?: number;
+    max?: number;
 }
 
 const NumberInputWithValidation = ({
+    id,
     onSubmit,
     defaultValue,
     integer,
@@ -42,7 +45,7 @@ const NumberInputWithValidation = ({
     max,
 }: Props) => {
     const [hasError, setHasError] = useState(false)
-    const [inputValue, setInputValue] = useState(defaultValue)
+    const [inputValue, setInputValue] = useState<number | undefined>(defaultValue)
     const [helperText, setHelperText] = useState("\u200B")
 
     useEffect(() => {
@@ -50,18 +53,15 @@ const NumberInputWithValidation = ({
     }, [defaultValue])
 
     const inputIsValid = (newValue: number) => {
-        setInputValue(newValue)
         if (min !== undefined && max !== undefined) {
             if (!isWithinRange(newValue, min, max)) {
                 setHelperText(`(min: ${min}, max: ${max})`)
                 setHasError(true)
                 return false
             }
-            setHasError(false)
-            setHelperText("\u200B")
-
-            return true
         }
+        setHasError(false)
+        setHelperText("\u200B")
         return true
     }
 
@@ -86,6 +86,7 @@ const NumberInputWithValidation = ({
             }}
         >
             <StyledInput
+                id={id}
                 type="number"
                 value={inputValue}
                 disabled={disabled}

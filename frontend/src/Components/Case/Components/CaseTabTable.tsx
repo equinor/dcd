@@ -8,7 +8,7 @@ import {
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import {
     CellKeyDownEvent, ColDef, GridReadyEvent,
 } from "@ag-grid-community/core"
@@ -54,7 +54,9 @@ const CaseTabTable = ({
     const styles = useStyles()
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
-    const { caseId } = useParams()
+    const { caseId, tab } = useParams()
+    const navigate = useNavigate()
+    const { undoEdit } = useDataEdits() // Ensure to import undoEdit from useDataEdits
 
     const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
     const [overrideModalProfileName, setOverrideModalProfileName] = useState<ProfileNames>()
@@ -62,6 +64,18 @@ const CaseTabTable = ({
     const [overrideProfile, setOverrideProfile] = useState<any>()
     const [stagedEdit, setStagedEdit] = useState<any>()
 
+    const scrollIntoViewCallback = (rowId: string) => {
+        const fieldElement = document.getElementById(rowId)
+        if (fieldElement) {
+            fieldElement.scrollIntoView({ behavior: "smooth" })
+        } else {
+            console.error(`Element with id ${rowId} not found`)
+        }
+    }
+
+    const handleUndoEdit = () => {
+        undoEdit(scrollIntoViewCallback)
+    }
     useEffect(() => {
         if (stagedEdit) {
             addEdit(stagedEdit)
@@ -85,6 +99,7 @@ const CaseTabTable = ({
             rowObject.overridable = ts.overridable
             rowObject.editable = ts.editable
             rowObject.hideIfEmpty = ts.hideIfEmpty
+            rowObject.fieldId = `${ts.resourcePropertyKey}`
 
             rowObject.overrideProfileSet = ts.overrideProfileSet
             rowObject.overrideProfile = ts.overrideProfile ?? {
@@ -268,6 +283,8 @@ const CaseTabTable = ({
                 resourceId: timeSeriesDataIndex()?.resourceId,
                 newResourceObject: newProfile,
                 resourceProfileId: timeSeriesDataIndex()?.resourceProfileId,
+                tabName: tab,
+                fieldId: `${timeSeriesDataIndex()?.resourcePropertyKey}`,
             })
         }
     }

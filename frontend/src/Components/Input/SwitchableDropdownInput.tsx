@@ -27,7 +27,7 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
 }: SwitchableDropdownInputProps) => {
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
-    const { caseId } = useParams()
+    const { caseId, tab } = useParams()
 
     const addToEditsAndSubmit: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if (!caseId || !project) { return }
@@ -44,6 +44,8 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
             caseId,
             newDisplayValue: options[e.currentTarget.value],
             previousDisplayValue: options[value],
+            tabName: tab,
+            fieldId: `${resourceName}-${resourcePropertyKey}-${resourceId}`,
         })
     }
 

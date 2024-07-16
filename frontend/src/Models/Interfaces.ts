@@ -133,6 +133,8 @@ export interface EditInstance {
     previousDisplayValue?: string | number | undefined; // the displayed previous value in case of when the value submitted is not what the user should see
     newResourceObject?: ResourceObject; // this is used to replace the whole asset object. used if the edit should change multiple values in the same assets
     previousResourceObject?: ResourceObject; // used to revert the asset object to its previous state during undo
+    tabName?: string; // add tabName property
+    fieldId?: string; // add fieldId property
 }
 
 export interface EditEntry {
