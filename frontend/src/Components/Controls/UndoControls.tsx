@@ -126,7 +126,7 @@ const UndoControls: React.FC = () => {
                         </Tooltip>
                     )
             }
-            {/* comment out for qa release
+            {/* comment out for qa release */}
 
             <Tooltip title={canUndo() ? "Undo" : "No changes to undo"}>
                 <Button
@@ -146,7 +146,6 @@ const UndoControls: React.FC = () => {
                     <Icon data={redo} />
                 </Button>
             </Tooltip>
-            {/* comment out for qa release */}
         </Container>
     )
 }

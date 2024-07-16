@@ -282,7 +282,7 @@ const useDataEdits = (): {
                 drillingScheduleId,
                 serviceMethod: createOrUpdateFunction,
             })
-            const returnValue = { ...result, resourceProfileId: result.id, }
+            const returnValue = { ...result, resourceProfileId: result.id }
             return returnValue
         } catch (error) {
             return error
