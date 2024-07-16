@@ -257,14 +257,11 @@ export const tableCellisEditable = (params: any, editMode: boolean): boolean => 
 
 export const numberValueParser = (params: { newValue: any }) => {
     const { newValue } = params
-    if (typeof newValue === "string" && newValue !== "") {
-        const processedValue = newValue.replace(/\s/g, "").replace(/,/g, ".")
-        const numberValue = Number(processedValue)
-        if (!Number.isNaN(numberValue)) {
-            return numberValue
-        }
-    }
-    return newValue
+    console.log("newValue", newValue)
+    const valueWithOnlyNumbersCommasAndDots = newValue.toString().replace(/[^0-9.,]/g, "")
+    console.log("valueWithOnlyNumbersCommasAndDots", valueWithOnlyNumbersCommasAndDots)
+
+    return valueWithOnlyNumbersCommasAndDots
 }
 
 export const getCaseRowStyle = (params: any) => {

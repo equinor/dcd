@@ -15,6 +15,7 @@ import {
     cellStyleRightAlign,
     extractTableTimeSeriesValues,
     generateProfile,
+    numberValueParser,
 } from "../../../../Utils/common"
 import { useAppContext } from "../../../../Context/AppContext"
 import { useProjectContext } from "../../../../Context/ProjectContext"
@@ -163,6 +164,7 @@ const CaseDrillingScheduleTabTable = ({
                 editable: editMode,
                 cellClass: editMode ? "editableCell" : undefined,
                 cellStyle: cellStyleRightAlign,
+                valueParser: numberValueParser,
             })
         }
         return columnPinned.concat([...yearDefs])
@@ -202,8 +204,8 @@ const CaseDrillingScheduleTabTable = ({
                 const resourceName = isExplorationTable ? "explorationWellDrillingSchedule" : "wellProjectWellDrillingSchedule"
 
                 setStagedEdit({
-                    newDisplayValue: newProfile.values.join(" - "),
-                    previousDisplayValue: existingProfile.values.join(" - "),
+                    newDisplayValue: newProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
+                    previousDisplayValue: existingProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
                     newValue: params.newValue,
                     previousValue: params.oldValue,
                     inputLabel: params.data.name,
