@@ -58,7 +58,7 @@ const CaseDrillingScheduleTabTable = ({
     const [rowData, setRowData] = useState<any[]>([])
     const [stagedEdit, setStagedEdit] = useState<any>()
 
-    const { editMode } = useAppContext()
+    const { editMode, setSnackBarMessage } = useAppContext()
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
     const { caseId } = useParams()
@@ -164,7 +164,7 @@ const CaseDrillingScheduleTabTable = ({
                 editable: editMode,
                 cellClass: editMode ? "editableCell" : undefined,
                 cellStyle: cellStyleRightAlign,
-                valueParser: numberValueParser,
+                valueParser: (params: any) => numberValueParser(setSnackBarMessage, params),
             })
         }
         return columnPinned.concat([...yearDefs])

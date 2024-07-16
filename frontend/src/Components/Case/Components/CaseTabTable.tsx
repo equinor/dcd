@@ -52,7 +52,7 @@ const CaseTabTable = ({
     includeFooter,
     totalRowName,
 }: Props) => {
-    const { editMode } = useAppContext()
+    const { editMode, setSnackBarMessage } = useAppContext()
     const styles = useStyles()
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
@@ -206,7 +206,7 @@ const CaseTabTable = ({
                     textAlign: "right",
                 },
                 cellClass: (params: any) => (editMode && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
-                valueParser: numberValueParser,
+                valueParser: (params: any) => numberValueParser(setSnackBarMessage, params),
             })
         }
         return columnPinned.concat([...yearDefs])

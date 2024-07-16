@@ -255,9 +255,14 @@ export const tableCellisEditable = (params: any, editMode: boolean): boolean => 
     return editMode && params.data.editable
 }
 
-export const numberValueParser = (params: { newValue: any }) => {
+export const numberValueParser = (setSnackBarMessage: Dispatch<SetStateAction<string | undefined>>, params: { newValue: any }) => {
     const { newValue } = params
     const valueWithOnlyNumbersCommasAndDots = newValue.toString().replace(/[^0-9.,]/g, "")
+
+    if (valueWithOnlyNumbersCommasAndDots !== newValue) {
+        setSnackBarMessage("Only numbers, commas and dots are allowed. Invalid characters have been removed.")
+    }
+
     return valueWithOnlyNumbersCommasAndDots
 }
 
