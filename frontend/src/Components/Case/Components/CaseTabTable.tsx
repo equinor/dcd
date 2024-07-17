@@ -20,6 +20,8 @@ import {
     getCaseRowStyle,
     validateInput,
     formatColumnSum,
+    extractTableTimeSeriesValues,
+    generateProfile,
 } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
 import { useAppContext } from "../../../Context/AppContext"
