@@ -55,8 +55,6 @@ const CaseTabTable = ({
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
     const { caseId, tab } = useParams()
-    const navigate = useNavigate()
-    const { undoEdit } = useDataEdits() // Ensure to import undoEdit from useDataEdits
 
     const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
     const [overrideModalProfileName, setOverrideModalProfileName] = useState<ProfileNames>()
@@ -64,18 +62,6 @@ const CaseTabTable = ({
     const [overrideProfile, setOverrideProfile] = useState<any>()
     const [stagedEdit, setStagedEdit] = useState<any>()
 
-    const scrollIntoViewCallback = (rowId: string) => {
-        const fieldElement = document.getElementById(rowId)
-        if (fieldElement) {
-            fieldElement.scrollIntoView({ behavior: "smooth" })
-        } else {
-            console.error(`Element with id ${rowId} not found`)
-        }
-    }
-
-    const handleUndoEdit = () => {
-        undoEdit(scrollIntoViewCallback)
-    }
     useEffect(() => {
         if (stagedEdit) {
             addEdit(stagedEdit)
@@ -99,7 +85,7 @@ const CaseTabTable = ({
             rowObject.overridable = ts.overridable
             rowObject.editable = ts.editable
             rowObject.hideIfEmpty = ts.hideIfEmpty
-            rowObject.fieldId = `${ts.resourcePropertyKey}`
+            rowObject.fieldId = `${ts.resourcePropertyKey}-${ts.resourceId}`
 
             rowObject.overrideProfileSet = ts.overrideProfileSet
             rowObject.overrideProfile = ts.overrideProfile ?? {
@@ -284,7 +270,8 @@ const CaseTabTable = ({
                 newResourceObject: newProfile,
                 resourceProfileId: timeSeriesDataIndex()?.resourceProfileId,
                 tabName: tab,
-                fieldId: `${timeSeriesDataIndex()?.resourcePropertyKey}`,
+                fieldId: `${timeSeriesDataIndex()?.resourcePropertyKey}-${timeSeriesDataIndex()?.resourceId}-${p.colDef.field}`,
+                tableName,
             })
         }
     }
@@ -385,9 +372,11 @@ const CaseTabTable = ({
                 profileName={overrideModalProfileName}
                 setProfile={overrideModalProfileSet}
                 profile={overrideProfile}
+            // id={`${resourceName}-${resourcePropertyKey}-${resourceId ?? ""}`}
             />
             <div className={styles.root}>
                 <div
+                    id={tableName}
                     style={{
                         display: "flex", flexDirection: "column", width: "100%",
                     }}

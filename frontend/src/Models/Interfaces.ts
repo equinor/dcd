@@ -135,6 +135,7 @@ export interface EditInstance {
     previousResourceObject?: ResourceObject; // used to revert the asset object to its previous state during undo
     tabName?: string; // add tabName property
     fieldId?: string; // add fieldId property
+    tableName?: string;
 }
 
 export interface EditEntry {

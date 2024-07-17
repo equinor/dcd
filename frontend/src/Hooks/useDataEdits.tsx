@@ -2,6 +2,7 @@
 import { v4 as uuidv4 } from "uuid"
 import { useMutation, useQueryClient } from "react-query"
 import { useLocation, useNavigate, useParams } from "react-router"
+import { useCallback } from "react"
 import { useCaseContext } from "../Context/CaseContext"
 import {
     EditInstance,
@@ -40,11 +41,12 @@ interface AddEditParams {
     previousResourceObject?: ResourceObject;
     tabName?: string; // Add tabName
     fieldId?: string; // Add fieldId
+    tableName?: string;
 }
 
 interface UseDataEditsProps {
     addEdit: (params: AddEditParams) => void;
-    undoEdit: (scrollIntoViewCallback: (rowId: string) => void) => void;
+    undoEdit: () => void;
     redoEdit: () => void;
 }
 const useDataEdits = (): UseDataEditsProps => {
@@ -1064,11 +1066,12 @@ const useDataEdits = (): UseDataEditsProps => {
         previousDisplayValue,
         newResourceObject,
         previousResourceObject,
-        tabName, // Add tabName
-        fieldId, // Add fieldId
+        tabName,
+        fieldId,
+        tableName,
     }: AddEditParams) => {
         if (resourceName !== "case" && !resourceId) {
-            console.log("asset id is required for this service")
+            console.log("Asset ID is required for this service")
             return
         }
 
@@ -1095,24 +1098,23 @@ const useDataEdits = (): UseDataEditsProps => {
             previousDisplayValue,
             newResourceObject,
             previousResourceObject,
-            tabName, // Add tabName
-            fieldId, // Add fieldId
+            tabName,
+            fieldId,
+            tableName,
         }
 
-        const success = await submitToApi(
-            {
-                projectId,
-                caseId: caseId!,
-                resourceName,
-                resourcePropertyKey,
-                value: newValue as string,
-                resourceId,
-                resourceProfileId,
-                wellId,
-                drillingScheduleId,
-                resourceObject: newResourceObject as ResourceObject | undefined,
-            },
-        )
+        const success = await submitToApi({
+            projectId,
+            caseId: caseId!,
+            resourceName,
+            resourcePropertyKey,
+            value: newValue as string,
+            resourceId,
+            resourceProfileId,
+            wellId,
+            drillingScheduleId,
+            resourceObject: newResourceObject as ResourceObject | undefined,
+        })
 
         if (success && caseId) {
             editInstanceObject.resourceProfileId = success.resourceProfileId
@@ -1121,59 +1123,89 @@ const useDataEdits = (): UseDataEditsProps => {
     }
 
     const { caseId, tab } = useParams()
+    // const undoEdit = (scrollIntoViewCallback: (rowId: string) => void) => {
+    //     const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams))
+    //     const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
+    //     const updatedEditIndex = currentEditIndex + 1
+    //     const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
 
-    const undoEdit = (scrollIntoViewCallback: (rowId: string) => void) => {
+    //     if (currentEditIndex === -1) {
+    //         return null
+    //     }
+    //     if (!updatedEdit) {
+    //         updateEditIndex("")
+    //     } else {
+    //         updateEditIndex(updatedEdit.uuid)
+    //     }
+
+    //     if (editThatWillBeUndone) {
+    //         // Navigate to the correct tab
+    //         const projectUrl = location.pathname.split("/case")[0]
+    //         navigate(`${projectUrl}/case/${caseId}/${editThatWillBeUndone.tabName ?? ""}`)
+
+    //         // Return the edit that will be undone
+    //         return editThatWillBeUndone
+    //     }
+
+    //     return null
+    // }
+
+    const undoEdit = () => {
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams))
-        const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
-        const updatedEditIndex = currentEditIndex + 1
-        const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
 
         if (currentEditIndex === -1) {
             return
         }
-        if (!updatedEdit) {
-            updateEditIndex("")
-        } else {
-            updateEditIndex(updatedEdit.uuid)
-        }
+
+        const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
+        const updatedEditIndex = currentEditIndex + 1
+        const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
+
+        updateEditIndex(updatedEdit ? updatedEdit.uuid : "")
 
         if (editThatWillBeUndone) {
-            // Navigate to the correct tab
-
             const projectUrl = location.pathname.split("/case")[0]
             console.log("1", projectUrl)
-            // navigate(`/yourBaseURL/${editThatWillBeUndone.tabName ?? ""}`)
             navigate(`${projectUrl}/case/${caseId}/${editThatWillBeUndone.tabName ?? ""}`)
-            const path = (`${projectUrl}/case/${caseId}/${editThatWillBeUndone.tabName ?? ""}`)
+            const path = `${projectUrl}/case/${caseId}/${editThatWillBeUndone.tabName ?? ""}`
             console.log("2", path)
-            console.log("3", editThatWillBeUndone.tabName)
+            console.log("3", editThatWillBeUndone)
             console.log("4", editThatWillBeUndone.resourcePropertyKey)
 
             setTimeout(() => {
-                const rowWhereCellWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex].resourcePropertyKey
+                const rowWhereCellWillBeUndone = editThatWillBeUndone.tableName
                 console.log("6", rowWhereCellWillBeUndone)
 
                 if (rowWhereCellWillBeUndone) {
-                    scrollIntoViewCallback(rowWhereCellWillBeUndone)
-                    console.log("Tried to scroll")
-                } else {
-                    console.error(`Element with id ${rowWhereCellWillBeUndone} not found`)
-                }
-            }, 500) // Increased timeout
+                    // const tabElement = document.getElementById(rowWhereCellWillBeUndone)
 
-            submitToApi(
-                {
-                    projectId: editThatWillBeUndone.projectId,
-                    caseId: editThatWillBeUndone.caseId!,
-                    resourceProfileId: editThatWillBeUndone.resourceProfileId,
-                    resourceName: editThatWillBeUndone.resourceName,
-                    resourcePropertyKey: editThatWillBeUndone.resourcePropertyKey,
-                    value: editThatWillBeUndone.previousValue as string,
-                    resourceId: editThatWillBeUndone.resourceId,
-                    resourceObject: editThatWillBeUndone.resourceProfileId
-                        ? updatedEdit?.newResourceObject as ResourceObject : editThatWillBeUndone.previousResourceObject as ResourceObject,
-                },
-            )
+                    const tabElement = document.getElementById(rowWhereCellWillBeUndone)
+                    console.log("7", tabElement)
+
+                    if (tabElement) {
+                        tabElement.scrollIntoView({ behavior: "smooth", block: "start" })
+                        console.log("Tried to scroll to ", tabElement)
+                    } else {
+                        console.error(`Element with id ${rowWhereCellWillBeUndone} not found`)
+                    }
+                } else {
+                    console.error("rowWhereCellWillBeUndone is undefined")
+                }
+            }, 500)
+
+            // Submit the undo action to the API
+            submitToApi({
+                projectId: editThatWillBeUndone.projectId,
+                caseId: editThatWillBeUndone.caseId!,
+                resourceProfileId: editThatWillBeUndone.resourceProfileId,
+                resourceName: editThatWillBeUndone.resourceName,
+                resourcePropertyKey: editThatWillBeUndone.resourcePropertyKey,
+                value: editThatWillBeUndone.previousValue as string,
+                resourceId: editThatWillBeUndone.resourceId,
+                resourceObject: editThatWillBeUndone.resourceProfileId
+                    ? updatedEdit?.newResourceObject as ResourceObject
+                    : editThatWillBeUndone.previousResourceObject as ResourceObject,
+            })
         }
     }
 
