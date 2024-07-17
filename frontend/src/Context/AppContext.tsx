@@ -22,6 +22,8 @@ interface AppContextType {
     setSidebarOpen: Dispatch<SetStateAction<boolean>>,
     snackBarMessage: string | undefined;
     setSnackBarMessage: Dispatch<SetStateAction<string | undefined>>;
+    isCalculatingProductionOverrides: boolean,
+    setIsCalculatingProductionOverrides: Dispatch<SetStateAction<boolean>>,
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
@@ -33,6 +35,7 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [editMode, setEditMode] = useState<boolean>(false)
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(true)
     const [snackBarMessage, setSnackBarMessage] = useState<string | undefined>(undefined)
+    const [isCalculatingProductionOverrides, setIsCalculatingProductionOverrides] = useState<boolean>(false)
 
     const value = useMemo(() => ({
         isCreating,
@@ -47,6 +50,8 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setSidebarOpen,
         snackBarMessage,
         setSnackBarMessage,
+        isCalculatingProductionOverrides,
+        setIsCalculatingProductionOverrides,
     }), [
         isCreating,
         setIsCreating,
@@ -60,6 +65,8 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setSidebarOpen,
         snackBarMessage,
         setSnackBarMessage,
+        isCalculatingProductionOverrides,
+        setIsCalculatingProductionOverrides,
     ])
 
     return (
