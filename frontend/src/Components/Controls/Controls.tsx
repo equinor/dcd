@@ -16,7 +16,7 @@ import {
 } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid"
 import { useQuery, useQueryClient } from "react-query"
-import { projectPath } from "../../Utils/common"
+import { projectPath, formatDateAndTime } from "../../Utils/common"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { useModalContext } from "../../Context/ModalContext"
 import CaseDropMenu from "../Case/Components/CaseDropMenu"
@@ -100,9 +100,7 @@ const Controls = () => {
     const projectId = project?.id || null
 
     const queryClient = useQueryClient()
-    const { data: apiData } = useQuery<
-        Components.Schemas.CaseWithAssetsDto | undefined
-    >(
+    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
         ["apiData", { projectId, caseId }],
         () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
         {
@@ -112,22 +110,6 @@ const Controls = () => {
     )
 
     const caseData = apiData?.case
-
-    const formatDate = (dateString: string | undefined | null) => {
-        if (!dateString) { return "" }
-        const date = new Date(dateString)
-        const options: Intl.DateTimeFormatOptions = {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false,
-        }
-        return new Intl.DateTimeFormat("en-GB", options)
-            .format(date)
-            .replace(",", "")
-    }
 
     useEffect(() => {
         if (location.pathname.includes("case")) {
@@ -199,32 +181,28 @@ const Controls = () => {
                 {!editMode && (
                     <Grid item>
                         <Typography variant="caption">
-                            {caseId ? "Case last updated:" : "Project last updated:"}
+                            {caseId ? "Case last updated" : "Project last updated"}
                             {" "}
-                            {caseId ? formatDate(caseLastUpdated) : formatDate(projectLastUpdated)}
+                            {caseId ? formatDateAndTime(caseLastUpdated) : formatDateAndTime(projectLastUpdated)}
                         </Typography>
                     </Grid>
                 )}
                 <Grid item>
                     <Button onClick={handleEdit} variant={editMode ? "outlined" : "contained"}>
-                        {isSaving ? (
-                            <Progress.Dots />
-                        ) : (
+
+                        {editMode && (
                             <>
-                                {editMode && (
-                                    <>
-                                        <Icon data={caseId ? visibility : save} />
-                                        <span>{caseId ? "View" : "Save"}</span>
-                                    </>
-                                )}
-                                {!editMode && (
-                                    <>
-                                        <Icon data={edit} />
-                                        <span>Edit</span>
-                                    </>
-                                )}
+                                <Icon data={caseId ? visibility : save} />
+                                <span>{caseId ? "View" : "Save"}</span>
                             </>
                         )}
+                        {!editMode && (
+                            <>
+                                <Icon data={edit} />
+                                <span>Edit</span>
+                            </>
+                        )}
+
                     </Button>
                 </Grid>
                 <Grid item>
