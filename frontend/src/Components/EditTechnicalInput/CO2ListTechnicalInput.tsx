@@ -36,19 +36,18 @@ const CO2ListTechnicalInput = () => {
         {
             field: "profile",
             headerName: "CO2 emission",
-            width: 400,
+            flex: 2,
             editable: false,
         },
         {
             field: "unit",
             headerName: "Unit",
-            width: 200,
+            flex: 1,
             editable: false,
         },
         {
             field: "value",
             headerName: "Value",
-            width: 500,
             flex: 1,
             editable: editMode,
             cellClass: editMode ? "editableCell" : undefined,

@@ -175,26 +175,24 @@ const WellListEditTechnicalInput = ({
     const [columnDefs] = useState<ColDef[]>([
         {
             field: "name",
-            width: 110,
+            flex: 2,
         },
         {
             field: "wellCategory",
             headerName: "Well type",
             cellRenderer: wellCategoryRenderer,
-            width: 250,
             editable: false,
+            flex: 2,
         },
         {
             field: "drillingDays",
             headerName: "Drilling days",
-            width: 110,
             flex: 1,
             cellStyle: cellStyleRightAlign,
         },
         {
             field: "wellCost",
             headerName: `Cost (${project?.currency === 1 ? "mill NOK" : "mill USD"})`,
-            width: 90,
             flex: 1,
             headerComponent: CustomHeaderForSecondaryHeader,
             headerComponentParams: {
@@ -208,7 +206,7 @@ const WellListEditTechnicalInput = ({
             headerName: "",
             cellRenderer: deleteWellRenderer,
             editable: false,
-            width: 90,
+            width: 80,
         },
     ])
 
