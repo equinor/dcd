@@ -14,6 +14,7 @@ import {
     CellKeyDownEvent, ColDef, GridReadyEvent,
 } from "@ag-grid-community/core"
 import isEqual from "lodash/isEqual"
+import { CircularProgress } from "@equinor/eds-core-react"
 import {
     extractTableTimeSeriesValues,
     generateProfile,
@@ -31,6 +32,7 @@ import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import useDataEdits from "../../../Hooks/useDataEdits"
 import { ProfileNames } from "../../../Models/Interfaces"
+import { productionOverrideResources } from "../../../Utils/constants"
 
 interface Props {
     timeSeriesData: any[]
@@ -53,7 +55,7 @@ const CaseTabTable = ({
     includeFooter,
     totalRowName,
 }: Props) => {
-    const { editMode, setSnackBarMessage } = useAppContext()
+    const { editMode, setSnackBarMessage, isCalculatingProductionOverrides } = useAppContext()
     const styles = useStyles()
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
@@ -66,11 +68,16 @@ const CaseTabTable = ({
     const [stagedEdit, setStagedEdit] = useState<any>()
     const firstTriggerRef = useRef<boolean>(true)
     const timerRef = useRef<NodeJS.Timeout | null>(null)
+
     useEffect(() => {
         if (stagedEdit) {
             addEdit(stagedEdit)
         }
     }, [stagedEdit])
+
+    useEffect(() => {
+        console.log("isCalculatingProductionOverrides", isCalculatingProductionOverrides)
+    }, [isCalculatingProductionOverrides])
 
     const profilesToRowData = () => {
         const tableRows: any[] = []
@@ -140,15 +147,40 @@ const CaseTabTable = ({
 
     const gridRowData = useMemo(() => gridRef.current?.api?.setGridOption("rowData", profilesToRowData()), [timeSeriesData, editMode])
 
-    const lockIconRenderer = (params: any) => (
-        <ClickableLockIcon
-            clickedElement={params}
-            setOverrideModalOpen={setOverrideModalOpen}
-            setOverrideModalProfileName={setOverrideModalProfileName}
-            setOverrideModalProfileSet={setOverrideModalProfileSet}
-            setOverrideProfile={setOverrideProfile}
-        />
-    )
+    const [trueEveryFiveSeconds, setTrueEveryFiveSeconds] = useState<boolean>(false)
+
+    useEffect(() => {
+        // refresh the aggrid table now
+        gridRef.current?.api?.redrawRows()
+        console.log("refreshing cells")
+    }, [trueEveryFiveSeconds])
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTrueEveryFiveSeconds((prev) => !prev)
+        }, 3000)
+        return () => clearInterval(interval)
+    }, [])
+    const lockIconRenderer = (params: any) => {
+        if (!params.data) {
+            return null
+        }
+
+        if (productionOverrideResources.includes(params.data.resourceName) && trueEveryFiveSeconds) {
+            console.log("loading..")
+            return <CircularProgress size={24} />
+        }
+
+        return (
+            <ClickableLockIcon
+                clickedElement={params}
+                setOverrideModalOpen={setOverrideModalOpen}
+                setOverrideModalProfileName={setOverrideModalProfileName}
+                setOverrideModalProfileSet={setOverrideModalProfileSet}
+                setOverrideProfile={setOverrideProfile}
+            />
+        )
+    }
 
     const generateTableYearColDefs = () => {
         const columnPinned: any[] = [
@@ -180,7 +212,7 @@ const CaseTabTable = ({
             },
             {
                 headerName: "",
-                width: 60,
+                width: 70,
                 field: "set",
                 pinned: "right",
                 aggFunc: "",
@@ -300,7 +332,7 @@ const CaseTabTable = ({
     useEffect(() => {
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
-    }, [tableYears, editMode])
+    }, [tableYears, editMode, trueEveryFiveSeconds])
 
     const onGridReady = useCallback((params: GridReadyEvent) => {
         const generateRowData = profilesToRowData()

@@ -68,3 +68,9 @@ export const tabNames = [
     "CO2 Emissions",
     "Summary",
 ]
+
+export const productionOverrideResources = [
+    "productionProfileFuelFlaringAndLossesOverride",
+    "productionProfileNetSalesGasOverride",
+    "productionProfileImportedElectricityOverride",
+]
