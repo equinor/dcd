@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect } from "react"
 import {
     Typography, Icon, Tooltip, CircularProgress, Button,
 } from "@equinor/eds-core-react"
@@ -65,7 +65,6 @@ const UndoControls: React.FC = () => {
     }
 
     const [saving, setSaving] = useState(false)
-    const [lastEditedField, setLastEditedField] = useState<string | null>(null)
 
     const startCountDown = () => {
         setSaving(true)
@@ -91,14 +90,12 @@ const UndoControls: React.FC = () => {
                 event.stopPropagation()
                 if (canUndo()) {
                     undoEdit()
-                    setLastEditedField(null)
                 }
             } else if (redoKey) {
                 event.preventDefault()
                 event.stopPropagation()
                 if (canRedo()) {
                     redoEdit()
-                    setLastEditedField(null)
                 }
             }
         }
@@ -148,7 +145,9 @@ const UndoControls: React.FC = () => {
                     <Icon data={redo} />
                 </Button>
             </Tooltip>
+            {/* comment out for qa release */}
         </Container>
     )
 }
+
 export default UndoControls

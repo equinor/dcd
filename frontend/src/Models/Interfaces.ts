@@ -135,6 +135,7 @@ export interface EditInstance {
     previousResourceObject?: ResourceObject; // used to revert the asset object to its previous state during undo
     tabName?: string; // used to go to the given tab where undo/redo happened
     tableName?: string; // used to highlight undone field
+    inputFieldId?: string;
 }
 
 export interface EditEntry {

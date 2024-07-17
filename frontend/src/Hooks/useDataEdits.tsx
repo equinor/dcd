@@ -39,8 +39,9 @@ interface AddEditParams {
     previousDisplayValue?: string | number | undefined;
     newResourceObject?: ResourceObject;
     previousResourceObject?: ResourceObject;
-    tabName?: string;
+    tabName?: string; // Add tabName
     tableName?: string;
+    inputFieldId?: string;
 }
 
 interface UseDataEditsProps {
@@ -280,7 +281,7 @@ const useDataEdits = (): UseDataEditsProps => {
 
     ) => {
         try {
-            const result = await mutation.mutateAsync({
+            await mutation.mutateAsync({
                 projectId,
                 caseId,
                 resourceId: assetId,
@@ -288,10 +289,9 @@ const useDataEdits = (): UseDataEditsProps => {
                 drillingScheduleId,
                 serviceMethod: createOrUpdateFunction,
             })
-            const returnValue = { ...result, resourceProfileId: result.id }
-            return returnValue
+            return true
         } catch (error) {
-            return error
+            return false
         }
     }
 
@@ -1068,6 +1068,7 @@ const useDataEdits = (): UseDataEditsProps => {
         previousResourceObject,
         tabName,
         tableName,
+        inputFieldId,
     }: AddEditParams) => {
         if (resourceName !== "case" && !resourceId) {
             console.log("Asset ID is required for this service")
@@ -1099,6 +1100,7 @@ const useDataEdits = (): UseDataEditsProps => {
             previousResourceObject,
             tabName,
             tableName,
+            inputFieldId,
         }
 
         const success = await submitToApi({
@@ -1133,27 +1135,31 @@ const useDataEdits = (): UseDataEditsProps => {
         const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
 
         updateEditIndex(updatedEdit ? updatedEdit.uuid : "")
-
+        console.log("1", editThatWillBeUndone)
         if (editThatWillBeUndone) {
             const projectUrl = location.pathname.split("/case")[0]
             navigate(`${projectUrl}/case/${caseId}/${editThatWillBeUndone.tabName ?? ""}`)
 
             setTimeout(() => {
-                const fieldWhereCellWillBeUndone = editThatWillBeUndone.tableName
+                let rowWhereCellWillBeUndone
+                if (editThatWillBeUndone.tableName) {
+                    rowWhereCellWillBeUndone = editThatWillBeUndone.tableName
+                } else {
+                    rowWhereCellWillBeUndone = editThatWillBeUndone.inputFieldId
+                }
 
-                if (fieldWhereCellWillBeUndone) {
-                    const tabElement = document.getElementById(fieldWhereCellWillBeUndone)
+                if (rowWhereCellWillBeUndone) {
+                    const tabElement = document.getElementById(rowWhereCellWillBeUndone)
 
                     if (tabElement) {
                         tabElement.scrollIntoView({ behavior: "smooth", block: "start" })
                     } else {
-                        console.error(`Element with id ${fieldWhereCellWillBeUndone} not found`)
+                        console.error(`Element with id ${rowWhereCellWillBeUndone} not found`)
                     }
                 } else {
-                    console.error("fieldWhereCellWillBeUndone is undefined")
+                    console.error("rowWhereCellWillBeUndone is undefined")
                 }
-            }, 500)
-
+            }, 1000)
             submitToApi({
                 projectId: editThatWillBeUndone.projectId,
                 caseId: editThatWillBeUndone.caseId!,

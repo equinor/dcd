@@ -9,12 +9,11 @@ import {
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { useNavigate, useParams } from "react-router"
+import { useParams } from "react-router"
 import {
     CellKeyDownEvent, ColDef, GridReadyEvent,
 } from "@ag-grid-community/core"
 import {
-    isInteger,
     tableCellisEditable,
     numberValueParser,
     getCaseRowStyle,
@@ -253,6 +252,8 @@ const CaseTabTable = ({
             newResourceObject: newProfile,
             previousResourceObject: existingProfile,
             resourceProfileId: timeSeriesDataIndex()?.resourceProfileId,
+            tabName: tab,
+            tableName,
         })
     }
 
@@ -358,7 +359,6 @@ const CaseTabTable = ({
         },
         [clearCellsInRange],
     )
-
     return (
         <>
             <OverrideTimeSeriesPrompt
