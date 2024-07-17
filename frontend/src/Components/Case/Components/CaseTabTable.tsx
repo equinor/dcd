@@ -150,9 +150,7 @@ const CaseTabTable = ({
     const [trueEveryFiveSeconds, setTrueEveryFiveSeconds] = useState<boolean>(false)
 
     useEffect(() => {
-        // refresh the aggrid table now
         gridRef.current?.api?.redrawRows()
-        console.log("refreshing cells")
     }, [trueEveryFiveSeconds])
 
     useEffect(() => {
