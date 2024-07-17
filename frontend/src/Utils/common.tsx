@@ -209,6 +209,22 @@ export function formatDate(isoDateString: string): string {
     return new Intl.DateTimeFormat("no-NO", options).format(date)
 }
 
+export const formatDateAndTime = (dateString: string | undefined | null) => {
+    if (!dateString) { return "" }
+    const date = new Date(dateString)
+    const options: Intl.DateTimeFormatOptions = {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+    }
+    return new Intl.DateTimeFormat("en-GB", options)
+        .format(date)
+        .replace(",", "")
+}
+
 export const isWithinRange = (number: number, max: number, min: number) => number >= max && number <= min
 
 export const preventNonDigitInput = (e: React.KeyboardEvent<HTMLInputElement>): void => {

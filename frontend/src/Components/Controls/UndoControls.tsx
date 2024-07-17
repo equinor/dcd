@@ -4,7 +4,7 @@ import {
 } from "@equinor/eds-core-react"
 import { check_circle_outlined, undo, redo } from "@equinor/eds-icons"
 import styled from "styled-components"
-import { useIsFetching } from "react-query"
+import { useIsFetching, useIsMutating } from "react-query"
 import { useParams } from "react-router-dom"
 import useDataEdits from "../../Hooks/useDataEdits"
 import { useCaseContext } from "../../Context/CaseContext"
@@ -28,19 +28,16 @@ const UndoControls: React.FC = () => {
         editIndexes,
         caseEditsBelongingToCurrentCase,
     } = useCaseContext()
-    const { caseId } = useParams()
-
-    const isFetching = useIsFetching()
-
     const { undoEdit, redoEdit } = useDataEdits()
+    const { caseId } = useParams()
+    const isMutating = useIsMutating()
+
 
     const currentEditId = getCurrentEditId(editIndexes, caseId)
+    const [saving, setSaving] = useState(false)
 
     const canUndo = () => {
-        if (isFetching) {
-            return false
-        }
-        if (!currentEditId || !caseEditsBelongingToCurrentCase) {
+        if (isMutating || currentEditId || !caseEditsBelongingToCurrentCase) {
             return false
         }
 
@@ -49,13 +46,10 @@ const UndoControls: React.FC = () => {
     }
 
     const canRedo = () => {
-        if (isFetching) {
+        if (isMutating || !caseEditsBelongingToCurrentCase) {
             return false
         }
 
-        if (!caseEditsBelongingToCurrentCase) {
-            return false
-        }
         if (!currentEditId && caseEditsBelongingToCurrentCase.length > 0) {
             return true
         }
@@ -64,20 +58,15 @@ const UndoControls: React.FC = () => {
         return currentEditIndex < caseEditsBelongingToCurrentCase.length && currentEditIndex > 0
     }
 
-    const [saving, setSaving] = useState(false)
-
-    const startCountDown = () => {
-        setSaving(true)
-        setTimeout(() => {
-            setSaving(false)
-        }, 500)
-    }
 
     useEffect(() => {
-        if (isFetching) {
-            startCountDown()
+        console.log("isMutating", isMutating)
+        if (isMutating) {
+            setSaving(true)
+        } else {
+            setSaving(false)
         }
-    }, [isFetching])
+    }, [isMutating])
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {

@@ -114,21 +114,21 @@ const PROSPCaseList = ({
             const rowNode = gridRef.current?.getRowNode(p.node?.data.id)
             if (projectCase) {
                 switch (p.column.colId) {
-                case "surfState":
-                    rowNode.data.surfStateChanged = (SharePointImport.surfStatus(projectCase, project) !== value)
-                    break
-                case "substructureState":
-                    rowNode.data.substructureStateChanged = (
-                        SharePointImport.substructureStatus(projectCase, project) !== value)
-                    break
-                case "topsideState":
-                    rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(projectCase, project) !== value)
-                    break
-                case "transportState":
-                    rowNode.data.transportStateChanged = (SharePointImport.transportStatus(projectCase, project) !== value)
-                    break
-                default:
-                    break
+                    case "surfState":
+                        rowNode.data.surfStateChanged = (SharePointImport.surfStatus(projectCase, project) !== value)
+                        break
+                    case "substructureState":
+                        rowNode.data.substructureStateChanged = (
+                            SharePointImport.substructureStatus(projectCase, project) !== value)
+                        break
+                    case "topsideState":
+                        rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(projectCase, project) !== value)
+                        break
+                    case "transportState":
+                        rowNode.data.transportStateChanged = (SharePointImport.transportStatus(projectCase, project) !== value)
+                        break
+                    default:
+                        break
                 }
             }
         }
@@ -252,7 +252,7 @@ const PROSPCaseList = ({
     const [columnDefs, setColumnDefs] = useState([
         {
             field: "name",
-            flex: 3,
+            flex: 2,
             headerCheckboxSelection: true,
             checkboxSelection: true,
             showDisabledCheckboxes: true,
@@ -262,13 +262,13 @@ const PROSPCaseList = ({
             headerName: "SharePoint file",
             cellRenderer: fileSelectorRenderer,
             sortable: false,
-            flex: 5,
+            flex: 3,
         },
         {
             field: "fileLink",
             headerName: "Link",
             cellRenderer: fileLinkRenderer,
-            width: 60,
+            flex: 1,
         },
         {
             field: "surfState",
