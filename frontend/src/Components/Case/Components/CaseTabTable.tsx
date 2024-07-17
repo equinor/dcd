@@ -14,13 +14,13 @@ import {
     CellKeyDownEvent, ColDef, GridReadyEvent,
 } from "@ag-grid-community/core"
 import {
+    extractTableTimeSeriesValues,
+    generateProfile,
     tableCellisEditable,
     numberValueParser,
     getCaseRowStyle,
     validateInput,
     formatColumnSum,
-    extractTableTimeSeriesValues,
-    generateProfile,
 } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
 import { useAppContext } from "../../../Context/AppContext"

@@ -16,13 +16,13 @@ const Helper = styled.div`
 `
 
 interface DateRangePickerProps {
-    setStartYear: (startYear: number) => void;
-    setEndYear: (endYear: number) => void;
-    startYear: number;
-    endYear: number;
-    labelText?: string | undefined;
-    labelValue?: string | undefined | number;
-    handleTableYearsClick: () => void;
+    setStartYear: (startYear: number) => void
+    setEndYear: (endYear: number) => void
+    startYear: number
+    endYear: number
+    labelText?: string | undefined
+    labelValue?: string | undefined | number
+    handleTableYearsClick: () => void
 }
 
 const DateRangePicker: React.FC<DateRangePickerProps> = ({

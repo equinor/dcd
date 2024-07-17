@@ -2,7 +2,6 @@
 import { v4 as uuidv4 } from "uuid"
 import { useMutation, useQueryClient } from "react-query"
 import { useLocation, useNavigate, useParams } from "react-router"
-import { useCallback } from "react"
 import { useCaseContext } from "../Context/CaseContext"
 import {
     EditInstance,
@@ -39,17 +38,16 @@ interface AddEditParams {
     previousDisplayValue?: string | number | undefined;
     newResourceObject?: ResourceObject;
     previousResourceObject?: ResourceObject;
-    tabName?: string; // Add tabName
+    tabName?: string;
     tableName?: string;
     inputFieldId?: string;
 }
 
-interface UseDataEditsProps {
+const useDataEdits = (): {
     addEdit: (params: AddEditParams) => void;
     undoEdit: () => void;
     redoEdit: () => void;
-}
-const useDataEdits = (): UseDataEditsProps => {
+} => {
     const { setSnackBarMessage } = useAppContext()
     const {
         caseEdits,
@@ -281,7 +279,7 @@ const useDataEdits = (): UseDataEditsProps => {
 
     ) => {
         try {
-            await mutation.mutateAsync({
+            const result = await mutation.mutateAsync({
                 projectId,
                 caseId,
                 resourceId: assetId,
@@ -289,9 +287,10 @@ const useDataEdits = (): UseDataEditsProps => {
                 drillingScheduleId,
                 serviceMethod: createOrUpdateFunction,
             })
-            return true
+            const returnValue = { ...result, resourceProfileId: result.id }
+            return returnValue
         } catch (error) {
-            return false
+            return error
         }
     }
 

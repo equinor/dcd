@@ -45,7 +45,7 @@ const NumberInputWithValidation = ({
     max,
 }: Props) => {
     const [hasError, setHasError] = useState(false)
-    const [inputValue, setInputValue] = useState<number | undefined>(defaultValue)
+    const [inputValue, setInputValue] = useState(defaultValue)
     const [helperText, setHelperText] = useState("\u200B")
 
     useEffect(() => {
@@ -53,15 +53,18 @@ const NumberInputWithValidation = ({
     }, [defaultValue])
 
     const inputIsValid = (newValue: number) => {
+        setInputValue(newValue)
         if (min !== undefined && max !== undefined) {
             if (!isWithinRange(newValue, min, max)) {
                 setHelperText(`(min: ${min}, max: ${max})`)
                 setHasError(true)
                 return false
             }
+            setHasError(false)
+            setHelperText("\u200B")
+
+            return true
         }
-        setHasError(false)
-        setHelperText("\u200B")
         return true
     }
 
