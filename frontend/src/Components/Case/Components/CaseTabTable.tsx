@@ -165,7 +165,6 @@ const CaseTabTable = ({
         }
 
         if (productionOverrideResources.includes(params.data.resourceName) && trueEveryFiveSeconds) {
-            console.log("loading..")
             return <CircularProgress size={24} />
         }
 
