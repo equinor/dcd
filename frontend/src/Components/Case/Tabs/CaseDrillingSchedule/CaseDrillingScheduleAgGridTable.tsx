@@ -10,6 +10,7 @@ import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import { useParams } from "react-router"
+import isEqual from "lodash/isEqual"
 import {
     isExplorationWell,
     cellStyleRightAlign,
@@ -203,22 +204,24 @@ const CaseDrillingScheduleTabTable = ({
                 updatedWells[index] = updatedWell
                 const resourceName = isExplorationTable ? "explorationWellDrillingSchedule" : "wellProjectWellDrillingSchedule"
 
-                setStagedEdit({
-                    newDisplayValue: newProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
-                    previousDisplayValue: existingProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
-                    newValue: params.newValue,
-                    previousValue: params.oldValue,
-                    inputLabel: params.data.name,
-                    projectId: project.id,
-                    resourceName,
-                    resourcePropertyKey: "drillingSchedule",
-                    caseId,
-                    resourceId,
-                    newResourceObject: newProfile,
-                    previousResourceObject: existingProfile,
-                    wellId: updatedWell.wellId,
-                    drillingScheduleId: newProfile.id,
-                })
+                if (!isEqual(newProfile.values, existingProfile.values)) {
+                    setStagedEdit({
+                        newDisplayValue: newProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
+                        previousDisplayValue: existingProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
+                        newValue: params.newValue,
+                        previousValue: params.oldValue,
+                        inputLabel: params.data.name,
+                        projectId: project.id,
+                        resourceName,
+                        resourcePropertyKey: "drillingSchedule",
+                        caseId,
+                        resourceId,
+                        newResourceObject: newProfile,
+                        previousResourceObject: existingProfile,
+                        wellId: updatedWell.wellId,
+                        drillingScheduleId: newProfile.id,
+                    })
+                }
             }
         }
     }
