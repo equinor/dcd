@@ -10,11 +10,13 @@ import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import { useParams } from "react-router"
+import isEqual from "lodash/isEqual"
 import {
     isExplorationWell,
     cellStyleRightAlign,
     extractTableTimeSeriesValues,
     generateProfile,
+    numberValueParser,
 } from "../../../../Utils/common"
 import { useAppContext } from "../../../../Context/AppContext"
 import { useProjectContext } from "../../../../Context/ProjectContext"
@@ -57,7 +59,7 @@ const CaseDrillingScheduleTabTable = ({
     const [rowData, setRowData] = useState<any[]>([])
     const [stagedEdit, setStagedEdit] = useState<any>()
 
-    const { editMode } = useAppContext()
+    const { editMode, setSnackBarMessage } = useAppContext()
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
     const { caseId } = useParams()
@@ -163,6 +165,7 @@ const CaseDrillingScheduleTabTable = ({
                 editable: editMode,
                 cellClass: editMode ? "editableCell" : undefined,
                 cellStyle: cellStyleRightAlign,
+                valueParser: (params: any) => numberValueParser(setSnackBarMessage, params),
             })
         }
         return columnPinned.concat([...yearDefs])
@@ -201,22 +204,24 @@ const CaseDrillingScheduleTabTable = ({
                 updatedWells[index] = updatedWell
                 const resourceName = isExplorationTable ? "explorationWellDrillingSchedule" : "wellProjectWellDrillingSchedule"
 
-                setStagedEdit({
-                    newDisplayValue: newProfile.values.join(" - "),
-                    previousDisplayValue: existingProfile.values.join(" - "),
-                    newValue: params.newValue,
-                    previousValue: params.oldValue,
-                    inputLabel: params.data.name,
-                    projectId: project.id,
-                    resourceName,
-                    resourcePropertyKey: "drillingSchedule",
-                    caseId,
-                    resourceId,
-                    newResourceObject: newProfile,
-                    previousResourceObject: existingProfile,
-                    wellId: updatedWell.wellId,
-                    drillingScheduleId: newProfile.id,
-                })
+                if (!isEqual(newProfile.values, existingProfile.values)) {
+                    setStagedEdit({
+                        newDisplayValue: newProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
+                        previousDisplayValue: existingProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
+                        newValue: params.newValue,
+                        previousValue: params.oldValue,
+                        inputLabel: params.data.name,
+                        projectId: project.id,
+                        resourceName,
+                        resourcePropertyKey: "drillingSchedule",
+                        caseId,
+                        resourceId,
+                        newResourceObject: newProfile,
+                        previousResourceObject: existingProfile,
+                        wellId: updatedWell.wellId,
+                        drillingScheduleId: newProfile.id,
+                    })
+                }
             }
         }
     }

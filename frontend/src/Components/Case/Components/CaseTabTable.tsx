@@ -13,6 +13,7 @@ import { useParams } from "react-router"
 import {
     CellKeyDownEvent, ColDef, GridReadyEvent,
 } from "@ag-grid-community/core"
+import isEqual from "lodash/isEqual"
 import {
     extractTableTimeSeriesValues,
     generateProfile,
@@ -52,7 +53,7 @@ const CaseTabTable = ({
     includeFooter,
     totalRowName,
 }: Props) => {
-    const { editMode } = useAppContext()
+    const { editMode, setSnackBarMessage } = useAppContext()
     const styles = useStyles()
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
@@ -206,7 +207,7 @@ const CaseTabTable = ({
                     textAlign: "right",
                 },
                 cellClass: (params: any) => (editMode && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
-                valueParser: numberValueParser,
+                valueParser: (params: any) => numberValueParser(setSnackBarMessage, params),
             })
         }
         return columnPinned.concat([...yearDefs])
@@ -238,21 +239,23 @@ const CaseTabTable = ({
             .map((v, i) => (v.profileName === params.data.profileName ? timeSeriesData[i] : undefined))
             .find((v) => v !== undefined)
 
-        setStagedEdit({
-            newDisplayValue: newProfile.values.join(" - "),
-            previousDisplayValue: existingProfile.values.join(" - "),
-            newValue: params.newValue,
-            previousValue: params.oldValue,
-            inputLabel: params.data.profileName,
-            projectId: project.id,
-            resourceName: timeSeriesDataIndex()?.resourceName,
-            resourcePropertyKey: timeSeriesDataIndex()?.resourcePropertyKey,
-            caseId,
-            resourceId: timeSeriesDataIndex()?.resourceId,
-            newResourceObject: newProfile,
-            previousResourceObject: existingProfile,
-            resourceProfileId: timeSeriesDataIndex()?.resourceProfileId,
-        })
+        if (!isEqual(newProfile.values, existingProfile.values)) {
+            setStagedEdit({
+                newDisplayValue: newProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
+                previousDisplayValue: existingProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
+                newValue: params.newValue,
+                previousValue: params.oldValue,
+                inputLabel: params.data.profileName,
+                projectId: project.id,
+                resourceName: timeSeriesDataIndex()?.resourceName,
+                resourcePropertyKey: timeSeriesDataIndex()?.resourcePropertyKey,
+                caseId,
+                resourceId: timeSeriesDataIndex()?.resourceId,
+                newResourceObject: newProfile,
+                previousResourceObject: existingProfile,
+                resourceProfileId: timeSeriesDataIndex()?.resourceProfileId,
+            })
+        }
     }
 
     const handleCellValueChange = useCallback((params: any) => {
