@@ -2,13 +2,20 @@ import {
     useMemo,
     useState,
     useEffect,
+    useRef,
+    useCallback,
 } from "react"
 
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import { useParams } from "react-router"
-import { isExplorationWell, isInteger, cellStyleRightAlign } from "../../../../Utils/common"
+import {
+    isExplorationWell,
+    cellStyleRightAlign,
+    extractTableTimeSeriesValues,
+    generateProfile,
+} from "../../../../Utils/common"
 import { useAppContext } from "../../../../Context/AppContext"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import useDataEdits from "../../../../Hooks/useDataEdits"
@@ -31,7 +38,7 @@ interface IAssetWell {
     drillingSchedule: {
         id?: string
         startYear: number
-        values: number[] | null
+        values: number[]
     }
 }
 
@@ -48,10 +55,15 @@ const CaseDrillingScheduleTabTable = ({
 }: Props) => {
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([])
+    const [stagedEdit, setStagedEdit] = useState<any>()
+
     const { editMode } = useAppContext()
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
     const { caseId } = useParams()
+
+    const firstTriggerRef = useRef<boolean>(true)
+    const timerRef = useRef<NodeJS.Timeout | null>(null)
 
     const createMissingAssetWellsFromWells = (assetWell: any[]) => {
         const newAssetWells: (IAssetWell)[] = assetWell.map((w) => ({
@@ -68,7 +80,7 @@ const CaseDrillingScheduleTabTable = ({
                         wellId: w.id,
                         drillingSchedule: {
                             startYear: dg4Year,
-                            values: null,
+                            values: [],
                         },
                     }
                     newAssetWells.push(newExplorationWell)
@@ -83,7 +95,7 @@ const CaseDrillingScheduleTabTable = ({
                         wellId: w.id,
                         drillingSchedule: {
                             startYear: dg4Year,
-                            values: null,
+                            values: [],
                         },
                     }
                     newAssetWells.push(newWellProjectWell)
@@ -118,18 +130,28 @@ const CaseDrillingScheduleTabTable = ({
                 if ((!editMode && tableWell.total > 0) || editMode) {
                     return tableWell
                 }
+                return undefined
             })
-            setRowData(tableWells.filter(tw => tw !== undefined))
+            setRowData(tableWells.filter((tw) => tw !== undefined))
         }
     }
 
     const generateTableYearColDefs = () => {
         const columnPinned: any[] = [
             {
-                field: "name", headerName: tableName, width: 250, editable: false, pinned: "left",
+                field: "name",
+                headerName: tableName,
+                width: 250,
+                editable: false,
+                pinned: "left",
             },
             {
-                field: "total", flex: 2, editable: false, pinned: "right", width: 100, cellStyle: { fontWeight: "bold", textAlign: "right" },
+                field: "total",
+                flex: 2,
+                editable: false,
+                pinned: "right",
+                width: 100,
+                cellStyle: { fontWeight: "bold", textAlign: "right" },
             },
         ]
         const yearDefs: any[] = []
@@ -148,68 +170,71 @@ const CaseDrillingScheduleTabTable = ({
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
-    const handleCellValueChange = (p: any) => {
-        if (!caseId || !project) { return }
-        const properties = Object.keys(p.data)
-        const tableTimeSeriesValues: any[] = []
-        properties.forEach((prop) => {
-            if (isInteger(prop)
-                && p.data[prop] !== ""
-                && p.data[prop] !== null
-                && !Number.isNaN(Number(p.data[prop].toString().replace(/,/g, ".")))) {
-                tableTimeSeriesValues.push({
-                    year: parseInt(prop, 10),
-                    value: Number(p.data[prop].toString().replace(/,/g, ".")),
-                })
-            }
-        })
-        tableTimeSeriesValues.sort((a, b) => a.year - b.year)
+    const stageEdit = (params: any) => {
+        const tableTimeSeriesValues = extractTableTimeSeriesValues(params.data)
+        const existingProfile = params.data.drillingSchedule ? structuredClone(params.data.drillingSchedule) : {
+            startYear: 0,
+            values: [],
+            id: resourceId,
+        }
+
+        let newProfile
         if (tableTimeSeriesValues.length > 0) {
-            const tableTimeSeriesFirstYear = tableTimeSeriesValues[0].year
-            const tableTimeSerieslastYear = tableTimeSeriesValues.at(-1).year
-            const timeSeriesStartYear = tableTimeSeriesFirstYear - dg4Year
-            const values: number[] = []
-            for (let i = tableTimeSeriesFirstYear; i <= tableTimeSerieslastYear; i += 1) {
-                const tableTimeSeriesValue = tableTimeSeriesValues.find((v) => v.year === i)
-                if (tableTimeSeriesValue) {
-                    values.push(tableTimeSeriesValue.value)
-                } else {
-                    values.push(0)
-                }
-            }
-            const newProfile = { ...p.data.drillingSchedule }
-            newProfile.startYear = timeSeriesStartYear
-            newProfile.values = values
-            const rowWells: Components.Schemas.ExplorationWellDto[] | Components.Schemas.WellProjectWellDto[] = p.data.assetWells
+            const firstYear = tableTimeSeriesValues[0].year
+            const lastYear = tableTimeSeriesValues[tableTimeSeriesValues.length - 1].year
+            const startYear = firstYear - dg4Year
+            newProfile = generateProfile(tableTimeSeriesValues, params.data.drillingSchedule, startYear, firstYear, lastYear)
+        } else {
+            newProfile = structuredClone(existingProfile)
+            newProfile.values = []
+        }
 
-            if (rowWells) {
-                const index = rowWells.findIndex((w) => w === p.data.assetWell)
-                if (index > -1) {
-                    const well = rowWells[index]
-                    const updatedWell = well
-                    updatedWell.drillingSchedule = newProfile
-                    const updatedWells: any[] = [...rowWells]
-                    updatedWells[index] = updatedWell
+        if (!caseId || !project || !newProfile) { return }
 
-                    const resourceName = isExplorationTable ? "explorationWellDrillingSchedule" : "wellProjectWellDrillingSchedule"
+        const rowWells = params.data.assetWells
+        if (rowWells) {
+            const index = rowWells.findIndex((w: any) => w === params.data.assetWell)
+            if (index > -1) {
+                const well = rowWells[index]
+                const updatedWell = { ...well, drillingSchedule: newProfile }
+                const updatedWells = [...rowWells]
+                updatedWells[index] = updatedWell
+                const resourceName = isExplorationTable ? "explorationWellDrillingSchedule" : "wellProjectWellDrillingSchedule"
 
-                    addEdit({
-                        newValue: p.newValue,
-                        previousValue: p.oldValue,
-                        inputLabel: p.data.name,
-                        projectId: project.id,
-                        resourceName,
-                        resourcePropertyKey: "drillingSchedule",
-                        caseId,
-                        resourceId,
-                        newResourceObject: newProfile,
-                        wellId: updatedWell.wellId,
-                        drillingScheduleId: newProfile.id,
-                    })
-                }
+                setStagedEdit({
+                    newDisplayValue: newProfile.values.join(" - "),
+                    previousDisplayValue: existingProfile.values.join(" - "),
+                    newValue: params.newValue,
+                    previousValue: params.oldValue,
+                    inputLabel: params.data.name,
+                    projectId: project.id,
+                    resourceName,
+                    resourcePropertyKey: "drillingSchedule",
+                    caseId,
+                    resourceId,
+                    newResourceObject: newProfile,
+                    previousResourceObject: existingProfile,
+                    wellId: updatedWell.wellId,
+                    drillingScheduleId: newProfile.id,
+                })
             }
         }
     }
+
+    const handleCellValueChange = useCallback((params: any) => {
+        if (firstTriggerRef.current) {
+            firstTriggerRef.current = false
+            stageEdit(params)
+
+            if (timerRef.current) {
+                clearTimeout(timerRef.current)
+            }
+
+            timerRef.current = setTimeout(() => {
+                firstTriggerRef.current = true
+            }, 500)
+        }
+    }, [stageEdit, dg4Year, project, isExplorationTable])
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
@@ -240,6 +265,12 @@ const CaseDrillingScheduleTabTable = ({
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
     }, [assetWells, tableYears, wells, editMode])
+
+    useEffect(() => {
+        if (stagedEdit) {
+            addEdit(stagedEdit)
+        }
+    }, [stagedEdit])
 
     return (
         <div className={styles.root}>

@@ -148,7 +148,6 @@ const UndoControls: React.FC = () => {
                     <Icon data={redo} />
                 </Button>
             </Tooltip>
-            {/* comment out for qa release */}
         </Container>
     )
 }

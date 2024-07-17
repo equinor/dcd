@@ -280,7 +280,7 @@ const useDataEdits = (): UseDataEditsProps => {
 
     ) => {
         try {
-            await mutation.mutateAsync({
+            const result = await mutation.mutateAsync({
                 projectId,
                 caseId,
                 resourceId: assetId,
@@ -288,9 +288,10 @@ const useDataEdits = (): UseDataEditsProps => {
                 drillingScheduleId,
                 serviceMethod: createOrUpdateFunction,
             })
-            return true
+            const returnValue = { ...result, resourceProfileId: result.id }
+            return returnValue
         } catch (error) {
-            return false
+            return error
         }
     }
 

@@ -4,6 +4,7 @@ using api.Adapters;
 using api.Context;
 using api.Dtos;
 using api.Models;
+using api.Repositories;
 
 using AutoMapper;
 
@@ -20,6 +21,8 @@ public class TechnicalInputService : ITechnicalInputService
     private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
     private readonly ILogger<TechnicalInputService> _logger;
     private readonly IMapper _mapper;
+    private readonly IProjectRepository _repository;
+
 
     public TechnicalInputService(
         DcdDbContext context,
@@ -28,7 +31,8 @@ public class TechnicalInputService : ITechnicalInputService
         IDevelopmentOperationalWellCostsService developmentOperationalWellCostsService,
         ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
         ILoggerFactory loggerFactory,
-        IMapper mapper
+        IMapper mapper,
+        IProjectRepository repository
     )
     {
         _context = context;
@@ -42,6 +46,7 @@ public class TechnicalInputService : ITechnicalInputService
 
         _logger = loggerFactory.CreateLogger<TechnicalInputService>();
         _mapper = mapper;
+        _repository = repository;
     }
 
     public async Task<TechnicalInputDto> UpdateTehnicalInput(Guid projectId, UpdateTechnicalInputDto technicalInputDto)
@@ -195,7 +200,7 @@ public class TechnicalInputService : ITechnicalInputService
             _logger.LogError("Failed to map project to dto");
             throw new Exception("Failed to map project to dto");
         }
-
+        await _repository.UpdateModifyTime(project.Id);
         return projectDto;
     }
 
