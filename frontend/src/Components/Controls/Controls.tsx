@@ -189,24 +189,20 @@ const Controls = () => {
                 )}
                 <Grid item>
                     <Button onClick={handleEdit} variant={editMode ? "outlined" : "contained"}>
-                        {isSaving ? (
-                            <Progress.Dots />
-                        ) : (
+
+                        {editMode && (
                             <>
-                                {editMode && (
-                                    <>
-                                        <Icon data={caseId ? visibility : save} />
-                                        <span>{caseId ? "View" : "Save"}</span>
-                                    </>
-                                )}
-                                {!editMode && (
-                                    <>
-                                        <Icon data={edit} />
-                                        <span>Edit</span>
-                                    </>
-                                )}
+                                <Icon data={caseId ? visibility : save} />
+                                <span>{caseId ? "View" : "Save"}</span>
                             </>
                         )}
+                        {!editMode && (
+                            <>
+                                <Icon data={edit} />
+                                <span>Edit</span>
+                            </>
+                        )}
+
                     </Button>
                 </Grid>
                 <Grid item>

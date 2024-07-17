@@ -4,11 +4,11 @@ import {
 } from "@equinor/eds-core-react"
 import { check_circle_outlined, undo, redo } from "@equinor/eds-icons"
 import styled from "styled-components"
-import { useIsFetching, useIsMutating } from "react-query"
 import { useParams } from "react-router-dom"
 import useDataEdits from "../../Hooks/useDataEdits"
 import { useCaseContext } from "../../Context/CaseContext"
 import { getCurrentEditId } from "../../Utils/common"
+import { useAppContext } from "../../Context/AppContext"
 
 const Container = styled.div`
    display: flex;
@@ -30,14 +30,12 @@ const UndoControls: React.FC = () => {
     } = useCaseContext()
     const { undoEdit, redoEdit } = useDataEdits()
     const { caseId } = useParams()
-    const isMutating = useIsMutating()
-
+    const { isSaving } = useAppContext()
 
     const currentEditId = getCurrentEditId(editIndexes, caseId)
-    const [saving, setSaving] = useState(false)
 
     const canUndo = () => {
-        if (isMutating || currentEditId || !caseEditsBelongingToCurrentCase) {
+        if (!currentEditId || !caseEditsBelongingToCurrentCase) {
             return false
         }
 
@@ -46,7 +44,7 @@ const UndoControls: React.FC = () => {
     }
 
     const canRedo = () => {
-        if (isMutating || !caseEditsBelongingToCurrentCase) {
+        if (!caseEditsBelongingToCurrentCase) {
             return false
         }
 
@@ -57,16 +55,6 @@ const UndoControls: React.FC = () => {
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === currentEditId)
         return currentEditIndex < caseEditsBelongingToCurrentCase.length && currentEditIndex > 0
     }
-
-
-    useEffect(() => {
-        console.log("isMutating", isMutating)
-        if (isMutating) {
-            setSaving(true)
-        } else {
-            setSaving(false)
-        }
-    }, [isMutating])
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -99,7 +87,7 @@ const UndoControls: React.FC = () => {
     return (
         <Container>
             {
-                saving
+                isSaving
                     ? (
                         <Status>
                             <CircularProgress value={0} size={16} />
@@ -115,8 +103,6 @@ const UndoControls: React.FC = () => {
                         </Tooltip>
                     )
             }
-            {/* comment out for qa release */}
-
             <Tooltip title={canUndo() ? "Undo" : "No changes to undo"}>
                 <Button
                     variant="ghost_icon"
