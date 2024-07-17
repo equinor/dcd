@@ -85,7 +85,6 @@ const CaseTabTable = ({
             rowObject.overridable = ts.overridable
             rowObject.editable = ts.editable
             rowObject.hideIfEmpty = ts.hideIfEmpty
-            rowObject.fieldId = `${ts.resourcePropertyKey}-${ts.resourceId}`
 
             rowObject.overrideProfileSet = ts.overrideProfileSet
             rowObject.overrideProfile = ts.overrideProfile ?? {
@@ -270,7 +269,6 @@ const CaseTabTable = ({
                 newResourceObject: newProfile,
                 resourceProfileId: timeSeriesDataIndex()?.resourceProfileId,
                 tabName: tab,
-                fieldId: `${timeSeriesDataIndex()?.resourcePropertyKey}-${timeSeriesDataIndex()?.resourceId}-${p.colDef.field}`,
                 tableName,
             })
         }
@@ -372,7 +370,6 @@ const CaseTabTable = ({
                 profileName={overrideModalProfileName}
                 setProfile={overrideModalProfileSet}
                 profile={overrideProfile}
-            // id={`${resourceName}-${resourcePropertyKey}-${resourceId ?? ""}`}
             />
             <div className={styles.root}>
                 <div

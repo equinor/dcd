@@ -45,7 +45,6 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
             newDisplayValue: options[e.currentTarget.value],
             previousDisplayValue: options[value],
             tabName: tab,
-            fieldId: `${resourceName}-${resourcePropertyKey}-${resourceId}`,
         })
     }
 

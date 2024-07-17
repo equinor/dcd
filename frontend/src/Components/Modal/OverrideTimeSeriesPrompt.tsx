@@ -43,7 +43,6 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
                 resourceId: profile.resourceId,
                 newResourceObject: { ...profile, override: !profile.override },
                 resourceProfileId: profile.id,
-                fieldId: `${profile.resourceName}-${"override"}-${profile.resourceId}`, // Generate a unique field ID
             })
         }
         setIsOpen(!isOpen)

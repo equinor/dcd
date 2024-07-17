@@ -54,8 +54,7 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
             resourcePropertyKey,
             resourceId,
             caseId,
-            tabName: tab, // Include current tab name
-            fieldId: `${resourceName}-${resourcePropertyKey}-${resourceId}`, // Generate a unique field ID
+            tabName: tab,
         })
     }
 
@@ -65,7 +64,7 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
             value={`${value}`}
         >
             <NumberInputWithValidation
-                id={`${resourceName}-${resourcePropertyKey}-${resourceId ?? ""}`} // Set the ID of the input field
+                id={`${resourceName}-${resourcePropertyKey}-${resourceId ?? ""}`}
                 onSubmit={addToEditsAndSubmit}
                 defaultValue={value}
                 integer={integer}

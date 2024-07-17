@@ -39,8 +39,7 @@ interface AddEditParams {
     previousDisplayValue?: string | number | undefined;
     newResourceObject?: ResourceObject;
     previousResourceObject?: ResourceObject;
-    tabName?: string; // Add tabName
-    fieldId?: string; // Add fieldId
+    tabName?: string;
     tableName?: string;
 }
 
@@ -1067,7 +1066,6 @@ const useDataEdits = (): UseDataEditsProps => {
         newResourceObject,
         previousResourceObject,
         tabName,
-        fieldId,
         tableName,
     }: AddEditParams) => {
         if (resourceName !== "case" && !resourceId) {
@@ -1099,7 +1097,6 @@ const useDataEdits = (): UseDataEditsProps => {
             newResourceObject,
             previousResourceObject,
             tabName,
-            fieldId,
             tableName,
         }
 
@@ -1122,34 +1119,7 @@ const useDataEdits = (): UseDataEditsProps => {
         }
     }
 
-    const { caseId, tab } = useParams()
-    // const undoEdit = (scrollIntoViewCallback: (rowId: string) => void) => {
-    //     const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams))
-    //     const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
-    //     const updatedEditIndex = currentEditIndex + 1
-    //     const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
-
-    //     if (currentEditIndex === -1) {
-    //         return null
-    //     }
-    //     if (!updatedEdit) {
-    //         updateEditIndex("")
-    //     } else {
-    //         updateEditIndex(updatedEdit.uuid)
-    //     }
-
-    //     if (editThatWillBeUndone) {
-    //         // Navigate to the correct tab
-    //         const projectUrl = location.pathname.split("/case")[0]
-    //         navigate(`${projectUrl}/case/${caseId}/${editThatWillBeUndone.tabName ?? ""}`)
-
-    //         // Return the edit that will be undone
-    //         return editThatWillBeUndone
-    //     }
-
-    //     return null
-    // }
-
+    const { caseId } = useParams()
     const undoEdit = () => {
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams))
 
@@ -1165,35 +1135,24 @@ const useDataEdits = (): UseDataEditsProps => {
 
         if (editThatWillBeUndone) {
             const projectUrl = location.pathname.split("/case")[0]
-            console.log("1", projectUrl)
             navigate(`${projectUrl}/case/${caseId}/${editThatWillBeUndone.tabName ?? ""}`)
-            const path = `${projectUrl}/case/${caseId}/${editThatWillBeUndone.tabName ?? ""}`
-            console.log("2", path)
-            console.log("3", editThatWillBeUndone)
-            console.log("4", editThatWillBeUndone.resourcePropertyKey)
 
             setTimeout(() => {
-                const rowWhereCellWillBeUndone = editThatWillBeUndone.tableName
-                console.log("6", rowWhereCellWillBeUndone)
+                const fieldWhereCellWillBeUndone = editThatWillBeUndone.tableName
 
-                if (rowWhereCellWillBeUndone) {
-                    // const tabElement = document.getElementById(rowWhereCellWillBeUndone)
-
-                    const tabElement = document.getElementById(rowWhereCellWillBeUndone)
-                    console.log("7", tabElement)
+                if (fieldWhereCellWillBeUndone) {
+                    const tabElement = document.getElementById(fieldWhereCellWillBeUndone)
 
                     if (tabElement) {
                         tabElement.scrollIntoView({ behavior: "smooth", block: "start" })
-                        console.log("Tried to scroll to ", tabElement)
                     } else {
-                        console.error(`Element with id ${rowWhereCellWillBeUndone} not found`)
+                        console.error(`Element with id ${fieldWhereCellWillBeUndone} not found`)
                     }
                 } else {
-                    console.error("rowWhereCellWillBeUndone is undefined")
+                    console.error("fieldWhereCellWillBeUndone is undefined")
                 }
             }, 500)
 
-            // Submit the undo action to the API
             submitToApi({
                 projectId: editThatWillBeUndone.projectId,
                 caseId: editThatWillBeUndone.caseId!,

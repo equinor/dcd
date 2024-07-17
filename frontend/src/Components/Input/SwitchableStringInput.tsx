@@ -43,8 +43,7 @@ const SwitchableStringInput: React.FC<CaseEditInputProps> = ({
             resourcePropertyKey,
             resourceId,
             caseId,
-            tabName: tab, // Include current tab name
-            fieldId: `${resourceName}-${resourcePropertyKey}-${resourceId}`, // Generate a unique field ID
+            tabName: tab,
         })
     }
 
