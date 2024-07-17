@@ -45,11 +45,7 @@ const NumberInputWithValidation = ({
     const [inputValue, setInputValue] = useState(defaultValue)
     const [helperText, setHelperText] = useState("\u200B")
 
-    useEffect(() => {
-        setInputValue(defaultValue)
-    }, [defaultValue])
-
-    const inputIsValid = (newValue: number) => {
+    const validateInput = (newValue: number) => {
         setInputValue(newValue)
         if (min !== undefined && max !== undefined) {
             if (!isWithinRange(newValue, min, max)) {
@@ -67,9 +63,8 @@ const NumberInputWithValidation = ({
 
     const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
         const newValue = Number(event.target.value)
-        if (inputIsValid(newValue)) {
-            onSubmit(newValue)
-        }
+        validateInput(newValue)
+        onSubmit(newValue)
     }
 
     const checkInput = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -77,6 +72,14 @@ const NumberInputWithValidation = ({
             preventNonDigitInput(event)
         }
     }
+
+    useEffect(() => {
+        if (defaultValue !== undefined) {
+            validateInput(defaultValue)
+        } else {
+            setInputValue(defaultValue)
+        }
+    }, [defaultValue])
 
     return (
         <InputWrapper
@@ -94,7 +97,7 @@ const NumberInputWithValidation = ({
                 onInput={(event: React.FormEvent<HTMLInputElement>) => checkInput(event as unknown as React.KeyboardEvent<HTMLInputElement>)}
                 rightAdornments={[unit, hasError ? <ErrorIcon size={16} data={error_filled} /> : undefined]}
                 variant={hasError ? "error" : undefined}
-                onChange={(e: any) => setInputValue(Number(e.target.value))}
+                onChange={(e: any) => validateInput(Number(e.target.value))}
             />
         </InputWrapper>
     )
