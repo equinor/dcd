@@ -21,7 +21,6 @@ public class TechnicalInputService : ITechnicalInputService
     private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
     private readonly ILogger<TechnicalInputService> _logger;
     private readonly IMapper _mapper;
-    private readonly IProjectRepository _repository;
 
 
     public TechnicalInputService(
@@ -31,8 +30,7 @@ public class TechnicalInputService : ITechnicalInputService
         IDevelopmentOperationalWellCostsService developmentOperationalWellCostsService,
         ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
         ILoggerFactory loggerFactory,
-        IMapper mapper,
-        IProjectRepository repository
+        IMapper mapper
     )
     {
         _context = context;
@@ -46,7 +44,6 @@ public class TechnicalInputService : ITechnicalInputService
 
         _logger = loggerFactory.CreateLogger<TechnicalInputService>();
         _mapper = mapper;
-        _repository = repository;
     }
 
     public async Task<TechnicalInputDto> UpdateTehnicalInput(Guid projectId, UpdateTechnicalInputDto technicalInputDto)
@@ -191,16 +188,17 @@ public class TechnicalInputService : ITechnicalInputService
     private async Task<ProjectDto> UpdateProject(Project project, UpdateProjectDto updatedDto)
     {
         _mapper.Map(updatedDto, project);
-        var updatedItem = _context.Projects!.Update(project);
+        project.ModifyTime = DateTimeOffset.UtcNow;
+
         await _context.SaveChangesAsync();
 
-        var projectDto = _mapper.Map<ProjectDto>(updatedItem.Entity, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+        var projectDto = _mapper.Map<ProjectDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
         if (projectDto == null)
         {
             _logger.LogError("Failed to map project to dto");
             throw new Exception("Failed to map project to dto");
         }
-        await _repository.UpdateModifyTime(project.Id);
+
         return projectDto;
     }
 

@@ -48,7 +48,7 @@ const useDataEdits = (): {
     undoEdit: () => void;
     redoEdit: () => void;
 } => {
-    const { setSnackBarMessage } = useAppContext()
+    const { setSnackBarMessage, setIsSaving } = useAppContext()
     const {
         caseEdits,
         setCaseEdits,
@@ -95,18 +95,19 @@ const useDataEdits = (): {
             serviceMethod: object,
         }) => serviceMethod,
         {
-            // TODO: Consider adding optimistic updates
             onSuccess: (
                 results: any,
                 variables,
             ) => {
                 const { projectId, caseId } = variables
-
                 queryClient.fetchQuery(["apiData", { projectId, caseId }])
             },
             onError: (error: any) => {
                 console.error("Failed to update data:", error)
                 setSnackBarMessage(error.message)
+            },
+            onSettled: () => {
+                setIsSaving(false)
             },
         },
     )
@@ -344,6 +345,8 @@ const useDataEdits = (): {
         wellId,
         drillingScheduleId,
     }: SubmitToApiParams): Promise<any> => {
+        setIsSaving(true)
+
         const existingDataInClient: object | undefined = queryClient.getQueryData([{
             projectId, caseId, resourceId, resourceProfileId: EMPTY_GUID, wellId, drillingScheduleId,
         }])
