@@ -11,16 +11,13 @@ namespace api.Repositories;
 public class CaseRepository : BaseRepository, ICaseRepository
 {
     private readonly ILogger<CaseRepository> _logger;
-    private readonly IProjectRepository _projectRepository;
 
     public CaseRepository(
         DcdDbContext context,
-        ILogger<CaseRepository> logger,
-        IProjectRepository projectRepository
+        ILogger<CaseRepository> logger
     ) : base(context)
     {
         _logger = logger;
-        _projectRepository = projectRepository;
     }
 
     public async Task<Case?> GetCase(Guid caseId)
@@ -68,10 +65,6 @@ public class CaseRepository : BaseRepository, ICaseRepository
             ?? throw new KeyNotFoundException($"Case with id {caseId} not found.");
 
         caseItem.ModifyTime = DateTimeOffset.UtcNow;
-
-        await _projectRepository.UpdateModifyTime(caseItem.ProjectId);
-
-        await _context.SaveChangesAsync();
     }
 
 }
