@@ -27,10 +27,41 @@ public class WellService : IWellService
         _projectRepository = projectRepository;
     }
 
+    private static bool UpdateChangesWellType(Well well, UpdateWellDto updatedWellDto)
+    {
+        var isWellProjectWell = Well.IsWellProjectWell(well.WellCategory);
+        return isWellProjectWell != Well.IsWellProjectWell(updatedWellDto.WellCategory);
+    }
+
+    private static bool InvalidWellCategory(UpdateWellDto updatedWellDto)
+    {
+        return new[] {
+            WellCategory.Oil_Producer,
+            WellCategory.Gas_Producer,
+            WellCategory.Water_Injector,
+            WellCategory.Gas_Injector,
+            WellCategory.Exploration_Well,
+            WellCategory.Appraisal_Well,
+            WellCategory.Sidetrack,
+        }.Contains(updatedWellDto.WellCategory);
+    }
+
     public async Task<WellDto> UpdateWell(Guid projectId, Guid wellId, UpdateWellDto updatedWellDto)
     {
+
+
         var existingWell = await _repository.GetWell(wellId)
             ?? throw new NotFoundInDBException($"Well with id {wellId} not found");
+
+        if (InvalidWellCategory(updatedWellDto))
+        {
+            throw new InvalidInputException("Invalid well category", wellId);
+        }
+
+        if (UpdateChangesWellType(existingWell, updatedWellDto))
+        {
+            throw new WellChangeTypeException("Cannot change well type", wellId);
+        }
 
         _mapperService.MapToEntity(updatedWellDto, existingWell, wellId);
 
