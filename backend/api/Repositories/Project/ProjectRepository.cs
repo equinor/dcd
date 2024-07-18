@@ -23,8 +23,25 @@ public class ProjectRepository : BaseRepository, IProjectRepository
         return await Get<Project>(projectId);
     }
 
+    public async Task<Project?> GetProjectWithCases(Guid projectId)
+    {
+        return await _context.Projects
+            .Include(p => p.Cases)
+            .FirstOrDefaultAsync(p => p.Id == projectId);
+    }
+
     public Project UpdateProject(Project updatedProject)
     {
         return Update(updatedProject);
+    }
+
+    public async Task<ExplorationOperationalWellCosts?> GetExplorationOperationalWellCosts(Guid id)
+    {
+        return await Get<ExplorationOperationalWellCosts>(id);
+    }
+
+    public async Task<DevelopmentOperationalWellCosts?> GetDevelopmentOperationalWellCosts(Guid id)
+    {
+        return await Get<DevelopmentOperationalWellCosts>(id);
     }
 }

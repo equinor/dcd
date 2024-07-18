@@ -43,14 +43,15 @@ public class ProjectService : IProjectService
         _mapperService = mapperService;
     }
 
-    public async Task<ProjectDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto)
+    public async Task<ProjectWithCasesDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto)
     {
-        var existingProject = await _projectRepository.GetProject(projectId)
+        var existingProject = await _projectRepository.GetProjectWithCases(projectId)
             ?? throw new NotFoundInDBException($"Project {projectId} not found");
 
         _mapperService.MapToEntity(projectDto, existingProject, projectId);
 
-        try {
+        try
+        {
             await _projectRepository.SaveChangesAsync();
         }
         catch (DbUpdateException e)
@@ -59,8 +60,58 @@ public class ProjectService : IProjectService
             throw;
         }
 
-        var dto = _mapperService.MapToDto<Project, ProjectDto>(existingProject, projectId);
+        var dto = _mapperService.MapToDto<Project, ProjectWithCasesDto>(existingProject, projectId);
         return dto;
+    }
+
+    public async Task<ExplorationOperationalWellCostsDto> UpdateExplorationOperationalWellCosts(
+        Guid projectId,
+        Guid explorationOperationalWellCostsId,
+        UpdateExplorationOperationalWellCostsDto dto
+    )
+    {
+        var existingExplorationOperationalWellCosts = await _projectRepository.GetExplorationOperationalWellCosts(explorationOperationalWellCostsId)
+            ?? throw new NotFoundInDBException($"ExplorationOperationalWellCosts {explorationOperationalWellCostsId} not found");
+
+        _mapperService.MapToEntity(dto, existingExplorationOperationalWellCosts, projectId);
+
+        try
+        {
+            await _projectRepository.SaveChangesAsync();
+        }
+        catch (DbUpdateException e)
+        {
+            _logger.LogError(e, "Failed to update project {projectId}", projectId);
+            throw;
+        }
+
+        var returnDto = _mapperService.MapToDto<ExplorationOperationalWellCosts, ExplorationOperationalWellCostsDto>(existingExplorationOperationalWellCosts, explorationOperationalWellCostsId);
+        return returnDto;
+    }
+
+    public async Task<DevelopmentOperationalWellCostsDto> UpdateDevelopmentOperationalWellCosts(
+        Guid projectId,
+        Guid developmentOperationalWellCostsId,
+        UpdateDevelopmentOperationalWellCostsDto dto
+    )
+    {
+        var existingDevelopmentOperationalWellCosts = await _projectRepository.GetDevelopmentOperationalWellCosts(developmentOperationalWellCostsId)
+            ?? throw new NotFoundInDBException($"DevelopmentOperationalWellCosts {developmentOperationalWellCostsId} not found");
+
+        _mapperService.MapToEntity(dto, existingDevelopmentOperationalWellCosts, projectId);
+
+        try
+        {
+            await _projectRepository.SaveChangesAsync();
+        }
+        catch (DbUpdateException e)
+        {
+            _logger.LogError(e, "Failed to update project {projectId}", projectId);
+            throw;
+        }
+
+        var returnDto = _mapperService.MapToDto<DevelopmentOperationalWellCosts, DevelopmentOperationalWellCostsDto>(existingDevelopmentOperationalWellCosts, developmentOperationalWellCostsId);
+        return returnDto;
     }
 
     public async Task<ProjectWithAssetsDto> UpdateProjectFromProjectMaster(ProjectWithAssetsDto projectDto)

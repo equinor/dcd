@@ -4,7 +4,7 @@ using api.Models;
 
 namespace api.Dtos;
 
-public class ProjectDto
+public class ProjectWithCasesDto
 {
     [Required]
     public ProjectClassification Classification { get; set; }
@@ -50,14 +50,6 @@ public class ProjectDto
     public double DailyEmissionFromDrillingRig { get; set; }
     [Required]
     public double AverageDevelopmentDrillingDays { get; set; }
-
-    public bool Equals(ProjectWithAssetsDto projectDto)
-    {
-        return Name == projectDto.Name &&
-               CommonLibraryName == projectDto.CommonLibraryName &&
-               FusionProjectId == projectDto.FusionProjectId &&
-               Country == projectDto.Country && Id == projectDto.Id &&
-               ProjectCategory == projectDto.ProjectCategory &&
-               ProjectPhase == projectDto.ProjectPhase;
-    }
+    [Required]
+    public ICollection<CaseDto> Cases { get; set; } = [];
 }

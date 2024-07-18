@@ -80,9 +80,21 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPut("{projectId}")]
-    public async Task<ProjectDto> UpdateProject([FromRoute] Guid projectId, [FromBody] UpdateProjectDto projectDto)
+    public async Task<ProjectWithCasesDto> UpdateProject([FromRoute] Guid projectId, [FromBody] UpdateProjectDto projectDto)
     {
         return await _projectService.UpdateProject(projectId, projectDto);
+    }
+
+    [HttpPut("{projectId}/exploration-operational-well-costs/{explorationOperationalWellCostsId}")]
+    public async Task<ExplorationOperationalWellCostsDto> UpdateExplorationOperationalWellCosts([FromRoute] Guid projectId, [FromRoute] Guid explorationOperationalWellCostsId, [FromBody] UpdateExplorationOperationalWellCostsDto dto)
+    {
+        return await _projectService.UpdateExplorationOperationalWellCosts(projectId, explorationOperationalWellCostsId, dto);
+    }
+
+    [HttpPut("{projectId}/development-operational-well-costs/{developmentOperationalWellCostsId}")]
+    public async Task<DevelopmentOperationalWellCostsDto> UpdateDevelopmentOperationalWellCosts([FromRoute] Guid projectId, [FromRoute] Guid developmentOperationalWellCostsId, [FromBody] UpdateDevelopmentOperationalWellCostsDto dto)
+    {
+        return await _projectService.UpdateDevelopmentOperationalWellCosts(projectId, developmentOperationalWellCostsId, dto);
     }
 
     [HttpGet("{projectId}/case-comparison")]
