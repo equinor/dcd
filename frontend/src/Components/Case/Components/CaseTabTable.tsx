@@ -153,11 +153,12 @@ const CaseTabTable = ({
     const gridRowData = useMemo(() => gridRef.current?.api?.setGridOption("rowData", profilesToRowData()), [timeSeriesData, editMode])
 
     const lockIconRenderer = (params: any) => {
+        const isUnlocked = params.data.overrideProfile?.override
         if (!params.data) {
             return null
         }
 
-        if (calculatedFields.includes(params.data.resourceName) && isCalculatingProductionOverrides) {
+        if (!isUnlocked && calculatedFields.includes(params.data.resourceName) && isCalculatingProductionOverrides) {
             return <CircularProgress size={24} />
         }
 
