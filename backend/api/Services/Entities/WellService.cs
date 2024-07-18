@@ -10,33 +10,34 @@ namespace api.Services;
 public class WellService : IWellService
 {
     private readonly IWellRepository _repository;
+    private readonly IProjectRepository _projectRepository;
     private readonly ILogger<WellService> _logger;
     private readonly IMapperService _mapperService;
 
     public WellService(
         ILoggerFactory loggerFactory,
         IWellRepository repository,
-        IMapperService mapperService
+        IMapperService mapperService,
+        IProjectRepository projectRepository
         )
     {
         _logger = loggerFactory.CreateLogger<WellService>();
         _repository = repository;
         _mapperService = mapperService;
+        _projectRepository = projectRepository;
     }
 
-    public async Task<WellDto> UpdateWell(Guid wellId, UpdateWellDto updatedWellDto)
+    public async Task<WellDto> UpdateWell(Guid projectId, Guid wellId, UpdateWellDto updatedWellDto)
     {
         var existingWell = await _repository.GetWell(wellId)
             ?? throw new NotFoundInDBException($"Well with id {wellId} not found");
 
         _mapperService.MapToEntity(updatedWellDto, existingWell, wellId);
 
-        // TODO: Update project last changed date
-        Well updatedWell;
         try
         {
-            updatedWell = _repository.UpdateWell(existingWell);
-            await _repository.SaveChangesAsync();
+            await _projectRepository.UpdateModifyTime(projectId);
+            await _repository.SaveChangesAsync(); // TODO: run calculations
         }
         catch (DbUpdateException ex)
         {
@@ -44,7 +45,62 @@ public class WellService : IWellService
             throw;
         }
 
-        var dto = _mapperService.MapToDto<Well, WellDto>(updatedWell, wellId);
+        var dto = _mapperService.MapToDto<Well, WellDto>(existingWell, wellId);
         return dto;
+    }
+
+    public async Task<WellDto> CreateWell(Guid projectId, CreateWellDto createWellDto)
+    {
+        var project = await _projectRepository.GetProject(projectId)
+            ?? throw new NotFoundInDBException($"Project with id {projectId} not found");
+
+        Well well = new()
+        {
+            Project = project
+        };
+
+        var newWell = _mapperService.MapToEntity(createWellDto, well, projectId);
+
+        Well createdWell;
+        try
+        {
+            createdWell = _repository.AddWell(newWell);
+            await _projectRepository.UpdateModifyTime(projectId);
+            await _repository.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            _logger.LogError(ex, "Failed to create well");
+            throw;
+        }
+
+        var dto = _mapperService.MapToDto<Well, WellDto>(createdWell, createdWell.Id);
+        return dto;
+    }
+
+    public async Task DeleteWell(Guid projectId, Guid wellId)
+    {
+        var well = await _repository.GetWell(wellId)
+            ?? throw new NotFoundInDBException($"Well with id {wellId} not found");
+
+        _repository.DeleteWell(well);
+        await _projectRepository.UpdateModifyTime(projectId);
+        await _repository.SaveChangesAsync(); // TODO: Run calculations
+    }
+
+    public async Task<IEnumerable<CaseDto>> GetAffectedCases(Guid wellId)
+    {
+        var _ = await _repository.GetWell(wellId)
+            ?? throw new NotFoundInDBException($"Well with id {wellId} not found");
+
+        var cases = await _repository.GetCasesAffectedByDeleteWell(wellId);
+
+        var dtos = new List<CaseDto>();
+        foreach (var c in cases)
+        {
+            var dto = _mapperService.MapToDto<Case, CaseDto>(c, c.Id);
+            dtos.Add(dto);
+        }
+        return dtos;
     }
 }

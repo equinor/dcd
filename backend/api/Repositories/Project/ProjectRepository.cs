@@ -44,4 +44,17 @@ public class ProjectRepository : BaseRepository, IProjectRepository
     {
         return await Get<DevelopmentOperationalWellCosts>(id);
     }
+
+    public async Task UpdateModifyTime(Guid projectId)
+    {
+        if (projectId == Guid.Empty)
+        {
+            throw new ArgumentException("The project id cannot be empty.", nameof(projectId));
+        }
+
+        var project = await _context.Projects.SingleOrDefaultAsync(c => c.Id == projectId)
+            ?? throw new KeyNotFoundException($"Project with id {projectId} not found.");
+
+        project.ModifyTime = DateTimeOffset.UtcNow;
+    }
 }

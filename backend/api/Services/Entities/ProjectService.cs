@@ -75,15 +75,16 @@ public class ProjectService : IProjectService
         var existingExplorationOperationalWellCosts = await _projectRepository.GetExplorationOperationalWellCosts(explorationOperationalWellCostsId)
             ?? throw new NotFoundInDBException($"ExplorationOperationalWellCosts {explorationOperationalWellCostsId} not found");
 
-        _mapperService.MapToEntity(dto, existingExplorationOperationalWellCosts, projectId);
+        _mapperService.MapToEntity(dto, existingExplorationOperationalWellCosts, explorationOperationalWellCostsId);
 
         try
         {
+            await _projectRepository.UpdateModifyTime(projectId);
             await _projectRepository.SaveChangesAsync();
         }
         catch (DbUpdateException e)
         {
-            _logger.LogError(e, "Failed to update project {projectId}", projectId);
+            _logger.LogError(e, "Failed to update exploration operational well costs {explorationOperationalWellCostsId}", explorationOperationalWellCostsId);
             throw;
         }
 
@@ -100,15 +101,16 @@ public class ProjectService : IProjectService
         var existingDevelopmentOperationalWellCosts = await _projectRepository.GetDevelopmentOperationalWellCosts(developmentOperationalWellCostsId)
             ?? throw new NotFoundInDBException($"DevelopmentOperationalWellCosts {developmentOperationalWellCostsId} not found");
 
-        _mapperService.MapToEntity(dto, existingDevelopmentOperationalWellCosts, projectId);
+        _mapperService.MapToEntity(dto, existingDevelopmentOperationalWellCosts, developmentOperationalWellCostsId);
 
         try
         {
+            await _projectRepository.UpdateModifyTime(projectId);
             await _projectRepository.SaveChangesAsync();
         }
         catch (DbUpdateException e)
         {
-            _logger.LogError(e, "Failed to update project {projectId}", projectId);
+            _logger.LogError(e, "Failed to update development operational well costs {developmentOperationalWellCostsId}", developmentOperationalWellCostsId);
             throw;
         }
 

@@ -33,6 +33,24 @@ public class WellsController : ControllerBase
     [HttpPut("{wellId}")]
     public async Task<WellDto> UpdateWell([FromRoute] Guid projectId, [FromRoute] Guid wellId, [FromBody] UpdateWellDto wellDto)
     {
-        return await _wellService.UpdateWell(wellId, wellDto);
+        return await _wellService.UpdateWell(projectId, wellId, wellDto);
+    }
+
+    [HttpPost]
+    public async Task<WellDto> CreateWell([FromRoute] Guid projectId, [FromBody] CreateWellDto wellDto)
+    {
+        return await _wellService.CreateWell(projectId, wellDto);
+    }
+
+    [HttpDelete("{wellId}")]
+    public async Task DeleteWell([FromRoute] Guid projectId, [FromRoute] Guid wellId)
+    {
+        await _wellService.DeleteWell(projectId, wellId);
+    }
+
+    [HttpGet("{wellId}/affected-cases")]
+    public async Task<IEnumerable<CaseDto>> GetAffectedCases([FromRoute] Guid projectId, [FromRoute] Guid wellId)
+    {
+        return await _wellService.GetAffectedCases(wellId);
     }
 }

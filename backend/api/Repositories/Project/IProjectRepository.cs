@@ -9,4 +9,5 @@ public interface IProjectRepository : IBaseRepository
     Project UpdateProject(Project updatedProject);
     Task<ExplorationOperationalWellCosts?> GetExplorationOperationalWellCosts(Guid id);
     Task<DevelopmentOperationalWellCosts?> GetDevelopmentOperationalWellCosts(Guid id);
+    Task UpdateModifyTime(Guid projectId);
 }
