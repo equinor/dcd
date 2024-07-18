@@ -32,7 +32,6 @@ import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import useDataEdits from "../../../Hooks/useDataEdits"
 import { ProfileNames } from "../../../Models/Interfaces"
-import { productionOverrideResources } from "../../../Utils/constants"
 
 interface Props {
     timeSeriesData: any[]
