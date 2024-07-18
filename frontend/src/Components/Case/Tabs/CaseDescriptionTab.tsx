@@ -4,6 +4,7 @@ import Grid from "@mui/material/Grid"
 import { useQueryClient, useQuery } from "react-query"
 import { useParams } from "react-router"
 import { useEffect, useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import Gallery from "../../Gallery/Gallery"
@@ -79,16 +80,34 @@ const CaseDescriptionTab = () => {
         <Grid container spacing={2}>
             <Gallery />
             <Grid item xs={12} sx={{ marginBottom: editMode ? "32px" : 0 }}>
-                <Typography group="input" variant="label">Description</Typography>
-                {editMode ? (
-                    <MarkdownEditor
-                        menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
-                        value={description}
-                        onBlur={(e) => handleBlur(e)}
-                    />
-                ) : (
-                    <MarkdownViewer value={caseData.description ?? ""} />
-                )}
+                <AnimatePresence initial={false} mode="popLayout">
+                    <Typography group="input" variant="label">Description</Typography>
+                    {editMode ? (
+                        <motion.div
+                            key="input"
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        >
+                            <MarkdownEditor
+                                menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
+                                value={description}
+                                onBlur={(e) => handleBlur(e)}
+                            />
+                        </motion.div>
+                    ) : (
+                        <motion.div
+                            key="input"
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        >
+                            <MarkdownViewer value={caseData.description ?? ""} />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput

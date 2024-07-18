@@ -76,7 +76,6 @@ const CaseTabTable = ({
     }, [stagedEdit])
 
     useEffect(() => {
-        console.log("isCalculatingProductionOverrides", isCalculatingProductionOverrides)
     }, [isCalculatingProductionOverrides])
 
     const profilesToRowData = () => {
