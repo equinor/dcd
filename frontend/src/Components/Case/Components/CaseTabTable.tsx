@@ -69,6 +69,12 @@ const CaseTabTable = ({
     const firstTriggerRef = useRef<boolean>(true)
     const timerRef = useRef<NodeJS.Timeout | null>(null)
 
+    const calculatedFields = [
+        "productionProfileFuelFlaringAndLossesOverride",
+        "productionProfileNetSalesGasOverride",
+        "productionProfileImportedElectricityOverride",
+    ]
+
     useEffect(() => {
         if (stagedEdit) {
             addEdit(stagedEdit)
@@ -76,6 +82,7 @@ const CaseTabTable = ({
     }, [stagedEdit])
 
     useEffect(() => {
+        gridRef.current?.api?.redrawRows()
     }, [isCalculatingProductionOverrides])
 
     const profilesToRowData = () => {
@@ -146,24 +153,12 @@ const CaseTabTable = ({
 
     const gridRowData = useMemo(() => gridRef.current?.api?.setGridOption("rowData", profilesToRowData()), [timeSeriesData, editMode])
 
-    const [trueEveryFiveSeconds, setTrueEveryFiveSeconds] = useState<boolean>(false)
-
-    useEffect(() => {
-        gridRef.current?.api?.redrawRows()
-    }, [trueEveryFiveSeconds])
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setTrueEveryFiveSeconds((prev) => !prev)
-        }, 3000)
-        return () => clearInterval(interval)
-    }, [])
     const lockIconRenderer = (params: any) => {
         if (!params.data) {
             return null
         }
 
-        if (productionOverrideResources.includes(params.data.resourceName) && trueEveryFiveSeconds) {
+        if (calculatedFields.includes(params.data.resourceName) && isCalculatingProductionOverrides) {
             return <CircularProgress size={24} />
         }
 
@@ -328,7 +323,7 @@ const CaseTabTable = ({
     useEffect(() => {
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
-    }, [tableYears, editMode, trueEveryFiveSeconds])
+    }, [tableYears, editMode, isCalculatingProductionOverrides])
 
     const onGridReady = useCallback((params: GridReadyEvent) => {
         const generateRowData = profilesToRowData()

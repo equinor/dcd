@@ -7,7 +7,6 @@ import {
 import { add, archive } from "@equinor/eds-icons"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
-import { motion } from "framer-motion"
 import { getProjectPhaseName, getProjectCategoryName, unwrapProjectId } from "../../Utils/common"
 import { GetProjectService } from "../../Services/ProjectService"
 import { GetSTEAService } from "../../Services/STEAService"

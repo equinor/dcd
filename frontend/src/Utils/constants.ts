@@ -70,7 +70,8 @@ export const tabNames = [
 ]
 
 export const productionOverrideResources = [
-    "productionProfileFuelFlaringAndLossesOverride",
-    "productionProfileNetSalesGasOverride",
-    "productionProfileImportedElectricityOverride",
+    "productionProfileOil",
+    "productionProfileGas",
+    "productionProfileWater",
+    "productionProfileWaterInjection",
 ]

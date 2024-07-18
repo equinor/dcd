@@ -346,6 +346,7 @@ const useDataEdits = (): {
         drillingScheduleId,
     }: SubmitToApiParams): Promise<any> => {
         setIsSaving(true)
+
         if (productionOverrideResources.includes(resourceName)) {
             setIsCalculatingProductionOverrides(true)
         }
