@@ -192,7 +192,7 @@ public class TechnicalInputService : ITechnicalInputService
 
         await _context.SaveChangesAsync();
 
-        var projectDto = _mapper.Map<ProjectWithAssetsDto>(updatedItem.Entity, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+        var projectDto = _mapper.Map<ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
         if (projectDto == null)
         {
             _logger.LogError("Failed to map project to dto");
