@@ -1151,14 +1151,32 @@ const useDataEdits = (): {
                     const tabElement = document.getElementById(rowWhereCellWillBeUndone)
 
                     if (tabElement) {
-                        tabElement.scrollIntoView({ behavior: "smooth", block: "start" })
+                        tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
+
+                        if (editThatWillBeUndone.tableName) {
+                            const tableCell = tabElement.querySelector(`[data-key="${editThatWillBeUndone.resourcePropertyKey}"]`)
+                            if (tableCell) {
+                                tabElement.classList.add("highlighted")
+
+                                setTimeout(() => {
+                                    tableCell.classList.remove("highlighted")
+                                }, 3000)
+                            }
+                        } else {
+                            tabElement.classList.add("highlighted")
+
+                            setTimeout(() => {
+                                tabElement.classList.remove("highlighted")
+                            }, 3000)
+                        }
                     } else {
                         console.error(`Element with id ${rowWhereCellWillBeUndone} not found`)
                     }
                 } else {
                     console.error("rowWhereCellWillBeUndone is undefined")
                 }
-            }, 1000)
+            }, 100)
+
             submitToApi({
                 projectId: editThatWillBeUndone.projectId,
                 caseId: editThatWillBeUndone.caseId!,
@@ -1167,9 +1185,7 @@ const useDataEdits = (): {
                 resourcePropertyKey: editThatWillBeUndone.resourcePropertyKey,
                 value: editThatWillBeUndone.previousValue as string,
                 resourceId: editThatWillBeUndone.resourceId,
-                resourceObject: editThatWillBeUndone.resourceProfileId
-                    ? updatedEdit?.newResourceObject as ResourceObject
-                    : editThatWillBeUndone.previousResourceObject as ResourceObject,
+                resourceObject: editThatWillBeUndone.previousResourceObject as ResourceObject,
             })
         }
     }
@@ -1178,42 +1194,96 @@ const useDataEdits = (): {
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams))
 
         if (currentEditIndex <= 0) {
-            // If the current edit is the first one or not found, redo the last edit.
             const lastEdit = caseEditsBelongingToCurrentCase[caseEditsBelongingToCurrentCase.length - 1]
 
             if (lastEdit) {
                 updateEditIndex(lastEdit.uuid)
-                submitToApi(
-                    {
-                        projectId: lastEdit.projectId,
-                        caseId: lastEdit.caseId!,
-                        resourceProfileId: lastEdit.resourceProfileId,
-                        resourceName: lastEdit.resourceName,
-                        resourcePropertyKey: lastEdit.resourcePropertyKey,
-                        value: lastEdit.newValue as string,
-                        resourceId: lastEdit.resourceId,
-                        resourceObject: lastEdit.newResourceObject as ResourceObject,
-                    },
-                )
+                const projectUrl = location.pathname.split("/case")[0]
+                navigate(`${projectUrl}/case/${caseId}/${lastEdit.tabName ?? ""}`)
+
+                setTimeout(() => {
+                    let rowWhereCellWillBeUndone
+                    if (lastEdit.tableName) {
+                        rowWhereCellWillBeUndone = lastEdit.tableName
+                    } else {
+                        rowWhereCellWillBeUndone = lastEdit.inputFieldId
+                    }
+
+                    if (rowWhereCellWillBeUndone) {
+                        const tabElement = document.getElementById(rowWhereCellWillBeUndone)
+
+                        if (tabElement) {
+                            tabElement.scrollIntoView({ behavior: "smooth" })
+
+                            tabElement.classList.add("highlighted")
+
+                            setTimeout(() => {
+                                tabElement.classList.remove("highlighted")
+                            }, 3000)
+                        } else {
+                            console.error(`Element with id ${rowWhereCellWillBeUndone} not found`)
+                        }
+                    } else {
+                        console.error("rowWhereCellWillBeUndone is undefined")
+                    }
+                }, 100)
+
+                submitToApi({
+                    projectId: lastEdit.projectId,
+                    caseId: lastEdit.caseId!,
+                    resourceProfileId: lastEdit.resourceProfileId,
+                    resourceName: lastEdit.resourceName,
+                    resourcePropertyKey: lastEdit.resourcePropertyKey,
+                    value: lastEdit.newValue as string,
+                    resourceId: lastEdit.resourceId,
+                    resourceObject: lastEdit.newResourceObject as ResourceObject,
+                })
             }
         } else {
-            // Otherwise, redo the previous edit.
             const updatedEdit = caseEditsBelongingToCurrentCase[currentEditIndex - 1]
             updateEditIndex(updatedEdit.uuid)
 
             if (updatedEdit) {
-                submitToApi(
-                    {
-                        projectId: updatedEdit.projectId,
-                        caseId: updatedEdit.caseId!,
-                        resourceProfileId: updatedEdit.resourceProfileId,
-                        resourceName: updatedEdit.resourceName,
-                        resourcePropertyKey: updatedEdit.resourcePropertyKey,
-                        value: updatedEdit.newValue as string,
-                        resourceId: updatedEdit.resourceId,
-                        resourceObject: updatedEdit.newResourceObject as ResourceObject,
-                    },
-                )
+                const projectUrl = location.pathname.split("/case")[0]
+                navigate(`${projectUrl}/case/${caseId}/${updatedEdit.tabName ?? ""}`)
+
+                setTimeout(() => {
+                    let rowWhereCellWillBeUndone
+                    if (updatedEdit.tableName) {
+                        rowWhereCellWillBeUndone = updatedEdit.tableName
+                    } else {
+                        rowWhereCellWillBeUndone = updatedEdit.inputFieldId
+                    }
+
+                    if (rowWhereCellWillBeUndone) {
+                        const tabElement = document.getElementById(rowWhereCellWillBeUndone)
+
+                        if (tabElement) {
+                            tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
+
+                            tabElement.classList.add("highlighted")
+
+                            setTimeout(() => {
+                                tabElement.classList.remove("highlighted")
+                            }, 3000)
+                        } else {
+                            console.error(`Element with id ${rowWhereCellWillBeUndone} not found`)
+                        }
+                    } else {
+                        console.error("rowWhereCellWillBeUndone is undefined")
+                    }
+                }, 1000)
+
+                submitToApi({
+                    projectId: updatedEdit.projectId,
+                    caseId: updatedEdit.caseId!,
+                    resourceProfileId: updatedEdit.resourceProfileId,
+                    resourceName: updatedEdit.resourceName,
+                    resourcePropertyKey: updatedEdit.resourcePropertyKey,
+                    value: updatedEdit.newValue as string,
+                    resourceId: updatedEdit.resourceId,
+                    resourceObject: updatedEdit.newResourceObject as ResourceObject,
+                })
             }
         }
     }

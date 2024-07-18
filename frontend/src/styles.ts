@@ -100,4 +100,10 @@ export default createGlobalStyle`
       .red-cell {
         background-color: #FFC0C1 !important;
     }
+
+    .highlighted {
+    background-color: yellow;
+    transition: background-color 0.5s ease;
+}
+
 `
