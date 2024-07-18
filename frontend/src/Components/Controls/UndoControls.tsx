@@ -4,11 +4,11 @@ import {
 } from "@equinor/eds-core-react"
 import { check_circle_outlined, undo, redo } from "@equinor/eds-icons"
 import styled from "styled-components"
-import { useIsFetching } from "react-query"
 import { useParams } from "react-router-dom"
 import useDataEdits from "../../Hooks/useDataEdits"
 import { useCaseContext } from "../../Context/CaseContext"
 import { getCurrentEditId } from "../../Utils/common"
+import { useAppContext } from "../../Context/AppContext"
 
 const Container = styled.div`
    display: flex;
@@ -28,18 +28,13 @@ const UndoControls: React.FC = () => {
         editIndexes,
         caseEditsBelongingToCurrentCase,
     } = useCaseContext()
-    const { caseId } = useParams()
-
-    const isFetching = useIsFetching()
-
     const { undoEdit, redoEdit } = useDataEdits()
+    const { caseId } = useParams()
+    const { isSaving } = useAppContext()
 
     const currentEditId = getCurrentEditId(editIndexes, caseId)
 
     const canUndo = () => {
-        if (isFetching) {
-            return false
-        }
         if (!currentEditId || !caseEditsBelongingToCurrentCase) {
             return false
         }
@@ -49,13 +44,10 @@ const UndoControls: React.FC = () => {
     }
 
     const canRedo = () => {
-        if (isFetching) {
-            return false
-        }
-
         if (!caseEditsBelongingToCurrentCase) {
             return false
         }
+
         if (!currentEditId && caseEditsBelongingToCurrentCase.length > 0) {
             return true
         }
@@ -63,21 +55,6 @@ const UndoControls: React.FC = () => {
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === currentEditId)
         return currentEditIndex < caseEditsBelongingToCurrentCase.length && currentEditIndex > 0
     }
-
-    const [saving, setSaving] = useState(false)
-
-    const startCountDown = () => {
-        setSaving(true)
-        setTimeout(() => {
-            setSaving(false)
-        }, 500)
-    }
-
-    useEffect(() => {
-        if (isFetching) {
-            startCountDown()
-        }
-    }, [isFetching])
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -110,7 +87,7 @@ const UndoControls: React.FC = () => {
     return (
         <Container>
             {
-                saving
+                isSaving
                     ? (
                         <Status>
                             <CircularProgress value={0} size={16} />
@@ -126,8 +103,6 @@ const UndoControls: React.FC = () => {
                         </Tooltip>
                     )
             }
-            {/* comment out for qa release
-
             <Tooltip title={canUndo() ? "Undo" : "No changes to undo"}>
                 <Button
                     variant="ghost_icon"
@@ -146,7 +121,6 @@ const UndoControls: React.FC = () => {
                     <Icon data={redo} />
                 </Button>
             </Tooltip>
-            {/* comment out for qa release */}
         </Container>
     )
 }

@@ -48,6 +48,8 @@ public class ProjectService : IProjectService
         var existingProject = await _projectRepository.GetProjectWithCases(projectId)
             ?? throw new NotFoundInDBException($"Project {projectId} not found");
 
+        existingProject.ModifyTime = DateTimeOffset.UtcNow;
+
         _mapperService.MapToEntity(projectDto, existingProject, projectId);
 
         try
@@ -296,14 +298,43 @@ public class ProjectService : IProjectService
 
     public async Task<Project> GetProject(Guid projectId)
     {
-        if (_context.Projects != null)
-        {
-            if (projectId == Guid.Empty)
-            {
-                throw new NotFoundInDBException($"Project {projectId} not found");
-            }
 
-            var project = await _context.Projects!
+        if (projectId == Guid.Empty)
+        {
+            throw new NotFoundInDBException($"Project {projectId} not found");
+        }
+
+        var project = await _context.Projects
+            .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
+            .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudiesOverride)
+            .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudies)
+            .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudiesOverride)
+            .Include(p => p.Cases)!.ThenInclude(c => c.TotalOtherStudiesCostProfile)
+            .Include(p => p.Cases)!.ThenInclude(c => c.WellInterventionCostProfile)
+            .Include(p => p.Cases)!.ThenInclude(c => c.WellInterventionCostProfileOverride)
+            .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfile)
+            .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+            .Include(p => p.Cases)!.ThenInclude(c => c.HistoricCostCostProfile)
+            .Include(p => p.Cases)!.ThenInclude(c => c.OnshoreRelatedOPEXCostProfile)
+            .Include(p => p.Cases)!.ThenInclude(c => c.AdditionalOPEXCostProfile)
+            .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCost)
+            .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCostOverride)
+            .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCost)
+            .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCostOverride)
+            .Include(p => p.Cases)!.ThenInclude(c => c.CessationOnshoreFacilitiesCostProfile)
+            .Include(p => p.Wells)
+            .Include(p => p.ExplorationOperationalWellCosts)
+            .Include(p => p.DevelopmentOperationalWellCosts)
+            .FirstOrDefaultAsync(p => p.Id.Equals(projectId));
+
+        if (project?.Cases?.Count > 0)
+        {
+            project.Cases = project.Cases.OrderBy(c => c.CreateTime).ToList();
+        }
+
+        if (project == null)
+        {
+            var projectByFusionId = await _context.Projects
                 .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
                 .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudiesOverride)
                 .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudies)
@@ -324,62 +355,38 @@ public class ProjectService : IProjectService
                 .Include(p => p.Wells)
                 .Include(p => p.ExplorationOperationalWellCosts)
                 .Include(p => p.DevelopmentOperationalWellCosts)
-                .FirstOrDefaultAsync(p => p.Id.Equals(projectId));
+                .FirstOrDefaultAsync(p => p.FusionProjectId.Equals(projectId));
 
-            if (project?.Cases?.Count > 0)
+            if (projectByFusionId == null)
             {
-                project.Cases = project.Cases.OrderBy(c => c.CreateTime).ToList();
+                throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
             }
 
-            if (project == null)
-            {
-                var projectByFusionId = await _context.Projects!
-                    .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudiesOverride)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudies)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudiesOverride)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.TotalOtherStudiesCostProfile)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.WellInterventionCostProfile)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.WellInterventionCostProfileOverride)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfile)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.HistoricCostCostProfile)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.OnshoreRelatedOPEXCostProfile)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.AdditionalOPEXCostProfile)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCost)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCostOverride)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCost)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCostOverride)
-                    .Include(p => p.Cases)!.ThenInclude(c => c.CessationOnshoreFacilitiesCostProfile)
-                    .Include(p => p.Wells)
-                    .Include(p => p.ExplorationOperationalWellCosts)
-                    .Include(p => p.DevelopmentOperationalWellCosts)
-                    .FirstOrDefaultAsync(p => p.FusionProjectId.Equals(projectId));
-
-                if (projectByFusionId == null)
-                {
-                    throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
-                }
-
-                project = projectByFusionId;
-            }
-
-            Activity.Current?.AddBaggage(nameof(projectId), JsonConvert.SerializeObject(projectId, Formatting.None,
-                new JsonSerializerSettings
-                {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                }));
-            await AddAssetsToProject(project);
-            return project;
+            project = projectByFusionId;
         }
 
-        _logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
-        throw new NotFoundInDBException("The database contains no projects");
+        Activity.Current?.AddBaggage(nameof(projectId), JsonConvert.SerializeObject(projectId, Formatting.None,
+            new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            }));
+        await AddAssetsToProject(project);
+        return project;
     }
 
     public async Task<ProjectWithAssetsDto> GetProjectDto(Guid projectId)
     {
         var project = await GetProject(projectId);
+
+        DateTimeOffset projectLastUpdated;
+        if (project.Cases?.Count > 0)
+        {
+            projectLastUpdated = new[] { project.ModifyTime }.Concat(project.Cases.Select(c => c.ModifyTime)).Max();
+        }
+        else
+        {
+            projectLastUpdated = project.ModifyTime;
+        }
 
         var destination = _mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 
@@ -389,6 +396,8 @@ public class ProjectService : IProjectService
         {
             throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
         }
+
+        projectDto.ModifyTime = projectLastUpdated;
 
         Activity.Current?.AddBaggage(nameof(projectDto), JsonConvert.SerializeObject(projectDto, Formatting.None,
             new JsonSerializerSettings

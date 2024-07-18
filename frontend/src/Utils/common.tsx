@@ -209,6 +209,22 @@ export function formatDate(isoDateString: string): string {
     return new Intl.DateTimeFormat("no-NO", options).format(date)
 }
 
+export const formatDateAndTime = (dateString: string | undefined | null) => {
+    if (!dateString) { return "" }
+    const date = new Date(dateString)
+    const options: Intl.DateTimeFormatOptions = {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+    }
+    return new Intl.DateTimeFormat("en-GB", options)
+        .format(date)
+        .replace(",", "")
+}
+
 export const isWithinRange = (number: number, max: number, min: number) => number >= max && number <= min
 
 export const preventNonDigitInput = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -255,16 +271,15 @@ export const tableCellisEditable = (params: any, editMode: boolean): boolean => 
     return editMode && params.data.editable
 }
 
-export const numberValueParser = (params: { newValue: any }) => {
+export const numberValueParser = (setSnackBarMessage: Dispatch<SetStateAction<string | undefined>>, params: { newValue: any }) => {
     const { newValue } = params
-    if (typeof newValue === "string" && newValue !== "") {
-        const processedValue = newValue.replace(/\s/g, "").replace(/,/g, ".")
-        const numberValue = Number(processedValue)
-        if (!Number.isNaN(numberValue)) {
-            return numberValue
-        }
+    const valueWithOnlyNumbersCommasAndDots = newValue.toString().replace(/[^0-9.,]/g, "")
+
+    if (valueWithOnlyNumbersCommasAndDots !== newValue) {
+        setSnackBarMessage("Only numbers, commas and dots are allowed. Invalid characters have been removed.")
     }
-    return newValue
+
+    return valueWithOnlyNumbersCommasAndDots
 }
 
 export const getCaseRowStyle = (params: any) => {
@@ -356,17 +371,19 @@ export const extractTableTimeSeriesValues = (data: any) => {
 export const generateProfile = (
     tableTimeSeriesValues: { year: number, value: number }[],
     profile: any,
-    startYearOffset: number,
+    startYear: number,
+    firstYear: number,
+    lastYear: number,
 ) => {
-    if (tableTimeSeriesValues.length === 0) {
-        return null
-    }
-
-    const firstYear = tableTimeSeriesValues[0].year
-    const lastYear = tableTimeSeriesValues[tableTimeSeriesValues.length - 1].year
-
-    const startYear = firstYear - startYearOffset
     const values: number[] = []
+
+    if (tableTimeSeriesValues.length === 0) {
+        return {
+            ...profile,
+            startYear,
+            values: [],
+        }
+    }
 
     for (let year = firstYear; year <= lastYear; year += 1) {
         const tableTimeSeriesValue = tableTimeSeriesValues.find((v) => v.year === year)

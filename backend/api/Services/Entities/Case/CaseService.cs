@@ -145,7 +145,9 @@ public class CaseService : ICaseService
         _mapper.Map(updatedCaseDto, caseItem);
 
         _context.Cases!.Update(caseItem);
+        await _repository.UpdateModifyTime(caseId);
         await _context.SaveChangesAsync();
+
         return await _projectService.GetProjectDto(caseItem.ProjectId);
     }
 
@@ -217,16 +219,12 @@ public class CaseService : ICaseService
         var existingCase = await _repository.GetCase(caseId)
             ?? throw new NotFoundInDBException($"Case with id {caseId} not found.");
 
-
         _mapperService.MapToEntity(updatedCaseDto, existingCase, caseId);
 
         existingCase.ModifyTime = DateTimeOffset.UtcNow;
 
-        // Case updatedCase;
         try
         {
-            // TODO: This breaks EF Core's change tracking
-            // updatedCase = _repository.UpdateCase(existingCase);
             await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
@@ -235,6 +233,7 @@ public class CaseService : ICaseService
             throw;
         }
 
+        await _repository.UpdateModifyTime(caseId);
         var dto = _mapperService.MapToDto<Case, CaseDto>(existingCase, caseId);
         return dto;
     }

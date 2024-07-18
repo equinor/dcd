@@ -25,7 +25,8 @@ const {
 } = Tabs
 
 const EditTechnicalInputModal = () => {
-    const { isSaving, setIsSaving, editMode } = useAppContext()
+    const { editMode } = useAppContext()
+    const [isSaving, setIsSaving] = useState<boolean>(false)
     const { project, setProject } = useProjectContext()
     const {
         technicalModalIsOpen,

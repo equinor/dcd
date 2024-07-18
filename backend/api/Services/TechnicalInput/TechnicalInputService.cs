@@ -4,6 +4,7 @@ using api.Adapters;
 using api.Context;
 using api.Dtos;
 using api.Models;
+using api.Repositories;
 
 using AutoMapper;
 
@@ -20,6 +21,7 @@ public class TechnicalInputService : ITechnicalInputService
     private readonly ICostProfileFromDrillingScheduleHelper _costProfileFromDrillingScheduleHelper;
     private readonly ILogger<TechnicalInputService> _logger;
     private readonly IMapper _mapper;
+
 
     public TechnicalInputService(
         DcdDbContext context,
@@ -186,7 +188,8 @@ public class TechnicalInputService : ITechnicalInputService
     private async Task<ProjectWithAssetsDto> UpdateProject(Project project, UpdateProjectDto updatedDto)
     {
         _mapper.Map(updatedDto, project);
-        var updatedItem = _context.Projects!.Update(project);
+        project.ModifyTime = DateTimeOffset.UtcNow;
+
         await _context.SaveChangesAsync();
 
         var projectDto = _mapper.Map<ProjectWithAssetsDto>(updatedItem.Entity, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
