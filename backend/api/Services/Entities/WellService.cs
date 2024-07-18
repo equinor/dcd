@@ -121,7 +121,7 @@ public class WellService : IWellService
 
     public async Task<IEnumerable<CaseDto>> GetAffectedCases(Guid wellId)
     {
-        var _ = await _repository.GetWell(wellId)
+        _ = await _repository.GetWell(wellId)
             ?? throw new NotFoundInDBException($"Well with id {wellId} not found");
 
         var cases = await _repository.GetCasesAffectedByDeleteWell(wellId);
