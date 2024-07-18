@@ -28,7 +28,7 @@ public class STEAService : ISTEAService
     {
         var project = await _projectService.GetProject(ProjectId);
         var sTEACaseDtos = new List<STEACaseDto>();
-        var projectDto = _mapper.Map<Project, ProjectDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+        var projectDto = _mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
         foreach (Case c in project.Cases!)
         {
             var caseDto = _mapper.Map<CaseWithProfilesDto>(c);

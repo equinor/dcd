@@ -5,5 +5,5 @@ namespace api.Services;
 
 public interface IDuplicateCaseService
 {
-    Task<ProjectDto> DuplicateCase(Guid caseId);
+    Task<ProjectWithAssetsDto> DuplicateCase(Guid caseId);
 }

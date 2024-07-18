@@ -358,7 +358,7 @@ public class ProspExcelImportService
         await _transportTimeSeriesService.AddOrUpdateTransportCostProfile(sourceCaseId, transportLink, costProfile);
     }
 
-    public async Task<ProjectDto> ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets,
+    public async Task<ProjectWithAssetsDto> ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets,
         string sharepointFileId, string? sharepointFileName, string? sharepointFileUrl)
     {
         using var document = SpreadsheetDocument.Open(stream, false);

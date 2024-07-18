@@ -4,7 +4,7 @@ using api.Models;
 
 namespace api.Dtos;
 
-public class ProjectDto
+public class ProjectWithAssetsDto : IEquatable<ProjectWithAssetsDto>
 {
     [Required]
     public ProjectClassification Classification { get; set; }
@@ -74,13 +74,14 @@ public class ProjectDto
     [Required]
     public DateTimeOffset ModifyTime { get; set; }
 
-    public bool Equals(ProjectDto projectDto)
+    public bool Equals(ProjectWithAssetsDto? projectDto)
     {
-        return Name == projectDto.Name &&
-               CommonLibraryName == projectDto.CommonLibraryName &&
-               FusionProjectId == projectDto.FusionProjectId &&
-               Country == projectDto.Country && Id == projectDto.Id &&
-               ProjectCategory == projectDto.ProjectCategory &&
-               ProjectPhase == projectDto.ProjectPhase;
+        return Name == projectDto?.Name &&
+               CommonLibraryName == projectDto?.CommonLibraryName &&
+               FusionProjectId == projectDto?.FusionProjectId &&
+               Country == projectDto?.Country &&
+               Id == projectDto?.Id &&
+               ProjectCategory == projectDto?.ProjectCategory &&
+               ProjectPhase == projectDto?.ProjectPhase;
     }
 }

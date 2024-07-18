@@ -7,7 +7,7 @@ namespace api.Adapters;
 
 public static class STEAProjectDtoBuilder
 {
-    public static STEAProjectDto Build(ProjectDto project, List<STEACaseDto> sTEACaseDtos)
+    public static STEAProjectDto Build(ProjectWithAssetsDto project, List<STEACaseDto> sTEACaseDtos)
     {
         var sTEAprojectDto = new STEAProjectDto
         {
