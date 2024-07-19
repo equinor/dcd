@@ -1126,6 +1126,7 @@ const useDataEdits = (): {
     }
 
     const { caseId } = useParams()
+
     const undoEdit = async () => {
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex(
             (edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams),
@@ -1151,14 +1152,9 @@ const useDataEdits = (): {
                     return
                 }
                 tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
-
-                const handleTransitionEnd = () => {
-                    resolve()
-                    tabElement.removeEventListener("transitionend", handleTransitionEnd)
-                }
-                tabElement.addEventListener("transitionend", handleTransitionEnd)
-                setTimeout(resolve, 500)
+                resolve()
             })
+
             // Føler dette er dårlig kode at jeg må sjekke så mange forskjellige verdier,
             // men det var løsningen jeg kom fram til for å få scrollToElement til å fungere på alle de ulike tables,
             // inputfields, markdown osv
@@ -1181,13 +1177,13 @@ const useDataEdits = (): {
                                 tabElement.classList.add("highlighted")
                                 setTimeout(() => {
                                     tabElement.classList.remove("highlighted")
-                                }, 3000)
+                                }, 2000)
                             }
                         } else {
                             tabElement.classList.add("highlighted")
                             setTimeout(() => {
                                 tabElement.classList.remove("highlighted")
-                            }, 3000)
+                            }, 2000)
                         }
                     }
 
@@ -1206,7 +1202,7 @@ const useDataEdits = (): {
                 } catch (error) {
                     console.error(error)
                 }
-            }, 1000)
+            }, 500)
         }
     }
 
@@ -1232,16 +1228,11 @@ const useDataEdits = (): {
                     }
 
                     tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
-
-                    const handleTransitionEnd = () => {
-                        resolve()
-                        tabElement.removeEventListener("transitionend", handleTransitionEnd)
-                    }
-                    tabElement.addEventListener("transitionend", handleTransitionEnd)
-                    setTimeout(resolve, 500)
+                    resolve()
                 })
 
                 const rowWhereCellWillBeUndone = lastEdit.tableName ?? lastEdit.inputFieldId ?? lastEdit.inputLabel ?? lastEdit.resourcePropertyKey
+
                 if (!rowWhereCellWillBeUndone) {
                     console.error("rowWhereCellWillBeUndone is undefined")
                     return
@@ -1256,7 +1247,7 @@ const useDataEdits = (): {
                             tabElement.classList.add("highlighted")
                             setTimeout(() => {
                                 tabElement.classList.remove("highlighted")
-                            }, 3000)
+                            }, 2000)
                         }
 
                         await submitToApi({
@@ -1274,7 +1265,7 @@ const useDataEdits = (): {
                     } catch (error) {
                         console.error(error)
                     }
-                }, 1000)
+                }, 500)
             }
         } else {
             const updatedEdit = caseEditsBelongingToCurrentCase[currentEditIndex - 1]
@@ -1292,12 +1283,7 @@ const useDataEdits = (): {
                         return
                     }
                     tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
-                    const handleTransitionEnd = () => {
-                        resolve()
-                        tabElement.removeEventListener("transitionend", handleTransitionEnd)
-                    }
-                    tabElement.addEventListener("transitionend", handleTransitionEnd)
-                    setTimeout(resolve, 500)
+                    resolve()
                 })
 
                 const rowWhereCellWillBeUndone = updatedEdit.tableName ?? updatedEdit.inputFieldId ?? updatedEdit.inputLabel ?? updatedEdit.resourcePropertyKey
@@ -1314,7 +1300,7 @@ const useDataEdits = (): {
                             tabElement.classList.add("highlighted")
                             setTimeout(() => {
                                 tabElement.classList.remove("highlighted")
-                            }, 3000)
+                            }, 2000)
 
                             await submitToApi({
                                 projectId: updatedEdit.projectId,
@@ -1332,7 +1318,7 @@ const useDataEdits = (): {
                     } catch (error) {
                         console.error(error)
                     }
-                }, 1000)
+                }, 500)
             }
         }
     }
