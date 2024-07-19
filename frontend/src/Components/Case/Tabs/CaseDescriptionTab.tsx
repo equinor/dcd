@@ -16,7 +16,7 @@ const CaseDescriptionTab = () => {
     const { project } = useProjectContext()
     const { editMode } = useAppContext()
     const { addEdit } = useDataEdits()
-    const { caseId } = useParams()
+    const { caseId, tab } = useParams()
     const queryClient = useQueryClient()
     const projectId = project?.id || null
 
@@ -71,6 +71,7 @@ const CaseDescriptionTab = () => {
             resourcePropertyKey: "description",
             resourceId: "",
             caseId: caseData.id,
+            tabName: tab,
         })
         setDescription(newValue)
     }
@@ -85,6 +86,7 @@ const CaseDescriptionTab = () => {
                         menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
                         value={description}
                         onBlur={(e) => handleBlur(e)}
+                        id="Description"
                     />
                 ) : (
                     <MarkdownViewer value={caseData.description ?? ""} />
@@ -99,6 +101,7 @@ const CaseDescriptionTab = () => {
                     integer
                     min={0}
                     max={100000}
+                    resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
@@ -111,6 +114,7 @@ const CaseDescriptionTab = () => {
                     disabled={false}
                     min={0}
                     max={100000}
+                    resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
@@ -122,6 +126,7 @@ const CaseDescriptionTab = () => {
                     integer
                     min={0}
                     max={100000}
+                    resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
@@ -131,6 +136,7 @@ const CaseDescriptionTab = () => {
                     resourcePropertyKey="productionStrategyOverview"
                     options={productionStrategyOptions}
                     label="Production strategy overview"
+                    resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
@@ -140,6 +146,7 @@ const CaseDescriptionTab = () => {
                     resourcePropertyKey="artificialLift"
                     options={artificialLiftOptions}
                     label="Artificial lift"
+                    resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
@@ -152,6 +159,7 @@ const CaseDescriptionTab = () => {
                     unit="%"
                     min={0}
                     max={100}
+                    resourceId={caseData.id}
                 />
             </Grid>
         </Grid>

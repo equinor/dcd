@@ -1120,6 +1120,7 @@ const useDataEdits = (): {
 
         if (success && caseId) {
             editInstanceObject.resourceProfileId = success.resourceProfileId
+            editInstanceObject.drillingScheduleId = success.resourceProfileId
             addToHistoryTracker(editInstanceObject, caseId)
         }
     }
@@ -1137,30 +1138,31 @@ const useDataEdits = (): {
         const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
 
         updateEditIndex(updatedEdit ? updatedEdit.uuid : "")
-        console.log("1", editThatWillBeUndone)
 
         if (editThatWillBeUndone) {
             const projectUrl = location.pathname.split("/case")[0]
             navigate(`${projectUrl}/case/${caseId}/${editThatWillBeUndone.tabName ?? ""}`)
 
             const scrollToElement = (elementId: string): Promise<void> => new Promise((resolve, reject) => {
-                    const tabElement = document.getElementById(elementId)
+                const tabElement = document.getElementById(elementId)
 
-                    if (!tabElement) {
-                        reject(new Error(`Element with id ${elementId} not found`))
-                        return
-                    }
-                    tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
+                if (!tabElement) {
+                    reject(new Error(`Element with id ${elementId} not found`))
+                    return
+                }
+                tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
 
-                    const handleTransitionEnd = () => {
-                        resolve()
-                        tabElement.removeEventListener("transitionend", handleTransitionEnd)
-                    }
-                    tabElement.addEventListener("transitionend", handleTransitionEnd)
-                    setTimeout(resolve, 500)
-                })
-
-            const rowWhereCellWillBeUndone = editThatWillBeUndone.tableName ?? editThatWillBeUndone.inputFieldId
+                const handleTransitionEnd = () => {
+                    resolve()
+                    tabElement.removeEventListener("transitionend", handleTransitionEnd)
+                }
+                tabElement.addEventListener("transitionend", handleTransitionEnd)
+                setTimeout(resolve, 500)
+            })
+            // Føler dette er dårlig kode at jeg må sjekke så mange forskjellige verdier,
+            // men det var løsningen jeg kom fram til for å få scrollToElement til å fungere på alle de ulike tables,
+            // inputfields, markdown osv
+            const rowWhereCellWillBeUndone = editThatWillBeUndone.tableName ?? editThatWillBeUndone.inputFieldId ?? editThatWillBeUndone.inputLabel ?? editThatWillBeUndone.resourcePropertyKey
 
             if (!rowWhereCellWillBeUndone) {
                 console.error("rowWhereCellWillBeUndone is undefined")
@@ -1170,7 +1172,6 @@ const useDataEdits = (): {
             setTimeout(async () => {
                 try {
                     await scrollToElement(rowWhereCellWillBeUndone)
-                    console.log("3", rowWhereCellWillBeUndone)
 
                     const tabElement = document.getElementById(rowWhereCellWillBeUndone)
                     if (tabElement) {
@@ -1223,25 +1224,24 @@ const useDataEdits = (): {
                 navigate(`${projectUrl}/case/${caseId}/${lastEdit.tabName ?? ""}`)
 
                 const scrollToElement = (elementId: string): Promise<void> => new Promise((resolve, reject) => {
-                        const tabElement = document.getElementById(elementId)
+                    const tabElement = document.getElementById(elementId)
 
-                        if (!tabElement) {
-                            reject(new Error(`Element with id ${elementId} not found`))
-                            return
-                        }
+                    if (!tabElement) {
+                        reject(new Error(`Element with id ${elementId} not found`))
+                        return
+                    }
 
-                        tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
+                    tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
 
-                        const handleTransitionEnd = () => {
-                            resolve()
-                            tabElement.removeEventListener("transitionend", handleTransitionEnd)
-                        }
-                        tabElement.addEventListener("transitionend", handleTransitionEnd)
-                        setTimeout(resolve, 500)
-                    })
+                    const handleTransitionEnd = () => {
+                        resolve()
+                        tabElement.removeEventListener("transitionend", handleTransitionEnd)
+                    }
+                    tabElement.addEventListener("transitionend", handleTransitionEnd)
+                    setTimeout(resolve, 500)
+                })
 
-                const rowWhereCellWillBeUndone = lastEdit.tableName ?? lastEdit.inputFieldId
-
+                const rowWhereCellWillBeUndone = lastEdit.tableName ?? lastEdit.inputFieldId ?? lastEdit.inputLabel ?? lastEdit.resourcePropertyKey
                 if (!rowWhereCellWillBeUndone) {
                     console.error("rowWhereCellWillBeUndone is undefined")
                     return
@@ -1285,25 +1285,23 @@ const useDataEdits = (): {
                 navigate(`${projectUrl}/case/${caseId}/${updatedEdit.tabName ?? ""}`)
 
                 const scrollToElement = (elementId: string): Promise<void> => new Promise((resolve, reject) => {
-                        const tabElement = document.getElementById(elementId)
+                    const tabElement = document.getElementById(elementId)
 
-                        if (!tabElement) {
-                            reject(new Error(`Element with id ${elementId} not found`))
-                            return
-                        }
-                        tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
-                        const handleTransitionEnd = () => {
-                            resolve()
-                            tabElement.removeEventListener("transitionend", handleTransitionEnd)
-                        }
-                        tabElement.addEventListener("transitionend", handleTransitionEnd)
-                        setTimeout(resolve, 500)
-                    })
+                    if (!tabElement) {
+                        reject(new Error(`Element with id ${elementId} not found`))
+                        return
+                    }
+                    tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
+                    const handleTransitionEnd = () => {
+                        resolve()
+                        tabElement.removeEventListener("transitionend", handleTransitionEnd)
+                    }
+                    tabElement.addEventListener("transitionend", handleTransitionEnd)
+                    setTimeout(resolve, 500)
+                })
 
-                const rowWhereCellWillBeUndone = updatedEdit.tableName ?? updatedEdit.inputFieldId
-
+                const rowWhereCellWillBeUndone = updatedEdit.tableName ?? updatedEdit.inputFieldId ?? updatedEdit.inputLabel ?? updatedEdit.resourcePropertyKey
                 if (!rowWhereCellWillBeUndone) {
-                    console.error("rowWhereCellWillBeUndone is undefined")
                     return
                 }
 
@@ -1327,6 +1325,8 @@ const useDataEdits = (): {
                                 value: updatedEdit.newValue as string,
                                 resourceId: updatedEdit.resourceId,
                                 resourceObject: updatedEdit.newResourceObject as ResourceObject,
+                                wellId: updatedEdit.wellId,
+                                drillingScheduleId: updatedEdit.drillingScheduleId,
                             })
                         }
                     } catch (error) {
