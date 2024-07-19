@@ -1199,6 +1199,8 @@ const useDataEdits = (): {
                         value: editThatWillBeUndone.previousValue as string,
                         resourceId: editThatWillBeUndone.resourceId,
                         resourceObject: editThatWillBeUndone.previousResourceObject as ResourceObject,
+                        wellId: editThatWillBeUndone.wellId,
+                        drillingScheduleId: editThatWillBeUndone.drillingScheduleId,
                     })
                 } catch (error) {
                     console.error(error)
@@ -1266,6 +1268,8 @@ const useDataEdits = (): {
                             value: lastEdit.newValue as string,
                             resourceId: lastEdit.resourceId,
                             resourceObject: lastEdit.newResourceObject as ResourceObject,
+                            wellId: lastEdit.wellId,
+                            drillingScheduleId: lastEdit.drillingScheduleId,
                         })
                     } catch (error) {
                         console.error(error)
