@@ -14,6 +14,7 @@ import { useProjectContext } from "../../Context/ProjectContext"
 import { useAppContext } from "../../Context/AppContext"
 import Modal from "../Modal/Modal"
 import { cellStyleRightAlign } from "../../Utils/common"
+import { GetWellService } from "../../Services/WellService"
 
 interface Props {
     wells: Components.Schemas.WellDto[] | undefined
@@ -149,8 +150,10 @@ const WellListEditTechnicalInput = ({
     const deleteWellRenderer = (p: any) => (
         <Button
             variant="ghost_icon"
-            onClick={() => {
-                const wellIsInUse = false // todo: check if well is in use
+            onClick={async () => {
+                if (!project) { return }
+                const wellsInUse = await (await GetWellService()).checkWellIsInUse(project.id, p.data.id)
+                const wellIsInUse = wellsInUse.length > 0
                 if (wellIsInUse) {
                     setWellStagedForDeletion(p)
                 } else {

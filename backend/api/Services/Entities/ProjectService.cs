@@ -23,11 +23,15 @@ public class ProjectService : IProjectService
     private readonly IFusionService? _fusionService;
     private readonly ILogger<ProjectService> _logger;
     private readonly IMapper _mapper;
+    private readonly IMapperService _mapperService;
+    private readonly IProjectRepository _projectRepository;
 
     public ProjectService(
         DcdDbContext context,
         ILoggerFactory loggerFactory,
         IMapper mapper,
+        IProjectRepository projectRepository,
+        IMapperService mapperService,
         FusionService? fusionService = null
         )
     {
@@ -35,22 +39,86 @@ public class ProjectService : IProjectService
         _logger = loggerFactory.CreateLogger<ProjectService>();
         _fusionService = fusionService;
         _mapper = mapper;
+        _projectRepository = projectRepository;
+        _mapperService = mapperService;
     }
 
-    public async Task<ProjectDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto)
+    public async Task<ProjectWithCasesDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto)
     {
-        var existingProject = await GetProject(projectId);
-
-        _mapper.Map(projectDto, existingProject);
+        var existingProject = await _projectRepository.GetProjectWithCases(projectId)
+            ?? throw new NotFoundInDBException($"Project {projectId} not found");
 
         existingProject.ModifyTime = DateTimeOffset.UtcNow;
 
-        await _context.SaveChangesAsync();
+        _mapperService.MapToEntity(projectDto, existingProject, projectId);
 
-        return await GetProjectDto(existingProject.Id);
+        try
+        {
+            await _projectRepository.SaveChangesAsync();
+        }
+        catch (DbUpdateException e)
+        {
+            _logger.LogError(e, "Failed to update project {projectId}", projectId);
+            throw;
+        }
+
+        var dto = _mapperService.MapToDto<Project, ProjectWithCasesDto>(existingProject, projectId);
+        return dto;
     }
 
-    public async Task<ProjectDto> UpdateProjectFromProjectMaster(ProjectDto projectDto)
+    public async Task<ExplorationOperationalWellCostsDto> UpdateExplorationOperationalWellCosts(
+        Guid projectId,
+        Guid explorationOperationalWellCostsId,
+        UpdateExplorationOperationalWellCostsDto dto
+    )
+    {
+        var existingExplorationOperationalWellCosts = await _projectRepository.GetExplorationOperationalWellCosts(explorationOperationalWellCostsId)
+            ?? throw new NotFoundInDBException($"ExplorationOperationalWellCosts {explorationOperationalWellCostsId} not found");
+
+        _mapperService.MapToEntity(dto, existingExplorationOperationalWellCosts, explorationOperationalWellCostsId);
+
+        try
+        {
+            await _projectRepository.UpdateModifyTime(projectId);
+            await _projectRepository.SaveChangesAsync();
+        }
+        catch (DbUpdateException e)
+        {
+            _logger.LogError(e, "Failed to update exploration operational well costs {explorationOperationalWellCostsId}", explorationOperationalWellCostsId);
+            throw;
+        }
+
+        var returnDto = _mapperService.MapToDto<ExplorationOperationalWellCosts, ExplorationOperationalWellCostsDto>(existingExplorationOperationalWellCosts, explorationOperationalWellCostsId);
+        return returnDto;
+    }
+
+    public async Task<DevelopmentOperationalWellCostsDto> UpdateDevelopmentOperationalWellCosts(
+        Guid projectId,
+        Guid developmentOperationalWellCostsId,
+        UpdateDevelopmentOperationalWellCostsDto dto
+    )
+    {
+        var existingDevelopmentOperationalWellCosts = await _projectRepository.GetDevelopmentOperationalWellCosts(developmentOperationalWellCostsId)
+            ?? throw new NotFoundInDBException($"DevelopmentOperationalWellCosts {developmentOperationalWellCostsId} not found");
+
+        _mapperService.MapToEntity(dto, existingDevelopmentOperationalWellCosts, developmentOperationalWellCostsId);
+
+        try
+        {
+            await _projectRepository.UpdateModifyTime(projectId);
+            await _projectRepository.SaveChangesAsync();
+        }
+        catch (DbUpdateException e)
+        {
+            _logger.LogError(e, "Failed to update development operational well costs {developmentOperationalWellCostsId}", developmentOperationalWellCostsId);
+            throw;
+        }
+
+        var returnDto = _mapperService.MapToDto<DevelopmentOperationalWellCosts, DevelopmentOperationalWellCostsDto>(existingDevelopmentOperationalWellCosts, developmentOperationalWellCostsId);
+        return returnDto;
+    }
+
+    public async Task<ProjectWithAssetsDto> UpdateProjectFromProjectMaster(ProjectWithAssetsDto projectDto)
     {
         var existingProject = await GetProject(projectDto.Id);
 
@@ -61,7 +129,7 @@ public class ProjectService : IProjectService
         return await GetProjectDto(existingProject.Id);
     }
 
-    public async Task<ProjectDto> CreateProject(Project project)
+    public async Task<ProjectWithAssetsDto> CreateProject(Project project)
     {
         project.CreateDate = DateTimeOffset.UtcNow;
         project.Cases = new List<Case>();
@@ -133,15 +201,15 @@ public class ProjectService : IProjectService
         return new List<Project>();
     }
 
-    public async Task<IEnumerable<ProjectDto>> GetAllDtos()
+    public async Task<IEnumerable<ProjectWithAssetsDto>> GetAllDtos()
     {
         var projects = await GetAll();
         if (projects != null)
         {
-            var projectDtos = new List<ProjectDto>();
+            var projectDtos = new List<ProjectWithAssetsDto>();
             foreach (var project in projects)
             {
-                var projectDto = _mapper.Map<ProjectDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+                var projectDto = _mapper.Map<ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
                 if (projectDto != null)
                 {
                     projectDtos.Add(projectDto);
@@ -157,7 +225,7 @@ public class ProjectService : IProjectService
             return projectDtos;
         }
 
-        return new List<ProjectDto>();
+        return new List<ProjectWithAssetsDto>();
     }
 
     public async Task<Project> GetProjectWithoutAssets(Guid projectId)
@@ -308,7 +376,7 @@ public class ProjectService : IProjectService
         return project;
     }
 
-    public async Task<ProjectDto> GetProjectDto(Guid projectId)
+    public async Task<ProjectWithAssetsDto> GetProjectDto(Guid projectId)
     {
         var project = await GetProject(projectId);
 
@@ -322,7 +390,7 @@ public class ProjectService : IProjectService
             projectLastUpdated = project.ModifyTime;
         }
 
-        var destination = _mapper.Map<Project, ProjectDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+        var destination = _mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 
         var projectDto = destination;
 
@@ -367,14 +435,14 @@ public class ProjectService : IProjectService
             numberOfDeviations, totalNumberOfProjects);
     }
 
-    private async Task<ProjectDto> GetProjectDtoFromProjectMaster(Guid projectGuid)
+    private async Task<ProjectWithAssetsDto> GetProjectDtoFromProjectMaster(Guid projectGuid)
     {
         if (_fusionService != null)
         {
             var projectMaster = await _fusionService.ProjectMasterAsync(projectGuid);
             // var category = CommonLibraryProjectDtoAdapter.ConvertCategory(projectMaster.ProjectCategory ?? "");
             // var phase = CommonLibraryProjectDtoAdapter.ConvertPhase(projectMaster.Phase ?? "");
-            ProjectDto projectDto = new()
+            ProjectWithAssetsDto projectDto = new()
             {
                 Name = projectMaster.Description ?? "",
                 CommonLibraryName = projectMaster.Description ?? "",

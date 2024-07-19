@@ -74,7 +74,7 @@ public class PROSPController : ControllerBase
 
     [HttpPost("{projectId}/sharepoint", Name = nameof(ImportFilesFromSharepointAsync))]
     [DisableRequestSizeLimit]
-    public async Task<ActionResult<ProjectDto>> ImportFilesFromSharepointAsync([FromQuery] Guid projectId,
+    public async Task<ActionResult<ProjectWithAssetsDto>> ImportFilesFromSharepointAsync([FromQuery] Guid projectId,
         [FromBody] SharePointImportDto[] dtos)
     {
         try

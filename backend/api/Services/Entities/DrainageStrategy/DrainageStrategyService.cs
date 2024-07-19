@@ -1,6 +1,5 @@
 using api.Context;
 using api.Dtos;
-using api.Enums;
 using api.Exceptions;
 using api.Models;
 using api.Repositories;

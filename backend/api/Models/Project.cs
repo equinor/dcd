@@ -56,8 +56,8 @@ public enum ProjectPhase
     Null,
     BidPreparations,
     BusinessIdentification,
-    BusinessPlanning,
-    ConceptPlanning,
+    BusinessPlanning, // DG0
+    ConceptPlanning, // DG1
     ConcessionNegotiations,
     Definition,
     Execution,

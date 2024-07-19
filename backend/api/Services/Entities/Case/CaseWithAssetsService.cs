@@ -1,18 +1,7 @@
-using System.Globalization;
-using System.Runtime.CompilerServices;
-
-using api.Adapters;
-using api.Context;
 using api.Dtos;
 using api.Exceptions;
-using api.Mappings;
 using api.Models;
 using api.Repositories;
-using api.Services.GenerateCostProfiles;
-
-using AutoMapper;
-
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 

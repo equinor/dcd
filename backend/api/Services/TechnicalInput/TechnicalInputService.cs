@@ -75,7 +75,7 @@ public class TechnicalInputService : ITechnicalInputService
         await _context.SaveChangesAsync();
 
         var returnProject = await _projectService.GetProject(projectId);
-        var returnProjectDto = _mapper.Map<ProjectDto>(returnProject, opts => opts.Items["ConversionUnit"] = returnProject.PhysicalUnit.ToString());
+        var returnProjectDto = _mapper.Map<ProjectWithAssetsDto>(returnProject, opts => opts.Items["ConversionUnit"] = returnProject.PhysicalUnit.ToString());
 
         if (returnProjectDto == null)
         {
@@ -185,14 +185,14 @@ public class TechnicalInputService : ITechnicalInputService
         }
         return well;
     }
-    private async Task<ProjectDto> UpdateProject(Project project, UpdateProjectDto updatedDto)
+    private async Task<ProjectWithAssetsDto> UpdateProject(Project project, UpdateProjectDto updatedDto)
     {
         _mapper.Map(updatedDto, project);
         project.ModifyTime = DateTimeOffset.UtcNow;
 
         await _context.SaveChangesAsync();
 
-        var projectDto = _mapper.Map<ProjectDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+        var projectDto = _mapper.Map<ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
         if (projectDto == null)
         {
             _logger.LogError("Failed to map project to dto");
