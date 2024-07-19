@@ -1125,76 +1125,92 @@ const useDataEdits = (): {
     }
 
     const { caseId } = useParams()
-    const undoEdit = () => {
-        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams))
-
+    const undoEdit = async () => {
+        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex(
+            (edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams),
+        )
         if (currentEditIndex === -1) {
             return
         }
-
         const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
         const updatedEditIndex = currentEditIndex + 1
         const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
 
         updateEditIndex(updatedEdit ? updatedEdit.uuid : "")
         console.log("1", editThatWillBeUndone)
+
         if (editThatWillBeUndone) {
             const projectUrl = location.pathname.split("/case")[0]
             navigate(`${projectUrl}/case/${caseId}/${editThatWillBeUndone.tabName ?? ""}`)
 
-            setTimeout(() => {
-                let rowWhereCellWillBeUndone
-                if (editThatWillBeUndone.tableName) {
-                    rowWhereCellWillBeUndone = editThatWillBeUndone.tableName
-                } else {
-                    rowWhereCellWillBeUndone = editThatWillBeUndone.inputFieldId
-                }
+            const scrollToElement = (elementId: string): Promise<void> => new Promise((resolve, reject) => {
+                    const tabElement = document.getElementById(elementId)
 
-                if (rowWhereCellWillBeUndone) {
+                    if (!tabElement) {
+                        reject(new Error(`Element with id ${elementId} not found`))
+                        return
+                    }
+                    tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
+
+                    const handleTransitionEnd = () => {
+                        resolve()
+                        tabElement.removeEventListener("transitionend", handleTransitionEnd)
+                    }
+                    tabElement.addEventListener("transitionend", handleTransitionEnd)
+                    setTimeout(resolve, 500)
+                })
+
+            const rowWhereCellWillBeUndone = editThatWillBeUndone.tableName ?? editThatWillBeUndone.inputFieldId
+
+            if (!rowWhereCellWillBeUndone) {
+                console.error("rowWhereCellWillBeUndone is undefined")
+                return
+            }
+
+            setTimeout(async () => {
+                try {
+                    await scrollToElement(rowWhereCellWillBeUndone)
+                    console.log("3", rowWhereCellWillBeUndone)
+
                     const tabElement = document.getElementById(rowWhereCellWillBeUndone)
-
                     if (tabElement) {
-                        tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
-
                         if (editThatWillBeUndone.tableName) {
                             const tableCell = tabElement.querySelector(`[data-key="${editThatWillBeUndone.resourcePropertyKey}"]`)
                             if (tableCell) {
                                 tabElement.classList.add("highlighted")
-
                                 setTimeout(() => {
-                                    tableCell.classList.remove("highlighted")
+                                    tabElement.classList.remove("highlighted")
                                 }, 3000)
                             }
                         } else {
                             tabElement.classList.add("highlighted")
-
                             setTimeout(() => {
                                 tabElement.classList.remove("highlighted")
                             }, 3000)
                         }
-                    } else {
-                        console.error(`Element with id ${rowWhereCellWillBeUndone} not found`)
                     }
-                } else {
-                    console.error("rowWhereCellWillBeUndone is undefined")
-                }
-            }, 100)
 
-            submitToApi({
-                projectId: editThatWillBeUndone.projectId,
-                caseId: editThatWillBeUndone.caseId!,
-                resourceProfileId: editThatWillBeUndone.resourceProfileId,
-                resourceName: editThatWillBeUndone.resourceName,
-                resourcePropertyKey: editThatWillBeUndone.resourcePropertyKey,
-                value: editThatWillBeUndone.previousValue as string,
-                resourceId: editThatWillBeUndone.resourceId,
-                resourceObject: editThatWillBeUndone.previousResourceObject as ResourceObject,
-            })
+                    await submitToApi({
+                        projectId: editThatWillBeUndone.projectId,
+                        caseId: editThatWillBeUndone.caseId!,
+                        resourceProfileId: editThatWillBeUndone.resourceProfileId,
+                        resourceName: editThatWillBeUndone.resourceName,
+                        resourcePropertyKey: editThatWillBeUndone.resourcePropertyKey,
+                        value: editThatWillBeUndone.previousValue as string,
+                        resourceId: editThatWillBeUndone.resourceId,
+                        resourceObject: editThatWillBeUndone.previousResourceObject as ResourceObject,
+                    })
+                } catch (error) {
+                    console.error(error)
+                }
+            }, 1000)
         }
     }
 
-    const redoEdit = () => {
-        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams))
+    const redoEdit = async () => {
+        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex(
+            (edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams),
+        )
 
         if (currentEditIndex <= 0) {
             const lastEdit = caseEditsBelongingToCurrentCase[caseEditsBelongingToCurrentCase.length - 1]
@@ -1204,43 +1220,57 @@ const useDataEdits = (): {
                 const projectUrl = location.pathname.split("/case")[0]
                 navigate(`${projectUrl}/case/${caseId}/${lastEdit.tabName ?? ""}`)
 
-                setTimeout(() => {
-                    let rowWhereCellWillBeUndone
-                    if (lastEdit.tableName) {
-                        rowWhereCellWillBeUndone = lastEdit.tableName
-                    } else {
-                        rowWhereCellWillBeUndone = lastEdit.inputFieldId
-                    }
+                const scrollToElement = (elementId: string): Promise<void> => new Promise((resolve, reject) => {
+                        const tabElement = document.getElementById(elementId)
 
-                    if (rowWhereCellWillBeUndone) {
+                        if (!tabElement) {
+                            reject(new Error(`Element with id ${elementId} not found`))
+                            return
+                        }
+
+                        tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
+
+                        const handleTransitionEnd = () => {
+                            resolve()
+                            tabElement.removeEventListener("transitionend", handleTransitionEnd)
+                        }
+                        tabElement.addEventListener("transitionend", handleTransitionEnd)
+                        setTimeout(resolve, 500)
+                    })
+
+                const rowWhereCellWillBeUndone = lastEdit.tableName ?? lastEdit.inputFieldId
+
+                if (!rowWhereCellWillBeUndone) {
+                    console.error("rowWhereCellWillBeUndone is undefined")
+                    return
+                }
+
+                setTimeout(async () => {
+                    try {
+                        await scrollToElement(rowWhereCellWillBeUndone)
+
                         const tabElement = document.getElementById(rowWhereCellWillBeUndone)
-
                         if (tabElement) {
-                            tabElement.scrollIntoView({ behavior: "smooth" })
-
                             tabElement.classList.add("highlighted")
-
                             setTimeout(() => {
                                 tabElement.classList.remove("highlighted")
                             }, 3000)
-                        } else {
-                            console.error(`Element with id ${rowWhereCellWillBeUndone} not found`)
                         }
-                    } else {
-                        console.error("rowWhereCellWillBeUndone is undefined")
-                    }
-                }, 100)
 
-                submitToApi({
-                    projectId: lastEdit.projectId,
-                    caseId: lastEdit.caseId!,
-                    resourceProfileId: lastEdit.resourceProfileId,
-                    resourceName: lastEdit.resourceName,
-                    resourcePropertyKey: lastEdit.resourcePropertyKey,
-                    value: lastEdit.newValue as string,
-                    resourceId: lastEdit.resourceId,
-                    resourceObject: lastEdit.newResourceObject as ResourceObject,
-                })
+                        await submitToApi({
+                            projectId: lastEdit.projectId,
+                            caseId: lastEdit.caseId!,
+                            resourceProfileId: lastEdit.resourceProfileId,
+                            resourceName: lastEdit.resourceName,
+                            resourcePropertyKey: lastEdit.resourcePropertyKey,
+                            value: lastEdit.newValue as string,
+                            resourceId: lastEdit.resourceId,
+                            resourceObject: lastEdit.newResourceObject as ResourceObject,
+                        })
+                    } catch (error) {
+                        console.error(error)
+                    }
+                }, 1000)
             }
         } else {
             const updatedEdit = caseEditsBelongingToCurrentCase[currentEditIndex - 1]
@@ -1250,43 +1280,55 @@ const useDataEdits = (): {
                 const projectUrl = location.pathname.split("/case")[0]
                 navigate(`${projectUrl}/case/${caseId}/${updatedEdit.tabName ?? ""}`)
 
-                setTimeout(() => {
-                    let rowWhereCellWillBeUndone
-                    if (updatedEdit.tableName) {
-                        rowWhereCellWillBeUndone = updatedEdit.tableName
-                    } else {
-                        rowWhereCellWillBeUndone = updatedEdit.inputFieldId
-                    }
+                const scrollToElement = (elementId: string): Promise<void> => new Promise((resolve, reject) => {
+                        const tabElement = document.getElementById(elementId)
 
-                    if (rowWhereCellWillBeUndone) {
+                        if (!tabElement) {
+                            reject(new Error(`Element with id ${elementId} not found`))
+                            return
+                        }
+                        tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
+                        const handleTransitionEnd = () => {
+                            resolve()
+                            tabElement.removeEventListener("transitionend", handleTransitionEnd)
+                        }
+                        tabElement.addEventListener("transitionend", handleTransitionEnd)
+                        setTimeout(resolve, 500)
+                    })
+
+                const rowWhereCellWillBeUndone = updatedEdit.tableName ?? updatedEdit.inputFieldId
+
+                if (!rowWhereCellWillBeUndone) {
+                    console.error("rowWhereCellWillBeUndone is undefined")
+                    return
+                }
+
+                setTimeout(async () => {
+                    try {
+                        await scrollToElement(rowWhereCellWillBeUndone)
+
                         const tabElement = document.getElementById(rowWhereCellWillBeUndone)
-
                         if (tabElement) {
-                            tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
-
                             tabElement.classList.add("highlighted")
-
                             setTimeout(() => {
                                 tabElement.classList.remove("highlighted")
                             }, 3000)
-                        } else {
-                            console.error(`Element with id ${rowWhereCellWillBeUndone} not found`)
+
+                            await submitToApi({
+                                projectId: updatedEdit.projectId,
+                                caseId: updatedEdit.caseId!,
+                                resourceProfileId: updatedEdit.resourceProfileId,
+                                resourceName: updatedEdit.resourceName,
+                                resourcePropertyKey: updatedEdit.resourcePropertyKey,
+                                value: updatedEdit.newValue as string,
+                                resourceId: updatedEdit.resourceId,
+                                resourceObject: updatedEdit.newResourceObject as ResourceObject,
+                            })
                         }
-                    } else {
-                        console.error("rowWhereCellWillBeUndone is undefined")
+                    } catch (error) {
+                        console.error(error)
                     }
                 }, 1000)
-
-                submitToApi({
-                    projectId: updatedEdit.projectId,
-                    caseId: updatedEdit.caseId!,
-                    resourceProfileId: updatedEdit.resourceProfileId,
-                    resourceName: updatedEdit.resourceName,
-                    resourcePropertyKey: updatedEdit.resourcePropertyKey,
-                    value: updatedEdit.newValue as string,
-                    resourceId: updatedEdit.resourceId,
-                    resourceObject: updatedEdit.newResourceObject as ResourceObject,
-                })
             }
         }
     }
