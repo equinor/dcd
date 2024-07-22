@@ -16,7 +16,6 @@ import {
 import { isEqual } from "lodash"
 import { CircularProgress } from "@mui/material"
 import {
-    isInteger,
     tableCellisEditable,
     numberValueParser,
     getCaseRowStyle,
@@ -30,7 +29,6 @@ import { useAppContext } from "../../../Context/AppContext"
 import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
-import hideProfilesWithoutValues from "./HideProfilesWithoutValues"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import useDataEdits from "../../../Hooks/useDataEdits"
 import { ProfileNames } from "../../../Models/Interfaces"
@@ -44,7 +42,6 @@ interface Props {
     gridRef?: any
     includeFooter: boolean
     totalRowName?: string
-    profilesToHideWithoutValues?: string[]
 }
 
 const CaseTabTable = ({
@@ -56,7 +53,6 @@ const CaseTabTable = ({
     gridRef,
     includeFooter,
     totalRowName,
-    profilesToHideWithoutValues,
 }: Props) => {
     const { editMode, setSnackBarMessage, isCalculatingProductionOverrides } = useAppContext()
     const styles = useStyles()
