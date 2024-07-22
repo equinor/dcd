@@ -14,6 +14,7 @@ import {
     CellKeyDownEvent, ColDef, GridReadyEvent,
 } from "@ag-grid-community/core"
 import isEqual from "lodash/isEqual"
+import { CircularProgress } from "@equinor/eds-core-react"
 import {
     extractTableTimeSeriesValues,
     generateProfile,
@@ -53,7 +54,7 @@ const CaseTabTable = ({
     includeFooter,
     totalRowName,
 }: Props) => {
-    const { editMode, setSnackBarMessage } = useAppContext()
+    const { editMode, setSnackBarMessage, isCalculatingProductionOverrides } = useAppContext()
     const styles = useStyles()
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
@@ -66,11 +67,22 @@ const CaseTabTable = ({
     const [stagedEdit, setStagedEdit] = useState<any>()
     const firstTriggerRef = useRef<boolean>(true)
     const timerRef = useRef<NodeJS.Timeout | null>(null)
+
+    const calculatedFields = [
+        "productionProfileFuelFlaringAndLossesOverride",
+        "productionProfileNetSalesGasOverride",
+        "productionProfileImportedElectricityOverride",
+    ]
+
     useEffect(() => {
         if (stagedEdit) {
             addEdit(stagedEdit)
         }
     }, [stagedEdit])
+
+    useEffect(() => {
+        gridRef.current?.api?.redrawRows()
+    }, [isCalculatingProductionOverrides])
 
     const profilesToRowData = () => {
         const tableRows: any[] = []
@@ -140,15 +152,27 @@ const CaseTabTable = ({
 
     const gridRowData = useMemo(() => gridRef.current?.api?.setGridOption("rowData", profilesToRowData()), [timeSeriesData, editMode])
 
-    const lockIconRenderer = (params: any) => (
-        <ClickableLockIcon
-            clickedElement={params}
-            setOverrideModalOpen={setOverrideModalOpen}
-            setOverrideModalProfileName={setOverrideModalProfileName}
-            setOverrideModalProfileSet={setOverrideModalProfileSet}
-            setOverrideProfile={setOverrideProfile}
-        />
-    )
+    const lockIconRenderer = (params: any) => {
+        if (!params.data) {
+            return null
+        }
+
+        const isUnlocked = params.data.overrideProfile?.override
+
+        if (!isUnlocked && calculatedFields.includes(params.data.resourceName) && isCalculatingProductionOverrides) {
+            return <CircularProgress size={24} />
+        }
+
+        return (
+            <ClickableLockIcon
+                clickedElement={params}
+                setOverrideModalOpen={setOverrideModalOpen}
+                setOverrideModalProfileName={setOverrideModalProfileName}
+                setOverrideModalProfileSet={setOverrideModalProfileSet}
+                setOverrideProfile={setOverrideProfile}
+            />
+        )
+    }
 
     const generateTableYearColDefs = () => {
         const columnPinned: any[] = [
@@ -180,7 +204,7 @@ const CaseTabTable = ({
             },
             {
                 headerName: "",
-                width: 60,
+                width: 70,
                 field: "set",
                 pinned: "right",
                 aggFunc: "",
@@ -300,7 +324,7 @@ const CaseTabTable = ({
     useEffect(() => {
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
-    }, [tableYears, editMode])
+    }, [tableYears, editMode, isCalculatingProductionOverrides])
 
     const onGridReady = useCallback((params: GridReadyEvent) => {
         const generateRowData = profilesToRowData()
