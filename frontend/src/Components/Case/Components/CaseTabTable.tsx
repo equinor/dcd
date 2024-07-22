@@ -16,13 +16,13 @@ import {
 import isEqual from "lodash/isEqual"
 import { CircularProgress } from "@equinor/eds-core-react"
 import {
+    extractTableTimeSeriesValues,
+    generateProfile,
     tableCellisEditable,
     numberValueParser,
     getCaseRowStyle,
     validateInput,
     formatColumnSum,
-    extractTableTimeSeriesValues,
-    generateProfile,
 } from "../../../Utils/common"
 import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
 import { useAppContext } from "../../../Context/AppContext"
