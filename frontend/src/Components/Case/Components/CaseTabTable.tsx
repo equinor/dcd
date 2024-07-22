@@ -13,8 +13,8 @@ import { useParams } from "react-router"
 import {
     CellKeyDownEvent, ColDef, GridReadyEvent,
 } from "@ag-grid-community/core"
-import { isEqual } from "lodash"
-import { CircularProgress } from "@mui/material"
+import isEqual from "lodash/isEqual"
+import { CircularProgress } from "@equinor/eds-core-react"
 import {
     tableCellisEditable,
     numberValueParser,
