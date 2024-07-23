@@ -8,7 +8,7 @@ import {
 
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { ColDef } from "@ag-grid-community/core"
+import { CellKeyDownEvent, ColDef } from "@ag-grid-community/core"
 import { useParams } from "react-router"
 import isEqual from "lodash/isEqual"
 import {
@@ -277,6 +277,52 @@ const CaseDrillingScheduleTabTable = ({
         }
     }, [stagedEdit])
 
+    const clearCellsInRange = (start: number, end: number, columns: any[]) => {
+        for (let rowIndex = start; rowIndex <= end; rowIndex += 1) {
+            const rowNode = gridRef.current?.api.getRowNode(rowIndex)
+            if (rowNode) {
+                columns.forEach((col: any) => {
+                    rowNode.setDataValue(col, "")
+                })
+            }
+        }
+    }
+
+    const handleDeleteOnRange = useCallback(
+        (e: CellKeyDownEvent) => {
+            const keyboardEvent = e.event as unknown as KeyboardEvent
+            const { key } = keyboardEvent
+
+            const cellRanges = e.api.getCellRanges()
+
+            if (key === "Backspace") {
+                if (!cellRanges || cellRanges.length === 0) {
+                    return
+                }
+
+                cellRanges.forEach((range: any) => {
+                    const { startRow, endRow, columns } = range
+                    const startRowIndex = Math.min(startRow.rowIndex, endRow.rowIndex)
+                    const endRowIndex = Math.max(startRow.rowIndex, endRow.rowIndex)
+
+                    const colIds = columns.map((col: any) => col.getColId())
+
+                    if (startRowIndex === endRowIndex && colIds.length === 1) {
+                        const colId = colIds[0]
+                        const cellValue = e.api.getValue(colId, e.node)
+                        if (cellValue !== undefined && cellValue !== null && typeof cellValue === "string") {
+                            const newValue = cellValue.slice(0, -1)
+                            e.node.setDataValue(colId, newValue)
+                        }
+                    } else {
+                        clearCellsInRange(startRowIndex, endRowIndex, colIds)
+                    }
+                })
+            }
+        },
+        [clearCellsInRange],
+    )
+
     return (
         <div className={styles.root}>
             <div
@@ -299,6 +345,8 @@ const CaseDrillingScheduleTabTable = ({
                     enableCharts
                     alignedGrids={gridRefArrayToAlignedGrid()}
                     stopEditingWhenCellsLoseFocus
+                    suppressLastEmptyLineOnPaste
+                    onCellKeyDown={editMode ? handleDeleteOnRange : undefined}
                 />
             </div>
         </div>

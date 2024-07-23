@@ -342,15 +342,15 @@ const CaseTabTable = ({
         }
     }, [tableYears])
 
-    const clearCellsInRange = (start: any, end: any, columns: any) => {
-        Array.from({ length: end - start + 1 }, (_, i) => start + i).forEach((i) => {
-            const rowNode = gridRef.current?.api.getRowNode(i)
+    const clearCellsInRange = (start: number, end: number, columns: any[]) => {
+        for (let rowIndex = start; rowIndex <= end; rowIndex += 1) {
+            const rowNode = gridRef.current?.api.getRowNode(rowIndex)
             if (rowNode) {
-                columns.forEach((column: any) => {
-                    rowNode.setDataValue(column, "")
+                columns.forEach((col: any) => {
+                    rowNode.setDataValue(col, "")
                 })
             }
-        })
+        }
     }
 
     const handleDeleteOnRange = useCallback(
@@ -358,27 +358,28 @@ const CaseTabTable = ({
             const keyboardEvent = e.event as unknown as KeyboardEvent
             const { key } = keyboardEvent
 
+            const cellRanges = e.api.getCellRanges()
+
             if (key === "Backspace") {
-                const cellRanges = e.api.getCellRanges()
                 if (!cellRanges || cellRanges.length === 0) {
                     return
                 }
 
-                cellRanges.forEach((cells) => {
-                    if (cells.startRow && cells.endRow) {
-                        const startRowIndex = Math.min(
-                            cells.startRow.rowIndex,
-                            cells.endRow.rowIndex,
-                        )
-                        const endRowIndex = Math.max(
-                            cells.startRow.rowIndex,
-                            cells.endRow.rowIndex,
-                        )
+                cellRanges.forEach((range: any) => {
+                    const { startRow, endRow, columns } = range
+                    const startRowIndex = Math.min(startRow.rowIndex, endRow.rowIndex)
+                    const endRowIndex = Math.max(startRow.rowIndex, endRow.rowIndex)
 
-                        const colIds = cells.columns.map(
-                            (col: any) => col.getColDef().field,
-                        )
+                    const colIds = columns.map((col: any) => col.getColId())
 
+                    if (startRowIndex === endRowIndex && colIds.length === 1) {
+                        const colId = colIds[0]
+                        const cellValue = e.api.getValue(colId, e.node)
+                        if (cellValue !== undefined && cellValue !== null && typeof cellValue === "string") {
+                            const newValue = cellValue.slice(0, -1)
+                            e.node.setDataValue(colId, newValue)
+                        }
+                    } else {
                         clearCellsInRange(startRowIndex, endRowIndex, colIds)
                     }
                 })
