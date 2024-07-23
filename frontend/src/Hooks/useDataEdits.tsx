@@ -1,4 +1,4 @@
-/* eslint-disable indent */
+import { useEffect, useState } from "react"
 import { v4 as uuidv4 } from "uuid"
 import { useMutation, useQueryClient } from "react-query"
 import { useParams } from "react-router"
@@ -1066,6 +1066,52 @@ const useDataEdits = (): {
         updateEditIndex(editInstanceObject.uuid)
     }
 
+    const [queueOnHold, setQueueOnHold] = useState<boolean>(false)
+    const [apiQueue, setApiQueue] = useState<EditInstance[]>([])
+
+    useEffect(() => {
+        const processQueue = async () => {
+            if (apiQueue.length > 0 && !queueOnHold) {
+                const editInstance = apiQueue[0]
+                const success = await submitToApi(
+                    {
+                        projectId: editInstance.projectId,
+                        caseId: editInstance.caseId!,
+                        resourceName: editInstance.resourceName,
+                        resourcePropertyKey: editInstance.resourcePropertyKey,
+                        value: editInstance.newValue as string,
+                        resourceId: editInstance.resourceId,
+                        resourceProfileId: editInstance.resourceProfileId,
+                        wellId: editInstance.wellId,
+                        drillingScheduleId: editInstance.drillingScheduleId,
+                        resourceObject: editInstance.newResourceObject as ResourceObject,
+                    },
+                )
+
+                if (success && editInstance.caseId) {
+                    editInstance.resourceProfileId = success.resourceProfileId
+                    editInstance.drillingScheduleId = success.resourceProfileId
+                    addToHistoryTracker(editInstance, editInstance.caseId)
+                }
+
+                setApiQueue((prev) => prev.slice(1))
+            }
+        }
+
+        processQueue()
+    }, [apiQueue])
+
+    const combineWithoutResourceObjects = async (editInstance: EditInstance, newEditInstance: EditInstance) => {
+        const combinedEditInstance: EditInstance = {
+            ...editInstance,
+            newValue: newEditInstance.newValue,
+            newDisplayValue: newEditInstance.newDisplayValue,
+            timeStamp: newEditInstance.timeStamp,
+        }
+
+        return combinedEditInstance
+    }
+
     const addEdit = async ({
         newValue,
         previousValue,
@@ -1089,7 +1135,6 @@ const useDataEdits = (): {
         }
 
         if (newValue === previousValue && !newResourceObject) {
-            console.log("No changes detected")
             return
         }
 
@@ -1112,25 +1157,21 @@ const useDataEdits = (): {
             newResourceObject,
             previousResourceObject,
         }
-        const success = await submitToApi(
-            {
-                projectId,
-                caseId: caseId!,
-                resourceName,
-                resourcePropertyKey,
-                value: newValue as string,
-                resourceId,
-                resourceProfileId,
-                wellId,
-                drillingScheduleId,
-                resourceObject: newResourceObject as ResourceObject | undefined,
-            },
-        )
 
-        if (success && caseId) {
-            editInstanceObject.resourceProfileId = success.resourceProfileId
-            editInstanceObject.drillingScheduleId = success.resourceProfileId
-            addToHistoryTracker(editInstanceObject, caseId)
+        const sameFieldEditInQueue = apiQueue.find((edit) => edit.caseId === caseId && edit.resourcePropertyKey === resourcePropertyKey)
+
+        if (sameFieldEditInQueue) {
+            console.log("edit instance already in queue", sameFieldEditInQueue)
+            console.log("combine that with new edit instance", editInstanceObject)
+            const combinedEditInstance = await combineWithoutResourceObjects(sameFieldEditInQueue, editInstanceObject)
+
+            // Remove the old edit instance from the queue
+            const newQueue = apiQueue.filter((edit) => edit.uuid !== sameFieldEditInQueue.uuid)
+            // Add the new combined edit instance to the queue
+            setApiQueue([...newQueue, combinedEditInstance])
+        } else {
+            console.log("new edit instance added to queue", editInstanceObject)
+            setApiQueue((prev) => [...prev, editInstanceObject])
         }
     }
 
