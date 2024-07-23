@@ -14,6 +14,7 @@ import {
     CellKeyDownEvent, ColDef, GridReadyEvent,
 } from "@ag-grid-community/core"
 import isEqual from "lodash/isEqual"
+import { CircularProgress } from "@equinor/eds-core-react"
 import {
     extractTableTimeSeriesValues,
     generateProfile,
@@ -53,7 +54,7 @@ const CaseTabTable = ({
     includeFooter,
     totalRowName,
 }: Props) => {
-    const { editMode, setSnackBarMessage } = useAppContext()
+    const { editMode, setSnackBarMessage, isCalculatingProductionOverrides } = useAppContext()
     const styles = useStyles()
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
@@ -66,11 +67,22 @@ const CaseTabTable = ({
     const [stagedEdit, setStagedEdit] = useState<any>()
     const firstTriggerRef = useRef<boolean>(true)
     const timerRef = useRef<NodeJS.Timeout | null>(null)
+
+    const calculatedFields = [
+        "productionProfileFuelFlaringAndLossesOverride",
+        "productionProfileNetSalesGasOverride",
+        "productionProfileImportedElectricityOverride",
+    ]
+
     useEffect(() => {
         if (stagedEdit) {
             addEdit(stagedEdit)
         }
     }, [stagedEdit])
+
+    useEffect(() => {
+        gridRef.current?.api?.redrawRows()
+    }, [isCalculatingProductionOverrides])
 
     const profilesToRowData = () => {
         const tableRows: any[] = []
@@ -140,15 +152,27 @@ const CaseTabTable = ({
 
     const gridRowData = useMemo(() => gridRef.current?.api?.setGridOption("rowData", profilesToRowData()), [timeSeriesData, editMode])
 
-    const lockIconRenderer = (params: any) => (
-        <ClickableLockIcon
-            clickedElement={params}
-            setOverrideModalOpen={setOverrideModalOpen}
-            setOverrideModalProfileName={setOverrideModalProfileName}
-            setOverrideModalProfileSet={setOverrideModalProfileSet}
-            setOverrideProfile={setOverrideProfile}
-        />
-    )
+    const lockIconRenderer = (params: any) => {
+        if (!params.data) {
+            return null
+        }
+
+        const isUnlocked = params.data.overrideProfile?.override
+
+        if (!isUnlocked && calculatedFields.includes(params.data.resourceName) && isCalculatingProductionOverrides) {
+            return <CircularProgress size={24} />
+        }
+
+        return (
+            <ClickableLockIcon
+                clickedElement={params}
+                setOverrideModalOpen={setOverrideModalOpen}
+                setOverrideModalProfileName={setOverrideModalProfileName}
+                setOverrideModalProfileSet={setOverrideModalProfileSet}
+                setOverrideProfile={setOverrideProfile}
+            />
+        )
+    }
 
     const generateTableYearColDefs = () => {
         const columnPinned: any[] = [
@@ -180,7 +204,7 @@ const CaseTabTable = ({
             },
             {
                 headerName: "",
-                width: 60,
+                width: 70,
                 field: "set",
                 pinned: "right",
                 aggFunc: "",
@@ -302,7 +326,7 @@ const CaseTabTable = ({
     useEffect(() => {
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
-    }, [tableYears, editMode])
+    }, [tableYears, editMode, isCalculatingProductionOverrides])
 
     const onGridReady = useCallback((params: GridReadyEvent) => {
         const generateRowData = profilesToRowData()
@@ -318,15 +342,15 @@ const CaseTabTable = ({
         }
     }, [tableYears])
 
-    const clearCellsInRange = (start: any, end: any, columns: any) => {
-        Array.from({ length: end - start + 1 }, (_, i) => start + i).forEach((i) => {
-            const rowNode = gridRef.current?.api.getRowNode(i)
+    const clearCellsInRange = (start: number, end: number, columns: any[]) => {
+        for (let rowIndex = start; rowIndex <= end; rowIndex += 1) {
+            const rowNode = gridRef.current?.api.getRowNode(rowIndex)
             if (rowNode) {
-                columns.forEach((column: any) => {
-                    rowNode.setDataValue(column, "")
+                columns.forEach((col: any) => {
+                    rowNode.setDataValue(col, "")
                 })
             }
-        })
+        }
     }
 
     const handleDeleteOnRange = useCallback(
@@ -334,27 +358,28 @@ const CaseTabTable = ({
             const keyboardEvent = e.event as unknown as KeyboardEvent
             const { key } = keyboardEvent
 
+            const cellRanges = e.api.getCellRanges()
+
             if (key === "Backspace") {
-                const cellRanges = e.api.getCellRanges()
                 if (!cellRanges || cellRanges.length === 0) {
                     return
                 }
 
-                cellRanges.forEach((cells) => {
-                    if (cells.startRow && cells.endRow) {
-                        const startRowIndex = Math.min(
-                            cells.startRow.rowIndex,
-                            cells.endRow.rowIndex,
-                        )
-                        const endRowIndex = Math.max(
-                            cells.startRow.rowIndex,
-                            cells.endRow.rowIndex,
-                        )
+                cellRanges.forEach((range: any) => {
+                    const { startRow, endRow, columns } = range
+                    const startRowIndex = Math.min(startRow.rowIndex, endRow.rowIndex)
+                    const endRowIndex = Math.max(startRow.rowIndex, endRow.rowIndex)
 
-                        const colIds = cells.columns.map(
-                            (col: any) => col.getColDef().field,
-                        )
+                    const colIds = columns.map((col: any) => col.getColId())
 
+                    if (startRowIndex === endRowIndex && colIds.length === 1) {
+                        const colId = colIds[0]
+                        const cellValue = e.api.getValue(colId, e.node)
+                        if (cellValue !== undefined && cellValue !== null && typeof cellValue === "string") {
+                            const newValue = cellValue.slice(0, -1)
+                            e.node.setDataValue(colId, newValue)
+                        }
+                    } else {
                         clearCellsInRange(startRowIndex, endRowIndex, colIds)
                     }
                 })

@@ -20,7 +20,7 @@ import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
 import { useAppContext } from "../Context/AppContext"
 import { GetWellProjectService } from "../Services/WellProjectService"
 import { GetExplorationService } from "../Services/ExplorationService"
-import { EMPTY_GUID } from "../Utils/constants"
+import { EMPTY_GUID, productionOverrideResources } from "../Utils/constants"
 
 interface AddEditParams {
     newValue: string | number | undefined;
@@ -48,7 +48,11 @@ const useDataEdits = (): {
     undoEdit: () => void;
     redoEdit: () => void;
 } => {
-    const { setSnackBarMessage, setIsSaving } = useAppContext()
+    const {
+        setSnackBarMessage,
+        setIsSaving,
+        setIsCalculatingProductionOverrides,
+    } = useAppContext()
     const {
         caseEdits,
         setCaseEdits,
@@ -108,6 +112,7 @@ const useDataEdits = (): {
             },
             onSettled: () => {
                 setIsSaving(false)
+                setIsCalculatingProductionOverrides(false)
             },
         },
     )
@@ -346,6 +351,10 @@ const useDataEdits = (): {
         drillingScheduleId,
     }: SubmitToApiParams): Promise<any> => {
         setIsSaving(true)
+
+        if (productionOverrideResources.includes(resourceName)) {
+            setIsCalculatingProductionOverrides(true)
+        }
 
         const existingDataInClient: object | undefined = queryClient.getQueryData([{
             projectId, caseId, resourceId, resourceProfileId: EMPTY_GUID, wellId, drillingScheduleId,

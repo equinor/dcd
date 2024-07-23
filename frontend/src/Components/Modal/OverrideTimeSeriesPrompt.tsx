@@ -51,6 +51,7 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
         <Modal
             isOpen={isOpen}
             title="Warning"
+            size="sm"
             content={(
                 <Grid container spacing={1}>
                     <Grid item xs={12}>

@@ -348,6 +348,7 @@ const CaseDrillingScheduleTabTable = ({
                     enableCharts
                     alignedGrids={gridRefArrayToAlignedGrid()}
                     stopEditingWhenCellsLoseFocus
+                    suppressLastEmptyLineOnPaste
                     onCellKeyDown={editMode ? handleDeleteOnRange : undefined}
                 />
             </div>
