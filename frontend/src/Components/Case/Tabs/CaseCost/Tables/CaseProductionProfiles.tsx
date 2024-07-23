@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { ITimeSeriesData } from "../../../../../Models/Interfaces"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
+import { useAppContext } from "../../../../../Context/AppContext"
 
 interface CaseProductionProfilesProps {
     apiData: Components.Schemas.CaseWithAssetsDto,
@@ -13,7 +14,13 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
     apiData, tableYears, alignedGridsRef,
 }) => {
     const { project } = useProjectContext()
+    const { isCalculatingProductionOverrides } = useAppContext()
     const [CaseProductionProfilesData, setCaseProductionProfilesData] = useState<ITimeSeriesData[]>([])
+    const calculatedFields = [
+        "productionProfileFuelFlaringAndLossesOverride",
+        "productionProfileNetSalesGasOverride",
+        "productionProfileImportedElectricityOverride",
+    ]
 
     useEffect(() => {
         const drainageStrategyData = apiData.drainageStrategy
@@ -148,6 +155,8 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             tableName="Production profiles"
             includeFooter={false}
             gridRef={alignedGridsRef}
+            calculatedFields={calculatedFields}
+            ongoingCalculation={isCalculatingProductionOverrides}
         />
     )
 }

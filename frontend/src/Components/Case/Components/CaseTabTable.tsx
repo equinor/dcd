@@ -42,6 +42,8 @@ interface Props {
     gridRef?: any
     includeFooter: boolean
     totalRowName?: string
+    calculatedFields?: string[]
+    ongoingCalculation?: boolean
 }
 
 const CaseTabTable = ({
@@ -53,8 +55,10 @@ const CaseTabTable = ({
     gridRef,
     includeFooter,
     totalRowName,
+    calculatedFields,
+    ongoingCalculation,
 }: Props) => {
-    const { editMode, setSnackBarMessage, isCalculatingProductionOverrides } = useAppContext()
+    const { editMode, setSnackBarMessage } = useAppContext()
     const styles = useStyles()
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
@@ -68,12 +72,6 @@ const CaseTabTable = ({
     const firstTriggerRef = useRef<boolean>(true)
     const timerRef = useRef<NodeJS.Timeout | null>(null)
 
-    const calculatedFields = [
-        "productionProfileFuelFlaringAndLossesOverride",
-        "productionProfileNetSalesGasOverride",
-        "productionProfileImportedElectricityOverride",
-    ]
-
     useEffect(() => {
         if (stagedEdit) {
             addEdit(stagedEdit)
@@ -82,7 +80,7 @@ const CaseTabTable = ({
 
     useEffect(() => {
         gridRef.current?.api?.redrawRows()
-    }, [isCalculatingProductionOverrides])
+    }, [ongoingCalculation])
 
     const profilesToRowData = () => {
         const tableRows: any[] = []
@@ -159,7 +157,11 @@ const CaseTabTable = ({
 
         const isUnlocked = params.data.overrideProfile?.override
 
-        if (!isUnlocked && calculatedFields.includes(params.data.resourceName) && isCalculatingProductionOverrides) {
+        if (
+            !isUnlocked
+            && calculatedFields
+            && calculatedFields.includes(params.data.resourceName)
+            && ongoingCalculation) {
             return <CircularProgress size={24} />
         }
 
@@ -324,7 +326,7 @@ const CaseTabTable = ({
     useEffect(() => {
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
-    }, [tableYears, editMode, isCalculatingProductionOverrides])
+    }, [tableYears, editMode, ongoingCalculation])
 
     const onGridReady = useCallback((params: GridReadyEvent) => {
         const generateRowData = profilesToRowData()

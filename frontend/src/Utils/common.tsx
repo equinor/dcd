@@ -337,10 +337,8 @@ export const getCurrentEditId = (editIndexes: EditEntry[], caseId: string | unde
 export const formatColumnSum = (params: { values: any[] }) => {
     let sum = 0
     params.values.forEach((value: any) => {
-        if (!Number(value)) {
-            sum += 0
-        } else {
-            sum += value
+        if (!Number.isNaN(parseFloat(value)) && Number.isFinite(value)) {
+            sum += Number(value)
         }
     })
     return sum > 0 ? parseFloat(sum.toFixed(10)) : ""
