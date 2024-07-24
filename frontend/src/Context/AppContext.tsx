@@ -24,6 +24,8 @@ interface AppContextType {
     setSnackBarMessage: Dispatch<SetStateAction<string | undefined>>;
     isCalculatingProductionOverrides: boolean,
     setIsCalculatingProductionOverrides: Dispatch<SetStateAction<boolean>>,
+    isCalculatingTotalStudyCostOverrides: boolean,
+    setIsCalculatingTotalStudyCostOverrides: Dispatch<SetStateAction<boolean>>,
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
@@ -36,6 +38,7 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(true)
     const [snackBarMessage, setSnackBarMessage] = useState<string | undefined>(undefined)
     const [isCalculatingProductionOverrides, setIsCalculatingProductionOverrides] = useState<boolean>(false)
+    const [isCalculatingTotalStudyCostOverrides, setIsCalculatingTotalStudyCostOverrides] = useState<boolean>(false)
 
     const value = useMemo(() => ({
         isCreating,
@@ -52,6 +55,8 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setSnackBarMessage,
         isCalculatingProductionOverrides,
         setIsCalculatingProductionOverrides,
+        isCalculatingTotalStudyCostOverrides,
+        setIsCalculatingTotalStudyCostOverrides,
     }), [
         isCreating,
         setIsCreating,
@@ -67,6 +72,8 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setSnackBarMessage,
         isCalculatingProductionOverrides,
         setIsCalculatingProductionOverrides,
+        isCalculatingTotalStudyCostOverrides,
+        setIsCalculatingTotalStudyCostOverrides,
     ])
 
     return (

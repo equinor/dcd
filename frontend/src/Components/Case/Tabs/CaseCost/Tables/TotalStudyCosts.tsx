@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { ITimeSeriesData } from "../../../../../Models/Interfaces"
+import { useAppContext } from "../../../../../Context/AppContext"
 
 interface CessationCostsProps {
     tableYears: [number, number];
@@ -17,6 +18,11 @@ const TotalStudyCosts: React.FC<CessationCostsProps> = ({
     apiData,
 }) => {
     const { project } = useProjectContext()
+    const { isCalculatingTotalStudyCostOverrides } = useAppContext()
+    const calculatedFields = [
+        "totalFeasibilityAndConceptStudiesOverride",
+        "totalFEEDStudiesOverride",
+    ]
 
     const [studyTimeSeriesData, setStudyTimeSeriesData] = useState<ITimeSeriesData[]>([])
 
@@ -79,6 +85,8 @@ const TotalStudyCosts: React.FC<CessationCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
+            ongoingCalculation={isCalculatingTotalStudyCostOverrides}
+            calculatedFields={calculatedFields}
         />
     )
 }

@@ -20,7 +20,11 @@ import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
 import { useAppContext } from "../Context/AppContext"
 import { GetWellProjectService } from "../Services/WellProjectService"
 import { GetExplorationService } from "../Services/ExplorationService"
-import { EMPTY_GUID, productionOverrideResources } from "../Utils/constants"
+import {
+    EMPTY_GUID,
+    productionOverrideResources,
+    totalStudyCostOverrideResources,
+} from "../Utils/constants"
 
 interface AddEditParams {
     newValue: string | number | undefined;
@@ -52,6 +56,7 @@ const useDataEdits = (): {
         setSnackBarMessage,
         setIsSaving,
         setIsCalculatingProductionOverrides,
+        setIsCalculatingTotalStudyCostOverrides,
     } = useAppContext()
     const {
         caseEdits,
@@ -113,6 +118,7 @@ const useDataEdits = (): {
             onSettled: () => {
                 setIsSaving(false)
                 setIsCalculatingProductionOverrides(false)
+                setIsCalculatingTotalStudyCostOverrides(false)
             },
         },
     )
@@ -354,6 +360,10 @@ const useDataEdits = (): {
 
         if (productionOverrideResources.includes(resourceName)) {
             setIsCalculatingProductionOverrides(true)
+        }
+
+        if (totalStudyCostOverrideResources.includes(resourceName)) {
+            setIsCalculatingTotalStudyCostOverrides(true)
         }
 
         const existingDataInClient: object | undefined = queryClient.getQueryData([{
