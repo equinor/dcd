@@ -75,3 +75,11 @@ export const productionOverrideResources = [
     "productionProfileWater",
     "productionProfileWaterInjection",
 ]
+
+export const totalStudyCostOverrideResources = [
+    "surfCostOverride",
+    "topsideCostOverride",
+    "transportCostOverride",
+    "substructureCostOverride",
+    "case",
+]
