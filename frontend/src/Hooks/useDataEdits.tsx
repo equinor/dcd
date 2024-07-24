@@ -1165,6 +1165,7 @@ const useDataEdits = (): {
             })
 
             const rowWhereCellWillBeUndone = editThatWillBeUndone.tableName ?? editThatWillBeUndone.inputFieldId ?? editThatWillBeUndone.inputLabel ?? editThatWillBeUndone.resourcePropertyKey
+            console.log("editThatWillBeUndone", editThatWillBeUndone)
             console.log("editThatWillBeUndone.tableName", editThatWillBeUndone.tableName)
             console.log("editThatWillBeUndone.inputFieldId", editThatWillBeUndone.inputFieldId)
             console.log("editThatWillBeUndone.inputLabel", editThatWillBeUndone.inputLabel)
@@ -1185,6 +1186,7 @@ const useDataEdits = (): {
                         console.log("editThatWillBeUndone.tableName", editThatWillBeUndone.tableName)
 
                         if (editThatWillBeUndone.tableName) {
+                            tabElement.classList.add("highlighted")
                             const tableCell = tabElement.querySelector(`[data-key="${editThatWillBeUndone.resourcePropertyKey}"]`)
                             console.log("tableCell", tableCell)
                             if (tableCell) {
@@ -1237,6 +1239,7 @@ const useDataEdits = (): {
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex(
             (edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams),
         )
+        console.log("currentEditIndex", currentEditIndex)
 
         if (currentEditIndex <= 0) {
             const lastEdit = caseEditsBelongingToCurrentCase[caseEditsBelongingToCurrentCase.length - 1]
@@ -1248,6 +1251,7 @@ const useDataEdits = (): {
 
                 const scrollToElement = (elementId: string): Promise<void> => new Promise((resolve, reject) => {
                     const tabElement = document.getElementById(elementId)
+                    console.log("tabElement", tabElement)
 
                     if (!tabElement) {
                         reject(new Error(`Element with id ${elementId} not found`))
@@ -1259,7 +1263,10 @@ const useDataEdits = (): {
                 })
 
                 const rowWhereCellWillBeUndone = lastEdit.tableName ?? lastEdit.inputFieldId ?? lastEdit.inputLabel ?? lastEdit.resourcePropertyKey
-
+                console.log("editThatWillBeUndone.tableName", lastEdit.tableName)
+                console.log("editThatWillBeUndone.inputFieldId", lastEdit.inputFieldId)
+                console.log("editThatWillBeUndone.inputLabel", lastEdit.inputLabel)
+                console.log("editThatWillBeUndone.resourcePropertyKey", lastEdit.resourcePropertyKey)
                 if (!rowWhereCellWillBeUndone) {
                     console.error("rowWhereCellWillBeUndone is undefined")
                     return
@@ -1271,12 +1278,37 @@ const useDataEdits = (): {
 
                         const tabElement = document.getElementById(rowWhereCellWillBeUndone)
                         if (tabElement) {
-                            tabElement.classList.add("highlighted")
-                            setTimeout(() => {
-                                tabElement.classList.remove("highlighted")
-                            }, 2000)
-                        }
+                            console.log("editThatWillBeUndone.tableName", lastEdit.tableName)
 
+                            if (lastEdit.tableName) {
+                                tabElement.classList.add("highlighted")
+                                const tableCell = tabElement.querySelector(`[data-key="${lastEdit.resourcePropertyKey}"]`)
+                                console.log("tableCell", tableCell)
+                                if (tableCell) {
+                                    tabElement.classList.add("highlighted")
+                                    setTimeout(() => {
+                                        tabElement.classList.remove("highlighted")
+                                    }, 2000)
+                                }
+                            } else {
+                                console.log("tabElement.classList", tabElement.classList)
+                                tabElement.classList.add("highlighted")
+                                setTimeout(() => {
+                                    tabElement.classList.remove("highlighted")
+                                }, 2000)
+                            }
+                        }
+                        const editorElement = document.getElementById("editor")
+                        if (editorElement) {
+                            console.log("Found editor element, applying highlight")
+                            editorElement.classList.add("highlighted")
+                            setTimeout(() => {
+                                editorElement.classList.remove("highlighted")
+                            }, 2000)
+                        } else {
+                            console.log("Editor element not found")
+                        }
+                        console.log("submit")
                         await submitToApi({
                             projectId: lastEdit.projectId,
                             caseId: lastEdit.caseId!,
@@ -1297,7 +1329,7 @@ const useDataEdits = (): {
         } else {
             const updatedEdit = caseEditsBelongingToCurrentCase[currentEditIndex - 1]
             updateEditIndex(updatedEdit.uuid)
-
+            console.log("updatedEdit", updatedEdit)
             if (updatedEdit) {
                 const projectUrl = location.pathname.split("/case")[0]
                 navigate(`${projectUrl}/case/${caseId}/${updatedEdit.tabName ?? ""}`)
@@ -1314,6 +1346,10 @@ const useDataEdits = (): {
                 })
 
                 const rowWhereCellWillBeUndone = updatedEdit.tableName ?? updatedEdit.inputFieldId ?? updatedEdit.inputLabel ?? updatedEdit.resourcePropertyKey
+                console.log("editThatWillBeUndone.tableName", updatedEdit.tableName)
+                console.log("editThatWillBeUndone.inputFieldId", updatedEdit.inputFieldId)
+                console.log("editThatWillBeUndone.inputLabel", updatedEdit.inputLabel)
+                console.log("editThatWillBeUndone.resourcePropertyKey", updatedEdit.resourcePropertyKey)
                 if (!rowWhereCellWillBeUndone) {
                     return
                 }
@@ -1324,24 +1360,50 @@ const useDataEdits = (): {
 
                         const tabElement = document.getElementById(rowWhereCellWillBeUndone)
                         if (tabElement) {
-                            tabElement.classList.add("highlighted")
-                            setTimeout(() => {
-                                tabElement.classList.remove("highlighted")
-                            }, 2000)
+                            console.log("editThatWillBeUndone.tableName", updatedEdit.tableName)
 
-                            await submitToApi({
-                                projectId: updatedEdit.projectId,
-                                caseId: updatedEdit.caseId!,
-                                resourceProfileId: updatedEdit.resourceProfileId,
-                                resourceName: updatedEdit.resourceName,
-                                resourcePropertyKey: updatedEdit.resourcePropertyKey,
-                                value: updatedEdit.newValue as string,
-                                resourceId: updatedEdit.resourceId,
-                                resourceObject: updatedEdit.newResourceObject as ResourceObject,
-                                wellId: updatedEdit.wellId,
-                                drillingScheduleId: updatedEdit.drillingScheduleId,
-                            })
+                            if (updatedEdit.tableName) {
+                                tabElement.classList.add("highlighted")
+                                const tableCell = tabElement.querySelector(`[data-key="${updatedEdit.resourcePropertyKey}"]`)
+                                console.log("tableCell", tableCell)
+                                if (tableCell) {
+                                    tabElement.classList.add("highlighted")
+                                    setTimeout(() => {
+                                        tabElement.classList.remove("highlighted")
+                                    }, 2000)
+                                }
+                            } else {
+                                console.log("tabElement.classList", tabElement.classList)
+                                tabElement.classList.add("highlighted")
+                                setTimeout(() => {
+                                    tabElement.classList.remove("highlighted")
+                                }, 2000)
+                            }
                         }
+                        // Check for the "editor" element and add "highlighted" class
+                        const editorElement = document.getElementById("editor")
+                        if (editorElement) {
+                            console.log("Found editor element, applying highlight")
+                            editorElement.classList.add("highlighted")
+                            setTimeout(() => {
+                                editorElement.classList.remove("highlighted")
+                            }, 2000)
+                        } else {
+                            console.log("Editor element not found")
+                        }
+
+                        submitToApi({
+                            projectId: updatedEdit.projectId,
+                            caseId: updatedEdit.caseId!,
+                            resourceProfileId: updatedEdit.resourceProfileId,
+                            resourceName: updatedEdit.resourceName,
+                            resourcePropertyKey: updatedEdit.resourcePropertyKey,
+                            value: updatedEdit.newValue as string,
+                            resourceId: updatedEdit.resourceId,
+                            resourceObject: updatedEdit.newResourceObject as ResourceObject,
+                            wellId: updatedEdit.wellId,
+                            drillingScheduleId: updatedEdit.drillingScheduleId,
+                        })
                     } catch (error) {
                         console.error(error)
                     }

@@ -102,7 +102,7 @@ export default createGlobalStyle`
     }
 
     .highlighted {
-    background-color: yellow;
+    border: 2px solid rgb(0, 79, 85);
     transition: background-color 0.5s ease;
 }
 
