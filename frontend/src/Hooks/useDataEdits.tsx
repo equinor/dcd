@@ -1146,7 +1146,7 @@ const useDataEdits = (): {
 
     const { caseId } = useParams()
 
-    const highlightElement = (element: HTMLElement | null, duration = 2000) => {
+    const highlightElement = (element: HTMLElement | null, duration = 3000) => {
         if (element) {
             element.classList.add("highlighted")
             setTimeout(() => {
@@ -1185,7 +1185,8 @@ const useDataEdits = (): {
                 resolve()
             })
 
-            const rowWhereCellWillBeUndone = editThatWillBeUndone.tableName ?? editThatWillBeUndone.inputFieldId ?? editThatWillBeUndone.inputLabel ?? editThatWillBeUndone.resourcePropertyKey
+            const rowWhereCellWillBeUndone = editThatWillBeUndone.tableName ?? editThatWillBeUndone.inputFieldId ?? editThatWillBeUndone.inputLabel
+
             if (!rowWhereCellWillBeUndone) {
                 console.error("rowWhereCellWillBeUndone is undefined")
                 return
@@ -1197,6 +1198,7 @@ const useDataEdits = (): {
 
                     const tabElement = document.getElementById(rowWhereCellWillBeUndone) as HTMLElement | null
                     if (tabElement) {
+                        // Attempt to highlight cell, doesnt work since querySelector can't find any element with data-key="${editThatWillBeUndone.resourcePropertyKey}
                         if (editThatWillBeUndone.tableName) {
                             const tableCell = tabElement.querySelector(`[data-key="${editThatWillBeUndone.resourcePropertyKey}"]`) as HTMLElement | null
                             highlightElement(tableCell ?? tabElement)
@@ -1205,11 +1207,7 @@ const useDataEdits = (): {
                         }
                     }
 
-                    const editorElement = document.getElementById("editor") as HTMLElement | null
-                    highlightElement(editorElement)
-
                     await delay(500)
-
                     await submitToApi({
                         projectId: editThatWillBeUndone.projectId,
                         caseId: editThatWillBeUndone.caseId!,
@@ -1250,7 +1248,7 @@ const useDataEdits = (): {
                     resolve()
                 })
 
-                const rowWhereCellWillBeUndone = lastEdit.tableName ?? lastEdit.inputFieldId ?? lastEdit.inputLabel ?? lastEdit.resourcePropertyKey
+                const rowWhereCellWillBeUndone = lastEdit.tableName ?? lastEdit.inputFieldId ?? lastEdit.inputLabel
                 if (!rowWhereCellWillBeUndone) {
                     console.error("rowWhereCellWillBeUndone is undefined")
                     return
@@ -1270,11 +1268,7 @@ const useDataEdits = (): {
                             }
                         }
 
-                        const editorElement = document.getElementById("editor") as HTMLElement | null
-                        highlightElement(editorElement)
-
                         await delay(500)
-
                         await submitToApi({
                             projectId: lastEdit.projectId,
                             caseId: lastEdit.caseId!,
@@ -1309,7 +1303,7 @@ const useDataEdits = (): {
                     resolve()
                 })
 
-                const rowWhereCellWillBeUndone = updatedEdit.tableName ?? updatedEdit.inputFieldId ?? updatedEdit.inputLabel ?? updatedEdit.resourcePropertyKey
+                const rowWhereCellWillBeUndone = updatedEdit.tableName ?? updatedEdit.inputFieldId ?? updatedEdit.inputLabel
                 if (!rowWhereCellWillBeUndone) {
                     return
                 }
@@ -1328,11 +1322,7 @@ const useDataEdits = (): {
                             }
                         }
 
-                        const editorElement = document.getElementById("editor") as HTMLElement | null
-                        highlightElement(editorElement)
-
                         await delay(500)
-
                         await submitToApi({
                             projectId: updatedEdit.projectId,
                             caseId: updatedEdit.caseId!,
