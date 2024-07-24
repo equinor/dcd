@@ -1153,21 +1153,22 @@ const useDataEdits = (): {
             const projectUrl = location.pathname.split("/case")[0]
             navigate(`${projectUrl}/case/${caseId}/${editThatWillBeUndone.tabName ?? ""}`)
 
-            const scrollToElement = (elementId: string): Promise<void> => new Promise((resolve, reject) => {
+            const scrollToElement = (elementId: string) => new Promise<void>((resolve, reject) => {
                 const tabElement = document.getElementById(elementId)
 
                 if (!tabElement) {
                     reject(new Error(`Element with id ${elementId} not found`))
                     return
                 }
-                tabElement?.scrollIntoView({ behavior: "auto", block: "center" })
+                tabElement.scrollIntoView({ behavior: "auto", block: "center" })
                 resolve()
             })
 
-            // Føler dette er dårlig kode at jeg må sjekke så mange forskjellige verdier,
-            // men det var løsningen jeg kom fram til for å få scrollToElement til å fungere på alle de ulike tables,
-            // inputfields, markdown osv
             const rowWhereCellWillBeUndone = editThatWillBeUndone.tableName ?? editThatWillBeUndone.inputFieldId ?? editThatWillBeUndone.inputLabel ?? editThatWillBeUndone.resourcePropertyKey
+            console.log("editThatWillBeUndone.tableName", editThatWillBeUndone.tableName)
+            console.log("editThatWillBeUndone.inputFieldId", editThatWillBeUndone.inputFieldId)
+            console.log("editThatWillBeUndone.inputLabel", editThatWillBeUndone.inputLabel)
+            console.log("editThatWillBeUndone.resourcePropertyKey", editThatWillBeUndone.resourcePropertyKey)
 
             if (!rowWhereCellWillBeUndone) {
                 console.error("rowWhereCellWillBeUndone is undefined")
@@ -1179,9 +1180,13 @@ const useDataEdits = (): {
                     await scrollToElement(rowWhereCellWillBeUndone)
 
                     const tabElement = document.getElementById(rowWhereCellWillBeUndone)
+                    console.log("tabElement", tabElement)
                     if (tabElement) {
+                        console.log("editThatWillBeUndone.tableName", editThatWillBeUndone.tableName)
+
                         if (editThatWillBeUndone.tableName) {
                             const tableCell = tabElement.querySelector(`[data-key="${editThatWillBeUndone.resourcePropertyKey}"]`)
+                            console.log("tableCell", tableCell)
                             if (tableCell) {
                                 tabElement.classList.add("highlighted")
                                 setTimeout(() => {
@@ -1189,11 +1194,24 @@ const useDataEdits = (): {
                                 }, 2000)
                             }
                         } else {
+                            console.log("tabElement.classList", tabElement.classList)
                             tabElement.classList.add("highlighted")
                             setTimeout(() => {
                                 tabElement.classList.remove("highlighted")
                             }, 2000)
                         }
+                    }
+
+                    // Check for the "editor" element and add "highlighted" class
+                    const editorElement = document.getElementById("editor")
+                    if (editorElement) {
+                        console.log("Found editor element, applying highlight")
+                        editorElement.classList.add("highlighted")
+                        setTimeout(() => {
+                            editorElement.classList.remove("highlighted")
+                        }, 2000)
+                    } else {
+                        console.log("Editor element not found")
                     }
 
                     await submitToApi({

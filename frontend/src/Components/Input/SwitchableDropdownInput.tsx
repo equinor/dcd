@@ -45,6 +45,7 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
             newDisplayValue: options[e.currentTarget.value],
             previousDisplayValue: options[value],
             tabName: tab,
+            inputFieldId: `${resourceName}-${resourcePropertyKey}-${resourceId}`,
         })
     }
 
@@ -54,8 +55,8 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
             label={label}
         >
             <NativeSelect
+                id={`${resourceName}-${resourcePropertyKey}-${resourceId ?? ""}`}
                 label=""
-                id={label}
                 value={value}
                 onChange={addToEditsAndSubmit}
             >

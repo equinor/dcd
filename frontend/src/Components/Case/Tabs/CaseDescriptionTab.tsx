@@ -90,12 +90,12 @@ const CaseDescriptionTab = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 10 }}
                             transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                            id="Description"
                         >
                             <MarkdownEditor
                                 menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
                                 value={description}
                                 onBlur={(e) => handleBlur(e)}
-                                id="Description"
                             />
                         </motion.div>
                     ) : (
