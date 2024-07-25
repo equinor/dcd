@@ -9,6 +9,7 @@ const CapexFactorFeedStudies: React.FC<props> = ({ caseData }) => (
         resourceName="case"
         resourcePropertyKey="capexFactorFEEDStudies"
         label="CAPEX factor FEED studies"
+        previousResourceObject={caseData}
         value={caseData.capexFactorFEEDStudies}
         integer={false}
         unit="%"

@@ -269,8 +269,6 @@ const CaseTabTable = ({
             setStagedEdit({
                 newDisplayValue: newProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
                 previousDisplayValue: existingProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
-                newValue: params.newValue,
-                previousValue: params.oldValue,
                 inputLabel: params.data.profileName,
                 projectId: project.id,
                 resourceName: timeSeriesDataIndex()?.resourceName,

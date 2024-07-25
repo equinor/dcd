@@ -122,6 +122,13 @@ const CaseScheduleTab = () => {
         return newCaseObject
     }
 
+    const getNewCaseObject = (dateKey: string, newDate: Date): ResourceObject => {
+        const newCaseObject = caseData as Components.Schemas.CaseDto
+        newCaseObject[dateKey as keyof typeof newCaseObject] = newDate.toISOString() as never // workaround for TS error
+
+        return newCaseObject
+    }
+
     function handleDateChange(dateKey: string, dateValue: string) {
         const caseDataCopy: any = { ...caseData }
 
@@ -130,11 +137,9 @@ const CaseScheduleTab = () => {
         const newDate = Number.isNaN(new Date(dateValue).getTime())
             ? defaultDate()
             : new Date(dateValue)
-        const dg0Object = dateKey === "dG0Date" ? getDGOChangesObject(newDate) : undefined
+        const dg0Object = dateKey === "dG0Date" && getDGOChangesObject(newDate)
 
         addEdit({
-            newValue: newDate.toISOString(),
-            previousValue: caseDataCopy[dateKey],
             inputLabel: dateKey,
             projectId: caseData.projectId,
             resourceName: "case",
@@ -142,8 +147,8 @@ const CaseScheduleTab = () => {
             caseId: caseData.id,
             newDisplayValue: formatDate(newDate.toISOString()),
             previousDisplayValue: formatDate(caseDataCopy[dateKey]),
-            newResourceObject: dg0Object,
-            previousResourceObject: dg0Object && caseDataCopy,
+            newResourceObject: dg0Object || getNewCaseObject(dateKey, newDate),
+            previousResourceObject: caseDataCopy,
         })
     }
 
@@ -213,7 +218,7 @@ const CaseScheduleTab = () => {
                                     value={getDateValue(caseDate.key)}
                                     resourcePropertyKey={caseDate.key as ResourcePropertyKey}
                                     label={caseDate.label}
-                                    onChange={(e) => handleDateChange(caseDate.key, e.target.value)}
+                                    onChange={(e) => handleDateChange(caseDate.key as ResourcePropertyKey, e.target.value)}
                                     min={
                                         (caseDate.min && caseData)
                                             ? findMinDate(getDatesFromStrings(caseDate.min.map((minDate) => caseData[minDate as keyof typeof caseData])))

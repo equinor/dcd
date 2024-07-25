@@ -31,17 +31,20 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
         setIsOpen(!isOpen)
     }
     const toggleLock = () => {
+        const newResourceObject = structuredClone(profile)
+        newResourceObject.override = !profile.override
         if (profile !== undefined) {
             addEdit({
-                newValue: (!profile.override).toString(),
-                previousValue: profile.override.toString(),
+                newDisplayValue: (!profile.override).toString(),
+                previousDisplayValue: profile.override.toString(),
                 inputLabel: profileName,
                 projectId: project.id,
                 resourceName: profile.resourceName,
                 resourcePropertyKey: "override",
                 caseId,
                 resourceId: profile.resourceId,
-                newResourceObject: { ...profile, override: !profile.override },
+                newResourceObject,
+                previousResourceObject: profile,
                 resourceProfileId: profile.id,
             })
         }

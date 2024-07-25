@@ -4,16 +4,16 @@ import { useParams } from "react-router-dom"
 import InputSwitcher from "./Components/InputSwitcher"
 import useDataEdits from "../../Hooks/useDataEdits"
 import { useProjectContext } from "../../Context/ProjectContext"
-import { ResourcePropertyKey, ResourceName } from "../../Models/Interfaces"
+import { ResourcePropertyKey, ResourceName, ResourceObject } from "../../Models/Interfaces"
 
 interface SwitchableDropdownInputProps {
     value: string | number;
     options: { [key: string]: string };
     resourceName: ResourceName;
     resourcePropertyKey: ResourcePropertyKey;
+    previousResourceObject: ResourceObject
     resourceId?: string;
     label: string;
-    onSubmit?: ChangeEventHandler<HTMLSelectElement>
 }
 
 const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
@@ -21,9 +21,9 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
     options,
     resourceName,
     resourcePropertyKey,
+    previousResourceObject,
     resourceId,
     label,
-    onSubmit,
 }: SwitchableDropdownInputProps) => {
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
@@ -31,11 +31,13 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
 
     const addToEditsAndSubmit: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if (!caseId || !project) { return }
-        if (onSubmit) { onSubmit(e) }
+
+        const newResourceObject: any = structuredClone(previousResourceObject)
+        newResourceObject[resourcePropertyKey] = Number(e.currentTarget.value)
 
         addEdit({
-            newValue: Number(e.currentTarget.value),
-            previousValue: value,
+            newResourceObject,
+            previousResourceObject,
             inputLabel: label,
             projectId: project.id,
             resourceName,

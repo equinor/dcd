@@ -4,7 +4,7 @@ import NumberInputWithValidation from "./Components/NumberInputWithValidation"
 import InputSwitcher from "./Components/InputSwitcher"
 import useDataEdits from "../../Hooks/useDataEdits"
 import { useProjectContext } from "../../Context/ProjectContext"
-import { ResourcePropertyKey, ResourceName } from "../../Models/Interfaces"
+import { ResourcePropertyKey, ResourceName, ResourceObject } from "../../Models/Interfaces"
 
 interface CaseEditInputProps {
     label: string;
@@ -12,6 +12,7 @@ interface CaseEditInputProps {
     value: number | undefined;
     resourceName: ResourceName;
     resourcePropertyKey: ResourcePropertyKey;
+    previousResourceObject: ResourceObject;
     resourceId?: string;
     integer: boolean;
     disabled?: boolean;
@@ -26,6 +27,7 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
     onSubmit, // this will be obsolete when we introduce autosave.
     value,
     resourcePropertyKey,
+    previousResourceObject,
     resourceName,
     resourceId,
     integer,
@@ -45,9 +47,14 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
         }
         if (!caseId || !project) { return }
 
+        const newResourceObject: ResourceObject = structuredClone(previousResourceObject)
+        newResourceObject[resourcePropertyKey as keyof ResourceObject] = String(insertedValue)
+
         addEdit({
-            newValue: insertedValue,
-            previousValue: value,
+            previousDisplayValue: value,
+            newDisplayValue: insertedValue,
+            newResourceObject,
+            previousResourceObject,
             inputLabel: label,
             projectId: project.id,
             resourceName,

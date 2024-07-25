@@ -62,16 +62,24 @@ const CaseDescriptionTab = () => {
     const handleBlur = (e: any) => {
         // eslint-disable-next-line no-underscore-dangle
         const newValue = e.target._value
+        const previousResourceObject = structuredClone(caseData)
+        const newResourceObject = structuredClone(caseData)
+        newResourceObject.description = newValue
+
+        console.log("newResourceObject", newResourceObject)
+        console.log("previousResourceObject", previousResourceObject)
 
         addEdit({
-            newValue,
-            previousValue: caseData.description,
+            newDisplayValue: newValue,
+            previousDisplayValue: caseData.description,
             inputLabel: "Description",
             projectId,
             resourceName: "case",
             resourcePropertyKey: "description",
             resourceId: "",
             caseId: caseData.id,
+            previousResourceObject,
+            newResourceObject,
         })
         setDescription(newValue)
     }
@@ -115,6 +123,7 @@ const CaseDescriptionTab = () => {
                     resourcePropertyKey="producerCount"
                     label="Production wells"
                     value={caseData.producerCount ?? 0}
+                    previousResourceObject={caseData}
                     integer
                     min={0}
                     max={100000}
@@ -126,6 +135,7 @@ const CaseDescriptionTab = () => {
                     resourcePropertyKey="waterInjectorCount"
                     label="Water injector wells"
                     value={caseData.waterInjectorCount ?? 0}
+                    previousResourceObject={caseData}
                     integer
                     disabled={false}
                     min={0}
@@ -138,6 +148,7 @@ const CaseDescriptionTab = () => {
                     resourcePropertyKey="gasInjectorCount"
                     label="Gas injector wells"
                     value={caseData.gasInjectorCount ?? 0}
+                    previousResourceObject={caseData}
                     integer
                     min={0}
                     max={100000}
@@ -149,6 +160,7 @@ const CaseDescriptionTab = () => {
                     resourceName="case"
                     resourcePropertyKey="productionStrategyOverview"
                     options={productionStrategyOptions}
+                    previousResourceObject={caseData}
                     label="Production strategy overview"
                 />
             </Grid>
@@ -158,6 +170,7 @@ const CaseDescriptionTab = () => {
                     resourceName="case"
                     resourcePropertyKey="artificialLift"
                     options={artificialLiftOptions}
+                    previousResourceObject={caseData}
                     label="Artificial lift"
                 />
             </Grid>
@@ -167,6 +180,7 @@ const CaseDescriptionTab = () => {
                     resourcePropertyKey="facilitiesAvailability"
                     label="Facilities availability"
                     value={caseData.facilitiesAvailability ?? 0}
+                    previousResourceObject={caseData}
                     integer={false}
                     unit="%"
                     min={0}

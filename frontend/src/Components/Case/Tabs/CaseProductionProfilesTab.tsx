@@ -119,6 +119,7 @@ const CaseProductionProfilesTab = () => {
                     resourcePropertyKey="facilitiesAvailability"
                     label="Facilities availability"
                     value={caseData.facilitiesAvailability}
+                    previousResourceObject={caseData}
                     integer={false}
                     unit="%"
                     min={0}
@@ -131,6 +132,7 @@ const CaseProductionProfilesTab = () => {
                     resourcePropertyKey="gasSolution"
                     resourceId={drainageStrategyData.id}
                     value={drainageStrategyData.gasSolution}
+                    previousResourceObject={drainageStrategyData}
                     options={gasSolutionOptions}
                     label="Gas solution"
                 />
@@ -175,6 +177,7 @@ const CaseProductionProfilesTab = () => {
                     resourcePropertyKey="producerCount"
                     label="Oil producer wells"
                     value={caseData.producerCount}
+                    previousResourceObject={caseData}
                     integer
                     disabled
                 />
@@ -185,6 +188,7 @@ const CaseProductionProfilesTab = () => {
                     resourcePropertyKey="waterInjectorCount"
                     label="Water injector wells"
                     value={caseData.waterInjectorCount}
+                    previousResourceObject={caseData}
                     integer
                     disabled
                 />
@@ -195,6 +199,7 @@ const CaseProductionProfilesTab = () => {
                     resourcePropertyKey="gasInjectorCount"
                     label="Gas injector wells"
                     value={caseData.gasInjectorCount}
+                    previousResourceObject={caseData}
                     integer
                     disabled
                 />

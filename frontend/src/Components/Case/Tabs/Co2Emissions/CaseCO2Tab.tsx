@@ -213,6 +213,7 @@ const CaseCO2Tab = () => {
                     resourceId={topsideData.id}
                     label="Fuel consumption"
                     value={topsideData.fuelConsumption}
+                    previousResourceObject={topsideData}
                     integer={false}
                     unit="million Sm³ gas/sd"
                 />

@@ -137,6 +137,7 @@ const CaseDrillingScheduleTab = () => {
                     resourceName="case"
                     resourcePropertyKey="producerCount" // dummy just to display swithable number input
                     label="Exploration wells"
+                    previousResourceObject={caseData}
                     value={explorationWellCount}
                     integer
                     disabled
@@ -147,6 +148,7 @@ const CaseDrillingScheduleTab = () => {
                     resourceName="case"
                     resourcePropertyKey="producerCount" // dummy just to display swithable number input
                     label="Appraisal wells"
+                    previousResourceObject={caseData}
                     value={appraisalWellCount}
                     integer
                     disabled
@@ -157,6 +159,7 @@ const CaseDrillingScheduleTab = () => {
                     resourceName="case"
                     resourcePropertyKey="producerCount" // dummy just to display disabled number input
                     label="Oil producer wells"
+                    previousResourceObject={caseData}
                     value={oilProducerCount}
                     integer
                     disabled
@@ -167,6 +170,7 @@ const CaseDrillingScheduleTab = () => {
                     resourceName="case"
                     resourcePropertyKey="producerCount" // dummy just to display disabled number input
                     label="Gas producer wells"
+                    previousResourceObject={caseData}
                     value={gasProducerCount}
                     integer
                     disabled
@@ -177,6 +181,7 @@ const CaseDrillingScheduleTab = () => {
                     resourceName="case"
                     resourcePropertyKey="producerCount" // dummy just to display disabled number input
                     label="Water injector wells"
+                    previousResourceObject={caseData}
                     value={waterInjectorCount}
                     integer
                     disabled
@@ -187,6 +192,7 @@ const CaseDrillingScheduleTab = () => {
                     resourceName="case"
                     resourcePropertyKey="producerCount" // dummy just to display disabled number input
                     label="Gas injector wells"
+                    previousResourceObject={caseData}
                     value={gasInjectorCount}
                     integer
                     disabled

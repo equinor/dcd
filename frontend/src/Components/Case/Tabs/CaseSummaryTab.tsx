@@ -264,6 +264,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                     resourcePropertyKey="npv"
                     label="NPV before tax"
                     value={caseData.npv}
+                    previousResourceObject={caseData}
                     integer={false}
                     allowNegative
                     min={0}
@@ -274,6 +275,7 @@ const CaseSummaryTab = (): React.ReactElement | null => {
                 <SwitchableNumberInput
                     resourceName="case"
                     resourcePropertyKey="breakEven"
+                    previousResourceObject={caseData}
                     label="B/E before tax"
                     value={caseData.breakEven}
                     integer={false}

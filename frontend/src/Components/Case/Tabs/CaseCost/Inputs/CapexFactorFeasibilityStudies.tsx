@@ -8,6 +8,7 @@ const CapexFactorFeasibilityStudies: React.FC<props> = ({ caseData }) => (
     <SwitchableNumberInput
         resourceName="case"
         resourcePropertyKey="capexFactorFeasibilityStudies"
+        previousResourceObject={caseData}
         label="CAPEX factor feasibility studies"
         value={caseData.capexFactorFeasibilityStudies}
         integer={false}
