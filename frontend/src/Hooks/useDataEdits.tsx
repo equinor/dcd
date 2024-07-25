@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { v4 as uuidv4 } from "uuid"
 import { useMutation, useQueryClient } from "react-query"
 import { useParams } from "react-router"
@@ -1428,33 +1428,6 @@ const useDataEdits = (): {
         return success
     }
 
-    const removeFromHistoryTracker = async (editUuid: string) => {
-        const updatedEdits = caseEdits.filter((edit) => edit.uuid !== editUuid)
-        console.log("removing from history tracker")
-        setCaseEdits(updatedEdits)
-    }
-
-    /*
-    const addToExistingEdit = async (editUuid: string, key: string) => {
-        console.log(caseEdits)
-        console.log(editUuid)
-        const editInstance = caseEdits.find((edit) => edit.uuid === editUuid)
-        if (!editInstance) {
-            console.error("Edit instance not found when adding to optimistically added edit")
-            return
-        }
-
-        const updatedEditInstance: EditInstance = {
-            ...editInstance,
-            [key]: value,
-        }
-
-        const updatedEdits: EditInstance[] = caseEdits.map((edit) => (edit.uuid === editUuid ? updatedEditInstance : edit))
-
-        setCaseEdits(updatedEdits)
-    }
-    */
-
     const addToHistoryTracker = async (editInstanceObject: EditInstance, caseId: string) => {
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams))
         const caseEditsNotBelongingToCurrentCase = caseEdits.filter((edit) => edit.caseId !== caseId)
@@ -1475,27 +1448,26 @@ const useDataEdits = (): {
     }
 
     const [apiQueue, setApiQueue] = useState<EditInstance[]>([])
+    const processingRef = useRef(false)
 
     useEffect(() => {
         const processQueue = async () => {
-            if (apiQueue.length > 0) {
+            if (apiQueue.length > 0 && !processingRef.current) {
+                processingRef.current = true
                 setIsSaving(true)
                 const editInstance = apiQueue[0]
-                addToHistoryTracker(editInstance, editInstance.caseId!)
 
-                const success = await submitToApi(
-                    {
-                        projectId: editInstance.projectId,
-                        caseId: editInstance.caseId!,
-                        resourceName: editInstance.resourceName,
-                        resourcePropertyKey: editInstance.resourcePropertyKey,
-                        resourceId: editInstance.resourceId,
-                        resourceProfileId: editInstance.resourceProfileId,
-                        wellId: editInstance.wellId,
-                        drillingScheduleId: editInstance.drillingScheduleId,
-                        resourceObject: editInstance.newResourceObject as ResourceObject,
-                    },
-                )
+                const success = await submitToApi({
+                    projectId: editInstance.projectId,
+                    caseId: editInstance.caseId!,
+                    resourceName: editInstance.resourceName,
+                    resourcePropertyKey: editInstance.resourcePropertyKey,
+                    resourceId: editInstance.resourceId,
+                    resourceProfileId: editInstance.resourceProfileId,
+                    wellId: editInstance.wellId,
+                    drillingScheduleId: editInstance.drillingScheduleId,
+                    resourceObject: editInstance.newResourceObject as ResourceObject,
+                })
 
                 if (success && editInstance.caseId) {
                     editInstance.resourceProfileId = success.resourceProfileId
@@ -1504,19 +1476,14 @@ const useDataEdits = (): {
                 }
 
                 setApiQueue((prev) => prev.slice(1))
+                processingRef.current = false
             }
         }
 
-        processQueue()
+        if (apiQueue.length > 0) {
+            processQueue()
+        }
     }, [apiQueue])
-    /*
-    const combineWithoutResourceObjects = async (editInstance: EditInstance, newEditInstance: EditInstance) => ({
-        ...editInstance,
-        newValue: newEditInstance.newValue,
-        newDisplayValue: newEditInstance.newDisplayValue,
-        timeStamp: newEditInstance.timeStamp,
-    })
-    */
 
     const addEdit = async ({
         inputLabel,
@@ -1538,13 +1505,6 @@ const useDataEdits = (): {
             return
         }
 
-        /*
-        if (newValue === previousValue && !newResourceObject) {
-            console.log("No changes detected")
-            return
-        }
-        */
-
         const editInstanceObject: EditInstance = {
             uuid: uuidv4(),
             timeStamp: new Date().getTime(),
@@ -1562,25 +1522,7 @@ const useDataEdits = (): {
             newResourceObject,
             previousResourceObject,
         }
-        const success = await submitToApi(
-            {
-                projectId,
-                caseId: caseId!,
-                resourceName,
-                resourcePropertyKey,
-                resourceId,
-                resourceProfileId,
-                wellId,
-                drillingScheduleId,
-                resourceObject: newResourceObject as ResourceObject,
-            },
-        )
-
-        if (success && caseId) {
-            editInstanceObject.resourceProfileId = success.resourceProfileId
-            editInstanceObject.drillingScheduleId = success.resourceProfileId
-            addToHistoryTracker(editInstanceObject, caseId)
-        }
+        setApiQueue((prev) => [...prev, editInstanceObject])
     }
 
     const undoEdit = () => {
