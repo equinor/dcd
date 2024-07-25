@@ -89,7 +89,7 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
                                 <Icon data={arrow_forward} size={16} />
                             </div>
                             <NextValue>
-                                {edit.newDisplayValue }
+                                {edit.newDisplayValue}
                             </NextValue>
                         </ChangeView>
                     </EditInstance>
