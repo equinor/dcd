@@ -43,7 +43,7 @@ implements Components.Schemas.SharePointImportDto {
         project: Components.Schemas.ProjectDto,
     ): ImportStatusEnum => {
         const surfId = projectCase.surfLink
-        const surf = project.surfs.find((s) => s.id === surfId)
+        const surf = project.surfs?.find((s) => s.id === surfId)
         if (!surf) {
             return ImportStatusEnum.NotSelected
         }
@@ -62,7 +62,7 @@ implements Components.Schemas.SharePointImportDto {
         project: Components.Schemas.ProjectDto,
     ): ImportStatusEnum => {
         const substructureId = projectCase.substructureLink
-        const substructure = project.substructures.find(
+        const substructure = project.substructures?.find(
             (s) => s.id === substructureId,
         )
         if (!substructure) {
@@ -83,7 +83,7 @@ implements Components.Schemas.SharePointImportDto {
         project: Components.Schemas.ProjectDto,
     ): ImportStatusEnum => {
         const topsideId = projectCase.topsideLink
-        const topside = project.topsides.find((s) => s.id === topsideId)
+        const topside = project.topsides?.find((s) => s.id === topsideId)
         if (!topside) {
             return ImportStatusEnum.NotSelected
         }
@@ -102,7 +102,7 @@ implements Components.Schemas.SharePointImportDto {
         project: Components.Schemas.ProjectDto,
     ): ImportStatusEnum => {
         const transportId = projectCase.transportLink
-        const transport = project.transports.find((s) => s.id === transportId)
+        const transport = project.transports?.find((s) => s.id === transportId)
         if (!transport) {
             return ImportStatusEnum.NotSelected
         }
