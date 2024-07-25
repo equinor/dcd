@@ -1,6 +1,4 @@
 import {
-    Dispatch,
-    SetStateAction,
     useMemo,
     useState,
     useEffect,
@@ -24,14 +22,12 @@ import {
     validateInput,
     formatColumnSum,
 } from "../../../Utils/common"
-import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
 import { useAppContext } from "../../../Context/AppContext"
 import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import useDataEdits from "../../../Hooks/useDataEdits"
-import { ProfileNames } from "../../../Models/Interfaces"
 
 interface Props {
     timeSeriesData: any[]
@@ -63,11 +59,6 @@ const CaseTabTable = ({
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
     const { caseId } = useParams()
-
-    const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
-    const [overrideModalProfileName, setOverrideModalProfileName] = useState<ProfileNames>()
-    const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
-    const [overrideProfile, setOverrideProfile] = useState<any>()
     const [stagedEdit, setStagedEdit] = useState<any>()
     const firstTriggerRef = useRef<boolean>(true)
     const timerRef = useRef<NodeJS.Timeout | null>(null)
@@ -151,7 +142,7 @@ const CaseTabTable = ({
     const gridRowData = useMemo(() => gridRef.current?.api?.setGridOption("rowData", profilesToRowData()), [timeSeriesData, editMode])
 
     const lockIconRenderer = (params: any) => {
-        if (!params.data) {
+        if (!params.data || !editMode) {
             return null
         }
 
@@ -168,10 +159,6 @@ const CaseTabTable = ({
         return (
             <ClickableLockIcon
                 clickedElement={params}
-                setOverrideModalOpen={setOverrideModalOpen}
-                setOverrideModalProfileName={setOverrideModalProfileName}
-                setOverrideModalProfileSet={setOverrideModalProfileSet}
-                setOverrideProfile={setOverrideProfile}
             />
         )
     }
@@ -389,45 +376,36 @@ const CaseTabTable = ({
     )
 
     return (
-        <>
-            <OverrideTimeSeriesPrompt
-                isOpen={overrideModalOpen}
-                setIsOpen={setOverrideModalOpen}
-                profileName={overrideModalProfileName}
-                setProfile={overrideModalProfileSet}
-                profile={overrideProfile}
-            />
-            <div className={styles.root}>
-                <div
-                    style={{
-                        display: "flex", flexDirection: "column", width: "100%",
-                    }}
-                >
-                    <AgGridReact
-                        ref={gridRef}
-                        rowData={gridRowData}
-                        columnDefs={columnDefs}
-                        defaultColDef={defaultColDef}
-                        animateRows
-                        domLayout="autoHeight"
-                        enableCellChangeFlash={editMode}
-                        rowSelection="multiple"
-                        enableRangeSelection
-                        suppressCopySingleCellRanges
-                        suppressMovableColumns
-                        enableCharts
-                        alignedGrids={gridRefArrayToAlignedGrid()}
-                        groupIncludeTotalFooter={includeFooter}
-                        getRowStyle={getCaseRowStyle}
-                        suppressLastEmptyLineOnPaste
-                        stopEditingWhenCellsLoseFocus
-                        onGridReady={onGridReady}
-                        defaultExcelExportParams={defaultExcelExportParams}
-                        onCellKeyDown={editMode ? handleDeleteOnRange : undefined}
-                    />
-                </div>
+        <div className={styles.root}>
+            <div
+                style={{
+                    display: "flex", flexDirection: "column", width: "100%",
+                }}
+            >
+                <AgGridReact
+                    ref={gridRef}
+                    rowData={gridRowData}
+                    columnDefs={columnDefs}
+                    defaultColDef={defaultColDef}
+                    animateRows
+                    domLayout="autoHeight"
+                    enableCellChangeFlash={editMode}
+                    rowSelection="multiple"
+                    enableRangeSelection
+                    suppressCopySingleCellRanges
+                    suppressMovableColumns
+                    enableCharts
+                    alignedGrids={gridRefArrayToAlignedGrid()}
+                    groupIncludeTotalFooter={includeFooter}
+                    getRowStyle={getCaseRowStyle}
+                    suppressLastEmptyLineOnPaste
+                    stopEditingWhenCellsLoseFocus
+                    onGridReady={onGridReady}
+                    defaultExcelExportParams={defaultExcelExportParams}
+                    onCellKeyDown={editMode ? handleDeleteOnRange : undefined}
+                />
             </div>
-        </>
+        </div>
     )
 }
 
