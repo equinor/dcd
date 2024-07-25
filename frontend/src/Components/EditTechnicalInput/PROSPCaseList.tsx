@@ -114,21 +114,21 @@ const PROSPCaseList = ({
             const rowNode = gridRef.current?.getRowNode(p.node?.data.id)
             if (projectCase) {
                 switch (p.column.colId) {
-                    case "surfState":
-                        rowNode.data.surfStateChanged = (SharePointImport.surfStatus(projectCase, project) !== value)
-                        break
-                    case "substructureState":
-                        rowNode.data.substructureStateChanged = (
-                            SharePointImport.substructureStatus(projectCase, project) !== value)
-                        break
-                    case "topsideState":
-                        rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(projectCase, project) !== value)
-                        break
-                    case "transportState":
-                        rowNode.data.transportStateChanged = (SharePointImport.transportStatus(projectCase, project) !== value)
-                        break
-                    default:
-                        break
+                case "surfState":
+                    rowNode.data.surfStateChanged = (SharePointImport.surfStatus(projectCase, project) !== value)
+                    break
+                case "substructureState":
+                    rowNode.data.substructureStateChanged = (
+                        SharePointImport.substructureStatus(projectCase, project) !== value)
+                    break
+                case "topsideState":
+                    rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(projectCase, project) !== value)
+                    break
+                case "transportState":
+                    rowNode.data.transportStateChanged = (SharePointImport.transportStatus(projectCase, project) !== value)
+                    break
+                default:
+                    break
                 }
             }
         }
@@ -165,8 +165,8 @@ const PROSPCaseList = ({
 
     const sharePointFileDropdownOptions = (items: DriveItem[]) => {
         const options: JSX.Element[] = []
-        items?.forEach((item) => {
-            options.push((<option key={item.id} value={item.id!}>{item.name}</option>))
+        items?.slice(1).forEach((item) => {
+            options.push(<option key={item.id} value={item.id!}>{item.name}</option>)
         })
         return options
     }
