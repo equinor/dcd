@@ -52,6 +52,8 @@ const useDataEdits = (): {
         setIsSaving,
         setIsCalculatingProductionOverrides,
         setIsCalculatingTotalStudyCostOverrides,
+        apiQueue,
+        setApiQueue,
     } = useAppContext()
     const {
         caseEdits,
@@ -1446,11 +1448,11 @@ const useDataEdits = (): {
         setCaseEdits(edits)
         updateEditIndex(editInstanceObject.uuid)
     }
-
-    const [apiQueue, setApiQueue] = useState<EditInstance[]>([])
+    /*
     const processingRef = useRef(false)
 
     useEffect(() => {
+        console.log("apiQueue", apiQueue)
         const processQueue = async () => {
             if (apiQueue.length > 0 && !processingRef.current) {
                 processingRef.current = true
@@ -1473,9 +1475,11 @@ const useDataEdits = (): {
                     editInstance.resourceProfileId = success.resourceProfileId
                     editInstance.drillingScheduleId = success.resourceProfileId
                     addToHistoryTracker(editInstance, editInstance.caseId)
+                    setApiQueue((prev) => prev.slice(1))
+                } else {
+                    console.log("Error saving edit")
                 }
 
-                setApiQueue((prev) => prev.slice(1))
                 processingRef.current = false
             }
         }
@@ -1484,6 +1488,7 @@ const useDataEdits = (): {
             processQueue()
         }
     }, [apiQueue])
+    */
 
     const addEdit = async ({
         inputLabel,
@@ -1522,7 +1527,32 @@ const useDataEdits = (): {
             newResourceObject,
             previousResourceObject,
         }
-        setApiQueue((prev) => [...prev, editInstanceObject])
+        console.log("adding to api queue", editInstanceObject)
+
+        // Check if an edit with the same caseId, resourcePropertyKey, and resourceId already exists
+        setApiQueue((prev) => {
+            const existingEditIndex = prev.findIndex(
+                (edit) => edit.caseId === caseId
+                    && edit.resourcePropertyKey === resourcePropertyKey
+                    && edit.resourceId === resourceId,
+            )
+
+            if (existingEditIndex !== -1) {
+                // Create a new array with the updated instance
+                const newQueue = [...prev]
+                newQueue[existingEditIndex] = {
+                    ...newQueue[existingEditIndex],
+                    newResourceObject,
+                    newDisplayValue,
+                    previousDisplayValue,
+                    timeStamp: new Date().getTime(),
+                }
+                return newQueue
+            }
+
+            // If no existing edit is found, add the new edit instance
+            return [...prev, editInstanceObject]
+        })
     }
 
     const undoEdit = () => {

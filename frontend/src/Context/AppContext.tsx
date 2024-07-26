@@ -8,6 +8,7 @@ import {
     useContext,
     useMemo,
 } from "react"
+import { EditInstance } from "../Models/Interfaces"
 
 interface AppContextType {
     isCreating: boolean,
@@ -26,6 +27,8 @@ interface AppContextType {
     setIsCalculatingProductionOverrides: Dispatch<SetStateAction<boolean>>,
     isCalculatingTotalStudyCostOverrides: boolean,
     setIsCalculatingTotalStudyCostOverrides: Dispatch<SetStateAction<boolean>>,
+    apiQueue: EditInstance[],
+    setApiQueue: Dispatch<SetStateAction<EditInstance[]>>
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
@@ -39,6 +42,7 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [snackBarMessage, setSnackBarMessage] = useState<string | undefined>(undefined)
     const [isCalculatingProductionOverrides, setIsCalculatingProductionOverrides] = useState<boolean>(false)
     const [isCalculatingTotalStudyCostOverrides, setIsCalculatingTotalStudyCostOverrides] = useState<boolean>(false)
+    const [apiQueue, setApiQueue] = useState<EditInstance[]>([])
 
     const value = useMemo(() => ({
         isCreating,
@@ -57,6 +61,8 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setIsCalculatingProductionOverrides,
         isCalculatingTotalStudyCostOverrides,
         setIsCalculatingTotalStudyCostOverrides,
+        apiQueue,
+        setApiQueue,
     }), [
         isCreating,
         setIsCreating,
@@ -74,6 +80,8 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setIsCalculatingProductionOverrides,
         isCalculatingTotalStudyCostOverrides,
         setIsCalculatingTotalStudyCostOverrides,
+        apiQueue,
+        setApiQueue,
     ])
 
     return (
