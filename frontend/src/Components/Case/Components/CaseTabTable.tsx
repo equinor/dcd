@@ -379,6 +379,7 @@ const CaseTabTable = ({
     return (
         <div className={styles.root}>
             <div
+                id={tableName}
                 style={{
                     display: "flex", flexDirection: "column", width: "100%",
                 }}

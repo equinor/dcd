@@ -1181,7 +1181,7 @@ const useDataEdits = (): {
                     reject(new Error(`Element with id ${elementId} not found`))
                     return
                 }
-                tabElement.scrollIntoView({ behavior: "auto", block: "center" })
+                tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
                 resolve()
             })
 
