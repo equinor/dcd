@@ -4,14 +4,14 @@ import CaseTabTable from "../../../Components/CaseTabTable"
 import { ITimeSeriesData } from "../../../../../Models/Interfaces"
 import { useAppContext } from "../../../../../Context/AppContext"
 
-interface CesationCostsProps {
+interface CessationCostsProps {
     tableYears: [number, number];
     studyGridRef: React.MutableRefObject<any>;
     alignedGridsRef: any[];
     apiData: Components.Schemas.CaseWithAssetsDto;
 }
 
-const TotalStudyCosts: React.FC<CesationCostsProps> = ({
+const TotalStudyCosts: React.FC<CessationCostsProps> = ({
     tableYears,
     studyGridRef,
     alignedGridsRef,

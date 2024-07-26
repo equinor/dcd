@@ -21,17 +21,19 @@ const StyledInput = styled(Input)`
 `
 
 interface Props {
-    onSubmit: (value: number) => void
-    defaultValue: number | undefined
-    integer: boolean
-    disabled?: boolean
-    unit?: string
-    allowNegative?: boolean
-    min?: number
-    max?: number
+    id: string;
+    onSubmit: (value: number) => void;
+    defaultValue: number | undefined;
+    integer: boolean;
+    disabled?: boolean;
+    unit?: string;
+    allowNegative?: boolean;
+    min?: number;
+    max?: number;
 }
 
 const NumberInputWithValidation = ({
+    id,
     onSubmit,
     defaultValue,
     integer,
@@ -89,6 +91,7 @@ const NumberInputWithValidation = ({
             }}
         >
             <StyledInput
+                id={id}
                 type="number"
                 value={inputValue}
                 disabled={disabled}
