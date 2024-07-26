@@ -104,7 +104,7 @@ class ExplorationService extends __BaseService {
         wellId: string,
         dto: Components.Schemas.CreateDrillingScheduleDto,
     ): Promise<Components.Schemas.DrillingScheduleDto> {
-        const res: Components.Schemas.CountryOfficeCostDto = await this.post(
+        const res: Components.Schemas.ExplorationWellCostProfileDto = await this.post(
             `projects/${projectId}/cases/${caseId}/explorations/${explorationId}/wells/${wellId}/drilling-schedule/`,
             { body: dto },
         )
@@ -119,7 +119,7 @@ class ExplorationService extends __BaseService {
         drillingScheuleId: string,
         dto: Components.Schemas.UpdateDrillingScheduleDto,
     ): Promise<Components.Schemas.DrillingScheduleDto> {
-        const res: Components.Schemas.CountryOfficeCostDto = await this.put(
+        const res: Components.Schemas.ExplorationWellCostProfileDto = await this.put(
             `projects/${projectId}/cases/${caseId}/explorations/${explorationId}/wells/${wellId}/drilling-schedule/${drillingScheuleId}`,
             { body: dto },
         )

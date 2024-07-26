@@ -58,7 +58,7 @@ const CaseTabTable = ({
     const styles = useStyles()
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
-    const { caseId } = useParams()
+    const { caseId, tab } = useParams()
     const [stagedEdit, setStagedEdit] = useState<any>()
     const firstTriggerRef = useRef<boolean>(true)
     const timerRef = useRef<NodeJS.Timeout | null>(null)
@@ -267,6 +267,8 @@ const CaseTabTable = ({
                 newResourceObject: newProfile,
                 previousResourceObject: existingProfile,
                 resourceProfileId: timeSeriesDataIndex()?.resourceProfileId,
+                tabName: tab,
+                tableName,
             })
         }
     }
@@ -374,10 +376,10 @@ const CaseTabTable = ({
         },
         [clearCellsInRange],
     )
-
     return (
         <div className={styles.root}>
             <div
+                id={tableName}
                 style={{
                     display: "flex", flexDirection: "column", width: "100%",
                 }}

@@ -123,6 +123,7 @@ const CaseProductionProfilesTab = () => {
                     unit="%"
                     min={0}
                     max={100}
+                    resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
@@ -177,6 +178,8 @@ const CaseProductionProfilesTab = () => {
                     value={caseData.producerCount}
                     integer
                     disabled
+                    resourceId={caseData.id}
+
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>

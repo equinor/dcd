@@ -19,7 +19,7 @@ import { useProjectContext } from "../../../Context/ProjectContext"
 const CaseScheduleTab = () => {
     const { project } = useProjectContext()
     const { addEdit } = useDataEdits()
-    const { caseId } = useParams()
+    const { caseId, tab } = useParams()
     const queryClient = useQueryClient()
     const { editMode } = useAppContext()
     const projectId = project?.id || null
@@ -144,6 +144,7 @@ const CaseScheduleTab = () => {
             previousDisplayValue: formatDate(caseDataCopy[dateKey]),
             newResourceObject: dg0Object,
             previousResourceObject: dg0Object && caseDataCopy,
+            tabName: tab,
         })
     }
 
