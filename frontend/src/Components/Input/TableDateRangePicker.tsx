@@ -14,6 +14,7 @@ const Helper = styled.div`
     top: 11px;
     margin-right: 20px;
 `
+
 interface DateRangePickerProps {
     setStartYear: (startYear: number) => void
     setEndYear: (endYear: number) => void
@@ -68,6 +69,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
             <Grid item>
                 <Typography variant="caption">Start year</Typography>
                 <CaseNumberInput
+                    id="start-year-input"
                     onSubmit={(value) => handleStartYearStateChange(value)}
                     defaultValue={startYear}
                     integer
@@ -78,6 +80,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
             <Grid item>
                 <Typography variant="caption">End year</Typography>
                 <CaseNumberInput
+                    id="end-year-input"
                     onSubmit={(value) => handleEndYearStateChange(value)}
                     defaultValue={endYear}
                     integer
