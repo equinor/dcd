@@ -28,7 +28,8 @@ interface AppContextType {
     isCalculatingTotalStudyCostOverrides: boolean,
     setIsCalculatingTotalStudyCostOverrides: Dispatch<SetStateAction<boolean>>,
     apiQueue: EditInstance[],
-    setApiQueue: Dispatch<SetStateAction<EditInstance[]>>
+    setApiQueue: Dispatch<SetStateAction<EditInstance[]>>,
+
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)

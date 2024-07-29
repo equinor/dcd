@@ -2,7 +2,6 @@ import React, { ChangeEventHandler } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
 import InputSwitcher from "./Components/InputSwitcher"
-import useDataEdits from "../../Hooks/useDataEdits"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { ResourcePropertyKey, ResourceName, ResourceObject } from "../../Models/Interfaces"
 
@@ -14,6 +13,7 @@ interface SwitchableDropdownInputProps {
     previousResourceObject: ResourceObject
     resourceId?: string;
     label: string;
+    addEdit: any;
 }
 
 const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
@@ -24,10 +24,10 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
     previousResourceObject,
     resourceId,
     label,
+    addEdit,
 }: SwitchableDropdownInputProps) => {
     const { project } = useProjectContext()
-    const { addEdit } = useDataEdits()
-    const { caseId } = useParams()
+    const { caseId, tab } = useParams()
 
     const addToEditsAndSubmit: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if (!caseId || !project) { return }
@@ -46,6 +46,8 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
             caseId,
             newDisplayValue: options[e.currentTarget.value],
             previousDisplayValue: options[value],
+            tabName: tab,
+            inputFieldId: `${resourceName}-${resourcePropertyKey}-${resourceId}`,
         })
     }
 
@@ -55,8 +57,8 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
             label={label}
         >
             <NativeSelect
+                id={`${resourceName}-${resourcePropertyKey}-${resourceId ?? ""}`}
                 label=""
-                id={label}
                 value={value}
                 onChange={addToEditsAndSubmit}
             >

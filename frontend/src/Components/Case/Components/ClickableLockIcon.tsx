@@ -1,34 +1,44 @@
-import React, { Dispatch, SetStateAction } from "react"
+import React from "react"
 import { lock, lock_open } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
-import { ProfileNames } from "../../../Models/Interfaces"
+import { useParams } from "react-router-dom"
+import { useProjectContext } from "../../../Context/ProjectContext"
 
 interface LockIconProps {
     clickedElement: any
-    setOverrideModalOpen: Dispatch<SetStateAction<boolean>>
-    setOverrideModalProfileName: Dispatch<SetStateAction<ProfileNames | undefined>>
-    setOverrideModalProfileSet: Dispatch<SetStateAction<any | undefined>>
-    setOverrideProfile: Dispatch<SetStateAction<any | undefined>>
+    addEdit: any
 }
 
 const LockIcon: React.FC<LockIconProps> = ({
     clickedElement,
-    setOverrideModalOpen,
-    setOverrideModalProfileName,
-    setOverrideModalProfileSet,
-    setOverrideProfile,
+    addEdit,
 }) => {
+    const { project } = useProjectContext()
+    const { caseId } = useParams()
+
     const handleLockIconClick = (params: any) => {
-        if (params?.data?.override !== undefined) {
-            setOverrideModalOpen(true)
-            setOverrideModalProfileName(params.data.profileName)
-            setOverrideModalProfileSet(() => params.data.overrideProfileSet)
-            setOverrideProfile({
+        if (params?.data?.override !== undefined && project && caseId) {
+            const profile = {
                 ...params.data.overrideProfile,
                 resourceId: params.data.resourceId,
                 resourceName: params.data.resourceName,
                 overridable: params.data.overridable,
                 editable: params.data.editable,
+            }
+
+            const newResourceObject = structuredClone(profile)
+            newResourceObject.override = !profile.override
+
+            addEdit({
+                inputLabel: params.data.profileName,
+                projectId: project.id,
+                resourceName: profile.resourceName,
+                resourcePropertyKey: "override",
+                caseId,
+                resourceId: profile.resourceId,
+                newResourceObject,
+                previousResourceObject: profile,
+                resourceProfileId: profile.id,
             })
 
             params.api.redrawRows()

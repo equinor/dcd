@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { Input } from "@equinor/eds-core-react"
-import useDataEdits from "../../Hooks/useDataEdits"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { ResourceName, ResourcePropertyKey, ResourceObject } from "../../Models/Interfaces"
 import InputSwitcher from "./Components/InputSwitcher"
@@ -13,6 +12,7 @@ interface CaseEditInputProps {
     resourcePropertyKey: ResourcePropertyKey
     resourceId?: string;
     previousResourceObject: ResourceObject;
+    addEdit: any;
 }
 
 const SwitchableStringInput: React.FC<CaseEditInputProps> = ({
@@ -22,10 +22,10 @@ const SwitchableStringInput: React.FC<CaseEditInputProps> = ({
     resourcePropertyKey,
     resourceId,
     previousResourceObject,
+    addEdit,
 }: CaseEditInputProps) => {
-    const { addEdit } = useDataEdits()
     const { project } = useProjectContext()
-    const { caseId } = useParams()
+    const { caseId, tab } = useParams()
 
     const [inputValue, setInputValue] = useState(value || "")
 
@@ -50,6 +50,7 @@ const SwitchableStringInput: React.FC<CaseEditInputProps> = ({
             resourcePropertyKey,
             resourceId,
             caseId,
+            tabName: tab,
         })
     }
 

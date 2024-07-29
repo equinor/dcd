@@ -3,8 +3,9 @@ import SwitchableNumberInput from "../../../../Input/SwitchableNumberInput"
 
 interface props {
     caseData: Components.Schemas.CaseDto
+    addEdit: any
 }
-const CapexFactorFeasibilityStudies: React.FC<props> = ({ caseData }) => (
+const CapexFactorFeasibilityStudies: React.FC<props> = ({ caseData, addEdit }) => (
     <SwitchableNumberInput
         resourceName="case"
         resourcePropertyKey="capexFactorFeasibilityStudies"
@@ -15,6 +16,7 @@ const CapexFactorFeasibilityStudies: React.FC<props> = ({ caseData }) => (
         unit="%"
         min={0}
         max={100}
+        addEdit={addEdit}
     />
 )
 

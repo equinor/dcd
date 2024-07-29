@@ -4,18 +4,20 @@ import CaseTabTable from "../../../Components/CaseTabTable"
 import { ITimeSeriesData } from "../../../../../Models/Interfaces"
 import { useAppContext } from "../../../../../Context/AppContext"
 
-interface CesationCostsProps {
+interface CessationCostsProps {
     tableYears: [number, number];
     studyGridRef: React.MutableRefObject<any>;
     alignedGridsRef: any[];
     apiData: Components.Schemas.CaseWithAssetsDto;
+    addEdit: any;
 }
 
-const TotalStudyCosts: React.FC<CesationCostsProps> = ({
+const TotalStudyCosts: React.FC<CessationCostsProps> = ({
     tableYears,
     studyGridRef,
     alignedGridsRef,
     apiData,
+    addEdit,
 }) => {
     const { project } = useProjectContext()
     const { isCalculatingTotalStudyCostOverrides } = useAppContext()
@@ -87,6 +89,7 @@ const TotalStudyCosts: React.FC<CesationCostsProps> = ({
             totalRowName="Total"
             ongoingCalculation={isCalculatingTotalStudyCostOverrides}
             calculatedFields={calculatedFields}
+            addEdit={addEdit}
         />
     )
 }

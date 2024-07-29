@@ -2,7 +2,6 @@ import React from "react"
 import { useParams } from "react-router-dom"
 import NumberInputWithValidation from "./Components/NumberInputWithValidation"
 import InputSwitcher from "./Components/InputSwitcher"
-import useDataEdits from "../../Hooks/useDataEdits"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { ResourcePropertyKey, ResourceName, ResourceObject } from "../../Models/Interfaces"
 
@@ -20,6 +19,7 @@ interface CaseEditInputProps {
     allowNegative?: boolean;
     min?: number;
     max?: number;
+    addEdit: any;
 }
 
 const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
@@ -36,10 +36,10 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
     allowNegative,
     min,
     max,
+    addEdit,
 }: CaseEditInputProps) => {
-    const { addEdit } = useDataEdits()
     const { project } = useProjectContext()
-    const { caseId } = useParams()
+    const { caseId, tab } = useParams()
 
     const addToEditsAndSubmit = (insertedValue: number) => {
         if (onSubmit) {
@@ -61,6 +61,8 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
             resourcePropertyKey,
             resourceId,
             caseId,
+            tabName: tab,
+            inputFieldId: `${resourceName}-${resourcePropertyKey}-${resourceId}`,
         })
     }
 
@@ -70,6 +72,7 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
             value={`${value}`}
         >
             <NumberInputWithValidation
+                id={`${resourceName}-${resourcePropertyKey}-${resourceId ?? ""}`}
                 onSubmit={addToEditsAndSubmit}
                 defaultValue={value}
                 integer={integer}

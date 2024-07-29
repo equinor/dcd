@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useEffect } from "react"
 import {
     Typography, Icon, Tooltip, CircularProgress, Button,
 } from "@equinor/eds-core-react"
@@ -121,6 +121,7 @@ const UndoControls: React.FC = () => {
                     <Icon data={redo} />
                 </Button>
             </Tooltip>
+            {/* comment out for qa release */}
         </Container>
     )
 }

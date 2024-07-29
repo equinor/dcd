@@ -15,6 +15,7 @@ import { useProjectContext } from "../Context/ProjectContext"
 import { useCaseContext } from "../Context/CaseContext"
 import CaseDescriptionTabSkeleton from "../Components/Case/Tabs/LoadingSkeletons/CaseDescriptionTabSkeleton"
 import { tabNames } from "../Utils/constants"
+import useDataEdits from "../Hooks/useDataEdits"
 
 const {
     List, Tab, Panels, Panel,
@@ -22,6 +23,7 @@ const {
 
 const CaseView = () => {
     const { caseId, tab } = useParams()
+    const { addEdit } = useDataEdits()
 
     const {
         project,
@@ -98,28 +100,28 @@ const CaseView = () => {
                     </List>
                     <Panels>
                         <Panel>
-                            <CaseDescriptionTab />
+                            <CaseDescriptionTab addEdit={addEdit} />
                         </Panel>
                         <Panel>
-                            <CaseProductionProfilesTab />
+                            <CaseProductionProfilesTab addEdit={addEdit} />
                         </Panel>
                         <Panel>
-                            <CaseScheduleTab />
+                            <CaseScheduleTab addEdit={addEdit} />
                         </Panel>
                         <Panel>
-                            <CaseDrillingScheduleTab />
+                            <CaseDrillingScheduleTab addEdit={addEdit} />
                         </Panel>
                         <Panel>
-                            <CaseFacilitiesTab />
+                            <CaseFacilitiesTab addEdit={addEdit} />
                         </Panel>
                         <Panel>
-                            <CaseCostTab />
+                            <CaseCostTab addEdit={addEdit} />
                         </Panel>
                         <Panel>
-                            <CaseCO2Tab />
+                            <CaseCO2Tab addEdit={addEdit} />
                         </Panel>
                         <Panel>
-                            <CaseSummaryTab />
+                            <CaseSummaryTab addEdit={addEdit} />
                         </Panel>
                     </Panels>
                 </Tabs>

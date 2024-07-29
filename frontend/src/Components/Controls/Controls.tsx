@@ -26,7 +26,6 @@ import CaseControls from "./CaseControls"
 import WhatsNewModal from "../Modal/WhatsNewModal"
 import Modal from "../Modal/Modal"
 import ProjectControls from "./ProjectControls"
-import { QueueTracker } from "../Case/Components/QueueTracker"
 
 const Controls = () => {
     const {
@@ -142,7 +141,6 @@ const Controls = () => {
 
     return (
         <Grid container spacing={1} justifyContent="space-between" alignItems="center">
-            <QueueTracker />
             <WhatsNewModal />
             <Modal
                 isOpen={isCanceling}

@@ -16,7 +16,7 @@ import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import CaseProductionProfilesTabSkeleton from "./LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
 
-const CaseProductionProfilesTab = () => {
+const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     const queryClient = useQueryClient()
     const { caseId } = useParams()
     const { project } = useProjectContext()
@@ -115,6 +115,7 @@ const CaseProductionProfilesTab = () => {
         <Grid container spacing={2}>
             <Grid item xs={12} md={6} lg={3}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="facilitiesAvailability"
                     label="Facilities availability"
@@ -124,10 +125,12 @@ const CaseProductionProfilesTab = () => {
                     unit="%"
                     min={0}
                     max={100}
+                    resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <SwitchableDropdownInput
+                    addEdit={addEdit}
                     resourceName="drainageStrategy"
                     resourcePropertyKey="gasSolution"
                     resourceId={drainageStrategyData.id}
@@ -173,6 +176,7 @@ const CaseProductionProfilesTab = () => {
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="producerCount"
                     label="Oil producer wells"
@@ -180,10 +184,13 @@ const CaseProductionProfilesTab = () => {
                     previousResourceObject={caseData}
                     integer
                     disabled
+                    resourceId={caseData.id}
+
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="waterInjectorCount"
                     label="Water injector wells"
@@ -195,6 +202,7 @@ const CaseProductionProfilesTab = () => {
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="gasInjectorCount"
                     label="Gas injector wells"
@@ -244,6 +252,7 @@ const CaseProductionProfilesTab = () => {
                     apiData={apiData}
                     tableYears={tableYears}
                     alignedGridsRef={gridRef}
+                    addEdit={addEdit}
                 />
             </Grid>
         </Grid>

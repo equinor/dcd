@@ -13,13 +13,11 @@ import {
 import { useAppContext } from "../../../Context/AppContext"
 import SwitchableDateInput from "../../Input/SwitchableDateInput"
 import { ResourceObject, ResourcePropertyKey } from "../../../Models/Interfaces"
-import useDataEdits from "../../../Hooks/useDataEdits"
 import { useProjectContext } from "../../../Context/ProjectContext"
 
-const CaseScheduleTab = () => {
+const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
-    const { addEdit } = useDataEdits()
-    const { caseId } = useParams()
+    const { caseId, tab } = useParams()
     const queryClient = useQueryClient()
     const { editMode } = useAppContext()
     const projectId = project?.id || null
@@ -148,7 +146,8 @@ const CaseScheduleTab = () => {
             newDisplayValue: formatDate(newDate.toISOString()),
             previousDisplayValue: formatDate(caseDataCopy[dateKey]),
             newResourceObject: dg0Object || getNewCaseObject(dateKey, newDate),
-            previousResourceObject: caseDataCopy,
+            previousResourceObject: dg0Object && caseDataCopy,
+            tabName: tab,
         })
     }
 

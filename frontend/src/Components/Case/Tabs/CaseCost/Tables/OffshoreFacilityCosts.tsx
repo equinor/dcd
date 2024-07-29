@@ -8,6 +8,7 @@ interface OffshoreFacillityCostsProps {
     capexGridRef: React.MutableRefObject<any>;
     alignedGridsRef: any[];
     apiData: Components.Schemas.CaseWithAssetsDto;
+    addEdit: any;
 }
 
 const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
@@ -15,6 +16,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
     capexGridRef,
     alignedGridsRef,
     apiData,
+    addEdit,
 }) => {
     const { project } = useProjectContext()
 
@@ -103,6 +105,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
+            addEdit={addEdit}
         />
     )
 }

@@ -1,7 +1,10 @@
-import { useEffect, useState, useRef } from "react"
+import {
+    useEffect, useState, useRef, useCallback,
+} from "react"
 import { v4 as uuidv4 } from "uuid"
 import { useMutation, useQueryClient } from "react-query"
-import { useParams } from "react-router"
+import { useLocation, useNavigate, useParams } from "react-router"
+import _ from "lodash"
 import { useCaseContext } from "../Context/CaseContext"
 import {
     EditInstance,
@@ -21,7 +24,6 @@ import { useAppContext } from "../Context/AppContext"
 import { GetWellProjectService } from "../Services/WellProjectService"
 import { GetExplorationService } from "../Services/ExplorationService"
 import {
-    EMPTY_GUID,
     productionOverrideResources,
     totalStudyCostOverrideResources,
 } from "../Utils/constants"
@@ -40,6 +42,9 @@ interface AddEditParams {
     previousDisplayValue?: string | number | undefined;
     newResourceObject: ResourceObject;
     previousResourceObject: ResourceObject;
+    tabName?: string;
+    tableName?: string;
+    inputFieldId?: string;
 }
 
 const useDataEdits = (): {
@@ -64,6 +69,8 @@ const useDataEdits = (): {
     } = useCaseContext()
 
     const { caseId: caseIdFromParams } = useParams()
+    const location = useLocation()
+    const navigate = useNavigate()
 
     const updateEditIndex = (newEditId: string) => {
         if (!caseIdFromParams) {
@@ -1448,47 +1455,67 @@ const useDataEdits = (): {
         setCaseEdits(edits)
         updateEditIndex(editInstanceObject.uuid)
     }
-    /*
-    const processingRef = useRef(false)
+
+    const submitQueueItem = async (editInstance: EditInstance) => {
+        console.log("submitting edit", editInstance)
+        const success = await submitToApi({
+            projectId: editInstance.projectId,
+            caseId: editInstance.caseId!,
+            resourceName: editInstance.resourceName,
+            resourcePropertyKey: editInstance.resourcePropertyKey,
+            resourceId: editInstance.resourceId,
+            resourceProfileId: editInstance.resourceProfileId,
+            wellId: editInstance.wellId,
+            drillingScheduleId: editInstance.drillingScheduleId,
+            resourceObject: editInstance.newResourceObject as ResourceObject,
+        })
+        return success
+    }
+    const timerRef = useRef<NodeJS.Timeout | null>(null)
+    const lastUpdateRef = useRef(Date.now())
+
+    const addEditToHistoryTracker = async (editInstance: EditInstance) => {
+        console.log("Processing edit", editInstance)
+        const submitted = await submitQueueItem(editInstance)
+
+        if (submitted && editInstance.caseId) {
+            if (!editInstance.resourceProfileId) {
+                console.log("Edit saved successfully")
+                addToHistoryTracker(editInstance, editInstance.caseId)
+            } else {
+                const editWithProfileId = structuredClone(editInstance)
+                editWithProfileId.resourceProfileId = submitted.resourceProfileId
+                editWithProfileId.drillingScheduleId = submitted.resourceProfileId
+                addToHistoryTracker(editWithProfileId, editInstance.caseId)
+                console.log("Edit with resourceProfileId saved successfully")
+            }
+        } else {
+            console.log("Error saving edit")
+        }
+    }
+
+    const processQueue = useCallback(() => {
+        console.log("Processes queue method running")
+        setApiQueue((prevQueue) => {
+            console.log("Queue length", prevQueue.length)
+
+            if (prevQueue.length > 0) {
+                setIsSaving(true)
+                const editInstance = prevQueue[0]
+                addEditToHistoryTracker(editInstance).then(() => {
+                    setIsSaving(false)
+                    setApiQueue(prevQueue.slice(1))
+                })
+            }
+            return prevQueue
+        })
+    }, [])
 
     useEffect(() => {
-        console.log("apiQueue", apiQueue)
-        const processQueue = async () => {
-            if (apiQueue.length > 0 && !processingRef.current) {
-                processingRef.current = true
-                setIsSaving(true)
-                const editInstance = apiQueue[0]
-
-                const success = await submitToApi({
-                    projectId: editInstance.projectId,
-                    caseId: editInstance.caseId!,
-                    resourceName: editInstance.resourceName,
-                    resourcePropertyKey: editInstance.resourcePropertyKey,
-                    resourceId: editInstance.resourceId,
-                    resourceProfileId: editInstance.resourceProfileId,
-                    wellId: editInstance.wellId,
-                    drillingScheduleId: editInstance.drillingScheduleId,
-                    resourceObject: editInstance.newResourceObject as ResourceObject,
-                })
-
-                if (success && editInstance.caseId) {
-                    editInstance.resourceProfileId = success.resourceProfileId
-                    editInstance.drillingScheduleId = success.resourceProfileId
-                    addToHistoryTracker(editInstance, editInstance.caseId)
-                    setApiQueue((prev) => prev.slice(1))
-                } else {
-                    console.log("Error saving edit")
-                }
-
-                processingRef.current = false
-            }
-        }
-
         if (apiQueue.length > 0) {
-            processQueue()
+            console.log("Queue: ", apiQueue)
         }
     }, [apiQueue])
-    */
 
     const addEdit = async ({
         inputLabel,
@@ -1504,6 +1531,9 @@ const useDataEdits = (): {
         previousDisplayValue,
         newResourceObject,
         previousResourceObject,
+        tabName,
+        tableName,
+        inputFieldId,
     }: AddEditParams) => {
         if (resourceName !== "case" && !resourceId) {
             console.log("asset id is required for this service")
@@ -1526,110 +1556,232 @@ const useDataEdits = (): {
             previousDisplayValue,
             newResourceObject,
             previousResourceObject,
+            tabName,
+            tableName,
+            inputFieldId,
         }
-        console.log("adding to api queue", editInstanceObject)
 
-        // Check if an edit with the same caseId, resourcePropertyKey, and resourceId already exists
-        setApiQueue((prev) => {
-            const existingEditIndex = prev.findIndex(
-                (edit) => edit.caseId === caseId
-                    && edit.resourcePropertyKey === resourcePropertyKey
-                    && edit.resourceId === resourceId,
-            )
-
-            if (existingEditIndex !== -1) {
-                // Create a new array with the updated instance
-                const newQueue = [...prev]
-                newQueue[existingEditIndex] = {
-                    ...newQueue[existingEditIndex],
-                    newResourceObject,
-                    newDisplayValue,
-                    previousDisplayValue,
-                    timeStamp: new Date().getTime(),
-                }
-                return newQueue
-            }
-
-            // If no existing edit is found, add the new edit instance
-            return [...prev, editInstanceObject]
-        })
+        setApiQueue((prevQueue) => [...prevQueue, editInstanceObject])
     }
 
-    const undoEdit = () => {
-        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams))
-        const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
+    /*
+            setApiQueue((prevQueue) => {
+                const existingEditIndex = prevQueue.findIndex(
+                    (edit) => edit.caseId === caseId
+                        && edit.resourceName === resourceName,
+                )
+                console.log("prevQueue", prevQueue)
+                console.log("existingEditIndex", existingEditIndex)
+                if (existingEditIndex !== -1) {
+                    const existingResourceObject = prevQueue[existingEditIndex].newResourceObject
 
-        const updatedEditIndex = currentEditIndex + 1
-        const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
+                    const combinedResourceObject: ResourceObject = structuredClone(existingResourceObject)
+                    combinedResourceObject[resourcePropertyKey as keyof ResourceObject] = newResourceObject[resourcePropertyKey as keyof ResourceObject]
+                    console.log("combinedResourceObject", combinedResourceObject)
+                    const newQueue = [...prevQueue]
+                    newQueue[existingEditIndex] = {
+                        ...newQueue[existingEditIndex],
+                        newResourceObject: combinedResourceObject,
+                        newDisplayValue,
+                        previousDisplayValue,
+                        timeStamp: new Date().getTime(),
+                    }
+                    return newQueue
+                }
+                return [...prevQueue, editInstanceObject]
+            }) */
+    const { caseId } = useParams()
 
+    const highlightElement = (element: HTMLElement | null, duration = 3000) => {
+        if (element) {
+            element.classList.add("highlighted")
+            setTimeout(() => {
+                element.classList.remove("highlighted")
+            }, duration)
+        }
+    }
+
+    const delay = (ms: number) => new Promise((resolve) => { setTimeout(resolve, ms) })
+
+    const undoEdit = async () => {
+        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex(
+            (edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams),
+        )
         if (currentEditIndex === -1) {
             return
         }
-        if (!updatedEdit) {
-            updateEditIndex("")
-        } else {
-            updateEditIndex(updatedEdit.uuid)
-        }
+
+        const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
+        const updatedEditIndex = currentEditIndex + 1
+        const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
+
+        updateEditIndex(updatedEdit ? updatedEdit.uuid : "")
 
         if (editThatWillBeUndone) {
-            submitToApi(
-                {
-                    projectId: editThatWillBeUndone.projectId,
-                    caseId: editThatWillBeUndone.caseId!,
-                    resourceProfileId: editThatWillBeUndone.resourceProfileId,
-                    resourceName: editThatWillBeUndone.resourceName,
-                    resourcePropertyKey: editThatWillBeUndone.resourcePropertyKey,
-                    resourceId: editThatWillBeUndone.resourceId,
-                    resourceObject: editThatWillBeUndone.previousResourceObject as ResourceObject,
-                    wellId: editThatWillBeUndone.wellId,
-                    drillingScheduleId: editThatWillBeUndone.drillingScheduleId,
-                },
-            )
+            const projectUrl = location.pathname.split("/case")[0]
+            navigate(`${projectUrl}/case/${caseId}/${editThatWillBeUndone.tabName ?? ""}`)
+
+            const scrollToElement = (elementId: string) => new Promise<void>((resolve, reject) => {
+                const tabElement = document.getElementById(elementId) as HTMLElement | null
+                if (!tabElement) {
+                    reject(new Error(`Element with id ${elementId} not found`))
+                    return
+                }
+                tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
+                resolve()
+            })
+
+            const rowWhereCellWillBeUndone = editThatWillBeUndone.tableName ?? editThatWillBeUndone.inputFieldId ?? editThatWillBeUndone.inputLabel
+
+            if (!rowWhereCellWillBeUndone) {
+                console.error("rowWhereCellWillBeUndone is undefined")
+                return
+            }
+
+            setTimeout(async () => {
+                try {
+                    await scrollToElement(rowWhereCellWillBeUndone)
+
+                    const tabElement = document.getElementById(rowWhereCellWillBeUndone) as HTMLElement | null
+                    if (tabElement) {
+                        // Attempt to highlight cell, doesnt work since querySelector can't find any element with data-key="${editThatWillBeUndone.resourcePropertyKey}
+                        if (editThatWillBeUndone.tableName) {
+                            const tableCell = tabElement.querySelector(`[data-key="${editThatWillBeUndone.resourcePropertyKey}"]`) as HTMLElement | null
+                            highlightElement(tableCell ?? tabElement)
+                        } else {
+                            highlightElement(tabElement)
+                        }
+                    }
+
+                    await delay(500)
+                    await submitToApi({
+                        projectId: editThatWillBeUndone.projectId,
+                        caseId: editThatWillBeUndone.caseId!,
+                        resourceProfileId: editThatWillBeUndone.resourceProfileId,
+                        resourceName: editThatWillBeUndone.resourceName,
+                        resourcePropertyKey: editThatWillBeUndone.resourcePropertyKey,
+                        resourceId: editThatWillBeUndone.resourceId,
+                        resourceObject: editThatWillBeUndone.previousResourceObject as ResourceObject,
+                        wellId: editThatWillBeUndone.wellId,
+                        drillingScheduleId: editThatWillBeUndone.drillingScheduleId,
+                    })
+                } catch (error) {
+                    console.error(error)
+                }
+            }, 500)
         }
     }
 
-    const redoEdit = () => {
-        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams))
-
+    const redoEdit = async () => {
+        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex(
+            (edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams),
+        )
         if (currentEditIndex <= 0) {
-            // If the current edit is the first one or not found, redo the last edit.
             const lastEdit = caseEditsBelongingToCurrentCase[caseEditsBelongingToCurrentCase.length - 1]
-
             if (lastEdit) {
                 updateEditIndex(lastEdit.uuid)
-                submitToApi(
-                    {
-                        projectId: lastEdit.projectId,
-                        caseId: lastEdit.caseId!,
-                        resourceProfileId: lastEdit.resourceProfileId,
-                        resourceName: lastEdit.resourceName,
-                        resourcePropertyKey: lastEdit.resourcePropertyKey,
-                        resourceId: lastEdit.resourceId,
-                        resourceObject: lastEdit.newResourceObject as ResourceObject,
-                        wellId: lastEdit.wellId,
-                        drillingScheduleId: lastEdit.drillingScheduleId,
-                    },
-                )
+                const projectUrl = location.pathname.split("/case")[0]
+                navigate(`${projectUrl}/case/${caseId}/${lastEdit.tabName ?? ""}`)
+
+                const scrollToElement = (elementId: string) => new Promise<void>((resolve, reject) => {
+                    const tabElement = document.getElementById(elementId) as HTMLElement | null
+                    if (!tabElement) {
+                        reject(new Error(`Element with id ${elementId} not found`))
+                        return
+                    }
+                    tabElement.scrollIntoView({ behavior: "auto", block: "center" })
+                    resolve()
+                })
+
+                const rowWhereCellWillBeUndone = lastEdit.tableName ?? lastEdit.inputFieldId ?? lastEdit.inputLabel
+                if (!rowWhereCellWillBeUndone) {
+                    console.error("rowWhereCellWillBeUndone is undefined")
+                    return
+                }
+
+                setTimeout(async () => {
+                    try {
+                        await scrollToElement(rowWhereCellWillBeUndone)
+
+                        const tabElement = document.getElementById(rowWhereCellWillBeUndone) as HTMLElement | null
+                        if (tabElement) {
+                            if (lastEdit.tableName) {
+                                const tableCell = tabElement.querySelector(`[data-key="${lastEdit.resourcePropertyKey}"]`) as HTMLElement | null
+                                highlightElement(tableCell ?? tabElement)
+                            } else {
+                                highlightElement(tabElement)
+                            }
+                        }
+
+                        await delay(500)
+                        await submitToApi({
+                            projectId: lastEdit.projectId,
+                            caseId: lastEdit.caseId!,
+                            resourceProfileId: lastEdit.resourceProfileId,
+                            resourceName: lastEdit.resourceName,
+                            resourcePropertyKey: lastEdit.resourcePropertyKey,
+                            resourceId: lastEdit.resourceId,
+                            resourceObject: lastEdit.newResourceObject as ResourceObject,
+                            wellId: lastEdit.wellId,
+                            drillingScheduleId: lastEdit.drillingScheduleId,
+                        })
+                    } catch (error) {
+                        console.error(error)
+                    }
+                }, 500)
             }
         } else {
-            // Otherwise, redo the previous edit.
             const updatedEdit = caseEditsBelongingToCurrentCase[currentEditIndex - 1]
             updateEditIndex(updatedEdit.uuid)
-
             if (updatedEdit) {
-                submitToApi(
-                    {
-                        projectId: updatedEdit.projectId,
-                        caseId: updatedEdit.caseId!,
-                        resourceProfileId: updatedEdit.resourceProfileId,
-                        resourceName: updatedEdit.resourceName,
-                        resourcePropertyKey: updatedEdit.resourcePropertyKey,
-                        resourceId: updatedEdit.resourceId,
-                        resourceObject: updatedEdit.newResourceObject as ResourceObject,
-                        wellId: updatedEdit.wellId,
-                        drillingScheduleId: updatedEdit.drillingScheduleId,
-                    },
-                )
+                const projectUrl = location.pathname.split("/case")[0]
+                navigate(`${projectUrl}/case/${caseId}/${updatedEdit.tabName ?? ""}`)
+
+                const scrollToElement = (elementId: string) => new Promise<void>((resolve, reject) => {
+                    const tabElement = document.getElementById(elementId) as HTMLElement | null
+                    if (!tabElement) {
+                        reject(new Error(`Element with id ${elementId} not found`))
+                        return
+                    }
+                    tabElement.scrollIntoView({ behavior: "smooth", block: "center" })
+                    resolve()
+                })
+
+                const rowWhereCellWillBeUndone = updatedEdit.tableName ?? updatedEdit.inputFieldId ?? updatedEdit.inputLabel
+                if (!rowWhereCellWillBeUndone) {
+                    return
+                }
+
+                setTimeout(async () => {
+                    try {
+                        await scrollToElement(rowWhereCellWillBeUndone)
+
+                        const tabElement = document.getElementById(rowWhereCellWillBeUndone) as HTMLElement | null
+                        if (tabElement) {
+                            if (updatedEdit.tableName) {
+                                const tableCell = tabElement.querySelector(`[data-key="${updatedEdit.resourcePropertyKey}"]`) as HTMLElement | null
+                                highlightElement(tableCell ?? tabElement)
+                            } else {
+                                highlightElement(tabElement)
+                            }
+                        }
+
+                        await delay(500)
+                        await submitToApi({
+                            projectId: updatedEdit.projectId,
+                            caseId: updatedEdit.caseId!,
+                            resourceProfileId: updatedEdit.resourceProfileId,
+                            resourceName: updatedEdit.resourceName,
+                            resourcePropertyKey: updatedEdit.resourcePropertyKey,
+                            resourceId: updatedEdit.resourceId,
+                            resourceObject: updatedEdit.newResourceObject as ResourceObject,
+                            wellId: updatedEdit.wellId,
+                            drillingScheduleId: updatedEdit.drillingScheduleId,
+                        })
+                    } catch (error) {
+                        console.error(error)
+                    }
+                }, 500)
             }
         }
     }

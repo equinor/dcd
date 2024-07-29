@@ -10,14 +10,12 @@ import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import Gallery from "../../Gallery/Gallery"
 import { useAppContext } from "../../../Context/AppContext"
 import { useProjectContext } from "../../../Context/ProjectContext"
-import useDataEdits from "../../../Hooks/useDataEdits"
 import CaseDescriptionTabSkeleton from "./LoadingSkeletons/CaseDescriptionTabSkeleton"
 
-const CaseDescriptionTab = () => {
+const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
     const { editMode } = useAppContext()
-    const { addEdit } = useDataEdits()
-    const { caseId } = useParams()
+    const { caseId, tab } = useParams()
     const queryClient = useQueryClient()
     const projectId = project?.id || null
 
@@ -66,20 +64,18 @@ const CaseDescriptionTab = () => {
         const newResourceObject = structuredClone(caseData)
         newResourceObject.description = newValue
 
-        console.log("newResourceObject", newResourceObject)
-        console.log("previousResourceObject", previousResourceObject)
-
         addEdit({
             newDisplayValue: newValue,
             previousDisplayValue: caseData.description,
+            previousResourceObject,
+            newResourceObject,
             inputLabel: "Description",
             projectId,
             resourceName: "case",
             resourcePropertyKey: "description",
             resourceId: "",
             caseId: caseData.id,
-            previousResourceObject,
-            newResourceObject,
+            tabName: tab,
         })
         setDescription(newValue)
     }
@@ -97,6 +93,7 @@ const CaseDescriptionTab = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 10 }}
                             transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                            id="Description"
                         >
                             <MarkdownEditor
                                 menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
@@ -119,6 +116,7 @@ const CaseDescriptionTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="producerCount"
                     label="Production wells"
@@ -127,10 +125,12 @@ const CaseDescriptionTab = () => {
                     integer
                     min={0}
                     max={100000}
+                    resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="waterInjectorCount"
                     label="Water injector wells"
@@ -140,10 +140,12 @@ const CaseDescriptionTab = () => {
                     disabled={false}
                     min={0}
                     max={100000}
+                    resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="gasInjectorCount"
                     label="Gas injector wells"
@@ -152,30 +154,36 @@ const CaseDescriptionTab = () => {
                     integer
                     min={0}
                     max={100000}
+                    resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableDropdownInput
+                    addEdit={addEdit}
                     value={caseData.productionStrategyOverview ?? 0}
                     resourceName="case"
                     resourcePropertyKey="productionStrategyOverview"
                     options={productionStrategyOptions}
                     previousResourceObject={caseData}
                     label="Production strategy overview"
+                    resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableDropdownInput
+                    addEdit={addEdit}
                     value={caseData.artificialLift ?? 0}
                     resourceName="case"
                     resourcePropertyKey="artificialLift"
                     options={artificialLiftOptions}
                     previousResourceObject={caseData}
                     label="Artificial lift"
+                    resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="facilitiesAvailability"
                     label="Facilities availability"
@@ -185,6 +193,7 @@ const CaseDescriptionTab = () => {
                     unit="%"
                     min={0}
                     max={100}
+                    resourceId={caseData.id}
                 />
             </Grid>
         </Grid>

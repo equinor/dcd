@@ -131,6 +131,9 @@ export interface EditInstance {
     caseId?: string; // the case id
     newDisplayValue?: string | number | undefined; // the displayed new value in case of when the value submitted is not what the user should see
     previousDisplayValue?: string | number | undefined; // the displayed previous value in case of when the value submitted is not what the user should see
+    tabName?: string; // used to go to the given tab where undo/redo happened
+    tableName?: string; // used to highlight undone field
+    inputFieldId?: string;
 }
 
 export interface EditEntry {

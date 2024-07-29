@@ -2,15 +2,14 @@ import React from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import { useParams } from "react-router"
 import InputSwitcher from "../../../../Input/Components/InputSwitcher"
-import useDataEdits from "../../../../../Hooks/useDataEdits"
 
 interface props {
     surfData: Components.Schemas.SurfWithProfilesDto
     projectId: string
+    addEdit: any
 }
 
-const Maturity: React.FC<props> = ({ surfData, projectId }) => {
-    const { addEdit } = useDataEdits()
+const Maturity: React.FC<props> = ({ surfData, projectId, addEdit }) => {
     const { caseId } = useParams()
 
     const maturityOptions: { [key: string]: string } = {

@@ -11,7 +11,6 @@ type Props = {
     isOpen: boolean
     setIsOpen: Dispatch<SetStateAction<boolean>>
     profileName: ProfileNames | undefined;
-    setProfile: Dispatch<SetStateAction<any>> | undefined
     profile: any
 }
 
@@ -19,7 +18,6 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
     isOpen,
     setIsOpen,
     profileName,
-    setProfile,
     profile,
 }) => {
     const { addEdit } = useDataEdits()

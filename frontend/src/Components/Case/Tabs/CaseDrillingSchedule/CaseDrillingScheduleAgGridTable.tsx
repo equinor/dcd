@@ -20,7 +20,6 @@ import {
 } from "../../../../Utils/common"
 import { useAppContext } from "../../../../Context/AppContext"
 import { useProjectContext } from "../../../../Context/ProjectContext"
-import useDataEdits from "../../../../Hooks/useDataEdits"
 
 interface Props {
     dg4Year: number
@@ -32,6 +31,7 @@ interface Props {
     wells: Components.Schemas.WellDto[] | undefined
     resourceId: string
     isExplorationTable: boolean
+    addEdit: any
 }
 
 interface IAssetWell {
@@ -54,6 +54,7 @@ const CaseDrillingScheduleTabTable = ({
     wells,
     resourceId,
     isExplorationTable,
+    addEdit,
 }: Props) => {
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([])
@@ -61,8 +62,7 @@ const CaseDrillingScheduleTabTable = ({
 
     const { editMode, setSnackBarMessage } = useAppContext()
     const { project } = useProjectContext()
-    const { addEdit } = useDataEdits()
-    const { caseId } = useParams()
+    const { caseId, tab } = useParams()
 
     const firstTriggerRef = useRef<boolean>(true)
     const timerRef = useRef<NodeJS.Timeout | null>(null)
@@ -218,6 +218,8 @@ const CaseDrillingScheduleTabTable = ({
                         previousResourceObject: existingProfile,
                         wellId: updatedWell.wellId,
                         drillingScheduleId: newProfile.id,
+                        tabName: tab,
+                        tableName,
                     })
                 }
             }
@@ -324,6 +326,7 @@ const CaseDrillingScheduleTabTable = ({
     return (
         <div className={styles.root}>
             <div
+                id={tableName}
                 style={{
                     display: "flex", flexDirection: "column", width: "100%",
                 }}

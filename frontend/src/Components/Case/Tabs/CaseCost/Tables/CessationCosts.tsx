@@ -3,18 +3,20 @@ import { useProjectContext } from "../../../../../Context/ProjectContext"
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { ITimeSeriesData } from "../../../../../Models/Interfaces"
 
-interface CesationCostsProps {
+interface CessationCostsProps {
     tableYears: [number, number];
     cessationGridRef: React.MutableRefObject<any>;
     alignedGridsRef: any[];
-    apiData: Components.Schemas.CaseWithAssetsDto ;
+    apiData: Components.Schemas.CaseWithAssetsDto;
+    addEdit: any;
 }
 
-const CessationCosts: React.FC<CesationCostsProps> = ({
+const CessationCosts: React.FC<CessationCostsProps> = ({
     tableYears,
     cessationGridRef,
     alignedGridsRef,
     apiData,
+    addEdit,
 }) => {
     const { project } = useProjectContext()
 
@@ -79,6 +81,7 @@ const CessationCosts: React.FC<CesationCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
+            addEdit={addEdit}
         />
     )
 }

@@ -19,7 +19,7 @@ import { useCaseContext } from "../../../../Context/CaseContext"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
 import { ITimeSeriesData } from "../../../../Models/Interfaces"
 
-const CaseCO2Tab = () => {
+const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
     const { caseId } = useParams()
     const queryClient = useQueryClient()
@@ -208,6 +208,7 @@ const CaseCO2Tab = () => {
             </Grid>
             <Grid item xs={12}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="topside"
                     resourcePropertyKey="fuelConsumption"
                     resourceId={topsideData.id}
@@ -265,6 +266,7 @@ const CaseCO2Tab = () => {
             />
             <Grid item xs={12}>
                 <CaseTabTable
+                    addEdit={addEdit}
                     timeSeriesData={timeSeriesData}
                     dg4Year={caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}
