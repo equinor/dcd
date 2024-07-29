@@ -1514,6 +1514,7 @@ const useDataEdits = (): {
     useEffect(() => {
         if (apiQueue.length > 0) {
             console.log("Queue: ", apiQueue)
+            processQueue()
         }
     }, [apiQueue])
 
@@ -1561,7 +1562,31 @@ const useDataEdits = (): {
             inputFieldId,
         }
 
-        setApiQueue((prevQueue) => [...prevQueue, editInstanceObject])
+        setApiQueue((prevQueue) => {
+            const existingEditIndex = prevQueue.findIndex(
+                (edit) => edit.caseId === caseId
+                    && edit.resourceName === resourceName,
+            )
+            console.log("prevQueue", prevQueue)
+            console.log("existingEditIndex", existingEditIndex)
+            if (existingEditIndex !== -1) {
+                const existingResourceObject = prevQueue[existingEditIndex].newResourceObject
+
+                const combinedResourceObject: ResourceObject = structuredClone(existingResourceObject)
+                combinedResourceObject[resourcePropertyKey as keyof ResourceObject] = newResourceObject[resourcePropertyKey as keyof ResourceObject]
+                console.log("combinedResourceObject", combinedResourceObject)
+                const newQueue = [...prevQueue]
+                newQueue[existingEditIndex] = {
+                    ...newQueue[existingEditIndex],
+                    newResourceObject: combinedResourceObject,
+                    newDisplayValue,
+                    previousDisplayValue,
+                    timeStamp: new Date().getTime(),
+                }
+                return newQueue
+            }
+            return [...prevQueue, editInstanceObject]
+        })
     }
 
     /*
