@@ -55,18 +55,46 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
     const [activeEdit, setActiveEdit] = useState<string | undefined>(undefined)
     const activeRef = useRef<HTMLDivElement | null>(null)
     const {
-        setIsSaving,
         apiQueue,
-        setApiQueue,
+        setIsSaving,
     } = useAppContext()
     const {
         caseEdits,
-        setCaseEdits,
         editIndexes,
-        caseEditsBelongingToCurrentCase,
-        setEditIndexes,
     } = useCaseContext()
-    const { submitToApi } = useDataEdits()
+    const {
+        processQueue,
+    } = useDataEdits()
+
+    useEffect(() => {
+        let timer: NodeJS.Timeout | undefined
+
+        if (apiQueue.length > 0) {
+            setIsSaving(true)
+
+            console.log("Queue: ", apiQueue)
+
+            // Clear the existing timer if `apiQueue` changes
+            if (timer) {
+                clearTimeout(timer)
+            }
+
+            // Set a new timer for 3 seconds
+            timer = setTimeout(() => {
+                console.log("processing queue")
+                processQueue()
+            }, 3000)
+        } else {
+            setIsSaving(false)
+        }
+
+        // Cleanup function to clear the timer if the component unmounts or `apiQueue` changes
+        return () => {
+            if (timer) {
+                clearTimeout(timer)
+            }
+        }
+    }, [apiQueue])
 
     useEffect(() => {
         const currentEditId = getCurrentEditId(editIndexes, caseId)
@@ -78,106 +106,6 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
             activeRef.current.scrollIntoView({ behavior: "smooth", block: "center" })
         }
     }, [activeEdit])
-
-    const updateEditIndex = (newEditId: string) => {
-        if (!caseId) {
-            console.log("you are not in a project case")
-            return
-        }
-
-        const editEntry: EditEntry = { caseId, currentEditId: newEditId }
-        const storedEditIndexes = localStorage.getItem("editIndexes")
-        const editIndexesArray = storedEditIndexes ? JSON.parse(storedEditIndexes) : []
-        const currentCasesEditIndex = editIndexesArray.findIndex((entry: { caseId: string }) => entry.caseId === caseId)
-
-        if (currentCasesEditIndex !== -1) {
-            editIndexesArray[currentCasesEditIndex].currentEditId = newEditId
-        } else {
-            editIndexesArray.push(editEntry)
-        }
-
-        localStorage.setItem("editIndexes", JSON.stringify(editIndexesArray))
-        setEditIndexes(editIndexesArray)
-    }
-
-    const addToHistoryTracker = async (editInstanceObject: EditInstance, newCaseId: string) => {
-        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, newCaseId))
-        const caseEditsNotBelongingToCurrentCase = caseEdits.filter((edit) => edit.caseId !== newCaseId)
-
-        let edits = caseEditsBelongingToCurrentCase
-
-        if (currentEditIndex > 0) {
-            edits = caseEditsBelongingToCurrentCase.slice(currentEditIndex)
-        }
-
-        if (currentEditIndex === -1) {
-            edits = []
-        }
-
-        edits = [editInstanceObject, ...edits, ...caseEditsNotBelongingToCurrentCase]
-        setCaseEdits(edits)
-        updateEditIndex(editInstanceObject.uuid)
-    }
-
-    const submitQueueItem = async (editInstance: EditInstance) => {
-        console.log("submitting edit", editInstance)
-        const success = await submitToApi({
-            projectId: editInstance.projectId,
-            caseId: editInstance.caseId!,
-            resourceName: editInstance.resourceName,
-            resourcePropertyKey: editInstance.resourcePropertyKey,
-            resourceId: editInstance.resourceId,
-            resourceProfileId: editInstance.resourceProfileId,
-            wellId: editInstance.wellId,
-            drillingScheduleId: editInstance.drillingScheduleId,
-            resourceObject: editInstance.newResourceObject as ResourceObject,
-        })
-        return success
-    }
-
-    const addEditToHistoryTracker = async (editInstance: EditInstance) => {
-        console.log("Processing edit", editInstance)
-        const submitted = await submitQueueItem(editInstance)
-
-        if (submitted && editInstance.caseId) {
-            if (!editInstance.resourceProfileId) {
-                console.log("Edit saved successfully")
-                addToHistoryTracker(editInstance, editInstance.caseId)
-            } else {
-                const editWithProfileId = structuredClone(editInstance)
-                editWithProfileId.resourceProfileId = submitted.resourceProfileId
-                editWithProfileId.drillingScheduleId = submitted.resourceProfileId
-                addToHistoryTracker(editWithProfileId, editInstance.caseId)
-                console.log("Edit with resourceProfileId saved successfully")
-            }
-        } else {
-            console.log("Error saving edit")
-        }
-    }
-
-    const processQueue = () => {
-        console.log("Processes queue method running")
-        setApiQueue((prevQueue) => {
-            console.log("Queue length", prevQueue.length)
-
-            if (prevQueue.length > 0) {
-                setIsSaving(true)
-                const editInstance = prevQueue[0]
-                addEditToHistoryTracker(editInstance).then(() => {
-                    setIsSaving(false)
-                    setApiQueue(prevQueue.slice(1))
-                })
-            }
-            return prevQueue
-        })
-    }
-
-    useEffect(() => {
-        if (apiQueue.length > 0) {
-            console.log("Queue: ", apiQueue)
-            processQueue()
-        }
-    }, [apiQueue])
 
     return (
         <>

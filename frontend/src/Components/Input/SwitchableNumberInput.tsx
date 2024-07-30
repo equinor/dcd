@@ -7,7 +7,6 @@ import { ResourcePropertyKey, ResourceName, ResourceObject } from "../../Models/
 
 interface CaseEditInputProps {
     label: string;
-    onSubmit?: (value: number) => void;
     value: number | undefined;
     resourceName: ResourceName;
     resourcePropertyKey: ResourcePropertyKey;
@@ -24,7 +23,6 @@ interface CaseEditInputProps {
 
 const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
     label,
-    onSubmit, // this will be obsolete when we introduce autosave.
     value,
     resourcePropertyKey,
     previousResourceObject,
@@ -42,13 +40,10 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
     const { caseId, tab } = useParams()
 
     const addToEditsAndSubmit = (insertedValue: number) => {
-        if (onSubmit) {
-            onSubmit(insertedValue) // this will be obsolete when we introduce autosave.
-        }
         if (!caseId || !project) { return }
 
         const newResourceObject: ResourceObject = structuredClone(previousResourceObject)
-        newResourceObject[resourcePropertyKey as keyof ResourceObject] = String(insertedValue)
+        newResourceObject[resourcePropertyKey as keyof ResourceObject] = insertedValue as any
 
         addEdit({
             previousDisplayValue: value,
