@@ -47,10 +47,23 @@ interface AddEditParams {
     inputFieldId?: string;
 }
 
+type SubmitToApiParams = {
+    projectId: string,
+    caseId: string,
+    resourceName: string,
+    resourcePropertyKey: ResourcePropertyKey,
+    resourceId?: string,
+    resourceObject: ResourceObject,
+    resourceProfileId?: string,
+    wellId?: string,
+    drillingScheduleId?: string,
+}
+
 const useDataEdits = (): {
     addEdit: (params: AddEditParams) => void;
     undoEdit: () => void;
     redoEdit: () => void;
+    submitToApi: (params: SubmitToApiParams) => Promise<any>;
 } => {
     const {
         setSnackBarMessage,
@@ -332,18 +345,6 @@ const useDataEdits = (): {
         } catch (error) {
             return false
         }
-    }
-
-    type SubmitToApiParams = {
-        projectId: string,
-        caseId: string,
-        resourceName: string,
-        resourcePropertyKey: ResourcePropertyKey,
-        resourceId?: string,
-        resourceObject: ResourceObject,
-        resourceProfileId?: string,
-        wellId?: string,
-        drillingScheduleId?: string,
     }
 
     const submitToApi = async ({
@@ -1436,7 +1437,7 @@ const useDataEdits = (): {
 
         return success
     }
-
+    /*
     const addToHistoryTracker = async (editInstanceObject: EditInstance, caseId: string) => {
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams))
         const caseEditsNotBelongingToCurrentCase = caseEdits.filter((edit) => edit.caseId !== caseId)
@@ -1471,8 +1472,6 @@ const useDataEdits = (): {
         })
         return success
     }
-    const timerRef = useRef<NodeJS.Timeout | null>(null)
-    const lastUpdateRef = useRef(Date.now())
 
     const addEditToHistoryTracker = async (editInstance: EditInstance) => {
         console.log("Processing edit", editInstance)
@@ -1517,6 +1516,7 @@ const useDataEdits = (): {
             processQueue()
         }
     }, [apiQueue])
+    */
 
     const addEdit = async ({
         inputLabel,
@@ -1815,6 +1815,7 @@ const useDataEdits = (): {
         addEdit,
         undoEdit,
         redoEdit,
+        submitToApi,
     }
 }
 
