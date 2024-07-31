@@ -112,8 +112,8 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 gasInjectorCostProfile,
             ]
 
-            const rigUpgradingCost = project.developmentOperationalWellCosts.rigUpgrading
-            const rigMobDemobCost = project.developmentOperationalWellCosts.rigMobDemob
+            const rigUpgradingCost = project.developmentOperationalWellCosts?.rigUpgrading
+            const rigMobDemobCost = project.developmentOperationalWellCosts?.rigMobDemob
             const sumOfRigAndMobDemob = rigUpgradingCost + rigMobDemobCost
 
             if (sumOfRigAndMobDemob > 0) {
