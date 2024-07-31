@@ -72,23 +72,17 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
         if (apiQueue.length > 0) {
             setIsSaving(true)
 
-            console.log("Queue: ", apiQueue)
-
-            // Clear the existing timer if `apiQueue` changes
             if (timer) {
                 clearTimeout(timer)
             }
 
-            // Set a new timer for 3 seconds
             timer = setTimeout(() => {
-                console.log("processing queue")
                 processQueue()
             }, 500)
         } else {
             setIsSaving(false)
         }
 
-        // Cleanup function to clear the timer if the component unmounts or `apiQueue` changes
         return () => {
             if (timer) {
                 clearTimeout(timer)

@@ -1432,34 +1432,6 @@ const useDataEdits = (): {
 
         return success
     }
-    const addToHistoryTracker = async (editInstanceObject: EditInstance, caseId: string) => {
-        const caseEditsNotBelongingToCurrentCase = caseEdits.filter((edit) => edit.caseId !== caseId)
-        const allEdits = [editInstanceObject, ...caseEditsBelongingToCurrentCase, ...caseEditsNotBelongingToCurrentCase]
-
-        setCaseEdits(allEdits)
-        updateEditIndex(editInstanceObject.uuid)
-
-        /*
-        const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex((edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams))
-        const caseEditsNotBelongingToCurrentCase = caseEdits.filter((edit) => edit.caseId !== caseId)
-
-        console.log("cases ")
-        let edits = caseEditsBelongingToCurrentCase
-        console.log("current edit index", currentEditIndex) // where the highlighed history tracker item was before adding the new edit
-
-        if (currentEditIndex > 0) {
-            edits = caseEditsBelongingToCurrentCase.slice(currentEditIndex)
-        }
-
-        if (currentEditIndex === -1) {
-            edits = []
-        }
-
-        edits = [editInstanceObject, ...edits, ...caseEditsNotBelongingToCurrentCase]
-        setCaseEdits(edits)
-        updateEditIndex(editInstanceObject.uuid)
-        */
-    }
 
     const registerEdit = async (editInstance: EditInstance) => {
         const submitted = await submitToApi({
@@ -1490,6 +1462,7 @@ const useDataEdits = (): {
     const processQueue = async () => {
         const registeredEdits: Array<EditInstance> = (await Promise.all(apiQueue.map((editInstance) => registerEdit(editInstance))))
             .filter((result): result is EditInstance => result !== null)
+            .reverse()
 
         const caseEditsNotBelongingToCurrentCase = caseEdits.filter((edit) => edit.caseId !== registeredEdits[0].caseId)
         const allEdits = [...registeredEdits, ...caseEditsBelongingToCurrentCase, ...caseEditsNotBelongingToCurrentCase]
@@ -1497,30 +1470,7 @@ const useDataEdits = (): {
         updateEditIndex(registeredEdits[0].uuid)
         setApiQueue([])
     }
-    /*
-    const processQ2ueue = () => {
-        registerEdits(apiQueue)
 
-            apiQueue.forEach((editInstance) => {
-                console.log("processing edit for input ", editInstance.inputLabel)
-                registerEdit(editInstance)
-            })
-            setApiQueue([])
-            */
-
-    /*
-            setApiQueue((prevQueue) => {
-                if (prevQueue.length > 0) {
-                    const editInstance = prevQueue[0]
-                    registerEdit(editInstance).then(() => {
-                        setApiQueue((prev) => prev.slice(1))
-                    })
-                }
-                return prevQueue
-            })
-
-    }
-  */
     const addEdit = async ({
         inputLabel,
         projectId,
@@ -1586,7 +1536,7 @@ const useDataEdits = (): {
 
             if (userUpdatedSameFieldTwice) {
                 // edit the existing queue entry with the new values from the submitted edit
-                console.log("user updated same field twice. updating existing edit")
+
                 console.log("upaded key", updatedFieldInCurrentEdit)
                 const existingEditWithWithAddedNewValue: EditInstance = {
                     ...latestEditForSameResourceObjectInQueue,
@@ -1600,7 +1550,7 @@ const useDataEdits = (): {
                 ])
             } else {
                 // add new queue entry combining the new values of the previous edit with the new values of the current edit
-                console.log("user updated different field. adding new edit entry but with combined values with previous edit in queue")
+
                 console.log("upaded key", updatedFieldInCurrentEdit)
                 const insertedEditInstanceWithCombinedResourceObject: EditInstance = {
                     ...insertedEditInstanceObject,
@@ -1610,9 +1560,9 @@ const useDataEdits = (): {
                 setApiQueue([...apiQueue, insertedEditInstanceWithCombinedResourceObject])
             }
         } else {
-            console.log("user updated a field with a resource object that is not currently in the queue")
-            console.log("upaded key", insertedEditInstanceObject.resourcePropertyKey)
             // new unique edit added with no previous edits for the same resource object. just add it to the queue
+
+            console.log("upaded key", insertedEditInstanceObject.resourcePropertyKey)
             setApiQueue([...apiQueue, insertedEditInstanceObject])
         }
     }
@@ -1641,7 +1591,6 @@ const useDataEdits = (): {
         const editThatWillBeUndone = caseEditsBelongingToCurrentCase[currentEditIndex]
         const updatedEditIndex = currentEditIndex + 1
         const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
-        console.log("edit that will be undone", editThatWillBeUndone)
 
         updateEditIndex(updatedEdit ? updatedEdit.uuid : "")
 
@@ -1706,7 +1655,6 @@ const useDataEdits = (): {
         )
         if (currentEditIndex <= 0) {
             const lastEdit = caseEditsBelongingToCurrentCase[caseEditsBelongingToCurrentCase.length - 1]
-            console.log("edit that will be redone", lastEdit)
             if (lastEdit) {
                 updateEditIndex(lastEdit.uuid)
                 const projectUrl = location.pathname.split("/case")[0]
@@ -1761,7 +1709,6 @@ const useDataEdits = (): {
             }
         } else {
             const updatedEdit = caseEditsBelongingToCurrentCase[currentEditIndex - 1]
-            console.log("edit that will be redone", updatedEdit)
             updateEditIndex(updatedEdit.uuid)
             if (updatedEdit) {
                 const projectUrl = location.pathname.split("/case")[0]
