@@ -1495,6 +1495,7 @@ const useDataEdits = (): {
         const allEdits = [...registeredEdits, ...caseEditsBelongingToCurrentCase, ...caseEditsNotBelongingToCurrentCase]
         setCaseEdits(allEdits)
         updateEditIndex(registeredEdits[0].uuid)
+        setApiQueue([])
     }
     /*
     const processQ2ueue = () => {
