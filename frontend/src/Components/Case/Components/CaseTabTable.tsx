@@ -28,6 +28,7 @@ import ClickableLockIcon from "./ClickableLockIcon"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import useDataEdits from "../../../Hooks/useDataEdits"
+import { TABLE_VALIDATION_RULES } from "../../../Utils/constants"
 
 interface Props {
     timeSeriesData: any[]
@@ -274,7 +275,10 @@ const CaseTabTable = ({
     }
 
     const handleCellValueChange = useCallback((params: any) => {
-        if (firstTriggerRef.current) {
+        const rule = TABLE_VALIDATION_RULES[params.data.profileName]
+        if (rule && (params.newValue < rule.min || params.newValue > rule.max)) {
+            setSnackBarMessage(`Value must be between ${rule.min} and ${rule.max}. Please correct the input to save the input.`)
+        } else if (firstTriggerRef.current) {
             firstTriggerRef.current = false
             stageEdit(params)
 
