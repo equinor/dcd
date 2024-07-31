@@ -6,7 +6,6 @@ import { motion } from "framer-motion"
 import { useCaseContext } from "../../../Context/CaseContext"
 import { formatTime, getCurrentEditId } from "../../../Utils/common"
 import { useAppContext } from "../../../Context/AppContext"
-import { EditInstance, EditEntry, ResourceObject } from "../../../Models/Interfaces"
 import useDataEdits from "../../../Hooks/useDataEdits"
 
 const EditInstanceWrapper = styled(motion.div) <{ $isActive: boolean }>`
