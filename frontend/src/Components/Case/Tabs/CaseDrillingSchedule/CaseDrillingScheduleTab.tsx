@@ -15,7 +15,7 @@ import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
 
-const CaseDrillingScheduleTab = () => {
+const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
     const { activeTabCase } = useCaseContext()
     const queryClient = useQueryClient()
@@ -134,9 +134,11 @@ const CaseDrillingScheduleTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="producerCount" // dummy just to display swithable number input
                     label="Exploration wells"
+                    previousResourceObject={caseData}
                     value={explorationWellCount}
                     integer
                     disabled
@@ -144,9 +146,11 @@ const CaseDrillingScheduleTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="producerCount" // dummy just to display swithable number input
                     label="Appraisal wells"
+                    previousResourceObject={caseData}
                     value={appraisalWellCount}
                     integer
                     disabled
@@ -154,9 +158,11 @@ const CaseDrillingScheduleTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="producerCount" // dummy just to display disabled number input
                     label="Oil producer wells"
+                    previousResourceObject={caseData}
                     value={oilProducerCount}
                     integer
                     disabled
@@ -164,9 +170,11 @@ const CaseDrillingScheduleTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="producerCount" // dummy just to display disabled number input
                     label="Gas producer wells"
+                    previousResourceObject={caseData}
                     value={gasProducerCount}
                     integer
                     disabled
@@ -174,9 +182,11 @@ const CaseDrillingScheduleTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="producerCount" // dummy just to display disabled number input
                     label="Water injector wells"
+                    previousResourceObject={caseData}
                     value={waterInjectorCount}
                     integer
                     disabled
@@ -184,9 +194,11 @@ const CaseDrillingScheduleTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="producerCount" // dummy just to display disabled number input
                     label="Gas injector wells"
+                    previousResourceObject={caseData}
                     value={gasInjectorCount}
                     integer
                     disabled
@@ -201,6 +213,7 @@ const CaseDrillingScheduleTab = () => {
             />
             <Grid item xs={12}>
                 <CaseDrillingScheduleTabTable
+                    addEdit={addEdit}
                     assetWells={explorationWellsData}
                     dg4Year={caseData.dG4Date !== undefined ? new Date(caseData.dG4Date).getFullYear() : 2030}
                     tableName="Exploration wells"
@@ -214,6 +227,7 @@ const CaseDrillingScheduleTab = () => {
             </Grid>
             <Grid item xs={12}>
                 <CaseDrillingScheduleTabTable
+                    addEdit={addEdit}
                     assetWells={wellProjectWellsData}
                     dg4Year={caseData.dG4Date !== undefined ? new Date(caseData.dG4Date).getFullYear() : 2030}
                     tableName="Development wells"
