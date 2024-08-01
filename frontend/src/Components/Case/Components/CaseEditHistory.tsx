@@ -2,13 +2,12 @@ import React, { useEffect, useRef, useState } from "react"
 import { Typography, Icon } from "@equinor/eds-core-react"
 import { arrow_forward } from "@equinor/eds-icons"
 import styled from "styled-components"
-import { motion } from "framer-motion"
 import { useCaseContext } from "../../../Context/CaseContext"
 import { formatTime, getCurrentEditId } from "../../../Utils/common"
 import { useAppContext } from "../../../Context/AppContext"
 import useDataEdits from "../../../Hooks/useDataEdits"
 
-const EditInstanceWrapper = styled(motion.div) <{ $isActive: boolean }>`
+const EditInstanceWrapper = styled.div <{ $isActive: boolean }>`
     padding: 10px 5px 10px 15px;
     border-left: 2px solid ${({ $isActive }) => ($isActive ? "#007079" : "#DCDCDC")};
 `
@@ -109,9 +108,6 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
                         key={edit.uuid}
                         $isActive={isActive}
                         ref={isActive ? activeRef : null}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
                     >
                         <Header>
                             <Typography variant="caption">{String(edit.inputLabel)}</Typography>
