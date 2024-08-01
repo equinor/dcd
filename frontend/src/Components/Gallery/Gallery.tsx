@@ -4,13 +4,14 @@ import styled from "styled-components"
 import { Icon, Button, Typography } from "@equinor/eds-core-react"
 import { delete_to_trash, expand_screen } from "@equinor/eds-icons"
 import { useParams } from "react-router-dom"
+import { motion, AnimatePresence } from "framer-motion"
 import ImageUpload from "./ImageUpload"
 import ImageModal from "./ImageModal"
 import { useAppContext } from "../../Context/AppContext"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { getImageService } from "../../Services/ImageService"
 
-const Wrapper = styled.div`
+const Wrapper = styled(motion.div)`
     display: flex;
     justify-content: start;
     gap: 10px;
@@ -122,28 +123,34 @@ const Gallery = () => {
                 {editMode && `Gallery (${gallery.length} / 4)`}
             </GalleryLabel>
             <Wrapper>
-                {gallery.map((image, index) => (
-                    <div
-                        key={`menu-item-${index + 1}`}
-                    >
-                        <ImageWithHover>
-                            <img src={image.url} alt={`upload #${index + 1}`} />
-                            <GalleryControls>
-                                {editMode && (
-                                    <Button variant="contained_icon" color="danger" onClick={() => handleDelete(image.url)}>
-                                        <Icon size={18} data={delete_to_trash} />
+                <AnimatePresence mode="popLayout">
+                    {gallery.map((image, index) => (
+                        <motion.div
+                            key={`menu-item-${index + 1}`}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            transition={{ duration: 0.5 }}
+                        >
+                            <ImageWithHover>
+                                <img src={image.url} alt={`upload #${index + 1}`} />
+                                <Controls>
+                                    {editMode && (
+                                        <Button variant="contained_icon" color="danger" onClick={() => handleDelete(image.url)}>
+                                            <Icon size={18} data={delete_to_trash} />
+                                        </Button>
+                                    )}
+                                    <Button variant="contained_icon" color="secondary" onClick={() => handleExpand(image.url)}>
+                                        <Icon size={18} data={expand_screen} />
                                     </Button>
-                                )}
-                                <Button variant="contained_icon" color="secondary" onClick={() => handleExpand(image.url)}>
-                                    <Icon size={18} data={expand_screen} />
-                                </Button>
-                            </GalleryControls>
-                        </ImageWithHover>
-                    </div>
-                ))}
-                {editMode && gallery.length < 4 && (
-                    <ImageUpload gallery={gallery} setGallery={setGallery} setExeededLimit={setExeededLimit} />
-                )}
+                                </Controls>
+                            </ImageWithHover>
+                        </motion.div>
+                    ))}
+                    {editMode && gallery.length < 4 && (
+                        <ImageUpload gallery={gallery} setGallery={setGallery} setExeededLimit={setExeededLimit} />
+                    )}
+                </AnimatePresence>
             </Wrapper>
         </Grid>
     ) : null

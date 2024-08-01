@@ -270,11 +270,9 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
     const handleCaseNameChange = (name: string) => {
         if (caseData) {
             addEdit({
-                previousDisplayValue: previousResourceObject.name,
-                newDisplayValue: name,
-                newResourceObject,
-                previousResourceObject,
-                inputLabel: "caseName",
+                newValue: name,
+                previousValue: caseData.name,
+                inputLabel: "Name",
                 projectId,
                 resourceName: "case",
                 resourcePropertyKey: "name",
@@ -320,7 +318,6 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
                             handleReferenceCaseChange={() => handleReferenceCaseChange(caseId)}
                         />
                         <Input
-                            id="caseName"
                             ref={nameInputRef}
                             type="text"
                             value={caseName}

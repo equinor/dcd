@@ -6,6 +6,7 @@ import { Icon, Typography } from "@equinor/eds-core-react"
 import { add } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { useParams } from "react-router-dom"
+import { motion } from "framer-motion"
 import { getImageService } from "../../Services/ImageService"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { useAppContext } from "../../Context/AppContext"
@@ -119,7 +120,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
     })
 
     return (
-        <div>
+        <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ type: "spring", stiffness: 900, damping: 45 }}
+        >
             <UploadBox {...getRootProps()}>
                 <input {...getInputProps()} />
                 <Icon data={add} size={48} />
@@ -129,7 +135,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
                     <Typography>Click or drag and drop images here to upload</Typography>
                 )}
             </UploadBox>
-        </div>
+        </motion.div>
     )
 }
 
