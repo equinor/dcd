@@ -94,6 +94,11 @@ public class CompareCasesService : ICompareCasesService
             {
                 sumOilProduction += drainageStrategy.ProductionProfileOil.Values.Sum();
             }
+
+            if (drainageStrategy.AdditionalProductionProfileOil != null)
+            {
+                sumOilProduction += drainageStrategy.AdditionalProductionProfileOil.Values.Sum();
+            }
         }
         catch (ArgumentException)
         {
@@ -118,6 +123,11 @@ public class CompareCasesService : ICompareCasesService
             if (drainageStrategy.ProductionProfileGas != null)
             {
                 sumGasProduction += drainageStrategy.ProductionProfileGas.Values.Sum();
+            }
+
+            if (drainageStrategy.AdditionalProductionProfileGas != null)
+            {
+                sumGasProduction += drainageStrategy.AdditionalProductionProfileGas.Values.Sum();
             }
         }
         catch (ArgumentException)

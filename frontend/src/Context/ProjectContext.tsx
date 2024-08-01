@@ -10,10 +10,10 @@ import {
 } from "react"
 
 interface ProjectContextType {
-    project: Components.Schemas.ProjectDto | undefined;
-    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>,
-    projectEdited: Components.Schemas.ProjectDto | undefined;
-    setProjectEdited: Dispatch<SetStateAction<Components.Schemas.ProjectDto | undefined>>,
+    project: Components.Schemas.ProjectWithAssetsDto | undefined;
+    setProject: Dispatch<SetStateAction<Components.Schemas.ProjectWithAssetsDto | undefined>>,
+    projectEdited: Components.Schemas.ProjectWithAssetsDto | undefined;
+    setProjectEdited: Dispatch<SetStateAction<Components.Schemas.ProjectWithAssetsDto | undefined>>,
     saveProject: boolean;
     setSaveProject: Dispatch<SetStateAction<boolean>>,
     activeTabProject: number;
@@ -23,8 +23,8 @@ interface ProjectContextType {
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined)
 
 const ProjectContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [project, setProject] = useState<Components.Schemas.ProjectDto | undefined>()
-    const [projectEdited, setProjectEdited] = useState<Components.Schemas.ProjectDto | undefined>()
+    const [project, setProject] = useState<Components.Schemas.ProjectWithAssetsDto | undefined>()
+    const [projectEdited, setProjectEdited] = useState<Components.Schemas.ProjectWithAssetsDto | undefined>()
     const [saveProject, setSaveProject] = useState<boolean>(false)
     const [activeTabProject, setActiveTabProject] = useState<number>(0)
 

@@ -29,7 +29,11 @@ public class DrainageStrategyWithProfilesDto
     [Required]
     public ProductionProfileOilDto ProductionProfileOil { get; set; } = new ProductionProfileOilDto();
     [Required]
+    public AdditionalProductionProfileOilDto AdditionalProductionProfileOil { get; set; } = new AdditionalProductionProfileOilDto();
+    [Required]
     public ProductionProfileGasDto ProductionProfileGas { get; set; } = new ProductionProfileGasDto();
+    [Required]
+    public AdditionalProductionProfileGasDto AdditionalProductionProfileGas { get; set; } = new AdditionalProductionProfileGasDto();
     [Required]
     public ProductionProfileWaterDto ProductionProfileWater { get; set; } = new ProductionProfileWaterDto();
     [Required]
@@ -68,7 +72,15 @@ public class ProductionProfileOilDto : TimeSeriesVolumeDto
 {
 }
 
+public class AdditionalProductionProfileOilDto : TimeSeriesVolumeDto
+{
+}
+
 public class ProductionProfileGasDto : TimeSeriesVolumeDto
+{
+}
+
+public class AdditionalProductionProfileGasDto : TimeSeriesVolumeDto
 {
 }
 

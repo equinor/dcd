@@ -22,7 +22,8 @@ export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFaci
     "surfCostProfileOverride" |
     "transportCostProfileOverride" |
     "substructureCostProfileOverride" |
-    "productionProfileOil" | "productionProfileGas" | "productionProfileWater" | "productionProfileWaterInjection" | "productionProfileFuelFlaringAndLossesOverride" |
+    "productionProfileOil" | "additionalProductionProfileOil" | "productionProfileGas" | "additionalProductionProfileGas" | "productionProfileWater" |
+    "productionProfileWaterInjection" | "productionProfileFuelFlaringAndLossesOverride" |
     "productionProfileNetSalesGasOverride" | "productionProfileImportedElectricityOverride" | "deferredOilProduction" | "deferredGasProduction" |
     "netSalesGasOverride" | "co2EmissionsOverride" | "importedElectricityOverride" | "deferredOilProduction" | "deferredGasProduction" |
     "oilProducerCostProfileOverride" | "gasProducerCostProfileOverride" | "waterInjectorCostProfileOverride" | "gasInjectorCostProfileOverride" |
@@ -56,7 +57,9 @@ export type ProfileObject =
     Components.Schemas.TransportCostProfileOverrideDto |
     Components.Schemas.SubstructureCostProfileOverrideDto |
     Components.Schemas.ProductionProfileOilDto |
+    Components.Schemas.AdditionalProductionProfileOilDto |
     Components.Schemas.ProductionProfileGasDto |
+    Components.Schemas.AdditionalProductionProfileGasDto |
     Components.Schemas.ProductionProfileWaterDto |
     Components.Schemas.ProductionProfileWaterInjectionDto |
     Components.Schemas.NetSalesGasOverrideDto |
@@ -100,7 +103,9 @@ export type ProfilePropertyKey =
     keyof Components.Schemas.TransportCostProfileOverrideDto |
     keyof Components.Schemas.SubstructureCostProfileOverrideDto |
     keyof Components.Schemas.ProductionProfileOilDto |
+    keyof Components.Schemas.AdditionalProductionProfileOilDto |
     keyof Components.Schemas.ProductionProfileGasDto |
+    keyof Components.Schemas.AdditionalProductionProfileGasDto |
     keyof Components.Schemas.ProductionProfileWaterDto |
     keyof Components.Schemas.ProductionProfileWaterInjectionDto |
     keyof Components.Schemas.NetSalesGasOverrideDto |

@@ -75,7 +75,9 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
                 const substructureCostProfileOverrideData = result.substructureCostProfileOverride
 
                 const productionProfileOilData = result.productionProfileOil
+                const additionalProductionProfileOilData = result.additionalProductionProfileOil
                 const productionProfileGasData = result.productionProfileGas
+                const additionalProductionProfileGasData = result.additionalProductionProfileGas
                 const productionProfileWaterData = result.productionProfileWater
                 const productionProfileWaterInjectionData = result.productionProfileWaterInjection
                 const fuelFlaringAndLossesData = result.fuelFlaringAndLosses
@@ -189,8 +191,14 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
                     projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: productionProfileOilData?.id,
                 }], productionProfileOilData)
                 queryClient.setQueryData([{
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: additionalProductionProfileOilData?.id,
+                }], additionalProductionProfileOilData)
+                queryClient.setQueryData([{
                     projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: productionProfileGasData?.id,
                 }], productionProfileGasData)
+                queryClient.setQueryData([{
+                    projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: additionalProductionProfileGasData?.id,
+                }], additionalProductionProfileGasData)
                 queryClient.setQueryData([{
                     projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: productionProfileWaterData?.id,
                 }], productionProfileWaterData)

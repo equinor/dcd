@@ -38,7 +38,9 @@ public class CaseWithAssetsDto
     [Required]
     public DrainageStrategyDto DrainageStrategy { get; set; } = null!;
     public ProductionProfileOilDto? ProductionProfileOil { get; set; }
+    public AdditionalProductionProfileOilDto? AdditionalProductionProfileOil { get; set; }
     public ProductionProfileGasDto? ProductionProfileGas { get; set; }
+    public AdditionalProductionProfileGasDto? AdditionalProductionProfileGas { get; set; }
     public ProductionProfileWaterDto? ProductionProfileWater { get; set; }
     public ProductionProfileWaterInjectionDto? ProductionProfileWaterInjection { get; set; }
     public FuelFlaringAndLossesDto? FuelFlaringAndLosses { get; set; }

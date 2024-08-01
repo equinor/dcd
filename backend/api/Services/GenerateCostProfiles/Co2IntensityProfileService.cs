@@ -103,23 +103,97 @@ public class Co2IntensityProfileService : ICo2IntensityProfileService
     {
         var million = 1E6;
         var oilValues = drainageStrategy.ProductionProfileOil?.Values.Select(v => v / million).ToArray() ?? Array.Empty<double>();
+        var additionalOilValues = drainageStrategy.AdditionalProductionProfileOil?.Values.Select(v => v / million).ToArray() ?? Array.Empty<double>();
+
+        TimeSeriesCostDto? oilProfile = null;
+        TimeSeriesCostDto? additionalOilProfile = null;
+
+        if (drainageStrategy.ProductionProfileOil != null)
+        {
+            oilProfile = new TimeSeriesCostDto
+            {
+                Id = drainageStrategy.ProductionProfileOil.Id, // Assuming Id is already a UUID
+                StartYear = drainageStrategy.ProductionProfileOil.StartYear,
+                Values = oilValues,
+                EPAVersion = "current", // Example value, set appropriately
+                Currency = Currency.USD // Example value, set appropriately
+            };
+        }
+
+        if (drainageStrategy.AdditionalProductionProfileOil != null)
+        {
+            additionalOilProfile = new TimeSeriesCostDto
+            {
+                Id = drainageStrategy.AdditionalProductionProfileOil.Id, // Assuming Id is already a UUID
+                StartYear = drainageStrategy.AdditionalProductionProfileOil.StartYear,
+                Values = additionalOilValues,
+                EPAVersion = "current", // Example value, set appropriately
+                Currency = Currency.USD // Example value, set appropriately
+            };
+        }
+
+        // Merging the profiles, defaulting to an empty profile if null
+        var mergedProfiles = TimeSeriesCostDto.MergeCostProfiles(
+            oilProfile ?? new TimeSeriesCostDto { Values = Array.Empty<double>(), StartYear = 0 },
+            additionalOilProfile ?? new TimeSeriesCostDto { Values = Array.Empty<double>(), StartYear = 0 }
+        );
+
         var oil = new TimeSeries<double>
         {
-            Values = oilValues,
-            StartYear = drainageStrategy.ProductionProfileOil?.StartYear ?? 0,
+            Values = mergedProfiles.Values,
+            StartYear = mergedProfiles.StartYear,
         };
+
         return oil;
     }
 
-    private static TimeSeries<double> GetGasProfile(DrainageStrategy drainageStrategy)
+
+private static TimeSeries<double> GetGasProfile(DrainageStrategy drainageStrategy)
+{
+    var billion = 1E9;
+    var gasValues = drainageStrategy.ProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? Array.Empty<double>();
+    var additionalGasValues = drainageStrategy.AdditionalProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? Array.Empty<double>();
+
+    TimeSeriesCostDto? gasProfile = null;
+    TimeSeriesCostDto? additionalGasProfile = null;
+
+    if (drainageStrategy.ProductionProfileGas != null)
     {
-        var billion = 1E9;
-        var gasValues = drainageStrategy.ProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? Array.Empty<double>();
-        var gas = new TimeSeries<double>
+        gasProfile = new TimeSeriesCostDto
         {
+            Id = drainageStrategy.ProductionProfileGas.Id, // Assuming Id is already a UUID
+            StartYear = drainageStrategy.ProductionProfileGas.StartYear,
             Values = gasValues,
-            StartYear = drainageStrategy.ProductionProfileGas?.StartYear ?? 0,
+            EPAVersion = "current", // Example value, set appropriately
+            Currency = Currency.USD // Example value, set appropriately
         };
-        return gas;
     }
+
+    if (drainageStrategy.AdditionalProductionProfileGas != null)
+    {
+        additionalGasProfile = new TimeSeriesCostDto
+        {
+            Id = drainageStrategy.AdditionalProductionProfileGas.Id,
+            StartYear = drainageStrategy.AdditionalProductionProfileGas.StartYear,
+            Values = additionalGasValues,
+            EPAVersion = "current", // Example value, set appropriately
+            Currency = Currency.USD // Example value, set appropriately
+        };
+    }
+
+    // Merging the profiles, defaulting to an empty profile if null
+    var mergedProfiles = TimeSeriesCostDto.MergeCostProfiles(
+        gasProfile ?? new TimeSeriesCostDto { Values = Array.Empty<double>(), StartYear = 0 },
+        additionalGasProfile ?? new TimeSeriesCostDto { Values = Array.Empty<double>(), StartYear = 0 }
+    );
+
+    var gas = new TimeSeries<double>
+    {
+        Values = mergedProfiles.Values,
+        StartYear = mergedProfiles.StartYear,
+    };
+
+    return gas;
+}
+
 }

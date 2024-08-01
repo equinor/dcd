@@ -7,7 +7,7 @@ export const loginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
 
 export const getDrainageStrategy = (
-    project: Components.Schemas.ProjectDto,
+    project: Components.Schemas.ProjectWithAssetsDto,
     drainageStrategyId?: string,
 ) => project.drainageStrategies?.find((o) => o.id === drainageStrategyId)
 

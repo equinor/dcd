@@ -283,10 +283,36 @@ public static class STEACaseDtoBuilder
         {
             var drainageStrategyDto = p.DrainageStrategies!.First(d => d.Id == c.DrainageStrategyLink);
             var startYearsProductionSalesAndVolumes = new List<int>();
-            if (drainageStrategyDto.ProductionProfileOil != null)
+
+            if (drainageStrategyDto.ProductionProfileOil != null || drainageStrategyDto.AdditionalProductionProfileOil != null)
             {
-                sTEACaseDto.ProductionAndSalesVolumes.TotalAndAnnualOil = drainageStrategyDto.ProductionProfileOil;
-                startYearsProductionSalesAndVolumes.Add(drainageStrategyDto.ProductionProfileOil.StartYear += dg4Year);
+                var oilProfile = drainageStrategyDto.ProductionProfileOil != null
+                    ? new TimeSeriesCostDto
+                    {
+                        Id = drainageStrategyDto.ProductionProfileOil.Id,
+                        StartYear = drainageStrategyDto.ProductionProfileOil.StartYear,
+                        Values = drainageStrategyDto.ProductionProfileOil.Values,
+                    }
+                    : new TimeSeriesCostDto { Values = Array.Empty<double>(), StartYear = 0 };
+
+                var additionalOilProfile = drainageStrategyDto.AdditionalProductionProfileOil != null
+                    ? new TimeSeriesCostDto
+                    {
+                        Id = drainageStrategyDto.AdditionalProductionProfileOil.Id,
+                        StartYear = drainageStrategyDto.AdditionalProductionProfileOil.StartYear,
+                        Values = drainageStrategyDto.AdditionalProductionProfileOil.Values,
+                    }
+                    : new TimeSeriesCostDto { Values = Array.Empty<double>(), StartYear = 0 };
+
+                var mergedOilProfile = TimeSeriesCostDto.MergeCostProfiles(oilProfile, additionalOilProfile);
+
+                sTEACaseDto.ProductionAndSalesVolumes.TotalAndAnnualOil = new ProductionProfileOilDto
+                {
+                    Id = mergedOilProfile.Id,
+                    StartYear = mergedOilProfile.StartYear + dg4Year,
+                    Values = mergedOilProfile.Values,
+                };
+                startYearsProductionSalesAndVolumes.Add(mergedOilProfile.StartYear + dg4Year);
             }
 
             if (drainageStrategyDto.NetSalesGasOverride?.Override == true)
