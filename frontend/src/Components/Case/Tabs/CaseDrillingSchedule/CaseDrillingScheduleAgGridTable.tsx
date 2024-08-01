@@ -20,7 +20,6 @@ import {
 } from "../../../../Utils/common"
 import { useAppContext } from "../../../../Context/AppContext"
 import { useProjectContext } from "../../../../Context/ProjectContext"
-import useDataEdits from "../../../../Hooks/useDataEdits"
 
 interface Props {
     dg4Year: number
@@ -32,6 +31,7 @@ interface Props {
     wells: Components.Schemas.WellDto[] | undefined
     resourceId: string
     isExplorationTable: boolean
+    addEdit: any
 }
 
 interface IAssetWell {
@@ -54,6 +54,7 @@ const CaseDrillingScheduleTabTable = ({
     wells,
     resourceId,
     isExplorationTable,
+    addEdit,
 }: Props) => {
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([])
@@ -61,7 +62,6 @@ const CaseDrillingScheduleTabTable = ({
 
     const { editMode, setSnackBarMessage } = useAppContext()
     const { project } = useProjectContext()
-    const { addEdit } = useDataEdits()
     const { caseId, tab } = useParams()
 
     const firstTriggerRef = useRef<boolean>(true)
@@ -208,8 +208,6 @@ const CaseDrillingScheduleTabTable = ({
                     setStagedEdit({
                         newDisplayValue: newProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
                         previousDisplayValue: existingProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
-                        newValue: params.newValue,
-                        previousValue: params.oldValue,
                         inputLabel: params.data.name,
                         projectId: project.id,
                         resourceName,

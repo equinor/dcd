@@ -259,12 +259,19 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
         }
     }, [caseData?.name])
 
+    if (!caseData) { return null }
+
     const handleCaseNameChange = (name: string) => {
+        const previousResourceObject = structuredClone(caseData)
+        const newResourceObject = structuredClone(caseData)
+        newResourceObject.name = name
         if (caseData) {
             addEdit({
-                newValue: name,
-                previousValue: caseData.name,
-                inputLabel: "Name",
+                previousDisplayValue: previousResourceObject.name,
+                newDisplayValue: name,
+                newResourceObject,
+                previousResourceObject,
+                inputLabel: "caseName",
                 projectId,
                 resourceName: "case",
                 resourcePropertyKey: "name",
@@ -289,10 +296,6 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
         }
     }
 
-    if (!caseData) {
-        return null
-    }
-
     return (
         <>
             <Grid item xs={0}>
@@ -310,6 +313,7 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
                             handleReferenceCaseChange={() => handleReferenceCaseChange(caseId)}
                         />
                         <Input
+                            id="caseName"
                             ref={nameInputRef}
                             type="text"
                             value={caseName}

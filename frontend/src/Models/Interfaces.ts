@@ -117,9 +117,9 @@ export type ProfilePropertyKey =
 
 export interface EditInstance {
     uuid: string; // unique identifier for the edit
+    newResourceObject: ResourceObject; // this is used to replace the whole asset object. used if the edit should change multiple values in the same assets
+    previousResourceObject: ResourceObject; // used to revert the asset object to its previous state during undo
     timeStamp: number; // the time the edit was made
-    newValue: string | number | undefined; // the value after the edit
-    previousValue: string | number | undefined; // the value before the edit
     inputLabel: string; // the label of the input field being edited
     projectId: string; // the project id
     resourceName: ResourceName; // the asset being edited
@@ -131,8 +131,6 @@ export interface EditInstance {
     caseId?: string; // the case id
     newDisplayValue?: string | number | undefined; // the displayed new value in case of when the value submitted is not what the user should see
     previousDisplayValue?: string | number | undefined; // the displayed previous value in case of when the value submitted is not what the user should see
-    newResourceObject?: ResourceObject; // this is used to replace the whole asset object. used if the edit should change multiple values in the same assets
-    previousResourceObject?: ResourceObject; // used to revert the asset object to its previous state during undo
     tabName?: string; // used to go to the given tab where undo/redo happened
     tableName?: string; // used to highlight undone field
     inputFieldId?: string;

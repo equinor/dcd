@@ -4,19 +4,16 @@ import Grid from "@mui/material/Grid"
 import { useQueryClient, useQuery } from "react-query"
 import { useParams } from "react-router"
 import { useEffect, useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import Gallery from "../../Gallery/Gallery"
 import { useAppContext } from "../../../Context/AppContext"
 import { useProjectContext } from "../../../Context/ProjectContext"
-import useDataEdits from "../../../Hooks/useDataEdits"
 import CaseDescriptionTabSkeleton from "./LoadingSkeletons/CaseDescriptionTabSkeleton"
 
-const CaseDescriptionTab = () => {
+const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
     const { editMode } = useAppContext()
-    const { addEdit } = useDataEdits()
     const { caseId, tab } = useParams()
     const queryClient = useQueryClient()
     const projectId = project?.id || null
@@ -62,10 +59,15 @@ const CaseDescriptionTab = () => {
     const handleBlur = (e: any) => {
         // eslint-disable-next-line no-underscore-dangle
         const newValue = e.target._value
+        const previousResourceObject = structuredClone(caseData)
+        const newResourceObject = structuredClone(caseData)
+        newResourceObject.description = newValue
 
         addEdit({
-            newValue,
-            previousValue: caseData.description,
+            newDisplayValue: newValue,
+            previousDisplayValue: caseData.description,
+            previousResourceObject,
+            newResourceObject,
             inputLabel: "Description",
             projectId,
             resourceName: "case",
@@ -81,42 +83,34 @@ const CaseDescriptionTab = () => {
         <Grid container spacing={2}>
             <Gallery />
             <Grid item xs={12} sx={{ marginBottom: editMode ? "32px" : 0 }}>
-                <AnimatePresence initial={false} mode="popLayout">
-                    <Typography group="input" variant="label">Description</Typography>
-                    {editMode ? (
-                        <motion.div
-                            key="input"
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 10 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                            id="Description"
-                        >
-                            <MarkdownEditor
-                                menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
-                                value={description}
-                                onBlur={(e) => handleBlur(e)}
-                            />
-                        </motion.div>
-                    ) : (
-                        <motion.div
-                            key="input"
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 10 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                        >
-                            <MarkdownViewer value={caseData.description ?? ""} />
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                <Typography group="input" variant="label">Description</Typography>
+                {editMode ? (
+                    <div
+                        key="input"
+                        id="Description"
+                    >
+                        <MarkdownEditor
+                            menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
+                            value={description}
+                            onBlur={(e) => handleBlur(e)}
+                        />
+                    </div>
+                ) : (
+                    <div
+                        key="input"
+                    >
+                        <MarkdownViewer value={caseData.description ?? ""} />
+                    </div>
+                )}
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="producerCount"
                     label="Production wells"
                     value={caseData.producerCount ?? 0}
+                    previousResourceObject={caseData}
                     integer
                     min={0}
                     max={100000}
@@ -125,10 +119,12 @@ const CaseDescriptionTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="waterInjectorCount"
                     label="Water injector wells"
                     value={caseData.waterInjectorCount ?? 0}
+                    previousResourceObject={caseData}
                     integer
                     disabled={false}
                     min={0}
@@ -138,10 +134,12 @@ const CaseDescriptionTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="gasInjectorCount"
                     label="Gas injector wells"
                     value={caseData.gasInjectorCount ?? 0}
+                    previousResourceObject={caseData}
                     integer
                     min={0}
                     max={100000}
@@ -150,30 +148,36 @@ const CaseDescriptionTab = () => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableDropdownInput
+                    addEdit={addEdit}
                     value={caseData.productionStrategyOverview ?? 0}
                     resourceName="case"
                     resourcePropertyKey="productionStrategyOverview"
                     options={productionStrategyOptions}
+                    previousResourceObject={caseData}
                     label="Production strategy overview"
                     resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableDropdownInput
+                    addEdit={addEdit}
                     value={caseData.artificialLift ?? 0}
                     resourceName="case"
                     resourcePropertyKey="artificialLift"
                     options={artificialLiftOptions}
+                    previousResourceObject={caseData}
                     label="Artificial lift"
                     resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="facilitiesAvailability"
                     label="Facilities availability"
                     value={caseData.facilitiesAvailability ?? 0}
+                    previousResourceObject={caseData}
                     integer={false}
                     unit="%"
                     min={0}

@@ -1,5 +1,4 @@
 import { Typography, InputWrapper } from "@equinor/eds-core-react"
-import { motion, AnimatePresence } from "framer-motion"
 import styled from "styled-components"
 import { useAppContext } from "../../../Context/AppContext"
 
@@ -22,27 +21,15 @@ const InputSwitcher = ({ value, label, children }: InputSwitcherProps): JSX.Elem
                 label,
             }}
         >
-            <AnimatePresence mode="popLayout" initial={false}>
-                {editMode ? (
-                    <motion.div
-                        key="input"
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ type: "spring", stiffness: 500, damping: 20 }}
-                    >
-                        {children}
-                    </motion.div>
-                ) : (
-                    <motion.div
-                        key="text"
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ type: "spring", stiffness: 500, damping: 20 }}
-                    >
-                        <ViewValue>{value}</ViewValue>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {editMode ? (
+                <div key="input">
+                    {children}
+                </div>
+            ) : (
+                <div key="text">
+                    <ViewValue>{value}</ViewValue>
+                </div>
+            )}
         </InputWrapper>
     )
 }
