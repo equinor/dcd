@@ -33,8 +33,6 @@ const EditTechnicalInputModal = () => {
         setTechnicalModalIsOpen,
         editTechnicalInput,
         setEditTechnicalInput,
-        setWellProject,
-        setExploration,
     } = useModalContext()
 
     const [activeTab, setActiveTab] = useState<number>(0)
@@ -84,13 +82,6 @@ const EditTechnicalInputModal = () => {
 
             if (result?.projectDto) {
                 setProject({ ...result?.projectDto })
-            }
-
-            if (result?.explorationDto && setExploration) {
-                setExploration(result?.explorationDto)
-            }
-            if (result?.wellProjectDto && setWellProject) {
-                setWellProject(result?.wellProjectDto)
             }
 
             setOriginalExplorationOperationalWellCosts(explorationOperationalWellCosts)
