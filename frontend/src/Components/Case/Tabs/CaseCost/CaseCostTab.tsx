@@ -11,7 +11,7 @@ import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import { useModalContext } from "../../../../Context/ModalContext"
-import Header from "./Header"
+import CaseCostHeader from "./CaseCostHeader"
 import CessationCosts from "./Tables/CessationCosts"
 import DevelopmentWellCosts from "./Tables/DevelopmentWellCosts"
 import ExplorationWellCosts from "./Tables/ExplorationWellCosts"
@@ -19,7 +19,7 @@ import OffshoreFacillityCosts from "./Tables/OffshoreFacilityCosts"
 import OpexCosts from "./Tables/OpexCosts"
 import TotalStudyCosts from "./Tables/TotalStudyCosts"
 
-const CaseCostTab = (): React.ReactElement | null => {
+const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
 
     const { activeTabCase } = useCaseContext()
@@ -126,7 +126,7 @@ const CaseCostTab = (): React.ReactElement | null => {
 
     return (
         <Grid container spacing={3}>
-            <Header
+            <CaseCostHeader
                 startYear={startYear}
                 endYear={endYear}
                 setStartYear={setStartYear}
@@ -134,6 +134,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                 setTableYears={setTableYears}
                 caseData={caseData}
                 surfData={surfData}
+                addEdit={addEdit}
             />
             <Grid item xs={12}>
                 <TotalStudyCosts
@@ -141,6 +142,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                     studyGridRef={studyGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
+                    addEdit={addEdit}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -149,6 +151,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                     opexGridRef={opexGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
+                    addEdit={addEdit}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -157,6 +160,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                     cessationGridRef={cessationGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
+                    addEdit={addEdit}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -165,6 +169,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                     capexGridRef={capexGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
+                    addEdit={addEdit}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -173,6 +178,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                     developmentWellsGridRef={developmentWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
+                    addEdit={addEdit}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -181,6 +187,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                     explorationWellsGridRef={explorationWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
                     apiData={apiData}
+                    addEdit={addEdit}
                 />
             </Grid>
         </Grid>

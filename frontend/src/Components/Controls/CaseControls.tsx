@@ -259,11 +259,18 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
         }
     }, [caseData?.name])
 
+    if (!caseData) { return null }
+
     const handleCaseNameChange = (name: string) => {
+        const previousResourceObject = structuredClone(caseData)
+        const newResourceObject = structuredClone(caseData)
+        newResourceObject.name = name
         if (caseData) {
             addEdit({
-                newValue: name,
-                previousValue: caseData.name,
+                previousDisplayValue: previousResourceObject.name,
+                newDisplayValue: name,
+                newResourceObject,
+                previousResourceObject,
                 inputLabel: "caseName",
                 projectId,
                 resourceName: "case",
@@ -287,10 +294,6 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
             const updateProject = await (await GetProjectService()).updateProject(projectId, newProject)
             setProject(updateProject)
         }
-    }
-
-    if (!caseData) {
-        return null
     }
 
     return (

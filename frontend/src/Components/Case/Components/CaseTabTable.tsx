@@ -27,7 +27,6 @@ import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
 import { useProjectContext } from "../../../Context/ProjectContext"
-import useDataEdits from "../../../Hooks/useDataEdits"
 
 interface Props {
     timeSeriesData: any[]
@@ -40,6 +39,7 @@ interface Props {
     totalRowName?: string
     calculatedFields?: string[]
     ongoingCalculation?: boolean
+    addEdit: any
 }
 
 const CaseTabTable = ({
@@ -53,11 +53,11 @@ const CaseTabTable = ({
     totalRowName,
     calculatedFields,
     ongoingCalculation,
+    addEdit,
 }: Props) => {
     const { editMode, setSnackBarMessage } = useAppContext()
     const styles = useStyles()
     const { project } = useProjectContext()
-    const { addEdit } = useDataEdits()
     const { caseId, tab } = useParams()
     const [stagedEdit, setStagedEdit] = useState<any>()
     const firstTriggerRef = useRef<boolean>(true)
@@ -159,6 +159,7 @@ const CaseTabTable = ({
         return (
             <ClickableLockIcon
                 clickedElement={params}
+                addEdit={addEdit}
             />
         )
     }
@@ -256,8 +257,6 @@ const CaseTabTable = ({
             setStagedEdit({
                 newDisplayValue: newProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
                 previousDisplayValue: existingProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
-                newValue: params.newValue,
-                previousValue: params.oldValue,
                 inputLabel: params.data.profileName,
                 projectId: project.id,
                 resourceName: timeSeriesDataIndex()?.resourceName,

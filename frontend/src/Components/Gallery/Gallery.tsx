@@ -36,7 +36,7 @@ const ImageWithHover = styled(Box)`
     }
 `
 
-const Controls = styled.div`
+const GalleryControls = styled.div`
     display: none;
     position: absolute;
     top: 0;
@@ -134,7 +134,7 @@ const Gallery = () => {
                         >
                             <ImageWithHover>
                                 <img src={image.url} alt={`upload #${index + 1}`} />
-                                <Controls>
+                                <GalleryControls>
                                     {editMode && (
                                         <Button variant="contained_icon" color="danger" onClick={() => handleDelete(image.url)}>
                                             <Icon size={18} data={delete_to_trash} />
@@ -143,7 +143,7 @@ const Gallery = () => {
                                     <Button variant="contained_icon" color="secondary" onClick={() => handleExpand(image.url)}>
                                         <Icon size={18} data={expand_screen} />
                                     </Button>
-                                </Controls>
+                                </GalleryControls>
                             </ImageWithHover>
                         </motion.div>
                     ))}
