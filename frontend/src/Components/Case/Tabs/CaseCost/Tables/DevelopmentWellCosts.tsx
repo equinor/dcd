@@ -8,6 +8,7 @@ interface DevelopmentWellCostsProps {
     developmentWellsGridRef: React.MutableRefObject<any>;
     alignedGridsRef: any[];
     apiData: Components.Schemas.CaseWithAssetsDto;
+    addEdit: any;
 }
 
 const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
@@ -15,6 +16,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
     developmentWellsGridRef,
     alignedGridsRef,
     apiData,
+    addEdit,
 }) => {
     const { project } = useProjectContext()
 
@@ -100,6 +102,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
+            addEdit={addEdit}
         />
     )
 }

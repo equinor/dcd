@@ -8,10 +8,11 @@ interface OpexCostsProps {
     opexGridRef: React.MutableRefObject<any>
     alignedGridsRef: any[]
     apiData: Components.Schemas.CaseWithAssetsDto
+    addEdit: any
 }
 
 const OpexCosts: React.FC<OpexCostsProps> = ({
-    tableYears, opexGridRef, alignedGridsRef, apiData,
+    tableYears, opexGridRef, alignedGridsRef, apiData, addEdit,
 }) => {
     const { project } = useProjectContext()
 
@@ -100,6 +101,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
+            addEdit={addEdit}
         />
     )
 }

@@ -8,6 +8,7 @@ interface ExplorationWellCostsProps {
     explorationWellsGridRef: React.MutableRefObject<any>;
     alignedGridsRef: any[];
     apiData: Components.Schemas.CaseWithAssetsDto;
+    addEdit: any;
 }
 
 const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
@@ -15,6 +16,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
     explorationWellsGridRef,
     alignedGridsRef,
     apiData,
+    addEdit,
 }) => {
     const { project } = useProjectContext()
 
@@ -119,6 +121,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             alignedGridsRef={alignedGridsRef}
             includeFooter
             totalRowName="Total"
+            addEdit={addEdit}
         />
     )
 }
