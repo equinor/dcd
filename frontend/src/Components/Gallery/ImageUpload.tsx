@@ -1,31 +1,30 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import { Accept, FileRejection, useDropzone } from "react-dropzone"
-import { Box, Typography } from "@mui/material"
+import { Box } from "@mui/material"
 import styled from "styled-components"
-import { Icon } from "@equinor/eds-core-react"
+import { Icon, Typography } from "@equinor/eds-core-react"
 import { add } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
+import { useParams } from "react-router-dom"
 import { getImageService } from "../../Services/ImageService"
-import { useCaseContext } from "../../Context/CaseContext"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { useAppContext } from "../../Context/AppContext"
 
 const UploadBox = styled(Box)`
     display: flex;
     align-items: center;
+    justify-content: center;
     flex-direction: column;
-    width: calc(100% - 40px);
-    height: 160px;
+    width: 240px;
+    height: 240px;
     border: 1px dashed ${tokens.colors.interactive.primary__resting.rgba};
     border-radius: 5px;
     cursor: pointer;
-    padding: 20px;
     transition: 0.3s;
     gap: 10px;
 
     & svg {
         fill: ${tokens.colors.interactive.primary__resting.rgba};
-        margin-top: 20px;
     }
 
     &:hover {
@@ -45,24 +44,25 @@ interface ImageUploadProps {
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeededLimit }) => {
-    const { projectCase } = useCaseContext()
+    const { caseId } = useParams()
     const { project } = useProjectContext()
     const { setSnackBarMessage } = useAppContext()
 
     useEffect(() => {
         const loadImages = async () => {
-            if (project?.id && projectCase?.id) {
+            if (project?.id && caseId) {
                 try {
                     const imageService = await getImageService()
-                    const imageDtos = await imageService.getImages(project.id, projectCase.id)
+                    const imageDtos = await imageService.getImages(project.id, caseId)
                     setGallery(imageDtos)
                 } catch (error) {
                     console.error("Error loading images:", error)
+                    setSnackBarMessage("Error loading images")
                 }
             }
         }
         loadImages()
-    }, [setGallery, project?.id, projectCase?.id])
+    }, [setGallery, project?.id, caseId])
 
     const MAX_FILE_SIZE = 5 * 1024 * 1024
     const MAX_FILES = 4
@@ -73,8 +73,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
     }
 
     const onDrop = async (acceptedFiles: File[], fileRejections: FileRejection[]) => {
-        setSnackBarMessage("")
-
         fileRejections.forEach((rejection) => {
             const { file, errors } = rejection
             errors.forEach((error: { code: string }) => {
@@ -92,14 +90,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         }
         setExeededLimit(false)
 
-        if (!project?.id || !projectCase?.id) {
-            console.error("Project ID or Case ID is missing.")
+        if (!project?.id) {
+            console.error("Project ID is missing.")
             return
         }
 
         const imageService = await getImageService()
 
-        const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(project.id, project.name, projectCase.id, file))
+        const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(project.id, project.name, file, caseId))
         try {
             const uploadedImageDtos = await Promise.all(uploadPromises)
             if (Array.isArray(uploadedImageDtos)) {
@@ -109,6 +107,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
             }
         } catch (error) {
             console.error("Error uploading images:", error)
+            setSnackBarMessage("Error uploading images")
         }
     }
 
@@ -120,15 +119,17 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
     })
 
     return (
-        <UploadBox {...getRootProps()}>
-            <input {...getInputProps()} />
-            <Icon data={add} size={48} />
-            {isDragActive ? (
-                <Typography variant="body1">Drop the images here...</Typography>
-            ) : (
-                <Typography variant="body1">Click or drag and drop images here to upload</Typography>
-            )}
-        </UploadBox>
+        <div>
+            <UploadBox {...getRootProps()}>
+                <input {...getInputProps()} />
+                <Icon data={add} size={48} />
+                {isDragActive ? (
+                    <Typography>Drop the images here...</Typography>
+                ) : (
+                    <Typography>Click or drag and drop images here to upload</Typography>
+                )}
+            </UploadBox>
+        </div>
     )
 }
 

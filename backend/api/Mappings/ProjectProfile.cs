@@ -11,8 +11,14 @@ public class ProjectProfile : Profile
 {
     public ProjectProfile()
     {
-        CreateMap<Project, ProjectDto>();
+        CreateMap<Project, ProjectWithAssetsDto>();
+        CreateMap<Project, ProjectWithCasesDto>();
         CreateMap<UpdateProjectDto, Project>();
+
+        CreateMap<UpdateExplorationOperationalWellCostsDto, ExplorationOperationalWellCosts>();
+        CreateMap<ExplorationOperationalWellCosts, ExplorationOperationalWellCostsDto>();
+        CreateMap<UpdateDevelopmentOperationalWellCostsDto, DevelopmentOperationalWellCosts>();
+        CreateMap<DevelopmentOperationalWellCosts, DevelopmentOperationalWellCostsDto>();
 
         CreateMap<FusionProjectMaster, Project>()
             .ForMember(

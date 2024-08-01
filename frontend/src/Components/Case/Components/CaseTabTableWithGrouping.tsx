@@ -107,13 +107,19 @@ const CaseTabTableWithGrouping = ({
                 // aggFunc: () => totalRowName,
             },
             {
+                field: "unit",
+                headerName: "Unit",
+                hide: true,
+                width: 100,
+            },
+            {
                 field: "total",
                 flex: 2,
                 editable: false,
                 pinned: "right",
                 width: 100,
                 aggFunc: formatColumnSum,
-                cellStyle: { fontWeight: "bold" },
+                cellStyle: { fontWeight: "bold", textAlign: "right" },
             },
 
         ]
@@ -127,7 +133,7 @@ const CaseTabTableWithGrouping = ({
                 minWidth: 100,
                 aggFunc: formatColumnSum,
                 cellClass: (params: any) => (editMode && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
-                cellStyle: { fontWeight: "bold" },
+                cellStyle: { fontWeight: "bold", textAlign: "right" },
             })
         }
         return columnPinned.concat([...yearDefs])
@@ -142,47 +148,11 @@ const CaseTabTableWithGrouping = ({
         setColumnDefs(newColDefs)
     }, [])
 
-    const handleCellValueChange = (p: any) => {
-        const properties = Object.keys(p.data)
-        const tableTimeSeriesValues: any[] = []
-        properties.forEach((prop) => {
-            if (isInteger(prop)
-                && p.data[prop] !== ""
-                && p.data[prop] !== null
-                && !Number.isNaN(Number(p.data[prop].toString().replace(/,/g, ".")))) {
-                tableTimeSeriesValues.push({
-                    year: parseInt(prop, 10),
-                    value: Number(p.data[prop].toString().replace(/,/g, ".")),
-                })
-            }
-        })
-        tableTimeSeriesValues.sort((a, b) => a.year - b.year)
-        if (tableTimeSeriesValues.length > 0) {
-            const tableTimeSeriesFirstYear = tableTimeSeriesValues[0].year
-            const tableTimeSerieslastYear = tableTimeSeriesValues.at(-1).year
-            const timeSeriesStartYear = tableTimeSeriesFirstYear - dg4Year
-            const values: number[] = []
-            for (let i = tableTimeSeriesFirstYear; i <= tableTimeSerieslastYear; i += 1) {
-                const tableTimeSeriesValue = tableTimeSeriesValues.find((v) => v.year === i)
-                if (tableTimeSeriesValue) {
-                    values.push(tableTimeSeriesValue.value)
-                } else {
-                    values.push(0)
-                }
-            }
-            const newProfile = { ...p.data.profile }
-            newProfile.startYear = timeSeriesStartYear
-            newProfile.values = values
-            p.data.set(newProfile)
-        }
-    }
-
     const defaultColDef = useMemo(() => ({
         sortable: true,
         filter: true,
         resizable: true,
         editable: true,
-        onCellValueChanged: handleCellValueChange,
         suppressHeaderMenuButton: true,
     }), [])
 
@@ -200,6 +170,15 @@ const CaseTabTableWithGrouping = ({
         }
         return undefined
     }
+
+    const defaultExcelExportParams = useMemo(() => {
+        const yearColumnKeys = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => (tableYears[0] + i).toString())
+        const columnKeys = ["profileName", "unit", ...yearColumnKeys, "total"]
+        return {
+            columnKeys,
+            fileName: "export.xlsx",
+        }
+    }, [tableYears])
 
     return (
         <div className={styles.root}>
@@ -229,6 +208,7 @@ const CaseTabTableWithGrouping = ({
                     suppressLastEmptyLineOnPaste
                     groupDefaultExpanded={groupDefaultExpanded}
                     stopEditingWhenCellsLoseFocus
+                    defaultExcelExportParams={defaultExcelExportParams}
                 />
             </div>
         </div>

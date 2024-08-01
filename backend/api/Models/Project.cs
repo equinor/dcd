@@ -35,6 +35,8 @@ public class Project
     public double CO2Vented { get; set; } = 1.96;
     public double DailyEmissionFromDrillingRig { get; set; } = 100;
     public double AverageDevelopmentDrillingDays { get; set; } = 50;
+    public DateTimeOffset ModifyTime { get; set; } = DateTimeOffset.UtcNow;
+
 }
 
 public enum PhysUnit
@@ -54,8 +56,8 @@ public enum ProjectPhase
     Null,
     BidPreparations,
     BusinessIdentification,
-    BusinessPlanning,
-    ConceptPlanning,
+    BusinessPlanning, // DG0
+    ConceptPlanning, // DG1
     ConcessionNegotiations,
     Definition,
     Execution,

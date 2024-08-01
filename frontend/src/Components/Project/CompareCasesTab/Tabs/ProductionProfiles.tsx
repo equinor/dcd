@@ -6,7 +6,7 @@ interface ProductionProfilesProps {
 }
 
 const ProductionProfiles: React.FC<ProductionProfilesProps> = ({ productionProfilesChartData }) => {
-    if (!productionProfilesChartData) return <div>No data available</div>
+    if (!productionProfilesChartData) { return <div>No data available</div> }
 
     return (
         <AgChartsCompareCases

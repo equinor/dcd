@@ -5,9 +5,9 @@ namespace api.Services;
 
 public interface ICaseService
 {
-    Task<ProjectDto> CreateCase(Guid projectId, CreateCaseDto createCaseDto);
-    Task<ProjectDto> UpdateCaseAndProfiles<TDto>(Guid caseId, TDto updatedCaseDto) where TDto : BaseUpdateCaseDto;
-    Task<ProjectDto> DeleteCase(Guid caseId);
+    Task<ProjectWithAssetsDto> CreateCase(Guid projectId, CreateCaseDto createCaseDto);
+    Task<ProjectWithAssetsDto> UpdateCaseAndProfiles<TDto>(Guid caseId, TDto updatedCaseDto) where TDto : BaseUpdateCaseDto;
+    Task<ProjectWithAssetsDto> DeleteCase(Guid caseId);
     Task<Case> GetCase(Guid caseId);
     Task<IEnumerable<Case>> GetAll();
     Task<CaseDto> UpdateCase<TDto>(Guid caseId, TDto updatedCaseDto) where TDto : BaseUpdateCaseDto;

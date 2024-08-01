@@ -988,7 +988,7 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CaseId")
+                    b.Property<Guid?>("CaseId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset>("CreateTime")
@@ -1453,6 +1453,9 @@ namespace api.Migrations
 
                     b.Property<Guid>("FusionProjectId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("ModifyTime")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -2908,9 +2911,7 @@ namespace api.Migrations
                 {
                     b.HasOne("api.Models.Case", null)
                         .WithMany("Images")
-                        .HasForeignKey("CaseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CaseId");
                 });
 
             modelBuilder.Entity("api.Models.ImportedElectricity", b =>

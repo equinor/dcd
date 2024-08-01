@@ -8,7 +8,7 @@ interface ProductionProfilesProps {
 }
 
 const ProductionProfiles: React.FC<ProductionProfilesProps> = ({ totalCo2EmissionsChartData, co2IntensityChartData }) => {
-    if (!totalCo2EmissionsChartData || !co2IntensityChartData) return <div>No data available</div>
+    if (!totalCo2EmissionsChartData || !co2IntensityChartData) { return <div>No data available</div> }
 
     return (
         <Grid container spacing={2}>

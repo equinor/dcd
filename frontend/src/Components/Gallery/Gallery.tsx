@@ -1,33 +1,31 @@
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Box, Grid } from "@mui/material"
 import styled from "styled-components"
 import { Icon, Button, Typography } from "@equinor/eds-core-react"
 import { delete_to_trash, expand_screen } from "@equinor/eds-icons"
+import { useParams } from "react-router-dom"
 import ImageUpload from "./ImageUpload"
 import ImageModal from "./ImageModal"
 import { useAppContext } from "../../Context/AppContext"
-import { useCaseContext } from "../../Context/CaseContext"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { getImageService } from "../../Services/ImageService"
 
-const Wrapper = styled(Grid)`
-    padding: 2px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(calc(25% - 20px), 1fr));
+const Wrapper = styled.div`
+    display: flex;
     justify-content: start;
     gap: 10px;
-    overflow: hidden;
     margin-bottom: 30px; 
+    width: 100%;
+    flex-wrap: wrap;
 `
 
 const ImageWithHover = styled(Box)`
     position: relative;
+    height: 240px;
+    border-radius: 5px;
+    border: 1px solid lightgray;
     & img {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-        border-radius: 5px;
-        border: 1px solid lightgray;
+        height: 100%;
     }
     &:hover {
         img {
@@ -37,15 +35,14 @@ const ImageWithHover = styled(Box)`
     }
 `
 
-const Controls = styled(Box)`
+const GalleryControls = styled.div`
     display: none;
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 0;
+    right: 0;
     padding: 10px;
     gap: 5px;
     
-
     ${ImageWithHover}:hover & {
         display: flex;
     }
@@ -66,16 +63,21 @@ const Gallery = () => {
     const [modalOpen, setModalOpen] = useState(false)
     const [expandedImage, setExpandedImage] = useState("")
     const [exeededLimit, setExeededLimit] = useState(false)
-    const { projectCase } = useCaseContext()
+    const { caseId } = useParams()
     const { project } = useProjectContext()
 
     useEffect(() => {
         const loadImages = async () => {
-            if (project?.id && projectCase?.id) {
+            if (project?.id) {
                 try {
                     const imageService = await getImageService()
-                    const imageDtos = await imageService.getImages(project.id, projectCase.id)
-                    setGallery(imageDtos)
+                    if (caseId) {
+                        const imageDtos = await imageService.getImages(project.id, caseId)
+                        setGallery(imageDtos)
+                    } else {
+                        const imageDtos = await imageService.getProjectImages(project.id)
+                        setGallery(imageDtos)
+                    }
                 } catch (error) {
                     console.error("Error loading images:", error)
                 }
@@ -83,15 +85,19 @@ const Gallery = () => {
         }
 
         loadImages()
-    }, [project?.id, projectCase?.id])
+    }, [project?.id, caseId])
 
     const handleDelete = async (imageUrl: string) => {
         try {
-            if (project?.id && projectCase?.id) {
+            if (project?.id) {
                 const imageService = await getImageService()
                 const image = gallery.find((img) => img.url === imageUrl)
                 if (image) {
-                    await imageService.deleteImage(project.id, projectCase.id, image.id)
+                    if (caseId) {
+                        await imageService.deleteImage(project.id, image.id, caseId)
+                    } else {
+                        await imageService.deleteImage(project.id, image.id)
+                    }
                     setGallery(gallery.filter((img) => img.url !== imageUrl))
                     setExeededLimit(false)
                 } else {
@@ -117,19 +123,23 @@ const Gallery = () => {
             </GalleryLabel>
             <Wrapper>
                 {gallery.map((image, index) => (
-                    <ImageWithHover key={`menu-item-${index + 1}`}>
-                        <img src={image.url} alt={`upload #${index + 1}`} />
-                        <Controls>
-                            {editMode && (
-                                <Button variant="contained_icon" color="danger" onClick={() => handleDelete(image.url)}>
-                                    <Icon size={18} data={delete_to_trash} />
+                    <div
+                        key={`menu-item-${index + 1}`}
+                    >
+                        <ImageWithHover>
+                            <img src={image.url} alt={`upload #${index + 1}`} />
+                            <GalleryControls>
+                                {editMode && (
+                                    <Button variant="contained_icon" color="danger" onClick={() => handleDelete(image.url)}>
+                                        <Icon size={18} data={delete_to_trash} />
+                                    </Button>
+                                )}
+                                <Button variant="contained_icon" color="secondary" onClick={() => handleExpand(image.url)}>
+                                    <Icon size={18} data={expand_screen} />
                                 </Button>
-                            )}
-                            <Button variant="contained_icon" color="secondary" onClick={() => handleExpand(image.url)}>
-                                <Icon size={18} data={expand_screen} />
-                            </Button>
-                        </Controls>
-                    </ImageWithHover>
+                            </GalleryControls>
+                        </ImageWithHover>
+                    </div>
                 ))}
                 {editMode && gallery.length < 4 && (
                     <ImageUpload gallery={gallery} setGallery={setGallery} setExeededLimit={setExeededLimit} />

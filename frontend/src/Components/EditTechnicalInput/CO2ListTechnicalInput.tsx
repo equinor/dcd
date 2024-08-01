@@ -10,6 +10,7 @@ import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { useAppContext } from "../../Context/AppContext"
+import { cellStyleRightAlign } from "../../Utils/common"
 
 const CO2ListTechnicalInput = () => {
     const gridRef = useRef<any>(null)
@@ -35,22 +36,22 @@ const CO2ListTechnicalInput = () => {
         {
             field: "profile",
             headerName: "CO2 emission",
-            width: 400,
+            flex: 2,
             editable: false,
         },
         {
             field: "unit",
             headerName: "Unit",
-            width: 200,
+            flex: 1,
             editable: false,
         },
         {
             field: "value",
             headerName: "Value",
-            width: 500,
             flex: 1,
             editable: editMode,
             cellClass: editMode ? "editableCell" : undefined,
+            cellStyle: cellStyleRightAlign,
         },
     ])
 
@@ -117,12 +118,12 @@ const CO2ListTechnicalInput = () => {
         (node: any): boolean => {
             if (node.data) {
                 switch (cO2VentedRow) {
-                case true:
-                    return node.data.profile === "CO2 vented"
-                case false:
-                    return node.data.profile !== "CO2 vented"
-                default:
-                    return true
+                    case true:
+                        return node.data.profile === "CO2 vented"
+                    case false:
+                        return node.data.profile !== "CO2 vented"
+                    default:
+                        return true
                 }
             }
             return true

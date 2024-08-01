@@ -19,27 +19,13 @@ namespace api.Controllers;
 )]
 public class CaseWithAssetsController : ControllerBase
 {
-    private readonly ICaseAndAssetsService _caseAndAssetsService;
     private readonly ICaseWithAssetsService _caseWithAssetsService;
 
     public CaseWithAssetsController(
-        ICaseAndAssetsService caseAndAssetsService,
         ICaseWithAssetsService caseWithAssetsService
     )
     {
         _caseWithAssetsService = caseWithAssetsService;
-        _caseAndAssetsService = caseAndAssetsService;
-    }
-
-    [HttpPost(Name = "UpdateCaseWithAssets")]
-    public async Task<ActionResult<ProjectWithGeneratedProfilesDto>> UpdateCaseWithAssets(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromBody] CaseWithAssetsWrapperDto caseWrapperDto
-    )
-    {
-        var dto = await _caseAndAssetsService.UpdateCaseWithAssets(projectId, caseId, caseWrapperDto);
-        return Ok(dto);
     }
 
     [HttpGet]

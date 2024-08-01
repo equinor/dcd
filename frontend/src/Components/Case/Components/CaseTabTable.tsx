@@ -1,10 +1,9 @@
 import {
-    Dispatch,
-    SetStateAction,
     useMemo,
     useState,
     useEffect,
     useCallback,
+    useRef,
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
@@ -12,23 +11,22 @@ import { useParams } from "react-router"
 import {
     CellKeyDownEvent, ColDef, GridReadyEvent,
 } from "@ag-grid-community/core"
+import isEqual from "lodash/isEqual"
+import { CircularProgress } from "@equinor/eds-core-react"
 import {
-    isInteger,
+    extractTableTimeSeriesValues,
+    generateProfile,
     tableCellisEditable,
     numberValueParser,
     getCaseRowStyle,
     validateInput,
     formatColumnSum,
 } from "../../../Utils/common"
-import { OverrideTimeSeriesPrompt } from "../../Modal/OverrideTimeSeriesPrompt"
 import { useAppContext } from "../../../Context/AppContext"
 import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
-import hideProfilesWithoutValues from "./HideProfilesWithoutValues"
 import { useProjectContext } from "../../../Context/ProjectContext"
-import useDataEdits from "../../../Hooks/useDataEdits"
-import { ProfileNames } from "../../../Models/Interfaces"
 
 interface Props {
     timeSeriesData: any[]
@@ -39,7 +37,9 @@ interface Props {
     gridRef?: any
     includeFooter: boolean
     totalRowName?: string
-    profilesToHideWithoutValues?: string[]
+    calculatedFields?: string[]
+    ongoingCalculation?: boolean
+    addEdit: any
 }
 
 const CaseTabTable = ({
@@ -51,18 +51,27 @@ const CaseTabTable = ({
     gridRef,
     includeFooter,
     totalRowName,
-    profilesToHideWithoutValues,
+    calculatedFields,
+    ongoingCalculation,
+    addEdit,
 }: Props) => {
-    const { editMode } = useAppContext()
+    const { editMode, setSnackBarMessage } = useAppContext()
     const styles = useStyles()
     const { project } = useProjectContext()
-    const { addEdit } = useDataEdits()
-    const { caseId } = useParams()
+    const { caseId, tab } = useParams()
+    const [stagedEdit, setStagedEdit] = useState<any>()
+    const firstTriggerRef = useRef<boolean>(true)
+    const timerRef = useRef<NodeJS.Timeout | null>(null)
 
-    const [overrideModalOpen, setOverrideModalOpen] = useState<boolean>(false)
-    const [overrideModalProfileName, setOverrideModalProfileName] = useState<ProfileNames>()
-    const [overrideModalProfileSet, setOverrideModalProfileSet] = useState<Dispatch<SetStateAction<any | undefined>>>()
-    const [overrideProfile, setOverrideProfile] = useState<any>()
+    useEffect(() => {
+        if (stagedEdit) {
+            addEdit(stagedEdit)
+        }
+    }, [stagedEdit])
+
+    useEffect(() => {
+        gridRef.current?.api?.redrawRows()
+    }, [ongoingCalculation])
 
     const profilesToRowData = () => {
         const tableRows: any[] = []
@@ -80,6 +89,7 @@ const CaseTabTable = ({
             rowObject.resourceName = ts.resourceName
             rowObject.overridable = ts.overridable
             rowObject.editable = ts.editable
+            rowObject.hideIfEmpty = ts.hideIfEmpty
 
             rowObject.overrideProfileSet = ts.overrideProfileSet
             rowObject.overrideProfile = ts.overrideProfile ?? {
@@ -118,31 +128,41 @@ const CaseTabTable = ({
                 }
             }
 
-            tableRows.push(rowObject)
-        })
+            const isNotHidden = !rowObject.hideIfEmpty
+            const hasProfileValues = rowObject.hideIfEmpty && rowObject.profile?.values.length > 0
 
-        if (profilesToHideWithoutValues !== undefined) {
-            return hideProfilesWithoutValues(
-                editMode,
-                profilesToHideWithoutValues,
-                tableRows,
-            )
-        }
+            if (editMode || isNotHidden || hasProfileValues) {
+                tableRows.push(rowObject)
+            }
+        })
 
         return tableRows
     }
 
-    const gridRowData = useMemo(() => gridRef.current?.api?.setGridOption("rowData", profilesToRowData()), [timeSeriesData])
+    const gridRowData = useMemo(() => gridRef.current?.api?.setGridOption("rowData", profilesToRowData()), [timeSeriesData, editMode])
 
-    const lockIconRenderer = (params: any) => (
-        <ClickableLockIcon
-            clickedElement={params}
-            setOverrideModalOpen={setOverrideModalOpen}
-            setOverrideModalProfileName={setOverrideModalProfileName}
-            setOverrideModalProfileSet={setOverrideModalProfileSet}
-            setOverrideProfile={setOverrideProfile}
-        />
-    )
+    const lockIconRenderer = (params: any) => {
+        if (!params.data || !editMode) {
+            return null
+        }
+
+        const isUnlocked = params.data.overrideProfile?.override
+
+        if (
+            !isUnlocked
+            && calculatedFields
+            && calculatedFields.includes(params.data.resourceName)
+            && ongoingCalculation) {
+            return <CircularProgress size={24} />
+        }
+
+        return (
+            <ClickableLockIcon
+                clickedElement={params}
+                addEdit={addEdit}
+            />
+        )
+    }
 
     const generateTableYearColDefs = () => {
         const columnPinned: any[] = [
@@ -158,17 +178,23 @@ const CaseTabTable = ({
                 aggFunc: () => totalRowName ?? "Total",
             },
             {
+                field: "unit",
+                headerName: "Unit",
+                hide: true,
+                width: 100,
+            },
+            {
                 field: "total",
                 flex: 2,
                 editable: false,
                 pinned: "right",
                 width: 100,
                 aggFunc: formatColumnSum,
-                cellStyle: { fontWeight: "bold" },
+                cellStyle: { fontWeight: "bold", textAlign: "right" },
             },
             {
                 headerName: "",
-                width: 60,
+                width: 70,
                 field: "set",
                 pinned: "right",
                 aggFunc: "",
@@ -195,7 +221,7 @@ const CaseTabTable = ({
                     textAlign: "right",
                 },
                 cellClass: (params: any) => (editMode && tableCellisEditable(params, editMode) ? "editableCell" : undefined),
-                valueParser: numberValueParser,
+                valueParser: (params: any) => numberValueParser(setSnackBarMessage, params),
             })
         }
         return columnPinned.concat([...yearDefs])
@@ -203,66 +229,63 @@ const CaseTabTable = ({
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(generateTableYearColDefs())
 
-    const handleCellValueChange = (p: any) => {
-        const properties = Object.keys(p.data)
-        const tableTimeSeriesValues: any[] = []
-        properties.forEach((prop) => {
-            if (isInteger(prop)
-                && p.data[prop] !== ""
-                && p.data[prop] !== null
-                && !Number.isNaN(Number(p.data[prop].toString().replace(/,/g, ".")))) {
-                tableTimeSeriesValues.push({
-                    year: parseInt(prop, 10),
-                    value: Number(p.data[prop].toString().replace(/,/g, ".")),
-                })
-            }
-        })
-        tableTimeSeriesValues.sort((a, b) => a.year - b.year)
+    const stageEdit = (params: any) => {
+        const tableTimeSeriesValues = extractTableTimeSeriesValues(params.data)
+        const existingProfile = params.data.profile ? structuredClone(params.data.profile) : {
+            startYear: 0, values: [],
+        }
+        let newProfile
         if (tableTimeSeriesValues.length > 0) {
-            const tableTimeSeriesFirstYear = tableTimeSeriesValues[0].year
-            const tableTimeSerieslastYear = tableTimeSeriesValues.at(-1).year
-            const timeSeriesStartYear = tableTimeSeriesFirstYear - dg4Year
-            const values: number[] = []
-            for (let i = tableTimeSeriesFirstYear; i <= tableTimeSerieslastYear; i += 1) {
-                const tableTimeSeriesValue = tableTimeSeriesValues.find((v) => v.year === i)
-                if (tableTimeSeriesValue) {
-                    values.push(tableTimeSeriesValue.value)
-                } else {
-                    values.push(0)
-                }
-            }
-            const newProfile = { ...p.data.profile }
-            newProfile.startYear = timeSeriesStartYear
-            newProfile.values = values
+            const firstYear = tableTimeSeriesValues[0].year
+            const lastYear = tableTimeSeriesValues[tableTimeSeriesValues.length - 1].year
+            const startYear = firstYear - dg4Year
+            newProfile = generateProfile(tableTimeSeriesValues, params.data.profile, startYear, firstYear, lastYear)
+        } else {
+            newProfile = structuredClone(existingProfile)
+            newProfile.values = []
+        }
 
-            if (!caseId || !project) { return }
+        if (!newProfile || !caseId || !project) {
+            return
+        }
 
-            const timeSeriesDataIndex = () => {
-                const result = timeSeriesData
-                    .map((v, i) => {
-                        if (v.profileName === p.data.profileName) {
-                            return timeSeriesData[i]
-                        }
-                        return undefined
-                    })
-                    .find((v) => v !== undefined)
-                return result
-            }
+        const timeSeriesDataIndex = () => timeSeriesData
+            .map((v, i) => (v.profileName === params.data.profileName ? timeSeriesData[i] : undefined))
+            .find((v) => v !== undefined)
 
-            addEdit({
-                newValue: p.newValue,
-                previousValue: p.oldValue,
-                inputLabel: p.data.profileName,
+        if (!isEqual(newProfile.values, existingProfile.values)) {
+            setStagedEdit({
+                newDisplayValue: newProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
+                previousDisplayValue: existingProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
+                inputLabel: params.data.profileName,
                 projectId: project.id,
                 resourceName: timeSeriesDataIndex()?.resourceName,
                 resourcePropertyKey: timeSeriesDataIndex()?.resourcePropertyKey,
                 caseId,
                 resourceId: timeSeriesDataIndex()?.resourceId,
                 newResourceObject: newProfile,
+                previousResourceObject: existingProfile,
                 resourceProfileId: timeSeriesDataIndex()?.resourceProfileId,
+                tabName: tab,
+                tableName,
             })
         }
     }
+
+    const handleCellValueChange = useCallback((params: any) => {
+        if (firstTriggerRef.current) {
+            firstTriggerRef.current = false
+            stageEdit(params)
+
+            if (timerRef.current) {
+                clearTimeout(timerRef.current)
+            }
+
+            timerRef.current = setTimeout(() => {
+                firstTriggerRef.current = true
+            }, 500)
+        }
+    }, [stageEdit, timeSeriesData, dg4Year, project, caseId])
 
     const gridRefArrayToAlignedGrid = () => {
         if (alignedGridsRef && alignedGridsRef.length > 0) {
@@ -286,86 +309,104 @@ const CaseTabTable = ({
         editable: true,
         onCellValueChanged: handleCellValueChange,
         suppressHeaderMenuButton: true,
-        cellDataType: "number",
     }), [timeSeriesData])
 
     useEffect(() => {
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
-    }, [timeSeriesData, tableYears])
+    }, [tableYears, editMode, ongoingCalculation])
 
     const onGridReady = useCallback((params: GridReadyEvent) => {
         const generateRowData = profilesToRowData()
         params.api.setGridOption("rowData", generateRowData)
     }, [])
 
-    const clearCellsInRange = (start: any, end: any, columns: any) => {
-        Array.from({ length: end - start + 1 }, (_, i) => start + i).map((i) => {
-            const rowNode = gridRef.current?.api.getRowNode(i)
-            return columns.forEach((column: any) => {
-                rowNode.setDataValue(column, "")
-            })
-        })
+    const defaultExcelExportParams = useMemo(() => {
+        const yearColumnKeys = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => (tableYears[0] + i).toString())
+        const columnKeys = ["profileName", "unit", ...yearColumnKeys, "total"]
+        return {
+            columnKeys,
+            fileName: "export.xlsx",
+        }
+    }, [tableYears])
+
+    const clearCellsInRange = (start: number, end: number, columns: any[]) => {
+        for (let rowIndex = start; rowIndex <= end; rowIndex += 1) {
+            const rowNode = gridRef.current?.api.getRowNode(rowIndex)
+            if (rowNode) {
+                columns.forEach((col: any) => {
+                    rowNode.setDataValue(col, "")
+                })
+            }
+        }
     }
 
-    const handleDeleteOnRange = useCallback((e: CellKeyDownEvent) => {
-        const keyboardEvent = e.event as unknown as KeyboardEvent
-        const { key } = keyboardEvent
+    const handleDeleteOnRange = useCallback(
+        (e: CellKeyDownEvent) => {
+            const keyboardEvent = e.event as unknown as KeyboardEvent
+            const { key } = keyboardEvent
 
-        if (key === "Backspace") {
             const cellRanges = e.api.getCellRanges()
-            if (!cellRanges || cellRanges.length === 0) { return }
-            cellRanges?.forEach((cells) => {
-                if (cells.startRow && cells.endRow) {
-                    const colIds = cells.columns.map((col: any) => col.colId)
-                    const startRowIndex = Math.min(cells.startRow.rowIndex, cells.endRow.rowIndex)
-                    const endRowIndex = Math.max(cells.startRow.rowIndex, cells.endRow.rowIndex)
-                    clearCellsInRange(startRowIndex, endRowIndex, colIds)
-                    handleCellValueChange(e)
-                }
-            })
-        }
-    }, [])
 
+            if (key === "Backspace") {
+                if (!cellRanges || cellRanges.length === 0) {
+                    return
+                }
+
+                cellRanges.forEach((range: any) => {
+                    const { startRow, endRow, columns } = range
+                    const startRowIndex = Math.min(startRow.rowIndex, endRow.rowIndex)
+                    const endRowIndex = Math.max(startRow.rowIndex, endRow.rowIndex)
+
+                    const colIds = columns.map((col: any) => col.getColId())
+
+                    if (startRowIndex === endRowIndex && colIds.length === 1) {
+                        const colId = colIds[0]
+                        const cellValue = e.api.getValue(colId, e.node)
+                        if (cellValue !== undefined && cellValue !== null && typeof cellValue === "string") {
+                            const newValue = cellValue.slice(0, -1)
+                            e.node.setDataValue(colId, newValue)
+                        }
+                    } else {
+                        clearCellsInRange(startRowIndex, endRowIndex, colIds)
+                    }
+                })
+            }
+        },
+        [clearCellsInRange],
+    )
     return (
-        <>
-            <OverrideTimeSeriesPrompt
-                isOpen={overrideModalOpen}
-                setIsOpen={setOverrideModalOpen}
-                profileName={overrideModalProfileName}
-                setProfile={overrideModalProfileSet}
-                profile={overrideProfile}
-            />
-            <div className={styles.root}>
-                <div
-                    style={{
-                        display: "flex", flexDirection: "column", width: "100%",
-                    }}
-                >
-                    <AgGridReact
-                        ref={gridRef}
-                        rowData={gridRowData}
-                        columnDefs={columnDefs}
-                        defaultColDef={defaultColDef}
-                        animateRows
-                        domLayout="autoHeight"
-                        enableCellChangeFlash={editMode}
-                        rowSelection="multiple"
-                        enableRangeSelection
-                        suppressCopySingleCellRanges
-                        suppressMovableColumns
-                        enableCharts
-                        alignedGrids={gridRefArrayToAlignedGrid()}
-                        groupIncludeTotalFooter={includeFooter}
-                        getRowStyle={getCaseRowStyle}
-                        suppressLastEmptyLineOnPaste
-                        stopEditingWhenCellsLoseFocus
-                        onGridReady={onGridReady}
-                        onCellKeyDown={editMode ? handleDeleteOnRange : undefined}
-                    />
-                </div>
+        <div className={styles.root}>
+            <div
+                id={tableName}
+                style={{
+                    display: "flex", flexDirection: "column", width: "100%",
+                }}
+            >
+                <AgGridReact
+                    ref={gridRef}
+                    rowData={gridRowData}
+                    columnDefs={columnDefs}
+                    defaultColDef={defaultColDef}
+                    animateRows
+                    domLayout="autoHeight"
+                    enableCellChangeFlash={editMode}
+                    rowSelection="multiple"
+                    enableRangeSelection
+                    suppressCopySingleCellRanges
+                    suppressMovableColumns
+                    enableCharts
+                    alignedGrids={gridRefArrayToAlignedGrid()}
+                    groupIncludeTotalFooter={includeFooter}
+                    getRowStyle={getCaseRowStyle}
+                    suppressLastEmptyLineOnPaste
+                    stopEditingWhenCellsLoseFocus
+                    onGridReady={onGridReady}
+                    defaultExcelExportParams={defaultExcelExportParams}
+                    onCellKeyDown={editMode ? handleDeleteOnRange : undefined}
+                />
             </div>
-        </>
+        </div>
     )
 }
 

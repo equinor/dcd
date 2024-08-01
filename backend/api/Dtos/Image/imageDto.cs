@@ -18,7 +18,7 @@ public class ImageDto
     public string? Description { get; set; }
 
     [Required]
-    public Guid CaseId { get; set; }
+    public Guid? CaseId { get; set; }
 
     [Required]
     public string ProjectName { get; set; } = null!;

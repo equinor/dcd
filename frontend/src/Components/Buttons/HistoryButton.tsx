@@ -1,12 +1,8 @@
 import React from "react"
-import {
-    Button,
-    Icon,
-    Tooltip,
-} from "@equinor/eds-core-react"
+import { Button, Icon, Tooltip } from "@equinor/eds-core-react"
 import { history } from "@equinor/eds-icons"
+import { useParams } from "react-router-dom"
 import { useAppContext } from "../../Context/AppContext"
-import { useCaseContext } from "../../Context/CaseContext"
 
 interface props {
     size?: 16 | 24 | 32 | 48 | 18 | 40
@@ -14,8 +10,9 @@ interface props {
 
 const HistoryButton: React.FC<props> = ({ size }) => {
     const { setSidebarOpen } = useAppContext()
-    const { projectCase } = useCaseContext()
-    if (!projectCase) { return null }
+    const { caseId } = useParams()
+
+    if (!caseId) { return null }
 
     const openHistory = () => {
         setSidebarOpen(true)

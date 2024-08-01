@@ -14,13 +14,14 @@ const Helper = styled.div`
     top: 11px;
     margin-right: 20px;
 `
+
 interface DateRangePickerProps {
     setStartYear: (startYear: number) => void
     setEndYear: (endYear: number) => void
     startYear: number
     endYear: number
-    labelText: string
-    labelValue: string | undefined | number
+    labelText?: string | undefined
+    labelValue?: string | undefined | number
     handleTableYearsClick: () => void
 }
 
@@ -53,17 +54,22 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
     return (
         <Grid item xs={12} container spacing={1} justifyContent="flex-end" alignItems="baseline" marginTop={6}>
-            <Helper>
-                <Typography variant="meta">
-                    {labelText}
-                </Typography>
-                <Typography variant="caption">
-                    {labelValue}
-                </Typography>
-            </Helper>
+            {labelText && labelValue && (
+                <Helper>
+                    <>
+                        <Typography variant="meta">
+                            {labelText}
+                        </Typography>
+                        <Typography variant="caption">
+                            {labelValue}
+                        </Typography>
+                    </>
+                </Helper>
+            )}
             <Grid item>
                 <Typography variant="caption">Start year</Typography>
                 <CaseNumberInput
+                    id="start-year-input"
                     onSubmit={(value) => handleStartYearStateChange(value)}
                     defaultValue={startYear}
                     integer
@@ -74,6 +80,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
             <Grid item>
                 <Typography variant="caption">End year</Typography>
                 <CaseNumberInput
+                    id="end-year-input"
                     onSubmit={(value) => handleEndYearStateChange(value)}
                     defaultValue={endYear}
                     integer

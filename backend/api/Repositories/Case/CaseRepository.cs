@@ -6,7 +6,6 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-
 namespace api.Repositories;
 
 public class CaseRepository : BaseRepository, ICaseRepository
@@ -16,7 +15,7 @@ public class CaseRepository : BaseRepository, ICaseRepository
     public CaseRepository(
         DcdDbContext context,
         ILogger<CaseRepository> logger
-        ) : base(context)
+    ) : base(context)
     {
         _logger = logger;
     }
@@ -67,4 +66,5 @@ public class CaseRepository : BaseRepository, ICaseRepository
 
         caseItem.ModifyTime = DateTimeOffset.UtcNow;
     }
+
 }

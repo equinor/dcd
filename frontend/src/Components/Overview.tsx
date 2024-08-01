@@ -12,9 +12,9 @@ import Sidebar from "./Controls/Sidebar/Sidebar"
 import Controls from "./Controls/Controls"
 import { useAppContext } from "../Context/AppContext"
 import { useProjectContext } from "../Context/ProjectContext"
-import { useCaseContext } from "../Context/CaseContext"
 import Modal from "./Modal/Modal"
 import { PROJECT_CLASSIFICATION } from "../Utils/constants"
+import { useModalContext } from "../Context/ModalContext"
 
 interface WarnedProjectInterface {
     [key: string]: string[]
@@ -25,14 +25,12 @@ const Overview = () => {
     const {
         isCreating,
         isLoading,
-        editMode,
         sidebarOpen,
         snackBarMessage,
         setSnackBarMessage,
     } = useAppContext()
     const { project } = useProjectContext()
-    const { setProjectCase } = useCaseContext()
-    const { caseId } = useParams()
+    const { featuresModalIsOpen } = useModalContext()
     const [warnedProjects, setWarnedProjects] = useState<WarnedProjectInterface | null>(null)
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
@@ -60,15 +58,6 @@ const Overview = () => {
     }, [])
 
     useEffect(() => {
-        if (project && !editMode && caseId) {
-            const foundCase = project.cases.find((c) => c.id === caseId)
-            setProjectCase(foundCase)
-        } else if (!caseId) {
-            setProjectCase(undefined)
-        }
-    }, [project, caseId, editMode])
-
-    useEffect(() => {
         if (currentUser && (!currentUserId || currentUser.localAccountId !== currentUserId)) {
             setCurrentUserId(currentUser.localAccountId as keyof typeof warnedProjects)
         }
@@ -91,13 +80,15 @@ const Overview = () => {
                     || !warnedProjects
                 )
             ) {
-                setProjectClassificationWarning(true)
+                if (!featuresModalIsOpen) {
+                    setProjectClassificationWarning(true)
+                }
             }
             if (warnedProjects && warnedProjects[currentUserId].some((vp: string) => vp === project.id)) {
                 setProjectClassificationWarning(false)
             }
         }
-    }, [project, currentUserId, warnedProjects])
+    }, [project, currentUserId, warnedProjects, featuresModalIsOpen])
 
     return (
         <>

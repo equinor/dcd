@@ -11,7 +11,7 @@ import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import { useModalContext } from "../../../../Context/ModalContext"
-import Header from "./Header"
+import CaseCostHeader from "./CaseCostHeader"
 import CessationCosts from "./Tables/CessationCosts"
 import DevelopmentWellCosts from "./Tables/DevelopmentWellCosts"
 import ExplorationWellCosts from "./Tables/ExplorationWellCosts"
@@ -19,17 +19,10 @@ import OffshoreFacillityCosts from "./Tables/OffshoreFacilityCosts"
 import OpexCosts from "./Tables/OpexCosts"
 import TotalStudyCosts from "./Tables/TotalStudyCosts"
 
-const CaseCostTab = (): React.ReactElement | null => {
+const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
 
-    const {
-        projectCase,
-        activeTabCase,
-        topside,
-        surf,
-        substructure,
-        transport,
-    } = useCaseContext()
+    const { activeTabCase } = useCaseContext()
 
     const {
         wellProject,
@@ -59,26 +52,42 @@ const CaseCostTab = (): React.ReactElement | null => {
         explorationWellsGridRef,
     ], [studyGridRef, opexGridRef, cessationGridRef, capexGridRef, developmentWellsGridRef, explorationWellsGridRef])
 
+    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
+        ["apiData", { projectId, caseId }],
+        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        {
+            enabled: !!projectId && !!caseId,
+            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        },
+    )
+
+    const surfData = apiData?.surf as Components.Schemas.SurfWithProfilesDto
+    const caseData = apiData?.case as Components.Schemas.CaseWithProfilesDto
+    const topside = apiData?.topside as Components.Schemas.TopsideWithProfilesDto
+    const substructure = apiData?.substructure as Components.Schemas.SubstructureWithProfilesDto
+    const transport = apiData?.transport as Components.Schemas.TransportWithProfilesDto
+    const surf = apiData?.surf as Components.Schemas.SurfWithProfilesDto
+
     useEffect(() => {
         (async () => {
             try {
-                if (projectCase && project && topside && surf && substructure && transport && exploration && wellProject) {
+                if (caseData && project && topside && surf && substructure && transport && exploration && wellProject) {
                     if (activeTabCase === 5) {
                         SetTableYearsFromProfiles([
-                            projectCase.totalFeasibilityAndConceptStudies,
-                            projectCase.totalFEEDStudies,
-                            projectCase.totalOtherStudiesCostProfile,
-                            projectCase.wellInterventionCostProfile,
-                            projectCase.offshoreFacilitiesOperationsCostProfile,
-                            projectCase.cessationWellsCost,
-                            projectCase.cessationOffshoreFacilitiesCost,
-                            projectCase.cessationOnshoreFacilitiesCostProfile,
-                            projectCase.totalFeasibilityAndConceptStudiesOverride,
-                            projectCase.totalFEEDStudiesOverride,
-                            projectCase.wellInterventionCostProfileOverride,
-                            projectCase.offshoreFacilitiesOperationsCostProfileOverride,
-                            projectCase.cessationWellsCostOverride,
-                            projectCase.cessationOffshoreFacilitiesCostOverride,
+                            caseData.totalFeasibilityAndConceptStudies,
+                            caseData.totalFEEDStudies,
+                            caseData.totalOtherStudiesCostProfile,
+                            caseData.wellInterventionCostProfile,
+                            caseData.offshoreFacilitiesOperationsCostProfile,
+                            caseData.cessationWellsCost,
+                            caseData.cessationOffshoreFacilitiesCost,
+                            caseData.cessationOnshoreFacilitiesCostProfile,
+                            caseData.totalFeasibilityAndConceptStudiesOverride,
+                            caseData.totalFEEDStudiesOverride,
+                            caseData.wellInterventionCostProfileOverride,
+                            caseData.offshoreFacilitiesOperationsCostProfileOverride,
+                            caseData.cessationWellsCostOverride,
+                            caseData.cessationOffshoreFacilitiesCostOverride,
                             surf.costProfile,
                             surf.costProfileOverride,
                             topside.costProfile,
@@ -100,7 +109,7 @@ const CaseCostTab = (): React.ReactElement | null => {
                             exploration.countryOfficeCost,
                             exploration?.gAndGAdminCost,
                             exploration?.gAndGAdminCostOverride,
-                        ], projectCase?.dG4Date ? new Date(projectCase?.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
+                        ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
                     }
                 }
             } catch (error) {
@@ -108,18 +117,6 @@ const CaseCostTab = (): React.ReactElement | null => {
             }
         })()
     }, [activeTabCase])
-
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
-
-    const surfData = apiData?.surf as Components.Schemas.SurfWithProfilesDto
-    const caseData = apiData?.case as Components.Schemas.CaseDto
 
     if (activeTabCase !== 5) { return null }
 
@@ -129,7 +126,7 @@ const CaseCostTab = (): React.ReactElement | null => {
 
     return (
         <Grid container spacing={3}>
-            <Header
+            <CaseCostHeader
                 startYear={startYear}
                 endYear={endYear}
                 setStartYear={setStartYear}
@@ -137,14 +134,15 @@ const CaseCostTab = (): React.ReactElement | null => {
                 setTableYears={setTableYears}
                 caseData={caseData}
                 surfData={surfData}
+                addEdit={addEdit}
             />
             <Grid item xs={12}>
                 <TotalStudyCosts
                     tableYears={tableYears}
                     studyGridRef={studyGridRef}
                     alignedGridsRef={alignedGridsRef}
-                    caseData={caseData}
                     apiData={apiData}
+                    addEdit={addEdit}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -152,8 +150,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     opexGridRef={opexGridRef}
                     alignedGridsRef={alignedGridsRef}
-                    caseData={caseData}
                     apiData={apiData}
+                    addEdit={addEdit}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -161,8 +159,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     cessationGridRef={cessationGridRef}
                     alignedGridsRef={alignedGridsRef}
-                    caseData={caseData}
                     apiData={apiData}
+                    addEdit={addEdit}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -170,8 +168,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     capexGridRef={capexGridRef}
                     alignedGridsRef={alignedGridsRef}
-                    caseData={caseData}
                     apiData={apiData}
+                    addEdit={addEdit}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -179,8 +177,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     developmentWellsGridRef={developmentWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
-                    caseData={caseData}
                     apiData={apiData}
+                    addEdit={addEdit}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -188,8 +186,8 @@ const CaseCostTab = (): React.ReactElement | null => {
                     tableYears={tableYears}
                     explorationWellsGridRef={explorationWellsGridRef}
                     alignedGridsRef={alignedGridsRef}
-                    caseData={caseData}
                     apiData={apiData}
+                    addEdit={addEdit}
                 />
             </Grid>
         </Grid>

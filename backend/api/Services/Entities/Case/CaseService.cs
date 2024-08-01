@@ -58,7 +58,7 @@ public class CaseService : ICaseService
         _repository = repository;
     }
 
-    public async Task<ProjectDto> CreateCase(Guid projectId, CreateCaseDto createCaseDto)
+    public async Task<ProjectWithAssetsDto> CreateCase(Guid projectId, CreateCaseDto createCaseDto)
     {
         var caseItem = _mapper.Map<Case>(createCaseDto);
         if (caseItem == null)
@@ -137,7 +137,7 @@ public class CaseService : ICaseService
         return await _projectService.GetProjectDto(project.Id);
     }
 
-    public async Task<ProjectDto> UpdateCaseAndProfiles<TDto>(Guid caseId, TDto updatedCaseDto)
+    public async Task<ProjectWithAssetsDto> UpdateCaseAndProfiles<TDto>(Guid caseId, TDto updatedCaseDto)
         where TDto : BaseUpdateCaseDto
     {
         var caseItem = await GetCase(caseId);
@@ -145,11 +145,13 @@ public class CaseService : ICaseService
         _mapper.Map(updatedCaseDto, caseItem);
 
         _context.Cases!.Update(caseItem);
+        await _repository.UpdateModifyTime(caseId);
         await _context.SaveChangesAsync();
+
         return await _projectService.GetProjectDto(caseItem.ProjectId);
     }
 
-    public async Task<ProjectDto> DeleteCase(Guid caseId)
+    public async Task<ProjectWithAssetsDto> DeleteCase(Guid caseId)
     {
         var caseItem = await GetCase(caseId);
         _context.Cases!.Remove(caseItem);
@@ -187,33 +189,25 @@ public class CaseService : ICaseService
 
     public async Task<IEnumerable<Case>> GetAll()
     {
-        if (_context.Cases != null)
-        {
-            return await _context.Cases
-                    .Include(c => c.TotalFeasibilityAndConceptStudies)
-                    .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
-                    .Include(c => c.TotalFEEDStudies)
-                    .Include(c => c.TotalFEEDStudiesOverride)
-                    .Include(c => c.TotalOtherStudiesCostProfile)
-                    .Include(c => c.HistoricCostCostProfile)
-                    .Include(c => c.WellInterventionCostProfile)
-                    .Include(c => c.WellInterventionCostProfileOverride)
-                    .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
-                    .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
-                    .Include(c => c.OnshoreRelatedOPEXCostProfile)
-                    .Include(c => c.AdditionalOPEXCostProfile)
-                    .Include(c => c.CessationWellsCost)
-                    .Include(c => c.CessationWellsCostOverride)
-                    .Include(c => c.CessationOffshoreFacilitiesCost)
-                    .Include(c => c.CessationOffshoreFacilitiesCostOverride)
-                    .Include(c => c.CessationOnshoreFacilitiesCostProfile)
-                    .ToListAsync();
-        }
-        else
-        {
-            _logger.LogInformation("No cases exists");
-            return new List<Case>();
-        }
+        return await _context.Cases
+                .Include(c => c.TotalFeasibilityAndConceptStudies)
+                .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
+                .Include(c => c.TotalFEEDStudies)
+                .Include(c => c.TotalFEEDStudiesOverride)
+                .Include(c => c.TotalOtherStudiesCostProfile)
+                .Include(c => c.HistoricCostCostProfile)
+                .Include(c => c.WellInterventionCostProfile)
+                .Include(c => c.WellInterventionCostProfileOverride)
+                .Include(c => c.OffshoreFacilitiesOperationsCostProfile)
+                .Include(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+                .Include(c => c.OnshoreRelatedOPEXCostProfile)
+                .Include(c => c.AdditionalOPEXCostProfile)
+                .Include(c => c.CessationWellsCost)
+                .Include(c => c.CessationWellsCostOverride)
+                .Include(c => c.CessationOffshoreFacilitiesCost)
+                .Include(c => c.CessationOffshoreFacilitiesCostOverride)
+                .Include(c => c.CessationOnshoreFacilitiesCostProfile)
+                .ToListAsync();
     }
 
     public async Task<CaseDto> UpdateCase<TDto>(
@@ -225,16 +219,12 @@ public class CaseService : ICaseService
         var existingCase = await _repository.GetCase(caseId)
             ?? throw new NotFoundInDBException($"Case with id {caseId} not found.");
 
-
         _mapperService.MapToEntity(updatedCaseDto, existingCase, caseId);
 
         existingCase.ModifyTime = DateTimeOffset.UtcNow;
 
-        // Case updatedCase;
         try
         {
-            // TODO: This breaks EF Core's change tracking
-            // updatedCase = _repository.UpdateCase(existingCase);
             await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
@@ -243,6 +233,7 @@ public class CaseService : ICaseService
             throw;
         }
 
+        await _repository.UpdateModifyTime(caseId);
         var dto = _mapperService.MapToDto<Case, CaseDto>(existingCase, caseId);
         return dto;
     }

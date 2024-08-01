@@ -4,8 +4,10 @@ import { arrow_forward } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { useCaseContext } from "../../../Context/CaseContext"
 import { formatTime, getCurrentEditId } from "../../../Utils/common"
+import { useAppContext } from "../../../Context/AppContext"
+import useDataEdits from "../../../Hooks/useDataEdits"
 
-const EditInstance = styled.div<{ $isActive: boolean }>`
+const EditInstanceWrapper = styled.div <{ $isActive: boolean }>`
     padding: 10px 5px 10px 15px;
     border-left: 2px solid ${({ $isActive }) => ($isActive ? "#007079" : "#DCDCDC")};
 `
@@ -33,14 +35,14 @@ const ChangeView = styled.div`
 const PreviousValue = styled(Typography)`
     color: red;
     text-decoration: line-through;
-    opacity: 0.5;
-    max-width: 100px;
+    opacity: 0.8;    max-width: 100px;
     font-size: 12px;
 `
 
 const NextValue = styled(Typography)`
     max-width: 100px;
     font-size: 12px;
+    font-weight: bold;
 `
 
 interface CaseEditHistoryProps {
@@ -48,14 +50,48 @@ interface CaseEditHistoryProps {
 }
 
 const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
-    const { caseEdits, projectCase, editIndexes } = useCaseContext()
     const [activeEdit, setActiveEdit] = useState<string | undefined>(undefined)
     const activeRef = useRef<HTMLDivElement | null>(null)
+    const {
+        apiQueue,
+        setIsSaving,
+    } = useAppContext()
+    const {
+        caseEdits,
+        editIndexes,
+    } = useCaseContext()
+    const {
+        processQueue,
+    } = useDataEdits()
 
     useEffect(() => {
-        const currentEditId = getCurrentEditId(editIndexes, projectCase)
+        let timer: NodeJS.Timeout | undefined
+
+        if (apiQueue.length > 0) {
+            setIsSaving(true)
+
+            if (timer) {
+                clearTimeout(timer)
+            }
+
+            timer = setTimeout(() => {
+                processQueue()
+            }, 500)
+        } else {
+            setIsSaving(false)
+        }
+
+        return () => {
+            if (timer) {
+                clearTimeout(timer)
+            }
+        }
+    }, [apiQueue])
+
+    useEffect(() => {
+        const currentEditId = getCurrentEditId(editIndexes, caseId)
         setActiveEdit(currentEditId)
-    }, [caseEdits, editIndexes, projectCase])
+    }, [caseEdits, editIndexes, caseId])
 
     useEffect(() => {
         if (activeRef.current) {
@@ -68,7 +104,7 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
             {caseEdits.map((edit) => {
                 const isActive = edit.uuid === activeEdit
                 return edit.caseId === caseId ? (
-                    <EditInstance
+                    <EditInstanceWrapper
                         key={edit.uuid}
                         $isActive={isActive}
                         ref={isActive ? activeRef : null}
@@ -79,16 +115,16 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
                         </Header>
                         <ChangeView>
                             <PreviousValue>
-                                {edit.previousDisplayValue ? edit.previousDisplayValue : edit.previousValue}
+                                {edit.previousDisplayValue}
                             </PreviousValue>
                             <div>
                                 <Icon data={arrow_forward} size={16} />
                             </div>
                             <NextValue>
-                                {edit.newDisplayValue ? edit.newDisplayValue : edit.newValue}
+                                {edit.newDisplayValue}
                             </NextValue>
                         </ChangeView>
-                    </EditInstance>
+                    </EditInstanceWrapper>
                 ) : null
             })}
         </>

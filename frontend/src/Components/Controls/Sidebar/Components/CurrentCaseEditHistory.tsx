@@ -1,6 +1,7 @@
 import React from "react"
 import styled from "styled-components"
 import { Typography, Tooltip } from "@equinor/eds-core-react"
+import { useParams } from "react-router-dom"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import { useAppContext } from "../../../../Context/AppContext"
 import HistoryButton from "../../../Buttons/HistoryButton"
@@ -40,7 +41,8 @@ const NextValue = styled(Typography)`
 `
 
 const CurrentCaseEditHistory: React.FC = () => {
-    const { projectCase, caseEditsBelongingToCurrentCase } = useCaseContext()
+    const { caseEditsBelongingToCurrentCase } = useCaseContext()
+    const { caseId } = useParams()
 
     const { sidebarOpen } = useAppContext()
 
@@ -54,7 +56,7 @@ const CurrentCaseEditHistory: React.FC = () => {
                 </Tooltip>
             )}
             <Content>
-                {sidebarOpen && projectCase && <CaseEditHistory caseId={projectCase.id} />}
+                {sidebarOpen && caseId && <CaseEditHistory caseId={caseId} />}
                 {caseEditsBelongingToCurrentCase?.length === 0 && <NextValue>No recent edits..</NextValue>}
             </Content>
         </Container>

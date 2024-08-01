@@ -19,7 +19,7 @@ import { useCaseContext } from "../../../../Context/CaseContext"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
 import { ITimeSeriesData } from "../../../../Models/Interfaces"
 
-const CaseCO2Tab = () => {
+const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
     const { caseId } = useParams()
     const queryClient = useQueryClient()
@@ -48,6 +48,7 @@ const CaseCO2Tab = () => {
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+    const [timeSeriesData, setTimeSeriesData] = useState<ITimeSeriesData[]>([])
 
     const co2GridRef = useRef<any>(null)
 
@@ -113,43 +114,35 @@ const CaseCO2Tab = () => {
         })()
     }, [activeTabCase])
 
-    const datePickerValue = (() => {
-        if (project?.physicalUnit === 0) {
-            return "SI"
-        } if (project?.physicalUnit === 1) {
-            return "Oil field"
-        }
-        return ""
-    })()
-
-    if (!caseData || !drainageStrategyData || !topsideData) { return null }
-
-    const timeSeriesData: ITimeSeriesData[] = [
-        {
-            profileName: "Annual CO2 emissions",
-            unit: `${project?.physicalUnit === 0 ? "MTPA" : "MTPA"}`,
-            profile: co2EmissionsData,
-            overridable: true,
-            editable: true,
-            overrideProfile: co2EmissionsOverrideData,
-            resourceName: "co2EmissionsOverride",
-            resourceId: drainageStrategyData.id,
-            resourceProfileId: co2EmissionsOverrideData?.id,
-            resourcePropertyKey: "co2EmissionsOverride",
-        },
-        {
-            profileName: "Year-by-year CO2 intensity",
-            unit: `${project?.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
-            profile: co2Intensity,
-            total: co2IntensityTotal?.toString(),
-            overridable: false,
-            editable: false,
-            resourceName: "co2Intensity",
-            resourceId: drainageStrategyData.id,
-            resourceProfileId: co2Intensity?.id,
-            resourcePropertyKey: "co2Intensity",
-        },
-    ]
+    useEffect(() => {
+        const newTimeSeriesData: ITimeSeriesData[] = [
+            {
+                profileName: "Annual CO2 emissions",
+                unit: `${project?.physicalUnit === 0 ? "MTPA" : "MTPA"}`,
+                profile: co2EmissionsData,
+                overridable: true,
+                editable: true,
+                overrideProfile: co2EmissionsOverrideData,
+                resourceName: "co2EmissionsOverride",
+                resourceId: drainageStrategyData?.id,
+                resourceProfileId: co2EmissionsOverrideData?.id,
+                resourcePropertyKey: "co2EmissionsOverride",
+            },
+            {
+                profileName: "Year-by-year CO2 intensity",
+                unit: `${project?.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
+                profile: co2Intensity,
+                total: co2IntensityTotal?.toString(),
+                overridable: false,
+                editable: false,
+                resourceName: "co2Intensity",
+                resourceId: drainageStrategyData?.id,
+                resourceProfileId: co2Intensity?.id,
+                resourcePropertyKey: "co2Intensity",
+            },
+        ]
+        setTimeSeriesData(newTimeSeriesData)
+    }, [apiData])
 
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
@@ -180,6 +173,15 @@ const CaseCO2Tab = () => {
         return dataArray
     }
 
+    const datePickerValue = (() => {
+        if (project?.physicalUnit === 0) {
+            return "SI"
+        } if (project?.physicalUnit === 1) {
+            return "Oil field"
+        }
+        return ""
+    })()
+
     const co2EmissionsTotalString = () => {
         if (co2EmissionsData) {
             return (Math.round(co2EmissionsData.sum! * 10) / 10).toString()
@@ -206,11 +208,13 @@ const CaseCO2Tab = () => {
             </Grid>
             <Grid item xs={12}>
                 <SwitchableNumberInput
+                    addEdit={addEdit}
                     resourceName="topside"
                     resourcePropertyKey="fuelConsumption"
                     resourceId={topsideData.id}
                     label="Fuel consumption"
                     value={topsideData.fuelConsumption}
+                    previousResourceObject={topsideData}
                     integer={false}
                     unit="million Sm³ gas/sd"
                 />
@@ -258,12 +262,11 @@ const CaseCO2Tab = () => {
                 endYear={endYear}
                 setStartYear={setStartYear}
                 setEndYear={setEndYear}
-                labelText="Units"
-                labelValue={datePickerValue}
                 handleTableYearsClick={handleTableYearsClick}
             />
             <Grid item xs={12}>
                 <CaseTabTable
+                    addEdit={addEdit}
                     timeSeriesData={timeSeriesData}
                     dg4Year={caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030}
                     tableYears={tableYears}

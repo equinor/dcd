@@ -16,7 +16,7 @@ public class Image
     public string? Description { get; set; }
 
     [ForeignKey("Case")]
-    public Guid CaseId { get; set; }
+    public Guid? CaseId { get; set; }
 
     [Required]
     public string ProjectName { get; set; } = null!;

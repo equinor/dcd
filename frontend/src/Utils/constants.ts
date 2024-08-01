@@ -57,3 +57,29 @@ export const PROJECT_CLASSIFICATION: { [key: number]: ProjectClassification } = 
         warn: true,
     },
 }
+
+export const tabNames = [
+    "Description",
+    "Production Profiles",
+    "Schedule",
+    "Drilling Schedule",
+    "Facilities",
+    "Cost",
+    "CO2 Emissions",
+    "Summary",
+]
+
+export const productionOverrideResources = [
+    "productionProfileOil",
+    "productionProfileGas",
+    "productionProfileWater",
+    "productionProfileWaterInjection",
+]
+
+export const totalStudyCostOverrideResources = [
+    "surfCostOverride",
+    "topsideCostOverride",
+    "transportCostOverride",
+    "substructureCostOverride",
+    "case",
+]

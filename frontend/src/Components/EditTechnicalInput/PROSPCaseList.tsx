@@ -165,8 +165,8 @@ const PROSPCaseList = ({
 
     const sharePointFileDropdownOptions = (items: DriveItem[]) => {
         const options: JSX.Element[] = []
-        items?.forEach((item) => {
-            options.push((<option key={item.id} value={item.id!}>{item.name}</option>))
+        items?.slice(1).forEach((item) => {
+            options.push(<option key={item.id} value={item.id!}>{item.name}</option>)
         })
         return options
     }
@@ -203,7 +203,7 @@ const PROSPCaseList = ({
 
     const handleFileChange = (event: ChangeEvent<HTMLSelectElement>, p: any) => {
         const value = { ...p.value }
-        value[1] = event.currentTarget.selectedOptions[0].value
+        value[1] = event.currentTarget.selectedOptions[0].value || ""
         updateFileLink(p.node?.data.id, value[1])
         const rowNode = gridRef.current?.getRowNode(p.node?.data.id)
         if (value[1] === rowNode.data.sharePointFileId) {
@@ -216,8 +216,9 @@ const PROSPCaseList = ({
     }
 
     const fileSelectorRenderer = (p: any) => {
-        const fileId = p.value[1]
-        const items: DriveItem[] = p.value[0]
+        const fileId = p.value[1] || ""
+        const items: DriveItem[] = p.value[0] || []
+
         return (
             <NativeSelect
                 id="sharePointFile"
@@ -251,7 +252,7 @@ const PROSPCaseList = ({
     const [columnDefs, setColumnDefs] = useState([
         {
             field: "name",
-            flex: 3,
+            flex: 2,
             headerCheckboxSelection: true,
             checkboxSelection: true,
             showDisabledCheckboxes: true,
@@ -261,13 +262,13 @@ const PROSPCaseList = ({
             headerName: "SharePoint file",
             cellRenderer: fileSelectorRenderer,
             sortable: false,
-            flex: 5,
+            flex: 3,
         },
         {
             field: "fileLink",
             headerName: "Link",
             cellRenderer: fileLinkRenderer,
-            width: 60,
+            flex: 1,
         },
         {
             field: "surfState",

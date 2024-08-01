@@ -15,9 +15,8 @@ import { AgGridReact } from "@ag-grid-community/react"
 import { more_vertical } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
-import { casePath, productionStrategyOverviewToString } from "../../../Utils/common"
+import { casePath, productionStrategyOverviewToString, cellStyleRightAlign } from "../../../Utils/common"
 import { useProjectContext } from "../../../Context/ProjectContext"
-import { useCaseContext } from "../../../Context/CaseContext"
 import { ReferenceCaseIcon } from "../Components/ReferenceCaseIcon"
 
 const AgTableContainer = styled.div`
@@ -57,7 +56,6 @@ const CasesAgGridTable = ({
 }: CasesAgGridTableProps): JSX.Element => {
     const gridRef = useRef<AgGridReact>(null)
     const { project } = useProjectContext()
-    const { setProjectCase } = useCaseContext()
     const [rowData, setRowData] = useState<TableCase[]>()
     const { currentContext } = useModuleCurrentContext()
     const navigate = useNavigate()
@@ -94,8 +92,6 @@ const CasesAgGridTable = ({
 
     const selectCase = (p: any) => {
         if (!currentContext || !p.node.data) { return null }
-        const caseResult = project.cases.find((o) => o.id === p.node.data.id)
-        setProjectCase(caseResult)
         navigate(casePath(currentContext.id, p.node.data.id))
         return null
     }
@@ -130,16 +126,19 @@ const CasesAgGridTable = ({
             field: "producerCount",
             headerName: "Producers",
             width: 130,
+            cellStyle: cellStyleRightAlign,
         },
         {
             field: "gasInjectorCount",
             headerName: "Gas injectors",
             width: 155,
+            cellStyle: cellStyleRightAlign,
         },
         {
             field: "waterInjectorCount",
             headerName: "Water injectors",
             width: 170,
+            cellStyle: cellStyleRightAlign,
         },
         {
             field: "createdAt",

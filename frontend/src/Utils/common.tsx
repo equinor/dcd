@@ -209,6 +209,22 @@ export function formatDate(isoDateString: string): string {
     return new Intl.DateTimeFormat("no-NO", options).format(date)
 }
 
+export const formatDateAndTime = (dateString: string | undefined | null) => {
+    if (!dateString) { return "" }
+    const date = new Date(dateString)
+    const options: Intl.DateTimeFormatOptions = {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+    }
+    return new Intl.DateTimeFormat("en-GB", options)
+        .format(date)
+        .replace(",", "")
+}
+
 export const isWithinRange = (number: number, max: number, min: number) => number >= max && number <= min
 
 export const preventNonDigitInput = (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -232,24 +248,44 @@ export function updateObject<T>(object: T | undefined, setObject: Dispatch<SetSt
     newObject[key] = value
     setObject(newObject)
 }
+/**
+ * Determines if a table cell is editable based on the provided parameters and edit mode.
+ *
+ * @param params The parameters of the table cell.
+ * @param editMode A boolean indicating if the table is in edit mode.
+ * @returns A boolean indicating if the cell is editable.
+ * */
+export const tableCellisEditable = (params: any, editMode: boolean): boolean => {
+    if (!params || !params.node || !params.data) {
+        return false
+    }
 
-export const tableCellisEditable = (params: any, editMode: boolean) => {
-    if (!params.node.footer && params.data.overridable) {
+    if (params.node.footer) {
+        return false
+    }
+
+    if (params.data.overridable) {
         return editMode && params.data.override
     }
-    return editMode && !params.node.footer && params.data.editable
+
+    return editMode && params.data.editable
 }
 
-export const numberValueParser = (params: { newValue: any }) => {
-    const { newValue } = params
-    if (typeof newValue === "string" && newValue !== "") {
-        const processedValue = newValue.replace(/\s/g, "").replace(/,/g, ".")
-        const numberValue = Number(processedValue)
-        if (!Number.isNaN(numberValue)) {
-            return numberValue
-        }
+export const numberValueParser = (setSnackBarMessage: Dispatch<SetStateAction<string | undefined>>, params: { newValue: any, oldValue: any }) => {
+    const { oldValue, newValue } = params
+    const valueWithOnlyNumbersCommasAndDots = newValue.toString().replace(/[^0-9.,]/g, "")
+    const allCommasTurnedToDots = valueWithOnlyNumbersCommasAndDots.replace(/,/g, ".")
+
+    if ((allCommasTurnedToDots.match(/\./g) || []).length > 1) {
+        setSnackBarMessage("Only one decimal point is allowed. The entry was reset.")
+        return oldValue
     }
-    return newValue
+
+    if (valueWithOnlyNumbersCommasAndDots !== newValue) {
+        setSnackBarMessage("Only numbers, commas and dots are allowed. Invalid characters have been removed.")
+    }
+
+    return allCommasTurnedToDots
 }
 
 export const getCaseRowStyle = (params: any) => {
@@ -258,6 +294,8 @@ export const getCaseRowStyle = (params: any) => {
     }
     return undefined
 }
+
+export const cellStyleRightAlign = { textAlign: "right" }
 
 export const validateInput = (params: any, editMode: boolean) => {
     const { value, data } = params
@@ -297,19 +335,68 @@ export const formatTime = (timestamp: number): string => {
     return `${formattedHours}:${formattedMinutes}`
 }
 
-export const getCurrentEditId = (editIndexes: EditEntry[], projectCase: Components.Schemas.CaseDto | undefined): string | undefined => {
-    const currentCaseEditId = editIndexes.find((entry: EditEntry) => entry.caseId === projectCase?.id && entry.currentEditId)
+export const getCurrentEditId = (editIndexes: EditEntry[], caseId: string | undefined): string | undefined => {
+    const currentCaseEditId = editIndexes.find((entry: EditEntry) => entry.caseId === caseId && entry.currentEditId)
     return (currentCaseEditId as unknown as EditEntry)?.currentEditId
 }
 
 export const formatColumnSum = (params: { values: any[] }) => {
     let sum = 0
     params.values.forEach((value: any) => {
-        if (!Number(value)) {
-            sum += 0
-        } else {
-            sum += value
+        if (!Number.isNaN(parseFloat(value)) && Number.isFinite(value)) {
+            sum += Number(value)
         }
     })
     return sum > 0 ? parseFloat(sum.toFixed(10)) : ""
+}
+
+export const extractTableTimeSeriesValues = (data: any) => {
+    const tableTimeSeriesValues: { year: number, value: number }[] = []
+
+    Object.keys(data).forEach((prop) => {
+        const value = data[prop]
+
+        if (
+            isInteger(prop)
+            && value !== ""
+            && value !== null
+            && !Number.isNaN(Number(value.toString().replace(/,/g, ".")))
+        ) {
+            tableTimeSeriesValues.push({
+                year: parseInt(prop, 10),
+                value: Number(value.toString().replace(/,/g, ".")),
+            })
+        }
+    })
+
+    return tableTimeSeriesValues.sort((a, b) => a.year - b.year)
+}
+
+export const generateProfile = (
+    tableTimeSeriesValues: { year: number, value: number }[],
+    profile: any,
+    startYear: number,
+    firstYear: number,
+    lastYear: number,
+) => {
+    const values: number[] = []
+
+    if (tableTimeSeriesValues.length === 0) {
+        return {
+            ...profile,
+            startYear,
+            values: [],
+        }
+    }
+
+    for (let year = firstYear; year <= lastYear; year += 1) {
+        const tableTimeSeriesValue = tableTimeSeriesValues.find((v) => v.year === year)
+        values.push(tableTimeSeriesValue ? tableTimeSeriesValue.value : 0)
+    }
+
+    return {
+        ...profile,
+        startYear,
+        values,
+    }
 }

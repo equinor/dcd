@@ -28,6 +28,9 @@ interface ModalContextType {
     setWellProject: React.Dispatch<React.SetStateAction<Components.Schemas.WellProjectWithProfilesDto | undefined>>,
     exploration: Components.Schemas.ExplorationWithProfilesDto | undefined;
     setExploration: React.Dispatch<React.SetStateAction<Components.Schemas.ExplorationWithProfilesDto | undefined>>,
+
+    featuresModalIsOpen: boolean;
+    setFeaturesModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined)
@@ -59,6 +62,7 @@ const ModalContextProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     const [editTechnicalInput, setEditTechnicalInput] = useState<boolean | undefined>(undefined)
     const [wellProject, setWellProject] = useState<Components.Schemas.WellProjectWithProfilesDto | undefined>(undefined)
     const [exploration, setExploration] = useState<Components.Schemas.ExplorationWithProfilesDto | undefined>(undefined)
+    const [featuresModalIsOpen, setFeaturesModalIsOpen] = useState<boolean>(false)
 
     const value = useMemo(() => ({
         caseModalIsOpen,
@@ -80,6 +84,9 @@ const ModalContextProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         setWellProject,
         exploration,
         setExploration,
+
+        featuresModalIsOpen,
+        setFeaturesModalIsOpen,
     }), [
         caseModalIsOpen,
         setCaseModalIsOpen,
@@ -100,6 +107,9 @@ const ModalContextProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         setWellProject,
         exploration,
         setExploration,
+
+        featuresModalIsOpen,
+        setFeaturesModalIsOpen,
     ])
 
     useEffect(() => {

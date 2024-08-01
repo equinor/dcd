@@ -19,14 +19,14 @@ interface CaseDropMenuProps {
     isMenuOpen: boolean
     setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
     menuAnchorEl: HTMLElement | null
-    projectCase: any
+    caseId: string
 }
 
 const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     isMenuOpen,
     setIsMenuOpen,
     menuAnchorEl,
-    projectCase,
+    caseId,
 }) => {
     const navigate = useNavigate()
     const {
@@ -38,9 +38,9 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     const [confirmDelete, setConfirmDelete] = useState(false)
 
     const deleteAndGoToProject = async () => {
-        if (!projectCase || !project) { return }
+        if (!caseId || !project) { return }
 
-        if (await deleteCase(projectCase?.id, project, setProject)) {
+        if (await deleteCase(caseId, project, setProject)) {
             if (project.fusionProjectId) { navigate(`/${project.fusionProjectId}`) }
         }
     }
@@ -76,7 +76,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                         Add New Case
                     </Typography>
                 </Menu.Item>
-                <Menu.Item onClick={() => project && duplicateCase(projectCase?.id, project, setProject)}>
+                <Menu.Item onClick={() => project && duplicateCase(caseId, project, setProject)}>
                     <Icon data={library_add} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
                         Duplicate
@@ -88,10 +88,10 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                         Delete
                     </Typography>
                 </Menu.Item>
-                {project?.referenceCaseId === projectCase?.id
+                {project?.referenceCaseId === caseId
                     ? (
                         <Menu.Item
-                            onClick={() => project && setCaseAsReference(projectCase?.id, project, setProject)}
+                            onClick={() => project && setCaseAsReference(caseId, project, setProject)}
                         >
                             <Icon data={bookmark_outlined} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">
@@ -101,7 +101,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                     )
                     : (
                         <Menu.Item
-                            onClick={() => project && setCaseAsReference(projectCase?.id, project, setProject)}
+                            onClick={() => project && setCaseAsReference(caseId, project, setProject)}
                         >
                             <Icon data={bookmark_filled} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">
