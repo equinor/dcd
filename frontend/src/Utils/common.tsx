@@ -271,15 +271,21 @@ export const tableCellisEditable = (params: any, editMode: boolean): boolean => 
     return editMode && params.data.editable
 }
 
-export const numberValueParser = (setSnackBarMessage: Dispatch<SetStateAction<string | undefined>>, params: { newValue: any }) => {
-    const { newValue } = params
+export const numberValueParser = (setSnackBarMessage: Dispatch<SetStateAction<string | undefined>>, params: { newValue: any, oldValue: any }) => {
+    const { oldValue, newValue } = params
     const valueWithOnlyNumbersCommasAndDots = newValue.toString().replace(/[^0-9.,]/g, "")
+    const allCommasTurnedToDots = valueWithOnlyNumbersCommasAndDots.replace(/,/g, ".")
+
+    if ((allCommasTurnedToDots.match(/\./g) || []).length > 1) {
+        setSnackBarMessage("Only one decimal point is allowed. The entry was reset.")
+        return oldValue
+    }
 
     if (valueWithOnlyNumbersCommasAndDots !== newValue) {
         setSnackBarMessage("Only numbers, commas and dots are allowed. Invalid characters have been removed.")
     }
 
-    return valueWithOnlyNumbersCommasAndDots
+    return allCommasTurnedToDots
 }
 
 export const getCaseRowStyle = (params: any) => {
