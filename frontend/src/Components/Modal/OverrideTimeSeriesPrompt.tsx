@@ -11,6 +11,7 @@ type Props = {
     isOpen: boolean
     setIsOpen: Dispatch<SetStateAction<boolean>>
     profileName: ProfileNames | undefined;
+    setProfile: Dispatch<SetStateAction<any>> | undefined
     profile: any
 }
 
@@ -18,6 +19,7 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
     isOpen,
     setIsOpen,
     profileName,
+    setProfile,
     profile,
 }) => {
     const { addEdit } = useDataEdits()
@@ -29,20 +31,17 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
         setIsOpen(!isOpen)
     }
     const toggleLock = () => {
-        const newResourceObject = structuredClone(profile)
-        newResourceObject.override = !profile.override
         if (profile !== undefined) {
             addEdit({
-                newDisplayValue: (!profile.override).toString(),
-                previousDisplayValue: profile.override.toString(),
+                newValue: (!profile.override).toString(),
+                previousValue: profile.override.toString(),
                 inputLabel: profileName,
                 projectId: project.id,
                 resourceName: profile.resourceName,
                 resourcePropertyKey: "override",
                 caseId,
                 resourceId: profile.resourceId,
-                newResourceObject,
-                previousResourceObject: profile,
+                newResourceObject: { ...profile, override: !profile.override },
                 resourceProfileId: profile.id,
             })
         }

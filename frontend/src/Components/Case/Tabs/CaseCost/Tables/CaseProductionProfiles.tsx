@@ -8,11 +8,10 @@ interface CaseProductionProfilesProps {
     apiData: Components.Schemas.CaseWithAssetsDto,
     tableYears: [number, number],
     alignedGridsRef: any,
-    addEdit: any,
 }
 
 const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
-    apiData, tableYears, alignedGridsRef, addEdit,
+    apiData, tableYears, alignedGridsRef,
 }) => {
     const { project } = useProjectContext()
     const { isCalculatingProductionOverrides } = useAppContext()
@@ -158,7 +157,6 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             gridRef={alignedGridsRef}
             calculatedFields={calculatedFields}
             ongoingCalculation={isCalculatingProductionOverrides}
-            addEdit={addEdit}
         />
     )
 }

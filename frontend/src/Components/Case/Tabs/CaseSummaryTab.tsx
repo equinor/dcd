@@ -24,7 +24,7 @@ interface ITimeSeriesData {
     overridable?: boolean
 }
 
-const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
+const CaseSummaryTab = (): React.ReactElement | null => {
     const { activeTabCase } = useCaseContext()
     const { project } = useProjectContext()
     const { caseId } = useParams()
@@ -260,12 +260,10 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="npv"
                     label="NPV before tax"
                     value={caseData.npv}
-                    previousResourceObject={caseData}
                     integer={false}
                     allowNegative
                     min={0}
@@ -274,10 +272,8 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid item xs={12} md={6}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="breakEven"
-                    previousResourceObject={caseData}
                     label="B/E before tax"
                     value={caseData.breakEven}
                     integer={false}

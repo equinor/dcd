@@ -13,10 +13,12 @@ import {
 import { useAppContext } from "../../../Context/AppContext"
 import SwitchableDateInput from "../../Input/SwitchableDateInput"
 import { ResourceObject, ResourcePropertyKey } from "../../../Models/Interfaces"
+import useDataEdits from "../../../Hooks/useDataEdits"
 import { useProjectContext } from "../../../Context/ProjectContext"
 
-const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
+const CaseScheduleTab = () => {
     const { project } = useProjectContext()
+    const { addEdit } = useDataEdits()
     const { caseId, tab } = useParams()
     const queryClient = useQueryClient()
     const { editMode } = useAppContext()
@@ -120,13 +122,6 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
         return newCaseObject
     }
 
-    const getNewCaseObject = (dateKey: string, newDate: Date): ResourceObject => {
-        const newCaseObject = caseData as Components.Schemas.CaseDto
-        newCaseObject[dateKey as keyof typeof newCaseObject] = newDate.toISOString() as never // workaround for TS error
-
-        return newCaseObject
-    }
-
     function handleDateChange(dateKey: string, dateValue: string) {
         const caseDataCopy: any = { ...caseData }
 
@@ -135,9 +130,11 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
         const newDate = Number.isNaN(new Date(dateValue).getTime())
             ? defaultDate()
             : new Date(dateValue)
-        const dg0Object = dateKey === "dG0Date" && getDGOChangesObject(newDate)
+        const dg0Object = dateKey === "dG0Date" ? getDGOChangesObject(newDate) : undefined
 
         addEdit({
+            newValue: newDate.toISOString(),
+            previousValue: caseDataCopy[dateKey],
             inputLabel: dateKey,
             projectId: caseData.projectId,
             resourceName: "case",
@@ -145,7 +142,7 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
             caseId: caseData.id,
             newDisplayValue: formatDate(newDate.toISOString()),
             previousDisplayValue: formatDate(caseDataCopy[dateKey]),
-            newResourceObject: dg0Object || getNewCaseObject(dateKey, newDate),
+            newResourceObject: dg0Object,
             previousResourceObject: dg0Object && caseDataCopy,
             tabName: tab,
         })
@@ -217,7 +214,7 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
                                     value={getDateValue(caseDate.key)}
                                     resourcePropertyKey={caseDate.key as ResourcePropertyKey}
                                     label={caseDate.label}
-                                    onChange={(e) => handleDateChange(caseDate.key as ResourcePropertyKey, e.target.value)}
+                                    onChange={(e) => handleDateChange(caseDate.key, e.target.value)}
                                     min={
                                         (caseDate.min && caseData)
                                             ? findMinDate(getDatesFromStrings(caseDate.min.map((minDate) => caseData[minDate as keyof typeof caseData])))

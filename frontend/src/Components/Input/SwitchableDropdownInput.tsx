@@ -2,18 +2,18 @@ import React, { ChangeEventHandler } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
 import InputSwitcher from "./Components/InputSwitcher"
+import useDataEdits from "../../Hooks/useDataEdits"
 import { useProjectContext } from "../../Context/ProjectContext"
-import { ResourcePropertyKey, ResourceName, ResourceObject } from "../../Models/Interfaces"
+import { ResourcePropertyKey, ResourceName } from "../../Models/Interfaces"
 
 interface SwitchableDropdownInputProps {
     value: string | number;
     options: { [key: string]: string };
     resourceName: ResourceName;
     resourcePropertyKey: ResourcePropertyKey;
-    previousResourceObject: ResourceObject
     resourceId?: string;
     label: string;
-    addEdit: any;
+    onSubmit?: ChangeEventHandler<HTMLSelectElement>
 }
 
 const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
@@ -21,23 +21,21 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
     options,
     resourceName,
     resourcePropertyKey,
-    previousResourceObject,
     resourceId,
     label,
-    addEdit,
+    onSubmit,
 }: SwitchableDropdownInputProps) => {
     const { project } = useProjectContext()
+    const { addEdit } = useDataEdits()
     const { caseId, tab } = useParams()
 
     const addToEditsAndSubmit: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if (!caseId || !project) { return }
-
-        const newResourceObject: any = structuredClone(previousResourceObject)
-        newResourceObject[resourcePropertyKey] = Number(e.currentTarget.value)
+        if (onSubmit) { onSubmit(e) }
 
         addEdit({
-            newResourceObject,
-            previousResourceObject,
+            newValue: Number(e.currentTarget.value),
+            previousValue: value,
             inputLabel: label,
             projectId: project.id,
             resourceName,

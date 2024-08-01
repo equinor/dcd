@@ -9,7 +9,6 @@ interface CessationCostsProps {
     studyGridRef: React.MutableRefObject<any>;
     alignedGridsRef: any[];
     apiData: Components.Schemas.CaseWithAssetsDto;
-    addEdit: any;
 }
 
 const TotalStudyCosts: React.FC<CessationCostsProps> = ({
@@ -17,7 +16,6 @@ const TotalStudyCosts: React.FC<CessationCostsProps> = ({
     studyGridRef,
     alignedGridsRef,
     apiData,
-    addEdit,
 }) => {
     const { project } = useProjectContext()
     const { isCalculatingTotalStudyCostOverrides } = useAppContext()
@@ -89,7 +87,6 @@ const TotalStudyCosts: React.FC<CessationCostsProps> = ({
             totalRowName="Total"
             ongoingCalculation={isCalculatingTotalStudyCostOverrides}
             calculatedFields={calculatedFields}
-            addEdit={addEdit}
         />
     )
 }

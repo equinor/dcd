@@ -13,7 +13,6 @@ interface HeaderProps {
     setTableYears: (years: [number, number]) => void;
     caseData: Components.Schemas.CaseDto;
     surfData: Components.Schemas.SurfWithProfilesDto
-    addEdit: any
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -24,7 +23,6 @@ const Header: React.FC<HeaderProps> = ({
     setTableYears,
     caseData,
     surfData,
-    addEdit,
 }) => {
     const { project } = useProjectContext()
     const projectId = project?.id || null
@@ -51,20 +49,17 @@ const Header: React.FC<HeaderProps> = ({
             <Grid item xs={12} md={4}>
                 <CapexFactorFeasibilityStudies
                     caseData={caseData}
-                    addEdit={addEdit}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
                 <CapexFactorFeedStudies
                     caseData={caseData}
-                    addEdit={addEdit}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
                 <Maturity
                     surfData={surfData}
                     projectId={projectId}
-                    addEdit={addEdit}
                 />
             </Grid>
             <DateRangePicker

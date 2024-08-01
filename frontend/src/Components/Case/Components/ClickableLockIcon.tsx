@@ -2,17 +2,17 @@ import React from "react"
 import { lock, lock_open } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
+import useDataEdits from "../../../Hooks/useDataEdits"
 import { useProjectContext } from "../../../Context/ProjectContext"
 
 interface LockIconProps {
     clickedElement: any
-    addEdit: any
 }
 
 const LockIcon: React.FC<LockIconProps> = ({
     clickedElement,
-    addEdit,
 }) => {
+    const { addEdit } = useDataEdits()
     const { project } = useProjectContext()
     const { caseId } = useParams()
 
@@ -26,18 +26,16 @@ const LockIcon: React.FC<LockIconProps> = ({
                 editable: params.data.editable,
             }
 
-            const newResourceObject = structuredClone(profile)
-            newResourceObject.override = !profile.override
-
             addEdit({
+                newValue: (!profile.override).toString(),
+                previousValue: profile.override.toString(),
                 inputLabel: params.data.profileName,
                 projectId: project.id,
                 resourceName: profile.resourceName,
                 resourcePropertyKey: "override",
                 caseId,
                 resourceId: profile.resourceId,
-                newResourceObject,
-                previousResourceObject: profile,
+                newResourceObject: { ...profile, override: !profile.override },
                 resourceProfileId: profile.id,
             })
 

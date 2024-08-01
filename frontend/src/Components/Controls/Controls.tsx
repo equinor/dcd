@@ -4,6 +4,7 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import {
     Icon,
     Button,
+    Progress,
     Typography,
 } from "@equinor/eds-core-react"
 import {

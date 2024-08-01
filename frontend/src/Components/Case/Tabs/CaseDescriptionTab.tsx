@@ -10,11 +10,13 @@ import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import Gallery from "../../Gallery/Gallery"
 import { useAppContext } from "../../../Context/AppContext"
 import { useProjectContext } from "../../../Context/ProjectContext"
+import useDataEdits from "../../../Hooks/useDataEdits"
 import CaseDescriptionTabSkeleton from "./LoadingSkeletons/CaseDescriptionTabSkeleton"
 
-const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
+const CaseDescriptionTab = () => {
     const { project } = useProjectContext()
     const { editMode } = useAppContext()
+    const { addEdit } = useDataEdits()
     const { caseId, tab } = useParams()
     const queryClient = useQueryClient()
     const projectId = project?.id || null
@@ -60,15 +62,10 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
     const handleBlur = (e: any) => {
         // eslint-disable-next-line no-underscore-dangle
         const newValue = e.target._value
-        const previousResourceObject = structuredClone(caseData)
-        const newResourceObject = structuredClone(caseData)
-        newResourceObject.description = newValue
 
         addEdit({
-            newDisplayValue: newValue,
-            previousDisplayValue: caseData.description,
-            previousResourceObject,
-            newResourceObject,
+            newValue,
+            previousValue: caseData.description,
             inputLabel: "Description",
             projectId,
             resourceName: "case",
@@ -116,12 +113,10 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="producerCount"
                     label="Production wells"
                     value={caseData.producerCount ?? 0}
-                    previousResourceObject={caseData}
                     integer
                     min={0}
                     max={100000}
@@ -130,12 +125,10 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="waterInjectorCount"
                     label="Water injector wells"
                     value={caseData.waterInjectorCount ?? 0}
-                    previousResourceObject={caseData}
                     integer
                     disabled={false}
                     min={0}
@@ -145,12 +138,10 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="gasInjectorCount"
                     label="Gas injector wells"
                     value={caseData.gasInjectorCount ?? 0}
-                    previousResourceObject={caseData}
                     integer
                     min={0}
                     max={100000}
@@ -159,36 +150,30 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableDropdownInput
-                    addEdit={addEdit}
                     value={caseData.productionStrategyOverview ?? 0}
                     resourceName="case"
                     resourcePropertyKey="productionStrategyOverview"
                     options={productionStrategyOptions}
-                    previousResourceObject={caseData}
                     label="Production strategy overview"
                     resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableDropdownInput
-                    addEdit={addEdit}
                     value={caseData.artificialLift ?? 0}
                     resourceName="case"
                     resourcePropertyKey="artificialLift"
                     options={artificialLiftOptions}
-                    previousResourceObject={caseData}
                     label="Artificial lift"
                     resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
                 <SwitchableNumberInput
-                    addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="facilitiesAvailability"
                     label="Facilities availability"
                     value={caseData.facilitiesAvailability ?? 0}
-                    previousResourceObject={caseData}
                     integer={false}
                     unit="%"
                     min={0}
