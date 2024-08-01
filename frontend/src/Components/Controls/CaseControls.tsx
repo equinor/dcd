@@ -271,7 +271,7 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
                 newDisplayValue: name,
                 newResourceObject,
                 previousResourceObject,
-                inputLabel: "Name",
+                inputLabel: "caseName",
                 projectId,
                 resourceName: "case",
                 resourcePropertyKey: "name",
@@ -313,6 +313,7 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
                             handleReferenceCaseChange={() => handleReferenceCaseChange(caseId)}
                         />
                         <Input
+                            id="caseName"
                             ref={nameInputRef}
                             type="text"
                             value={caseName}
