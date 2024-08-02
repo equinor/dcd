@@ -1,6 +1,7 @@
 import {
     useState,
     useRef,
+    useEffect,
 } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
@@ -15,6 +16,7 @@ import DateRangePicker from "../../Input/TableDateRangePicker"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import CaseProductionProfilesTabSkeleton from "./LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
+import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 
 const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     const queryClient = useQueryClient()
@@ -26,7 +28,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
-
+    const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
     const productionStrategyOptions = {
         0: "Depletion",
         1: "Water injection",
@@ -41,15 +43,6 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
         2: "Electrical submerged pumps",
         3: "Subsea booster pumps",
     }
-
-    const datePickerValue = (() => {
-        if (project?.physicalUnit === 1) {
-            return "Oil field"
-        } if (project?.physicalUnit === 0) {
-            return "SI"
-        }
-        return ""
-    })()
 
     const gridRef = useRef<any>(null)
 
@@ -72,10 +65,48 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     const gasProductionData = apiData?.productionProfileGas
     const waterProductionData = apiData?.productionProfileWater
     const waterInjectionData = apiData?.productionProfileWaterInjection
+    const fuelFlaringAndLossesData = apiData?.fuelFlaringAndLosses
+    const fuelFlaringAndLossesOverrideData = apiData?.fuelFlaringAndLossesOverride
+    const netSalesGasData = apiData?.netSalesGas
+    const netSalesGasOverrideData = apiData?.netSalesGasOverride
+    const importedElectricityData = apiData?.importedElectricity
+    const importedElectricityOverrideData = apiData?.importedElectricityOverride
+    const deferredOilData = apiData?.deferredOilProduction
+    const deferredGasData = apiData?.deferredGasProduction
     const caseData = apiData?.case
 
-    if (!caseData || !drainageStrategyData || activeTabCase !== 1) { return null }
+    useEffect(() => {
+        if (apiData && activeTabCase === 1 && !yearRangeSetFromProfiles) {
+            SetTableYearsFromProfiles(
+                [
+                    drainageStrategyData,
+                    oilProductionData,
+                    gasProductionData,
+                    waterProductionData,
+                    waterInjectionData,
+                    fuelFlaringAndLossesData,
+                    fuelFlaringAndLossesOverrideData,
+                    netSalesGasData,
+                    netSalesGasOverrideData,
+                    importedElectricityData,
+                    importedElectricityOverrideData,
+                    deferredOilData,
+                    deferredGasData,
+                ],
+                caseData?.dG4Date ? new Date(caseData.dG4Date).getFullYear() : endYear,
+                setStartYear,
+                setEndYear,
+                setTableYears,
+            )
+            setYearRangeSetFromProfiles(true)
+        }
+    }, [apiData, activeTabCase])
 
+    if (activeTabCase !== 1) { return null }
+
+    if (!caseData || !drainageStrategyData || !projectId) {
+        return (<CaseProductionProfilesTabSkeleton />)
+    }
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
     }
@@ -105,10 +136,6 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
             })
         }
         return dataArray
-    }
-
-    if (!caseData || !drainageStrategyData || !projectId) {
-        return (<CaseProductionProfilesTabSkeleton />)
     }
 
     return (

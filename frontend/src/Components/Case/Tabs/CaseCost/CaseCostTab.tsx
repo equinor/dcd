@@ -21,13 +21,7 @@ import TotalStudyCosts from "./Tables/TotalStudyCosts"
 
 const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
-
     const { activeTabCase } = useCaseContext()
-
-    const {
-        wellProject,
-        exploration,
-    } = useModalContext()
     const { caseId } = useParams()
     const queryClient = useQueryClient()
     const projectId = project?.id || null
@@ -35,6 +29,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+    const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
     const studyGridRef = useRef<any>(null)
     const opexGridRef = useRef<any>(null)
@@ -61,66 +56,55 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
         },
     )
 
-    const surfData = apiData?.surf as Components.Schemas.SurfWithProfilesDto
-    const caseData = apiData?.case as Components.Schemas.CaseWithProfilesDto
-    const topside = apiData?.topside as Components.Schemas.TopsideWithProfilesDto
-    const substructure = apiData?.substructure as Components.Schemas.SubstructureWithProfilesDto
-    const transport = apiData?.transport as Components.Schemas.TransportWithProfilesDto
-    const surf = apiData?.surf as Components.Schemas.SurfWithProfilesDto
-
     useEffect(() => {
-        (async () => {
-            try {
-                if (caseData && project && topside && surf && substructure && transport && exploration && wellProject) {
-                    if (activeTabCase === 5) {
-                        SetTableYearsFromProfiles([
-                            caseData.totalFeasibilityAndConceptStudies,
-                            caseData.totalFEEDStudies,
-                            caseData.totalOtherStudiesCostProfile,
-                            caseData.wellInterventionCostProfile,
-                            caseData.offshoreFacilitiesOperationsCostProfile,
-                            caseData.cessationWellsCost,
-                            caseData.cessationOffshoreFacilitiesCost,
-                            caseData.cessationOnshoreFacilitiesCostProfile,
-                            caseData.totalFeasibilityAndConceptStudiesOverride,
-                            caseData.totalFEEDStudiesOverride,
-                            caseData.wellInterventionCostProfileOverride,
-                            caseData.offshoreFacilitiesOperationsCostProfileOverride,
-                            caseData.cessationWellsCostOverride,
-                            caseData.cessationOffshoreFacilitiesCostOverride,
-                            surf.costProfile,
-                            surf.costProfileOverride,
-                            topside.costProfile,
-                            topside.costProfileOverride,
-                            substructure.costProfile,
-                            substructure.costProfileOverride,
-                            transport.costProfileOverride,
-                            transport.costProfile,
-                            wellProject.oilProducerCostProfile,
-                            wellProject.gasProducerCostProfile,
-                            wellProject.waterInjectorCostProfile,
-                            wellProject.gasInjectorCostProfile,
-                            wellProject.oilProducerCostProfileOverride,
-                            wellProject.gasProducerCostProfileOverride,
-                            wellProject.waterInjectorCostProfileOverride,
-                            wellProject.gasInjectorCostProfileOverride,
-                            exploration.explorationWellCostProfile,
-                            exploration.seismicAcquisitionAndProcessing,
-                            exploration.countryOfficeCost,
-                            exploration?.gAndGAdminCost,
-                            exploration?.gAndGAdminCostOverride,
-                        ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
-                    }
-                }
-            } catch (error) {
-                console.error("[CaseView] Error while generating cost profile", error)
-            }
-        })()
-    }, [activeTabCase])
+        if (activeTabCase === 5 && apiData && !yearRangeSetFromProfiles) {
+            console.log("apiData", apiData)
+            const caseData = apiData?.case as Components.Schemas.CaseDto
+
+            SetTableYearsFromProfiles([
+                apiData.totalFeasibilityAndConceptStudies,
+                apiData.totalFEEDStudies,
+                apiData.totalOtherStudiesCostProfile,
+                apiData.wellInterventionCostProfile,
+                apiData.offshoreFacilitiesOperationsCostProfile,
+                apiData.cessationWellsCost,
+                apiData.cessationOffshoreFacilitiesCost,
+                apiData.cessationOnshoreFacilitiesCostProfile,
+                apiData.totalFeasibilityAndConceptStudiesOverride,
+                apiData.totalFEEDStudiesOverride,
+                apiData.wellInterventionCostProfileOverride,
+                apiData.offshoreFacilitiesOperationsCostProfileOverride,
+                apiData.cessationWellsCostOverride,
+                apiData.cessationOffshoreFacilitiesCostOverride,
+                apiData.surfCostProfile,
+                apiData.surfCostProfileOverride,
+                apiData.topsideCostProfile,
+                apiData.topsideCostProfileOverride,
+                apiData.substructureCostProfile,
+                apiData.substructureCostProfileOverride,
+                apiData.transportCostProfileOverride,
+                apiData.transportCostProfile,
+                apiData.oilProducerCostProfile,
+                apiData.gasProducerCostProfile,
+                apiData.waterInjectorCostProfile,
+                apiData.gasInjectorCostProfile,
+                apiData.oilProducerCostProfileOverride,
+                apiData.gasProducerCostProfileOverride,
+                apiData.waterInjectorCostProfileOverride,
+                apiData.gasInjectorCostProfileOverride,
+                apiData.explorationWellCostProfile,
+                apiData.seismicAcquisitionAndProcessing,
+                apiData.countryOfficeCost,
+                apiData.gAndGAdminCost,
+                apiData.gAndGAdminCostOverride,
+            ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
+            setYearRangeSetFromProfiles(true)
+        }
+    }, [activeTabCase, apiData, project])
 
     if (activeTabCase !== 5) { return null }
 
-    if (!caseData || !surfData || !apiData) {
+    if (!apiData) {
         return <p>loading....</p>
     }
 
@@ -132,8 +116,8 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 setStartYear={setStartYear}
                 setEndYear={setEndYear}
                 setTableYears={setTableYears}
-                caseData={caseData}
-                surfData={surfData}
+                caseData={apiData.case}
+                surfData={apiData.surf as Components.Schemas.SurfWithProfilesDto}
                 addEdit={addEdit}
             />
             <Grid item xs={12}>
