@@ -49,6 +49,7 @@ const CaseCO2Tab = () => {
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [timeSeriesData, setTimeSeriesData] = useState<ITimeSeriesData[]>([])
+    const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
     const co2GridRef = useRef<any>(null)
 
@@ -100,13 +101,16 @@ const CaseCO2Tab = () => {
                     setCo2IntensityTotal(Number(co2ITotal))
                     setCo2DrillingFlaringFuelTotals(co2DFFTotal)
 
-                    SetTableYearsFromProfiles(
-                        [co2EmissionsData, await co2I, co2EmissionsOverrideData?.override ? co2EmissionsOverrideData : undefined],
-                        caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030,
-                        setStartYear,
-                        setEndYear,
-                        setTableYears,
-                    )
+                    if (!yearRangeSetFromProfiles) {
+                        SetTableYearsFromProfiles(
+                            [co2EmissionsData, await co2I, co2EmissionsOverrideData?.override ? co2EmissionsOverrideData : undefined],
+                            caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030,
+                            setStartYear,
+                            setEndYear,
+                            setTableYears,
+                        )
+                        setYearRangeSetFromProfiles(true)
+                    }
                 }
             } catch (error) {
                 console.error("[CaseView] Error while generating cost profile", error)

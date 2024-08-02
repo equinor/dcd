@@ -26,6 +26,7 @@ const CaseDrillingScheduleTab = () => {
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
+    const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
     // WellProjectWell
     const [oilProducerCount, setOilProducerCount] = useState<number>(0)
@@ -57,7 +58,7 @@ const CaseDrillingScheduleTab = () => {
     const caseData = apiData?.case
 
     useEffect(() => {
-        if (activeTabCase === 3 && caseData) {
+        if (activeTabCase === 3 && caseData && !yearRangeSetFromProfiles) {
             const explorationDrillingSchedule = explorationWellsData?.map((ew) => ew.drillingSchedule) ?? []
             const wellProjectDrillingSchedule = wellProjectWellsData?.map((ew) => ew.drillingSchedule) ?? []
             SetTableYearsFromProfiles(
@@ -67,6 +68,7 @@ const CaseDrillingScheduleTab = () => {
                 setEndYear,
                 setTableYears,
             )
+            setYearRangeSetFromProfiles(true)
         }
     }, [activeTabCase])
 

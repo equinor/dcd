@@ -24,10 +24,6 @@ interface ModalContextType {
     setTechnicalModalIsOpen: React.Dispatch<React.SetStateAction<boolean | undefined>>,
     editTechnicalInput: boolean;
     setEditTechnicalInput: React.Dispatch<React.SetStateAction<boolean | undefined>>,
-    wellProject: Components.Schemas.WellProjectWithProfilesDto | undefined;
-    setWellProject: React.Dispatch<React.SetStateAction<Components.Schemas.WellProjectWithProfilesDto | undefined>>,
-    exploration: Components.Schemas.ExplorationWithProfilesDto | undefined;
-    setExploration: React.Dispatch<React.SetStateAction<Components.Schemas.ExplorationWithProfilesDto | undefined>>,
 
     featuresModalIsOpen: boolean;
     setFeaturesModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
@@ -60,8 +56,6 @@ const ModalContextProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     // Technical input modal
     const [technicalModalIsOpen, setTechnicalModalIsOpen] = useState<boolean>(false)
     const [editTechnicalInput, setEditTechnicalInput] = useState<boolean | undefined>(undefined)
-    const [wellProject, setWellProject] = useState<Components.Schemas.WellProjectWithProfilesDto | undefined>(undefined)
-    const [exploration, setExploration] = useState<Components.Schemas.ExplorationWithProfilesDto | undefined>(undefined)
     const [featuresModalIsOpen, setFeaturesModalIsOpen] = useState<boolean>(false)
 
     const value = useMemo(() => ({
@@ -80,10 +74,6 @@ const ModalContextProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         setTechnicalModalIsOpen,
         editTechnicalInput,
         setEditTechnicalInput,
-        wellProject,
-        setWellProject,
-        exploration,
-        setExploration,
 
         featuresModalIsOpen,
         setFeaturesModalIsOpen,
@@ -103,10 +93,6 @@ const ModalContextProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         setTechnicalModalIsOpen,
         editTechnicalInput,
         setEditTechnicalInput,
-        wellProject,
-        setWellProject,
-        exploration,
-        setExploration,
 
         featuresModalIsOpen,
         setFeaturesModalIsOpen,
