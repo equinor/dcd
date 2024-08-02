@@ -106,18 +106,6 @@ declare namespace Components {
             epaVersion: string;
             currency: Currency /* int32 */;
         }
-        export interface AdditionalProductionProfileGasDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-        }
-        export interface AdditionalProductionProfileOilDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-        }
         export interface AppraisalWellCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
@@ -209,9 +197,7 @@ declare namespace Components {
             topsideCessationCostProfile?: TopsideCessationCostProfileDto;
             drainageStrategy: DrainageStrategyDto;
             productionProfileOil?: ProductionProfileOilDto;
-            additionalProductionProfileOil?: AdditionalProductionProfileOilDto;
             productionProfileGas?: ProductionProfileGasDto;
-            additionalProductionProfileGas?: AdditionalProductionProfileGasDto;
             productionProfileWater?: ProductionProfileWaterDto;
             productionProfileWaterInjection?: ProductionProfileWaterInjectionDto;
             fuelFlaringAndLosses?: FuelFlaringAndLossesDto;
@@ -417,14 +403,6 @@ declare namespace Components {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
-        }
-        export interface CreateAdditionalProductionProfileGasDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-        }
-        export interface CreateAdditionalProductionProfileOilDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
         }
         export interface CreateCaseDto {
             name?: string | null;
@@ -659,9 +637,7 @@ declare namespace Components {
             artificialLift: ArtificialLift /* int32 */;
             gasSolution: GasSolution /* int32 */;
             productionProfileOil: ProductionProfileOilDto;
-            additionalProductionProfileOil: AdditionalProductionProfileOilDto;
             productionProfileGas: ProductionProfileGasDto;
-            additionalProductionProfileGas: AdditionalProductionProfileGasDto;
             productionProfileWater: ProductionProfileWaterDto;
             productionProfileWaterInjection: ProductionProfileWaterInjectionDto;
             fuelFlaringAndLosses: FuelFlaringAndLossesDto;
@@ -1443,14 +1419,6 @@ declare namespace Components {
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
         }
-        export interface UpdateAdditionalProductionProfileGasDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-        }
-        export interface UpdateAdditionalProductionProfileOilDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-        }
         export interface UpdateAppraisalWellCostProfileDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -2166,82 +2134,6 @@ declare namespace Paths {
             export type RequestBody = Components.Schemas.UpdateDrainageStrategyDto;
             namespace Responses {
                 export type $200 = Components.Schemas.DrainageStrategyDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdDrainageStrategies$DrainageStrategyIdAdditionalProductionProfileGas {
-        namespace Post {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.CreateAdditionalProductionProfileGasDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.AdditionalProductionProfileGasDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdDrainageStrategies$DrainageStrategyIdAdditionalProductionProfileGas$ProfileId {
-        namespace Put {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
-                export type ProfileId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
-                profileId: Parameters.ProfileId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.UpdateAdditionalProductionProfileGasDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.AdditionalProductionProfileGasDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdDrainageStrategies$DrainageStrategyIdAdditionalProductionProfileOil {
-        namespace Post {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.CreateAdditionalProductionProfileOilDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.AdditionalProductionProfileOilDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdDrainageStrategies$DrainageStrategyIdAdditionalProductionProfileOil$ProfileId {
-        namespace Put {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type DrainageStrategyId = string; // uuid
-                export type ProfileId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                drainageStrategyId: Parameters.DrainageStrategyId /* uuid */;
-                profileId: Parameters.ProfileId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.UpdateAdditionalProductionProfileOilDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.AdditionalProductionProfileOilDto;
             }
         }
     }
