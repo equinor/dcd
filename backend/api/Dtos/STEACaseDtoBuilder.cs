@@ -1,4 +1,5 @@
 using api.Dtos;
+using api.Models;
 
 namespace api.Adapters;
 
@@ -287,24 +288,22 @@ public static class STEACaseDtoBuilder
             if (drainageStrategyDto.ProductionProfileOil != null || drainageStrategyDto.AdditionalProductionProfileOil != null)
             {
                 var oilProfile = drainageStrategyDto.ProductionProfileOil != null
-                    ? new TimeSeriesCostDto
+                    ? new TimeSeriesCost
                     {
-                        Id = drainageStrategyDto.ProductionProfileOil.Id,
                         StartYear = drainageStrategyDto.ProductionProfileOil.StartYear,
                         Values = drainageStrategyDto.ProductionProfileOil.Values,
                     }
-                    : new TimeSeriesCostDto { Values = Array.Empty<double>(), StartYear = 0 };
+                    : new TimeSeriesCost { Values = Array.Empty<double>(), StartYear = 0 };
 
                 var additionalOilProfile = drainageStrategyDto.AdditionalProductionProfileOil != null
-                    ? new TimeSeriesCostDto
+                    ? new TimeSeriesCost
                     {
-                        Id = drainageStrategyDto.AdditionalProductionProfileOil.Id,
                         StartYear = drainageStrategyDto.AdditionalProductionProfileOil.StartYear,
                         Values = drainageStrategyDto.AdditionalProductionProfileOil.Values,
                     }
-                    : new TimeSeriesCostDto { Values = Array.Empty<double>(), StartYear = 0 };
+                    : new TimeSeriesCost { Values = Array.Empty<double>(), StartYear = 0 };
 
-                var mergedOilProfile = TimeSeriesCostDto.MergeCostProfiles(oilProfile, additionalOilProfile);
+                var mergedOilProfile = TimeSeriesCost.MergeCostProfiles(oilProfile, additionalOilProfile);
 
                 sTEACaseDto.ProductionAndSalesVolumes.TotalAndAnnualOil = new ProductionProfileOilDto
                 {
