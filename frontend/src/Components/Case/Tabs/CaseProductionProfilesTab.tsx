@@ -255,10 +255,12 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
                     data={productionProfilesChartData()}
                     chartTitle="Production profiles"
                     barColors={["#243746", "#EB0037", "#A8CED1"]}
-                    barProfiles={["oilProduction", "gasProduction", "waterProduction"]}
+                    barProfiles={["oilProduction", "additionalOilProduction", "gasProduction", "additionalGasProduction", "waterProduction"]}
                     barNames={[
                         "Oil production (MSm3)",
+                        "Additional Oil production (MSm3)",
                         "Gas production (GSm3)",
+                        "Additional Gas production (MSm3)",
                         "Water production (MSm3)",
                     ]}
                 />
