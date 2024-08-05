@@ -81,69 +81,6 @@ const useDataEdits = (): {
     const location = useLocation()
     const navigate = useNavigate()
 
-    const getActiveEditFromIndexes = () => {
-        const storedEditIndexes = localStorage.getItem("editIndexes")
-        const editIndexesArray = storedEditIndexes ? JSON.parse(storedEditIndexes) : []
-
-        const existingEntry = _.find(editIndexesArray, { caseId: caseIdFromParams })
-
-        if (existingEntry) {
-            return existingEntry
-        }
-        return undefined
-    }
-
-    const updateEditIndex = (newEditId: string) => {
-        if (!caseIdFromParams) {
-            console.log("you are not in a project case")
-            return
-        }
-
-        const editEntry: EditEntry = { caseId: caseIdFromParams, currentEditId: newEditId }
-
-        const storedEditIndexes = localStorage.getItem("editIndexes")
-        const editIndexesArray = storedEditIndexes ? JSON.parse(storedEditIndexes) : []
-
-        const activeEdit = getActiveEditFromIndexes()
-
-        if (activeEdit) {
-            activeEdit.currentEditId = newEditId
-            const index = _.findIndex(editIndexesArray, { caseId: caseIdFromParams })
-            editIndexesArray[index] = activeEdit
-        } else {
-            editIndexesArray.push(editEntry)
-        }
-
-        localStorage.setItem("editIndexes", JSON.stringify(editIndexesArray))
-        setEditIndexes(editIndexesArray)
-    }
-
-    const updateHistory = () => {
-        const currentCaseEditsWithoutObsoleteEntries = () => {
-            const activeEdit = getActiveEditFromIndexes()
-
-            if (activeEdit) {
-                const indexOfActiveEdit = _.findIndex(caseEditsBelongingToCurrentCase, { uuid: activeEdit.currentEditId })
-                console.log("case edits:", caseEdits)
-                console.log("active edit:", activeEdit)
-                console.log("indexOfActiveEdit", indexOfActiveEdit)
-
-                if (indexOfActiveEdit > 0) {
-                    const newCurrentCaseEdits = structuredClone(caseEditsBelongingToCurrentCase)
-                    newCurrentCaseEdits.splice(0, indexOfActiveEdit)
-
-                    return newCurrentCaseEdits
-                }
-            }
-            return caseEditsBelongingToCurrentCase
-        }
-        const caseEditsNotBelongingToCurrentCase = caseEdits.filter((edit) => edit.caseId !== caseIdFromParams)
-        const allEdits = [...apiQueue, ...currentCaseEditsWithoutObsoleteEntries(), ...caseEditsNotBelongingToCurrentCase]
-
-        setCaseEdits(allEdits)
-        updateEditIndex(allEdits[0].uuid)
-    }
-
     const queryClient = useQueryClient()
 
     const mutation = useMutation(
@@ -1473,6 +1410,69 @@ const useDataEdits = (): {
         }
 
         return success
+    }
+
+    const getActiveEditFromIndexes = () => {
+        const storedEditIndexes = localStorage.getItem("editIndexes")
+        const editIndexesArray = storedEditIndexes ? JSON.parse(storedEditIndexes) : []
+
+        const existingEntry = _.find(editIndexesArray, { caseId: caseIdFromParams })
+
+        if (existingEntry) {
+            return existingEntry
+        }
+        return undefined
+    }
+
+    const updateEditIndex = (newEditId: string) => {
+        if (!caseIdFromParams) {
+            console.log("you are not in a project case")
+            return
+        }
+
+        const editEntry: EditEntry = { caseId: caseIdFromParams, currentEditId: newEditId }
+
+        const storedEditIndexes = localStorage.getItem("editIndexes")
+        const editIndexesArray = storedEditIndexes ? JSON.parse(storedEditIndexes) : []
+
+        const activeEdit = getActiveEditFromIndexes()
+
+        if (activeEdit) {
+            activeEdit.currentEditId = newEditId
+            const index = _.findIndex(editIndexesArray, { caseId: caseIdFromParams })
+            editIndexesArray[index] = activeEdit
+        } else {
+            editIndexesArray.push(editEntry)
+        }
+
+        localStorage.setItem("editIndexes", JSON.stringify(editIndexesArray))
+        setEditIndexes(editIndexesArray)
+    }
+
+    const updateHistory = () => {
+        const currentCaseEditsWithoutObsoleteEntries = () => {
+            const activeEdit = getActiveEditFromIndexes()
+
+            if (activeEdit) {
+                const indexOfActiveEdit = _.findIndex(caseEditsBelongingToCurrentCase, { uuid: activeEdit.currentEditId })
+                console.log("case edits:", caseEdits)
+                console.log("active edit:", activeEdit)
+                console.log("indexOfActiveEdit", indexOfActiveEdit)
+
+                if (indexOfActiveEdit > 0) {
+                    const newCurrentCaseEdits = structuredClone(caseEditsBelongingToCurrentCase)
+                    newCurrentCaseEdits.splice(0, indexOfActiveEdit)
+
+                    return newCurrentCaseEdits
+                }
+            }
+            return caseEditsBelongingToCurrentCase
+        }
+        const caseEditsNotBelongingToCurrentCase = caseEdits.filter((edit) => edit.caseId !== caseIdFromParams)
+        const allEdits = [...apiQueue, ...currentCaseEditsWithoutObsoleteEntries(), ...caseEditsNotBelongingToCurrentCase]
+
+        setCaseEdits(allEdits)
+        updateEditIndex(allEdits[0].uuid)
     }
 
     /**
