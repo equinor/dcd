@@ -1455,9 +1455,6 @@ const useDataEdits = (): {
 
             if (activeEdit) {
                 const indexOfActiveEdit = _.findIndex(caseEditsBelongingToCurrentCase, { uuid: activeEdit.currentEditId })
-                console.log("case edits:", caseEdits)
-                console.log("active edit:", activeEdit)
-                console.log("indexOfActiveEdit", indexOfActiveEdit)
 
                 if (indexOfActiveEdit > 0) {
                     const newCurrentCaseEdits = structuredClone(caseEditsBelongingToCurrentCase)
@@ -1614,7 +1611,6 @@ const useDataEdits = (): {
             }
         } else {
             // new unique edit added with no previous edits for the same resource object. just add it to the queue
-            console.log("new resource object: ", insertedEditInstanceObject)
             setApiQueue([...apiQueue, insertedEditInstanceObject])
         }
     }
