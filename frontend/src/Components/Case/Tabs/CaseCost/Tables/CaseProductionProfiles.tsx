@@ -62,6 +62,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 resourcePropertyKey: "additionalProductionProfileOil",
                 editable: true,
                 overridable: false,
+                hideIfEmpty: true,
             },
             {
                 profileName: "Gas production",
@@ -84,6 +85,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 resourcePropertyKey: "additionalProductionProfileGas",
                 editable: true,
                 overridable: false,
+                hideIfEmpty: true,
             },
             {
                 profileName: "Water production",
