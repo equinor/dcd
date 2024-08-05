@@ -3,7 +3,9 @@ namespace api.Enums;
 public enum DrainageStrategyProfileNames
 {
     ProductionProfileOil,
+    AdditionalProductionProfileOil,
     ProductionProfileGas,
+    AdditionalProductionProfileGas,
     ProductionProfileWater,
     ProductionProfileWaterInjection,
     FuelFlaringAndLossesOverride,

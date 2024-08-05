@@ -10,11 +10,22 @@ public class DrainageStrategyBuilder : DrainageStrategy
         ProductionProfileOil = p;
         return this;
     }
-
+    public DrainageStrategyBuilder WithAdditionalProductionProfileOil(AdditionalProductionProfileOil p)
+    {
+        p.DrainageStrategy = this;
+        AdditionalProductionProfileOil = p;
+        return this;
+    }
     public DrainageStrategyBuilder WithProductionProfileGas(ProductionProfileGas p)
     {
         p.DrainageStrategy = this;
         ProductionProfileGas = p;
+        return this;
+    }
+        public DrainageStrategyBuilder WithAdditionalProductionProfileGas(AdditionalProductionProfileGas p)
+    {
+        p.DrainageStrategy = this;
+        AdditionalProductionProfileGas = p;
         return this;
     }
     public DrainageStrategyBuilder WithProductionProfileWater(ProductionProfileWater p)

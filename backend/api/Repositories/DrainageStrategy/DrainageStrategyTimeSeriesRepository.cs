@@ -32,6 +32,22 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
         return Update(productionProfileOil);
     }
 
+        public AdditionalProductionProfileOil CreateAdditionalProductionProfileOil(AdditionalProductionProfileOil additionalProductionProfileOil)
+    {
+        _context.AdditionalProductionProfileOil.Add(additionalProductionProfileOil);
+        return additionalProductionProfileOil;
+    }
+
+    public async Task<AdditionalProductionProfileOil?> GetAdditionalProductionProfileOil(Guid additionalProductionProfileOilId)
+    {
+        return await Get<AdditionalProductionProfileOil>(additionalProductionProfileOilId);
+    }
+
+    public AdditionalProductionProfileOil UpdateAdditionalProductionProfileOil(AdditionalProductionProfileOil additionalProductionProfileOil)
+    {
+        return Update(additionalProductionProfileOil);
+    }
+
     public ProductionProfileGas CreateProductionProfileGas(ProductionProfileGas profile)
     {
         _context.ProductionProfileGas.Add(profile);
@@ -44,6 +60,22 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
     }
 
     public ProductionProfileGas UpdateProductionProfileGas(ProductionProfileGas productionProfile)
+    {
+        return Update(productionProfile);
+    }
+
+    public AdditionalProductionProfileGas CreateAdditionalProductionProfileGas(AdditionalProductionProfileGas profile)
+    {
+        _context.AdditionalProductionProfileGas.Add(profile);
+        return profile;
+    }
+
+    public async Task<AdditionalProductionProfileGas?> GetAdditionalProductionProfileGas(Guid productionProfileId)
+    {
+        return await Get<AdditionalProductionProfileGas>(productionProfileId);
+    }
+
+    public AdditionalProductionProfileGas UpdateAdditionalProductionProfileGas(AdditionalProductionProfileGas productionProfile)
     {
         return Update(productionProfile);
     }

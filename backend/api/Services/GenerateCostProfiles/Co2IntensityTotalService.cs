@@ -50,6 +50,10 @@ public class Co2IntensityTotalService : ICo2IntensityTotalService
             {
                 sumOilProduction += drainageStrategy.ProductionProfileOil.Values.Sum();
             }
+            if (drainageStrategy.AdditionalProductionProfileOil != null)
+            {
+                sumOilProduction += drainageStrategy.AdditionalProductionProfileOil.Values.Sum();
+            }
         }
         catch (ArgumentException)
         {
@@ -74,6 +78,10 @@ public class Co2IntensityTotalService : ICo2IntensityTotalService
             if (drainageStrategy.ProductionProfileGas != null)
             {
                 sumGasProduction += drainageStrategy.ProductionProfileGas.Values.Sum();
+            }
+            if (drainageStrategy.AdditionalProductionProfileGas != null)
+            {
+                sumGasProduction += drainageStrategy.AdditionalProductionProfileGas.Values.Sum();
             }
         }
         catch (ArgumentException)

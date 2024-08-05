@@ -563,7 +563,9 @@ public class ProjectService : IProjectService
         {
             return await _context.DrainageStrategies
                 .Include(c => c.ProductionProfileOil)
+                .Include(c => c.AdditionalProductionProfileOil)
                 .Include(c => c.ProductionProfileGas)
+                .Include(c => c.AdditionalProductionProfileGas)
                 .Include(c => c.ProductionProfileWater)
                 .Include(c => c.ProductionProfileWaterInjection)
                 .Include(c => c.FuelFlaringAndLosses)

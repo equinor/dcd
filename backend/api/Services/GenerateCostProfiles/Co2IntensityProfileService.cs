@@ -103,23 +103,84 @@ public class Co2IntensityProfileService : ICo2IntensityProfileService
     {
         var million = 1E6;
         var oilValues = drainageStrategy.ProductionProfileOil?.Values.Select(v => v / million).ToArray() ?? Array.Empty<double>();
+        var additionalOilValues = drainageStrategy.AdditionalProductionProfileOil?.Values.Select(v => v / million).ToArray() ?? Array.Empty<double>();
+
+        TimeSeriesCost? oilProfile = null;
+        TimeSeriesCost? additionalOilProfile = null;
+
+        if (drainageStrategy.ProductionProfileOil != null)
+        {
+            oilProfile = new TimeSeriesCost
+            {
+                StartYear = drainageStrategy.ProductionProfileOil.StartYear,
+                Values = oilValues,
+            };
+        }
+
+        if (drainageStrategy.AdditionalProductionProfileOil != null)
+        {
+            additionalOilProfile = new TimeSeriesCost
+            {
+                StartYear = drainageStrategy.AdditionalProductionProfileOil.StartYear,
+                Values = additionalOilValues,
+            };
+        }
+
+        // Merging the profiles, defaulting to an empty profile if null
+        var mergedProfiles = TimeSeriesCost.MergeCostProfiles(
+            oilProfile ?? new TimeSeriesCost { Values = Array.Empty<double>(), StartYear = 0 },
+            additionalOilProfile ?? new TimeSeriesCost { Values = Array.Empty<double>(), StartYear = 0 }
+        );
+
         var oil = new TimeSeries<double>
         {
-            Values = oilValues,
-            StartYear = drainageStrategy.ProductionProfileOil?.StartYear ?? 0,
+            Values = mergedProfiles.Values,
+            StartYear = mergedProfiles.StartYear,
         };
+
         return oil;
     }
 
-    private static TimeSeries<double> GetGasProfile(DrainageStrategy drainageStrategy)
+
+private static TimeSeries<double> GetGasProfile(DrainageStrategy drainageStrategy)
+{
+    var billion = 1E9;
+    var gasValues = drainageStrategy.ProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? Array.Empty<double>();
+    var additionalGasValues = drainageStrategy.AdditionalProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? Array.Empty<double>();
+
+    TimeSeriesCost? gasProfile = null;
+    TimeSeriesCost? additionalGasProfile = null;
+
+    if (drainageStrategy.ProductionProfileGas != null)
     {
-        var billion = 1E9;
-        var gasValues = drainageStrategy.ProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? Array.Empty<double>();
-        var gas = new TimeSeries<double>
+        gasProfile = new TimeSeriesCost
         {
+            StartYear = drainageStrategy.ProductionProfileGas.StartYear,
             Values = gasValues,
-            StartYear = drainageStrategy.ProductionProfileGas?.StartYear ?? 0,
         };
-        return gas;
     }
+
+    if (drainageStrategy.AdditionalProductionProfileGas != null)
+    {
+        additionalGasProfile = new TimeSeriesCost
+        {
+            StartYear = drainageStrategy.AdditionalProductionProfileGas.StartYear,
+            Values = additionalGasValues,
+        };
+    }
+
+    var mergedProfiles = TimeSeriesCost.MergeCostProfiles(
+        gasProfile ?? new TimeSeriesCost { Values = Array.Empty<double>(), StartYear = 0 },
+        additionalGasProfile ?? new TimeSeriesCost { Values = Array.Empty<double>(), StartYear = 0 }
+    );
+
+    var gas = new TimeSeries<double>
+    {
+        Values = mergedProfiles.Values,
+        StartYear = mergedProfiles.StartYear,
+    };
+
+    return gas;
+}
+
 }
