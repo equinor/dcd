@@ -450,6 +450,36 @@ const useDataEdits = (): {
                     )
                 }
                 break
+            case "additionalProductionProfileOil":
+                if (!resourceProfileId) {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetDrainageStrategyService()).createAdditionalProductionProfileOil(
+                            projectId,
+                            caseId,
+                            resourceId!,
+                            resourceObject as Components.Schemas.CreateAdditionalProductionProfileOilDto,
+                        ),
+                    )
+                } else {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetDrainageStrategyService()).updateAdditionalProductionProfileOil(
+                            projectId,
+                            caseId,
+                            resourceId!,
+                            resourceProfileId!,
+                            resourceObject as Components.Schemas.UpdateAdditionalProductionProfileOilDto,
+                        ),
+                    )
+                }
+                break
             case "productionProfileGas":
                 if (!resourceProfileId) {
                     success = await createOrUpdateTimeSeriesProfile(
@@ -476,6 +506,36 @@ const useDataEdits = (): {
                             resourceId!,
                             resourceProfileId!,
                             resourceObject as Components.Schemas.UpdateProductionProfileGasDto,
+                        ),
+                    )
+                }
+                break
+            case "additionalProductionProfileGas":
+                if (!resourceProfileId) {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetDrainageStrategyService()).createAdditionalProductionProfileGas(
+                            projectId,
+                            caseId,
+                            resourceId!,
+                            resourceObject as Components.Schemas.CreateAdditionalProductionProfileGasDto,
+                        ),
+                    )
+                } else {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetDrainageStrategyService()).updateAdditionalProductionProfileGas(
+                            projectId,
+                            caseId,
+                            resourceId!,
+                            resourceProfileId!,
+                            resourceObject as Components.Schemas.UpdateAdditionalProductionProfileGasDto,
                         ),
                     )
                 }
