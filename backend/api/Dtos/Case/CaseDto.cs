@@ -37,6 +37,14 @@ public class CaseDto
     public double NPV { get; set; }
     [Required]
     public double BreakEven { get; set; }
+    [Required]
+    public double oilPrice { get; set; }
+    [Required]
+    public double gasPrice { get; set; }
+    [Required]
+    public double discountRate { get; set; }
+    [Required]
+    public double exchangeRate { get; set; }
     public string? Host { get; set; }
 
     [Required]

@@ -16,6 +16,7 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
     private readonly ITopsideService _topsideService;
     private readonly DcdDbContext _context;
     private readonly IMapper _mapper;
+    private readonly EconomicsCalculationHelper _economicsCalculationHelper;
 
     public FuelFlaringLossesProfileService(
         DcdDbContext context,
@@ -23,6 +24,8 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
         IProjectService projectService,
         ITopsideService topsideService,
         IDrainageStrategyService drainageStrategyService,
+        IStudyCostProfileService studyCostProfileService, // Add this dependency
+        IOpexCostProfileService OpexCostProfile,
         IMapper mapper)
     {
         _context = context;
@@ -31,6 +34,8 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
         _topsideService = topsideService;
         _drainageStrategyService = drainageStrategyService;
         _mapper = mapper;
+        _economicsCalculationHelper = new EconomicsCalculationHelper(studyCostProfileService, OpexCostProfile); // Instantiate the helper
+
     }
 
     public async Task<FuelFlaringAndLossesDto> Generate(Guid caseId)
@@ -39,6 +44,7 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
         var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
         var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
         var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+        var studycost = await _economicsCalculationHelper.CalculateTotalCostAsync(caseItem); // Pass the required repositories or mock them for testing
 
         var fuelConsumptions =
             EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);

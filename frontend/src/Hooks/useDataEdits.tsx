@@ -1597,7 +1597,7 @@ const useDataEdits = (): {
             if (userUpdatedSameFieldTwice) {
                 // edit the existing queue entry with the new values from the submitted edit
 
-                console.log("upaded key", updatedFieldInCurrentEdit)
+                console.log("updated key", updatedFieldInCurrentEdit)
                 const existingEditWithWithAddedNewValue: EditInstance = {
                     ...latestEditForSameResourceObjectInQueue,
                     newResourceObject: existingResourceObjectWithAddedNewValue,
@@ -1611,7 +1611,7 @@ const useDataEdits = (): {
             } else {
                 // add new queue entry combining the new values of the previous edit with the new values of the current edit
 
-                console.log("upaded key", updatedFieldInCurrentEdit)
+                console.log("updated key", updatedFieldInCurrentEdit)
                 const insertedEditInstanceWithCombinedResourceObject: EditInstance = {
                     ...insertedEditInstanceObject,
                     newResourceObject: existingResourceObjectWithAddedNewValue,
@@ -1622,7 +1622,7 @@ const useDataEdits = (): {
         } else {
             // new unique edit added with no previous edits for the same resource object. just add it to the queue
 
-            console.log("upaded key", insertedEditInstanceObject.resourcePropertyKey)
+            console.log("updated key", insertedEditInstanceObject.resourcePropertyKey)
             setApiQueue([...apiQueue, insertedEditInstanceObject])
         }
     }
