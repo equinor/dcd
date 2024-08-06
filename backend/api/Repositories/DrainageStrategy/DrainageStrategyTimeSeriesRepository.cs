@@ -32,7 +32,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
         return Update(productionProfileOil);
     }
 
-        public AdditionalProductionProfileOil CreateAdditionalProductionProfileOil(AdditionalProductionProfileOil additionalProductionProfileOil)
+    public AdditionalProductionProfileOil CreateAdditionalProductionProfileOil(AdditionalProductionProfileOil additionalProductionProfileOil)
     {
         _context.AdditionalProductionProfileOil.Add(additionalProductionProfileOil);
         return additionalProductionProfileOil;

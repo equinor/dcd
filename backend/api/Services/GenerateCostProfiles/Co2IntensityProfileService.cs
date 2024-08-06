@@ -142,45 +142,45 @@ public class Co2IntensityProfileService : ICo2IntensityProfileService
     }
 
 
-private static TimeSeries<double> GetGasProfile(DrainageStrategy drainageStrategy)
-{
-    var billion = 1E9;
-    var gasValues = drainageStrategy.ProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? Array.Empty<double>();
-    var additionalGasValues = drainageStrategy.AdditionalProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? Array.Empty<double>();
-
-    TimeSeriesCost? gasProfile = null;
-    TimeSeriesCost? additionalGasProfile = null;
-
-    if (drainageStrategy.ProductionProfileGas != null)
+    private static TimeSeries<double> GetGasProfile(DrainageStrategy drainageStrategy)
     {
-        gasProfile = new TimeSeriesCost
+        var billion = 1E9;
+        var gasValues = drainageStrategy.ProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? Array.Empty<double>();
+        var additionalGasValues = drainageStrategy.AdditionalProductionProfileGas?.Values.Select(v => v / billion).ToArray() ?? Array.Empty<double>();
+
+        TimeSeriesCost? gasProfile = null;
+        TimeSeriesCost? additionalGasProfile = null;
+
+        if (drainageStrategy.ProductionProfileGas != null)
         {
-            StartYear = drainageStrategy.ProductionProfileGas.StartYear,
-            Values = gasValues,
-        };
-    }
+            gasProfile = new TimeSeriesCost
+            {
+                StartYear = drainageStrategy.ProductionProfileGas.StartYear,
+                Values = gasValues,
+            };
+        }
 
-    if (drainageStrategy.AdditionalProductionProfileGas != null)
-    {
-        additionalGasProfile = new TimeSeriesCost
+        if (drainageStrategy.AdditionalProductionProfileGas != null)
         {
-            StartYear = drainageStrategy.AdditionalProductionProfileGas.StartYear,
-            Values = additionalGasValues,
+            additionalGasProfile = new TimeSeriesCost
+            {
+                StartYear = drainageStrategy.AdditionalProductionProfileGas.StartYear,
+                Values = additionalGasValues,
+            };
+        }
+
+        var mergedProfiles = TimeSeriesCost.MergeCostProfiles(
+            gasProfile ?? new TimeSeriesCost { Values = Array.Empty<double>(), StartYear = 0 },
+            additionalGasProfile ?? new TimeSeriesCost { Values = Array.Empty<double>(), StartYear = 0 }
+        );
+
+        var gas = new TimeSeries<double>
+        {
+            Values = mergedProfiles.Values,
+            StartYear = mergedProfiles.StartYear,
         };
+
+        return gas;
     }
-
-    var mergedProfiles = TimeSeriesCost.MergeCostProfiles(
-        gasProfile ?? new TimeSeriesCost { Values = Array.Empty<double>(), StartYear = 0 },
-        additionalGasProfile ?? new TimeSeriesCost { Values = Array.Empty<double>(), StartYear = 0 }
-    );
-
-    var gas = new TimeSeries<double>
-    {
-        Values = mergedProfiles.Values,
-        StartYear = mergedProfiles.StartYear,
-    };
-
-    return gas;
-}
 
 }
