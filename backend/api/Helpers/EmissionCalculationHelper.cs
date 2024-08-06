@@ -98,7 +98,6 @@ public static class EmissionCalculationHelper
             Values = additionalGr
         };
 
-        // Merge the profiles using TimeSeriesCost.MergeCostProfiles
         var mergedProfile = TimeSeriesCost.MergeCostProfiles(productionProfileGas, additionalProductionProfileGas);
 
         var gsp = topside.CO2ShareGasProfile;
