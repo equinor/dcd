@@ -271,7 +271,21 @@ export const tableCellisEditable = (params: any, editMode: boolean): boolean => 
     return editMode && params.data.editable
 }
 
-export const numberValueParser = (setSnackBarMessage: Dispatch<SetStateAction<string | undefined>>, params: { newValue: any, oldValue: any }) => {
+export const validateInput = (params: any, editMode: boolean) => {
+    const { value, data } = params
+    if (tableCellisEditable(params, editMode) && editMode && value) {
+        const rule = TABLE_VALIDATION_RULES[data.profileName]
+        if (rule && (value < rule.min || value > rule.max)) {
+            return `Value must be between ${rule.min} and ${rule.max}.`
+        }
+    }
+    return null
+}
+
+export const numberValueParser = (
+    setSnackBarMessage: Dispatch<SetStateAction<string | undefined>>,
+    params: { newValue: any, oldValue: any, data: any },
+) => {
     const { oldValue, newValue } = params
     const valueWithOnlyNumbersCommasAndDots = newValue.toString().replace(/[^0-9.,]/g, "")
     const allCommasTurnedToDots = valueWithOnlyNumbersCommasAndDots.replace(/,/g, ".")
@@ -296,17 +310,6 @@ export const getCaseRowStyle = (params: any) => {
 }
 
 export const cellStyleRightAlign = { textAlign: "right" }
-
-export const validateInput = (params: any, editMode: boolean) => {
-    const { value, data } = params
-    if (tableCellisEditable(params, editMode) && editMode && value) {
-        const rule = TABLE_VALIDATION_RULES[data.profileName]
-        if (rule && (value < rule.min || value > rule.max)) {
-            return `Value must be between ${rule.min} and ${rule.max}.`
-        }
-    }
-    return null
-}
 
 /**
  * Updates a state object with a non-negative number value.

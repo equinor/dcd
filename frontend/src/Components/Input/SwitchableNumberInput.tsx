@@ -67,6 +67,7 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
             value={`${value}`}
         >
             <NumberInputWithValidation
+                label={label}
                 id={`${resourceName}-${resourcePropertyKey}-${resourceId ?? ""}`}
                 onSubmit={addToEditsAndSubmit}
                 defaultValue={value}
