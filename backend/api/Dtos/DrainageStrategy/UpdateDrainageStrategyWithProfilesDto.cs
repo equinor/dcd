@@ -15,7 +15,9 @@ public class UpdateDrainageStrategyWithProfilesDto
     public ArtificialLift ArtificialLift { get; set; }
     public GasSolution GasSolution { get; set; }
     public UpdateProductionProfileOilDto? ProductionProfileOil { get; set; }
+    public UpdateAdditionalProductionProfileOilDto? AdditionalProductionProfileOil { get; set; }
     public UpdateProductionProfileGasDto? ProductionProfileGas { get; set; }
+    public UpdateAdditionalProductionProfileGasDto? AdditionalProductionProfileGas { get; set; }
     public UpdateProductionProfileWaterDto? ProductionProfileWater { get; set; }
     public UpdateProductionProfileWaterInjectionDto? ProductionProfileWaterInjection { get; set; }
     public UpdateFuelFlaringAndLossesOverrideDto? FuelFlaringAndLossesOverride { get; set; }
@@ -31,7 +33,15 @@ public class UpdateProductionProfileOilDto : UpdateTimeSeriesVolumeDto
 {
 }
 
+public class UpdateAdditionalProductionProfileOilDto : UpdateTimeSeriesVolumeDto
+{
+}
+
 public class UpdateProductionProfileGasDto : UpdateTimeSeriesVolumeDto
+{
+}
+
+public class UpdateAdditionalProductionProfileGasDto : UpdateTimeSeriesVolumeDto
 {
 }
 

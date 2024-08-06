@@ -15,7 +15,7 @@ implements Components.Schemas.SharePointImportDto {
 
     constructor(
         projectCase: Components.Schemas.CaseDto,
-        project: Components.Schemas.ProjectDto,
+        project: Components.Schemas.ProjectWithAssetsDto,
         data: Components.Schemas.SharePointImportDto | undefined,
     ) {
         this.id = projectCase.id!
@@ -40,7 +40,7 @@ implements Components.Schemas.SharePointImportDto {
 
     static surfStatus = (
         projectCase: Components.Schemas.CaseDto,
-        project: Components.Schemas.ProjectDto,
+        project: Components.Schemas.ProjectWithAssetsDto,
     ): ImportStatusEnum => {
         const surfId = projectCase.surfLink
         const surf = project.surfs?.find((s) => s.id === surfId)
@@ -59,7 +59,7 @@ implements Components.Schemas.SharePointImportDto {
 
     static substructureStatus = (
         projectCase: Components.Schemas.CaseDto,
-        project: Components.Schemas.ProjectDto,
+        project: Components.Schemas.ProjectWithAssetsDto,
     ): ImportStatusEnum => {
         const substructureId = projectCase.substructureLink
         const substructure = project.substructures?.find(
@@ -80,7 +80,7 @@ implements Components.Schemas.SharePointImportDto {
 
     static topsideStatus = (
         projectCase: Components.Schemas.CaseDto,
-        project: Components.Schemas.ProjectDto,
+        project: Components.Schemas.ProjectWithAssetsDto,
     ): ImportStatusEnum => {
         const topsideId = projectCase.topsideLink
         const topside = project.topsides?.find((s) => s.id === topsideId)
@@ -99,7 +99,7 @@ implements Components.Schemas.SharePointImportDto {
 
     static transportStatus = (
         projectCase: Components.Schemas.CaseDto,
-        project: Components.Schemas.ProjectDto,
+        project: Components.Schemas.ProjectWithAssetsDto,
     ): ImportStatusEnum => {
         const transportId = projectCase.transportLink
         const transport = project.transports?.find((s) => s.id === transportId)

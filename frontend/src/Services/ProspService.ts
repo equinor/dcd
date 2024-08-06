@@ -9,8 +9,8 @@ export class __ProspService extends __BaseService {
         sourceCaseId: string,
         projectId: string,
         body: any,
-    ): Promise<Components.Schemas.ProjectDto> {
-        const res: Components.Schemas.ProjectDto = await this.postWithParams(
+    ): Promise<Components.Schemas.ProjectWithAssetsDto> {
+        const res: Components.Schemas.ProjectWithAssetsDto = await this.postWithParams(
             "",
             { body },
 
@@ -27,8 +27,8 @@ export class __ProspService extends __BaseService {
     public async importFromSharepoint(
         projectId: string,
         body: any,
-    ): Promise<Components.Schemas.ProjectDto> {
-        const res: Components.Schemas.ProjectDto = await this.postWithParams(
+    ): Promise<Components.Schemas.ProjectWithAssetsDto> {
+        const res: Components.Schemas.ProjectWithAssetsDto = await this.postWithParams(
             `${projectId}/sharepoint`,
             { body },
 

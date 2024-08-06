@@ -93,6 +93,10 @@ public class NetSaleGasProfileService : INetSaleGasProfileService
             Values = fuelFlaringLosses.Values.Select(x => x * -1).ToArray(),
         };
 
-        return TimeSeriesCost.MergeCostProfiles(drainageStrategy.ProductionProfileGas, negativeFuelFlaringLosses);
+        var additionalProductionProfileGas = drainageStrategy.AdditionalProductionProfileGas ?? new TimeSeries<double>();
+
+        var gasProduction = TimeSeriesCost.MergeCostProfiles(drainageStrategy.ProductionProfileGas, additionalProductionProfileGas);
+        return TimeSeriesCost.MergeCostProfiles(gasProduction, negativeFuelFlaringLosses);
     }
+
 }

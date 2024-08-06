@@ -62,7 +62,9 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
 
     const drainageStrategyData = apiData?.drainageStrategy
     const oilProductionData = apiData?.productionProfileOil
+    const additionalOilProductionData = apiData?.additionalProductionProfileOil
     const gasProductionData = apiData?.productionProfileGas
+    const additionalGasProductionData = apiData?.additionalProductionProfileGas
     const waterProductionData = apiData?.productionProfileWater
     const waterInjectionData = apiData?.productionProfileWaterInjection
     const fuelFlaringAndLossesData = apiData?.fuelFlaringAndLosses
@@ -118,7 +120,9 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
             dataArray.push({
                 year: i,
                 oilProduction: setValueToCorrespondingYear(oilProductionData, i, startYear, new Date(caseData.dG4Date).getFullYear()),
+                additionalOilProduction: setValueToCorrespondingYear(additionalOilProductionData, i, startYear, new Date(caseData.dG4Date).getFullYear()),
                 gasProduction: setValueToCorrespondingYear(gasProductionData, i, startYear, new Date(caseData.dG4Date).getFullYear()),
+                additionalGasProduction: setValueToCorrespondingYear(additionalGasProductionData, i, startYear, new Date(caseData.dG4Date).getFullYear()),
                 waterProduction: setValueToCorrespondingYear(waterProductionData, i, startYear, new Date(caseData.dG4Date).getFullYear()),
             })
         }
@@ -251,10 +255,12 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
                     data={productionProfilesChartData()}
                     chartTitle="Production profiles"
                     barColors={["#243746", "#EB0037", "#A8CED1"]}
-                    barProfiles={["oilProduction", "gasProduction", "waterProduction"]}
+                    barProfiles={["oilProduction", "additionalOilProduction", "gasProduction", "additionalGasProduction", "waterProduction"]}
                     barNames={[
                         "Oil production (MSm3)",
+                        "Additional Oil production (MSm3)",
                         "Gas production (GSm3)",
+                        "Additional Gas production (MSm3)",
                         "Water production (MSm3)",
                     ]}
                 />
