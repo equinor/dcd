@@ -139,12 +139,29 @@ public class DcdDbContext : DbContext
         var productionProfileOilAdded = ChangeTracker.Entries<ProductionProfileOil>()
             .Any(e => e.State == EntityState.Added);
 
+
+        var additionalProductionProfileOilChanges = ChangeTracker.Entries<AdditionalProductionProfileOil>()
+            .Any(e => e.State == EntityState.Modified &&
+                        (e.Property(nameof(Models.AdditionalProductionProfileOil.InternalData)).IsModified ||
+                        e.Property(nameof(Models.AdditionalProductionProfileOil.StartYear)).IsModified));
+
+        var additionalProductionProfileOilAdded = ChangeTracker.Entries<AdditionalProductionProfileOil>()
+            .Any(e => e.State == EntityState.Added);
+
         var productionProfileGasChanges = ChangeTracker.Entries<ProductionProfileGas>()
             .Any(e => e.State == EntityState.Modified &&
                       (e.Property(nameof(Models.ProductionProfileGas.InternalData)).IsModified ||
                        e.Property(nameof(Models.ProductionProfileGas.StartYear)).IsModified));
 
         var productionProfileGasAdded = ChangeTracker.Entries<ProductionProfileGas>()
+            .Any(e => e.State == EntityState.Added);
+
+        var additionalProductionProfileGasChanges = ChangeTracker.Entries<AdditionalProductionProfileGas>()
+            .Any(e => e.State == EntityState.Modified &&
+                      (e.Property(nameof(Models.AdditionalProductionProfileGas.InternalData)).IsModified ||
+                       e.Property(nameof(Models.AdditionalProductionProfileGas.StartYear)).IsModified));
+
+        var additionalProductionProfileGasAdded = ChangeTracker.Entries<AdditionalProductionProfileGas>()
             .Any(e => e.State == EntityState.Added);
 
         var productionProfileWaterInjectionChanges = ChangeTracker.Entries<ProductionProfileWaterInjection>()
@@ -170,8 +187,12 @@ public class DcdDbContext : DbContext
         || topsideChanges
         || productionProfileOilChanges
         || productionProfileOilAdded
+        || additionalProductionProfileOilChanges
+        || additionalProductionProfileOilAdded
         || productionProfileGasChanges
         || productionProfileGasAdded
+        || additionalProductionProfileGasChanges
+        || additionalProductionProfileGasAdded
         || productionProfileWaterInjectionChanges
         || productionProfileWaterInjectionAdded
         || wellChanges
@@ -217,6 +238,15 @@ public class DcdDbContext : DbContext
         var productionProfileOilAdded = ChangeTracker.Entries<ProductionProfileOil>()
             .Any(e => e.State == EntityState.Added);
 
+
+        var additionalProductionProfileOilChanges = ChangeTracker.Entries<AdditionalProductionProfileOil>()
+            .Any(e => e.State == EntityState.Modified &&
+                        (e.Property(nameof(Models.AdditionalProductionProfileOil.InternalData)).IsModified ||
+                        e.Property(nameof(Models.AdditionalProductionProfileOil.StartYear)).IsModified));
+
+        var additionalProductionProfileOilAdded = ChangeTracker.Entries<AdditionalProductionProfileOil>()
+            .Any(e => e.State == EntityState.Added);
+
         var wellsChanges = ChangeTracker.Entries<Well>()
             .Any(e => e.State == EntityState.Modified);
 
@@ -240,7 +270,9 @@ public class DcdDbContext : DbContext
             || additionalOpexAdded
             || developmentOperationalWellCostsChanges
             || productionProfileOilChanges
+            || additionalProductionProfileOilChanges
             || productionProfileOilAdded
+            || additionalProductionProfileOilAdded
             || wellsChanges
             || drillingScheduleChanges
             || drillingScheduleAdded
@@ -278,12 +310,29 @@ public class DcdDbContext : DbContext
         var productionProfileOilAdded = ChangeTracker.Entries<ProductionProfileOil>()
             .Any(e => e.State == EntityState.Added);
 
+
+        var additionalProductionProfileOilChanges = ChangeTracker.Entries<AdditionalProductionProfileOil>()
+            .Any(e => e.State == EntityState.Modified &&
+                        (e.Property(nameof(Models.AdditionalProductionProfileOil.InternalData)).IsModified ||
+                        e.Property(nameof(Models.AdditionalProductionProfileOil.StartYear)).IsModified));
+
+        var additionalProductionProfileOilAdded = ChangeTracker.Entries<AdditionalProductionProfileOil>()
+            .Any(e => e.State == EntityState.Added);
+
         var productionProfileGasChanges = ChangeTracker.Entries<ProductionProfileGas>()
             .Any(e => e.State == EntityState.Modified &&
                       (e.Property(nameof(Models.ProductionProfileGas.InternalData)).IsModified ||
                        e.Property(nameof(Models.ProductionProfileGas.StartYear)).IsModified));
 
         var productionProfileGasAdded = ChangeTracker.Entries<ProductionProfileGas>()
+            .Any(e => e.State == EntityState.Added);
+
+        var additionalProductionProfileGasChanges = ChangeTracker.Entries<AdditionalProductionProfileGas>()
+            .Any(e => e.State == EntityState.Modified &&
+                      (e.Property(nameof(Models.AdditionalProductionProfileGas.InternalData)).IsModified ||
+                       e.Property(nameof(Models.AdditionalProductionProfileGas.StartYear)).IsModified));
+
+        var additionalProductionProfileGasAdded = ChangeTracker.Entries<AdditionalProductionProfileGas>()
             .Any(e => e.State == EntityState.Added);
 
         var productionProfileWaterInjectionChanges = ChangeTracker.Entries<ProductionProfileWaterInjection>()
@@ -303,8 +352,12 @@ public class DcdDbContext : DbContext
             || topsideChanges
             || productionProfileOilChanges
             || productionProfileOilAdded
+            || additionalProductionProfileOilChanges
+            || additionalProductionProfileOilAdded
             || productionProfileGasChanges
             || productionProfileGasAdded
+            || additionalProductionProfileGasChanges
+            || additionalProductionProfileGasAdded
             || productionProfileWaterInjectionChanges
             || productionProfileWaterInjectionAdded
             || drainageStrategyChanges;
@@ -336,12 +389,28 @@ public class DcdDbContext : DbContext
         var productionProfileOilAdded = ChangeTracker.Entries<ProductionProfileOil>()
             .Any(e => e.State == EntityState.Added);
 
+        var additionalProductionProfileOilChanges = ChangeTracker.Entries<AdditionalProductionProfileOil>()
+            .Any(e => e.State == EntityState.Modified &&
+                        (e.Property(nameof(Models.AdditionalProductionProfileOil.InternalData)).IsModified ||
+                        e.Property(nameof(Models.AdditionalProductionProfileOil.StartYear)).IsModified));
+
+        var additionalProductionProfileOilAdded = ChangeTracker.Entries<AdditionalProductionProfileOil>()
+            .Any(e => e.State == EntityState.Added);
+
         var productionProfileGasChanges = ChangeTracker.Entries<ProductionProfileGas>()
             .Any(e => e.State == EntityState.Modified &&
                       (e.Property(nameof(Models.ProductionProfileGas.InternalData)).IsModified ||
                        e.Property(nameof(Models.ProductionProfileGas.StartYear)).IsModified));
 
         var productionProfileGasAdded = ChangeTracker.Entries<ProductionProfileGas>()
+            .Any(e => e.State == EntityState.Added);
+
+        var additionalProductionProfileGasChanges = ChangeTracker.Entries<AdditionalProductionProfileGas>()
+            .Any(e => e.State == EntityState.Modified &&
+                      (e.Property(nameof(Models.AdditionalProductionProfileGas.InternalData)).IsModified ||
+                       e.Property(nameof(Models.AdditionalProductionProfileGas.StartYear)).IsModified));
+
+        var additionalProductionProfileGasAdded = ChangeTracker.Entries<AdditionalProductionProfileGas>()
             .Any(e => e.State == EntityState.Added);
 
         var productionProfileWaterInjectionChanges = ChangeTracker.Entries<ProductionProfileWaterInjection>()
@@ -356,8 +425,12 @@ public class DcdDbContext : DbContext
             || topsideChanges
             || productionProfileOilChanges
             || productionProfileOilAdded
+            || additionalProductionProfileOilChanges
+            || additionalProductionProfileOilAdded
             || productionProfileGasChanges
             || productionProfileGasAdded
+            || additionalProductionProfileGasChanges
+            || additionalProductionProfileGasAdded
             || productionProfileWaterInjectionChanges
             || productionProfileWaterInjectionAdded;
     }
@@ -422,6 +495,15 @@ public class DcdDbContext : DbContext
         var productionProfileOilAdded = ChangeTracker.Entries<ProductionProfileOil>()
             .Any(e => e.State == EntityState.Added);
 
+
+        var additionalProductionProfileOilChanges = ChangeTracker.Entries<AdditionalProductionProfileOil>()
+            .Any(e => e.State == EntityState.Modified &&
+                        (e.Property(nameof(Models.AdditionalProductionProfileOil.InternalData)).IsModified ||
+                        e.Property(nameof(Models.AdditionalProductionProfileOil.StartYear)).IsModified));
+
+        var additionalProductionProfileOilAdded = ChangeTracker.Entries<AdditionalProductionProfileOil>()
+            .Any(e => e.State == EntityState.Added);
+
         var productionProfileGasChanges = ChangeTracker.Entries<ProductionProfileGas>()
             .Any(e => e.State == EntityState.Modified &&
                 (
@@ -430,6 +512,14 @@ public class DcdDbContext : DbContext
                 ));
 
         var productionProfileGasAdded = ChangeTracker.Entries<ProductionProfileGas>()
+            .Any(e => e.State == EntityState.Added);
+
+        var additionalProductionProfileGasChanges = ChangeTracker.Entries<AdditionalProductionProfileGas>()
+            .Any(e => e.State == EntityState.Modified &&
+                      (e.Property(nameof(Models.AdditionalProductionProfileGas.InternalData)).IsModified ||
+                       e.Property(nameof(Models.AdditionalProductionProfileGas.StartYear)).IsModified));
+
+        var additionalProductionProfileGasAdded = ChangeTracker.Entries<AdditionalProductionProfileGas>()
             .Any(e => e.State == EntityState.Added);
 
         var productionProfileWaterInjectionChanges = ChangeTracker.Entries<ProductionProfileWaterInjection>()
@@ -447,8 +537,12 @@ public class DcdDbContext : DbContext
         || topsideChanges
         || productionProfileOilChanges
         || productionProfileOilAdded
+        || additionalProductionProfileOilChanges
+        || additionalProductionProfileOilAdded
         || productionProfileGasChanges
         || productionProfileGasAdded
+        || additionalProductionProfileGasChanges
+        || additionalProductionProfileGasAdded
         || productionProfileWaterInjectionChanges
         || productionProfileWaterInjectionAdded;
     }
@@ -485,6 +579,15 @@ public class DcdDbContext : DbContext
         var productionProfileOilAdded = ChangeTracker.Entries<ProductionProfileOil>()
             .Any(e => e.State == EntityState.Added);
 
+
+        var additionalProductionProfileOilChanges = ChangeTracker.Entries<AdditionalProductionProfileOil>()
+            .Any(e => e.State == EntityState.Modified &&
+                        (e.Property(nameof(Models.AdditionalProductionProfileOil.InternalData)).IsModified ||
+                        e.Property(nameof(Models.AdditionalProductionProfileOil.StartYear)).IsModified));
+
+        var additionalProductionProfileOilAdded = ChangeTracker.Entries<AdditionalProductionProfileOil>()
+            .Any(e => e.State == EntityState.Added);
+
         var surfChanges = ChangeTracker.Entries<SurfCessationCostProfile>()
             .Any(e => e.State == EntityState.Modified &&
             (
@@ -511,6 +614,8 @@ public class DcdDbContext : DbContext
             || cessationOffshoreFacilitiesCostAdded
             || productionProfileOilChanges
             || productionProfileOilAdded
+            || additionalProductionProfileOilChanges
+            || additionalProductionProfileOilAdded
             || surfChanges
             || developmentOperationalWellCostsChanges
             || drillingScheduleChanges
@@ -717,8 +822,12 @@ public class DcdDbContext : DbContext
     public DbSet<TransportCessationCostProfile> TransportCessationCostProfiles { get; set; } = null!;
 
     public DbSet<DrainageStrategy> DrainageStrategies { get; set; } = null!;
-    public DbSet<ProductionProfileGas> ProductionProfileGas { get; set; } = null!;
     public DbSet<ProductionProfileOil> ProductionProfileOil { get; set; } = null!;
+    public DbSet<AdditionalProductionProfileOil> AdditionalProductionProfileOil { get; set; } = null!;
+
+    public DbSet<ProductionProfileGas> ProductionProfileGas { get; set; } = null!;
+    public DbSet<AdditionalProductionProfileGas> AdditionalProductionProfileGas { get; set; } = null!;
+
     public DbSet<ProductionProfileWater> ProductionProfileWater { get; set; } = null!;
     public DbSet<ProductionProfileWaterInjection> ProductionProfileWaterInjection { get; set; } = null!;
 

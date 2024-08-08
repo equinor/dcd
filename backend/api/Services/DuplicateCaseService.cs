@@ -282,7 +282,9 @@ public class DuplicateCaseService : IDuplicateCaseService
         newDrainageStrategy.Id = Guid.NewGuid();
 
         SetNewGuidTimeSeries(newDrainageStrategy.ProductionProfileOil);
+        SetNewGuidTimeSeries(newDrainageStrategy.AdditionalProductionProfileOil);
         SetNewGuidTimeSeries(newDrainageStrategy.ProductionProfileGas);
+        SetNewGuidTimeSeries(newDrainageStrategy.AdditionalProductionProfileGas);
         SetNewGuidTimeSeries(newDrainageStrategy.ProductionProfileWater);
         SetNewGuidTimeSeries(newDrainageStrategy.ProductionProfileWaterInjection);
         SetNewGuidTimeSeries(newDrainageStrategy.FuelFlaringAndLosses);
@@ -306,7 +308,9 @@ public class DuplicateCaseService : IDuplicateCaseService
         var drainageStrategy = await _context.DrainageStrategies
             .AsNoTracking()
             .Include(c => c.ProductionProfileOil)
+            .Include(c => c.AdditionalProductionProfileOil)
             .Include(c => c.ProductionProfileGas)
+            .Include(c => c.AdditionalProductionProfileGas)
             .Include(c => c.ProductionProfileWater)
             .Include(c => c.ProductionProfileWaterInjection)
             .Include(c => c.FuelFlaringAndLosses)

@@ -43,6 +43,33 @@ class DrainageStrategyService extends __BaseService {
         return res
     }
 
+    public async createAdditionalProductionProfileOil(
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        dto: Components.Schemas.CreateAdditionalProductionProfileOilDto,
+    ): Promise<Components.Schemas.AdditionalProductionProfileOilDto> {
+        const res: Components.Schemas.AdditionalProductionProfileOilDto = await this.post(
+            `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/additional-production-profile-oil/`,
+            { body: dto },
+        )
+        return res
+    }
+
+    public async updateAdditionalProductionProfileOil(
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        productionProfileId: string,
+        dto: Components.Schemas.UpdateAdditionalProductionProfileOilDto,
+    ): Promise<Components.Schemas.AdditionalProductionProfileOilDto> {
+        const res: Components.Schemas.AdditionalProductionProfileOilDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/additional-production-profile-oil/${productionProfileId}`,
+            { body: dto },
+        )
+        return res
+    }
+
     public async createProductionProfileGas(
         projectId: string,
         caseId: string,
@@ -65,6 +92,33 @@ class DrainageStrategyService extends __BaseService {
     ): Promise<Components.Schemas.ProductionProfileGasDto> {
         const res: Components.Schemas.ProductionProfileGasDto = await this.put(
             `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/production-profile-gas/${productionProfileId}`,
+            { body: dto },
+        )
+        return res
+    }
+
+    public async createAdditionalProductionProfileGas(
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        dto: Components.Schemas.CreateAdditionalProductionProfileGasDto,
+    ): Promise<Components.Schemas.AdditionalProductionProfileGasDto> {
+        const res: Components.Schemas.AdditionalProductionProfileGasDto = await this.post(
+            `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/additional-production-profile-gas/`,
+            { body: dto },
+        )
+        return res
+    }
+
+    public async updateAdditionalProductionProfileGas(
+        projectId: string,
+        caseId: string,
+        drainageStrategyId: string,
+        productionProfileId: string,
+        dto: Components.Schemas.UpdateAdditionalProductionProfileGasDto,
+    ): Promise<Components.Schemas.AdditionalProductionProfileGasDto> {
+        const res: Components.Schemas.AdditionalProductionProfileGasDto = await this.put(
+            `projects/${projectId}/cases/${caseId}/drainage-strategies/${drainageStrategyId}/additional-production-profile-gas/${productionProfileId}`,
             { body: dto },
         )
         return res

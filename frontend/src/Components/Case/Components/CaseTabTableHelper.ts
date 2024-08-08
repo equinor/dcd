@@ -25,12 +25,12 @@ export const GetTimeSeriesLastYear = (
 export const SetTableYearsFromProfiles = (
     profiles: (
         | {
-              id?: string;
-              startYear?: number;
-              name?: string;
-              values?: number[] | null;
-              sum?: number | undefined;
-          }
+            id?: string;
+            startYear?: number;
+            name?: string;
+            values?: number[] | null;
+            sum?: number | undefined;
+        }
         | undefined
     )[],
     dG4Year: number,
@@ -38,23 +38,39 @@ export const SetTableYearsFromProfiles = (
     setEndYear: Dispatch<SetStateAction<number>>,
     setTableYears: Dispatch<SetStateAction<[number, number]>>,
 ) => {
-    let firstYear = Number.MAX_SAFE_INTEGER
-    let lastYear = Number.MIN_SAFE_INTEGER
-    profiles.forEach((p) => {
-        if (p && p.startYear !== undefined && p.startYear < firstYear && p.startYear > 0) {
-            firstYear = p.startYear
+    let firstYear: number | undefined
+    let lastYear: number | undefined
+
+    profiles.forEach((profile) => {
+        if (profile?.startYear !== undefined) {
+            const { startYear } = profile
+            const profileStartYear: number = startYear + dG4Year
+            if (firstYear === undefined) {
+                firstYear = profileStartYear
+            } else if (profileStartYear < firstYear) {
+                firstYear = profileStartYear
+            }
         }
-        const profileLastYear = GetTimeSeriesLastYear(p)
-        if (profileLastYear !== undefined && profileLastYear > lastYear) {
-            lastYear = profileLastYear
+
+        const profileLastYear = GetTimeSeriesLastYear(profile)
+        if (profileLastYear !== undefined) {
+            const adjustedProfileLastYear = profileLastYear + dG4Year
+
+            if (lastYear === undefined) {
+                lastYear = adjustedProfileLastYear
+            } else if (adjustedProfileLastYear > lastYear) {
+                lastYear = adjustedProfileLastYear
+            }
         }
     })
-    if (
-        firstYear < Number.MAX_SAFE_INTEGER
-        && lastYear > Number.MIN_SAFE_INTEGER
-    ) {
-        setStartYear(firstYear + dG4Year)
-        setEndYear(lastYear + dG4Year)
-        setTableYears([firstYear + dG4Year, lastYear + dG4Year])
+
+    if (firstYear !== undefined) {
+        setStartYear(firstYear)
+    }
+    if (lastYear !== undefined) {
+        setEndYear(lastYear)
+    }
+    if (firstYear !== undefined && lastYear !== undefined) {
+        setTableYears([firstYear, lastYear])
     }
 }

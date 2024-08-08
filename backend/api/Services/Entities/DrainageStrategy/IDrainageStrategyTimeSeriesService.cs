@@ -7,8 +7,12 @@ public interface IDrainageStrategyTimeSeriesService
 {
     Task<ProductionProfileOilDto> CreateProductionProfileOil(Guid projectId, Guid caseId, Guid drainageStrategyId, CreateProductionProfileOilDto createProductionProfileOilDto);
     Task<ProductionProfileOilDto> UpdateProductionProfileOil(Guid projectId, Guid caseId, Guid drainageStrategyId, Guid productionProfileOilId, UpdateProductionProfileOilDto updatedProductionProfileOilDto);
+    Task<AdditionalProductionProfileOilDto> CreateAdditionalProductionProfileOil(Guid projectId, Guid caseId, Guid drainageStrategyId, CreateAdditionalProductionProfileOilDto createAdditionalProductionProfileOilDto);
+    Task<AdditionalProductionProfileOilDto> UpdateAdditionalProductionProfileOil(Guid projectId, Guid caseId, Guid drainageStrategyId, Guid additionalProductionProfileOilId, UpdateAdditionalProductionProfileOilDto updatedAdditionalProductionProfileOilDto);
     Task<ProductionProfileGasDto> CreateProductionProfileGas(Guid projectId, Guid caseId, Guid drainageStrategyId, CreateProductionProfileGasDto createProfileDto);
     Task<ProductionProfileGasDto> UpdateProductionProfileGas(Guid projectId, Guid caseId, Guid drainageStrategyId, Guid productionProfileId, UpdateProductionProfileGasDto updatedProductionProfileGasDto);
+    Task<AdditionalProductionProfileGasDto> CreateAdditionalProductionProfileGas(Guid projectId, Guid caseId, Guid drainageStrategyId, CreateAdditionalProductionProfileGasDto createProfileDto);
+    Task<AdditionalProductionProfileGasDto> UpdateAdditionalProductionProfileGas(Guid projectId, Guid caseId, Guid drainageStrategyId, Guid additionalProductionProfileId, UpdateAdditionalProductionProfileGasDto updatedAdditionalProductionProfileGasDto);
     Task<ProductionProfileWaterDto> CreateProductionProfileWater(Guid projectId, Guid caseId, Guid drainageStrategyId, CreateProductionProfileWaterDto createProfileDto);
     Task<ProductionProfileWaterDto> UpdateProductionProfileWater(Guid projectId, Guid caseId, Guid drainageStrategyId, Guid productionProfileId, UpdateProductionProfileWaterDto updatedProductionProfileWaterDto);
     Task<ProductionProfileWaterInjectionDto> CreateProductionProfileWaterInjection(Guid projectId, Guid caseId, Guid drainageStrategyId, CreateProductionProfileWaterInjectionDto createProfileDto);
