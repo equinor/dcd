@@ -54,7 +54,9 @@ public class CaseWithAssetsService : ICaseWithAssetsService
 
             DrainageStrategy = _conversionMapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(drainageStrategy, drainageStrategy.Id, project.PhysicalUnit),
             ProductionProfileOil = ConversionMapToDto<ProductionProfileOil, ProductionProfileOilDto>(drainageStrategy?.ProductionProfileOil, drainageStrategy?.ProductionProfileOil?.Id, project.PhysicalUnit),
+            AdditionalProductionProfileOil = ConversionMapToDto<AdditionalProductionProfileOil, AdditionalProductionProfileOilDto>(drainageStrategy?.AdditionalProductionProfileOil, drainageStrategy?.AdditionalProductionProfileOil?.Id, project.PhysicalUnit),
             ProductionProfileGas = ConversionMapToDto<ProductionProfileGas, ProductionProfileGasDto>(drainageStrategy?.ProductionProfileGas, drainageStrategy?.ProductionProfileGas?.Id, project.PhysicalUnit),
+            AdditionalProductionProfileGas = ConversionMapToDto<AdditionalProductionProfileGas, AdditionalProductionProfileGasDto>(drainageStrategy?.AdditionalProductionProfileGas, drainageStrategy?.AdditionalProductionProfileGas?.Id, project.PhysicalUnit),
             ProductionProfileWater = ConversionMapToDto<ProductionProfileWater, ProductionProfileWaterDto>(drainageStrategy?.ProductionProfileWater, drainageStrategy?.ProductionProfileWater?.Id, project.PhysicalUnit),
             ProductionProfileWaterInjection = ConversionMapToDto<ProductionProfileWaterInjection, ProductionProfileWaterInjectionDto>(drainageStrategy?.ProductionProfileWaterInjection, drainageStrategy?.ProductionProfileWaterInjection?.Id, project.PhysicalUnit),
             FuelFlaringAndLosses = ConversionMapToDto<FuelFlaringAndLosses, FuelFlaringAndLossesDto>(drainageStrategy?.FuelFlaringAndLosses, drainageStrategy?.FuelFlaringAndLosses?.Id, project.PhysicalUnit),

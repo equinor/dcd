@@ -8,9 +8,15 @@ public interface IDrainageStrategyTimeSeriesRepository : IBaseRepository
     ProductionProfileOil CreateProductionProfileOil(ProductionProfileOil productionProfileOil);
     Task<ProductionProfileOil?> GetProductionProfileOil(Guid productionProfileOilId);
     ProductionProfileOil UpdateProductionProfileOil(ProductionProfileOil productionProfileOil);
+    AdditionalProductionProfileOil CreateAdditionalProductionProfileOil(AdditionalProductionProfileOil additionalProductionProfileOil);
+    Task<AdditionalProductionProfileOil?> GetAdditionalProductionProfileOil(Guid additionalProductionProfileOilId);
+    AdditionalProductionProfileOil UpdateAdditionalProductionProfileOil(AdditionalProductionProfileOil additionalProductionProfileOil);
     ProductionProfileGas CreateProductionProfileGas(ProductionProfileGas profile);
     Task<ProductionProfileGas?> GetProductionProfileGas(Guid productionProfileId);
     ProductionProfileGas UpdateProductionProfileGas(ProductionProfileGas productionProfile);
+    AdditionalProductionProfileGas CreateAdditionalProductionProfileGas(AdditionalProductionProfileGas profile);
+    Task<AdditionalProductionProfileGas?> GetAdditionalProductionProfileGas(Guid productionProfileId);
+    AdditionalProductionProfileGas UpdateAdditionalProductionProfileGas(AdditionalProductionProfileGas productionProfile);
     ProductionProfileWater CreateProductionProfileWater(ProductionProfileWater profile);
     Task<ProductionProfileWater?> GetProductionProfileWater(Guid productionProfileId);
     ProductionProfileWater UpdateProductionProfileWater(ProductionProfileWater productionProfile);

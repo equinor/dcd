@@ -26,7 +26,9 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
     useEffect(() => {
         const drainageStrategyData = apiData.drainageStrategy
         const oilProductionData = apiData.productionProfileOil
+        const additionalOilProductionData = apiData.additionalProductionProfileOil
         const gasProductionData = apiData.productionProfileGas
+        const additionalGasProductionData = apiData.additionalProductionProfileGas
         const waterProductionData = apiData.productionProfileWater
         const waterInjectionData = apiData.productionProfileWaterInjection
         const fuelFlaringAndLossesData = apiData.fuelFlaringAndLosses
@@ -51,6 +53,18 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 overridable: false,
             },
             {
+                profileName: "Additional Oil production",
+                unit: `${project?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
+                profile: additionalOilProductionData,
+                resourceName: "additionalProductionProfileOil",
+                resourceId: drainageStrategyData?.id,
+                resourceProfileId: additionalOilProductionData?.id,
+                resourcePropertyKey: "additionalProductionProfileOil",
+                editable: true,
+                overridable: false,
+                hideIfEmpty: true,
+            },
+            {
                 profileName: "Gas production",
                 unit: `${project?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: gasProductionData,
@@ -60,6 +74,18 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 resourcePropertyKey: "productionProfileGas",
                 editable: true,
                 overridable: false,
+            },
+            {
+                profileName: "Additional Gas production",
+                unit: `${project?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
+                profile: additionalGasProductionData,
+                resourceName: "additionalProductionProfileGas",
+                resourceId: drainageStrategyData?.id,
+                resourceProfileId: additionalGasProductionData?.id,
+                resourcePropertyKey: "additionalProductionProfileGas",
+                editable: true,
+                overridable: false,
+                hideIfEmpty: true,
             },
             {
                 profileName: "Water production",

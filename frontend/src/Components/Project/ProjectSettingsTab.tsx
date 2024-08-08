@@ -19,7 +19,7 @@ const ProjectSettingsTab = () => {
     const handlePhysicalUnitChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
             const newPhysicalUnit: Components.Schemas.PhysUnit = Number(e.currentTarget.value) as Components.Schemas.PhysUnit
-            const newProject: Components.Schemas.ProjectDto = { ...project }
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
             newProject.physicalUnit = newPhysicalUnit
             setProjectEdited(newProject)
         }
@@ -28,7 +28,7 @@ const ProjectSettingsTab = () => {
     const handleCurrencyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([1, 2].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
             const newCurrency: Components.Schemas.Currency = Number(e.currentTarget.value) as Components.Schemas.Currency
-            const newProject: Components.Schemas.ProjectDto = { ...project }
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
             newProject.currency = newCurrency
             setProjectEdited(newProject)
         }
@@ -38,7 +38,7 @@ const ProjectSettingsTab = () => {
         if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
             setClassification(Number(e.currentTarget.value))
             const newClassification: Components.Schemas.ProjectClassification = Number(e.currentTarget.value) as unknown as Components.Schemas.ProjectClassification
-            const newProject: Components.Schemas.ProjectDto = { ...project }
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
             newProject.classification = newClassification
             setProjectEdited(newProject)
         }

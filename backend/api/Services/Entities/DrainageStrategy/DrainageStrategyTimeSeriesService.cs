@@ -72,6 +72,42 @@ public class DrainageStrategyTimeSeriesService : IDrainageStrategyTimeSeriesServ
         );
     }
 
+    public async Task<AdditionalProductionProfileOilDto> CreateAdditionalProductionProfileOil(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        CreateAdditionalProductionProfileOilDto createAdditionalProductionProfileOilDto
+    )
+    {
+        return await CreateDrainageStrategyProfile<AdditionalProductionProfileOil, AdditionalProductionProfileOilDto, CreateAdditionalProductionProfileOilDto>(
+            projectId,
+            caseId,
+            drainageStrategyId,
+            createAdditionalProductionProfileOilDto,
+            _repository.CreateAdditionalProductionProfileOil,
+            DrainageStrategyProfileNames.AdditionalProductionProfileOil
+        );
+    }
+
+    public async Task<AdditionalProductionProfileOilDto> UpdateAdditionalProductionProfileOil(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid additionalproductionProfileOilId,
+        UpdateAdditionalProductionProfileOilDto updatedAdditionalProductionProfileOilDto
+    )
+    {
+        return await UpdateDrainageStrategyProfile<AdditionalProductionProfileOil, AdditionalProductionProfileOilDto, UpdateAdditionalProductionProfileOilDto>(
+            projectId,
+            caseId,
+            drainageStrategyId,
+            additionalproductionProfileOilId,
+            updatedAdditionalProductionProfileOilDto,
+            _repository.GetAdditionalProductionProfileOil,
+            _repository.UpdateAdditionalProductionProfileOil
+        );
+    }
+
     public async Task<ProductionProfileGasDto> CreateProductionProfileGas(
         Guid projectId,
         Guid caseId,
@@ -105,6 +141,42 @@ public class DrainageStrategyTimeSeriesService : IDrainageStrategyTimeSeriesServ
             updatedProductionProfileGasDto,
             _repository.GetProductionProfileGas,
             _repository.UpdateProductionProfileGas
+        );
+    }
+
+    public async Task<AdditionalProductionProfileGasDto> CreateAdditionalProductionProfileGas(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        CreateAdditionalProductionProfileGasDto createProfileDto
+    )
+    {
+        return await CreateDrainageStrategyProfile<AdditionalProductionProfileGas, AdditionalProductionProfileGasDto, CreateAdditionalProductionProfileGasDto>(
+            projectId,
+            caseId,
+            drainageStrategyId,
+            createProfileDto,
+            _repository.CreateAdditionalProductionProfileGas,
+            DrainageStrategyProfileNames.AdditionalProductionProfileGas
+        );
+    }
+
+    public async Task<AdditionalProductionProfileGasDto> UpdateAdditionalProductionProfileGas(
+        Guid projectId,
+        Guid caseId,
+        Guid drainageStrategyId,
+        Guid productionProfileId,
+        UpdateAdditionalProductionProfileGasDto updatedAdditionalProductionProfileGasDto
+    )
+    {
+        return await UpdateDrainageStrategyProfile<AdditionalProductionProfileGas, AdditionalProductionProfileGasDto, UpdateAdditionalProductionProfileGasDto>(
+            projectId,
+            caseId,
+            drainageStrategyId,
+            productionProfileId,
+            updatedAdditionalProductionProfileGasDto,
+            _repository.GetAdditionalProductionProfileGas,
+            _repository.UpdateAdditionalProductionProfileGas
         );
     }
 
