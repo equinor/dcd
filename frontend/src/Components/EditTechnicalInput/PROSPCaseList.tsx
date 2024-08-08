@@ -304,7 +304,7 @@ const PROSPCaseList = ({
         gridRef.current = params.api
     }
 
-    const gridDataToDtos = useCallback((p: Components.Schemas.ProjectDto) => {
+    const gridDataToDtos = (p: Components.Schemas.ProjectDto) => {
         const dtos: any[] = []
         gridRef.current.forEachNode((node: RowNode<RowData>) => {
             const dto: any = {}
@@ -326,7 +326,7 @@ const PROSPCaseList = ({
             }
         })
         return dtos
-    }, [gridRef])
+    }
 
     const save = useCallback(async (p: Components.Schemas.ProjectDto) => {
         const dtos = gridDataToDtos(p)
