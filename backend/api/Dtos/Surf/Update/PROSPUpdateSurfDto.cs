@@ -5,7 +5,6 @@ namespace api.Dtos;
 
 public class PROSPUpdateSurfDto : BaseUpdateSurfDto
 {
-    public UpdateSurfCostProfileDto? CostProfile { get; set; }
     public DateTimeOffset? ProspVersion { get; set; }
 }
 
