@@ -9,7 +9,7 @@ import Grid from "@mui/material/Grid"
 import { useModalContext } from "../../../../Context/ModalContext"
 import { useAppContext } from "../../../../Context/AppContext"
 import CasesList from "../Components/CasesList"
-import { Timeline } from "../Sidebar"
+import { Timeline, Header } from "../Sidebar"
 
 const CasesDetails: React.FC = () => {
     const { sidebarOpen } = useAppContext()
@@ -19,9 +19,9 @@ const CasesDetails: React.FC = () => {
         <>
 
             <Grid item xs={12} container alignItems="center" justifyContent={sidebarOpen ? "space-between" : "center"}>
-                <Grid item flex={sidebarOpen ? 1 : undefined} sx={{ padding: "8px" }}>
+                <Header>
                     <Typography variant="overline">Cases</Typography>
-                </Grid>
+                </Header>
                 {sidebarOpen && (
                     <Grid item>
                         <Tooltip title="Add new case">

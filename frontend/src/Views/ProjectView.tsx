@@ -1,16 +1,17 @@
 import { useEffect } from "react"
-import { Tabs } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useLocation } from "react-router-dom"
+import styled from "styled-components"
 import ProjectOverviewTab from "../Components/Project/ProjectOverviewTab"
 import ProjectCompareCasesTab from "../Components/Project/CompareCasesTab/CompareCasesTabOverview"
 import ProjectSettingsTab from "../Components/Project/ProjectSettingsTab"
 import EditHistoryOverviewTab from "../Components/Project/EditHistoryOverviewTab"
 import { useProjectContext } from "../Context/ProjectContext"
+import TechnicalInput from "../Components/Project/CompareCasesTab/Tabs/TechnicalInput"
 
-const {
-    List, Tab, Panels, Panel,
-} = Tabs
+const Wrapper = styled(Grid)`
+    padding: 0 16px;
+`
 
 const ProjectView = () => {
     const { activeTabProject, setActiveTabProject } = useProjectContext()
@@ -22,35 +23,23 @@ const ProjectView = () => {
     }, [activeTabProjectParam])
 
     return (
-        <Grid container spacing={1} alignSelf="flex-start">
-            <Grid item xs={12}>
-                <Tabs activeTab={activeTabProject} onChange={setActiveTabProject}>
-                    <List>
-                        <Tab>Overview </Tab>
-                        <Tab>Compare cases</Tab>
-                        {/* comment out for qa release */}
-                        <Tab>Case edit history</Tab>
-                        <Tab>Settings</Tab>
-                    </List>
-                    <Panels>
-                        <Panel>
-                            <ProjectOverviewTab />
-                        </Panel>
-                        <Panel>
-                            <ProjectCompareCasesTab />
-                        </Panel>
-                        {/* comment out for qa release */}
-                        <Panel>
-                            <EditHistoryOverviewTab />
-                        </Panel>
-                        {/* comment out for qa release */}
-                        <Panel>
-                            <ProjectSettingsTab />
-                        </Panel>
-                    </Panels>
-                </Tabs>
-            </Grid>
-        </Grid>
+        <Wrapper item xs={12}>
+            <div role="tabpanel" hidden={activeTabProject !== 0}>
+                <ProjectOverviewTab />
+            </div>
+            <div role="tabpanel" hidden={activeTabProject !== 1}>
+                <ProjectCompareCasesTab />
+            </div>
+            <div role="tabpanel" hidden={activeTabProject !== 2}>
+                <TechnicalInput />
+            </div>
+            <div role="tabpanel" hidden={activeTabProject !== 3}>
+                <EditHistoryOverviewTab />
+            </div>
+            <div role="tabpanel" hidden={activeTabProject !== 4}>
+                <ProjectSettingsTab />
+            </div>
+        </Wrapper>
     )
 }
 

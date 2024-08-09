@@ -20,8 +20,6 @@ const Kpis: React.FC<KpisProps> = ({ npvChartData, breakEvenChartData }) => {
                     barProfiles={["npv"]}
                     barNames={["NPV"]}
                     unit="mill USD"
-                    height={400}
-                    width="100%"
                     enableLegend={false}
                 />
             </Grid>
@@ -33,8 +31,6 @@ const Kpis: React.FC<KpisProps> = ({ npvChartData, breakEvenChartData }) => {
                     barProfiles={["breakEven"]}
                     barNames={["Break even"]}
                     unit="USD/bbl"
-                    width="100%"
-                    height={400}
                     enableLegend={false}
                 />
             </Grid>

@@ -1,6 +1,7 @@
 import { FC } from "react"
 import { QueryClient, QueryClientProvider } from "react-query"
 import { ReactQueryDevtools } from "react-query/devtools"
+import { ThemeProvider, createTheme } from "@mui/material"
 import { APP_VERSION } from "./version"
 import AppRouter from "./Router"
 import { resolveConfiguration } from "./Utils/config"
@@ -15,6 +16,16 @@ import Styles from "./styles"
 
 const AppComponent: FC = () => {
     const queryClient = new QueryClient()
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: "#007079",
+            },
+            secondary: {
+                main: "#FF9100",
+            },
+        },
+    })
 
     const config = resolveConfiguration(EnvironmentVariables.ENVIRONMENT)
 
@@ -26,17 +37,19 @@ const AppComponent: FC = () => {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools />
-            <AppContextProvider>
-                <ProjectContextProvider>
-                    <CaseContextProvider>
-                        <ModalContextProvider>
-                            <Styles />
-                            <AppRouter />
-                        </ModalContextProvider>
-                    </CaseContextProvider>
-                </ProjectContextProvider>
-            </AppContextProvider>
+            <ThemeProvider theme={theme}>
+                <ReactQueryDevtools />
+                <AppContextProvider>
+                    <ProjectContextProvider>
+                        <CaseContextProvider>
+                            <ModalContextProvider>
+                                <Styles />
+                                <AppRouter />
+                            </ModalContextProvider>
+                        </CaseContextProvider>
+                    </ProjectContextProvider>
+                </AppContextProvider>
+            </ThemeProvider>
         </QueryClientProvider>
     )
 }

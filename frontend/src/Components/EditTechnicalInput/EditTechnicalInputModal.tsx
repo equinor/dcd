@@ -3,13 +3,8 @@ import {
     Button,
     Progress,
     Tabs,
-    Typography,
 } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import Dialog from "@mui/material/Dialog"
-import DialogTitle from "@mui/material/DialogTitle"
-import DialogContent from "@mui/material/DialogContent"
-import DialogActions from "@mui/material/DialogActions"
 import WellCostsTab from "./WellCostsTab"
 import PROSPTab from "./PROSPTab"
 import { EMPTY_GUID } from "../../Utils/constants"
@@ -157,83 +152,75 @@ const EditTechnicalInputModal = () => {
     if (!explorationOperationalWellCosts || !developmentOperationalWellCosts) { return null }
 
     return (
-        <Dialog
-            open={technicalModalIsOpen}
-            fullWidth
-            maxWidth="lg"
-            className="ConceptApp ag-theme-alpine-fusion"
-        >
-            <DialogTitle><Typography variant="h2" as="p">Technical Input</Typography></DialogTitle>
-            <DialogContent>
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <Tabs activeTab={activeTab} onChange={setActiveTab}>
-                            <List>
-                                <Tab>Well Costs</Tab>
-                                <Tab>PROSP</Tab>
-                                <Tab>CO2</Tab>
-                            </List>
-                            <Panels>
-                                <Panel>
-                                    <WellCostsTab
-                                        developmentOperationalWellCosts={developmentOperationalWellCosts}
-                                        setDevelopmentOperationalWellCosts={setDevelopmentOperationalWellCosts}
-                                        explorationOperationalWellCosts={explorationOperationalWellCosts}
-                                        setExplorationOperationalWellCosts={setExplorationOperationalWellCosts}
-                                        explorationWells={explorationWells}
-                                        setExplorationWells={setExplorationWells}
-                                        wellProjectWells={wellProjectWells}
-                                        setWellProjectWells={setWellProjectWells}
-                                        setDeletedWells={setDeletedWells}
-                                    />
-                                </Panel>
-                                <Panel>
-                                    <PROSPTab />
-                                </Panel>
-                                <Panel>
-                                    <CO2Tab />
-                                </Panel>
-                            </Panels>
-                        </Tabs>
-                    </Grid>
+        <div>
+            <Grid container>
+                <Grid item xs={12}>
+                    <Tabs activeTab={activeTab} onChange={setActiveTab}>
+                        <List>
+                            <Tab>Well Costs</Tab>
+                            <Tab>PROSP</Tab>
+                            <Tab>CO2</Tab>
+                        </List>
+                        <Panels>
+                            <Panel>
+                                <WellCostsTab
+                                    developmentOperationalWellCosts={developmentOperationalWellCosts}
+                                    setDevelopmentOperationalWellCosts={setDevelopmentOperationalWellCosts}
+                                    explorationOperationalWellCosts={explorationOperationalWellCosts}
+                                    setExplorationOperationalWellCosts={setExplorationOperationalWellCosts}
+                                    explorationWells={explorationWells}
+                                    setExplorationWells={setExplorationWells}
+                                    wellProjectWells={wellProjectWells}
+                                    setWellProjectWells={setWellProjectWells}
+                                    setDeletedWells={setDeletedWells}
+                                />
+                            </Panel>
+                            <Panel>
+                                <PROSPTab />
+                            </Panel>
+                            <Panel>
+                                <CO2Tab />
+                            </Panel>
+                        </Panels>
+                    </Tabs>
                 </Grid>
-            </DialogContent>
-            <DialogActions>
-                <Grid container spacing={1} justifyContent="flex-end">
+            </Grid>
+
+            <Grid container justifyContent="flex-end">
+                <Grid item>
+                    <Button
+                        type="button"
+                        variant="outlined"
+                        onClick={handleCancel}
+                    >
+                        {(editMode || editTechnicalInput) ? "Cancel" : "Close"}
+                    </Button>
+                </Grid>
+                {(editMode || editTechnicalInput) && !isSaving && (
+                    <>
+                        <Grid item>
+                            <Button onClick={handleSave}>Save</Button>
+                        </Grid>
+                        <Grid item>
+                            <Button onClick={handleSaveAndClose}>Save and Close</Button>
+                        </Grid>
+                    </>
+                )}
+                {(editMode || editTechnicalInput) && isSaving && (
                     <Grid item>
-                        <Button
-                            type="button"
-                            variant="outlined"
-                            onClick={handleCancel}
-                        >
-                            {(editMode || editTechnicalInput) ? "Cancel" : "Close"}
+                        <Button>
+                            <Progress.Dots />
                         </Button>
                     </Grid>
-                    {(editMode || editTechnicalInput) && !isSaving && (
-                        <>
-                            <Grid item>
-                                <Button onClick={handleSave}>Save</Button>
-                            </Grid>
-                            <Grid item>
-                                <Button onClick={handleSaveAndClose}>Save and Close</Button>
-                            </Grid>
-                        </>
-                    )}
-                    {(editMode || editTechnicalInput) && isSaving && (
-                        <Grid item>
-                            <Button>
-                                <Progress.Dots />
-                            </Button>
-                        </Grid>
-                    )}
-                    {!(editMode || editTechnicalInput) && (
-                        <Grid item>
-                            <Button onClick={() => setEditTechnicalInput(true)}>Edit</Button>
-                        </Grid>
-                    )}
-                </Grid>
-            </DialogActions>
-        </Dialog>
+                )}
+                {!(editMode || editTechnicalInput) && (
+                    <Grid item>
+                        <Button onClick={() => setEditTechnicalInput(true)}>Edit</Button>
+                    </Grid>
+                )}
+            </Grid>
+        </div>
+
     )
 }
 

@@ -16,6 +16,8 @@ const Wrapper = styled.div`
     gap: 10px;
     margin-bottom: 30px; 
     width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
     flex-wrap: wrap;
 `
 
@@ -40,9 +42,7 @@ const GalleryControls = styled.div`
     position: absolute;
     top: 0;
     right: 0;
-    padding: 10px;
     gap: 5px;
-    
     ${ImageWithHover}:hover & {
         display: flex;
     }
@@ -52,8 +52,6 @@ const GalleryLabel = styled(Typography) <{ $warning: boolean }>`
     font-size: 0.750rem;
     font-weight: 500;
     line-height: 1.333em;
-    margin-left: 8px;
-    margin-right: 8px;
     color: ${({ $warning }) => ($warning ? "red" : "rgba(111, 111, 111, 1)")};
 `
 

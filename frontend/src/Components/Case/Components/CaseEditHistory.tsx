@@ -8,7 +8,7 @@ import { useAppContext } from "../../../Context/AppContext"
 import useDataEdits from "../../../Hooks/useDataEdits"
 
 const EditInstanceWrapper = styled.div <{ $isActive: boolean }>`
-    padding: 10px 5px 10px 15px;
+    padding: 10px 5px 10px 10px;
     border-left: 2px solid ${({ $isActive }) => ($isActive ? "#007079" : "#DCDCDC")};
 `
 

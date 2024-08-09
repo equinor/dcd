@@ -257,7 +257,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     if (activeTabCase !== 7) { return null }
 
     return (
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
                 <SwitchableNumberInput
                     addEdit={addEdit}

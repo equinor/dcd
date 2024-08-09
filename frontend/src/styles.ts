@@ -15,38 +15,17 @@ export default createGlobalStyle`
 
     * {
         scrollbar-width: thin;
+        box-sizing: border-box!important;
     }
 
     .App {
         font-family: Equinor;
     }
 
-    .ConceptApp.MainGrid {
-        height: calc(100vh - 60px);
-        width: 100vw;
-        overflow-x: hidden;
-        
-    }
-
     div[class*="TabList"][role="tablist"] {
         position: relative;
         z-index: 1;
         scrollbar-width: none;
-    }
-    div[class*="TabList"][role="tablist"]:after {
-        content: '';
-        display: block;
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        height: 2px;
-        background-color: var(--eds_ui_background__medium,rgba(220,220,220,1));
-        z-index: -1;
-    }
-
-    div[class*="TabPanel"][role="tabpanel"] {
-        height: calc(100vh - (16px * 4) - 48px - var(--header-height) - var(--controls-height));
-        overflow: auto;
     }
 
     div[role="rowgroup"] div[role="row"]:last-of-type {
@@ -70,10 +49,6 @@ export default createGlobalStyle`
         }
     }
 
-    .ConceptApp .MuiDialogActions-root {
-        padding: 20px 24px;
-    }
-
     .ag-theme-alpine-fusion .ag-row-odd {
         background-color: var(--ag-background-color);
     }
@@ -85,12 +60,6 @@ export default createGlobalStyle`
     .ag-theme-alpine-fusion [role="gridcell"].editableCell:not(.ag-cell-range-selected) {
         background-color: var(--UI-Background-Light, #F7F7F7);
         border-right: 1px solid #DBDBDB;
-    }
-
-    .ContentOverview {
-        height: calc(100vh - var(--header-height));
-        padding: 16px;
-        overflow: hidden;
     }
 
     .ag-aria-description-container {

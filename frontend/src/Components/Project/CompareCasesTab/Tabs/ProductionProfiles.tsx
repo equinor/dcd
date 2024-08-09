@@ -19,7 +19,6 @@ const ProductionProfiles: React.FC<ProductionProfilesProps> = ({ productionProfi
                 "Gas production (GSm3)",
                 "Total exported volumes (MSm3)",
             ]}
-            height={432}
         />
     )
 }

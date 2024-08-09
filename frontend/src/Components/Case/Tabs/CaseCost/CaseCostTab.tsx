@@ -10,7 +10,6 @@ import { useQueryClient, useQuery } from "react-query"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
-import { useModalContext } from "../../../../Context/ModalContext"
 import CaseCostHeader from "./CaseCostHeader"
 import CessationCosts from "./Tables/CessationCosts"
 import DevelopmentWellCosts from "./Tables/DevelopmentWellCosts"
@@ -109,7 +108,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     return (
-        <Grid container spacing={3}>
+        <Grid container spacing={2}>
             <CaseCostHeader
                 startYear={startYear}
                 endYear={endYear}

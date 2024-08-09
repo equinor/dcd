@@ -3,13 +3,6 @@ import { bookmark_filled, bookmark_outlined } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import styled from "styled-components"
 
-export const SideBarRefCaseWrapper = styled.div`
-    justify-content: center;
-    align-items: center;
-    display: inline-flex;
-    margin-left: 1.1rem;
-`
-
 const CaseViewIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
     margin-right: 0.2rem;
@@ -23,8 +16,7 @@ const CasesTableIcon = styled(Icon)`
 
 const SideBarIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
-    margin-right: 0.2rem;
-    margin-left: -1.2rem;
+    margin-left: 0.4rem;
 `
 
 interface PropsChooseRefCase {
