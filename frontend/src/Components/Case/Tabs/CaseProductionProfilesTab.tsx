@@ -139,7 +139,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     return (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} style={{ width: "100%" /* workaround to make AgChart behave */ }}>
             <Grid item xs={12} md={6} lg={3}>
                 <SwitchableNumberInput
                     addEdit={addEdit}
@@ -274,7 +274,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
                     </Grid>
                 )
             }
-            <Grid item xs={12}>
+            <Grid item xs={12} style={{ width: "calc(100%+  16px)" }}>
                 <CaseProductionProfiles
                     apiData={apiData}
                     tableYears={tableYears}

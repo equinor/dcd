@@ -3,33 +3,73 @@ import { useQuery, useQueryClient } from "react-query"
 import {
     Icon, Button, Input, Typography,
 } from "@equinor/eds-core-react"
-import { arrow_back } from "@equinor/eds-icons"
-import Grid from "@mui/material/Grid"
-import { useNavigate } from "react-router-dom"
+import {
+    arrow_back,
+    more_vertical,
+    visibility,
+    edit,
+} from "@equinor/eds-icons"
+import { useNavigate, useLocation } from "react-router-dom"
+import Tabs from "@mui/material/Tabs"
+import Tab from "@mui/material/Tab"
+import styled from "styled-components"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { GetCaseService } from "../../Services/CaseService"
 import { useAppContext } from "../../Context/AppContext"
 import { ChooseReferenceCase, ReferenceCaseIcon } from "../Case/Components/ReferenceCaseIcon"
 import Classification from "./Classification"
-import { EMPTY_GUID } from "../../Utils/constants"
+import { EMPTY_GUID, caseTabNames } from "../../Utils/constants"
 import { GetProjectService } from "../../Services/ProjectService"
 import useDataEdits from "../../Hooks/useDataEdits"
+import { useCaseContext } from "../../Context/CaseContext"
+import CaseDropMenu from "../Case/Components/CaseDropMenu"
+import { formatDateAndTime } from "../../Utils/common"
+import UndoControls from "./UndoControls"
 
+const Header = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 0 5px;
+
+    & div {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+`
+const DropButton = styled(Icon)`
+    cursor: pointer;
+    padding: 0 5px;
+`
 interface props {
     backToProject: () => void;
     projectId: string;
     caseId: string;
+    caseLastUpdated: string;
+    handleEdit: () => void;
 }
 
-const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => {
+const CaseControls: React.FC<props> = ({
+    backToProject,
+    projectId,
+    caseId,
+    caseLastUpdated,
+    handleEdit,
+}) => {
     const nameInputRef = useRef<HTMLInputElement>(null)
     const { project, setProject } = useProjectContext()
     const { setSnackBarMessage, editMode } = useAppContext()
     const { addEdit } = useDataEdits()
     const navigate = useNavigate()
     const queryClient = useQueryClient()
+    const { activeTabCase } = useCaseContext()
+    const location = useLocation()
 
     const [caseName, setCaseName] = useState("")
+    const [menuAnchorEl, setMenuAnchorEl] = useState<any | null>(null)
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
     const fetchCaseData = async () => {
         const caseService = await GetCaseService()
@@ -296,39 +336,95 @@ const CaseControls: React.FC<props> = ({ backToProject, projectId, caseId }) => 
         }
     }
 
+    const handleTabChange = (index: number) => {
+        const projectUrl = location.pathname.split("/case")[0]
+        navigate(`${projectUrl}/case/${caseId}/${caseTabNames[index]}`)
+    }
+
     return (
         <>
-            <Grid item xs={0}>
-                <Button onClick={backToProject} variant="ghost_icon">
-                    <Icon data={arrow_back} />
-                </Button>
-            </Grid>
+            <Header>
+                <div>
+                    <Button onClick={backToProject} variant="ghost_icon">
+                        <Icon data={arrow_back} />
+                    </Button>
+                    <div>
+                        {editMode ? (
+                            <>
+                                <ChooseReferenceCase
+                                    projectRefCaseId={project?.referenceCaseId}
+                                    projectCaseId={caseId}
+                                    handleReferenceCaseChange={() => handleReferenceCaseChange(caseId)}
+                                />
+                                <Input
+                                    id="caseName"
+                                    ref={nameInputRef}
+                                    type="text"
+                                    value={caseName}
+                                    onChange={(e: any) => setCaseName(e.target.value)}
+                                    onBlur={() => handleCaseNameChange(nameInputRef.current?.value || "")}
+                                />
+                            </>
+                        ) : (
+                            <>
+                                {project?.referenceCaseId === caseId && <ReferenceCaseIcon />}
+                                <Typography variant="h4">{caseData.name}</Typography>
+                                <Classification />
+                            </>
+                        )}
+                    </div>
+                </div>
+                <div>
+                    {!editMode
+                        ? (
+                            <Typography variant="caption">
+                                Case last updated
+                                {" "}
+                                {formatDateAndTime(caseLastUpdated)}
+                            </Typography>
+                        )
+                        : <UndoControls />}
+                    <Button onClick={handleEdit} variant={editMode ? "outlined" : "contained"}>
 
-            <Grid item xs display="flex" alignItems="center" gap={1}>
-                {editMode ? (
-                    <>
-                        <ChooseReferenceCase
-                            projectRefCaseId={project?.referenceCaseId}
-                            projectCaseId={caseId}
-                            handleReferenceCaseChange={() => handleReferenceCaseChange(caseId)}
+                        {editMode && (
+                            <>
+                                <Icon data={visibility} />
+                                <span>View</span>
+                            </>
+                        )}
+                        {!editMode && (
+                            <>
+                                <Icon data={edit} />
+                                <span>Edit</span>
+                            </>
+                        )}
+
+                    </Button>
+                    <div>
+                        <DropButton
+                            ref={setMenuAnchorEl}
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            data={more_vertical}
+                            size={32}
                         />
-                        <Input
-                            id="caseName"
-                            ref={nameInputRef}
-                            type="text"
-                            value={caseName}
-                            onChange={(e: any) => setCaseName(e.target.value)}
-                            onBlur={() => handleCaseNameChange(nameInputRef.current?.value || "")}
-                        />
-                    </>
-                ) : (
-                    <>
-                        {project?.referenceCaseId === caseId && <ReferenceCaseIcon />}
-                        <Typography variant="h4">{caseData.name}</Typography>
-                        <Classification />
-                    </>
-                )}
-            </Grid>
+                    </div>
+                    <CaseDropMenu
+                        isMenuOpen={isMenuOpen}
+                        setIsMenuOpen={setIsMenuOpen}
+                        menuAnchorEl={menuAnchorEl}
+                        caseId={caseId}
+                    />
+                </div>
+            </Header>
+
+            <Tabs
+                value={activeTabCase}
+                onChange={(_, index) => handleTabChange(index)}
+                variant="scrollable"
+            >
+                {caseTabNames.map((tabName) => <Tab key={tabName} label={tabName} />)}
+            </Tabs>
+
         </>
     )
 }
