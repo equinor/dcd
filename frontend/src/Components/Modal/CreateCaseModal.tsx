@@ -114,7 +114,7 @@ const CreateCaseModal = () => {
                 throw new Error("No project found")
             }
 
-            let projectResult: Components.Schemas.ProjectDto
+            let projectResult: Components.Schemas.ProjectWithAssetsDto
             if (caseModalEditMode && projectCase && projectCase.id) {
                 const newCase = { ...projectCase }
                 newCase.name = caseName

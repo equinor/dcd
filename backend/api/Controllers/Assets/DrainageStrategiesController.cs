@@ -62,6 +62,27 @@ public class DrainageStrategiesController : ControllerBase
         return await _drainageStrategyTimeSeriesService.UpdateProductionProfileOil(projectId, caseId, drainageStrategyId, profileId, dto);
     }
 
+    [HttpPost("{drainageStrategyId}/additional-production-profile-oil/")]
+    public async Task<AdditionalProductionProfileOilDto> CreateAdditionalProductionProfileOil(
+    [FromRoute] Guid projectId,
+    [FromRoute] Guid caseId,
+    [FromRoute] Guid drainageStrategyId,
+    [FromBody] CreateAdditionalProductionProfileOilDto dto)
+    {
+        return await _drainageStrategyTimeSeriesService.CreateAdditionalProductionProfileOil(projectId, caseId, drainageStrategyId, dto);
+    }
+
+    [HttpPut("{drainageStrategyId}/additional-production-profile-oil/{profileId}")]
+    public async Task<AdditionalProductionProfileOilDto> UpdateAdditionalProductionProfileOil(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromRoute] Guid profileId,
+        [FromBody] UpdateAdditionalProductionProfileOilDto dto)
+    {
+        return await _drainageStrategyTimeSeriesService.UpdateAdditionalProductionProfileOil(projectId, caseId, drainageStrategyId, profileId, dto);
+    }
+
     [HttpPost("{drainageStrategyId}/production-profile-gas/")]
     public async Task<ProductionProfileGasDto> CreateProductionProfileGas(
         [FromRoute] Guid projectId,
@@ -81,6 +102,27 @@ public class DrainageStrategiesController : ControllerBase
         [FromBody] UpdateProductionProfileGasDto dto)
     {
         return await _drainageStrategyTimeSeriesService.UpdateProductionProfileGas(projectId, caseId, drainageStrategyId, profileId, dto);
+    }
+
+    [HttpPost("{drainageStrategyId}/additional-production-profile-gas/")]
+    public async Task<AdditionalProductionProfileGasDto> CreateAdditionalProductionProfileGas(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromBody] CreateAdditionalProductionProfileGasDto dto)
+    {
+        return await _drainageStrategyTimeSeriesService.CreateAdditionalProductionProfileGas(projectId, caseId, drainageStrategyId, dto);
+    }
+
+    [HttpPut("{drainageStrategyId}/additional-production-profile-gas/{profileId}")]
+    public async Task<AdditionalProductionProfileGasDto> UpdateAdditionalProductionProfileGas(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid drainageStrategyId,
+        [FromRoute] Guid profileId,
+        [FromBody] UpdateAdditionalProductionProfileGasDto dto)
+    {
+        return await _drainageStrategyTimeSeriesService.UpdateAdditionalProductionProfileGas(projectId, caseId, drainageStrategyId, profileId, dto);
     }
 
     [HttpPost("{drainageStrategyId}/production-profile-water/")]
