@@ -333,7 +333,12 @@ const PROSPCaseList = ({
         if (dtos.length > 0) {
             setIsApplying(true)
             const newProject = await (await GetProspService()).importFromSharepoint(p.id!, dtos)
-            setProject(newProject)
+            const noSharePointFileNewProject: any = newProject
+            if (noSharePointFileNewProject.result) {
+                setProject(noSharePointFileNewProject.result)
+            } else {
+                setProject(newProject)
+            }
             setIsApplying(false)
         }
     }, [])
