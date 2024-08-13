@@ -77,7 +77,7 @@ namespace api.Helpers
             var oilIncome = new TimeSeries<double>
             {
                 StartYear = totalOilProduction.StartYear,
-                Values = totalOilProduction.Values.Select(v => v * oilPrice).ToArray()
+                Values = totalOilProduction.Values.Select(v => v / 1_000_000 * oilPrice).ToArray()
             };
 
             // Calculate income from gas
@@ -100,7 +100,7 @@ namespace api.Helpers
             var gasIncome = new TimeSeries<double>
             {
                 StartYear = totalGasProduction.StartYear,
-                Values = totalGasProduction.Values.Select(v => v * gasPrice * exchangeRate).ToArray()
+                Values = totalGasProduction.Values.Select(v => v / 1_000_000_000 * gasPrice * exchangeRate).ToArray()
             };
 
             // Merge the income profiles
