@@ -1,5 +1,6 @@
 using api.Authorization;
 using api.Context;
+using api.Dtos;
 using api.Helpers;
 using api.Mappings;
 using api.Repositories;
@@ -231,6 +232,7 @@ builder.Services.AddScoped<ISurfTimeSeriesRepository, SurfTimeSeriesRepository>(
 
 builder.Services.AddScoped<IWellRepository, WellRepository>();
 builder.Services.AddScoped<ICaseWithAssetsRepository, CaseWithAssetsRepository>();
+builder.Services.AddScoped<ProjectWithAssetsDto>();
 
 
 
@@ -291,6 +293,7 @@ builder.Services.AddScoped(x => new BlobServiceClient(azureBlobStorageConnection
 
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
+builder.Services.AddScoped<EconomicsCalculationHelper>();
 
 builder.Host.UseSerilog();
 

@@ -17,6 +17,9 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
     private readonly DcdDbContext _context;
     private readonly IMapper _mapper;
     private readonly EconomicsCalculationHelper _economicsCalculationHelper;
+        private readonly ProjectWithAssetsDto _projectWithAssetsDto;
+
+
 
     public FuelFlaringLossesProfileService(
         DcdDbContext context,
@@ -24,9 +27,10 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
         IProjectService projectService,
         ITopsideService topsideService,
         IDrainageStrategyService drainageStrategyService,
-        IStudyCostProfileService studyCostProfileService, // Add this dependency
-        IOpexCostProfileService OpexCostProfile,
-        IMapper mapper)
+        IMapper mapper,
+        EconomicsCalculationHelper economicsCalculationHelper,
+        ProjectWithAssetsDto projectWithAssetsDto) // Add this parameter
+
     {
         _context = context;
         _caseService = caseService;
@@ -34,7 +38,8 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
         _topsideService = topsideService;
         _drainageStrategyService = drainageStrategyService;
         _mapper = mapper;
-        _economicsCalculationHelper = new EconomicsCalculationHelper(studyCostProfileService, OpexCostProfile); // Instantiate the helper
+        _economicsCalculationHelper = economicsCalculationHelper;
+        _projectWithAssetsDto = projectWithAssetsDto; // Initialize this
 
     }
 
@@ -44,7 +49,8 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
         var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
         var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
         var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
-        var studycost = await _economicsCalculationHelper.CalculateTotalCostAsync(caseItem); // Pass the required repositories or mock them for testing
+
+        var cashflow = await _economicsCalculationHelper.CalculateProjectCashFlowAsync(caseItem, drainageStrategy, 75, 0.35, 8.5); // Use the instance
 
         var fuelConsumptions =
             EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
