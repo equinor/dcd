@@ -2,6 +2,7 @@ using api.Dtos;
 using api.Models;
 using api.Repositories;
 using api.Services;
+using api.Services.GenerateCostProfiles;
 
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,9 @@ namespace api.Helpers
         private readonly ITopsideRepository _topsideRepository;
         private readonly ITransportRepository _transportRepository;
         private readonly IWellProjectRepository _wellProjectRepository; // Add this if it exists
+        private readonly ICo2IntensityTotalService _co2IntensityTotalService; // Add this
+        private readonly IProjectService _projectService;
+
 
         // Constructor with dependency injection
         public EconomicsCalculationHelper(
@@ -39,7 +43,9 @@ namespace api.Helpers
             ISurfRepository surfRepository,
             ITopsideRepository topsideRepository,
             ITransportRepository transportRepository,
-            IWellProjectRepository wellProjectRepository) // Add this to the constructor
+            IWellProjectRepository wellProjectRepository,
+            ICo2IntensityTotalService co2IntensityTotalService,
+            IProjectService projectService) // Add this to the constructor
         {
             _studyCostProfileService = studyCostProfileService ?? throw new ArgumentNullException(nameof(studyCostProfileService));
             _opexCostProfileService = opexCostProfileService ?? throw new ArgumentNullException(nameof(opexCostProfileService));
@@ -52,55 +58,66 @@ namespace api.Helpers
             _topsideRepository = topsideRepository ?? throw new ArgumentNullException(nameof(topsideRepository));
             _transportRepository = transportRepository ?? throw new ArgumentNullException(nameof(transportRepository));
             _wellProjectRepository = wellProjectRepository ?? throw new ArgumentNullException(nameof(wellProjectRepository)); // Initialize this
+            _co2IntensityTotalService = co2IntensityTotalService ?? throw new ArgumentNullException(nameof(co2IntensityTotalService)); // Initialize this
+            _projectService = projectService;
+
         }
 
         private static TimeSeries<double> CalculateIncome(DrainageStrategy drainageStrategy, double oilPrice, double gasPrice, double exchangeRate)
         {
+            // divides both totalOil and totalGas by 1 million so that the value is saved in millions just as cost profiles
+            var cubicMetersToBarrelsFactor = 6.29; // 1 cubic meter = 6.28981 barrels
+            var million = 1E6; // Factor for million conversion
 
             // Calculate income from oil
             var oilProfile = drainageStrategy.ProductionProfileOil?.Values ?? Array.Empty<double>();
             var additionalOilProfile = drainageStrategy.AdditionalProductionProfileOil?.Values ?? Array.Empty<double>();
 
-            var productionProfileOil = new TimeSeries<double>
-            {
-                StartYear = drainageStrategy.ProductionProfileOil?.StartYear ?? 0,
-                Values = oilProfile
-            };
+            var totalOilProduction = TimeSeriesCost.MergeCostProfiles(
+                new TimeSeries<double>
+                {
+                    StartYear = drainageStrategy.ProductionProfileOil?.StartYear ?? 0,
+                    Values = oilProfile
+                },
+                new TimeSeries<double>
+                {
+                    StartYear = drainageStrategy.AdditionalProductionProfileOil?.StartYear ?? 0,
+                    Values = additionalOilProfile
+                }
+            );
 
-            var additionalProductionProfileOil = new TimeSeries<double>
-            {
-                StartYear = drainageStrategy.AdditionalProductionProfileOil?.StartYear ?? 0,
-                Values = additionalOilProfile
-            };
+            // Convert oil production from million sm³ to million barrels
+            var oilProductionInMillionsOfBarrels = totalOilProduction.Values.Select(v => v * cubicMetersToBarrelsFactor / million).ToArray();
 
-            var totalOilProduction = TimeSeriesCost.MergeCostProfiles(productionProfileOil, additionalProductionProfileOil);
+            // Calculate income from oil
             var oilIncome = new TimeSeries<double>
             {
                 StartYear = totalOilProduction.StartYear,
-                Values = totalOilProduction.Values.Select(v => v / 1_000_000 * oilPrice).ToArray()
+                Values = oilProductionInMillionsOfBarrels.Select(v => v * oilPrice).ToArray()
             };
 
             // Calculate income from gas
             var gasProfile = drainageStrategy.ProductionProfileGas?.Values ?? Array.Empty<double>();
             var additionalGasProfile = drainageStrategy.AdditionalProductionProfileGas?.Values ?? Array.Empty<double>();
 
-            var productionProfileGas = new TimeSeries<double>
-            {
-                StartYear = drainageStrategy.ProductionProfileGas?.StartYear ?? 0,
-                Values = gasProfile
-            };
+            var totalGasProduction = TimeSeriesCost.MergeCostProfiles(
+                new TimeSeries<double>
+                {
+                    StartYear = drainageStrategy.ProductionProfileGas?.StartYear ?? 0,
+                    Values = gasProfile
+                },
+                new TimeSeries<double>
+                {
+                    StartYear = drainageStrategy.AdditionalProductionProfileGas?.StartYear ?? 0,
+                    Values = additionalGasProfile
+                }
+            );
 
-            var additionalProductionProfileGas = new TimeSeries<double>
-            {
-                StartYear = drainageStrategy.AdditionalProductionProfileGas?.StartYear ?? 0,
-                Values = additionalGasProfile
-            };
-
-            var totalGasProduction = TimeSeriesCost.MergeCostProfiles(productionProfileGas, additionalProductionProfileGas);
+            // Convert gas production from billion SCF to billion SCF
             var gasIncome = new TimeSeries<double>
             {
                 StartYear = totalGasProduction.StartYear,
-                Values = totalGasProduction.Values.Select(v => v / 1_000_000_000 * gasPrice * exchangeRate).ToArray()
+                Values = totalGasProduction.Values.Select(v => v  * gasPrice / million).ToArray()
             };
 
             // Merge the income profiles
@@ -108,6 +125,8 @@ namespace api.Helpers
 
             return totalIncome;
         }
+
+
 
         public async Task<TimeSeries<double>> CalculateTotalCostAsync(Case caseItem)
         {
