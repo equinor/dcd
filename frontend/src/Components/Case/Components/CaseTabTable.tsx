@@ -27,7 +27,6 @@ import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
 import { useProjectContext } from "../../../Context/ProjectContext"
-import useDataEdits from "../../../Hooks/useDataEdits"
 import { TABLE_VALIDATION_RULES } from "../../../Utils/constants"
 
 interface Props {
