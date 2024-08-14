@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import { Typography } from "@equinor/eds-core-react"
+import { useQuery, useQueryClient } from "react-query"
 import CaseEditHistory from "../Case/Components/CaseEditHistory"
 import { useProjectContext } from "../../Context/ProjectContext"
 import { useCaseContext } from "../../Context/CaseContext"
@@ -21,12 +22,26 @@ const CaseEdits = styled.div`
 const EditHistoryOverviewTab = () => {
     const { project } = useProjectContext()
     const { caseEdits } = useCaseContext()
+    const queryClient = useQueryClient()
 
-    if (!project) {
+    const projectId = project?.id || null
+
+    const { data: apiData } = useQuery<Components.Schemas.ProjectWithAssetsDto | undefined>(
+        ["apiData", { projectId }],
+        () => queryClient.getQueryData(["apiData", { projectId }]),
+        {
+            enabled: !!projectId,
+            initialData: () => queryClient.getQueryData(["apiData", { projectId }]),
+        },
+    )
+
+    const projectData = apiData
+
+    if (!projectData) {
         return null
     }
 
-    if (project.cases.length === 0) {
+    if (projectData.cases.length === 0) {
         return <Typography>The edit history for this project&apos;s cases will appear here once cases are created.</Typography>
     }
 
@@ -36,7 +51,7 @@ const EditHistoryOverviewTab = () => {
 
     return (
         <Container>
-            {project.cases
+            {projectData.cases
                 .sort((a, b) => new Date(a.createTime).getTime() - new Date(b.createTime).getTime())
                 .map((projectCase, index) => {
                     const filteredEdits = caseEdits.filter((edit) => edit.caseId === projectCase.id)

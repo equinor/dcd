@@ -7,8 +7,8 @@ import {
 import { add, archive } from "@equinor/eds-icons"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
-import { getProjectPhaseName, getProjectCategoryName, unwrapProjectId } from "../../Utils/common"
-import { GetProjectService } from "../../Services/ProjectService"
+import { useQuery, useQueryClient } from "react-query"
+import { getProjectPhaseName, getProjectCategoryName } from "../../Utils/common"
 import { GetSTEAService } from "../../Services/STEAService"
 import { useProjectContext } from "../../Context/ProjectContext"
 import CasesTable from "../Case/OverviewCasesTable/CasesTable"
@@ -18,6 +18,7 @@ import Gallery from "../Gallery/Gallery"
 
 const ProjectOverviewTab = () => {
     const { editMode } = useAppContext()
+    const queryClient = useQueryClient()
     const {
         project,
         projectEdited,
@@ -27,6 +28,19 @@ const ProjectOverviewTab = () => {
     const {
         addNewCase,
     } = useModalContext()
+
+    const projectId = project?.id || null
+
+    const { data: apiData } = useQuery<Components.Schemas.ProjectWithAssetsDto | undefined>(
+        ["apiData", { projectId }],
+        () => queryClient.getQueryData(["apiData", { projectId }]),
+        {
+            enabled: !!projectId,
+            initialData: () => queryClient.getQueryData(["apiData", { projectId }]),
+        },
+    )
+
+    const projectData = apiData || null
 
     function handleDescriptionChange(value: string) {
         if (projectEdited) {
@@ -40,9 +54,7 @@ const ProjectOverviewTab = () => {
 
         if (project) {
             try {
-                const projectId = unwrapProjectId(project.id)
-                const projectResult = await (await GetProjectService()).getProject(projectId)
-                await (await GetSTEAService()).excelToSTEA(projectResult)
+                await (await GetSTEAService()).excelToSTEA(apiData!)
             } catch (error) {
                 console.error("[ProjectView] error while submitting form data", error)
             }
@@ -60,19 +72,19 @@ const ProjectOverviewTab = () => {
                 <Grid item>
                     <Typography group="input" variant="label">Project Phase</Typography>
                     <Typography aria-label="Project phase">
-                        {getProjectPhaseName(project.projectPhase)}
+                        {getProjectPhaseName(projectData?.projectPhase)}
                     </Typography>
                 </Grid>
                 <Grid item>
                     <Typography group="input" variant="label">Project Category</Typography>
                     <Typography aria-label="Project category">
-                        {getProjectCategoryName(project.projectCategory)}
+                        {getProjectCategoryName(projectData?.projectCategory)}
                     </Typography>
                 </Grid>
                 <Grid item>
                     <Typography group="input" variant="label">Country</Typography>
                     <Typography aria-label="Country">
-                        {project.country ?? "Not defined in Common Library"}
+                        {projectData?.country ?? "Not defined in Common Library"}
                     </Typography>
                 </Grid>
             </Grid>
@@ -88,10 +100,10 @@ const ProjectOverviewTab = () => {
                                 handleDescriptionChange(value)
                             }}
                         >
-                            {projectEdited?.description !== undefined ? projectEdited.description : project?.description}
+                            {projectEdited?.description !== undefined ? projectEdited.description : projectData?.description}
                         </MarkdownEditor>
                     )
-                    : <MarkdownViewer value={project.description} />}
+                    : <MarkdownViewer value={projectData?.description} />}
             </Grid>
             <Grid item xs={12} container spacing={1} justifyContent="space-between">
                 <Grid item>
