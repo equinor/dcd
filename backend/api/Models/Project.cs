@@ -36,6 +36,11 @@ public class Project
     public double DailyEmissionFromDrillingRig { get; set; } = 100;
     public double AverageDevelopmentDrillingDays { get; set; } = 50;
     public DateTimeOffset ModifyTime { get; set; } = DateTimeOffset.UtcNow;
+    public double OilPrice { get; set; } = 75.0; // Default $75/bbl
+    public double GasPrice { get; set; } = 300.0; // Default 300 øre/Sm3
+    public double DiscountRate { get; set; } = 8.0; // Default 8%
+    public double ExchangeRate { get; set; } = 8.5; // Default 8.5 NOK/USD
+    public int NpvYear { get; set; } = DateTime.Now.Year; // Default to current year
 
 }
 
