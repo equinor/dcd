@@ -50,7 +50,7 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
         var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
         var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
-        var cashflow = await _economicsCalculationHelper.CalculateProjectCashFlowAsync(caseItem, drainageStrategy); // Use the instance
+        var cashflow = await _economicsCalculationHelper.CalculateProjectCashFlowAsync(caseItem, drainageStrategy); 
 
         var fuelConsumptions =
             EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);

@@ -64,7 +64,7 @@ namespace api.Helpers
         {
             var oilPrice = project.OilPrice;
             var gasPrice = project.GasPrice;
-            var exchangeRate = project.ExchangeRate;
+            var exchangeRate = project.ExchangeRateNOKToUSD;
             var cubicMetersToBarrelsFactor = 6.29;
             var million = 1E6;
 
@@ -90,7 +90,7 @@ namespace api.Helpers
             var oilIncome = new TimeSeries<double>
             {
                 StartYear = totalOilProduction.StartYear,
-                Values = oilProductionInMillionsOfBarrels.Select(v => v * oilPrice).ToArray()
+                Values = oilProductionInMillionsOfBarrels.Select(v => v * oilPrice).ToArray(),
             };
 
             var gasProfile = drainageStrategy.ProductionProfileGas?.Values ?? Array.Empty<double>();
