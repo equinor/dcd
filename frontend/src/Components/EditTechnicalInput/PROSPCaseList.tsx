@@ -304,7 +304,7 @@ const PROSPCaseList = ({
         gridRef.current = params.api
     }
 
-    const gridDataToDtos = (p: Components.Schemas.ProjectDto) => {
+    const gridDataToDtos = (p: Components.Schemas.ProjectWithAssetsDto) => {
         const dtos: any[] = []
         gridRef.current.forEachNode((node: RowNode<RowData>) => {
             const dto: any = {}
@@ -328,12 +328,17 @@ const PROSPCaseList = ({
         return dtos
     }
 
-    const save = useCallback(async (p: Components.Schemas.ProjectDto) => {
+    const save = useCallback(async (p: Components.Schemas.ProjectWithAssetsDto) => {
         const dtos = gridDataToDtos(p)
         if (dtos.length > 0) {
             setIsApplying(true)
             const newProject = await (await GetProspService()).importFromSharepoint(p.id!, dtos)
-            setProject(newProject)
+            const noSharePointFileNewProject: any = newProject
+            if (noSharePointFileNewProject.result) {
+                setProject(noSharePointFileNewProject.result)
+            } else {
+                setProject(newProject)
+            }
             setIsApplying(false)
         }
     }, [])

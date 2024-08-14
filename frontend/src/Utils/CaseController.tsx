@@ -4,8 +4,8 @@ import { EMPTY_GUID } from "../Utils/constants"
 
 export const deleteCase = async (
     caseId: string,
-    project: Components.Schemas.ProjectDto,
-    setProject: (project: Components.Schemas.ProjectDto) => void,
+    project: Components.Schemas.ProjectWithAssetsDto,
+    setProject: (project: Components.Schemas.ProjectWithAssetsDto) => void,
 ): Promise<boolean> => {
     try {
         const newProject = await (await GetCaseService()).deleteCase(project.id, caseId)
@@ -19,8 +19,8 @@ export const deleteCase = async (
 
 export const duplicateCase = async (
     caseId: string,
-    project: Components.Schemas.ProjectDto,
-    setProject: (project: Components.Schemas.ProjectDto) => void,
+    project: Components.Schemas.ProjectWithAssetsDto,
+    setProject: (project: Components.Schemas.ProjectWithAssetsDto) => void,
 ): Promise<boolean> => {
     try {
         const newProject = await (await GetCaseService()).duplicateCase(project.id, caseId)
@@ -34,8 +34,8 @@ export const duplicateCase = async (
 
 export const setCaseAsReference = async (
     caseId: string | undefined,
-    project: Components.Schemas.ProjectDto,
-    setProject: (project: Components.Schemas.ProjectDto) => void,
+    project: Components.Schemas.ProjectWithAssetsDto,
+    setProject: (project: Components.Schemas.ProjectWithAssetsDto) => void,
 ) => {
     try {
         const projectDto = { ...project }

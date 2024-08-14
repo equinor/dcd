@@ -16,7 +16,9 @@ public class DrainageStrategy
     public ArtificialLift ArtificialLift { get; set; }
     public GasSolution GasSolution { get; set; }
     public ProductionProfileOil? ProductionProfileOil { get; set; }
+    public AdditionalProductionProfileOil? AdditionalProductionProfileOil { get; set; }
     public ProductionProfileGas? ProductionProfileGas { get; set; }
+    public AdditionalProductionProfileGas? AdditionalProductionProfileGas { get; set; }
     public ProductionProfileWater? ProductionProfileWater { get; set; }
     public ProductionProfileWaterInjection? ProductionProfileWaterInjection { get; set; }
 
@@ -49,7 +51,19 @@ public class ProductionProfileOil : TimeSeriesVolume, IDrainageStrategyTimeSerie
     public DrainageStrategy DrainageStrategy { get; set; } = null!;
 }
 
+public class AdditionalProductionProfileOil : TimeSeriesVolume, IDrainageStrategyTimeSeries
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
+}
+
 public class ProductionProfileGas : TimeSeriesVolume, IDrainageStrategyTimeSeries
+{
+    [ForeignKey("DrainageStrategy.Id")]
+    public DrainageStrategy DrainageStrategy { get; set; } = null!;
+}
+
+public class AdditionalProductionProfileGas : TimeSeriesVolume, IDrainageStrategyTimeSeries
 {
     [ForeignKey("DrainageStrategy.Id")]
     public DrainageStrategy DrainageStrategy { get; set; } = null!;

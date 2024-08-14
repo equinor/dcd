@@ -74,7 +74,9 @@ public class DrainageStrategyService : IDrainageStrategyService
         var drainageStrategy = await _context.DrainageStrategies!
             .Include(c => c.Project)
             .Include(c => c.ProductionProfileOil)
+            .Include(c => c.AdditionalProductionProfileOil)
             .Include(c => c.ProductionProfileGas)
+            .Include(c => c.AdditionalProductionProfileGas)
             .Include(c => c.ProductionProfileWater)
             .Include(c => c.ProductionProfileWaterInjection)
             .Include(c => c.FuelFlaringAndLosses)

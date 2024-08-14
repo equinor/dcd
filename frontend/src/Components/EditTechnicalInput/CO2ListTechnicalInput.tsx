@@ -160,7 +160,7 @@ const CO2ListTechnicalInput = () => {
         setRowData(co2Data)
 
         if (project) {
-            const newProject: Components.Schemas.ProjectDto = { ...project }
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
             newProject.cO2RemovedFromGas = cO2RemovedFromGas
             newProject.cO2EmissionFromFuelGas = cO2EmissionsFromFuelGas
             newProject.flaredGasPerProducedVolume = flaredGasPerProducedVolume

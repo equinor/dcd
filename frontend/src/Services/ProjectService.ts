@@ -5,12 +5,12 @@ import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 export class __ProjectService extends __BaseService {
     async getProject(id: string) {
-        const project: Components.Schemas.ProjectDto = await this.get<Components.Schemas.ProjectDto>(`/${id}`)
+        const project: Components.Schemas.ProjectWithAssetsDto = await this.get<Components.Schemas.ProjectWithAssetsDto>(`/${id}`)
         return project
     }
 
-    public async createProject(contextId: string): Promise<Components.Schemas.ProjectDto> {
-        const res: Components.Schemas.ProjectDto = await this.postWithParams(
+    public async createProject(contextId: string): Promise<Components.Schemas.ProjectWithAssetsDto> {
+        const res: Components.Schemas.ProjectWithAssetsDto = await this.postWithParams(
             "",
             {},
             { params: { contextId } },
@@ -18,7 +18,7 @@ export class __ProjectService extends __BaseService {
         return res
     }
 
-    public async updateProject(projectId: string, body: Components.Schemas.UpdateProjectDto): Promise<Components.Schemas.ProjectDto> {
+    public async updateProject(projectId: string, body: Components.Schemas.UpdateProjectDto): Promise<Components.Schemas.ProjectWithAssetsDto> {
         const res = await this.put(`${projectId}`, { body })
         return res
     }

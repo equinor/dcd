@@ -4,7 +4,15 @@ public class CreateProductionProfileOilDto : CreateTimeSeriesVolumeDto
 {
 }
 
+public class CreateAdditionalProductionProfileOilDto : CreateTimeSeriesVolumeDto
+{
+}
+
 public class CreateProductionProfileGasDto : CreateTimeSeriesVolumeDto
+{
+}
+
+public class CreateAdditionalProductionProfileGasDto : CreateTimeSeriesVolumeDto
 {
 }
 

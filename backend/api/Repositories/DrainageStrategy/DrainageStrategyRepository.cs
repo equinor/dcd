@@ -26,7 +26,9 @@ public class DrainageStrategyRepository : BaseRepository, IDrainageStrategyRepos
         Expression<Func<DrainageStrategy, bool>> profileExistsExpression = profileType switch
         {
             DrainageStrategyProfileNames.ProductionProfileOil => d => d.ProductionProfileOil != null,
+            DrainageStrategyProfileNames.AdditionalProductionProfileOil => d => d.AdditionalProductionProfileOil != null,
             DrainageStrategyProfileNames.ProductionProfileGas => d => d.ProductionProfileGas != null,
+            DrainageStrategyProfileNames.AdditionalProductionProfileGas => d => d.AdditionalProductionProfileGas != null,
             DrainageStrategyProfileNames.ProductionProfileWater => d => d.ProductionProfileWater != null,
             DrainageStrategyProfileNames.ProductionProfileWaterInjection => d => d.ProductionProfileWaterInjection != null,
             DrainageStrategyProfileNames.FuelFlaringAndLossesOverride => d => d.FuelFlaringAndLossesOverride != null,
