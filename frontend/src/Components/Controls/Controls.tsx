@@ -2,17 +2,14 @@ import React, { useState, useEffect } from "react"
 import { useNavigate, useParams, useLocation } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
-    Icon,
     Button,
     Typography,
 } from "@equinor/eds-core-react"
-import { keyboard_tab } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid"
 import { useQuery, useQueryClient } from "react-query"
 import styled from "styled-components"
 import { projectPath } from "../../Utils/common"
 import { useProjectContext } from "../../Context/ProjectContext"
-import { useModalContext } from "../../Context/ModalContext"
 import { GetProjectService } from "../../Services/ProjectService"
 import { useAppContext } from "../../Context/AppContext"
 import CaseControls from "./CaseControls"
