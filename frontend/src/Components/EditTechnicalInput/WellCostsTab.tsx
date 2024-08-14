@@ -12,12 +12,12 @@ const Section = styled.section`
     margin-top: 56px;
     display: flex;
     flex-direction: column;
-    gap: 26px;
+    gap: 30px;
 `
 
 const SectionHeader = styled.div`
     display: flex;
-    gap: 16px;
+    gap: 20px;
     align-items: center;
     justify-content: space-between;
 `

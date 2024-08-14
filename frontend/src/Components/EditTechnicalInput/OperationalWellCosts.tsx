@@ -17,6 +17,20 @@ const FullwidthTable = styled(Table)`
     width: 100%;
 `
 
+const CostWithCurrency = styled.div`
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+
+    div {
+        font-weight: normal;
+        font-size: 10px;
+        margin-top: -4px;
+        color: #6F6F6F;
+        letter-spacing: 0.5px;
+    }
+`
+
 interface Props {
     title: string
     developmentOperationalWellCosts?: Components.Schemas.DevelopmentOperationalWellCostsDto
@@ -90,15 +104,12 @@ const OperationalWellCosts = ({
                         {title}
                     </Cell>
                     <Cell>
-                        <div>
+                        <CostWithCurrency>
                             Cost
-                            <div style={{
-                                fontWeight: "normal", fontSize: "10px", marginTop: "-4px", color: "#6F6F6F",
-                            }}
-                            >
-                                {`${project?.currency === 1 ? "mill NOK" : "mill USD"}`}
+                            <div>
+                                {`${project?.currency === 1 ? "(mill NOK)" : "(mill USD)"}`}
                             </div>
-                        </div>
+                        </CostWithCurrency>
                     </Cell>
                 </Row>
             </Head>
