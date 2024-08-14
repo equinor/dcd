@@ -21,22 +21,21 @@ const Wrapper = styled.div`
 
 const ProjectControls = () => {
     const { currentContext } = useModuleCurrentContext()
-    const { project } = useProjectContext()
     const queryClient = useQueryClient()
     const { setSnackBarMessage, editMode } = useAppContext()
     const { addEdit } = useDataEdits()
     const navigate = useNavigate()
 
-    const projectId = project?.id || null
+    const projectId = currentContext?.externalId
 
-    const fetchCaseData = async () => {
-        const caseService = await GetProjectService()
-        return caseService.getProject(projectId!)
+    const fetchProjectData = async () => {
+        const projectService = await GetProjectService()
+        return projectService.getProject(projectId!)
     }
 
     useQuery(
         ["apiData", { projectId }],
-        fetchCaseData,
+        fetchProjectData,
         {
             enabled: !!projectId,
             onSuccess: (result) => {

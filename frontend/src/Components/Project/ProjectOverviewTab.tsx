@@ -8,6 +8,7 @@ import { add, archive } from "@equinor/eds-icons"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
 import { useQuery, useQueryClient } from "react-query"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { getProjectPhaseName, getProjectCategoryName } from "../../Utils/common"
 import { GetSTEAService } from "../../Services/STEAService"
 import { useProjectContext } from "../../Context/ProjectContext"
@@ -24,12 +25,13 @@ const ProjectOverviewTab = () => {
         projectEdited,
         setProjectEdited,
     } = useProjectContext()
+    const { currentContext } = useModuleCurrentContext()
 
     const {
         addNewCase,
     } = useModalContext()
 
-    const projectId = project?.id || null
+    const projectId = currentContext?.externalId || null
 
     const { data: apiData } = useQuery<Components.Schemas.ProjectWithAssetsDto | undefined>(
         ["apiData", { projectId }],
@@ -52,9 +54,9 @@ const ProjectOverviewTab = () => {
     const submitToSTEA: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
 
-        if (project) {
+        if (projectData) {
             try {
-                await (await GetSTEAService()).excelToSTEA(apiData!)
+                await (await GetSTEAService()).excelToSTEA(projectData)
             } catch (error) {
                 console.error("[ProjectView] error while submitting form data", error)
             }

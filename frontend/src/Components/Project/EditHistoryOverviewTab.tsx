@@ -1,8 +1,8 @@
 import styled from "styled-components"
 import { Typography } from "@equinor/eds-core-react"
 import { useQuery, useQueryClient } from "react-query"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import CaseEditHistory from "../Case/Components/CaseEditHistory"
-import { useProjectContext } from "../../Context/ProjectContext"
 import { useCaseContext } from "../../Context/CaseContext"
 
 const Container = styled.div`
@@ -20,11 +20,11 @@ const CaseEdits = styled.div`
 `
 
 const EditHistoryOverviewTab = () => {
-    const { project } = useProjectContext()
+    const { currentContext } = useModuleCurrentContext()
     const { caseEdits } = useCaseContext()
     const queryClient = useQueryClient()
 
-    const projectId = project?.id || null
+    const projectId = currentContext?.externalId || null
 
     const { data: apiData } = useQuery<Components.Schemas.ProjectWithAssetsDto | undefined>(
         ["apiData", { projectId }],

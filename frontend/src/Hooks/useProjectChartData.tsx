@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useQuery, useQueryClient } from "react-query"
-import { useProjectContext } from "../Context/ProjectContext"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { GetProjectService } from "../Services/ProjectService"
 
 interface TableCompareCase {
@@ -24,7 +24,7 @@ interface TableCompareCase {
 }
 
 export const useProjectChartData = () => {
-    const { project } = useProjectContext()
+    const { currentContext } = useModuleCurrentContext()
     const queryClient = useQueryClient()
 
     const [rowData, setRowData] = useState<TableCompareCase[]>()
@@ -36,7 +36,7 @@ export const useProjectChartData = () => {
     const [totalCo2EmissionsChartData, setTotalCo2EmissionsChartData] = useState<object>()
     const [co2IntensityChartData, setCo2IntensityChartData] = useState<object>()
 
-    const projectId = project?.id || null
+    const projectId = currentContext?.externalId || null
 
     const { data: apiData } = useQuery<Components.Schemas.ProjectWithAssetsDto | undefined>(
         ["apiData", { projectId }],

@@ -2,17 +2,19 @@ import { useState, ChangeEventHandler, useEffect } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useQuery, useQueryClient } from "react-query"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useProjectContext } from "../../Context/ProjectContext"
 import InputSwitcher from "../Input/Components/InputSwitcher"
 import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
 
 const ProjectSettingsTab = () => {
     const { project, projectEdited, setProjectEdited } = useProjectContext()
+    const { currentContext } = useModuleCurrentContext()
     const [classification, setClassification] = useState<number | undefined>(undefined)
     const [dummyRole, setDummyRole] = useState(0) // TODO: Get role from user
     const queryClient = useQueryClient()
 
-    const projectId = project?.id || null
+    const projectId = currentContext?.externalId || null
 
     const { data: apiData } = useQuery<Components.Schemas.ProjectWithAssetsDto | undefined>(
         ["apiData", { projectId }],
