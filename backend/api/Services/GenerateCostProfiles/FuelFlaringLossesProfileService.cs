@@ -29,7 +29,7 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
         IDrainageStrategyService drainageStrategyService,
         IMapper mapper,
         EconomicsCalculationHelper economicsCalculationHelper,
-        ProjectWithAssetsDto projectWithAssetsDto) // Add this parameter
+        ProjectWithAssetsDto projectWithAssetsDto)
 
     {
         _context = context;
@@ -39,7 +39,7 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
         _drainageStrategyService = drainageStrategyService;
         _mapper = mapper;
         _economicsCalculationHelper = economicsCalculationHelper;
-        _projectWithAssetsDto = projectWithAssetsDto; // Initialize this
+        _projectWithAssetsDto = projectWithAssetsDto;
 
     }
 
