@@ -19,9 +19,7 @@ namespace api.Helpers
         private readonly IOpexCostProfileService _opexCostProfileService;
         private readonly ICessationCostProfileService _cessationCostProfileService;
         private readonly IExplorationRepository _explorationRepository;
-        private readonly ISubstructureService _substructureService;
         private readonly ISubstructureRepository _substructureRepository;
-
         private readonly ISurfRepository _surfRepository;
         private readonly ITopsideRepository _topsideRepository;
         private readonly ITransportRepository _transportRepository;
@@ -34,9 +32,7 @@ namespace api.Helpers
             IStudyCostProfileService studyCostProfileService,
             IOpexCostProfileService opexCostProfileService,
             ICessationCostProfileService cessationCostProfileService,
-            IWellCostProfileService wellCostProfileService,
             IExplorationRepository explorationRepository,
-            ISubstructureService substructureService,
             ISubstructureRepository substructureRepository,
             ISurfRepository surfRepository,
             ITopsideRepository topsideRepository,
@@ -49,7 +45,6 @@ namespace api.Helpers
             _opexCostProfileService = opexCostProfileService ?? throw new ArgumentNullException(nameof(opexCostProfileService));
             _cessationCostProfileService = cessationCostProfileService ?? throw new ArgumentNullException(nameof(cessationCostProfileService));
             _explorationRepository = explorationRepository ?? throw new ArgumentNullException(nameof(explorationRepository));
-            _substructureService = substructureService ?? throw new ArgumentNullException(nameof(substructureService));
             _substructureRepository = substructureRepository ?? throw new ArgumentNullException(nameof(substructureRepository));
             _surfRepository = surfRepository ?? throw new ArgumentNullException(nameof(surfRepository));
             _topsideRepository = topsideRepository ?? throw new ArgumentNullException(nameof(topsideRepository));
@@ -57,10 +52,9 @@ namespace api.Helpers
             _wellProjectRepository = wellProjectRepository ?? throw new ArgumentNullException(nameof(wellProjectRepository));
             _co2IntensityTotalService = co2IntensityTotalService ?? throw new ArgumentNullException(nameof(co2IntensityTotalService));
             _projectService = projectService;
-
         }
 
-        private static TimeSeries<double> CalculateIncome(DrainageStrategy drainageStrategy, Project project)
+        public static TimeSeries<double> CalculateIncome(DrainageStrategy drainageStrategy, Project project)
         {
             var oilPrice = project.OilPrice;
             var gasPrice = project.GasPrice;
