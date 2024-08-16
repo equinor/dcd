@@ -26,6 +26,7 @@ namespace api.Helpers
         private readonly IWellProjectRepository _wellProjectRepository;
         private readonly ICo2IntensityTotalService _co2IntensityTotalService;
         private readonly IProjectService _projectService;
+        private readonly ISubstructureTimeSeriesRepository _substructureTimeSeriesRepository;
 
 
         public EconomicsCalculationHelper(
@@ -39,19 +40,21 @@ namespace api.Helpers
             ITransportRepository transportRepository,
             IWellProjectRepository wellProjectRepository,
             ICo2IntensityTotalService co2IntensityTotalService,
-            IProjectService projectService)
+            IProjectService projectService,
+            ISubstructureTimeSeriesRepository substructureTimeSeriesRepository)
         {
-            _studyCostProfileService = studyCostProfileService ?? throw new ArgumentNullException(nameof(studyCostProfileService));
-            _opexCostProfileService = opexCostProfileService ?? throw new ArgumentNullException(nameof(opexCostProfileService));
-            _cessationCostProfileService = cessationCostProfileService ?? throw new ArgumentNullException(nameof(cessationCostProfileService));
-            _explorationRepository = explorationRepository ?? throw new ArgumentNullException(nameof(explorationRepository));
-            _substructureRepository = substructureRepository ?? throw new ArgumentNullException(nameof(substructureRepository));
-            _surfRepository = surfRepository ?? throw new ArgumentNullException(nameof(surfRepository));
-            _topsideRepository = topsideRepository ?? throw new ArgumentNullException(nameof(topsideRepository));
-            _transportRepository = transportRepository ?? throw new ArgumentNullException(nameof(transportRepository));
-            _wellProjectRepository = wellProjectRepository ?? throw new ArgumentNullException(nameof(wellProjectRepository));
-            _co2IntensityTotalService = co2IntensityTotalService ?? throw new ArgumentNullException(nameof(co2IntensityTotalService));
+            _studyCostProfileService = studyCostProfileService;
+            _opexCostProfileService = opexCostProfileService;
+            _cessationCostProfileService = cessationCostProfileService;
+            _explorationRepository = explorationRepository;
+            _substructureRepository = substructureRepository;
+            _surfRepository = surfRepository;
+            _topsideRepository = topsideRepository;
+            _transportRepository = transportRepository;
+            _wellProjectRepository = wellProjectRepository; 
+            _co2IntensityTotalService = co2IntensityTotalService;
             _projectService = projectService;
+            _substructureTimeSeriesRepository = substructureTimeSeriesRepository;
         }
 
         public static TimeSeries<double> CalculateIncome(DrainageStrategy drainageStrategy, Project project)
@@ -290,7 +293,11 @@ namespace api.Helpers
                     Values = wellProject.OilProducerCostProfile?.Values ?? Array.Empty<double>()
                 };
             }
-
+            Console.WriteLine("Income values:");
+            foreach (var value in oilProducerProfile.Values)
+            {
+                Console.WriteLine(value);
+            }
             if (wellProject?.GasProducerCostProfileOverride?.Override == true)
             {
                 gasProducerProfile = new TimeSeries<double>
@@ -439,7 +446,7 @@ namespace api.Helpers
             return totalExplorationCost;
         }
 
-        private static TimeSeries<double> CalculateCashFlow(TimeSeries<double> income, TimeSeries<double> totalCost)
+        public static TimeSeries<double> CalculateCashFlow(TimeSeries<double> income, TimeSeries<double> totalCost)
         {
             var startYear = Math.Min(income.StartYear, totalCost.StartYear);
             var endYear = Math.Max(
