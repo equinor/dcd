@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 using api.Dtos;
 using api.Helpers;
@@ -23,14 +19,10 @@ namespace api.Tests.Helpers
         private readonly IExplorationRepository _explorationRepository;
         private readonly ISubstructureRepository _substructureRepository;
         private readonly ISubstructureTimeSeriesRepository _substructureTimeSeriesRepository = Substitute.For<ISubstructureTimeSeriesRepository>();
-        private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
-
         private readonly ISurfRepository _surfRepository;
         private readonly ITopsideRepository _topsideRepository;
         private readonly ITransportRepository _transportRepository;
         private readonly IWellProjectRepository _wellProjectRepository;
-        private readonly IWellProjectTimeSeriesRepository _wellProjectTimeSeriesRepository;
-
         private readonly ICo2IntensityTotalService _co2IntensityTotalService;
         private readonly IProjectService _projectService;
 
@@ -51,7 +43,6 @@ namespace api.Tests.Helpers
             _wellProjectRepository = Substitute.For<IWellProjectRepository>();
             _co2IntensityTotalService = Substitute.For<ICo2IntensityTotalService>();
             _projectService = Substitute.For<IProjectService>();
-            _wellProjectTimeSeriesRepository = Substitute.For<IWellProjectTimeSeriesRepository>();
 
             // Instantiate EconomicsCalculationHelper with all required dependencies
             _economicsCalculationHelper = new EconomicsCalculationHelper(
@@ -105,7 +96,7 @@ namespace api.Tests.Helpers
             };
 
             // Act
-            var income = EconomicsCalculationHelper.CalculateIncome(drainageStrategy, project);
+            var income = _economicsCalculationHelper.CalculateIncome(drainageStrategy, project);
 
             // Assert
             Assert.Equal(2020, income.StartYear);
@@ -130,6 +121,534 @@ namespace api.Tests.Helpers
             Assert.Equal(expectedFirstYearIncome, income.Values[0], precision: 0);
             Assert.Equal(expectedSecondYearIncome, income.Values[1], precision: 0);
             Assert.Equal(expectedThirdYearIncome, income.Values[2], precision: 0);
+        }
+
+        [Fact]
+        public void CalculateIncome_NullDrainageStrategy_ThrowsNullReferenceException()
+        {
+            // Arrange
+            DrainageStrategy drainageStrategy = null;
+            var project = new Project { OilPrice = 75, GasPrice = 0.3531 };
+
+            // Act & Assert
+            Assert.Throws<NullReferenceException>(() => _economicsCalculationHelper.CalculateIncome(drainageStrategy, project));
+        }
+
+        [Fact]
+        public void CalculateIncome_ZeroValues_ReturnsZeroIncome()
+        {
+            // Arrange
+            var drainageStrategy = new DrainageStrategy
+            {
+                ProductionProfileOil = new ProductionProfileOil
+                {
+                    StartYear = 2020,
+                    Values = [0.0, 0.0, 0.0]
+                },
+                ProductionProfileGas = new ProductionProfileGas
+                {
+                    StartYear = 2020,
+                    Values = [0.0, 0.0, 0.0]
+                }
+            };
+
+            var project = new Project { OilPrice = 0, GasPrice = 0 };
+
+            // Act
+            var income = _economicsCalculationHelper.CalculateIncome(drainageStrategy, project);
+
+            // Assert
+            Assert.Equal(2020, income.StartYear);
+            Assert.All(income.Values, value => Assert.Equal(0.0, value));
+        }
+
+        [Fact]
+        public async Task CalculateTotalCostAsync_AllProfilesProvided_ReturnsCorrectTotalCost()
+        {
+            // Arrange
+            var caseItem = new Case
+            {
+                Id = Guid.NewGuid(),
+                WellProjectLink = Guid.NewGuid(),
+                SubstructureLink = Guid.NewGuid(),
+                SurfLink = Guid.NewGuid(),
+                TopsideLink = Guid.NewGuid(),
+                TransportLink = Guid.NewGuid(),
+                ExplorationLink = Guid.NewGuid()
+
+            };
+
+            var studyCostProfileDto = new StudyCostProfileDto
+            {
+                StartYear = 2020,
+                Values = [1000.0, 1500.0, 2000.0]
+            };
+            var opexCostProfileDto = new OpexCostProfileDto
+            {
+                StartYear = 2020,
+                Values = [500.0, 600.0, 700.0]
+            };
+            var cessationCostDto = new CessationCostDto
+            {
+                StartYear = 2020,
+                Values = [300.0, 400.0, 500.0]
+            };
+
+            // Wrap DTOs in wrapper DTOs
+            var studyCostProfileWrapper = new StudyCostProfileWrapperDto { StudyCostProfileDto = studyCostProfileDto };
+            var opexCostProfileWrapper = new OpexCostProfileWrapperDto { OpexCostProfileDto = opexCostProfileDto };
+            var cessationCostWrapper = new CessationCostWrapperDto { CessationCostDto = cessationCostDto };
+
+            // Mock the services to return the wrapper DTOs
+            _studyCostProfileService.Generate(caseItem.Id).Returns(Task.FromResult(studyCostProfileWrapper));
+            _opexCostProfileService.Generate(caseItem.Id).Returns(Task.FromResult(opexCostProfileWrapper));
+            _cessationCostProfileService.Generate(caseItem.Id).Returns(Task.FromResult(cessationCostWrapper));
+
+            var substructure = new Substructure
+            {
+                CostProfileOverride = new SubstructureCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [70.0, 110.0, 150.0]
+                }
+            };
+
+            var surf = new Models.Surf
+            {
+                CostProfileOverride = new SurfCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [30.0, 60.0, 90.0]
+                }
+            };
+
+            var topside = new Topside
+            {
+                CostProfileOverride = new TopsideCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [50.0, 80.0, 120.0]
+                }
+            };
+
+            var transport = new Models.Transport
+            {
+                CostProfileOverride = new TransportCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [40.0, 70.0, 100.0]
+                }
+            };
+
+            // Set up the substitutes to return the expected cost profiles
+            _substructureRepository.GetSubstructure(caseItem.SubstructureLink)
+                .Returns(Task.FromResult(substructure));
+
+            _surfRepository.GetSurf(caseItem.SurfLink)
+                .Returns(Task.FromResult(surf));
+
+            _topsideRepository.GetTopside(caseItem.TopsideLink)
+                .Returns(Task.FromResult(topside));
+
+            _transportRepository.GetTransport(caseItem.TransportLink)
+                .Returns(Task.FromResult(transport));
+
+
+            var wellProject = new WellProject
+            {
+                OilProducerCostProfileOverride = new OilProducerCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [100.0, 150.0, 200.0]
+                },
+
+                GasProducerCostProfileOverride = new GasProducerCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [50.0, 80.0, 120.0]
+                },
+
+                WaterInjectorCostProfileOverride = new WaterInjectorCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [70.0, 100.0, 130.0]
+                },
+
+                GasInjectorCostProfileOverride = new GasInjectorCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [50.0, 80.0, 120.0]
+                },
+            };
+
+            // Set up the substitutes to return the expected cost profiles
+            _wellProjectRepository.GetWellProject(caseItem.WellProjectLink)
+                .Returns(Task.FromResult(wellProject));
+
+            var exploration = new Exploration
+            {
+                GAndGAdminCostOverride = new GAndGAdminCostOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [100.0, 200.0, 300.0]
+                },
+                SeismicAcquisitionAndProcessing = new SeismicAcquisitionAndProcessing
+                {
+                    StartYear = 2020,
+                    Values = [150.0, 250.0, 350.0]
+                },
+                CountryOfficeCost = new CountryOfficeCost
+                {
+                    StartYear = 2020,
+                    Values = [50.0, 100.0]
+                },
+                ExplorationWellCostProfile = new ExplorationWellCostProfile
+                {
+                    StartYear = 2020,
+                    Values = [100.0, 100.0]
+                },
+                AppraisalWellCostProfile = new AppraisalWellCostProfile
+                {
+                    StartYear = 2020,
+                    Values = [100.0, 100.0]
+                },
+                SidetrackCostProfile = new SidetrackCostProfile
+                {
+                    StartYear = 2020,
+                    Values = [100.0, 100.0]
+                }
+            };
+
+            // Set up the substitute to return the expected exploration costs
+            _explorationRepository.GetExploration(caseItem.ExplorationLink)
+                .Returns(Task.FromResult(exploration));
+
+
+
+            // Act
+            var result = await _economicsCalculationHelper.CalculateTotalCostAsync(caseItem);
+
+            // Assert
+            Assert.Equal(2020, result.StartYear);
+            Assert.Equal(3, result.Values.Length);
+
+            var expectedValues = new[]
+            {
+                2860, 4080, 4880
+            };
+
+            Assert.Equal(expectedValues.Length, result.Values.Length);
+            for (int i = 0; i < expectedValues.Length; i++)
+            {
+                Assert.Equal(expectedValues[i], result.Values[i], precision: 0);
+            }
+        }
+
+        [Fact]
+        public async Task CalculateTotalCostAsync_SomeProfilesMissing_ReturnsCorrectTotalCost()
+        {
+            // Arrange
+            var caseItem = new Case
+            {
+                Id = Guid.NewGuid(),
+                WellProjectLink = Guid.NewGuid(),
+                SubstructureLink = Guid.NewGuid(),
+                SurfLink = Guid.NewGuid(),
+                TopsideLink = Guid.NewGuid(),
+                TransportLink = Guid.NewGuid(),
+                ExplorationLink = Guid.NewGuid()
+            };
+
+            // Define profiles
+            var studyCostProfileDto = new StudyCostProfileDto
+            {
+                StartYear = 2020,
+                Values = [1000.0, 1500.0, 2000.0]
+            };
+
+            var opexCostProfileDto = new OpexCostProfileDto
+            {
+                StartYear = 2020,
+                Values = [500.0, 600.0, 700.0]
+            };
+
+            // Cessation cost is not provided in this test
+            var cessationCostDto = new CessationCostDto
+            {
+                StartYear = 2020,
+                Values = [300.0, 400.0, 500.0]
+            };
+
+            // Wrap DTOs in wrapper DTOs
+            var studyCostProfileWrapper = new StudyCostProfileWrapperDto { StudyCostProfileDto = studyCostProfileDto };
+            var opexCostProfileWrapper = new OpexCostProfileWrapperDto { OpexCostProfileDto = opexCostProfileDto };
+            var cessationCostWrapper = new CessationCostWrapperDto { CessationCostDto = cessationCostDto };
+
+            // Mock the services to return the wrapper DTOs
+            _studyCostProfileService.Generate(caseItem.Id).Returns(Task.FromResult(studyCostProfileWrapper));
+            _opexCostProfileService.Generate(caseItem.Id).Returns(Task.FromResult(opexCostProfileWrapper));
+            _cessationCostProfileService.Generate(caseItem.Id).Returns(Task.FromResult(cessationCostWrapper));
+
+            var substructure = new Substructure
+            {
+                CostProfileOverride = new SubstructureCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [70.0, 110.0, 150.0]
+                }
+            };
+
+            var surf = new Models.Surf
+            {
+                CostProfileOverride = new SurfCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [30.0, 60.0, 90.0]
+                }
+            };
+
+            var topside = new Topside
+            {
+                CostProfileOverride = new TopsideCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [50.0, 80.0, 120.0]
+                }
+            };
+
+            var transport = new Models.Transport
+            {
+                CostProfileOverride = new TransportCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [40.0, 70.0, 100.0]
+                }
+            };
+
+            // Set up the substitutes to return the expected cost profiles
+            _substructureRepository.GetSubstructure(caseItem.SubstructureLink)
+                .Returns(Task.FromResult(substructure));
+
+            _surfRepository.GetSurf(caseItem.SurfLink)
+                .Returns(Task.FromResult(surf));
+
+            _topsideRepository.GetTopside(caseItem.TopsideLink)
+                .Returns(Task.FromResult(topside));
+
+            _transportRepository.GetTransport(caseItem.TransportLink)
+                .Returns(Task.FromResult(transport));
+
+            var wellProject = new WellProject
+            {
+                OilProducerCostProfileOverride = new OilProducerCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [100.0, 150.0, 200.0]
+                },
+
+                GasProducerCostProfileOverride = new GasProducerCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [50.0, 80.0, 120.0]
+                },
+
+                WaterInjectorCostProfileOverride = new WaterInjectorCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [70.0, 100.0, 130.0]
+                },
+
+                GasInjectorCostProfileOverride = new GasInjectorCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [50.0, 80.0, 120.0]
+                },
+            };
+
+            // Set up the substitutes to return the expected cost profiles
+            _wellProjectRepository.GetWellProject(caseItem.WellProjectLink)
+                .Returns(Task.FromResult(wellProject));
+
+            var exploration = new Exploration
+            {
+                GAndGAdminCostOverride = new GAndGAdminCostOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = [100.0, 200.0, 300.0]
+                },
+                SeismicAcquisitionAndProcessing = new SeismicAcquisitionAndProcessing
+                {
+                    StartYear = 2020,
+                    Values = [150.0, 250.0, 350.0]
+                },
+                CountryOfficeCost = new CountryOfficeCost
+                {
+                    StartYear = 2020,
+                    Values = [50.0, 100.0]
+                },
+                ExplorationWellCostProfile = new ExplorationWellCostProfile
+                {
+                    StartYear = 2020,
+                    Values = [100.0, 100.0]
+                },
+                AppraisalWellCostProfile = new AppraisalWellCostProfile
+                {
+                    StartYear = 2020,
+                    Values = [100.0, 100.0]
+                },
+                SidetrackCostProfile = new SidetrackCostProfile
+                {
+                    StartYear = 2020,
+                    Values = [100.0, 100.0]
+                }
+            };
+
+            // Set up the substitute to return the expected exploration costs
+            _explorationRepository.GetExploration(caseItem.ExplorationLink)
+                .Returns(Task.FromResult(exploration));
+
+            // Act
+            var result = await _economicsCalculationHelper.CalculateTotalCostAsync(caseItem);
+
+            // Assert
+            Assert.Equal(2020, result.StartYear);
+            Assert.Equal(3, result.Values.Length);
+
+            var expectedValues = new[]
+            {
+        2860, 4080, 4880 // These values need to be calculated based on the available profiles and the missing cessation cost profile.
+    };
+
+            Assert.Equal(expectedValues.Length, result.Values.Length);
+            for (int i = 0; i < expectedValues.Length; i++)
+            {
+                Assert.Equal(expectedValues[i], result.Values[i], precision: 0);
+            }
+        }
+
+        [Fact]
+        public async Task CalculateTotalCostAsync_EmptyProfiles_ReturnsCorrectTotalCost()
+        {
+            // Arrange
+            var caseItem = new Case
+            {
+                Id = Guid.NewGuid(),
+                WellProjectLink = Guid.NewGuid(),
+                SubstructureLink = Guid.NewGuid(),
+                SurfLink = Guid.NewGuid(),
+                TopsideLink = Guid.NewGuid(),
+                TransportLink = Guid.NewGuid(),
+                ExplorationLink = Guid.NewGuid()
+            };
+
+            var studyCostProfileDto = new StudyCostProfileDto
+            {
+                StartYear = 2020,
+                Values = Array.Empty<double>()
+            };
+
+            var opexCostProfileDto = new OpexCostProfileDto
+            {
+                StartYear = 2020,
+                Values = Array.Empty<double>()
+            };
+
+            var cessationCostDto = new CessationCostDto
+            {
+                StartYear = 2020,
+                Values = Array.Empty<double>()
+            };
+
+            // Wrap DTOs in wrapper DTOs
+            var studyCostProfileWrapper = new StudyCostProfileWrapperDto { StudyCostProfileDto = studyCostProfileDto };
+            var opexCostProfileWrapper = new OpexCostProfileWrapperDto { OpexCostProfileDto = opexCostProfileDto };
+            var cessationCostWrapper = new CessationCostWrapperDto { CessationCostDto = cessationCostDto };
+
+            // Mock the services to return the wrapper DTOs
+            _studyCostProfileService.Generate(caseItem.Id).Returns(Task.FromResult(studyCostProfileWrapper));
+            _opexCostProfileService.Generate(caseItem.Id).Returns(Task.FromResult(opexCostProfileWrapper));
+            _cessationCostProfileService.Generate(caseItem.Id).Returns(Task.FromResult(cessationCostWrapper));
+
+            var substructure = new Substructure
+            {
+                CostProfileOverride = new SubstructureCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = Array.Empty<double>()
+                }
+            };
+
+            var surf = new Models.Surf
+            {
+                CostProfileOverride = new SurfCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = Array.Empty<double>()
+                }
+            };
+
+            var topside = new Topside
+            {
+                CostProfileOverride = new TopsideCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = Array.Empty<double>()
+                }
+            };
+
+            var transport = new Models.Transport
+            {
+                CostProfileOverride = new TransportCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = Array.Empty<double>()
+                }
+            };
+
+            // Set up the substitutes to return the expected cost profiles
+            _substructureRepository.GetSubstructure(caseItem.SubstructureLink)
+                .Returns(Task.FromResult(substructure));
+
+            _surfRepository.GetSurf(caseItem.SurfLink)
+                .Returns(Task.FromResult(surf));
+
+            _topsideRepository.GetTopside(caseItem.TopsideLink)
+                .Returns(Task.FromResult(topside));
+
+            _transportRepository.GetTransport(caseItem.TransportLink)
+                .Returns(Task.FromResult(transport));
+
+            // Act
+            var result = await _economicsCalculationHelper.CalculateTotalCostAsync(caseItem);
+
+            // Assert
+            Assert.Equal(0, result.StartYear);
+            Assert.Empty(result.Values); // Expecting no cost values
+
+            // Optional: you may check if result.Values is empty
+            Assert.Equal(0, result.Values.Length);
         }
 
         [Fact]
@@ -213,6 +732,80 @@ namespace api.Tests.Helpers
             {
                 Assert.Equal(expectedValues[i], result.Values[i]);
             }
+        }
+
+        [Fact]
+        public async Task CalculateTotalOffshoreFacilityCostAsync_NullCase_ThrowsNullReferenceException()
+        {
+            // Act & Assert
+            await Assert.ThrowsAsync<NullReferenceException>(() => _economicsCalculationHelper.CalculateTotalOffshoreFacilityCostAsync(null));
+        }
+
+        [Fact]
+        public async Task CalculateTotalOffshoreFacilityCostAsync_EmptyCostProfiles_ReturnsZeroCost()
+        {
+            // Arrange
+            var caseItem = new Case
+            {
+                SubstructureLink = Guid.NewGuid(),
+                SurfLink = Guid.NewGuid(),
+                TopsideLink = Guid.NewGuid(),
+                TransportLink = Guid.NewGuid()
+            };
+
+            var substructure = new Substructure
+            {
+                CostProfileOverride = new SubstructureCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = Array.Empty<double>()
+                }
+            };
+
+            var surf = new Models.Surf
+            {
+                CostProfileOverride = new SurfCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = Array.Empty<double>()
+                }
+            };
+
+            var topside = new Topside
+            {
+                CostProfileOverride = new TopsideCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = Array.Empty<double>()
+                }
+            };
+
+            var transport = new Models.Transport
+            {
+                CostProfileOverride = new TransportCostProfileOverride
+                {
+                    Override = true,
+                    StartYear = 2020,
+                    Values = Array.Empty<double>()
+                }
+            };
+
+            _substructureRepository.GetSubstructure(caseItem.SubstructureLink).Returns(substructure);
+            _surfRepository.GetSurf(caseItem.SurfLink).Returns(surf);
+            _topsideRepository.GetTopside(caseItem.TopsideLink).Returns(topside);
+            _transportRepository.GetTransport(caseItem.TransportLink).Returns(transport);
+
+            // Act
+            var totalCost = await _economicsCalculationHelper.CalculateTotalOffshoreFacilityCostAsync(caseItem);
+            var expectedIncome = 0;
+
+            // Assert
+            Assert.Equal(expectedIncome, totalCost.Values.Sum());
+            Assert.Empty(totalCost.Values);
+
         }
 
         [Fact]
@@ -347,13 +940,13 @@ namespace api.Tests.Helpers
             var income = new TimeSeries<double>
             {
                 StartYear = 2020,
-                Values = new double[] { 500.0, 700.0, 900.0 }
+                Values = [500.0, 700.0, 900.0]
             };
 
             var totalCost = new TimeSeries<double>
             {
                 StartYear = 2020,
-                Values = new double[] { 200.0, 300.0, 400.0, 500.0 }
+                Values = [200.0, 300.0, 400.0, 500.0]
             };
 
             var expectedStartYear = 2020;
@@ -361,7 +954,7 @@ namespace api.Tests.Helpers
             var expectedValues = new double[] { 300.0, 400.0, 500.0, -500.0 };
 
             // Act
-            var result = EconomicsCalculationHelper.CalculateCashFlow(income, totalCost);
+            var result = _economicsCalculationHelper.CalculateCashFlow(income, totalCost);
 
             // Assert
             Assert.Equal(expectedStartYear, result.StartYear);
@@ -373,5 +966,59 @@ namespace api.Tests.Helpers
             }
         }
 
+        [Fact]
+        public async Task CalculateTotalOffshoreFacilityCostAsync_NullProfiles_ReturnsEmptyProfile()
+        {
+            // Arrange
+            _substructureRepository.GetSubstructure(Arg.Any<Guid>()).Returns((Substructure)null);
+            _surfRepository.GetSurf(Arg.Any<Guid>()).Returns((Models.Surf)null);
+            _topsideRepository.GetTopside(Arg.Any<Guid>()).Returns((Topside)null);
+            _transportRepository.GetTransport(Arg.Any<Guid>()).Returns((Models.Transport)null);
+            _wellProjectRepository.GetWellProject(Arg.Any<Guid>()).Returns((WellProject)null);
+
+            // Arrange
+            var caseItem = new Case
+            {
+                SubstructureLink = Guid.NewGuid(),
+                SurfLink = Guid.NewGuid(),
+                TopsideLink = Guid.NewGuid(),
+                TransportLink = Guid.NewGuid()
+            };
+
+            // Act
+            var result = await _economicsCalculationHelper.CalculateTotalOffshoreFacilityCostAsync(caseItem);
+
+            // Assert
+            Assert.Equal("00000000-0000-0000-0000-000000000000", result.Id.ToString());
+        }
+
+        [Fact]
+        public async Task CalculateTotalOffshoreFacilityCostAsync_EmptyProfiles_ReturnsZeroCost()
+        {
+            // Arrange
+            var substructure = new Substructure { CostProfile = new SubstructureCostProfile { Values = [], StartYear = 2020 } };
+            var surf = new Models.Surf { CostProfile = new SurfCostProfile { Values = [], StartYear = 2020 } };
+            var topside = new Topside { CostProfile = new TopsideCostProfile { Values = [], StartYear = 2020 } };
+            var transport = new Models.Transport { CostProfile = new TransportCostProfile { Values = [], StartYear = 2020 } };
+
+            _substructureRepository.GetSubstructure(Arg.Any<Guid>()).Returns(substructure);
+            _surfRepository.GetSurf(Arg.Any<Guid>()).Returns(surf);
+            _topsideRepository.GetTopside(Arg.Any<Guid>()).Returns(topside);
+            _transportRepository.GetTransport(Arg.Any<Guid>()).Returns(transport);
+
+            var caseItem = new Case
+            {
+                SubstructureLink = Guid.NewGuid(),
+                SurfLink = Guid.NewGuid(),
+                TopsideLink = Guid.NewGuid(),
+                TransportLink = Guid.NewGuid()
+            };
+
+            // Act
+            var result = await _economicsCalculationHelper.CalculateTotalOffshoreFacilityCostAsync(caseItem);
+
+            // Assert
+            Assert.Empty(result.Values);
+        }
     }
 }

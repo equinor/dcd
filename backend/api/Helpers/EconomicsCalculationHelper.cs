@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace api.Helpers
 {
-    public class EconomicsCalculationHelper
+    public class EconomicsCalculationHelper : IEconomicsCalculationHelper
     {
         private const int Cd = 365;
 
@@ -57,7 +57,7 @@ namespace api.Helpers
             _substructureTimeSeriesRepository = substructureTimeSeriesRepository;
         }
 
-        public static TimeSeries<double> CalculateIncome(DrainageStrategy drainageStrategy, Project project)
+        public TimeSeries<double> CalculateIncome(DrainageStrategy drainageStrategy, Project project)
         {
             var oilPrice = project.OilPrice;
             var gasPrice = project.GasPrice;
@@ -446,7 +446,7 @@ namespace api.Helpers
             return totalExplorationCost;
         }
 
-        public static TimeSeries<double> CalculateCashFlow(TimeSeries<double> income, TimeSeries<double> totalCost)
+        public TimeSeries<double> CalculateCashFlow(TimeSeries<double> income, TimeSeries<double> totalCost)
         {
             var startYear = Math.Min(income.StartYear, totalCost.StartYear);
             var endYear = Math.Max(
