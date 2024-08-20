@@ -5,14 +5,12 @@ interface Props {
     chartTitle: string
     barColors: string[]
     unit?: string
-    width?: string
-    height: number
     enableLegend?: boolean
     totalCo2Emission: string | undefined
 }
 
 export const AgChartsPie = ({
-    data, chartTitle, barColors, unit, width, height, enableLegend, totalCo2Emission,
+    data, chartTitle, barColors, unit, enableLegend, totalCo2Emission,
 }: Props) => {
     const figmaTheme = {
         palette: {
@@ -34,10 +32,10 @@ export const AgChartsPie = ({
         title: { text: chartTitle ?? "" },
         subtitle: { text: unit ?? "" },
         padding: {
-            top: 40,
-            right: 40,
-            bottom: 40,
-            left: 40,
+            top: 10,
+            right: 10,
+            bottom: 10,
+            left: 10,
         },
         theme: figmaTheme,
         series: [
@@ -78,7 +76,7 @@ export const AgChartsPie = ({
     }
 
     return (
-        <div style={{ height, width }}>
+        <div>
             <AgChartsReact
                 options={defaultOptions}
             />

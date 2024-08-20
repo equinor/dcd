@@ -48,11 +48,12 @@ export const AgChartsTimeseries = ({
         data,
         title: { text: chartTitle ?? "" },
         subtitle: { text: unit ?? "" },
+        height: 400,
         padding: {
-            top: 40,
-            right: 40,
-            bottom: 40,
-            left: 40,
+            top: 10,
+            right: 10,
+            bottom: 10,
+            left: 10,
         },
         theme: figmaTheme,
         series: [
@@ -64,7 +65,7 @@ export const AgChartsTimeseries = ({
     }
 
     return (
-        <div style={{ height: height ?? 400, width }}>
+        <div>
             <AgChartsReact
                 options={defaultOptions}
             />
