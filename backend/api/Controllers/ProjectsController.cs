@@ -2,6 +2,7 @@ using api.Authorization;
 using api.Dtos;
 using api.Exceptions;
 using api.Models;
+using api.Models.Fusion;
 using api.Services;
 using api.Services.FusionIntegration;
 
@@ -13,15 +14,15 @@ using Microsoft.Identity.Web.Resource;
 
 namespace api.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("projects")]
-[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-[RequiresApplicationRoles(
-    ApplicationRole.Admin,
-    ApplicationRole.ReadOnly,
-    ApplicationRole.User
-)]
+// [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
+// [RequiresApplicationRoles(
+//     ApplicationRole.Admin,
+//     ApplicationRole.ReadOnly,
+//     ApplicationRole.User
+// )]
+[Authorize(Policy = "ProjectAccess")]
 public class ProjectsController : ControllerBase
 {
     private readonly IFusionService _fusionService;
@@ -29,13 +30,17 @@ public class ProjectsController : ControllerBase
     private readonly ICompareCasesService _compareCasesService;
     private readonly ITechnicalInputService _technicalInputService;
     private readonly IMapper _mapper;
+    private readonly IAuthorizationService _authorizationService;
+    private readonly IFusionPeopleService _fusionPeopleService;
 
     public ProjectsController(
         IProjectService projectService,
         IFusionService fusionService,
         ICompareCasesService compareCasesService,
         ITechnicalInputService technicalInputService,
-        IMapper mapper
+        IMapper mapper,
+        IAuthorizationService authorizationService,
+        IFusionPeopleService fusionPeopleService
     )
     {
         _projectService = projectService;
@@ -43,6 +48,8 @@ public class ProjectsController : ControllerBase
         _compareCasesService = compareCasesService;
         _technicalInputService = technicalInputService;
         _mapper = mapper;
+        _authorizationService = authorizationService;
+        _fusionPeopleService = fusionPeopleService;
     }
 
     [HttpGet("{projectId}")]
@@ -50,12 +57,20 @@ public class ProjectsController : ControllerBase
     {
         try
         {
+            var authorizationResult = await _authorizationService.AuthorizeAsync(User, new Project(), new ProjectAccessRequirement());
             return await _projectService.GetProjectDto(projectId);
         }
         catch (NotFoundInDBException)
         {
             return null;
         }
+    }
+
+    [HttpGet("{projectId}/members")]
+    public async Task<List<FusionPersonV1>> GetMembers(Guid projectId)
+    {
+        var result = await _fusionPeopleService.GetAllPersonsOnProject(projectId, "", 100, 0);
+        return result;
     }
 
     [HttpPost]

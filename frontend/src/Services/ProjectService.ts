@@ -9,6 +9,11 @@ export class __ProjectService extends __BaseService {
         return project
     }
 
+    async getProjectMembers(id: string) {
+        const project: any = await this.get<any>(`/${id}/members`)
+        return project
+    }
+
     public async createProject(contextId: string): Promise<Components.Schemas.ProjectWithAssetsDto> {
         const res: Components.Schemas.ProjectWithAssetsDto = await this.postWithParams(
             "",

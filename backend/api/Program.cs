@@ -46,7 +46,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"))
     .EnableTokenAcquisitionToCallDownstreamApi()
     .AddMicrosoftGraph(builder.Configuration.GetSection("Graph"))
+    .AddDownstreamApi("FusionPeople", builder.Configuration.GetSection("FusionPeople"))
     .AddInMemoryTokenCaches();
+
+
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("ProjectAccess", policy =>
+    {
+        policy.Requirements.Add(new ProjectAccessRequirement());
+    });
 
 var sqlConnectionString = config["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
 
@@ -162,6 +170,9 @@ builder.Configuration.AddAzureAppConfiguration(options =>
            });
 });
 
+builder.Services.AddScoped<IAuthorizationHandler, ProjectAccessHandler>();
+builder.Services.AddScoped<IFusionPeopleService, FusionPeopleService>();
+
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IFusionService, FusionService>();
 builder.Services.AddScoped<ICaseService, CaseService>();
@@ -243,7 +254,7 @@ builder.Services.AddScoped<ProspSharepointImportService>();
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
-builder.Services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
+// builder.Services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
 
 builder.Services.Configure<IConfiguration>(builder.Configuration);
 
@@ -296,6 +307,7 @@ builder.Host.UseSerilog();
 
 var app = builder.Build();
 app.UseRouting();
+
 if (app.Environment.IsDevelopment())
 {
     IdentityModelEventSource.ShowPII = true;
@@ -308,8 +320,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(_accessControlPolicyName);
 app.UseAuthentication();
-app.UseMiddleware<ClaimsMiddelware>();
-app.UseMiddleware<RequestLoggingMiddleware>();
+// app.UseMiddleware<ClaimsMiddelware>();
+// app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
