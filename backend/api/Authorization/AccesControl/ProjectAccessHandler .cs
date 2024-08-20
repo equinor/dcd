@@ -30,9 +30,9 @@ public class ProjectAccessHandler : AuthorizationHandler<ProjectAccessRequiremen
 
         var project = await GetCurrentProject(context);
 
-        // bool isProjectMember = await CheckUserMembershipInProject(context.User, project);
+        bool isProjectMember = CheckUserMembershipInProject(context.User, project);
 
-        if (IsUserAuthorized(userGroups, project?.Classification, project?.ProjectPhase, true))
+        if (IsUserAuthorized(userGroups, project?.Classification, project?.ProjectPhase, isProjectMember))
         {
             context.Succeed(requirement);
         }
@@ -65,13 +65,36 @@ public class ProjectAccessHandler : AuthorizationHandler<ProjectAccessRequiremen
         return project;
     }
 
-    private Task<bool> CheckUserMembershipInProject(ClaimsPrincipal user, Project? project)
+    private bool CheckUserMembershipInProject(ClaimsPrincipal user, Project? project)
     {
-        return new Task<bool>(() => true);
+        var fusionIdentity = user.Identities.FirstOrDefault(i => i is Fusion.Integration.Authentication.FusionIdentity)
+            as Fusion.Integration.Authentication.FusionIdentity;
+
+        var azureUniqueId = fusionIdentity?.Profile?.AzureUniqueId ??
+            throw new InvalidOperationException("AzureUniqueId not found in user profile");
+        Console.WriteLine("azureUniqueId: " + azureUniqueId);
+        if (project == null)
+        {
+            return false;
+        }
+        var projectMembers = project.ProjectMembers;
+        if (projectMembers == null)
+        {
+            return false;
+        }
+        var result = projectMembers.Any(pm => pm.AzureUniqueId == azureUniqueId);
+        return result;
     }
 
     private bool IsUserAuthorized(List<string> userGroups, ProjectClassification? classification, ProjectPhase? projectPhase, bool isProjectMember)
     {
+        if (classification == ProjectClassification.Confidential || classification == ProjectClassification.Restricted)
+        {
+            if (!isProjectMember)
+            {
+                return false;
+            }
+        }
         return true;
     }
 }

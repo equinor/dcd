@@ -73,6 +73,12 @@ public class ProjectsController : ControllerBase
         return result;
     }
 
+    [HttpPut("{projectId}/members/{personId}")]
+    public async Task<ProjectMember> AddMember(Guid projectId, Guid personId)
+    {
+        return await _projectService.AddProjectMember(projectId, personId);
+    }
+
     [HttpPost]
     public async Task<ProjectWithAssetsDto> CreateProject([FromQuery] Guid contextId)
     {

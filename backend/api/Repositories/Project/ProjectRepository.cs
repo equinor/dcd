@@ -25,7 +25,9 @@ public class ProjectRepository : BaseRepository, IProjectRepository
 
     public async Task<Project?> GetProjectByIdOrExternalId(Guid id)
     {
-        return await _context.Projects.FirstOrDefaultAsync(p => p.Id == id || p.FusionProjectId == id);
+        return await _context.Projects
+            .Include(p => p.ProjectMembers)
+            .FirstOrDefaultAsync(p => p.Id == id || p.FusionProjectId == id);
     }
 
     public async Task<Project?> GetProjectWithCases(Guid projectId)

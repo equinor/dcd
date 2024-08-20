@@ -27,6 +27,9 @@ public class Project
     public ICollection<DrainageStrategy>? DrainageStrategies { get; set; }
     public ICollection<WellProject>? WellProjects { get; set; }
     public ICollection<Exploration>? Explorations { get; set; }
+
+    public ICollection<ProjectMember>? ProjectMembers { get; set; }
+
     public string? SharepointSiteUrl { get; set; }
     public double CO2RemovedFromGas { get; set; }
     public double CO2EmissionFromFuelGas { get; set; } = 2.34;
