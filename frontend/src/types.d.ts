@@ -14,6 +14,10 @@ declare namespace Components {
             capexFactorFEEDStudies?: number; // double
             npv?: number; // double
             breakEven?: number; // double
+            oilPrice?: number; // double
+            gasPrice?: number; // double
+            discountRate?: number; // double
+            exchangeRate?: number; // double
             host?: string | null;
             dgaDate?: string; // date-time
             dgbDate?: string; // date-time
@@ -158,6 +162,10 @@ declare namespace Components {
             capexFactorFEEDStudies: number; // double
             npv: number; // double
             breakEven: number; // double
+            oilPrice: number; // double
+            gasPrice: number; // double
+            discountRate: number; // double
+            exchangeRate: number; // double
             host?: string | null;
             dgaDate: string; // date-time
             dgbDate: string; // date-time
@@ -274,6 +282,10 @@ declare namespace Components {
             capexFactorFEEDStudies: number; // double
             npv: number; // double
             breakEven: number; // double
+            oilPrice: number; // double
+            gasPrice: number; // double
+            discountRate: number; // double
+            exchangeRate: number; // double
             host?: string | null;
             dgaDate: string; // date-time
             dgbDate: string; // date-time

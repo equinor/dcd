@@ -29,7 +29,12 @@ export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFaci
     "oilProducerCostProfileOverride" | "gasProducerCostProfileOverride" | "waterInjectorCostProfileOverride" | "gasInjectorCostProfileOverride" |
     "seismicAcquisitionAndProcessing" | "countryOfficeCost" | "explorationWellCostProfile" | "appraisalWellCostProfile" |
     "sidetrackCostProfile" | "surfCostOverride" | "topsideCostOverride" | "substructureCostOverride" | "transportCostOverride" |
-    "co2EmissionsOverride" | "co2Intensity"
+    "co2EmissionsOverride" | "co2Intensity" |
+    "totalFeasibilityAndConceptStudies" | "totalFEEDStudies" | "totalOtherStudiesCostProfile" |
+    "historicCostCostProfile" | "wellInterventionCostProfile" | "offshoreFacilitiesOperationsCostProfile" |
+    "onshoreRelatedOPEXCostProfile" | "additionalOPEXCostProfile" | "cessationWellsCost" |
+    "cessationOffshoreFacilitiesCost" | "cessationOnshoreFacilitiesCostProfile" | "surf" | "topside" |
+    "transport" | "substructure";
 
 export type ResourceObject =
     Components.Schemas.TopsideDto |
@@ -160,3 +165,4 @@ export interface ITimeSeriesData {
     total?: string
     hideIfEmpty?: boolean
 }
+

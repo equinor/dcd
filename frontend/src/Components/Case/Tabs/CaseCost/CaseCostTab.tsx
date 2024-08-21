@@ -17,6 +17,7 @@ import ExplorationWellCosts from "./Tables/ExplorationWellCosts"
 import OffshoreFacillityCosts from "./Tables/OffshoreFacilityCosts"
 import OpexCosts from "./Tables/OpexCosts"
 import TotalStudyCosts from "./Tables/TotalStudyCosts"
+import AggregatedTotalsTable from "./Tables/AggregatedTotalsTable"
 
 const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
@@ -119,6 +120,15 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 surfData={apiData.surf as Components.Schemas.SurfWithProfilesDto}
                 addEdit={addEdit}
             />
+            <Grid item xs={12}>
+                <AggregatedTotalsTable
+                    tableYears={tableYears}
+                    addEdit={addEdit}
+                    apiData={apiData}
+                    studyGridRef={studyGridRef}
+                />
+            </Grid>
+
             <Grid item xs={12}>
                 <TotalStudyCosts
                     tableYears={tableYears}
