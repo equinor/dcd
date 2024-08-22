@@ -10,14 +10,16 @@ interface AggregatedTotalsTableProps {
     tableYears: [number, number];
     addEdit: any;
     apiData: Components.Schemas.CaseWithAssetsDto;
-    studyGridRef: React.MutableRefObject<any>;
+    aggregatedGridRef: React.MutableRefObject<any>;
+    alignedGridsRef: any[];
 }
 
 const AggregatedTotalsTable: React.FC<AggregatedTotalsTableProps> = ({
     tableYears,
     addEdit,
     apiData,
-    studyGridRef,
+    aggregatedGridRef,
+    alignedGridsRef,
 }) => {
     const { project } = useProjectContext()
     const { caseId } = useParams()
@@ -49,7 +51,7 @@ const AggregatedTotalsTable: React.FC<AggregatedTotalsTableProps> = ({
 
         const aggregatedProfile: ITimeSeries = {
             id: crypto.randomUUID(),
-            startYear: Math.min(...Object.keys(totals).map(Number)),
+            startYear: Math.min(...Object.keys(totals).map(Number)) - new Date(apiData.case.dG4Date).getFullYear(),
             values: Object.values(totals),
         }
 
@@ -65,40 +67,41 @@ const AggregatedTotalsTable: React.FC<AggregatedTotalsTableProps> = ({
 
             const profiles = {
                 studyProfiles: [
-                    apiData.totalFeasibilityAndConceptStudies,
-                    apiData.totalFeasibilityAndConceptStudiesOverride,
-                    apiData.totalFEEDStudies,
-                    apiData.totalFEEDStudiesOverride,
+                    apiData.totalFeasibilityAndConceptStudiesOverride || apiData.totalFeasibilityAndConceptStudies,
+                    apiData.totalFEEDStudiesOverride || apiData.totalFEEDStudies,
                     apiData.totalOtherStudiesCostProfile,
                 ],
                 opexProfiles: [
-                    apiData.historicCostCostProfile,
-                    apiData.wellInterventionCostProfile,
-                    apiData.offshoreFacilitiesOperationsCostProfile,
-                    apiData.offshoreFacilitiesOperationsCostProfileOverride,
+                    apiData.wellInterventionCostProfileOverride || apiData.wellInterventionCostProfile,
+                    apiData.offshoreFacilitiesOperationsCostProfileOverride || apiData.offshoreFacilitiesOperationsCostProfile,
                     apiData.onshoreRelatedOPEXCostProfile,
                     apiData.additionalOPEXCostProfile,
+                    apiData.historicCostCostProfile,
                 ],
                 cessationProfiles: [
-                    apiData.cessationWellsCost,
-                    apiData.cessationWellsCostOverride,
-                    apiData.cessationOffshoreFacilitiesCost,
-                    apiData.cessationOffshoreFacilitiesCostOverride,
+                    apiData.cessationWellsCostOverride || apiData.cessationWellsCost,
+                    apiData.cessationOffshoreFacilitiesCostOverride || apiData.cessationOffshoreFacilitiesCost,
                     apiData.cessationOnshoreFacilitiesCostProfile,
                 ],
                 offshoreFacilityProfiles: [
-                    apiData.surf,
-                    apiData.topside,
-                    apiData.transport,
-                    apiData.substructure,
-                    apiData.surfCostProfile,
-                    apiData.surfCostProfileOverride,
-                    apiData.topsideCostProfile,
-                    apiData.topsideCostProfileOverride,
-                    apiData.substructureCostProfile,
-                    apiData.substructureCostProfileOverride,
-                    apiData.transportCostProfile,
-                    apiData.transportCostProfileOverride,
+                    apiData.surfCostProfileOverride || apiData.surfCostProfile,
+                    apiData.topsideCostProfileOverride || apiData.topsideCostProfile,
+                    apiData.substructureCostProfileOverride || apiData.substructureCostProfile,
+                    apiData.transportCostProfileOverride || apiData.transportCostProfile,
+                ],
+                developmentWellCostProfiles: [
+                    apiData.oilProducerCostProfileOverride || apiData.oilProducerCostProfile,
+                    apiData.gasProducerCostProfileOverride || apiData.gasProducerCostProfile,
+                    apiData.waterInjectorCostProfileOverride || apiData.waterInjectorCostProfile,
+                    apiData.gasInjectorCostProfileOverride || apiData.gasInjectorCostProfile,
+                ],
+                explorationWellCostProfiles: [
+                    apiData.gAndGAdminCostOverride || apiData.gAndGAdminCost,
+                    apiData.seismicAcquisitionAndProcessing,
+                    apiData.countryOfficeCost,
+                    apiData.explorationWellCostProfile,
+                    apiData.appraisalWellCostProfile,
+                    apiData.sidetrackCostProfile,
                 ],
             }
 
@@ -118,17 +121,19 @@ const AggregatedTotalsTable: React.FC<AggregatedTotalsTableProps> = ({
                     unit: project?.currency === 1 ? "MNOK" : "MUSD",
                     profile: aggregatedProfile,
                     resourceName,
-                    resourceId: caseId || "",
+                    resourceId: apiData.case.id,
+                    resourceProfileId: aggregatedProfile.id,
                     resourcePropertyKey: profileName,
                     overridable: false,
                     editable: false,
                 })
+                console.log("newTimeSeriesData", newTimeSeriesData)
             })
 
             console.log("Final TimeSeries Data:", newTimeSeriesData)
             setAggregatedTimeSeriesData(newTimeSeriesData)
         }
-    }, [apiData, tableYears])
+    }, [apiData, tableYears, project])
 
     if (!apiData) {
         return <p>Loading...</p>
@@ -137,13 +142,14 @@ const AggregatedTotalsTable: React.FC<AggregatedTotalsTableProps> = ({
     return (
         <CaseTabTable
             timeSeriesData={aggregatedTimeSeriesData}
-            tableYears={tableYears}
-            tableName="Aggregated Totals"
-            totalRowName="Aggregated Total"
-            addEdit={addEdit}
             dg4Year={apiData.case.dG4Date ? new Date(apiData.case.dG4Date).getFullYear() : 2030}
-            includeFooter={false}
-            gridRef={studyGridRef}
+            tableYears={tableYears}
+            tableName="Aggregated Cost Totals"
+            gridRef={aggregatedGridRef}
+            alignedGridsRef={alignedGridsRef}
+            includeFooter
+            totalRowName="Total"
+            addEdit={addEdit}
         />
     )
 }
