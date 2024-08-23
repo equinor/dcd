@@ -120,6 +120,21 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 addEdit={addEdit}
             />
             <Grid item xs={12}>
+<<<<<<< Updated upstream
+=======
+                <AggregatedTotals
+                    apiData={apiData}
+                    barColors={["#004F55", "#007079", "#97CACE", "#C3F3D2", "#E6FAEC", "#FF7D7D", "#9F9F9F"]}
+                    unit="MNOK"
+                    enableLegend
+                    tableYears={tableYears}
+                    aggregatedGridRef={aggregatedGridRef}
+                    alignedGridsRef={alignedGridsRef}
+                />
+            </Grid>
+
+            <Grid item xs={12}>
+>>>>>>> Stashed changes
                 <TotalStudyCosts
                     tableYears={tableYears}
                     studyGridRef={studyGridRef}

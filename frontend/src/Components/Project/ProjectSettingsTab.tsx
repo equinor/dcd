@@ -1,5 +1,5 @@
 import { useState, ChangeEventHandler, useEffect } from "react"
-import { NativeSelect } from "@equinor/eds-core-react"
+import { Input, InputWrapper, NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useProjectContext } from "../../Context/ProjectContext"
 import InputSwitcher from "../Input/Components/InputSwitcher"
@@ -9,10 +9,18 @@ const ProjectSettingsTab = () => {
     const { project, projectEdited, setProjectEdited } = useProjectContext()
     const [classification, setClassification] = useState<number | undefined>(undefined)
     const [dummyRole, setDummyRole] = useState(0) // TODO: Get role from user
+    const [oilPriceUSD, setOilPriceUSD] = useState<number | undefined>(75)
+    const [gasPriceNOK, setGasPriceNOK] = useState<number | undefined>(3)
+    const [discountRate, setDiscountRate] = useState<number | undefined>(8)
+    const [exchangeRateNOKToUSD, setExchangeRateNOKToUSD] = useState<number | undefined>(0.1)
 
     useEffect(() => {
         if (project) {
             setClassification(project.classification)
+            setOilPriceUSD(project.oilPriceUSD ?? 75)
+            setGasPriceNOK(project.gasPriceNOK ?? 3)
+            setDiscountRate(project.discountRate ?? 8)
+            setExchangeRateNOKToUSD(project.exchangeRateNOKToUSD ?? 0.1)
         }
     }, [project])
 
@@ -40,6 +48,46 @@ const ProjectSettingsTab = () => {
             const newClassification: Components.Schemas.ProjectClassification = Number(e.currentTarget.value) as unknown as Components.Schemas.ProjectClassification
             const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
             newProject.classification = newClassification
+            setProjectEdited(newProject)
+        }
+    }
+
+    const handleOilPriceChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+        const newOilPrice = parseFloat(e.currentTarget.value)
+        if (!Number.isNaN(newOilPrice) && project) {
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
+            newProject.oilPriceUSD = newOilPrice
+            setOilPriceUSD(newOilPrice)
+            setProjectEdited(newProject)
+        }
+    }
+
+    const handleGasPriceChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+        const newGasPrice = parseFloat(e.currentTarget.value)
+        if (!Number.isNaN(newGasPrice) && project) {
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
+            newProject.gasPriceNOK = newGasPrice
+            setGasPriceNOK(newGasPrice)
+            setProjectEdited(newProject)
+        }
+    }
+
+    const handleDiscountRateChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+        const newDiscountRate = parseFloat(e.currentTarget.value)
+        if (!Number.isNaN(newDiscountRate) && project) {
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
+            newProject.discountRate = newDiscountRate
+            setDiscountRate(newDiscountRate)
+            setProjectEdited(newProject)
+        }
+    }
+
+    const handleExchangeRateNOKToUSDChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+        const newExchangeRate = parseFloat(e.currentTarget.value)
+        if (!Number.isNaN(newExchangeRate) && project) {
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
+            newProject.exchangeRateNOKToUSD = newExchangeRate
+            setExchangeRateNOKToUSD(newExchangeRate)
             setProjectEdited(newProject)
         }
     }
@@ -100,6 +148,50 @@ const ProjectSettingsTab = () => {
                         </NativeSelect>
                     </InputSwitcher>
                 )}
+            </Grid>
+            <Grid item xs={12} md={4}>
+                <InputWrapper labelProps={{ label: "Oil Price (USD)" }}>
+                    <Input
+                        id="oilPriceUSD"
+                        type="number"
+                        value={oilPriceUSD}
+                        onChange={handleOilPriceChange}
+                        placeholder="Enter oil price in USD"
+                    />
+                </InputWrapper>
+            </Grid>
+            <Grid item xs={12} md={4}>
+                <InputWrapper labelProps={{ label: "Gas Price (NOK)" }}>
+                    <Input
+                        id="gasPriceNOK"
+                        type="number"
+                        value={gasPriceNOK}
+                        onChange={handleGasPriceChange}
+                        placeholder="Enter gas price in NOK"
+                    />
+                </InputWrapper>
+            </Grid>
+            <Grid item xs={12} md={4}>
+                <InputWrapper labelProps={{ label: "Discount Rate (%)" }}>
+                    <Input
+                        id="discountRate"
+                        type="number"
+                        value={discountRate}
+                        onChange={handleDiscountRateChange}
+                        placeholder="Enter discount rate"
+                    />
+                </InputWrapper>
+            </Grid>
+            <Grid item xs={12} md={4}>
+                <InputWrapper labelProps={{ label: "Exchange Rate (NOK to USD)" }}>
+                    <Input
+                        id="exchangeRateNOKToUSD"
+                        type="number"
+                        value={exchangeRateNOKToUSD}
+                        onChange={handleExchangeRateNOKToUSDChange}
+                        placeholder="Enter exchange rate NOK to USD"
+                    />
+                </InputWrapper>
             </Grid>
         </Grid>
     )
