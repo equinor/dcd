@@ -17,7 +17,7 @@ import ExplorationWellCosts from "./Tables/ExplorationWellCosts"
 import OffshoreFacillityCosts from "./Tables/OffshoreFacilityCosts"
 import OpexCosts from "./Tables/OpexCosts"
 import TotalStudyCosts from "./Tables/TotalStudyCosts"
-import AggregatedTotalsTable from "./Tables/AggregatedTotalsTable"
+import AggregatedTotals from "./Tables/AggregatedTotals"
 
 const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
@@ -122,11 +122,22 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 surfData={apiData.surf as Components.Schemas.SurfWithProfilesDto}
                 addEdit={addEdit}
             />
-            <Grid item xs={12}>
-                <AggregatedTotalsTable
+            {/* <Grid item xs={12}>
+                <AggregatedTotals
                     tableYears={tableYears}
                     addEdit={addEdit}
                     apiData={apiData}
+                    aggregatedGridRef={aggregatedGridRef}
+                    alignedGridsRef={alignedGridsRef}
+                />
+            </Grid> */}
+            <Grid item xs={12}>
+                <AggregatedTotals
+                    apiData={apiData}
+                    barColors={["#004F55", "#007079", "#97CACE", "#C3F3D2", "#E6FAEC", "#FF7D7D", "#9F9F9F"]} // Define appropriate colors
+                    unit="MNOK"
+                    enableLegend
+                    tableYears={tableYears}
                     aggregatedGridRef={aggregatedGridRef}
                     alignedGridsRef={alignedGridsRef}
                 />
