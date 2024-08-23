@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react"
 import { useQueryClient } from "react-query"
 import { useParams } from "react-router-dom"
 import { AgChartsReact } from "ag-charts-react"
+import { Grid } from "@mui/material"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
 import { ITimeSeriesData, ProfileNames } from "../../../../../Models/Interfaces"
 import { ITimeSeries } from "../../../../../Models/ITimeSeries"
@@ -340,14 +341,14 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     }
 
     return (
-        <div style={{ display: "flex", justifyContent: "space-between", gap: "20px" }}>
-            <div style={{ flex: "1 1 67%" }}>
-                <AgChartsReact options={barChartOptions} />
-            </div>
-            <div style={{ flex: "1 1 33%" }}>
-                <AgChartsReact options={pieChartOptions} />
-            </div>
-        </div>
+        <Grid container spacing={2} style={{ width: "100%" }}>
+            <Grid item lg={12} xl={7}>
+                <AgChartsReact options={barChartOptions} style={{ height: "100%" }} />
+            </Grid>
+            <Grid item lg={8} xl={5}>
+                <AgChartsReact options={pieChartOptions} style={{ height: "100%" }} />
+            </Grid>
+        </Grid>
     )
 }
 

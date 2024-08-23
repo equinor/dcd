@@ -122,15 +122,6 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 surfData={apiData.surf as Components.Schemas.SurfWithProfilesDto}
                 addEdit={addEdit}
             />
-            {/* <Grid item xs={12}>
-                <AggregatedTotals
-                    tableYears={tableYears}
-                    addEdit={addEdit}
-                    apiData={apiData}
-                    aggregatedGridRef={aggregatedGridRef}
-                    alignedGridsRef={alignedGridsRef}
-                />
-            </Grid> */}
             <Grid item xs={12}>
                 <AggregatedTotals
                     apiData={apiData}
