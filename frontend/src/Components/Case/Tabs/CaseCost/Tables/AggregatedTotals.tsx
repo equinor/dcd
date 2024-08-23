@@ -1,6 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react"
-import { useQueryClient } from "react-query"
-import { useParams } from "react-router-dom"
 import { AgChartsReact } from "ag-charts-react"
 import { Grid } from "@mui/material"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
@@ -11,8 +9,6 @@ import { mergeTimeseries } from "../../../../../Utils/common"
 interface AggregatedTotalsProps {
     tableYears: [number, number];
     apiData: Components.Schemas.CaseWithAssetsDto;
-    aggregatedGridRef: React.MutableRefObject<any>;
-    alignedGridsRef: any[];
     barColors: string[];
     unit?: string;
     enableLegend?: boolean;
@@ -33,13 +29,8 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     unit,
     enableLegend,
     tableYears,
-    aggregatedGridRef,
-    alignedGridsRef,
 }) => {
     const { project } = useProjectContext()
-    const { caseId } = useParams()
-    const queryClient = useQueryClient()
-    const projectId = project?.id || null
     const [aggregatedTimeSeriesData, setAggregatedTimeSeriesData] = useState<ITimeSeriesData[]>([])
 
     const aggregateProfiles = (profiles: any[], dg4Year: number): ITimeSeries => {
@@ -135,32 +126,25 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         const oilPrice = 75.0 // USD
         const gasPrice = 0.3531 // USD
         const cubicMetersToBarrelsFactor = 6.29
-        const million = 1e6
 
-        // Merge oil production profiles
         const totalOilProduction = mergeTimeseries(apiData.productionProfileOil, apiData.additionalProductionProfileOil)
 
-        // Ensure values are defined, fallback to an empty array if undefined
         const oilProductionInMillionsOfBarrels = (totalOilProduction.values || []).map((v) => (v * cubicMetersToBarrelsFactor))
 
-        // Calculate oil income
         const oilIncome = {
             id: crypto.randomUUID(),
             startYear: totalOilProduction.startYear + new Date(apiData.case.dG4Date).getFullYear(),
             values: oilProductionInMillionsOfBarrels.map((v) => v * oilPrice),
         }
 
-        // Merge gas production profiles
         const totalGasProduction = mergeTimeseries(apiData.productionProfileGas, apiData.additionalProductionProfileGas)
 
-        // Ensure values are defined, fallback to an empty array if undefined
         const gasIncome = {
             id: crypto.randomUUID(),
             startYear: totalGasProduction.startYear + new Date(apiData.case.dG4Date).getFullYear(),
             values: (totalGasProduction.values || []).map((v) => (v * gasPrice)),
         }
 
-        // Merge oil and gas income to get total income
         const totalIncome = mergeTimeseries(oilIncome, gasIncome)
         console.log("totalIncome", totalIncome)
         return totalIncome
@@ -171,7 +155,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         const dg4Year = new Date(apiData.case.dG4Date).getFullYear()
         const years = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => tableYears[0] + i)
 
-        // Calculate total income data
         const totalIncomeData = calculateIncome()
 
         let cumulativeSum = 0
@@ -182,7 +165,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 yearData[series.profileName] = value
                 cumulativeSum += value
             })
-            // Instead of cumulative sum of aggregated data, set cumulative sum to total income
             yearData.cumulativeSum = (totalIncomeData.values || []).reduce((acc, value, index) => {
                 if (totalIncomeData.startYear + index === year) {
                     return acc + value
@@ -213,8 +195,8 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     const barChartOptions: object = {
         data: chartData,
         title: {
-            text: "Annual Cost Profile", // Updated bar chart title
-            fontSize: 24, // Title font size, if required
+            text: "Annual Cost Profile",
+            fontSize: 24,
         },
         subtitle: { text: unit },
         padding: {
@@ -237,8 +219,8 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 type: "line",
                 xKey: "year",
                 yKey: "cumulativeSum",
-                name: "Total Income", // Updated line name
-                yName: "Total Income", // Updated y-axis label
+                name: "Total Income",
+                yName: "Total Income",
                 stroke: "red",
                 strokeWidth: 2,
                 marker: {
@@ -263,7 +245,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             {
                 type: "number",
                 position: "right",
-                title: { text: "Total Income" }, // Updated y-axis title
+                title: { text: "Total Income" },
                 keys: ["cumulativeSum"],
                 visibleRange: [0, 1],
             },
@@ -271,7 +253,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         legend: { enabled: enableLegend, position: "bottom", spacing: 40 },
     }
 
-    // Prepare pie chart data
     const pieChartData = useMemo(() => {
         const pieData: any[] = aggregatedTimeSeriesData.map((series) => ({
             profile: series.profileName,
@@ -281,13 +262,13 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         return pieData
     }, [aggregatedTimeSeriesData])
 
-    const totalValue = pieChartData.reduce((acc, curr) => acc + curr.value, 0) // Calculate the total sum of all values
+    const totalValue = pieChartData.reduce((acc, curr) => acc + curr.value, 0)
 
     const pieChartOptions: object = {
         data: pieChartData,
         title: {
-            text: "Cost Distribution", // Updated bar chart title
-            fontSize: 24, // Title font size, if required
+            text: "Cost Distribution",
+            fontSize: 24,
         },
         subtitle: { text: unit ?? "" },
         padding: {

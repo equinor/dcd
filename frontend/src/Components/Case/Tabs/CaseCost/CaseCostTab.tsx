@@ -125,8 +125,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
             <Grid item xs={12}>
                 <AggregatedTotals
                     apiData={apiData}
-                    barColors={["#004F55", "#007079", "#97CACE", "#C3F3D2", "#E6FAEC", "#FF7D7D", "#9F9F9F"]} // Define appropriate colors
-                    unit="MNOK"
+                    barColors={["#004F55", "#007079", "#97CACE", "#C3F3D2", "#E6FAEC", "#FF7D7D", "#9F9F9F"]}
                     enableLegend
                     tableYears={tableYears}
                     aggregatedGridRef={aggregatedGridRef}
