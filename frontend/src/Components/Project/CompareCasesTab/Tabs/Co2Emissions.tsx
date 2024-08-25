@@ -20,8 +20,6 @@ const ProductionProfiles: React.FC<ProductionProfilesProps> = ({ totalCo2Emissio
                     barProfiles={["totalCO2Emissions"]}
                     barNames={["Total CO2 emissions"]}
                     unit="mill tonnes"
-                    width="100%"
-                    height={400}
                     enableLegend={false}
                 />
             </Grid>
@@ -34,8 +32,6 @@ const ProductionProfiles: React.FC<ProductionProfilesProps> = ({ totalCo2Emissio
                     barProfiles={["cO2Intensity"]}
                     barNames={["CO2 intensity"]}
                     unit="kg CO2/boe"
-                    width="100%"
-                    height={400}
                     enableLegend={false}
                 />
             </Grid>

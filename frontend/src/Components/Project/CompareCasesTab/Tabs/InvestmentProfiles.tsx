@@ -9,7 +9,7 @@ interface InvestmentProfilesProps {
 const InvestmentProfiles: React.FC<InvestmentProfilesProps> = ({ investmentProfilesChartData }) => {
     const { project } = useProjectContext()
 
-    if (!investmentProfilesChartData) return <div>No data available</div>
+    if (!investmentProfilesChartData) { return <div>No data available</div> }
 
     return (
         <AgChartsCompareCases
@@ -24,7 +24,6 @@ const InvestmentProfiles: React.FC<InvestmentProfilesProps> = ({ investmentProfi
                 "Exploration well costs",
             ]}
             unit={`${project?.currency === 1 ? "mill NOK" : "mill USD"}`}
-            height={432}
         />
     )
 }
