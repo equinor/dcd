@@ -12,6 +12,7 @@ import { useCaseContext } from "../../../Context/CaseContext"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
 import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
 import { mergeTimeseriesList } from "../../../Utils/common"
+import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 
 interface ITimeSeriesData {
     group?: string
@@ -32,8 +33,11 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const queryClient = useQueryClient()
     const projectId = project?.id || null
 
-    const [tableYears] = useState<[number, number]>([2020, 2030])
+    const [startYear, setStartYear] = useState<number>(2020)
+    const [endYear, setEndYear] = useState<number>(2030)
+    const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
+    const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
     const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
         ["apiData", { projectId, caseId }],
@@ -248,7 +252,30 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             newStudycostTimeSeriesData,
             newOpexTimeSeriesData,
         ])
-    }, [apiData, project])
+
+        if (activeTabCase === 5 && apiData) {
+            console.log("apiData", apiData)
+            const caseData = apiData?.case as Components.Schemas.CaseDto
+
+            SetTableYearsFromProfiles([
+                totalExplorationCostData,
+                totalDrillingCostData,
+                cessationOffshoreFacilitiesCostOverrideData,
+                cessationOffshoreFacilitiesCostData,
+                cessationOnshoreFacilitiesCostProfileData,
+                totalFeasibilityAndConceptStudiesOverrideData,
+                totalFeasibilityAndConceptStudiesData,
+                totalFEEDStudiesOverrideData,
+                totalFEEDStudiesData,
+                totalOtherStudiesCostProfileData,
+                historicCostCostProfileData,
+                offshoreOpexPlussWellInterventionData,
+                onshoreRelatedOPEXCostProfileData,
+                additionalOPEXCostProfileData,
+            ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
+            setYearRangeSetFromProfiles(true)
+        }
+    }, [apiData, project, activeTabCase])
 
     const caseData = apiData?.case
 
