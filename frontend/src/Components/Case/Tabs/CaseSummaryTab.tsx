@@ -48,42 +48,38 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         },
     )
 
-    useEffect(() => {
-        if (!apiData || !project) {
-            console.error("Missing data in CaseSummaryTab")
-            return
-        }
-        const handleOffshoreFacilitiesCost = () => mergeTimeseriesList([
-            (apiData?.surfCostProfileOverride?.override === true
-                ? apiData?.surfCostProfileOverride
-                : apiData?.surfCostProfile),
-            (apiData?.substructureCostProfileOverride?.override === true
-                ? apiData?.substructureCostProfileOverride
-                : apiData?.substructureCostProfile),
-            (apiData?.transportCostProfileOverride?.override === true
-                ? apiData?.transportCostProfileOverride
-                : apiData?.transportCostProfile),
-        ])
+    const handleOffshoreFacilitiesCost = () => mergeTimeseriesList([
+        (apiData?.surfCostProfileOverride?.override === true
+            ? apiData?.surfCostProfileOverride
+            : apiData?.surfCostProfile),
+        (apiData?.substructureCostProfileOverride?.override === true
+            ? apiData?.substructureCostProfileOverride
+            : apiData?.substructureCostProfile),
+        (apiData?.transportCostProfileOverride?.override === true
+            ? apiData?.transportCostProfileOverride
+            : apiData?.transportCostProfile),
+    ])
 
-        const handleOffshoreOpexPlussWellIntervention = () => mergeTimeseriesList([
-            (apiData?.wellInterventionCostProfileOverride?.override === true
-                ? apiData?.wellInterventionCostProfileOverride
-                : apiData?.wellInterventionCostProfile),
-            (apiData?.offshoreFacilitiesOperationsCostProfileOverride?.override === true
-                ? apiData?.offshoreFacilitiesOperationsCostProfileOverride
-                : apiData?.offshoreFacilitiesOperationsCostProfile),
-        ])
+    const handleOffshoreOpexPlussWellIntervention = () => mergeTimeseriesList([
+        (apiData?.wellInterventionCostProfileOverride?.override === true
+            ? apiData?.wellInterventionCostProfileOverride
+            : apiData?.wellInterventionCostProfile),
+        (apiData?.offshoreFacilitiesOperationsCostProfileOverride?.override === true
+            ? apiData?.offshoreFacilitiesOperationsCostProfileOverride
+            : apiData?.offshoreFacilitiesOperationsCostProfile),
+    ])
 
-        const handleTotalExplorationCost = () => mergeTimeseriesList([
-            apiData?.explorationWellCostProfile,
-            apiData?.appraisalWellCostProfile,
-            apiData?.sidetrackCostProfile,
-            apiData?.seismicAcquisitionAndProcessing,
-            apiData?.countryOfficeCost,
-            apiData?.gAndGAdminCost,
-        ])
+    const handleTotalExplorationCost = () => mergeTimeseriesList([
+        apiData?.explorationWellCostProfile,
+        apiData?.appraisalWellCostProfile,
+        apiData?.sidetrackCostProfile,
+        apiData?.seismicAcquisitionAndProcessing,
+        apiData?.countryOfficeCost,
+        apiData?.gAndGAdminCost,
+    ])
 
-        const handleDrilling = () => {
+    const handleDrilling = () => {
+        if (project) {
             const oilProducerCostProfile = apiData?.oilProducerCostProfileOverride?.override
                 ? apiData.oilProducerCostProfileOverride
                 : apiData?.oilProducerCostProfile
@@ -144,6 +140,14 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 }
             }
             return mergeTimeseriesList(drillingCostSeriesList)
+        }
+        return undefined
+    }
+
+    useEffect(() => {
+        if (!apiData || !project) {
+            console.error("Missing data in CaseSummaryTab")
+            return
         }
 
         const totalExplorationCostData = handleTotalExplorationCost()
@@ -252,26 +256,28 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             newStudycostTimeSeriesData,
             newOpexTimeSeriesData,
         ])
+    }, [apiData, project])
 
-        if (activeTabCase === 5 && apiData) {
-            console.log("apiData", apiData)
+    useEffect(() => {
+        if (activeTabCase === 7 && apiData) {
             const caseData = apiData?.case as Components.Schemas.CaseDto
 
             SetTableYearsFromProfiles([
-                totalExplorationCostData,
-                totalDrillingCostData,
-                cessationOffshoreFacilitiesCostOverrideData,
-                cessationOffshoreFacilitiesCostData,
-                cessationOnshoreFacilitiesCostProfileData,
-                totalFeasibilityAndConceptStudiesOverrideData,
-                totalFeasibilityAndConceptStudiesData,
-                totalFEEDStudiesOverrideData,
-                totalFEEDStudiesData,
-                totalOtherStudiesCostProfileData,
-                historicCostCostProfileData,
-                offshoreOpexPlussWellInterventionData,
-                onshoreRelatedOPEXCostProfileData,
-                additionalOPEXCostProfileData,
+                handleTotalExplorationCost(),
+                handleDrilling(),
+                handleOffshoreFacilitiesCost(),
+                apiData?.cessationOffshoreFacilitiesCostOverride,
+                apiData?.cessationOffshoreFacilitiesCost,
+                apiData?.cessationOnshoreFacilitiesCostProfile,
+                apiData?.totalFeasibilityAndConceptStudiesOverride,
+                apiData?.totalFeasibilityAndConceptStudies,
+                apiData?.totalFEEDStudiesOverride,
+                apiData?.totalFEEDStudies,
+                apiData?.totalOtherStudiesCostProfile,
+                apiData?.historicCostCostProfile,
+                handleOffshoreOpexPlussWellIntervention(),
+                apiData?.onshoreRelatedOPEXCostProfile,
+                apiData?.additionalOPEXCostProfile,
             ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
             setYearRangeSetFromProfiles(true)
         }
