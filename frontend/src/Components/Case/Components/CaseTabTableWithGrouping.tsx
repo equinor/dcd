@@ -146,7 +146,7 @@ const CaseTabTableWithGrouping = ({
         setRowData(profilesToRowData())
         const newColDefs = generateTableYearColDefs()
         setColumnDefs(newColDefs)
-    }, [])
+    }, [allTimeSeriesData])
 
     const defaultColDef = useMemo(() => ({
         sortable: true,

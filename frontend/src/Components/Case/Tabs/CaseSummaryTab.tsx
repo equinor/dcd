@@ -145,6 +145,31 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     useEffect(() => {
+        if (activeTabCase === 7 && apiData && !yearRangeSetFromProfiles) {
+            const caseData = apiData.case as Components.Schemas.CaseDto
+
+            SetTableYearsFromProfiles([
+                handleTotalExplorationCost(),
+                handleDrilling(),
+                handleOffshoreFacilitiesCost(),
+                apiData.cessationOffshoreFacilitiesCostOverride,
+                apiData.cessationOffshoreFacilitiesCost,
+                apiData.cessationOnshoreFacilitiesCostProfile,
+                apiData.totalFeasibilityAndConceptStudiesOverride,
+                apiData.totalFeasibilityAndConceptStudies,
+                apiData.totalFEEDStudiesOverride,
+                apiData.totalFEEDStudies,
+                apiData.totalOtherStudiesCostProfile,
+                apiData.historicCostCostProfile,
+                handleOffshoreOpexPlussWellIntervention(),
+                apiData.onshoreRelatedOPEXCostProfile,
+                apiData.additionalOPEXCostProfile,
+            ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
+            setYearRangeSetFromProfiles(true)
+        }
+    }, [activeTabCase, apiData, project])
+
+    useEffect(() => {
         if (!apiData || !project) {
             console.error("Missing data in CaseSummaryTab")
             return
@@ -258,30 +283,8 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         ])
     }, [apiData, project])
 
-    useEffect(() => {
-        if (activeTabCase === 7 && apiData) {
-            const caseData = apiData?.case as Components.Schemas.CaseDto
-
-            SetTableYearsFromProfiles([
-                handleTotalExplorationCost(),
-                handleDrilling(),
-                handleOffshoreFacilitiesCost(),
-                apiData?.cessationOffshoreFacilitiesCostOverride,
-                apiData?.cessationOffshoreFacilitiesCost,
-                apiData?.cessationOnshoreFacilitiesCostProfile,
-                apiData?.totalFeasibilityAndConceptStudiesOverride,
-                apiData?.totalFeasibilityAndConceptStudies,
-                apiData?.totalFEEDStudiesOverride,
-                apiData?.totalFEEDStudies,
-                apiData?.totalOtherStudiesCostProfile,
-                apiData?.historicCostCostProfile,
-                handleOffshoreOpexPlussWellIntervention(),
-                apiData?.onshoreRelatedOPEXCostProfile,
-                apiData?.additionalOPEXCostProfile,
-            ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
-            setYearRangeSetFromProfiles(true)
-        }
-    }, [apiData, project, activeTabCase])
+    console.log(allTimeSeriesData)
+    console.log(yearRangeSetFromProfiles)
 
     const caseData = apiData?.case
 
