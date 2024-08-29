@@ -1649,11 +1649,13 @@ const useDataEdits = (): {
 
         if (existingEditsForSameResourceInQueue.length > 0) {
             // TODO: find a more elegant way to check if the edit is for a table
-            const isTableEdit = newResourceObject.hasOwnProperty("startYear") && newResourceObject.hasOwnProperty("values")
+            const isTableEdit = Object.prototype.hasOwnProperty.call(newResourceObject, "startYear")
+                && Object.prototype.hasOwnProperty.call(newResourceObject, "values")
+
             const latestEditInQueue = structuredClone(existingEditsForSameResourceInQueue[existingEditsForSameResourceInQueue.length - 1])
             const existingQueueItemsResourceObject = structuredClone(latestEditInQueue.newResourceObject)
 
-            let combinedResourceObject = {} as ResourceObject;
+            let combinedResourceObject = {} as ResourceObject
             if (isTableEdit) {
                 combinedResourceObject = structuredClone(newResourceObject)
             } else {
