@@ -20,6 +20,10 @@ const Sticky = styled.div`
     height: calc(100vh - 64px);
 `
 
+const StyledSideBar = styled(SideBar)`
+    height: auto;
+    `
+
 export const Header = styled.div`
     margin: 15px 10px;
 `
@@ -61,7 +65,7 @@ const Sidebar = () => {
     return (
         <Wrapper>
             <Sticky>
-                <SideBar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>
+                <StyledSideBar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>
                     <Content>
                         <ProjectDetails />
                         <Divider />
@@ -73,7 +77,7 @@ const Sidebar = () => {
                     <Footer>
                         <Toggle />
                     </Footer>
-                </SideBar>
+                </StyledSideBar>
             </Sticky>
         </Wrapper>
     )
