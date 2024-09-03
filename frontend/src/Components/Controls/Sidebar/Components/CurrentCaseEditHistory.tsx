@@ -6,26 +6,17 @@ import { useCaseContext } from "../../../../Context/CaseContext"
 import { useAppContext } from "../../../../Context/AppContext"
 import HistoryButton from "../../../Buttons/HistoryButton"
 import CaseEditHistory from "../../../Case/Components/CaseEditHistory"
-
-const Header = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin: 15px 0;
-`
+import { Header } from "../Sidebar"
 
 const Container = styled.div<{ $sidebarOpen: boolean }>`
     display: flex;
     flex-direction: column;
-    width: 100%;
-    padding: ${({ $sidebarOpen }) => ($sidebarOpen ? "0 8px 20px 8px" : "0")};
     align-items: ${({ $sidebarOpen }) => ($sidebarOpen ? "space-between" : "center")};
-    border-bottom: 1px solid #DCDCDC;
 `
 
 const Content = styled.div`
     max-height: 300px;
+    padding: 0 10px;
     overflow: auto;
     -ms-overflow-style: none; 
     scrollbar-width: none; 
@@ -57,7 +48,7 @@ const CurrentCaseEditHistory: React.FC = () => {
             )}
             <Content>
                 {sidebarOpen && caseId && <CaseEditHistory caseId={caseId} />}
-                {caseEditsBelongingToCurrentCase?.length === 0 && <NextValue>No recent edits..</NextValue>}
+                {sidebarOpen && caseEditsBelongingToCurrentCase?.length === 0 && <NextValue>No recent edits..</NextValue>}
             </Content>
         </Container>
     )

@@ -9,75 +9,51 @@ import CurrentCaseEditHistory from "./Components/CurrentCaseEditHistory"
 
 const { Toggle, Content, Footer } = SideBar
 
-const StyledSidebar = styled(SideBar)`
-    position: fixed;
-    height: calc(100vh - 60px);
-    overflow: hidden;
-    display: grid;
-    grid-template-rows: auto 80px;
-    &[open] {
-        grid-template-rows: auto 60px;
-    }
+const Wrapper = styled.div`
+        position: relative;
 `
 
-const StyledSidebarContent = styled(Content)`
-    display: grid;
-    grid-template-rows: auto 1fr;
-    width: 100%;
-    overflow: auto;
+const Sticky = styled.div`
+    position: sticky;
+    top: 0;
+    background-color: white;
+    height: calc(100vh - 64px);
 `
+
+const StyledSideBar = styled(SideBar)`
+    height: auto;
+    `
+
+export const Header = styled.div`
+    margin: 15px 10px;
+`
+
 export const Timeline = styled(Grid)`
-    position: relative;
+    padding-left: 10px;
     max-height: 200px;
     overflow: auto;
     &[data-timeline="true"] {
-        margin: 0 8px;
-        width: calc(100% - 16px);
-        overflow-x: hidden;
         overflow-y: auto;
         display: flex;
         flex-wrap: nowrap;
-        align-items: flex-start;
         flex-direction: column;
         scrollbar-width: none;
         & > * {
-            position: relative;
             border-left: 2px solid #DCDCDC;
-            width: 100%;
-            &.GhostItem {
-                min-height: 14px;
-            }
-            &[data-timeline-active="true"],
-            &:not(.GhostItem):hover {
+
+            &[data-timeline-active="true"]{
                 border-left: 2px solid #007079;
             }
         }
     }
-    &[data-timeline="false"] .GhostItem {
-        display: none;
-    }
-`
 
-const SidebarFooter = styled(Footer)`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
 `
 
 export const TimelineElement = styled(Button)`
     text-align: left;
     height: 28px;
-    &:before {
-        display: none;
-    }
-    & > span {
-        display: block;
-        line-height: 28px;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-    }
+    padding: 10px 5px 10px 10px;  
+    
 `
 
 const Sidebar = () => {
@@ -87,24 +63,23 @@ const Sidebar = () => {
     if (!project) { return null }
 
     return (
-        <StyledSidebar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>
-            <StyledSidebarContent>
-                <Grid container justifyContent="center">
-                    <ProjectDetails />
-                    <CasesDetails />
-                    <Grid item xs={12}>
+        <Wrapper>
+            <Sticky>
+                <StyledSideBar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>
+                    <Content>
+                        <ProjectDetails />
                         <Divider />
-                    </Grid>
-                    {/* comment out for qa release */}
-                    <CurrentCaseEditHistory />
-                </Grid>
-            </StyledSidebarContent>
-            <SidebarFooter>
-                <Grid container justifyContent="flex-end" alignItems="flex-end">
-                    <Toggle />
-                </Grid>
-            </SidebarFooter>
-        </StyledSidebar>
+                        <CasesDetails />
+                        <Divider />
+                        <CurrentCaseEditHistory />
+                        <Divider />
+                    </Content>
+                    <Footer>
+                        <Toggle />
+                    </Footer>
+                </StyledSideBar>
+            </Sticky>
+        </Wrapper>
     )
 }
 

@@ -69,6 +69,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
             <Grid item>
                 <Typography variant="caption">Start year</Typography>
                 <CaseNumberInput
+                    label="Start year"
                     id="start-year-input"
                     onSubmit={(value) => handleStartYearStateChange(value)}
                     defaultValue={startYear}
@@ -80,6 +81,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
             <Grid item>
                 <Typography variant="caption">End year</Typography>
                 <CaseNumberInput
+                    label="End year"
                     id="end-year-input"
                     onSubmit={(value) => handleEndYearStateChange(value)}
                     defaultValue={endYear}
