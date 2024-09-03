@@ -9,7 +9,7 @@ import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import Gallery from "../../Gallery/Gallery"
 import { useAppContext } from "../../../Context/AppContext"
 import { useProjectContext } from "../../../Context/ProjectContext"
-import CaseDescriptionTabSkeleton from "./LoadingSkeletons/CaseDescriptionTabSkeleton"
+import CaseDescriptionTabSkeleton from "../../LoadingSkeletons/CaseDescriptionTabSkeleton"
 
 const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()

@@ -2,7 +2,7 @@ import React from "react"
 import { Grid, Skeleton } from "@mui/material"
 
 const CaseDescriptionTabSkeleton: React.FC = () => (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} sx={{ padding: "16px" }}>
         <Grid item xs={12}>
             <Grid item xs={12}>
                 <Skeleton variant="text" animation="wave" width="30%" height={20} />
