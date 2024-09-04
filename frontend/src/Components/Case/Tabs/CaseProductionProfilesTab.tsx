@@ -14,7 +14,7 @@ import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import DateRangePicker from "../../Input/TableDateRangePicker"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
-import CaseProductionProfilesTabSkeleton from "./LoadingSkeletons/CaseProductionProfilesTabSkeleton"
+import CaseProductionProfilesTabSkeleton from "../../LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 

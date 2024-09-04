@@ -9,15 +9,13 @@ import CurrentCaseEditHistory from "./Components/CurrentCaseEditHistory"
 
 const { Toggle, Content, Footer } = SideBar
 
-const Wrapper = styled.div`
-        position: relative;
-`
-
 const Sticky = styled.div`
     position: sticky;
     top: 0;
     background-color: white;
-    height: calc(100vh - 64px);
+    height: calc(100vh - 68px);
+    overflow: auto;
+    border-right: 1px solid #DCDCDC;
 `
 
 const StyledSideBar = styled(SideBar)`
@@ -63,23 +61,21 @@ const Sidebar = () => {
     if (!project) { return null }
 
     return (
-        <Wrapper>
-            <Sticky>
-                <StyledSideBar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>
-                    <Content>
-                        <ProjectDetails />
-                        <Divider />
-                        <CasesDetails />
-                        <Divider />
-                        <CurrentCaseEditHistory />
-                        <Divider />
-                    </Content>
-                    <Footer>
-                        <Toggle />
-                    </Footer>
-                </StyledSideBar>
-            </Sticky>
-        </Wrapper>
+        <Sticky>
+            <StyledSideBar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>
+                <Content>
+                    <ProjectDetails />
+                    <Divider />
+                    <CasesDetails />
+                    <Divider />
+                    <CurrentCaseEditHistory />
+                    <Divider />
+                </Content>
+                <Footer>
+                    <Toggle />
+                </Footer>
+            </StyledSideBar>
+        </Sticky>
     )
 }
 
