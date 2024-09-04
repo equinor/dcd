@@ -16,6 +16,7 @@ import { useProjectContext } from "../Context/ProjectContext"
 import Modal from "./Modal/Modal"
 import { PROJECT_CLASSIFICATION } from "../Utils/constants"
 import { useModalContext } from "../Context/ModalContext"
+import ProjectSkeleton from "./LoadingSkeletons/ProjectSkeleton"
 
 const ControlsWrapper = styled.div`
     position: sticky;
@@ -107,10 +108,7 @@ const Overview = () => {
 
     if (isCreating || isLoading) {
         return (
-            <div>
-                <Progress.Circular size={24} color="primary" />
-                <Typography variant="h3">{isCreating ? "Creating" : "Loading"}</Typography>
-            </div>
+            <ProjectSkeleton />
         )
     }
 
