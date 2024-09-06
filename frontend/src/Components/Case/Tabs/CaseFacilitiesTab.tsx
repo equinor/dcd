@@ -5,7 +5,7 @@ import { useQueryClient, useQuery } from "react-query"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
-import CaseFasilitiesTabSkeleton from "./LoadingSkeletons/CaseFacilitiesTabSkeleton"
+import CaseFasilitiesTabSkeleton from "../../LoadingSkeletons/CaseFacilitiesTabSkeleton"
 import SwitchableStringInput from "../../Input/SwitchableStringInput"
 
 const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {

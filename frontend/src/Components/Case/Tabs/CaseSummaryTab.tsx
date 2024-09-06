@@ -12,6 +12,7 @@ import { useCaseContext } from "../../../Context/CaseContext"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
 import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
 import { mergeTimeseriesList } from "../../../Utils/common"
+import CaseSummarySkeleton from "../../LoadingSkeletons/CaseSummarySkeleton"
 
 interface ITimeSeriesData {
     group?: string
@@ -252,7 +253,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
 
     const caseData = apiData?.case
 
-    if (!caseData) { return <p>Loading...</p> }
+    if (!caseData) { return <CaseSummarySkeleton /> }
 
     if (activeTabCase !== 7) { return null }
 

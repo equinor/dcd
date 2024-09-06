@@ -18,6 +18,7 @@ import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
 import { ITimeSeriesData } from "../../../../Models/Interfaces"
+import CaseCo2TabSkeleton from "../../../LoadingSkeletons/CaseCo2TabSkeleton"
 
 const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
@@ -200,7 +201,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     ]
 
     if (!topsideData) {
-        return <p>loading...</p>
+        return <CaseCo2TabSkeleton />
     }
 
     if (activeTabCase !== 6 || !caseData) { return null }
@@ -226,7 +227,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
             <Grid item xs={12}>
                 <CaseCO2DistributionTable topside={topsideData} />
             </Grid>
-            <Grid item lg={12} xl={7}>
+            <Grid item lg={12} xl={6}>
                 <AgChartsTimeseries
                     data={co2EmissionsChartData()}
                     chartTitle="Annual CO2 emissions"
@@ -237,7 +238,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                     axesData={chartAxes}
                 />
             </Grid>
-            <Grid item lg={12} xl={4} container direction="column" spacing={1} justifyContent="center" alignItems="center">
+            <Grid item lg={12} xl={6} container direction="column" spacing={1} justifyContent="center" alignItems="center">
                 <Grid item>
                     <Typography variant="h4">Average lifetime CO2 intensity</Typography>
                 </Grid>

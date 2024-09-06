@@ -4,6 +4,7 @@ import Overview from "./Components/Overview"
 import ProjectView from "./Views/ProjectView"
 import CaseView from "./Views/CaseView"
 import Header from "./Components/Header"
+import ProjectSkeleton from "./Components/LoadingSkeletons/ProjectSkeleton"
 
 const routes: RouteObject[] = [
     {
@@ -25,5 +26,5 @@ const routes: RouteObject[] = [
 
 export default function AppRouter() {
     const router = useRouter(routes)
-    return <RouterProvider router={router} fallbackElement={<div>Loading...</div>} />
+    return <RouterProvider router={router} fallbackElement={<ProjectSkeleton />} />
 }
