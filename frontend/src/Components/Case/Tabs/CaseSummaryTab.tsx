@@ -33,8 +33,6 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const queryClient = useQueryClient()
     const projectId = project?.id || null
 
-    // const [startYear, setStartYear] = useState<number>(2020)
-    // const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
@@ -282,9 +280,6 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             newOpexTimeSeriesData,
         ])
     }, [apiData, project])
-
-    console.log(allTimeSeriesData)
-    console.log(yearRangeSetFromProfiles)
 
     const caseData = apiData?.case
 
