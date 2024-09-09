@@ -20,8 +20,6 @@ const profileAndUnitInSameCell = (params: any, rowData: any) => {
     const checkAllUnitsAreSame = rowUnits.every((unit: any) => unit === rowUnits[0])
     const totalUnit = checkAllUnitsAreSame && params.value ? rowUnits[0] : ""
 
-    console.log(params)
-
     return (
         <CellWrapper>
             {params.value}

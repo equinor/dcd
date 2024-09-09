@@ -74,3 +74,48 @@ export const SetTableYearsFromProfiles = (
         setTableYears([firstYear, lastYear])
     }
 }
+
+export const SetSummaryTableYearsFromProfiles = (
+    profiles: (
+        | {
+            id?: string;
+            startYear?: number;
+            name?: string;
+            values?: number[] | null;
+            sum?: number | undefined;
+        }
+        | undefined
+    )[],
+    dG4Year: number,
+    setTableYears: Dispatch<SetStateAction<[number, number]>>,
+) => {
+    let firstYear: number | undefined
+    let lastYear: number | undefined
+
+    profiles.forEach((profile) => {
+        if (profile?.startYear !== undefined) {
+            const { startYear } = profile
+            const profileStartYear: number = startYear + dG4Year
+            if (firstYear === undefined) {
+                firstYear = profileStartYear
+            } else if (profileStartYear < firstYear) {
+                firstYear = profileStartYear
+            }
+        }
+
+        const profileLastYear = GetTimeSeriesLastYear(profile)
+        if (profileLastYear !== undefined) {
+            const adjustedProfileLastYear = profileLastYear + dG4Year
+
+            if (lastYear === undefined) {
+                lastYear = adjustedProfileLastYear
+            } else if (adjustedProfileLastYear > lastYear) {
+                lastYear = adjustedProfileLastYear
+            }
+        }
+    })
+
+    if (firstYear !== undefined && lastYear !== undefined) {
+        setTableYears([firstYear, lastYear])
+    }
+}

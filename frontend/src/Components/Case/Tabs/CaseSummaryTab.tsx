@@ -12,7 +12,7 @@ import { useCaseContext } from "../../../Context/CaseContext"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
 import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
 import { mergeTimeseriesList } from "../../../Utils/common"
-import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
+import { SetSummaryTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 
 interface ITimeSeriesData {
     group?: string
@@ -33,8 +33,8 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const queryClient = useQueryClient()
     const projectId = project?.id || null
 
-    const [startYear, setStartYear] = useState<number>(2020)
-    const [endYear, setEndYear] = useState<number>(2030)
+    // const [startYear, setStartYear] = useState<number>(2020)
+    // const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
@@ -148,7 +148,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         if (activeTabCase === 7 && apiData && !yearRangeSetFromProfiles) {
             const caseData = apiData.case as Components.Schemas.CaseDto
 
-            SetTableYearsFromProfiles([
+            SetSummaryTableYearsFromProfiles([
                 handleTotalExplorationCost(),
                 handleDrilling(),
                 handleOffshoreFacilitiesCost(),
@@ -164,7 +164,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 handleOffshoreOpexPlussWellIntervention(),
                 apiData.onshoreRelatedOPEXCostProfile,
                 apiData.additionalOPEXCostProfile,
-            ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
+            ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setTableYears)
             setYearRangeSetFromProfiles(true)
         }
     }, [activeTabCase, apiData, project])
