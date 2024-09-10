@@ -293,7 +293,7 @@ const CaseTabTable = ({
 
             timerRef.current = setTimeout(() => {
                 firstTriggerRef.current = true
-            }, 500)
+            }, 0) // TODO: Can this be removed?
         }
     }, [stageEdit, timeSeriesData, dg4Year, project, caseId])
 
