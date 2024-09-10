@@ -10,10 +10,8 @@ namespace api.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-[Authorize]
 [RequiresApplicationRoles(
     ApplicationRole.Admin,
-    ApplicationRole.ReadOnly,
     ApplicationRole.User
 )]
 public class PROSPController : ControllerBase

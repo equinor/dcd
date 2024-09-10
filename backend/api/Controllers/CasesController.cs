@@ -10,13 +10,11 @@ using Microsoft.Identity.Web.Resource;
 
 namespace api.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("projects/{projectId}/cases")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
     ApplicationRole.Admin,
-    ApplicationRole.ReadOnly,
     ApplicationRole.User
 )]
 public class CasesController : ControllerBase
@@ -53,7 +51,6 @@ public class CasesController : ControllerBase
     {
         return await _caseService.UpdateCase(caseId, caseDto);
     }
-
 
     [HttpDelete("{caseId}")]
     public async Task<ProjectWithAssetsDto> DeleteCase(Guid caseId)
@@ -149,7 +146,7 @@ public class CasesController : ControllerBase
     [FromRoute] Guid projectId,
     [FromRoute] Guid caseId,
     [FromBody] CreateTotalOtherStudiesCostProfileDto dto
-)
+    )
     {
         return await _caseTimeSeriesService.CreateTotalOtherStudiesCostProfile(projectId, caseId, dto);
     }

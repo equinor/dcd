@@ -1,11 +1,14 @@
+using api.Authorization;
 using api.Dtos;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-[Authorize]
 [ApiController]
 [Route("projects/{projectId}")]
+[RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.User
+    )]
 public class BlobStorageController : ControllerBase
 {
     private readonly IBlobStorageService _blobStorageService;
@@ -61,6 +64,11 @@ public class BlobStorageController : ControllerBase
         return UploadImage(projectId, projectName, caseId, image);
     }
 
+    [RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+    )]
     [HttpGet("cases/{caseId}/images")]
     public async Task<ActionResult<List<ImageDto>>> GetImages(Guid projectId, Guid caseId)
     {
@@ -95,6 +103,11 @@ public class BlobStorageController : ControllerBase
         return UploadImage(projectId, projectName, null, image);
     }
 
+    [RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+    )]
     [HttpGet("images")]
     public async Task<ActionResult<List<ImageDto>>> GetProjectImages(Guid projectId)
     {

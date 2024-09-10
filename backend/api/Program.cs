@@ -50,11 +50,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddInMemoryTokenCaches();
 
 
-builder.Services.AddAuthorizationBuilder()
-    .AddPolicy("ProjectAccess", policy =>
-    {
-        policy.Requirements.Add(new ProjectAccessRequirement());
-    });
+// builder.Services.AddAuthorizationBuilder()
+//     .AddPolicy("ProjectAccess", policy =>
+//     {
+//         policy.Requirements.Add(new ProjectAccessRequirement());
+//     });
 
 var sqlConnectionString = config["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
 
@@ -254,7 +254,7 @@ builder.Services.AddScoped<ProspSharepointImportService>();
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSingleton<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
-// builder.Services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
 
 builder.Services.Configure<IConfiguration>(builder.Configuration);
 
@@ -320,7 +320,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(_accessControlPolicyName);
 app.UseAuthentication();
-// app.UseMiddleware<ClaimsMiddelware>();
+app.UseMiddleware<ClaimsMiddelware>();
 // app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseAuthorization();
 app.MapControllers();

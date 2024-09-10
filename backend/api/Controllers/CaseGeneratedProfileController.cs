@@ -12,7 +12,6 @@ using Microsoft.Identity.Web.Resource;
 
 namespace api.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("/projects/{projectId}/cases/{caseId}")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]

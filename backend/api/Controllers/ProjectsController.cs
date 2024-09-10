@@ -16,13 +16,7 @@ namespace api.Controllers;
 
 [ApiController]
 [Route("projects")]
-// [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-// [RequiresApplicationRoles(
-//     ApplicationRole.Admin,
-//     ApplicationRole.ReadOnly,
-//     ApplicationRole.User
-// )]
-[Authorize(Policy = "ProjectAccess")]
+[RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class ProjectsController : ControllerBase
 {
     private readonly IFusionService _fusionService;
@@ -52,6 +46,11 @@ public class ProjectsController : ControllerBase
         _fusionPeopleService = fusionPeopleService;
     }
 
+    [RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+    )]
     [HttpGet("{projectId}")]
     public async Task<ProjectWithAssetsDto?> Get(Guid projectId)
     {
@@ -66,6 +65,9 @@ public class ProjectsController : ControllerBase
         }
     }
 
+    [RequiresApplicationRoles(
+        ApplicationRole.Admin
+    )]
     [HttpGet("{projectId}/members")]
     public async Task<List<FusionPersonV1>> GetMembers(Guid projectId)
     {
@@ -73,6 +75,9 @@ public class ProjectsController : ControllerBase
         return result;
     }
 
+    [RequiresApplicationRoles(
+        ApplicationRole.Admin
+    )]
     [HttpPut("{projectId}/members/{personId}")]
     public async Task<ProjectMember> AddMember(Guid projectId, Guid personId)
     {
@@ -80,6 +85,10 @@ public class ProjectsController : ControllerBase
     }
 
     [HttpPost]
+    [RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.User
+    )]
     public async Task<ProjectWithAssetsDto> CreateProject([FromQuery] Guid contextId)
     {
         var projectMaster = await _fusionService.ProjectMasterAsync(contextId);
@@ -100,30 +109,51 @@ public class ProjectsController : ControllerBase
         return new ProjectWithAssetsDto();
     }
 
+    [RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.User
+    )]
     [HttpPut("{projectId}")]
     public async Task<ProjectWithCasesDto> UpdateProject([FromRoute] Guid projectId, [FromBody] UpdateProjectDto projectDto)
     {
         return await _projectService.UpdateProject(projectId, projectDto);
     }
 
+    [RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.User
+    )]
     [HttpPut("{projectId}/exploration-operational-well-costs/{explorationOperationalWellCostsId}")]
     public async Task<ExplorationOperationalWellCostsDto> UpdateExplorationOperationalWellCosts([FromRoute] Guid projectId, [FromRoute] Guid explorationOperationalWellCostsId, [FromBody] UpdateExplorationOperationalWellCostsDto dto)
     {
         return await _projectService.UpdateExplorationOperationalWellCosts(projectId, explorationOperationalWellCostsId, dto);
     }
 
+    [RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.User
+    )]
     [HttpPut("{projectId}/development-operational-well-costs/{developmentOperationalWellCostsId}")]
     public async Task<DevelopmentOperationalWellCostsDto> UpdateDevelopmentOperationalWellCosts([FromRoute] Guid projectId, [FromRoute] Guid developmentOperationalWellCostsId, [FromBody] UpdateDevelopmentOperationalWellCostsDto dto)
     {
         return await _projectService.UpdateDevelopmentOperationalWellCosts(projectId, developmentOperationalWellCostsId, dto);
     }
 
+    [RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+    )]
     [HttpGet("{projectId}/case-comparison")]
     public async Task<List<CompareCasesDto>> CaseComparison(Guid projectId)
     {
         return new List<CompareCasesDto>(await _compareCasesService.Calculate(projectId));
     }
 
+    [RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.User
+    )]
     [HttpPut("{projectId}/technical-input")]
     public async Task<TechnicalInputDto> UpdateTechnicalInput([FromRoute] Guid projectId, [FromBody] UpdateTechnicalInputDto dto)
     {
