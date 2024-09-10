@@ -57,7 +57,7 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
     {
         var userHasRequiredRole = userRoles.Any(role => roleRequirement.Roles.Contains(role));
 
-                var fusionIdentity = context.User.Identities.FirstOrDefault(i => i is Fusion.Integration.Authentication.FusionIdentity)
+        var fusionIdentity = context.User.Identities.FirstOrDefault(i => i is Fusion.Integration.Authentication.FusionIdentity)
             as Fusion.Integration.Authentication.FusionIdentity;
 
         var azureUniqueId = fusionIdentity?.Profile?.AzureUniqueId ??
