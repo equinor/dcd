@@ -140,7 +140,13 @@ const CaseTabTable = ({
         return tableRows
     }
 
-    const gridRowData = useMemo(() => gridRef.current?.api?.setGridOption("rowData", profilesToRowData()), [timeSeriesData, editMode])
+    const gridRowData = useMemo(() => profilesToRowData(), [timeSeriesData, editMode])
+
+    useEffect(() => {
+        if (gridRef.current?.api) {
+            gridRef.current.api.setGridOption("rowData", gridRowData)
+        }
+    }, [gridRowData])
 
     const lockIconRenderer = (params: any) => {
         if (!params.data || !editMode) {
