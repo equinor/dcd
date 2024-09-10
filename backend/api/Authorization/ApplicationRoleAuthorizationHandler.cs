@@ -37,7 +37,7 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         }
 
         var userRoles = context.User.AssignedApplicationRoles();
-        if (!IsAuthorized(requirement, userRoles))
+        if (!IsAuthorized(context, requirement, userRoles))
         {
             HandleUnauthorizedRequest(context, requestPath, requirement.Roles, userRoles);
             return Task.CompletedTask;
@@ -53,9 +53,18 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         return requestPath?.StartsWithSegments(swaggerPath) == true;
     }
 
-    private static bool IsAuthorized(ApplicationRoleRequirement roleRequirement, List<ApplicationRole> userRoles)
+    private static bool IsAuthorized(AuthorizationHandlerContext context, ApplicationRoleRequirement roleRequirement, List<ApplicationRole> userRoles)
     {
-        return userRoles.Any(role => roleRequirement.Roles.Contains(role));
+        var userHasRequiredRole = userRoles.Any(role => roleRequirement.Roles.Contains(role));
+
+                var fusionIdentity = context.User.Identities.FirstOrDefault(i => i is Fusion.Integration.Authentication.FusionIdentity)
+            as Fusion.Integration.Authentication.FusionIdentity;
+
+        var azureUniqueId = fusionIdentity?.Profile?.AzureUniqueId ??
+            throw new InvalidOperationException("AzureUniqueId not found in user profile");
+        Console.WriteLine("azureUniqueId: " + azureUniqueId);
+
+        return userHasRequiredRole;
     }
 
     private void HandleUnauthorizedRequest(

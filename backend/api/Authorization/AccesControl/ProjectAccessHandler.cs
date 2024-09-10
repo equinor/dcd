@@ -26,13 +26,13 @@ public class ProjectAccessHandler : AuthorizationHandler<ProjectAccessRequiremen
 
     protected override async Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context, ProjectAccessRequirement requirement)
     {
-        var userGroups = GetUserGroups(context.User);
+        // var userGroups = GetUserGroups(context.User);
 
         var project = await GetCurrentProject(context);
 
         bool isProjectMember = CheckUserMembershipInProject(context.User, project);
 
-        if (IsUserAuthorized(userGroups, project?.Classification, project?.ProjectPhase, isProjectMember))
+        if (IsUserAuthorized(project?.Classification, project?.ProjectPhase, isProjectMember))
         {
             context.Succeed(requirement);
         }
@@ -43,15 +43,15 @@ public class ProjectAccessHandler : AuthorizationHandler<ProjectAccessRequiremen
         return Task.CompletedTask;
     }
 
-    private List<string> GetUserGroups(ClaimsPrincipal user)
-    {
-        var groupSids = user.Claims
-                            .Where(c => c.Type == ClaimTypes.GroupSid)
-                            .Select(c => c.Value)
-                            .ToList();
+    // private List<string> GetUserGroups(ClaimsPrincipal user)
+    // {
+    //     var groupSids = user.Claims
+    //                         .Where(c => c.Type == ClaimTypes.GroupSid)
+    //                         .Select(c => c.Value)
+    //                         .ToList();
 
-        return groupSids;
-    }
+    //     return groupSids;
+    // }
 
     private async Task<Project?> GetCurrentProject(AuthorizationHandlerContext context)
     {
@@ -86,7 +86,7 @@ public class ProjectAccessHandler : AuthorizationHandler<ProjectAccessRequiremen
         return result;
     }
 
-    private bool IsUserAuthorized(List<string> userGroups, ProjectClassification? classification, ProjectPhase? projectPhase, bool isProjectMember)
+    private bool IsUserAuthorized(ProjectClassification? classification, ProjectPhase? projectPhase, bool isProjectMember)
     {
         if (classification == ProjectClassification.Confidential || classification == ProjectClassification.Restricted)
         {
