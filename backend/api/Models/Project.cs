@@ -39,8 +39,7 @@ public class Project
     public double OilPrice { get; set; } = 75.0; // USD
     public double GasPrice { get; set; } = 3; // NOK
     public double DiscountRate { get; set; } = 8.0;
-    public double ExchangeRateNOKToUSD { get; set; } = 10;
-    public double ExchangeRateUSDToNOK { get; set; } = 0.1;
+
 }
 
 public enum PhysUnit

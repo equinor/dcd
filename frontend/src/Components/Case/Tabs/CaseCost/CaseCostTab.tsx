@@ -129,8 +129,8 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                     barColors={["#004F55", "#007079", "#97CACE", "#C3F3D2", "#E6FAEC", "#FF7D7D", "#9F9F9F"]}
                     enableLegend
                     tableYears={tableYears}
-                    aggregatedGridRef={aggregatedGridRef}
-                    alignedGridsRef={alignedGridsRef}
+                    // aggregatedGridRef={aggregatedGridRef}
+                    // alignedGridsRef={alignedGridsRef}
                 />
             </Grid>
 
