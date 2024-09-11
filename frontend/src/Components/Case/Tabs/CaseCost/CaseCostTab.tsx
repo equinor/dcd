@@ -38,7 +38,6 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     const capexGridRef = useRef<any>(null)
     const developmentWellsGridRef = useRef<any>(null)
     const explorationWellsGridRef = useRef<any>(null)
-    const aggregatedGridRef = useRef<any>(null)
 
     const alignedGridsRef = useMemo(() => [
         studyGridRef,
@@ -47,7 +46,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
         capexGridRef,
         developmentWellsGridRef,
         explorationWellsGridRef,
-    ], [studyGridRef, opexGridRef, cessationGridRef, capexGridRef, developmentWellsGridRef, explorationWellsGridRef, aggregatedGridRef])
+    ], [studyGridRef, opexGridRef, cessationGridRef, capexGridRef, developmentWellsGridRef, explorationWellsGridRef])
 
     const barColors = {
         studyColor: "#004F55",
