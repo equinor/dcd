@@ -47,9 +47,17 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
         capexGridRef,
         developmentWellsGridRef,
         explorationWellsGridRef,
-        aggregatedGridRef,
     ], [studyGridRef, opexGridRef, cessationGridRef, capexGridRef, developmentWellsGridRef, explorationWellsGridRef, aggregatedGridRef])
 
+    const barColors = {
+        studyColor: "#004F55",
+        opexColor: "#007079",
+        cessationColor: "#97CACE",
+        offshoreFacilityColor: "#C3F3D2",
+        developmentWellColor: "#E6FAEC",
+        explorationWellColor: "#FF7D7D",
+        totalIncomeColor: "#9F9F9F",
+    }
     const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
         ["apiData", { projectId, caseId }],
         () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
@@ -126,7 +134,13 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
             <Grid item xs={12}>
                 <AggregatedTotals
                     apiData={apiData}
-                    barColors={["#004F55", "#007079", "#97CACE", "#C3F3D2", "#E6FAEC", "#FF7D7D", "#9F9F9F"]}
+                    barColors={[
+                        barColors.studyColor,
+                        barColors.opexColor,
+                        barColors.cessationColor,
+                        barColors.developmentWellColor,
+                        barColors.explorationWellColor,
+                        barColors.totalIncomeColor]}
                     enableLegend
                     tableYears={tableYears}
                 />

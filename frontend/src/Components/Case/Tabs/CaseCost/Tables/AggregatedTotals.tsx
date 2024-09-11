@@ -49,7 +49,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         })
 
         return {
-            id: crypto.randomUUID(),
+            id: "",
             startYear: Math.min(...Object.keys(totals).map(Number)) - dg4Year,
             values: Object.values(totals),
         }
@@ -132,7 +132,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         const oilProductionInMillionsOfBarrels = (totalOilProduction.values || []).map((v) => v * cubicMetersToBarrelsFactor)
 
         const oilIncome = {
-            id: crypto.randomUUID(),
+            id: "",
             startYear: totalOilProduction.startYear + new Date(apiData.case.dG4Date).getFullYear(),
             values: oilProductionInMillionsOfBarrels.map((v) => v * oilPrice),
         }
@@ -140,7 +140,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         const totalGasProduction = mergeTimeseries(apiData.productionProfileGas, apiData.additionalProductionProfileGas)
 
         const gasIncome = {
-            id: crypto.randomUUID(),
+            id: "",
             startYear: totalGasProduction.startYear + new Date(apiData.case.dG4Date).getFullYear(),
             values: (totalGasProduction.values || []).map((v) => v * gasPrice),
         }
@@ -154,7 +154,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             }
         }
 
-        console.log("totalIncome", totalIncome)
         return totalIncome
     }
 
