@@ -11,6 +11,7 @@ public class Case : IHasProjectId
     public string Name { get; set; } = string.Empty!;
     public string Description { get; set; } = string.Empty!;
     public bool ReferenceCase { get; set; }
+    public bool Archived { get; set; }
 
     public DateTimeOffset CreateTime { get; set; }
     public DateTimeOffset ModifyTime { get; set; } = DateTimeOffset.UtcNow;
