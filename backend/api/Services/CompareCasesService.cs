@@ -48,6 +48,7 @@ public class CompareCasesService : ICompareCasesService
             Exploration exploration;
             foreach (var caseItem in project.Cases)
             {
+                if (caseItem.Archived) { continue; }
                 drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
                 exploration = await _explorationService.GetExploration(caseItem.ExplorationLink);
                 var generateCo2EmissionsProfile = await _generateCo2EmissionsProfile.Generate(caseItem.Id);

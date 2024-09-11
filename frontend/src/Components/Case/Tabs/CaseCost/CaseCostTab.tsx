@@ -18,6 +18,7 @@ import OffshoreFacillityCosts from "./Tables/OffshoreFacilityCosts"
 import OpexCosts from "./Tables/OpexCosts"
 import TotalStudyCosts from "./Tables/TotalStudyCosts"
 import AggregatedTotals from "./Tables/AggregatedTotals"
+import CaseCostSkeleton from "../../../LoadingSkeletons/CaseCostTabSkeleton"
 
 const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
@@ -107,7 +108,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     if (activeTabCase !== 5) { return null }
 
     if (!apiData) {
-        return <p>loading....</p>
+        return <CaseCostSkeleton />
     }
 
     return (

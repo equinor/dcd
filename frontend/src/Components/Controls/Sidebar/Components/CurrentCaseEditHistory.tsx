@@ -15,7 +15,7 @@ const Container = styled.div<{ $sidebarOpen: boolean }>`
 `
 
 const Content = styled.div`
-    max-height: 300px;
+    max-height: 220px;
     padding: 0 10px;
     overflow: auto;
     -ms-overflow-style: none; 

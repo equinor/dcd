@@ -4,6 +4,7 @@ declare namespace Components {
             name: string;
             description?: string | null;
             referenceCase?: boolean | null;
+            archived?: boolean;
             artificialLift?: ArtificialLift /* int32 */;
             productionStrategyOverview?: ProductionStrategyOverview /* int32 */;
             producerCount?: number; // int32
@@ -148,6 +149,7 @@ declare namespace Components {
             name: string;
             description: string;
             referenceCase: boolean;
+            archived: boolean;
             artificialLift: ArtificialLift /* int32 */;
             productionStrategyOverview: ProductionStrategyOverview /* int32 */;
             producerCount: number; // int32
@@ -264,6 +266,7 @@ declare namespace Components {
             name: string;
             description: string;
             referenceCase: boolean;
+            archived: boolean;
             artificialLift: ArtificialLift /* int32 */;
             productionStrategyOverview: ProductionStrategyOverview /* int32 */;
             producerCount: number; // int32
