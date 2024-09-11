@@ -12,8 +12,8 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20240911085450_cashflowcalculation")]
-    partial class cashflowcalculation
+    [Migration("20240911112252_cashflowcalcs")]
+    partial class cashflowcalcs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1503,7 +1503,9 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("DiscountRate")
-                        .HasColumnType("float");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(8.0);
 
                     b.Property<double>("FlaredGasPerProducedVolume")
                         .HasColumnType("float");
@@ -1512,7 +1514,9 @@ namespace api.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("GasPrice")
-                        .HasColumnType("float");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(3.0);
 
                     b.Property<DateTimeOffset>("ModifyTime")
                         .HasColumnType("datetimeoffset");
@@ -1522,7 +1526,9 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("OilPrice")
-                        .HasColumnType("float");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(75.0);
 
                     b.Property<int>("PhysicalUnit")
                         .HasColumnType("int");
