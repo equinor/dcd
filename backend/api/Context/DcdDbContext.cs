@@ -887,6 +887,18 @@ public class DcdDbContext : DbContext
         modelBuilder.Entity<Project>()
             .Property(p => p.Classification)
             .HasDefaultValue(ProjectClassification.Internal);
+
+        modelBuilder.Entity<Project>()
+            .Property(p => p.DiscountRate)
+            .HasDefaultValue(8.0);
+
+        modelBuilder.Entity<Project>()
+            .Property(p => p.OilPrice)
+            .HasDefaultValue(75.0);
+
+        modelBuilder.Entity<Project>()
+            .Property(p => p.GasPrice)
+            .HasDefaultValue(3.0);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
