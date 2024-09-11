@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useQuery, useQueryClient } from "react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { GetProjectService } from "../Services/ProjectService"
+import CaseProductionProfilesTabSkeleton from "../Components/Case/Tabs/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 
 interface TableCompareCase {
     id: string,
@@ -49,6 +50,10 @@ export const useProjectChartData = () => {
 
     const projectData = apiData
 
+    // if (!projectData) {
+    //     return <CaseProductionProfilesTabSkeleton />
+    // }
+
     console.log(projectData)
 
     const generateAllCharts = () => {
@@ -58,6 +63,8 @@ export const useProjectChartData = () => {
         const investmentProfilesObject: object[] = []
         const totalCo2EmissionsObject: object[] = []
         const co2IntensityObject: object[] = []
+        console.log(projectData)
+        console.log(compareCasesTotals)
         if (compareCasesTotals !== undefined && projectData) {
             for (let i = 0; i < projectData.cases.length; i += 1) {
                 npvObject.push({
@@ -133,7 +140,7 @@ export const useProjectChartData = () => {
 
     // Fetch compareCasesTotals and set it to state
     useEffect(() => {
-        if (projectData) {
+        if (projectData !== undefined) {
             (async () => {
                 try {
                     const compareCasesService = await (await GetProjectService()).compareCases(projectData.id)
@@ -144,14 +151,15 @@ export const useProjectChartData = () => {
                 }
             })()
         }
-    }, [])
+    }, [projectData])
 
     useEffect(() => {
-        if (projectData) {
+        console.log(projectData)
+        if (projectData !== undefined) {
             casesToRowData()
             generateAllCharts()
         }
-    }, [projectData?.cases, compareCasesTotals])
+    }, [projectData, compareCasesTotals])
 
     return {
         rowData,

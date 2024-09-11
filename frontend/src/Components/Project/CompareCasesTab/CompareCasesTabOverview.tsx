@@ -11,6 +11,7 @@ import InvestmentProfiles from "./Tabs/InvestmentProfiles"
 import Co2Emissions from "./Tabs/Co2Emissions"
 import { useProjectChartData } from "../../../Hooks/useProjectChartData"
 import ProjectAgGridTable from "./ProjectAgGridTable"
+import CaseProductionProfilesTabSkeleton from "../../Case/Tabs/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 
 const MuiTabs = styled(Tabs)`
     &.MuiTabs-vertical {
@@ -99,6 +100,23 @@ const ProjectCompareCasesTab = () => {
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue)
     }
+
+    if (!rowData || !npvChartData || !breakEvenChartData
+        || !productionProfilesChartData || !investmentProfilesChartData
+        || !totalCo2EmissionsChartData || !co2IntensityChartData
+    ) {
+        return <CaseProductionProfilesTabSkeleton />
+    }
+
+    console.log(
+        rowData,
+        npvChartData,
+        breakEvenChartData,
+        productionProfilesChartData,
+        investmentProfilesChartData,
+        totalCo2EmissionsChartData,
+        co2IntensityChartData,
+    )
 
     return (
         <Grid container spacing={6}>
