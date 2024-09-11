@@ -11,8 +11,6 @@ import { mergeTimeseries } from "../../../../../Utils/common"
 interface AggregatedTotalsProps {
     tableYears: [number, number];
     apiData: Components.Schemas.CaseWithAssetsDto;
-    aggregatedGridRef: React.MutableRefObject<any>;
-    alignedGridsRef: any[];
     barColors: string[];
     unit?: string;
     enableLegend?: boolean;
@@ -33,8 +31,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     unit,
     enableLegend,
     tableYears,
-    aggregatedGridRef,
-    alignedGridsRef,
 }) => {
     const { project } = useProjectContext()
     const { caseId } = useParams()
@@ -58,7 +54,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         })
 
         return {
-            id: crypto.randomUUID(),
+            id: "",
             startYear: Math.min(...Object.keys(totals).map(Number)) - dg4Year,
             values: Object.values(totals),
         }
@@ -132,30 +128,37 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     }, [apiData, tableYears, project])
 
     const calculateIncome = () => {
-        const oilPriceUSD = project?.oilPriceUSD ?? 0
-        const gasPriceNOK = project?.gasPriceNOK ?? 0
-        const exchangeRateNOKToUSD = project?.exchangeRateNOKToUSD ?? 1
-        const gasPriceUSD = gasPriceNOK * exchangeRateNOKToUSD
+        const oilPrice = 75.0 // USD
+        const gasPrice = 0.3531 // USD
         const cubicMetersToBarrelsFactor = 6.29
+        const exchangeRateUSDToNOK = 10.0
 
         const totalOilProduction = mergeTimeseries(apiData.productionProfileOil, apiData.additionalProductionProfileOil)
-        const oilProductionInMillionsOfBarrels = (totalOilProduction.values || []).map((v) => (v * cubicMetersToBarrelsFactor))
+        const oilProductionInMillionsOfBarrels = (totalOilProduction.values || []).map((v) => v * cubicMetersToBarrelsFactor)
 
         const oilIncome = {
-            id: crypto.randomUUID(),
+            id: "",
             startYear: totalOilProduction.startYear + new Date(apiData.case.dG4Date).getFullYear(),
-            values: oilProductionInMillionsOfBarrels.map((v) => v * oilPriceUSD),
+            values: oilProductionInMillionsOfBarrels.map((v) => v * oilPrice),
         }
 
         const totalGasProduction = mergeTimeseries(apiData.productionProfileGas, apiData.additionalProductionProfileGas)
+
         const gasIncome = {
-            id: crypto.randomUUID(),
+            id: "",
             startYear: totalGasProduction.startYear + new Date(apiData.case.dG4Date).getFullYear(),
-            values: (totalGasProduction.values || []).map((v) => (v * gasPriceUSD)),
+            values: (totalGasProduction.values || []).map((v) => v * gasPrice),
         }
 
-        const totalIncome = mergeTimeseries(oilIncome, gasIncome)
-        console.log("totalIncome", totalIncome)
+        let totalIncome = mergeTimeseries(oilIncome, gasIncome)
+
+        if (project?.currency === 1 && totalIncome.values) {
+            totalIncome = {
+                ...totalIncome,
+                values: totalIncome.values.map((v) => v * exchangeRateUSDToNOK),
+            }
+        }
+
         return totalIncome
     }
 
@@ -249,7 +252,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             {
                 type: "number",
                 position: "left",
-                title: { text: `Cost (${unit})` },
+                title: { text: `Cost (${project?.currency === 1 ? "MNOK" : "MUSD"})` },
             },
             {
                 type: "number",
@@ -265,7 +268,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     const pieChartData = useMemo(() => {
         const pieData: any[] = aggregatedTimeSeriesData.map((series) => ({
             profile: series.profileName,
-            value: series.profile?.values?.reduce((sum, value) => sum + value, 0) ?? 0,
+            value: series.profile?.values?.reduce((sum, value) => sum + value, 0) ?? 0, // Sum values for the pie chart
         }))
 
         return pieData

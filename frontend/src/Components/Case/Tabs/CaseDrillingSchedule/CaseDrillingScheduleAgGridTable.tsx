@@ -237,7 +237,7 @@ const CaseDrillingScheduleTabTable = ({
 
             timerRef.current = setTimeout(() => {
                 firstTriggerRef.current = true
-            }, 500)
+            }, 0) // TODO: Can this be removed?
         }
     }, [stageEdit, dg4Year, project, isExplorationTable])
 
