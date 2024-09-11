@@ -173,6 +173,8 @@ builder.Configuration.AddAzureAppConfiguration(options =>
 builder.Services.AddScoped<IAuthorizationHandler, ProjectAccessHandler>();
 builder.Services.AddScoped<IFusionPeopleService, FusionPeopleService>();
 
+builder.Services.AddScoped<IProjectAccessService, ProjectAccessService>();
+
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IFusionService, FusionService>();
 builder.Services.AddScoped<ICaseService, CaseService>();
@@ -219,6 +221,8 @@ builder.Services.AddScoped<ICo2DrillingFlaringFuelTotalsService, Co2DrillingFlar
 builder.Services.AddScoped<IWellCostProfileService, WellCostProfileService>();
 
 builder.Services.AddScoped<ISTEAService, STEAService>();
+
+builder.Services.AddScoped<IProjectAccessRepository, ProjectAccessRepository>();
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<ICaseRepository, CaseRepository>();

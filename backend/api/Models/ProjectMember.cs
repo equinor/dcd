@@ -1,6 +1,8 @@
+using api.Models.Interfaces;
+
 namespace api.Models;
 
-public class ProjectMember
+public class ProjectMember : IHasProjectId
 {
     public Guid AzureUniqueId { get; set; }
     public Guid ProjectId { get; set; }

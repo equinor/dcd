@@ -1,8 +1,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
+using api.Models.Interfaces;
+
 namespace api.Models;
 
-public class DrainageStrategy
+public class DrainageStrategy : IHasProjectId
 {
     public Guid Id { get; set; }
     public Project Project { get; set; } = null!;

@@ -1,7 +1,9 @@
 
+using api.Models.Interfaces;
+
 namespace api.Models;
 
-public class Well
+public class Well : IHasProjectId
 {
     public Guid Id { get; set; }
     public Project Project { get; set; } = null!;

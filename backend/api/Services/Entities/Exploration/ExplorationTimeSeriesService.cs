@@ -44,12 +44,14 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
         _mapperService = mapperService;
     }
     public async Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
+        Guid projectId,
             Guid caseId,
             Guid explorationId,
             CreateGAndGAdminCostOverrideDto createProfileDto
         )
     {
         return await CreateExplorationProfile<GAndGAdminCostOverride, GAndGAdminCostOverrideDto, CreateGAndGAdminCostOverrideDto>(
+            projectId,
             caseId,
             explorationId,
             createProfileDto,
@@ -58,6 +60,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
         );
     }
     public async Task<GAndGAdminCostOverrideDto> UpdateGAndGAdminCostOverride(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
@@ -65,6 +68,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     )
     {
         return await UpdateExplorationCostProfile<GAndGAdminCostOverride, GAndGAdminCostOverrideDto, UpdateGAndGAdminCostOverrideDto>(
+            projectId,
             caseId,
             wellProjectId,
             profileId,
@@ -74,6 +78,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
         );
     }
     public async Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
@@ -81,6 +86,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     )
     {
         return await UpdateExplorationCostProfile<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto, UpdateSeismicAcquisitionAndProcessingDto>(
+            projectId,
             caseId,
             wellProjectId,
             profileId,
@@ -91,6 +97,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     }
 
     public async Task<CountryOfficeCostDto> UpdateCountryOfficeCost(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
@@ -98,6 +105,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     )
     {
         return await UpdateExplorationCostProfile<CountryOfficeCost, CountryOfficeCostDto, UpdateCountryOfficeCostDto>(
+            projectId,
             caseId,
             wellProjectId,
             profileId,
@@ -108,12 +116,14 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     }
 
     public async Task<SeismicAcquisitionAndProcessingDto> CreateSeismicAcquisitionAndProcessing(
+        Guid projectId,
         Guid caseId,
         Guid explorationId,
         CreateSeismicAcquisitionAndProcessingDto createProfileDto
     )
     {
         return await CreateExplorationProfile<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto, CreateSeismicAcquisitionAndProcessingDto>(
+            projectId,
             caseId,
             explorationId,
             createProfileDto,
@@ -123,12 +133,14 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     }
 
     public async Task<CountryOfficeCostDto> CreateCountryOfficeCost(
+        Guid projectId,
         Guid caseId,
         Guid explorationId,
         CreateCountryOfficeCostDto createProfileDto
     )
     {
         return await CreateExplorationProfile<CountryOfficeCost, CountryOfficeCostDto, CreateCountryOfficeCostDto>(
+            projectId,
             caseId,
             explorationId,
             createProfileDto,
@@ -138,6 +150,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     }
 
     private async Task<TDto> UpdateExplorationCostProfile<TProfile, TDto, TUpdateDto>(
+        Guid projectId,
         Guid caseId,
         Guid explorationId,
         Guid profileId,
@@ -173,6 +186,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     }
 
     private async Task<TDto> CreateExplorationProfile<TProfile, TDto, TCreateDto>(
+            Guid projectId,
             Guid caseId,
             Guid explorationId,
             TCreateDto createExplorationProfileDto,

@@ -15,7 +15,7 @@ public class ExplorationService : IExplorationService
 {
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
-
+    private readonly IProjectAccessService _projectAccessService;
     private readonly ILogger<ExplorationService> _logger;
     private readonly IMapper _mapper;
     private readonly ICaseRepository _caseRepository;
@@ -29,7 +29,8 @@ public class ExplorationService : IExplorationService
         IMapper mapper,
         ICaseRepository caseRepository,
         IExplorationRepository repository,
-        IMapperService mapperService
+        IMapperService mapperService,
+        IProjectAccessService projectAccessService
         )
     {
         _context = context;
@@ -39,6 +40,7 @@ public class ExplorationService : IExplorationService
         _caseRepository = caseRepository;
         _repository = repository;
         _mapperService = mapperService;
+        _projectAccessService = projectAccessService;
     }
 
     public async Task<Exploration> CreateExploration(Guid projectId, Guid sourceCaseId, CreateExplorationDto explorationDto)
@@ -85,11 +87,14 @@ public class ExplorationService : IExplorationService
     }
 
     public async Task<ExplorationDto> UpdateExploration(
+        Guid projectId,
         Guid caseId,
         Guid explorationId,
         UpdateExplorationDto updatedExplorationDto
     )
     {
+        await _projectAccessService.ProjectExists<Exploration>(projectId, explorationId);
+
         var existingExploration = await _repository.GetExploration(explorationId)
             ?? throw new NotFoundInDBException($"Exploration with id {explorationId} not found.");
 
@@ -113,6 +118,7 @@ public class ExplorationService : IExplorationService
     }
 
     public async Task<DrillingScheduleDto> UpdateExplorationWellDrillingSchedule(
+        Guid projectId,
         Guid caseId,
         Guid explorationId,
         Guid wellId,
@@ -143,6 +149,7 @@ public class ExplorationService : IExplorationService
     }
 
     public async Task<DrillingScheduleDto> CreateExplorationWellDrillingSchedule(
+        Guid projectId,
         Guid caseId,
         Guid explorationId,
         Guid wellId,
