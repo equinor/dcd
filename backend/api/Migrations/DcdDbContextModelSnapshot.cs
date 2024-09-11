@@ -1499,21 +1499,11 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("DiscountRate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasDefaultValue(8.0);
-
                     b.Property<double>("FlaredGasPerProducedVolume")
                         .HasColumnType("float");
 
                     b.Property<Guid>("FusionProjectId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("GasPrice")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasDefaultValue(3.0);
 
                     b.Property<DateTimeOffset>("ModifyTime")
                         .HasColumnType("datetimeoffset");
@@ -1521,11 +1511,6 @@ namespace api.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("OilPrice")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasDefaultValue(75.0);
 
                     b.Property<int>("PhysicalUnit")
                         .HasColumnType("int");
