@@ -31,6 +31,7 @@ public class STEAService : ISTEAService
         var projectDto = _mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
         foreach (Case c in project.Cases!)
         {
+            if (c.Archived) { continue; }
             var caseDto = _mapper.Map<CaseWithProfilesDto>(c);
             if (projectDto == null || caseDto == null)
             {
