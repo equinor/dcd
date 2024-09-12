@@ -1,6 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react"
-import { useQueryClient } from "react-query"
-import { useParams } from "react-router-dom"
 import { AgChartsReact } from "ag-charts-react"
 import { Grid } from "@mui/material"
 import { useProjectContext } from "../../../../../Context/ProjectContext"
@@ -33,9 +31,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     tableYears,
 }) => {
     const { project } = useProjectContext()
-    const { caseId } = useParams()
-    const queryClient = useQueryClient()
-    const projectId = project?.id || null
     const [aggregatedTimeSeriesData, setAggregatedTimeSeriesData] = useState<ITimeSeriesData[]>([])
 
     const aggregateProfiles = (profiles: any[], dg4Year: number): ITimeSeries => {
@@ -128,10 +123,15 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     }, [apiData, tableYears, project])
 
     const calculateIncome = () => {
-        const oilPrice = 75.0 // USD
-        const gasPrice = 0.3531 // USD
+        const oilPrice = project?.oilPriceUSD ?? 75.0
+        console.log(oilPrice, "oilPrice")
+        const gasPrice = project?.gasPriceNOK ?? 3
+        console.log(gasPrice, "gasPrice")
+
         const cubicMetersToBarrelsFactor = 6.29
-        const exchangeRateUSDToNOK = 10.0
+        const exchangeRateUSDToNOK = project?.exchangeRateNOKToUSD ?? 10.0
+        console.log(exchangeRateUSDToNOK, "exchangeRateUSDToNOK")
+        const exchangeRateNOKToUSD = 0.1
 
         const totalOilProduction = mergeTimeseries(apiData.productionProfileOil, apiData.additionalProductionProfileOil)
         const oilProductionInMillionsOfBarrels = (totalOilProduction.values || []).map((v) => v * cubicMetersToBarrelsFactor)
