@@ -32,6 +32,7 @@ export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFaci
     "co2EmissionsOverride" | "co2Intensity"
 
 export type ResourceObject =
+    Components.Schemas.ProjectWithAssetsDto |
     Components.Schemas.TopsideDto |
     Components.Schemas.SurfDto |
     Components.Schemas.SubstructureDto |

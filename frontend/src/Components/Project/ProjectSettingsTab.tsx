@@ -6,6 +6,7 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import { useProjectContext } from "../../Context/ProjectContext"
 import InputSwitcher from "../Input/Components/InputSwitcher"
 import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
+import useProjectDataEdits from "../../Hooks/useProjectDataEdits"
 
 const ProjectSettingsTab = () => {
     const { project, projectEdited, setProjectEdited } = useProjectContext()
@@ -13,6 +14,8 @@ const ProjectSettingsTab = () => {
     const [classification, setClassification] = useState<number | undefined>(undefined)
     const [dummyRole, setDummyRole] = useState(0) // TODO: Get role from user
     const queryClient = useQueryClient()
+
+    const { addProjectEdit } = useProjectDataEdits()
 
     const projectId = currentContext?.externalId || null
 
@@ -38,6 +41,12 @@ const ProjectSettingsTab = () => {
             const newPhysicalUnit: Components.Schemas.PhysUnit = Number(e.currentTarget.value) as Components.Schemas.PhysUnit
             const newProject: Components.Schemas.ProjectWithAssetsDto = { ...projectData }
             newProject.physicalUnit = newPhysicalUnit
+
+            addProjectEdit({
+                projectId: projectData.id,
+                newResourceObject: newProject,
+            })
+
             setProjectEdited(newProject)
         }
     }
