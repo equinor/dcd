@@ -77,7 +77,7 @@ public class CessationCostProfileService : ICessationCostProfileService
 
     private async Task<CessationWellsCost> GetCessationWellsCost(Case caseItem, Project project)
     {
-        if (caseItem.CessationWellsCostOverride != null)
+        if (caseItem.CessationWellsCostOverride?.Override == true)
         {
             var overrideCost = caseItem.CessationWellsCostOverride;
             return new CessationWellsCost
@@ -104,7 +104,7 @@ public class CessationCostProfileService : ICessationCostProfileService
 
     private async Task<CessationOffshoreFacilitiesCost> GetCessationOffshoreFacilitiesCost(Case caseItem)
     {
-        if (caseItem.CessationOffshoreFacilitiesCostOverride != null)
+        if (caseItem.CessationOffshoreFacilitiesCostOverride?.Override == true)
         {
             var overrideCost = caseItem.CessationOffshoreFacilitiesCostOverride;
             return new CessationOffshoreFacilitiesCost
