@@ -1,5 +1,5 @@
 import { useState, ChangeEventHandler, useEffect } from "react"
-import { Input, InputWrapper, NativeSelect } from "@equinor/eds-core-react"
+import { Input, NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useProjectContext } from "../../Context/ProjectContext"
 import InputSwitcher from "../Input/Components/InputSwitcher"
@@ -9,20 +9,20 @@ const ProjectSettingsTab = () => {
     const { project, projectEdited, setProjectEdited } = useProjectContext()
     const [classification, setClassification] = useState<number | undefined>(undefined)
     const [dummyRole, setDummyRole] = useState(0) // TODO: Get role from user
-    const [oilPriceUSD, setOilPriceUSD] = useState<number | undefined>(75)
-    const [gasPriceNOK, setGasPriceNOK] = useState<number | undefined>(3)
-    const [discountRate, setDiscountRate] = useState<number | undefined>(8)
-    const [exchangeRateNOKToUSD, setExchangeRateNOKToUSD] = useState<number | undefined>(0.1)
+    const [oilPriceUSD, setOilPriceUSD] = useState<number | undefined>(undefined)
+    const [gasPriceNOK, setGasPriceNOK] = useState<number | undefined>(undefined)
+    const [discountRate, setDiscountRate] = useState<number | undefined>(undefined)
+    const [exchangeRateNOKToUSD, setExchangeRateNOKToUSD] = useState<number | undefined>(undefined)
 
     useEffect(() => {
         if (project) {
             setClassification(project.classification)
-            setOilPriceUSD(project.oilPriceUSD ?? 75)
-            setGasPriceNOK(project.gasPriceNOK ?? 3)
-            setDiscountRate(project.discountRate ?? 8)
-            setExchangeRateNOKToUSD(project.exchangeRateNOKToUSD ?? 0.1)
+            setOilPriceUSD(projectEdited?.oilPriceUSD ?? oilPriceUSD)
+            setGasPriceNOK(projectEdited?.gasPriceNOK ?? gasPriceNOK)
+            setDiscountRate(projectEdited?.discountRate ?? discountRate)
+            setExchangeRateNOKToUSD(projectEdited?.discountRate ?? discountRate)
         }
-    }, [project])
+    }, [project, projectEdited])
 
     const handlePhysicalUnitChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
@@ -52,21 +52,30 @@ const ProjectSettingsTab = () => {
         }
     }
 
+    // const handleOilPriceChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    //     const newOilPrice = parseFloat(e.currentTarget.value)
+    //     if (!Number.isNaN(newOilPrice) && project) {
+    //         const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
+    //         newProject.oilPriceUSD = newOilPrice
+    //         setOilPriceUSD(newOilPrice)
+    //         setProjectEdited(newProject)
+    //     }
+    // }
+
     const handleOilPriceChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         const newOilPrice = parseFloat(e.currentTarget.value)
+        console.log(newOilPrice, "newOilPrice")
         if (!Number.isNaN(newOilPrice) && project) {
-            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
-            newProject.oilPriceUSD = newOilPrice
-            setOilPriceUSD(newOilPrice)
-            setProjectEdited(newProject)
+            setOilPriceUSD(newOilPrice) // Update state immediately
+            const newProject = { ...project, oilPriceUSD: newOilPrice }
+            setProjectEdited(newProject) // Set edited project
         }
     }
 
     const handleGasPriceChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         const newGasPrice = parseFloat(e.currentTarget.value)
         if (!Number.isNaN(newGasPrice) && project) {
-            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
-            newProject.gasPriceNOK = newGasPrice
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project, gasPriceNOK: newGasPrice }
             setGasPriceNOK(newGasPrice)
             setProjectEdited(newProject)
         }
@@ -75,8 +84,7 @@ const ProjectSettingsTab = () => {
     const handleDiscountRateChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         const newDiscountRate = parseFloat(e.currentTarget.value)
         if (!Number.isNaN(newDiscountRate) && project) {
-            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
-            newProject.discountRate = newDiscountRate
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project, discountRate: newDiscountRate }
             setDiscountRate(newDiscountRate)
             setProjectEdited(newProject)
         }
@@ -85,8 +93,7 @@ const ProjectSettingsTab = () => {
     const handleExchangeRateNOKToUSDChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         const newExchangeRate = parseFloat(e.currentTarget.value)
         if (!Number.isNaN(newExchangeRate) && project) {
-            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
-            newProject.exchangeRateNOKToUSD = newExchangeRate
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project, exchangeRateNOKToUSD: newExchangeRate }
             setExchangeRateNOKToUSD(newExchangeRate)
             setProjectEdited(newProject)
         }
@@ -149,49 +156,57 @@ const ProjectSettingsTab = () => {
                     </InputSwitcher>
                 )}
             </Grid>
-            <Grid item xs={12} md={4}>
-                <InputWrapper labelProps={{ label: "Oil Price (USD)" }}>
+            <Grid item>
+                <InputSwitcher
+                    value={String(projectEdited?.oilPriceUSD ?? project.oilPriceUSD ?? oilPriceUSD)}
+                    label="Oil Price (USD)"
+                >
                     <Input
-                        id="oilPriceUSD"
                         type="number"
+                        step="0.01"
                         value={oilPriceUSD}
                         onChange={handleOilPriceChange}
-                        placeholder="Enter oil price in USD"
                     />
-                </InputWrapper>
+                </InputSwitcher>
             </Grid>
-            <Grid item xs={12} md={4}>
-                <InputWrapper labelProps={{ label: "Gas Price (NOK)" }}>
+            <Grid item>
+                <InputSwitcher
+                    value={String(projectEdited?.gasPriceNOK ?? project.gasPriceNOK ?? gasPriceNOK)}
+                    label="Gas Price (NOK)"
+                >
                     <Input
-                        id="gasPriceNOK"
                         type="number"
+                        step="0.01"
                         value={gasPriceNOK}
                         onChange={handleGasPriceChange}
-                        placeholder="Enter gas price in NOK"
                     />
-                </InputWrapper>
+                </InputSwitcher>
             </Grid>
-            <Grid item xs={12} md={4}>
-                <InputWrapper labelProps={{ label: "Discount Rate (%)" }}>
+            <Grid item>
+                <InputSwitcher
+                    value={String(projectEdited?.discountRate ?? project.discountRate ?? discountRate)}
+                    label="Discount Rate (%)"
+                >
                     <Input
-                        id="discountRate"
                         type="number"
+                        step="0.01"
                         value={discountRate}
                         onChange={handleDiscountRateChange}
-                        placeholder="Enter discount rate"
                     />
-                </InputWrapper>
+                </InputSwitcher>
             </Grid>
-            <Grid item xs={12} md={4}>
-                <InputWrapper labelProps={{ label: "Exchange Rate (NOK to USD)" }}>
+            <Grid item>
+                <InputSwitcher
+                    value={String(projectEdited?.exchangeRateNOKToUSD ?? project.exchangeRateNOKToUSD ?? exchangeRateNOKToUSD)}
+                    label="Exchange Rate (NOK to USD)"
+                >
                     <Input
-                        id="exchangeRateNOKToUSD"
                         type="number"
-                        value={exchangeRateNOKToUSD}
+                        step="0.01"
+                        value={exchangeRateNOKToUSD || ""}
                         onChange={handleExchangeRateNOKToUSDChange}
-                        placeholder="Enter exchange rate NOK to USD"
                     />
-                </InputWrapper>
+                </InputSwitcher>
             </Grid>
         </Grid>
     )

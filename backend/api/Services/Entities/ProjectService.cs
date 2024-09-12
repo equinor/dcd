@@ -151,11 +151,6 @@ public class ProjectService : IProjectService
         project.CO2Vented = 1.96;
         project.DailyEmissionFromDrillingRig = 100;
         project.AverageDevelopmentDrillingDays = 50;
-        project.OilPriceUSD = 75.0;
-        project.GasPriceNOK = 3.0;
-        project.DiscountRate = 8.0;
-        project.ExchangeRateNOKToUSD = 0.1;
-        project.ExchangeRateUSDToNOK = 10;
 
         Activity.Current?.AddBaggage(nameof(project), JsonConvert.SerializeObject(project, Formatting.None,
             new JsonSerializerSettings
