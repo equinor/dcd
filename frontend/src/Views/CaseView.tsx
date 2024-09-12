@@ -39,6 +39,7 @@ const CaseView = () => {
     const location = useLocation()
     const queryClient = useQueryClient()
     const projectId = project?.id || null
+    const projectUrl = location.pathname.split("/case")[0]
 
     useEffect(() => {
         if (tab) {
@@ -49,10 +50,15 @@ const CaseView = () => {
         }
     }, [tab])
 
+    useEffect(() => {
+        if (!project?.cases.find((c: any) => c.id === caseId)) {
+            navigate(projectUrl)
+        }
+    }, [project])
+
     // navigates to the default tab (description) if none is provided in the url
     useEffect(() => {
         if (!tab && caseId) {
-            const projectUrl = location.pathname.split("/case")[0]
             navigate(`${projectUrl}/case/${caseId}/${caseTabNames[0]}`, { replace: true })
         } else if (tab) {
             const tabIndex = caseTabNames.indexOf(tab)
