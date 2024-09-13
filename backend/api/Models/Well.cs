@@ -4,7 +4,7 @@ namespace api.Models;
 public class Well
 {
     public Guid Id { get; set; }
-    public Project Project { get; set; } = null!;
+    public virtual Project Project { get; set; } = null!;
     public Guid ProjectId { get; set; }
     public string? Name { get; set; }
     public WellCategory WellCategory { get; set; }
@@ -12,8 +12,8 @@ public class Well
     public double DrillingDays { get; set; }
     public double PlugingAndAbandonmentCost { get; set; }
     public double WellInterventionCost { get; set; }
-    public ICollection<WellProjectWell>? WellProjectWells { get; set; }
-    public ICollection<ExplorationWell>? ExplorationWells { get; set; }
+    public virtual ICollection<WellProjectWell>? WellProjectWells { get; set; }
+    public virtual ICollection<ExplorationWell>? ExplorationWells { get; set; }
 
     public static bool IsWellProjectWell(WellCategory wellCategory) => new[] {
         WellCategory.Oil_Producer,
