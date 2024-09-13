@@ -7,44 +7,30 @@ import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
 
 const ProjectSettingsTab = () => {
     const { project, projectEdited, setProjectEdited } = useProjectContext()
-    const [classification, setClassification] = useState<number | undefined>(undefined)
     const [dummyRole, setDummyRole] = useState(0) // TODO: Get role from user
-    const [oilPriceUSD, setOilPriceUSD] = useState<number | undefined>(undefined)
-    const [gasPriceNOK, setGasPriceNOK] = useState<number | undefined>(undefined)
-    const [discountRate, setDiscountRate] = useState<number | undefined>(undefined)
-
-    useEffect(() => {
-        if (project) {
-            setClassification(project.classification)
-            setOilPriceUSD(projectEdited?.oilPriceUSD ?? oilPriceUSD)
-            setGasPriceNOK(projectEdited?.gasPriceNOK ?? gasPriceNOK)
-            setDiscountRate(projectEdited?.discountRate ?? discountRate)
-        }
-    }, [project, projectEdited])
 
     const handlePhysicalUnitChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
+        if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1 && projectEdited) {
             const newPhysicalUnit: Components.Schemas.PhysUnit = Number(e.currentTarget.value) as Components.Schemas.PhysUnit
-            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...projectEdited }
             newProject.physicalUnit = newPhysicalUnit
             setProjectEdited(newProject)
         }
     }
 
     const handleCurrencyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([1, 2].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
+        if ([1, 2].indexOf(Number(e.currentTarget.value)) !== -1 && projectEdited) {
             const newCurrency: Components.Schemas.Currency = Number(e.currentTarget.value) as Components.Schemas.Currency
-            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...projectEdited }
             newProject.currency = newCurrency
             setProjectEdited(newProject)
         }
     }
 
     const handleClassificationChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
-            setClassification(Number(e.currentTarget.value))
+        if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1 && projectEdited) {
             const newClassification: Components.Schemas.ProjectClassification = Number(e.currentTarget.value) as unknown as Components.Schemas.ProjectClassification
-            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...projectEdited }
             newProject.classification = newClassification
             setProjectEdited(newProject)
         }
@@ -52,27 +38,24 @@ const ProjectSettingsTab = () => {
 
     const handleOilPriceChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         const newOilPrice = parseFloat(e.currentTarget.value)
-        if (!Number.isNaN(newOilPrice) && project) {
-            setOilPriceUSD(newOilPrice)
-            const newProject = { ...project, oilPriceUSD: newOilPrice }
+        if (!Number.isNaN(newOilPrice) && projectEdited) {
+            const newProject = { ...projectEdited, oilPriceUSD: newOilPrice }
             setProjectEdited(newProject)
         }
     }
 
     const handleGasPriceChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         const newGasPrice = parseFloat(e.currentTarget.value)
-        if (!Number.isNaN(newGasPrice) && project) {
-            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project, gasPriceNOK: newGasPrice }
-            setGasPriceNOK(newGasPrice)
+        if (!Number.isNaN(newGasPrice) && projectEdited) {
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...projectEdited, gasPriceNOK: newGasPrice }
             setProjectEdited(newProject)
         }
     }
 
     const handleDiscountRateChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         const newDiscountRate = parseFloat(e.currentTarget.value)
-        if (!Number.isNaN(newDiscountRate) && project) {
-            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project, discountRate: newDiscountRate }
-            setDiscountRate(newDiscountRate)
+        if (!Number.isNaN(newDiscountRate) && projectEdited) {
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...projectEdited, discountRate: newDiscountRate }
             setProjectEdited(newProject)
         }
     }
@@ -118,14 +101,16 @@ const ProjectSettingsTab = () => {
             <Grid item>
                 {dummyRole === 0 && (
                     <InputSwitcher
-                        value={classification !== undefined ? PROJECT_CLASSIFICATION[classification].label : "Not set"}
+                        value={projectEdited ?
+                            PROJECT_CLASSIFICATION[projectEdited.classification].label
+                            : PROJECT_CLASSIFICATION[project.classification].label}
                         label="Classification"
                     >
                         <NativeSelect
                             id="classification"
                             label=""
                             onChange={(e) => handleClassificationChange(e)}
-                            value={classification || undefined}
+                            value={projectEdited ? projectEdited.classification : undefined}
                         >
                             {Object.entries(PROJECT_CLASSIFICATION).map(([key, value]) => (
                                 <option key={key} value={key}>{value.label}</option>
@@ -136,39 +121,39 @@ const ProjectSettingsTab = () => {
             </Grid>
             <Grid item>
                 <InputSwitcher
-                    value={String(projectEdited?.oilPriceUSD ?? project.oilPriceUSD ?? oilPriceUSD)}
+                    value={String(project.oilPriceUSD)}
                     label="Oil Price (USD)"
                 >
                     <Input
                         type="number"
                         step="0.01"
-                        value={oilPriceUSD}
+                        value={projectEdited?.oilPriceUSD}
                         onChange={handleOilPriceChange}
                     />
                 </InputSwitcher>
             </Grid>
             <Grid item>
                 <InputSwitcher
-                    value={String(projectEdited?.gasPriceNOK ?? project.gasPriceNOK ?? gasPriceNOK)}
+                    value={String(project.gasPriceNOK)}
                     label="Gas Price (NOK)"
                 >
                     <Input
                         type="number"
                         step="0.01"
-                        value={gasPriceNOK}
+                        value={projectEdited?.gasPriceNOK}
                         onChange={handleGasPriceChange}
                     />
                 </InputSwitcher>
             </Grid>
             <Grid item>
                 <InputSwitcher
-                    value={String(projectEdited?.discountRate ?? project.discountRate ?? discountRate)}
+                    value={String(project.discountRate)}
                     label="Discount Rate (%)"
                 >
                     <Input
                         type="number"
                         step="0.01"
-                        value={discountRate}
+                        value={projectEdited?.discountRate}
                         onChange={handleDiscountRateChange}
                     />
                 </InputSwitcher>
