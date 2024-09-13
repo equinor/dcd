@@ -74,11 +74,11 @@ public class ProjectWithAssetsDto : IEquatable<ProjectWithAssetsDto>
     [Required]
     public DateTimeOffset ModifyTime { get; set; }
     [Required]
-    public double oilPriceUSD { get; set; }
+    public double OilPriceUSD { get; set; }
     [Required]
-    public double gasPriceNOK { get; set; }
+    public double GasPriceNOK { get; set; }
     [Required]
-    public double discountRate { get; set; }
+    public double DiscountRate { get; set; }
     [Required]
     public double ExchangeRateUSDToNOK { get; set; }
 
