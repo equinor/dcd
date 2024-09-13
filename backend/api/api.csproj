@@ -7,22 +7,23 @@
         <NoWarn>$(NoWarn);CS8524</NoWarn>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="13.0.0" />
-        <PackageReference Include="Azure.Identity" Version="1.11.4" />
-        <PackageReference Include="Azure.Storage.Blobs" Version="12.20.0" />
+        <PackageReference Include="AutoMapper" Version="13.0.1" />
+        <PackageReference Include="Azure.Identity" Version="1.12.0" />
+        <PackageReference Include="Azure.Storage.Blobs" Version="12.21.2" />
         <PackageReference Include="DocumentFormat.OpenXml" Version="2.16.0" />
         <PackageReference Include="Equinor.TI.CommonLibrary.Client" Version="0.3.4" />
-        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.0" />
-        <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
+        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.8" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.8" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.8" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.8" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8" />
         <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="4.5.1" />
         <PackageReference Include="Microsoft.Graph" Version="4.34.0" />
         <PackageReference Include="Microsoft.Identity.Web" Version="2.13.4" />
@@ -37,8 +38,8 @@
         <PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
         <PackageReference Include="Serilog.Sinks.Dynatrace" Version="1.0.5" />
         <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-        <PackageReference Include="ClosedXML" Version="0.95.4" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
+        <PackageReference Include="ClosedXML" Version="0.102.3" />
         <PackageReference Include="Fusion.Infrastructure.Database" Version="7.0.0" />
         <PackageReference Include="Fusion.Integration" Version="7.0.4" />
         <PackageReference Include="Fusion.Integration.Abstractions" Version="7.0.4" />

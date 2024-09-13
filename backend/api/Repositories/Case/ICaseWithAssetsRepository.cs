@@ -14,5 +14,5 @@ public interface ICaseWithAssetsRepository
         Surf Surf,
         Transport Transport,
         WellProject WellProject
-        )> GetCaseWithAssets(Guid caseId);
+        )> GetCaseWithAssetsNoTracking(Guid caseId);
 }

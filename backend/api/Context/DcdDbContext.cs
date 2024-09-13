@@ -588,7 +588,7 @@ public class DcdDbContext : DbContext
         var additionalProductionProfileOilAdded = ChangeTracker.Entries<AdditionalProductionProfileOil>()
             .Any(e => e.State == EntityState.Added);
 
-        var surfChanges = ChangeTracker.Entries<SurfCessationCostProfile>()
+        var surfChanges = ChangeTracker.Entries<Surf>()
             .Any(e => e.State == EntityState.Modified &&
             (
                 e.Property(nameof(Surf.CessationCost)).IsModified

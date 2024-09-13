@@ -26,7 +26,7 @@ public class Case : IHasProjectId
     public DateTimeOffset DG3Date { get; set; }
     public DateTimeOffset DG4Date { get; set; }
 
-    public Project Project { get; set; } = null!;
+    public virtual Project Project { get; set; } = null!;
     public ArtificialLift ArtificialLift { get; set; }
     public ProductionStrategyOverview ProductionStrategyOverview { get; set; }
     public int ProducerCount { get; set; }
@@ -38,26 +38,26 @@ public class Case : IHasProjectId
     public double NPV { get; set; }
     public double BreakEven { get; set; }
     public string? Host { get; set; }
-    public ICollection<Image>? Images { get; set; }
+    public virtual ICollection<Image>? Images { get; set; }
 
-    public CessationWellsCost? CessationWellsCost { get; set; }
-    public CessationWellsCostOverride? CessationWellsCostOverride { get; set; }
-    public CessationOffshoreFacilitiesCost? CessationOffshoreFacilitiesCost { get; set; }
-    public CessationOffshoreFacilitiesCostOverride? CessationOffshoreFacilitiesCostOverride { get; set; }
-    public CessationOnshoreFacilitiesCostProfile? CessationOnshoreFacilitiesCostProfile { get; set; }
+    public virtual CessationWellsCost? CessationWellsCost { get; set; }
+    public virtual CessationWellsCostOverride? CessationWellsCostOverride { get; set; }
+    public virtual CessationOffshoreFacilitiesCost? CessationOffshoreFacilitiesCost { get; set; }
+    public virtual CessationOffshoreFacilitiesCostOverride? CessationOffshoreFacilitiesCostOverride { get; set; }
+    public virtual CessationOnshoreFacilitiesCostProfile? CessationOnshoreFacilitiesCostProfile { get; set; }
 
-    public TotalFeasibilityAndConceptStudies? TotalFeasibilityAndConceptStudies { get; set; }
-    public TotalFeasibilityAndConceptStudiesOverride? TotalFeasibilityAndConceptStudiesOverride { get; set; }
-    public TotalFEEDStudies? TotalFEEDStudies { get; set; }
-    public TotalFEEDStudiesOverride? TotalFEEDStudiesOverride { get; set; }
-    public TotalOtherStudiesCostProfile? TotalOtherStudiesCostProfile { get; set; }
-    public HistoricCostCostProfile? HistoricCostCostProfile { get; set; }
-    public WellInterventionCostProfile? WellInterventionCostProfile { get; set; }
-    public WellInterventionCostProfileOverride? WellInterventionCostProfileOverride { get; set; }
-    public OffshoreFacilitiesOperationsCostProfile? OffshoreFacilitiesOperationsCostProfile { get; set; }
-    public OffshoreFacilitiesOperationsCostProfileOverride? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
-    public OnshoreRelatedOPEXCostProfile? OnshoreRelatedOPEXCostProfile { get; set; }
-    public AdditionalOPEXCostProfile? AdditionalOPEXCostProfile { get; set; }
+    public virtual TotalFeasibilityAndConceptStudies? TotalFeasibilityAndConceptStudies { get; set; }
+    public virtual TotalFeasibilityAndConceptStudiesOverride? TotalFeasibilityAndConceptStudiesOverride { get; set; }
+    public virtual TotalFEEDStudies? TotalFEEDStudies { get; set; }
+    public virtual TotalFEEDStudiesOverride? TotalFEEDStudiesOverride { get; set; }
+    public virtual TotalOtherStudiesCostProfile? TotalOtherStudiesCostProfile { get; set; }
+    public virtual HistoricCostCostProfile? HistoricCostCostProfile { get; set; }
+    public virtual WellInterventionCostProfile? WellInterventionCostProfile { get; set; }
+    public virtual WellInterventionCostProfileOverride? WellInterventionCostProfileOverride { get; set; }
+    public virtual OffshoreFacilitiesOperationsCostProfile? OffshoreFacilitiesOperationsCostProfile { get; set; }
+    public virtual OffshoreFacilitiesOperationsCostProfileOverride? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
+    public virtual OnshoreRelatedOPEXCostProfile? OnshoreRelatedOPEXCostProfile { get; set; }
+    public virtual AdditionalOPEXCostProfile? AdditionalOPEXCostProfile { get; set; }
 
     public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
     public Guid WellProjectLink { get; set; } = Guid.Empty;
@@ -95,29 +95,29 @@ public class CessationCost : TimeSeriesCost
 public class CessationWellsCost : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    public virtual Case Case { get; set; } = null!;
 }
 public class CessationWellsCostOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
 {
     [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    public virtual Case Case { get; set; } = null!;
     public bool Override { get; set; }
 }
 public class CessationOffshoreFacilitiesCost : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    public virtual Case Case { get; set; } = null!;
 }
 public class CessationOffshoreFacilitiesCostOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
 {
     [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    public virtual Case Case { get; set; } = null!;
     public bool Override { get; set; }
 }
 public class CessationOnshoreFacilitiesCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    public virtual Case Case { get; set; } = null!;
 }
 public class OpexCostProfile : TimeSeriesCost
 {
@@ -126,40 +126,40 @@ public class OpexCostProfile : TimeSeriesCost
 public class HistoricCostCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    public virtual Case Case { get; set; } = null!;
 }
 public class WellInterventionCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    public virtual Case Case { get; set; } = null!;
 }
 public class WellInterventionCostProfileOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
 {
     [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    public virtual Case Case { get; set; } = null!;
     public bool Override { get; set; }
 }
 public class OffshoreFacilitiesOperationsCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    public virtual Case Case { get; set; } = null!;
 }
 
 public class OffshoreFacilitiesOperationsCostProfileOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
 {
     [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    public virtual Case Case { get; set; } = null!;
     public bool Override { get; set; }
 }
 public class OnshoreRelatedOPEXCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    public virtual Case Case { get; set; } = null!;
 }
 public class AdditionalOPEXCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    public virtual Case Case { get; set; } = null!;
 }
 
 public class StudyCostProfile : TimeSeriesCost
@@ -169,24 +169,24 @@ public class StudyCostProfile : TimeSeriesCost
 public class TotalFeasibilityAndConceptStudies : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    public virtual Case Case { get; set; } = null!;
 }
 public class TotalFeasibilityAndConceptStudiesOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
 {
     [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    public virtual Case Case { get; set; } = null!;
     public bool Override { get; set; }
 
 }
 public class TotalFEEDStudies : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    public virtual Case Case { get; set; } = null!;
 }
 public class TotalFEEDStudiesOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
 {
     [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    public virtual Case Case { get; set; } = null!;
     public bool Override { get; set; }
 
 }
@@ -194,7 +194,7 @@ public class TotalFEEDStudiesOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSe
 public class TotalOtherStudiesCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
-    public Case Case { get; set; } = null!;
+    public virtual Case Case { get; set; } = null!;
 }
 public interface ICaseTimeSeries
 {

@@ -30,21 +30,21 @@ public class CaseWithAssetsRepository : ICaseWithAssetsRepository
         Surf Surf,
         Transport Transport,
         WellProject WellProject
-        )> GetCaseWithAssets(Guid caseId)
+        )> GetCaseWithAssetsNoTracking(Guid caseId)
     {
-        var caseItem = await GetCase(caseId);
-        var drainageStrategy = await GetDrainageStrategy(caseItem.DrainageStrategyLink);
-        var topside = await GetTopside(caseItem.TopsideLink);
-        var exploration = await GetExploration(caseItem.ExplorationLink);
-        var substructure = await GetSubstructure(caseItem.SubstructureLink);
-        var surf = await GetSurf(caseItem.SurfLink);
-        var transport = await GetTransport(caseItem.TransportLink);
-        var wellProject = await GetWellProject(caseItem.WellProjectLink);
+        var caseItem = await GetCaseNoTracking(caseId);
+        var drainageStrategy = await GetDrainageStrategyNoTracking(caseItem.DrainageStrategyLink);
+        var topside = await GetTopsideNoTracking(caseItem.TopsideLink);
+        var exploration = await GetExplorationNoTracking(caseItem.ExplorationLink);
+        var substructure = await GetSubstructureNoTracking(caseItem.SubstructureLink);
+        var surf = await GetSurfNoTracking(caseItem.SurfLink);
+        var transport = await GetTransportNoTracking(caseItem.TransportLink);
+        var wellProject = await GetWellProjectNoTracking(caseItem.WellProjectLink);
 
         return (caseItem, drainageStrategy, topside, exploration, substructure, surf, transport, wellProject);
     }
 
-    private async Task<Case> GetCase(Guid id)
+    private async Task<Case> GetCaseNoTracking(Guid id)
     {
         return await _context.Cases
                 .Include(c => c.TotalFeasibilityAndConceptStudies)
@@ -64,41 +64,45 @@ public class CaseWithAssetsRepository : ICaseWithAssetsRepository
                 .Include(c => c.CessationOffshoreFacilitiesCost)
                 .Include(c => c.CessationOffshoreFacilitiesCostOverride)
                 .Include(c => c.CessationOnshoreFacilitiesCostProfile)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id)
             ?? throw new NotFoundInDBException($"Case with id {id} not found.");
     }
 
-    private async Task<Transport> GetTransport(Guid id)
+    private async Task<Transport> GetTransportNoTracking(Guid id)
     {
         return await _context.Transports
                 .Include(c => c.CostProfile)
                 .Include(c => c.CostProfileOverride)
                 .Include(c => c.CessationCostProfile)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(o => o.Id == id)
             ?? throw new NotFoundInDBException($"Transport with id {id} not found.");
     }
 
-    private async Task<Surf> GetSurf(Guid id)
+    private async Task<Surf> GetSurfNoTracking(Guid id)
     {
         return await _context.Surfs
                 .Include(c => c.CostProfile)
                 .Include(c => c.CostProfileOverride)
                 .Include(c => c.CessationCostProfile)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(o => o.Id == id)
             ?? throw new NotFoundInDBException($"Surf with id {id} not found.");
     }
 
-    private async Task<Substructure> GetSubstructure(Guid id)
+    private async Task<Substructure> GetSubstructureNoTracking(Guid id)
     {
         return await _context.Substructures
                 .Include(c => c.CostProfile)
                 .Include(c => c.CostProfileOverride)
                 .Include(c => c.CessationCostProfile)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(o => o.Id == id)
             ?? throw new NotFoundInDBException($"Substructure with id {id} not found.");
     }
 
-    private async Task<DrainageStrategy> GetDrainageStrategy(Guid id)
+    private async Task<DrainageStrategy> GetDrainageStrategyNoTracking(Guid id)
     {
         return await _context.DrainageStrategies
             .Include(c => c.ProductionProfileOil)
@@ -118,21 +122,23 @@ public class CaseWithAssetsRepository : ICaseWithAssetsRepository
             .Include(c => c.ImportedElectricityOverride)
             .Include(c => c.DeferredOilProduction)
             .Include(c => c.DeferredGasProduction)
+            .AsNoTracking()
             .FirstOrDefaultAsync(o => o.Id == id)
         ?? throw new NotFoundInDBException($"DrainageStrategy with id {id} not found.");
     }
 
-    private async Task<Topside> GetTopside(Guid id)
+    private async Task<Topside> GetTopsideNoTracking(Guid id)
     {
         return await _context.Topsides
                 .Include(c => c.CostProfile)
                 .Include(c => c.CostProfileOverride)
                 .Include(c => c.CessationCostProfile)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(o => o.Id == id)
             ?? throw new NotFoundInDBException($"Topside with id {id} not found.");
     }
 
-    private async Task<WellProject> GetWellProject(Guid id)
+    private async Task<WellProject> GetWellProjectNoTracking(Guid id)
     {
         return await _context.WellProjects
                 .Include(c => c.WellProjectWells)!.ThenInclude(c => c.DrillingSchedule)
@@ -144,11 +150,12 @@ public class CaseWithAssetsRepository : ICaseWithAssetsRepository
                 .Include(c => c.WaterInjectorCostProfileOverride)
                 .Include(c => c.GasInjectorCostProfile)
                 .Include(c => c.GasInjectorCostProfileOverride)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(o => o.Id == id)
             ?? throw new NotFoundInDBException($"WellProject with id {id} not found.");
     }
 
-    private async Task<Exploration> GetExploration(Guid id)
+    private async Task<Exploration> GetExplorationNoTracking(Guid id)
     {
         return await _context.Explorations
                 .Include(c => c.ExplorationWells)!.ThenInclude(c => c.DrillingSchedule)
@@ -159,6 +166,7 @@ public class CaseWithAssetsRepository : ICaseWithAssetsRepository
                 .Include(c => c.GAndGAdminCostOverride)
                 .Include(c => c.SeismicAcquisitionAndProcessing)
                 .Include(c => c.CountryOfficeCost)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(o => o.Id == id)
             ?? throw new NotFoundInDBException($"Exploration with id {id} not found.");
     }

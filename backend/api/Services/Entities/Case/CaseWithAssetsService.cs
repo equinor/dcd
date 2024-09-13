@@ -28,13 +28,13 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         _projectAccessService = projectAccessService;
     }
 
-    public async Task<CaseWithAssetsDto> GetCaseWithAssets(Guid projectId, Guid caseId)
+    public async Task<CaseWithAssetsDto> GetCaseWithAssetsNoTracking(Guid projectId, Guid caseId)
     {
         await _projectAccessService.ProjectExists<Case>(projectId, caseId);
 
         var project = await _projectRepository.GetProject(projectId) ?? throw new NotFoundInDBException($"Project with id {projectId} not found");
 
-        var (caseItem, drainageStrategy, topside, exploration, substructure, surf, transport, wellProject) = await _repository.GetCaseWithAssets(caseId);
+        var (caseItem, drainageStrategy, topside, exploration, substructure, surf, transport, wellProject) = await _repository.GetCaseWithAssetsNoTracking(caseId);
 
         var caseWithAssetsDto = new CaseWithAssetsDto
         {
