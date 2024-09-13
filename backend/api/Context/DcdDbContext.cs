@@ -903,6 +903,10 @@ public class DcdDbContext : DbContext
         modelBuilder.Entity<Project>()
             .Property(p => p.ExchangeRateNOKToUSD)
             .HasDefaultValue(0.1);
+
+        modelBuilder.Entity<Project>()
+            .Property(p => p.ExchangeRateUSDToNOK)
+            .HasDefaultValue(10);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

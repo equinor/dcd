@@ -52,23 +52,14 @@ const ProjectSettingsTab = () => {
         }
     }
 
-    // const handleOilPriceChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    //     const newOilPrice = parseFloat(e.currentTarget.value)
-    //     if (!Number.isNaN(newOilPrice) && project) {
-    //         const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
-    //         newProject.oilPriceUSD = newOilPrice
-    //         setOilPriceUSD(newOilPrice)
-    //         setProjectEdited(newProject)
-    //     }
-    // }
 
     const handleOilPriceChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         const newOilPrice = parseFloat(e.currentTarget.value)
         console.log(newOilPrice, "newOilPrice")
         if (!Number.isNaN(newOilPrice) && project) {
-            setOilPriceUSD(newOilPrice) // Update state immediately
+            setOilPriceUSD(newOilPrice)
             const newProject = { ...project, oilPriceUSD: newOilPrice }
-            setProjectEdited(newProject) // Set edited project
+            setProjectEdited(newProject)
         }
     }
 

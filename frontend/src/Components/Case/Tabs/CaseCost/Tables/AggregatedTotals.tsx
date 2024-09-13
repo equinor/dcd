@@ -124,31 +124,32 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
 
     const calculateIncome = () => {
         const oilPrice = project?.oilPriceUSD ?? 75.0
-        console.log(oilPrice, "oilPrice")
         const gasPrice = project?.gasPriceNOK ?? 3
-        console.log(gasPrice, "gasPrice")
-
         const cubicMetersToBarrelsFactor = 6.29
-        const exchangeRateUSDToNOK = project?.exchangeRateNOKToUSD ?? 10.0
-        console.log(exchangeRateUSDToNOK, "exchangeRateUSDToNOK")
-        const exchangeRateNOKToUSD = 0.1
+        const exchangeRateUSDToNOK = project?.exchangeRateUSDToNOK ?? 10.0
+        const exchangeRateNOKToUSD = project?.exchangeRateNOKToUSD ?? 0.1
 
-        const totalOilProduction = mergeTimeseries(apiData.productionProfileOil, apiData.additionalProductionProfileOil)
-        const oilProductionInMillionsOfBarrels = (totalOilProduction.values || []).map((v) => v * cubicMetersToBarrelsFactor)
+        const totalOilProductionInMegaCubics = mergeTimeseries(apiData.productionProfileOil, apiData.additionalProductionProfileOil)
+
+        const oilProductionInBarrels = (totalOilProductionInMegaCubics.values || []).map((v) => v * cubicMetersToBarrelsFactor)
+        // finally one should have multiplied oilProduction by 1 million because the oilProduction used in the calculation is in mega cubics.
+        // But because the OilIncome in the diagram is in MNOK/MUSD, we would divide by 1 million to get the correct oilincome
+        // We can therefore ignore these multiplications and divisions
 
         const oilIncome = {
             id: "",
-            startYear: totalOilProduction.startYear + new Date(apiData.case.dG4Date).getFullYear(),
-            values: oilProductionInMillionsOfBarrels.map((v) => v * oilPrice),
+            startYear: totalOilProductionInMegaCubics.startYear + new Date(apiData.case.dG4Date).getFullYear(),
+            values: oilProductionInBarrels.map((v) => v * oilPrice),
         }
 
-        const totalGasProduction = mergeTimeseries(apiData.productionProfileGas, apiData.additionalProductionProfileGas)
-
+        const totalGasProductionInGigaCubics = mergeTimeseries(apiData.productionProfileGas, apiData.additionalProductionProfileGas)
         const gasIncome = {
             id: "",
-            startYear: totalGasProduction.startYear + new Date(apiData.case.dG4Date).getFullYear(),
-            values: (totalGasProduction.values || []).map((v) => v * gasPrice),
+            startYear: totalGasProductionInGigaCubics.startYear + new Date(apiData.case.dG4Date).getFullYear(),
+            values: (totalGasProductionInGigaCubics.values || []).map((v) => v * gasPrice * exchangeRateNOKToUSD * 1000),
         }
+        // similar to previous comment, we should have multiplied the totalGasProduction value by 1 billion since its set in giga cubics, but since the diagram is in MNOK/MUSD
+        // We only need to multiply by 1000 to get the correct gas Income
 
         let totalIncome = mergeTimeseries(oilIncome, gasIncome)
 
@@ -158,6 +159,13 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 values: totalIncome.values.map((v) => v * exchangeRateUSDToNOK),
             }
         }
+
+        // if (project?.currency === 2 && totalIncome.values) {
+        //     totalIncome = {
+        //         ...totalIncome,
+        //         values: totalIncome.values.map((v) => v * exchangeRateNOKToUSD),
+        //     }
+        // }
 
         return totalIncome
     }
@@ -207,7 +215,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     const barChartOptions: object = {
         data: chartData,
         title: {
-            text: "Annual Cost Profile",
+            text: `Annual Cost Profile (${project?.currency === 1 ? "MNOK" : "MUSD"})`,
             fontSize: 24,
         },
         subtitle: { text: unit },
@@ -252,7 +260,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             {
                 type: "number",
                 position: "left",
-                title: { text: `Cost (${project?.currency === 1 ? "MNOK" : "MUSD"})` },
+                title: { text: "Cost" },
             },
             {
                 type: "number",
