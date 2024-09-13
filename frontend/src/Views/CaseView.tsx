@@ -51,7 +51,7 @@ const CaseView = () => {
     }, [tab])
 
     useEffect(() => {
-        if (!project?.cases.find((c: any) => c.id === caseId)) {
+        if (!project?.cases.find((c: Components.Schemas.CaseDto) => c.id === caseId)) {
             navigate(projectUrl)
         }
     }, [project])
