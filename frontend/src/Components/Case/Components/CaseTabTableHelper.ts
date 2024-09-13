@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from "react"
+import { ITimeSeries } from "../../../Models/ITimeSeries";
 
 export const GetTimeSeriesLastYear = (
     timeSeries:
@@ -76,16 +77,7 @@ export const SetTableYearsFromProfiles = (
 }
 
 export const SetSummaryTableYearsFromProfiles = (
-    profiles: (
-        | {
-            id?: string;
-            startYear?: number;
-            name?: string;
-            values?: number[] | null;
-            sum?: number | undefined;
-        }
-        | undefined
-    )[],
+    profiles: (ITimeSeries | undefined)[],
     dG4Year: number,
     setTableYears: Dispatch<SetStateAction<[number, number]>>,
 ) => {
