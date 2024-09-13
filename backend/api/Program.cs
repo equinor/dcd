@@ -109,12 +109,18 @@ var appInsightTelemetryOptions = new ApplicationInsightsServiceOptions
 
 if (environment == "localdev")
 {
-    builder.Services.AddDbContext<DcdDbContext>(options =>
-        options.UseSqlite(_sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)));
+    builder.Services.AddDbContext<DcdDbContext>(
+        options => options.UseLazyLoadingProxies()
+                            .UseSqlite(
+                                _sqlConnectionString,
+                                o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)
+                                ));
 }
 else
 {
-    builder.Services.AddDbContext<DcdDbContext>(options => options.UseSqlServer(sqlConnectionString));
+    builder.Services.AddDbContext<DcdDbContext>(
+        options => options.UseLazyLoadingProxies()
+                            .UseSqlServer(sqlConnectionString));
 }
 
 builder.Services.AddFusionIntegration(options =>
