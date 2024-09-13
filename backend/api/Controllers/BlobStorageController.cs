@@ -59,7 +59,7 @@ public class BlobStorageController : ControllerBase
     }
 
     [HttpPost("cases/{caseId}/images")]
-    public Task<ActionResult<ImageDto>> UploadCaseImage(Guid projectId, [FromForm] string projectName, Guid caseId, [FromForm] IFormFile image)
+    public Task<ActionResult<ImageDto>> UploadCaseImage(Guid projectId, [FromForm] string projectName, Guid caseId, IFormFile image)
     {
         return UploadImage(projectId, projectName, caseId, image);
     }
@@ -98,7 +98,7 @@ public class BlobStorageController : ControllerBase
     }
 
     [HttpPost("images")]
-    public Task<ActionResult<ImageDto>> UploadProjectImage(Guid projectId, [FromForm] string projectName, [FromForm] IFormFile image)
+    public Task<ActionResult<ImageDto>> UploadProjectImage(Guid projectId, [FromForm] string projectName, IFormFile image)
     {
         return UploadImage(projectId, projectName, null, image);
     }

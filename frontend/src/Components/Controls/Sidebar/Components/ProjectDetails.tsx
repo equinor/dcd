@@ -86,7 +86,7 @@ const ProjectDetails: React.FC = () => {
                         <TimelineElement
                             variant="ghost"
                             className="GhostButton"
-                            onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 2 } })}
+                            onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 4 } })}
                         >
                             {sidebarOpen
                                 ? "Settings"
