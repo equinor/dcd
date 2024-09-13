@@ -58,7 +58,7 @@ public class StudyCostProfileService : IStudyCostProfileService
         var newFeed = CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
 
         TotalFeasibilityAndConceptStudies feasibility;
-        if (caseItem.TotalFeasibilityAndConceptStudiesOverride != null)
+        if (caseItem.TotalFeasibilityAndConceptStudiesOverride?.Override == true)
         {
             feasibility = new TotalFeasibilityAndConceptStudies
             {
@@ -72,7 +72,7 @@ public class StudyCostProfileService : IStudyCostProfileService
         }
 
         TotalFEEDStudies feed;
-        if (caseItem.TotalFEEDStudiesOverride != null)
+        if (caseItem.TotalFEEDStudiesOverride?.Override == true)
         {
             feed = new TotalFEEDStudies
             {

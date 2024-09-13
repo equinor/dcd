@@ -7,11 +7,11 @@ public class Surf
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty!;
 
-    public Project Project { get; set; } = null!;
+    public virtual Project Project { get; set; } = null!;
     public Guid ProjectId { get; set; }
-    public SurfCostProfile? CostProfile { get; set; }
-    public SurfCostProfileOverride? CostProfileOverride { get; set; }
-    public SurfCessationCostProfile? CessationCostProfile { get; set; }
+    public virtual SurfCostProfile? CostProfile { get; set; }
+    public virtual SurfCostProfileOverride? CostProfileOverride { get; set; }
+    public virtual SurfCessationCostProfile? CessationCostProfile { get; set; }
     public double CessationCost { get; set; }
     public Maturity Maturity { get; set; }
     public double InfieldPipelineSystemLength { get; set; }
@@ -36,20 +36,20 @@ public class Surf
 public class SurfCostProfile : TimeSeriesCost, ISurfTimeSeries
 {
     [ForeignKey("Surf.Id")]
-    public Surf Surf { get; set; } = null!;
+    public virtual Surf Surf { get; set; } = null!;
 }
 
 public class SurfCostProfileOverride : TimeSeriesCost, ISurfTimeSeries, ITimeSeriesOverride
 {
     [ForeignKey("Surf.Id")]
-    public Surf Surf { get; set; } = null!;
+    public virtual Surf Surf { get; set; } = null!;
     public bool Override { get; set; }
 }
 
 public class SurfCessationCostProfile : TimeSeriesCost, ISurfTimeSeries
 {
     [ForeignKey("Surf.Id")]
-    public Surf Surf { get; set; } = null!;
+    public virtual Surf Surf { get; set; } = null!;
 }
 
 public enum ProductionFlowline

@@ -58,7 +58,7 @@ public class OpexCostProfileService : IOpexCostProfileService
         var newOffshoreFacilitiesOperationsCost = await CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, drainageStrategy);
 
         WellInterventionCostProfile wellInterventionCost;
-        if (caseItem.WellInterventionCostProfileOverride != null)
+        if (caseItem.WellInterventionCostProfileOverride?.Override == true)
         {
             wellInterventionCost = new WellInterventionCostProfile
             {
@@ -72,7 +72,7 @@ public class OpexCostProfileService : IOpexCostProfileService
         }
 
         OffshoreFacilitiesOperationsCostProfile offshoreFacilitiesOperationsCost;
-        if (caseItem.OffshoreFacilitiesOperationsCostProfileOverride != null)
+        if (caseItem.OffshoreFacilitiesOperationsCostProfileOverride?.Override == true)
         {
             offshoreFacilitiesOperationsCost = new OffshoreFacilitiesOperationsCostProfile
             {
