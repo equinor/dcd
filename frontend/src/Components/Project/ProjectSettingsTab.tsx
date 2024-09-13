@@ -52,7 +52,6 @@ const ProjectSettingsTab = () => {
 
     const handleOilPriceChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         const newOilPrice = parseFloat(e.currentTarget.value)
-        console.log(newOilPrice, "newOilPrice")
         if (!Number.isNaN(newOilPrice) && project) {
             setOilPriceUSD(newOilPrice)
             const newProject = { ...project, oilPriceUSD: newOilPrice }
@@ -77,7 +76,6 @@ const ProjectSettingsTab = () => {
             setProjectEdited(newProject)
         }
     }
-
 
     if (!project) {
         return <div>Loading project data...</div>

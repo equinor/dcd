@@ -209,10 +209,11 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     const barChartOptions: object = {
         data: chartData,
         title: {
-            text: "Annual Cost Profile (MNOK)", // (${project?.currency === 1 ? "MNOK" : "MUSD"})`, add this to dynamically show what MNOK or MUSD on graph based on project.currency
+            text: "Annual Cost Profile", // (${project?.currency === 1 ? "MNOK" : "MUSD"})`, add this to dynamically show what MNOK or MUSD on graph based on project.currency
             fontSize: 24,
         },
-        subtitle: { text: unit },
+        subtitle: { text: "(MNOK)" ?? "" },
+
         padding: {
             top: 10,
             right: 10,
@@ -225,7 +226,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 type: "column",
                 xKey: "year",
                 yKey: key,
-                name: key,
+                yName: key,
                 fill: barColors[index],
                 stacked: true,
             })),
@@ -233,7 +234,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 type: "line",
                 xKey: "year",
                 yKey: "cumulativeSum",
-                name: "Total Income",
                 yName: "Total Income",
                 stroke: "red",
                 strokeWidth: 2,
@@ -282,9 +282,9 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         data: pieChartData,
         title: {
             text: "Cost Distribution",
-            fontSize: 24,
+            fontSize: 22,
         },
-        subtitle: { text: unit ?? "" },
+        subtitle: { text: "(MNOK)" ?? "" },
         padding: {
             top: 10,
             right: 10,
@@ -302,7 +302,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 strokes: ["white"],
                 innerLabels: [
                     {
-                        text: `${totalValue.toFixed(2)}`, // Display the total sum in the middle of the pie chart
+                        text: `${totalValue.toFixed(2)}`,
                         fontSize: 18,
                         color: "#000000",
                         margin: 0,
