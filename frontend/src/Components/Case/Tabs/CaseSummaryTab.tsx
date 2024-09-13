@@ -169,117 +169,114 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     }, [activeTabCase, apiData, project])
 
     useEffect(() => {
-        if (!apiData || !project) {
-            console.error("Missing data in CaseSummaryTab")
-            return
+        if (apiData || project) {
+            const totalExplorationCostData = handleTotalExplorationCost()
+            const totalDrillingCostData = handleDrilling()
+            const offshoreFacilitiesCostData = handleOffshoreFacilitiesCost()
+            const cessationOffshoreFacilitiesCostOverrideData = apiData?.cessationOffshoreFacilitiesCostOverride
+            const cessationOffshoreFacilitiesCostData = apiData?.cessationOffshoreFacilitiesCost
+            const cessationOnshoreFacilitiesCostProfileData = apiData?.cessationOnshoreFacilitiesCostProfile
+            const totalFeasibilityAndConceptStudiesOverrideData = apiData?.totalFeasibilityAndConceptStudiesOverride
+            const totalFeasibilityAndConceptStudiesData = apiData?.totalFeasibilityAndConceptStudies
+            const totalFEEDStudiesOverrideData = apiData?.totalFEEDStudiesOverride
+            const totalFEEDStudiesData = apiData?.totalFEEDStudies
+            const totalOtherStudiesCostProfileData = apiData?.totalOtherStudiesCostProfile
+            const historicCostCostProfileData = apiData?.historicCostCostProfile
+            const offshoreOpexPlussWellInterventionData = handleOffshoreOpexPlussWellIntervention()
+            const onshoreRelatedOPEXCostProfileData = apiData?.onshoreRelatedOPEXCostProfile
+            const additionalOPEXCostProfileData = apiData?.additionalOPEXCostProfile
+
+            const newExplorationTimeSeriesData: ITimeSeriesData[] = [
+                {
+                    profileName: "Exploration cost",
+                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    profile: totalExplorationCostData,
+                    group: "Exploration",
+                },
+            ]
+
+            const newCapexTimeSeriesData: ITimeSeriesData[] = [
+                {
+                    profileName: "Drilling",
+                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    profile: totalDrillingCostData,
+                    group: "CAPEX",
+                },
+                {
+                    profileName: "Offshore facilities",
+                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    profile: offshoreFacilitiesCostData,
+                    group: "CAPEX",
+                },
+                {
+                    profileName: "Cessation - offshore facilities",
+                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    profile: cessationOffshoreFacilitiesCostOverrideData?.override ? cessationOffshoreFacilitiesCostOverrideData : cessationOffshoreFacilitiesCostData,
+                    group: "CAPEX",
+                },
+                {
+                    profileName: "Cessation - onshore facilities",
+                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    profile: cessationOnshoreFacilitiesCostProfileData,
+                    group: "CAPEX",
+                },
+            ]
+
+            const newStudycostTimeSeriesData: ITimeSeriesData[] = [
+                {
+                    profileName: "Feasibility & Conceptual studies",
+                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    profile: totalFeasibilityAndConceptStudiesOverrideData?.override ? totalFeasibilityAndConceptStudiesOverrideData : totalFeasibilityAndConceptStudiesData,
+                    group: "Study cost",
+                },
+                {
+                    profileName: "FEED studies (DG2-DG3)",
+                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    profile: totalFEEDStudiesOverrideData?.override ? totalFEEDStudiesOverrideData : totalFEEDStudiesData,
+                    group: "Study cost",
+                },
+                {
+                    profileName: "Other studies",
+                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    profile: totalOtherStudiesCostProfileData,
+                    group: "Study cost",
+                },
+            ]
+
+            const newOpexTimeSeriesData: ITimeSeriesData[] = [
+                {
+                    profileName: "Historic cost",
+                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    profile: historicCostCostProfileData,
+                    group: "OPEX",
+                },
+                {
+                    profileName: "Offshore related OPEX, incl. well intervention",
+                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    profile: offshoreOpexPlussWellInterventionData,
+                    group: "OPEX",
+                },
+                {
+                    profileName: "Onshore related OPEX",
+                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    profile: onshoreRelatedOPEXCostProfileData,
+                    group: "OPEX",
+                },
+                {
+                    profileName: "Additional OPEX",
+                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    profile: additionalOPEXCostProfileData,
+                    group: "OPEX",
+                },
+            ]
+
+            setAllTimeSeriesData([
+                newExplorationTimeSeriesData,
+                newCapexTimeSeriesData,
+                newStudycostTimeSeriesData,
+                newOpexTimeSeriesData,
+            ])
         }
-
-        const totalExplorationCostData = handleTotalExplorationCost()
-        const totalDrillingCostData = handleDrilling()
-        const offshoreFacilitiesCostData = handleOffshoreFacilitiesCost()
-        const cessationOffshoreFacilitiesCostOverrideData = apiData?.cessationOffshoreFacilitiesCostOverride
-        const cessationOffshoreFacilitiesCostData = apiData?.cessationOffshoreFacilitiesCost
-        const cessationOnshoreFacilitiesCostProfileData = apiData?.cessationOnshoreFacilitiesCostProfile
-        const totalFeasibilityAndConceptStudiesOverrideData = apiData?.totalFeasibilityAndConceptStudiesOverride
-        const totalFeasibilityAndConceptStudiesData = apiData?.totalFeasibilityAndConceptStudies
-        const totalFEEDStudiesOverrideData = apiData?.totalFEEDStudiesOverride
-        const totalFEEDStudiesData = apiData?.totalFEEDStudies
-        const totalOtherStudiesCostProfileData = apiData?.totalOtherStudiesCostProfile
-        const historicCostCostProfileData = apiData?.historicCostCostProfile
-        const offshoreOpexPlussWellInterventionData = handleOffshoreOpexPlussWellIntervention()
-        const onshoreRelatedOPEXCostProfileData = apiData?.onshoreRelatedOPEXCostProfile
-        const additionalOPEXCostProfileData = apiData?.additionalOPEXCostProfile
-
-        const newExplorationTimeSeriesData: ITimeSeriesData[] = [
-            {
-                profileName: "Exploration cost",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-                profile: totalExplorationCostData,
-                group: "Exploration",
-            },
-        ]
-
-        const newCapexTimeSeriesData: ITimeSeriesData[] = [
-            {
-                profileName: "Drilling",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-                profile: totalDrillingCostData,
-                group: "CAPEX",
-            },
-            {
-                profileName: "Offshore facilities",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-                profile: offshoreFacilitiesCostData,
-                group: "CAPEX",
-            },
-            {
-                profileName: "Cessation - offshore facilities",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-                profile: cessationOffshoreFacilitiesCostOverrideData?.override ? cessationOffshoreFacilitiesCostOverrideData : cessationOffshoreFacilitiesCostData,
-                group: "CAPEX",
-            },
-            {
-                profileName: "Cessation - onshore facilities",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-                profile: cessationOnshoreFacilitiesCostProfileData,
-                group: "CAPEX",
-            },
-        ]
-
-        const newStudycostTimeSeriesData: ITimeSeriesData[] = [
-            {
-                profileName: "Feasibility & Conceptual studies",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-                profile: totalFeasibilityAndConceptStudiesOverrideData?.override ? totalFeasibilityAndConceptStudiesOverrideData : totalFeasibilityAndConceptStudiesData,
-                group: "Study cost",
-            },
-            {
-                profileName: "FEED studies (DG2-DG3)",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-                profile: totalFEEDStudiesOverrideData?.override ? totalFEEDStudiesOverrideData : totalFEEDStudiesData,
-                group: "Study cost",
-            },
-            {
-                profileName: "Other studies",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-                profile: totalOtherStudiesCostProfileData,
-                group: "Study cost",
-            },
-        ]
-
-        const newOpexTimeSeriesData: ITimeSeriesData[] = [
-            {
-                profileName: "Historic cost",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-                profile: historicCostCostProfileData,
-                group: "OPEX",
-            },
-            {
-                profileName: "Offshore related OPEX, incl. well intervention",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-                profile: offshoreOpexPlussWellInterventionData,
-                group: "OPEX",
-            },
-            {
-                profileName: "Onshore related OPEX",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-                profile: onshoreRelatedOPEXCostProfileData,
-                group: "OPEX",
-            },
-            {
-                profileName: "Additional OPEX",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
-                profile: additionalOPEXCostProfileData,
-                group: "OPEX",
-            },
-        ]
-
-        setAllTimeSeriesData([
-            newExplorationTimeSeriesData,
-            newCapexTimeSeriesData,
-            newStudycostTimeSeriesData,
-            newOpexTimeSeriesData,
-        ])
     }, [apiData, project])
 
     const caseData = apiData?.case
