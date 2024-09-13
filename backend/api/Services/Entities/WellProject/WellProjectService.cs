@@ -40,7 +40,11 @@ public class WellProjectService : IWellProjectService
         _mapperService = mapperService;
     }
 
-    public async Task<WellProject> CreateWellProject(Guid projectId, Guid sourceCaseId, CreateWellProjectDto wellProjectDto)
+    public async Task<WellProject> CreateWellProject(
+        Guid projectId,
+        Guid sourceCaseId,
+        CreateWellProjectDto wellProjectDto
+        )
     {
         var wellProject = _mapper.Map<WellProject>(wellProjectDto);
         if (wellProject == null)
@@ -86,6 +90,7 @@ public class WellProjectService : IWellProjectService
     }
 
     public async Task<WellProjectDto> UpdateWellProject(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         UpdateWellProjectDto updatedWellProjectDto
@@ -114,6 +119,7 @@ public class WellProjectService : IWellProjectService
     }
 
     public async Task<DrillingScheduleDto> UpdateWellProjectWellDrillingSchedule(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid wellId,
@@ -144,6 +150,7 @@ public class WellProjectService : IWellProjectService
     }
 
     public async Task<DrillingScheduleDto> CreateWellProjectWellDrillingSchedule(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid wellId,

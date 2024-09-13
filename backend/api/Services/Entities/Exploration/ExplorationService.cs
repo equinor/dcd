@@ -93,6 +93,7 @@ public class ExplorationService : IExplorationService
         UpdateExplorationDto updatedExplorationDto
     )
     {
+        // Need to verify that the project from the URL is the same as the project of the exploration
         await _projectAccessService.ProjectExists<Exploration>(projectId, explorationId);
 
         var existingExploration = await _repository.GetExploration(explorationId)
@@ -100,10 +101,8 @@ public class ExplorationService : IExplorationService
 
         _mapperService.MapToEntity(updatedExplorationDto, existingExploration, explorationId);
 
-        // Exploration updatedExploration;
         try
         {
-            // updatedExploration = _repository.UpdateExploration(existingExploration);
             await _caseRepository.UpdateModifyTime(caseId);
             await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
@@ -126,15 +125,19 @@ public class ExplorationService : IExplorationService
         UpdateDrillingScheduleDto updatedExplorationWellDto
     )
     {
-        var existingDrillingSchedule = await _repository.GetExplorationWellDrillingSchedule(drillingScheduleId)
-            ?? throw new NotFoundInDBException($"Drilling schedule with {drillingScheduleId} not found.");
+        var existingExploration = await _repository.GetExplorationWithDrillingSchedule(drillingScheduleId)
+            ?? throw new NotFoundInDBException($"No exploration connected to {drillingScheduleId} found.");
+
+        // Need to verify that the project from the URL is the same as the project of the exploration
+        await _projectAccessService.ProjectExists<Exploration>(projectId, existingExploration.Id);
+
+        var existingDrillingSchedule = existingExploration.ExplorationWells?.FirstOrDefault(w => w.WellId == wellId)?.DrillingSchedule
+            ?? throw new NotFoundInDBException($"Drilling schedule with id {drillingScheduleId} not found.");
 
         _mapperService.MapToEntity(updatedExplorationWellDto, existingDrillingSchedule, drillingScheduleId);
 
-        // DrillingSchedule updatedDrillingSchedule;
         try
         {
-            // updatedDrillingSchedule = _repository.UpdateExplorationWellDrillingSchedule(existingDrillingSchedule);
             await _caseRepository.UpdateModifyTime(caseId);
             await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
