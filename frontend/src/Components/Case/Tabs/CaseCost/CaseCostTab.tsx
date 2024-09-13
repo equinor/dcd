@@ -108,6 +108,10 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 apiData.gAndGAdminCost,
                 apiData.gAndGAdminCostOverride,
                 apiData.historicCostCostProfile,
+                apiData.onshoreRelatedOPEXCostProfile,
+                apiData.additionalOPEXCostProfile,
+                apiData.appraisalWellCostProfile,
+                apiData.sidetrackCostProfile,
             ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
             setYearRangeSetFromProfiles(true)
         }
