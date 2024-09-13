@@ -52,7 +52,6 @@ const ProjectSettingsTab = () => {
         }
     }
 
-
     const handleOilPriceChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         const newOilPrice = parseFloat(e.currentTarget.value)
         console.log(newOilPrice, "newOilPrice")

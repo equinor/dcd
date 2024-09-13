@@ -139,27 +139,21 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         const oilIncome = {
             id: "",
             startYear: totalOilProductionInMegaCubics.startYear + new Date(apiData.case.dG4Date).getFullYear(),
-            values: oilProductionInBarrels.map((v) => v * oilPrice),
+            values: oilProductionInBarrels.map((v) => v * oilPrice * exchangeRateUSDToNOK),
         }
 
         const totalGasProductionInGigaCubics = mergeTimeseries(apiData.productionProfileGas, apiData.additionalProductionProfileGas)
         const gasIncome = {
             id: "",
             startYear: totalGasProductionInGigaCubics.startYear + new Date(apiData.case.dG4Date).getFullYear(),
-            values: (totalGasProductionInGigaCubics.values || []).map((v) => v * gasPrice * exchangeRateNOKToUSD * 1000),
+            values: (totalGasProductionInGigaCubics.values || []).map((v) => v * gasPrice * 1000),
         }
         // similar to previous comment, we should have multiplied the totalGasProduction value by 1 billion since its set in giga cubics, but since the diagram is in MNOK/MUSD
         // We only need to multiply by 1000 to get the correct gas Income
 
-        let totalIncome = mergeTimeseries(oilIncome, gasIncome)
+        const totalIncome = mergeTimeseries(oilIncome, gasIncome)
 
-        if (project?.currency === 1 && totalIncome.values) {
-            totalIncome = {
-                ...totalIncome,
-                values: totalIncome.values.map((v) => v * exchangeRateUSDToNOK),
-            }
-        }
-
+        // Uncomment this to adjust income based on currency
         // if (project?.currency === 2 && totalIncome.values) {
         //     totalIncome = {
         //         ...totalIncome,
@@ -215,7 +209,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     const barChartOptions: object = {
         data: chartData,
         title: {
-            text: `Annual Cost Profile (${project?.currency === 1 ? "MNOK" : "MUSD"})`,
+            text: "Annual Cost Profile (MNOK)", // (${project?.currency === 1 ? "MNOK" : "MUSD"})`, add this to dynamically show what MNOK or MUSD on graph based on project.currency
             fontSize: 24,
         },
         subtitle: { text: unit },
