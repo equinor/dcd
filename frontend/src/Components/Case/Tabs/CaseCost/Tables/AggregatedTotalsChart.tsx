@@ -127,7 +127,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         const gasPrice = project?.gasPriceNOK ?? 3
         const cubicMetersToBarrelsFactor = 6.29
         const exchangeRateUSDToNOK = project?.exchangeRateUSDToNOK ?? 10.0
-        const exchangeRateNOKToUSD = project?.exchangeRateNOKToUSD ?? 0.1
+        const exchangeRateNOKToUSD = 1 / exchangeRateUSDToNOK
 
         const totalOilProductionInMegaCubics = mergeTimeseries(apiData.productionProfileOil, apiData.additionalProductionProfileOil)
 

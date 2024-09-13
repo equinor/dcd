@@ -901,10 +901,6 @@ public class DcdDbContext : DbContext
             .HasDefaultValue(3.0);
 
         modelBuilder.Entity<Project>()
-            .Property(p => p.ExchangeRateNOKToUSD)
-            .HasDefaultValue(0.1);
-
-        modelBuilder.Entity<Project>()
             .Property(p => p.ExchangeRateUSDToNOK)
             .HasDefaultValue(10);
     }

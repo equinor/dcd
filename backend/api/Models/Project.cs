@@ -39,7 +39,6 @@ public class Project
     public double OilPriceUSD { get; set; }
     public double GasPriceNOK { get; set; }
     public double DiscountRate { get; set; }
-    public double ExchangeRateNOKToUSD { get; set; }
     public double ExchangeRateUSDToNOK { get; set; }
 }
 

@@ -80,8 +80,6 @@ public class ProjectWithAssetsDto : IEquatable<ProjectWithAssetsDto>
     [Required]
     public double discountRate { get; set; }
     [Required]
-    public double ExchangeRateNOKToUSD { get; set; }
-    [Required]
     public double ExchangeRateUSDToNOK { get; set; }
 
     public bool Equals(ProjectWithAssetsDto? projectDto)

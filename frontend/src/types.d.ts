@@ -1002,7 +1002,6 @@ declare namespace Components {
             oilPriceUSD: number; // double
             gasPriceNOK: number; // double
             discountRate: number; // double
-            exchangeRateNOKToUSD: number; // double
             exchangeRateUSDToNOK: number; // double
         }
         export interface ProjectWithCasesDto {
@@ -1637,7 +1636,6 @@ declare namespace Components {
             oilPriceUSD?: number; // double
             gasPriceNOK?: number; // double
             discountRate?: number; // double
-            exchangeRateNOKToUSD?: number; // double
             exchangeRateUSDToNOK?: number; // double
         }
         export interface UpdateSeismicAcquisitionAndProcessingDto {

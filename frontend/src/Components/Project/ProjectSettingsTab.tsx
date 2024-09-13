@@ -12,7 +12,6 @@ const ProjectSettingsTab = () => {
     const [oilPriceUSD, setOilPriceUSD] = useState<number | undefined>(undefined)
     const [gasPriceNOK, setGasPriceNOK] = useState<number | undefined>(undefined)
     const [discountRate, setDiscountRate] = useState<number | undefined>(undefined)
-    const [exchangeRateNOKToUSD, setExchangeRateNOKToUSD] = useState<number | undefined>(undefined)
 
     useEffect(() => {
         if (project) {
@@ -20,7 +19,6 @@ const ProjectSettingsTab = () => {
             setOilPriceUSD(projectEdited?.oilPriceUSD ?? oilPriceUSD)
             setGasPriceNOK(projectEdited?.gasPriceNOK ?? gasPriceNOK)
             setDiscountRate(projectEdited?.discountRate ?? discountRate)
-            setExchangeRateNOKToUSD(projectEdited?.discountRate ?? discountRate)
         }
     }, [project, projectEdited])
 
@@ -80,14 +78,6 @@ const ProjectSettingsTab = () => {
         }
     }
 
-    const handleExchangeRateNOKToUSDChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-        const newExchangeRate = parseFloat(e.currentTarget.value)
-        if (!Number.isNaN(newExchangeRate) && project) {
-            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project, exchangeRateNOKToUSD: newExchangeRate }
-            setExchangeRateNOKToUSD(newExchangeRate)
-            setProjectEdited(newProject)
-        }
-    }
 
     if (!project) {
         return <div>Loading project data...</div>
@@ -182,19 +172,6 @@ const ProjectSettingsTab = () => {
                         step="0.01"
                         value={discountRate}
                         onChange={handleDiscountRateChange}
-                    />
-                </InputSwitcher>
-            </Grid>
-            <Grid item>
-                <InputSwitcher
-                    value={String(projectEdited?.exchangeRateNOKToUSD ?? project.exchangeRateNOKToUSD ?? exchangeRateNOKToUSD)}
-                    label="Exchange Rate (NOK to USD)"
-                >
-                    <Input
-                        type="number"
-                        step="0.01"
-                        value={exchangeRateNOKToUSD || ""}
-                        onChange={handleExchangeRateNOKToUSDChange}
                     />
                 </InputSwitcher>
             </Grid>

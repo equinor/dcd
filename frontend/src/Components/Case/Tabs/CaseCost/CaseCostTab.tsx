@@ -17,7 +17,7 @@ import ExplorationWellCosts from "./Tables/ExplorationWellCosts"
 import OffshoreFacillityCosts from "./Tables/OffshoreFacilityCosts"
 import OpexCosts from "./Tables/OpexCosts"
 import TotalStudyCosts from "./Tables/TotalStudyCosts"
-import AggregatedTotals from "./Tables/AggregatedTotals"
+import AggregatedTotals from "./Tables/AggregatedTotalsChart"
 import CaseCostSkeleton from "../../../LoadingSkeletons/CaseCostTabSkeleton"
 
 const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
