@@ -49,7 +49,7 @@ public class CessationCostProfileService : ICessationCostProfileService
         var caseItem = await _caseService.GetCase(caseId);
         var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
 
-        var cessationWellsCost = await GetCessationWellsCost(caseItem, project);
+        var cessationWellsCost = await CalculateCessationWellsCost(caseItem, project);
         var cessationOffshoreFacilitiesCost = await GetCessationOffshoreFacilitiesCost(caseItem);
         var cessationOnshoreFacilitiesCostProfile = caseItem.CessationOnshoreFacilitiesCostProfile ?? new CessationOnshoreFacilitiesCostProfile();
 
@@ -75,9 +75,9 @@ public class CessationCostProfileService : ICessationCostProfileService
         return result;
     }
 
-    private async Task<CessationWellsCost> GetCessationWellsCost(Case caseItem, Project project)
+    private async Task<CessationWellsCost> CalculateCessationWellsCost(Case caseItem, Project project)
     {
-        if (caseItem.CessationWellsCostOverride != null)
+        if (caseItem.CessationWellsCostOverride?.Override == true)
         {
             var overrideCost = caseItem.CessationWellsCostOverride;
             return new CessationWellsCost
@@ -104,7 +104,7 @@ public class CessationCostProfileService : ICessationCostProfileService
 
     private async Task<CessationOffshoreFacilitiesCost> GetCessationOffshoreFacilitiesCost(Case caseItem)
     {
-        if (caseItem.CessationOffshoreFacilitiesCostOverride != null)
+        if (caseItem.CessationOffshoreFacilitiesCostOverride?.Override == true)
         {
             var overrideCost = caseItem.CessationOffshoreFacilitiesCostOverride;
             return new CessationOffshoreFacilitiesCost
@@ -179,7 +179,10 @@ public class CessationCostProfileService : ICessationCostProfileService
             _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
             return null;
         }
-        if (drainageStrategy.ProductionProfileOil == null || drainageStrategy.ProductionProfileOil.Values.Length == 0) { return null; }
+        if (drainageStrategy.ProductionProfileOil == null || drainageStrategy.ProductionProfileOil.Values.Length == 0)
+        {
+            return null;
+        }
         var lastYear = drainageStrategy.ProductionProfileOil.StartYear + drainageStrategy.ProductionProfileOil.Values.Length - 1;
         return lastYear;
     }
