@@ -13,7 +13,7 @@ import CaseDrillingScheduleTab from "../Components/Case/Tabs/CaseDrillingSchedul
 import CaseCO2Tab from "../Components/Case/Tabs/Co2Emissions/CaseCO2Tab"
 import { useProjectContext } from "../Context/ProjectContext"
 import { useCaseContext } from "../Context/CaseContext"
-import CaseDescriptionTabSkeleton from "../Components/Case/Tabs/LoadingSkeletons/CaseDescriptionTabSkeleton"
+import CaseDescriptionTabSkeleton from "../Components/LoadingSkeletons/CaseDescriptionTabSkeleton"
 import { caseTabNames } from "../Utils/constants"
 import useDataEdits from "../Hooks/useDataEdits"
 
@@ -39,6 +39,7 @@ const CaseView = () => {
     const location = useLocation()
     const queryClient = useQueryClient()
     const projectId = project?.id || null
+    const projectUrl = location.pathname.split("/case")[0]
 
     useEffect(() => {
         if (tab) {
@@ -49,10 +50,15 @@ const CaseView = () => {
         }
     }, [tab])
 
+    useEffect(() => {
+        if (!project?.cases.find((c: Components.Schemas.CaseDto) => c.id === caseId)) {
+            navigate(projectUrl)
+        }
+    }, [project])
+
     // navigates to the default tab (description) if none is provided in the url
     useEffect(() => {
         if (!tab && caseId) {
-            const projectUrl = location.pathname.split("/case")[0]
             navigate(`${projectUrl}/case/${caseId}/${caseTabNames[0]}`, { replace: true })
         } else if (tab) {
             const tabIndex = caseTabNames.indexOf(tab)
@@ -80,10 +86,6 @@ const CaseView = () => {
             initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
         },
     )
-
-    if (!project || !apiData) {
-        return <CaseDescriptionTabSkeleton />
-    }
 
     return (
         <Wrapper item xs={12}>

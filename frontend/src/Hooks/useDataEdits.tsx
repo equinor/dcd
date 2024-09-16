@@ -81,27 +81,6 @@ const useDataEdits = (): {
     const location = useLocation()
     const navigate = useNavigate()
 
-    const updateEditIndex = (newEditId: string) => {
-        if (!caseIdFromParams) {
-            console.log("you are not in a project case")
-            return
-        }
-
-        const editEntry: EditEntry = { caseId: caseIdFromParams, currentEditId: newEditId }
-        const storedEditIndexes = localStorage.getItem("editIndexes")
-        const editIndexesArray = storedEditIndexes ? JSON.parse(storedEditIndexes) : []
-        const currentCasesEditIndex = editIndexesArray.findIndex((entry: { caseId: string }) => entry.caseId === caseIdFromParams)
-
-        if (currentCasesEditIndex !== -1) {
-            editIndexesArray[currentCasesEditIndex].currentEditId = newEditId
-        } else {
-            editIndexesArray.push(editEntry)
-        }
-
-        localStorage.setItem("editIndexes", JSON.stringify(editIndexesArray))
-        setEditIndexes(editIndexesArray)
-    }
-
     const queryClient = useQueryClient()
 
     const mutation = useMutation(
@@ -1493,7 +1472,71 @@ const useDataEdits = (): {
         return success
     }
 
-    const registerEdit = async (editInstance: EditInstance) => {
+    const getActiveEditFromIndexes = () => {
+        const storedEditIndexes = localStorage.getItem("editIndexes")
+        const editIndexesArray = storedEditIndexes ? JSON.parse(storedEditIndexes) : []
+
+        const existingEntry = _.find(editIndexesArray, { caseId: caseIdFromParams })
+
+        if (existingEntry) {
+            return existingEntry
+        }
+        return undefined
+    }
+
+    const updateEditIndex = (newEditId: string) => {
+        if (!caseIdFromParams) {
+            console.log("you are not in a project case")
+            return
+        }
+
+        const editEntry: EditEntry = { caseId: caseIdFromParams, currentEditId: newEditId }
+
+        const storedEditIndexes = localStorage.getItem("editIndexes")
+        const editIndexesArray = storedEditIndexes ? JSON.parse(storedEditIndexes) : []
+
+        const activeEdit = getActiveEditFromIndexes()
+
+        if (activeEdit) {
+            activeEdit.currentEditId = newEditId
+            const index = _.findIndex(editIndexesArray, { caseId: caseIdFromParams })
+            editIndexesArray[index] = activeEdit
+        } else {
+            editIndexesArray.push(editEntry)
+        }
+
+        localStorage.setItem("editIndexes", JSON.stringify(editIndexesArray))
+        setEditIndexes(editIndexesArray)
+    }
+
+    const updateHistory = () => {
+        const currentCaseEditsWithoutObsoleteEntries = () => {
+            const activeEdit = getActiveEditFromIndexes()
+
+            if (activeEdit) {
+                const indexOfActiveEdit = _.findIndex(caseEditsBelongingToCurrentCase, { uuid: activeEdit.currentEditId })
+
+                if (indexOfActiveEdit > 0) {
+                    const newCurrentCaseEdits = structuredClone(caseEditsBelongingToCurrentCase)
+                    newCurrentCaseEdits.splice(0, indexOfActiveEdit)
+
+                    return newCurrentCaseEdits
+                }
+            }
+            return caseEditsBelongingToCurrentCase
+        }
+        const caseEditsNotBelongingToCurrentCase = caseEdits.filter((edit) => edit.caseId !== caseIdFromParams)
+        const allEdits = [...apiQueue, ...currentCaseEditsWithoutObsoleteEntries(), ...caseEditsNotBelongingToCurrentCase]
+
+        setCaseEdits(allEdits)
+        updateEditIndex(allEdits[0].uuid)
+    }
+
+    /**
+     * Submits an edit instance to the api then returns the same edit instance. In cases where the API
+     * returns a new resourceProfileId, the edit instance is updated with the new resourceProfileId and returned.
+     */
+    const HandleApiSubmissionResults = async (editInstance: EditInstance) => {
         const submitted = await submitToApi({
             projectId: editInstance.projectId,
             caseId: editInstance.caseId!,
@@ -1519,15 +1562,22 @@ const useDataEdits = (): {
         return null
     }
 
+    /**
+     * iterates the queue from the end to the beginning and creates a new array containing only the latest
+     * edit for each resource, then submits that array and updates the history tracker.
+     *
+     * Since each edit in the queue contains the previous edits made to the same resource object,
+     * we only need to submit the the latest edit for each modified resource object to update the data the API
+     */
     const processQueue = async () => {
-        const registeredEdits: Array<EditInstance> = (await Promise.all(apiQueue.map((editInstance) => registerEdit(editInstance))))
-            .filter((result): result is EditInstance => result !== null)
-            .reverse()
+        const uniqueEditsQueue = _.uniqBy(apiQueue.reverse(), (edit) => edit.resourceName + edit.resourceId)
+        const registedEdits = await Promise.all(uniqueEditsQueue.map((editInstance) => HandleApiSubmissionResults(editInstance)))
 
-        const caseEditsNotBelongingToCurrentCase = caseEdits.filter((edit) => edit.caseId !== registeredEdits[0].caseId)
-        const allEdits = [...registeredEdits, ...caseEditsBelongingToCurrentCase, ...caseEditsNotBelongingToCurrentCase]
-        setCaseEdits(allEdits)
-        updateEditIndex(registeredEdits[0].uuid)
+        // todo: make sure that when the registered edit method returns an edit with a resourceProfileId,
+        // the edit in history tracker is updated with the new resourceProfileId
+        // update: actually, it seems that the switch between put and post works fine already?
+        // idk how though we should discuss this
+        updateHistory()
         setApiQueue([])
     }
 
@@ -1559,6 +1609,9 @@ const useDataEdits = (): {
             return
         }
 
+        const editIsForSameResourceName = (edit1: EditInstance, edit2: EditInstance) => edit1.resourceName === edit2.resourceName && edit1.caseId === edit2.caseId
+        const editIsForSamePropertyKey = (edit1: EditInstance, edit2: EditInstance) => edit1.resourcePropertyKey === edit2.resourcePropertyKey
+
         const insertedEditInstanceObject: EditInstance = {
             uuid: uuidv4(),
             timeStamp: new Date().getTime(),
@@ -1579,50 +1632,58 @@ const useDataEdits = (): {
             tableName,
             inputFieldId,
         }
-        const latestEditForSameResourceObjectInQueue = apiQueue
+
+        const existingEditsForSameResourceInQueue = apiQueue
             .slice()
-            .reverse()
-            .find((edit) => edit.caseId === caseId && edit.resourceName === resourceName)
+            .filter((edit) => editIsForSameResourceName(edit, insertedEditInstanceObject))
 
-        if (latestEditForSameResourceObjectInQueue) {
-            const existingEntrysNewResourceObject = latestEditForSameResourceObjectInQueue.newResourceObject
+        let sameFieldAlreadyInQueue = null
 
-            const existingResourceObjectWithAddedNewValue: ResourceObject = structuredClone(existingEntrysNewResourceObject)
-            existingResourceObjectWithAddedNewValue[resourcePropertyKey as keyof ResourceObject] = newResourceObject[resourcePropertyKey as keyof ResourceObject]
+        for (let i = existingEditsForSameResourceInQueue.length - 1; i >= 0; i -= 1) {
+            const edit = existingEditsForSameResourceInQueue[i]
+            if (editIsForSamePropertyKey(edit, insertedEditInstanceObject)) {
+                sameFieldAlreadyInQueue = edit
+                break
+            }
+        }
 
-            const updatedFieldInPreviousEdit = latestEditForSameResourceObjectInQueue.resourcePropertyKey
-            const updatedFieldInCurrentEdit = insertedEditInstanceObject.resourcePropertyKey
-            const userUpdatedSameFieldTwice = updatedFieldInPreviousEdit === updatedFieldInCurrentEdit
+        if (existingEditsForSameResourceInQueue.length > 0) {
+            // TODO: find a more elegant way to check if the edit is for a table
+            const isTableEdit = Object.prototype.hasOwnProperty.call(newResourceObject, "startYear")
+                && Object.prototype.hasOwnProperty.call(newResourceObject, "values")
 
-            if (userUpdatedSameFieldTwice) {
-                // edit the existing queue entry with the new values from the submitted edit
+            const latestEditInQueue = structuredClone(existingEditsForSameResourceInQueue[existingEditsForSameResourceInQueue.length - 1])
+            const existingQueueItemsResourceObject = structuredClone(latestEditInQueue.newResourceObject)
 
-                console.log("updated key", updatedFieldInCurrentEdit)
-                const existingEditWithWithAddedNewValue: EditInstance = {
-                    ...latestEditForSameResourceObjectInQueue,
-                    newResourceObject: existingResourceObjectWithAddedNewValue,
-                    newDisplayValue,
-                    timeStamp: new Date().getTime(),
-                }
-                setApiQueue([
-                    existingEditWithWithAddedNewValue,
-                    ...apiQueue.filter((edit) => edit.uuid !== latestEditForSameResourceObjectInQueue.uuid),
-                ])
+            let combinedResourceObject = {} as ResourceObject
+            if (isTableEdit) {
+                combinedResourceObject = structuredClone(newResourceObject)
             } else {
-                // add new queue entry combining the new values of the previous edit with the new values of the current edit
+                const propertyKey = resourcePropertyKey as keyof ResourceObject
+                existingQueueItemsResourceObject[propertyKey] = newResourceObject[propertyKey]
+                combinedResourceObject = existingQueueItemsResourceObject
+            }
 
-                console.log("updated key", updatedFieldInCurrentEdit)
+            if (sameFieldAlreadyInQueue) {
+                // add the new edit with the updated previous resource object
                 const insertedEditInstanceWithCombinedResourceObject: EditInstance = {
                     ...insertedEditInstanceObject,
-                    newResourceObject: existingResourceObjectWithAddedNewValue,
-                    previousResourceObject: latestEditForSameResourceObjectInQueue.newResourceObject,
+                    newResourceObject: combinedResourceObject,
+                    previousResourceObject: latestEditInQueue.newResourceObject,
+                    previousDisplayValue: sameFieldAlreadyInQueue.newDisplayValue,
+                }
+                setApiQueue([...apiQueue, insertedEditInstanceWithCombinedResourceObject])
+            } else {
+                // add new queue entry combining the new values of the previous edit with the new values of the current edit
+                const insertedEditInstanceWithCombinedResourceObject: EditInstance = {
+                    ...insertedEditInstanceObject,
+                    newResourceObject: combinedResourceObject,
+                    previousResourceObject: latestEditInQueue.newResourceObject,
                 }
                 setApiQueue([...apiQueue, insertedEditInstanceWithCombinedResourceObject])
             }
         } else {
             // new unique edit added with no previous edits for the same resource object. just add it to the queue
-
-            console.log("updated key", insertedEditInstanceObject.resourcePropertyKey)
             setApiQueue([...apiQueue, insertedEditInstanceObject])
         }
     }
@@ -1652,7 +1713,7 @@ const useDataEdits = (): {
         const updatedEditIndex = currentEditIndex + 1
         const updatedEdit = caseEditsBelongingToCurrentCase[updatedEditIndex]
 
-        updateEditIndex(updatedEdit ? updatedEdit.uuid : "")
+        updateEditIndex(updatedEdit.uuid)
 
         if (editThatWillBeUndone) {
             const projectUrl = location.pathname.split("/case")[0]

@@ -10,6 +10,7 @@ public class APIUpdateCaseDto : BaseUpdateCaseDto
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
     public bool? ReferenceCase { get; set; }
+    public bool Archived { get; set; }
     public ArtificialLift? ArtificialLift { get; set; }
     public ProductionStrategyOverview? ProductionStrategyOverview { get; set; }
     public int ProducerCount { get; set; }

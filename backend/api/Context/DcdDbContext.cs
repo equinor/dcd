@@ -588,7 +588,7 @@ public class DcdDbContext : DbContext
         var additionalProductionProfileOilAdded = ChangeTracker.Entries<AdditionalProductionProfileOil>()
             .Any(e => e.State == EntityState.Added);
 
-        var surfChanges = ChangeTracker.Entries<SurfCessationCostProfile>()
+        var surfChanges = ChangeTracker.Entries<Surf>()
             .Any(e => e.State == EntityState.Modified &&
             (
                 e.Property(nameof(Surf.CessationCost)).IsModified
@@ -887,6 +887,22 @@ public class DcdDbContext : DbContext
         modelBuilder.Entity<Project>()
             .Property(p => p.Classification)
             .HasDefaultValue(ProjectClassification.Internal);
+
+        modelBuilder.Entity<Project>()
+            .Property(p => p.DiscountRate)
+            .HasDefaultValue(8.0);
+
+        modelBuilder.Entity<Project>()
+            .Property(p => p.OilPriceUSD)
+            .HasDefaultValue(75.0);
+
+        modelBuilder.Entity<Project>()
+            .Property(p => p.GasPriceNOK)
+            .HasDefaultValue(3.0);
+
+        modelBuilder.Entity<Project>()
+            .Property(p => p.ExchangeRateUSDToNOK)
+            .HasDefaultValue(10);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -14,6 +14,7 @@ import { useAppContext } from "../../../Context/AppContext"
 import SwitchableDateInput from "../../Input/SwitchableDateInput"
 import { ResourceObject, ResourcePropertyKey } from "../../../Models/Interfaces"
 import { useProjectContext } from "../../../Context/ProjectContext"
+import CaseScheduleTabSkeleton from "../../LoadingSkeletons/CaseScheduleTabSkeleton"
 
 const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
@@ -198,7 +199,7 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     if (!caseData || !projectId) {
-        return (<p>Loading...</p>)
+        return (<CaseScheduleTabSkeleton />)
     }
 
     return (

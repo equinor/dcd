@@ -18,6 +18,8 @@ public class CaseDto
     [Required]
     public bool ReferenceCase { get; set; }
     [Required]
+    public bool Archived { get; set; }
+    [Required]
     public ArtificialLift ArtificialLift { get; set; }
     [Required]
     public ProductionStrategyOverview ProductionStrategyOverview { get; set; }

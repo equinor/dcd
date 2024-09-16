@@ -8,17 +8,21 @@ import CasesDetails from "./Components/CasesDetails"
 import CurrentCaseEditHistory from "./Components/CurrentCaseEditHistory"
 
 const { Toggle, Content, Footer } = SideBar
-
 const Wrapper = styled.div`
-        position: relative;
-`
-
+    position: relative;
+    `
 const Sticky = styled.div`
     position: sticky;
     top: 0;
     background-color: white;
-    height: calc(100vh - 64px);
+    height: calc(100vh - 68px);
+    overflow: auto;
+    border-right: 1px solid #DCDCDC;
 `
+
+const StyledSideBar = styled(SideBar)`
+    height: auto;
+    `
 
 export const Header = styled.div`
     margin: 15px 10px;
@@ -61,7 +65,7 @@ const Sidebar = () => {
     return (
         <Wrapper>
             <Sticky>
-                <SideBar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>
+                <StyledSideBar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>
                     <Content>
                         <ProjectDetails />
                         <Divider />
@@ -73,7 +77,7 @@ const Sidebar = () => {
                     <Footer>
                         <Toggle />
                     </Footer>
-                </SideBar>
+                </StyledSideBar>
             </Sticky>
         </Wrapper>
     )
