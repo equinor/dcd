@@ -17,6 +17,7 @@ import ExplorationWellCosts from "./Tables/ExplorationWellCosts"
 import OffshoreFacillityCosts from "./Tables/OffshoreFacilityCosts"
 import OpexCosts from "./Tables/OpexCosts"
 import TotalStudyCosts from "./Tables/TotalStudyCosts"
+import AggregatedTotals from "./Tables/AggregatedTotalsChart"
 import CaseCostSkeleton from "../../../LoadingSkeletons/CaseCostTabSkeleton"
 
 const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
@@ -47,6 +48,15 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
         explorationWellsGridRef,
     ], [studyGridRef, opexGridRef, cessationGridRef, capexGridRef, developmentWellsGridRef, explorationWellsGridRef])
 
+    const barColors = {
+        studyColor: "#004F55",
+        opexColor: "#007079",
+        cessationColor: "#97CACE",
+        offshoreFacilityColor: "#C3F3D2",
+        developmentWellColor: "#E6FAEC",
+        explorationWellColor: "#FF7D7D",
+        totalIncomeColor: "#9F9F9F",
+    }
     const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
         ["apiData", { projectId, caseId }],
         () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
@@ -97,6 +107,11 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 apiData.countryOfficeCost,
                 apiData.gAndGAdminCost,
                 apiData.gAndGAdminCostOverride,
+                apiData.historicCostCostProfile,
+                apiData.onshoreRelatedOPEXCostProfile,
+                apiData.additionalOPEXCostProfile,
+                apiData.appraisalWellCostProfile,
+                apiData.sidetrackCostProfile,
             ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
             setYearRangeSetFromProfiles(true)
         }
@@ -120,6 +135,21 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 surfData={apiData.surf as Components.Schemas.SurfWithProfilesDto}
                 addEdit={addEdit}
             />
+            <Grid item xs={12}>
+                <AggregatedTotals
+                    apiData={apiData}
+                    barColors={[
+                        barColors.studyColor,
+                        barColors.opexColor,
+                        barColors.cessationColor,
+                        barColors.developmentWellColor,
+                        barColors.explorationWellColor,
+                        barColors.totalIncomeColor]}
+                    enableLegend
+                    tableYears={tableYears}
+                />
+            </Grid>
+
             <Grid item xs={12}>
                 <TotalStudyCosts
                     tableYears={tableYears}

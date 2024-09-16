@@ -5,5 +5,5 @@ namespace api.Services;
 
 public interface ICaseWithAssetsService
 {
-    Task<CaseWithAssetsDto> GetCaseWithAssets(Guid projectId, Guid caseId);
+    Task<CaseWithAssetsDto> GetCaseWithAssetsNoTracking(Guid projectId, Guid caseId);
 }
