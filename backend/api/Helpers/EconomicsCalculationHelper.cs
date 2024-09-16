@@ -51,7 +51,7 @@ namespace api.Helpers
             _surfRepository = surfRepository;
             _topsideRepository = topsideRepository;
             _transportRepository = transportRepository;
-            _wellProjectRepository = wellProjectRepository; 
+            _wellProjectRepository = wellProjectRepository;
             _co2IntensityTotalService = co2IntensityTotalService;
             _projectService = projectService;
             _substructureTimeSeriesRepository = substructureTimeSeriesRepository;
@@ -59,16 +59,16 @@ namespace api.Helpers
 
         public TimeSeries<double> CalculateIncome(DrainageStrategy drainageStrategy, Project project)
         {
-            var oilPrice = project.OilPrice;
-            var gasPrice = project.GasPrice;
-            var exchangeRate = project.ExchangeRateNOKToUSD;
+            var oilPrice = project.OilPriceUSD;
+            var gasPrice = project.GasPriceNOK;
             var cubicMetersToBarrelsFactor = 6.29;
-            var million = 1E6;
+            var exchangeRateUSDToNOK = project.ExchangeRateUSDToNOK;
+            var exchangeRateNOKToUSD = 1 / exchangeRateUSDToNOK;
 
             var oilProfile = drainageStrategy.ProductionProfileOil?.Values ?? Array.Empty<double>();
             var additionalOilProfile = drainageStrategy.AdditionalProductionProfileOil?.Values ?? Array.Empty<double>();
 
-            var totalOilProduction = TimeSeriesCost.MergeCostProfiles(
+            var totalOilProductionInMegaCubics = TimeSeriesCost.MergeCostProfiles(
                 new TimeSeries<double>
                 {
                     StartYear = drainageStrategy.ProductionProfileOil?.StartYear ?? 0,
@@ -82,18 +82,18 @@ namespace api.Helpers
             );
 
             // Convert oil production from million sm³ to barrels in millions
-            var oilProductionInMillionsOfBarrels = totalOilProduction.Values.Select(v => v * cubicMetersToBarrelsFactor / million).ToArray();
+            var oilProductionInMillionsOfBarrels = totalOilProductionInMegaCubics.Values.Select(v => v * cubicMetersToBarrelsFactor).ToArray(); //originalt del på 1 mill
 
             var oilIncome = new TimeSeries<double>
             {
-                StartYear = totalOilProduction.StartYear,
-                Values = oilProductionInMillionsOfBarrels.Select(v => v * oilPrice).ToArray(),
+                StartYear = totalOilProductionInMegaCubics.StartYear,
+                Values = oilProductionInMillionsOfBarrels.Select(v => v * oilPrice * exchangeRateUSDToNOK).ToArray(),
             };
 
             var gasProfile = drainageStrategy.ProductionProfileGas?.Values ?? Array.Empty<double>();
             var additionalGasProfile = drainageStrategy.AdditionalProductionProfileGas?.Values ?? Array.Empty<double>();
 
-            var totalGasProduction = TimeSeriesCost.MergeCostProfiles(
+            var totalGasProductionInGigaCubics = TimeSeriesCost.MergeCostProfiles(
                 new TimeSeries<double>
                 {
                     StartYear = drainageStrategy.ProductionProfileGas?.StartYear ?? 0,
@@ -108,8 +108,8 @@ namespace api.Helpers
 
             var gasIncome = new TimeSeries<double>
             {
-                StartYear = totalGasProduction.StartYear,
-                Values = totalGasProduction.Values.Select(v => v * gasPrice / million).ToArray()
+                StartYear = totalGasProductionInGigaCubics.StartYear,
+                Values = totalGasProductionInGigaCubics.Values.Select(v => v * gasPrice * 1000).ToArray() //originally divide by 1 mill instead of multiply by 1000
             };
 
             var totalIncome = TimeSeriesCost.MergeCostProfiles(oilIncome, gasIncome);
