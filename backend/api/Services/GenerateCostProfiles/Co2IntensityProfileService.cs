@@ -141,6 +141,7 @@ public class Co2IntensityProfileService : ICo2IntensityProfileService
         return oil;
     }
 
+
     private static TimeSeries<double> GetGasProfile(DrainageStrategy drainageStrategy)
     {
         var billion = 1E9;
