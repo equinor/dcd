@@ -123,36 +123,43 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     }, [apiData, tableYears, project])
 
     const calculateIncome = () => {
-        const oilPrice = 75.0 // USD
-        const gasPrice = 0.3531 // USD
+        const oilPrice = project?.oilPriceUSD ?? 75.0
+        const gasPrice = project?.gasPriceNOK ?? 3
         const cubicMetersToBarrelsFactor = 6.29
-        const exchangeRateUSDToNOK = 10.0
+        const exchangeRateUSDToNOK = project?.exchangeRateUSDToNOK ?? 10.0
+        const exchangeRateNOKToUSD = 1 / exchangeRateUSDToNOK
 
-        const totalOilProduction = mergeTimeseries(apiData.productionProfileOil, apiData.additionalProductionProfileOil)
-        const oilProductionInMillionsOfBarrels = (totalOilProduction.values || []).map((v) => v * cubicMetersToBarrelsFactor)
+        const totalOilProductionInMegaCubics = mergeTimeseries(apiData.productionProfileOil, apiData.additionalProductionProfileOil)
+
+        const oilProductionInBarrels = (totalOilProductionInMegaCubics.values || []).map((v) => v * cubicMetersToBarrelsFactor)
+        // finally one should have multiplied oilProduction by 1 million because the oilProduction used in the calculation is in mega cubics.
+        // But because the OilIncome in the diagram is in MNOK/MUSD, we would divide by 1 million to get the correct oilincome
+        // We can therefore ignore these multiplications and divisions
 
         const oilIncome = {
             id: "",
-            startYear: totalOilProduction.startYear + new Date(apiData.case.dG4Date).getFullYear(),
-            values: oilProductionInMillionsOfBarrels.map((v) => v * oilPrice),
+            startYear: totalOilProductionInMegaCubics.startYear + new Date(apiData.case.dG4Date).getFullYear(),
+            values: oilProductionInBarrels.map((v) => v * oilPrice * exchangeRateUSDToNOK),
         }
 
-        const totalGasProduction = mergeTimeseries(apiData.productionProfileGas, apiData.additionalProductionProfileGas)
-
+        const totalGasProductionInGigaCubics = mergeTimeseries(apiData.productionProfileGas, apiData.additionalProductionProfileGas)
         const gasIncome = {
             id: "",
-            startYear: totalGasProduction.startYear + new Date(apiData.case.dG4Date).getFullYear(),
-            values: (totalGasProduction.values || []).map((v) => v * gasPrice),
+            startYear: totalGasProductionInGigaCubics.startYear + new Date(apiData.case.dG4Date).getFullYear(),
+            values: (totalGasProductionInGigaCubics.values || []).map((v) => v * gasPrice * 1000),
         }
+        // similar to previous comment, we should have multiplied the totalGasProduction value by 1 billion since its set in giga cubics, but since the diagram is in MNOK/MUSD
+        // We only need to multiply by 1000 to get the correct gas Income
 
-        let totalIncome = mergeTimeseries(oilIncome, gasIncome)
+        const totalIncome = mergeTimeseries(oilIncome, gasIncome)
 
-        if (project?.currency === 1 && totalIncome.values) {
-            totalIncome = {
-                ...totalIncome,
-                values: totalIncome.values.map((v) => v * exchangeRateUSDToNOK),
-            }
-        }
+        // Uncomment this to adjust income based on currency
+        // if (project?.currency === 2 && totalIncome.values) {
+        //     totalIncome = {
+        //         ...totalIncome,
+        //         values: totalIncome.values.map((v) => v * exchangeRateNOKToUSD),
+        //     }
+        // }
 
         return totalIncome
     }
@@ -202,10 +209,11 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     const barChartOptions: object = {
         data: chartData,
         title: {
-            text: "Annual Cost Profile",
+            text: "Annual Cost Profile", // (${project?.currency === 1 ? "MNOK" : "MUSD"})`, add this to dynamically show what MNOK or MUSD on graph based on project.currency
             fontSize: 24,
         },
-        subtitle: { text: unit },
+        subtitle: { text: "(MNOK)" ?? "" },
+
         padding: {
             top: 10,
             right: 10,
@@ -218,7 +226,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 type: "column",
                 xKey: "year",
                 yKey: key,
-                name: key,
+                yName: key,
                 fill: barColors[index],
                 stacked: true,
             })),
@@ -226,7 +234,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 type: "line",
                 xKey: "year",
                 yKey: "cumulativeSum",
-                name: "Total Income",
                 yName: "Total Income",
                 stroke: "red",
                 strokeWidth: 2,
@@ -247,7 +254,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             {
                 type: "number",
                 position: "left",
-                title: { text: `Cost (${project?.currency === 1 ? "MNOK" : "MUSD"})` },
+                title: { text: "Cost" },
             },
             {
                 type: "number",
@@ -275,9 +282,9 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         data: pieChartData,
         title: {
             text: "Cost Distribution",
-            fontSize: 24,
+            fontSize: 22,
         },
-        subtitle: { text: unit ?? "" },
+        subtitle: { text: "(MNOK)" ?? "" },
         padding: {
             top: 10,
             right: 10,
@@ -295,7 +302,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 strokes: ["white"],
                 innerLabels: [
                     {
-                        text: `${totalValue.toFixed(2)}`, // Display the total sum in the middle of the pie chart
+                        text: `${totalValue.toFixed(2)}`,
                         fontSize: 18,
                         color: "#000000",
                         margin: 0,

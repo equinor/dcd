@@ -17,7 +17,7 @@ import ExplorationWellCosts from "./Tables/ExplorationWellCosts"
 import OffshoreFacillityCosts from "./Tables/OffshoreFacilityCosts"
 import OpexCosts from "./Tables/OpexCosts"
 import TotalStudyCosts from "./Tables/TotalStudyCosts"
-import AggregatedTotals from "./Tables/AggregatedTotals"
+import AggregatedTotals from "./Tables/AggregatedTotalsChart"
 import CaseCostSkeleton from "../../../LoadingSkeletons/CaseCostTabSkeleton"
 
 const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
@@ -107,6 +107,11 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 apiData.countryOfficeCost,
                 apiData.gAndGAdminCost,
                 apiData.gAndGAdminCostOverride,
+                apiData.historicCostCostProfile,
+                apiData.onshoreRelatedOPEXCostProfile,
+                apiData.additionalOPEXCostProfile,
+                apiData.appraisalWellCostProfile,
+                apiData.sidetrackCostProfile,
             ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
             setYearRangeSetFromProfiles(true)
         }
