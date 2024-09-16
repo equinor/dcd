@@ -170,13 +170,6 @@ const Controls = () => {
                 <Grid item>
                     {editMode && caseId && <UndoControls />}
                 </Grid>
-                {editMode && !caseId && (
-                    <Grid item>
-                        <Button variant="outlined" onClick={() => setIsCanceling(true)}>
-                            Cancel
-                        </Button>
-                    </Grid>
-                )}
                 {!editMode && (
                     <Grid item>
                         <Typography variant="caption">
@@ -191,8 +184,8 @@ const Controls = () => {
 
                         {editMode && (
                             <>
-                                <Icon data={caseId ? visibility : save} />
-                                <span>{caseId ? "View" : "Save"}</span>
+                                <Icon data={visibility} />
+                                <span>View</span>
                             </>
                         )}
                         {!editMode && (

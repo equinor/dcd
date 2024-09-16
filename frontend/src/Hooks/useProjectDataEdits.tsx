@@ -95,10 +95,11 @@ const useProjectDataEdits = (): {
         const service = await GetProjectService()
         const serviceMethod = service.updateProject(
             projectId,
-            resourceObject as Components.Schemas.UpdateProjectDto,
+            resourceObject as Components.Schemas.ProjectWithAssetsDto,
         )
 
         try {
+            console.log("updating project")
             return await mutation.mutateAsync({
                 projectId,
                 serviceMethod,

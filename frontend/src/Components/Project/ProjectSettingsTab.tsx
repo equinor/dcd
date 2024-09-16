@@ -7,6 +7,7 @@ import { useProjectContext } from "../../Context/ProjectContext"
 import InputSwitcher from "../Input/Components/InputSwitcher"
 import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
 import useProjectDataEdits from "../../Hooks/useProjectDataEdits"
+import { useAppContext } from "../../Context/AppContext"
 
 const ProjectSettingsTab = () => {
     const { project, projectEdited, setProjectEdited } = useProjectContext()
@@ -14,6 +15,7 @@ const ProjectSettingsTab = () => {
     const [classification, setClassification] = useState<number | undefined>(undefined)
     const [dummyRole, setDummyRole] = useState(0) // TODO: Get role from user
     const queryClient = useQueryClient()
+    const { editMode } = useAppContext()
 
     const { addProjectEdit } = useProjectDataEdits()
 
@@ -42,12 +44,14 @@ const ProjectSettingsTab = () => {
             const newProject: Components.Schemas.ProjectWithAssetsDto = { ...projectData }
             newProject.physicalUnit = newPhysicalUnit
 
+            console.log(newProject)
+
             addProjectEdit({
                 projectId: projectData.id,
                 newResourceObject: newProject,
             })
 
-            setProjectEdited(newProject)
+            // setProjectEdited(newProject)
         }
     }
 
@@ -70,6 +74,11 @@ const ProjectSettingsTab = () => {
         }
     }
 
+    const physicalUnitOptions = {
+        0: "SI",
+        1: "Oil field",
+    }
+
     if (!projectData) {
         return <div>Loading project data...</div>
     }
@@ -78,14 +87,14 @@ const ProjectSettingsTab = () => {
         <Grid container direction="column" spacing={2}>
             <Grid item>
                 <InputSwitcher
-                    value={projectData.physicalUnit === 0 ? "SI" : "Oil field"}
+                    value={physicalUnitOptions[projectData.physicalUnit]}
                     label="Physical unit"
                 >
                     <NativeSelect
                         id="physicalUnit"
                         label=""
                         onChange={handlePhysicalUnitChange}
-                        value={projectEdited ? projectEdited.physicalUnit : projectData.physicalUnit}
+                        value={projectData.physicalUnit}
                     >
                         <option key={0} value={0}>SI</option>
                         <option key={1} value={1}>Oil field</option>
