@@ -21,10 +21,6 @@ public class APIUpdateCaseDto : BaseUpdateCaseDto
     public double CapexFactorFEEDStudies { get; set; }
     public double NPV { get; set; }
     public double BreakEven { get; set; }
-    public double oilPrice { get; set; }
-    public double gasPrice { get; set; }
-    public double discountRate { get; set; }
-    public double exchangeRate { get; set; }
     public string? Host { get; set; }
 
     public DateTimeOffset DGADate { get; set; }

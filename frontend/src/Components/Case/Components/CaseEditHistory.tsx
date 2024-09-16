@@ -66,7 +66,6 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
 
     useEffect(() => {
         let timer: NodeJS.Timeout | undefined
-
         if (apiQueue.length > 0) {
             setIsSaving(true)
 
@@ -76,7 +75,7 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
 
             timer = setTimeout(() => {
                 processQueue()
-            }, 500)
+            }, 2000)
         } else {
             setIsSaving(false)
         }
