@@ -36,7 +36,7 @@ public class SubstructuresController : ControllerBase
         [FromRoute] Guid substructureId,
         [FromBody] APIUpdateSubstructureDto dto)
     {
-        return await _substructureService.UpdateSubstructure(caseId, substructureId, dto);
+        return await _substructureService.UpdateSubstructure(projectId, caseId, substructureId, dto);
     }
 
     [HttpPost("{substructureId}/cost-profile-override")]
@@ -46,7 +46,7 @@ public class SubstructuresController : ControllerBase
         [FromRoute] Guid substructureId,
         [FromBody] CreateSubstructureCostProfileOverrideDto dto)
     {
-        return await _substructureTimeSeriesService.CreateSubstructureCostProfileOverride(caseId, substructureId, dto);
+        return await _substructureTimeSeriesService.CreateSubstructureCostProfileOverride(projectId, caseId, substructureId, dto);
     }
 
     [HttpPut("{substructureId}/cost-profile-override/{costProfileId}")]
@@ -57,6 +57,6 @@ public class SubstructuresController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateSubstructureCostProfileOverrideDto dto)
     {
-        return await _substructureTimeSeriesService.UpdateSubstructureCostProfileOverride(caseId, substructureId, costProfileId, dto);
+        return await _substructureTimeSeriesService.UpdateSubstructureCostProfileOverride(projectId, caseId, substructureId, costProfileId, dto);
     }
 }

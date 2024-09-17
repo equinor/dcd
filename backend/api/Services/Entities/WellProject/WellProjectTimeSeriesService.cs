@@ -15,6 +15,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
 {
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
+    private readonly IProjectAccessService _projectAccessService;
     private readonly ILogger<WellProjectService> _logger;
     private readonly IMapper _mapper;
     private readonly IWellProjectTimeSeriesRepository _repository;
@@ -30,7 +31,8 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
         IWellProjectTimeSeriesRepository repository,
         IWellProjectRepository wellProjectRepository,
         ICaseRepository caseRepository,
-        IMapperService mapperService
+        IMapperService mapperService,
+        IProjectAccessService projectAccessService
         )
     {
         _context = context;
@@ -41,6 +43,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
         _wellProjectRepository = wellProjectRepository;
         _caseRepository = caseRepository;
         _mapperService = mapperService;
+        _projectAccessService = projectAccessService;
     }
 
     public async Task<OilProducerCostProfileOverrideDto> UpdateOilProducerCostProfileOverride(
@@ -203,6 +206,9 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
         var existingProfile = await getProfile(profileId)
             ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
 
+        // Need to verify that the project from the URL is the same as the project of the exploration
+        await _projectAccessService.ProjectExists<WellProject>(projectId, existingProfile.WellProject.Id);
+
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, wellProjectId);
 
         try
@@ -233,6 +239,9 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
         where TDto : class
         where TCreateDto : class
     {
+        // Need to verify that the project from the URL is the same as the project of the exploration
+        await _projectAccessService.ProjectExists<Exploration>(projectId, wellProjectId);
+
         var wellProject = await _wellProjectRepository.GetWellProject(wellProjectId)
             ?? throw new NotFoundInDBException($"Well project with id {wellProjectId} not found.");
 

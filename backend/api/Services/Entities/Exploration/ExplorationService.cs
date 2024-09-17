@@ -159,6 +159,9 @@ public class ExplorationService : IExplorationService
         CreateDrillingScheduleDto updatedExplorationWellDto
     )
     {
+        // Need to verify that the project from the URL is the same as the project of the exploration
+        await _projectAccessService.ProjectExists<Exploration>(projectId, explorationId);
+
         var existingExploration = await _repository.GetExploration(explorationId)
             ?? throw new NotFoundInDBException($"Well project with {explorationId} not found.");
 

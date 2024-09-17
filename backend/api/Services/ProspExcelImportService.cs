@@ -260,8 +260,8 @@ public class ProspExcelImportService
             PeakElectricityImported = peakElectricityImported,
         };
 
-        await _topsideService.UpdateTopside(sourceCaseId, topsideLink, updateTopsideDto);
-        await _topsideTimeSeriesService.AddOrUpdateTopsideCostProfile(sourceCaseId, topsideLink, costProfile);
+        await _topsideService.UpdateTopside(projectId, sourceCaseId, topsideLink, updateTopsideDto);
+        await _topsideTimeSeriesService.AddOrUpdateTopsideCostProfile(projectId, sourceCaseId, topsideLink, costProfile);
     }
 
     private async Task ImportSubstructure(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
@@ -307,8 +307,8 @@ public class ProspExcelImportService
             CostYear = costYear,
         };
 
-        await _substructureService.UpdateSubstructure(sourceCaseId, substructureLink, updateSubstructureDto);
-        await _substructureTimeSeriesService.AddOrUpdateSubstructureCostProfile(sourceCaseId, substructureLink, costProfile);
+        await _substructureService.UpdateSubstructure(projectId, sourceCaseId, substructureLink, updateSubstructureDto);
+        await _substructureTimeSeriesService.AddOrUpdateSubstructureCostProfile(projectId, sourceCaseId, substructureLink, costProfile);
     }
 
     private async Task ImportTransport(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
@@ -475,8 +475,8 @@ public class ProspExcelImportService
         var costProfileDto = new UpdateTopsideCostProfileDto();
 
 
-        await _topsideService.UpdateTopside(caseItem.Id, topsideLink, dto);
-        await _topsideTimeSeriesService.AddOrUpdateTopsideCostProfile(caseItem.Id, topsideLink, costProfileDto);
+        await _topsideService.UpdateTopside(caseItem.ProjectId, caseItem.Id, topsideLink, dto);
+        await _topsideTimeSeriesService.AddOrUpdateTopsideCostProfile(caseItem.ProjectId, caseItem.Id, topsideLink, costProfileDto);
     }
 
     private async Task ClearImportedSubstructure(Case caseItem)
@@ -489,8 +489,8 @@ public class ProspExcelImportService
 
         var costProfileDto = new UpdateSubstructureCostProfileDto();
 
-        await _substructureService.UpdateSubstructure(caseItem.Id, substructureLink, dto);
-        await _substructureTimeSeriesService.AddOrUpdateSubstructureCostProfile(caseItem.Id, substructureLink, costProfileDto);
+        await _substructureService.UpdateSubstructure(caseItem.ProjectId, caseItem.Id, substructureLink, dto);
+        await _substructureTimeSeriesService.AddOrUpdateSubstructureCostProfile(caseItem.ProjectId, caseItem.Id, substructureLink, costProfileDto);
     }
 
     private async Task ClearImportedTransport(Case caseItem)

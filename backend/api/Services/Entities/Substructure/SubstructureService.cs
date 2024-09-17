@@ -15,6 +15,7 @@ public class SubstructureService : ISubstructureService
 {
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
+    private readonly IProjectAccessService _projectAccessService;
     private readonly ILogger<SubstructureService> _logger;
     private readonly IMapper _mapper;
     private readonly ISubstructureRepository _repository;
@@ -28,7 +29,8 @@ public class SubstructureService : ISubstructureService
         IMapper mapper,
         ISubstructureRepository substructureRepository,
         ICaseRepository caseRepository,
-        IMapperService mapperService
+        IMapperService mapperService,
+        IProjectAccessService projectAccessService
         )
     {
         _context = context;
@@ -38,6 +40,7 @@ public class SubstructureService : ISubstructureService
         _repository = substructureRepository;
         _caseRepository = caseRepository;
         _mapperService = mapperService;
+        _projectAccessService = projectAccessService;
     }
 
     public async Task<Substructure> CreateSubstructure(Guid projectId, Guid sourceCaseId, CreateSubstructureDto substructureDto)
@@ -81,12 +84,16 @@ public class SubstructureService : ISubstructureService
     }
 
     public async Task<SubstructureDto> UpdateSubstructure<TDto>(
+        Guid projectId,
         Guid caseId,
         Guid substructureId,
         TDto updatedSubstructureDto
     )
         where TDto : BaseUpdateSubstructureDto
     {
+        // Need to verify that the project from the URL is the same as the project of the exploration
+        await _projectAccessService.ProjectExists<Substructure>(projectId, substructureId);
+
         var existingSubstructure = await _repository.GetSubstructure(substructureId)
             ?? throw new NotFoundInDBException($"Substructure with id {substructureId} not found.");
 

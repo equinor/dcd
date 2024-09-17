@@ -15,6 +15,7 @@ public class WellProjectService : IWellProjectService
 {
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
+    private readonly IProjectAccessService _projectAccessService;
     private readonly ILogger<WellProjectService> _logger;
     private readonly IMapper _mapper;
     private readonly IWellProjectRepository _repository;
@@ -28,7 +29,8 @@ public class WellProjectService : IWellProjectService
         IMapper mapper,
         IWellProjectRepository repository,
         ICaseRepository caseRepository,
-        IMapperService mapperService
+        IMapperService mapperService,
+        IProjectAccessService projectAccessService
         )
     {
         _context = context;
@@ -38,6 +40,7 @@ public class WellProjectService : IWellProjectService
         _repository = repository;
         _caseRepository = caseRepository;
         _mapperService = mapperService;
+        _projectAccessService = projectAccessService;
     }
 
     public async Task<WellProject> CreateWellProject(
@@ -96,15 +99,16 @@ public class WellProjectService : IWellProjectService
         UpdateWellProjectDto updatedWellProjectDto
     )
     {
+        // Need to verify that the project from the URL is the same as the project of the exploration
+        await _projectAccessService.ProjectExists<WellProject>(projectId, wellProjectId);
+
         var existingWellProject = await _repository.GetWellProject(wellProjectId)
             ?? throw new NotFoundInDBException($"Well project with id {wellProjectId} not found.");
 
         _mapperService.MapToEntity(updatedWellProjectDto, existingWellProject, wellProjectId);
 
-        // WellProject updatedWellProject;
         try
         {
-            // updatedWellProject = _repository.UpdateWellProject(existingWellProject);
             await _caseRepository.UpdateModifyTime(caseId);
             await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
@@ -127,15 +131,21 @@ public class WellProjectService : IWellProjectService
         UpdateDrillingScheduleDto updatedWellProjectWellDto
     )
     {
-        var existingDrillingSchedule = await _repository.GetWellProjectWellDrillingSchedule(drillingScheduleId)
+        var existingWellProject = await _repository.GetWellProjectWithDrillingSchedule(drillingScheduleId)
+            ?? throw new NotFoundInDBException($"No wellproject connected to {drillingScheduleId} found.");
+
+        // Need to verify that the project from the URL is the same as the project of the exploration
+        await _projectAccessService.ProjectExists<WellProject>(projectId, existingWellProject.Id);
+
+        var existingDrillingSchedule = existingWellProject.WellProjectWells?.FirstOrDefault(w => w.WellId == wellId)?.DrillingSchedule
             ?? throw new NotFoundInDBException($"Drilling schedule with {drillingScheduleId} not found.");
 
         _mapperService.MapToEntity(updatedWellProjectWellDto, existingDrillingSchedule, drillingScheduleId);
 
-        DrillingSchedule updatedDrillingSchedule;
+        // DrillingSchedule updatedDrillingSchedule;
         try
         {
-            updatedDrillingSchedule = _repository.UpdateWellProjectWellDrillingSchedule(existingDrillingSchedule);
+            // updatedDrillingSchedule = _repository.UpdateWellProjectWellDrillingSchedule(existingDrillingSchedule);
             await _caseRepository.UpdateModifyTime(caseId);
             await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
@@ -145,7 +155,7 @@ public class WellProjectService : IWellProjectService
             throw;
         }
 
-        var dto = _mapperService.MapToDto<DrillingSchedule, DrillingScheduleDto>(updatedDrillingSchedule, drillingScheduleId);
+        var dto = _mapperService.MapToDto<DrillingSchedule, DrillingScheduleDto>(existingDrillingSchedule, drillingScheduleId);
         return dto;
     }
 
@@ -157,6 +167,9 @@ public class WellProjectService : IWellProjectService
         CreateDrillingScheduleDto updatedWellProjectWellDto
     )
     {
+        // Need to verify that the project from the URL is the same as the project of the exploration
+        await _projectAccessService.ProjectExists<WellProject>(projectId, wellProjectId);
+
         var existingWellProject = await _repository.GetWellProject(wellProjectId)
             ?? throw new NotFoundInDBException($"Well project with {wellProjectId} not found.");
 

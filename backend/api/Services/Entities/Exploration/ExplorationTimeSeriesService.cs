@@ -168,7 +168,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
             ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the exploration
-        await _projectAccessService.ProjectExists<Exploration>(projectId, existingProfile.Exploration.ProjectId);
+        await _projectAccessService.ProjectExists<Exploration>(projectId, existingProfile.Exploration.Id);
 
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, explorationId);
 
@@ -202,11 +202,11 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
             where TDto : class
             where TCreateDto : class
     {
+        // Need to verify that the project from the URL is the same as the project of the exploration
+        await _projectAccessService.ProjectExists<Exploration>(projectId, explorationId);
+
         var exploration = await _explorationRepository.GetExploration(explorationId)
             ?? throw new NotFoundInDBException($"Exploration with id {explorationId} not found.");
-
-        // Need to verify that the project from the URL is the same as the project of the exploration
-        await _projectAccessService.ProjectExists<Exploration>(projectId, exploration.ProjectId);
 
         var resourceHasProfile = await _explorationRepository.ExplorationHasProfile(explorationId, profileName);
 

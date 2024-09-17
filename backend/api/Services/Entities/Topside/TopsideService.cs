@@ -14,6 +14,7 @@ public class TopsideService : ITopsideService
 {
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
+    private readonly IProjectAccessService _projectAccessService;
     private readonly ILogger<TopsideService> _logger;
     private readonly IMapper _mapper;
     private readonly ITopsideRepository _repository;
@@ -27,7 +28,8 @@ public class TopsideService : ITopsideService
         IMapper mapper,
         ITopsideRepository repository,
         ICaseRepository caseRepository,
-        IMapperService mapperService
+        IMapperService mapperService,
+        IProjectAccessService projectAccessService
         )
     {
         _context = context;
@@ -37,6 +39,7 @@ public class TopsideService : ITopsideService
         _repository = repository;
         _caseRepository = caseRepository;
         _mapperService = mapperService;
+        _projectAccessService = projectAccessService;
     }
 
     public async Task<Topside> CreateTopside(Guid projectId, Guid sourceCaseId, CreateTopsideDto topsideDto)
@@ -82,12 +85,16 @@ public class TopsideService : ITopsideService
     }
 
     public async Task<TopsideDto> UpdateTopside<TDto>(
+        Guid projectId,
         Guid caseId,
         Guid topsideId,
         TDto updatedTopsideDto
     )
         where TDto : BaseUpdateTopsideDto
     {
+        // Need to verify that the project from the URL is the same as the project of the exploration
+        await _projectAccessService.ProjectExists<Topside>(projectId, topsideId);
+
         var existingTopside = await _repository.GetTopside(topsideId)
             ?? throw new NotFoundInDBException($"Topside with id {topsideId} not found.");
 
