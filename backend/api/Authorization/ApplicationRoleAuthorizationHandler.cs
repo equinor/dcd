@@ -1,25 +1,37 @@
 using api.Authorization.Extensions;
+using Microsoft.Extensions.Caching.Memory;
+using api.Models;
+using api.Repositories;
 
 using Microsoft.AspNetCore.Authorization;
+using api.Controllers;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using System.Reflection;
 
 namespace api.Authorization;
 
 public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<ApplicationRoleRequirement>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IProjectRepository _projectRepository;
+    private readonly IMemoryCache _cache;
     private readonly ILogger<ApplicationRoleAuthorizationHandler> _logger;
 
 
 
     public ApplicationRoleAuthorizationHandler(
+        IProjectRepository projectRepository,
         IHttpContextAccessor httpContextAccessor,
-        ILogger<ApplicationRoleAuthorizationHandler> logger
+        ILogger<ApplicationRoleAuthorizationHandler> logger,
+        IMemoryCache cache
         )
     {
         _httpContextAccessor = httpContextAccessor;
         _logger = logger;
+        _projectRepository = projectRepository;
+        _cache = cache;
     }
-    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ApplicationRoleRequirement requirement)
+    protected override async Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context, ApplicationRoleRequirement requirement)
     {
         var requestPath = _httpContextAccessor.HttpContext?.Request.Path;
 
@@ -37,7 +49,7 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         }
 
         var userRoles = context.User.AssignedApplicationRoles();
-        if (!IsAuthorized(context, requirement, userRoles))
+        if (!await IsAuthorized(context, requirement, userRoles))
         {
             HandleUnauthorizedRequest(context, requestPath, requirement.Roles, userRoles);
             return Task.CompletedTask;
@@ -53,7 +65,7 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         return requestPath?.StartsWithSegments(swaggerPath) == true;
     }
 
-    private static bool IsAuthorized(AuthorizationHandlerContext context, ApplicationRoleRequirement roleRequirement, List<ApplicationRole> userRoles)
+    private async Task<bool> IsAuthorized(AuthorizationHandlerContext context, ApplicationRoleRequirement roleRequirement, List<ApplicationRole> userRoles)
     {
         var userHasRequiredRole = userRoles.Any(role => roleRequirement.Roles.Contains(role));
 
@@ -62,9 +74,58 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
 
         var azureUniqueId = fusionIdentity?.Profile?.AzureUniqueId ??
             throw new InvalidOperationException("AzureUniqueId not found in user profile");
-        Console.WriteLine("azureUniqueId: " + azureUniqueId);
+
+        var project = await GetCurrentProject(context);
+
+        var actionType = GetActionTypeFromEndpoint();
+
+        Console.WriteLine("Action type: " + actionType);
 
         return userHasRequiredRole;
+    }
+
+    private ActionType? GetActionTypeFromEndpoint()
+    {
+        var endpoint = _httpContextAccessor.HttpContext?.GetEndpoint();
+        if (endpoint == null) { return null; }
+
+        var controllerActionDescriptor = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>();
+        if (controllerActionDescriptor == null) { return null; }
+
+        var actionTypeAttribute = controllerActionDescriptor.MethodInfo.GetCustomAttribute<ActionTypeAttribute>();
+
+        actionTypeAttribute ??= controllerActionDescriptor.ControllerTypeInfo.GetCustomAttribute<ActionTypeAttribute>();
+
+        return actionTypeAttribute?.ActionType;
+    }
+
+    private async Task<Project?> GetCurrentProject(AuthorizationHandlerContext context)
+    {
+        var projectId = _httpContextAccessor.HttpContext?.Request.RouteValues["projectId"];
+        if (projectId == null)
+        {
+            return null;
+        }
+
+        if (!Guid.TryParse(projectId.ToString(), out Guid projectIdGuid))
+        {
+            return null;
+        }
+
+        // Check if the project exists in the cache
+        if (!_cache.TryGetValue(projectIdGuid, out Project? project))
+        {
+            // Get the project from the database
+            project = await _projectRepository.GetProjectByIdOrExternalId(projectIdGuid);
+
+            // Store the project in the cache
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                .SetSlidingExpiration(TimeSpan.FromMinutes(5));
+
+            _cache.Set(projectIdGuid, project, cacheEntryOptions);
+        }
+
+        return project;
     }
 
     private void HandleUnauthorizedRequest(

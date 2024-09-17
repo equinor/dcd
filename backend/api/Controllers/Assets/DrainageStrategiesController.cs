@@ -15,6 +15,7 @@ namespace api.Controllers;
     ApplicationRole.Admin,
     ApplicationRole.User
 )]
+[ActionType(ActionType.Edit)]
 public class DrainageStrategiesController : ControllerBase
 {
     private readonly IDrainageStrategyService _drainageStrategyService;

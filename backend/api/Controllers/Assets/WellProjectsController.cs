@@ -15,6 +15,7 @@ namespace api.Controllers;
     ApplicationRole.Admin,
     ApplicationRole.User
 )]
+[ActionType(ActionType.Edit)]
 public class WellProjectsController : ControllerBase
 {
     private readonly IWellProjectService _wellProjectService;

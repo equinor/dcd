@@ -15,6 +15,7 @@ namespace api.Controllers;
     ApplicationRole.Admin,
     ApplicationRole.User
 )]
+[ActionType(ActionType.Edit)]
 public class SubstructuresController : ControllerBase
 {
     private readonly ISubstructureService _substructureService;

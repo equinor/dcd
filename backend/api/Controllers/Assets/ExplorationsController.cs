@@ -16,6 +16,7 @@ namespace api.Controllers;
     ApplicationRole.ReadOnly,
     ApplicationRole.User
 )]
+[ActionType(ActionType.Edit)]
 public class ExplorationsController : ControllerBase
 {
     private readonly IExplorationService _explorationService;

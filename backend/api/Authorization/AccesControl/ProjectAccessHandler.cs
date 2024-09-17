@@ -26,8 +26,6 @@ public class ProjectAccessHandler : AuthorizationHandler<ProjectAccessRequiremen
 
     protected override async Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context, ProjectAccessRequirement requirement)
     {
-        // var userGroups = GetUserGroups(context.User);
-
         var project = await GetCurrentProject(context);
 
         bool isProjectMember = CheckUserMembershipInProject(context.User, project);
@@ -42,16 +40,6 @@ public class ProjectAccessHandler : AuthorizationHandler<ProjectAccessRequiremen
         }
         return Task.CompletedTask;
     }
-
-    // private List<string> GetUserGroups(ClaimsPrincipal user)
-    // {
-    //     var groupSids = user.Claims
-    //                         .Where(c => c.Type == ClaimTypes.GroupSid)
-    //                         .Select(c => c.Value)
-    //                         .ToList();
-
-    //     return groupSids;
-    // }
 
     private async Task<Project?> GetCurrentProject(AuthorizationHandlerContext context)
     {

@@ -9,7 +9,7 @@ using Microsoft.Identity.Web.Resource;
 namespace api.Controllers;
 
 [ApiController]
-[Route("projects/{projectId}/cases/{caseId}/[controller]")]
+[Route("projects/{projectId}/cases/{caseId}/case-with-assets")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
     ApplicationRole.Admin,
@@ -28,6 +28,7 @@ public class CaseWithAssetsController : ControllerBase
     }
 
     [HttpGet]
+    [ActionType(ActionType.Read)]
     public async Task<ActionResult<CaseWithAssetsDto>> GetCaseWithAssets(
         [FromRoute] Guid projectId,
         [FromRoute] Guid caseId

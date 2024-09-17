@@ -20,6 +20,7 @@ namespace api.Controllers;
     ApplicationRole.ReadOnly,
     ApplicationRole.User
 )]
+[ActionType(ActionType.Read)]
 public class CaseGeneratedProfileController : ControllerBase
 {
     private readonly ICo2IntensityProfileService _generateCo2IntensityProfile;

@@ -262,8 +262,8 @@ builder.Services.AddHostedService<RefreshProjectService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
 
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddSingleton<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
+builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
 
 builder.Services.Configure<IConfiguration>(builder.Configuration);

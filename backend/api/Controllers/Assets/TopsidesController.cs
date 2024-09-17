@@ -15,6 +15,7 @@ namespace api.Controllers;
     ApplicationRole.Admin,
     ApplicationRole.User
 )]
+[ActionType(ActionType.Edit)]
 public class TopsidesController : ControllerBase
 {
     private readonly ITopsideService _topsideService;

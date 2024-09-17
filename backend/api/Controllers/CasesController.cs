@@ -17,6 +17,7 @@ namespace api.Controllers;
     ApplicationRole.Admin,
     ApplicationRole.User
 )]
+[ActionType(ActionType.Edit)]
 public class CasesController : ControllerBase
 {
     private readonly ICaseService _caseService;
