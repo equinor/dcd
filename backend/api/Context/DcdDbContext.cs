@@ -896,12 +896,16 @@ public class DcdDbContext : DbContext
             .HasDefaultValue(8.0);
 
         modelBuilder.Entity<Project>()
-            .Property(p => p.OilPrice)
+            .Property(p => p.OilPriceUSD)
             .HasDefaultValue(75.0);
 
         modelBuilder.Entity<Project>()
-            .Property(p => p.GasPrice)
+            .Property(p => p.GasPriceNOK)
             .HasDefaultValue(3.0);
+
+        modelBuilder.Entity<Project>()
+            .Property(p => p.ExchangeRateUSDToNOK)
+            .HasDefaultValue(10);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

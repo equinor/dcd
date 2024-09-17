@@ -73,6 +73,14 @@ public class ProjectWithAssetsDto : IEquatable<ProjectWithAssetsDto>
     public double AverageDevelopmentDrillingDays { get; set; }
     [Required]
     public DateTimeOffset ModifyTime { get; set; }
+    [Required]
+    public double OilPriceUSD { get; set; }
+    [Required]
+    public double GasPriceNOK { get; set; }
+    [Required]
+    public double DiscountRate { get; set; }
+    [Required]
+    public double ExchangeRateUSDToNOK { get; set; }
 
     public bool Equals(ProjectWithAssetsDto? projectDto)
     {
