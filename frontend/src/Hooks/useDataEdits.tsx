@@ -41,6 +41,7 @@ const useDataEdits = (): {
     const {
         apiQueue,
         setApiQueue,
+        setIsSaving,
     } = useAppContext()
     const {
         caseEdits,
@@ -198,10 +199,7 @@ const useDataEdits = (): {
             return
         }
 
-        if (_.isEqual(newResourceObject, previousResourceObject)) {
-            console.log("No changes made")
-            return
-        }
+        if (_.isEqual(newResourceObject, previousResourceObject)) { return }
 
         const editIsForSameResourceName = (edit1: EditInstance, edit2: EditInstance) => edit1.resourceName === edit2.resourceName && edit1.caseId === edit2.caseId
         const editIsForSamePropertyKey = (edit1: EditInstance, edit2: EditInstance) => edit1.resourcePropertyKey === edit2.resourcePropertyKey
@@ -296,6 +294,7 @@ const useDataEdits = (): {
     const delay = (ms: number) => new Promise((resolve) => { setTimeout(resolve, ms) })
 
     const undoEdit = async () => {
+        setIsSaving(true)
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex(
             (edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams),
         )
@@ -355,6 +354,8 @@ const useDataEdits = (): {
                         resourceObject: editThatWillBeUndone.previousResourceObject as ResourceObject,
                         wellId: editThatWillBeUndone.wellId,
                         drillingScheduleId: editThatWillBeUndone.drillingScheduleId,
+                    }).then(() => {
+                        setIsSaving(false)
                     })
                 } catch (error) {
                     console.error(error)
@@ -364,6 +365,7 @@ const useDataEdits = (): {
     }
 
     const redoEdit = async () => {
+        setIsSaving(true)
         const currentEditIndex = caseEditsBelongingToCurrentCase.findIndex(
             (edit) => edit.uuid === getCurrentEditId(editIndexes, caseIdFromParams),
         )
@@ -414,6 +416,8 @@ const useDataEdits = (): {
                             resourceObject: lastEdit.newResourceObject as ResourceObject,
                             wellId: lastEdit.wellId,
                             drillingScheduleId: lastEdit.drillingScheduleId,
+                        }).then(() => {
+                            setIsSaving(false)
                         })
                     } catch (error) {
                         console.error(error)
@@ -466,6 +470,8 @@ const useDataEdits = (): {
                             resourceObject: updatedEdit.newResourceObject as ResourceObject,
                             wellId: updatedEdit.wellId,
                             drillingScheduleId: updatedEdit.drillingScheduleId,
+                        }).then(() => {
+                            setIsSaving(false)
                         })
                     } catch (error) {
                         console.error(error)
