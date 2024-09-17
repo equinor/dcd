@@ -82,6 +82,11 @@ const ProjectSettingsTab = () => {
         1: "Oil field",
     }
 
+    const currencyOptions = {
+        1: "NOK",
+        2: "USD",
+    }
+
     if (!projectData) {
         return <div>Loading project data...</div>
     }
@@ -96,27 +101,29 @@ const ProjectSettingsTab = () => {
                     <NativeSelect
                         id="physicalUnit"
                         label=""
-                        onChange={handlePhysicalUnitChange}
+                        onChange={(e) => handlePhysicalUnitChange(e)}
                         value={projectData.physicalUnit}
                     >
-                        <option key={0} value={0}>SI</option>
-                        <option key={1} value={1}>Oil field</option>
+                        {Object.entries(physicalUnitOptions).map(([key, val]) => (
+                            <option key={key} value={key}>{val}</option>
+                        ))}
                     </NativeSelect>
                 </InputSwitcher>
             </Grid>
             <Grid item>
                 <InputSwitcher
-                    value={projectData.currency === 1 ? "NOK" : "USD"}
+                    value={currencyOptions[projectData.currency]}
                     label="Currency"
                 >
                     <NativeSelect
                         id="currency"
                         label=""
-                        onChange={handleCurrencyChange}
+                        onChange={(e) => handleCurrencyChange(e)}
                         value={projectEdited ? projectEdited.currency : projectData.currency}
                     >
-                        <option key={1} value={1}>NOK</option>
-                        <option key={2} value={2}>USD</option>
+                        {Object.entries(currencyOptions).map(([key, val]) => (
+                            <option key={key} value={key}>{val}</option>
+                        ))}
                     </NativeSelect>
                 </InputSwitcher>
             </Grid>
