@@ -23,11 +23,7 @@ interface UpdateResourceParams {
 
 export const useSubmitToApi = () => {
     const queryClient = useQueryClient()
-    const {
-        setSnackBarMessage,
-        setIsCalculatingProductionOverrides,
-        setIsCalculatingTotalStudyCostOverrides,
-    } = useAppContext()
+    const { setSnackBarMessage, setIsCalculatingProductionOverrides, setIsCalculatingTotalStudyCostOverrides } = useAppContext()
 
     const mutation = useMutation(
         async ({ serviceMethod }: {
