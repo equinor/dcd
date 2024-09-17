@@ -32,7 +32,7 @@ interface AddEditParams {
     newDisplayValue?: string | number | undefined;
     // previousDisplayValue?: string | number | undefined;
     newResourceObject: ResourceObject;
-    // previousResourceObject: ResourceObject;
+    previousResourceObject: ResourceObject;
     // tabName?: string;
     // tableName?: string;
     // inputFieldId?: string;
@@ -124,15 +124,15 @@ const useProjectDataEdits = (): {
 
     const addProjectEdit = async ({
         projectId,
-        newDisplayValue,
+        // newDisplayValue,
         // previousDisplayValue,
         newResourceObject,
-        // previousResourceObject,
+        previousResourceObject,
     }: AddEditParams) => {
-        // if (_.isEqual(newResourceObject, previousResourceObject)) {
-        //     console.log("No changes made")
-        //     return
-        // }
+        if (_.isEqual(newResourceObject, previousResourceObject)) {
+            console.log("No changes made")
+            return
+        }
 
         // const insertedEditInstanceObject: EditInstance = {
         //     uuid: uuidv4(),

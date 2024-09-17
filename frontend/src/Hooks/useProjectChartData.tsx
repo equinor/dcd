@@ -54,8 +54,6 @@ export const useProjectChartData = () => {
     //     return <CaseProductionProfilesTabSkeleton />
     // }
 
-    console.log(projectData)
-
     const generateAllCharts = () => {
         const npvObject: object[] = []
         const breakEvenObject: object[] = []
@@ -63,8 +61,6 @@ export const useProjectChartData = () => {
         const investmentProfilesObject: object[] = []
         const totalCo2EmissionsObject: object[] = []
         const co2IntensityObject: object[] = []
-        console.log(projectData)
-        console.log(compareCasesTotals)
         if (compareCasesTotals !== undefined && projectData) {
             for (let i = 0; i < projectData.cases.length; i += 1) {
                 npvObject.push({

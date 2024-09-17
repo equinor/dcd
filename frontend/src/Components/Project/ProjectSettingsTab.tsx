@@ -49,11 +49,14 @@ const ProjectSettingsTab = () => {
             addProjectEdit({
                 projectId: projectData.id,
                 newResourceObject: newProject,
+                previousResourceObject: projectData,
             })
 
             // setProjectEdited(newProject)
         }
     }
+
+    console.log(projectData)
 
     const handleCurrencyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([1, 2].indexOf(Number(e.currentTarget.value)) !== -1 && projectData) {

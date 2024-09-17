@@ -108,16 +108,6 @@ const ProjectCompareCasesTab = () => {
         return <CaseProductionProfilesTabSkeleton />
     }
 
-    console.log(
-        rowData,
-        npvChartData,
-        breakEvenChartData,
-        productionProfilesChartData,
-        investmentProfilesChartData,
-        totalCo2EmissionsChartData,
-        co2IntensityChartData,
-    )
-
     return (
         <Grid container spacing={6}>
             <Grid item xs={12} container display="grid" gridTemplateColumns="auto auto">
