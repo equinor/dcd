@@ -14,6 +14,7 @@ public class TransportService : ITransportService
 {
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
+    private readonly IProjectAccessService _projectAccessService;
     private readonly ILogger<TransportService> _logger;
     private readonly IMapper _mapper;
     private readonly ICaseRepository _caseRepository;
@@ -27,7 +28,8 @@ public class TransportService : ITransportService
         IMapper mapper,
         ICaseRepository caseRepository,
         ITransportRepository transportRepository,
-        IMapperService mapperService
+        IMapperService mapperService,
+        IProjectAccessService projectAccessService
         )
     {
         _context = context;
@@ -37,6 +39,7 @@ public class TransportService : ITransportService
         _caseRepository = caseRepository;
         _repository = transportRepository;
         _mapperService = mapperService;
+        _projectAccessService = projectAccessService;
     }
 
     public async Task<Transport> CreateTransport(Guid projectId, Guid sourceCaseId, CreateTransportDto transportDto)
@@ -80,9 +83,12 @@ public class TransportService : ITransportService
         return transport;
     }
 
-    public async Task<TransportDto> UpdateTransport<TDto>(Guid caseId, Guid transportId, TDto updatedTransportDto)
+    public async Task<TransportDto> UpdateTransport<TDto>(Guid projectId, Guid caseId, Guid transportId, TDto updatedTransportDto)
         where TDto : BaseUpdateTransportDto
     {
+        // Need to verify that the project from the URL is the same as the project of the exploration
+        await _projectAccessService.ProjectExists<Transport>(projectId, transportId);
+
         var existing = await _repository.GetTransport(transportId)
             ?? throw new NotFoundInDBException($"Transport with id {transportId} not found.");
 

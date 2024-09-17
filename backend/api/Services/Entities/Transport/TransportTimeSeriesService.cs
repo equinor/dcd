@@ -12,42 +12,40 @@ namespace api.Services;
 
 public class TransportTimeSeriesService : ITransportTimeSeriesService
 {
-    private readonly DcdDbContext _context;
-    private readonly IProjectService _projectService;
     private readonly ILogger<TransportService> _logger;
-    private readonly IMapper _mapper;
+    private readonly IProjectAccessService _projectAccessService;
     private readonly ICaseRepository _caseRepository;
     private readonly ITransportRepository _transportRepository;
     private readonly ITransportTimeSeriesRepository _repository;
     private readonly IMapperService _mapperService;
 
     public TransportTimeSeriesService(
-        DcdDbContext context,
-        IProjectService projectService,
         ILoggerFactory loggerFactory,
-        IMapper mapper,
         ICaseRepository caseRepository,
         ITransportRepository transportRepository,
         ITransportTimeSeriesRepository repository,
-        IMapperService mapperService
+        IMapperService mapperService,
+        IProjectAccessService projectAccessService
         )
     {
-        _context = context;
-        _projectService = projectService;
         _logger = loggerFactory.CreateLogger<TransportService>();
-        _mapper = mapper;
         _caseRepository = caseRepository;
         _repository = repository;
         _transportRepository = transportRepository;
         _mapperService = mapperService;
+        _projectAccessService = projectAccessService;
     }
 
     public async Task<TransportCostProfileOverrideDto> CreateTransportCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid transportId,
         CreateTransportCostProfileOverrideDto dto
     )
     {
+        // Need to verify that the project from the URL is the same as the project of the exploration
+        await _projectAccessService.ProjectExists<Transport>(projectId, transportId);
+
         var transport = await _transportRepository.GetTransport(transportId)
             ?? throw new NotFoundInDBException($"Transport with id {transportId} not found.");
 
@@ -83,12 +81,14 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
     }
 
     public async Task<TransportCostProfileOverrideDto> UpdateTransportCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid transportId,
         Guid costProfileId,
         UpdateTransportCostProfileOverrideDto dto)
     {
         return await UpdateTransportTimeSeries<TransportCostProfileOverride, TransportCostProfileOverrideDto, UpdateTransportCostProfileOverrideDto>(
+            projectId,
             caseId,
             transportId,
             costProfileId,
@@ -99,6 +99,7 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
     }
 
     public async Task<TransportCostProfileDto> AddOrUpdateTransportCostProfile(
+        Guid projectId,
         Guid caseId,
         Guid transportId,
         UpdateTransportCostProfileDto dto
@@ -109,13 +110,14 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
 
         if (transport.CostProfile != null)
         {
-            return await UpdateTransportCostProfile(caseId, transportId, transport.CostProfile.Id, dto);
+            return await UpdateTransportCostProfile(projectId, caseId, transportId, transport.CostProfile.Id, dto);
         }
 
         return await CreateTransportCostProfile(caseId, transportId, dto, transport);
     }
 
     private async Task<TransportCostProfileDto> UpdateTransportCostProfile(
+        Guid projectId,
         Guid caseId,
         Guid transportId,
         Guid profileId,
@@ -123,6 +125,7 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
     )
     {
         return await UpdateTransportTimeSeries<TransportCostProfile, TransportCostProfileDto, UpdateTransportCostProfileDto>(
+            projectId,
             caseId,
             transportId,
             profileId,
@@ -163,6 +166,7 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
     }
 
     private async Task<TDto> UpdateTransportTimeSeries<TProfile, TDto, TUpdateDto>(
+        Guid projectId,
         Guid caseId,
         Guid transportId,
         Guid profileId,
@@ -170,19 +174,20 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
         Func<Guid, Task<TProfile?>> getProfile,
         Func<TProfile, TProfile> updateProfile
     )
-        where TProfile : class
+        where TProfile : class, ITransportTimeSeries
         where TDto : class
         where TUpdateDto : class
     {
         var existingProfile = await getProfile(profileId)
             ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
 
+        // Need to verify that the project from the URL is the same as the project of the exploration
+        await _projectAccessService.ProjectExists<Transport>(projectId, existingProfile.Transport.Id);
+
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, transportId);
 
-        // TProfile updatedProfile;
         try
         {
-            // updatedProfile = updateProfile(existingProfile);
             await _caseRepository.UpdateModifyTime(caseId);
             await _repository.SaveChangesAndRecalculateAsync(caseId);
         }

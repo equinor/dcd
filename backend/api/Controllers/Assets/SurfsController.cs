@@ -36,7 +36,7 @@ public class SurfsController : ControllerBase
         [FromRoute] Guid surfId,
         [FromBody] APIUpdateSurfDto dto)
     {
-        return await _surfService.UpdateSurf(caseId, surfId, dto);
+        return await _surfService.UpdateSurf(projectId, caseId, surfId, dto);
     }
 
     [HttpPost("{surfId}/cost-profile-override/")]
@@ -46,7 +46,7 @@ public class SurfsController : ControllerBase
         [FromRoute] Guid surfId,
         [FromBody] CreateSurfCostProfileOverrideDto dto)
     {
-        return await _surfTimeSeriesService.CreateSurfCostProfileOverride(caseId, surfId, dto);
+        return await _surfTimeSeriesService.CreateSurfCostProfileOverride(projectId, caseId, surfId, dto);
     }
 
     [HttpPut("{surfId}/cost-profile-override/{costProfileId}")]
@@ -57,6 +57,6 @@ public class SurfsController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateSurfCostProfileOverrideDto dto)
     {
-        return await _surfTimeSeriesService.UpdateSurfCostProfileOverride(caseId, surfId, costProfileId, dto);
+        return await _surfTimeSeriesService.UpdateSurfCostProfileOverride(projectId, caseId, surfId, costProfileId, dto);
     }
 }

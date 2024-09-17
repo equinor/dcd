@@ -101,10 +101,8 @@ public class TopsideService : ITopsideService
         _mapperService.MapToEntity(updatedTopsideDto, existingTopside, topsideId);
         existingTopside.LastChangedDate = DateTimeOffset.UtcNow;
 
-        // Topside updatedTopside;
         try
         {
-            // updatedTopside = _repository.UpdateTopside(existingTopside);
             await _caseRepository.UpdateModifyTime(caseId);
             await _repository.SaveChangesAndRecalculateAsync(caseId);
         }

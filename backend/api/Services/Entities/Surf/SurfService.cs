@@ -14,6 +14,7 @@ public class SurfService : ISurfService
 {
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
+    private readonly IProjectAccessService _projectAccessService;
     private readonly ILogger<SurfService> _logger;
     private readonly IMapper _mapper;
     private readonly ISurfRepository _repository;
@@ -26,7 +27,8 @@ public class SurfService : ISurfService
         IMapper mapper,
         ISurfRepository repository,
         ICaseRepository caseRepository,
-        IMapperService mapperService
+        IMapperService mapperService,
+        IProjectAccessService projectAccessService
         )
     {
         _context = context;
@@ -36,6 +38,7 @@ public class SurfService : ISurfService
         _repository = repository;
         _caseRepository = caseRepository;
         _mapperService = mapperService;
+        _projectAccessService = projectAccessService;
     }
 
     public async Task<Surf> GetSurf(Guid surfId)
@@ -79,22 +82,24 @@ public class SurfService : ISurfService
     }
 
     public async Task<SurfDto> UpdateSurf<TDto>(
+        Guid projectId,
         Guid caseId,
         Guid surfId,
         TDto updatedSurfDto
     )
         where TDto : BaseUpdateSurfDto
     {
+        // Need to verify that the project from the URL is the same as the project of the exploration
+        await _projectAccessService.ProjectExists<Surf>(projectId, surfId);
+
         var existingSurf = await _repository.GetSurf(surfId)
             ?? throw new ArgumentException(string.Format($"Surf with id {surfId} not found."));
 
         _mapperService.MapToEntity(updatedSurfDto, existingSurf, surfId);
         existingSurf.LastChangedDate = DateTimeOffset.UtcNow;
 
-        // Surf updatedSurf;
         try
         {
-            // updatedSurf = _repository.UpdateSurf(existingSurf);
             await _caseRepository.UpdateModifyTime(caseId);
             await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
