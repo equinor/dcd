@@ -56,14 +56,27 @@ const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } }
             { description: "Unable to add numbers to tables if they have custom format from Excel" },
         ],
     },
-    /*
     "2.1.0": {
-        "New Features": [
+        "New Functionalities": [
             { description: "Undo/redo edits" },
             { description: "Edit history overview in the sidebar displays all changes made to each case in the past hour" },
+            { description: "Queue API requests for better performance" },
+            { description: "Show cash flow in cost tab" },
+
+        ],
+        "UI Improvements": [
+            { description: "Added loading indicators"},
+            { description: "Removed modal for overriding time series"},
+            { description: ""}
+        ],
+        Bugfixes: [
+            { description: "Misc Sharepoint PROSP import fixes"},
+            { description: "Set table year ranges from from time series data"},
+            { description: "Fix calucalation always using manual input if manual input was ever used"},
+            { description: "Fix navigating to project view when chaning project context"},
         ],
     },
-    */
+
 }
 
 const versions = Object.keys(whatsNewUpdates).sort((a, b) => {
