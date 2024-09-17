@@ -89,7 +89,7 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
 
     public async Task<CessationWellsCostOverride?> GetCessationWellsCostOverride(Guid costProfileId)
     {
-        return await Get<CessationWellsCostOverride>(costProfileId);
+        return await GetWithIncludes<CessationWellsCostOverride>(costProfileId, c => c.Case);
     }
 
     public CessationWellsCostOverride UpdateCessationWellsCostOverride(CessationWellsCostOverride costProfile)
@@ -99,7 +99,7 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
 
     public async Task<CessationOffshoreFacilitiesCostOverride?> GetCessationOffshoreFacilitiesCostOverride(Guid costProfileId)
     {
-        return await Get<CessationOffshoreFacilitiesCostOverride>(costProfileId);
+        return await GetWithIncludes<CessationOffshoreFacilitiesCostOverride>(costProfileId, c => c.Case);
     }
 
     public CessationOffshoreFacilitiesCostOverride UpdateCessationOffshoreFacilitiesCostOverride(CessationOffshoreFacilitiesCostOverride costProfile)
@@ -108,7 +108,7 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
     }
     public async Task<CessationOnshoreFacilitiesCostProfile?> GetCessationOnshoreFacilitiesCostProfile(Guid costProfileId)
     {
-        return await Get<CessationOnshoreFacilitiesCostProfile>(costProfileId);
+        return await GetWithIncludes<CessationOnshoreFacilitiesCostProfile>(costProfileId, c => c.Case);
     }
 
     public CessationOnshoreFacilitiesCostProfile UpdateCessationOnshoreFacilitiesCostProfile(CessationOnshoreFacilitiesCostProfile costProfile)
@@ -118,7 +118,7 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
 
     public async Task<TotalFeasibilityAndConceptStudiesOverride?> GetTotalFeasibilityAndConceptStudiesOverride(Guid costProfileId)
     {
-        return await Get<TotalFeasibilityAndConceptStudiesOverride>(costProfileId);
+        return await GetWithIncludes<TotalFeasibilityAndConceptStudiesOverride>(costProfileId, c => c.Case);
     }
 
     public TotalFeasibilityAndConceptStudiesOverride UpdateTotalFeasibilityAndConceptStudiesOverride(TotalFeasibilityAndConceptStudiesOverride costProfile)
@@ -128,7 +128,7 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
 
     public async Task<TotalFEEDStudiesOverride?> GetTotalFEEDStudiesOverride(Guid costProfileId)
     {
-        return await Get<TotalFEEDStudiesOverride>(costProfileId);
+        return await GetWithIncludes<TotalFEEDStudiesOverride>(costProfileId, c => c.Case);
     }
 
     public TotalFEEDStudiesOverride UpdateTotalFEEDStudiesOverride(TotalFEEDStudiesOverride costProfile)
@@ -138,7 +138,7 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
 
     public async Task<TotalOtherStudiesCostProfile?> GetTotalOtherStudiesCostProfile(Guid costProfileId)
     {
-        return await Get<TotalOtherStudiesCostProfile>(costProfileId);
+        return await GetWithIncludes<TotalOtherStudiesCostProfile>(costProfileId, c => c.Case);
     }
 
     public TotalOtherStudiesCostProfile UpdateTotalOtherStudiesCostProfile(TotalOtherStudiesCostProfile costProfile)
@@ -148,7 +148,7 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
 
     public async Task<HistoricCostCostProfile?> GetHistoricCostCostProfile(Guid costProfileId)
     {
-        return await Get<HistoricCostCostProfile>(costProfileId);
+        return await GetWithIncludes<HistoricCostCostProfile>(costProfileId, c => c.Case);
     }
 
     public HistoricCostCostProfile UpdateHistoricCostCostProfile(HistoricCostCostProfile costProfile)
@@ -158,7 +158,7 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
 
     public async Task<WellInterventionCostProfileOverride?> GetWellInterventionCostProfileOverride(Guid costProfileId)
     {
-        return await Get<WellInterventionCostProfileOverride>(costProfileId);
+        return await GetWithIncludes<WellInterventionCostProfileOverride>(costProfileId, c => c.Case);
     }
 
     public WellInterventionCostProfileOverride UpdateWellInterventionCostProfileOverride(WellInterventionCostProfileOverride costProfile)
@@ -168,7 +168,7 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
 
     public async Task<OffshoreFacilitiesOperationsCostProfileOverride?> GetOffshoreFacilitiesOperationsCostProfileOverride(Guid costProfileId)
     {
-        return await Get<OffshoreFacilitiesOperationsCostProfileOverride>(costProfileId);
+        return await GetWithIncludes<OffshoreFacilitiesOperationsCostProfileOverride>(costProfileId, c => c.Case);
     }
 
     public OffshoreFacilitiesOperationsCostProfileOverride UpdateOffshoreFacilitiesOperationsCostProfileOverride(OffshoreFacilitiesOperationsCostProfileOverride costProfile)
@@ -178,7 +178,7 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
 
     public async Task<OnshoreRelatedOPEXCostProfile?> GetOnshoreRelatedOPEXCostProfile(Guid costProfileId)
     {
-        return await Get<OnshoreRelatedOPEXCostProfile>(costProfileId);
+        return await GetWithIncludes<OnshoreRelatedOPEXCostProfile>(costProfileId, c => c.Case);
     }
 
     public OnshoreRelatedOPEXCostProfile UpdateOnshoreRelatedOPEXCostProfile(OnshoreRelatedOPEXCostProfile costProfile)
@@ -188,7 +188,7 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
 
     public async Task<AdditionalOPEXCostProfile?> GetAdditionalOPEXCostProfile(Guid costProfileId)
     {
-        return await Get<AdditionalOPEXCostProfile>(costProfileId);
+        return await GetWithIncludes<AdditionalOPEXCostProfile>(costProfileId, c => c.Case);
     }
 
     public AdditionalOPEXCostProfile UpdateAdditionalOPEXCostProfile(AdditionalOPEXCostProfile costProfile)

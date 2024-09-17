@@ -93,7 +93,7 @@ public class ExplorationService : IExplorationService
         UpdateExplorationDto updatedExplorationDto
     )
     {
-        // Need to verify that the project from the URL is the same as the project of the exploration
+        // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<Exploration>(projectId, explorationId);
 
         var existingExploration = await _repository.GetExploration(explorationId)
@@ -128,7 +128,7 @@ public class ExplorationService : IExplorationService
         var existingExploration = await _repository.GetExplorationWithDrillingSchedule(drillingScheduleId)
             ?? throw new NotFoundInDBException($"No exploration connected to {drillingScheduleId} found.");
 
-        // Need to verify that the project from the URL is the same as the project of the exploration
+        // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<Exploration>(projectId, existingExploration.Id);
 
         var existingDrillingSchedule = existingExploration.ExplorationWells?.FirstOrDefault(w => w.WellId == wellId)?.DrillingSchedule
@@ -159,7 +159,7 @@ public class ExplorationService : IExplorationService
         CreateDrillingScheduleDto updatedExplorationWellDto
     )
     {
-        // Need to verify that the project from the URL is the same as the project of the exploration
+        // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<Exploration>(projectId, explorationId);
 
         var existingExploration = await _repository.GetExploration(explorationId)

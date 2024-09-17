@@ -86,7 +86,7 @@ public class TransportService : ITransportService
     public async Task<TransportDto> UpdateTransport<TDto>(Guid projectId, Guid caseId, Guid transportId, TDto updatedTransportDto)
         where TDto : BaseUpdateTransportDto
     {
-        // Need to verify that the project from the URL is the same as the project of the exploration
+        // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<Transport>(projectId, transportId);
 
         var existing = await _repository.GetTransport(transportId)

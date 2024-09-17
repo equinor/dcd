@@ -487,7 +487,7 @@ public class DrainageStrategyTimeSeriesService : IDrainageStrategyTimeSeriesServ
         var existingProfile = await getProfile(productionProfileId)
             ?? throw new NotFoundInDBException($"Production profile with id {productionProfileId} not found.");
 
-        // Need to verify that the project from the URL is the same as the project of the exploration
+        // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<DrainageStrategy>(projectId, existingProfile.DrainageStrategy.Id);
 
         var project = await _projectRepository.GetProject(projectId)
@@ -525,7 +525,7 @@ public class DrainageStrategyTimeSeriesService : IDrainageStrategyTimeSeriesServ
         where TDto : class
         where TCreateDto : class
     {
-        // Need to verify that the project from the URL is the same as the project of the exploration
+        // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<DrainageStrategy>(projectId, drainageStrategyId);
 
         var drainageStrategy = await _drainageStrategyRepository.GetDrainageStrategy(drainageStrategyId)

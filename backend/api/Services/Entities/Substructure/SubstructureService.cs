@@ -91,7 +91,7 @@ public class SubstructureService : ISubstructureService
     )
         where TDto : BaseUpdateSubstructureDto
     {
-        // Need to verify that the project from the URL is the same as the project of the exploration
+        // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<Substructure>(projectId, substructureId);
 
         var existingSubstructure = await _repository.GetSubstructure(substructureId)

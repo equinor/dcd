@@ -43,7 +43,7 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
         CreateTransportCostProfileOverrideDto dto
     )
     {
-        // Need to verify that the project from the URL is the same as the project of the exploration
+        // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<Transport>(projectId, transportId);
 
         var transport = await _transportRepository.GetTransport(transportId)
@@ -181,7 +181,7 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
         var existingProfile = await getProfile(profileId)
             ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
 
-        // Need to verify that the project from the URL is the same as the project of the exploration
+        // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<Transport>(projectId, existingProfile.Transport.Id);
 
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, transportId);

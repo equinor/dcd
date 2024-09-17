@@ -206,7 +206,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
         var existingProfile = await getProfile(profileId)
             ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
 
-        // Need to verify that the project from the URL is the same as the project of the exploration
+        // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<WellProject>(projectId, existingProfile.WellProject.Id);
 
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, wellProjectId);
@@ -239,7 +239,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
         where TDto : class
         where TCreateDto : class
     {
-        // Need to verify that the project from the URL is the same as the project of the exploration
+        // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<Exploration>(projectId, wellProjectId);
 
         var wellProject = await _wellProjectRepository.GetWellProject(wellProjectId)

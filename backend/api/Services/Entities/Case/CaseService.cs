@@ -15,6 +15,7 @@ public class CaseService : ICaseService
 {
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
+    private readonly IProjectAccessService _projectAccessService;
     private readonly IDrainageStrategyService _drainageStrategyService;
     private readonly ITopsideService _topsideService;
     private readonly ISurfService _surfService;
@@ -40,7 +41,8 @@ public class CaseService : ICaseService
         IWellProjectService wellProjectService,
         ICaseRepository repository,
         IMapperService mapperService,
-        IMapper mapper
+        IMapper mapper,
+        IProjectAccessService projectAccessService
         )
     {
         _context = context;
@@ -56,6 +58,7 @@ public class CaseService : ICaseService
         _mapper = mapper;
         _mapperService = mapperService;
         _repository = repository;
+        _projectAccessService = projectAccessService;
     }
 
     public async Task<ProjectWithAssetsDto> CreateCase(Guid projectId, CreateCaseDto createCaseDto)
@@ -137,6 +140,7 @@ public class CaseService : ICaseService
         return await _projectService.GetProjectDto(project.Id);
     }
 
+    // TODO: Delete this method
     public async Task<ProjectWithAssetsDto> UpdateCaseAndProfiles<TDto>(Guid caseId, TDto updatedCaseDto)
         where TDto : BaseUpdateCaseDto
     {
@@ -151,11 +155,17 @@ public class CaseService : ICaseService
         return await _projectService.GetProjectDto(caseItem.ProjectId);
     }
 
-    public async Task<ProjectWithAssetsDto> DeleteCase(Guid caseId)
+    public async Task<ProjectWithAssetsDto> DeleteCase(Guid projectId, Guid caseId)
     {
+        // Need to verify that the project from the URL is the same as the project of the resource
+        await _projectAccessService.ProjectExists<Case>(projectId, caseId);
+
         var caseItem = await GetCase(caseId);
+
         _context.Cases!.Remove(caseItem);
+
         await _context.SaveChangesAsync();
+
         return await _projectService.GetProjectDto(caseItem.ProjectId);
     }
 
@@ -187,6 +197,7 @@ public class CaseService : ICaseService
         return caseItem;
     }
 
+    // TODO: Delete this method
     public async Task<IEnumerable<Case>> GetAll()
     {
         return await _context.Cases
@@ -211,11 +222,15 @@ public class CaseService : ICaseService
     }
 
     public async Task<CaseDto> UpdateCase<TDto>(
-            Guid caseId,
-            TDto updatedCaseDto
+        Guid projectId,
+        Guid caseId,
+        TDto updatedCaseDto
     )
         where TDto : BaseUpdateCaseDto
     {
+        // Need to verify that the project from the URL is the same as the project of the resource
+        await _projectAccessService.ProjectExists<Case>(projectId, caseId);
+
         var existingCase = await _repository.GetCase(caseId)
             ?? throw new NotFoundInDBException($"Case with id {caseId} not found.");
 

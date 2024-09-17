@@ -99,7 +99,7 @@ public class WellProjectService : IWellProjectService
         UpdateWellProjectDto updatedWellProjectDto
     )
     {
-        // Need to verify that the project from the URL is the same as the project of the exploration
+        // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<WellProject>(projectId, wellProjectId);
 
         var existingWellProject = await _repository.GetWellProject(wellProjectId)
@@ -134,7 +134,7 @@ public class WellProjectService : IWellProjectService
         var existingWellProject = await _repository.GetWellProjectWithDrillingSchedule(drillingScheduleId)
             ?? throw new NotFoundInDBException($"No wellproject connected to {drillingScheduleId} found.");
 
-        // Need to verify that the project from the URL is the same as the project of the exploration
+        // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<WellProject>(projectId, existingWellProject.Id);
 
         var existingDrillingSchedule = existingWellProject.WellProjectWells?.FirstOrDefault(w => w.WellId == wellId)?.DrillingSchedule
@@ -167,7 +167,7 @@ public class WellProjectService : IWellProjectService
         CreateDrillingScheduleDto updatedWellProjectWellDto
     )
     {
-        // Need to verify that the project from the URL is the same as the project of the exploration
+        // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<WellProject>(projectId, wellProjectId);
 
         var existingWellProject = await _repository.GetWellProject(wellProjectId)

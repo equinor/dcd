@@ -42,7 +42,7 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
         CreateSurfCostProfileOverrideDto dto
     )
     {
-        // Need to verify that the project from the URL is the same as the project of the exploration
+        // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<Surf>(projectId, surfId);
 
         var surf = await _surfRepository.GetSurf(surfId)
@@ -86,7 +86,7 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
         UpdateSurfCostProfileDto dto
     )
     {
-        // Need to verify that the project from the URL is the same as the project of the exploration
+        // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<Surf>(projectId, surfId);
 
         var surf = await _surfRepository.GetSurfWithCostProfile(surfId)
@@ -184,7 +184,7 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
         var existingProfile = await getProfile(profileId)
             ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
 
-        // Need to verify that the project from the URL is the same as the project of the exploration
+        // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<Surf>(projectId, existingProfile.Surf.Id);
 
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, surfId);

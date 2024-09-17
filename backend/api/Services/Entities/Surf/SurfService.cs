@@ -89,7 +89,7 @@ public class SurfService : ISurfService
     )
         where TDto : BaseUpdateSurfDto
     {
-        // Need to verify that the project from the URL is the same as the project of the exploration
+        // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<Surf>(projectId, surfId);
 
         var existingSurf = await _repository.GetSurf(surfId)

@@ -47,15 +47,22 @@ public class CasesController : ControllerBase
     }
 
     [HttpPut("{caseId}")]
-    public async Task<CaseDto> UpdateCase([FromRoute] Guid caseId, [FromBody] APIUpdateCaseDto caseDto)
+    public async Task<CaseDto> UpdateCase(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId,
+        [FromBody] APIUpdateCaseDto caseDto
+        )
     {
-        return await _caseService.UpdateCase(caseId, caseDto);
+        return await _caseService.UpdateCase(projectId, caseId, caseDto);
     }
 
     [HttpDelete("{caseId}")]
-    public async Task<ProjectWithAssetsDto> DeleteCase(Guid caseId)
+    public async Task<ProjectWithAssetsDto> DeleteCase(
+        [FromRoute] Guid projectId,
+        [FromRoute] Guid caseId
+        )
     {
-        return await _caseService.DeleteCase(caseId);
+        return await _caseService.DeleteCase(projectId, caseId);
     }
 
     [HttpPut("{caseId}/cessation-wells-cost-override/{costProfileId}")]
