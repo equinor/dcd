@@ -40,6 +40,9 @@ public class CaseRepository : BaseRepository, ICaseRepository
             CaseProfileNames.OffshoreFacilitiesOperationsCostProfileOverride => d => d.OffshoreFacilitiesOperationsCostProfileOverride != null,
             CaseProfileNames.OnshoreRelatedOPEXCostProfile => d => d.OnshoreRelatedOPEXCostProfile != null,
             CaseProfileNames.AdditionalOPEXCostProfile => d => d.AdditionalOPEXCostProfile != null,
+            CaseProfileNames.CalculatedTotalIncomeCostProfile => d => d.CalculatedTotalIncomeCostProfile != null,
+            CaseProfileNames.CalculatedTotalCostCostProfile => d => d.CalculatedTotalCostCostProfile != null,
+
         };
 
         bool hasProfile = await _context.Cases

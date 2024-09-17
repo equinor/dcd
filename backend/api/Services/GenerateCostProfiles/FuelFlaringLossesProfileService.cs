@@ -50,13 +50,25 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
         var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
         var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
-        // var cashflow = await _economicsCalculationHelper.CalculateProjectCashFlowAsync(caseItem, drainageStrategy);
-        // var income = EconomicsCalculationHelper.CalculateIncome(drainageStrategy, project);
-        // Console.WriteLine("Income values:");
-        // foreach (var value in income.Values)
-        // {
-        //     Console.WriteLine(value);
-        // }
+        var cashflow = await _economicsCalculationHelper.CalculateProjectCashFlowAsync(caseItem, drainageStrategy);
+        foreach (var value in cashflow.Values)
+        {
+            Console.WriteLine(value);
+        }
+        
+        var income = EconomicsCalculationHelper.CalculateIncome(drainageStrategy, project, caseItem);
+        Console.WriteLine("Income values:");
+        foreach (var value in income.Values)
+        {
+            Console.WriteLine(value.ToString());
+        }
+
+        var cost = await _economicsCalculationHelper.CalculateTotalCostAsync(caseItem);
+        Console.WriteLine("Cost values:");
+        foreach (var value in cost.Values)
+        {
+            Console.WriteLine(caseItem.CalculatedTotalCostCostProfile);
+        }
 
         var fuelConsumptions =
             EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);

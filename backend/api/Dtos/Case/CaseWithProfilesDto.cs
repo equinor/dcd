@@ -100,7 +100,10 @@ public class CaseWithProfilesDto
     public OnshoreRelatedOPEXCostProfileDto? OnshoreRelatedOPEXCostProfile { get; set; } = new OnshoreRelatedOPEXCostProfileDto();
     [Required]
     public AdditionalOPEXCostProfileDto? AdditionalOPEXCostProfile { get; set; } = new AdditionalOPEXCostProfileDto();
-
+    [Required]
+    public CalculatedTotalIncomeCostProfileDto? CalculatedTotalIncomeCostProfile { get; set; } = new CalculatedTotalIncomeCostProfileDto();
+    [Required]
+    public CalculatedTotalCostCostProfileDto? CalculatedTotalCostCostProfile { get; set; } = new CalculatedTotalCostCostProfileDto();
 
     [Required]
     public Guid DrainageStrategyLink { get; set; }
@@ -239,4 +242,11 @@ public class CapexYear
 {
     public double[]? Values { get; set; }
     public int? StartYear { get; set; }
+}
+
+public class CalculatedTotalIncomeCostProfileDto : TimeSeriesCostDto
+{
+}
+public class CalculatedTotalCostCostProfileDto : TimeSeriesCostDto
+{
 }

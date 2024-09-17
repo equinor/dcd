@@ -51,9 +51,20 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
         return profile;
     }
 
+    public CalculatedTotalIncomeCostProfile CreateCalculatedTotalIncomeCostProfile(CalculatedTotalIncomeCostProfile profile)
+    {
+        _context.CalculatedTotalIncomeCostProfile.Add(profile);
+        return profile;
+    }
     public TotalOtherStudiesCostProfile CreateTotalOtherStudiesCostProfile(TotalOtherStudiesCostProfile profile)
     {
         _context.TotalOtherStudiesCostProfile.Add(profile);
+        return profile;
+    }
+
+    public CalculatedTotalCostCostProfile CreateCalculatedTotalCostCostProfile(CalculatedTotalCostCostProfile profile)
+    {
+        _context.CalculatedTotalCostCostProfile.Add(profile);
         return profile;
     }
 
@@ -192,6 +203,26 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
     }
 
     public AdditionalOPEXCostProfile UpdateAdditionalOPEXCostProfile(AdditionalOPEXCostProfile costProfile)
+    {
+        return Update(costProfile);
+    }
+
+    public async Task<CalculatedTotalIncomeCostProfile?> GetCalculatedTotalIncomeCostProfile(Guid costProfileId)
+    {
+        return await Get<CalculatedTotalIncomeCostProfile>(costProfileId);
+    }
+
+    public CalculatedTotalIncomeCostProfile UpdateCalculatedTotalIncomeCostProfile(CalculatedTotalIncomeCostProfile costProfile)
+    {
+        return Update(costProfile);
+    }
+
+        public async Task<CalculatedTotalCostCostProfile?> GetCalculatedTotalCostCostProfile(Guid costProfileId)
+    {
+        return await Get<CalculatedTotalCostCostProfile>(costProfileId);
+    }
+
+    public CalculatedTotalCostCostProfile UpdateCalculatedTotalCostCostProfile(CalculatedTotalCostCostProfile costProfile)
     {
         return Update(costProfile);
     }

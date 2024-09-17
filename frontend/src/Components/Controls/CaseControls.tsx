@@ -133,6 +133,9 @@ const CaseControls: React.FC<props> = ({
                 const deferredOilProductionData = result.deferredOilProduction
                 const deferredGasProductionData = result.deferredGasProduction
 
+                const calculatedTotalIncomeCostProfileData = result.calculatedTotalIncomeCostProfile
+                const calculatedTotalCostCostProfileData = result.calculatedTotalCostCostProfile
+
                 // Assets
                 queryClient.setQueryData([{
                     projectId, caseId, resourceId: EMPTY_GUID, resourceProfileId: EMPTY_GUID,

@@ -17,6 +17,8 @@ public interface ICaseTimeSeriesRepository : IBaseRepository
     OffshoreFacilitiesOperationsCostProfileOverride CreateOffshoreFacilitiesOperationsCostProfileOverride(OffshoreFacilitiesOperationsCostProfileOverride profile);
     OnshoreRelatedOPEXCostProfile CreateOnshoreRelatedOPEXCostProfile(OnshoreRelatedOPEXCostProfile profile);
     AdditionalOPEXCostProfile CreateAdditionalOPEXCostProfile(AdditionalOPEXCostProfile profile);
+    CalculatedTotalIncomeCostProfile CreateCalculatedTotalIncomeCostProfile(CalculatedTotalIncomeCostProfile profile);
+    CalculatedTotalCostCostProfile CreateCalculatedTotalCostCostProfile(CalculatedTotalCostCostProfile profile);
 
     Task<CessationWellsCostOverride?> GetCessationWellsCostOverride(Guid costProfileId);
     CessationWellsCostOverride UpdateCessationWellsCostOverride(CessationWellsCostOverride costProfile);
@@ -40,4 +42,9 @@ public interface ICaseTimeSeriesRepository : IBaseRepository
     OnshoreRelatedOPEXCostProfile UpdateOnshoreRelatedOPEXCostProfile(OnshoreRelatedOPEXCostProfile costProfile);
     Task<AdditionalOPEXCostProfile?> GetAdditionalOPEXCostProfile(Guid costProfileId);
     AdditionalOPEXCostProfile UpdateAdditionalOPEXCostProfile(AdditionalOPEXCostProfile costProfile);
+
+    Task<CalculatedTotalIncomeCostProfile?> GetCalculatedTotalIncomeCostProfile(Guid costProfileId);
+    CalculatedTotalIncomeCostProfile UpdateCalculatedTotalIncomeCostProfile(CalculatedTotalIncomeCostProfile costProfile);
+    Task<CalculatedTotalCostCostProfile?> GetCalculatedTotalCostCostProfile(Guid costProfileId);
+    CalculatedTotalCostCostProfile UpdateCalculatedTotalCostCostProfile(CalculatedTotalCostCostProfile costProfile);
 }

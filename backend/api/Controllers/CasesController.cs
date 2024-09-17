@@ -204,6 +204,26 @@ public class CasesController : ControllerBase
         return await _caseTimeSeriesService.CreateAdditionalOPEXCostProfile(projectId, caseId, dto);
     }
 
+    [HttpPost("{caseId}/calculated-total-income")]
+    public async Task<CalculatedTotalIncomeCostProfileDto> CreateCalculatedTotalIncomeCostProfile(
+    [FromRoute] Guid projectId,
+    [FromRoute] Guid caseId,
+    [FromBody] CreateCalculatedTotalIncomeCostProfileDto dto
+    )
+    {
+        return await _caseTimeSeriesService.CreateCalculatedTotalIncomeCostProfile(projectId, caseId, dto);
+    }
+
+    [HttpPost("{caseId}/calculated-total-cost")]
+    public async Task<CalculatedTotalCostCostProfileDto> CreateCalculatedTotalCostCostProfile(
+    [FromRoute] Guid projectId,
+    [FromRoute] Guid caseId,
+    [FromBody] CreateCalculatedTotalCostCostProfileDto dto
+    )
+    {
+        return await _caseTimeSeriesService.CreateCalculatedTotalCostCostProfile(projectId, caseId, dto);
+    }
+
     [HttpPut("{caseId}/total-feasibility-and-concept-studies-override/{costProfileId}")]
     public async Task<TotalFeasibilityAndConceptStudiesOverrideDto> UpdateTotalFeasibilityAndConceptStudiesOverride(
         [FromRoute] Guid projectId,
@@ -290,5 +310,28 @@ public class CasesController : ControllerBase
     )
     {
         return await _caseTimeSeriesService.UpdateAdditionalOPEXCostProfile(projectId, caseId, costProfileId, dto);
+    }
+
+
+    [HttpPut("{caseId}/calculated-total-income")]
+    public async Task<CalculatedTotalIncomeCostProfileDto> UpdateCalculatedTotalIncomeCostProfile(
+    [FromRoute] Guid projectId,
+    [FromRoute] Guid caseId,
+    [FromRoute] Guid costProfileId,
+    [FromBody] UpdateCalculatedTotalIncomeCostProfileDto dto
+    )
+    {
+        return await _caseTimeSeriesService.UpdateCalculatedTotalIncomeCostProfile(projectId, caseId, costProfileId, dto);
+    }
+
+    [HttpPut("{caseId}/calculated-total-cost")]
+    public async Task<CalculatedTotalCostCostProfileDto> UpdateCalculatedTotalCostCostProfile(
+    [FromRoute] Guid projectId,
+    [FromRoute] Guid caseId,
+    [FromRoute] Guid costProfileId,
+    [FromBody] UpdateCalculatedTotalCostCostProfileDto dto
+    )
+    {
+        return await _caseTimeSeriesService.UpdateCalculatedTotalCostCostProfile(projectId, caseId, costProfileId, dto);
     }
 }

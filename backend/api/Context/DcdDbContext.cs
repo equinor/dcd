@@ -865,6 +865,9 @@ public class DcdDbContext : DbContext
     public DbSet<AppraisalWellCostProfile> AppraisalWellCostProfile { get; set; } = null!;
     public DbSet<SidetrackCostProfile> SidetrackCostProfile { get; set; } = null!;
 
+    public DbSet<CalculatedTotalIncomeCostProfile> CalculatedTotalIncomeCostProfile { get; set; } = null!;
+    public DbSet<CalculatedTotalCostCostProfile> CalculatedTotalCostCostProfile { get; set; } = null!;
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

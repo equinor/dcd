@@ -68,6 +68,11 @@ public class Case
     public string? SharepointFileId { get; set; }
     public string? SharepointFileName { get; set; }
     public string? SharepointFileUrl { get; set; }
+
+    public virtual CalculatedTotalIncomeCostProfile? CalculatedTotalIncomeCostProfile { get; set; }
+    public virtual CalculatedTotalCostCostProfile? CalculatedTotalCostCostProfile { get; set; }
+
+
 }
 
 public enum ArtificialLift
@@ -190,6 +195,18 @@ public class TotalFEEDStudiesOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSe
 }
 
 public class TotalOtherStudiesCostProfile : TimeSeriesCost, ICaseTimeSeries
+{
+    [ForeignKey("Case.Id")]
+    public virtual Case Case { get; set; } = null!;
+}
+
+public class CalculatedTotalIncomeCostProfile : TimeSeriesCost, ICaseTimeSeries
+{
+    [ForeignKey("Case.Id")]
+    public virtual Case Case { get; set; } = null!;
+}
+
+public class CalculatedTotalCostCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;

@@ -324,6 +324,8 @@ public class ProjectService : IProjectService
             .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCost)
             .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCostOverride)
             .Include(p => p.Cases)!.ThenInclude(c => c.CessationOnshoreFacilitiesCostProfile)
+            .Include(p => p.Cases)!.ThenInclude(c => c.CalculatedTotalIncomeCostProfile)
+            .Include(p => p.Cases)!.ThenInclude(c => c.CalculatedTotalCostCostProfile)
             .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)

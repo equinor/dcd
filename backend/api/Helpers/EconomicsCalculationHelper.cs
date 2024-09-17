@@ -14,7 +14,6 @@ namespace api.Helpers
     public class EconomicsCalculationHelper : IEconomicsCalculationHelper
     {
         private const int Cd = 365;
-
         private readonly IStudyCostProfileService _studyCostProfileService;
         private readonly IOpexCostProfileService _opexCostProfileService;
         private readonly ICessationCostProfileService _cessationCostProfileService;
@@ -57,8 +56,9 @@ namespace api.Helpers
             _substructureTimeSeriesRepository = substructureTimeSeriesRepository;
         }
 
-        public TimeSeries<double> CalculateIncome(DrainageStrategy drainageStrategy, Project project)
+        public static TimeSeries<double> CalculateIncome(DrainageStrategy drainageStrategy, Project project, Case caseItem)
         {
+            // Remove Project as input, use caseItem.Project instead
             var oilPrice = project.OilPriceUSD;
             var gasPrice = project.GasPriceNOK;
             var cubicMetersToBarrelsFactor = 6.29;
@@ -112,8 +112,15 @@ namespace api.Helpers
                 Values = totalGasProductionInGigaCubics.Values.Select(v => v * gasPrice * 1000).ToArray() //originally divide by 1 mill instead of multiply by 1000
             };
 
-            var totalIncome = TimeSeriesCost.MergeCostProfiles(oilIncome, gasIncome);
 
+            var totalIncome = TimeSeriesCost.MergeCostProfiles(oilIncome, gasIncome);
+            var calculatedTotalIncomeCostProfile = new CalculatedTotalIncomeCostProfile
+            {
+                StartYear = totalIncome.StartYear,
+                Values = totalIncome.Values,
+            };
+
+            caseItem.CalculatedTotalIncomeCostProfile = calculatedTotalIncomeCostProfile;
             return totalIncome;
         }
 
@@ -172,6 +179,14 @@ namespace api.Helpers
                 developmentProfile,
                 explorationProfile
             });
+            
+            var calculatedTotalCostCostProfile = new CalculatedTotalCostCostProfile
+            {
+                StartYear = totalCost.StartYear,
+                Values = totalCost.Values,
+            };
+
+            caseItem.CalculatedTotalCostCostProfile = calculatedTotalCostCostProfile;
 
             return totalCost;
         }
@@ -292,11 +307,6 @@ namespace api.Helpers
                     StartYear = wellProject.OilProducerCostProfile?.StartYear ?? 0,
                     Values = wellProject.OilProducerCostProfile?.Values ?? Array.Empty<double>()
                 };
-            }
-            Console.WriteLine("Income values:");
-            foreach (var value in oilProducerProfile.Values)
-            {
-                Console.WriteLine(value);
             }
             if (wellProject?.GasProducerCostProfileOverride?.Override == true)
             {
@@ -488,7 +498,7 @@ namespace api.Helpers
         public async Task<TimeSeries<double>> CalculateProjectCashFlowAsync(Case caseItem, DrainageStrategy drainageStrategy)
         {
             var project = await _projectService.GetProject(caseItem.ProjectId);
-            var income = CalculateIncome(drainageStrategy, project);
+            var income = CalculateIncome(drainageStrategy, project, caseItem);
             var totalCost = await CalculateTotalCostAsync(caseItem);
             var cashFlow = CalculateCashFlow(income, totalCost);
             return cashFlow;

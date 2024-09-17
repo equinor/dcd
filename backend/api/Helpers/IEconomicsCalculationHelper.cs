@@ -6,7 +6,7 @@ namespace api.Helpers
 {
     public interface IEconomicsCalculationHelper
     {
-        TimeSeries<double> CalculateIncome(DrainageStrategy drainageStrategy, Project project);
+        // TimeSeries<double> CalculateIncome(DrainageStrategy drainageStrategy, Project project, Case caseItem);
         
         Task<TimeSeries<double>> CalculateTotalCostAsync(Case caseItem);
 

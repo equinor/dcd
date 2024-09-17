@@ -45,3 +45,11 @@ public class CreateOnshoreRelatedOPEXCostProfileDto : CreateTimeSeriesCostDto
 public class CreateAdditionalOPEXCostProfileDto : CreateTimeSeriesCostDto
 {
 }
+
+public class CreateCalculatedTotalIncomeCostProfileDto : CreateTimeSeriesCostDto
+{
+}
+
+public class CreateCalculatedTotalCostCostProfileDto : CreateTimeSeriesCostDto
+{
+}

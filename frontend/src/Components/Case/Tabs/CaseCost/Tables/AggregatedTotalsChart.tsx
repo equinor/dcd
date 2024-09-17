@@ -169,8 +169,17 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         const dg4Year = new Date(apiData.case.dG4Date).getFullYear()
         const years = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => tableYears[0] + i)
 
-        const totalIncomeData = calculateIncome()
+        const totalIncomeData = apiData.calculatedTotalIncomeCostProfile
+        console.log("totalIncomeData", totalIncomeData)
 
+        const income = {
+            id: "",
+            startYear: totalIncomeData?.startYear !== undefined
+                ? totalIncomeData.startYear + new Date(apiData.case.dG4Date).getFullYear()
+                : 0, // Default to 0 or handle the case when startYear is undefined
+                values: (totalIncomeData?.values || []).map((v) => v / 1000000) ?? [], // Default to an empty array if values are undefined
+        }
+        console.log("income", income)
         let cumulativeSum = 0
         years.forEach((year) => {
             const yearData: any = { year }
@@ -179,8 +188,8 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 yearData[series.profileName] = value
                 cumulativeSum += value
             })
-            yearData.cumulativeSum = (totalIncomeData.values || []).reduce((acc, value, index) => {
-                if (totalIncomeData.startYear + index === year) {
+            yearData.cumulativeSum = (income.values || []).reduce((acc, value, index) => {
+                if (income.startYear + index === year) {
                     return acc + value
                 }
                 return acc

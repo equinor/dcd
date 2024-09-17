@@ -1465,6 +1465,62 @@ const useDataEdits = (): {
                     )
                 }
                 break
+            case "calculatedTotalIncomeCostProfile":
+                if (!resourceProfileId) {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).createCalculatedTotalIncomeCostProfile(
+                            projectId,
+                            caseId,
+                            resourceObject as Components.Schemas.CreateCalculatedTotalIncomeCostProfileDto,
+                        ),
+                    )
+                } else {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).updateCalculatedTotalIncomeCostProfile(
+                            projectId,
+                            caseId,
+                            resourceProfileId!,
+                            resourceObject as Components.Schemas.UpdateCalculatedTotalIncomeCostProfileDto,
+                        ),
+                    )
+                }
+                break
+            case "calculatedTotalCostCostProfile":
+                if (!resourceProfileId) {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).createCalculatedTotalCostCostProfile(
+                            projectId,
+                            caseId,
+                            resourceObject as Components.Schemas.CreateCalculatedTotalCostCostProfileDto,
+                        ),
+                    )
+                } else {
+                    success = await createOrUpdateTimeSeriesProfile(
+                        projectId,
+                        caseId,
+                        resourceId!,
+                        resourceProfileId!,
+                        await (await GetCaseService()).updateCalculatedTotalCostCostProfile(
+                            projectId,
+                            caseId,
+                            resourceProfileId!,
+                            resourceObject as Components.Schemas.UpdateCalculatedTotalCostCostProfileDto,
+                        ),
+                    )
+                }
+                break
             default:
                 console.log("Service not found")
         }

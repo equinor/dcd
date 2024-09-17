@@ -43,6 +43,8 @@ public class APIUpdateCaseWithProfilesDto : BaseUpdateCaseDto
     public UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
     public UpdateOnshoreRelatedOPEXCostProfileDto? OnshoreRelatedOPEXCostProfile { get; set; }
     public UpdateAdditionalOPEXCostProfileDto? AdditionalOPEXCostProfile { get; set; }
+    public UpdateCalculatedTotalIncomeCostProfileDto? CalculatedTotalIncomeCostProfile { get; set; }
+    public UpdateCalculatedTotalCostCostProfileDto? CalculatedTotalCostCostProfile { get; set; }
 
     public double Capex { get; set; }
     public CapexYear? CapexYear { get; set; }
@@ -97,5 +99,13 @@ public class UpdateOnshoreRelatedOPEXCostProfileDto : UpdateTimeSeriesCostDto
 }
 
 public class UpdateAdditionalOPEXCostProfileDto : UpdateTimeSeriesCostDto
+{
+}
+
+public class UpdateCalculatedTotalIncomeCostProfileDto : UpdateTimeSeriesCostDto
+{
+}
+
+public class UpdateCalculatedTotalCostCostProfileDto : UpdateTimeSeriesCostDto
 {
 }

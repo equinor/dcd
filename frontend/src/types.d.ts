@@ -128,6 +128,22 @@ declare namespace Components {
             currency: Currency /* int32 */;
         }
         export type ArtificialLift = 0 | 1 | 2 | 3; // int32
+        export interface CalculatedTotalCostCostProfileDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion: string;
+            currency: Currency /* int32 */;
+        }
+        export interface CalculatedTotalIncomeCostProfileDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion: string;
+            currency: Currency /* int32 */;
+        }
         export interface CapexDto {
             id: string; // uuid
             startYear: number; // int32
@@ -205,6 +221,8 @@ declare namespace Components {
             offshoreFacilitiesOperationsCostProfileOverride?: OffshoreFacilitiesOperationsCostProfileOverrideDto;
             onshoreRelatedOPEXCostProfile?: OnshoreRelatedOPEXCostProfileDto;
             additionalOPEXCostProfile?: AdditionalOPEXCostProfileDto;
+            calculatedTotalIncomeCostProfile?: CalculatedTotalIncomeCostProfileDto;
+            calculatedTotalCostCostProfile?: CalculatedTotalCostCostProfileDto;
             topside: TopsideDto;
             topsideCostProfile?: TopsideCostProfileDto;
             topsideCostProfileOverride?: TopsideCostProfileOverrideDto;
@@ -307,6 +325,8 @@ declare namespace Components {
             offshoreFacilitiesOperationsCostProfileOverride: OffshoreFacilitiesOperationsCostProfileOverrideDto;
             onshoreRelatedOPEXCostProfile: OnshoreRelatedOPEXCostProfileDto;
             additionalOPEXCostProfile: AdditionalOPEXCostProfileDto;
+            calculatedTotalIncomeCostProfile: CalculatedTotalIncomeCostProfileDto;
+            calculatedTotalCostCostProfile: CalculatedTotalCostCostProfileDto;
             drainageStrategyLink: string; // uuid
             wellProjectLink: string; // uuid
             surfLink: string; // uuid
@@ -428,6 +448,16 @@ declare namespace Components {
         export interface CreateAdditionalProductionProfileOilDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
+        }
+        export interface CreateCalculatedTotalCostCostProfileDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            currency?: Currency /* int32 */;
+        }
+        export interface CreateCalculatedTotalIncomeCostProfileDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            currency?: Currency /* int32 */;
         }
         export interface CreateCaseDto {
             name?: string | null;
@@ -690,7 +720,7 @@ declare namespace Components {
             id?: string | null;
             sharepointFileUrl?: string | null;
             createdDateTime?: string | null; // date-time
-            content?: Stream;
+            content?: string | null; // binary
             size?: number | null; // int64
             sharepointIds?: SharepointIds;
             createdBy?: IdentitySet;
@@ -1028,6 +1058,10 @@ declare namespace Components {
             dailyEmissionFromDrillingRig: number; // double
             averageDevelopmentDrillingDays: number; // double
             cases: CaseDto[];
+            oilPriceUSD: number; // double
+            gasPriceNOK: number; // double
+            discountRate: number; // double
+            exchangeRateUSDToNOK: number; // double
         }
         export interface STEACaseDto {
             name?: string | null;
@@ -1083,16 +1117,6 @@ declare namespace Components {
             currency: Currency /* int32 */;
         }
         export type Source = 0 | 1; // int32
-        export interface Stream {
-            canRead?: boolean;
-            canWrite?: boolean;
-            canSeek?: boolean;
-            canTimeout?: boolean;
-            length?: number; // int64
-            position?: number; // int64
-            readTimeout?: number; // int32
-            writeTimeout?: number; // int32
-        }
         export interface StudyCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
@@ -1459,6 +1483,16 @@ declare namespace Components {
             values?: number /* double */[] | null;
         }
         export interface UpdateAppraisalWellCostProfileDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            currency?: Currency /* int32 */;
+        }
+        export interface UpdateCalculatedTotalCostCostProfileDto {
+            startYear?: number; // int32
+            values?: number /* double */[] | null;
+            currency?: Currency /* int32 */;
+        }
+        export interface UpdateCalculatedTotalIncomeCostProfileDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
@@ -1997,6 +2031,70 @@ declare namespace Paths {
             export type RequestBody = Components.Schemas.UpdateAdditionalOPEXCostProfileDto;
             namespace Responses {
                 export type $200 = Components.Schemas.AdditionalOPEXCostProfileDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCalculatedTotalCost {
+        namespace Post {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.CreateCalculatedTotalCostCostProfileDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.CalculatedTotalCostCostProfileDto;
+            }
+        }
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type CostProfileId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                costProfileId: Parameters.CostProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateCalculatedTotalCostCostProfileDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.CalculatedTotalCostCostProfileDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdCases$CaseIdCalculatedTotalIncome {
+        namespace Post {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.CreateCalculatedTotalIncomeCostProfileDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.CalculatedTotalIncomeCostProfileDto;
+            }
+        }
+        namespace Put {
+            namespace Parameters {
+                export type CaseId = string; // uuid
+                export type CostProfileId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
+                costProfileId: Parameters.CostProfileId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateCalculatedTotalIncomeCostProfileDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.CalculatedTotalIncomeCostProfileDto;
             }
         }
     }
@@ -2869,14 +2967,7 @@ declare namespace Paths {
             }
             export interface RequestBody {
                 projectName?: string;
-                ContentType?: string;
-                ContentDisposition?: string;
-                Headers?: {
-                    [name: string]: string[];
-                };
-                Length?: number; // int64
-                Name?: string;
-                FileName?: string;
+                image?: string; // binary
             }
             namespace Responses {
                 export type $200 = Components.Schemas.ImageDto;
@@ -3594,14 +3685,7 @@ declare namespace Paths {
             }
             export interface RequestBody {
                 projectName?: string;
-                ContentType?: string;
-                ContentDisposition?: string;
-                Headers?: {
-                    [name: string]: string[];
-                };
-                Length?: number; // int64
-                Name?: string;
-                FileName?: string;
+                image?: string; // binary
             }
             namespace Responses {
                 export type $200 = Components.Schemas.ImageDto;

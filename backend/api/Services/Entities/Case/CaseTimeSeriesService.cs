@@ -70,7 +70,7 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
     Guid caseId,
     Guid costProfileId,
     UpdateCessationOnshoreFacilitiesCostProfileDto updatedCostProfileDto
-)
+    )
     {
         return await UpdateCaseCostProfile<CessationOnshoreFacilitiesCostProfile, CessationOnshoreFacilitiesCostProfileDto, UpdateCessationOnshoreFacilitiesCostProfileDto>(
             projectId,
@@ -121,7 +121,7 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
     Guid caseId,
     Guid costProfileId,
     UpdateTotalOtherStudiesCostProfileDto updatedCostProfileDto
-)
+    )
     {
         return await UpdateCaseCostProfile<TotalOtherStudiesCostProfile, TotalOtherStudiesCostProfileDto, UpdateTotalOtherStudiesCostProfileDto>(
             projectId,
@@ -201,6 +201,40 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
         );
     }
 
+    public async Task<CalculatedTotalIncomeCostProfileDto> UpdateCalculatedTotalIncomeCostProfile(
+    Guid projectId,
+    Guid caseId,
+    Guid costProfileId,
+    UpdateCalculatedTotalIncomeCostProfileDto updatedCostProfileDto
+    )
+    {
+        return await UpdateCaseCostProfile<CalculatedTotalIncomeCostProfile, CalculatedTotalIncomeCostProfileDto, UpdateCalculatedTotalIncomeCostProfileDto>(
+            projectId,
+            caseId,
+            costProfileId,
+            updatedCostProfileDto,
+            _repository.GetCalculatedTotalIncomeCostProfile,
+            _repository.UpdateCalculatedTotalIncomeCostProfile
+        );
+    }
+
+    public async Task<CalculatedTotalCostCostProfileDto> UpdateCalculatedTotalCostCostProfile(
+    Guid projectId,
+    Guid caseId,
+    Guid costProfileId,
+    UpdateCalculatedTotalCostCostProfileDto updatedCostProfileDto
+    )
+    {
+        return await UpdateCaseCostProfile<CalculatedTotalCostCostProfile, CalculatedTotalCostCostProfileDto, UpdateCalculatedTotalCostCostProfileDto>(
+            projectId,
+            caseId,
+            costProfileId,
+            updatedCostProfileDto,
+            _repository.GetCalculatedTotalCostCostProfile,
+            _repository.UpdateCalculatedTotalCostCostProfile
+        );
+    }
+
     public async Task<OffshoreFacilitiesOperationsCostProfileOverrideDto> CreateOffshoreFacilitiesOperationsCostProfileOverride(
         Guid projectId,
         Guid caseId,
@@ -249,7 +283,7 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
     Guid projectId,
     Guid caseId,
     CreateCessationOnshoreFacilitiesCostProfileDto createProfileDto
-)
+    )
     {
         return await CreateCaseProfile<CessationOnshoreFacilitiesCostProfile, CessationOnshoreFacilitiesCostProfileDto, CreateCessationOnshoreFacilitiesCostProfileDto>(
             projectId,
@@ -379,6 +413,36 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             updatedCostProfileDto,
             _repository.GetAdditionalOPEXCostProfile,
             _repository.UpdateAdditionalOPEXCostProfile
+        );
+    }
+
+    public async Task<CalculatedTotalIncomeCostProfileDto> CreateCalculatedTotalIncomeCostProfile(
+        Guid projectId,
+        Guid caseId,
+        CreateCalculatedTotalIncomeCostProfileDto createProfileDto
+    )
+    {
+        return await CreateCaseProfile<CalculatedTotalIncomeCostProfile, CalculatedTotalIncomeCostProfileDto, CreateCalculatedTotalIncomeCostProfileDto>(
+            projectId,
+            caseId,
+            createProfileDto,
+            _repository.CreateCalculatedTotalIncomeCostProfile,
+            CaseProfileNames.CalculatedTotalIncomeCostProfile
+        );
+    }
+
+    public async Task<CalculatedTotalCostCostProfileDto> CreateCalculatedTotalCostCostProfile(
+        Guid projectId,
+        Guid caseId,
+        CreateCalculatedTotalCostCostProfileDto createProfileDto
+    )
+    {
+        return await CreateCaseProfile<CalculatedTotalCostCostProfile, CalculatedTotalCostCostProfileDto, CreateCalculatedTotalCostCostProfileDto>(
+            projectId,
+            caseId,
+            createProfileDto,
+            _repository.CreateCalculatedTotalCostCostProfile,
+            CaseProfileNames.CalculatedTotalCostCostProfile
         );
     }
 
