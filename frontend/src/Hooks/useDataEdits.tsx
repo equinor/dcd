@@ -32,18 +32,6 @@ interface AddEditParams {
     inputFieldId?: string;
 }
 
-type SubmitToApiParams = {
-    projectId: string,
-    caseId: string,
-    resourceName: string,
-    resourcePropertyKey: ResourcePropertyKey,
-    resourceId?: string,
-    resourceObject: ResourceObject,
-    resourceProfileId?: string,
-    wellId?: string,
-    drillingScheduleId?: string,
-}
-
 const useDataEdits = (): {
     addEdit: (params: AddEditParams) => void;
     undoEdit: () => void;
@@ -136,7 +124,6 @@ const useDataEdits = (): {
             projectId,
             caseId,
             resourceName,
-            resourcePropertyKey,
             resourceId,
             resourceProfileId,
             wellId,
@@ -148,7 +135,6 @@ const useDataEdits = (): {
             projectId,
             caseId: caseId!,
             resourceName,
-            resourcePropertyKey,
             resourceId,
             resourceProfileId,
             wellId,
@@ -365,7 +351,6 @@ const useDataEdits = (): {
                         caseId: editThatWillBeUndone.caseId!,
                         resourceProfileId: editThatWillBeUndone.resourceProfileId,
                         resourceName: editThatWillBeUndone.resourceName,
-                        resourcePropertyKey: editThatWillBeUndone.resourcePropertyKey,
                         resourceId: editThatWillBeUndone.resourceId,
                         resourceObject: editThatWillBeUndone.previousResourceObject as ResourceObject,
                         wellId: editThatWillBeUndone.wellId,
@@ -425,7 +410,6 @@ const useDataEdits = (): {
                             caseId: lastEdit.caseId!,
                             resourceProfileId: lastEdit.resourceProfileId,
                             resourceName: lastEdit.resourceName,
-                            resourcePropertyKey: lastEdit.resourcePropertyKey,
                             resourceId: lastEdit.resourceId,
                             resourceObject: lastEdit.newResourceObject as ResourceObject,
                             wellId: lastEdit.wellId,
@@ -478,7 +462,6 @@ const useDataEdits = (): {
                             caseId: updatedEdit.caseId!,
                             resourceProfileId: updatedEdit.resourceProfileId,
                             resourceName: updatedEdit.resourceName,
-                            resourcePropertyKey: updatedEdit.resourcePropertyKey,
                             resourceId: updatedEdit.resourceId,
                             resourceObject: updatedEdit.newResourceObject as ResourceObject,
                             wellId: updatedEdit.wellId,
