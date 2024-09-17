@@ -67,7 +67,6 @@ const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } }
         "UI Improvements": [
             { description: "Added loading indicators"},
             { description: "Removed modal for overriding time series"},
-            { description: ""}
         ],
         Bugfixes: [
             { description: "Misc Sharepoint PROSP import fixes"},
