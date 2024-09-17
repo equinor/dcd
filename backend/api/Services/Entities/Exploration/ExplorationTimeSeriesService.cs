@@ -15,7 +15,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
 {
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
-
+    private readonly IProjectAccessService _projectAccessService;
     private readonly ILogger<ExplorationService> _logger;
     private readonly IMapper _mapper;
     private readonly ICaseRepository _caseRepository;
@@ -31,7 +31,8 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
         ICaseRepository caseRepository,
         IExplorationTimeSeriesRepository repository,
         IExplorationRepository explorationRepository,
-        IMapperService mapperService
+        IMapperService mapperService,
+        IProjectAccessService projectAccessService
         )
     {
         _context = context;
@@ -42,6 +43,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
         _repository = repository;
         _explorationRepository = explorationRepository;
         _mapperService = mapperService;
+        _projectAccessService = projectAccessService;
     }
     public async Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
         Guid projectId,
@@ -165,6 +167,9 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
         var existingProfile = await getProfile(profileId)
             ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
 
+        // Need to verify that the project from the URL is the same as the project of the exploration
+        await _projectAccessService.ProjectExists<Exploration>(projectId, existingProfile.Exploration.ProjectId);
+
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, explorationId);
 
         TProfile updatedProfile;
@@ -199,6 +204,9 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     {
         var exploration = await _explorationRepository.GetExploration(explorationId)
             ?? throw new NotFoundInDBException($"Exploration with id {explorationId} not found.");
+
+        // Need to verify that the project from the URL is the same as the project of the exploration
+        await _projectAccessService.ProjectExists<Exploration>(projectId, exploration.ProjectId);
 
         var resourceHasProfile = await _explorationRepository.ExplorationHasProfile(explorationId, profileName);
 
