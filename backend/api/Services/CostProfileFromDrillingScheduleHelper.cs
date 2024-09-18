@@ -185,7 +185,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
 
     private static TimeSeries<double> GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(List<Well> wells, List<ExplorationWell> explorationWells)
     {
-        var costProfilesList = new List<TimeSeries<double>>();
+        var costProfilesList = new List<TimeSeries<double>?>();
         foreach (var explorationWell in explorationWells)
         {
             if (explorationWell?.DrillingSchedule?.Values?.Length > 0)
@@ -275,7 +275,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
 
     private static TimeSeries<double> GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(List<Well> wells, List<WellProjectWell> wellProjectWells)
     {
-        var costProfilesList = new List<TimeSeries<double>>();
+        var costProfilesList = new List<TimeSeries<double>?>();
         foreach (var wellProjectWell in wellProjectWells)
         {
             if (wellProjectWell?.DrillingSchedule?.Values?.Length > 0)

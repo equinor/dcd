@@ -105,7 +105,7 @@ public class StudyCostProfileService : IStudyCostProfileService
             return new StudyCostProfileWrapperDto();
         }
 
-        var cost = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { feasibility, feed, otherStudies });
+        var cost = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>?> { feasibility, feed, otherStudies });
 
         var studyCost = new StudyCostProfile
         {

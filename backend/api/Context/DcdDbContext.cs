@@ -10,6 +10,7 @@ namespace api.Context;
 public class DcdDbContext : DbContext
 {
     private readonly IServiceProvider _serviceProvider = null!;
+    private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
     public DcdDbContext(DbContextOptions<DcdDbContext> options) : base(options)
     {
@@ -27,8 +28,56 @@ public class DcdDbContext : DbContext
     // TODO: This is not pretty, need to move this logic out of the context
     public async Task<int> SaveChangesAndRecalculateAsync(Guid caseId, CancellationToken cancellationToken = default)
     {
-        await DetectChangesAndCalculateEntities(caseId);
-        return await base.SaveChangesAsync(cancellationToken);
+        await _semaphore.WaitAsync(cancellationToken);
+        try
+        {
+            await DetectChangesAndCalculateEntities(caseId);
+
+            bool saveFailed;
+            int result = 0;
+
+            do
+            {
+                saveFailed = false;
+                try
+                {
+                    result = await base.SaveChangesAsync(cancellationToken);
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    Console.WriteLine("Concurrency exception");
+                    saveFailed = true;
+
+                    // Iterate over all the entries in the exception
+                    Console.WriteLine("ex.Entries count: " + ex.Entries.Count);
+                    foreach (var entry in ex.Entries)
+                    {
+                        var clientValues = entry.CurrentValues;
+                        var databaseEntry = entry.GetDatabaseValues();
+                        Console.WriteLine("entry: " + entry.Entity.GetType().Name);
+
+                        if (databaseEntry == null)
+                        {
+                            throw new Exception("The entity being updated has been deleted.");
+                        }
+                        else
+                        {
+                            var databaseValues = databaseEntry.ToObject();
+                            Console.WriteLine("Database values: " + databaseValues);
+
+                            // TODO: Decide how to handle the conflict
+                            entry.OriginalValues.SetValues(databaseValues);;
+                        }
+                    }
+                }
+            } while (saveFailed);
+
+            return result;
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
     }
 
     private async Task DetectChangesAndCalculateEntities(Guid caseId)

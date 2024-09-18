@@ -103,7 +103,7 @@ public class OpexCostProfileService : IOpexCostProfileService
         result.OnshoreRelatedOPEXCostProfileDto = onshoreRelatedOPEXCostDto;
         result.AdditionalOPEXCostProfileDto = additionalOPEXCostDto;
 
-        var OPEX = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> {
+        var OPEX = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>?> {
         wellInterventionCost,
         offshoreFacilitiesOperationsCost,
         historicCost,

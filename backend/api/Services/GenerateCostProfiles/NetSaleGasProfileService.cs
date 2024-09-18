@@ -79,7 +79,7 @@ public class NetSaleGasProfileService : INetSaleGasProfileService
         }
 
         var fuelFlaringLosses =
-            TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { fuelConsumption, flarings, losses });
+            TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>?> { fuelConsumption, flarings, losses });
 
         if (drainageStrategy.FuelFlaringAndLossesOverride?.Override == true)
         {

@@ -45,7 +45,7 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
         var flaring = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
         var losses = EmissionCalculationHelper.CalculateLosses(project, drainageStrategy);
 
-        var total = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { fuelConsumptions, flaring, losses });
+        var total = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>?> { fuelConsumptions, flaring, losses });
 
         var fuelFlaringLosses = drainageStrategy.FuelFlaringAndLosses ?? new FuelFlaringAndLosses();
         fuelFlaringLosses.StartYear = total.StartYear;

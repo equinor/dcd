@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 using api.Context;
 using api.Dtos;
 using api.Enums;
@@ -82,6 +84,12 @@ public class ExplorationService : IExplorationService
             throw new ArgumentException(string.Format("Exploration {0} not found.", explorationId));
         }
         return exploration;
+    }
+
+    public async Task<Exploration> GetExplorationWithIncludes(Guid explorationId, params Expression<Func<Exploration, object>>[] includes)
+    {
+        return await _repository.GetExplorationWithIncludes(explorationId, includes)
+            ?? throw new NotFoundInDBException($"Exploration with id {explorationId} not found.");
     }
 
     public async Task<ExplorationDto> UpdateExploration(

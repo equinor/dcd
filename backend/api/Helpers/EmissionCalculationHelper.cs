@@ -38,7 +38,7 @@ public static class EmissionCalculationHelper
         var totalPowerGas = CalculateTotalUseOfPowerGas(topside, drainageStrategy, pe);
         var totalPowerWI = CalculateTotalUseOfPowerWI(topside, drainageStrategy, pe);
 
-        var mergedPowerProfile = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { totalPowerOil, totalPowerGas, totalPowerWI });
+        var mergedPowerProfile = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>?> { totalPowerOil, totalPowerGas, totalPowerWI });
 
         var totalUseOFPowerValues = mergedPowerProfile.Values.Select(v => v + cO2ShareCO2Max).ToArray();
         var totalUseOfPower = new TimeSeries<double>

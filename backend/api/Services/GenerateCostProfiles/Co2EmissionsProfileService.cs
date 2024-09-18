@@ -52,7 +52,7 @@ public class Co2EmissionsProfileService : ICo2EmissionsProfileService
         var flaringsProfile = GetFlaringsProfile(project, drainageStrategy);
         var lossesProfile = GetLossesProfile(project, drainageStrategy);
 
-        var tempProfile = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { fuelConsumptionsProfile, flaringsProfile, lossesProfile });
+        var tempProfile = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>?> { fuelConsumptionsProfile, flaringsProfile, lossesProfile });
 
         var convertedValues = tempProfile.Values.Select(v => v / 1000);
 

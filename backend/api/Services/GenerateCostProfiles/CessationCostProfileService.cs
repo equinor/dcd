@@ -18,11 +18,9 @@ public class CessationCostProfileService : ICessationCostProfileService
     private readonly IWellProjectWellService _wellProjectWellService;
     private readonly ISurfService _surfService;
     private readonly IProjectService _projectService;
-    private readonly DcdDbContext _context;
     private readonly IMapper _mapper;
 
     public CessationCostProfileService(
-        DcdDbContext context,
         ILoggerFactory loggerFactory,
         ICaseService caseService,
         IDrainageStrategyService drainageStrategyService,
@@ -32,7 +30,6 @@ public class CessationCostProfileService : ICessationCostProfileService
         IProjectService projectService,
         IMapper mapper)
     {
-        _context = context;
         _logger = loggerFactory.CreateLogger<CessationCostProfileService>();
         _caseService = caseService;
         _drainageStrategyService = drainageStrategyService;
@@ -64,7 +61,7 @@ public class CessationCostProfileService : ICessationCostProfileService
 
         UpdateCaseAndSave(caseItem, cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCostProfile);
 
-        var cessationTimeSeries = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCostProfile });
+        var cessationTimeSeries = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>?> { cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCostProfile });
         var cessation = new CessationCost
         {
             StartYear = cessationTimeSeries.StartYear,
@@ -102,17 +99,11 @@ public class CessationCostProfileService : ICessationCostProfileService
         }
     }
 
-    private async Task<CessationOffshoreFacilitiesCost> GetCessationOffshoreFacilitiesCost(Case caseItem)
+    private async Task<TimeSeriesCost> GetCessationOffshoreFacilitiesCost(Case caseItem)
     {
         if (caseItem.CessationOffshoreFacilitiesCostOverride?.Override == true)
         {
-            var overrideCost = caseItem.CessationOffshoreFacilitiesCostOverride;
-            return new CessationOffshoreFacilitiesCost
-            {
-                StartYear = overrideCost.StartYear,
-                Values = overrideCost.Values,
-                Currency = overrideCost.Currency
-            };
+            return caseItem.CessationOffshoreFacilitiesCostOverride;
         }
         else
         {
@@ -120,7 +111,7 @@ public class CessationCostProfileService : ICessationCostProfileService
             if (lastYear.HasValue)
             {
                 var surf = await _surfService.GetSurf(caseItem.SurfLink);
-                return GenerateCessationOffshoreFacilitiesCost(surf, lastYear.Value, new CessationOffshoreFacilitiesCost());
+                return GenerateCessationOffshoreFacilitiesCost(surf, lastYear.Value, caseItem.CessationOffshoreFacilitiesCost ?? new CessationOffshoreFacilitiesCost());
             }
             else
             {
@@ -129,12 +120,11 @@ public class CessationCostProfileService : ICessationCostProfileService
         }
     }
 
-    private void UpdateCaseAndSave(Case caseItem, CessationWellsCost cessationWellsCost, CessationOffshoreFacilitiesCost cessationOffshoreFacilitiesCost, CessationOnshoreFacilitiesCostProfile CessationOnshoreFacilitiesCostProfile)
+    private void UpdateCaseAndSave(Case caseItem, CessationWellsCost cessationWellsCost, TimeSeriesCost cessationOffshoreFacilitiesCost, CessationOnshoreFacilitiesCostProfile CessationOnshoreFacilitiesCostProfile)
     {
         caseItem.CessationWellsCost = cessationWellsCost;
-        caseItem.CessationOffshoreFacilitiesCost = cessationOffshoreFacilitiesCost;
+        caseItem.CessationOffshoreFacilitiesCost = (CessationOffshoreFacilitiesCost?)cessationOffshoreFacilitiesCost;
         caseItem.CessationOnshoreFacilitiesCostProfile = CessationOnshoreFacilitiesCostProfile;
-        // return await _context.SaveChangesAsync();
     }
 
     private async Task<CessationWellsCost> GenerateCessationWellsCost(WellProject wellProject, Project project, int lastYear, CessationWellsCost cessationWells)
