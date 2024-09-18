@@ -63,7 +63,21 @@ public class CompareCasesService : ICompareCasesService
                     c => c.CessationWellsCost!,
                     c => c.CessationOffshoreFacilitiesCostOverride!,
                     c => c.CessationOffshoreFacilitiesCost!,
-                    c => c.CessationOnshoreFacilitiesCostProfile!);
+                    c => c.CessationOnshoreFacilitiesCostProfile!,
+                    c => c.TotalFeasibilityAndConceptStudies!,
+                    c => c.TotalFeasibilityAndConceptStudiesOverride!,
+                    c => c.TotalFEEDStudies!,
+                    c => c.TotalFEEDStudiesOverride!,
+                    c => c.TotalOtherStudiesCostProfile!,
+                    c => c.WellInterventionCostProfile!,
+                    c => c.WellInterventionCostProfileOverride!,
+                    c => c.OffshoreFacilitiesOperationsCostProfile!,
+                    c => c.OffshoreFacilitiesOperationsCostProfileOverride!,
+                    c => c.HistoricCostCostProfile!,
+                    c => c.OnshoreRelatedOPEXCostProfile!,
+                    c => c.AdditionalOPEXCostProfile!
+
+                    );
 
                 drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
                     caseItem.DrainageStrategyLink,
@@ -87,17 +101,18 @@ public class CompareCasesService : ICompareCasesService
                 var totalGasProduction = CalculateTotalGasProduction(caseItem, project, drainageStrategy, false);
                 var totalExportedVolumes = CalculateTotalExportedVolumes(caseItem, project, drainageStrategy, false);
 
-                var generateCo2EmissionsProfile = await _generateCo2EmissionsProfile.Generate(caseItem.Id);
+                var explorationCosts = CalculateExplorationWellCosts(caseItem, exploration);
+                var developmentCosts = await CalculateDevelopmentWellCosts(caseItem);
 
-                var totalCo2Emissions = CalculateTotalCO2Emissions(generateCo2EmissionsProfile);
-                var co2Intensity = CalculateCO2Intensity(caseItem, project, drainageStrategy, generateCo2EmissionsProfile);
+                TimeSeriesMass? generateCo2EmissionsProfile = drainageStrategy.Co2EmissionsOverride?.Override == true ? drainageStrategy.Co2EmissionsOverride : drainageStrategy.Co2Emissions;
+
+                var totalCo2Emissions = generateCo2EmissionsProfile?.Values.Sum() ?? 0;
+                var co2Intensity = CalculateCO2Intensity(caseItem, project, drainageStrategy, totalCo2Emissions);
 
                 var totalCessationCosts = CalculateTotalCessationCosts(caseWithProfiles);
 
-                var totalStudyCostsPlusOpex = await CalculateTotalStudyCostsPlusOpex(caseItem);
+                var totalStudyCostsPlusOpex = CalculateTotalStudyCostsPlusOpex(caseWithProfiles);
                 var offshorePlusOnshoreFacilityCosts = await CalculateOffshorePlusOnshoreFacilityCosts(caseItem);
-                var developmentCosts = await CalculateDevelopmentWellCosts(caseItem);
-                var explorationCosts = CalculateExplorationWellCosts(caseItem, exploration);
 
                 var compareCases = new CompareCasesDto
                 {
@@ -189,12 +204,36 @@ public class CompareCasesService : ICompareCasesService
         return CalculateTotalOilProduction(caseItem, project, drainageStrategy, true) + CalculateTotalGasProduction(caseItem, project, drainageStrategy, true);
     }
 
-    private async Task<double> CalculateTotalStudyCostsPlusOpex(Case caseItem)
+    private double CalculateTotalStudyCostsPlusOpex(Case caseItem)
     {
-        var generateStudyProfile = await _generateStudyCostProfile.Generate(caseItem.Id);
-        var generateOpexProfile = await _generateOpexCostProfile.Generate(caseItem.Id);
-        var sumStudyValues = generateStudyProfile?.StudyCostProfileDto?.Sum ?? 0;
-        var sumOpexValues = generateOpexProfile?.OpexCostProfileDto?.Sum ?? 0;
+        TimeSeriesCost? feasibility = caseItem.TotalFeasibilityAndConceptStudiesOverride?.Override == true ? caseItem.TotalFeasibilityAndConceptStudiesOverride : caseItem.TotalFeasibilityAndConceptStudies;
+        TimeSeriesCost? feed = caseItem.TotalFEEDStudiesOverride?.Override == true ? caseItem.TotalFEEDStudiesOverride : caseItem.TotalFEEDStudies;
+        TimeSeriesCost? otherStudies = caseItem.TotalOtherStudiesCostProfile;
+
+        var studyTimeSeries = TimeSeriesCost.MergeCostProfilesList(
+            [
+                feasibility,
+                feed,
+                otherStudies
+            ]);
+
+        TimeSeriesCost? wellIntervention = caseItem.WellInterventionCostProfileOverride?.Override == true ? caseItem.WellInterventionCostProfileOverride : caseItem.WellInterventionCostProfile;
+        TimeSeriesCost? offshoreFacilities = caseItem.OffshoreFacilitiesOperationsCostProfileOverride?.Override == true ? caseItem.OffshoreFacilitiesOperationsCostProfileOverride : caseItem.OffshoreFacilitiesOperationsCostProfile;
+        TimeSeriesCost? historicCost = caseItem.HistoricCostCostProfile;
+        TimeSeriesCost? onshoreOpex = caseItem.OnshoreRelatedOPEXCostProfile;
+        TimeSeriesCost? additionalOpex = caseItem.AdditionalOPEXCostProfile;
+
+        var opexTimeSeries = TimeSeriesCost.MergeCostProfilesList(
+            [
+                wellIntervention,
+                offshoreFacilities,
+                historicCost,
+                onshoreOpex,
+                additionalOpex
+            ]);
+
+        var sumStudyValues = studyTimeSeries?.Values.Sum() ?? 0;
+        var sumOpexValues = opexTimeSeries?.Values.Sum() ?? 0;
 
         return sumStudyValues + sumOpexValues;
     }
@@ -205,7 +244,12 @@ public class CompareCasesService : ICompareCasesService
         TimeSeriesCost? cessationOffshoreFacilitiesCost = caseItem.CessationOffshoreFacilitiesCostOverride?.Override == true ? caseItem.CessationOffshoreFacilitiesCostOverride : caseItem.CessationOffshoreFacilitiesCost;
         TimeSeriesCost? cessationOnshoreFacilitiesCostProfile = caseItem.CessationOnshoreFacilitiesCostProfile;
 
-        var cessationTimeSeries = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>?> { cessationWellsCost, cessationOffshoreFacilitiesCost, cessationOnshoreFacilitiesCostProfile });
+        var cessationTimeSeries = TimeSeriesCost.MergeCostProfilesList(
+            [
+                cessationWellsCost,
+                cessationOffshoreFacilitiesCost,
+                cessationOnshoreFacilitiesCostProfile
+            ]);
 
         return cessationTimeSeries.Values.Sum();
     }
@@ -259,17 +303,11 @@ public class CompareCasesService : ICompareCasesService
         return sumExplorationWellCost;
     }
 
-    private static double CalculateTotalCO2Emissions(Co2EmissionsDto generateCo2EmissionsProfile)
-    {
-        return generateCo2EmissionsProfile.Sum;
-    }
-
-    private double CalculateCO2Intensity(Case caseItem, Project project, DrainageStrategy drainageStrategy, Co2EmissionsDto generateCo2EmissionsProfile)
+    private double CalculateCO2Intensity(Case caseItem, Project project, DrainageStrategy drainageStrategy, double totalCo2Emissions)
     {
         var tonnesToKgFactor = 1000;
         var boeConversionFactor = 6.29;
         var totalExportedVolumes = CalculateTotalExportedVolumes(caseItem, project, drainageStrategy, true);
-        var totalCo2Emissions = CalculateTotalCO2Emissions(generateCo2EmissionsProfile);
         if (totalExportedVolumes != 0 && totalCo2Emissions != 0)
         {
             return totalCo2Emissions / totalExportedVolumes / boeConversionFactor * tonnesToKgFactor;
