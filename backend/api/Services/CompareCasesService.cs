@@ -1,12 +1,7 @@
-using System.Globalization;
-
-using api.Adapters;
-using api.Context;
 using api.Dtos;
 using api.Models;
 using api.Services.GenerateCostProfiles;
 
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
@@ -75,9 +70,7 @@ public class CompareCasesService : ICompareCasesService
                     c => c.OffshoreFacilitiesOperationsCostProfileOverride!,
                     c => c.HistoricCostCostProfile!,
                     c => c.OnshoreRelatedOPEXCostProfile!,
-                    c => c.AdditionalOPEXCostProfile!
-
-                    );
+                    c => c.AdditionalOPEXCostProfile!);
 
                 drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
                     caseItem.DrainageStrategyLink,
