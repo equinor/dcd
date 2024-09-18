@@ -1,11 +1,6 @@
 using System.Globalization;
 
-using api.Adapters;
-using api.Context;
-using api.Dtos;
 using api.Models;
-
-using AutoMapper;
 
 namespace api.Services;
 
@@ -18,21 +13,16 @@ public class StudyCostProfileService : IStudyCostProfileService
     private readonly ISubstructureService _substructureService;
     private readonly ISurfService _surfService;
     private readonly ITransportService _transportService;
-    private readonly DcdDbContext _context;
-    private readonly IMapper _mapper;
 
     public StudyCostProfileService(
-        DcdDbContext context,
         ILoggerFactory loggerFactory,
         ICaseService caseService,
         IWellProjectService wellProjectService,
         ITopsideService topsideService,
         ISubstructureService substructureService,
         ISurfService surfService,
-        ITransportService transportService,
-        IMapper mapper)
+        ITransportService transportService)
     {
-        _context = context;
         _logger = loggerFactory.CreateLogger<StudyCostProfileService>();
         _caseService = caseService;
         _wellProjectService = wellProjectService;
@@ -40,104 +30,43 @@ public class StudyCostProfileService : IStudyCostProfileService
         _substructureService = substructureService;
         _surfService = surfService;
         _transportService = transportService;
-        _mapper = mapper;
     }
 
-    public async Task<StudyCostProfileWrapperDto> Generate(Guid caseId)
+    public async Task Generate(Guid caseId)
     {
-        var caseItem = await _caseService.GetCase(caseId);
-        return await Generate(caseItem);
-    }
+        var caseItem = await _caseService.GetCaseWithIncludes(
+            caseId,
+            c => c.TotalFeasibilityAndConceptStudies!,
+            c => c.TotalFeasibilityAndConceptStudiesOverride!,
+            c => c.TotalFEEDStudies!,
+            c => c.TotalFEEDStudiesOverride!
+        );
 
-    public async Task<StudyCostProfileWrapperDto> Generate(Case caseItem)
-    {
         var sumFacilityCost = await SumAllCostFacility(caseItem);
         var sumWellCost = await SumWellCost(caseItem);
 
-        var newFeasibility = CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
-        var newFeed = CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
+        CalculateTotalFeasibilityAndConceptStudies(caseItem, sumFacilityCost, sumWellCost);
+        CalculateTotalFEEDStudies(caseItem, sumFacilityCost, sumWellCost);
+    }
 
-        TotalFeasibilityAndConceptStudies feasibility;
+    public void CalculateTotalFeasibilityAndConceptStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
+    {
         if (caseItem.TotalFeasibilityAndConceptStudiesOverride?.Override == true)
         {
-            feasibility = new TotalFeasibilityAndConceptStudies
-            {
-                StartYear = caseItem.TotalFeasibilityAndConceptStudiesOverride.StartYear,
-                Values = caseItem.TotalFeasibilityAndConceptStudiesOverride.Values,
-            };
-        }
-        else
-        {
-            feasibility = newFeasibility;
+            return;
         }
 
-        TotalFEEDStudies feed;
-        if (caseItem.TotalFEEDStudiesOverride?.Override == true)
-        {
-            feed = new TotalFEEDStudies
-            {
-                StartYear = caseItem.TotalFEEDStudiesOverride.StartYear,
-                Values = caseItem.TotalFEEDStudiesOverride.Values,
-            };
-        }
-        else
-        {
-            feed = newFeed;
-        }
-
-        var otherStudies = caseItem.TotalOtherStudiesCostProfile ?? new TotalOtherStudiesCostProfile();
-
-        UpdateCaseAndSave(caseItem, feasibility, feed, otherStudies);
-
-        var result = new StudyCostProfileWrapperDto();
-        var feasibilityDto = _mapper.Map<TotalFeasibilityAndConceptStudiesDto>(feasibility);
-        var feedDto = _mapper.Map<TotalFEEDStudiesDto>(feed);
-        var otherStudiesDto = _mapper.Map<TotalOtherStudiesCostProfileDto>(otherStudies);
-
-        result.TotalFeasibilityAndConceptStudiesDto = feasibilityDto;
-        result.TotalFEEDStudiesDto = feedDto;
-        result.TotalOtherStudiesCostProfileDto = otherStudiesDto;
-
-        if ((feasibility.Values == null || feasibility.Values.Length == 0) &&
-            (feed.Values == null || feed.Values.Length == 0) &&
-            (otherStudies.Values == null || otherStudies.Values.Length == 0))
-        {
-            return new StudyCostProfileWrapperDto();
-        }
-
-        var cost = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>?> { feasibility, feed, otherStudies });
-
-        var studyCost = new StudyCostProfile
-        {
-            StartYear = cost.StartYear,
-            Values = cost.Values
-        };
-
-        var study = _mapper.Map<StudyCostProfileDto>(studyCost);
-        result.StudyCostProfileDto = study;
-
-        return result;
-    }
-
-
-
-
-    private void UpdateCaseAndSave(Case caseItem, TotalFeasibilityAndConceptStudies totalFeasibilityAndConceptStudies, TotalFEEDStudies totalFEEDStudies, TotalOtherStudiesCostProfile totalOtherStudiesCostProfile)
-    {
-        caseItem.TotalFeasibilityAndConceptStudies = totalFeasibilityAndConceptStudies;
-        caseItem.TotalFEEDStudies = totalFEEDStudies;
-        caseItem.TotalOtherStudiesCostProfile = totalOtherStudiesCostProfile;
-        // return await _context.SaveChangesAsync();
-    }
-
-    public TotalFeasibilityAndConceptStudies CalculateTotalFeasibilityAndConceptStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
-    {
         var totalFeasibilityAndConceptStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFeasibilityStudies;
 
         var dg0 = caseItem.DG0Date;
         var dg2 = caseItem.DG2Date;
 
-        if (dg0.Year == 1 || dg2.Year == 1) { return new TotalFeasibilityAndConceptStudies(); }
+        if (dg0.Year == 1 || dg2.Year == 1)
+        {
+            CalculationHelper.ResetTimeSeries(caseItem.TotalFeasibilityAndConceptStudies);
+            return;
+        }
+
         if (dg2.DayOfYear == 1) { dg2 = dg2.AddDays(-1); } // Treat the 1st of January as the 31st of December
 
         var totalDays = (dg2 - dg0).Days + 1;
@@ -168,17 +97,37 @@ public class StudyCostProfileService : IStudyCostProfileService
             Values = valuesList.ToArray()
         };
 
-        return feasibilityAndConceptStudiesCost;
+        if (caseItem.TotalFeasibilityAndConceptStudies != null)
+        {
+            caseItem.TotalFeasibilityAndConceptStudies.Values = feasibilityAndConceptStudiesCost.Values;
+            caseItem.TotalFeasibilityAndConceptStudies.StartYear = feasibilityAndConceptStudiesCost.StartYear;
+        }
+        else
+        {
+            caseItem.TotalFeasibilityAndConceptStudies = feasibilityAndConceptStudiesCost;
+        }
+
+        return;
     }
 
-    public TotalFEEDStudies CalculateTotalFEEDStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
+    public void CalculateTotalFEEDStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
     {
+        if (caseItem.TotalFEEDStudiesOverride?.Override == true)
+        {
+            return;
+        }
+
         var totalFeedStudies = (sumFacilityCost + sumWellCost) * caseItem.CapexFactorFEEDStudies;
 
         var dg2 = caseItem.DG2Date;
         var dg3 = caseItem.DG3Date;
 
-        if (dg2.Year == 1 || dg3.Year == 1) { return new TotalFEEDStudies(); }
+        if (dg2.Year == 1 || dg3.Year == 1)
+        {
+            CalculationHelper.ResetTimeSeries(caseItem.TotalFEEDStudies);
+            return;
+        }
+
         if (dg3.DayOfYear == 1) { dg3 = dg3.AddDays(-1); } // Treat the 1st of January as the 31st of December
 
         var totalDays = (dg3 - dg2).Days + 1;
@@ -209,83 +158,64 @@ public class StudyCostProfileService : IStudyCostProfileService
             Values = valuesList.ToArray()
         };
 
-        return totalFeedStudiesCost;
+        if (caseItem.TotalFEEDStudies != null)
+        {
+            caseItem.TotalFEEDStudies.Values = totalFeedStudiesCost.Values;
+            caseItem.TotalFEEDStudies.StartYear = totalFeedStudiesCost.StartYear;
+        }
+        else
+        {
+            caseItem.TotalFEEDStudies = totalFeedStudiesCost;
+        }
+
+        return;
     }
 
     public async Task<double> SumAllCostFacility(Case caseItem)
     {
         var sumFacilityCost = 0.0;
 
-        Substructure substructure;
-        try
+        var substructure = await _substructureService.GetSubstructure(caseItem.SubstructureLink);
+        if (substructure.CostProfileOverride?.Override == true)
         {
-            substructure = await _substructureService.GetSubstructure(caseItem.SubstructureLink);
-            if (substructure.CostProfileOverride?.Override == true)
-            {
-                sumFacilityCost += substructure.CostProfileOverride.Values.Sum();
-            }
-            else if (substructure.CostProfile != null)
-            {
-                sumFacilityCost += substructure.CostProfile.Values.Sum();
-            }
+            sumFacilityCost += substructure.CostProfileOverride.Values.Sum();
         }
-        catch (ArgumentException)
+        else if (substructure.CostProfile != null)
         {
-            _logger.LogInformation("Substructure {0} not found.", caseItem.SubstructureLink);
+            sumFacilityCost += substructure.CostProfile.Values.Sum();
         }
 
-        Surf surf;
-        try
+
+        var surf = await _surfService.GetSurf(caseItem.SurfLink);
+        if (surf.CostProfileOverride?.Override == true)
         {
-            surf = await _surfService.GetSurf(caseItem.SurfLink);
-            if (surf.CostProfileOverride?.Override == true)
-            {
-                sumFacilityCost += surf.CostProfileOverride.Values.Sum();
-            }
-            else if (surf.CostProfile != null)
-            {
-                sumFacilityCost += surf.CostProfile.Values.Sum();
-            }
+            sumFacilityCost += surf.CostProfileOverride.Values.Sum();
         }
-        catch (ArgumentException)
+        else if (surf.CostProfile != null)
         {
-            _logger.LogInformation("Surf {0} not found.", caseItem.SurfLink);
+            sumFacilityCost += surf.CostProfile.Values.Sum();
         }
 
-        Topside topside;
-        try
+
+        var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
+        if (topside.CostProfileOverride?.Override == true)
         {
-            topside = await _topsideService.GetTopside(caseItem.TopsideLink);
-            if (topside.CostProfileOverride?.Override == true)
-            {
-                sumFacilityCost += topside.CostProfileOverride.Values.Sum();
-            }
-            else if (topside.CostProfile != null)
-            {
-                sumFacilityCost += topside.CostProfile.Values.Sum();
-            }
+            sumFacilityCost += topside.CostProfileOverride.Values.Sum();
         }
-        catch (ArgumentException)
+        else if (topside.CostProfile != null)
         {
-            _logger.LogInformation("Topside {0} not found.", caseItem.TopsideLink);
+            sumFacilityCost += topside.CostProfile.Values.Sum();
         }
 
-        Transport transport;
-        try
+
+        var transport = await _transportService.GetTransport(caseItem.TransportLink);
+        if (transport.CostProfileOverride?.Override == true)
         {
-            transport = await _transportService.GetTransport(caseItem.TransportLink);
-            if (transport.CostProfileOverride?.Override == true)
-            {
-                sumFacilityCost += transport.CostProfileOverride.Values.Sum();
-            }
-            else if (transport.CostProfile != null)
-            {
-                sumFacilityCost += transport.CostProfile.Values.Sum();
-            }
+            sumFacilityCost += transport.CostProfileOverride.Values.Sum();
         }
-        catch (ArgumentException)
+        else if (transport.CostProfile != null)
         {
-            _logger.LogInformation("Transport {0} not found.", caseItem.TransportLink);
+            sumFacilityCost += transport.CostProfile.Values.Sum();
         }
 
         return sumFacilityCost;
@@ -295,50 +225,42 @@ public class StudyCostProfileService : IStudyCostProfileService
     {
         var sumWellCost = 0.0;
 
-        WellProject wellProject;
-        try
+        var wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
+
+        if (wellProject.OilProducerCostProfileOverride?.Override == true)
         {
-            wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
-
-            if (wellProject.OilProducerCostProfileOverride?.Override == true)
-            {
-                sumWellCost += wellProject.OilProducerCostProfileOverride.Values.Sum();
-            }
-            else if (wellProject.OilProducerCostProfile != null)
-            {
-                sumWellCost += wellProject.OilProducerCostProfile.Values.Sum();
-            }
-
-            if (wellProject.GasProducerCostProfileOverride?.Override == true)
-            {
-                sumWellCost += wellProject.GasProducerCostProfileOverride.Values.Sum();
-            }
-            else if (wellProject.GasProducerCostProfile != null)
-            {
-                sumWellCost += wellProject.GasProducerCostProfile.Values.Sum();
-            }
-
-            if (wellProject.WaterInjectorCostProfileOverride?.Override == true)
-            {
-                sumWellCost += wellProject.WaterInjectorCostProfileOverride.Values.Sum();
-            }
-            else if (wellProject.WaterInjectorCostProfile != null)
-            {
-                sumWellCost += wellProject.WaterInjectorCostProfile.Values.Sum();
-            }
-
-            if (wellProject.GasInjectorCostProfileOverride?.Override == true)
-            {
-                sumWellCost += wellProject.GasInjectorCostProfileOverride.Values.Sum();
-            }
-            else if (wellProject.GasInjectorCostProfile != null)
-            {
-                sumWellCost += wellProject.GasInjectorCostProfile.Values.Sum();
-            }
+            sumWellCost += wellProject.OilProducerCostProfileOverride.Values.Sum();
         }
-        catch (ArgumentException)
+        else if (wellProject.OilProducerCostProfile != null)
         {
-            _logger.LogInformation("WellProject {0} not found.", caseItem.WellProjectLink);
+            sumWellCost += wellProject.OilProducerCostProfile.Values.Sum();
+        }
+
+        if (wellProject.GasProducerCostProfileOverride?.Override == true)
+        {
+            sumWellCost += wellProject.GasProducerCostProfileOverride.Values.Sum();
+        }
+        else if (wellProject.GasProducerCostProfile != null)
+        {
+            sumWellCost += wellProject.GasProducerCostProfile.Values.Sum();
+        }
+
+        if (wellProject.WaterInjectorCostProfileOverride?.Override == true)
+        {
+            sumWellCost += wellProject.WaterInjectorCostProfileOverride.Values.Sum();
+        }
+        else if (wellProject.WaterInjectorCostProfile != null)
+        {
+            sumWellCost += wellProject.WaterInjectorCostProfile.Values.Sum();
+        }
+
+        if (wellProject.GasInjectorCostProfileOverride?.Override == true)
+        {
+            sumWellCost += wellProject.GasInjectorCostProfileOverride.Values.Sum();
+        }
+        else if (wellProject.GasInjectorCostProfile != null)
+        {
+            sumWellCost += wellProject.GasInjectorCostProfile.Values.Sum();
         }
 
         return sumWellCost;
