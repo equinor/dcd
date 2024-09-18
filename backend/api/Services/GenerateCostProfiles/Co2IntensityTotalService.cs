@@ -34,7 +34,17 @@ public class Co2IntensityTotalService : ICo2IntensityTotalService
         var project = await _projectService.GetProject(caseItem.ProjectId);
         var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
-        var generateCo2EmissionsProfile = await _generateCo2EmissionsProfile.Generate(caseItem.Id);
+        var generateCo2EmissionsProfile = new Co2EmissionsDto();
+        if (drainageStrategy.Co2EmissionsOverride?.Override == true)
+        {
+            generateCo2EmissionsProfile.Values = drainageStrategy.Co2EmissionsOverride.Values;
+            generateCo2EmissionsProfile.StartYear = drainageStrategy.Co2EmissionsOverride.StartYear;
+        }
+        else
+        {
+            generateCo2EmissionsProfile.Values = drainageStrategy.Co2Emissions?.Values ?? [];
+            generateCo2EmissionsProfile.StartYear = drainageStrategy.Co2Emissions?.StartYear ?? 0;
+        }
         double co2Intensity = CalculateCO2Intensity(caseItem, project, drainageStrategy, generateCo2EmissionsProfile);
         return co2Intensity;
     }

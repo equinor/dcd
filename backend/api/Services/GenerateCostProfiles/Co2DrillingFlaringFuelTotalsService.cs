@@ -33,10 +33,17 @@ public class Co2DrillingFlaringFuelTotalsService : ICo2DrillingFlaringFuelTotals
 
     public async Task<Co2DrillingFlaringFuelTotalsDto> Generate(Guid caseId)
     {
-        var caseItem = await _caseService.GetCase(caseId);
-        var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
+        var caseItem = await _caseService.GetCaseWithIncludes(caseId);
+        var topside = await _topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
         var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
-        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
+            caseItem.DrainageStrategyLink,
+            d => d.ProductionProfileOil!,
+            d => d.AdditionalProductionProfileOil!,
+            d => d.ProductionProfileGas!,
+            d => d.AdditionalProductionProfileGas!,
+            d => d.ProductionProfileWaterInjection!
+        );
         var wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
 
         var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(project, caseItem, topside, drainageStrategy);
@@ -65,8 +72,12 @@ public class Co2DrillingFlaringFuelTotalsService : ICo2DrillingFlaringFuelTotals
         return flaringsProfile.Values.Sum() / 1000;
     }
 
-    private static double GetFuelConsumptionsProfileTotal(Project project, Case caseItem, Topside topside,
-        DrainageStrategy drainageStrategy)
+    private static double GetFuelConsumptionsProfileTotal(
+        Project project,
+        Case caseItem,
+        Topside topside,
+        DrainageStrategy drainageStrategy
+    )
     {
         var fuelConsumptions =
             EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);

@@ -46,9 +46,9 @@ public class Co2IntensityProfileService : ICo2IntensityProfileService
         }
         else
         {
-            var generatedCo2 = await _generateCo2EmissionsProfile.Generate(caseId);
-            generateCo2EmissionsProfile.StartYear = generatedCo2.StartYear;
-            generateCo2EmissionsProfile.Values = generatedCo2.Values;
+            var co2Emissions = drainageStrategy.Co2Emissions;
+            generateCo2EmissionsProfile.StartYear = co2Emissions?.StartYear ?? 0;
+            generateCo2EmissionsProfile.Values = co2Emissions?.Values ?? [];
         }
 
         var co2IntensityValues = new List<double>();
