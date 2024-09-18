@@ -21,9 +21,9 @@ public class ExplorationRepository : BaseRepository, IExplorationRepository
         return await Get<Exploration>(explorationId);
     }
 
-    public async Task<Exploration?> GetExplorationWithIncludes(Guid caseId, params Expression<Func<Exploration, object>>[] includes)
+    public async Task<Exploration?> GetExplorationWithIncludes(Guid explorationId, params Expression<Func<Exploration, object>>[] includes)
     {
-        return await GetWithIncludes(caseId, includes);
+        return await GetWithIncludes(explorationId, includes);
     }
 
     public async Task<Well?> GetWell(Guid wellId)

@@ -11,9 +11,6 @@ public class CompareCasesService : ICompareCasesService
     private readonly ILogger<CompareCasesService> _logger;
     private readonly IExplorationService _explorationService;
     private readonly IDrainageStrategyService _drainageStrategyService;
-    private readonly ICo2EmissionsProfileService _generateCo2EmissionsProfile;
-    private readonly IGenerateGAndGAdminCostProfile _generateGAndGAdminCostProfile;
-    private readonly IOpexCostProfileService _generateOpexCostProfile;
     private readonly IStudyCostProfileService _generateStudyCostProfile;
     private readonly ICaseService _caseService;
 
@@ -23,21 +20,14 @@ public class CompareCasesService : ICompareCasesService
         ILoggerFactory loggerFactory,
         IExplorationService explorationService,
         IDrainageStrategyService drainageStrategyService,
-        IGenerateGAndGAdminCostProfile generateGAndGAdminCostProfile,
         IStudyCostProfileService generateStudyCostProfile,
-        IOpexCostProfileService generateOpexCostProfile,
-        ICo2EmissionsProfileService generateCo2EmissionsProfile,
         ICaseService caseService)
     {
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<CompareCasesService>();
         _explorationService = explorationService;
         _drainageStrategyService = drainageStrategyService;
-
-        _generateGAndGAdminCostProfile = generateGAndGAdminCostProfile;
         _generateStudyCostProfile = generateStudyCostProfile;
-        _generateOpexCostProfile = generateOpexCostProfile;
-        _generateCo2EmissionsProfile = generateCo2EmissionsProfile;
         _caseService = caseService;
     }
 

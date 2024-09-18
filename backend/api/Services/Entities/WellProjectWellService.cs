@@ -20,13 +20,8 @@ public class WellProjectWellService : IWellProjectWellService
 
     public async Task<List<WellProjectWell>> GetWellProjectWellsForWellProject(Guid wellProjectId)
     {
-        var wellProjectWells = await _context.WellProjectWell!
+        return await _context.WellProjectWell!
             .Include(wpw => wpw.DrillingSchedule)
             .Where(w => w.WellProjectId == wellProjectId).ToListAsync();
-        if (wellProjectWells == null)
-        {
-            throw new ArgumentException(string.Format("WellProjectWells for WellProject {0} not found.", wellProjectId));
-        }
-        return wellProjectWells;
     }
 }
