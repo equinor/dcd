@@ -63,7 +63,12 @@ const ProjectSettingsTab = () => {
             const newCurrency: Components.Schemas.Currency = Number(e.currentTarget.value) as Components.Schemas.Currency
             const newProject: Components.Schemas.ProjectWithAssetsDto = { ...projectData }
             newProject.currency = newCurrency
-            setProjectEdited(newProject)
+
+            addProjectEdit({
+                projectId: projectData.id,
+                newResourceObject: newProject,
+                previousResourceObject: projectData,
+            })
         }
     }
 
@@ -73,7 +78,12 @@ const ProjectSettingsTab = () => {
             const newClassification: Components.Schemas.ProjectClassification = Number(e.currentTarget.value) as unknown as Components.Schemas.ProjectClassification
             const newProject: Components.Schemas.ProjectWithAssetsDto = { ...projectData }
             newProject.classification = newClassification
-            setProjectEdited(newProject)
+
+            addProjectEdit({
+                projectId: projectData.id,
+                newResourceObject: newProject,
+                previousResourceObject: projectData,
+            })
         }
     }
 
@@ -119,7 +129,7 @@ const ProjectSettingsTab = () => {
                         id="currency"
                         label=""
                         onChange={(e) => handleCurrencyChange(e)}
-                        value={projectEdited ? projectEdited.currency : projectData.currency}
+                        value={projectData.currency}
                     >
                         {Object.entries(currencyOptions).map(([key, val]) => (
                             <option key={key} value={key}>{val}</option>
@@ -130,17 +140,17 @@ const ProjectSettingsTab = () => {
             <Grid item>
                 {dummyRole === 0 && (
                     <InputSwitcher
-                        value={classification !== undefined ? PROJECT_CLASSIFICATION[classification].label : "Not set"}
+                        value={projectData.classification !== undefined ? PROJECT_CLASSIFICATION[projectData.classification].label : "Not set"}
                         label="Classification"
                     >
                         <NativeSelect
                             id="classification"
                             label=""
                             onChange={(e) => handleClassificationChange(e)}
-                            value={classification || undefined}
+                            value={projectData.classification || undefined}
                         >
-                            {Object.entries(PROJECT_CLASSIFICATION).map(([key, value]) => (
-                                <option key={key} value={key}>{value.label}</option>
+                            {Object.entries(PROJECT_CLASSIFICATION).map(([key, val]) => (
+                                <option key={key} value={key}>{val.label}</option>
                             ))}
                         </NativeSelect>
                     </InputSwitcher>
