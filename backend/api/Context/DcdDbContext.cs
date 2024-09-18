@@ -45,16 +45,13 @@ public class DcdDbContext : DbContext
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    Console.WriteLine("Concurrency exception");
                     saveFailed = true;
 
                     // Iterate over all the entries in the exception
-                    Console.WriteLine("ex.Entries count: " + ex.Entries.Count);
                     foreach (var entry in ex.Entries)
                     {
                         var clientValues = entry.CurrentValues;
                         var databaseEntry = entry.GetDatabaseValues();
-                        Console.WriteLine("entry: " + entry.Entity.GetType().Name);
 
                         if (databaseEntry == null)
                         {
@@ -63,7 +60,6 @@ public class DcdDbContext : DbContext
                         else
                         {
                             var databaseValues = databaseEntry.ToObject();
-                            Console.WriteLine("Database values: " + databaseValues);
 
                             // TODO: Decide how to handle the conflict
                             entry.OriginalValues.SetValues(databaseValues);;
