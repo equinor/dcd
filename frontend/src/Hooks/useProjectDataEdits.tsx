@@ -1,29 +1,9 @@
-import { v4 as uuidv4 } from "uuid"
 import { useMutation, useQueryClient } from "react-query"
-import { useLocation, useNavigate, useParams } from "react-router"
 import _ from "lodash"
-import { useCaseContext } from "../Context/CaseContext"
 import {
-    EditInstance,
-    EditEntry,
-    ResourceName,
-    ResourcePropertyKey,
     ResourceObject,
 } from "../Models/Interfaces"
-import { getCurrentEditId } from "../Utils/common"
-import { GetCaseService } from "../Services/CaseService"
-import { GetTopsideService } from "../Services/TopsideService"
-import { GetSurfService } from "../Services/SurfService"
-import { GetSubstructureService } from "../Services/SubstructureService"
-import { GetTransportService } from "../Services/TransportService"
-import { GetDrainageStrategyService } from "../Services/DrainageStrategyService"
 import { useAppContext } from "../Context/AppContext"
-import { GetWellProjectService } from "../Services/WellProjectService"
-import { GetExplorationService } from "../Services/ExplorationService"
-import {
-    productionOverrideResources,
-    totalStudyCostOverrideResources,
-} from "../Utils/constants"
 import { GetProjectService } from "../Services/ProjectService"
 
 interface AddEditParams {
@@ -48,22 +28,7 @@ const useProjectDataEdits = (): {
 } => {
     const {
         setSnackBarMessage,
-        setIsCalculatingProductionOverrides,
-        setIsCalculatingTotalStudyCostOverrides,
-        apiQueue,
-        setApiQueue,
     } = useAppContext()
-    const {
-        caseEdits,
-        setCaseEdits,
-        editIndexes,
-        setEditIndexes,
-        caseEditsBelongingToCurrentCase,
-    } = useCaseContext()
-
-    const { caseId: caseIdFromParams } = useParams()
-    const location = useLocation()
-    const navigate = useNavigate()
 
     const queryClient = useQueryClient()
 
@@ -77,8 +42,7 @@ const useProjectDataEdits = (): {
                 results: any,
                 variables,
             ) => {
-                const { projectId } = variables
-                queryClient.fetchQuery(["apiData", projectId])
+                queryClient.fetchQuery(["apiData", variables.projectId])
             },
             onError: (error: any) => {
                 console.error("Failed to update data:", error)
@@ -133,25 +97,6 @@ const useProjectDataEdits = (): {
             console.log("No changes made")
             return
         }
-
-        // const insertedEditInstanceObject: EditInstance = {
-        //     uuid: uuidv4(),
-        //     timeStamp: new Date().getTime(),
-        //     inputLabel,
-        //     projectId,
-        //     newDisplayValue,
-        //     previousDisplayValue,
-        //     newResourceObject,
-        //     previousResourceObject,
-        //     tabName,
-        //     tableName,
-        //     inputFieldId,
-        // }
-
-        // if (newDisplayValue === previousDisplayValue && !newResourceObject) {
-        //     console.log("No changes detected")
-        //     return
-        // }
 
         const success = await submitToApi(
             {

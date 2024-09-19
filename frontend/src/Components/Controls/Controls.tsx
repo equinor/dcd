@@ -31,8 +31,6 @@ const Controls = () => {
     const {
         project,
         setProject,
-        projectEdited,
-        setProjectEdited,
     } = useProjectContext()
 
     const navigate = useNavigate()
@@ -50,33 +48,7 @@ const Controls = () => {
 
     const cancelEdit = async () => {
         setEditMode(false)
-        setProjectEdited(undefined)
         setIsCanceling(false)
-    }
-
-    const handleProjectSave = async () => {
-        if (project && projectEdited) {
-            const updatedProject = { ...projectEdited }
-            const result = await (await GetProjectService()).updateProject(
-                project.id,
-                updatedProject,
-            )
-            setProject(result)
-            setProjectEdited(undefined)
-            setEditMode(false)
-            setProjectLastUpdated(result.modifyTime)
-            return result
-        }
-        return null
-    }
-
-    const handleProjectEdit = async () => {
-        setProjectEdited(project)
-        setEditMode(true)
-    }
-
-    const handleCaseEdit = async () => {
-        setEditMode(true)
     }
 
     const backToProject = async () => {
@@ -85,14 +57,10 @@ const Controls = () => {
     }
 
     const handleEdit = () => {
-        if (editMode && caseId) { // user is going out of edit mode in case
+        if (editMode) { // user is going out of edit mode in case
             cancelEdit()
-        } else if (projectEdited) { // user is saving project
-            handleProjectSave()
-        } else if (!editMode && caseId) { // user is going into edit mode in case
-            handleCaseEdit()
-        } else { // user is going into edit mode in project
-            handleProjectEdit()
+        } else if (!editMode) { // user is going into edit mode in case
+            setEditMode(true)
         }
     }
 

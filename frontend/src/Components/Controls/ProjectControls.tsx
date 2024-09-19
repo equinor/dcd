@@ -5,8 +5,6 @@ import { useQuery, useQueryClient } from "react-query"
 import { useNavigate } from "react-router"
 import Classification from "./Classification"
 import { GetProjectService } from "../../Services/ProjectService"
-import { useProjectContext } from "../../Context/ProjectContext"
-import useDataEdits from "../../Hooks/useDataEdits"
 import { useAppContext } from "../../Context/AppContext"
 
 const Wrapper = styled.div`
@@ -22,8 +20,7 @@ const Wrapper = styled.div`
 const ProjectControls = () => {
     const { currentContext } = useModuleCurrentContext()
     const queryClient = useQueryClient()
-    const { setSnackBarMessage, editMode } = useAppContext()
-    const { addEdit } = useDataEdits()
+    const { setSnackBarMessage } = useAppContext()
     const navigate = useNavigate()
 
     const projectId = currentContext?.externalId
@@ -37,17 +34,13 @@ const ProjectControls = () => {
         ["apiData", projectId],
         fetchProjectData,
         {
-            enabled: !!projectId, // refetch on value change
+            enabled: !!projectId,
             onSuccess: (result) => {
                 const projectData = result
-                console.log(projectData)
 
                 queryClient.setQueryData([{
                     projectId,
                 }], projectData)
-                queryClient.invalidateQueries({
-                    queryKey: ["apiData", projectId],
-                })
             },
             onError: (error: Error) => {
                 console.error("Error fetching data:", error)
