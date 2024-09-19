@@ -39,9 +39,6 @@ const ProjectControls = () => {
                 const projectData = result
 
                 queryClient.setQueryData(["apiData", { projectId }], projectData)
-                // queryClient.invalidateQueries({
-                //     queryKey: ["apiData", { projectId }],
-                // })
             },
             onError: (error: Error) => {
                 console.error("Error fetching data:", error)

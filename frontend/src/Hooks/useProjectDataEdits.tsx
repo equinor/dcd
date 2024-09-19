@@ -38,10 +38,9 @@ const useProjectDataEdits = (): {
                 variables,
             ) => {
                 const { projectId } = variables
-                queryClient.fetchQuery(["apiData", { projectId }])
-                // queryClient.invalidateQueries({
-                //     queryKey: ["apiData", { projectId }],
-                // })
+                queryClient.invalidateQueries({
+                    queryKey: ["apiData", { projectId }],
+                })
             },
             onError: (error: any) => {
                 console.error("Failed to update data:", error)
@@ -62,7 +61,6 @@ const useProjectDataEdits = (): {
         )
 
         try {
-            console.log("updating project")
             return await mutation.mutateAsync({
                 projectId,
                 serviceMethod,
@@ -95,14 +93,12 @@ const useProjectDataEdits = (): {
             return
         }
 
-        const success = await submitToApi(
+        await submitToApi(
             {
                 projectId,
                 resourceObject: newResourceObject as ResourceObject,
             },
         )
-
-        console.log(success)
     }
 
     return {
