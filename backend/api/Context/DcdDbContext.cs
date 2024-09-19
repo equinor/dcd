@@ -62,7 +62,7 @@ public class DcdDbContext : DbContext
                             var databaseValues = databaseEntry.ToObject();
 
                             // TODO: Decide how to handle the conflict
-                            entry.OriginalValues.SetValues(databaseValues);;
+                            entry.OriginalValues.SetValues(databaseValues);
                         }
                     }
                 }

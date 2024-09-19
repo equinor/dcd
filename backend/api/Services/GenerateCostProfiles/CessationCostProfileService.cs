@@ -66,7 +66,8 @@ public class CessationCostProfileService : ICessationCostProfileService
             return;
         }
 
-        if (!lastYear.HasValue) {
+        if (!lastYear.HasValue)
+        {
             CalculationHelper.ResetTimeSeries(caseItem.CessationWellsCost);
             return;
         }
