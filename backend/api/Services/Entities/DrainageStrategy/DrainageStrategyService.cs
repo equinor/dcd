@@ -52,7 +52,7 @@ public class DrainageStrategyService : IDrainageStrategyService
         {
             throw new ArgumentNullException(nameof(drainageStrategy));
         }
-        var project = await _projectService.GetProject(projectId);
+        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
         drainageStrategy.Project = project;
         var createdDrainageStrategy = _context.DrainageStrategies!.Add(drainageStrategy);
         await _context.SaveChangesAsync();

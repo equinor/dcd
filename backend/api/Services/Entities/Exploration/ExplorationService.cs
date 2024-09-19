@@ -50,7 +50,7 @@ public class ExplorationService : IExplorationService
         {
             throw new ArgumentNullException(nameof(exploration));
         }
-        var project = await _projectService.GetProject(projectId);
+        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
         exploration.Project = project;
         var createdExploration = _context.Explorations!.Add(exploration);
         SetCaseLink(exploration, sourceCaseId, project);

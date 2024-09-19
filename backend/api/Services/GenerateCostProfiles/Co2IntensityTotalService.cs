@@ -27,7 +27,7 @@ public class Co2IntensityTotalService : ICo2IntensityTotalService
     public async Task<double> Calculate(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
-        var project = await _projectService.GetProject(caseItem.ProjectId);
+        var project = await _projectService.GetProjectWithCasesAndAssets(caseItem.ProjectId);
         var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
         var generateCo2EmissionsProfile = new Co2EmissionsDto();

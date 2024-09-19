@@ -67,7 +67,7 @@ public class CaseService : ICaseService
         {
             throw new ArgumentNullException(nameof(caseItem));
         }
-        var project = await _projectService.GetProject(projectId);
+        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
         caseItem.Project = project;
         caseItem.CapexFactorFeasibilityStudies = 0.015;
         caseItem.CapexFactorFEEDStudies = 0.015;

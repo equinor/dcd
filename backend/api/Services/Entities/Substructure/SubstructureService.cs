@@ -47,7 +47,7 @@ public class SubstructureService : ISubstructureService
         {
             throw new ArgumentNullException(nameof(substructure));
         }
-        var project = await _projectService.GetProject(projectId);
+        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
         substructure.Project = project;
         substructure.LastChangedDate = DateTimeOffset.UtcNow;
         var createdSubstructure = _context.Substructures!.Add(substructure);

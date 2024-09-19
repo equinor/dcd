@@ -48,7 +48,7 @@ public class TopsideService : ITopsideService
         {
             throw new ArgumentNullException(nameof(topside));
         }
-        var project = await _projectService.GetProject(projectId);
+        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
         topside.Project = project;
         topside.LastChangedDate = DateTimeOffset.UtcNow;
         var createdTopside = _context.Topsides!.Add(topside);
