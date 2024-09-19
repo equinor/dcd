@@ -9,10 +9,15 @@ import {
     edit,
     folder,
     library_add,
+    archive,
+    unarchive
 } from "@equinor/eds-icons"
-import { useState } from "react"
-import { useProjectContext } from "../../../Context/ProjectContext"
-import { deleteCase, duplicateCase, setCaseAsReference } from "../../../Utils/CaseController"
+import { useMemo, useState } from "react"
+
+import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseController"
+import { useProjectContext } from "@/Context/ProjectContext"
+import { ResourceObject } from "@/Models/Interfaces"
+import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
 import Modal from "../../Modal/Modal"
 
 interface CasesDropMenuProps {
@@ -32,8 +37,12 @@ const CasesDropMenu = ({
 }: CasesDropMenuProps): JSX.Element => {
     const { project, setProject } = useProjectContext()
     const [confirmDelete, setConfirmDelete] = useState(false)
+    
+    const { updateCase } = useSubmitToApi()
+    const projectId = project?.id || null
 
     if (!project) { return <p>project not found</p> }
+    const selectedCase = useMemo(() => project.cases.find((c) => c.id === selectedCaseId), [project, selectedCaseId])
 
     const navigate = useNavigate()
 
@@ -53,6 +62,15 @@ const CasesDropMenu = ({
         if (selectedCaseId) {
             deleteCase(selectedCaseId, project, setProject)
         }
+    }
+
+    const archiveCase = async (isArchived: boolean) => {
+        const currentCase = project.cases.find((c) => c.id === selectedCaseId)
+        if(!currentCase || selectedCaseId === undefined || projectId === undefined || projectId === null) { return }
+        const newResourceObject = { ...currentCase, archived: isArchived } as ResourceObject
+        console.log("currentCase", currentCase)
+        console.log("newResourceObject: ", newResourceObject)
+        updateCase({ projectId, caseId: selectedCaseId, resourceObject: newResourceObject })
     }
 
     return (
@@ -82,6 +100,7 @@ const CasesDropMenu = ({
                 placement="right"
             >
                 <Menu.Item
+                    disabled={selectedCase?.archived}
                     onClick={openCase}
                 >
                     <Icon data={folder} size={16} />
@@ -90,6 +109,7 @@ const CasesDropMenu = ({
                     </Typography>
                 </Menu.Item>
                 <Menu.Item
+                    disabled={selectedCase?.archived}
                     onClick={() => (project && selectedCaseId) && duplicateCase(selectedCaseId, project, setProject)}
 
                 >
@@ -98,7 +118,24 @@ const CasesDropMenu = ({
                         Duplicate
                     </Typography>
                 </Menu.Item>
+                {selectedCase?.archived
+                    ? (
+                        <Menu.Item onClick={() => archiveCase(false)}>
+                            <Icon data={unarchive} size={16} />
+                            <Typography group="navigation" variant="menu_title" as="span">
+                                Restore Case
+                            </Typography>
+                        </Menu.Item>
+                    ):(
+                    <Menu.Item onClick={() => archiveCase(true)}>
+                        <Icon data={archive} size={16} />
+                        <Typography group="navigation" variant="menu_title" as="span">
+                            Archive Case
+                        </Typography>
+                    </Menu.Item>
+                )}
                 <Menu.Item
+                    disabled={selectedCase?.archived}
                     onClick={() => editCase()}
                 >
                     <Icon data={edit} size={16} />
@@ -117,6 +154,7 @@ const CasesDropMenu = ({
                 {project.referenceCaseId === selectedCaseId
                     ? (
                         <Menu.Item
+                            disabled={selectedCase?.archived}
                             onClick={() => project && setCaseAsReference(selectedCaseId, project, setProject)}
                         >
                             <Icon data={bookmark_outlined} size={16} />
@@ -127,6 +165,7 @@ const CasesDropMenu = ({
                     )
                     : (
                         <Menu.Item
+                            disabled={selectedCase?.archived}
                             onClick={() => project && setCaseAsReference(selectedCaseId, project, setProject)}
                         >
                             <Icon data={bookmark_filled} size={16} />

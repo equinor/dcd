@@ -13,17 +13,18 @@ import { useNavigate, useLocation } from "react-router-dom"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import styled from "styled-components"
-import { useProjectContext } from "../../Context/ProjectContext"
-import { GetCaseService } from "../../Services/CaseService"
-import { useAppContext } from "../../Context/AppContext"
+
+import { useProjectContext } from "@/Context/ProjectContext"
+import { GetCaseService } from "@/Services/CaseService"
+import { useAppContext } from "@/Context/AppContext"
 import { ChooseReferenceCase, ReferenceCaseIcon } from "../Case/Components/ReferenceCaseIcon"
 import Classification from "./Classification"
-import { EMPTY_GUID, caseTabNames } from "../../Utils/constants"
-import { GetProjectService } from "../../Services/ProjectService"
-import useDataEdits from "../../Hooks/useDataEdits"
-import { useCaseContext } from "../../Context/CaseContext"
+import { EMPTY_GUID, caseTabNames } from "@/Utils/constants"
+import { GetProjectService } from "@/Services/ProjectService"
+import useDataEdits from "@/Hooks/useDataEdits"
+import { useCaseContext } from "@/Context/CaseContext"
 import CaseDropMenu from "../Case/Components/CaseDropMenu"
-import { formatDateAndTime } from "../../Utils/common"
+import { formatDateAndTime } from "@/Utils/common"
 import UndoControls from "./UndoControls"
 
 const Header = styled.div`
@@ -421,6 +422,7 @@ const CaseControls: React.FC<props> = ({
                         setIsMenuOpen={setIsMenuOpen}
                         menuAnchorEl={menuAnchorEl}
                         caseId={caseId}
+                        isArchived={caseData.archived}
                     />
                 </div>
             </Header>

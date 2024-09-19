@@ -1,11 +1,14 @@
 import styled from "styled-components"
 import { SideBar, Button, Divider } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import { useProjectContext } from "../../../Context/ProjectContext"
-import { useAppContext } from "../../../Context/AppContext"
+
+import { useProjectContext } from "@/Context/ProjectContext"
+import { useAppContext } from "@/Context/AppContext"
 import ProjectDetails from "./Components/ProjectDetails"
 import CasesDetails from "./Components/CasesDetails"
 import CurrentCaseEditHistory from "./Components/CurrentCaseEditHistory"
+import ArchivedCasesDetails from "./Components/ArchivedCasesDetails"
+import { useMemo } from "react"
 
 const { Toggle, Content, Footer } = SideBar
 const Wrapper = styled.div`
@@ -62,24 +65,31 @@ const Sidebar = () => {
 
     if (!project) { return null }
 
+    const archivedCases = useMemo(() => {
+        return project.cases.filter((c) => c.archived === true);
+      }, [project.cases]);
+
     return (
-        <Wrapper>
-            <Sticky>
-                <StyledSideBar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>
-                    <Content>
-                        <ProjectDetails />
+        <Sticky>
+            <StyledSideBar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>
+                <Content>
+                    <ProjectDetails />
+                    <Divider />
+                    <CasesDetails />
+                    <Divider />
+                    {archivedCases.length > 0 && 
+                    <>
+                        <ArchivedCasesDetails />
                         <Divider />
-                        <CasesDetails />
-                        <Divider />
-                        <CurrentCaseEditHistory />
-                        <Divider />
-                    </Content>
-                    <Footer>
-                        <Toggle />
-                    </Footer>
-                </StyledSideBar>
-            </Sticky>
-        </Wrapper>
+                    </>}
+                    <CurrentCaseEditHistory />
+                    <Divider />
+                </Content>
+                <Footer>
+                    <Toggle />
+                </Footer>
+            </StyledSideBar>
+        </Sticky>
     )
 }
 

@@ -43,7 +43,7 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
         if (!caseId || !project) { return }
 
         const newResourceObject: ResourceObject = structuredClone(previousResourceObject)
-        newResourceObject[resourcePropertyKey as keyof ResourceObject] = insertedValue as any
+        newResourceObject[resourcePropertyKey as keyof ResourceObject] = insertedValue as never
 
         addEdit({
             previousDisplayValue: value,

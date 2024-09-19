@@ -485,7 +485,7 @@ const useDataEdits = (): {
         addEdit,
         undoEdit,
         redoEdit,
-        processQueue,
+        processQueue
     }
 }
 

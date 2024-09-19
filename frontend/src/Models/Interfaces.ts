@@ -37,6 +37,7 @@ export type ResourceObject =
     Components.Schemas.SubstructureDto |
     Components.Schemas.TransportDto |
     Components.Schemas.CaseDto |
+    Components.Schemas.CaseWithAssetsDto |
     Components.Schemas.DrainageStrategyDto |
     Components.Schemas.WellProjectDto |
     Components.Schemas.ExplorationDto |

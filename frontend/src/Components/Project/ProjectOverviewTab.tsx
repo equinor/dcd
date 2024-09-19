@@ -1,19 +1,15 @@
 import {
-    MouseEventHandler,
-} from "react"
-import {
     Button, Icon, Typography,
 } from "@equinor/eds-core-react"
-import { add, archive } from "@equinor/eds-icons"
+import { add } from "@equinor/eds-icons"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
-import { getProjectPhaseName, getProjectCategoryName, unwrapProjectId } from "../../Utils/common"
-import { GetProjectService } from "../../Services/ProjectService"
-import { GetSTEAService } from "../../Services/STEAService"
-import { useProjectContext } from "../../Context/ProjectContext"
+
+import { getProjectPhaseName, getProjectCategoryName } from "@/Utils/common"
+import { useProjectContext } from "@/Context/ProjectContext"
+import { useModalContext } from "@/Context/ModalContext"
+import { useAppContext } from "@/Context/AppContext"
 import CasesTable from "../Case/OverviewCasesTable/CasesTable"
-import { useModalContext } from "../../Context/ModalContext"
-import { useAppContext } from "../../Context/AppContext"
 import Gallery from "../Gallery/Gallery"
 
 const ProjectOverviewTab = () => {
@@ -32,20 +28,6 @@ const ProjectOverviewTab = () => {
         if (projectEdited) {
             const updatedProject = { ...projectEdited, description: value }
             setProjectEdited(updatedProject)
-        }
-    }
-
-    const submitToSTEA: MouseEventHandler<HTMLButtonElement> = async (e) => {
-        e.preventDefault()
-
-        if (project) {
-            try {
-                const projectId = unwrapProjectId(project.id)
-                const projectResult = await (await GetProjectService()).getProject(projectId)
-                await (await GetSTEAService()).excelToSTEA(projectResult)
-            } catch (error) {
-                console.error("[ProjectView] error while submitting form data", error)
-            }
         }
     }
 
@@ -105,12 +87,6 @@ const ProjectOverviewTab = () => {
                 </Grid>
                 <Grid item xs={12}>
                     <CasesTable />
-                </Grid>
-                <Grid item>
-                    <Button variant="outlined" onClick={submitToSTEA}>
-                        <Icon data={archive} size={18} />
-                        Download input to STEA
-                    </Button>
                 </Grid>
             </Grid>
         </Grid>

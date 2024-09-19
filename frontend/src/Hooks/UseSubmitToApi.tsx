@@ -996,5 +996,5 @@ export const useSubmitToApi = () => {
         return success
     }
 
-    return { submitToApi, mutation }
+    return { submitToApi, updateCase, mutation }
 }
