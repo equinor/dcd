@@ -106,8 +106,6 @@ public class StudyCostProfileService : IStudyCostProfileService
         {
             caseItem.TotalFeasibilityAndConceptStudies = feasibilityAndConceptStudiesCost;
         }
-
-        return;
     }
 
     public void CalculateTotalFEEDStudies(Case caseItem, double sumFacilityCost, double sumWellCost)
@@ -167,8 +165,6 @@ public class StudyCostProfileService : IStudyCostProfileService
         {
             caseItem.TotalFEEDStudies = totalFeedStudiesCost;
         }
-
-        return;
     }
 
     public async Task<double> SumAllCostFacility(Case caseItem)
