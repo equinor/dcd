@@ -1,9 +1,8 @@
 using api.Authorization;
 using api.Context;
-using api.Helpers;
 using api.Mappings;
+using api.Middleware;
 using api.Repositories;
-using api.SampleData.Generators;
 using api.Services;
 using api.Services.FusionIntegration;
 using api.Services.GenerateCostProfiles;
@@ -316,6 +315,9 @@ builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 builder.Host.UseSerilog();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.UseRouting();
 
 if (app.Environment.IsDevelopment())
@@ -329,9 +331,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(_accessControlPolicyName);
+
 app.UseAuthentication();
 app.UseMiddleware<ClaimsMiddelware>();
-// app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseAuthorization();
+
 app.MapControllers();
 app.Run();
