@@ -28,19 +28,6 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         _mapper = mapper;
     }
 
-    // public async Task UpdateCostProfilesForWellsFromDrillingSchedules(List<Guid> drillingScheduleIds)
-    // {
-    //     var explorationWells = GetAllExplorationWells()
-    //         .Where(ew => ew.DrillingScheduleId.HasValue && drillingScheduleIds.Contains(ew.DrillingScheduleId.Value));
-
-    //     var wellProjectWells = GetAllWellProjectWells()
-    //         .Where(wpw => wpw.DrillingScheduleId.HasValue && drillingScheduleIds.Contains(wpw.DrillingScheduleId.Value));
-
-    //     var wellIds = explorationWells.Select(ew => ew.WellId).Union(wellProjectWells.Select(wpw => wpw.WellId)).Distinct();
-
-    //     await UpdateCostProfilesForWells(wellIds.ToList());
-    // }
-
     public async Task UpdateCostProfilesForWells(List<Guid> wellIds)
     {
         var explorationWells = GetAllExplorationWells().Where(ew => wellIds.Contains(ew.WellId));
