@@ -49,7 +49,7 @@ public class OpexCostProfileService : IOpexCostProfileService
         );
 
         var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(drainageStrategy);
-        var firstYearOfProduction = CalculationHelper.GetRelatveFirstYearOfProduction(drainageStrategy);
+        var firstYearOfProduction = CalculationHelper.GetRelativeFirstYearOfProduction(drainageStrategy);
 
         await CalculateWellInterventionCostProfile(caseItem, project, lastYearOfProduction);
         await CalculateOffshoreFacilitiesOperationsCostProfile(caseItem, firstYearOfProduction, lastYearOfProduction);

@@ -17,7 +17,7 @@ public static class CalculationHelper
         return lastYear;
     }
 
-    public static int? GetRelatveFirstYearOfProduction(DrainageStrategy drainageStrategy)
+    public static int? GetRelativeFirstYearOfProduction(DrainageStrategy drainageStrategy)
     {
         var firstYear = new List<int?>
         {
