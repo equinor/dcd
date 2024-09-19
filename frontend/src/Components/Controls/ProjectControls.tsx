@@ -31,16 +31,17 @@ const ProjectControls = () => {
     }
 
     useQuery(
-        ["apiData", projectId],
+        ["apiData", { projectId }],
         fetchProjectData,
         {
             enabled: !!projectId,
             onSuccess: (result) => {
                 const projectData = result
 
-                queryClient.setQueryData([{
-                    projectId,
-                }], projectData)
+                queryClient.setQueryData(["apiData", { projectId }], projectData)
+                // queryClient.invalidateQueries({
+                //     queryKey: ["apiData", { projectId }],
+                // })
             },
             onError: (error: Error) => {
                 console.error("Error fetching data:", error)

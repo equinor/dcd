@@ -7,15 +7,10 @@ import { useAppContext } from "../Context/AppContext"
 import { GetProjectService } from "../Services/ProjectService"
 
 interface AddEditParams {
-    // inputLabel: string;
     projectId: string;
     newDisplayValue?: string | number | undefined;
-    // previousDisplayValue?: string | number | undefined;
     newResourceObject: ResourceObject;
     previousResourceObject: ResourceObject;
-    // tabName?: string;
-    // tableName?: string;
-    // inputFieldId?: string;
 }
 
 type SubmitToApiParams = {
@@ -42,7 +37,11 @@ const useProjectDataEdits = (): {
                 results: any,
                 variables,
             ) => {
-                queryClient.fetchQuery(["apiData", variables.projectId])
+                const { projectId } = variables
+                queryClient.fetchQuery(["apiData", { projectId }])
+                // queryClient.invalidateQueries({
+                //     queryKey: ["apiData", { projectId }],
+                // })
             },
             onError: (error: any) => {
                 console.error("Failed to update data:", error)
@@ -88,8 +87,6 @@ const useProjectDataEdits = (): {
 
     const addProjectEdit = async ({
         projectId,
-        // newDisplayValue,
-        // previousDisplayValue,
         newResourceObject,
         previousResourceObject,
     }: AddEditParams) => {
