@@ -132,8 +132,6 @@ public class OpexCostProfileService : IOpexCostProfileService
         {
             caseItem.WellInterventionCostProfile = result;
         }
-
-        return;
     }
 
     public async Task CalculateOffshoreFacilitiesOperationsCostProfile(Case caseItem, int? firstYearOfProduction, int? lastYearofProduction)

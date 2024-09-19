@@ -50,7 +50,6 @@ public class DcdDbContext : DbContext
                     // Iterate over all the entries in the exception
                     foreach (var entry in ex.Entries)
                     {
-                        var clientValues = entry.CurrentValues;
                         var databaseEntry = entry.GetDatabaseValues();
 
                         if (databaseEntry == null)
