@@ -78,7 +78,7 @@ const useProjectDataEdits = (): {
                 variables,
             ) => {
                 const { projectId } = variables
-                queryClient.fetchQuery(["apiData", { projectId }])
+                queryClient.fetchQuery(["apiData", projectId])
             },
             onError: (error: any) => {
                 console.error("Failed to update data:", error)

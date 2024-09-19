@@ -22,11 +22,11 @@ const ProjectSettingsTab = () => {
     const projectId = currentContext?.externalId || null
 
     const { data: apiData } = useQuery<Components.Schemas.ProjectWithAssetsDto | undefined>(
-        ["apiData", { projectId }],
-        () => queryClient.getQueryData(["apiData", { projectId }]),
+        ["apiData", projectId],
+        () => queryClient.getQueryData(["apiData", projectId]),
         {
             enabled: !!projectId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId }]),
+            initialData: () => queryClient.getQueryData(["apiData", projectId]),
         },
     )
 
