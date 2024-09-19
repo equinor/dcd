@@ -1,12 +1,6 @@
-using System.Globalization;
 
-using api.Adapters;
-using api.Context;
 using api.Dtos;
 using api.Models;
-using api.Services.GenerateCostProfiles;
-
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Services.GenerateCostProfiles;
 
@@ -16,16 +10,18 @@ public class Co2IntensityTotalService : ICo2IntensityTotalService
     private readonly IProjectService _projectService;
     private readonly ILogger<Co2IntensityTotalService> _logger;
     private readonly IDrainageStrategyService _drainageStrategyService;
-    private readonly ICo2EmissionsProfileService _generateCo2EmissionsProfile;
 
-    public Co2IntensityTotalService(IProjectService projectService, ILoggerFactory loggerFactory, ICaseService caseService, IDrainageStrategyService drainageStrategyService,
-        ICo2EmissionsProfileService generateCo2EmissionsProfile)
+    public Co2IntensityTotalService(
+        IProjectService projectService,
+        ILoggerFactory loggerFactory,
+        ICaseService caseService,
+        IDrainageStrategyService drainageStrategyService
+    )
     {
         _caseService = caseService;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<Co2IntensityTotalService>();
         _drainageStrategyService = drainageStrategyService;
-        _generateCo2EmissionsProfile = generateCo2EmissionsProfile;
     }
 
     public async Task<double> Calculate(Guid caseId)
