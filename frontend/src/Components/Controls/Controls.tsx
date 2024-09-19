@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate, useParams, useLocation } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
@@ -11,7 +11,6 @@ import {
     edit,
     keyboard_tab,
     more_vertical,
-    save,
 } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid"
 import { useQuery, useQueryClient } from "react-query"
@@ -37,7 +36,7 @@ const Controls = () => {
     const location = useLocation()
     const { setTechnicalModalIsOpen } = useModalContext()
     const { currentContext } = useModuleCurrentContext()
-    const { isSaving, editMode, setEditMode } = useAppContext()
+    const { editMode, setEditMode } = useAppContext()
     const { caseId } = useParams()
 
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)

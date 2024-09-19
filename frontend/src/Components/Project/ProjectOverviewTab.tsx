@@ -16,6 +16,7 @@ import CasesTable from "../Case/OverviewCasesTable/CasesTable"
 import { useModalContext } from "../../Context/ModalContext"
 import { useAppContext } from "../../Context/AppContext"
 import Gallery from "../Gallery/Gallery"
+import useProjectDataEdits from "../../Hooks/useProjectDataEdits"
 
 const ProjectOverviewTab = () => {
     const { editMode } = useAppContext()
@@ -23,13 +24,14 @@ const ProjectOverviewTab = () => {
     const {
         project,
         projectEdited,
-        setProjectEdited,
     } = useProjectContext()
     const { currentContext } = useModuleCurrentContext()
 
     const {
         addNewCase,
     } = useModalContext()
+
+    const { addProjectEdit } = useProjectDataEdits()
 
     const projectId = currentContext?.externalId || null
 
@@ -45,9 +47,13 @@ const ProjectOverviewTab = () => {
     const projectData = apiData || null
 
     function handleDescriptionChange(value: string) {
-        if (projectEdited) {
+        if (projectEdited && projectData) {
             const updatedProject = { ...projectEdited, description: value }
-            setProjectEdited(updatedProject)
+            addProjectEdit({
+                projectId: projectData.id,
+                newResourceObject: updatedProject,
+                previousResourceObject: projectData,
+            })
         }
     }
 

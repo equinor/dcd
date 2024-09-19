@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { useQuery, useQueryClient } from "react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { GetProjectService } from "../Services/ProjectService"
-import CaseProductionProfilesTabSkeleton from "../Components/Case/Tabs/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 
 interface TableCompareCase {
     id: string,
@@ -49,10 +48,6 @@ export const useProjectChartData = () => {
     )
 
     const projectData = apiData
-
-    // if (!projectData) {
-    //     return <CaseProductionProfilesTabSkeleton />
-    // }
 
     const generateAllCharts = () => {
         const npvObject: object[] = []

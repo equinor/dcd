@@ -7,15 +7,13 @@ import { useProjectContext } from "../../Context/ProjectContext"
 import InputSwitcher from "../Input/Components/InputSwitcher"
 import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
 import useProjectDataEdits from "../../Hooks/useProjectDataEdits"
-import { useAppContext } from "../../Context/AppContext"
 
 const ProjectSettingsTab = () => {
-    const { project, projectEdited, setProjectEdited } = useProjectContext()
+    const { project } = useProjectContext()
     const { currentContext } = useModuleCurrentContext()
     const [classification, setClassification] = useState<number | undefined>(undefined)
     const [dummyRole, setDummyRole] = useState(0) // TODO: Get role from user
     const queryClient = useQueryClient()
-    const { editMode } = useAppContext()
 
     const { addProjectEdit } = useProjectDataEdits()
 
@@ -44,19 +42,13 @@ const ProjectSettingsTab = () => {
             const newProject: Components.Schemas.ProjectWithAssetsDto = { ...projectData }
             newProject.physicalUnit = newPhysicalUnit
 
-            console.log(newProject)
-
             addProjectEdit({
                 projectId: projectData.id,
                 newResourceObject: newProject,
                 previousResourceObject: projectData,
             })
-
-            // setProjectEdited(newProject)
         }
     }
-
-    console.log(projectData)
 
     const handleCurrencyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([1, 2].indexOf(Number(e.currentTarget.value)) !== -1 && projectData) {
