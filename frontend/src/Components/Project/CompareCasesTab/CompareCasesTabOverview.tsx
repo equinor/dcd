@@ -1,17 +1,15 @@
 import { useState } from "react"
-import { Typography } from "@equinor/eds-core-react"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import Grid from "@mui/material/Grid"
 import styled from "styled-components"
-import Box from "@mui/material/Box"
 import Kpis from "./Tabs/Kpis"
 import ProductionProfiles from "./Tabs/ProductionProfiles"
 import InvestmentProfiles from "./Tabs/InvestmentProfiles"
 import Co2Emissions from "./Tabs/Co2Emissions"
 import { useProjectChartData } from "../../../Hooks/useProjectChartData"
 import ProjectAgGridTable from "./ProjectAgGridTable"
-import CaseProductionProfilesTabSkeleton from "../../Case/Tabs/LoadingSkeletons/CaseProductionProfilesTabSkeleton"
+import CaseProductionProfilesTabSkeleton from "../../LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 
 const MuiTabs = styled(Tabs)`
     &.MuiTabs-vertical {
