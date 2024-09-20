@@ -1,17 +1,23 @@
 import React from "react"
-import { lock, lock_open } from "@equinor/eds-icons"
+import { lock, lock_open, microsoft_excel } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
 import { useProjectContext } from "../../../Context/ProjectContext"
+import { ExcelHideIcon } from "../../../Media/Icons/ExcelHideIcon"
+import { CalculatorIcon } from "../../../Media/Icons/CalculatorIcon"
+import { CalculatorHideIcon } from "../../../Media/Icons/CalculatorHideIcon"
+
 
 interface LockIconProps {
     clickedElement: any
     addEdit: any
+    isProsp?: boolean
 }
 
 const LockIcon: React.FC<LockIconProps> = ({
     clickedElement,
     addEdit,
+    isProsp
 }) => {
     const { project } = useProjectContext()
     const { caseId } = useParams()
@@ -46,6 +52,7 @@ const LockIcon: React.FC<LockIconProps> = ({
         }
     }
 
+    //øverste er åpen lås, nederste er låst lås
     if (clickedElement.data?.overridable) {
         return (clickedElement.data.overrideProfile?.override) ? (
             <Icon
@@ -55,12 +62,16 @@ const LockIcon: React.FC<LockIconProps> = ({
                 onClick={() => handleLockIconClick(clickedElement)}
             />
         )
-            : (
-                <Icon
-                    data={lock}
-                    color="#007079"
-                    onClick={() => handleLockIconClick(clickedElement)}
-                />
+            : (<>
+                {isProsp ? (
+                    <Icon
+                        data={microsoft_excel}
+                        color="#007079"
+                        onClick={() => handleLockIconClick(clickedElement)}
+                    />) : <div onClick={() => handleLockIconClick(clickedElement)}><CalculatorIcon size={20} /></div>
+                }
+            </>
+
             )
     }
     return null

@@ -41,6 +41,7 @@ interface Props {
     calculatedFields?: string[]
     ongoingCalculation?: boolean
     addEdit: any
+    isProsp?: boolean
 }
 
 const CaseTabTable = ({
@@ -55,6 +56,7 @@ const CaseTabTable = ({
     calculatedFields,
     ongoingCalculation,
     addEdit,
+    isProsp
 }: Props) => {
     const { editMode, setSnackBarMessage } = useAppContext()
     const styles = useStyles()
@@ -164,10 +166,13 @@ const CaseTabTable = ({
         }
 
         return (
-            <ClickableLockIcon
-                clickedElement={params}
-                addEdit={addEdit}
-            />
+            <div style={{ paddingTop: "7px", paddingLeft: "5px"  }}>
+                <ClickableLockIcon
+                    isProsp={isProsp}
+                    clickedElement={params}
+                    addEdit={addEdit}
+                />
+          </div>
         )
     }
 
