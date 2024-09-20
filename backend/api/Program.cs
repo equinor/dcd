@@ -118,16 +118,13 @@ if (environment == "localdev")
 {
     builder.Services.AddDbContext<DcdDbContext>(
         options => options.UseLazyLoadingProxies()
-                            .UseSqlite(
-                                _sqlConnectionString,
-                                o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)
-                                ));
+        .UseSqlite(_sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 }
 else
 {
     builder.Services.AddDbContext<DcdDbContext>(
         options => options.UseLazyLoadingProxies()
-                            .UseSqlServer(sqlConnectionString));
+        .UseSqlServer(sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 }
 
 builder.Services.AddFusionIntegration(options =>

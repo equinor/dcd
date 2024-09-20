@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 using api.Context;
 using api.Dtos;
 using api.Enums;
@@ -50,7 +52,7 @@ public class ExplorationService : IExplorationService
         {
             throw new ArgumentNullException(nameof(exploration));
         }
-        var project = await _projectService.GetProject(projectId);
+        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
         exploration.Project = project;
         var createdExploration = _context.Explorations!.Add(exploration);
         SetCaseLink(exploration, sourceCaseId, project);
@@ -84,6 +86,12 @@ public class ExplorationService : IExplorationService
             throw new ArgumentException(string.Format("Exploration {0} not found.", explorationId));
         }
         return exploration;
+    }
+
+    public async Task<Exploration> GetExplorationWithIncludes(Guid explorationId, params Expression<Func<Exploration, object>>[] includes)
+    {
+        return await _repository.GetExplorationWithIncludes(explorationId, includes)
+            ?? throw new NotFoundInDBException($"Exploration with id {explorationId} not found.");
     }
 
     public async Task<ExplorationDto> UpdateExploration(

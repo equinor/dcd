@@ -12,61 +12,68 @@ public class ImportedElectricityProfileService : IImportedElectricityProfileServ
 {
     private readonly ICaseService _caseService;
     private readonly IDrainageStrategyService _drainageStrategyService;
-    private readonly IProjectService _projectService;
     private readonly ITopsideService _topsideService;
-    private readonly DcdDbContext _context;
-    private readonly IMapper _mapper;
 
     public ImportedElectricityProfileService(
-        DcdDbContext context,
         ICaseService caseService,
-        IProjectService projectService,
         ITopsideService topsideService,
-        IDrainageStrategyService drainageStrategyService,
-        IMapper mapper
-        )
+        IDrainageStrategyService drainageStrategyService
+    )
     {
-        _context = context;
         _caseService = caseService;
-        _projectService = projectService;
         _topsideService = topsideService;
         _drainageStrategyService = drainageStrategyService;
-        _mapper = mapper;
     }
 
-    public async Task<ImportedElectricityDto> Generate(Guid caseId)
+    public async Task Generate(Guid caseId)
     {
-        var caseItem = await _caseService.GetCase(caseId);
-        var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
-        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+        var caseItem = await _caseService.GetCaseWithIncludes(caseId);
+        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
+            caseItem.DrainageStrategyLink,
+            d => d.ImportedElectricity!,
+            d => d.ImportedElectricityOverride!,
+            d => d.ProductionProfileOil!,
+            d => d.AdditionalProductionProfileOil!,
+            d => d.ProductionProfileGas!,
+            d => d.AdditionalProductionProfileGas!,
+            d => d.ProductionProfileWaterInjection!
+        );
+
+        if (drainageStrategy.ImportedElectricityOverride?.Override == true)
+        {
+            return;
+        }
+
+        var topside = await _topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
 
         var facilitiesAvailability = caseItem.FacilitiesAvailability;
 
         var totalUseOfPower = EmissionCalculationHelper.CalculateTotalUseOfPower(topside, drainageStrategy, facilitiesAvailability);
 
-        var calculateImportedElectricity =
-            CalculateImportedElectricity(topside.PeakElectricityImported, facilitiesAvailability, totalUseOfPower);
+        var calculateImportedElectricity = CalculateImportedElectricity(topside.PeakElectricityImported, facilitiesAvailability, totalUseOfPower);
 
-        var importedElectricity = drainageStrategy.ImportedElectricity ?? new ImportedElectricity();
+        var importedElectricity = new ImportedElectricity
+        {
+            StartYear = calculateImportedElectricity.StartYear,
+            Values = calculateImportedElectricity.Values
+        };
 
-        importedElectricity.StartYear = calculateImportedElectricity.StartYear;
-        importedElectricity.Values = calculateImportedElectricity.Values;
-
-        UpdateDrainageStrategyAndSave(drainageStrategy, importedElectricity);
-
-        var dto = _mapper.Map<ImportedElectricityDto>(importedElectricity);
-
-        return dto ?? new ImportedElectricityDto();
+        if (drainageStrategy.ImportedElectricity != null)
+        {
+            drainageStrategy.ImportedElectricity.StartYear = importedElectricity.StartYear;
+            drainageStrategy.ImportedElectricity.Values = importedElectricity.Values;
+        }
+        else
+        {
+            drainageStrategy.ImportedElectricity = importedElectricity;
+        }
     }
 
-    private void UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, ImportedElectricity importedElectricity)
-    {
-        drainageStrategy.ImportedElectricity = importedElectricity;
-        // return await _context.SaveChangesAsync();
-    }
-
-    private static TimeSeries<double> CalculateImportedElectricity(double peakElectricityImported, double facilityAvailability,
-        TimeSeries<double> totalUseOfPower)
+    private static TimeSeries<double> CalculateImportedElectricity(
+        double peakElectricityImported,
+        double facilityAvailability,
+        TimeSeries<double> totalUseOfPower
+    )
     {
         const int hoursInOneYear = 8766;
         var peakElectricityImportedFromGrid = peakElectricityImported * 1.1;

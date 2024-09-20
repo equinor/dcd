@@ -62,7 +62,7 @@ public class SurfService : ISurfService
         {
             throw new ArgumentNullException(nameof(surf));
         }
-        var project = await _projectService.GetProject(projectId);
+        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
         surf.Project = project;
         surf.LastChangedDate = DateTimeOffset.UtcNow;
         var createdSurf = _context.Surfs!.Add(surf);

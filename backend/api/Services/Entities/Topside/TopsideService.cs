@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 using api.Context;
 using api.Dtos;
 using api.Exceptions;
@@ -49,7 +51,7 @@ public class TopsideService : ITopsideService
         {
             throw new ArgumentNullException(nameof(topside));
         }
-        var project = await _projectService.GetProject(projectId);
+        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
         topside.Project = project;
         topside.LastChangedDate = DateTimeOffset.UtcNow;
         var createdTopside = _context.Topsides!.Add(topside);
@@ -82,6 +84,12 @@ public class TopsideService : ITopsideService
             throw new ArgumentException(string.Format("Topside {0} not found.", topsideId));
         }
         return topside;
+    }
+
+    public async Task<Topside> GetTopsideWithIncludes(Guid topsideId, params Expression<Func<Topside, object>>[] includes)
+    {
+        return await _repository.GetTopsideWithIncludes(topsideId, includes)
+            ?? throw new NotFoundInDBException($"Topside with id {topsideId} not found.");
     }
 
     public async Task<TopsideDto> UpdateTopside<TDto>(

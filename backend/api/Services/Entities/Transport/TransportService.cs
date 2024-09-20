@@ -49,7 +49,7 @@ public class TransportService : ITransportService
         {
             throw new ArgumentNullException(nameof(transport));
         }
-        var project = await _projectService.GetProject(projectId);
+        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
         transport.Project = project;
         transport.LastChangedDate = DateTimeOffset.UtcNow;
         var createdTransport = _context.Transports!.Add(transport);

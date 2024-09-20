@@ -21,6 +21,11 @@ public class DrainageStrategyRepository : BaseRepository, IDrainageStrategyRepos
         return await Get<DrainageStrategy>(drainageStrategyId);
     }
 
+    public async Task<DrainageStrategy?> GetDrainageStrategyWithIncludes(Guid drainageStrategyId, params Expression<Func<DrainageStrategy, object>>[] includes)
+    {
+        return await GetWithIncludes(drainageStrategyId, includes);
+    }
+
     public async Task<bool> DrainageStrategyHasProfile(Guid drainageStrategyId, DrainageStrategyProfileNames profileType)
     {
         Expression<Func<DrainageStrategy, bool>> profileExistsExpression = profileType switch

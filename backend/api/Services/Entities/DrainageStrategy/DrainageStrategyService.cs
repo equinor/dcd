@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 using api.Context;
 using api.Dtos;
 using api.Exceptions;
@@ -53,7 +55,7 @@ public class DrainageStrategyService : IDrainageStrategyService
         {
             throw new ArgumentNullException(nameof(drainageStrategy));
         }
-        var project = await _projectService.GetProject(projectId);
+        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
         drainageStrategy.Project = project;
         var createdDrainageStrategy = _context.DrainageStrategies!.Add(drainageStrategy);
         await _context.SaveChangesAsync();
@@ -99,6 +101,15 @@ public class DrainageStrategyService : IDrainageStrategyService
             throw new ArgumentException(string.Format("Drainage strategy {0} not found.", drainageStrategyId));
         }
         return drainageStrategy;
+    }
+
+    public async Task<DrainageStrategy> GetDrainageStrategyWithIncludes(
+        Guid drainageStrategyId,
+        params Expression<Func<DrainageStrategy, object>>[] includes
+        )
+    {
+        return await _repository.GetDrainageStrategyWithIncludes(drainageStrategyId, includes)
+            ?? throw new NotFoundInDBException($"Drainage strategy with id {drainageStrategyId} not found.");
     }
 
     public async Task<DrainageStrategyDto> UpdateDrainageStrategy(
