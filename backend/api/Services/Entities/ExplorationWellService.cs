@@ -23,10 +23,7 @@ public class ExplorationWellService : IExplorationWellService
         var explorationWells = await _context.ExplorationWell!
             .Include(wpw => wpw.DrillingSchedule)
             .Where(w => w.ExplorationId == explorationId).ToListAsync();
-        if (explorationWells == null)
-        {
-            throw new ArgumentException(string.Format("ExplorationWell for Exploration {0} not found.", explorationId));
-        }
+
         return explorationWells;
     }
 }

@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 using api.Context;
 using api.Dtos;
 using api.Enums;
@@ -65,7 +67,7 @@ public class CaseService : ICaseService
         {
             throw new ArgumentNullException(nameof(caseItem));
         }
-        var project = await _projectService.GetProject(projectId);
+        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
         caseItem.Project = project;
         caseItem.CapexFactorFeasibilityStudies = 0.015;
         caseItem.CapexFactorFEEDStudies = 0.015;
@@ -185,6 +187,12 @@ public class CaseService : ICaseService
             throw new NotFoundInDBException(string.Format("Case {0} not found.", caseId));
         }
         return caseItem;
+    }
+
+    public async Task<Case> GetCaseWithIncludes(Guid caseId, params Expression<Func<Case, object>>[] includes)
+    {
+        return await _repository.GetCaseWithIncludes(caseId, includes)
+            ?? throw new NotFoundInDBException($"Case with id {caseId} not found.");
     }
 
     public async Task<IEnumerable<Case>> GetAll()
