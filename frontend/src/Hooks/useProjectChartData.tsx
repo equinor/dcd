@@ -34,8 +34,8 @@ export const useProjectChartData = () => {
     const [totalCo2EmissionsChartData, setTotalCo2EmissionsChartData] = useState<object>()
     const [co2IntensityChartData, setCo2IntensityChartData] = useState<object>()
 
-        const generateAllCharts = () => {
-        if (!compareCasesTotals || !project) return
+    const generateAllCharts = () => {
+        if (!compareCasesTotals || !project) { return }
 
         const npvObject = project.cases.map(caseItem => ({
             cases: caseItem.name,
