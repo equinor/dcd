@@ -27,6 +27,7 @@ import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
 import { useProjectContext } from "../../../Context/ProjectContext"
+import { TABLE_VALIDATION_RULES } from "../../../Utils/constants"
 
 interface Props {
     timeSeriesData: any[]
@@ -139,7 +140,13 @@ const CaseTabTable = ({
         return tableRows
     }
 
-    const gridRowData = useMemo(() => gridRef.current?.api?.setGridOption("rowData", profilesToRowData()), [timeSeriesData, editMode])
+    const gridRowData = useMemo(() => profilesToRowData(), [timeSeriesData, editMode])
+
+    useEffect(() => {
+        if (gridRef.current?.api) {
+            gridRef.current.api.setGridOption("rowData", gridRowData)
+        }
+    }, [gridRowData])
 
     const lockIconRenderer = (params: any) => {
         if (!params.data || !editMode) {
@@ -273,7 +280,10 @@ const CaseTabTable = ({
     }
 
     const handleCellValueChange = useCallback((params: any) => {
-        if (firstTriggerRef.current) {
+        const rule = TABLE_VALIDATION_RULES[params.data.profileName]
+        if (rule && (params.newValue < rule.min || params.newValue > rule.max)) {
+            setSnackBarMessage(`Value must be between ${rule.min} and ${rule.max}. Please correct the input to save the input.`)
+        } else if (firstTriggerRef.current) {
             firstTriggerRef.current = false
             stageEdit(params)
 
@@ -283,7 +293,7 @@ const CaseTabTable = ({
 
             timerRef.current = setTimeout(() => {
                 firstTriggerRef.current = true
-            }, 500)
+            }, 0) // TODO: Can this be removed?
         }
     }, [stageEdit, timeSeriesData, dg4Year, project, caseId])
 

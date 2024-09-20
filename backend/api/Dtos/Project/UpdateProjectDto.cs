@@ -24,4 +24,8 @@ public class UpdateProjectDto
     public double CO2Vented { get; set; }
     public double DailyEmissionFromDrillingRig { get; set; }
     public double AverageDevelopmentDrillingDays { get; set; }
+    public double OilPriceUSD { get; set; }
+    public double GasPriceNOK { get; set; }
+    public double DiscountRate { get; set; }
+    public double ExchangeRateUSDToNOK { get; set; }
 }

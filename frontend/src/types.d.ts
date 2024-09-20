@@ -4,6 +4,7 @@ declare namespace Components {
             name: string;
             description?: string | null;
             referenceCase?: boolean | null;
+            archived?: boolean;
             artificialLift?: ArtificialLift /* int32 */;
             productionStrategyOverview?: ProductionStrategyOverview /* int32 */;
             producerCount?: number; // int32
@@ -148,6 +149,7 @@ declare namespace Components {
             name: string;
             description: string;
             referenceCase: boolean;
+            archived: boolean;
             artificialLift: ArtificialLift /* int32 */;
             productionStrategyOverview: ProductionStrategyOverview /* int32 */;
             producerCount: number; // int32
@@ -264,6 +266,7 @@ declare namespace Components {
             name: string;
             description: string;
             referenceCase: boolean;
+            archived: boolean;
             artificialLift: ArtificialLift /* int32 */;
             productionStrategyOverview: ProductionStrategyOverview /* int32 */;
             producerCount: number; // int32
@@ -996,6 +999,10 @@ declare namespace Components {
             dailyEmissionFromDrillingRig: number; // double
             averageDevelopmentDrillingDays: number; // double
             modifyTime: string; // date-time
+            oilPriceUSD: number; // double
+            gasPriceNOK: number; // double
+            discountRate: number; // double
+            exchangeRateUSDToNOK: number; // double
         }
         export interface ProjectWithCasesDto {
             classification: ProjectClassification /* int32 */;
@@ -1626,6 +1633,10 @@ declare namespace Components {
             cO2Vented?: number; // double
             dailyEmissionFromDrillingRig?: number; // double
             averageDevelopmentDrillingDays?: number; // double
+            oilPriceUSD?: number; // double
+            gasPriceNOK?: number; // double
+            discountRate?: number; // double
+            exchangeRateUSDToNOK?: number; // double
         }
         export interface UpdateSeismicAcquisitionAndProcessingDto {
             startYear?: number; // int32

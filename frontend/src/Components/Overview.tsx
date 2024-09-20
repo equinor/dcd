@@ -8,6 +8,7 @@ import {
     Typography,
 } from "@equinor/eds-core-react"
 import { useCurrentUser } from "@equinor/fusion-framework-react/hooks"
+import styled from "styled-components"
 import Sidebar from "./Controls/Sidebar/Sidebar"
 import Controls from "./Controls/Controls"
 import { useAppContext } from "../Context/AppContext"
@@ -15,6 +16,22 @@ import { useProjectContext } from "../Context/ProjectContext"
 import Modal from "./Modal/Modal"
 import { PROJECT_CLASSIFICATION } from "../Utils/constants"
 import { useModalContext } from "../Context/ModalContext"
+import ProjectSkeleton from "./LoadingSkeletons/ProjectSkeleton"
+
+const ControlsWrapper = styled.div`
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+`
+const ContentWrapper = styled.div`
+    display: flex;
+    padding-bottom: 20px;
+`
+
+const MainView = styled.div`
+    flex: 1;
+`
 
 interface WarnedProjectInterface {
     [key: string]: string[]
@@ -25,7 +42,6 @@ const Overview = () => {
     const {
         isCreating,
         isLoading,
-        sidebarOpen,
         snackBarMessage,
         setSnackBarMessage,
     } = useAppContext()
@@ -90,60 +106,42 @@ const Overview = () => {
         }
     }, [project, currentUserId, warnedProjects, featuresModalIsOpen])
 
+    if (isCreating || isLoading) {
+        return (
+            <ProjectSkeleton />
+        )
+    }
+
     return (
         <>
-            <Grid container display="grid" className="ConceptApp MainGrid" gridTemplateColumns={sidebarOpen ? "256px 1fr" : "72px 1fr"}>
-                <Snackbar open={snackBarMessage !== undefined} autoHideDuration={6000} onClose={() => setSnackBarMessage(undefined)}>
-                    {snackBarMessage}
-                </Snackbar>
-                <Grid item alignSelf="stretch">
-                    <Sidebar />
-                </Grid>
-                {(isCreating || isLoading)
-                    ? (
-                        <Grid item alignSelf="stretch" container spacing={1} alignItems="center" justifyContent="center">
-                            <Grid item>
-                                <Progress.Circular size={24} color="primary" />
-                            </Grid>
-                            <Grid item>
-                                <Typography variant="h3">{isCreating ? "Creating" : "Loading"}</Typography>
-                            </Grid>
-                        </Grid>
-                    )
-                    : (
-                        <Grid
-                            item
-                            alignSelf="flex-start"
-                            className="ag-theme-alpine-fusion ContentOverview"
-                            container
-                            spacing={2}
-                            alignItems="flex-start"
-                            alignContent="flex-start"
-                        >
-                            <Grid item xs={12}>
-                                <Controls />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Outlet />
-                            </Grid>
-                        </Grid>
+            <Snackbar open={snackBarMessage !== undefined} autoHideDuration={6000} onClose={() => setSnackBarMessage(undefined)}>
+                {snackBarMessage}
+            </Snackbar>
+            <ContentWrapper>
+                <Sidebar />
+                <MainView className="ag-theme-alpine-fusion ">
+                    {project && (
+                        <Modal
+                            isOpen={projectClassificationWarning}
+                            size="sm"
+                            title={`Attention - ${PROJECT_CLASSIFICATION[project.classification].label} project`}
+                            content={(
+                                <Typography key="text">
+                                    {PROJECT_CLASSIFICATION[project.classification].description}
+                                </Typography>
+                            )}
+                            actions={
+                                <Button key="ok" onClick={() => addVisitedProject()}>OK</Button>
+                            }
+                        />
                     )}
-            </Grid>
-            {project && (
-                <Modal
-                    isOpen={projectClassificationWarning}
-                    size="sm"
-                    title={`Attention - ${PROJECT_CLASSIFICATION[project.classification].label} project`}
-                    content={(
-                        <Typography key="text">
-                            {PROJECT_CLASSIFICATION[project.classification].description}
-                        </Typography>
-                    )}
-                    actions={
-                        <Button key="ok" onClick={() => addVisitedProject()}>OK</Button>
-                    }
-                />
-            )}
+                    <ControlsWrapper>
+                        <Controls />
+                    </ControlsWrapper>
+                    <Outlet />
+                </MainView>
+            </ContentWrapper>
+
         </>
     )
 }

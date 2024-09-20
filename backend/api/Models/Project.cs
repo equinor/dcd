@@ -13,20 +13,20 @@ public class Project
     public Currency Currency { get; set; }
     public PhysUnit PhysicalUnit { get; set; }
     public DateTimeOffset CreateDate { get; set; }
-    public ICollection<Case>? Cases { get; set; }
-    public ICollection<Well>? Wells { get; set; }
-    public ICollection<Surf>? Surfs { get; set; }
-    public ICollection<Substructure>? Substructures { get; set; }
-    public ICollection<Topside>? Topsides { get; set; }
-    public ICollection<Transport>? Transports { get; set; }
+    public virtual ICollection<Case>? Cases { get; set; }
+    public virtual ICollection<Well>? Wells { get; set; }
+    public virtual ICollection<Surf>? Surfs { get; set; }
+    public virtual ICollection<Substructure>? Substructures { get; set; }
+    public virtual ICollection<Topside>? Topsides { get; set; }
+    public virtual ICollection<Transport>? Transports { get; set; }
     public ProjectPhase ProjectPhase { get; set; }
     public ProjectClassification Classification { get; set; }
     public ProjectCategory ProjectCategory { get; set; }
-    public ExplorationOperationalWellCosts? ExplorationOperationalWellCosts { get; set; }
-    public DevelopmentOperationalWellCosts? DevelopmentOperationalWellCosts { get; set; }
-    public ICollection<DrainageStrategy>? DrainageStrategies { get; set; }
-    public ICollection<WellProject>? WellProjects { get; set; }
-    public ICollection<Exploration>? Explorations { get; set; }
+    public virtual ExplorationOperationalWellCosts? ExplorationOperationalWellCosts { get; set; }
+    public virtual DevelopmentOperationalWellCosts? DevelopmentOperationalWellCosts { get; set; }
+    public virtual ICollection<DrainageStrategy>? DrainageStrategies { get; set; }
+    public virtual ICollection<WellProject>? WellProjects { get; set; }
+    public virtual ICollection<Exploration>? Explorations { get; set; }
     public string? SharepointSiteUrl { get; set; }
     public double CO2RemovedFromGas { get; set; }
     public double CO2EmissionFromFuelGas { get; set; } = 2.34;
@@ -36,7 +36,10 @@ public class Project
     public double DailyEmissionFromDrillingRig { get; set; } = 100;
     public double AverageDevelopmentDrillingDays { get; set; } = 50;
     public DateTimeOffset ModifyTime { get; set; } = DateTimeOffset.UtcNow;
-
+    public double OilPriceUSD { get; set; }
+    public double GasPriceNOK { get; set; }
+    public double DiscountRate { get; set; }
+    public double ExchangeRateUSDToNOK { get; set; }
 }
 
 public enum PhysUnit

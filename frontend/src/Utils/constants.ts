@@ -58,7 +58,7 @@ export const PROJECT_CLASSIFICATION: { [key: number]: ProjectClassification } = 
     },
 }
 
-export const tabNames = [
+export const caseTabNames = [
     "Description",
     "Production Profiles",
     "Schedule",
@@ -67,6 +67,14 @@ export const tabNames = [
     "Cost",
     "CO2 Emissions",
     "Summary",
+]
+
+export const projectTabNames = [
+    "Overview",
+    "Compare cases",
+    "Technical Input",
+    "Case edit history",
+    "Settings",
 ]
 
 export const productionOverrideResources = [

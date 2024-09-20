@@ -1,8 +1,8 @@
-import { Tabs } from "@equinor/eds-core-react"
 import { useEffect } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import Grid from "@mui/material/Grid"
 import { useQueryClient, useQuery } from "react-query"
+import styled from "styled-components"
 import CaseDescriptionTab from "../Components/Case/Tabs/CaseDescriptionTab"
 import CaseCostTab from "../Components/Case/Tabs/CaseCost/CaseCostTab"
 import CaseFacilitiesTab from "../Components/Case/Tabs/CaseFacilitiesTab"
@@ -13,14 +13,13 @@ import CaseDrillingScheduleTab from "../Components/Case/Tabs/CaseDrillingSchedul
 import CaseCO2Tab from "../Components/Case/Tabs/Co2Emissions/CaseCO2Tab"
 import { useProjectContext } from "../Context/ProjectContext"
 import { useCaseContext } from "../Context/CaseContext"
-import CaseDescriptionTabSkeleton from "../Components/Case/Tabs/LoadingSkeletons/CaseDescriptionTabSkeleton"
-import { tabNames } from "../Utils/constants"
+import CaseDescriptionTabSkeleton from "../Components/LoadingSkeletons/CaseDescriptionTabSkeleton"
+import { caseTabNames } from "../Utils/constants"
 import useDataEdits from "../Hooks/useDataEdits"
 
-const {
-    List, Tab, Panels, Panel,
-} = Tabs
-
+const Wrapper = styled(Grid)`
+    padding: 0 16px;
+`
 const CaseView = () => {
     const { caseId, tab } = useParams()
     const { addEdit } = useDataEdits()
@@ -40,23 +39,29 @@ const CaseView = () => {
     const location = useLocation()
     const queryClient = useQueryClient()
     const projectId = project?.id || null
+    const projectUrl = location.pathname.split("/case")[0]
 
     useEffect(() => {
         if (tab) {
-            const tabIndex = tabNames.indexOf(tab)
+            const tabIndex = caseTabNames.indexOf(tab)
             if (activeTabCase !== tabIndex) {
                 setActiveTabCase(tabIndex)
             }
         }
     }, [tab])
 
+    useEffect(() => {
+        if (project && !project?.cases.find((c: Components.Schemas.CaseDto) => c.id === caseId)) {
+            navigate(projectUrl)
+        }
+    }, [project])
+
     // navigates to the default tab (description) if none is provided in the url
     useEffect(() => {
         if (!tab && caseId) {
-            const projectUrl = location.pathname.split("/case")[0]
-            navigate(`${projectUrl}/case/${caseId}/${tabNames[0]}`, { replace: true })
+            navigate(`${projectUrl}/case/${caseId}/${caseTabNames[0]}`, { replace: true })
         } else if (tab) {
-            const tabIndex = tabNames.indexOf(tab)
+            const tabIndex = caseTabNames.indexOf(tab)
             if (activeTabCase !== tabIndex) {
                 setActiveTabCase(tabIndex)
             }
@@ -73,11 +78,6 @@ const CaseView = () => {
         }
     }, [caseId, caseEdits])
 
-    const handleTabChange = (index: number) => {
-        const projectUrl = location.pathname.split("/case")[0]
-        navigate(`${projectUrl}/case/${caseId}/${tabNames[index]}`)
-    }
-
     const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
         ["apiData", { projectId, caseId }],
         () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
@@ -87,46 +87,33 @@ const CaseView = () => {
         },
     )
 
-    if (!project || !apiData) {
-        return <CaseDescriptionTabSkeleton />
-    }
-
     return (
-        <Grid container spacing={1} alignSelf="flex-start">
-            <Grid item xs={12}>
-                <Tabs activeTab={activeTabCase} onChange={handleTabChange} scrollable>
-                    <List>
-                        {tabNames.map((tabName) => <Tab key={tabName}>{tabName}</Tab>)}
-                    </List>
-                    <Panels>
-                        <Panel>
-                            <CaseDescriptionTab addEdit={addEdit} />
-                        </Panel>
-                        <Panel>
-                            <CaseProductionProfilesTab addEdit={addEdit} />
-                        </Panel>
-                        <Panel>
-                            <CaseScheduleTab addEdit={addEdit} />
-                        </Panel>
-                        <Panel>
-                            <CaseDrillingScheduleTab addEdit={addEdit} />
-                        </Panel>
-                        <Panel>
-                            <CaseFacilitiesTab addEdit={addEdit} />
-                        </Panel>
-                        <Panel>
-                            <CaseCostTab addEdit={addEdit} />
-                        </Panel>
-                        <Panel>
-                            <CaseCO2Tab addEdit={addEdit} />
-                        </Panel>
-                        <Panel>
-                            <CaseSummaryTab addEdit={addEdit} />
-                        </Panel>
-                    </Panels>
-                </Tabs>
-            </Grid>
-        </Grid>
+        <Wrapper item xs={12}>
+            <div role="tabpanel" hidden={activeTabCase !== 0}>
+                <CaseDescriptionTab addEdit={addEdit} />
+            </div>
+            <div role="tabpanel" hidden={activeTabCase !== 1}>
+                <CaseProductionProfilesTab addEdit={addEdit} />
+            </div>
+            <div role="tabpanel" hidden={activeTabCase !== 2}>
+                <CaseScheduleTab addEdit={addEdit} />
+            </div>
+            <div role="tabpanel" hidden={activeTabCase !== 3}>
+                <CaseDrillingScheduleTab addEdit={addEdit} />
+            </div>
+            <div role="tabpanel" hidden={activeTabCase !== 4}>
+                <CaseFacilitiesTab addEdit={addEdit} />
+            </div>
+            <div role="tabpanel" hidden={activeTabCase !== 5}>
+                <CaseCostTab addEdit={addEdit} />
+            </div>
+            <div role="tabpanel" hidden={activeTabCase !== 6}>
+                <CaseCO2Tab addEdit={addEdit} />
+            </div>
+            <div role="tabpanel" hidden={activeTabCase !== 7}>
+                <CaseSummaryTab addEdit={addEdit} />
+            </div>
+        </Wrapper>
     )
 }
 

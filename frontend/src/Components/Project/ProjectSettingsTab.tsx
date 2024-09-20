@@ -1,5 +1,5 @@
 import { useState, ChangeEventHandler, useEffect } from "react"
-import { NativeSelect } from "@equinor/eds-core-react"
+import { Input, NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useQuery, useQueryClient } from "react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
@@ -9,7 +9,6 @@ import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
 import useProjectDataEdits from "../../Hooks/useProjectDataEdits"
 
 const ProjectSettingsTab = () => {
-    const { project } = useProjectContext()
     const { currentContext } = useModuleCurrentContext()
     const [classification, setClassification] = useState<number | undefined>(undefined)
     const [dummyRole, setDummyRole] = useState(0) // TODO: Get role from user
@@ -29,12 +28,6 @@ const ProjectSettingsTab = () => {
     )
 
     const projectData = apiData
-
-    useEffect(() => {
-        if (project) {
-            setClassification(project.classification)
-        }
-    }, [project])
 
     const handlePhysicalUnitChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1 && projectData) {
@@ -70,6 +63,45 @@ const ProjectSettingsTab = () => {
             const newClassification: Components.Schemas.ProjectClassification = Number(e.currentTarget.value) as unknown as Components.Schemas.ProjectClassification
             const newProject: Components.Schemas.ProjectWithAssetsDto = { ...projectData }
             newProject.classification = newClassification
+
+            addProjectEdit({
+                projectId: projectData.id,
+                newResourceObject: newProject,
+                previousResourceObject: projectData,
+            })
+        }
+    }
+
+    const handleOilPriceChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+        const newOilPrice = parseFloat(e.currentTarget.value)
+        if (!Number.isNaN(newOilPrice) && projectData) {
+            const newProject = { ...projectData, oilPriceUSD: newOilPrice }
+
+            addProjectEdit({
+                projectId: projectData.id,
+                newResourceObject: newProject,
+                previousResourceObject: projectData,
+            })
+        }
+    }
+
+    const handleGasPriceChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+        const newGasPrice = parseFloat(e.currentTarget.value)
+        if (!Number.isNaN(newGasPrice) && projectData) {
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...projectData, gasPriceNOK: newGasPrice }
+
+            addProjectEdit({
+                projectId: projectData.id,
+                newResourceObject: newProject,
+                previousResourceObject: projectData,
+            })
+        }
+    }
+
+    const handleDiscountRateChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+        const newDiscountRate = parseFloat(e.currentTarget.value)
+        if (!Number.isNaN(newDiscountRate) && projectData) {
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...projectData, discountRate: newDiscountRate }
 
             addProjectEdit({
                 projectId: projectData.id,
@@ -147,6 +179,45 @@ const ProjectSettingsTab = () => {
                         </NativeSelect>
                     </InputSwitcher>
                 )}
+            </Grid>
+            <Grid item>
+                <InputSwitcher
+                    value={String(projectData.oilPriceUSD)}
+                    label="Oil Price (USD)"
+                >
+                    <Input
+                        type="number"
+                        step="0.01"
+                        value={projectData?.oilPriceUSD}
+                        onChange={handleOilPriceChange}
+                    />
+                </InputSwitcher>
+            </Grid>
+            <Grid item>
+                <InputSwitcher
+                    value={String(projectData.gasPriceNOK)}
+                    label="Gas Price (NOK)"
+                >
+                    <Input
+                        type="number"
+                        step="0.01"
+                        value={projectData?.gasPriceNOK}
+                        onChange={handleGasPriceChange}
+                    />
+                </InputSwitcher>
+            </Grid>
+            <Grid item>
+                <InputSwitcher
+                    value={String(projectData.discountRate)}
+                    label="Discount Rate (%)"
+                >
+                    <Input
+                        type="number"
+                        step="0.01"
+                        value={projectData?.discountRate}
+                        onChange={handleDiscountRateChange}
+                    />
+                </InputSwitcher>
             </Grid>
         </Grid>
     )

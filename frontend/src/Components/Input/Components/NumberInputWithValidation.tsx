@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import { error_filled } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { preventNonDigitInput, isWithinRange } from "../../../Utils/common"
+import { useAppContext } from "../../../Context/AppContext"
 
 const ErrorIcon = styled(Icon)`
     margin-left: 8px;
@@ -21,6 +22,7 @@ const StyledInput = styled(Input)`
 `
 
 interface Props {
+    label: string;
     id: string;
     onSubmit: (value: number) => void;
     defaultValue: number | undefined;
@@ -33,6 +35,7 @@ interface Props {
 }
 
 const NumberInputWithValidation = ({
+    label,
     id,
     onSubmit,
     defaultValue,
@@ -43,10 +46,10 @@ const NumberInputWithValidation = ({
     min,
     max,
 }: Props) => {
+    const { setSnackBarMessage } = useAppContext()
     const [hasError, setHasError] = useState(false)
     const [inputValue, setInputValue] = useState(defaultValue)
     const [helperText, setHelperText] = useState("\u200B")
-
     const validateInput = (newValue: number) => {
         setInputValue(newValue)
         if (min !== undefined && max !== undefined) {
@@ -65,8 +68,11 @@ const NumberInputWithValidation = ({
 
     const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
         const newValue = Number(event.target.value)
-        validateInput(newValue)
-        onSubmit(newValue)
+        if (validateInput(newValue)) {
+            onSubmit(newValue)
+        } else {
+            setSnackBarMessage(`The input for ${label} was not saved, because it's outside the allowed range (min: ${min}, max: ${max}).`)
+        }
     }
 
     const checkInput = (event: React.KeyboardEvent<HTMLInputElement>) => {

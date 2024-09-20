@@ -18,6 +18,7 @@ import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
 import { ITimeSeriesData } from "../../../../Models/Interfaces"
+import CaseCo2TabSkeleton from "../../../LoadingSkeletons/CaseCo2TabSkeleton"
 
 const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
@@ -200,13 +201,13 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     ]
 
     if (!topsideData) {
-        return <p>loading....</p>
+        return <CaseCo2TabSkeleton />
     }
 
     if (activeTabCase !== 6 || !caseData) { return null }
 
     return (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} style={{ width: "100%" /* workaround to make AgChart behave */ }}>
             <Grid item xs={12}>
                 <Typography>Facility data, Cost and CO2 emissions can be imported using the PROSP import feature in Technical input</Typography>
             </Grid>
@@ -226,20 +227,18 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
             <Grid item xs={12}>
                 <CaseCO2DistributionTable topside={topsideData} />
             </Grid>
-            <Grid item xs={12} lg={8}>
+            <Grid item lg={12} xl={6}>
                 <AgChartsTimeseries
                     data={co2EmissionsChartData()}
                     chartTitle="Annual CO2 emissions"
                     barColors={["#E24973", "#FF92A8"]}
                     barProfiles={["co2Emissions"]}
                     barNames={["Annual CO2 emissions (million tonnes)"]}
-                    width="100%"
-                    height="600px"
                     lineChart={co2IntensityLine}
                     axesData={chartAxes}
                 />
             </Grid>
-            <Grid item xs={12} lg={4} container direction="column" spacing={1} justifyContent="center" alignItems="center">
+            <Grid item lg={12} xl={6} container direction="column" spacing={1} justifyContent="center" alignItems="center">
                 <Grid item>
                     <Typography variant="h4">Average lifetime CO2 intensity</Typography>
                 </Grid>
@@ -254,8 +253,6 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                         data={co2DistributionChartData}
                         chartTitle="CO2 distribution"
                         barColors={["#243746", "#EB0037", "#A8CED1"]}
-                        height={400}
-                        width="400px"
                         totalCo2Emission={co2EmissionsTotalString()}
                         unit="million tonnes"
                     />
