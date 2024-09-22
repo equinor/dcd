@@ -1,7 +1,7 @@
 import { Typography } from "@equinor/eds-core-react"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
-import { useQueryClient, useQuery } from "react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import { useEffect, useState } from "react"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
@@ -35,16 +35,9 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
         3: "Subsea booster pumps",
     }
 
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
-
-    const caseData = apiData?.case
+    const caseData = queryClient.getQueryData(
+        ["case", { projectId, caseId }],
+    ) as Components.Schemas.CaseWithProfilesDto
 
     useEffect(() => {
         if (caseData?.description !== undefined) {

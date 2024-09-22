@@ -1,7 +1,7 @@
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useParams } from "react-router"
-import { useQueryClient, useQuery } from "react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
@@ -46,22 +46,33 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
         13: "HDPE lined CS (Water injection only)",
     }
 
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
+    const caseData = queryClient.getQueryData(
+        ["case", { projectId, caseId }],
+    ) as Components.Schemas.CaseDto
 
-    const caseData = apiData?.case
-    const topsideData = apiData?.topside
-    const surfData = apiData?.surf
-    const transportData = apiData?.transport
-    const substructureData = apiData?.substructure
+    const topsideData = queryClient.getQueryData(
+        ["topside", { projectId, caseId }],
+    ) as Components.Schemas.TopsideDto
 
-    if (!caseData || !topsideData || !surfData || !transportData || !substructureData) {
+    const surfData = queryClient.getQueryData(
+        ["surf", { projectId, caseId }],
+    ) as Components.Schemas.SurfDto
+
+    const transportData = queryClient.getQueryData(
+        ["transport", { projectId, caseId }],
+    ) as Components.Schemas.TransportDto
+
+    const substructureData = queryClient.getQueryData(
+        ["substructure", { projectId, caseId }],
+    ) as Components.Schemas.SubstructureDto
+
+    if (
+        !caseData
+        || !topsideData
+        || !surfData
+        || !transportData
+        || !substructureData
+    ) {
         return (<CaseFasilitiesTabSkeleton />)
     }
 

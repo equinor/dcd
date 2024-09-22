@@ -6,7 +6,7 @@ import {
 } from "react"
 import Grid from "@mui/material/Grid"
 import { useParams } from "react-router"
-import { useQueryClient, useQuery } from "react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
@@ -57,14 +57,10 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
         explorationWellColor: "#FF7D7D",
         totalIncomeColor: "#9F9F9F",
     }
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
+
+    const apiData = queryClient.getQueryData(
         ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
+    ) as Components.Schemas.CaseWithAssetsDto
 
     useEffect(() => {
         if (activeTabCase === 5 && apiData && !yearRangeSetFromProfiles) {

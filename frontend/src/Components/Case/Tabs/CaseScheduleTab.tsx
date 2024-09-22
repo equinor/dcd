@@ -1,7 +1,7 @@
 import Grid from "@mui/material/Grid"
 import { v4 as uuidv4 } from "uuid"
 import { useParams } from "react-router"
-import { useQueryClient, useQuery } from "react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import {
     dateFromString,
     defaultDate,
@@ -23,16 +23,9 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const { editMode } = useAppContext()
     const projectId = project?.id || null
 
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
-
-    const caseData = apiData?.case
+    const caseData = queryClient.getQueryData(
+        ["case", { projectId, caseId }],
+    ) as Components.Schemas.CaseWithProfilesDto
 
     const caseDateKeys = [
         {

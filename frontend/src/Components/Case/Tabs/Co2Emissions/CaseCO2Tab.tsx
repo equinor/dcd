@@ -6,7 +6,7 @@ import {
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useParams } from "react-router"
-import { useQueryClient, useQuery } from "react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import SwitchableNumberInput from "../../../Input/SwitchableNumberInput"
 import CaseTabTable from "../../Components/CaseTabTable"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
@@ -27,20 +27,25 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const projectId = project?.id || null
     const { activeTabCase } = useCaseContext()
 
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
+    const caseData = queryClient.getQueryData(
+        ["case", { projectId, caseId }],
+    ) as Components.Schemas.CaseDto
 
-    const caseData = apiData?.case
-    const topsideData = apiData?.topside as Components.Schemas.TopsideWithProfilesDto
-    const drainageStrategyData = apiData?.drainageStrategy as Components.Schemas.DrainageStrategyWithProfilesDto
-    const co2EmissionsOverrideData = apiData?.co2EmissionsOverride
-    const co2EmissionsData = apiData?.co2Emissions as Components.Schemas.Co2EmissionsDto
+    const topsideData = queryClient.getQueryData(
+        ["topside", { projectId, caseId }],
+    ) as Components.Schemas.TopsideWithProfilesDto
+
+    const drainageStrategyData = queryClient.getQueryData(
+        ["drainageStrategy", { projectId, caseId }],
+    ) as Components.Schemas.DrainageStrategyWithProfilesDto
+
+    const co2EmissionsOverrideData = queryClient.getQueryData(
+        ["co2EmissionsOverride", { projectId, caseId }],
+    ) as Components.Schemas.Co2EmissionsOverrideDto
+
+    const co2EmissionsData = queryClient.getQueryData(
+        ["co2Emissions", { projectId, caseId }],
+    ) as Components.Schemas.Co2EmissionsDto
 
     // todo: get co2Intensity, co2IntensityTotal and co2DrillingFlaringFuelTotals stored in backend
     const [co2Intensity, setCo2Intensity] = useState<Components.Schemas.Co2IntensityDto>()
@@ -147,7 +152,13 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
             },
         ]
         setTimeSeriesData(newTimeSeriesData)
-    }, [apiData])
+    }, [
+        co2EmissionsData,
+        co2EmissionsOverrideData,
+        co2Intensity,
+        co2IntensityTotal,
+        co2DrillingFlaringFuelTotals,
+    ])
 
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])

@@ -6,7 +6,7 @@ import {
 
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import { useQuery, useQueryClient } from "react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import SwitchableNumberInput from "../../../Input/SwitchableNumberInput"
 import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleAgGridTable"
@@ -14,6 +14,7 @@ import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
+import CaseProductionProfilesTabSkeleton from "../../../LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 
 const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
@@ -42,20 +43,25 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const wellProjectWellsGridRef = useRef(null)
     const explorationWellsGridRef = useRef(null)
 
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
+    const caseData = queryClient.getQueryData(
+        ["case", { projectId, caseId }],
+    ) as Components.Schemas.CaseWithProfilesDto
 
-    const wellProjectWellsData = apiData?.wellProjectWells
-    const explorationWellsData = apiData?.explorationWells
-    const explorationData = apiData?.exploration
-    const wellProjectData = apiData?.wellProject
-    const caseData = apiData?.case
+    const explorationData = queryClient.getQueryData(
+        ["exploration", { projectId, caseId }],
+    ) as Components.Schemas.CaseWithProfilesDto
+
+    const wellProjectData = queryClient.getQueryData(
+        ["wellProject", { projectId, caseId }],
+    ) as Components.Schemas.CaseWithProfilesDto
+
+    const wellProjectWellsData = queryClient.getQueryData(
+        ["wellProjectWells", { projectId, caseId }],
+    ) as Components.Schemas.WellProjectWellDto[]
+
+    const explorationWellsData = queryClient.getQueryData(
+        ["explorationWells", { projectId, caseId }],
+    ) as Components.Schemas.ExplorationWellDto[]
 
     useEffect(() => {
         if (activeTabCase === 3 && caseData && !yearRangeSetFromProfiles) {
@@ -123,7 +129,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
         || !wellProjectWellsData
         || !explorationData
         || !wellProjectData
-    ) { return null }
+    ) { return (<CaseProductionProfilesTabSkeleton />) }
 
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])

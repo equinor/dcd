@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { ResourceObject } from "../Models/Interfaces"
 import { GetCaseService } from "../Services/CaseService"
 import { GetTopsideService } from "../Services/TopsideService"
@@ -24,6 +24,40 @@ interface UpdateResourceParams {
 export const useSubmitToApi = () => {
     const queryClient = useQueryClient()
     const { setSnackBarMessage, setIsCalculatingProductionOverrides, setIsCalculatingTotalStudyCostOverrides } = useAppContext()
+
+    const mutationFn = async ({ serviceMethod }: {
+        projectId: string,
+        caseId: string,
+        resourceId?: string,
+        resourceProfileId?: string,
+        wellId?: string,
+        drillingScheduleId?: string,
+        serviceMethod: object,
+    }) => serviceMethod
+
+    const mutation = useMutation({
+        mutationFn,
+        onSuccess: (
+            results: any,
+            variables,
+        ) => {
+            console.log("results", results)
+            const { projectId, caseId } = variables
+            queryClient.fetchQuery({
+                queryKey: ["apiData", { projectId, caseId }],
+            })
+        },
+        onError: (error: any) => {
+            console.error("Failed to update data:", error)
+            setSnackBarMessage(error.message)
+        },
+        onSettled: () => {
+            setIsCalculatingProductionOverrides(false)
+            setIsCalculatingTotalStudyCostOverrides(false)
+        },
+    })
+
+    /*
 
     const mutation = useMutation(
         async ({ serviceMethod }: {
@@ -53,6 +87,7 @@ export const useSubmitToApi = () => {
             },
         },
     )
+    */
 
     const updateResource = async (
         getService: () => Promise<any>,
