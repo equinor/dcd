@@ -41,11 +41,13 @@ export const useSubmitToApi = () => {
             results: any,
             variables,
         ) => {
-            console.log("results", results)
             const { projectId, caseId } = variables
-            queryClient.fetchQuery({
-                queryKey: ["apiData", { projectId, caseId }],
-            })
+            queryClient.invalidateQueries(
+                { queryKey: ["apiData", { projectId, caseId }] },
+            )
+            queryClient.invalidateQueries(
+                { queryKey: ["case", { projectId, caseId }] },
+            )
         },
         onError: (error: any) => {
             console.error("Failed to update data:", error)
@@ -56,38 +58,6 @@ export const useSubmitToApi = () => {
             setIsCalculatingTotalStudyCostOverrides(false)
         },
     })
-
-    /*
-
-    const mutation = useMutation(
-        async ({ serviceMethod }: {
-            projectId: string,
-            caseId: string,
-            resourceId?: string,
-            resourceProfileId?: string,
-            wellId?: string,
-            drillingScheduleId?: string,
-            serviceMethod: object,
-        }) => serviceMethod,
-        {
-            onSuccess: (
-                results: any,
-                variables,
-            ) => {
-                const { projectId, caseId } = variables
-                queryClient.fetchQuery(["apiData", { projectId, caseId }])
-            },
-            onError: (error: any) => {
-                console.error("Failed to update data:", error)
-                setSnackBarMessage(error.message)
-            },
-            onSettled: () => {
-                setIsCalculatingProductionOverrides(false)
-                setIsCalculatingTotalStudyCostOverrides(false)
-            },
-        },
-    )
-    */
 
     const updateResource = async (
         getService: () => Promise<any>,

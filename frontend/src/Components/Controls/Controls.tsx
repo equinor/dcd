@@ -6,7 +6,7 @@ import {
     Typography,
 } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import styled from "styled-components"
 import { projectPath } from "../../Utils/common"
 import { useProjectContext } from "../../Context/ProjectContext"
@@ -90,20 +90,11 @@ const Controls = () => {
     }
 
     const projectId = project?.id || null
-
     const queryClient = useQueryClient()
-    // const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-    //     ["apiData", { projectId, caseId }],
-    //     () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-    //     {
-    //         enabled: !!projectId && !!caseId,
-    //         initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-    //     },
-    // )
 
-    // const caseData = apiData?.case
-
-    const caseData = {} as any
+    const caseData = queryClient.getQueryData(
+        ["case", { projectId, caseId }],
+    ) as Components.Schemas.CaseWithProfilesDto
 
     useEffect(() => {
         if (location.pathname.includes("case")) {

@@ -91,15 +91,17 @@ const CaseControls: React.FC<props> = ({
     )
 
     // divides the data into separate queries for each resource
-    if (isSuccess && apiData) {
-        const defaultParams = { projectId, caseId }
-
-        Object.entries(apiData).forEach(([key, data]) => {
-            if (data) {
-                queryClient.setQueryData([key, defaultParams], data)
-            }
-        })
-    }
+    useEffect(() => {
+        if (isSuccess && apiData) {
+            console.log("refreshing case data")
+            const defaultParams = { projectId, caseId }
+            Object.entries(apiData).forEach(([key, data]) => {
+                if (data) {
+                    queryClient.setQueryData([key, defaultParams], data)
+                }
+            })
+        }
+    }, [isSuccess, apiData, projectId, caseId])
 
     if (error) {
         setSnackBarMessage(error.message)
