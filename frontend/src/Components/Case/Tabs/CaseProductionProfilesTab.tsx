@@ -5,7 +5,7 @@ import {
 } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import { useQueryClient, useQuery } from "react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../AgGrid/AgChartsTimeseries"
@@ -51,31 +51,73 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
         1: "Injection",
     }
 
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
+    const apiData = queryClient.getQueryData(
         ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
+    ) as Components.Schemas.CaseWithAssetsDto
 
-    const drainageStrategyData = apiData?.drainageStrategy
-    const oilProductionData = apiData?.productionProfileOil
-    const additionalOilProductionData = apiData?.additionalProductionProfileOil
-    const gasProductionData = apiData?.productionProfileGas
-    const additionalGasProductionData = apiData?.additionalProductionProfileGas
-    const waterProductionData = apiData?.productionProfileWater
-    const waterInjectionData = apiData?.productionProfileWaterInjection
-    const fuelFlaringAndLossesData = apiData?.fuelFlaringAndLosses
-    const fuelFlaringAndLossesOverrideData = apiData?.fuelFlaringAndLossesOverride
-    const netSalesGasData = apiData?.netSalesGas
-    const netSalesGasOverrideData = apiData?.netSalesGasOverride
-    const importedElectricityData = apiData?.importedElectricity
-    const importedElectricityOverrideData = apiData?.importedElectricityOverride
-    const deferredOilData = apiData?.deferredOilProduction
-    const deferredGasData = apiData?.deferredGasProduction
-    const caseData = apiData?.case
+    const drainageStrategyData = queryClient.getQueryData(
+        ["drainageStrategy", { projectId, caseId }],
+    ) as Components.Schemas.DrainageStrategyDto
+
+    const oilProductionData = queryClient.getQueryData(
+        ["productionProfileOil", { projectId, caseId }],
+    ) as any
+
+    const additionalOilProductionData = queryClient.getQueryData(
+        ["additionalProductionProfileOil", { projectId, caseId }],
+    ) as any
+
+    const gasProductionData = queryClient.getQueryData(
+        ["productionProfileGas", { projectId, caseId }],
+    ) as any
+
+    const additionalGasProductionData = queryClient.getQueryData(
+        ["additionalProductionProfileGas", { projectId, caseId }],
+    ) as any
+
+    const waterProductionData = queryClient.getQueryData(
+        ["productionProfileWater", { projectId, caseId }],
+    ) as any
+
+    const waterInjectionData = queryClient.getQueryData(
+        ["productionProfileWaterInjection", { projectId, caseId }],
+    ) as any
+
+    const fuelFlaringAndLossesData = queryClient.getQueryData(
+        ["fuelFlaringAndLosses", { projectId, caseId }],
+    ) as Components.Schemas.FuelFlaringAndLossesDto
+
+    const fuelFlaringAndLossesOverrideData = queryClient.getQueryData(
+        ["fuelFlaringAndLossesOverride", { projectId, caseId }],
+    ) as Components.Schemas.FuelFlaringAndLossesDto
+
+    const netSalesGasData = queryClient.getQueryData(
+        ["netSalesGas", { projectId, caseId }],
+    ) as Components.Schemas.NetSalesGasDto
+
+    const netSalesGasOverrideData = queryClient.getQueryData(
+        ["netSalesGasOverride", { projectId, caseId }],
+    ) as Components.Schemas.NetSalesGasDto // does not exist
+
+    const importedElectricityData = queryClient.getQueryData(
+        ["importedElectricity", { projectId, caseId }],
+    ) as Components.Schemas.ImportedElectricityDto
+
+    const importedElectricityOverrideData = queryClient.getQueryData(
+        ["importedElectricityOverride", { projectId, caseId }],
+    ) as Components.Schemas.ImportedElectricityDto // does not exist
+
+    const deferredOilData = queryClient.getQueryData(
+        ["deferredOilProduction", { projectId, caseId }],
+    ) as Components.Schemas.DeferredOilProductionDto
+
+    const deferredGasData = queryClient.getQueryData(
+        ["deferredGasProduction", { projectId, caseId }],
+    ) as Components.Schemas.DeferredGasProductionDto
+
+    const caseData = queryClient.getQueryData(
+        ["case", { projectId, caseId }],
+    ) as Components.Schemas.CaseWithProfilesDto
 
     useEffect(() => {
         if (apiData && activeTabCase === 1 && !yearRangeSetFromProfiles) {
@@ -106,9 +148,6 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
 
     if (activeTabCase !== 1) { return null }
 
-    if (!caseData || !drainageStrategyData || !projectId) {
-        return (<CaseProductionProfilesTabSkeleton />)
-    }
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
     }
@@ -142,6 +181,25 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
         return dataArray
     }
 
+    if (
+        !apiData
+        || !drainageStrategyData
+        || !oilProductionData
+        || !additionalOilProductionData
+        || !gasProductionData
+        || !additionalGasProductionData
+        || !waterProductionData
+        || !waterInjectionData
+        || !fuelFlaringAndLossesData
+        || !netSalesGasData
+        || !importedElectricityData
+        || !deferredOilData
+        || !deferredGasData
+        || !caseData
+    ) {
+        console.log("loading")
+        return (<CaseProductionProfilesTabSkeleton />)
+    }
     return (
         <Grid container spacing={2} style={{ width: "100%" /* workaround to make AgChart behave */ }}>
             <Grid item xs={12} md={6} lg={3}>

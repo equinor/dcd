@@ -2,7 +2,7 @@ import {
     Dispatch, SetStateAction, useState, useEffect,
 } from "react"
 import Grid from "@mui/material/Grid"
-import { useQueryClient, useQuery } from "react-query"
+import { useQueryClient } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
@@ -38,14 +38,9 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
+    const apiData = queryClient.getQueryData(
         ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
+    ) as Components.Schemas.CaseWithAssetsDto
 
     const handleOffshoreFacilitiesCost = () => mergeTimeseriesList([
         (apiData?.surfCostProfileOverride?.override === true
