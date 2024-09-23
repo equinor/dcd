@@ -5,15 +5,18 @@ import {
     Tabs,
 } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 import WellCostsTab from "./WellCostsTab"
 import PROSPTab from "./PROSPTab"
 import { EMPTY_GUID } from "../../Utils/constants"
 import { isExplorationWell } from "../../Utils/common"
 import CO2Tab from "./CO2Tab"
 import { GetTechnicalInputService } from "../../Services/TechnicalInputService"
-import { useProjectContext } from "../../Context/ProjectContext"
 import { useModalContext } from "../../Context/ModalContext"
 import { useAppContext } from "../../Context/AppContext"
+import { projectQueryFn } from "../../Services/QueryFunctions"
+import useEditProject from "../../Hooks/useEditProject"
 
 const {
     List, Tab, Panels, Panel,
@@ -22,46 +25,52 @@ const {
 const EditTechnicalInputModal = () => {
     const { editMode } = useAppContext()
     const [isSaving, setIsSaving] = useState<boolean>(false)
-    const { project, setProject } = useProjectContext()
     const {
-        technicalModalIsOpen,
-        setTechnicalModalIsOpen,
         editTechnicalInput,
         setEditTechnicalInput,
     } = useModalContext()
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
+    const { addProjectEdit } = useEditProject()
 
     const [activeTab, setActiveTab] = useState<number>(0)
     const [deletedWells, setDeletedWells] = useState<string[]>([])
 
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
+
     const [
         explorationOperationalWellCosts,
         setExplorationOperationalWellCosts,
-    ] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(project?.explorationOperationalWellCosts)
+    ] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(apiData?.explorationOperationalWellCosts)
     const [
         developmentOperationalWellCosts,
         setDevelopmentOperationalWellCosts,
-    ] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(project?.developmentOperationalWellCosts)
+    ] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(apiData?.developmentOperationalWellCosts)
 
     const [
         originalExplorationOperationalWellCosts,
         setOriginalExplorationOperationalWellCosts,
-    ] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(project?.explorationOperationalWellCosts)
+    ] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(apiData?.explorationOperationalWellCosts)
     const [
         originalDevelopmentOperationalWellCosts,
         setOriginalDevelopmentOperationalWellCosts,
-    ] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(project?.developmentOperationalWellCosts)
+    ] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(apiData?.developmentOperationalWellCosts)
 
-    const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => !isExplorationWell(w)) ?? [])
-    const [explorationWells, setExplorationWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => isExplorationWell(w)) ?? [])
+    const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellDto[]>(apiData?.wells?.filter((w) => !isExplorationWell(w)) ?? [])
+    const [explorationWells, setExplorationWells] = useState<Components.Schemas.WellDto[]>(apiData?.wells?.filter((w) => isExplorationWell(w)) ?? [])
 
-    const [originalWellProjectWells, setOriginalWellProjectWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => !isExplorationWell(w)) ?? [])
-    const [originalExplorationWells, setOriginalExplorationWells] = useState<Components.Schemas.WellDto[]>(project?.wells?.filter((w) => isExplorationWell(w)) ?? [])
+    const [originalWellProjectWells, setOriginalWellProjectWells] = useState<Components.Schemas.WellDto[]>(apiData?.wells?.filter((w) => !isExplorationWell(w)) ?? [])
+    const [originalExplorationWells, setOriginalExplorationWells] = useState<Components.Schemas.WellDto[]>(apiData?.wells?.filter((w) => isExplorationWell(w)) ?? [])
 
     const handleSave = async () => {
         try {
             const dto: Components.Schemas.UpdateTechnicalInputDto = {}
             setIsSaving(true)
-            dto.projectDto = { ...project }
+            dto.projectDto = { ...apiData }
 
             dto.explorationOperationalWellCostsDto = explorationOperationalWellCosts
 
@@ -73,10 +82,11 @@ const EditTechnicalInputModal = () => {
             dto.updateWellDtos = wellDtos.filter((w) => w.id !== EMPTY_GUID && w.id !== undefined && w.id !== null && w.id !== "")
             dto.deleteWellDtos = deletedWells.map((id) => ({ id }))
 
-            const result = project ? await (await GetTechnicalInputService()).update(project?.id, dto) : undefined
+            // refactor to use react-query?
+            const result = apiData ? await (await GetTechnicalInputService()).update(apiData?.id, dto) : undefined
 
             if (result?.projectDto) {
-                setProject({ ...result?.projectDto })
+                addProjectEdit(result?.projectDto.id, result?.projectDto)
             }
 
             setOriginalExplorationOperationalWellCosts(explorationOperationalWellCosts)
@@ -98,7 +108,6 @@ const EditTechnicalInputModal = () => {
     const handleSaveAndClose = async () => {
         try {
             await handleSave()
-            setTechnicalModalIsOpen(false)
             setEditTechnicalInput(undefined)
         } catch (e) {
             console.error("Error during save operation: ", e)
@@ -115,41 +124,24 @@ const EditTechnicalInputModal = () => {
         setExplorationWells([...originalExplorationWells])
 
         // Close the modal in all cases
-        setTechnicalModalIsOpen(false)
         setEditTechnicalInput(undefined)
         setActiveTab(0)
     }
 
     useEffect(() => {
-        if (technicalModalIsOpen) {
-            setExplorationOperationalWellCosts(structuredClone(project?.explorationOperationalWellCosts))
-            setDevelopmentOperationalWellCosts(structuredClone(project?.developmentOperationalWellCosts))
-            setOriginalExplorationOperationalWellCosts(structuredClone(project?.explorationOperationalWellCosts))
-            setOriginalDevelopmentOperationalWellCosts(structuredClone(project?.developmentOperationalWellCosts))
-            setWellProjectWells(structuredClone(project?.wells?.filter((w) => !isExplorationWell(w)) ?? []))
-            setExplorationWells(structuredClone(project?.wells?.filter((w) => isExplorationWell(w)) ?? []))
-            setOriginalWellProjectWells(structuredClone(project?.wells?.filter((w) => !isExplorationWell(w)) ?? []))
-            setOriginalExplorationWells(structuredClone(project?.wells?.filter((w) => isExplorationWell(w)) ?? []))
-        }
-    }, [technicalModalIsOpen])
+        setExplorationOperationalWellCosts(structuredClone(apiData?.explorationOperationalWellCosts))
+        setDevelopmentOperationalWellCosts(structuredClone(apiData?.developmentOperationalWellCosts))
+        setOriginalExplorationOperationalWellCosts(structuredClone(apiData?.explorationOperationalWellCosts))
+        setOriginalDevelopmentOperationalWellCosts(structuredClone(apiData?.developmentOperationalWellCosts))
+        setWellProjectWells(structuredClone(apiData?.wells?.filter((w) => !isExplorationWell(w)) ?? []))
+        setExplorationWells(structuredClone(apiData?.wells?.filter((w) => isExplorationWell(w)) ?? []))
+        setOriginalWellProjectWells(structuredClone(apiData?.wells?.filter((w) => !isExplorationWell(w)) ?? []))
+        setOriginalExplorationWells(structuredClone(apiData?.wells?.filter((w) => isExplorationWell(w)) ?? []))
+    }, [apiData])
 
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === "Escape") {
-                setTechnicalModalIsOpen(false)
-            }
-        }
-
-        if (technicalModalIsOpen) {
-            window.addEventListener("keydown", handleKeyDown)
-        }
-
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown)
-        }
-    }, [technicalModalIsOpen, setTechnicalModalIsOpen])
-
-    if (!explorationOperationalWellCosts || !developmentOperationalWellCosts) { return null }
+    if (!explorationOperationalWellCosts || !developmentOperationalWellCosts) {
+        return (<div>Loading...</div>)
+    }
 
     return (
         <div>

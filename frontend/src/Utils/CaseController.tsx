@@ -5,11 +5,11 @@ import { EMPTY_GUID } from "../Utils/constants"
 export const deleteCase = async (
     caseId: string,
     project: Components.Schemas.ProjectWithAssetsDto,
-    setProject: (project: Components.Schemas.ProjectWithAssetsDto) => void,
+    addProjectEdit: (projectId: string, project: Components.Schemas.ProjectWithAssetsDto) => void,
 ): Promise<boolean> => {
     try {
         const newProject = await (await GetCaseService()).deleteCase(project.id, caseId)
-        setProject(newProject)
+        addProjectEdit(project.id, newProject)
         return true
     } catch (error) {
         console.error("[ProjectView] Error while deleting case", error)
@@ -20,11 +20,11 @@ export const deleteCase = async (
 export const duplicateCase = async (
     caseId: string,
     project: Components.Schemas.ProjectWithAssetsDto,
-    setProject: (project: Components.Schemas.ProjectWithAssetsDto) => void,
+    addProjectEdit: (projectId: string, project: Components.Schemas.ProjectWithAssetsDto) => void,
 ): Promise<boolean> => {
     try {
         const newProject = await (await GetCaseService()).duplicateCase(project.id, caseId)
-        setProject(newProject)
+        addProjectEdit(project.id, newProject)
         return true
     } catch (error) {
         console.error("[ProjectView] error while submitting form data", error)
@@ -35,7 +35,7 @@ export const duplicateCase = async (
 export const setCaseAsReference = async (
     caseId: string | undefined,
     project: Components.Schemas.ProjectWithAssetsDto,
-    setProject: (project: Components.Schemas.ProjectWithAssetsDto) => void,
+    addProjectEdit: (projectId: string, project: Components.Schemas.ProjectWithAssetsDto) => void,
 ) => {
     try {
         const projectDto = { ...project }
@@ -45,7 +45,7 @@ export const setCaseAsReference = async (
             projectDto.referenceCaseId = caseId ?? ""
         }
         const newProject = await (await GetProjectService()).updateProject(project.id, projectDto)
-        setProject(newProject)
+        addProjectEdit(project.id, newProject)
     } catch (error) {
         console.error("[ProjectView] error while submitting form data", error)
     }

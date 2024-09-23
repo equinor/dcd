@@ -18,7 +18,7 @@ const AppComponent: FC = () => {
     const queryClient = new QueryClient({
         defaultOptions: {
             queries: {
-                refetchOnWindowFocus: "always",
+                refetchOnWindowFocus: true,
                 refetchOnReconnect: true,
             },
         },

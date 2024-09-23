@@ -1,8 +1,8 @@
 import React, { ChangeEventHandler } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import InputSwitcher from "./Components/InputSwitcher"
-import { useProjectContext } from "../../Context/ProjectContext"
 import { ResourcePropertyKey, ResourceName, ResourceObject } from "../../Models/Interfaces"
 
 interface SwitchableDropdownInputProps {
@@ -26,11 +26,13 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
     label,
     addEdit,
 }: SwitchableDropdownInputProps) => {
-    const { project } = useProjectContext()
     const { caseId, tab } = useParams()
 
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
+
     const addToEditsAndSubmit: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if (!caseId || !project) { return }
+        if (!caseId || !projectId) { return }
 
         const newResourceObject: any = structuredClone(previousResourceObject)
         newResourceObject[resourcePropertyKey] = Number(e.currentTarget.value)
@@ -39,7 +41,7 @@ const SwitchableDropdownInput: React.FC<SwitchableDropdownInputProps> = ({
             newResourceObject,
             previousResourceObject,
             inputLabel: label,
-            projectId: project.id,
+            projectId,
             resourceName,
             resourcePropertyKey,
             resourceId,

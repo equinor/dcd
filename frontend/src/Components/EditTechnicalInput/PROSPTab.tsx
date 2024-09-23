@@ -9,20 +9,31 @@ import {
 } from "@equinor/eds-core-react"
 import React, { ChangeEvent, useEffect, useState } from "react"
 import Grid from "@mui/material/Grid"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 import { GetProspService } from "../../Services/ProspService"
 import { GetProjectService } from "../../Services/ProjectService"
 import { DriveItem } from "../../Models/sharepoint/DriveItem"
 import PROSPCaseList from "./PROSPCaseList"
-import { useProjectContext } from "../../Context/ProjectContext"
+import { projectQueryFn } from "../../Services/QueryFunctions"
+import useEditProject from "../../Hooks/useEditProject"
 
 const PROSPTab = () => {
-    const { project, setProject } = useProjectContext()
+    const { currentContext } = useModuleCurrentContext()
+    const { addProjectEdit } = useEditProject()
+    const projectId = currentContext?.externalId
 
     const [sharepointUrl, setSharepointUrl] = useState<string>()
     const [check, setCheck] = useState(false)
     const [driveItems, setDriveItems] = useState<DriveItem[]>()
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
     const [errorMessage, setErrorMessage] = useState<string>("")
+
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
 
     const saveUrl: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
         setIsRefreshing(true)
@@ -32,11 +43,11 @@ const PROSPTab = () => {
             setDriveItems(result)
             setErrorMessage("")
 
-            if (project && sharepointUrl !== project.sharepointSiteUrl) {
-                const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
+            if (apiData && sharepointUrl !== apiData.sharepointSiteUrl) {
+                const newProject: Components.Schemas.ProjectWithAssetsDto = { ...apiData }
                 newProject.sharepointSiteUrl = sharepointUrl
-                const projectResult = await (await GetProjectService()).updateProject(project.id, newProject)
-                setProject(projectResult)
+                const projectResult = await (await GetProjectService()).updateProject(apiData.id, newProject)
+                addProjectEdit(apiData.id, projectResult)
                 setSharepointUrl(projectResult.sharepointSiteUrl ?? "")
             }
         } catch (error) {
@@ -51,13 +62,13 @@ const PROSPTab = () => {
     }
 
     useEffect(() => {
-        if (project && project.sharepointSiteUrl) {
+        if (apiData && apiData.sharepointSiteUrl) {
             (async () => {
-                setSharepointUrl(project.sharepointSiteUrl ?? "")
-                if (project.sharepointSiteUrl && project.sharepointSiteUrl !== "") {
+                setSharepointUrl(apiData.sharepointSiteUrl ?? "")
+                if (apiData.sharepointSiteUrl && apiData.sharepointSiteUrl !== "") {
                     try {
                         const result = await (await GetProspService())
-                            .getSharePointFileNamesAndId({ url: project.sharepointSiteUrl })
+                            .getSharePointFileNamesAndId({ url: apiData.sharepointSiteUrl })
                         setDriveItems(result)
                         setErrorMessage("")
                     } catch (error) {
@@ -67,7 +78,7 @@ const PROSPTab = () => {
                 }
             })()
         }
-    }, [project?.sharepointSiteUrl])
+    }, [apiData?.sharepointSiteUrl])
 
     return (
         <Grid container rowSpacing={3} columnSpacing={2}>

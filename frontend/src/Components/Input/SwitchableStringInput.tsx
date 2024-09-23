@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { Input } from "@equinor/eds-core-react"
-import { useProjectContext } from "../../Context/ProjectContext"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { ResourceName, ResourcePropertyKey, ResourceObject } from "../../Models/Interfaces"
 import InputSwitcher from "./Components/InputSwitcher"
 
@@ -24,7 +24,6 @@ const SwitchableStringInput: React.FC<CaseEditInputProps> = ({
     previousResourceObject,
     addEdit,
 }: CaseEditInputProps) => {
-    const { project } = useProjectContext()
     const { caseId, tab } = useParams()
 
     const [inputValue, setInputValue] = useState(value || "")
@@ -34,7 +33,10 @@ const SwitchableStringInput: React.FC<CaseEditInputProps> = ({
     }, [value])
 
     const addToEditsAndSubmit = (insertedValue: string) => {
-        if (!caseId || !project) { return }
+        const { currentContext } = useModuleCurrentContext()
+        const projectId = currentContext?.externalId
+
+        if (!caseId || !projectId) { return }
 
         const newResourceObject: ResourceObject = structuredClone(previousResourceObject)
         newResourceObject[resourcePropertyKey as keyof ResourceObject] = insertedValue
@@ -45,7 +47,7 @@ const SwitchableStringInput: React.FC<CaseEditInputProps> = ({
             newDisplayValue: insertedValue,
             previousDisplayValue: value,
             inputLabel: label,
-            projectId: project.id,
+            projectId,
             resourceName,
             resourcePropertyKey,
             resourceId,

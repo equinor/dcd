@@ -18,3 +18,12 @@ export const projectQueryFn = async (projectId: string | undefined) => {
     const projectService = await GetProjectService()
     return projectService.getProject(projectId!)
 }
+
+export const compareCasesQueryFn = async (projectId: string | undefined) => {
+    if (!projectId) {
+        console.error("projectId is undefined")
+        return null
+    }
+    const projectService = await GetProjectService()
+    return projectService.compareCases(projectId!)
+}

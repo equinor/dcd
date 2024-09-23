@@ -12,7 +12,6 @@ import {
 import { getCurrentEditId } from "../Utils/common"
 import { useAppContext } from "../Context/AppContext"
 import { useSubmitToApi } from "./UseSubmitToApi"
-import { useProjectContext } from "../Context/ProjectContext"
 
 interface AddEditParams {
     inputLabel: string;
@@ -33,7 +32,7 @@ interface AddEditParams {
     inputFieldId?: string;
 }
 
-const useDataEdits = (): {
+const useEditCase = (): {
     addEdit: (params: AddEditParams) => void;
     undoEdit: () => void;
     redoEdit: () => void;
@@ -52,7 +51,6 @@ const useDataEdits = (): {
         caseEditsBelongingToCurrentCase,
     } = useCaseContext()
     const { submitToApi } = useSubmitToApi()
-    const { project } = useProjectContext()
 
     const { caseId: caseIdFromParams } = useParams()
     const location = useLocation()
@@ -491,4 +489,4 @@ const useDataEdits = (): {
     }
 }
 
-export default useDataEdits
+export default useEditCase

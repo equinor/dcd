@@ -11,6 +11,7 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { CellKeyDownEvent, ColDef } from "@ag-grid-community/core"
 import { useParams } from "react-router"
 import isEqual from "lodash/isEqual"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
     isExplorationWell,
     cellStyleRightAlign,
@@ -19,7 +20,6 @@ import {
     numberValueParser,
 } from "../../../../Utils/common"
 import { useAppContext } from "../../../../Context/AppContext"
-import { useProjectContext } from "../../../../Context/ProjectContext"
 
 interface Props {
     dg4Year: number
@@ -56,12 +56,13 @@ const CaseDrillingScheduleTabTable = ({
     isExplorationTable,
     addEdit,
 }: Props) => {
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([])
     const [stagedEdit, setStagedEdit] = useState<any>()
 
     const { editMode, setSnackBarMessage } = useAppContext()
-    const { project } = useProjectContext()
     const { caseId, tab } = useParams()
 
     const firstTriggerRef = useRef<boolean>(true)
@@ -192,7 +193,7 @@ const CaseDrillingScheduleTabTable = ({
             newProfile.values = []
         }
 
-        if (!caseId || !project || !newProfile) { return }
+        if (!caseId || !projectId || !newProfile) { return }
 
         const rowWells = params.data.assetWells
         if (rowWells) {
@@ -209,7 +210,7 @@ const CaseDrillingScheduleTabTable = ({
                         newDisplayValue: newProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
                         previousDisplayValue: existingProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
                         inputLabel: params.data.name,
-                        projectId: project.id,
+                        projectId,
                         resourceName,
                         resourcePropertyKey: "drillingSchedule",
                         caseId,
@@ -239,7 +240,7 @@ const CaseDrillingScheduleTabTable = ({
                 firstTriggerRef.current = true
             }, 0) // TODO: Can this be removed?
         }
-    }, [stageEdit, dg4Year, project, isExplorationTable])
+    }, [stageEdit, dg4Year, projectId, isExplorationTable])
 
     const defaultColDef = useMemo(() => ({
         sortable: true,

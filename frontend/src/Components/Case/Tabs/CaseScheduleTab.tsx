@@ -2,6 +2,7 @@ import Grid from "@mui/material/Grid"
 import { v4 as uuidv4 } from "uuid"
 import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
     dateFromString,
     defaultDate,
@@ -13,18 +14,17 @@ import {
 import { useAppContext } from "../../../Context/AppContext"
 import SwitchableDateInput from "../../Input/SwitchableDateInput"
 import { ResourceObject, ResourcePropertyKey } from "../../../Models/Interfaces"
-import { useProjectContext } from "../../../Context/ProjectContext"
 import CaseScheduleTabSkeleton from "../../LoadingSkeletons/CaseScheduleTabSkeleton"
 import { caseQueryFn } from "../../../Services/QueryFunctions"
 
 const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
-    const { project } = useProjectContext()
     const { caseId, tab } = useParams()
     const { editMode } = useAppContext()
-    const projectId = project?.id
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
 
     const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", { projectId, caseId }],
+        queryKey: ["caseApiData", projectId, caseId],
         queryFn: () => caseQueryFn(projectId, caseId),
         enabled: !!projectId && !!caseId,
     })

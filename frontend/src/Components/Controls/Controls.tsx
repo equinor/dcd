@@ -16,7 +16,7 @@ import CaseControls from "./CaseControls"
 import WhatsNewModal from "../Modal/WhatsNewModal"
 import Modal from "../Modal/Modal"
 import ProjectControls from "./ProjectControls"
-import { caseQueryFn } from "../../Services/QueryFunctions"
+import { caseQueryFn, projectQueryFn } from "../../Services/QueryFunctions"
 
 const Wrapper = styled(Grid)`
     padding-top: 20px;
@@ -26,7 +26,6 @@ const Wrapper = styled(Grid)`
 
 const Controls = () => {
     const {
-        project,
         setProject,
         projectEdited,
         setProjectEdited,
@@ -37,10 +36,23 @@ const Controls = () => {
     const { currentContext } = useModuleCurrentContext()
     const { editMode, setEditMode } = useAppContext()
     const { caseId } = useParams()
-    const projectId = project?.id
+    const projectId = currentContext?.externalId
+
     const [isCanceling, setIsCanceling] = useState<boolean>(false)
     const [projectLastUpdated, setProjectLastUpdated] = useState<string>("")
     const [caseLastUpdated, setCaseLastUpdated] = useState<string>("")
+
+    const { data: apiData } = useQuery({
+        queryKey: ["caseApiData", projectId, caseId],
+        queryFn: () => caseQueryFn(projectId, caseId),
+        enabled: !!projectId && !!caseId,
+    })
+
+    const { data: projectData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
 
     const cancelEdit = async () => {
         setEditMode(false)
@@ -49,10 +61,10 @@ const Controls = () => {
     }
 
     const handleProjectSave = async () => {
-        if (project && projectEdited) {
+        if (projectData && projectEdited) {
             const updatedProject = { ...projectEdited }
             const result = await (await GetProjectService()).updateProject(
-                project.id,
+                projectData.id,
                 updatedProject,
             )
             setProject(result)
@@ -65,8 +77,10 @@ const Controls = () => {
     }
 
     const handleProjectEdit = async () => {
-        setProjectEdited(project)
-        setEditMode(true)
+        if (projectData) {
+            setProjectEdited(projectData)
+            setEditMode(true)
+        }
     }
 
     const handleCaseEdit = async () => {
@@ -90,12 +104,6 @@ const Controls = () => {
         }
     }
 
-    const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", { projectId, caseId }],
-        queryFn: () => caseQueryFn(projectId, caseId),
-        enabled: !!projectId && !!caseId,
-    })
-
     const caseData = apiData?.case as Components.Schemas.CaseWithProfilesDto
 
     useEffect(() => {
@@ -105,27 +113,27 @@ const Controls = () => {
         } else {
             setProjectLastUpdated(caseData?.modifyTime ?? "")
         }
-    }, [location.pathname, caseData, project])
+    }, [location.pathname, caseData, projectData])
 
     useEffect(() => {
         cancelEdit()
     }, [caseId])
 
     useEffect(() => {
-        setProjectLastUpdated(project?.modifyTime ?? "")
-    }, [caseData, project])
+        setProjectLastUpdated(projectData?.modifyTime ?? "")
+    }, [caseData, projectData])
 
     useEffect(() => {
         const fetchData = async () => {
-            if (location.pathname.includes("case") && project?.id && caseId) {
+            if (location.pathname.includes("case") && projectData?.id && caseId) {
                 const projectService = await GetProjectService()
-                const projectData = await projectService.getProject(project.id)
-                setProject(projectData)
-                setProjectLastUpdated(projectData.modifyTime)
+                const data = await projectService.getProject(projectData.id)
+                setProject(data)
+                setProjectLastUpdated(data.modifyTime)
             }
         }
         fetchData()
-    }, [location.pathname, project?.id, caseId, setProject])
+    }, [location.pathname, projectData, caseId, setProject])
 
     return (
         <Wrapper>
@@ -147,10 +155,10 @@ const Controls = () => {
                 )}
             />
 
-            {project && caseId ? (
+            {projectData && caseId ? (
                 <CaseControls
                     backToProject={backToProject}
-                    projectId={project.id}
+                    projectId={projectData.id}
                     caseId={caseId}
                     caseLastUpdated={caseLastUpdated}
                     handleEdit={handleEdit}
