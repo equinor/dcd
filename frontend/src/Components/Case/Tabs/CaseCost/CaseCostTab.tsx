@@ -6,7 +6,7 @@ import {
 } from "react"
 import Grid from "@mui/material/Grid"
 import { useParams } from "react-router"
-import { useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
@@ -19,13 +19,13 @@ import OpexCosts from "./Tables/OpexCosts"
 import TotalStudyCosts from "./Tables/TotalStudyCosts"
 import AggregatedTotals from "./Tables/AggregatedTotalsChart"
 import CaseCostSkeleton from "../../../LoadingSkeletons/CaseCostTabSkeleton"
+import { caseQueryFn } from "../../../../Services/QueryFunctions"
 
 const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
     const { activeTabCase } = useCaseContext()
     const { caseId } = useParams()
-    const queryClient = useQueryClient()
-    const projectId = project?.id || null
+    const projectId = project?.id
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -58,10 +58,11 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
         totalIncomeColor: "#9F9F9F",
     }
 
-    const apiData = queryClient.getQueryData(
-        ["apiData", { projectId, caseId }],
-    ) as Components.Schemas.CaseWithAssetsDto
-
+    const { data: apiData } = useQuery({
+        queryKey: ["apiData", { projectId, caseId }],
+        queryFn: () => caseQueryFn(projectId, caseId),
+        enabled: !!projectId && !!caseId,
+    })
     useEffect(() => {
         if (activeTabCase === 5 && apiData && !yearRangeSetFromProfiles) {
             console.log("apiData", apiData)

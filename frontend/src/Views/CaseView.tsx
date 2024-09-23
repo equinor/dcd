@@ -100,8 +100,6 @@ const CaseView = () => {
             <div role="tabpanel" hidden={activeTabCase !== 7}>
                 <CaseSummaryTab addEdit={addEdit} />
             </div>
-            {" "}
-            ß
         </Wrapper>
     )
 }

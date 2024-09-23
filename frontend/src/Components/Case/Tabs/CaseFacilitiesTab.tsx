@@ -1,18 +1,18 @@
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useParams } from "react-router"
-import { useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import CaseFasilitiesTabSkeleton from "../../LoadingSkeletons/CaseFacilitiesTabSkeleton"
 import SwitchableStringInput from "../../Input/SwitchableStringInput"
+import { caseQueryFn } from "../../../Services/QueryFunctions"
 
 const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
-    const queryClient = useQueryClient()
     const { project } = useProjectContext()
     const { caseId } = useParams()
-    const projectId = project?.id || null
+    const projectId = project?.id
 
     const platformConceptValues: { [key: number]: string } = {
         0: "No Concept",
@@ -46,25 +46,20 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
         13: "HDPE lined CS (Water injection only)",
     }
 
-    const caseData = queryClient.getQueryData(
-        ["case", { projectId, caseId }],
-    ) as Components.Schemas.CaseDto
+    const { data: apiData } = useQuery({
+        queryKey: ["apiData", { projectId, caseId }],
+        queryFn: () => caseQueryFn(projectId, caseId),
+        enabled: !!projectId && !!caseId,
+    })
 
-    const topsideData = queryClient.getQueryData(
-        ["topside", { projectId, caseId }],
-    ) as Components.Schemas.TopsideDto
+    const caseData = apiData?.case
+    const topsideData = apiData?.topside
 
-    const surfData = queryClient.getQueryData(
-        ["surf", { projectId, caseId }],
-    ) as Components.Schemas.SurfDto
+    const surfData = apiData?.surf
 
-    const transportData = queryClient.getQueryData(
-        ["transport", { projectId, caseId }],
-    ) as Components.Schemas.TransportDto
+    const transportData = apiData?.transport
 
-    const substructureData = queryClient.getQueryData(
-        ["substructure", { projectId, caseId }],
-    ) as Components.Schemas.SubstructureDto
+    const substructureData = apiData?.substructure
 
     if (
         !caseData

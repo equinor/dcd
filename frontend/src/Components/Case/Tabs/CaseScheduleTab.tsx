@@ -1,7 +1,7 @@
 import Grid from "@mui/material/Grid"
 import { v4 as uuidv4 } from "uuid"
 import { useParams } from "react-router"
-import { useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import {
     dateFromString,
     defaultDate,
@@ -15,17 +15,19 @@ import SwitchableDateInput from "../../Input/SwitchableDateInput"
 import { ResourceObject, ResourcePropertyKey } from "../../../Models/Interfaces"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import CaseScheduleTabSkeleton from "../../LoadingSkeletons/CaseScheduleTabSkeleton"
+import { caseQueryFn } from "../../../Services/QueryFunctions"
 
 const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
     const { caseId, tab } = useParams()
-    const queryClient = useQueryClient()
     const { editMode } = useAppContext()
-    const projectId = project?.id || null
+    const projectId = project?.id
 
-    const caseData = queryClient.getQueryData(
-        ["case", { projectId, caseId }],
-    ) as Components.Schemas.CaseWithProfilesDto
+    const { data: apiData } = useQuery({
+        queryKey: ["apiData", { projectId, caseId }],
+        queryFn: () => caseQueryFn(projectId, caseId),
+        enabled: !!projectId && !!caseId,
+    })
 
     const caseDateKeys = [
         {
@@ -83,11 +85,14 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
         },
     ]
 
+    if (!apiData || !projectId) {
+        return (<CaseScheduleTabSkeleton />)
+    }
+
+    const caseData = apiData.case
+
     const getDGOChangesObject = (newDate: Date): ResourceObject | undefined => {
         const newCaseObject = caseData as Components.Schemas.CaseDto
-
-        if (!newCaseObject) { return undefined }
-
         newCaseObject.dG0Date = new Date(newDate).toISOString()
 
         if (newCaseObject.dG1Date && isDefaultDateString(newCaseObject.dG1Date)) {
@@ -123,9 +128,6 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
 
     function handleDateChange(dateKey: string, dateValue: string) {
         const caseDataCopy: any = { ...caseData }
-
-        if (!caseData) { return }
-
         const newDate = Number.isNaN(new Date(dateValue).getTime())
             ? defaultDate()
             : new Date(dateValue)
@@ -189,10 +191,6 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
             return toScheduleValue(caseDataObject[dateKey as keyof typeof caseDataObject])
         }
         return defaultDate().toISOString()
-    }
-
-    if (!caseData || !projectId) {
-        return (<CaseScheduleTabSkeleton />)
     }
 
     return (

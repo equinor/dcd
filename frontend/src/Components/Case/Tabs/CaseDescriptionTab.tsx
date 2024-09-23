@@ -1,7 +1,7 @@
 import { Typography } from "@equinor/eds-core-react"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
-import { useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import { useEffect, useState } from "react"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
@@ -10,13 +10,13 @@ import Gallery from "../../Gallery/Gallery"
 import { useAppContext } from "../../../Context/AppContext"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import CaseDescriptionTabSkeleton from "../../LoadingSkeletons/CaseDescriptionTabSkeleton"
+import { caseQueryFn } from "../../../Services/QueryFunctions"
 
 const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
     const { editMode } = useAppContext()
     const { caseId, tab } = useParams()
-    const queryClient = useQueryClient()
-    const projectId = project?.id || null
+    const projectId = project?.id
 
     const [description, setDescription] = useState("")
 
@@ -35,19 +35,22 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
         3: "Subsea booster pumps",
     }
 
-    const caseData = queryClient.getQueryData(
-        ["case", { projectId, caseId }],
-    ) as Components.Schemas.CaseWithProfilesDto
+    const { data: apiData } = useQuery({
+        queryKey: ["apiData", { projectId, caseId }],
+        queryFn: () => caseQueryFn(projectId, caseId),
+        enabled: !!projectId && !!caseId,
+    })
 
     useEffect(() => {
-        if (caseData?.description !== undefined) {
-            setDescription(caseData.description)
+        if (apiData && apiData.case.description !== undefined) {
+            setDescription(apiData.case.description)
         }
-    }, [caseData?.description])
+    }, [apiData])
 
-    if (!caseData || !projectId) {
+    if (!apiData || !projectId) {
         return <CaseDescriptionTabSkeleton />
     }
+    const caseData = apiData.case
 
     const handleBlur = (e: any) => {
         // eslint-disable-next-line no-underscore-dangle

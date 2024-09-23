@@ -5,7 +5,7 @@ import {
 } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import { useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../AgGrid/AgChartsTimeseries"
@@ -17,13 +17,13 @@ import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import CaseProductionProfilesTabSkeleton from "../../LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
+import { caseQueryFn } from "../../../Services/QueryFunctions"
 
 const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
-    const queryClient = useQueryClient()
     const { caseId } = useParams()
     const { project } = useProjectContext()
     const { activeTabCase } = useCaseContext()
-    const projectId = project?.id || null
+    const projectId = project?.id
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -51,102 +51,56 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
         1: "Injection",
     }
 
-    const apiData = queryClient.getQueryData(
-        ["apiData", { projectId, caseId }],
-    ) as Components.Schemas.CaseWithAssetsDto
-
-    const drainageStrategyData = queryClient.getQueryData(
-        ["drainageStrategy", { projectId, caseId }],
-    ) as Components.Schemas.DrainageStrategyDto
-
-    const oilProductionData = queryClient.getQueryData(
-        ["productionProfileOil", { projectId, caseId }],
-    ) as any
-
-    const additionalOilProductionData = queryClient.getQueryData(
-        ["additionalProductionProfileOil", { projectId, caseId }],
-    ) as any
-
-    const gasProductionData = queryClient.getQueryData(
-        ["productionProfileGas", { projectId, caseId }],
-    ) as any
-
-    const additionalGasProductionData = queryClient.getQueryData(
-        ["additionalProductionProfileGas", { projectId, caseId }],
-    ) as any
-
-    const waterProductionData = queryClient.getQueryData(
-        ["productionProfileWater", { projectId, caseId }],
-    ) as any
-
-    const waterInjectionData = queryClient.getQueryData(
-        ["productionProfileWaterInjection", { projectId, caseId }],
-    ) as any
-
-    const fuelFlaringAndLossesData = queryClient.getQueryData(
-        ["fuelFlaringAndLosses", { projectId, caseId }],
-    ) as Components.Schemas.FuelFlaringAndLossesDto
-
-    const fuelFlaringAndLossesOverrideData = queryClient.getQueryData(
-        ["fuelFlaringAndLossesOverride", { projectId, caseId }],
-    ) as Components.Schemas.FuelFlaringAndLossesDto
-
-    const netSalesGasData = queryClient.getQueryData(
-        ["netSalesGas", { projectId, caseId }],
-    ) as Components.Schemas.NetSalesGasDto
-
-    const netSalesGasOverrideData = queryClient.getQueryData(
-        ["netSalesGasOverride", { projectId, caseId }],
-    ) as Components.Schemas.NetSalesGasDto // does not exist
-
-    const importedElectricityData = queryClient.getQueryData(
-        ["importedElectricity", { projectId, caseId }],
-    ) as Components.Schemas.ImportedElectricityDto
-
-    const importedElectricityOverrideData = queryClient.getQueryData(
-        ["importedElectricityOverride", { projectId, caseId }],
-    ) as Components.Schemas.ImportedElectricityDto // does not exist
-
-    const deferredOilData = queryClient.getQueryData(
-        ["deferredOilProduction", { projectId, caseId }],
-    ) as Components.Schemas.DeferredOilProductionDto
-
-    const deferredGasData = queryClient.getQueryData(
-        ["deferredGasProduction", { projectId, caseId }],
-    ) as Components.Schemas.DeferredGasProductionDto
-
-    const caseData = queryClient.getQueryData(
-        ["case", { projectId, caseId }],
-    ) as Components.Schemas.CaseWithProfilesDto
+    const { data: apiData, isLoading } = useQuery({
+        queryKey: ["apiData", { projectId, caseId }],
+        queryFn: () => caseQueryFn(projectId, caseId),
+        enabled: !!projectId && !!caseId,
+    })
 
     useEffect(() => {
         if (apiData && activeTabCase === 1 && !yearRangeSetFromProfiles) {
             SetTableYearsFromProfiles(
                 [
-                    drainageStrategyData,
-                    oilProductionData,
-                    gasProductionData,
-                    waterProductionData,
-                    waterInjectionData,
-                    fuelFlaringAndLossesData,
-                    fuelFlaringAndLossesOverrideData,
-                    netSalesGasData,
-                    netSalesGasOverrideData,
-                    importedElectricityData,
-                    importedElectricityOverrideData,
-                    deferredOilData,
-                    deferredGasData,
+                    apiData.drainageStrategy,
+                    apiData.productionProfileOil,
+                    apiData.productionProfileGas,
+                    apiData.productionProfileWater,
+                    apiData.productionProfileWaterInjection,
+                    apiData.fuelFlaringAndLosses,
+                    apiData.fuelFlaringAndLossesOverride,
+                    apiData.netSalesGas,
+                    apiData.netSalesGasOverride,
+                    apiData.importedElectricity,
+                    apiData.importedElectricityOverride,
+                    apiData.deferredOilProduction,
+                    apiData.deferredGasProduction,
                 ],
-                caseData?.dG4Date ? new Date(caseData.dG4Date).getFullYear() : endYear,
+                apiData.case.dG4Date ? new Date(apiData.case.dG4Date).getFullYear() : endYear,
                 setStartYear,
                 setEndYear,
                 setTableYears,
             )
             setYearRangeSetFromProfiles(true)
         }
-    }, [apiData, activeTabCase])
+    }, [
+        apiData,
+        activeTabCase,
+    ])
 
     if (activeTabCase !== 1) { return null }
+
+    if (isLoading || !apiData) {
+        return <CaseProductionProfilesTabSkeleton />
+    }
+
+    const caseData = apiData.case
+    const drainageStrategyData = apiData.drainageStrategy
+    const oilProductionData = apiData.productionProfileOil
+    const additionalOilProductionData = apiData.additionalProductionProfileOil
+    const gasProductionData = apiData.productionProfileGas
+    const additionalGasProductionData = apiData.additionalProductionProfileGas
+    const waterProductionData = apiData.productionProfileWater
+    const waterInjectionData = apiData.productionProfileWaterInjection
 
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
@@ -181,22 +135,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
         return dataArray
     }
 
-    if (
-        !apiData
-        || !drainageStrategyData
-        || !oilProductionData
-        || !additionalOilProductionData
-        || !gasProductionData
-        || !additionalGasProductionData
-        || !waterProductionData
-        || !waterInjectionData
-        || !fuelFlaringAndLossesData
-        || !netSalesGasData
-        || !importedElectricityData
-        || !deferredOilData
-        || !deferredGasData
-        || !caseData
-    ) {
+    if (!drainageStrategyData || !caseData || !apiData) {
         console.log("loading")
         return (<CaseProductionProfilesTabSkeleton />)
     }

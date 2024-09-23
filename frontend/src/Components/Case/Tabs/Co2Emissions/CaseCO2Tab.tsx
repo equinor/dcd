@@ -6,7 +6,7 @@ import {
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useParams } from "react-router"
-import { useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import SwitchableNumberInput from "../../../Input/SwitchableNumberInput"
 import CaseTabTable from "../../Components/CaseTabTable"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
@@ -19,33 +19,25 @@ import { useCaseContext } from "../../../../Context/CaseContext"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
 import { ITimeSeriesData } from "../../../../Models/Interfaces"
 import CaseCo2TabSkeleton from "../../../LoadingSkeletons/CaseCo2TabSkeleton"
+import { caseQueryFn } from "../../../../Services/QueryFunctions"
 
 const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
     const { caseId } = useParams()
-    const queryClient = useQueryClient()
-    const projectId = project?.id || null
+    const projectId = project?.id
     const { activeTabCase } = useCaseContext()
 
-    const caseData = queryClient.getQueryData(
-        ["case", { projectId, caseId }],
-    ) as Components.Schemas.CaseDto
+    const { data: apiData } = useQuery({
+        queryKey: ["apiData", { projectId, caseId }],
+        queryFn: () => caseQueryFn(projectId, caseId),
+        enabled: !!projectId && !!caseId,
+    })
 
-    const topsideData = queryClient.getQueryData(
-        ["topside", { projectId, caseId }],
-    ) as Components.Schemas.TopsideWithProfilesDto
-
-    const drainageStrategyData = queryClient.getQueryData(
-        ["drainageStrategy", { projectId, caseId }],
-    ) as Components.Schemas.DrainageStrategyWithProfilesDto
-
-    const co2EmissionsOverrideData = queryClient.getQueryData(
-        ["co2EmissionsOverride", { projectId, caseId }],
-    ) as Components.Schemas.Co2EmissionsOverrideDto
-
-    const co2EmissionsData = queryClient.getQueryData(
-        ["co2Emissions", { projectId, caseId }],
-    ) as Components.Schemas.Co2EmissionsDto
+    const caseData = apiData?.case as Components.Schemas.CaseDto
+    const topsideData = apiData?.topside as Components.Schemas.TopsideWithProfilesDto
+    const drainageStrategyData = apiData?.drainageStrategy as Components.Schemas.DrainageStrategyWithProfilesDto
+    const co2EmissionsOverrideData = apiData?.co2EmissionsOverride as Components.Schemas.Co2EmissionsOverrideDto
+    const co2EmissionsData = apiData?.co2Emissions as Components.Schemas.Co2EmissionsDto
 
     // todo: get co2Intensity, co2IntensityTotal and co2DrillingFlaringFuelTotals stored in backend
     const [co2Intensity, setCo2Intensity] = useState<Components.Schemas.Co2IntensityDto>()
@@ -134,7 +126,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                 editable: true,
                 overrideProfile: co2EmissionsOverrideData,
                 resourceName: "co2EmissionsOverride",
-                resourceId: drainageStrategyData?.id,
+                resourceId: drainageStrategyData?.id!,
                 resourceProfileId: co2EmissionsOverrideData?.id,
                 resourcePropertyKey: "co2EmissionsOverride",
             },
@@ -146,7 +138,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                 overridable: false,
                 editable: false,
                 resourceName: "co2Intensity",
-                resourceId: drainageStrategyData?.id,
+                resourceId: drainageStrategyData?.id!,
                 resourceProfileId: co2Intensity?.id,
                 resourcePropertyKey: "co2Intensity",
             },

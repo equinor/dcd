@@ -79,7 +79,6 @@ const CaseControls: React.FC<props> = ({
     const {
         data: apiData,
         error,
-        isSuccess,
     } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
         {
             queryKey: ["apiData", { projectId, caseId }],
@@ -90,6 +89,7 @@ const CaseControls: React.FC<props> = ({
         queryClient,
     )
 
+    /*
     // divides the data into separate queries for each resource
     useEffect(() => {
         if (isSuccess && apiData) {
@@ -102,22 +102,20 @@ const CaseControls: React.FC<props> = ({
             })
         }
     }, [isSuccess, apiData, projectId, caseId])
+    */
 
     if (error) {
         setSnackBarMessage(error.message)
     }
 
-    const caseData = queryClient.getQueryData(
-        ["case", { projectId, caseId }],
-    ) as Components.Schemas.CaseWithProfilesDto
-
     useEffect(() => {
-        if (caseData?.name) {
-            setCaseName(caseData.name)
+        if (apiData && apiData.case.name) {
+            setCaseName(apiData.case.name)
         }
-    }, [caseData?.name])
+    }, [apiData])
 
-    if (!caseData) { return null }
+    if (!apiData) { return null }
+    const caseData = apiData.case
 
     const handleCaseNameChange = (name: string) => {
         const previousResourceObject = structuredClone(caseData)

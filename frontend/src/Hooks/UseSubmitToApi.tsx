@@ -45,9 +45,6 @@ export const useSubmitToApi = () => {
             queryClient.invalidateQueries(
                 { queryKey: ["apiData", { projectId, caseId }] },
             )
-            queryClient.invalidateQueries(
-                { queryKey: ["case", { projectId, caseId }] },
-            )
         },
         onError: (error: any) => {
             console.error("Failed to update data:", error)
@@ -173,6 +170,8 @@ export const useSubmitToApi = () => {
         wellId,
         drillingScheduleId,
     }: SubmitToApiParams): Promise<any> => {
+        console.log("submitToApi", resourceName, resourceId, resourceObject, resourceProfileId, wellId, drillingScheduleId, caseId, projectId)
+
         if (productionOverrideResources.includes(resourceName)) {
             setIsCalculatingProductionOverrides(true)
         }
