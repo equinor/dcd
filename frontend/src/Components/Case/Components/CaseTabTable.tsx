@@ -13,6 +13,7 @@ import {
 } from "@ag-grid-community/core"
 import isEqual from "lodash/isEqual"
 import { CircularProgress } from "@equinor/eds-core-react"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
     extractTableTimeSeriesValues,
     generateProfile,
@@ -26,7 +27,6 @@ import { useAppContext } from "../../../Context/AppContext"
 import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
-import { useProjectContext } from "../../../Context/ProjectContext"
 import { TABLE_VALIDATION_RULES } from "../../../Utils/constants"
 
 interface Props {
@@ -58,11 +58,12 @@ const CaseTabTable = ({
 }: Props) => {
     const { editMode, setSnackBarMessage } = useAppContext()
     const styles = useStyles()
-    const { project } = useProjectContext()
     const { caseId, tab } = useParams()
     const [stagedEdit, setStagedEdit] = useState<any>()
     const firstTriggerRef = useRef<boolean>(true)
     const timerRef = useRef<NodeJS.Timeout | null>(null)
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
 
     useEffect(() => {
         if (stagedEdit) {
@@ -252,7 +253,7 @@ const CaseTabTable = ({
             newProfile.values = []
         }
 
-        if (!newProfile || !caseId || !project) {
+        if (!newProfile || !caseId) {
             return
         }
 
@@ -265,7 +266,7 @@ const CaseTabTable = ({
                 newDisplayValue: newProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
                 previousDisplayValue: existingProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
                 inputLabel: params.data.profileName,
-                projectId: project.id,
+                projectId,
                 resourceName: timeSeriesDataIndex()?.resourceName,
                 resourcePropertyKey: timeSeriesDataIndex()?.resourcePropertyKey,
                 caseId,
@@ -295,7 +296,7 @@ const CaseTabTable = ({
                 firstTriggerRef.current = true
             }, 0) // TODO: Can this be removed?
         }
-    }, [stageEdit, timeSeriesData, dg4Year, project, caseId])
+    }, [stageEdit, timeSeriesData, dg4Year, caseId])
 
     const gridRefArrayToAlignedGrid = () => {
         if (alignedGridsRef && alignedGridsRef.length > 0) {

@@ -13,11 +13,14 @@ import {
 } from "@ag-grid-community/core"
 import { external_link } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 import SharePointImport from "./SharePointImport"
 import { DriveItem } from "../../Models/sharepoint/DriveItem"
 import { ImportStatusEnum } from "./ImportStatusEnum"
 import { GetProspService } from "../../Services/ProspService"
-import { useProjectContext } from "../../Context/ProjectContext"
+import { projectQueryFn } from "../../Services/QueryFunctions"
+import useEditProject from "../../Hooks/useEditProject"
 
 interface Props {
     driveItems: DriveItem[] | undefined
@@ -45,23 +48,32 @@ const PROSPCaseList = ({
     driveItems,
     check,
 }: Props) => {
-    const { project, setProject } = useProjectContext()
     const gridRef = useRef<any>(null)
     const styles = useStyles()
+    const { currentContext } = useModuleCurrentContext()
+    const { addProjectEdit } = useEditProject()
+    const projectId = currentContext?.externalId
+
     const [rowData, setRowData] = useState<RowData[]>()
     const [isApplying, setIsApplying] = useState<boolean>()
 
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
+
     const casesToRowData = () => {
-        if (project && project.cases) {
+        if (apiData && apiData.cases) {
             const tableCases: RowData[] = []
-            project.cases.forEach((c) => {
+            apiData.cases.forEach((c) => {
                 const tableCase: RowData = {
                     id: c.id!,
                     name: c.name ?? "",
-                    surfState: SharePointImport.surfStatus(c, project),
-                    substructureState: SharePointImport.substructureStatus(c, project),
-                    topsideState: SharePointImport.topsideStatus(c, project),
-                    transportState: SharePointImport.transportStatus(c, project),
+                    surfState: SharePointImport.surfStatus(c, apiData),
+                    substructureState: SharePointImport.substructureStatus(c, apiData),
+                    topsideState: SharePointImport.topsideStatus(c, apiData),
+                    transportState: SharePointImport.transportStatus(c, apiData),
                     sharePointFileId: c.sharepointFileId,
                     sharePointFileName: c.sharepointFileName,
                     sharepointFileUrl: c.sharepointFileUrl,
@@ -109,26 +121,26 @@ const PROSPCaseList = ({
     }
 
     const handleAdvancedSettingsChange = (p: any, value: ImportStatusEnum) => {
-        if (project && project.cases) {
-            const projectCase = project.cases.find((el: any) => p.data.id && p.data.id === el.id)
+        if (apiData && apiData.cases) {
+            const projectCase = apiData.cases.find((el: any) => p.data.id && p.data.id === el.id)
             const rowNode = gridRef.current?.getRowNode(p.node?.data.id)
             if (projectCase) {
                 switch (p.column.colId) {
-                case "surfState":
-                    rowNode.data.surfStateChanged = (SharePointImport.surfStatus(projectCase, project) !== value)
-                    break
-                case "substructureState":
-                    rowNode.data.substructureStateChanged = (
-                        SharePointImport.substructureStatus(projectCase, project) !== value)
-                    break
-                case "topsideState":
-                    rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(projectCase, project) !== value)
-                    break
-                case "transportState":
-                    rowNode.data.transportStateChanged = (SharePointImport.transportStatus(projectCase, project) !== value)
-                    break
-                default:
-                    break
+                    case "surfState":
+                        rowNode.data.surfStateChanged = (SharePointImport.surfStatus(projectCase, apiData) !== value)
+                        break
+                    case "substructureState":
+                        rowNode.data.substructureStateChanged = (
+                            SharePointImport.substructureStatus(projectCase, apiData) !== value)
+                        break
+                    case "topsideState":
+                        rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(projectCase, apiData) !== value)
+                        break
+                    case "transportState":
+                        rowNode.data.transportStateChanged = (SharePointImport.transportStatus(projectCase, apiData) !== value)
+                        break
+                    default:
+                        break
                 }
             }
         }
@@ -335,9 +347,9 @@ const PROSPCaseList = ({
             const newProject = await (await GetProspService()).importFromSharepoint(p.id!, dtos)
             const noSharePointFileNewProject: any = newProject
             if (noSharePointFileNewProject.result) {
-                setProject(noSharePointFileNewProject.result)
+                addProjectEdit(noSharePointFileNewProject.result.id, noSharePointFileNewProject.result)
             } else {
-                setProject(newProject)
+                addProjectEdit(newProject.id, newProject)
             }
             setIsApplying(false)
         }
@@ -366,7 +378,7 @@ const PROSPCaseList = ({
         if (gridRef.current.redrawRows) {
             gridRef.current.redrawRows()
         }
-    }, [project, driveItems])
+    }, [apiData, driveItems])
 
     return (
         <Grid container spacing={1}>
@@ -392,9 +404,9 @@ const PROSPCaseList = ({
                 </div>
             </Grid>
             <Grid item>
-                {!isApplying && project ? (
+                {!isApplying && apiData ? (
                     <Button
-                        onClick={() => save(project)}
+                        onClick={() => save(apiData)}
                         color="secondary"
                     >
                         Apply changes

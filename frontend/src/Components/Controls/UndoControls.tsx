@@ -5,7 +5,7 @@ import {
 import { check_circle_outlined, undo, redo } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { useParams } from "react-router-dom"
-import useDataEdits from "../../Hooks/useDataEdits"
+import useEditCase from "../../Hooks/useEditCase"
 import { useCaseContext } from "../../Context/CaseContext"
 import { getCurrentEditId } from "../../Utils/common"
 import { useAppContext } from "../../Context/AppContext"
@@ -28,7 +28,7 @@ const UndoControls: React.FC = () => {
         editIndexes,
         caseEditsBelongingToCurrentCase,
     } = useCaseContext()
-    const { undoEdit, redoEdit } = useDataEdits()
+    const { undoEdit, redoEdit } = useEditCase()
     const { caseId } = useParams()
     const { isSaving } = useAppContext()
 

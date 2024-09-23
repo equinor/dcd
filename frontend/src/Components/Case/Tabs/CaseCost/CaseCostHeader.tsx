@@ -1,9 +1,11 @@
 import Grid from "@mui/material/Grid"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 import CapexFactorFeasibilityStudies from "./Inputs/CapexFactorFeasibilityStudies"
 import CapexFactorFeedStudies from "./Inputs/CapexFactorFeedStudies"
 import Maturity from "./Inputs/Maturity"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
-import { useProjectContext } from "../../../../Context/ProjectContext"
+import { projectQueryFn } from "../../../../Services/QueryFunctions"
 
 interface HeaderProps {
     startYear: number;
@@ -26,17 +28,23 @@ const Header: React.FC<HeaderProps> = ({
     surfData,
     addEdit,
 }) => {
-    const { project } = useProjectContext()
-    const projectId = project?.id || null
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
+
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
 
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
     }
 
     const datePickerValue = (() => {
-        if (project?.currency === 1) {
+        if (apiData?.currency === 1) {
             return "MNOK"
-        } if (project?.currency === 2) {
+        } if (apiData?.currency === 2) {
             return "MUSD"
         }
         return ""

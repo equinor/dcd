@@ -1,8 +1,7 @@
-/* eslint-disable no-unsafe-optional-chaining */
-
 import { useEffect, useState } from "react"
-import { useProjectContext } from "../Context/ProjectContext"
-import { GetProjectService } from "../Services/ProjectService"
+import { useQuery } from "@tanstack/react-query"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { projectQueryFn, compareCasesQueryFn } from "../Services/QueryFunctions"
 
 interface TableCompareCase {
     id: string,
@@ -23,7 +22,8 @@ interface TableCompareCase {
 }
 
 export const useProjectChartData = () => {
-    const { project } = useProjectContext()
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
 
     const [rowData, setRowData] = useState<TableCompareCase[]>()
     const [compareCasesTotals, setCompareCasesTotals] = useState<Components.Schemas.CompareCasesDto[]>()
@@ -34,21 +34,32 @@ export const useProjectChartData = () => {
     const [totalCo2EmissionsChartData, setTotalCo2EmissionsChartData] = useState<object>()
     const [co2IntensityChartData, setCo2IntensityChartData] = useState<object>()
 
-    const generateAllCharts = () => {
-        if (!compareCasesTotals || !project) { return }
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
 
-        const npvObject = project.cases.map(caseItem => ({
+    const { data: compareCasesData } = useQuery({
+        queryKey: ["compareCasesApiData", projectId],
+        queryFn: () => compareCasesQueryFn(projectId),
+        enabled: !!projectId,
+    })
+
+    const generateAllCharts = () => {
+        if (!compareCasesTotals || !apiData) { return }
+        const npvObject = apiData.cases.map((caseItem) => ({
             cases: caseItem.name,
             npv: caseItem.npv,
         }))
 
-        const breakEvenObject = project.cases.map(caseItem => ({
+        const breakEvenObject = apiData.cases.map((caseItem) => ({
             cases: caseItem.name,
             breakEven: caseItem.breakEven,
         }))
 
-        const productionProfilesObject = project.cases.map(caseItem => {
-            const compareCase = compareCasesTotals.find(c => c.caseId === caseItem.id)
+        const productionProfilesObject = apiData.cases.map((caseItem) => {
+            const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.id)
             return {
                 cases: caseItem.name,
                 oilProduction: compareCase?.totalOilProduction,
@@ -57,8 +68,8 @@ export const useProjectChartData = () => {
             }
         })
 
-        const investmentProfilesObject = project.cases.map(caseItem => {
-            const compareCase = compareCasesTotals.find(c => c.caseId === caseItem.id)
+        const investmentProfilesObject = apiData.cases.map((caseItem) => {
+            const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.id)
             return {
                 cases: caseItem.name,
                 offshorePlusOnshoreFacilityCosts: compareCase?.offshorePlusOnshoreFacilityCosts,
@@ -67,16 +78,16 @@ export const useProjectChartData = () => {
             }
         })
 
-        const totalCo2EmissionsObject = project.cases.map(caseItem => {
-            const compareCase = compareCasesTotals.find(c => c.caseId === caseItem.id)
+        const totalCo2EmissionsObject = apiData.cases.map((caseItem) => {
+            const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.id)
             return {
                 cases: caseItem.name,
                 totalCO2Emissions: compareCase?.totalCo2Emissions,
             }
         })
 
-        const co2IntensityObject = project.cases.map(caseItem => {
-            const compareCase = compareCasesTotals.find(c => c.caseId === caseItem.id)
+        const co2IntensityObject = apiData.cases.map((caseItem) => {
+            const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.id)
             return {
                 cases: caseItem.name,
                 cO2Intensity: compareCase?.co2Intensity,
@@ -93,10 +104,10 @@ export const useProjectChartData = () => {
 
     // Convert cases to rowData
     const casesToRowData = () => {
-        if (project) {
+        if (apiData) {
             const tableCompareCases: TableCompareCase[] = []
             if (compareCasesTotals) {
-                project.cases.forEach((c) => {
+                apiData.cases.forEach((c) => {
                     const matchingCase = compareCasesTotals.find((checkMatchingCase: any) => checkMatchingCase.caseId === c.id)
                     if (matchingCase) {
                         const tableCase: TableCompareCase = {
@@ -126,25 +137,18 @@ export const useProjectChartData = () => {
 
     // Fetch compareCasesTotals and set it to state
     useEffect(() => {
-        if (project) {
-            (async () => {
-                try {
-                    const compareCasesService = await (await GetProjectService()).compareCases(project.id)
-                    const casesOrderedByGuid = compareCasesService.sort((a, b) => a.caseId!.localeCompare(b.caseId!))
-                    setCompareCasesTotals(casesOrderedByGuid)
-                } catch (error) {
-                    console.error("[ProjectView] Error while generating compareCasesTotals", error)
-                }
-            })()
+        if (compareCasesData) {
+            const casesOrderedByGuid = compareCasesData.sort((a, b) => a.caseId!.localeCompare(b.caseId!))
+            setCompareCasesTotals(casesOrderedByGuid)
         }
-    }, [])
+    }, [compareCasesData])
 
     useEffect(() => {
-        if (project) {
+        if (apiData) {
             casesToRowData()
             generateAllCharts()
         }
-    }, [project?.cases, compareCasesTotals])
+    }, [apiData, compareCasesTotals])
 
     return {
         rowData,

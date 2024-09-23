@@ -10,10 +10,13 @@ import {
     bookmark_filled,
 } from "@equinor/eds-icons"
 import { useNavigate } from "react-router-dom"
-import { useProjectContext } from "../../../Context/ProjectContext"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 import { deleteCase, duplicateCase, setCaseAsReference } from "../../../Utils/CaseController"
 import { useModalContext } from "../../../Context/ModalContext"
 import Modal from "../../Modal/Modal"
+import { projectQueryFn } from "../../../Services/QueryFunctions"
+import useEditProject from "../../../Hooks/useEditProject"
 
 interface CaseDropMenuProps {
     isMenuOpen: boolean
@@ -29,19 +32,23 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     caseId,
 }) => {
     const navigate = useNavigate()
-    const {
-        project,
-        setProject,
-    } = useProjectContext()
-
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
     const { addNewCase } = useModalContext()
     const [confirmDelete, setConfirmDelete] = useState(false)
+    const { addProjectEdit } = useEditProject()
+
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
 
     const deleteAndGoToProject = async () => {
-        if (!caseId || !project) { return }
+        if (!caseId || !apiData) { return }
 
-        if (await deleteCase(caseId, project, setProject)) {
-            if (project.fusionProjectId) { navigate(`/${project.fusionProjectId}`) }
+        if (await deleteCase(caseId, apiData, addProjectEdit)) {
+            if (apiData.fusionProjectId) { navigate(`/${apiData.fusionProjectId}`) }
         }
     }
 
@@ -76,22 +83,22 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                         Add New Case
                     </Typography>
                 </Menu.Item>
-                <Menu.Item onClick={() => project && duplicateCase(caseId, project, setProject)}>
+                <Menu.Item onClick={() => apiData && duplicateCase(caseId, apiData, addProjectEdit)}>
                     <Icon data={library_add} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
                         Duplicate
                     </Typography>
                 </Menu.Item>
-                <Menu.Item onClick={() => project && setConfirmDelete(true)}>
+                <Menu.Item onClick={() => apiData && setConfirmDelete(true)}>
                     <Icon data={delete_to_trash} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
                         Delete
                     </Typography>
                 </Menu.Item>
-                {project?.referenceCaseId === caseId
+                {apiData?.referenceCaseId === caseId
                     ? (
                         <Menu.Item
-                            onClick={() => project && setCaseAsReference(caseId, project, setProject)}
+                            onClick={() => apiData && setCaseAsReference(caseId, apiData, addProjectEdit)}
                         >
                             <Icon data={bookmark_outlined} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">
@@ -101,7 +108,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                     )
                     : (
                         <Menu.Item
-                            onClick={() => project && setCaseAsReference(caseId, project, setProject)}
+                            onClick={() => apiData && setCaseAsReference(caseId, apiData, addProjectEdit)}
                         >
                             <Icon data={bookmark_filled} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">

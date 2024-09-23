@@ -2,9 +2,9 @@ import { Dispatch, SetStateAction, FunctionComponent } from "react"
 import { Button, Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useParams } from "react-router-dom"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import Modal from "./Modal"
-import useDataEdits from "../../Hooks/useDataEdits"
-import { useProjectContext } from "../../Context/ProjectContext"
+import useEditCase from "../../Hooks/useEditCase"
 import { ProfileNames } from "../../Models/Interfaces"
 
 type Props = {
@@ -20,11 +20,12 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
     profileName,
     profile,
 }) => {
-    const { addEdit } = useDataEdits()
-    const { project } = useProjectContext()
+    const { addEdit } = useEditCase()
     const { caseId } = useParams()
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
 
-    if (!isOpen || !project || !profileName) { return null }
+    if (!isOpen || !projectId || !profileName) { return null }
     const toggleIsOpen = () => {
         setIsOpen(!isOpen)
     }
@@ -36,7 +37,7 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
                 newDisplayValue: (!profile.override).toString(),
                 previousDisplayValue: profile.override.toString(),
                 inputLabel: profileName,
-                projectId: project.id,
+                projectId,
                 resourceName: profile.resourceName,
                 resourcePropertyKey: "override",
                 caseId,
