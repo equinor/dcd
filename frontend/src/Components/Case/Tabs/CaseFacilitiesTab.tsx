@@ -1,18 +1,18 @@
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useParams } from "react-router"
-import { useQueryClient, useQuery } from "react-query"
+import { useQuery } from "@tanstack/react-query"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import { useProjectContext } from "../../../Context/ProjectContext"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import CaseFasilitiesTabSkeleton from "../../LoadingSkeletons/CaseFacilitiesTabSkeleton"
 import SwitchableStringInput from "../../Input/SwitchableStringInput"
+import { caseQueryFn } from "../../../Services/QueryFunctions"
 
 const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
-    const queryClient = useQueryClient()
     const { project } = useProjectContext()
     const { caseId } = useParams()
-    const projectId = project?.id || null
+    const projectId = project?.id
 
     const platformConceptValues: { [key: number]: string } = {
         0: "No Concept",
@@ -46,22 +46,28 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
         13: "HDPE lined CS (Water injection only)",
     }
 
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
+    const { data: apiData } = useQuery({
+        queryKey: ["apiData", { projectId, caseId }],
+        queryFn: () => caseQueryFn(projectId, caseId),
+        enabled: !!projectId && !!caseId,
+    })
 
     const caseData = apiData?.case
     const topsideData = apiData?.topside
+
     const surfData = apiData?.surf
+
     const transportData = apiData?.transport
+
     const substructureData = apiData?.substructure
 
-    if (!caseData || !topsideData || !surfData || !transportData || !substructureData) {
+    if (
+        !caseData
+        || !topsideData
+        || !surfData
+        || !transportData
+        || !substructureData
+    ) {
         return (<CaseFasilitiesTabSkeleton />)
     }
 
