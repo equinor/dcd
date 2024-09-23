@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { ResourceObject } from "../Models/Interfaces"
 import { GetCaseService } from "../Services/CaseService"
 import { GetTopsideService } from "../Services/TopsideService"
@@ -25,34 +25,36 @@ export const useSubmitToApi = () => {
     const queryClient = useQueryClient()
     const { setSnackBarMessage, setIsCalculatingProductionOverrides, setIsCalculatingTotalStudyCostOverrides } = useAppContext()
 
-    const mutation = useMutation(
-        async ({ serviceMethod }: {
-            projectId: string,
-            caseId: string,
-            resourceId?: string,
-            resourceProfileId?: string,
-            wellId?: string,
-            drillingScheduleId?: string,
-            serviceMethod: object,
-        }) => serviceMethod,
-        {
-            onSuccess: (
-                results: any,
-                variables,
-            ) => {
-                const { projectId, caseId } = variables
-                queryClient.fetchQuery(["apiData", { projectId, caseId }])
-            },
-            onError: (error: any) => {
-                console.error("Failed to update data:", error)
-                setSnackBarMessage(error.message)
-            },
-            onSettled: () => {
-                setIsCalculatingProductionOverrides(false)
-                setIsCalculatingTotalStudyCostOverrides(false)
-            },
+    const mutationFn = async ({ serviceMethod }: {
+        projectId: string,
+        caseId: string,
+        resourceId?: string,
+        resourceProfileId?: string,
+        wellId?: string,
+        drillingScheduleId?: string,
+        serviceMethod: object,
+    }) => serviceMethod
+
+    const mutation = useMutation({
+        mutationFn,
+        onSuccess: (
+            results: any,
+            variables,
+        ) => {
+            const { projectId, caseId } = variables
+            queryClient.invalidateQueries(
+                { queryKey: ["apiData", { projectId, caseId }] },
+            )
         },
-    )
+        onError: (error: any) => {
+            console.error("Failed to update data:", error)
+            setSnackBarMessage(error.message)
+        },
+        onSettled: () => {
+            setIsCalculatingProductionOverrides(false)
+            setIsCalculatingTotalStudyCostOverrides(false)
+        },
+    })
 
     const updateResource = async (
         getService: () => Promise<any>,
@@ -168,6 +170,8 @@ export const useSubmitToApi = () => {
         wellId,
         drillingScheduleId,
     }: SubmitToApiParams): Promise<any> => {
+        console.log("submitToApi", resourceName, resourceId, resourceObject, resourceProfileId, wellId, drillingScheduleId, caseId, projectId)
+
         if (productionOverrideResources.includes(resourceName)) {
             setIsCalculatingProductionOverrides(true)
         }

@@ -2,7 +2,7 @@ import {
     Dispatch, SetStateAction, useState, useEffect,
 } from "react"
 import Grid from "@mui/material/Grid"
-import { useQueryClient, useQuery } from "react-query"
+import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
@@ -14,6 +14,7 @@ import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride
 import { mergeTimeseriesList } from "../../../Utils/common"
 import { SetSummaryTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 import CaseSummarySkeleton from "../../LoadingSkeletons/CaseSummarySkeleton"
+import { caseQueryFn } from "../../../Services/QueryFunctions"
 
 interface ITimeSeriesData {
     group?: string
@@ -31,21 +32,17 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
     const { caseId } = useParams()
 
-    const queryClient = useQueryClient()
-    const projectId = project?.id || null
+    const projectId = project?.id
 
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
+    const { data: apiData } = useQuery({
+        queryKey: ["apiData", { projectId, caseId }],
+        queryFn: () => caseQueryFn(projectId, caseId),
+        enabled: !!projectId && !!caseId,
+    })
 
     const handleOffshoreFacilitiesCost = () => mergeTimeseriesList([
         (apiData?.surfCostProfileOverride?.override === true
