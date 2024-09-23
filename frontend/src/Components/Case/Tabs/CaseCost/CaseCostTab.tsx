@@ -59,13 +59,12 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     const { data: apiData } = useQuery({
-        queryKey: ["apiData", { projectId, caseId }],
+        queryKey: ["caseApiData", { projectId, caseId }],
         queryFn: () => caseQueryFn(projectId, caseId),
         enabled: !!projectId && !!caseId,
     })
     useEffect(() => {
         if (activeTabCase === 5 && apiData && !yearRangeSetFromProfiles) {
-            console.log("apiData", apiData)
             const caseData = apiData?.case as Components.Schemas.CaseDto
 
             SetTableYearsFromProfiles([

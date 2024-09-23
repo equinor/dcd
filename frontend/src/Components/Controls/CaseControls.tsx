@@ -81,10 +81,10 @@ const CaseControls: React.FC<props> = ({
         error,
     } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
         {
-            queryKey: ["apiData", { projectId, caseId }],
+            queryKey: ["caseApiData", { projectId, caseId }],
             queryFn: fetchCaseData,
             enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+            initialData: () => queryClient.getQueryData(["caseApiData", { projectId, caseId }]),
         },
         queryClient,
     )
