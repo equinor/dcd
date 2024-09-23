@@ -42,6 +42,7 @@ interface Props {
     ongoingCalculation?: boolean
     addEdit: any
     isProsp?: boolean
+    sharepointFileId?: string
 }
 
 const CaseTabTable = ({
@@ -56,7 +57,8 @@ const CaseTabTable = ({
     calculatedFields,
     ongoingCalculation,
     addEdit,
-    isProsp
+    isProsp,
+    sharepointFileId,
 }: Props) => {
     const { editMode, setSnackBarMessage } = useAppContext()
     const styles = useStyles()
@@ -169,6 +171,7 @@ const CaseTabTable = ({
             <div style={{ paddingTop: "7px", paddingLeft: "5px"  }}>
                 <ClickableLockIcon
                     isProsp={isProsp}
+                    sharepointFileId={sharepointFileId}
                     clickedElement={params}
                     addEdit={addEdit}
                 />

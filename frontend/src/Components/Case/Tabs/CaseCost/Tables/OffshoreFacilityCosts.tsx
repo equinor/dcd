@@ -22,6 +22,8 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
 
     const [capexTimeSeriesData, setCapexTimeSeriesData] = useState<ITimeSeriesData[]>([])
 
+    //console.log("sharepoint fileid: ", apiData.case.sharepointFileId)
+
     useEffect(() => {
         const surf = apiData?.surf
         const topside = apiData?.topside
@@ -94,7 +96,6 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
 
         setCapexTimeSeriesData(newCapexTimeSeriesData)
     }, [apiData, project])
-
     return (
         <CaseTabTable
             timeSeriesData={capexTimeSeriesData}
@@ -107,6 +108,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             totalRowName="Total"
             addEdit={addEdit}
             isProsp={true}
+            sharepointFileId={apiData.case.sharepointFileId ?? undefined}
         />
     )
 }

@@ -9,7 +9,7 @@ export const CalculatorIcon = ({ size }: Props) => {
     <svg
       id="Layer_1"
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 16.35 19.2"
+      viewBox="0 0 21.57 20.56"
       width={size}
       height={size}
     >
@@ -20,55 +20,59 @@ export const CalculatorIcon = ({ size }: Props) => {
               font-family: BalooBhaijaan-Regular, 'Baloo Bhaijaan';
               font-size: 1.5px;
             }
-            .cls-2 {
+            .cls-2, .cls-3 {
+              stroke: #fff;
+            }
+            .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+              stroke-miterlimit: 10;
+            }
+            .cls-2, .cls-4, .cls-5, .cls-6 {
+              fill: #fff;
+            }
+            .cls-2, .cls-6, .cls-7 {
+              stroke-width: 1.5px;
+            }
+            .cls-8 {
+              letter-spacing: .13em;
+            }
+            .cls-9 {
+              letter-spacing: .13em;
+            }
+            .cls-10 {
               letter-spacing: .13em;
             }
             .cls-3 {
-              letter-spacing: .13em;
-            }
-            .cls-4 {
-              letter-spacing: .13em;
-            }
-            .cls-5 {
               fill: none;
-              stroke: #fff;
               stroke-width: 1.1px;
             }
-            .cls-5, .cls-6, .cls-7, .cls-8 {
-              stroke-miterlimit: 10;
-            }
-            .cls-6 {
+            .cls-4 {
               stroke-width: .8px;
             }
-            .cls-6, .cls-7 {
-              fill: #fff;
-            }
-            .cls-6, .cls-7, .cls-8 {
+            .cls-4, .cls-5, .cls-6, .cls-7 {
               stroke: #000;
             }
-            .cls-7 {
+            .cls-5 {
               stroke-width: 1.2px;
             }
-            .cls-8 {
+            .cls-7 {
               fill: #020000;
-              stroke-width: 1.5px;
             }
           `}
         </style>
       </defs>
-      <rect className="cls-7" x=".6" y=".6" width="15.15" height="18" rx=".61" ry=".61" />
-      <rect className="cls-6" x="2.44" y="2.35" width="11.32" height="2.88" rx=".04" ry=".04" />
-      <rect className="cls-8" x="2.86" y="7.58" width="10.62" height="8.7" />
-      <line className="cls-5" x1="8.1" y1="6.41" x2="8.1" y2="17.46" />
-      <line className="cls-5" x1="4.85" y1="6.5" x2="4.85" y2="17.56" />
-      <line className="cls-5" x1="11.42" y1="6.21" x2="11.42" y2="17.27" />
-      <line className="cls-5" x1="14.28" y1="11.19" x2="2.05" y2="11.19" />
-      <line className="cls-5" x1="14.29" y1="14.32" x2="2.06" y2="14.32" />
-      <line className="cls-5" x1="14.29" y1="8" x2="2.06" y2="8" />
-      <text className="cls-1" transform="translate(9.25 4.21)">
-        <tspan className="cls-2" x="0" y="0">13</tspan>
-        <tspan className="cls-4" x="1.77" y="0">3</tspan>
-        <tspan className="cls-3" x="2.73" y="0">7</tspan>
+      <rect className="cls-5" x="3.01" y="1.25" width="15.15" height="18" rx=".61" ry=".61" />
+      <rect className="cls-4" x="4.85" y="3" width="11.32" height="2.88" rx=".04" ry=".04" />
+      <rect className="cls-7" x="5.27" y="8.23" width="10.62" height="8.7" />
+      <line className="cls-3" x1="10.51" y1="7.06" x2="10.51" y2="18.11" />
+      <line className="cls-3" x1="7.26" y1="7.15" x2="7.26" y2="18.2" />
+      <line className="cls-3" x1="13.83" y1="6.86" x2="13.83" y2="17.92" />
+      <line className="cls-3" x1="16.69" y1="11.84" x2="4.45" y2="11.84" />
+      <line className="cls-3" x1="16.7" y1="14.97" x2="4.47" y2="14.97" />
+      <line className="cls-3" x1="16.7" y1="8.65" x2="4.47" y2="8.65" />
+      <text className="cls-1" transform="translate(11.66 4.86)">
+        <tspan className="cls-8" x="0" y="0">13</tspan>
+        <tspan className="cls-10" x="1.77" y="0">3</tspan>
+        <tspan className="cls-9" x="2.73" y="0">7</tspan>
       </text>
     </svg>
   );
