@@ -14,45 +14,49 @@ public class Co2EmissionsProfileService : ICo2EmissionsProfileService
     private readonly IDrainageStrategyService _drainageStrategyService;
     private readonly IProjectService _projectService;
     private readonly ITopsideService _topsideService;
-    private readonly IWellProjectService _wellProjectService;
     private readonly IWellProjectWellService _wellProjectWellService;
-    private readonly DcdDbContext _context;
-    private readonly IMapper _mapper;
 
     public Co2EmissionsProfileService(
-        DcdDbContext context,
         ICaseService caseService,
         IDrainageStrategyService drainageStrategyService,
         IProjectService projectService,
         ITopsideService topsideService,
-        IWellProjectService wellProjectService,
-        IWellProjectWellService wellProjectWellService,
-        IMapper mapper
+        IWellProjectWellService wellProjectWellService
         )
     {
-        _context = context;
         _caseService = caseService;
         _projectService = projectService;
         _topsideService = topsideService;
         _drainageStrategyService = drainageStrategyService;
-        _wellProjectService = wellProjectService;
         _wellProjectWellService = wellProjectWellService;
-        _mapper = mapper;
     }
 
-    public async Task<Co2EmissionsDto> Generate(Guid caseId)
+    public async Task Generate(Guid caseId)
     {
-        var caseItem = await _caseService.GetCase(caseId);
-        var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
+        var caseItem = await _caseService.GetCaseWithIncludes(caseId);
+        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
+            caseItem.DrainageStrategyLink,
+            d => d.ProductionProfileOil!,
+            d => d.AdditionalProductionProfileOil!,
+            d => d.ProductionProfileGas!,
+            d => d.AdditionalProductionProfileGas!,
+            d => d.ProductionProfileWaterInjection!,
+            d => d.Co2Emissions!,
+            d => d.Co2EmissionsOverride!
+        );
+        if (drainageStrategy.Co2EmissionsOverride?.Override == true)
+        {
+            return;
+        }
+
+        var topside = await _topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
         var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
-        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
-        var wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
 
         var fuelConsumptionsProfile = GetFuelConsumptionsProfile(project, caseItem, topside, drainageStrategy);
         var flaringsProfile = GetFlaringsProfile(project, drainageStrategy);
         var lossesProfile = GetLossesProfile(project, drainageStrategy);
 
-        var tempProfile = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { fuelConsumptionsProfile, flaringsProfile, lossesProfile });
+        var tempProfile = TimeSeriesCost.MergeCostProfilesList([fuelConsumptionsProfile, flaringsProfile, lossesProfile]);
 
         var convertedValues = tempProfile.Values.Select(v => v / 1000);
 
@@ -62,27 +66,26 @@ public class Co2EmissionsProfileService : ICo2EmissionsProfileService
             Values = convertedValues.ToArray(),
         };
 
-        var drillingEmissionsProfile = await CalculateDrillingEmissions(project, wellProject);
+        var drillingEmissionsProfile = await CalculateDrillingEmissions(project, caseItem.WellProjectLink);
 
         var totalProfile =
             TimeSeriesCost.MergeCostProfiles(newProfile, drillingEmissionsProfile);
-        var co2Emission = drainageStrategy.Co2Emissions ?? new Co2Emissions();
 
-        co2Emission.StartYear = totalProfile.StartYear;
-        co2Emission.Values = totalProfile.Values;
-
-        UpdateDrainageStrategyAndSave(drainageStrategy, co2Emission);
-
-        var dto = _mapper.Map<Co2EmissionsDto>(co2Emission, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
-
-        return dto ?? new Co2EmissionsDto();
+        if (drainageStrategy.Co2Emissions != null)
+        {
+            drainageStrategy.Co2Emissions.Values = totalProfile.Values;
+            drainageStrategy.Co2Emissions.StartYear = totalProfile.StartYear;
+        }
+        else
+        {
+            drainageStrategy.Co2Emissions = new()
+            {
+                StartYear = totalProfile.StartYear,
+                Values = totalProfile.Values
+            };
+        }
     }
 
-    private void UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, Co2Emissions co2Emissions)
-    {
-        drainageStrategy.Co2Emissions = co2Emissions;
-        // return await _context.SaveChangesAsync();
-    }
 
     private static TimeSeriesVolume GetLossesProfile(Project project, DrainageStrategy drainageStrategy)
     {
@@ -108,8 +111,12 @@ public class Co2EmissionsProfileService : ICo2EmissionsProfileService
         return flaringsProfile;
     }
 
-    private static TimeSeriesVolume GetFuelConsumptionsProfile(Project project, Case caseItem, Topside topside,
-        DrainageStrategy drainageStrategy)
+    private static TimeSeriesVolume GetFuelConsumptionsProfile(
+        Project project,
+        Case caseItem,
+        Topside topside,
+        DrainageStrategy drainageStrategy
+    )
     {
         var fuelConsumptions =
             EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
@@ -122,9 +129,9 @@ public class Co2EmissionsProfileService : ICo2EmissionsProfileService
         return fuelConsumptionsProfile;
     }
 
-    private async Task<TimeSeriesVolume> CalculateDrillingEmissions(Project project, WellProject wellProject)
+    private async Task<TimeSeriesVolume> CalculateDrillingEmissions(Project project, Guid wellProjectId)
     {
-        var linkedWells = await _wellProjectWellService.GetWellProjectWellsForWellProject(wellProject.Id);
+        var linkedWells = await _wellProjectWellService.GetWellProjectWellsForWellProject(wellProjectId);
         if (linkedWells == null)
         {
             return new TimeSeriesVolume();

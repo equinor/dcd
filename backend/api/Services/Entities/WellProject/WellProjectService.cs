@@ -47,7 +47,7 @@ public class WellProjectService : IWellProjectService
         {
             throw new ArgumentNullException(nameof(wellProject));
         }
-        var project = await _projectService.GetProject(projectId);
+        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
         wellProject.Project = project;
         var createdWellProject = _context.WellProjects!.Add(wellProject);
         await _context.SaveChangesAsync();

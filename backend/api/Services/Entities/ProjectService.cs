@@ -120,7 +120,7 @@ public class ProjectService : IProjectService
 
     public async Task<ProjectWithAssetsDto> UpdateProjectFromProjectMaster(ProjectWithAssetsDto projectDto)
     {
-        var existingProject = await GetProject(projectDto.Id);
+        var existingProject = await GetProjectWithCasesAndAssets(projectDto.Id);
 
         _mapper.Map(projectDto, existingProject);
 
@@ -300,6 +300,12 @@ public class ProjectService : IProjectService
 
     public async Task<Project> GetProject(Guid projectId)
     {
+        return await _projectRepository.GetProject(projectId)
+            ?? throw new NotFoundInDBException($"Project {projectId} not found");
+    }
+
+    public async Task<Project> GetProjectWithCasesAndAssets(Guid projectId)
+    {
 
         if (projectId == Guid.Empty)
         {
@@ -380,7 +386,7 @@ public class ProjectService : IProjectService
 
     public async Task<ProjectWithAssetsDto> GetProjectDto(Guid projectId)
     {
-        var project = await GetProject(projectId);
+        var project = await GetProjectWithCasesAndAssets(projectId);
 
         DateTimeOffset projectLastUpdated;
         if (project.Cases?.Count > 0)

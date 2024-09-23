@@ -28,19 +28,6 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         _mapper = mapper;
     }
 
-    public async Task UpdateCostProfilesForWellsFromDrillingSchedules(List<Guid> drillingScheduleIds)
-    {
-        var explorationWells = GetAllExplorationWells()
-            .Where(ew => ew.DrillingScheduleId.HasValue && drillingScheduleIds.Contains(ew.DrillingScheduleId.Value));
-
-        var wellProjectWells = GetAllWellProjectWells()
-            .Where(wpw => wpw.DrillingScheduleId.HasValue && drillingScheduleIds.Contains(wpw.DrillingScheduleId.Value));
-
-        var wellIds = explorationWells.Select(ew => ew.WellId).Union(wellProjectWells.Select(wpw => wpw.WellId)).Distinct();
-
-        await UpdateCostProfilesForWells(wellIds.ToList());
-    }
-
     public async Task UpdateCostProfilesForWells(List<Guid> wellIds)
     {
         var explorationWells = GetAllExplorationWells().Where(ew => wellIds.Contains(ew.WellId));
@@ -125,7 +112,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         return wellProject;
     }
 
-    public async Task<Exploration> UpdateExplorationCostProfilesForCase(Guid caseId)
+    private async Task<Exploration> UpdateExplorationCostProfilesForCase(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
 
@@ -185,7 +172,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
 
     private static TimeSeries<double> GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(List<Well> wells, List<ExplorationWell> explorationWells)
     {
-        var costProfilesList = new List<TimeSeries<double>>();
+        var costProfilesList = new List<TimeSeries<double>?>();
         foreach (var explorationWell in explorationWells)
         {
             if (explorationWell?.DrillingSchedule?.Values?.Length > 0)
@@ -205,7 +192,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         return mergedCostProfile;
     }
 
-    public async Task<WellProject> UpdateWellProjectCostProfilesForCase(Guid caseId)
+    private async Task<WellProject> UpdateWellProjectCostProfilesForCase(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
 
@@ -275,7 +262,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
 
     private static TimeSeries<double> GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(List<Well> wells, List<WellProjectWell> wellProjectWells)
     {
-        var costProfilesList = new List<TimeSeries<double>>();
+        var costProfilesList = new List<TimeSeries<double>?>();
         foreach (var wellProjectWell in wellProjectWells)
         {
             if (wellProjectWell?.DrillingSchedule?.Values?.Length > 0)
@@ -295,7 +282,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         return mergedCostProfile;
     }
 
-    private IEnumerable<Well> GetAllWells()
+    private IQueryable<Well> GetAllWells()
     {
         if (_context.Wells != null)
         {
@@ -303,7 +290,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         }
         else
         {
-            return new List<Well>();
+            return Enumerable.Empty<Well>().AsQueryable();
         }
     }
 

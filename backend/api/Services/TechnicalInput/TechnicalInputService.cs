@@ -48,7 +48,7 @@ public class TechnicalInputService : ITechnicalInputService
 
     public async Task<TechnicalInputDto> UpdateTehnicalInput(Guid projectId, UpdateTechnicalInputDto technicalInputDto)
     {
-        var project = await _projectService.GetProject(projectId);
+        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
 
         await UpdateProject(project, technicalInputDto.ProjectDto);
 
@@ -74,7 +74,7 @@ public class TechnicalInputService : ITechnicalInputService
 
         await _context.SaveChangesAsync();
 
-        var returnProject = await _projectService.GetProject(projectId);
+        var returnProject = await _projectService.GetProjectWithCasesAndAssets(projectId);
         var returnProjectDto = _mapper.Map<ProjectWithAssetsDto>(returnProject, opts => opts.Items["ConversionUnit"] = returnProject.PhysicalUnit.ToString());
 
         if (returnProjectDto == null)

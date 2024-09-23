@@ -122,6 +122,8 @@ public class CessationOnshoreFacilitiesCostProfile : TimeSeriesCost, ICaseTimeSe
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
 }
+
+// TODO: Can this be deleted?
 public class OpexCostProfile : TimeSeriesCost
 {
 }
