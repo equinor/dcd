@@ -7,7 +7,7 @@ import { useProjectContext } from "../../../Context/ProjectContext"
 import { ExcelHideIcon } from "../../../Media/Icons/ExcelHideIcon"
 import { CalculatorIcon } from "../../../Media/Icons/CalculatorIcon"
 import { CalculatorHideIcon } from "../../../Media/Icons/CalculatorHideIcon"
-import { DisabledExcelHideIcon } from "@/Media/Icons/DisabledExcelHideIcon"
+import { DisabledExcelHideIcon } from "../../../Media/Icons/DisabledExcelHideIcon"
 
 
 interface LockIconProps {
@@ -57,17 +57,10 @@ const LockIcon: React.FC<LockIconProps> = ({
         }
     }
 
-    // <Icon
-    //     data={lock_open}
-    //     opacity={0.5}
-    //     color="#007079"
-    //     onClick={() => handleLockIconClick(clickedElement)}
-    // />
     if(isProsp && !sharepointId) {
         return <Tooltip title="To show numbers from PROSP, please add a PROPS file to the case."><div><DisabledExcelHideIcon size={20} /></div></Tooltip>
     }
 
-    //øverste er åpen lås, nederste er låst lås
     if (clickedElement.data?.overridable) {
         return (clickedElement.data.overrideProfile?.override) ? (
             <>
