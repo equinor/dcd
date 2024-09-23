@@ -13,6 +13,8 @@ import {
 } from "@ag-grid-community/core"
 import isEqual from "lodash/isEqual"
 import { CircularProgress } from "@equinor/eds-core-react"
+import styled from "styled-components"
+
 import {
     extractTableTimeSeriesValues,
     generateProfile,
@@ -23,11 +25,11 @@ import {
     formatColumnSum,
 } from "../../../Utils/common"
 import { useAppContext } from "../../../Context/AppContext"
+import { useProjectContext } from "../../../Context/ProjectContext"
+import { TABLE_VALIDATION_RULES } from "../../../Utils/constants"
 import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
-import { useProjectContext } from "../../../Context/ProjectContext"
-import { TABLE_VALIDATION_RULES } from "../../../Utils/constants"
 
 interface Props {
     timeSeriesData: any[]
@@ -44,6 +46,11 @@ interface Props {
     isProsp?: boolean
     sharepointFileId?: string
 }
+
+const CenterGridIcons = styled.div`
+    padding-top: 6px;
+    padding-left: 5px;
+`
 
 const CaseTabTable = ({
     timeSeriesData,
@@ -168,14 +175,14 @@ const CaseTabTable = ({
         }
 
         return (
-            <div style={{ paddingTop: "7px", paddingLeft: "5px"  }}>
+            <CenterGridIcons>
                 <ClickableLockIcon
                     isProsp={isProsp}
                     sharepointFileId={sharepointFileId}
                     clickedElement={params}
                     addEdit={addEdit}
                 />
-          </div>
+            </CenterGridIcons>
         )
     }
 

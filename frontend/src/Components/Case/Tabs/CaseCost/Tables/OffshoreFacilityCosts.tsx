@@ -22,8 +22,6 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
 
     const [capexTimeSeriesData, setCapexTimeSeriesData] = useState<ITimeSeriesData[]>([])
 
-    //console.log("sharepoint fileid: ", apiData.case.sharepointFileId)
-
     useEffect(() => {
         const surf = apiData?.surf
         const topside = apiData?.topside
