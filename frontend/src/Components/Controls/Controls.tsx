@@ -6,7 +6,7 @@ import {
     Typography,
 } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import { useQuery, useQueryClient } from "react-query"
+import { useQuery } from "@tanstack/react-query"
 import styled from "styled-components"
 import { projectPath } from "../../Utils/common"
 import { useProjectContext } from "../../Context/ProjectContext"
@@ -16,6 +16,7 @@ import CaseControls from "./CaseControls"
 import WhatsNewModal from "../Modal/WhatsNewModal"
 import Modal from "../Modal/Modal"
 import ProjectControls from "./ProjectControls"
+import { caseQueryFn } from "../../Services/QueryFunctions"
 
 const Wrapper = styled(Grid)`
     padding-top: 20px;
@@ -36,7 +37,7 @@ const Controls = () => {
     const { currentContext } = useModuleCurrentContext()
     const { editMode, setEditMode } = useAppContext()
     const { caseId } = useParams()
-
+    const projectId = project?.id
     const [isCanceling, setIsCanceling] = useState<boolean>(false)
     const [projectLastUpdated, setProjectLastUpdated] = useState<string>("")
     const [caseLastUpdated, setCaseLastUpdated] = useState<string>("")
@@ -89,19 +90,13 @@ const Controls = () => {
         }
     }
 
-    const projectId = project?.id || null
+    const { data: apiData } = useQuery({
+        queryKey: ["apiData", { projectId, caseId }],
+        queryFn: () => caseQueryFn(projectId, caseId),
+        enabled: !!projectId && !!caseId,
+    })
 
-    const queryClient = useQueryClient()
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
-
-    const caseData = apiData?.case
+    const caseData = apiData?.case as Components.Schemas.CaseWithProfilesDto
 
     useEffect(() => {
         if (location.pathname.includes("case")) {

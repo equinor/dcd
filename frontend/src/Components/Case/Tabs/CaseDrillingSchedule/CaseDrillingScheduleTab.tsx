@@ -6,7 +6,7 @@ import {
 
 import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import { useQuery, useQueryClient } from "react-query"
+import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import SwitchableNumberInput from "../../../Input/SwitchableNumberInput"
 import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleAgGridTable"
@@ -14,13 +14,14 @@ import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
 import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
+import CaseProductionProfilesTabSkeleton from "../../../LoadingSkeletons/CaseProductionProfilesTabSkeleton"
+import { caseQueryFn } from "../../../../Services/QueryFunctions"
 
 const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const { project } = useProjectContext()
     const { activeTabCase } = useCaseContext()
-    const queryClient = useQueryClient()
     const { caseId } = useParams()
-    const projectId = project?.id || null
+    const projectId = project?.id
     const wells = project?.wells
 
     const [startYear, setStartYear] = useState<number>(2020)
@@ -42,40 +43,33 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const wellProjectWellsGridRef = useRef(null)
     const explorationWellsGridRef = useRef(null)
 
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
-
-    const wellProjectWellsData = apiData?.wellProjectWells
-    const explorationWellsData = apiData?.explorationWells
-    const explorationData = apiData?.exploration
-    const wellProjectData = apiData?.wellProject
-    const caseData = apiData?.case
+    const { data: apiData } = useQuery({
+        queryKey: ["apiData", { projectId, caseId }],
+        queryFn: () => caseQueryFn(projectId, caseId),
+        enabled: !!projectId && !!caseId,
+    })
 
     useEffect(() => {
-        if (activeTabCase === 3 && caseData && !yearRangeSetFromProfiles) {
-            const explorationDrillingSchedule = explorationWellsData?.map((ew) => ew.drillingSchedule) ?? []
-            const wellProjectDrillingSchedule = wellProjectWellsData?.map((ew) => ew.drillingSchedule) ?? []
+        if (activeTabCase === 3 && apiData && !yearRangeSetFromProfiles) {
+            const explorationDrillingSchedule = apiData.explorationWells?.map((ew) => ew.drillingSchedule) ?? []
+            const wellProjectDrillingSchedule = apiData.wellProjectWells?.map((ew) => ew.drillingSchedule) ?? []
             SetTableYearsFromProfiles(
                 [...explorationDrillingSchedule, ...wellProjectDrillingSchedule],
-                new Date(caseData.dG4Date).getFullYear(),
+                new Date(apiData.case.dG4Date).getFullYear(),
                 setStartYear,
                 setEndYear,
                 setTableYears,
             )
             setYearRangeSetFromProfiles(true)
         }
-    }, [activeTabCase])
+    }, [activeTabCase, apiData])
 
     const sumWellsForWellCategory = (category: Components.Schemas.WellCategory): number => {
+        if (!apiData) { return 0 }
+
         if (wells && wells.length > 0) {
             if (category >= 4) {
-                const filteredExplorationWells = explorationWellsData?.filter((ew) => ew.explorationId === explorationData?.id)
+                const filteredExplorationWells = apiData.explorationWells?.filter((ew) => ew.explorationId === apiData.exploration?.id)
                 const filteredWells = wells.filter((w) => w.wellCategory === category)
                 let sum = 0
                 filteredWells.forEach((fw) => {
@@ -89,7 +83,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
                 })
                 return sum
             }
-            const filteredWellProjectWells = wellProjectWellsData?.filter((wpw) => wpw.wellProjectId === wellProjectData?.id)
+            const filteredWellProjectWells = apiData.wellProjectWells?.filter((wpw) => wpw.wellProjectId === apiData.wellProject?.id)
             const filteredWells = wells.filter((w) => w.wellCategory === category)
             let sum = 0
             filteredWells.forEach((fw) => {
@@ -114,7 +108,15 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
             setAppraisalWellCount(sumWellsForWellCategory(5))
             setSidetrackCount(sumWellsForWellCategory(6))
         }
-    }, [wells, explorationWellsData, wellProjectWellsData, activeTabCase])
+    }, [apiData, wells, activeTabCase])
+
+    if (!apiData) { return (<CaseProductionProfilesTabSkeleton />) }
+
+    const caseData = apiData.case
+    const explorationData = apiData.exploration
+    const wellProjectData = apiData.wellProject
+    const wellProjectWellsData = apiData.wellProjectWells
+    const explorationWellsData = apiData.explorationWells
 
     if (
         activeTabCase !== 3
@@ -123,7 +125,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
         || !wellProjectWellsData
         || !explorationData
         || !wellProjectData
-    ) { return null }
+    ) { return (<CaseProductionProfilesTabSkeleton />) }
 
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])

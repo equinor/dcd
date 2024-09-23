@@ -5,7 +5,7 @@ import {
 } from "react"
 import { NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import { useQueryClient, useQuery } from "react-query"
+import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../AgGrid/AgChartsTimeseries"
@@ -17,13 +17,13 @@ import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import CaseProductionProfilesTabSkeleton from "../../LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
+import { caseQueryFn } from "../../../Services/QueryFunctions"
 
 const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
-    const queryClient = useQueryClient()
     const { caseId } = useParams()
     const { project } = useProjectContext()
     const { activeTabCase } = useCaseContext()
-    const projectId = project?.id || null
+    const projectId = project?.id
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -51,64 +51,57 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
         1: "Injection",
     }
 
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
-
-    const drainageStrategyData = apiData?.drainageStrategy
-    const oilProductionData = apiData?.productionProfileOil
-    const additionalOilProductionData = apiData?.additionalProductionProfileOil
-    const gasProductionData = apiData?.productionProfileGas
-    const additionalGasProductionData = apiData?.additionalProductionProfileGas
-    const waterProductionData = apiData?.productionProfileWater
-    const waterInjectionData = apiData?.productionProfileWaterInjection
-    const fuelFlaringAndLossesData = apiData?.fuelFlaringAndLosses
-    const fuelFlaringAndLossesOverrideData = apiData?.fuelFlaringAndLossesOverride
-    const netSalesGasData = apiData?.netSalesGas
-    const netSalesGasOverrideData = apiData?.netSalesGasOverride
-    const importedElectricityData = apiData?.importedElectricity
-    const importedElectricityOverrideData = apiData?.importedElectricityOverride
-    const deferredOilData = apiData?.deferredOilProduction
-    const deferredGasData = apiData?.deferredGasProduction
-    const caseData = apiData?.case
+    const { data: apiData, isLoading } = useQuery({
+        queryKey: ["apiData", { projectId, caseId }],
+        queryFn: () => caseQueryFn(projectId, caseId),
+        enabled: !!projectId && !!caseId,
+    })
 
     useEffect(() => {
         if (apiData && activeTabCase === 1 && !yearRangeSetFromProfiles) {
             SetTableYearsFromProfiles(
                 [
-                    drainageStrategyData,
-                    oilProductionData,
-                    gasProductionData,
-                    waterProductionData,
-                    waterInjectionData,
-                    fuelFlaringAndLossesData,
-                    fuelFlaringAndLossesOverrideData,
-                    netSalesGasData,
-                    netSalesGasOverrideData,
-                    importedElectricityData,
-                    importedElectricityOverrideData,
-                    deferredOilData,
-                    deferredGasData,
+                    apiData.drainageStrategy,
+                    apiData.productionProfileOil,
+                    apiData.productionProfileGas,
+                    apiData.productionProfileWater,
+                    apiData.productionProfileWaterInjection,
+                    apiData.fuelFlaringAndLosses,
+                    apiData.fuelFlaringAndLossesOverride,
+                    apiData.netSalesGas,
+                    apiData.netSalesGasOverride,
+                    apiData.importedElectricity,
+                    apiData.importedElectricityOverride,
+                    apiData.deferredOilProduction,
+                    apiData.deferredGasProduction,
                 ],
-                caseData?.dG4Date ? new Date(caseData.dG4Date).getFullYear() : endYear,
+                apiData.case.dG4Date ? new Date(apiData.case.dG4Date).getFullYear() : endYear,
                 setStartYear,
                 setEndYear,
                 setTableYears,
             )
             setYearRangeSetFromProfiles(true)
         }
-    }, [apiData, activeTabCase])
+    }, [
+        apiData,
+        activeTabCase,
+    ])
 
     if (activeTabCase !== 1) { return null }
 
-    if (!caseData || !drainageStrategyData || !projectId) {
-        return (<CaseProductionProfilesTabSkeleton />)
+    if (isLoading || !apiData) {
+        return <CaseProductionProfilesTabSkeleton />
     }
+
+    const caseData = apiData.case
+    const drainageStrategyData = apiData.drainageStrategy
+    const oilProductionData = apiData.productionProfileOil
+    const additionalOilProductionData = apiData.additionalProductionProfileOil
+    const gasProductionData = apiData.productionProfileGas
+    const additionalGasProductionData = apiData.additionalProductionProfileGas
+    const waterProductionData = apiData.productionProfileWater
+    const waterInjectionData = apiData.productionProfileWaterInjection
+
     const handleTableYearsClick = () => {
         setTableYears([startYear, endYear])
     }
@@ -142,6 +135,10 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
         return dataArray
     }
 
+    if (!drainageStrategyData || !caseData || !apiData) {
+        console.log("loading")
+        return (<CaseProductionProfilesTabSkeleton />)
+    }
     return (
         <Grid container spacing={2} style={{ width: "100%" /* workaround to make AgChart behave */ }}>
             <Grid item xs={12} md={6} lg={3}>

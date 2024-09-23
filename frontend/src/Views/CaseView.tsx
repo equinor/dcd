@@ -1,7 +1,6 @@
 import { useEffect } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import Grid from "@mui/material/Grid"
-import { useQueryClient, useQuery } from "react-query"
 import styled from "styled-components"
 import CaseDescriptionTab from "../Components/Case/Tabs/CaseDescriptionTab"
 import CaseCostTab from "../Components/Case/Tabs/CaseCost/CaseCostTab"
@@ -13,7 +12,6 @@ import CaseDrillingScheduleTab from "../Components/Case/Tabs/CaseDrillingSchedul
 import CaseCO2Tab from "../Components/Case/Tabs/Co2Emissions/CaseCO2Tab"
 import { useProjectContext } from "../Context/ProjectContext"
 import { useCaseContext } from "../Context/CaseContext"
-import CaseDescriptionTabSkeleton from "../Components/LoadingSkeletons/CaseDescriptionTabSkeleton"
 import { caseTabNames } from "../Utils/constants"
 import useDataEdits from "../Hooks/useDataEdits"
 
@@ -37,8 +35,6 @@ const CaseView = () => {
 
     const navigate = useNavigate()
     const location = useLocation()
-    const queryClient = useQueryClient()
-    const projectId = project?.id || null
     const projectUrl = location.pathname.split("/case")[0]
 
     useEffect(() => {
@@ -77,15 +73,6 @@ const CaseView = () => {
             setCaseEditsBelongingToCurrentCase(caseEdits.filter((edit) => edit.caseId === caseId))
         }
     }, [caseId, caseEdits])
-
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
 
     return (
         <Wrapper item xs={12}>
