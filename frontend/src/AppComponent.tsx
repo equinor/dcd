@@ -15,7 +15,14 @@ import { AppContextProvider } from "./Context/AppContext"
 import Styles from "./styles"
 
 const AppComponent: FC = () => {
-    const queryClient = new QueryClient()
+    const queryClient = new QueryClient({
+        defaultOptions: {
+            queries: {
+                refetchOnWindowFocus: "always",
+                refetchOnReconnect: true,
+            },
+        },
+    })
     const theme = createTheme({
         palette: {
             primary: {

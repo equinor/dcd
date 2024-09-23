@@ -44,7 +44,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const explorationWellsGridRef = useRef(null)
 
     const { data: apiData } = useQuery({
-        queryKey: ["apiData", { projectId, caseId }],
+        queryKey: ["caseApiData", { projectId, caseId }],
         queryFn: () => caseQueryFn(projectId, caseId),
         enabled: !!projectId && !!caseId,
     })

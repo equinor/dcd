@@ -28,7 +28,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()
 
     const { data: apiData } = useQuery({
-        queryKey: ["apiData", { projectId, caseId }],
+        queryKey: ["caseApiData", { projectId, caseId }],
         queryFn: () => caseQueryFn(projectId, caseId),
         enabled: !!projectId && !!caseId,
     })
