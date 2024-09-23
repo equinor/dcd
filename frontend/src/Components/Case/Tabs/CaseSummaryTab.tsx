@@ -40,14 +40,11 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
 
     const [cashflowProfile, setCashflowProfile] = useState<ITimeSeries | undefined>(undefined)
 
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
+    const { data: apiData } = useQuery({
+        queryKey: ["apiData", { projectId, caseId }],
+        queryFn: () => caseQueryFn(projectId, caseId),
+        enabled: !!projectId && !!caseId,
+    })
 
     const calculateDiscountedVolume = (volumeArray: number[], discountRate: number):
         number => volumeArray.reduce((accumulatedVolume, volume, index) => accumulatedVolume + (volume / (1 + (discountRate / 100)) ** (index + 1)), 0)
