@@ -109,7 +109,7 @@ namespace api.Helpers
             var gasIncome = new TimeSeries<double>
             {
                 StartYear = totalGasProductionInGigaCubics.StartYear,
-                Values = totalGasProductionInGigaCubics.Values.Select(v => v * gasPrice * 1000).ToArray() //originally divide by 1 mill instead of multiply by 1000
+                Values = totalGasProductionInGigaCubics.Values.Select(v => v * gasPrice).ToArray() //originally divide by 1 mill instead of multiply by 1000
             };
 
 
@@ -121,32 +121,32 @@ namespace api.Helpers
             };
 
             caseItem.CalculatedTotalIncomeCostProfile = calculatedTotalIncomeCostProfile;
+            Console.WriteLine($"11111 + caseItem.CalculatedTotalIncomeCostProfile:");
             return totalIncome;
         }
 
-
-
         public async Task<TimeSeries<double>> CalculateTotalCostAsync(Case caseItem)
         {
-            var totalStudyCost = await _studyCostProfileService.Generate(caseItem.Id);
+            var totalStudyCost = CalculateStudyCost(caseItem);
+
             var studiesProfile = new TimeSeries<double>
             {
-                StartYear = totalStudyCost.StudyCostProfileDto?.StartYear ?? 0,
-                Values = totalStudyCost.StudyCostProfileDto?.Values ?? Array.Empty<double>()
+                StartYear = totalStudyCost.StartYear,
+                Values = totalStudyCost.Values ?? Array.Empty<double>()
             };
 
-            var totalOpexCost = await _opexCostProfileService.Generate(caseItem.Id);
+            var totalOpexCost = CalculateOpexCost(caseItem);
             var opexProfile = new TimeSeries<double>
             {
-                StartYear = totalOpexCost.OpexCostProfileDto?.StartYear ?? 0,
-                Values = totalOpexCost.OpexCostProfileDto?.Values ?? Array.Empty<double>()
+                StartYear = totalOpexCost.StartYear,
+                Values = totalOpexCost.Values ?? Array.Empty<double>()
             };
 
-            var totalCessationCost = await _cessationCostProfileService.Generate(caseItem.Id);
+            var totalCessationCost = CalculateCessationCost(caseItem);
             var cessationProfile = new TimeSeries<double>
             {
-                StartYear = totalCessationCost.CessationCostDto?.StartYear ?? 0,
-                Values = totalCessationCost.CessationCostDto?.Values ?? Array.Empty<double>()
+                StartYear = totalCessationCost.StartYear,
+                Values = totalCessationCost.Values ?? Array.Empty<double>()
             };
 
             var totalOffshoreFacilityCost = await CalculateTotalOffshoreFacilityCostAsync(caseItem);
@@ -170,16 +170,16 @@ namespace api.Helpers
                 Values = explorationCost.Values
             };
 
-            var totalCost = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>>
-            {
+            var totalCost = TimeSeriesCost.MergeCostProfilesList(
+            [
                 studiesProfile,
                 opexProfile,
                 cessationProfile,
                 totalOffshoreFacilityProfile,
                 developmentProfile,
                 explorationProfile
-            });
-            
+            ]);
+
             var calculatedTotalCostCostProfile = new CalculatedTotalCostCostProfile
             {
                 StartYear = totalCost.StartYear,
@@ -187,9 +187,207 @@ namespace api.Helpers
             };
 
             caseItem.CalculatedTotalCostCostProfile = calculatedTotalCostCostProfile;
+            Console.WriteLine($"222222 + caseItem.CalculatedTotalCostCostProfile:");
 
             return totalCost;
         }
+
+        public TimeSeries<double> CalculateStudyCost(Case caseItem)
+        {
+            TimeSeries<double> feasibilityProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
+            TimeSeries<double> feedProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
+            TimeSeries<double> otherStudiesProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
+
+            if (caseItem.TotalFeasibilityAndConceptStudiesOverride?.Override == true)
+            {
+                feasibilityProfile = new TimeSeries<double>
+                {
+                    StartYear = caseItem.TotalFeasibilityAndConceptStudiesOverride.StartYear,
+                    Values = caseItem.TotalFeasibilityAndConceptStudiesOverride.Values ?? Array.Empty<double>()
+                };
+            }
+            else if (caseItem.TotalFeasibilityAndConceptStudies != null)
+            {
+                feasibilityProfile = new TimeSeries<double>
+                {
+                    StartYear = caseItem.TotalFeasibilityAndConceptStudies.StartYear,
+                    Values = caseItem.TotalFeasibilityAndConceptStudies.Values ?? Array.Empty<double>()
+                };
+            }
+
+            if (caseItem.TotalFEEDStudiesOverride?.Override == true)
+            {
+                feedProfile = new TimeSeries<double>
+                {
+                    StartYear = caseItem.TotalFEEDStudiesOverride.StartYear,
+                    Values = caseItem.TotalFEEDStudiesOverride.Values ?? Array.Empty<double>()
+                };
+            }
+            else if (caseItem.TotalFEEDStudies != null)
+            {
+                feedProfile = new TimeSeries<double>
+                {
+                    StartYear = caseItem.TotalFEEDStudies.StartYear,
+                    Values = caseItem.TotalFEEDStudies.Values ?? Array.Empty<double>()
+                };
+            }
+
+            if (caseItem.TotalOtherStudiesCostProfile != null)
+            {
+                otherStudiesProfile = new TimeSeries<double>
+                {
+                    StartYear = caseItem.TotalOtherStudiesCostProfile.StartYear,
+                    Values = caseItem.TotalOtherStudiesCostProfile.Values ?? Array.Empty<double>()
+                };
+            }
+
+            var totalStudyCost = TimeSeriesCost.MergeCostProfilesList(
+            [
+                feasibilityProfile,
+                feedProfile,
+                otherStudiesProfile
+            ]);
+            return totalStudyCost;
+        }
+
+        public TimeSeries<double> CalculateOpexCost(Case caseItem)
+        {
+            TimeSeries<double> historicCostProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
+            TimeSeries<double> wellInterventionProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
+            TimeSeries<double> offshoreFacilitiesProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
+            TimeSeries<double> onshoreRelatedOpexProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
+            TimeSeries<double> additionalOpexProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
+
+            if (caseItem.HistoricCostCostProfile != null)
+            {
+                historicCostProfile = new TimeSeries<double>
+                {
+                    StartYear = caseItem.HistoricCostCostProfile.StartYear,
+                    Values = caseItem.HistoricCostCostProfile.Values ?? Array.Empty<double>()
+                };
+            }
+
+            if (caseItem.WellInterventionCostProfileOverride?.Override == true)
+            {
+                wellInterventionProfile = new TimeSeries<double>
+                {
+                    StartYear = caseItem.WellInterventionCostProfileOverride.StartYear,
+                    Values = caseItem.WellInterventionCostProfileOverride.Values ?? Array.Empty<double>()
+                };
+            }
+            else if (caseItem.WellInterventionCostProfile != null)
+            {
+                wellInterventionProfile = new TimeSeries<double>
+                {
+                    StartYear = caseItem.WellInterventionCostProfile.StartYear,
+                    Values = caseItem.WellInterventionCostProfile.Values ?? Array.Empty<double>()
+                };
+            }
+
+            if (caseItem.OffshoreFacilitiesOperationsCostProfileOverride?.Override == true)
+            {
+                offshoreFacilitiesProfile = new TimeSeries<double>
+                {
+                    StartYear = caseItem.OffshoreFacilitiesOperationsCostProfileOverride.StartYear,
+                    Values = caseItem.OffshoreFacilitiesOperationsCostProfileOverride.Values ?? Array.Empty<double>()
+                };
+            }
+            else if (caseItem.OffshoreFacilitiesOperationsCostProfile != null)
+            {
+                offshoreFacilitiesProfile = new TimeSeries<double>
+                {
+                    StartYear = caseItem.OffshoreFacilitiesOperationsCostProfile.StartYear,
+                    Values = caseItem.OffshoreFacilitiesOperationsCostProfile.Values ?? Array.Empty<double>()
+                };
+            }
+
+            if (caseItem.OnshoreRelatedOPEXCostProfile != null)
+            {
+                onshoreRelatedOpexProfile = new TimeSeries<double>
+                {
+                    StartYear = caseItem.OnshoreRelatedOPEXCostProfile.StartYear,
+                    Values = caseItem.OnshoreRelatedOPEXCostProfile.Values ?? Array.Empty<double>()
+                };
+            }
+
+            if (caseItem.AdditionalOPEXCostProfile != null)
+            {
+                additionalOpexProfile = new TimeSeries<double>
+                {
+                    StartYear = caseItem.AdditionalOPEXCostProfile.StartYear,
+                    Values = caseItem.AdditionalOPEXCostProfile.Values ?? Array.Empty<double>()
+                };
+            }
+
+            var totalOpexCost = TimeSeriesCost.MergeCostProfilesList(
+            [
+                historicCostProfile,
+                wellInterventionProfile,
+                offshoreFacilitiesProfile,
+                onshoreRelatedOpexProfile,
+                additionalOpexProfile
+            ]);
+            return totalOpexCost;
+        }
+
+        public TimeSeries<double> CalculateCessationCost(Case caseItem)
+        {
+            TimeSeries<double> cessationWellsProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
+            TimeSeries<double> cessationOffshoreFacilitiesProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
+            TimeSeries<double> cessationOnshoreFacilitiesProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
+
+            if (caseItem.CessationWellsCostOverride?.Override == true)
+            {
+                cessationWellsProfile = new TimeSeries<double>
+                {
+                    StartYear = caseItem.CessationWellsCostOverride.StartYear,
+                    Values = caseItem.CessationWellsCostOverride.Values ?? Array.Empty<double>()
+                };
+            }
+            else if (caseItem.CessationWellsCost != null)
+            {
+                cessationWellsProfile = new TimeSeries<double>
+                {
+                    StartYear = caseItem.CessationWellsCost.StartYear,
+                    Values = caseItem.CessationWellsCost.Values ?? Array.Empty<double>()
+                };
+            }
+
+            if (caseItem.CessationOffshoreFacilitiesCostOverride?.Override == true)
+            {
+                cessationOffshoreFacilitiesProfile = new TimeSeries<double>
+                {
+                    StartYear = caseItem.CessationOffshoreFacilitiesCostOverride.StartYear,
+                    Values = caseItem.CessationOffshoreFacilitiesCostOverride.Values ?? Array.Empty<double>()
+                };
+            }
+            else if (caseItem.CessationOffshoreFacilitiesCost != null)
+            {
+                cessationOffshoreFacilitiesProfile = new TimeSeries<double>
+                {
+                    StartYear = caseItem.CessationOffshoreFacilitiesCost.StartYear,
+                    Values = caseItem.CessationOffshoreFacilitiesCost.Values ?? Array.Empty<double>()
+                };
+            }
+
+            if (caseItem.CessationOnshoreFacilitiesCostProfile != null)
+            {
+                cessationOnshoreFacilitiesProfile = new TimeSeries<double>
+                {
+                    StartYear = caseItem.CessationOnshoreFacilitiesCostProfile.StartYear,
+                    Values = caseItem.CessationOnshoreFacilitiesCostProfile.Values ?? Array.Empty<double>()
+                };
+            }
+
+            var totalCessationCost = TimeSeriesCost.MergeCostProfilesList(
+            [
+                cessationWellsProfile,
+                cessationOffshoreFacilitiesProfile,
+                cessationOnshoreFacilitiesProfile
+            ]);
+            return totalCessationCost;
+        }
+
 
         public async Task<TimeSeries<double>> CalculateTotalOffshoreFacilityCostAsync(Case caseItem)
         {
@@ -271,13 +469,13 @@ namespace api.Helpers
                 };
             }
 
-            var totalOffshoreFacilityCost = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>>
-            {
+            var totalOffshoreFacilityCost = TimeSeriesCost.MergeCostProfilesList(
+            [
                 substructureProfile,
                 surfProfile,
                 topsideProfile,
                 transportProfile
-            });
+            ]);
 
             return totalOffshoreFacilityCost;
         }
@@ -359,13 +557,13 @@ namespace api.Helpers
                 };
             }
 
-            var totalDevelopmentCost = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>>
-            {
+            var totalDevelopmentCost = TimeSeriesCost.MergeCostProfilesList(
+            [
                 oilProducerProfile,
                 gasProducerProfile,
                 waterInjectorProfile,
                 gasInjectorProfile
-            });
+            ]);
 
             return totalDevelopmentCost;
         }
@@ -443,15 +641,15 @@ namespace api.Helpers
                 };
             }
 
-            var totalExplorationCost = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>>
-            {
+            var totalExplorationCost = TimeSeriesCost.MergeCostProfilesList(
+            [
                 gAndGAdminCostProfile,
                 seismicAcquisitionAndProcessingProfile,
                 countryOfficeCostProfile,
                 explorationWellCostProfile,
                 appraisalWellCostProfile,
                 sidetrackCostProfile
-            });
+            ]);
 
             return totalExplorationCost;
         }

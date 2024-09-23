@@ -47,7 +47,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 }
             }
         })
-
+apiData.calculatedTotalCostCostProfile
         return {
             id: "",
             startYear: Math.min(...Object.keys(totals).map(Number)) - dg4Year,
@@ -122,48 +122,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         }
     }, [apiData, tableYears, project])
 
-    const calculateIncome = () => {
-        const oilPrice = project?.oilPriceUSD ?? 75.0
-        const gasPrice = project?.gasPriceNOK ?? 3
-        const cubicMetersToBarrelsFactor = 6.29
-        const exchangeRateUSDToNOK = project?.exchangeRateUSDToNOK ?? 10.0
-        const exchangeRateNOKToUSD = 1 / exchangeRateUSDToNOK
-
-        const totalOilProductionInMegaCubics = mergeTimeseries(apiData.productionProfileOil, apiData.additionalProductionProfileOil)
-
-        const oilProductionInBarrels = (totalOilProductionInMegaCubics.values || []).map((v) => v * cubicMetersToBarrelsFactor)
-        // finally one should have multiplied oilProduction by 1 million because the oilProduction used in the calculation is in mega cubics.
-        // But because the OilIncome in the diagram is in MNOK/MUSD, we would divide by 1 million to get the correct oilincome
-        // We can therefore ignore these multiplications and divisions
-
-        const oilIncome = {
-            id: "",
-            startYear: totalOilProductionInMegaCubics.startYear + new Date(apiData.case.dG4Date).getFullYear(),
-            values: oilProductionInBarrels.map((v) => v * oilPrice * exchangeRateUSDToNOK),
-        }
-
-        const totalGasProductionInGigaCubics = mergeTimeseries(apiData.productionProfileGas, apiData.additionalProductionProfileGas)
-        const gasIncome = {
-            id: "",
-            startYear: totalGasProductionInGigaCubics.startYear + new Date(apiData.case.dG4Date).getFullYear(),
-            values: (totalGasProductionInGigaCubics.values || []).map((v) => v * gasPrice * 1000),
-        }
-        // similar to previous comment, we should have multiplied the totalGasProduction value by 1 billion since its set in giga cubics, but since the diagram is in MNOK/MUSD
-        // We only need to multiply by 1000 to get the correct gas Income
-
-        const totalIncome = mergeTimeseries(oilIncome, gasIncome)
-
-        // Uncomment this to adjust income based on currency
-        // if (project?.currency === 2 && totalIncome.values) {
-        //     totalIncome = {
-        //         ...totalIncome,
-        //         values: totalIncome.values.map((v) => v * exchangeRateNOKToUSD),
-        //     }
-        // }
-
-        return totalIncome
-    }
-
     const chartData = useMemo(() => {
         const data: number[] = []
         const dg4Year = new Date(apiData.case.dG4Date).getFullYear()
@@ -176,10 +134,11 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             id: "",
             startYear: totalIncomeData?.startYear !== undefined
                 ? totalIncomeData.startYear + new Date(apiData.case.dG4Date).getFullYear()
-                : 0, // Default to 0 or handle the case when startYear is undefined
-                values: (totalIncomeData?.values || []).map((v) => v / 1000000) ?? [], // Default to an empty array if values are undefined
+                : 0,
+            values: (totalIncomeData?.values || []).map((v) => v / 1000000) ?? [],
         }
         console.log("income", income)
+
         let cumulativeSum = 0
         years.forEach((year) => {
             const yearData: any = { year }

@@ -11,7 +11,7 @@ import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
 import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
-import { mergeTimeseriesList } from "../../../Utils/common"
+import { mergeTimeseries, mergeTimeseriesList } from "../../../Utils/common"
 import { SetSummaryTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 import CaseSummarySkeleton from "../../LoadingSkeletons/CaseSummarySkeleton"
 import { caseQueryFn } from "../../../Services/QueryFunctions"
@@ -38,11 +38,94 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
-    const { data: apiData } = useQuery({
-        queryKey: ["apiData", { projectId, caseId }],
-        queryFn: () => caseQueryFn(projectId, caseId),
-        enabled: !!projectId && !!caseId,
-    })
+    const [cashflowProfile, setCashflowProfile] = useState<ITimeSeries | undefined>(undefined)
+
+    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
+        ["apiData", { projectId, caseId }],
+        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        {
+            enabled: !!projectId && !!caseId,
+            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
+        },
+    )
+
+    const calculateDiscountedVolume = (volumeArray: number[], discountRate: number):
+        number => volumeArray.reduce((accumulatedVolume, volume, index) => accumulatedVolume + (volume / (1 + (discountRate / 100)) ** (index + 1)), 0)
+
+    const calculateBreakEvenOilPrice = () => {
+        if (!apiData) { return }
+
+        const discountRate = project?.discountRate || 8
+        const defaultOilPrice = project?.oilPriceUSD || 75
+        const gasPriceNOK = project?.gasPriceNOK
+        const exchangeRateUSDToNOK = project?.exchangeRateUSDToNOK ?? 10
+        const exchangeRateNOKToUSD = 1 / exchangeRateUSDToNOK
+        const oilVolume = mergeTimeseries(apiData.productionProfileOil, apiData.additionalProductionProfileOil)
+        console.log("oilVolume", oilVolume)
+
+        const gasVolume = mergeTimeseries(apiData.productionProfileGas, apiData.additionalProductionProfileGas)
+        console.log("gasVolume", gasVolume)
+
+        const discountedGasVolume = calculateDiscountedVolume(gasVolume?.values || [], discountRate)
+        const discountedOilVolume = calculateDiscountedVolume(oilVolume.values || [], discountRate)
+        const discountedTotalCost = calculateDiscountedVolume(apiData?.calculatedTotalCostCostProfile?.values || [], discountRate)
+
+        const GOR = discountedGasVolume / discountedOilVolume
+        let PA = 0
+        if (gasPriceNOK) {
+            PA = gasPriceNOK / (exchangeRateNOKToUSD * 6.29 * defaultOilPrice)
+        }
+
+        const breakEvenOilPrice = discountedTotalCost / ((GOR * PA) + 1) / discountedOilVolume
+        const caseData = apiData?.case
+
+        if (caseData) {
+            caseData.breakEven = breakEvenOilPrice
+        }
+    }
+
+    const calculateNPV = (cashflowValues: number[], discountRate: number):
+        number => cashflowValues.reduce((accumulatedNPV, cashflow, index) => accumulatedNPV + (cashflow / (1 + (0.01 * discountRate)) ** (index + 1)), 0)
+
+    const calculateCashflowProfile = (): ITimeSeries => {
+        if (!apiData) {
+            return {
+                id: "cashflow",
+                startYear: 0,
+                values: [],
+            }
+        }
+
+        const dg4Year = new Date(apiData.case.dG4Date).getFullYear()
+        const totalCostProfile = apiData.calculatedTotalCostCostProfile
+        const totalIncomeProfile = apiData.calculatedTotalIncomeCostProfile
+        console.log("totalIncomeProfile.values", totalIncomeProfile?.values)
+
+        console.log("totalCostProfile.values", totalCostProfile?.values)
+
+        if (!totalCostProfile?.values || !totalIncomeProfile?.values) {
+            return {
+                id: "cashflow",
+                startYear: dg4Year,
+                values: [],
+            }
+        }
+
+        const negatedCostProfile = {
+            ...totalCostProfile,
+            values: totalCostProfile.values.map((value) => -value),
+        }
+        console.log("negatedCostProfile.values", negatedCostProfile.values)
+
+        const mergedProfile = mergeTimeseries(negatedCostProfile, totalIncomeProfile)
+        console.log("mergedProfile.values", mergedProfile.values)
+
+        return {
+            id: "cashflow",
+            startYear: mergedProfile.startYear,
+            values: mergedProfile.values,
+        }
+    }
 
     const handleOffshoreFacilitiesCost = () => mergeTimeseriesList([
         (apiData?.surfCostProfileOverride?.override === true
@@ -144,6 +227,11 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         if (activeTabCase === 7 && apiData && !yearRangeSetFromProfiles) {
             const caseData = apiData.case as Components.Schemas.CaseDto
 
+            const newCashflowProfile = calculateCashflowProfile()
+            console.log("newCashflowProfile.values", newCashflowProfile.values)
+            setCashflowProfile(newCashflowProfile)
+            calculateBreakEvenOilPrice()
+            console.log("caseData.breakEven", caseData.breakEven)
             SetSummaryTableYearsFromProfiles([
                 handleTotalExplorationCost(),
                 handleDrilling(),
@@ -275,13 +363,18 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             ])
         }
     }, [apiData, project])
-
     const caseData = apiData?.case
 
     if (!caseData) { return <CaseSummarySkeleton /> }
 
     if (activeTabCase !== 7) { return null }
+    console.log("cashflowProfile.values", cashflowProfile?.values)
+    console.log("project.discountRate", project?.discountRate)
 
+    const npvValue = cashflowProfile && cashflowProfile.values && project?.discountRate
+        ? calculateNPV(cashflowProfile.values, project.discountRate)
+        : 0
+    console.log("npvValue", npvValue)
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
@@ -290,7 +383,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     resourceName="case"
                     resourcePropertyKey="npv"
                     label="NPV before tax"
-                    value={caseData.npv}
+                    value={npvValue}
                     previousResourceObject={caseData}
                     integer={false}
                     allowNegative
