@@ -1,7 +1,5 @@
 import {
     MouseEventHandler,
-    useEffect,
-    useState,
 } from "react"
 import {
     Button, Icon, Typography,
@@ -17,11 +15,8 @@ import CasesTable from "../Case/OverviewCasesTable/CasesTable"
 import { useModalContext } from "../../Context/ModalContext"
 import { useAppContext } from "../../Context/AppContext"
 import Gallery from "../Gallery/Gallery"
-import { useParams } from "react-router"
 
 const ProjectOverviewTab = () => {
-    const [projectMemebers, setProjectMembers] = useState<any[]>([])
-    const { fusionContextId } = useParams()
     const { editMode } = useAppContext()
     const {
         project,
@@ -32,17 +27,6 @@ const ProjectOverviewTab = () => {
     const {
         addNewCase,
     } = useModalContext()
-
-    useEffect(() => {
-        const fetchProjectMembers = async () => {
-            if (project && fusionContextId) {
-                const projectMembers = await (await GetProjectService()).getProjectMembers(fusionContextId)
-                setProjectMembers(projectMembers.filter((member: any) => member.accountClassification === "Internal"))
-                console.log("projectMemeber: ", projectMembers.filter((member: any) => member.accountClassification === "Internal"))
-            }
-        }
-        fetchProjectMembers()
-    }, [project])
 
     function handleDescriptionChange(value: string) {
         if (projectEdited) {
@@ -129,16 +113,6 @@ const ProjectOverviewTab = () => {
                     </Button>
                 </Grid>
             </Grid>
-                <Grid>
-                    <Typography variant="h3">Project Members</Typography>
-                    <ul>
-                        {projectMemebers.map((member) => (
-                            <li key={member.id}>
-                                {member.name}
-                            </li>
-                        ))}
-                    </ul>
-                </Grid>
         </Grid>
     )
 }

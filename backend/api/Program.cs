@@ -48,13 +48,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddDownstreamApi("FusionPeople", builder.Configuration.GetSection("FusionPeople"))
     .AddInMemoryTokenCaches();
 
-
-// builder.Services.AddAuthorizationBuilder()
-//     .AddPolicy("ProjectAccess", policy =>
-//     {
-//         policy.Requirements.Add(new ProjectAccessRequirement());
-//     });
-
 var sqlConnectionString = config["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
 
 // Setup in memory DB SQL lite for test purposes
