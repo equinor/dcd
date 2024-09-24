@@ -1,7 +1,7 @@
 using api.Authorization;
 using api.Context;
-using api.Helpers;
 using api.Mappings;
+using api.Middleware;
 using api.Repositories;
 using api.Services;
 using api.Services.FusionIntegration;
@@ -45,6 +45,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"))
     .EnableTokenAcquisitionToCallDownstreamApi()
     .AddMicrosoftGraph(builder.Configuration.GetSection("Graph"))
+    .AddDownstreamApi("FusionPeople", builder.Configuration.GetSection("FusionPeople"))
     .AddInMemoryTokenCaches();
 
 var sqlConnectionString = config["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
@@ -164,6 +165,10 @@ builder.Configuration.AddAzureAppConfiguration(options =>
            });
 });
 
+builder.Services.AddScoped<IFusionPeopleService, FusionPeopleService>();
+
+builder.Services.AddScoped<IProjectAccessService, ProjectAccessService>();
+
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IFusionService, FusionService>();
 builder.Services.AddScoped<ICaseService, CaseService>();
@@ -211,6 +216,8 @@ builder.Services.AddScoped<IWellCostProfileService, WellCostProfileService>();
 
 builder.Services.AddScoped<ISTEAService, STEAService>();
 
+builder.Services.AddScoped<IProjectAccessRepository, ProjectAccessRepository>();
+
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<ICaseRepository, CaseRepository>();
 builder.Services.AddScoped<ISubstructureRepository, SubstructureRepository>();
@@ -243,8 +250,8 @@ builder.Services.AddHostedService<RefreshProjectService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
 
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddSingleton<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
+builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
 
 builder.Services.Configure<IConfiguration>(builder.Configuration);
@@ -297,7 +304,11 @@ builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 builder.Host.UseSerilog();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.UseRouting();
+
 if (app.Environment.IsDevelopment())
 {
     IdentityModelEventSource.ShowPII = true;
@@ -309,9 +320,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(_accessControlPolicyName);
+
 app.UseAuthentication();
 app.UseMiddleware<ClaimsMiddelware>();
-app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseAuthorization();
+
 app.MapControllers();
 app.Run();

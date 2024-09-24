@@ -12,41 +12,39 @@ namespace api.Services;
 
 public class SurfTimeSeriesService : ISurfTimeSeriesService
 {
-    private readonly DcdDbContext _context;
-    private readonly IProjectService _projectService;
     private readonly ILogger<SurfService> _logger;
-    private readonly IMapper _mapper;
+    private readonly IProjectAccessService _projectAccessService;
     private readonly ISurfRepository _surfRepository;
     private readonly ISurfTimeSeriesRepository _repository;
     private readonly ICaseRepository _caseRepository;
     private readonly IMapperService _mapperService;
     public SurfTimeSeriesService(
-        DcdDbContext context,
-        IProjectService projectService,
         ILoggerFactory loggerFactory,
-        IMapper mapper,
         ISurfTimeSeriesRepository repository,
         ISurfRepository surfRepository,
         ICaseRepository caseRepository,
-        IMapperService mapperService
+        IMapperService mapperService,
+        IProjectAccessService projectAccessService
         )
     {
-        _context = context;
-        _projectService = projectService;
         _logger = loggerFactory.CreateLogger<SurfService>();
-        _mapper = mapper;
         _repository = repository;
         _surfRepository = surfRepository;
         _caseRepository = caseRepository;
         _mapperService = mapperService;
+        _projectAccessService = projectAccessService;
     }
 
     public async Task<SurfCostProfileOverrideDto> CreateSurfCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid surfId,
         CreateSurfCostProfileOverrideDto dto
     )
     {
+        // Need to verify that the project from the URL is the same as the project of the resource
+        await _projectAccessService.ProjectExists<Surf>(projectId, surfId);
+
         var surf = await _surfRepository.GetSurf(surfId)
             ?? throw new NotFoundInDBException($"Surf with id {surfId} not found.");
 
@@ -82,23 +80,28 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
     }
 
     public async Task<SurfCostProfileDto> AddOrUpdateSurfCostProfile(
+        Guid projectId,
         Guid caseId,
         Guid surfId,
         UpdateSurfCostProfileDto dto
     )
     {
+        // Need to verify that the project from the URL is the same as the project of the resource
+        await _projectAccessService.ProjectExists<Surf>(projectId, surfId);
+
         var surf = await _surfRepository.GetSurfWithCostProfile(surfId)
             ?? throw new NotFoundInDBException($"Surf with id {surfId} not found.");
 
         if (surf.CostProfile != null)
         {
-            return await UpdateSurfCostProfile(caseId, surfId, surf.CostProfile.Id, dto);
+            return await UpdateSurfCostProfile(projectId, caseId, surfId, surf.CostProfile.Id, dto);
         }
 
         return await CreateSurfCostProfile(caseId, surfId, dto, surf);
     }
 
     private async Task<SurfCostProfileDto> UpdateSurfCostProfile(
+        Guid projectId,
         Guid caseId,
         Guid surfId,
         Guid profileId,
@@ -106,6 +109,7 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
     )
     {
         return await UpdateSurfTimeSeries<SurfCostProfile, SurfCostProfileDto, UpdateSurfCostProfileDto>(
+            projectId,
             caseId,
             surfId,
             profileId,
@@ -146,6 +150,7 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
     }
 
     public async Task<SurfCostProfileOverrideDto> UpdateSurfCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid surfId,
         Guid costProfileId,
@@ -153,6 +158,7 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
     )
     {
         return await UpdateSurfTimeSeries<SurfCostProfileOverride, SurfCostProfileOverrideDto, UpdateSurfCostProfileOverrideDto>(
+            projectId,
             caseId,
             surfId,
             costProfileId,
@@ -163,6 +169,7 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
     }
 
     private async Task<TDto> UpdateSurfTimeSeries<TProfile, TDto, TUpdateDto>(
+        Guid projectId,
         Guid caseId,
         Guid surfId,
         Guid profileId,
@@ -170,12 +177,15 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
         Func<Guid, Task<TProfile?>> getProfile,
         Func<TProfile, TProfile> updateProfile
     )
-        where TProfile : class
+        where TProfile : class, ISurfTimeSeries
         where TDto : class
         where TUpdateDto : class
     {
         var existingProfile = await getProfile(profileId)
             ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
+
+        // Need to verify that the project from the URL is the same as the project of the resource
+        await _projectAccessService.ProjectExists<Surf>(projectId, existingProfile.Surf.Id);
 
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, surfId);
 

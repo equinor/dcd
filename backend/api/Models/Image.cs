@@ -2,9 +2,11 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using api.Models.Interfaces;
+
 namespace api.Models;
 
-public class Image
+public class Image : IHasProjectId
 {
     [Key]
     public Guid Id { get; set; }

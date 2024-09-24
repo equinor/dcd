@@ -13,6 +13,7 @@ public interface IExplorationRepository : IBaseRepository
     Task<bool> ExplorationHasProfile(Guid ExplorationId, ExplorationProfileNames profileType);
     Exploration UpdateExploration(Exploration exploration);
     Task<DrillingSchedule?> GetExplorationWellDrillingSchedule(Guid drillingScheduleId);
+    Task<Exploration?> GetExplorationWithDrillingSchedule(Guid drillingScheduleId);
     DrillingSchedule UpdateExplorationWellDrillingSchedule(DrillingSchedule drillingSchedule);
     ExplorationWell CreateExplorationWellDrillingSchedule(ExplorationWell explorationWellWithDrillingSchedule);
 }

@@ -1,11 +1,15 @@
+using api.Authorization;
+using api.Controllers;
 using api.Dtos;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-[Authorize]
 [ApiController]
 [Route("projects/{projectId}")]
+[RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.User
+    )]
 public class BlobStorageController : ControllerBase
 {
     private readonly IBlobStorageService _blobStorageService;
@@ -56,12 +60,19 @@ public class BlobStorageController : ControllerBase
     }
 
     [HttpPost("cases/{caseId}/images")]
+    [ActionType(ActionType.Edit)]
     public Task<ActionResult<ImageDto>> UploadCaseImage(Guid projectId, [FromForm] string projectName, Guid caseId, IFormFile image)
     {
         return UploadImage(projectId, projectName, caseId, image);
     }
 
+    [RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+    )]
     [HttpGet("cases/{caseId}/images")]
+    [ActionType(ActionType.Read)]
     public async Task<ActionResult<List<ImageDto>>> GetImages(Guid projectId, Guid caseId)
     {
         try
@@ -76,6 +87,7 @@ public class BlobStorageController : ControllerBase
     }
 
     [HttpDelete("cases/{caseId}/images/{imageId}")]
+    [ActionType(ActionType.Edit)]
     public async Task<ActionResult> DeleteCaseImage(Guid imageId)
     {
         try
@@ -90,12 +102,19 @@ public class BlobStorageController : ControllerBase
     }
 
     [HttpPost("images")]
+    [ActionType(ActionType.Edit)]
     public Task<ActionResult<ImageDto>> UploadProjectImage(Guid projectId, [FromForm] string projectName, IFormFile image)
     {
         return UploadImage(projectId, projectName, null, image);
     }
 
+    [RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+    )]
     [HttpGet("images")]
+    [ActionType(ActionType.Read)]
     public async Task<ActionResult<List<ImageDto>>> GetProjectImages(Guid projectId)
     {
         try
@@ -110,6 +129,7 @@ public class BlobStorageController : ControllerBase
     }
 
     [HttpDelete("images/{imageId}")]
+    [ActionType(ActionType.Edit)]
     public async Task<ActionResult> DeleteProjectImage(Guid imageId)
     {
         try
