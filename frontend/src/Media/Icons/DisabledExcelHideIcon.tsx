@@ -11,6 +11,7 @@ export const DisabledExcelHideIcon = ({ size }: Props) => {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 21.57 20.56"
       width={size} height={size}
+      display={"block"}
     >
       <defs>
         <style>

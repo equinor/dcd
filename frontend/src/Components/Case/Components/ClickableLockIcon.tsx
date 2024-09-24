@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { microsoft_excel } from "@equinor/eds-icons"
-import { Icon, Tooltip } from "@equinor/eds-core-react"
+import { Icon, Tooltip, Button } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
 
 import { useProjectContext } from "../../../Context/ProjectContext"
@@ -57,8 +57,8 @@ const LockIcon: React.FC<LockIconProps> = ({
         }
     }
 
-    if(isProsp && !sharepointId) {
-        return <Tooltip title="To show numbers from PROSP, please add a PROPS file to the case."><div><DisabledExcelHideIcon size={20} /></div></Tooltip>
+    if (isProsp && !sharepointId) {
+        return <Tooltip title="To show numbers from PROSP, please add a PROPS file to the case."><Button variant="ghost_icon" color="secondary" disabled><DisabledExcelHideIcon size={20} /></Button></Tooltip>
     }
 
     if (clickedElement.data?.overridable) {
@@ -67,9 +67,9 @@ const LockIcon: React.FC<LockIconProps> = ({
 
                 {isProsp ? (
                     <Tooltip title="Show numbers from PROSP file">
-                        <div onClick={() => handleLockIconClick(clickedElement)}>
-                            <ExcelHideIcon size={20} /></div>
-                    </Tooltip>) : <Tooltip title="Show Calculated Numbers"><div onClick={() => handleLockIconClick(clickedElement)}><CalculatorHideIcon size={20} /></div></Tooltip>
+                        <Button variant="ghost_icon" color="secondary" onClick={() => handleLockIconClick(clickedElement)}>
+                            <ExcelHideIcon size={20} /></Button>
+                    </Tooltip>) : <Tooltip title="Show Calculated Numbers"><Button variant="ghost_icon" color="secondary" onClick={() => handleLockIconClick(clickedElement)}><CalculatorHideIcon size={20} /></Button></Tooltip>
                 }
             </>
         )
@@ -77,11 +77,12 @@ const LockIcon: React.FC<LockIconProps> = ({
                 <>
                     {isProsp ? (
                         <Tooltip title="Hide numbers from PROSP file">
-                            <Icon
-                                data={microsoft_excel}
-                                color="#007079"
-                                onClick={() => handleLockIconClick(clickedElement)}
-                            /></Tooltip>) : <Tooltip title="Hide Calculated Numbers"><div onClick={() => handleLockIconClick(clickedElement)}><CalculatorIcon size={20} /></div></Tooltip>
+                            <Button variant="ghost_icon" color="secondary" onClick={() => handleLockIconClick(clickedElement)}>
+                                <Icon
+                                    data={microsoft_excel}
+                                    color="#007079" />
+                            </Button>
+                        </Tooltip>) : <Tooltip title="Hide Calculated Numbers"><Button variant="ghost_icon" color="secondary" onClick={() => handleLockIconClick(clickedElement)}><CalculatorIcon size={20} /></Button></Tooltip>
                     }
                 </>
             )

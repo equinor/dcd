@@ -5,6 +5,8 @@ interface Props {
 }
 
 export const CalculatorHideIcon = ({ size }: Props) => {
+  const color = "var(--eds_interactive_primary__resting, rgba(0, 112, 121, 1));";
+
   return (
     <svg
       id="Layer_1"
@@ -12,6 +14,7 @@ export const CalculatorHideIcon = ({ size }: Props) => {
       viewBox="0 0 21.57 20.56"
       width={size}
       height={size}
+      display={"block"}
     >
       <defs>
         <style>
@@ -49,13 +52,13 @@ export const CalculatorHideIcon = ({ size }: Props) => {
               stroke-width: .8px;
             }
             .cls-4, .cls-5, .cls-6, .cls-7 {
-              stroke: #000;
+              stroke: ${color};
             }
             .cls-5 {
               stroke-width: 1.2px;
             }
             .cls-7 {
-              fill: #020000;
+              fill: ${color};
             }
           `}
         </style>

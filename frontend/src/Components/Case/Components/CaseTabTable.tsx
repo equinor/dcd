@@ -48,8 +48,9 @@ interface Props {
 }
 
 const CenterGridIcons = styled.div`
-    padding-top: 6px;
-    padding-left: 5px;
+    padding-top: 0px;
+    padding-left: 0px;
+    height: 100%;
 `
 
 const CaseTabTable = ({
@@ -176,12 +177,12 @@ const CaseTabTable = ({
 
         return (
             <CenterGridIcons>
-                <ClickableLockIcon
-                    isProsp={isProsp}
-                    sharepointFileId={sharepointFileId}
-                    clickedElement={params}
-                    addEdit={addEdit}
-                />
+            <ClickableLockIcon
+                isProsp={isProsp}
+                sharepointFileId={sharepointFileId}
+                clickedElement={params}
+                addEdit={addEdit}
+            />
             </CenterGridIcons>
         )
     }
