@@ -23,6 +23,12 @@ public class ProjectRepository : BaseRepository, IProjectRepository
         return await Get<Project>(projectId);
     }
 
+    public async Task<Project?> GetProjectByIdOrExternalId(Guid id)
+    {
+        return await _context.Projects
+            .FirstOrDefaultAsync(p => p.Id == id || p.FusionProjectId == id);
+    }
+
     public async Task<Project?> GetProjectWithCases(Guid projectId)
     {
         return await _context.Projects

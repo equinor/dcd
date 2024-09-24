@@ -22,7 +22,7 @@ public class ExplorationTimeSeriesRepository : BaseRepository, IExplorationTimeS
     }
     public async Task<GAndGAdminCostOverride?> GetGAndGAdminCostOverride(Guid profileId)
     {
-        return await Get<GAndGAdminCostOverride>(profileId);
+        return await GetWithIncludes<GAndGAdminCostOverride>(profileId, e => e.Exploration);
     }
 
     public GAndGAdminCostOverride UpdateGAndGAdminCostOverride(GAndGAdminCostOverride costProfile)
@@ -32,7 +32,7 @@ public class ExplorationTimeSeriesRepository : BaseRepository, IExplorationTimeS
 
     public async Task<SeismicAcquisitionAndProcessing?> GetSeismicAcquisitionAndProcessing(Guid seismicAcquisitionAndProcessingId)
     {
-        return await Get<SeismicAcquisitionAndProcessing>(seismicAcquisitionAndProcessingId);
+        return await GetWithIncludes<SeismicAcquisitionAndProcessing>(seismicAcquisitionAndProcessingId, e => e.Exploration);
     }
 
     public SeismicAcquisitionAndProcessing CreateSeismicAcquisitionAndProcessing(SeismicAcquisitionAndProcessing profile)
@@ -54,7 +54,7 @@ public class ExplorationTimeSeriesRepository : BaseRepository, IExplorationTimeS
 
     public async Task<CountryOfficeCost?> GetCountryOfficeCost(Guid countryOfficeCostId)
     {
-        return await Get<CountryOfficeCost>(countryOfficeCostId);
+        return await GetWithIncludes<CountryOfficeCost>(countryOfficeCostId, e => e.Exploration);
     }
 
     public CountryOfficeCost UpdateCountryOfficeCost(CountryOfficeCost countryOfficeCost)

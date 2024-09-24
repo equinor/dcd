@@ -24,7 +24,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public async Task<ProductionProfileOil?> GetProductionProfileOil(Guid productionProfileOilId)
     {
-        return await Get<ProductionProfileOil>(productionProfileOilId);
+        return await GetWithIncludes<ProductionProfileOil>(productionProfileOilId, d => d.DrainageStrategy);
     }
 
     public ProductionProfileOil UpdateProductionProfileOil(ProductionProfileOil productionProfileOil)
@@ -40,7 +40,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public async Task<AdditionalProductionProfileOil?> GetAdditionalProductionProfileOil(Guid additionalProductionProfileOilId)
     {
-        return await Get<AdditionalProductionProfileOil>(additionalProductionProfileOilId);
+        return await GetWithIncludes<AdditionalProductionProfileOil>(additionalProductionProfileOilId, d => d.DrainageStrategy);
     }
 
     public AdditionalProductionProfileOil UpdateAdditionalProductionProfileOil(AdditionalProductionProfileOil additionalProductionProfileOil)
@@ -56,7 +56,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public async Task<ProductionProfileGas?> GetProductionProfileGas(Guid productionProfileId)
     {
-        return await Get<ProductionProfileGas>(productionProfileId);
+        return await GetWithIncludes<ProductionProfileGas>(productionProfileId, d => d.DrainageStrategy);
     }
 
     public ProductionProfileGas UpdateProductionProfileGas(ProductionProfileGas productionProfile)
@@ -72,7 +72,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public async Task<AdditionalProductionProfileGas?> GetAdditionalProductionProfileGas(Guid productionProfileId)
     {
-        return await Get<AdditionalProductionProfileGas>(productionProfileId);
+        return await GetWithIncludes<AdditionalProductionProfileGas>(productionProfileId, d => d.DrainageStrategy);
     }
 
     public AdditionalProductionProfileGas UpdateAdditionalProductionProfileGas(AdditionalProductionProfileGas productionProfile)
@@ -88,7 +88,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public async Task<ProductionProfileWater?> GetProductionProfileWater(Guid productionProfileId)
     {
-        return await Get<ProductionProfileWater>(productionProfileId);
+        return await GetWithIncludes<ProductionProfileWater>(productionProfileId, d => d.DrainageStrategy);
     }
 
     public ProductionProfileWater UpdateProductionProfileWater(ProductionProfileWater productionProfile)
@@ -103,7 +103,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
     }
     public async Task<ProductionProfileWaterInjection?> GetProductionProfileWaterInjection(Guid productionProfileId)
     {
-        return await Get<ProductionProfileWaterInjection>(productionProfileId);
+        return await GetWithIncludes<ProductionProfileWaterInjection>(productionProfileId, d => d.DrainageStrategy);
     }
 
 
@@ -120,7 +120,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public async Task<FuelFlaringAndLossesOverride?> GetFuelFlaringAndLossesOverride(Guid profileId)
     {
-        return await Get<FuelFlaringAndLossesOverride>(profileId);
+        return await GetWithIncludes<FuelFlaringAndLossesOverride>(profileId, d => d.DrainageStrategy);
     }
 
 
@@ -137,7 +137,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public async Task<NetSalesGasOverride?> GetNetSalesGasOverride(Guid profileId)
     {
-        return await Get<NetSalesGasOverride>(profileId);
+        return await GetWithIncludes<NetSalesGasOverride>(profileId, d => d.DrainageStrategy);
     }
 
 
@@ -154,7 +154,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public async Task<Co2EmissionsOverride?> GetCo2EmissionsOverride(Guid profileId)
     {
-        return await Get<Co2EmissionsOverride>(profileId);
+        return await GetWithIncludes<Co2EmissionsOverride>(profileId, d => d.DrainageStrategy);
     }
 
 
@@ -171,7 +171,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public async Task<ImportedElectricityOverride?> GetImportedElectricityOverride(Guid profileId)
     {
-        return await Get<ImportedElectricityOverride>(profileId);
+        return await GetWithIncludes<ImportedElectricityOverride>(profileId, d => d.DrainageStrategy);
     }
 
 
@@ -188,7 +188,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public async Task<DeferredOilProduction?> GetDeferredOilProduction(Guid productionProfileId)
     {
-        return await Get<DeferredOilProduction>(productionProfileId);
+        return await GetWithIncludes<DeferredOilProduction>(productionProfileId, d => d.DrainageStrategy);
     }
 
 
@@ -205,7 +205,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public async Task<DeferredGasProduction?> GetDeferredGasProduction(Guid productionProfileId)
     {
-        return await Get<DeferredGasProduction>(productionProfileId);
+        return await GetWithIncludes<DeferredGasProduction>(productionProfileId, d => d.DrainageStrategy);
     }
 
 

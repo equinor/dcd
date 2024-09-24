@@ -12,42 +12,40 @@ namespace api.Services;
 
 public class TopsideTimeSeriesService : ITopsideTimeSeriesService
 {
-    private readonly DcdDbContext _context;
-    private readonly IProjectService _projectService;
     private readonly ILogger<TopsideService> _logger;
-    private readonly IMapper _mapper;
+    private readonly IProjectAccessService _projectAccessService;
     private readonly ITopsideTimeSeriesRepository _repository;
     private readonly ITopsideRepository _topsideRepository;
     private readonly ICaseRepository _caseRepository;
     private readonly IMapperService _mapperService;
 
     public TopsideTimeSeriesService(
-        DcdDbContext context,
-        IProjectService projectService,
         ILoggerFactory loggerFactory,
-        IMapper mapper,
         ITopsideTimeSeriesRepository repository,
         ITopsideRepository topsideRepository,
         ICaseRepository caseRepository,
-        IMapperService mapperService
+        IMapperService mapperService,
+        IProjectAccessService projectAccessService
         )
     {
-        _context = context;
-        _projectService = projectService;
         _logger = loggerFactory.CreateLogger<TopsideService>();
-        _mapper = mapper;
         _repository = repository;
         _topsideRepository = topsideRepository;
         _caseRepository = caseRepository;
         _mapperService = mapperService;
+        _projectAccessService = projectAccessService;
     }
 
     public async Task<TopsideCostProfileOverrideDto> CreateTopsideCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid topsideId,
         CreateTopsideCostProfileOverrideDto dto
     )
     {
+        // Need to verify that the project from the URL is the same as the project of the resource
+        await _projectAccessService.ProjectExists<Topside>(projectId, topsideId);
+
         var topside = await _topsideRepository.GetTopside(topsideId)
             ?? throw new NotFoundInDBException($"Topside with id {topsideId} not found.");
 
@@ -83,6 +81,7 @@ public class TopsideTimeSeriesService : ITopsideTimeSeriesService
     }
 
     public async Task<TopsideCostProfileOverrideDto> UpdateTopsideCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid topsideId,
         Guid costProfileId,
@@ -90,6 +89,7 @@ public class TopsideTimeSeriesService : ITopsideTimeSeriesService
     )
     {
         return await UpdateTopsideTimeSeries<TopsideCostProfileOverride, TopsideCostProfileOverrideDto, UpdateTopsideCostProfileOverrideDto>(
+            projectId,
             caseId,
             topsideId,
             costProfileId,
@@ -100,23 +100,28 @@ public class TopsideTimeSeriesService : ITopsideTimeSeriesService
     }
 
     public async Task<TopsideCostProfileDto> AddOrUpdateTopsideCostProfile(
+        Guid projectId,
         Guid caseId,
         Guid topsideId,
         UpdateTopsideCostProfileDto dto
     )
     {
+        // Need to verify that the project from the URL is the same as the project of the resource
+        await _projectAccessService.ProjectExists<Topside>(projectId, topsideId);
+
         var topside = await _topsideRepository.GetTopsideWithCostProfile(topsideId)
             ?? throw new NotFoundInDBException($"Topside with id {topsideId} not found.");
 
         if (topside.CostProfile != null)
         {
-            return await UpdateTopsideCostProfile(caseId, topsideId, topside.CostProfile.Id, dto);
+            return await UpdateTopsideCostProfile(projectId, caseId, topsideId, topside.CostProfile.Id, dto);
         }
 
         return await CreateTopsideCostProfile(caseId, topsideId, dto, topside);
     }
 
     private async Task<TopsideCostProfileDto> UpdateTopsideCostProfile(
+        Guid projectId,
         Guid caseId,
         Guid topsideId,
         Guid profileId,
@@ -124,6 +129,7 @@ public class TopsideTimeSeriesService : ITopsideTimeSeriesService
     )
     {
         return await UpdateTopsideTimeSeries<TopsideCostProfile, TopsideCostProfileDto, UpdateTopsideCostProfileDto>(
+            projectId,
             caseId,
             topsideId,
             profileId,
@@ -164,6 +170,7 @@ public class TopsideTimeSeriesService : ITopsideTimeSeriesService
     }
 
     private async Task<TDto> UpdateTopsideTimeSeries<TProfile, TDto, TUpdateDto>(
+        Guid projectId,
         Guid caseId,
         Guid topsideId,
         Guid profileId,
@@ -171,19 +178,20 @@ public class TopsideTimeSeriesService : ITopsideTimeSeriesService
         Func<Guid, Task<TProfile?>> getProfile,
         Func<TProfile, TProfile> updateProfile
     )
-        where TProfile : class
+        where TProfile : class, ITopsideTimeSeries
         where TDto : class
         where TUpdateDto : class
     {
         var existingProfile = await getProfile(profileId)
             ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
 
+        // Need to verify that the project from the URL is the same as the project of the resource
+        await _projectAccessService.ProjectExists<Topside>(projectId, existingProfile.Topside.Id);
+
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, topsideId);
 
-        // TProfile updatedProfile;
         try
         {
-            // updatedProfile = updateProfile(existingProfile);
             await _caseRepository.UpdateModifyTime(caseId);
             await _repository.SaveChangesAndRecalculateAsync(caseId);
         }

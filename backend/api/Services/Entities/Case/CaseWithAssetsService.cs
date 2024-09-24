@@ -12,21 +12,26 @@ public class CaseWithAssetsService : ICaseWithAssetsService
     private readonly IProjectRepository _projectRepository;
     private readonly IMapperService _mapperService;
     private readonly IConversionMapperService _conversionMapperService;
+    private readonly IProjectAccessService _projectAccessService;
     public CaseWithAssetsService(
         ICaseWithAssetsRepository repository,
         IProjectRepository projectRepository,
         IMapperService mapperService,
-        IConversionMapperService conversionMapperService
+        IConversionMapperService conversionMapperService,
+        IProjectAccessService projectAccessService
     )
     {
         _repository = repository;
         _projectRepository = projectRepository;
         _mapperService = mapperService;
         _conversionMapperService = conversionMapperService;
+        _projectAccessService = projectAccessService;
     }
 
     public async Task<CaseWithAssetsDto> GetCaseWithAssetsNoTracking(Guid projectId, Guid caseId)
     {
+        await _projectAccessService.ProjectExists<Case>(projectId, caseId);
+
         var project = await _projectRepository.GetProject(projectId) ?? throw new NotFoundInDBException($"Project with id {projectId} not found");
 
         var (caseItem, drainageStrategy, topside, exploration, substructure, surf, transport, wellProject) = await _repository.GetCaseWithAssetsNoTracking(caseId);

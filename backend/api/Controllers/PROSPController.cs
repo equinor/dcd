@@ -10,12 +10,11 @@ namespace api.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-[Authorize]
 [RequiresApplicationRoles(
     ApplicationRole.Admin,
-    ApplicationRole.ReadOnly,
     ApplicationRole.User
 )]
+[ActionType(ActionType.Edit)]
 public class PROSPController : ControllerBase
 {
     private const string isCheckedAsset = "true";

@@ -6,6 +6,7 @@ namespace api.Services;
 public interface IWellProjectTimeSeriesService
 {
     Task<OilProducerCostProfileOverrideDto> UpdateOilProducerCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
@@ -13,6 +14,7 @@ public interface IWellProjectTimeSeriesService
     );
 
     Task<GasProducerCostProfileOverrideDto> UpdateGasProducerCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
@@ -20,6 +22,7 @@ public interface IWellProjectTimeSeriesService
     );
 
     Task<WaterInjectorCostProfileOverrideDto> UpdateWaterInjectorCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
@@ -27,6 +30,7 @@ public interface IWellProjectTimeSeriesService
     );
 
     Task<GasInjectorCostProfileOverrideDto> UpdateGasInjectorCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
@@ -34,24 +38,28 @@ public interface IWellProjectTimeSeriesService
     );
 
     Task<OilProducerCostProfileOverrideDto> CreateOilProducerCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         CreateOilProducerCostProfileOverrideDto createProfileDto
     );
 
     Task<GasProducerCostProfileOverrideDto> CreateGasProducerCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         CreateGasProducerCostProfileOverrideDto createProfileDto
     );
 
     Task<WaterInjectorCostProfileOverrideDto> CreateWaterInjectorCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         CreateWaterInjectorCostProfileOverrideDto createProfileDto
     );
 
     Task<GasInjectorCostProfileOverrideDto> CreateGasInjectorCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         CreateGasInjectorCostProfileOverrideDto createProfileDto

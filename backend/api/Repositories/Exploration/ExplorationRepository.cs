@@ -62,6 +62,16 @@ public class ExplorationRepository : BaseRepository, IExplorationRepository
         return await Get<DrillingSchedule>(drillingScheduleId);
     }
 
+    public async Task<Exploration?> GetExplorationWithDrillingSchedule(Guid drillingScheduleId)
+    {
+        var exploration = await _context.Explorations
+            .Include(e => e.ExplorationWells)!
+            .ThenInclude(w => w.DrillingSchedule)
+            .FirstOrDefaultAsync(e => e.ExplorationWells != null && e.ExplorationWells.Any(w => w.DrillingScheduleId == drillingScheduleId));
+
+        return exploration;
+    }
+
     public DrillingSchedule UpdateExplorationWellDrillingSchedule(DrillingSchedule drillingSchedule)
     {
         return Update(drillingSchedule);

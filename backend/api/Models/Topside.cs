@@ -1,8 +1,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
+using api.Models.Interfaces;
+
 namespace api.Models;
 
-public class Topside
+public class Topside : IHasProjectId
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty!;

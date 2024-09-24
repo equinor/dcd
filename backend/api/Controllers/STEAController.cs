@@ -11,7 +11,6 @@ using Microsoft.Identity.Web.Resource;
 
 namespace api.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("[controller]")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
@@ -21,6 +20,7 @@ namespace api.Controllers;
         ApplicationRole.User
 
     )]
+[ActionType(ActionType.Read)]
 public class STEAController : ControllerBase
 {
     private readonly ISTEAService _sTEAService;
