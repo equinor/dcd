@@ -4,10 +4,10 @@ import styled from "styled-components"
 import { Icon, Button, Typography } from "@equinor/eds-core-react"
 import { delete_to_trash, expand_screen } from "@equinor/eds-icons"
 import { useParams } from "react-router-dom"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import ImageUpload from "./ImageUpload"
 import ImageModal from "./ImageModal"
 import { useAppContext } from "../../Context/AppContext"
-import { useProjectContext } from "../../Context/ProjectContext"
 import { getImageService } from "../../Services/ImageService"
 
 const Wrapper = styled.div`
@@ -62,18 +62,19 @@ const Gallery = () => {
     const [expandedImage, setExpandedImage] = useState("")
     const [exeededLimit, setExeededLimit] = useState(false)
     const { caseId } = useParams()
-    const { project } = useProjectContext()
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
 
     useEffect(() => {
         const loadImages = async () => {
-            if (project?.id) {
+            if (projectId) {
                 try {
                     const imageService = await getImageService()
                     if (caseId) {
-                        const imageDtos = await imageService.getImages(project.id, caseId)
+                        const imageDtos = await imageService.getImages(projectId, caseId)
                         setGallery(imageDtos)
                     } else {
-                        const imageDtos = await imageService.getProjectImages(project.id)
+                        const imageDtos = await imageService.getProjectImages(projectId)
                         setGallery(imageDtos)
                     }
                 } catch (error) {
@@ -83,18 +84,18 @@ const Gallery = () => {
         }
 
         loadImages()
-    }, [project?.id, caseId])
+    }, [projectId, caseId])
 
     const handleDelete = async (imageUrl: string) => {
         try {
-            if (project?.id) {
+            if (projectId) {
                 const imageService = await getImageService()
                 const image = gallery.find((img) => img.url === imageUrl)
                 if (image) {
                     if (caseId) {
-                        await imageService.deleteImage(project.id, image.id, caseId)
+                        await imageService.deleteImage(projectId, image.id, caseId)
                     } else {
-                        await imageService.deleteImage(project.id, image.id)
+                        await imageService.deleteImage(projectId, image.id)
                     }
                     setGallery(gallery.filter((img) => img.url !== imageUrl))
                     setExeededLimit(false)

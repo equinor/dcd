@@ -8,27 +8,38 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { Switch } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid"
-import { useProjectContext } from "../../Context/ProjectContext"
+import { useQuery } from "@tanstack/react-query"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useAppContext } from "../../Context/AppContext"
 import { cellStyleRightAlign } from "../../Utils/common"
+import { projectQueryFn } from "../../Services/QueryFunctions"
+import useEditProject from "../../Hooks/useEditProject"
 
 const CO2ListTechnicalInput = () => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
-    const { project, setProject } = useProjectContext()
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
 
-    if (!project) { return null }
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
+
+    if (!apiData) { return null }
 
     const [check, setCheck] = useState(false)
-    const [cO2RemovedFromGas, setCO2RemovedFromGas] = useState<number>(project.cO2RemovedFromGas ?? 0)
-    const [cO2EmissionsFromFuelGas, setCO2EmissionsFromFuelGas] = useState<number>(project.cO2EmissionFromFuelGas ?? 0)
-    const [flaredGasPerProducedVolume, setFlaredGasPerProducedVolume] = useState<number>(project.flaredGasPerProducedVolume ?? 0)
-    const [cO2EmissionsFromFlaredGas, setCO2EmissionsFromFlaredGas] = useState<number>(project.cO2EmissionsFromFlaredGas ?? 0)
-    const [cO2Vented, setCO2Vented] = useState<number>(project.cO2Vented ?? 0)
-    const [averageDevelopmentWellDrillingDays, setAverageDevelopmentWellDrillingDays] = useState<number>(project.averageDevelopmentDrillingDays ?? 0)
-    const [dailyEmissionsFromDrillingRig, setDailyEmissionsFromDrillingRig] = useState<number>(project.dailyEmissionFromDrillingRig ?? 0)
+    const [cO2RemovedFromGas, setCO2RemovedFromGas] = useState<number>(apiData.cO2RemovedFromGas ?? 0)
+    const [cO2EmissionsFromFuelGas, setCO2EmissionsFromFuelGas] = useState<number>(apiData.cO2EmissionFromFuelGas ?? 0)
+    const [flaredGasPerProducedVolume, setFlaredGasPerProducedVolume] = useState<number>(apiData.flaredGasPerProducedVolume ?? 0)
+    const [cO2EmissionsFromFlaredGas, setCO2EmissionsFromFlaredGas] = useState<number>(apiData.cO2EmissionsFromFlaredGas ?? 0)
+    const [cO2Vented, setCO2Vented] = useState<number>(apiData.cO2Vented ?? 0)
+    const [averageDevelopmentWellDrillingDays, setAverageDevelopmentWellDrillingDays] = useState<number>(apiData.averageDevelopmentDrillingDays ?? 0)
+    const [dailyEmissionsFromDrillingRig, setDailyEmissionsFromDrillingRig] = useState<number>(apiData.dailyEmissionFromDrillingRig ?? 0)
     const [rowData, setRowData] = useState([{}])
     const { editMode } = useAppContext()
+    const { addProjectEdit } = useEditProject()
 
     let cO2VentedRow = true
 
@@ -159,8 +170,8 @@ const CO2ListTechnicalInput = () => {
     useEffect(() => {
         setRowData(co2Data)
 
-        if (project) {
-            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
+        if (apiData) {
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...apiData }
             newProject.cO2RemovedFromGas = cO2RemovedFromGas
             newProject.cO2EmissionFromFuelGas = cO2EmissionsFromFuelGas
             newProject.flaredGasPerProducedVolume = flaredGasPerProducedVolume
@@ -168,7 +179,7 @@ const CO2ListTechnicalInput = () => {
             newProject.cO2Vented = cO2Vented
             newProject.averageDevelopmentDrillingDays = averageDevelopmentWellDrillingDays
             newProject.dailyEmissionFromDrillingRig = dailyEmissionsFromDrillingRig
-            setProject(newProject)
+            addProjectEdit(apiData.id, newProject)
         }
     }, [
         cO2RemovedFromGas,

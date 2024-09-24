@@ -9,12 +9,14 @@ import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 import CustomHeaderForSecondaryHeader from "../../CustomHeaderForSecondaryHeader"
-import { useProjectContext } from "../../Context/ProjectContext"
 import { useAppContext } from "../../Context/AppContext"
 import Modal from "../Modal/Modal"
 import { cellStyleRightAlign } from "../../Utils/common"
 import { GetWellService } from "../../Services/WellService"
+import { projectQueryFn } from "../../Services/QueryFunctions"
 
 interface Props {
     wells: Components.Schemas.WellDto[] | undefined
@@ -40,13 +42,19 @@ const WellListEditTechnicalInput = ({
     setDeletedWells,
 }: Props) => {
     const { editMode } = useAppContext()
-    const { project } = useProjectContext()
     const [rowData, setRowData] = useState<TableWell[]>()
     const [wellStagedForDeletion, setWellStagedForDeletion] = useState<any | undefined>()
-
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
     const gridRef = useRef(null)
     const styles = useStyles()
     const onGridReady = (params: any) => { gridRef.current = params.api }
+
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
 
     const wellsToRowData = () => {
         if (wells) {
@@ -151,8 +159,8 @@ const WellListEditTechnicalInput = ({
         <Button
             variant="ghost_icon"
             onClick={async () => {
-                if (!project) { return }
-                const wellsInUse = await (await GetWellService()).checkWellIsInUse(project.id, p.data.id)
+                if (!apiData) { return }
+                const wellsInUse = await (await GetWellService()).checkWellIsInUse(apiData.id, p.data.id)
                 const wellIsInUse = wellsInUse.length > 0
                 if (wellIsInUse) {
                     setWellStagedForDeletion(p)
@@ -195,12 +203,12 @@ const WellListEditTechnicalInput = ({
         },
         {
             field: "wellCost",
-            headerName: `Cost (${project?.currency === 1 ? "mill NOK" : "mill USD"})`,
+            headerName: `Cost (${apiData?.currency === 1 ? "mill NOK" : "mill USD"})`,
             flex: 1,
             headerComponent: CustomHeaderForSecondaryHeader,
             headerComponentParams: {
                 columnHeader: "Cost",
-                unit: project?.currency === 1 ? "mill NOK" : "mill USD",
+                unit: apiData?.currency === 1 ? "mill NOK" : "mill USD",
             },
             cellStyle: cellStyleRightAlign,
         },

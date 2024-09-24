@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { SideBar, Button, Divider } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
-import { useProjectContext } from "../../../Context/ProjectContext"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useAppContext } from "../../../Context/AppContext"
 import ProjectDetails from "./Components/ProjectDetails"
 import CasesDetails from "./Components/CasesDetails"
@@ -57,10 +57,11 @@ export const TimelineElement = styled(Button)`
 `
 
 const Sidebar = () => {
-    const { project } = useProjectContext()
     const { sidebarOpen, setSidebarOpen } = useAppContext()
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
 
-    if (!project) { return null }
+    if (!projectId) { return null }
 
     return (
         <Wrapper>

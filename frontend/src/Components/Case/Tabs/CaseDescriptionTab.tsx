@@ -4,19 +4,19 @@ import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import { useEffect, useState } from "react"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import Gallery from "../../Gallery/Gallery"
 import { useAppContext } from "../../../Context/AppContext"
-import { useProjectContext } from "../../../Context/ProjectContext"
 import CaseDescriptionTabSkeleton from "../../LoadingSkeletons/CaseDescriptionTabSkeleton"
 import { caseQueryFn } from "../../../Services/QueryFunctions"
 
 const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
-    const { project } = useProjectContext()
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
     const { editMode } = useAppContext()
     const { caseId, tab } = useParams()
-    const projectId = project?.id
 
     const [description, setDescription] = useState("")
 
@@ -36,7 +36,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     const { data: apiData } = useQuery({
-        queryKey: ["apiData", { projectId, caseId }],
+        queryKey: ["caseApiData", projectId, caseId],
         queryFn: () => caseQueryFn(projectId, caseId),
         enabled: !!projectId && !!caseId,
     })

@@ -11,9 +11,12 @@ import {
     library_add,
 } from "@equinor/eds-icons"
 import { useState } from "react"
-import { useProjectContext } from "../../../Context/ProjectContext"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 import { deleteCase, duplicateCase, setCaseAsReference } from "../../../Utils/CaseController"
 import Modal from "../../Modal/Modal"
+import { projectQueryFn } from "../../../Services/QueryFunctions"
+import useEditProject from "../../../Hooks/useEditProject"
 
 interface CasesDropMenuProps {
     isMenuOpen: boolean
@@ -30,10 +33,20 @@ const CasesDropMenu = ({
     selectedCaseId,
     editCase,
 }: CasesDropMenuProps): JSX.Element => {
-    const { project, setProject } = useProjectContext()
+    const { addProjectEdit } = useEditProject()
+
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
+
+    const { data: projectData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
+
     const [confirmDelete, setConfirmDelete] = useState(false)
 
-    if (!project) { return <p>project not found</p> }
+    if (!projectData) { return <p>project not found</p> }
 
     const navigate = useNavigate()
 
@@ -51,7 +64,7 @@ const CasesDropMenu = ({
         setConfirmDelete(false)
 
         if (selectedCaseId) {
-            deleteCase(selectedCaseId, project, setProject)
+            deleteCase(selectedCaseId, projectData, addProjectEdit)
         }
     }
 
@@ -90,7 +103,7 @@ const CasesDropMenu = ({
                     </Typography>
                 </Menu.Item>
                 <Menu.Item
-                    onClick={() => (project && selectedCaseId) && duplicateCase(selectedCaseId, project, setProject)}
+                    onClick={() => (projectData && selectedCaseId) && duplicateCase(selectedCaseId, projectData, addProjectEdit)}
 
                 >
                     <Icon data={library_add} size={16} />
@@ -114,10 +127,10 @@ const CasesDropMenu = ({
                         Delete
                     </Typography>
                 </Menu.Item>
-                {project.referenceCaseId === selectedCaseId
+                {projectData.referenceCaseId === selectedCaseId
                     ? (
                         <Menu.Item
-                            onClick={() => project && setCaseAsReference(selectedCaseId, project, setProject)}
+                            onClick={() => projectData && setCaseAsReference(selectedCaseId, projectData, addProjectEdit)}
                         >
                             <Icon data={bookmark_outlined} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">
@@ -127,7 +140,7 @@ const CasesDropMenu = ({
                     )
                     : (
                         <Menu.Item
-                            onClick={() => project && setCaseAsReference(selectedCaseId, project, setProject)}
+                            onClick={() => projectData && setCaseAsReference(selectedCaseId, projectData, addProjectEdit)}
                         >
                             <Icon data={bookmark_filled} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">

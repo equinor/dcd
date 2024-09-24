@@ -2,7 +2,7 @@ import React from "react"
 import { lock, lock_open } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
-import { useProjectContext } from "../../../Context/ProjectContext"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
 interface LockIconProps {
     clickedElement: any
@@ -12,12 +12,14 @@ interface LockIconProps {
 const LockIcon: React.FC<LockIconProps> = ({
     clickedElement,
     addEdit,
+
 }) => {
-    const { project } = useProjectContext()
     const { caseId } = useParams()
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
 
     const handleLockIconClick = (params: any) => {
-        if (params?.data?.override !== undefined && project && caseId) {
+        if (params?.data?.override !== undefined && caseId) {
             const profile = {
                 ...params.data.overrideProfile,
                 resourceId: params.data.resourceId,
@@ -31,7 +33,7 @@ const LockIcon: React.FC<LockIconProps> = ({
 
             addEdit({
                 inputLabel: params.data.profileName,
-                projectId: project.id,
+                projectId,
                 resourceName: profile.resourceName,
                 resourcePropertyKey: "override",
                 caseId,
