@@ -42,12 +42,16 @@ const RouteCoordinator = (): JSX.Element => {
             try {
                 setIsLoading(true)
                 const projectService = await GetProjectService()
-                let fetchedProject = await projectService.getProject(currentContext.externalId)
-
-                if (!fetchedProject || fetchedProject.id === "") {
-                    setIsCreating(true)
-                    setSnackBarMessage("No project found for this search. Creating new.")
-                    fetchedProject = await projectService.createProject(currentContext.id)
+                let fetchedProject
+                try {
+                    fetchedProject = await projectService.getProject(currentContext.externalId)
+                }
+                catch (error) {
+                    if (!fetchedProject || fetchedProject.id === "") {
+                        setIsCreating(true)
+                        setSnackBarMessage("No project found for this search. Creating new.")
+                        fetchedProject = await projectService.createProject(currentContext.id)
+                    }
                 }
 
                 if (fetchedProject) {
