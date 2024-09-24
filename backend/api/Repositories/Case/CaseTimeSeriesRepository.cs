@@ -217,7 +217,7 @@ public class CaseTimeSeriesRepository : BaseRepository, ICaseTimeSeriesRepositor
         return Update(costProfile);
     }
 
-        public async Task<CalculatedTotalCostCostProfile?> GetCalculatedTotalCostCostProfile(Guid costProfileId)
+    public async Task<CalculatedTotalCostCostProfile?> GetCalculatedTotalCostCostProfile(Guid costProfileId)
     {
         return await Get<CalculatedTotalCostCostProfile>(costProfileId);
     }

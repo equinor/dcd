@@ -47,7 +47,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 }
             }
         })
-apiData.calculatedTotalCostCostProfile
+
         return {
             id: "",
             startYear: Math.min(...Object.keys(totals).map(Number)) - dg4Year,
@@ -157,7 +157,7 @@ apiData.calculatedTotalCostCostProfile
         })
 
         return data
-    }, [aggregatedTimeSeriesData, tableYears, apiData])
+    }, [aggregatedTimeSeriesData, tableYears, apiData, project])
 
     const figmaTheme = {
         palette: {

@@ -6,9 +6,9 @@ namespace api.Helpers
 {
     public interface IEconomicsCalculationHelper
     {
-        // TimeSeries<double> CalculateIncome(DrainageStrategy drainageStrategy, Project project, Case caseItem);
+        Task CalculateTotalIncome(Guid caseId);
         
-        Task<TimeSeries<double>> CalculateTotalCostAsync(Case caseItem);
+        Task CalculateTotalCost(Guid caseId);
 
         Task<TimeSeries<double>> CalculateTotalOffshoreFacilityCostAsync(Case caseItem);
 
@@ -18,6 +18,5 @@ namespace api.Helpers
 
         TimeSeries<double> CalculateCashFlow(TimeSeries<double> income, TimeSeries<double> totalCost);
 
-        Task<TimeSeries<double>> CalculateProjectCashFlowAsync(Case caseItem, DrainageStrategy drainageStrategy);
     }
 }

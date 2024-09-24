@@ -12,21 +12,18 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
     private readonly IDrainageStrategyService _drainageStrategyService;
     private readonly IProjectService _projectService;
     private readonly ITopsideService _topsideService;
-    private readonly EconomicsCalculationHelper _economicsCalculationHelper;
 
     public FuelFlaringLossesProfileService(
         ICaseService caseService,
         IProjectService projectService,
         ITopsideService topsideService,
-        IDrainageStrategyService drainageStrategyService,
-        EconomicsCalculationHelper economicsCalculationHelper
+        IDrainageStrategyService drainageStrategyService
     )
     {
         _caseService = caseService;
         _projectService = projectService;
         _topsideService = topsideService;
         _drainageStrategyService = drainageStrategyService;
-        _economicsCalculationHelper = economicsCalculationHelper;
     }
 
     public async Task Generate(Guid caseId)
@@ -43,33 +40,13 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
             d => d.ProductionProfileWaterInjection!
         );
 
-        var cashflow = await _economicsCalculationHelper.CalculateProjectCashFlowAsync(caseItem, drainageStrategy);
-        foreach (var value in cashflow.Values)
-        {
-            Console.WriteLine(value);
-        }
-        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
-
-        var income = EconomicsCalculationHelper.CalculateIncome(drainageStrategy, project, caseItem);
-        Console.WriteLine("Income values:");
-        foreach (var value in income.Values)
-        {
-            Console.WriteLine(value.ToString());
-        }
-
-        var cost = await _economicsCalculationHelper.CalculateTotalCostAsync(caseItem);
-        Console.WriteLine("Cost values:");
-        foreach (var value in cost.Values)
-        {
-            Console.WriteLine(caseItem.CalculatedTotalCostCostProfile);
-        }
-
         if (drainageStrategy.FuelFlaringAndLossesOverride?.Override == true)
         {
             return;
         }
 
         var topside = await _topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
+        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
 
         var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
         var flaring = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
