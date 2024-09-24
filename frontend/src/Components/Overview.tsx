@@ -21,7 +21,7 @@ import { projectQueryFn } from "../Services/QueryFunctions"
 const ControlsWrapper = styled.div`
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 1;
 
 `
 const ContentWrapper = styled.div`

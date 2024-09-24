@@ -38,7 +38,6 @@ const Controls = () => {
     const { caseId } = useParams()
     const projectId = currentContext?.externalId
 
-    const [isCanceling, setIsCanceling] = useState<boolean>(false)
     const [projectLastUpdated, setProjectLastUpdated] = useState<string>("")
     const [caseLastUpdated, setCaseLastUpdated] = useState<string>("")
 
@@ -57,7 +56,6 @@ const Controls = () => {
     const cancelEdit = async () => {
         setEditMode(false)
         setProjectEdited(undefined)
-        setIsCanceling(false)
     }
 
     const handleProjectSave = async () => {
@@ -138,23 +136,6 @@ const Controls = () => {
     return (
         <Wrapper>
             <WhatsNewModal />
-            <Modal
-                isOpen={isCanceling}
-                title="Are you sure you want to cancel?"
-                size="sm"
-                content={<Typography>All unsaved changes will be lost. This action cannot be undone.</Typography>}
-                actions={(
-                    <>
-                        <Button onClick={() => setIsCanceling(false)} variant="outlined">
-                            Continue editing
-                        </Button>
-                        <Button onClick={cancelEdit} variant="contained" color="danger">
-                            Discard changes
-                        </Button>
-                    </>
-                )}
-            />
-
             {projectData && caseId ? (
                 <CaseControls
                     backToProject={backToProject}
@@ -168,7 +149,6 @@ const Controls = () => {
                     <ProjectControls
                         projectLastUpdated={projectLastUpdated}
                         handleEdit={handleEdit}
-                        setIsCanceling={setIsCanceling}
                     />
                 )}
         </Wrapper>
