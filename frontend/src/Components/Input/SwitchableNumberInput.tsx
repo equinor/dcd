@@ -37,11 +37,9 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
     addEdit,
 }: CaseEditInputProps) => {
     const { caseId, tab } = useParams()
-
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
     const addToEditsAndSubmit = (insertedValue: number) => {
-        const { currentContext } = useModuleCurrentContext()
-        const projectId = currentContext?.externalId
-
         if (!caseId || !projectId) { return }
 
         const newResourceObject: ResourceObject = structuredClone(previousResourceObject)
