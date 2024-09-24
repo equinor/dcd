@@ -20,6 +20,7 @@ namespace api.Controllers;
         ApplicationRole.User
 
     )]
+[ActionType(ActionType.Read)]
 public class STEAController : ControllerBase
 {
     private readonly ISTEAService _sTEAService;

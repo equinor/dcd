@@ -14,6 +14,7 @@ namespace api.Controllers;
     ApplicationRole.Admin,
     ApplicationRole.User
 )]
+[ActionType(ActionType.Edit)]
 public class PROSPController : ControllerBase
 {
     private const string isCheckedAsset = "true";

@@ -50,6 +50,7 @@ public class WellsController : ControllerBase
     }
 
     [HttpGet("{wellId}/affected-cases")]
+    [ActionType(ActionType.Edit)]
     public async Task<IEnumerable<CaseDto>> GetAffectedCases([FromRoute] Guid projectId, [FromRoute] Guid wellId)
     {
         return await _wellService.GetAffectedCases(wellId);

@@ -20,17 +20,14 @@ public class ExceptionHandlingMiddleware
     {
         try
         {
-            Console.WriteLine("ExceptionHandlingMiddleware.Invoke");
             await _next(context);
         }
         catch (Exception ex)
         {
-            Console.WriteLine("ExceptionHandlingMiddleware.Invoke catch");
             await HandleException(context, ex);
         }
         finally
         {
-
             _logger.LogInformation(
             "Request {trace} {user} {method} {url} => {statusCode}",
             context.TraceIdentifier,
@@ -89,8 +86,6 @@ public class ExceptionHandlingMiddleware
         }
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)statusCode;
-
-        Console.WriteLine("context.Response.StatusCode: " + context.Response.StatusCode);
 
         var response = new
         {
