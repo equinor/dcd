@@ -182,7 +182,7 @@ const CasesAgGridTable = ({
 
     useEffect(() => {
         casesToRowData()
-    }, [apiData.cases])
+    }, [apiData])
 
     return (
         <div>

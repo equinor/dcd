@@ -27,7 +27,6 @@ const Controls = () => {
     } = useProjectContext()
 
     const navigate = useNavigate()
-    const location = useLocation()
     const { currentContext } = useModuleCurrentContext()
     const { editMode, setEditMode } = useAppContext()
     const { caseId } = useParams()
