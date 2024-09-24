@@ -912,9 +912,6 @@ public class DcdDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ProjectMember>()
-            .HasKey(pm => new { pm.ProjectId, pm.AzureUniqueId });
-
         modelBuilder.Entity<WellProjectWell>()
             .HasKey(wc => new { wc.WellProjectId, wc.WellId });
 

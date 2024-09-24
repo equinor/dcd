@@ -23,6 +23,4 @@ public interface IProjectService
         Guid developmentOperationalWellCostsId,
         UpdateDevelopmentOperationalWellCostsDto dto
     );
-
-    Task<ProjectMember> AddProjectMember(Guid projectId, Guid personId);
 }

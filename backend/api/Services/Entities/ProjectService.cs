@@ -47,44 +47,6 @@ public class ProjectService : IProjectService
         _cache = cache;
     }
 
-    public async Task<ProjectMember> AddProjectMember(Guid projectId, Guid personId)
-    {
-        var project = await GetProject(projectId);
-
-        if (project == null)
-        {
-            throw new NotFoundInDBException($"Project {projectId} not found");
-        }
-
-        // TODO: Check that user exists in Azure AD
-        // TODO: Check if only internal users can be added
-        var projectMember = new ProjectMember
-        {
-            ProjectId = projectId,
-            AzureUniqueId = personId,
-            Role = ProjectRole.Contributor,
-        };
-
-        if (project.ProjectMembers == null)
-        {
-            project.ProjectMembers = new List<ProjectMember>();
-        }
-
-        project.ProjectMembers.Add(projectMember);
-
-        try
-        {
-            await _projectRepository.SaveChangesAsync();
-        }
-        catch (DbUpdateException e)
-        {
-            _logger.LogError(e, "Failed to add project member {personId} to project {projectId}", personId, projectId);
-            throw;
-        }
-
-        return projectMember;
-    }
-
     public async Task<ProjectWithCasesDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto)
     {
         var existingProject = await _projectRepository.GetProjectWithCases(projectId)
@@ -343,7 +305,6 @@ public class ProjectService : IProjectService
         }
 
         var project = await _context.Projects
-            .Include(p => p.ProjectMembers)
             .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
             .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudies)

@@ -27,7 +27,6 @@ public class Project
     public virtual ICollection<DrainageStrategy>? DrainageStrategies { get; set; }
     public virtual ICollection<WellProject>? WellProjects { get; set; }
     public virtual ICollection<Exploration>? Explorations { get; set; }
-    public virtual ICollection<ProjectMember>? ProjectMembers { get; set; }
 
     public string? SharepointSiteUrl { get; set; }
     public double CO2RemovedFromGas { get; set; }

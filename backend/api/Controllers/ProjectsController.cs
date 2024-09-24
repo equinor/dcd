@@ -24,17 +24,13 @@ public class ProjectsController : ControllerBase
     private readonly ICompareCasesService _compareCasesService;
     private readonly ITechnicalInputService _technicalInputService;
     private readonly IMapper _mapper;
-    private readonly IAuthorizationService _authorizationService;
-    private readonly IFusionPeopleService _fusionPeopleService;
 
     public ProjectsController(
         IProjectService projectService,
         IFusionService fusionService,
         ICompareCasesService compareCasesService,
         ITechnicalInputService technicalInputService,
-        IMapper mapper,
-        IAuthorizationService authorizationService,
-        IFusionPeopleService fusionPeopleService
+        IMapper mapper
     )
     {
         _projectService = projectService;
@@ -42,8 +38,6 @@ public class ProjectsController : ControllerBase
         _compareCasesService = compareCasesService;
         _technicalInputService = technicalInputService;
         _mapper = mapper;
-        _authorizationService = authorizationService;
-        _fusionPeopleService = fusionPeopleService;
     }
 
     [RequiresApplicationRoles(
@@ -55,35 +49,7 @@ public class ProjectsController : ControllerBase
     [ActionType(ActionType.Read)]
     public async Task<ProjectWithAssetsDto?> Get(Guid projectId)
     {
-        try
-        {
-            var authorizationResult = await _authorizationService.AuthorizeAsync(User, new Project(), new ProjectAccessRequirement());
-            return await _projectService.GetProjectDto(projectId);
-        }
-        catch (NotFoundInDBException)
-        {
-            return null;
-        }
-    }
-
-    [RequiresApplicationRoles(
-        ApplicationRole.Admin
-    )]
-    [HttpGet("{projectId}/members")]
-    public async Task<List<FusionPersonV1>> GetMembers(Guid projectId)
-    {
-        var result = await _fusionPeopleService.GetAllPersonsOnProject(projectId, "", 100, 0);
-        return result;
-    }
-
-    [RequiresApplicationRoles(
-        ApplicationRole.Admin
-    )]
-    [HttpPut("{projectId}/members/{personId}")]
-    [ActionType(ActionType.Edit)]
-    public async Task<ProjectMember> AddMember(Guid projectId, Guid personId)
-    {
-        return await _projectService.AddProjectMember(projectId, personId);
+        return await _projectService.GetProjectDto(projectId);
     }
 
     [HttpPost]

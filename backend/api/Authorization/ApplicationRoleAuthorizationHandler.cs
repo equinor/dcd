@@ -31,7 +31,7 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         _projectRepository = projectRepository;
         _cache = cache;
     }
-    protected override async Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context, ApplicationRoleRequirement requirement)
+    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ApplicationRoleRequirement requirement)
     {
         var requestPath = _httpContextAccessor.HttpContext?.Request.Path;
 
@@ -49,7 +49,7 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         }
 
         var userRoles = context.User.AssignedApplicationRoles();
-        if (!await IsAuthorized(context, requirement, userRoles))
+        if (!IsAuthorized(context, requirement, userRoles))
         {
             HandleUnauthorizedRequest(context, requestPath, requirement.Roles, userRoles);
             return Task.CompletedTask;
@@ -65,7 +65,7 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         return requestPath?.StartsWithSegments(swaggerPath) == true;
     }
 
-    private async Task<bool> IsAuthorized(AuthorizationHandlerContext context, ApplicationRoleRequirement roleRequirement, List<ApplicationRole> userRoles)
+    private bool IsAuthorized(AuthorizationHandlerContext context, ApplicationRoleRequirement roleRequirement, List<ApplicationRole> userRoles)
     {
         var userHasRequiredRole = userRoles.Any(role => roleRequirement.Roles.Contains(role));
 
@@ -75,11 +75,22 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         var azureUniqueId = fusionIdentity?.Profile?.AzureUniqueId ??
             throw new InvalidOperationException("AzureUniqueId not found in user profile");
 
-        var project = await GetCurrentProject(context);
+        // TODO: Implement check for classification and project phase
+        // var project = await GetCurrentProject(context);
 
         var actionType = GetActionTypeFromEndpoint();
 
-        Console.WriteLine("Action type: " + actionType);
+        var requiredRolesForEdit = new List<ApplicationRole> { ApplicationRole.Admin, ApplicationRole.User };
+        var requiredRolesForView = new List<ApplicationRole> { ApplicationRole.ReadOnly, ApplicationRole.Admin, ApplicationRole.User };
+
+        if (actionType == ActionType.Edit)
+        {
+            userHasRequiredRole = userRoles.Any(role => requiredRolesForEdit.Contains(role));
+        }
+        else if (actionType == ActionType.Read)
+        {
+            userHasRequiredRole = userRoles.Any(role => requiredRolesForView.Contains(role));
+        }
 
         return userHasRequiredRole;
     }

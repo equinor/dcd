@@ -172,7 +172,6 @@ builder.Configuration.AddAzureAppConfiguration(options =>
            });
 });
 
-builder.Services.AddScoped<IAuthorizationHandler, ProjectAccessHandler>();
 builder.Services.AddScoped<IFusionPeopleService, FusionPeopleService>();
 
 builder.Services.AddScoped<IProjectAccessService, ProjectAccessService>();
