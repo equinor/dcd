@@ -170,7 +170,6 @@ export const useSubmitToApi = () => {
         wellId,
         drillingScheduleId,
     }: SubmitToApiParams): Promise<any> => {
-        console.log("submitToApi", resourceName, resourceId, resourceObject, resourceProfileId, wellId, drillingScheduleId, caseId, projectId)
 
         if (productionOverrideResources.includes(resourceName)) {
             setIsCalculatingProductionOverrides(true)
