@@ -17,7 +17,6 @@ import { ExcelExportModule } from "@ag-grid-enterprise/excel-export"
 export const configure: AppModuleInitiator = (configurator, args) => {
     const { agGridLicense } = (args.env.config?.environment as { agGridLicense?: string })
     const { basename } = args.env
-    console.log("Configuring app with basename", basename)
 
     ModuleRegistry.registerModules([
         ClientSideRowModelModule,

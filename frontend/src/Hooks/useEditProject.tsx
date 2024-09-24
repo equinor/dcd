@@ -4,7 +4,7 @@ import { useAppContext } from "../Context/AppContext"
 
 export const useProjectEdits = () => {
     const queryClient = useQueryClient()
-    const { setSnackBarMessage } = useAppContext()
+    const { setSnackBarMessage, setIsSaving } = useAppContext()
 
     type UpdateProjectVariables = {
         projectId: string;
@@ -24,6 +24,7 @@ export const useProjectEdits = () => {
             queryClient.invalidateQueries(
                 { queryKey: ["projectApiData", id] },
             )
+            setIsSaving(false)
         },
         onError: (error) => {
             console.error("Error updating project", error)
@@ -35,6 +36,7 @@ export const useProjectEdits = () => {
         projectId: string,
         projectEdit: Components.Schemas.UpdateProjectDto,
     ) => {
+        setIsSaving(true)
         mutation.mutate({ projectId, body: projectEdit })
     }
 
