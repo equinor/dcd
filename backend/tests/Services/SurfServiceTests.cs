@@ -23,6 +23,8 @@ namespace tests.Services
         private readonly ISurfRepository _repository = Substitute.For<ISurfRepository>();
         private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
         private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
+        private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
+
 
         public SurfServiceTests()
         {
@@ -38,7 +40,8 @@ namespace tests.Services
                 _mapper,
                 _repository,
                 _caseRepository,
-                _mapperService
+                _mapperService,
+                _projectAccessService
             );
         }
 
@@ -46,6 +49,7 @@ namespace tests.Services
         public async Task UpdateSurf_ShouldUpdateSurf_WhenGivenValidInput()
         {
             // Arrange
+            var projectId = Guid.NewGuid();
             var caseId = Guid.NewGuid();
             var surfId = Guid.NewGuid();
             var updatedSurfDto = new APIUpdateSurfDto();
@@ -60,7 +64,7 @@ namespace tests.Services
             _mapperService.MapToDto<Surf, SurfDto>(existingSurf, surfId).Returns(updatedSurfDtoResult);
 
             // Act
-            var result = await _surfService.UpdateSurf<BaseUpdateSurfDto>(caseId, surfId, updatedSurfDto);
+            var result = await _surfService.UpdateSurf<BaseUpdateSurfDto>(projectId, caseId, surfId, updatedSurfDto);
 
             // Assert
             Assert.Equal(updatedSurfDtoResult, result);
@@ -71,6 +75,7 @@ namespace tests.Services
         public async Task UpdateSurf_ShouldThrowException_WhenDbUpdateExceptionOccurs()
         {
             // Arrange
+            var projectId = Guid.NewGuid();
             var caseId = Guid.NewGuid();
             var surfId = Guid.NewGuid();
             var updatedSurfDto = new APIUpdateSurfDto();
@@ -81,7 +86,7 @@ namespace tests.Services
             _repository.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(x => throw new DbUpdateException());
 
             // Act & Assert
-            await Assert.ThrowsAsync<DbUpdateException>(() => _surfService.UpdateSurf<BaseUpdateSurfDto>(caseId, surfId, updatedSurfDto));
+            await Assert.ThrowsAsync<DbUpdateException>(() => _surfService.UpdateSurf<BaseUpdateSurfDto>(projectId, caseId, surfId, updatedSurfDto));
         }
     }
 }

@@ -23,6 +23,8 @@ namespace tests.Services
         private readonly ITopsideRepository _repository = Substitute.For<ITopsideRepository>();
         private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
         private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
+        private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
+
 
         public TopsideServiceTests()
         {
@@ -38,7 +40,8 @@ namespace tests.Services
                 _mapper,
                 _repository,
                 _caseRepository,
-                _mapperService
+                _mapperService,
+                _projectAccessService
             );
         }
 
@@ -46,6 +49,7 @@ namespace tests.Services
         public async Task UpdateTopside_ShouldUpdateTopside_WhenGivenValidInput()
         {
             // Arrange
+            var projectId = Guid.NewGuid();
             var caseId = Guid.NewGuid();
             var topsideId = Guid.NewGuid();
             var updatedTopsideDto = new APIUpdateTopsideDto();
@@ -60,7 +64,7 @@ namespace tests.Services
             _mapperService.MapToDto<Topside, TopsideDto>(existingTopside, topsideId).Returns(updatedTopsideDtoResult);
 
             // Act
-            var result = await _topsideService.UpdateTopside<BaseUpdateTopsideDto>(caseId, topsideId, updatedTopsideDto);
+            var result = await _topsideService.UpdateTopside<BaseUpdateTopsideDto>(projectId, caseId, topsideId, updatedTopsideDto);
 
             // Assert
             Assert.Equal(updatedTopsideDtoResult, result);
@@ -71,6 +75,7 @@ namespace tests.Services
         public async Task UpdateTopside_ShouldThrowException_WhenDbUpdateExceptionOccurs()
         {
             // Arrange
+            var projectId = Guid.NewGuid();
             var caseId = Guid.NewGuid();
             var topsideId = Guid.NewGuid();
             var updatedTopsideDto = new APIUpdateTopsideDto();
@@ -81,7 +86,7 @@ namespace tests.Services
             _repository.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(x => throw new DbUpdateException());
 
             // Act & Assert
-            await Assert.ThrowsAsync<DbUpdateException>(() => _topsideService.UpdateTopside<BaseUpdateTopsideDto>(caseId, topsideId, updatedTopsideDto));
+            await Assert.ThrowsAsync<DbUpdateException>(() => _topsideService.UpdateTopside<BaseUpdateTopsideDto>(projectId, caseId, topsideId, updatedTopsideDto));
         }
     }
 }

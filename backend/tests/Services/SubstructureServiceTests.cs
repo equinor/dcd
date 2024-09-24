@@ -23,6 +23,8 @@ namespace tests.Services
         private readonly ISubstructureRepository _repository = Substitute.For<ISubstructureRepository>();
         private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
         private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
+                private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
+
 
         public SubstructureServiceTests()
         {
@@ -38,7 +40,8 @@ namespace tests.Services
                 _mapper,
                 _repository,
                 _caseRepository,
-                _mapperService
+                _mapperService,
+                _projectAccessService
             );
         }
 
@@ -46,6 +49,7 @@ namespace tests.Services
         public async Task UpdateSubstructure_ShouldUpdateSubstructure_WhenGivenValidInput()
         {
             // Arrange
+            var projectId = Guid.NewGuid();
             var caseId = Guid.NewGuid();
             var substructureId = Guid.NewGuid();
             var updatedSubstructureDto = new APIUpdateSubstructureDto();
@@ -60,7 +64,7 @@ namespace tests.Services
             _mapperService.MapToDto<Substructure, SubstructureDto>(existingSubstructure, substructureId).Returns(updatedSubstructureDtoResult);
 
             // Act
-            var result = await _substructureService.UpdateSubstructure<BaseUpdateSubstructureDto>(caseId, substructureId, updatedSubstructureDto);
+            var result = await _substructureService.UpdateSubstructure<BaseUpdateSubstructureDto>(projectId, caseId, substructureId, updatedSubstructureDto);
 
             // Assert
             Assert.Equal(updatedSubstructureDtoResult, result);
@@ -71,6 +75,7 @@ namespace tests.Services
         public async Task UpdateSubstructure_ShouldThrowException_WhenDbUpdateExceptionOccurs()
         {
             // Arrange
+            var projectId = Guid.NewGuid();
             var caseId = Guid.NewGuid();
             var substructureId = Guid.NewGuid();
             var updatedSubstructureDto = new APIUpdateSubstructureDto();
@@ -81,7 +86,7 @@ namespace tests.Services
             _repository.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(x => throw new DbUpdateException());
 
             // Act & Assert
-            await Assert.ThrowsAsync<DbUpdateException>(() => _substructureService.UpdateSubstructure<BaseUpdateSubstructureDto>(caseId, substructureId, updatedSubstructureDto));
+            await Assert.ThrowsAsync<DbUpdateException>(() => _substructureService.UpdateSubstructure<BaseUpdateSubstructureDto>(projectId, caseId, substructureId, updatedSubstructureDto));
         }
     }
 }
