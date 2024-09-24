@@ -2,8 +2,8 @@ import React, { useState } from "react"
 import { microsoft_excel } from "@equinor/eds-icons"
 import { Icon, Tooltip, Button } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
-import { useProjectContext } from "../../../Context/ProjectContext"
 import { ExcelHideIcon } from "../../../Media/Icons/ExcelHideIcon"
 import { CalculatorIcon } from "../../../Media/Icons/CalculatorIcon"
 import { CalculatorHideIcon } from "../../../Media/Icons/CalculatorHideIcon"
@@ -23,12 +23,13 @@ const LockIcon: React.FC<LockIconProps> = ({
     isProsp,
     sharepointFileId
 }) => {
-    const { project } = useProjectContext()
     const { caseId } = useParams()
     const [sharepointId] = useState(sharepointFileId)
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
 
     const handleLockIconClick = (params: any) => {
-        if (params?.data?.override !== undefined && project && caseId) {
+        if (params?.data?.override !== undefined && caseId) {
             const profile = {
                 ...params.data.overrideProfile,
                 resourceId: params.data.resourceId,
@@ -42,7 +43,7 @@ const LockIcon: React.FC<LockIconProps> = ({
 
             addEdit({
                 inputLabel: params.data.profileName,
-                projectId: project.id,
+                projectId,
                 resourceName: profile.resourceName,
                 resourcePropertyKey: "override",
                 caseId,

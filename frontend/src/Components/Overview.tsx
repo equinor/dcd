@@ -1,27 +1,27 @@
 import { useState, useEffect } from "react"
-import { Outlet, useParams } from "react-router-dom"
-import Grid from "@mui/material/Grid"
+import { Outlet } from "react-router-dom"
 import {
     Button,
-    Progress,
     Snackbar,
     Typography,
 } from "@equinor/eds-core-react"
 import { useCurrentUser } from "@equinor/fusion-framework-react/hooks"
 import styled from "styled-components"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 import Sidebar from "./Controls/Sidebar/Sidebar"
 import Controls from "./Controls/Controls"
 import { useAppContext } from "../Context/AppContext"
-import { useProjectContext } from "../Context/ProjectContext"
 import Modal from "./Modal/Modal"
 import { PROJECT_CLASSIFICATION } from "../Utils/constants"
 import { useModalContext } from "../Context/ModalContext"
 import ProjectSkeleton from "./LoadingSkeletons/ProjectSkeleton"
+import { projectQueryFn } from "../Services/QueryFunctions"
 
 const ControlsWrapper = styled.div`
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 1;
 
 `
 const ContentWrapper = styled.div`
@@ -39,26 +39,33 @@ interface WarnedProjectInterface {
 
 const Overview = () => {
     const currentUser = useCurrentUser()
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
     const {
         isCreating,
         isLoading,
         snackBarMessage,
         setSnackBarMessage,
     } = useAppContext()
-    const { project } = useProjectContext()
     const { featuresModalIsOpen } = useModalContext()
     const [warnedProjects, setWarnedProjects] = useState<WarnedProjectInterface | null>(null)
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
 
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
+
     function addVisitedProject() {
-        if (project && currentUserId) {
+        if (apiData && currentUserId) {
             if (warnedProjects && warnedProjects[currentUserId]) {
                 const wp = { ...warnedProjects }
-                wp[currentUserId].push(project.id)
+                wp[currentUserId].push(apiData.id)
                 setWarnedProjects(wp)
             } else {
-                setWarnedProjects({ [currentUserId]: [project.id] })
+                setWarnedProjects({ [currentUserId]: [apiData.id] })
             }
         }
     }
@@ -86,12 +93,12 @@ const Overview = () => {
     }, [warnedProjects])
 
     useEffect(() => {
-        if (project && currentUserId) {
+        if (apiData && currentUserId) {
             if (
                 !projectClassificationWarning
-                && PROJECT_CLASSIFICATION[project.classification].warn
+                && PROJECT_CLASSIFICATION[apiData.classification].warn
                 && (
-                    (warnedProjects && !warnedProjects[currentUserId].some((vp: string) => vp === project.id))
+                    (warnedProjects && !warnedProjects[currentUserId].some((vp: string) => vp === apiData.id))
                     || (warnedProjects && !warnedProjects[currentUserId])
                     || !warnedProjects
                 )
@@ -100,11 +107,11 @@ const Overview = () => {
                     setProjectClassificationWarning(true)
                 }
             }
-            if (warnedProjects && warnedProjects[currentUserId].some((vp: string) => vp === project.id)) {
+            if (warnedProjects && warnedProjects[currentUserId].some((vp: string) => vp === apiData.id)) {
                 setProjectClassificationWarning(false)
             }
         }
-    }, [project, currentUserId, warnedProjects, featuresModalIsOpen])
+    }, [apiData, currentUserId, warnedProjects, featuresModalIsOpen])
 
     if (isCreating || isLoading) {
         return (
@@ -120,14 +127,14 @@ const Overview = () => {
             <ContentWrapper>
                 <Sidebar />
                 <MainView className="ag-theme-alpine-fusion ">
-                    {project && (
+                    {apiData && (
                         <Modal
                             isOpen={projectClassificationWarning}
                             size="sm"
-                            title={`Attention - ${PROJECT_CLASSIFICATION[project.classification].label} project`}
+                            title={`Attention - ${PROJECT_CLASSIFICATION[apiData.classification].label} project`}
                             content={(
                                 <Typography key="text">
-                                    {PROJECT_CLASSIFICATION[project.classification].description}
+                                    {PROJECT_CLASSIFICATION[apiData.classification].description}
                                 </Typography>
                             )}
                             actions={

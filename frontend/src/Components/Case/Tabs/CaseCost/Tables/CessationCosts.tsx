@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react"
-import { useProjectContext } from "../../../../../Context/ProjectContext"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { ITimeSeriesData } from "../../../../../Models/Interfaces"
+
+import { projectQueryFn } from "../../../../../Services/QueryFunctions"
 
 interface CessationCostsProps {
     tableYears: [number, number];
@@ -18,7 +21,14 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
     apiData,
     addEdit,
 }) => {
-    const { project } = useProjectContext()
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
+
+    const { data: projectData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
 
     const [cessationTimeSeriesData, setCessationTimeSeriesData] = useState<ITimeSeriesData[]>([])
 
@@ -33,7 +43,7 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
         const newCessationTimeSeriesData: ITimeSeriesData[] = [
             {
                 profileName: "Cessation - Development wells",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: cessationWellsCostData,
                 resourceName: "cessationWellsCostOverride",
                 resourceId: caseData.id,
@@ -45,7 +55,7 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
             },
             {
                 profileName: "Cessation - Offshore facilities",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: cessationOffshoreFacilitiesCostData,
                 resourceName: "cessationOffshoreFacilitiesCostOverride",
                 resourceId: caseData.id,
@@ -57,7 +67,7 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
             },
             {
                 profileName: "CAPEX - Cessation - Onshore facilities",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: cessationOnshoreFacilitiesCostProfileData,
                 resourceName: "cessationOnshoreFacilitiesCostProfile",
                 resourceId: caseData.id,
@@ -69,7 +79,7 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
         ]
 
         setCessationTimeSeriesData(newCessationTimeSeriesData)
-    }, [apiData, project])
+    }, [apiData, projectData])
 
     return (
         <CaseTabTable

@@ -43,7 +43,7 @@ export const useSubmitToApi = () => {
         ) => {
             const { projectId, caseId } = variables
             queryClient.invalidateQueries(
-                { queryKey: ["apiData", { projectId, caseId }] },
+                { queryKey: ["caseApiData", projectId, caseId] },
             )
         },
         onError: (error: any) => {

@@ -7,10 +7,10 @@ import { NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../AgGrid/AgChartsTimeseries"
 import InputSwitcher from "../../Input/Components/InputSwitcher"
-import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import DateRangePicker from "../../Input/TableDateRangePicker"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
@@ -21,9 +21,9 @@ import { caseQueryFn } from "../../../Services/QueryFunctions"
 
 const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     const { caseId } = useParams()
-    const { project } = useProjectContext()
     const { activeTabCase } = useCaseContext()
-    const projectId = project?.id
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -52,7 +52,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     const { data: apiData, isLoading } = useQuery({
-        queryKey: ["apiData", { projectId, caseId }],
+        queryKey: ["caseApiData", projectId, caseId],
         queryFn: () => caseQueryFn(projectId, caseId),
         enabled: !!projectId && !!caseId,
     })

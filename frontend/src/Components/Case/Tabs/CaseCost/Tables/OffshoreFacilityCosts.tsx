@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react"
-import { useProjectContext } from "../../../../../Context/ProjectContext"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { ITimeSeriesData } from "../../../../../Models/Interfaces"
+import { projectQueryFn } from "../../../../../Services/QueryFunctions"
 
 interface OffshoreFacillityCostsProps {
     tableYears: [number, number];
@@ -18,7 +20,14 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
     apiData,
     addEdit,
 }) => {
-    const { project } = useProjectContext()
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
+
+    const { data: projectData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
 
     const [capexTimeSeriesData, setCapexTimeSeriesData] = useState<ITimeSeriesData[]>([])
 
@@ -44,7 +53,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
         const newCapexTimeSeriesData: ITimeSeriesData[] = [
             {
                 profileName: "Subsea production system",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: surfCostData,
                 resourceName: "surfCostOverride",
                 resourceId: surf.id,
@@ -56,7 +65,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             },
             {
                 profileName: "Topside",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: topsideCostData,
                 resourceName: "topsideCostOverride",
                 resourceId: topside.id,
@@ -68,7 +77,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             },
             {
                 profileName: "Substructure",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: substructureCostData,
                 resourceName: "substructureCostOverride",
                 resourceId: substructure.id,
@@ -80,7 +89,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             },
             {
                 profileName: "Transport system",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: transportCostData,
                 resourceName: "transportCostOverride",
                 resourceId: transport.id,
@@ -93,7 +102,8 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
         ]
 
         setCapexTimeSeriesData(newCapexTimeSeriesData)
-    }, [apiData, project])
+    }, [apiData, projectData])
+
     return (
         <CaseTabTable
             timeSeriesData={capexTimeSeriesData}

@@ -6,8 +6,10 @@ import {
     useState,
 } from "react"
 import styled from "styled-components"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 import OperationalWellCost from "./OperationalWellCost"
-import { useProjectContext } from "../../Context/ProjectContext"
+import { projectQueryFn } from "../../Services/QueryFunctions"
 
 const {
     Head, Body, Row, Cell,
@@ -47,7 +49,9 @@ const OperationalWellCosts = ({
     setDevelopmentOperationalWellCosts,
     setExplorationOperationalWellCosts,
 }: Props) => {
-    const { project } = useProjectContext()
+    const { currentContext } = useModuleCurrentContext()
+    const projectId = currentContext?.externalId
+
     const [developmentRigUpgrading, setDevelopmentRigUpgrading] = useState<number | undefined>(developmentOperationalWellCosts?.rigUpgrading)
     const [developmentRigMobDemob, setDevelopmentRigMobDemob] = useState<number | undefined>(developmentOperationalWellCosts?.rigMobDemob)
     const [developmentAnnualWellInterventionCost, setDevelopmentAnnualWellInterventionCost] = useState<number | undefined>(developmentOperationalWellCosts?.annualWellInterventionCostPerWell)
@@ -57,6 +61,12 @@ const OperationalWellCosts = ({
     const [explorationProjectDrillingCosts, setExplorationProjectDrillingCosts] = useState<number | undefined>(explorationOperationalWellCosts?.explorationProjectDrillingCosts)
     const [appraisalRigMobDemob, setAppraisalRigMobDemob] = useState<number | undefined>(explorationOperationalWellCosts?.appraisalRigMobDemob)
     const [appraisalProjectDrillingCosts, setAppraisalProjectDrillingCosts] = useState<number | undefined>(explorationOperationalWellCosts?.appraisalProjectDrillingCosts)
+
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
 
     useEffect(() => {
         if (developmentRigUpgrading === undefined
@@ -107,7 +117,7 @@ const OperationalWellCosts = ({
                         <CostWithCurrency>
                             Cost
                             <div>
-                                {`${project?.currency === 1 ? "(mill NOK)" : "(mill USD)"}`}
+                                {`${apiData?.currency === 1 ? "(mill NOK)" : "(mill USD)"}`}
                             </div>
                         </CostWithCurrency>
                     </Cell>
