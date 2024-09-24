@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useNavigate, useParams, useLocation } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import {
-    Button,
-    Typography,
-} from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import styled from "styled-components"
@@ -14,7 +10,6 @@ import { GetProjectService } from "../../Services/ProjectService"
 import { useAppContext } from "../../Context/AppContext"
 import CaseControls from "./CaseControls"
 import WhatsNewModal from "../Modal/WhatsNewModal"
-import Modal from "../Modal/Modal"
 import ProjectControls from "./ProjectControls"
 import { caseQueryFn, projectQueryFn } from "../../Services/QueryFunctions"
 
@@ -105,22 +100,22 @@ const Controls = () => {
     const caseData = apiData?.case as Components.Schemas.CaseWithProfilesDto
 
     useEffect(() => {
-        if (location.pathname.includes("case")) {
-            setCaseLastUpdated(caseData?.modifyTime ?? "")
-            setProjectLastUpdated(caseData?.modifyTime ?? "")
-        } else {
-            setProjectLastUpdated(caseData?.modifyTime ?? "")
-        }
-    }, [location.pathname, caseData, projectData])
-
-    useEffect(() => {
         cancelEdit()
     }, [caseId])
 
     useEffect(() => {
-        setProjectLastUpdated(projectData?.modifyTime ?? "")
-    }, [caseData, projectData])
+        if (projectData) {
+            setProjectLastUpdated(projectData.modifyTime)
+        }
+    }, [projectData])
 
+    useEffect(() => {
+        if (apiData) {
+            setCaseLastUpdated(caseData.modifyTime)
+        }
+    }, [caseData])
+
+    /*
     useEffect(() => {
         const fetchData = async () => {
             if (location.pathname.includes("case") && projectData?.id && caseId) {
@@ -132,7 +127,16 @@ const Controls = () => {
         }
         fetchData()
     }, [location.pathname, projectData, caseId, setProject])
+    */
 
+    // useEffect(() => {
+    //     if (location.pathname.includes("case")) {
+    //         setCaseLastUpdated(caseData?.modifyTime ?? "")
+    //         setProjectLastUpdated(caseData?.modifyTime ?? "")
+    //     } else {
+    //         setProjectLastUpdated(caseData?.modifyTime ?? "")
+    //     }
+    // }, [location.pathname, caseData, projectData])
     return (
         <Wrapper>
             <WhatsNewModal />
