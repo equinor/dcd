@@ -23,7 +23,7 @@ namespace tests.Services
         private readonly ISubstructureRepository _repository = Substitute.For<ISubstructureRepository>();
         private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
         private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
-                private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
+        private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
 
 
         public SubstructureServiceTests()
