@@ -1,12 +1,13 @@
+using System.Reflection;
+
 using api.Authorization.Extensions;
-using Microsoft.Extensions.Caching.Memory;
+using api.Controllers;
 using api.Models;
 using api.Repositories;
 
 using Microsoft.AspNetCore.Authorization;
-using api.Controllers;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using System.Reflection;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace api.Authorization;
 
