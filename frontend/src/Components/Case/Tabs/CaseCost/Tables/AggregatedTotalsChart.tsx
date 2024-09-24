@@ -135,7 +135,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             startYear: totalIncomeData?.startYear !== undefined
                 ? totalIncomeData.startYear + new Date(apiData.case.dG4Date).getFullYear()
                 : 0,
-            values: (totalIncomeData?.values || []).map((v) => v / 1000000) ?? [],
+            values: (totalIncomeData?.values || []).map((v) => v) ?? [],
         }
         console.log("income", income)
 

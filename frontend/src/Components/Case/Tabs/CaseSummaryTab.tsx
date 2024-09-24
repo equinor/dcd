@@ -79,10 +79,11 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         if (caseData) {
             caseData.breakEven = breakEvenOilPrice
         }
+        console.log("caseData.breakEven", caseData.breakEven)
     }
 
     const calculateNPV = (cashflowValues: number[], discountRate: number):
-        number => cashflowValues.reduce((accumulatedNPV, cashflow, index) => accumulatedNPV + (cashflow / (1 + (0.01 * discountRate)) ** (index + 1)), 0)
+        number => cashflowValues.reduce((accumulatedNPV, cashflow, index) => accumulatedNPV + (cashflow / (1 + (discountRate / 100)) ** (index + 1)), 0)
 
     const calculateCashflowProfile = (): ITimeSeries => {
         if (!apiData) {
