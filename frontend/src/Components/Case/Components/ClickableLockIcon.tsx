@@ -3,8 +3,6 @@ import { lock, lock_open } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery } from "@tanstack/react-query"
-import { projectQueryFn } from "../../../Services/QueryFunctions"
 
 interface LockIconProps {
     clickedElement: any
@@ -14,19 +12,14 @@ interface LockIconProps {
 const LockIcon: React.FC<LockIconProps> = ({
     clickedElement,
     addEdit,
+
 }) => {
     const { caseId } = useParams()
     const { currentContext } = useModuleCurrentContext()
     const projectId = currentContext?.externalId
 
-    const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
-    })
-
     const handleLockIconClick = (params: any) => {
-        if (params?.data?.override !== undefined && apiData && caseId) {
+        if (params?.data?.override !== undefined && caseId) {
             const profile = {
                 ...params.data.overrideProfile,
                 resourceId: params.data.resourceId,
@@ -40,7 +33,7 @@ const LockIcon: React.FC<LockIconProps> = ({
 
             addEdit({
                 inputLabel: params.data.profileName,
-                projectId: apiData.id,
+                projectId,
                 resourceName: profile.resourceName,
                 resourcePropertyKey: "override",
                 caseId,
