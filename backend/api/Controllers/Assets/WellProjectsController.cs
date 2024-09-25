@@ -8,15 +8,14 @@ using Microsoft.Identity.Web.Resource;
 
 namespace api.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("projects/{projectId}/cases/{caseId}/well-projects")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
     ApplicationRole.Admin,
-    ApplicationRole.ReadOnly,
     ApplicationRole.User
 )]
+[ActionType(ActionType.Edit)]
 public class WellProjectsController : ControllerBase
 {
     private readonly IWellProjectService _wellProjectService;
@@ -38,7 +37,7 @@ public class WellProjectsController : ControllerBase
         [FromRoute] Guid wellProjectId,
         [FromBody] UpdateWellProjectDto dto)
     {
-        return await _wellProjectService.UpdateWellProject(caseId, wellProjectId, dto);
+        return await _wellProjectService.UpdateWellProject(projectId, caseId, wellProjectId, dto);
     }
 
     [HttpPut("{wellProjectId}/wells/{wellId}/drilling-schedule/{drillingScheduleId}")]
@@ -50,7 +49,7 @@ public class WellProjectsController : ControllerBase
         [FromRoute] Guid drillingScheduleId,
         [FromBody] UpdateDrillingScheduleDto dto)
     {
-        return await _wellProjectService.UpdateWellProjectWellDrillingSchedule(caseId, wellProjectId, wellId, drillingScheduleId, dto);
+        return await _wellProjectService.UpdateWellProjectWellDrillingSchedule(projectId, caseId, wellProjectId, wellId, drillingScheduleId, dto);
     }
 
     [HttpPost("{wellProjectId}/wells/{wellId}/drilling-schedule")]
@@ -61,7 +60,7 @@ public class WellProjectsController : ControllerBase
         [FromRoute] Guid wellId,
         [FromBody] CreateDrillingScheduleDto dto)
     {
-        return await _wellProjectService.CreateWellProjectWellDrillingSchedule(caseId, wellProjectId, wellId, dto);
+        return await _wellProjectService.CreateWellProjectWellDrillingSchedule(projectId, caseId, wellProjectId, wellId, dto);
     }
 
     [HttpPut("{wellProjectId}/oil-producer-cost-profile-override/{costProfileId}")]
@@ -72,7 +71,7 @@ public class WellProjectsController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateOilProducerCostProfileOverrideDto dto)
     {
-        return await _wellProjectTimeSeriesService.UpdateOilProducerCostProfileOverride(caseId, wellProjectId, costProfileId, dto);
+        return await _wellProjectTimeSeriesService.UpdateOilProducerCostProfileOverride(projectId, caseId, wellProjectId, costProfileId, dto);
     }
 
     [HttpPut("{wellProjectId}/gas-producer-cost-profile-override/{costProfileId}")]
@@ -83,7 +82,7 @@ public class WellProjectsController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateGasProducerCostProfileOverrideDto dto)
     {
-        return await _wellProjectTimeSeriesService.UpdateGasProducerCostProfileOverride(caseId, wellProjectId, costProfileId, dto);
+        return await _wellProjectTimeSeriesService.UpdateGasProducerCostProfileOverride(projectId, caseId, wellProjectId, costProfileId, dto);
     }
 
     [HttpPut("{wellProjectId}/water-injector-cost-profile-override/{costProfileId}")]
@@ -94,7 +93,7 @@ public class WellProjectsController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateWaterInjectorCostProfileOverrideDto dto)
     {
-        return await _wellProjectTimeSeriesService.UpdateWaterInjectorCostProfileOverride(caseId, wellProjectId, costProfileId, dto);
+        return await _wellProjectTimeSeriesService.UpdateWaterInjectorCostProfileOverride(projectId, caseId, wellProjectId, costProfileId, dto);
     }
 
     [HttpPut("{wellProjectId}/gas-injector-cost-profile-override/{costProfileId}")]
@@ -105,7 +104,7 @@ public class WellProjectsController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateGasInjectorCostProfileOverrideDto dto)
     {
-        return await _wellProjectTimeSeriesService.UpdateGasInjectorCostProfileOverride(caseId, wellProjectId, costProfileId, dto);
+        return await _wellProjectTimeSeriesService.UpdateGasInjectorCostProfileOverride(projectId, caseId, wellProjectId, costProfileId, dto);
     }
 
     [HttpPost("{wellProjectId}/oil-producer-cost-profile-override")]
@@ -115,7 +114,7 @@ public class WellProjectsController : ControllerBase
         [FromRoute] Guid wellProjectId,
         [FromBody] CreateOilProducerCostProfileOverrideDto dto)
     {
-        return await _wellProjectTimeSeriesService.CreateOilProducerCostProfileOverride(caseId, wellProjectId, dto);
+        return await _wellProjectTimeSeriesService.CreateOilProducerCostProfileOverride(projectId, caseId, wellProjectId, dto);
     }
 
     [HttpPost("{wellProjectId}/gas-producer-cost-profile-override")]
@@ -125,7 +124,7 @@ public class WellProjectsController : ControllerBase
         [FromRoute] Guid wellProjectId,
         [FromBody] CreateGasProducerCostProfileOverrideDto dto)
     {
-        return await _wellProjectTimeSeriesService.CreateGasProducerCostProfileOverride(caseId, wellProjectId, dto);
+        return await _wellProjectTimeSeriesService.CreateGasProducerCostProfileOverride(projectId, caseId, wellProjectId, dto);
     }
 
     [HttpPost("{wellProjectId}/water-injector-cost-profile-override")]
@@ -135,7 +134,7 @@ public class WellProjectsController : ControllerBase
         [FromRoute] Guid wellProjectId,
         [FromBody] CreateWaterInjectorCostProfileOverrideDto dto)
     {
-        return await _wellProjectTimeSeriesService.CreateWaterInjectorCostProfileOverride(caseId, wellProjectId, dto);
+        return await _wellProjectTimeSeriesService.CreateWaterInjectorCostProfileOverride(projectId, caseId, wellProjectId, dto);
     }
 
     [HttpPost("{wellProjectId}/gas-injector-cost-profile-override")]
@@ -145,6 +144,6 @@ public class WellProjectsController : ControllerBase
         [FromRoute] Guid wellProjectId,
         [FromBody] CreateGasInjectorCostProfileOverrideDto dto)
     {
-        return await _wellProjectTimeSeriesService.CreateGasInjectorCostProfileOverride(caseId, wellProjectId, dto);
+        return await _wellProjectTimeSeriesService.CreateGasInjectorCostProfileOverride(projectId, caseId, wellProjectId, dto);
     }
 }

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import {
     Icon, Button, Input, Typography,
 } from "@equinor/eds-core-react"
@@ -13,18 +13,18 @@ import { useNavigate, useLocation } from "react-router-dom"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import styled from "styled-components"
-import { useProjectContext } from "../../Context/ProjectContext"
-import { GetCaseService } from "../../Services/CaseService"
 import { useAppContext } from "../../Context/AppContext"
 import { ChooseReferenceCase, ReferenceCaseIcon } from "../Case/Components/ReferenceCaseIcon"
 import Classification from "./Classification"
 import { EMPTY_GUID, caseTabNames } from "../../Utils/constants"
 import { GetProjectService } from "../../Services/ProjectService"
-import useDataEdits from "../../Hooks/useDataEdits"
+import useEditCase from "../../Hooks/useEditCase"
 import { useCaseContext } from "../../Context/CaseContext"
 import CaseDropMenu from "../Case/Components/CaseDropMenu"
 import { formatDateAndTime } from "../../Utils/common"
 import UndoControls from "./UndoControls"
+import { caseQueryFn, projectQueryFn } from "../../Services/QueryFunctions"
+import useEditProject from "../../Hooks/useEditProject"
 
 const Header = styled.div`
     display: flex;
@@ -59,11 +59,10 @@ const CaseControls: React.FC<props> = ({
     handleEdit,
 }) => {
     const nameInputRef = useRef<HTMLInputElement>(null)
-    const { project, setProject } = useProjectContext()
+    const { addProjectEdit } = useEditProject()
     const { setSnackBarMessage, editMode } = useAppContext()
-    const { addEdit } = useDataEdits()
+    const { addEdit } = useEditCase()
     const navigate = useNavigate()
-    const queryClient = useQueryClient()
     const { activeTabCase } = useCaseContext()
     const location = useLocation()
 
@@ -71,27 +70,22 @@ const CaseControls: React.FC<props> = ({
     const [menuAnchorEl, setMenuAnchorEl] = useState<any | null>(null)
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
-    const fetchCaseData = async () => {
-        const caseService = await GetCaseService()
-        return caseService.getCaseWithAssets(projectId, caseId)
-    }
+    const { data: apiData, error } = useQuery({
+        queryKey: ["caseApiData", projectId, caseId],
+        queryFn: () => caseQueryFn(projectId, caseId),
+        enabled: !!projectId && !!caseId,
+        refetchInterval: 20000,
+    })
 
-    const {
-        data: apiData,
-        error,
-    } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        {
-            queryKey: ["apiData", { projectId, caseId }],
-            queryFn: fetchCaseData,
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-        queryClient,
-    )
+    const { data: projectData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
 
     /*
-    // divides the data into separate queries for each resource
-    useEffect(() => {
+        // divides the data into separate queries for each resource
+        useEffect(() => {
         if (isSuccess && apiData) {
             console.log("refreshing case data")
             const defaultParams = { projectId, caseId }
@@ -138,9 +132,9 @@ const CaseControls: React.FC<props> = ({
     }
 
     const handleReferenceCaseChange = async (referenceCaseId: string) => {
-        if (project) {
+        if (projectData) {
             const newProject = {
-                ...project,
+                ...projectData,
             }
             if (newProject.referenceCaseId === referenceCaseId) {
                 newProject.referenceCaseId = EMPTY_GUID
@@ -148,7 +142,9 @@ const CaseControls: React.FC<props> = ({
                 newProject.referenceCaseId = referenceCaseId ?? ""
             }
             const updateProject = await (await GetProjectService()).updateProject(projectId, newProject)
-            setProject(updateProject)
+            if (updateProject) {
+                addProjectEdit(updateProject.id, updateProject)
+            }
         }
     }
 
@@ -168,7 +164,7 @@ const CaseControls: React.FC<props> = ({
                         {editMode ? (
                             <>
                                 <ChooseReferenceCase
-                                    projectRefCaseId={project?.referenceCaseId}
+                                    projectRefCaseId={projectData?.referenceCaseId}
                                     projectCaseId={caseId}
                                     handleReferenceCaseChange={() => handleReferenceCaseChange(caseId)}
                                 />
@@ -183,7 +179,7 @@ const CaseControls: React.FC<props> = ({
                             </>
                         ) : (
                             <>
-                                {project?.referenceCaseId === caseId && <ReferenceCaseIcon />}
+                                {projectData?.referenceCaseId === caseId && <ReferenceCaseIcon />}
                                 <Typography variant="h4">{caseData.name}</Typography>
                                 <Classification />
                             </>
@@ -244,5 +240,4 @@ const CaseControls: React.FC<props> = ({
         </>
     )
 }
-
 export default CaseControls

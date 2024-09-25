@@ -1,6 +1,8 @@
+using api.Models.Interfaces;
+
 namespace api.Models
 {
-    public class DevelopmentOperationalWellCosts
+    public class DevelopmentOperationalWellCosts : IHasProjectId
     {
         public virtual Project Project { get; set; } = null!;
         public Guid ProjectId { get; set; }

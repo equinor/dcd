@@ -2,21 +2,19 @@ using api.Authorization;
 using api.Dtos;
 using api.Services;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 
 namespace api.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("projects/{projectId}/cases/{caseId}/drainage-strategies")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
     ApplicationRole.Admin,
-    ApplicationRole.ReadOnly,
     ApplicationRole.User
 )]
+[ActionType(ActionType.Edit)]
 public class DrainageStrategiesController : ControllerBase
 {
     private readonly IDrainageStrategyService _drainageStrategyService;

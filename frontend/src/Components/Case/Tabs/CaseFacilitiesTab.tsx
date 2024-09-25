@@ -2,17 +2,19 @@ import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
-import { useProjectContext } from "../../../Context/ProjectContext"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import CaseFasilitiesTabSkeleton from "../../LoadingSkeletons/CaseFacilitiesTabSkeleton"
 import SwitchableStringInput from "../../Input/SwitchableStringInput"
-import { caseQueryFn } from "../../../Services/QueryFunctions"
+import { caseQueryFn, projectQueryFn } from "../../../Services/QueryFunctions"
+import { useProjectContext } from "../../../Context/ProjectContext"
 
 const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
-    const { project } = useProjectContext()
+    const { currentContext } = useModuleCurrentContext()
+    const externalId = currentContext?.externalId
     const { caseId } = useParams()
-    const projectId = project?.id
+    const { projectId } = useProjectContext()
 
     const platformConceptValues: { [key: number]: string } = {
         0: "No Concept",
@@ -45,24 +47,27 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
         12: "Cr13 + PIP",
         13: "HDPE lined CS (Water injection only)",
     }
+    const { data: projectData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
+    })
 
     const { data: apiData } = useQuery({
-        queryKey: ["apiData", { projectId, caseId }],
+        queryKey: ["caseApiData", projectId, caseId],
         queryFn: () => caseQueryFn(projectId, caseId),
         enabled: !!projectId && !!caseId,
     })
 
     const caseData = apiData?.case
     const topsideData = apiData?.topside
-
     const surfData = apiData?.surf
-
     const transportData = apiData?.transport
-
     const substructureData = apiData?.substructure
 
     if (
         !caseData
+        || !projectData
         || !topsideData
         || !surfData
         || !transportData
@@ -108,7 +113,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     label="Facility opex"
                     value={Math.round(Number(topsideData.facilityOpex) * 10) / 10}
                     integer={false}
-                    unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
+                    unit={`${projectData.currency === 1 ? "MNOK" : "MUSD"}`}
                 />
 
             </Grid>
@@ -122,7 +127,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     label="Cessation cost"
                     value={Math.round(Number(surfData?.cessationCost) * 10) / 10}
                     integer={false}
-                    unit={`${project?.currency === 1 ? "MNOK" : "MUSD"}`}
+                    unit={`${projectData.currency === 1 ? "MNOK" : "MUSD"}`}
                 />
             </Grid>
             <Grid item xs={12}>

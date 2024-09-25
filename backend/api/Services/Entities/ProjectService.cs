@@ -12,6 +12,7 @@ using api.Services.FusionIntegration;
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 using Newtonsoft.Json;
 
@@ -23,6 +24,7 @@ public class ProjectService : IProjectService
     private readonly IFusionService? _fusionService;
     private readonly ILogger<ProjectService> _logger;
     private readonly IMapper _mapper;
+    private readonly IMemoryCache _cache;
     private readonly IMapperService _mapperService;
     private readonly IProjectRepository _projectRepository;
 
@@ -32,6 +34,7 @@ public class ProjectService : IProjectService
         IMapper mapper,
         IProjectRepository projectRepository,
         IMapperService mapperService,
+        IMemoryCache cache,
         FusionService? fusionService = null
         )
     {
@@ -41,6 +44,7 @@ public class ProjectService : IProjectService
         _mapper = mapper;
         _projectRepository = projectRepository;
         _mapperService = mapperService;
+        _cache = cache;
     }
 
     public async Task<ProjectWithCasesDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto)
@@ -54,6 +58,7 @@ public class ProjectService : IProjectService
 
         try
         {
+            _cache.Remove(projectId);
             await _projectRepository.SaveChangesAsync();
         }
         catch (DbUpdateException e)
@@ -242,17 +247,11 @@ public class ProjectService : IProjectService
                 .Include(p => p.Wells)
                 .Include(p => p.ExplorationOperationalWellCosts)
                 .Include(p => p.DevelopmentOperationalWellCosts)
-                .FirstOrDefaultAsync(p => p.Id.Equals(projectId));
+                .FirstOrDefaultAsync(p => p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId));
 
             if (project == null)
             {
-                var projectByFusionId = await _context.Projects
-                    .Include(p => p.Cases)
-                    .Include(p => p.Wells)
-                    .Include(p => p.ExplorationOperationalWellCosts)
-                    .Include(p => p.DevelopmentOperationalWellCosts)
-                    .FirstOrDefaultAsync(p => p.FusionProjectId.Equals(projectId));
-                project = projectByFusionId ?? throw new NotFoundInDBException($"Project {projectId} not found");
+                throw new NotFoundInDBException($"Project {projectId} not found");
             }
 
             return project;
@@ -277,18 +276,11 @@ public class ProjectService : IProjectService
                 .Include(p => p.Wells)
                 .Include(p => p.ExplorationOperationalWellCosts)
                 .Include(p => p.DevelopmentOperationalWellCosts)
-                .FirstOrDefaultAsync(p => p.Id.Equals(projectId));
+                .FirstOrDefaultAsync(p => p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId));
 
             if (project == null)
             {
-                var projectByFusionId = await _context.Projects
-                    .AsNoTracking()
-                    .Include(p => p.Cases)
-                    .Include(p => p.Wells)
-                    .Include(p => p.ExplorationOperationalWellCosts)
-                    .Include(p => p.DevelopmentOperationalWellCosts)
-                    .FirstOrDefaultAsync(p => p.FusionProjectId.Equals(projectId));
-                project = projectByFusionId ?? throw new NotFoundInDBException($"Project {projectId} not found");
+                throw new NotFoundInDBException($"Project {projectId} not found");
             }
 
             return project;
@@ -335,7 +327,7 @@ public class ProjectService : IProjectService
             .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
-            .FirstOrDefaultAsync(p => p.Id.Equals(projectId));
+            .FirstOrDefaultAsync(p => p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId));
 
         if (project?.Cases?.Count > 0)
         {
@@ -344,35 +336,7 @@ public class ProjectService : IProjectService
 
         if (project == null)
         {
-            var projectByFusionId = await _context.Projects
-                .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
-                .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudiesOverride)
-                .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudies)
-                .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudiesOverride)
-                .Include(p => p.Cases)!.ThenInclude(c => c.TotalOtherStudiesCostProfile)
-                .Include(p => p.Cases)!.ThenInclude(c => c.WellInterventionCostProfile)
-                .Include(p => p.Cases)!.ThenInclude(c => c.WellInterventionCostProfileOverride)
-                .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfile)
-                .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
-                .Include(p => p.Cases)!.ThenInclude(c => c.HistoricCostCostProfile)
-                .Include(p => p.Cases)!.ThenInclude(c => c.OnshoreRelatedOPEXCostProfile)
-                .Include(p => p.Cases)!.ThenInclude(c => c.AdditionalOPEXCostProfile)
-                .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCost)
-                .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCostOverride)
-                .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCost)
-                .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCostOverride)
-                .Include(p => p.Cases)!.ThenInclude(c => c.CessationOnshoreFacilitiesCostProfile)
-                .Include(p => p.Wells)
-                .Include(p => p.ExplorationOperationalWellCosts)
-                .Include(p => p.DevelopmentOperationalWellCosts)
-                .FirstOrDefaultAsync(p => p.FusionProjectId.Equals(projectId));
-
-            if (projectByFusionId == null)
-            {
-                throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
-            }
-
-            project = projectByFusionId;
+            throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
         }
 
         Activity.Current?.AddBaggage(nameof(projectId), JsonConvert.SerializeObject(projectId, Formatting.None,

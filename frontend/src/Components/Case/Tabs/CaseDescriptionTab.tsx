@@ -8,15 +8,14 @@ import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import Gallery from "../../Gallery/Gallery"
 import { useAppContext } from "../../../Context/AppContext"
-import { useProjectContext } from "../../../Context/ProjectContext"
 import CaseDescriptionTabSkeleton from "../../LoadingSkeletons/CaseDescriptionTabSkeleton"
 import { caseQueryFn } from "../../../Services/QueryFunctions"
+import { useProjectContext } from "../../../Context/ProjectContext"
 
 const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
-    const { project } = useProjectContext()
     const { editMode } = useAppContext()
     const { caseId, tab } = useParams()
-    const projectId = project?.id
+    const { projectId } = useProjectContext()
 
     const [description, setDescription] = useState("")
 
@@ -36,7 +35,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     const { data: apiData } = useQuery({
-        queryKey: ["apiData", { projectId, caseId }],
+        queryKey: ["caseApiData", projectId, caseId],
         queryFn: () => caseQueryFn(projectId, caseId),
         enabled: !!projectId && !!caseId,
     })

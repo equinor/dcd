@@ -1,10 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { AgChartsReact } from "ag-charts-react"
 import { Grid } from "@mui/material"
-import { useProjectContext } from "../../../../../Context/ProjectContext"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 import { ITimeSeriesData, ProfileNames } from "../../../../../Models/Interfaces"
 import { ITimeSeries } from "../../../../../Models/ITimeSeries"
 import { mergeTimeseries } from "../../../../../Utils/common"
+import { projectQueryFn } from "../../../../../Services/QueryFunctions"
 
 interface AggregatedTotalsProps {
     tableYears: [number, number];
@@ -30,7 +32,15 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     enableLegend,
     tableYears,
 }) => {
-    const { project } = useProjectContext()
+    const { currentContext } = useModuleCurrentContext()
+    const externalId = currentContext?.externalId
+
+    const { data: projectData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
+    })
+
     const [aggregatedTimeSeriesData, setAggregatedTimeSeriesData] = useState<ITimeSeriesData[]>([])
 
     const aggregateProfiles = (profiles: any[], dg4Year: number): ITimeSeries => {
@@ -107,7 +117,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
 
                 newTimeSeriesData.push({
                     profileName: profileName.replace(/Profiles$/, "").replace(/([A-Z])/g, " $1").trim(),
-                    unit: project?.currency === 1 ? "MNOK" : "MUSD",
+                    unit: projectData?.currency === 1 ? "MNOK" : "MUSD",
                     profile: aggregatedProfile,
                     resourceName,
                     resourceId: apiData.case.id,
@@ -120,7 +130,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
 
             setAggregatedTimeSeriesData(newTimeSeriesData)
         }
-    }, [apiData, tableYears, project])
+    }, [apiData, tableYears, projectData])
 
     const chartData = useMemo(() => {
         const data: number[] = []
@@ -155,7 +165,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         })
 
         return data
-    }, [aggregatedTimeSeriesData, tableYears, apiData, project])
+    }, [aggregatedTimeSeriesData, tableYears, apiData, projectData])
 
     const figmaTheme = {
         palette: {

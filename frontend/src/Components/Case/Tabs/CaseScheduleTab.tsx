@@ -13,18 +13,17 @@ import {
 import { useAppContext } from "../../../Context/AppContext"
 import SwitchableDateInput from "../../Input/SwitchableDateInput"
 import { ResourceObject, ResourcePropertyKey } from "../../../Models/Interfaces"
-import { useProjectContext } from "../../../Context/ProjectContext"
 import CaseScheduleTabSkeleton from "../../LoadingSkeletons/CaseScheduleTabSkeleton"
 import { caseQueryFn } from "../../../Services/QueryFunctions"
+import { useProjectContext } from "../../../Context/ProjectContext"
 
 const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
-    const { project } = useProjectContext()
     const { caseId, tab } = useParams()
     const { editMode } = useAppContext()
-    const projectId = project?.id
+    const { projectId } = useProjectContext()
 
     const { data: apiData } = useQuery({
-        queryKey: ["apiData", { projectId, caseId }],
+        queryKey: ["caseApiData", projectId, caseId],
         queryFn: () => caseQueryFn(projectId, caseId),
         enabled: !!projectId && !!caseId,
     })

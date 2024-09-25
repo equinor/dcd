@@ -17,18 +17,22 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
     private readonly IMapperService _mapperService;
     private readonly ICaseTimeSeriesRepository _repository;
     private readonly ICaseRepository _caseRepository;
+    private readonly IProjectAccessService _projectAccessService;
+
 
     public CaseTimeSeriesService(
         ILoggerFactory loggerFactory,
         ICaseTimeSeriesRepository repository,
         ICaseRepository caseRepository,
-        IMapperService mapperService
+        IMapperService mapperService,
+        IProjectAccessService projectAccessService
     )
     {
         _logger = loggerFactory.CreateLogger<CaseService>();
         _mapperService = mapperService;
         _repository = repository;
         _caseRepository = caseRepository;
+        _projectAccessService = projectAccessService;
     }
 
     public async Task<CessationWellsCostOverrideDto> UpdateCessationWellsCostOverride(
@@ -454,19 +458,21 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
         Func<Guid, Task<TProfile?>> getProfile,
         Func<TProfile, TProfile> updateProfile
     )
-        where TProfile : class
+        where TProfile : class, ICaseTimeSeries
         where TDto : class
         where TUpdateDto : class
     {
+
         var existingProfile = await getProfile(costProfileId)
             ?? throw new NotFoundInDBException($"Production profile with id {costProfileId} not found.");
 
+        // Need to verify that the project from the URL is the same as the project of the resource
+        await _projectAccessService.ProjectExists<Case>(projectId, existingProfile.Case.Id);
+
         _mapperService.MapToEntity(updatedCostProfileDto, existingProfile, caseId);
 
-        // TProfile updatedProfile;
         try
         {
-            // updatedProfile = updateProfile(existingProfile);
             await _caseRepository.UpdateModifyTime(caseId);
             await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
@@ -493,6 +499,9 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
         where TDto : class
         where TCreateDto : class
     {
+        // Need to verify that the project from the URL is the same as the project of the resource
+        await _projectAccessService.ProjectExists<Case>(projectId, caseId);
+
         var caseEntity = await _caseRepository.GetCase(caseId)
             ?? throw new NotFoundInDBException($"Case with id {caseId} not found.");
 

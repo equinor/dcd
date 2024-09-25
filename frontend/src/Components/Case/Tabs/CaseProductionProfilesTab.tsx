@@ -10,7 +10,6 @@ import { useParams } from "react-router"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../AgGrid/AgChartsTimeseries"
 import InputSwitcher from "../../Input/Components/InputSwitcher"
-import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import DateRangePicker from "../../Input/TableDateRangePicker"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
@@ -18,13 +17,12 @@ import CaseProductionProfilesTabSkeleton from "../../LoadingSkeletons/CaseProduc
 import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 import { caseQueryFn } from "../../../Services/QueryFunctions"
+import { useProjectContext } from "../../../Context/ProjectContext"
 
 const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     const { caseId } = useParams()
-    const { project } = useProjectContext()
     const { activeTabCase } = useCaseContext()
-    const projectId = project?.id
-
+    const { projectId } = useProjectContext()
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
@@ -52,7 +50,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     const { data: apiData, isLoading } = useQuery({
-        queryKey: ["apiData", { projectId, caseId }],
+        queryKey: ["caseApiData", projectId, caseId],
         queryFn: () => caseQueryFn(projectId, caseId),
         enabled: !!projectId && !!caseId,
     })

@@ -7,6 +7,7 @@ import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import SwitchableNumberInput from "../../../Input/SwitchableNumberInput"
 import CaseTabTable from "../../Components/CaseTabTable"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
@@ -14,23 +15,28 @@ import { GetGenerateProfileService } from "../../../../Services/CaseGeneratedPro
 import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../../AgGrid/AgChartsTimeseries"
 import { AgChartsPie } from "../../../AgGrid/AgChartsPie"
-import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
 import { ITimeSeriesData } from "../../../../Models/Interfaces"
 import CaseCo2TabSkeleton from "../../../LoadingSkeletons/CaseCo2TabSkeleton"
-import { caseQueryFn } from "../../../../Services/QueryFunctions"
+import { caseQueryFn, projectQueryFn } from "../../../../Services/QueryFunctions"
+import { useProjectContext } from "../../../../Context/ProjectContext"
 
 const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
-    const { project } = useProjectContext()
     const { caseId } = useParams()
-    const projectId = project?.id
     const { activeTabCase } = useCaseContext()
+    const { projectId } = useProjectContext()
 
     const { data: apiData } = useQuery({
-        queryKey: ["apiData", { projectId, caseId }],
+        queryKey: ["caseApiData", projectId, caseId],
         queryFn: () => caseQueryFn(projectId, caseId),
         enabled: !!projectId && !!caseId,
+    })
+
+    const { data: projectData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
     })
 
     const caseData = apiData?.case as Components.Schemas.CaseDto
@@ -90,10 +96,10 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     useEffect(() => {
         (async () => {
             try {
-                if (caseData && project && activeTabCase === 6 && caseData.id) {
-                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(project.id, caseData.id)
-                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(project.id, caseData.id)
-                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(project.id, caseData.id)
+                if (caseData && projectData && activeTabCase === 6 && caseData.id) {
+                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(projectData.id, caseData.id)
+                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(projectData.id, caseData.id)
+                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(projectData.id, caseData.id)
 
                     setCo2Intensity(await co2I)
                     setCo2IntensityTotal(Number(co2ITotal))
@@ -120,7 +126,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
         const newTimeSeriesData: ITimeSeriesData[] = [
             {
                 profileName: "Annual CO2 emissions",
-                unit: `${project?.physicalUnit === 0 ? "MTPA" : "MTPA"}`,
+                unit: `${projectData?.physicalUnit === 0 ? "MTPA" : "MTPA"}`,
                 profile: co2EmissionsData,
                 overridable: true,
                 editable: true,
@@ -132,7 +138,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
             },
             {
                 profileName: "Year-by-year CO2 intensity",
-                unit: `${project?.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
+                unit: `${projectData?.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
                 profile: co2Intensity,
                 total: co2IntensityTotal?.toString(),
                 overridable: false,
@@ -182,9 +188,9 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     }
 
     const datePickerValue = (() => {
-        if (project?.physicalUnit === 0) {
+        if (projectData?.physicalUnit === 0) {
             return "SI"
-        } if (project?.physicalUnit === 1) {
+        } if (projectData?.physicalUnit === 1) {
             return "Oil field"
         }
         return ""
