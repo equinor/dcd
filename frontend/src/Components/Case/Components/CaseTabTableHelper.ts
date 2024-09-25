@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react"
-import { ITimeSeries } from "../../../Models/ITimeSeries";
+import { ITimeSeries } from "../../../Models/ITimeSeries"
 
 export const GetTimeSeriesLastYear = (
     timeSeries:

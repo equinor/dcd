@@ -128,7 +128,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         const years = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => tableYears[0] + i)
 
         const totalIncomeData = apiData.calculatedTotalIncomeCostProfile
-        console.log("totalIncomeData", totalIncomeData)
 
         const income = {
             id: "",
@@ -137,7 +136,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 : 0,
             values: (totalIncomeData?.values || []).map((v) => v) ?? [],
         }
-        console.log("income", income)
 
         let cumulativeSum = 0
         years.forEach((year) => {
