@@ -18,6 +18,7 @@ public class DrainageStrategyTimeSeriesService : IDrainageStrategyTimeSeriesServ
     private readonly IDrainageStrategyRepository _drainageStrategyRepository;
     private readonly IConversionMapperService _conversionMapperService;
     private readonly IProjectRepository _projectRepository;
+    private readonly IProjectAccessService _projectAccessService;
 
     public DrainageStrategyTimeSeriesService(
         ILoggerFactory loggerFactory,
@@ -25,7 +26,8 @@ public class DrainageStrategyTimeSeriesService : IDrainageStrategyTimeSeriesServ
         IDrainageStrategyTimeSeriesRepository repository,
         IDrainageStrategyRepository drainageStrategyTimeSeriesRepository,
         IConversionMapperService conversionMapperService,
-        IProjectRepository projectRepository
+        IProjectRepository projectRepository,
+        IProjectAccessService projectAccessService
         )
     {
         _logger = loggerFactory.CreateLogger<DrainageStrategyService>();
@@ -34,6 +36,7 @@ public class DrainageStrategyTimeSeriesService : IDrainageStrategyTimeSeriesServ
         _drainageStrategyRepository = drainageStrategyTimeSeriesRepository;
         _conversionMapperService = conversionMapperService;
         _projectRepository = projectRepository;
+        _projectAccessService = projectAccessService;
     }
 
     public async Task<ProductionProfileOilDto> CreateProductionProfileOil(
@@ -484,6 +487,9 @@ public class DrainageStrategyTimeSeriesService : IDrainageStrategyTimeSeriesServ
         var existingProfile = await getProfile(productionProfileId)
             ?? throw new NotFoundInDBException($"Production profile with id {productionProfileId} not found.");
 
+        // Need to verify that the project from the URL is the same as the project of the resource
+        await _projectAccessService.ProjectExists<DrainageStrategy>(projectId, existingProfile.DrainageStrategy.Id);
+
         var project = await _projectRepository.GetProject(projectId)
             ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
 
@@ -519,6 +525,9 @@ public class DrainageStrategyTimeSeriesService : IDrainageStrategyTimeSeriesServ
         where TDto : class
         where TCreateDto : class
     {
+        // Need to verify that the project from the URL is the same as the project of the resource
+        await _projectAccessService.ProjectExists<DrainageStrategy>(projectId, drainageStrategyId);
+
         var drainageStrategy = await _drainageStrategyRepository.GetDrainageStrategy(drainageStrategyId)
             ?? throw new NotFoundInDBException($"Drainage strategy with id {drainageStrategyId} not found.");
 

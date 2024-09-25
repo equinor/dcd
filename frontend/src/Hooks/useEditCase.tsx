@@ -32,7 +32,7 @@ interface AddEditParams {
     inputFieldId?: string;
 }
 
-const useDataEdits = (): {
+const useEditCase = (): {
     addEdit: (params: AddEditParams) => void;
     undoEdit: () => void;
     redoEdit: () => void;
@@ -489,4 +489,4 @@ const useDataEdits = (): {
     }
 }
 
-export default useDataEdits
+export default useEditCase

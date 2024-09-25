@@ -1,8 +1,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
+using api.Models.Interfaces;
+
 namespace api.Models;
 
-public class Case
+public class Case : IHasProjectId
 {
     public Guid Id { get; set; }
     public Guid ProjectId { get; set; }
@@ -117,6 +119,8 @@ public class CessationOnshoreFacilitiesCostProfile : TimeSeriesCost, ICaseTimeSe
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
 }
+
+// TODO: Can this be deleted?
 public class OpexCostProfile : TimeSeriesCost
 {
 }

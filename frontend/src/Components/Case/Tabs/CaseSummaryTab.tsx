@@ -2,18 +2,20 @@ import {
     Dispatch, SetStateAction, useState, useEffect,
 } from "react"
 import Grid from "@mui/material/Grid"
-import { useQueryClient, useQuery } from "react-query"
+import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import { ITimeSeries } from "../../../Models/ITimeSeries"
 import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
-import { useProjectContext } from "../../../Context/ProjectContext"
 import { useCaseContext } from "../../../Context/CaseContext"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
 import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
 import { mergeTimeseriesList } from "../../../Utils/common"
 import { SetSummaryTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 import CaseSummarySkeleton from "../../LoadingSkeletons/CaseSummarySkeleton"
+import { caseQueryFn, projectQueryFn } from "../../../Services/QueryFunctions"
+import { useProjectContext } from "../../../Context/ProjectContext"
 
 interface ITimeSeriesData {
     group?: string
@@ -28,24 +30,23 @@ interface ITimeSeriesData {
 
 const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()
-    const { project } = useProjectContext()
     const { caseId } = useParams()
-
-    const queryClient = useQueryClient()
-    const projectId = project?.id || null
-
+    const { projectId } = useProjectContext()
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
+    const { data: projectData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
+
+    const { data: apiData } = useQuery({
+        queryKey: ["caseApiData", projectId, caseId],
+        queryFn: () => caseQueryFn(projectId, caseId),
+        enabled: !!projectId && !!caseId,
+    })
 
     const handleOffshoreFacilitiesCost = () => mergeTimeseriesList([
         (apiData?.surfCostProfileOverride?.override === true
@@ -78,7 +79,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     ])
 
     const handleDrilling = () => {
-        if (project) {
+        if (projectData) {
             const oilProducerCostProfile = apiData?.oilProducerCostProfileOverride?.override
                 ? apiData.oilProducerCostProfileOverride
                 : apiData?.oilProducerCostProfile
@@ -111,8 +112,8 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 gasInjectorCostProfile,
             ]
 
-            const rigUpgradingCost = project.developmentOperationalWellCosts?.rigUpgrading
-            const rigMobDemobCost = project.developmentOperationalWellCosts?.rigMobDemob
+            const rigUpgradingCost = projectData.developmentOperationalWellCosts?.rigUpgrading
+            const rigMobDemobCost = projectData.developmentOperationalWellCosts?.rigMobDemob
             const sumOfRigAndMobDemob = rigUpgradingCost + rigMobDemobCost
 
             if (sumOfRigAndMobDemob > 0) {
@@ -166,10 +167,10 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setTableYears)
             setYearRangeSetFromProfiles(true)
         }
-    }, [activeTabCase, apiData, project])
+    }, [activeTabCase, apiData, projectData])
 
     useEffect(() => {
-        if (apiData || project) {
+        if (apiData || projectData) {
             const totalExplorationCostData = handleTotalExplorationCost()
             const totalDrillingCostData = handleDrilling()
             const offshoreFacilitiesCostData = handleOffshoreFacilitiesCost()
@@ -189,7 +190,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const newExplorationTimeSeriesData: ITimeSeriesData[] = [
                 {
                     profileName: "Exploration cost",
-                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: totalExplorationCostData,
                     group: "Exploration",
                 },
@@ -198,25 +199,25 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const newCapexTimeSeriesData: ITimeSeriesData[] = [
                 {
                     profileName: "Drilling",
-                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: totalDrillingCostData,
                     group: "CAPEX",
                 },
                 {
                     profileName: "Offshore facilities",
-                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: offshoreFacilitiesCostData,
                     group: "CAPEX",
                 },
                 {
                     profileName: "Cessation - offshore facilities",
-                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: cessationOffshoreFacilitiesCostOverrideData?.override ? cessationOffshoreFacilitiesCostOverrideData : cessationOffshoreFacilitiesCostData,
                     group: "CAPEX",
                 },
                 {
                     profileName: "Cessation - onshore facilities",
-                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: cessationOnshoreFacilitiesCostProfileData,
                     group: "CAPEX",
                 },
@@ -225,19 +226,19 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const newStudycostTimeSeriesData: ITimeSeriesData[] = [
                 {
                     profileName: "Feasibility & Conceptual studies",
-                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: totalFeasibilityAndConceptStudiesOverrideData?.override ? totalFeasibilityAndConceptStudiesOverrideData : totalFeasibilityAndConceptStudiesData,
                     group: "Study cost",
                 },
                 {
                     profileName: "FEED studies (DG2-DG3)",
-                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: totalFEEDStudiesOverrideData?.override ? totalFEEDStudiesOverrideData : totalFEEDStudiesData,
                     group: "Study cost",
                 },
                 {
                     profileName: "Other studies",
-                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: totalOtherStudiesCostProfileData,
                     group: "Study cost",
                 },
@@ -246,25 +247,25 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const newOpexTimeSeriesData: ITimeSeriesData[] = [
                 {
                     profileName: "Historic cost",
-                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: historicCostCostProfileData,
                     group: "OPEX",
                 },
                 {
                     profileName: "Offshore related OPEX, incl. well intervention",
-                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: offshoreOpexPlussWellInterventionData,
                     group: "OPEX",
                 },
                 {
                     profileName: "Onshore related OPEX",
-                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: onshoreRelatedOPEXCostProfileData,
                     group: "OPEX",
                 },
                 {
                     profileName: "Additional OPEX",
-                    unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: additionalOPEXCostProfileData,
                     group: "OPEX",
                 },
@@ -277,7 +278,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 newOpexTimeSeriesData,
             ])
         }
-    }, [apiData, project])
+    }, [apiData, projectData])
 
     const caseData = apiData?.case
 

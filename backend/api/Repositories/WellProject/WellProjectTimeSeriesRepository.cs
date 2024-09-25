@@ -42,7 +42,7 @@ public class WellProjectTimeSeriesRepository : BaseRepository, IWellProjectTimeS
 
     public async Task<OilProducerCostProfileOverride?> GetOilProducerCostProfileOverride(Guid profileId)
     {
-        return await Get<OilProducerCostProfileOverride>(profileId);
+        return await GetWithIncludes<OilProducerCostProfileOverride>(profileId, w => w.WellProject);
     }
 
     public OilProducerCostProfileOverride UpdateOilProducerCostProfileOverride(OilProducerCostProfileOverride costProfile)
@@ -52,7 +52,7 @@ public class WellProjectTimeSeriesRepository : BaseRepository, IWellProjectTimeS
 
     public async Task<GasProducerCostProfileOverride?> GetGasProducerCostProfileOverride(Guid profileId)
     {
-        return await Get<GasProducerCostProfileOverride>(profileId);
+        return await GetWithIncludes<GasProducerCostProfileOverride>(profileId, w => w.WellProject);
     }
 
     public GasProducerCostProfileOverride UpdateGasProducerCostProfileOverride(GasProducerCostProfileOverride costProfile)
@@ -62,7 +62,7 @@ public class WellProjectTimeSeriesRepository : BaseRepository, IWellProjectTimeS
 
     public async Task<WaterInjectorCostProfileOverride?> GetWaterInjectorCostProfileOverride(Guid profileId)
     {
-        return await Get<WaterInjectorCostProfileOverride>(profileId);
+        return await GetWithIncludes<WaterInjectorCostProfileOverride>(profileId, w => w.WellProject);
     }
 
     public WaterInjectorCostProfileOverride UpdateWaterInjectorCostProfileOverride(WaterInjectorCostProfileOverride costProfile)
@@ -72,7 +72,7 @@ public class WellProjectTimeSeriesRepository : BaseRepository, IWellProjectTimeS
 
     public async Task<GasInjectorCostProfileOverride?> GetGasInjectorCostProfileOverride(Guid profileId)
     {
-        return await Get<GasInjectorCostProfileOverride>(profileId);
+        return await GetWithIncludes<GasInjectorCostProfileOverride>(profileId, w => w.WellProject);
     }
 
     public GasInjectorCostProfileOverride UpdateGasInjectorCostProfileOverride(GasInjectorCostProfileOverride costProfile)

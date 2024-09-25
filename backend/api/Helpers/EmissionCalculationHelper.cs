@@ -8,8 +8,11 @@ public static class EmissionCalculationHelper
     private const int cd = 365;
     private const int ConversionFactorFromMtoG = 1000;
 
-    public static TimeSeries<double> CalculateTotalFuelConsumptions(Case caseItem, Topside topside,
-        DrainageStrategy drainageStrategy)
+    public static TimeSeries<double> CalculateTotalFuelConsumptions(
+        Case caseItem,
+        Topside topside,
+        DrainageStrategy drainageStrategy
+    )
     {
         var factor = caseItem.FacilitiesAvailability * topside.FuelConsumption * cd * 1e6;
 
@@ -25,8 +28,11 @@ public static class EmissionCalculationHelper
         return fuelConsumptions;
     }
 
-    public static TimeSeries<double> CalculateTotalUseOfPower(Topside topside,
-        DrainageStrategy drainageStrategy, double pe)
+    public static TimeSeries<double> CalculateTotalUseOfPower(
+        Topside topside,
+        DrainageStrategy drainageStrategy,
+        double pe
+    )
     {
         var cO2ShareCO2MaxOil = topside.CO2ShareOilProfile * topside.CO2OnMaxOilProfile;
         var cO2ShareCO2MaxGas = topside.CO2ShareGasProfile * topside.CO2OnMaxGasProfile;
@@ -38,7 +44,7 @@ public static class EmissionCalculationHelper
         var totalPowerGas = CalculateTotalUseOfPowerGas(topside, drainageStrategy, pe);
         var totalPowerWI = CalculateTotalUseOfPowerWI(topside, drainageStrategy, pe);
 
-        var mergedPowerProfile = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { totalPowerOil, totalPowerGas, totalPowerWI });
+        var mergedPowerProfile = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>?> { totalPowerOil, totalPowerGas, totalPowerWI });
 
         var totalUseOFPowerValues = mergedPowerProfile.Values.Select(v => v + cO2ShareCO2Max).ToArray();
         var totalUseOfPower = new TimeSeries<double>
@@ -52,8 +58,11 @@ public static class EmissionCalculationHelper
 
     // Formula: 1. WRP = WR/WIC/cd
     //          2. WRP*WSP*(1-WOM)
-    private static TimeSeries<double> CalculateTotalUseOfPowerWI(Topside topside,
-        DrainageStrategy drainageStrategy, double pe)
+    private static TimeSeries<double> CalculateTotalUseOfPowerWI(
+        Topside topside,
+        DrainageStrategy drainageStrategy,
+        double pe
+    )
     {
         var wic = topside.WaterInjectionCapacity;
         var wr = drainageStrategy.ProductionProfileWaterInjection?.Values;

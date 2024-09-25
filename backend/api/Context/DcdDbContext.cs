@@ -10,6 +10,7 @@ namespace api.Context;
 public class DcdDbContext : DbContext
 {
     private readonly IServiceProvider _serviceProvider = null!;
+    private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
     public DcdDbContext(DbContextOptions<DcdDbContext> options) : base(options)
     {
@@ -27,8 +28,51 @@ public class DcdDbContext : DbContext
     // TODO: This is not pretty, need to move this logic out of the context
     public async Task<int> SaveChangesAndRecalculateAsync(Guid caseId, CancellationToken cancellationToken = default)
     {
-        await DetectChangesAndCalculateEntities(caseId);
-        return await base.SaveChangesAsync(cancellationToken);
+        await _semaphore.WaitAsync(cancellationToken);
+        try
+        {
+            await DetectChangesAndCalculateEntities(caseId);
+
+            bool saveFailed;
+            int result = 0;
+
+            do
+            {
+                saveFailed = false;
+                try
+                {
+                    result = await base.SaveChangesAsync(cancellationToken);
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    saveFailed = true;
+
+                    // Iterate over all the entries in the exception
+                    foreach (var entry in ex.Entries)
+                    {
+                        var databaseEntry = entry.GetDatabaseValues();
+
+                        if (databaseEntry == null)
+                        {
+                            throw new Exception("The entity being updated has been deleted.");
+                        }
+                        else
+                        {
+                            var databaseValues = databaseEntry.ToObject();
+
+                            // TODO: Decide how to handle the conflict
+                            entry.OriginalValues.SetValues(databaseValues);
+                        }
+                    }
+                }
+            } while (saveFailed);
+
+            return result;
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
     }
 
     private async Task DetectChangesAndCalculateEntities(Guid caseId)

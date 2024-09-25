@@ -9,7 +9,7 @@ public class ApplicationRoleRequirement : IAuthorizationRequirement
         Roles = roles;
     }
 
-    public static ApplicationRole DefaultApplicationRole { get; } = ApplicationRole.User;
+    public static ApplicationRole DefaultApplicationRole { get; } = ApplicationRole.Admin;
 
     public List<ApplicationRole> Roles { get; private set; }
 }

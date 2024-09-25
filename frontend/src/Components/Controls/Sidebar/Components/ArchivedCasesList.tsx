@@ -4,11 +4,12 @@ import { Tooltip } from "@equinor/eds-core-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
+import { useQuery } from "@tanstack/react-query"
 
-import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppContext } from "@/Context/AppContext"
 import { EMPTY_GUID } from "@/Utils/constants"
 import { productionStrategyOverviewToString, casePath } from "@/Utils/common"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 import { TimelineElement } from "../Sidebar"
 import { ReferenceCaseIcon } from "../../../Case/Components/ReferenceCaseIcon"
 
@@ -19,11 +20,17 @@ const SideBarRefCaseWrapper = styled.div`
 `
 
 const ArchivedCasesList: React.FC = () => {
-    const { project } = useProjectContext()
     const { sidebarOpen } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
 
-    if (!project || !currentContext) { return null }
+    const externalId = currentContext?.externalId
+    const { data: projectData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
+    })
+
+    if (!projectData || !currentContext) { return null }
 
     const location = useLocation()
     const navigate = useNavigate()
@@ -35,8 +42,8 @@ const ArchivedCasesList: React.FC = () => {
     }
 
     const archivedCases = useMemo(() => {
-        return project.cases.filter((c) => c.archived === true);
-      }, [project.cases]);
+        return projectData.cases.filter((c) => c.archived === true);
+      }, [projectData.cases]);
 
     return (
         <>
@@ -53,14 +60,14 @@ const ArchivedCasesList: React.FC = () => {
                         placement="right"
                     >
                         <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.id)}>
-                            {project?.referenceCaseId !== EMPTY_GUID
+                            {projectData?.referenceCaseId !== EMPTY_GUID
                                 ? (
                                     <SideBarRefCaseWrapper>
 
                                         {!sidebarOpen && `#${index + 1}`}
                                         {(sidebarOpen && projectCase.name) && projectCase.name}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
-                                        {project?.referenceCaseId === projectCase?.id && (
+                                        {projectData?.referenceCaseId === projectCase?.id && (
                                             <ReferenceCaseIcon iconPlacement="sideBar" />
                                         )}
                                     </SideBarRefCaseWrapper>

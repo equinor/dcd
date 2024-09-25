@@ -5,6 +5,6 @@ namespace api.Services
 {
     public interface IOpexCostProfileService
     {
-        Task<OpexCostProfileWrapperDto> Generate(Guid caseId);
+        Task Generate(Guid caseId);
     }
 }

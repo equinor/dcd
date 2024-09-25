@@ -4,12 +4,13 @@ import { Tooltip } from "@equinor/eds-core-react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
-import { useProjectContext } from "../../../../Context/ProjectContext"
+import { useQuery } from "@tanstack/react-query"
 import { productionStrategyOverviewToString, casePath } from "../../../../Utils/common"
 import { TimelineElement } from "../Sidebar"
 import { useAppContext } from "../../../../Context/AppContext"
 import { ReferenceCaseIcon } from "../../../Case/Components/ReferenceCaseIcon"
 import { EMPTY_GUID } from "../../../../Utils/constants"
+import { projectQueryFn } from "../../../../Services/QueryFunctions"
 
 const SideBarRefCaseWrapper = styled.div`
     justify-content: center;
@@ -18,14 +19,19 @@ const SideBarRefCaseWrapper = styled.div`
 `
 
 const CasesList: React.FC = () => {
-    const { project } = useProjectContext()
     const { sidebarOpen } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
+    const externalId = currentContext?.externalId
 
-    if (!project || !currentContext) { return null }
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
+    })
 
     const location = useLocation()
     const navigate = useNavigate()
+    if (!apiData || !currentContext) { return null }
 
     const selectCase = (caseId: string) => {
         if (!currentContext || !caseId) { return null }
@@ -35,7 +41,7 @@ const CasesList: React.FC = () => {
 
     return (
         <>
-            {project.cases.sort((a, b) => new Date(a.createTime).getDate() - new Date(b.createTime).getDate()).map((projectCase, index) => (
+            {apiData.cases.sort((a, b) => new Date(a.createTime).getDate() - new Date(b.createTime).getDate()).map((projectCase, index) => (
                 <Grid
                     item
                     container
@@ -48,14 +54,14 @@ const CasesList: React.FC = () => {
                         placement="right"
                     >
                         <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.id)}>
-                            {project?.referenceCaseId !== EMPTY_GUID
+                            {apiData?.referenceCaseId !== EMPTY_GUID
                                 ? (
                                     <SideBarRefCaseWrapper>
 
                                         {!sidebarOpen && `#${index + 1}`}
                                         {(sidebarOpen && projectCase.name) && projectCase.name}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
-                                        {project?.referenceCaseId === projectCase?.id && (
+                                        {apiData?.referenceCaseId === projectCase?.id && (
                                             <ReferenceCaseIcon iconPlacement="sideBar" />
                                         )}
                                     </SideBarRefCaseWrapper>

@@ -1,5 +1,6 @@
 namespace api.Models;
 
+// TODO: Move this to a more appropriate location
 public static class ExcelMimeTypes
 {
     public static string Xlsx => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";

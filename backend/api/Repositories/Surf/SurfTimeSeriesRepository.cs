@@ -21,7 +21,7 @@ public class SurfTimeSeriesRepository : BaseRepository, ISurfTimeSeriesRepositor
 
     public async Task<SurfCostProfile?> GetSurfCostProfile(Guid surfCostProfileId)
     {
-        return await Get<SurfCostProfile>(surfCostProfileId);
+        return await GetWithIncludes<SurfCostProfile>(surfCostProfileId, s => s.Surf);
     }
 
     public SurfCostProfile UpdateSurfCostProfile(SurfCostProfile surfCostProfile)
@@ -37,7 +37,7 @@ public class SurfTimeSeriesRepository : BaseRepository, ISurfTimeSeriesRepositor
 
     public async Task<SurfCostProfileOverride?> GetSurfCostProfileOverride(Guid surfCostProfileOverrideId)
     {
-        return await Get<SurfCostProfileOverride>(surfCostProfileOverrideId);
+        return await GetWithIncludes<SurfCostProfileOverride>(surfCostProfileOverrideId, s => s.Surf);
     }
 
     public SurfCostProfileOverride UpdateSurfCostProfileOverride(SurfCostProfileOverride surfCostProfileOverride)

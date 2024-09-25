@@ -15,6 +15,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
 {
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
+    private readonly IProjectAccessService _projectAccessService;
     private readonly ILogger<WellProjectService> _logger;
     private readonly IMapper _mapper;
     private readonly IWellProjectTimeSeriesRepository _repository;
@@ -30,7 +31,8 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
         IWellProjectTimeSeriesRepository repository,
         IWellProjectRepository wellProjectRepository,
         ICaseRepository caseRepository,
-        IMapperService mapperService
+        IMapperService mapperService,
+        IProjectAccessService projectAccessService
         )
     {
         _context = context;
@@ -41,9 +43,11 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
         _wellProjectRepository = wellProjectRepository;
         _caseRepository = caseRepository;
         _mapperService = mapperService;
+        _projectAccessService = projectAccessService;
     }
 
     public async Task<OilProducerCostProfileOverrideDto> UpdateOilProducerCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
@@ -51,6 +55,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
     )
     {
         return await UpdateWellProjectCostProfile<OilProducerCostProfileOverride, OilProducerCostProfileOverrideDto, UpdateOilProducerCostProfileOverrideDto>(
+            projectId,
             caseId,
             wellProjectId,
             profileId,
@@ -61,6 +66,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
     }
 
     public async Task<GasProducerCostProfileOverrideDto> UpdateGasProducerCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
@@ -68,6 +74,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
     )
     {
         return await UpdateWellProjectCostProfile<GasProducerCostProfileOverride, GasProducerCostProfileOverrideDto, UpdateGasProducerCostProfileOverrideDto>(
+            projectId,
             caseId,
             wellProjectId,
             profileId,
@@ -78,6 +85,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
     }
 
     public async Task<WaterInjectorCostProfileOverrideDto> UpdateWaterInjectorCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
@@ -85,6 +93,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
     )
     {
         return await UpdateWellProjectCostProfile<WaterInjectorCostProfileOverride, WaterInjectorCostProfileOverrideDto, UpdateWaterInjectorCostProfileOverrideDto>(
+            projectId,
             caseId,
             wellProjectId,
             profileId,
@@ -95,6 +104,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
     }
 
     public async Task<GasInjectorCostProfileOverrideDto> UpdateGasInjectorCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
@@ -102,6 +112,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
     )
     {
         return await UpdateWellProjectCostProfile<GasInjectorCostProfileOverride, GasInjectorCostProfileOverrideDto, UpdateGasInjectorCostProfileOverrideDto>(
+            projectId,
             caseId,
             wellProjectId,
             profileId,
@@ -112,12 +123,14 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
     }
 
     public async Task<OilProducerCostProfileOverrideDto> CreateOilProducerCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         CreateOilProducerCostProfileOverrideDto createProfileDto
     )
     {
         return await CreateWellProjectProfile<OilProducerCostProfileOverride, OilProducerCostProfileOverrideDto, CreateOilProducerCostProfileOverrideDto>(
+            projectId,
             caseId,
             wellProjectId,
             createProfileDto,
@@ -127,12 +140,14 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
     }
 
     public async Task<GasProducerCostProfileOverrideDto> CreateGasProducerCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         CreateGasProducerCostProfileOverrideDto createProfileDto
     )
     {
         return await CreateWellProjectProfile<GasProducerCostProfileOverride, GasProducerCostProfileOverrideDto, CreateGasProducerCostProfileOverrideDto>(
+            projectId,
             caseId,
             wellProjectId,
             createProfileDto,
@@ -142,12 +157,14 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
     }
 
     public async Task<WaterInjectorCostProfileOverrideDto> CreateWaterInjectorCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         CreateWaterInjectorCostProfileOverrideDto createProfileDto
     )
     {
         return await CreateWellProjectProfile<WaterInjectorCostProfileOverride, WaterInjectorCostProfileOverrideDto, CreateWaterInjectorCostProfileOverrideDto>(
+            projectId,
             caseId,
             wellProjectId,
             createProfileDto,
@@ -157,12 +174,14 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
     }
 
     public async Task<GasInjectorCostProfileOverrideDto> CreateGasInjectorCostProfileOverride(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         CreateGasInjectorCostProfileOverrideDto createProfileDto
     )
     {
         return await CreateWellProjectProfile<GasInjectorCostProfileOverride, GasInjectorCostProfileOverrideDto, CreateGasInjectorCostProfileOverrideDto>(
+            projectId,
             caseId,
             wellProjectId,
             createProfileDto,
@@ -172,6 +191,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
     }
 
     private async Task<TDto> UpdateWellProjectCostProfile<TProfile, TDto, TUpdateDto>(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
@@ -186,12 +206,13 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
         var existingProfile = await getProfile(profileId)
             ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
 
+        // Need to verify that the project from the URL is the same as the project of the resource
+        await _projectAccessService.ProjectExists<WellProject>(projectId, existingProfile.WellProject.Id);
+
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, wellProjectId);
 
-        // TProfile updatedProfile;
         try
         {
-            // updatedProfile = updateProfile(existingProfile);
             await _caseRepository.UpdateModifyTime(caseId);
             await _repository.SaveChangesAndRecalculateAsync(caseId);
         }
@@ -207,6 +228,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
     }
 
     private async Task<TDto> CreateWellProjectProfile<TProfile, TDto, TCreateDto>(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         TCreateDto createWellProjectProfileDto,
@@ -217,6 +239,9 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
         where TDto : class
         where TCreateDto : class
     {
+        // Need to verify that the project from the URL is the same as the project of the resource
+        await _projectAccessService.ProjectExists<Exploration>(projectId, wellProjectId);
+
         var wellProject = await _wellProjectRepository.GetWellProject(wellProjectId)
             ?? throw new NotFoundInDBException($"Well project with id {wellProjectId} not found.");
 

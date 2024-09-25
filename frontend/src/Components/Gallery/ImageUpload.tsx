@@ -6,9 +6,11 @@ import { Icon, Typography } from "@equinor/eds-core-react"
 import { add } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
 import { useParams } from "react-router-dom"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 import { getImageService } from "../../Services/ImageService"
-import { useProjectContext } from "../../Context/ProjectContext"
 import { useAppContext } from "../../Context/AppContext"
+import { projectQueryFn } from "../../Services/QueryFunctions"
 
 const UploadBox = styled(Box)`
     display: flex;
@@ -45,15 +47,22 @@ interface ImageUploadProps {
 
 const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeededLimit }) => {
     const { caseId } = useParams()
-    const { project } = useProjectContext()
     const { setSnackBarMessage } = useAppContext()
+    const { currentContext } = useModuleCurrentContext()
+    const externalId = currentContext?.externalId
+
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
+    })
 
     useEffect(() => {
         const loadImages = async () => {
-            if (project?.id && caseId) {
+            if (apiData && caseId) {
                 try {
                     const imageService = await getImageService()
-                    const imageDtos = await imageService.getImages(project.id, caseId)
+                    const imageDtos = await imageService.getImages(apiData.id, caseId)
                     setGallery(imageDtos)
                 } catch (error) {
                     console.error("Error loading images:", error)
@@ -62,7 +71,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
             }
         }
         loadImages()
-    }, [setGallery, project?.id, caseId])
+    }, [setGallery, apiData, caseId])
 
     const MAX_FILE_SIZE = 5 * 1024 * 1024
     const MAX_FILES = 4
@@ -90,14 +99,15 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         }
         setExeededLimit(false)
 
-        if (!project?.id) {
+        if (!apiData || !externalId) {
             console.error("Project ID is missing.")
             return
         }
 
         const imageService = await getImageService()
 
-        const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(project.id, project.name, file, caseId))
+        // if we could avoid project name here, we could drop the project query
+        const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(apiData.id, apiData.name, file, caseId))
         try {
             const uploadedImageDtos = await Promise.all(uploadPromises)
             if (Array.isArray(uploadedImageDtos)) {

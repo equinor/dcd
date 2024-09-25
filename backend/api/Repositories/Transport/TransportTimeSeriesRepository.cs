@@ -21,7 +21,7 @@ public class TransportTimeSeriesRepository : BaseRepository, ITransportTimeSerie
 
     public async Task<TransportCostProfile?> GetTransportCostProfile(Guid transportCostProfileId)
     {
-        return await Get<TransportCostProfile>(transportCostProfileId);
+        return await GetWithIncludes<TransportCostProfile>(transportCostProfileId, t => t.Transport);
     }
 
     public TransportCostProfile UpdateTransportCostProfile(TransportCostProfile transportCostProfile)
@@ -38,7 +38,7 @@ public class TransportTimeSeriesRepository : BaseRepository, ITransportTimeSerie
 
     public async Task<TransportCostProfileOverride?> GetTransportCostProfileOverride(Guid transportCostProfileOverrideId)
     {
-        return await Get<TransportCostProfileOverride>(transportCostProfileOverrideId);
+        return await GetWithIncludes<TransportCostProfileOverride>(transportCostProfileOverrideId, t => t.Transport);
     }
 
     public TransportCostProfileOverride UpdateTransportCostProfileOverride(TransportCostProfileOverride transportCostProfileOverride)

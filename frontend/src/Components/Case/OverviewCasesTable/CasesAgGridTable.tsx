@@ -18,11 +18,12 @@ import { arrow_drop_down, arrow_drop_up, more_vertical } from "@equinor/eds-icon
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
 import { archive } from "@equinor/eds-icons"
+import { useQuery } from "@tanstack/react-query"
 
+import { casePath, productionStrategyOverviewToString, cellStyleRightAlign, unwrapProjectId } from "@/Utils/common"
 import { GetProjectService } from "@/Services/ProjectService"
 import { GetSTEAService } from "@/Services/STEAService"
-import { casePath, productionStrategyOverviewToString, cellStyleRightAlign, unwrapProjectId } from "@/Utils/common"
-import { useProjectContext } from "@/Context/ProjectContext"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 import { ReferenceCaseIcon } from "../Components/ReferenceCaseIcon"
 
 const AgTableContainer = styled.div`
@@ -70,12 +71,12 @@ const CasesAgGridTable = ({
     isMenuOpen,
 }: CasesAgGridTableProps): JSX.Element => {
     const gridRef = useRef<AgGridReact>(null)
-    const { project } = useProjectContext()
     const [rowData, setRowData] = useState<TableCase[]>()
     const [archivedRowData, setArchivedRowData] = useState<TableCase[]>()
     const [expandList, setExpandList] = useState<boolean>(false)
     const { currentContext } = useModuleCurrentContext()
     const navigate = useNavigate()
+    const externalId = currentContext?.externalId
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
@@ -84,7 +85,13 @@ const CasesAgGridTable = ({
         suppressHeaderMenuButton: true,
     }), [])
 
-    if (!project) { return <p>project not found</p> }
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
+    })
+
+    if (!apiData) { return <p>project not found</p> }
 
     const productionStrategyToString = (p: any) => {
         const stringValue = productionStrategyOverviewToString(p.value)
@@ -134,12 +141,13 @@ const CasesAgGridTable = ({
         </Tooltip>
     )
 
+    // hvorfor er denne duplisert i ProjectOverviewTab?
     const submitToSTEA: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
 
-        if (project) {
+        if (apiData) {
             try {
-                const projectId = unwrapProjectId(project.id)
+                const projectId = unwrapProjectId(apiData.id)
                 const projectResult = await (await GetProjectService()).getProject(projectId)
                 await (await GetSTEAService()).excelToSTEA(projectResult)
             } catch (error) {
@@ -194,10 +202,10 @@ const CasesAgGridTable = ({
     ])
 
     const casesToRowData = (isArchived: boolean) => {
-        if (project.cases) {
-            let cases = isArchived ? project.cases.filter(c => c.archived === false) : project.cases.filter(c => c.archived === true)
+        if (apiData.cases) {
+            let cases = isArchived ? apiData.cases.filter((c:any) => c.archived === false) : apiData.cases.filter((c:any) => c.archived === true)
             const tableCases: TableCase[] = []
-            cases.forEach((c) => {
+            cases.forEach((c:any) => {
                 const tableCase: TableCase = {
                     id: c.id!,
                     name: c.name ?? "",
@@ -207,7 +215,7 @@ const CasesAgGridTable = ({
                     waterInjectorCount: c.waterInjectorCount ?? 0,
                     gasInjectorCount: c.gasInjectorCount ?? 0,
                     createdAt: c.createTime?.substring(0, 10),
-                    referenceCaseId: project.referenceCaseId,
+                    referenceCaseId: apiData.referenceCaseId,
                 }
                 tableCases.push(tableCase)
             })
@@ -218,7 +226,7 @@ const CasesAgGridTable = ({
     useEffect(() => {
         casesToRowData(true)
         casesToRowData(false)
-    }, [project.cases])
+    }, [apiData])
 
     return (
         <div>

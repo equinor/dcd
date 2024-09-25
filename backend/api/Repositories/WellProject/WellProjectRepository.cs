@@ -53,6 +53,16 @@ public class WellProjectRepository : BaseRepository, IWellProjectRepository
         return await Get<DrillingSchedule>(drillingScheduleId);
     }
 
+    public async Task<WellProject?> GetWellProjectWithDrillingSchedule(Guid drillingScheduleId)
+    {
+        var wellProject = await _context.WellProjects
+            .Include(e => e.WellProjectWells)!
+            .ThenInclude(w => w.DrillingSchedule)
+            .FirstOrDefaultAsync(e => e.WellProjectWells != null && e.WellProjectWells.Any(w => w.DrillingScheduleId == drillingScheduleId));
+
+        return wellProject;
+    }
+
     public DrillingSchedule UpdateWellProjectWellDrillingSchedule(DrillingSchedule drillingSchedule)
     {
         return Update(drillingSchedule);

@@ -6,9 +6,8 @@ import {
 } from "react"
 import Grid from "@mui/material/Grid"
 import { useParams } from "react-router"
-import { useQueryClient, useQuery } from "react-query"
+import { useQuery } from "@tanstack/react-query"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
-import { useProjectContext } from "../../../../Context/ProjectContext"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import CaseCostHeader from "./CaseCostHeader"
 import CessationCosts from "./Tables/CessationCosts"
@@ -19,13 +18,13 @@ import OpexCosts from "./Tables/OpexCosts"
 import TotalStudyCosts from "./Tables/TotalStudyCosts"
 import AggregatedTotals from "./Tables/AggregatedTotalsChart"
 import CaseCostSkeleton from "../../../LoadingSkeletons/CaseCostTabSkeleton"
+import { caseQueryFn, projectQueryFn } from "../../../../Services/QueryFunctions"
+import { useProjectContext } from "../../../../Context/ProjectContext"
 
 const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
-    const { project } = useProjectContext()
     const { activeTabCase } = useCaseContext()
     const { caseId } = useParams()
-    const queryClient = useQueryClient()
-    const projectId = project?.id || null
+    const { projectId } = useProjectContext()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -57,18 +56,21 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
         explorationWellColor: "#FF7D7D",
         totalIncomeColor: "#9F9F9F",
     }
-    const { data: apiData } = useQuery<Components.Schemas.CaseWithAssetsDto | undefined>(
-        ["apiData", { projectId, caseId }],
-        () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        {
-            enabled: !!projectId && !!caseId,
-            initialData: () => queryClient.getQueryData(["apiData", { projectId, caseId }]),
-        },
-    )
+
+    const { data: apiData } = useQuery({
+        queryKey: ["caseApiData", projectId, caseId],
+        queryFn: () => caseQueryFn(projectId, caseId),
+        enabled: !!projectId && !!caseId,
+    })
+
+    const { data: projectData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
 
     useEffect(() => {
         if (activeTabCase === 5 && apiData && !yearRangeSetFromProfiles) {
-            console.log("apiData", apiData)
             const caseData = apiData?.case as Components.Schemas.CaseDto
 
             SetTableYearsFromProfiles([
@@ -115,7 +117,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
             ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
             setYearRangeSetFromProfiles(true)
         }
-    }, [activeTabCase, apiData, project])
+    }, [activeTabCase, apiData, projectData]) // is projectData even needed here?
 
     if (activeTabCase !== 5) { return null }
 

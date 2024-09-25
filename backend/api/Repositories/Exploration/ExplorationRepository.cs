@@ -21,6 +21,11 @@ public class ExplorationRepository : BaseRepository, IExplorationRepository
         return await Get<Exploration>(explorationId);
     }
 
+    public async Task<Exploration?> GetExplorationWithIncludes(Guid explorationId, params Expression<Func<Exploration, object>>[] includes)
+    {
+        return await GetWithIncludes(explorationId, includes);
+    }
+
     public async Task<Well?> GetWell(Guid wellId)
     {
         return await Get<Well>(wellId);
@@ -55,6 +60,16 @@ public class ExplorationRepository : BaseRepository, IExplorationRepository
     public async Task<DrillingSchedule?> GetExplorationWellDrillingSchedule(Guid drillingScheduleId)
     {
         return await Get<DrillingSchedule>(drillingScheduleId);
+    }
+
+    public async Task<Exploration?> GetExplorationWithDrillingSchedule(Guid drillingScheduleId)
+    {
+        var exploration = await _context.Explorations
+            .Include(e => e.ExplorationWells)!
+            .ThenInclude(w => w.DrillingSchedule)
+            .FirstOrDefaultAsync(e => e.ExplorationWells != null && e.ExplorationWells.Any(w => w.DrillingScheduleId == drillingScheduleId));
+
+        return exploration;
     }
 
     public DrillingSchedule UpdateExplorationWellDrillingSchedule(DrillingSchedule drillingSchedule)

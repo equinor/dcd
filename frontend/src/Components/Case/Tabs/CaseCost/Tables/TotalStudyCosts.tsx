@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react"
-import { useProjectContext } from "../../../../../Context/ProjectContext"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { ITimeSeriesData } from "../../../../../Models/Interfaces"
 import { useAppContext } from "../../../../../Context/AppContext"
+import { projectQueryFn } from "../../../../../Services/QueryFunctions"
 
 interface TotalStudyCostsProps {
     tableYears: [number, number];
@@ -19,8 +21,16 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
     apiData,
     addEdit,
 }) => {
-    const { project } = useProjectContext()
     const { isCalculatingTotalStudyCostOverrides } = useAppContext()
+    const { currentContext } = useModuleCurrentContext()
+    const externalId = currentContext?.externalId
+
+    const { data: projectData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
+    })
+
     const calculatedFields = [
         "totalFeasibilityAndConceptStudiesOverride",
         "totalFEEDStudiesOverride",
@@ -39,7 +49,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
         const newStudyTimeSeriesData: ITimeSeriesData[] = [
             {
                 profileName: "Feasibility & conceptual stud.",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: totalFeasibilityAndConceptStudiesData,
                 resourceName: "totalFeasibilityAndConceptStudiesOverride",
                 resourceId: caseData.id,
@@ -51,7 +61,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
             },
             {
                 profileName: "FEED studies (DG2-DG3)",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: totalFEEDStudiesData,
                 resourceName: "totalFEEDStudiesOverride",
                 resourceId: caseData.id,
@@ -63,7 +73,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
             },
             {
                 profileName: "Other studies",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: totalOtherStudiesCostProfileData,
                 resourceName: "totalOtherStudiesCostProfile",
                 resourceId: caseData.id,
@@ -75,7 +85,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
         ]
 
         setStudyTimeSeriesData(newStudyTimeSeriesData)
-    }, [apiData, project])
+    }, [apiData, projectData])
 
     return (
         <CaseTabTable

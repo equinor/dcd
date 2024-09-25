@@ -1,8 +1,10 @@
 import styled from "styled-components"
 import { Icon, Chip, Tooltip } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
-import { useProjectContext } from "../../Context/ProjectContext"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
+import { projectQueryFn } from "../../Services/QueryFunctions"
 
 const StyledChip = styled(Chip)`
     border-width: 0;
@@ -38,19 +40,26 @@ const SmallTooltip = styled(Tooltip)`
 `
 
 const Classification = () => {
-    const { project } = useProjectContext()
     const { caseId } = useParams()
+    const { currentContext } = useModuleCurrentContext()
+    const externalId = currentContext?.externalId
+
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
+    })
 
     return (
-        project && !caseId
+        apiData && !caseId
             ? (
-                <SmallTooltip placement="bottom-start" title={PROJECT_CLASSIFICATION[project?.classification].description}>
+                <SmallTooltip placement="bottom-start" title={PROJECT_CLASSIFICATION[apiData.classification].description}>
                     <StyledChip
-                        variant={PROJECT_CLASSIFICATION[project?.classification].color}
-                        className={`ProjectClassification ${PROJECT_CLASSIFICATION[project?.classification].color}`}
+                        variant={PROJECT_CLASSIFICATION[apiData?.classification].color}
+                        className={`ProjectClassification ${PROJECT_CLASSIFICATION[apiData.classification].color}`}
                     >
-                        <Icon data={PROJECT_CLASSIFICATION[project?.classification].icon} />
-                        {PROJECT_CLASSIFICATION[project?.classification].label}
+                        <Icon data={PROJECT_CLASSIFICATION[apiData.classification].icon} />
+                        {PROJECT_CLASSIFICATION[apiData.classification].label}
                     </StyledChip>
                 </SmallTooltip>
             )

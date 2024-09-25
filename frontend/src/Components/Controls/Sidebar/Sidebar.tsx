@@ -1,14 +1,14 @@
+import { useMemo } from "react"
 import styled from "styled-components"
 import { SideBar, Button, Divider } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
-import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppContext } from "@/Context/AppContext"
 import ProjectDetails from "./Components/ProjectDetails"
 import CasesDetails from "./Components/CasesDetails"
 import CurrentCaseEditHistory from "./Components/CurrentCaseEditHistory"
 import ArchivedCasesDetails from "./Components/ArchivedCasesDetails"
-import { useMemo } from "react"
 
 const { Toggle, Content, Footer } = SideBar
 const Wrapper = styled.div`
@@ -60,14 +60,15 @@ export const TimelineElement = styled(Button)`
 `
 
 const Sidebar = () => {
-    const { project } = useProjectContext()
     const { sidebarOpen, setSidebarOpen } = useAppContext()
+    const { currentContext } = useModuleCurrentContext()
+    const externalId = currentContext?.externalId
 
-    if (!project) { return null }
+    if (!externalId) { return null }
 
-    const archivedCases = useMemo(() => {
-        return project.cases.filter((c) => c.archived === true);
-      }, [project.cases]);
+    // const archivedCases = useMemo(() => {
+    //     return project.cases.filter((c) => c.archived === true);
+    //   }, [project.cases]);
 
     return (
         <Sticky>
@@ -77,11 +78,11 @@ const Sidebar = () => {
                     <Divider />
                     <CasesDetails />
                     <Divider />
-                    {archivedCases.length > 0 && 
+                    {/* {archivedCases.length > 0 && 
                     <>
                         <ArchivedCasesDetails />
                         <Divider />
-                    </>}
+                    </>} */}
                     <CurrentCaseEditHistory />
                     <Divider />
                 </Content>

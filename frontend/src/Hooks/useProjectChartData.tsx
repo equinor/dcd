@@ -1,8 +1,7 @@
-/* eslint-disable no-unsafe-optional-chaining */
-
 import { useEffect, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import { projectQueryFn, compareCasesQueryFn } from "../Services/QueryFunctions"
 import { useProjectContext } from "../Context/ProjectContext"
-import { GetProjectService } from "../Services/ProjectService"
 
 interface TableCompareCase {
     id: string,
@@ -23,10 +22,9 @@ interface TableCompareCase {
 }
 
 export const useProjectChartData = () => {
-    const { project } = useProjectContext()
-
+    const { projectId } = useProjectContext()
     const [rowData, setRowData] = useState<TableCompareCase[]>()
-    const [compareCasesTotals, setCompareCasesTotals] = useState<any>()
+    const [compareCasesTotals, setCompareCasesTotals] = useState<Components.Schemas.CompareCasesDto[]>()
     const [npvChartData, setNpvChartData] = useState<object>()
     const [breakEvenChartData, setBreakEvenChartData] = useState<object>()
     const [productionProfilesChartData, setProductionProfilesChartData] = useState<object>()
@@ -34,45 +32,66 @@ export const useProjectChartData = () => {
     const [totalCo2EmissionsChartData, setTotalCo2EmissionsChartData] = useState<object>()
     const [co2IntensityChartData, setCo2IntensityChartData] = useState<object>()
 
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
+
+    const { data: compareCasesData } = useQuery({
+        queryKey: ["compareCasesApiData", projectId],
+        queryFn: () => compareCasesQueryFn(projectId),
+        enabled: !!projectId,
+    })
+
     const generateAllCharts = () => {
-        const npvObject: object[] = []
-        const breakEvenObject: object[] = []
-        const productionProfilesObject: object[] = []
-        const investmentProfilesObject: object[] = []
-        const totalCo2EmissionsObject: object[] = []
-        const co2IntensityObject: object[] = []
-        if (compareCasesTotals !== undefined && project) {
-            for (let i = 0; i < project.cases.length; i += 1) {
-                npvObject.push({
-                    cases: project.cases[i].name,
-                    npv: project.cases[i].npv,
-                })
-                breakEvenObject.push({
-                    cases: project.cases[i].name,
-                    breakEven: project.cases[i].breakEven,
-                })
-                productionProfilesObject.push({
-                    cases: project.cases[i].name,
-                    oilProduction: compareCasesTotals[i]?.totalOilProduction,
-                    gasProduction: compareCasesTotals[i]?.totalGasProduction,
-                    totalExportedVolumes: compareCasesTotals[i]?.totalExportedVolumes,
-                })
-                investmentProfilesObject.push({
-                    cases: project.cases[i].name,
-                    offshorePlusOnshoreFacilityCosts: compareCasesTotals[i]?.offshorePlusOnshoreFacilityCosts,
-                    developmentCosts: compareCasesTotals[i]?.developmentWellCosts,
-                    explorationWellCosts: compareCasesTotals[i]?.explorationWellCosts,
-                })
-                totalCo2EmissionsObject.push({
-                    cases: project.cases[i].name,
-                    totalCO2Emissions: compareCasesTotals[i]?.totalCo2Emissions,
-                })
-                co2IntensityObject.push({
-                    cases: project.cases[i].name,
-                    cO2Intensity: compareCasesTotals[i]?.co2Intensity,
-                })
+        if (!compareCasesTotals || !apiData) { return }
+        const npvObject = apiData.cases.map((caseItem) => ({
+            cases: caseItem.name,
+            npv: caseItem.npv,
+        }))
+
+        const breakEvenObject = apiData.cases.map((caseItem) => ({
+            cases: caseItem.name,
+            breakEven: caseItem.breakEven,
+        }))
+
+        const productionProfilesObject = apiData.cases.map((caseItem) => {
+            const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.id)
+            return {
+                cases: caseItem.name,
+                oilProduction: compareCase?.totalOilProduction,
+                gasProduction: compareCase?.totalGasProduction,
+                totalExportedVolumes: compareCase?.totalExportedVolumes,
             }
-        }
+        })
+
+        const investmentProfilesObject = apiData.cases.map((caseItem) => {
+            const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.id)
+            return {
+                cases: caseItem.name,
+                offshorePlusOnshoreFacilityCosts: compareCase?.offshorePlusOnshoreFacilityCosts,
+                developmentCosts: compareCase?.developmentWellCosts,
+                explorationWellCosts: compareCase?.explorationWellCosts,
+            }
+        })
+
+        const totalCo2EmissionsObject = apiData.cases.map((caseItem) => {
+            const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.id)
+            return {
+                cases: caseItem.name,
+                totalCO2Emissions: compareCase?.totalCo2Emissions,
+            }
+        })
+
+        const co2IntensityObject = apiData.cases.map((caseItem) => {
+            const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.id)
+            return {
+                cases: caseItem.name,
+                cO2Intensity: compareCase?.co2Intensity,
+            }
+        })
+
         setNpvChartData(npvObject)
         setBreakEvenChartData(breakEvenObject)
         setProductionProfilesChartData(productionProfilesObject)
@@ -83,18 +102,18 @@ export const useProjectChartData = () => {
 
     // Convert cases to rowData
     const casesToRowData = () => {
-        if (project) {
+        if (apiData) {
             const tableCompareCases: TableCompareCase[] = []
             if (compareCasesTotals) {
-                project.cases.forEach((c) => {
+                apiData.cases.forEach((c) => {
                     const matchingCase = compareCasesTotals.find((checkMatchingCase: any) => checkMatchingCase.caseId === c.id)
                     if (matchingCase) {
                         const tableCase: TableCompareCase = {
                             id: c.id!,
                             cases: c.name ?? "",
                             description: c.description ?? "",
-                            npv: Math.round(c.npv ?? 0 * 1) / 1 ?? 0,
-                            breakEven: Math.round(c.breakEven ?? 0 * 1) / 1 ?? 0,
+                            npv: Math.round(c.npv ?? 0 * 1) / 1,
+                            breakEven: Math.round(c.breakEven ?? 0 * 1) / 1,
                             oilProduction: Math.round(matchingCase.totalOilProduction * 10) / 10,
                             gasProduction: Math.round(matchingCase.totalGasProduction * 10) / 10,
                             totalExportedVolumes: Math.round(matchingCase.totalExportedVolumes * 10) / 10,
@@ -116,25 +135,18 @@ export const useProjectChartData = () => {
 
     // Fetch compareCasesTotals and set it to state
     useEffect(() => {
-        if (project) {
-            (async () => {
-                try {
-                    const compareCasesService = await (await GetProjectService()).compareCases(project.id)
-                    const casesOrderedByGuid = compareCasesService.sort((a, b) => a.caseId!.localeCompare(b.caseId!))
-                    setCompareCasesTotals(casesOrderedByGuid)
-                } catch (error) {
-                    console.error("[ProjectView] Error while generating compareCasesTotals", error)
-                }
-            })()
+        if (compareCasesData) {
+            const casesOrderedByGuid = compareCasesData.sort((a, b) => a.caseId!.localeCompare(b.caseId!))
+            setCompareCasesTotals(casesOrderedByGuid)
         }
-    }, [])
+    }, [compareCasesData])
 
     useEffect(() => {
-        if (project) {
+        if (apiData) {
             casesToRowData()
             generateAllCharts()
         }
-    }, [project?.cases, compareCasesTotals])
+    }, [apiData, compareCasesTotals])
 
     return {
         rowData,

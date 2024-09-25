@@ -11,19 +11,19 @@ public enum ApplicationRole
     None = 0,
 
     /// <summary>
-    /// ...
+    /// Project user role
     /// </summary>
     [Display(Name = "User")]
     User,
 
     /// <summary>
-    /// ...
+    /// Observer role
     /// </summary>
     [Display(Name = "ReadOnly")]
     ReadOnly,
 
     /// <summary>
-    /// ...
+    /// Admin role
     /// </summary>
     [Display(Name = "Admin")]
     Admin,

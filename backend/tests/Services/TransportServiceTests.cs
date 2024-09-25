@@ -23,6 +23,8 @@ namespace tests.Services
         private readonly ITransportRepository _repository = Substitute.For<ITransportRepository>();
         private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
         private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
+        private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
+
 
         public TransportServiceTests()
         {
@@ -38,7 +40,8 @@ namespace tests.Services
                 _mapper,
                 _caseRepository,
                 _repository,
-                _mapperService
+                _mapperService,
+                _projectAccessService
             );
         }
 
@@ -46,6 +49,7 @@ namespace tests.Services
         public async Task UpdateTransport_ShouldUpdateTransport_WhenGivenValidInput()
         {
             // Arrange
+            var projectId = Guid.NewGuid();
             var caseId = Guid.NewGuid();
             var transportId = Guid.NewGuid();
             var updatedTransportDto = new APIUpdateTransportDto();
@@ -60,7 +64,7 @@ namespace tests.Services
             _mapperService.MapToDto<Transport, TransportDto>(existingTransport, transportId).Returns(updatedTransportDtoResult);
 
             // Act
-            var result = await _transportService.UpdateTransport<BaseUpdateTransportDto>(caseId, transportId, updatedTransportDto);
+            var result = await _transportService.UpdateTransport<BaseUpdateTransportDto>(projectId, caseId, transportId, updatedTransportDto);
 
             // Assert
             Assert.Equal(updatedTransportDtoResult, result);
@@ -71,6 +75,7 @@ namespace tests.Services
         public async Task UpdateTransport_ShouldThrowException_WhenDbUpdateExceptionOccurs()
         {
             // Arrange
+            var projectId = Guid.NewGuid();
             var caseId = Guid.NewGuid();
             var transportId = Guid.NewGuid();
             var updatedTransportDto = new APIUpdateTransportDto();
@@ -81,7 +86,7 @@ namespace tests.Services
             _repository.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(x => throw new DbUpdateException());
 
             // Act & Assert
-            await Assert.ThrowsAsync<DbUpdateException>(() => _transportService.UpdateTransport<BaseUpdateTransportDto>(caseId, transportId, updatedTransportDto));
+            await Assert.ThrowsAsync<DbUpdateException>(() => _transportService.UpdateTransport<BaseUpdateTransportDto>(projectId, caseId, transportId, updatedTransportDto));
         }
     }
 }

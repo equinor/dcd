@@ -1,6 +1,4 @@
-using api.Adapters;
 using api.Context;
-using api.Dtos;
 using api.Helpers;
 using api.Models;
 
@@ -14,52 +12,60 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
     private readonly IDrainageStrategyService _drainageStrategyService;
     private readonly IProjectService _projectService;
     private readonly ITopsideService _topsideService;
-    private readonly DcdDbContext _context;
-    private readonly IMapper _mapper;
 
     public FuelFlaringLossesProfileService(
-        DcdDbContext context,
         ICaseService caseService,
         IProjectService projectService,
         ITopsideService topsideService,
-        IDrainageStrategyService drainageStrategyService,
-        IMapper mapper)
+        IDrainageStrategyService drainageStrategyService
+    )
     {
-        _context = context;
         _caseService = caseService;
         _projectService = projectService;
         _topsideService = topsideService;
         _drainageStrategyService = drainageStrategyService;
-        _mapper = mapper;
     }
 
-    public async Task<FuelFlaringAndLossesDto> Generate(Guid caseId)
+    public async Task Generate(Guid caseId)
     {
-        var caseItem = await _caseService.GetCase(caseId);
-        var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
-        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
-        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+        var caseItem = await _caseService.GetCaseWithIncludes(caseId);
+        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
+            caseItem.DrainageStrategyLink,
+            d => d.FuelFlaringAndLosses!,
+            d => d.FuelFlaringAndLossesOverride!,
+            d => d.ProductionProfileGas!,
+            d => d.ProductionProfileOil!,
+            d => d.AdditionalProductionProfileGas!,
+            d => d.AdditionalProductionProfileOil!,
+            d => d.ProductionProfileWaterInjection!
+        );
 
-        var fuelConsumptions =
-            EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
+        if (drainageStrategy.FuelFlaringAndLossesOverride?.Override == true)
+        {
+            return;
+        }
+
+        var topside = await _topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
+        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+
+        var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
         var flaring = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
         var losses = EmissionCalculationHelper.CalculateLosses(project, drainageStrategy);
 
-        var total = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>> { fuelConsumptions, flaring, losses });
+        var total = TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>?> { fuelConsumptions, flaring, losses });
 
-        var fuelFlaringLosses = drainageStrategy.FuelFlaringAndLosses ?? new FuelFlaringAndLosses();
-        fuelFlaringLosses.StartYear = total.StartYear;
-        fuelFlaringLosses.Values = total.Values;
-
-        UpdateDrainageStrategyAndSave(drainageStrategy, fuelFlaringLosses);
-
-        var dto = _mapper.Map<FuelFlaringAndLossesDto>(fuelFlaringLosses, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
-        return dto ?? new FuelFlaringAndLossesDto();
-    }
-
-    private void UpdateDrainageStrategyAndSave(DrainageStrategy drainageStrategy, FuelFlaringAndLosses fuelFlaringAndLosses)
-    {
-        drainageStrategy.FuelFlaringAndLosses = fuelFlaringAndLosses;
-        // return await _context.SaveChangesAsync();
+        if (drainageStrategy.FuelFlaringAndLosses != null)
+        {
+            drainageStrategy.FuelFlaringAndLosses.StartYear = total.StartYear;
+            drainageStrategy.FuelFlaringAndLosses.Values = total.Values;
+        }
+        else
+        {
+            drainageStrategy.FuelFlaringAndLosses = new FuelFlaringAndLosses
+            {
+                StartYear = total.StartYear,
+                Values = total.Values
+            };
+        }
     }
 }

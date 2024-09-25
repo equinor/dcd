@@ -5,7 +5,7 @@ import styled from "styled-components"
 import { useCaseContext } from "../../../Context/CaseContext"
 import { formatTime, getCurrentEditId } from "../../../Utils/common"
 import { useAppContext } from "../../../Context/AppContext"
-import useDataEdits from "../../../Hooks/useDataEdits"
+import useEditCase from "../../../Hooks/useEditCase"
 
 const EditInstanceWrapper = styled.div <{ $isActive: boolean }>`
     padding: 10px 5px 10px 10px;
@@ -62,7 +62,7 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
     } = useCaseContext()
     const {
         processQueue,
-    } = useDataEdits()
+    } = useEditCase()
 
     useEffect(() => {
         let timer: NodeJS.Timeout | undefined

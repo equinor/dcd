@@ -55,15 +55,25 @@ public class TimeSeriesCost : TimeSeries<double>
     public string EPAVersion { get; set; } = string.Empty;
     public Currency Currency { get; set; }
 
-    public static TimeSeries<double> MergeCostProfilesList(List<TimeSeries<double>> timeseriesList)
+    public static TimeSeries<double> MergeCostProfilesList(List<TimeSeries<double>?> timeSeriesList)
     {
-        var timeSeries = new TimeSeries<double>();
-        foreach (var ts in timeseriesList)
+        var timeSeriesListNonNull = timeSeriesList
+            .Where(ts => ts != null)
+            .Select(ts => ts!)
+            .ToList();
+
+        if (timeSeriesListNonNull.Count == 0)
         {
-            timeSeries = MergeCostProfiles(timeSeries, ts);
+            return new TimeSeries<double>();
         }
 
-        return timeSeries;
+        var mergedTimeSeries = new TimeSeries<double>();
+        foreach (var ts in timeSeriesListNonNull)
+        {
+            mergedTimeSeries = MergeCostProfiles(mergedTimeSeries, ts);
+        }
+
+        return mergedTimeSeries;
     }
 
     public static TimeSeries<double> MergeCostProfiles(TimeSeries<double> t1, TimeSeries<double> t2)

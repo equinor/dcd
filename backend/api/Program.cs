@@ -1,9 +1,8 @@
 using api.Authorization;
 using api.Context;
-using api.Helpers;
 using api.Mappings;
+using api.Middleware;
 using api.Repositories;
-using api.SampleData.Generators;
 using api.Services;
 using api.Services.FusionIntegration;
 using api.Services.GenerateCostProfiles;
@@ -46,6 +45,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"))
     .EnableTokenAcquisitionToCallDownstreamApi()
     .AddMicrosoftGraph(builder.Configuration.GetSection("Graph"))
+    .AddDownstreamApi("FusionPeople", builder.Configuration.GetSection("FusionPeople"))
     .AddInMemoryTokenCaches();
 
 var sqlConnectionString = config["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
@@ -111,16 +111,13 @@ if (environment == "localdev")
 {
     builder.Services.AddDbContext<DcdDbContext>(
         options => options.UseLazyLoadingProxies()
-                            .UseSqlite(
-                                _sqlConnectionString,
-                                o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery)
-                                ));
+        .UseSqlite(_sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 }
 else
 {
     builder.Services.AddDbContext<DcdDbContext>(
         options => options.UseLazyLoadingProxies()
-                            .UseSqlServer(sqlConnectionString));
+        .UseSqlServer(sqlConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 }
 
 builder.Services.AddFusionIntegration(options =>
@@ -167,6 +164,10 @@ builder.Configuration.AddAzureAppConfiguration(options =>
                kv.SetCredential(new DefaultAzureCredential());
            });
 });
+
+builder.Services.AddScoped<IFusionPeopleService, FusionPeopleService>();
+
+builder.Services.AddScoped<IProjectAccessService, ProjectAccessService>();
 
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IFusionService, FusionService>();
@@ -215,6 +216,8 @@ builder.Services.AddScoped<IWellCostProfileService, WellCostProfileService>();
 
 builder.Services.AddScoped<ISTEAService, STEAService>();
 
+builder.Services.AddScoped<IProjectAccessRepository, ProjectAccessRepository>();
+
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<ICaseRepository, CaseRepository>();
 builder.Services.AddScoped<ISubstructureRepository, SubstructureRepository>();
@@ -247,8 +250,8 @@ builder.Services.AddHostedService<RefreshProjectService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
 
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddSingleton<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
+builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
 
 builder.Services.Configure<IConfiguration>(builder.Configuration);
@@ -301,7 +304,11 @@ builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 builder.Host.UseSerilog();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.UseRouting();
+
 if (app.Environment.IsDevelopment())
 {
     IdentityModelEventSource.ShowPII = true;
@@ -313,9 +320,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors(_accessControlPolicyName);
+
 app.UseAuthentication();
 app.UseMiddleware<ClaimsMiddelware>();
-app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseAuthorization();
+
 app.MapControllers();
 app.Run();
