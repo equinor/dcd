@@ -5,13 +5,6 @@ using api.Repositories;
 using api.Services;
 using api.Services.GenerateCostProfiles;
 
-using Microsoft.EntityFrameworkCore;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace api.Helpers
 {
     public class EconomicsCalculationHelper : IEconomicsCalculationHelper

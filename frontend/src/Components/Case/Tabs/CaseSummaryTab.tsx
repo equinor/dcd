@@ -40,6 +40,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
 
     const [cashflowProfile, setCashflowProfile] = useState<ITimeSeries | undefined>(undefined)
     const [breakevenOilPrice, setBreakevenOilPrice] = useState<number | undefined>(undefined)
+    const [npvValue, setNpvValue] = useState<number | undefined>(undefined)
 
     const { data: apiData } = useQuery({
         queryKey: ["apiData", { projectId, caseId }],
@@ -47,11 +48,30 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         enabled: !!projectId && !!caseId,
     })
 
+    const [caseData, setCaseData] = useState(apiData?.case)
+
+    useEffect(() => {
+        if (apiData) {
+            setCaseData(apiData.case)
+        }
+    }, [apiData])
+
     const calculateDiscountedVolume = (volumeArray: number[], discountRate: number, startIndex: number): number => volumeArray.reduce(
         (accumulatedVolume, volume, i) => accumulatedVolume + (volume / (1 + (discountRate / 100)) ** (startIndex + i + 1)),
         0,
     )
+    const calculateNPV = () => {
+        if (!apiData) { return }
 
+        const currentYear = new Date().getFullYear()
+        const nextYear = currentYear + 1
+        const dg4Year = new Date(apiData.case.dG4Date).getFullYear()
+        const nextYearInRelationToDg4Year = nextYear - dg4Year
+        const calculateNpvValue = cashflowProfile && cashflowProfile.values && project?.discountRate
+            ? calculateDiscountedVolume(cashflowProfile.values, project.discountRate, (cashflowProfile?.startYear ?? 0) + Math.abs(nextYearInRelationToDg4Year))
+            : 0
+        setNpvValue(calculateNpvValue)
+    }
     const calculateBreakEvenOilPrice = () => {
         if (!apiData) { return }
 
@@ -84,7 +104,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
 
         setBreakevenOilPrice(breakEvenOilPrice)
 
-        const caseData = apiData?.case
+        // const caseData = apiData?.case
         if (caseData) {
             caseData.breakEven = breakEvenOilPrice
         }
@@ -149,7 +169,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const newCashflowProfile = calculateCashflowProfile()
             setCashflowProfile(newCashflowProfile)
             calculateBreakEvenOilPrice()
-
+            calculateNPV()
             SetSummaryTableYearsFromProfiles([
             ], apiData.case.dG4Date ? new Date(apiData.case.dG4Date).getFullYear() : 2030, setTableYears)
             setYearRangeSetFromProfiles(true)
@@ -260,7 +280,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
 
     useEffect(() => {
         if (activeTabCase === 7 && apiData && !yearRangeSetFromProfiles) {
-            const caseData = apiData.case as Components.Schemas.CaseDto
+            // const caseData = apiData.case as Components.Schemas.CaseDto
 
             const newCashflowProfile = calculateCashflowProfile()
             setCashflowProfile(newCashflowProfile)
@@ -282,7 +302,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 handleOffshoreOpexPlussWellIntervention(),
                 apiData.onshoreRelatedOPEXCostProfile,
                 apiData.additionalOPEXCostProfile,
-            ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setTableYears)
+            ], caseData?.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setTableYears)
             setYearRangeSetFromProfiles(true)
         }
     }, [activeTabCase, apiData, project])
@@ -397,19 +417,10 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             ])
         }
     }, [apiData, project])
-    const caseData = apiData?.case
 
     if (!caseData) { return <CaseSummarySkeleton /> }
 
     if (activeTabCase !== 7) { return null }
-
-    const currentYear = new Date().getFullYear()
-    const nextYear = currentYear + 1
-    const dg4Year = new Date(apiData.case.dG4Date).getFullYear()
-    const nextYearInRelationToDg4Year = nextYear - dg4Year
-    const npvValue = cashflowProfile && cashflowProfile.values && project?.discountRate
-        ? calculateDiscountedVolume(cashflowProfile.values, project.discountRate, (cashflowProfile?.startYear ?? 0) + Math.abs(nextYearInRelationToDg4Year))
-        : 0
 
     return (
         <Grid container spacing={2}>
@@ -418,8 +429,8 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="npv"
-                    label="NPV before tax"
-                    value={npvValue}
+                    label={`NPV before tax (${project?.currency === 1 ? "MNOK" : "MUSD"})`}
+                    value={npvValue ? Number(npvValue.toFixed(2)) : undefined}
                     previousResourceObject={caseData}
                     integer={false}
                     allowNegative
@@ -433,8 +444,8 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     resourceName="case"
                     resourcePropertyKey="breakEven"
                     previousResourceObject={caseData}
-                    label="B/E before tax"
-                    value={breakevenOilPrice}
+                    label={`B/E before tax (${project?.currency === 1 ? "NOK" : "USD"})`}
+                    value={breakevenOilPrice ? Number(breakevenOilPrice.toFixed(2)) : undefined}
                     integer={false}
                     min={0}
                     max={1000000}
