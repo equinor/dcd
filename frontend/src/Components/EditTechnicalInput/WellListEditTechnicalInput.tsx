@@ -45,15 +45,15 @@ const WellListEditTechnicalInput = ({
     const [rowData, setRowData] = useState<TableWell[]>()
     const [wellStagedForDeletion, setWellStagedForDeletion] = useState<any | undefined>()
     const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const contextId = currentContext?.externalId
     const gridRef = useRef(null)
     const styles = useStyles()
     const onGridReady = (params: any) => { gridRef.current = params.api }
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
+        queryKey: ["projectApiData", contextId],
+        queryFn: () => projectQueryFn(contextId),
+        enabled: !!contextId,
     })
 
     const wellsToRowData = () => {

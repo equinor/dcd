@@ -13,7 +13,6 @@ import {
 } from "@ag-grid-community/core"
 import isEqual from "lodash/isEqual"
 import { CircularProgress } from "@equinor/eds-core-react"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
     extractTableTimeSeriesValues,
     generateProfile,
@@ -28,6 +27,7 @@ import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
 import { TABLE_VALIDATION_RULES } from "../../../Utils/constants"
+import { useProjectContext } from "../../../Context/ProjectContext"
 
 interface Props {
     timeSeriesData: any[]
@@ -62,8 +62,7 @@ const CaseTabTable = ({
     const [stagedEdit, setStagedEdit] = useState<any>()
     const firstTriggerRef = useRef<boolean>(true)
     const timerRef = useRef<NodeJS.Timeout | null>(null)
-    const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const { projectId } = useProjectContext()
 
     useEffect(() => {
         if (stagedEdit) {

@@ -23,12 +23,12 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
 }) => {
     const { isCalculatingTotalStudyCostOverrides } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const contextId = currentContext?.externalId
 
     const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
+        queryKey: ["projectApiData", contextId],
+        queryFn: () => projectQueryFn(contextId),
+        enabled: !!contextId,
     })
 
     const calculatedFields = [

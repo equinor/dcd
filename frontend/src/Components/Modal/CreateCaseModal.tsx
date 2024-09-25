@@ -19,18 +19,16 @@ import { useQuery } from "@tanstack/react-query"
 import Modal from "./Modal"
 import { defaultDate, isDefaultDate, toMonthDate } from "../../Utils/common"
 import { GetCaseService } from "../../Services/CaseService"
-import { useProjectContext } from "../../Context/ProjectContext"
 import { useModalContext } from "../../Context/ModalContext"
 import { useAppContext } from "../../Context/AppContext"
 import { projectQueryFn } from "../../Services/QueryFunctions"
+// import useEditProject from "../../Hooks/useEditProject"
 
 const CreateCaseModal = () => {
     const { isLoading, setIsLoading } = useAppContext()
-    const {
-        setProject,
-    } = useProjectContext()
     const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const contextId = currentContext?.externalId
+    // const { addProjectEdit } = useEditProject()
 
     const {
         caseModalIsOpen,
@@ -40,9 +38,9 @@ const CreateCaseModal = () => {
     } = useModalContext()
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
+        queryKey: ["projectApiData", contextId],
+        queryFn: () => projectQueryFn(contextId),
+        enabled: !!contextId,
     })
 
     const [caseName, setCaseName] = useState<string>("")
@@ -156,7 +154,8 @@ const CreateCaseModal = () => {
                 )
                 setIsLoading(false)
             }
-            setProject(projectResult)
+            // this is probably unnecessary ad the project service is already called to update the project. uncomment if needed
+            // addProjectEdit(apiData.id, projectResult)
             setCaseModalIsOpen(false)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)

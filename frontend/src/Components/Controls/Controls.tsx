@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from "react"
-import { useNavigate, useParams, useLocation } from "react-router-dom"
+import { useState, useEffect } from "react"
+import { useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import styled from "styled-components"
 import { projectPath } from "../../Utils/common"
 import { useProjectContext } from "../../Context/ProjectContext"
-import { GetProjectService } from "../../Services/ProjectService"
 import { useAppContext } from "../../Context/AppContext"
 import CaseControls from "./CaseControls"
 import WhatsNewModal from "../Modal/WhatsNewModal"
@@ -20,17 +19,11 @@ const Wrapper = styled(Grid)`
 `
 
 const Controls = () => {
-    const {
-        setProject,
-        projectEdited,
-        setProjectEdited,
-    } = useProjectContext()
-
     const navigate = useNavigate()
     const { currentContext } = useModuleCurrentContext()
     const { editMode, setEditMode } = useAppContext()
     const { caseId } = useParams()
-    const projectId = currentContext?.externalId
+    const { projectId } = useProjectContext()
 
     const [projectLastUpdated, setProjectLastUpdated] = useState<string>("")
     const [caseLastUpdated, setCaseLastUpdated] = useState<string>("")
@@ -49,34 +42,6 @@ const Controls = () => {
 
     const cancelEdit = async () => {
         setEditMode(false)
-        setProjectEdited(undefined)
-    }
-
-    const handleProjectSave = async () => {
-        if (projectData && projectEdited) {
-            const updatedProject = { ...projectEdited }
-            const result = await (await GetProjectService()).updateProject(
-                projectData.id,
-                updatedProject,
-            )
-            setProject(result)
-            setProjectEdited(undefined)
-            setEditMode(false)
-            setProjectLastUpdated(result.modifyTime)
-            return result
-        }
-        return null
-    }
-
-    const handleProjectEdit = async () => {
-        if (projectData) {
-            setProjectEdited(projectData)
-            setEditMode(true)
-        }
-    }
-
-    const handleCaseEdit = async () => {
-        setEditMode(true)
     }
 
     const backToProject = async () => {
@@ -85,14 +50,10 @@ const Controls = () => {
     }
 
     const handleEdit = () => {
-        if (editMode && caseId) { // user is going out of edit mode in case
+        if (editMode && caseId) {
             cancelEdit()
-        } else if (projectEdited) { // user is saving project
-            handleProjectSave()
-        } else if (!editMode && caseId) { // user is going into edit mode in case
-            handleCaseEdit()
-        } else { // user is going into edit mode in project
-            handleProjectEdit()
+        } else {
+            setEditMode(true)
         }
     }
 

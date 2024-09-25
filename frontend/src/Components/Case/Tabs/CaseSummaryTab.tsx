@@ -15,6 +15,7 @@ import { mergeTimeseriesList } from "../../../Utils/common"
 import { SetSummaryTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 import CaseSummarySkeleton from "../../LoadingSkeletons/CaseSummarySkeleton"
 import { caseQueryFn, projectQueryFn } from "../../../Services/QueryFunctions"
+import { useProjectContext } from "../../../Context/ProjectContext"
 
 interface ITimeSeriesData {
     group?: string
@@ -30,23 +31,21 @@ interface ITimeSeriesData {
 const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()
     const { caseId } = useParams()
-    const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
-
+    const { projectId } = useProjectContext()
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
-
-    const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", projectId, caseId],
-        queryFn: () => caseQueryFn(projectId, caseId),
-        enabled: !!projectId && !!caseId,
-    })
 
     const { data: projectData } = useQuery({
         queryKey: ["projectApiData", projectId],
         queryFn: () => projectQueryFn(projectId),
         enabled: !!projectId,
+    })
+
+    const { data: apiData } = useQuery({
+        queryKey: ["caseApiData", projectId, caseId],
+        queryFn: () => caseQueryFn(projectId, caseId),
+        enabled: !!projectId && !!caseId,
     })
 
     const handleOffshoreFacilitiesCost = () => mergeTimeseriesList([

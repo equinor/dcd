@@ -8,11 +8,13 @@ import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import CaseFasilitiesTabSkeleton from "../../LoadingSkeletons/CaseFacilitiesTabSkeleton"
 import SwitchableStringInput from "../../Input/SwitchableStringInput"
 import { caseQueryFn, projectQueryFn } from "../../../Services/QueryFunctions"
+import { useProjectContext } from "../../../Context/ProjectContext"
 
 const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
     const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const contextId = currentContext?.externalId
     const { caseId } = useParams()
+    const { projectId } = useProjectContext()
 
     const platformConceptValues: { [key: number]: string } = {
         0: "No Concept",
@@ -45,6 +47,11 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
         12: "Cr13 + PIP",
         13: "HDPE lined CS (Water injection only)",
     }
+    const { data: projectData } = useQuery({
+        queryKey: ["projectApiData", contextId],
+        queryFn: () => projectQueryFn(contextId),
+        enabled: !!contextId,
+    })
 
     const { data: apiData } = useQuery({
         queryKey: ["caseApiData", projectId, caseId],
@@ -52,19 +59,10 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
         enabled: !!projectId && !!caseId,
     })
 
-    const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
-    })
-
     const caseData = apiData?.case
     const topsideData = apiData?.topside
-
     const surfData = apiData?.surf
-
     const transportData = apiData?.transport
-
     const substructureData = apiData?.substructure
 
     if (

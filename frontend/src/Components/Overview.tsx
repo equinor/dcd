@@ -17,6 +17,7 @@ import { PROJECT_CLASSIFICATION } from "../Utils/constants"
 import { useModalContext } from "../Context/ModalContext"
 import ProjectSkeleton from "./LoadingSkeletons/ProjectSkeleton"
 import { projectQueryFn } from "../Services/QueryFunctions"
+import { useProjectContext } from "../Context/ProjectContext"
 
 const ControlsWrapper = styled.div`
     position: sticky;
@@ -40,22 +41,23 @@ interface WarnedProjectInterface {
 const Overview = () => {
     const currentUser = useCurrentUser()
     const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const contextId = currentContext?.externalId
     const {
         isCreating,
         isLoading,
         snackBarMessage,
         setSnackBarMessage,
     } = useAppContext()
+    const { setProjectId } = useProjectContext()
     const { featuresModalIsOpen } = useModalContext()
     const [warnedProjects, setWarnedProjects] = useState<WarnedProjectInterface | null>(null)
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
+        queryKey: ["projectApiData", contextId],
+        queryFn: () => projectQueryFn(contextId),
+        enabled: !!contextId,
     })
 
     function addVisitedProject() {
@@ -91,6 +93,12 @@ const Overview = () => {
             localStorage.setItem("pv", JSON.stringify(warnedProjects))
         }
     }, [warnedProjects])
+
+    useEffect(() => {
+        if (apiData) {
+            setProjectId(apiData.id)
+        }
+    }, [apiData])
 
     useEffect(() => {
         if (apiData && currentUserId) {

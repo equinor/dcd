@@ -11,11 +11,11 @@ import useEditProject from "../../Hooks/useEditProject"
 const ProjectSettingsTab = () => {
     const { currentContext } = useModuleCurrentContext()
     const { addProjectEdit } = useEditProject()
-    const projectId = currentContext?.externalId
+    const contextId = currentContext?.externalId
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
+        queryKey: ["projectApiData", contextId],
+        queryFn: () => projectQueryFn(contextId),
+        enabled: !!contextId,
     })
 
     const [dummyRole, setDummyRole] = useState(0) // TODO: Get role from user

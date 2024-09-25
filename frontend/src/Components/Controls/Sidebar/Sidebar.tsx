@@ -59,9 +59,9 @@ export const TimelineElement = styled(Button)`
 const Sidebar = () => {
     const { sidebarOpen, setSidebarOpen } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const contextId = currentContext?.externalId
 
-    if (!projectId) { return null }
+    if (!contextId) { return null }
 
     return (
         <Wrapper>

@@ -21,7 +21,7 @@ import useEditProject from "../../Hooks/useEditProject"
 const PROSPTab = () => {
     const { currentContext } = useModuleCurrentContext()
     const { addProjectEdit } = useEditProject()
-    const projectId = currentContext?.externalId
+    const contextId = currentContext?.externalId
 
     const [sharepointUrl, setSharepointUrl] = useState<string>()
     const [check, setCheck] = useState(false)
@@ -30,9 +30,9 @@ const PROSPTab = () => {
     const [errorMessage, setErrorMessage] = useState<string>("")
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
+        queryKey: ["projectApiData", contextId],
+        queryFn: () => projectQueryFn(contextId),
+        enabled: !!contextId,
     })
 
     const saveUrl: React.MouseEventHandler<HTMLButtonElement> = async (e) => {

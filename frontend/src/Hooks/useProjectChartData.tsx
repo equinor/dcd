@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { projectQueryFn, compareCasesQueryFn } from "../Services/QueryFunctions"
+import { useProjectContext } from "../Context/ProjectContext"
 
 interface TableCompareCase {
     id: string,
@@ -22,9 +22,7 @@ interface TableCompareCase {
 }
 
 export const useProjectChartData = () => {
-    const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
-
+    const { projectId } = useProjectContext()
     const [rowData, setRowData] = useState<TableCompareCase[]>()
     const [compareCasesTotals, setCompareCasesTotals] = useState<Components.Schemas.CompareCasesDto[]>()
     const [npvChartData, setNpvChartData] = useState<object>()

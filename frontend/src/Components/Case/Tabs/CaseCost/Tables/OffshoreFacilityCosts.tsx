@@ -21,12 +21,12 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
     addEdit,
 }) => {
     const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const contextId = currentContext?.externalId
 
     const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
+        queryKey: ["projectApiData", contextId],
+        queryFn: () => projectQueryFn(contextId),
+        enabled: !!contextId,
     })
 
     const [capexTimeSeriesData, setCapexTimeSeriesData] = useState<ITimeSeriesData[]>([])

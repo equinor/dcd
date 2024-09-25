@@ -2,7 +2,7 @@ import React from "react"
 import { lock, lock_open } from "@equinor/eds-icons"
 import { Icon } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useProjectContext } from "../../../Context/ProjectContext"
 
 interface LockIconProps {
     clickedElement: any
@@ -15,8 +15,7 @@ const LockIcon: React.FC<LockIconProps> = ({
 
 }) => {
     const { caseId } = useParams()
-    const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const { projectId } = useProjectContext()
 
     const handleLockIconClick = (params: any) => {
         if (params?.data?.override !== undefined && caseId) {

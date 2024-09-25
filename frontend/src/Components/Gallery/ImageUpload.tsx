@@ -49,20 +49,20 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
     const { caseId } = useParams()
     const { setSnackBarMessage } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const contextId = currentContext?.externalId
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
+        queryKey: ["projectApiData", contextId],
+        queryFn: () => projectQueryFn(contextId),
+        enabled: !!contextId,
     })
 
     useEffect(() => {
         const loadImages = async () => {
-            if (projectId && caseId) {
+            if (apiData && caseId) {
                 try {
                     const imageService = await getImageService()
-                    const imageDtos = await imageService.getImages(projectId, caseId)
+                    const imageDtos = await imageService.getImages(apiData.id, caseId)
                     setGallery(imageDtos)
                 } catch (error) {
                     console.error("Error loading images:", error)
@@ -71,7 +71,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
             }
         }
         loadImages()
-    }, [setGallery, projectId, caseId])
+    }, [setGallery, apiData, caseId])
 
     const MAX_FILE_SIZE = 5 * 1024 * 1024
     const MAX_FILES = 4
@@ -99,7 +99,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         }
         setExeededLimit(false)
 
-        if (!apiData || !projectId) {
+        if (!apiData || !contextId) {
             console.error("Project ID is missing.")
             return
         }
@@ -107,7 +107,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         const imageService = await getImageService()
 
         // if we could avoid project name here, we could drop the project query
-        const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(projectId, apiData.name, file, caseId))
+        const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(contextId, apiData.name, file, caseId))
         try {
             const uploadedImageDtos = await Promise.all(uploadPromises)
             if (Array.isArray(uploadedImageDtos)) {
