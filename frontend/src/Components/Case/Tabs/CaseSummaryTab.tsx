@@ -46,8 +46,10 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         enabled: !!projectId && !!caseId,
     })
 
-    const calculateDiscountedVolume = (volumeArray: number[], discountRate: number):
-        number => volumeArray.reduce((accumulatedVolume, volume, index) => accumulatedVolume + (volume / (1 + (discountRate / 100)) ** (index + 1)), 0)
+    const calculateDiscountedVolume = (volumeArray: number[], discountRate: number, startIndex: number): number => volumeArray.reduce(
+        (accumulatedVolume, volume, i) => accumulatedVolume + (volume / (1 + (discountRate / 100)) ** (startIndex + i + 1)),
+        0,
+    )
 
     const calculateBreakEvenOilPrice = () => {
         if (!apiData) { return }
@@ -61,19 +63,44 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         console.log("oilVolume", oilVolume)
 
         const gasVolume = mergeTimeseries(apiData.productionProfileGas, apiData.additionalProductionProfileGas)
-        console.log("gasVolume", gasVolume)
+        console.log("gasVolume.startYear", gasVolume.startYear)
 
-        const discountedGasVolume = calculateDiscountedVolume(gasVolume?.values || [], discountRate)
-        const discountedOilVolume = calculateDiscountedVolume(oilVolume.values || [], discountRate)
-        const discountedTotalCost = calculateDiscountedVolume(apiData?.calculatedTotalCostCostProfile?.values || [], discountRate)
+        const currentYear = new Date().getFullYear() // Get the current year
+        const nextYear = currentYear + 1 // Calculate next year
+        const dg4Year = new Date(apiData.case.dG4Date).getFullYear() // dg4Year
+        console.log("dg4Year", dg4Year)
+        const nextYearInRelationToDg4Year = nextYear - dg4Year
+        console.log("nextYearInRelationToDg4Year", nextYearInRelationToDg4Year)
+
+        console.log("gasVolume?.values", gasVolume)
+        console.log("oilVolume.values", oilVolume)
+        console.log("apiData?.calculatedTotalCostCostProfile?.values", apiData?.calculatedTotalCostCostProfile)
+
+        console.log("gasVolume.startYear + Math.abs(nextYearInRelationToDg4Year", gasVolume.startYear + Math.abs(nextYearInRelationToDg4Year))
+        console.log("oilVolume.startYear + Math.abs(nextYearInRelationToDg4Year)", oilVolume.startYear + Math.abs(nextYearInRelationToDg4Year))
+        console.log("(apiData?.calculatedTotalCostCostProfile?.startYear ?? 0) + Math.abs(nextYearInRelationToDg4Year)", (apiData?.calculatedTotalCostCostProfile?.startYear ?? 0) + Math.abs(nextYearInRelationToDg4Year))
+        console.log("apiData?.calculatedTotalCostCostProfile?.startYear", apiData?.calculatedTotalCostCostProfile?.startYear)
+        console.log("Math.abs(nextYearInRelationToDg4Year)", Math.abs(nextYearInRelationToDg4Year))
+
+        const discountedGasVolume = calculateDiscountedVolume(gasVolume?.values || [], discountRate, gasVolume.startYear + Math.abs(nextYearInRelationToDg4Year))
+        const discountedOilVolume = calculateDiscountedVolume(oilVolume.values || [], discountRate, oilVolume.startYear + Math.abs(nextYearInRelationToDg4Year))
+        const discountedTotalCost = calculateDiscountedVolume(apiData?.calculatedTotalCostCostProfile?.values || [], discountRate, (apiData?.calculatedTotalCostCostProfile?.startYear ?? 0) + Math.abs(nextYearInRelationToDg4Year))
+        console.log("discountedGasVolume", discountedGasVolume)
+        console.log("discountedOilVolume", discountedOilVolume)
+        console.log("discountedTotalCost", discountedTotalCost)
 
         const GOR = discountedGasVolume / discountedOilVolume
+        console.log("GOR", GOR)
+
         let PA = 0
         if (gasPriceNOK) {
-            PA = gasPriceNOK / (exchangeRateNOKToUSD * 6.29 * defaultOilPrice)
+            PA = (gasPriceNOK * 1000) / (exchangeRateUSDToNOK * 6.29 * defaultOilPrice)
         }
+        console.log("PA", PA)
 
-        const breakEvenOilPrice = discountedTotalCost / ((GOR * PA) + 1) / discountedOilVolume
+        const breakEvenOilPrice = discountedTotalCost / ((GOR * PA) + 1) / discountedOilVolume / 6.29
+        console.log("breakEvenOilPrice", breakEvenOilPrice)
+
         const caseData = apiData?.case
 
         if (caseData) {
@@ -81,9 +108,6 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         }
         console.log("caseData.breakEven", caseData.breakEven)
     }
-
-    const calculateNPV = (cashflowValues: number[], discountRate: number):
-        number => cashflowValues.reduce((accumulatedNPV, cashflow, index) => accumulatedNPV + (cashflow / (1 + (discountRate / 100)) ** (index + 1)), 0)
 
     const calculateCashflowProfile = (): ITimeSeries => {
         if (!apiData) {
@@ -94,17 +118,23 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             }
         }
 
-        const dg4Year = new Date(apiData.case.dG4Date).getFullYear()
+        const currentYear = new Date().getFullYear() // Get the current year
+        const nextYear = currentYear + 1 // Calculate next year
+
+        const dg4Year = new Date(apiData.case.dG4Date).getFullYear() // dg4Year
+        console.log("dg4Year", dg4Year)
         const totalCostProfile = apiData.calculatedTotalCostCostProfile
         const totalIncomeProfile = apiData.calculatedTotalIncomeCostProfile
         console.log("totalIncomeProfile.values", totalIncomeProfile?.values)
-
         console.log("totalCostProfile.values", totalCostProfile?.values)
 
         if (!totalCostProfile?.values || !totalIncomeProfile?.values) {
             return {
                 id: "cashflow",
-                startYear: dg4Year,
+                startYear: Math.min(
+                    totalCostProfile?.startYear ?? 0,
+                    totalIncomeProfile?.startYear ?? 0,
+                ), // Set start year to dg4Year
                 values: [],
             }
         }
@@ -113,15 +143,34 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             ...totalCostProfile,
             values: totalCostProfile.values.map((value) => -value),
         }
-        console.log("negatedCostProfile.values", negatedCostProfile.values)
+        console.log("negatedCostProfile", negatedCostProfile)
+        console.log("totalIncomeProfile", totalIncomeProfile)
 
         const mergedProfile = mergeTimeseries(negatedCostProfile, totalIncomeProfile)
-        console.log("mergedProfile.values", mergedProfile.values)
+        if (!mergedProfile.values) {
+            return {
+                id: "cashflow",
+                startYear: mergedProfile.startYear, // Return with no values if merged profile is undefined
+                values: [],
+            }
+        }
+        console.log("mergedProfile", mergedProfile)
+
+        // Calculate the offset from dg4Year to nextYear
+        const nextYearOffset = nextYear - dg4Year
+        console.log("nextYearOffset", nextYearOffset)
+
+        // Calculate the index in the mergedProfile that corresponds to nextYear
+        const startYearIndex = nextYearOffset - mergedProfile.startYear // Adjust based on relative startYear
+
+        // Ensure we don't slice beyond the length of the array
+        const filteredValues = mergedProfile.values.slice(Math.max(startYearIndex, 0))
+        console.log("filteredValues", filteredValues)
 
         return {
             id: "cashflow",
-            startYear: mergedProfile.startYear,
-            values: mergedProfile.values,
+            startYear: mergedProfile.startYear, // Set the start year to next year
+            values: filteredValues, // Only include data from next year onwards
         }
     }
 
@@ -230,6 +279,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             setCashflowProfile(newCashflowProfile)
             calculateBreakEvenOilPrice()
             console.log("caseData.breakEven", caseData.breakEven)
+
             SetSummaryTableYearsFromProfiles([
                 handleTotalExplorationCost(),
                 handleDrilling(),
@@ -369,9 +419,18 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     console.log("cashflowProfile.values", cashflowProfile?.values)
     console.log("project.discountRate", project?.discountRate)
 
+    const currentYear = new Date().getFullYear() // Get the current year
+    const nextYear = currentYear + 1 // Calculate next year
+    const dg4Year = new Date(apiData.case.dG4Date).getFullYear() // dg4Year
+    console.log("dg4Year", dg4Year)
+    const nextYearInRelationToDg4Year = nextYear - dg4Year
+    console.log("cashflowProfile", cashflowProfile)
+    console.log("cashflowProfile.startYear + Math.abs(nextYearInRelationToDg4Year)", (cashflowProfile?.startYear ?? 0) + Math.abs(nextYearInRelationToDg4Year))
+
     const npvValue = cashflowProfile && cashflowProfile.values && project?.discountRate
-        ? calculateNPV(cashflowProfile.values, project.discountRate)
+        ? calculateDiscountedVolume(cashflowProfile.values, project.discountRate, (cashflowProfile?.startYear ?? 0) + Math.abs(nextYearInRelationToDg4Year))
         : 0
+
     console.log("npvValue", npvValue)
     return (
         <Grid container spacing={2}>
