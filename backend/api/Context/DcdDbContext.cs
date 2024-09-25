@@ -902,9 +902,9 @@ public class DcdDbContext : DbContext
             .Any(e => e.State == EntityState.Modified ||
             e.State == EntityState.Added);
 
-        // var totalFEEDOverrideChanges = ChangeTracker.Entries<Models.TotalFEEDStudiesOverride>()
-        //     .Any(e => e.State == EntityState.Modified ||
-        //     e.State == EntityState.Added);
+        var totalFEEDOverrideChanges = ChangeTracker.Entries<Models.TotalFEEDStudiesOverride>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
 
         var totalOtherStudiesChanges = ChangeTracker.Entries<Models.TotalOtherStudiesCostProfile>()
             .Any(e => e.State == EntityState.Modified ||
@@ -1051,12 +1051,10 @@ public class DcdDbContext : DbContext
             e.State == EntityState.Added);
 
         return
-             //caseChanges
-             //||
-             totalFeasibilityAdded
+            totalFeasibilityAdded
             || totalFeasibilityOverrideChanges
             || totalFEEDChanges
-            //|| totalFEEDOverrideChanges
+            || totalFEEDOverrideChanges
             || totalOtherStudiesChanges
             || historicCostChanges
             || wellInterventionChanges

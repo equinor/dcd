@@ -104,7 +104,6 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
 
         setBreakevenOilPrice(breakEvenOilPrice)
 
-        // const caseData = apiData?.case
         if (caseData) {
             caseData.breakEven = breakEvenOilPrice
         }
@@ -280,8 +279,6 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
 
     useEffect(() => {
         if (activeTabCase === 7 && apiData && !yearRangeSetFromProfiles) {
-            // const caseData = apiData.case as Components.Schemas.CaseDto
-
             const newCashflowProfile = calculateCashflowProfile()
             setCashflowProfile(newCashflowProfile)
             calculateBreakEvenOilPrice()

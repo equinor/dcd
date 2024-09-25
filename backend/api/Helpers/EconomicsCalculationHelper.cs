@@ -101,7 +101,7 @@ namespace api.Helpers
             );
 
             // Convert oil production from million sm³ to barrels in millions
-            var oilProductionInMillionsOfBarrels = totalOilProductionInMegaCubics.Values.Select(v => v * cubicMetersToBarrelsFactor).ToArray(); //originalt del på 1 mill
+            var oilProductionInMillionsOfBarrels = totalOilProductionInMegaCubics.Values.Select(v => v * cubicMetersToBarrelsFactor).ToArray();
 
             var oilIncome = new TimeSeries<double>
             {
@@ -128,12 +128,12 @@ namespace api.Helpers
             var gasIncome = new TimeSeries<double>
             {
                 StartYear = totalGasProductionInGigaCubics.StartYear,
-                Values = totalGasProductionInGigaCubics.Values.Select(v => v * gasPriceNok).ToArray() //originally divide by 1 mill instead of multiply by 1000
+                Values = totalGasProductionInGigaCubics.Values.Select(v => v * gasPriceNok).ToArray()
             };
 
             var totalIncome = TimeSeriesCost.MergeCostProfiles(oilIncome, gasIncome);
 
-            // Divide the totalIncome by 1 million before assigning it to CalculatedTotalIncomeCostProfile
+            // Divide the totalIncome by 1 million before assigning it to CalculatedTotalIncomeCostProfile to get correct unit
             var scaledTotalIncomeValues = totalIncome.Values.Select(v => v / 1_000_000).ToArray();
 
             if (caseItem.CalculatedTotalIncomeCostProfile != null)
