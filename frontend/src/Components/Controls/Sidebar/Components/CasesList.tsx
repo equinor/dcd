@@ -21,12 +21,12 @@ const SideBarRefCaseWrapper = styled.div`
 const CasesList: React.FC = () => {
     const { sidebarOpen } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const externalId = currentContext?.externalId
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
 
     const location = useLocation()

@@ -1,8 +1,8 @@
 import { GetCaseService } from "./CaseService"
 import { GetProjectService } from "./ProjectService"
 
-export const caseQueryFn = async (projectId: string | undefined, caseId: string | undefined) => {
-    if (!projectId || !caseId) {
+export const caseQueryFn = async (projectId: string, caseId: string | undefined) => {
+    if (projectId === "" || !caseId) {
         console.error("projectId or caseId is undefined")
         return null
     }

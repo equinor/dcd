@@ -2,10 +2,10 @@ import { Dispatch, SetStateAction, FunctionComponent } from "react"
 import { Button, Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useParams } from "react-router-dom"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import Modal from "./Modal"
 import useEditCase from "../../Hooks/useEditCase"
 import { ProfileNames } from "../../Models/Interfaces"
+import { useProjectContext } from "../../Context/ProjectContext"
 
 type Props = {
     isOpen: boolean
@@ -22,8 +22,7 @@ export const OverrideTimeSeriesPrompt: FunctionComponent<Props> = ({
 }) => {
     const { addEdit } = useEditCase()
     const { caseId } = useParams()
-    const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const { projectId } = useProjectContext()
 
     if (!isOpen || !projectId || !profileName) { return null }
     const toggleIsOpen = () => {

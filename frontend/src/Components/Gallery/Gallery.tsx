@@ -4,11 +4,11 @@ import styled from "styled-components"
 import { Icon, Button, Typography } from "@equinor/eds-core-react"
 import { delete_to_trash, expand_screen } from "@equinor/eds-icons"
 import { useParams } from "react-router-dom"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import ImageUpload from "./ImageUpload"
 import ImageModal from "./ImageModal"
 import { useAppContext } from "../../Context/AppContext"
 import { getImageService } from "../../Services/ImageService"
+import { useProjectContext } from "../../Context/ProjectContext"
 
 const Wrapper = styled.div`
     display: flex;
@@ -62,8 +62,7 @@ const Gallery = () => {
     const [expandedImage, setExpandedImage] = useState("")
     const [exeededLimit, setExeededLimit] = useState(false)
     const { caseId } = useParams()
-    const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const { projectId } = useProjectContext()
 
     useEffect(() => {
         const loadImages = async () => {

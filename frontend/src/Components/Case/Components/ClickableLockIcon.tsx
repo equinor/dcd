@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { microsoft_excel } from "@equinor/eds-icons"
 import { Icon, Tooltip, Button } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useProjectContext } from "../../../Context/ProjectContext"
 
 import { ExcelHideIcon } from "../../../Media/Icons/ExcelHideIcon"
 import { CalculatorIcon } from "../../../Media/Icons/CalculatorIcon"
@@ -24,9 +24,8 @@ const LockIcon: React.FC<LockIconProps> = ({
     sharepointFileId
 }) => {
     const { caseId } = useParams()
+    const { projectId } = useProjectContext()
     const [sharepointId] = useState(sharepointFileId)
-    const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
 
     const handleLockIconClick = (params: any) => {
         if (params?.data?.override !== undefined && caseId) {

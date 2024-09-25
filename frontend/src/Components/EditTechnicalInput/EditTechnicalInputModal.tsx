@@ -30,16 +30,16 @@ const EditTechnicalInputModal = () => {
         setEditTechnicalInput,
     } = useModalContext()
     const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const externalId = currentContext?.externalId
     const { addProjectEdit } = useEditProject()
 
     const [activeTab, setActiveTab] = useState<number>(0)
     const [deletedWells, setDeletedWells] = useState<string[]>([])
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
 
     const [

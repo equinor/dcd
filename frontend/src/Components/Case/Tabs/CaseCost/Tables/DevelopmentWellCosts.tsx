@@ -21,12 +21,12 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
     addEdit,
 }) => {
     const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const externalId = currentContext?.externalId
 
     const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
 
     const [developmentTimeSeriesData, setDevelopmentTimeSeriesData] = useState<ITimeSeriesData[]>([])

@@ -25,12 +25,12 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
     const styles = useStyles()
     const gridRef = useRef(null)
     const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const externalId = currentContext?.externalId
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
 
     const nameWithReferenceCase = (p: any) => (

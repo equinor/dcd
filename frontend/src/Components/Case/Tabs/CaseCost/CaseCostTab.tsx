@@ -7,7 +7,6 @@ import {
 import Grid from "@mui/material/Grid"
 import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
 import { useCaseContext } from "../../../../Context/CaseContext"
 import CaseCostHeader from "./CaseCostHeader"
@@ -20,12 +19,12 @@ import TotalStudyCosts from "./Tables/TotalStudyCosts"
 import AggregatedTotals from "./Tables/AggregatedTotalsChart"
 import CaseCostSkeleton from "../../../LoadingSkeletons/CaseCostTabSkeleton"
 import { caseQueryFn, projectQueryFn } from "../../../../Services/QueryFunctions"
+import { useProjectContext } from "../../../../Context/ProjectContext"
 
 const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()
     const { caseId } = useParams()
-    const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const { projectId } = useProjectContext()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)

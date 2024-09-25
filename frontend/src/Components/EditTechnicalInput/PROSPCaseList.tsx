@@ -52,15 +52,15 @@ const PROSPCaseList = ({
     const styles = useStyles()
     const { currentContext } = useModuleCurrentContext()
     const { addProjectEdit } = useEditProject()
-    const projectId = currentContext?.externalId
+    const externalId = currentContext?.externalId
 
     const [rowData, setRowData] = useState<RowData[]>()
     const [isApplying, setIsApplying] = useState<boolean>()
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
 
     const casesToRowData = () => {
