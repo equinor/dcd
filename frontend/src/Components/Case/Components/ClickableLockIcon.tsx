@@ -1,20 +1,30 @@
-import React from "react"
-import { lock, lock_open } from "@equinor/eds-icons"
-import { Icon } from "@equinor/eds-core-react"
+import React, { useState } from "react"
+import { microsoft_excel } from "@equinor/eds-icons"
+import { Icon, Tooltip, Button } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+
+import { ExcelHideIcon } from "../../../Media/Icons/ExcelHideIcon"
+import { CalculatorIcon } from "../../../Media/Icons/CalculatorIcon"
+import { CalculatorHideIcon } from "../../../Media/Icons/CalculatorHideIcon"
+import { DisabledExcelHideIcon } from "../../../Media/Icons/DisabledExcelHideIcon"
+
 
 interface LockIconProps {
     clickedElement: any
     addEdit: any
+    isProsp?: boolean
+    sharepointFileId?: string
 }
 
 const LockIcon: React.FC<LockIconProps> = ({
     clickedElement,
     addEdit,
-
+    isProsp,
+    sharepointFileId
 }) => {
     const { caseId } = useParams()
+    const [sharepointId] = useState(sharepointFileId)
     const { currentContext } = useModuleCurrentContext()
     const projectId = currentContext?.externalId
 
@@ -48,21 +58,47 @@ const LockIcon: React.FC<LockIconProps> = ({
         }
     }
 
+    if (isProsp && !sharepointId) {
+        return (
+            <Tooltip title="To show numbers from PROSP, please add a PROSP file to the case.">
+                <Button variant="ghost_icon" color="secondary" disabled>
+                    <DisabledExcelHideIcon size={20} />
+                </Button>
+            </Tooltip>)}
+
     if (clickedElement.data?.overridable) {
         return (clickedElement.data.overrideProfile?.override) ? (
-            <Icon
-                data={lock_open}
-                opacity={0.5}
-                color="#007079"
-                onClick={() => handleLockIconClick(clickedElement)}
-            />
-        )
-            : (
-                <Icon
-                    data={lock}
-                    color="#007079"
-                    onClick={() => handleLockIconClick(clickedElement)}
-                />
+            <>
+
+                {isProsp ? (
+                    <Tooltip title="Show numbers from PROSP file">
+                        <Button variant="ghost_icon" color="secondary" onClick={() => handleLockIconClick(clickedElement)}>
+                            <ExcelHideIcon size={20} /></Button>
+                    </Tooltip>
+                ) : (
+                    <Tooltip title="Show calculated numbers">
+                        <Button variant="ghost_icon" color="secondary" onClick={() => handleLockIconClick(clickedElement)}>
+                            <CalculatorHideIcon size={20} />
+                        </Button>
+                    </Tooltip>)}
+            </>
+        ) : (
+            <>
+                {isProsp ? (
+                    <Tooltip title="Hide numbers from PROSP file">
+                        <Button variant="ghost_icon" color="secondary" onClick={() => handleLockIconClick(clickedElement)}>
+                            <Icon
+                                data={microsoft_excel}
+                                color="#007079" />
+                        </Button>
+                    </Tooltip>
+                ) : (
+                    <Tooltip title="Hide calculated numbers">
+                        <Button variant="ghost_icon" color="secondary" onClick={() => handleLockIconClick(clickedElement)}>
+                            <CalculatorIcon size={20} />
+                        </Button>
+                    </Tooltip>)}
+            </>
             )
     }
     return null

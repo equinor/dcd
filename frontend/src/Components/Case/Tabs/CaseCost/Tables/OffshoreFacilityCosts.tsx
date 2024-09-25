@@ -115,6 +115,8 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             includeFooter
             totalRowName="Total"
             addEdit={addEdit}
+            isProsp={true}
+            sharepointFileId={apiData.case.sharepointFileId ?? undefined}
         />
     )
 }
