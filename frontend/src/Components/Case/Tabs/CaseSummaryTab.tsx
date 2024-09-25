@@ -39,6 +39,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
     const [cashflowProfile, setCashflowProfile] = useState<ITimeSeries | undefined>(undefined)
+    const [breakevenOilPrice, setBreakevenOilPrice] = useState<number | undefined>(undefined)
 
     const { data: apiData } = useQuery({
         queryKey: ["apiData", { projectId, caseId }],
@@ -101,8 +102,9 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         const breakEvenOilPrice = discountedTotalCost / ((GOR * PA) + 1) / discountedOilVolume / 6.29
         console.log("breakEvenOilPrice", breakEvenOilPrice)
 
-        const caseData = apiData?.case
+        setBreakevenOilPrice(breakEvenOilPrice)
 
+        const caseData = apiData?.case
         if (caseData) {
             caseData.breakEven = breakEvenOilPrice
         }
@@ -173,6 +175,28 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             values: filteredValues, // Only include data from next year onwards
         }
     }
+
+    // Effect for updating cashflow profile and breakeven oil price
+    useEffect(() => {
+        if (activeTabCase === 7 && apiData) {
+            const newCashflowProfile = calculateCashflowProfile()
+            setCashflowProfile(newCashflowProfile)
+            calculateBreakEvenOilPrice()
+
+            // Update table years based on profiles
+            SetSummaryTableYearsFromProfiles([
+                // List all relevant profiles here...
+            ], apiData.case.dG4Date ? new Date(apiData.case.dG4Date).getFullYear() : 2030, setTableYears)
+            setYearRangeSetFromProfiles(true)
+        }
+    }, [activeTabCase, apiData, project])
+
+    // Effect for recalculating breakeven oil price when related values change
+    useEffect(() => {
+        if (cashflowProfile || apiData || project) {
+            calculateBreakEvenOilPrice()
+        }
+    }, [cashflowProfile, apiData, project])
 
     const handleOffshoreFacilitiesCost = () => mergeTimeseriesList([
         (apiData?.surfCostProfileOverride?.override === true
@@ -455,7 +479,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     resourcePropertyKey="breakEven"
                     previousResourceObject={caseData}
                     label="B/E before tax"
-                    value={caseData.breakEven}
+                    value={breakevenOilPrice}
                     integer={false}
                     min={0}
                     max={1000000}
