@@ -295,7 +295,7 @@ builder.Services.AddScoped(x => new BlobServiceClient(azureBlobStorageConnection
 
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
-builder.Services.AddScoped<IEconomicsCalculationHelper,EconomicsCalculationHelper>();
+builder.Services.AddScoped<IEconomicsCalculationHelper, EconomicsCalculationHelper>();
 
 builder.Host.UseSerilog();
 
