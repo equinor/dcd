@@ -49,12 +49,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
     const { caseId } = useParams()
     const { setSnackBarMessage } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
-    const contextId = currentContext?.externalId
+    const externalId = currentContext?.externalId
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", contextId],
-        queryFn: () => projectQueryFn(contextId),
-        enabled: !!contextId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
 
     useEffect(() => {
@@ -99,7 +99,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         }
         setExeededLimit(false)
 
-        if (!apiData || !contextId) {
+        if (!apiData || !externalId) {
             console.error("Project ID is missing.")
             return
         }
@@ -107,7 +107,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         const imageService = await getImageService()
 
         // if we could avoid project name here, we could drop the project query
-        const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(contextId, apiData.name, file, caseId))
+        const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(externalId, apiData.name, file, caseId))
         try {
             const uploadedImageDtos = await Promise.all(uploadPromises)
             if (Array.isArray(uploadedImageDtos)) {

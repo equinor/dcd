@@ -19,12 +19,12 @@ const CO2ListTechnicalInput = () => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
     const { currentContext } = useModuleCurrentContext()
-    const contextId = currentContext?.externalId
+    const externalId = currentContext?.externalId
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", contextId],
-        queryFn: () => projectQueryFn(contextId),
-        enabled: !!contextId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
 
     if (!apiData) { return null }

@@ -33,15 +33,15 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
 }) => {
     const navigate = useNavigate()
     const { currentContext } = useModuleCurrentContext()
-    const contextId = currentContext?.externalId
+    const externalId = currentContext?.externalId
     const { addNewCase } = useModalContext()
     const [confirmDelete, setConfirmDelete] = useState(false)
     const { addProjectEdit } = useEditProject()
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", contextId],
-        queryFn: () => projectQueryFn(contextId),
-        enabled: !!contextId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
 
     const deleteAndGoToProject = async () => {

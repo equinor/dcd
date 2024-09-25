@@ -42,12 +42,12 @@ const SmallTooltip = styled(Tooltip)`
 const Classification = () => {
     const { caseId } = useParams()
     const { currentContext } = useModuleCurrentContext()
-    const contextId = currentContext?.externalId
+    const externalId = currentContext?.externalId
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", contextId],
-        queryFn: () => projectQueryFn(contextId),
-        enabled: !!contextId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
 
     return (

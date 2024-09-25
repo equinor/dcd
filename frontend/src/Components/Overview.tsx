@@ -41,7 +41,7 @@ interface WarnedProjectInterface {
 const Overview = () => {
     const currentUser = useCurrentUser()
     const { currentContext } = useModuleCurrentContext()
-    const contextId = currentContext?.externalId
+    const externalId = currentContext?.externalId
     const {
         isCreating,
         isLoading,
@@ -55,9 +55,9 @@ const Overview = () => {
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", contextId],
-        queryFn: () => projectQueryFn(contextId),
-        enabled: !!contextId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
 
     function addVisitedProject() {

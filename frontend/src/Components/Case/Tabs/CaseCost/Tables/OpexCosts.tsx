@@ -17,13 +17,13 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
     tableYears, opexGridRef, alignedGridsRef, apiData, addEdit,
 }) => {
     const { currentContext } = useModuleCurrentContext()
-    const contextId = currentContext?.externalId
+    const externalId = currentContext?.externalId
     const [opexTimeSeriesData, setOpexTimeSeriesData] = useState<ITimeSeriesData[]>([])
 
     const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", contextId],
-        queryFn: () => projectQueryFn(contextId),
-        enabled: !!contextId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
     useEffect(() => {
         const historicCostCostProfileData = apiData.historicCostCostProfile

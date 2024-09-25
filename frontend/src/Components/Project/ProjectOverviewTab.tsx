@@ -25,12 +25,12 @@ const ProjectOverviewTab = () => {
     const { addProjectEdit } = useEditProject()
     const { addNewCase } = useModalContext()
 
-    const contextId = currentContext?.externalId
+    const externalId = currentContext?.externalId
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", contextId],
-        queryFn: () => projectQueryFn(contextId),
-        enabled: !!contextId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
 
     })
 

@@ -12,7 +12,7 @@ import { useProjectContext } from "../../../Context/ProjectContext"
 
 const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
     const { currentContext } = useModuleCurrentContext()
-    const contextId = currentContext?.externalId
+    const externalId = currentContext?.externalId
     const { caseId } = useParams()
     const { projectId } = useProjectContext()
 
@@ -48,9 +48,9 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
         13: "HDPE lined CS (Water injection only)",
     }
     const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", contextId],
-        queryFn: () => projectQueryFn(contextId),
-        enabled: !!contextId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
 
     const { data: apiData } = useQuery({

@@ -59,7 +59,7 @@ const CasesAgGridTable = ({
     const [rowData, setRowData] = useState<TableCase[]>()
     const { currentContext } = useModuleCurrentContext()
     const navigate = useNavigate()
-    const contextId = currentContext?.externalId
+    const externalId = currentContext?.externalId
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
@@ -69,9 +69,9 @@ const CasesAgGridTable = ({
     }), [])
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", contextId],
-        queryFn: () => projectQueryFn(contextId),
-        enabled: !!contextId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
 
     if (!apiData) { return <p>project not found</p> }

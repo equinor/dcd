@@ -27,7 +27,7 @@ import { projectQueryFn } from "../../Services/QueryFunctions"
 const CreateCaseModal = () => {
     const { isLoading, setIsLoading } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
-    const contextId = currentContext?.externalId
+    const externalId = currentContext?.externalId
     // const { addProjectEdit } = useEditProject()
 
     const {
@@ -38,9 +38,9 @@ const CreateCaseModal = () => {
     } = useModalContext()
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", contextId],
-        queryFn: () => projectQueryFn(contextId),
-        enabled: !!contextId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
 
     const [caseName, setCaseName] = useState<string>("")

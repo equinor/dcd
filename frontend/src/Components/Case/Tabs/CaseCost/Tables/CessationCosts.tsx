@@ -22,12 +22,12 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
     addEdit,
 }) => {
     const { currentContext } = useModuleCurrentContext()
-    const contextId = currentContext?.externalId
+    const externalId = currentContext?.externalId
 
     const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", contextId],
-        queryFn: () => projectQueryFn(contextId),
-        enabled: !!contextId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
 
     const [cessationTimeSeriesData, setCessationTimeSeriesData] = useState<ITimeSeriesData[]>([])

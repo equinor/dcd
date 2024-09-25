@@ -18,7 +18,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
 }) => {
     const { isCalculatingProductionOverrides } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
-    const contextId = currentContext?.externalId
+    const externalId = currentContext?.externalId
     const [CaseProductionProfilesData, setCaseProductionProfilesData] = useState<ITimeSeriesData[]>([])
     const calculatedFields = [
         "productionProfileFuelFlaringAndLossesOverride",
@@ -27,9 +27,9 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
     ]
 
     const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", contextId],
-        queryFn: () => projectQueryFn(contextId),
-        enabled: !!contextId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
 
     useEffect(() => {
