@@ -74,7 +74,11 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             ? calculateDiscountedVolume(cashflowProfile.values, projectData.discountRate, (cashflowProfile?.startYear ?? 0) + Math.abs(nextYearInRelationToDg4Year))
             : 0
         setNpvValue(calculateNpvValue)
+        if (caseData) {
+            caseData.npv = calculateNpvValue
+        }
     }
+
     const calculateBreakEvenOilPrice = () => {
         if (!apiData) { return }
 
@@ -165,24 +169,6 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             values: filteredValues,
         }
     }
-
-    useEffect(() => {
-        if (activeTabCase === 7 && apiData) {
-            const newCashflowProfile = calculateCashflowProfile()
-            setCashflowProfile(newCashflowProfile)
-            calculateBreakEvenOilPrice()
-            calculateNPV()
-            SetSummaryTableYearsFromProfiles([
-            ], apiData.case.dG4Date ? new Date(apiData.case.dG4Date).getFullYear() : 2030, setTableYears)
-            setYearRangeSetFromProfiles(true)
-        }
-    }, [activeTabCase, apiData, projectData])
-
-    useEffect(() => {
-        if (cashflowProfile || apiData || projectData) {
-            calculateBreakEvenOilPrice()
-        }
-    }, [cashflowProfile, apiData, projectData])
 
     const handleOffshoreFacilitiesCost = () => mergeTimeseriesList([
         (apiData?.surfCostProfileOverride?.override === true
@@ -281,12 +267,12 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     useEffect(() => {
-        if (activeTabCase === 7 && apiData && !yearRangeSetFromProfiles) {
+        if (activeTabCase === 7 && apiData) {
             const newCashflowProfile = calculateCashflowProfile()
             setCashflowProfile(newCashflowProfile)
             calculateBreakEvenOilPrice()
-
-            SetSummaryTableYearsFromProfiles([
+            calculateNPV()
+            const tableYearsData = [
                 handleTotalExplorationCost(),
                 handleDrilling(),
                 handleOffshoreFacilitiesCost(),
@@ -302,10 +288,14 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 handleOffshoreOpexPlussWellIntervention(),
                 apiData.onshoreRelatedOPEXCostProfile,
                 apiData.additionalOPEXCostProfile,
-            ], caseData?.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setTableYears)
+            ]
+
+            const yearsFromDate = apiData.case.dG4Date ? new Date(apiData.case.dG4Date).getFullYear() : 2030
+
+            SetSummaryTableYearsFromProfiles(tableYearsData, yearsFromDate, setTableYears)
             setYearRangeSetFromProfiles(true)
         }
-    }, [activeTabCase, apiData, projectData])
+    }, [activeTabCase, apiData, projectData, cashflowProfile])
 
     useEffect(() => {
         if (apiData || projectData) {
@@ -429,7 +419,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="npv"
-                    label={`NPV before tax (${project?.currency === 1 ? "MNOK" : "MUSD"})`}
+                    label={`NPV before tax (${projectData?.currency === 1 ? "MNOK" : "MUSD"})`}
                     value={npvValue ? Number(npvValue.toFixed(2)) : undefined}
                     previousResourceObject={caseData}
                     integer={false}
@@ -444,7 +434,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     resourceName="case"
                     resourcePropertyKey="breakEven"
                     previousResourceObject={caseData}
-                    label={`B/E before tax (${project?.currency === 1 ? "NOK" : "USD"})`}
+                    label={`B/E before tax (${projectData?.currency === 1 ? "NOK" : "USD"})`}
                     value={breakevenOilPrice ? Number(breakevenOilPrice.toFixed(2)) : undefined}
                     integer={false}
                     min={0}
