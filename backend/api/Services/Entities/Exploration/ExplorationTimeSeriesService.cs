@@ -15,7 +15,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
 {
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
-
+    private readonly IProjectAccessService _projectAccessService;
     private readonly ILogger<ExplorationService> _logger;
     private readonly IMapper _mapper;
     private readonly ICaseRepository _caseRepository;
@@ -31,7 +31,8 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
         ICaseRepository caseRepository,
         IExplorationTimeSeriesRepository repository,
         IExplorationRepository explorationRepository,
-        IMapperService mapperService
+        IMapperService mapperService,
+        IProjectAccessService projectAccessService
         )
     {
         _context = context;
@@ -42,14 +43,17 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
         _repository = repository;
         _explorationRepository = explorationRepository;
         _mapperService = mapperService;
+        _projectAccessService = projectAccessService;
     }
     public async Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
+        Guid projectId,
             Guid caseId,
             Guid explorationId,
             CreateGAndGAdminCostOverrideDto createProfileDto
         )
     {
         return await CreateExplorationProfile<GAndGAdminCostOverride, GAndGAdminCostOverrideDto, CreateGAndGAdminCostOverrideDto>(
+            projectId,
             caseId,
             explorationId,
             createProfileDto,
@@ -58,6 +62,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
         );
     }
     public async Task<GAndGAdminCostOverrideDto> UpdateGAndGAdminCostOverride(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
@@ -65,6 +70,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     )
     {
         return await UpdateExplorationCostProfile<GAndGAdminCostOverride, GAndGAdminCostOverrideDto, UpdateGAndGAdminCostOverrideDto>(
+            projectId,
             caseId,
             wellProjectId,
             profileId,
@@ -74,6 +80,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
         );
     }
     public async Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
@@ -81,6 +88,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     )
     {
         return await UpdateExplorationCostProfile<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto, UpdateSeismicAcquisitionAndProcessingDto>(
+            projectId,
             caseId,
             wellProjectId,
             profileId,
@@ -91,6 +99,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     }
 
     public async Task<CountryOfficeCostDto> UpdateCountryOfficeCost(
+        Guid projectId,
         Guid caseId,
         Guid wellProjectId,
         Guid profileId,
@@ -98,6 +107,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     )
     {
         return await UpdateExplorationCostProfile<CountryOfficeCost, CountryOfficeCostDto, UpdateCountryOfficeCostDto>(
+            projectId,
             caseId,
             wellProjectId,
             profileId,
@@ -108,12 +118,14 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     }
 
     public async Task<SeismicAcquisitionAndProcessingDto> CreateSeismicAcquisitionAndProcessing(
+        Guid projectId,
         Guid caseId,
         Guid explorationId,
         CreateSeismicAcquisitionAndProcessingDto createProfileDto
     )
     {
         return await CreateExplorationProfile<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto, CreateSeismicAcquisitionAndProcessingDto>(
+            projectId,
             caseId,
             explorationId,
             createProfileDto,
@@ -123,12 +135,14 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     }
 
     public async Task<CountryOfficeCostDto> CreateCountryOfficeCost(
+        Guid projectId,
         Guid caseId,
         Guid explorationId,
         CreateCountryOfficeCostDto createProfileDto
     )
     {
         return await CreateExplorationProfile<CountryOfficeCost, CountryOfficeCostDto, CreateCountryOfficeCostDto>(
+            projectId,
             caseId,
             explorationId,
             createProfileDto,
@@ -138,6 +152,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     }
 
     private async Task<TDto> UpdateExplorationCostProfile<TProfile, TDto, TUpdateDto>(
+        Guid projectId,
         Guid caseId,
         Guid explorationId,
         Guid profileId,
@@ -151,6 +166,9 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     {
         var existingProfile = await getProfile(profileId)
             ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
+
+        // Need to verify that the project from the URL is the same as the project of the resource
+        await _projectAccessService.ProjectExists<Exploration>(projectId, existingProfile.Exploration.Id);
 
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, explorationId);
 
@@ -173,6 +191,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
     }
 
     private async Task<TDto> CreateExplorationProfile<TProfile, TDto, TCreateDto>(
+            Guid projectId,
             Guid caseId,
             Guid explorationId,
             TCreateDto createExplorationProfileDto,
@@ -183,6 +202,9 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
             where TDto : class
             where TCreateDto : class
     {
+        // Need to verify that the project from the URL is the same as the project of the resource
+        await _projectAccessService.ProjectExists<Exploration>(projectId, explorationId);
+
         var exploration = await _explorationRepository.GetExploration(explorationId)
             ?? throw new NotFoundInDBException($"Exploration with id {explorationId} not found.");
 

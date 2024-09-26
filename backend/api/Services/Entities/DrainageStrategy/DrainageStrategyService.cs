@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 using api.Context;
 using api.Dtos;
 using api.Exceptions;
@@ -15,6 +17,7 @@ public class DrainageStrategyService : IDrainageStrategyService
 {
     private readonly DcdDbContext _context;
     private readonly IProjectService _projectService;
+    private readonly IProjectAccessService _projectAccessService;
     private readonly ILogger<DrainageStrategyService> _logger;
     private readonly IMapper _mapper;
     private readonly ICaseRepository _caseRepository;
@@ -30,7 +33,8 @@ public class DrainageStrategyService : IDrainageStrategyService
         ICaseRepository caseRepository,
         IDrainageStrategyRepository repository,
         IConversionMapperService conversionMapperService,
-        IProjectRepository projectRepository
+        IProjectRepository projectRepository,
+        IProjectAccessService projectAccessService
         )
     {
         _context = context;
@@ -41,6 +45,7 @@ public class DrainageStrategyService : IDrainageStrategyService
         _repository = repository;
         _conversionMapperService = conversionMapperService;
         _projectRepository = projectRepository;
+        _projectAccessService = projectAccessService;
     }
 
     public async Task<DrainageStrategy> CreateDrainageStrategy(Guid projectId, Guid sourceCaseId, CreateDrainageStrategyDto drainageStrategyDto)
@@ -50,7 +55,7 @@ public class DrainageStrategyService : IDrainageStrategyService
         {
             throw new ArgumentNullException(nameof(drainageStrategy));
         }
-        var project = await _projectService.GetProject(projectId);
+        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
         drainageStrategy.Project = project;
         var createdDrainageStrategy = _context.DrainageStrategies!.Add(drainageStrategy);
         await _context.SaveChangesAsync();
@@ -98,6 +103,15 @@ public class DrainageStrategyService : IDrainageStrategyService
         return drainageStrategy;
     }
 
+    public async Task<DrainageStrategy> GetDrainageStrategyWithIncludes(
+        Guid drainageStrategyId,
+        params Expression<Func<DrainageStrategy, object>>[] includes
+        )
+    {
+        return await _repository.GetDrainageStrategyWithIncludes(drainageStrategyId, includes)
+            ?? throw new NotFoundInDBException($"Drainage strategy with id {drainageStrategyId} not found.");
+    }
+
     public async Task<DrainageStrategyDto> UpdateDrainageStrategy(
         Guid projectId,
         Guid caseId,
@@ -105,6 +119,9 @@ public class DrainageStrategyService : IDrainageStrategyService
         UpdateDrainageStrategyDto updatedDrainageStrategyDto
     )
     {
+        // Need to verify that the project from the URL is the same as the project of the resource
+        await _projectAccessService.ProjectExists<DrainageStrategy>(projectId, drainageStrategyId);
+
         var existingDrainageStrategy = await _repository.GetDrainageStrategy(drainageStrategyId)
             ?? throw new NotFoundInDBException($"Drainage strategy with id {drainageStrategyId} not found.");
 
@@ -113,10 +130,8 @@ public class DrainageStrategyService : IDrainageStrategyService
 
         _conversionMapperService.MapToEntity(updatedDrainageStrategyDto, existingDrainageStrategy, drainageStrategyId, project.PhysicalUnit);
 
-        // DrainageStrategy updatedDrainageStrategy;
         try
         {
-            // updatedDrainageStrategy = _repository.UpdateDrainageStrategy(existingDrainageStrategy);
             await _caseRepository.UpdateModifyTime(caseId);
             await _repository.SaveChangesAndRecalculateAsync(caseId);
         }

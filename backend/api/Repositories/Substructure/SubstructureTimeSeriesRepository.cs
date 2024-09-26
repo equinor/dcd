@@ -21,7 +21,7 @@ public class SubstructureTimeSeriesRepository : BaseRepository, ISubstructureTim
 
     public async Task<SubstructureCostProfile?> GetSubstructureCostProfile(Guid substructureCostProfileId)
     {
-        return await Get<SubstructureCostProfile>(substructureCostProfileId);
+        return await GetWithIncludes<SubstructureCostProfile>(substructureCostProfileId, s => s.Substructure);
     }
 
     public SubstructureCostProfile UpdateSubstructureCostProfile(SubstructureCostProfile substructureCostProfile)
@@ -37,7 +37,7 @@ public class SubstructureTimeSeriesRepository : BaseRepository, ISubstructureTim
 
     public async Task<SubstructureCostProfileOverride?> GetSubstructureCostProfileOverride(Guid substructureCostProfileOverrideId)
     {
-        return await Get<SubstructureCostProfileOverride>(substructureCostProfileOverrideId);
+        return await GetWithIncludes<SubstructureCostProfileOverride>(substructureCostProfileOverrideId, s => s.Substructure);
     }
 
     public SubstructureCostProfileOverride UpdateSubstructureCostProfileOverride(SubstructureCostProfileOverride substructureCostProfileOverride)

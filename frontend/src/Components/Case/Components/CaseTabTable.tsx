@@ -13,6 +13,8 @@ import {
 } from "@ag-grid-community/core"
 import isEqual from "lodash/isEqual"
 import { CircularProgress } from "@equinor/eds-core-react"
+import styled from "styled-components"
+
 import {
     extractTableTimeSeriesValues,
     generateProfile,
@@ -23,11 +25,11 @@ import {
     formatColumnSum,
 } from "../../../Utils/common"
 import { useAppContext } from "../../../Context/AppContext"
+import { TABLE_VALIDATION_RULES } from "../../../Utils/constants"
 import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
 import { useProjectContext } from "../../../Context/ProjectContext"
-import { TABLE_VALIDATION_RULES } from "../../../Utils/constants"
 
 interface Props {
     timeSeriesData: any[]
@@ -41,7 +43,15 @@ interface Props {
     calculatedFields?: string[]
     ongoingCalculation?: boolean
     addEdit: any
+    isProsp?: boolean
+    sharepointFileId?: string
 }
+
+const CenterGridIcons = styled.div`
+    padding-top: 0px;
+    padding-left: 0px;
+    height: 100%;
+`
 
 const CaseTabTable = ({
     timeSeriesData,
@@ -55,14 +65,16 @@ const CaseTabTable = ({
     calculatedFields,
     ongoingCalculation,
     addEdit,
+    isProsp,
+    sharepointFileId,
 }: Props) => {
     const { editMode, setSnackBarMessage } = useAppContext()
     const styles = useStyles()
-    const { project } = useProjectContext()
     const { caseId, tab } = useParams()
     const [stagedEdit, setStagedEdit] = useState<any>()
     const firstTriggerRef = useRef<boolean>(true)
     const timerRef = useRef<NodeJS.Timeout | null>(null)
+    const { projectId } = useProjectContext()
 
     useEffect(() => {
         if (stagedEdit) {
@@ -164,10 +176,14 @@ const CaseTabTable = ({
         }
 
         return (
-            <ClickableLockIcon
-                clickedElement={params}
-                addEdit={addEdit}
-            />
+            <CenterGridIcons>
+                <ClickableLockIcon
+                    isProsp={isProsp}
+                    sharepointFileId={sharepointFileId}
+                    clickedElement={params}
+                    addEdit={addEdit}
+                />
+            </CenterGridIcons>
         )
     }
 
@@ -252,7 +268,7 @@ const CaseTabTable = ({
             newProfile.values = []
         }
 
-        if (!newProfile || !caseId || !project) {
+        if (!newProfile || !caseId) {
             return
         }
 
@@ -265,7 +281,7 @@ const CaseTabTable = ({
                 newDisplayValue: newProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
                 previousDisplayValue: existingProfile.values.map((value: string) => Math.floor(Number(value) * 10000) / 10000).join(" - "),
                 inputLabel: params.data.profileName,
-                projectId: project.id,
+                projectId,
                 resourceName: timeSeriesDataIndex()?.resourceName,
                 resourcePropertyKey: timeSeriesDataIndex()?.resourcePropertyKey,
                 caseId,
@@ -295,7 +311,7 @@ const CaseTabTable = ({
                 firstTriggerRef.current = true
             }, 0) // TODO: Can this be removed?
         }
-    }, [stageEdit, timeSeriesData, dg4Year, project, caseId])
+    }, [stageEdit, timeSeriesData, dg4Year, caseId])
 
     const gridRefArrayToAlignedGrid = () => {
         if (alignedGridsRef && alignedGridsRef.length > 0) {

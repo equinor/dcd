@@ -2,11 +2,13 @@ import { Dispatch, SetStateAction } from "react"
 import { Typography, Button, Icon } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { add } from "@equinor/eds-icons"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 import OperationalWellCosts from "./OperationalWellCosts"
 import WellListEditTechnicalInput from "./WellListEditTechnicalInput"
-import { useProjectContext } from "../../Context/ProjectContext"
 import { useModalContext } from "../../Context/ModalContext"
 import { useAppContext } from "../../Context/AppContext"
+import { projectQueryFn } from "../../Services/QueryFunctions"
 
 const Section = styled.section`
     margin-top: 56px;
@@ -48,15 +50,23 @@ const WellCostsTab = ({
     setExplorationWells,
     setDeletedWells,
 }: Props) => {
-    const { project } = useProjectContext()
+    const { currentContext } = useModuleCurrentContext()
+    const externalId = currentContext?.externalId
+
     const { editTechnicalInput } = useModalContext()
     const { editMode } = useAppContext()
+
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
+    })
 
     const CreateWell = async (wells: any[], setWells: React.Dispatch<React.SetStateAction<any[]>>, category: number) => {
         const newWell: any = {
             wellCategory: category,
             name: "New well",
-            projectId: project?.id,
+            projectId: apiData?.id,
         }
         if (wells) {
             const newWells = [...wells, newWell]

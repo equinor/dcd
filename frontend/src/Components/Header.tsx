@@ -3,16 +3,15 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import { Banner, Icon } from "@equinor/eds-core-react"
 import { info_circle } from "@equinor/eds-icons"
 import { Outlet, useLocation, useNavigate } from "react-router-dom"
-import { useProjectContext } from "../Context/ProjectContext"
 import { GetProjectService } from "../Services/ProjectService"
 import CreateCaseModal from "./Modal/CreateCaseModal"
-import EditTechnicalInputModal from "./EditTechnicalInput/EditTechnicalInputModal"
 import { useAppContext } from "../Context/AppContext"
+import useEditProject from "../Hooks/useEditProject"
 
 const RouteCoordinator = (): JSX.Element => {
     const { setIsCreating, setIsLoading, setSnackBarMessage } = useAppContext()
-    const { setProject } = useProjectContext()
     const { currentContext } = useModuleCurrentContext()
+    const { addProjectEdit } = useEditProject()
 
     const navigate = useNavigate()
     const location = useLocation()
@@ -35,23 +34,25 @@ const RouteCoordinator = (): JSX.Element => {
         const fetchAndSetProject = async () => {
             if (!currentContext?.externalId) {
                 console.log("No externalId in context")
-                setProject(undefined)
                 return
             }
 
             try {
                 setIsLoading(true)
                 const projectService = await GetProjectService()
-                let fetchedProject = await projectService.getProject(currentContext.externalId)
-
-                if (!fetchedProject || fetchedProject.id === "") {
-                    setIsCreating(true)
-                    setSnackBarMessage("No project found for this search. Creating new.")
-                    fetchedProject = await projectService.createProject(currentContext.id)
+                let fetchedProject
+                try {
+                    fetchedProject = await projectService.getProject(currentContext.externalId)
+                } catch (error) {
+                    if (!fetchedProject || fetchedProject.id === "") {
+                        setIsCreating(true)
+                        setSnackBarMessage("No project found for this search. Creating new.")
+                        fetchedProject = await projectService.createProject(currentContext.id)
+                    }
                 }
 
                 if (fetchedProject) {
-                    setProject(fetchedProject)
+                    addProjectEdit(fetchedProject.id, fetchedProject)
                     setIsCreating(false)
                     setIsLoading(false)
                 }
@@ -78,7 +79,6 @@ const RouteCoordinator = (): JSX.Element => {
     } return (
         <>
             <CreateCaseModal />
-            <EditTechnicalInputModal />
             <Outlet />
         </>
     )

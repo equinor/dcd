@@ -15,9 +15,10 @@ import { AgGridReact } from "@ag-grid-community/react"
 import { more_vertical } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
+import { useQuery } from "@tanstack/react-query"
 import { casePath, productionStrategyOverviewToString, cellStyleRightAlign } from "../../../Utils/common"
-import { useProjectContext } from "../../../Context/ProjectContext"
 import { ReferenceCaseIcon } from "../Components/ReferenceCaseIcon"
+import { projectQueryFn } from "../../../Services/QueryFunctions"
 
 const AgTableContainer = styled.div`
     overflow: auto;
@@ -55,10 +56,10 @@ const CasesAgGridTable = ({
     isMenuOpen,
 }: CasesAgGridTableProps): JSX.Element => {
     const gridRef = useRef<AgGridReact>(null)
-    const { project } = useProjectContext()
     const [rowData, setRowData] = useState<TableCase[]>()
     const { currentContext } = useModuleCurrentContext()
     const navigate = useNavigate()
+    const externalId = currentContext?.externalId
 
     const defaultColDef = useMemo(() => ({
         sortable: true,
@@ -67,7 +68,13 @@ const CasesAgGridTable = ({
         suppressHeaderMenuButton: true,
     }), [])
 
-    if (!project) { return <p>project not found</p> }
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
+    })
+
+    if (!apiData) { return <p>project not found</p> }
 
     const productionStrategyToString = (p: any) => {
         const stringValue = productionStrategyOverviewToString(p.value)
@@ -153,9 +160,9 @@ const CasesAgGridTable = ({
     ])
 
     const casesToRowData = () => {
-        if (project.cases) {
+        if (apiData.cases) {
             const tableCases: TableCase[] = []
-            project.cases.forEach((c) => {
+            apiData.cases.forEach((c) => {
                 const tableCase: TableCase = {
                     id: c.id!,
                     name: c.name ?? "",
@@ -165,7 +172,7 @@ const CasesAgGridTable = ({
                     waterInjectorCount: c.waterInjectorCount ?? 0,
                     gasInjectorCount: c.gasInjectorCount ?? 0,
                     createdAt: c.createTime?.substring(0, 10),
-                    referenceCaseId: project.referenceCaseId,
+                    referenceCaseId: apiData.referenceCaseId,
                 }
                 tableCases.push(tableCase)
             })
@@ -175,7 +182,7 @@ const CasesAgGridTable = ({
 
     useEffect(() => {
         casesToRowData()
-    }, [project.cases])
+    }, [apiData])
 
     return (
         <div>

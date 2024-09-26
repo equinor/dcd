@@ -1,6 +1,6 @@
 import { FC } from "react"
-import { QueryClient, QueryClientProvider } from "react-query"
-import { ReactQueryDevtools } from "react-query/devtools"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { ThemeProvider, createTheme } from "@mui/material"
 import { APP_VERSION } from "./version"
 import AppRouter from "./Router"
@@ -15,7 +15,14 @@ import { AppContextProvider } from "./Context/AppContext"
 import Styles from "./styles"
 
 const AppComponent: FC = () => {
-    const queryClient = new QueryClient()
+    const queryClient = new QueryClient({
+        defaultOptions: {
+            queries: {
+                refetchOnWindowFocus: true,
+                refetchOnReconnect: true,
+            },
+        },
+    })
     const theme = createTheme({
         palette: {
             primary: {

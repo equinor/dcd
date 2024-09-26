@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react"
-import { useProjectContext } from "../../../../../Context/ProjectContext"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 import CaseTabTable from "../../../Components/CaseTabTable"
 import { ITimeSeriesData } from "../../../../../Models/Interfaces"
+import { projectQueryFn } from "../../../../../Services/QueryFunctions"
 
 interface DevelopmentWellCostsProps {
     tableYears: [number, number];
@@ -18,7 +20,14 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
     apiData,
     addEdit,
 }) => {
-    const { project } = useProjectContext()
+    const { currentContext } = useModuleCurrentContext()
+    const externalId = currentContext?.externalId
+
+    const { data: projectData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
+    })
 
     const [developmentTimeSeriesData, setDevelopmentTimeSeriesData] = useState<ITimeSeriesData[]>([])
 
@@ -41,7 +50,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
         const newDevelopmentTimeSeriesData: ITimeSeriesData[] = [
             {
                 profileName: "Oil producer",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: wellProjectOilProducerCostData,
                 resourceName: "wellProjectOilProducerCostOverride",
                 resourceId: wellProject.id,
@@ -53,7 +62,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             },
             {
                 profileName: "Gas producer",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: wellProjectGasProducerCostData,
                 resourceName: "wellProjectGasProducerCostOverride",
                 resourceId: wellProject.id,
@@ -65,7 +74,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             },
             {
                 profileName: "Water injector",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: wellProjectWaterInjectorCostData,
                 resourceName: "wellProjectWaterInjectorCostOverride",
                 resourceId: wellProject.id,
@@ -77,7 +86,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             },
             {
                 profileName: "Gas injector",
-                unit: `${project?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: wellProjectGasInjectorCostData,
                 resourceName: "wellProjectGasInjectorCostOverride",
                 resourceId: wellProject.id,
@@ -90,7 +99,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
         ]
 
         setDevelopmentTimeSeriesData(newDevelopmentTimeSeriesData)
-    }, [apiData, project])
+    }, [apiData, projectData])
 
     return (
         <CaseTabTable

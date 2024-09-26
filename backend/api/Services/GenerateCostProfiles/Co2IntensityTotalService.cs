@@ -1,12 +1,6 @@
-using System.Globalization;
 
-using api.Adapters;
-using api.Context;
 using api.Dtos;
 using api.Models;
-using api.Services.GenerateCostProfiles;
-
-using Microsoft.EntityFrameworkCore;
 
 namespace api.Services.GenerateCostProfiles;
 
@@ -16,25 +10,37 @@ public class Co2IntensityTotalService : ICo2IntensityTotalService
     private readonly IProjectService _projectService;
     private readonly ILogger<Co2IntensityTotalService> _logger;
     private readonly IDrainageStrategyService _drainageStrategyService;
-    private readonly ICo2EmissionsProfileService _generateCo2EmissionsProfile;
 
-    public Co2IntensityTotalService(IProjectService projectService, ILoggerFactory loggerFactory, ICaseService caseService, IDrainageStrategyService drainageStrategyService,
-        ICo2EmissionsProfileService generateCo2EmissionsProfile)
+    public Co2IntensityTotalService(
+        IProjectService projectService,
+        ILoggerFactory loggerFactory,
+        ICaseService caseService,
+        IDrainageStrategyService drainageStrategyService
+    )
     {
         _caseService = caseService;
         _projectService = projectService;
         _logger = loggerFactory.CreateLogger<Co2IntensityTotalService>();
         _drainageStrategyService = drainageStrategyService;
-        _generateCo2EmissionsProfile = generateCo2EmissionsProfile;
     }
 
     public async Task<double> Calculate(Guid caseId)
     {
         var caseItem = await _caseService.GetCase(caseId);
-        var project = await _projectService.GetProject(caseItem.ProjectId);
+        var project = await _projectService.GetProjectWithCasesAndAssets(caseItem.ProjectId);
         var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
 
-        var generateCo2EmissionsProfile = await _generateCo2EmissionsProfile.Generate(caseItem.Id);
+        var generateCo2EmissionsProfile = new Co2EmissionsDto();
+        if (drainageStrategy.Co2EmissionsOverride?.Override == true)
+        {
+            generateCo2EmissionsProfile.Values = drainageStrategy.Co2EmissionsOverride.Values;
+            generateCo2EmissionsProfile.StartYear = drainageStrategy.Co2EmissionsOverride.StartYear;
+        }
+        else
+        {
+            generateCo2EmissionsProfile.Values = drainageStrategy.Co2Emissions?.Values ?? [];
+            generateCo2EmissionsProfile.StartYear = drainageStrategy.Co2Emissions?.StartYear ?? 0;
+        }
         double co2Intensity = CalculateCO2Intensity(caseItem, project, drainageStrategy, generateCo2EmissionsProfile);
         return co2Intensity;
     }

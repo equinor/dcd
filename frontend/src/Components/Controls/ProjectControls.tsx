@@ -4,10 +4,13 @@ import {
     Typography,
     Icon,
     Button,
+    Tooltip,
+    CircularProgress,
 } from "@equinor/eds-core-react"
 import {
     edit,
-    save,
+    visibility,
+    check_circle_outlined,
 } from "@equinor/eds-icons"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
@@ -16,6 +19,7 @@ import { useAppContext } from "../../Context/AppContext"
 import { formatDateAndTime } from "../../Utils/common"
 import { projectTabNames } from "../../Utils/constants"
 import { useProjectContext } from "../../Context/ProjectContext"
+import FullPageLoading from "../fullPageLoading"
 
 const Header = styled.div`
     display: flex;
@@ -30,17 +34,21 @@ const Header = styled.div`
         gap: 10px;
     }
 `
-
+const Status = styled.div`
+   display: flex;
+   align-items: center;
+   gap: 5px;
+`
 interface props {
     projectLastUpdated: string
     handleEdit: () => void
-    setIsCanceling: (value: boolean) => void
 }
 
-const ProjectControls = ({ projectLastUpdated, handleEdit, setIsCanceling }: props) => {
+const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
     const { currentContext } = useModuleCurrentContext()
     const { editMode } = useAppContext()
     const { activeTabProject, setActiveTabProject } = useProjectContext()
+    const { isSaving } = useAppContext()
 
     const handleTabChange = (index: number) => {
         setActiveTabProject(index)
@@ -48,6 +56,7 @@ const ProjectControls = ({ projectLastUpdated, handleEdit, setIsCanceling }: pro
 
     return (
         <>
+            {isSaving && <FullPageLoading />}
             <Header>
                 <div>
                     <Typography variant="h4">
@@ -66,16 +75,26 @@ const ProjectControls = ({ projectLastUpdated, handleEdit, setIsCanceling }: pro
                         )}
 
                     {editMode && (
-                        <Button variant="outlined" onClick={() => setIsCanceling(true)}>
-                            Cancel
-                        </Button>
+                        isSaving ? (
+                            <Status>
+                                <CircularProgress value={0} size={16} />
+                                <Typography variant="caption">saving...</Typography>
+                            </Status>
+                        ) : (
+                            <Tooltip title="All changes are saved">
+                                <Status>
+                                    <Icon data={check_circle_outlined} size={16} />
+                                    <Typography variant="caption">up to date</Typography>
+                                </Status>
+                            </Tooltip>
+                        )
                     )}
                     <Button onClick={handleEdit} variant={editMode ? "outlined" : "contained"}>
 
                         {editMode && (
                             <>
-                                <Icon data={save} />
-                                <span>Save</span>
+                                <Icon data={visibility} />
+                                <span>View</span>
                             </>
                         )}
                         {!editMode && (

@@ -8,15 +8,14 @@ using Microsoft.Identity.Web.Resource;
 
 namespace api.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("projects/{projectId}/cases/{caseId}/substructures")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
     ApplicationRole.Admin,
-    ApplicationRole.ReadOnly,
     ApplicationRole.User
 )]
+[ActionType(ActionType.Edit)]
 public class SubstructuresController : ControllerBase
 {
     private readonly ISubstructureService _substructureService;
@@ -38,7 +37,7 @@ public class SubstructuresController : ControllerBase
         [FromRoute] Guid substructureId,
         [FromBody] APIUpdateSubstructureDto dto)
     {
-        return await _substructureService.UpdateSubstructure(caseId, substructureId, dto);
+        return await _substructureService.UpdateSubstructure(projectId, caseId, substructureId, dto);
     }
 
     [HttpPost("{substructureId}/cost-profile-override")]
@@ -48,7 +47,7 @@ public class SubstructuresController : ControllerBase
         [FromRoute] Guid substructureId,
         [FromBody] CreateSubstructureCostProfileOverrideDto dto)
     {
-        return await _substructureTimeSeriesService.CreateSubstructureCostProfileOverride(caseId, substructureId, dto);
+        return await _substructureTimeSeriesService.CreateSubstructureCostProfileOverride(projectId, caseId, substructureId, dto);
     }
 
     [HttpPut("{substructureId}/cost-profile-override/{costProfileId}")]
@@ -59,6 +58,6 @@ public class SubstructuresController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateSubstructureCostProfileOverrideDto dto)
     {
-        return await _substructureTimeSeriesService.UpdateSubstructureCostProfileOverride(caseId, substructureId, costProfileId, dto);
+        return await _substructureTimeSeriesService.UpdateSubstructureCostProfileOverride(projectId, caseId, substructureId, costProfileId, dto);
     }
 }

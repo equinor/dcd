@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 using api.Dtos;
 using api.Models;
 
@@ -7,14 +9,17 @@ public interface IExplorationService
 {
     Task<Exploration> CreateExploration(Guid projectId, Guid sourceCaseId, CreateExplorationDto explorationDto);
     Task<Exploration> GetExploration(Guid explorationId);
+    Task<Exploration> GetExplorationWithIncludes(Guid explorationId, params Expression<Func<Exploration, object>>[] includes);
 
     Task<ExplorationDto> UpdateExploration(
+        Guid projectId,
         Guid caseId,
         Guid explorationId,
         UpdateExplorationDto updatedExplorationDto
     );
 
     Task<DrillingScheduleDto> UpdateExplorationWellDrillingSchedule(
+        Guid projectId,
         Guid caseId,
         Guid explorationId,
         Guid wellId,
@@ -23,6 +28,7 @@ public interface IExplorationService
     );
 
     Task<DrillingScheduleDto> CreateExplorationWellDrillingSchedule(
+        Guid projectId,
         Guid caseId,
         Guid explorationId,
         Guid wellId,

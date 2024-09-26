@@ -10,6 +10,7 @@ public interface IWellProjectRepository : IBaseRepository
     Task<bool> WellProjectHasProfile(Guid WellProjectId, WellProjectProfileNames profileType);
     WellProject UpdateWellProject(WellProject wellProject);
     Task<DrillingSchedule?> GetWellProjectWellDrillingSchedule(Guid drillingScheduleId);
+    Task<WellProject?> GetWellProjectWithDrillingSchedule(Guid drillingScheduleId);
     DrillingSchedule UpdateWellProjectWellDrillingSchedule(DrillingSchedule drillingScheduleId);
     WellProjectWell CreateWellProjectWellDrillingSchedule(WellProjectWell wellProjectWellWithDrillingSchedule);
 }

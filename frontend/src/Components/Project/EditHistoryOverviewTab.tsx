@@ -1,8 +1,10 @@
 import styled from "styled-components"
 import { Typography } from "@equinor/eds-core-react"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 import CaseEditHistory from "../Case/Components/CaseEditHistory"
-import { useProjectContext } from "../../Context/ProjectContext"
 import { useCaseContext } from "../../Context/CaseContext"
+import { projectQueryFn } from "../../Services/QueryFunctions"
 
 const Container = styled.div`
     display: flex;
@@ -19,14 +21,21 @@ const CaseEdits = styled.div`
 `
 
 const EditHistoryOverviewTab = () => {
-    const { project } = useProjectContext()
     const { caseEdits } = useCaseContext()
+    const { currentContext } = useModuleCurrentContext()
+    const externalId = currentContext?.externalId
 
-    if (!project) {
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
+    })
+
+    if (!apiData) {
         return null
     }
 
-    if (project.cases.length === 0) {
+    if (apiData.cases.length === 0) {
         return <Typography>The edit history for this project&apos;s cases will appear here once cases are created.</Typography>
     }
 
@@ -36,7 +45,7 @@ const EditHistoryOverviewTab = () => {
 
     return (
         <Container>
-            {project.cases
+            {apiData.cases
                 .sort((a, b) => new Date(a.createTime).getTime() - new Date(b.createTime).getTime())
                 .map((projectCase, index) => {
                     const filteredEdits = caseEdits.filter((edit) => edit.caseId === projectCase.id)

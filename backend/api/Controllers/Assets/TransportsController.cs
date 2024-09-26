@@ -8,15 +8,14 @@ using Microsoft.Identity.Web.Resource;
 
 namespace api.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("projects/{projectId}/cases/{caseId}/transports")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 [RequiresApplicationRoles(
     ApplicationRole.Admin,
-    ApplicationRole.ReadOnly,
     ApplicationRole.User
 )]
+[ActionType(ActionType.Edit)]
 public class TransportsController : ControllerBase
 {
     private readonly ITransportService _transportService;
@@ -38,7 +37,7 @@ public class TransportsController : ControllerBase
         [FromRoute] Guid transportId,
         [FromBody] APIUpdateTransportDto dto)
     {
-        return await _transportService.UpdateTransport(caseId, transportId, dto);
+        return await _transportService.UpdateTransport(projectId, caseId, transportId, dto);
     }
 
     [HttpPost("{transportId}/cost-profile-override")]
@@ -48,7 +47,7 @@ public class TransportsController : ControllerBase
         [FromRoute] Guid transportId,
         [FromBody] CreateTransportCostProfileOverrideDto dto)
     {
-        return await _transportTimeSeriesService.CreateTransportCostProfileOverride(caseId, transportId, dto);
+        return await _transportTimeSeriesService.CreateTransportCostProfileOverride(projectId, caseId, transportId, dto);
     }
 
     [HttpPut("{transportId}/cost-profile-override/{costProfileId}")]
@@ -59,6 +58,6 @@ public class TransportsController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateTransportCostProfileOverrideDto dto)
     {
-        return await _transportTimeSeriesService.UpdateTransportCostProfileOverride(caseId, transportId, costProfileId, dto);
+        return await _transportTimeSeriesService.UpdateTransportCostProfileOverride(projectId, caseId, transportId, costProfileId, dto);
     }
 }

@@ -26,7 +26,7 @@ public class STEAService : ISTEAService
 
     public async Task<STEAProjectDto> GetInputToSTEA(Guid ProjectId)
     {
-        var project = await _projectService.GetProject(ProjectId);
+        var project = await _projectService.GetProjectWithCasesAndAssets(ProjectId);
         var sTEACaseDtos = new List<STEACaseDto>();
         var projectDto = _mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
         foreach (Case c in project.Cases!)

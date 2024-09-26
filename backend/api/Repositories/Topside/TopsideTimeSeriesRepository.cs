@@ -15,7 +15,7 @@ public class TopsideTimeSeriesRepository : BaseRepository, ITopsideTimeSeriesRep
 
     public async Task<TopsideCostProfile?> GetTopsideCostProfile(Guid topsideCostProfileId)
     {
-        return await Get<TopsideCostProfile>(topsideCostProfileId);
+        return await GetWithIncludes<TopsideCostProfile>(topsideCostProfileId, t => t.Topside);
     }
 
     public TopsideCostProfile CreateTopsideCostProfile(TopsideCostProfile topsideCostProfile)
@@ -37,7 +37,7 @@ public class TopsideTimeSeriesRepository : BaseRepository, ITopsideTimeSeriesRep
 
     public async Task<TopsideCostProfileOverride?> GetTopsideCostProfileOverride(Guid topsideCostProfileOverrideId)
     {
-        return await Get<TopsideCostProfileOverride>(topsideCostProfileOverrideId);
+        return await GetWithIncludes<TopsideCostProfileOverride>(topsideCostProfileOverrideId, t => t.Topside);
     }
 
     public TopsideCostProfileOverride UpdateTopsideCostProfileOverride(TopsideCostProfileOverride topsideCostProfileOverride)

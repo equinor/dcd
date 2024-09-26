@@ -158,7 +158,7 @@ public class WellCostProfileService : IWellCostProfileService
 
     private static TimeSeries<double> GenerateExplorationCostProfileFromDrillingSchedulesAndWellCost(IEnumerable<ExplorationWell> explorationWells)
     {
-        var costProfilesList = new List<TimeSeries<double>>();
+        var costProfilesList = new List<TimeSeries<double>?>();
         foreach (var explorationWell in explorationWells)
         {
             if (explorationWell?.DrillingSchedule?.Values?.Length > 0)
@@ -180,7 +180,7 @@ public class WellCostProfileService : IWellCostProfileService
 
     private static TimeSeries<double> GenerateWellProjectCostProfileFromDrillingSchedulesAndWellCost(IEnumerable<WellProjectWell> wellProjectWells)
     {
-        var costProfilesList = new List<TimeSeries<double>>();
+        var costProfilesList = new List<TimeSeries<double>?>();
         foreach (var wellProjectWell in wellProjectWells)
         {
             if (wellProjectWell?.DrillingSchedule?.Values?.Length > 0)

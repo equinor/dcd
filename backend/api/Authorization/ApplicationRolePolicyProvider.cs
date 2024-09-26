@@ -4,30 +4,26 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace api.Authorization;
 
-[DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
 public class ApplicationRolePolicyProvider : IAuthorizationPolicyProvider
 {
     private const string PolicyPrefix = "ApplicationRoles:";
     private const string PolicyDivider = "|";
-
 
     public static string ApplicationRolesToPolicy(IEnumerable<ApplicationRole> applicationRoles)
     {
         return PolicyPrefix + string.Join(PolicyDivider, applicationRoles);
     }
 
-    public Task<AuthorizationPolicy> GetDefaultPolicyAsync() => Task.FromResult(DefaultApplicationRole());
-
     public Task<AuthorizationPolicy?> GetFallbackPolicyAsync() =>
         Task.FromResult((AuthorizationPolicy?)DefaultApplicationRole());
+
+    public Task<AuthorizationPolicy> GetDefaultPolicyAsync() => Task.FromResult(DefaultApplicationRole());
 
     public Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
     {
         var applicationRoles = PolicyToApplicationRoles(policyName).ToList();
         return Task.FromResult((AuthorizationPolicy?)PolicyWithRequiredRole(applicationRoles));
     }
-
-    private string GetDebuggerDisplay() => ToString() ?? "";
 
     private static IEnumerable<ApplicationRole> PolicyToApplicationRoles(string policy)
     {
