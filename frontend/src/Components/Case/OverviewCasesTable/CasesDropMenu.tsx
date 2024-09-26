@@ -140,12 +140,12 @@ const CasesDropMenu = ({
                             </Typography>
                         </Menu.Item>
                     ):(
-                    <Menu.Item onClick={() => archiveCase(true)}>
-                        <Icon data={archive} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Archive Case
-                        </Typography>
-                    </Menu.Item>
+                        <Menu.Item onClick={() => archiveCase(true)}>
+                            <Icon data={archive} size={16} />
+                            <Typography group="navigation" variant="menu_title" as="span">
+                                Archive Case
+                            </Typography>
+                        </Menu.Item>
                 )}
                 <Menu.Item
                     disabled={selectedCase?.archived}

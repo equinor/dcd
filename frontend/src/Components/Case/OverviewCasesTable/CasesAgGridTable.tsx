@@ -114,17 +114,7 @@ const CasesAgGridTable = ({
         </Button>
     )
 
-    const ArchivedMenuButton = (p: any) => (
-        <Button
-            variant="ghost"
-            onClick={(e) => onMoreClick(p.node.data, e.currentTarget)}
-
-        >
-            <Icon data={more_vertical} />
-        </Button>
-    )
-
-    const selectCase = (p: any) => {
+    const selectCase = (p:any) => {
         if (!currentContext || !p.node.data) { return null }
         navigate(casePath(currentContext.id, p.node.data.id))
         return null
@@ -141,7 +131,6 @@ const CasesAgGridTable = ({
         </Tooltip>
     )
 
-    // hvorfor er denne duplisert i ProjectOverviewTab?
     const submitToSTEA: MouseEventHandler<HTMLButtonElement> = async (e) => {
         e.preventDefault()
 
@@ -203,9 +192,9 @@ const CasesAgGridTable = ({
 
     const casesToRowData = (isArchived: boolean) => {
         if (apiData.cases) {
-            let cases = isArchived ? apiData.cases.filter((c:any) => c.archived === false) : apiData.cases.filter((c:any) => c.archived === true)
+            let cases = isArchived ? apiData.cases.filter((c) => c.archived === false) : apiData.cases.filter((c) => c.archived === true)
             const tableCases: TableCase[] = []
-            cases.forEach((c:any) => {
+            cases.forEach((c) => {
                 const tableCase: TableCase = {
                     id: c.id!,
                     name: c.name ?? "",
