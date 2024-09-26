@@ -434,7 +434,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     resourceName="case"
                     resourcePropertyKey="breakEven"
                     previousResourceObject={caseData}
-                    label={`B/E before tax (${projectData?.currency === 1 ? "NOK" : "USD"})`}
+                    label={`B/E before tax (${projectData?.currency === 1 ? "NOK/bbl" : "USD/bbl"})`}
                     value={breakevenOilPrice ? Number(breakevenOilPrice.toFixed(2)) : undefined}
                     integer={false}
                     min={0}
