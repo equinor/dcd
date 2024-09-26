@@ -12,12 +12,12 @@ import {
     archive,
     unarchive
 } from "@equinor/eds-icons"
-import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useMemo, useState } from "react"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
 import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseController"
-//import { ResourceObject } from "@/Models/Interfaces"
+import { ResourceObject } from "@/Models/Interfaces"
 import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
@@ -38,8 +38,10 @@ const CasesDropMenu = ({
     selectedCaseId,
     editCase,
 }: CasesDropMenuProps): JSX.Element => {
+    const queryClient = useQueryClient()
     const { addProjectEdit } = useEditProject()
-
+    const navigate = useNavigate()
+    const { updateCase } = useSubmitToApi()
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
 
@@ -48,16 +50,13 @@ const CasesDropMenu = ({
         queryFn: () => projectQueryFn(externalId),
         enabled: !!externalId,
     })
-
+    
     const [confirmDelete, setConfirmDelete] = useState(false)
     
-    const { updateCase } = useSubmitToApi()
+    const selectedCase = useMemo(() => projectData?.cases.find((c) => c.id === selectedCaseId), [projectData, selectedCaseId])
 
-    const selectedCase = {archived: false}
-    //useMemo(() => project.cases.find((c) => c.id === selectedCaseId), [project, selectedCaseId])
     if (!projectData) { return <p>project not found</p> }
 
-    const navigate = useNavigate()
 
     const openCase = async () => {
         try {
@@ -78,13 +77,14 @@ const CasesDropMenu = ({
     }
 
     const archiveCase = async (isArchived: boolean) => {
-        console.log(isArchived)
-        // const currentCase = project.cases.find((c) => c.id === selectedCaseId)
-        // if(!currentCase || selectedCaseId === undefined || projectId === undefined || projectId === null) { return }
-        // const newResourceObject = { ...currentCase, archived: isArchived } as ResourceObject
-        // console.log("currentCase", currentCase)
-        // console.log("newResourceObject: ", newResourceObject)
-        // updateCase({ projectId, caseId: selectedCaseId, resourceObject: newResourceObject })
+        if(!selectedCase || selectedCaseId === undefined || !projectData.id) { return }
+        const newResourceObject = { ...selectedCase, archived: isArchived } as ResourceObject
+        const result = await updateCase({ projectId: projectData.id , caseId: selectedCaseId, resourceObject: newResourceObject })
+        if(result) {
+            queryClient.invalidateQueries(
+                { queryKey: ["projectApiData", projectData.id] },
+            )
+        }
     }
 
     return (

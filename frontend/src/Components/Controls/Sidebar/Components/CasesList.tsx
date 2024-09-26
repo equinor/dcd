@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useMemo } from "react"
 import { Grid } from "@mui/material"
 import { Tooltip } from "@equinor/eds-core-react"
 import { useLocation, useNavigate } from "react-router-dom"
@@ -39,9 +39,13 @@ const CasesList: React.FC = () => {
         return null
     }
 
+    const cases = useMemo(() => {
+        return apiData.cases.filter((c) => c.archived === false);
+      }, [apiData.cases]);
+
     return (
         <>
-            {apiData.cases.sort((a, b) => new Date(a.createTime).getDate() - new Date(b.createTime).getDate()).map((projectCase, index) => (
+            {cases.sort((a, b) => new Date(a.createTime).getDate() - new Date(b.createTime).getDate()).map((projectCase, index) => (
                 <Grid
                     item
                     container

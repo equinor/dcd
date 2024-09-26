@@ -1,10 +1,12 @@
-import { useMemo } from "react"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { SideBar, Button, Divider } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery } from "@tanstack/react-query"
 
 import { useAppContext } from "@/Context/AppContext"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 import ProjectDetails from "./Components/ProjectDetails"
 import CasesDetails from "./Components/CasesDetails"
 import CurrentCaseEditHistory from "./Components/CurrentCaseEditHistory"
@@ -64,11 +66,20 @@ const Sidebar = () => {
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
 
-    if (!externalId) { return null }
+    const { data: projectData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
+    })
 
-    // const archivedCases = useMemo(() => {
-    //     return project.cases.filter((c) => c.archived === true);
-    //   }, [project.cases]);
+    const [archivedCases, setArchivedCases] = useState<Components.Schemas.CaseWithProfilesDto[]>([])
+    
+    useEffect(() => {
+        if (!projectData) { return }
+        setArchivedCases(projectData.cases.filter((c) => c.archived === true))
+    }, [projectData])
+
+    if (!projectData) { return null }
 
     return (
         <Sticky>
@@ -78,11 +89,11 @@ const Sidebar = () => {
                     <Divider />
                     <CasesDetails />
                     <Divider />
-                    {/* {archivedCases.length > 0 && 
-                    <>
-                        <ArchivedCasesDetails />
-                        <Divider />
-                    </>} */}
+                    {archivedCases.length > 0 &&
+                        <>
+                            <ArchivedCasesDetails />
+                            <Divider />
+                        </>}
                     <CurrentCaseEditHistory />
                     <Divider />
                 </Content>

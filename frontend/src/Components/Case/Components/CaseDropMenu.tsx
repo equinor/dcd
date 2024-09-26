@@ -13,7 +13,7 @@ import {
 } from "@equinor/eds-icons"
 import { useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
 import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseController"
@@ -21,8 +21,8 @@ import { useModalContext } from "@/Context/ModalContext"
 import { ResourceObject } from "@/Models/Interfaces"
 import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
-import Modal from "../../Modal/Modal"
 import { useProjectContext } from "@/Context/ProjectContext"
+import Modal from "../../Modal/Modal"
 
 interface CaseDropMenuProps {
     isMenuOpen: boolean
@@ -41,20 +41,21 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
 }) => {
     const navigate = useNavigate()
     const { currentContext } = useModuleCurrentContext()
+    const queryClient = useQueryClient()
     const externalId = currentContext?.externalId
     const { addNewCase } = useModalContext()
     const [confirmDelete, setConfirmDelete] = useState(false)
     const { addProjectEdit } = useEditProject()
     const { projectId } = useProjectContext()
     const { updateCase } = useSubmitToApi()
-
+    
     const { data: projectData } = useQuery({
         queryKey: ["projectApiData", externalId],
         queryFn: () => projectQueryFn(externalId),
         enabled: !!externalId,
     })
 
-    const { data: apiData } = useQuery({
+    const { data: caseApiData } = useQuery({
         queryKey: ["caseApiData", projectId, caseId],
         queryFn: () => caseQueryFn(projectId, caseId),
         enabled: !!projectId && !!caseId,
@@ -62,17 +63,21 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
 
     const deleteAndGoToProject = async () => {
         if (!caseId || !projectData) { return }
-
+        
         if (await deleteCase(caseId, projectData, addProjectEdit)) {
             if (projectData.fusionProjectId) { navigate(`/${projectData.fusionProjectId}`) }
         }
     }
 
-
     const archiveCase = async (isArchived: boolean) => {
-        if(apiData?.case === undefined && projectId === undefined || projectId === null) { return }
-        const newResourceObject = { ...apiData?.case, archived: isArchived } as ResourceObject
-        updateCase({ projectId, caseId, resourceObject: newResourceObject })
+        if(!caseApiData?.case || !caseId || !projectData?.id) { return }
+        const newResourceObject = { ...caseApiData?.case, archived: isArchived } as ResourceObject
+        const result = await updateCase({ projectId: projectData.id , caseId, resourceObject: newResourceObject })
+        if(result) {
+            queryClient.invalidateQueries(
+                { queryKey: ["projectApiData", projectData.id] },
+            )
+        }
     }
 
     return (
