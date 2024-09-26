@@ -15,7 +15,7 @@ import Tab from "@mui/material/Tab"
 import styled from "styled-components"
 import { useAppContext } from "../../Context/AppContext"
 import { ChooseReferenceCase, ReferenceCaseIcon } from "../Case/Components/ReferenceCaseIcon"
-import Classification from "./Classification"
+import ClassificationChip from "./ClassificationChip"
 import { EMPTY_GUID, caseTabNames } from "../../Utils/constants"
 import { GetProjectService } from "../../Services/ProjectService"
 import useEditCase from "../../Hooks/useEditCase"
@@ -82,21 +82,6 @@ const CaseControls: React.FC<props> = ({
         queryFn: () => projectQueryFn(projectId),
         enabled: !!projectId,
     })
-
-    /*
-        // divides the data into separate queries for each resource
-        useEffect(() => {
-        if (isSuccess && apiData) {
-            console.log("refreshing case data")
-            const defaultParams = { projectId, caseId }
-            Object.entries(apiData).forEach(([key, data]) => {
-                if (data) {
-                    queryClient.setQueryData([key, defaultParams], data)
-                }
-            })
-        }
-    }, [isSuccess, apiData, projectId, caseId])
-    */
 
     if (error) {
         setSnackBarMessage(error.message)
@@ -181,7 +166,7 @@ const CaseControls: React.FC<props> = ({
                             <>
                                 {projectData?.referenceCaseId === caseId && <ReferenceCaseIcon />}
                                 <Typography variant="h4">{caseData.name}</Typography>
-                                <Classification />
+                                <ClassificationChip />
                             </>
                         )}
                     </div>
@@ -228,7 +213,6 @@ const CaseControls: React.FC<props> = ({
                     />
                 </div>
             </Header>
-
             <Tabs
                 value={activeTabCase}
                 onChange={(_, index) => handleTabChange(index)}

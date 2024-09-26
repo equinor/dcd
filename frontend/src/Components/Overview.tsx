@@ -61,7 +61,7 @@ const Overview = () => {
         snackBarMessage,
         setSnackBarMessage,
     } = useAppContext()
-    const { setProjectId, setIsRevision } = useProjectContext()
+    const { setProjectId, setIsRevision, isRevision } = useProjectContext()
     const { featuresModalIsOpen } = useModalContext()
     const [warnedProjects, setWarnedProjects] = useState<WarnedProjectInterface | null>(null)
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
@@ -171,6 +171,7 @@ const Overview = () => {
             </ContentWrapper>
             <SwitchWrapper>
                 <Switch
+                    checked={isRevision}
                     label="Revision"
                     onChange={() => setIsRevision((prev) => !prev)}
                 />

@@ -25,7 +25,6 @@ const ProjectContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [projectId, setProjectId] = useState<string>("")
     const [isRevision, setIsRevision] = useState<boolean>(false)
 
-
     const value = useMemo(() => ({
         activeTabProject,
         setActiveTabProject,
