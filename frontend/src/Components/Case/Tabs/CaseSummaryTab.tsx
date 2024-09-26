@@ -89,7 +89,6 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         const defaultOilPrice = projectData?.oilPriceUSD || 75
         const gasPriceNOK = projectData?.gasPriceNOK
         const exchangeRateUSDToNOK = projectData?.exchangeRateUSDToNOK ?? 10
-        const exchangeRateNOKToUSD = 1 / exchangeRateUSDToNOK
         const oilVolume = mergeTimeseries(apiData.productionProfileOil, apiData.additionalProductionProfileOil)
 
         const gasVolume = mergeTimeseries(apiData.productionProfileGas, apiData.additionalProductionProfileGas)

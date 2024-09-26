@@ -165,7 +165,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         })
 
         return data
-    }, [aggregatedTimeSeriesData, tableYears, apiData, projectData])
+    }, [aggregatedTimeSeriesData, tableYears, apiData])
 
     const figmaTheme = {
         palette: {
