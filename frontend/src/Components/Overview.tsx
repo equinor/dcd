@@ -4,6 +4,7 @@ import {
     Button,
     Snackbar,
     Typography,
+    Switch,
 } from "@equinor/eds-core-react"
 import { useCurrentUser } from "@equinor/fusion-framework-react/hooks"
 import styled from "styled-components"
@@ -23,6 +24,18 @@ const ControlsWrapper = styled.div`
     position: sticky;
     top: 0;
     z-index: 1;
+`
+
+const SwitchWrapper = styled.div`
+    position: absolute;
+    right: 80px;
+    bottom: 12px;
+    background-color: white;
+    padding: 0 10px;
+    border-radius: 20px;
+    z-index: 10;
+    border: 1px solid #f2f2f2;
+    box-shadow: 4.0px 8.0px 8.0px hsl(0deg 0% 0% / 0.18);
 
 `
 const ContentWrapper = styled.div`
@@ -48,7 +61,7 @@ const Overview = () => {
         snackBarMessage,
         setSnackBarMessage,
     } = useAppContext()
-    const { setProjectId } = useProjectContext()
+    const { setProjectId, setIsRevision } = useProjectContext()
     const { featuresModalIsOpen } = useModalContext()
     const [warnedProjects, setWarnedProjects] = useState<WarnedProjectInterface | null>(null)
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
@@ -156,6 +169,12 @@ const Overview = () => {
                     <Outlet />
                 </MainView>
             </ContentWrapper>
+            <SwitchWrapper>
+                <Switch
+                    label="Revision"
+                    onChange={() => setIsRevision((prev) => !prev)}
+                />
+            </SwitchWrapper>
 
         </>
     )
