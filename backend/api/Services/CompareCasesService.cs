@@ -60,7 +60,11 @@ public class CompareCasesService : ICompareCasesService
                     c => c.OffshoreFacilitiesOperationsCostProfileOverride!,
                     c => c.HistoricCostCostProfile!,
                     c => c.OnshoreRelatedOPEXCostProfile!,
-                    c => c.AdditionalOPEXCostProfile!);
+                    c => c.AdditionalOPEXCostProfile!,
+                    c => c.NPV!,
+                    c => c.NPVOverride!,
+                    c => c.BreakEven!,
+                    c => c.breakEvenOverride!);
 
                 drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
                     caseItem.DrainageStrategyLink,

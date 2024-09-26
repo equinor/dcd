@@ -156,6 +156,9 @@ namespace api.Migrations
                     b.Property<double>("BreakEven")
                         .HasColumnType("float");
 
+                    b.Property<double>("BreakEvenOverride")
+                        .HasColumnType("float");
+
                     b.Property<double>("CapexFactorFEEDStudies")
                         .HasColumnType("float");
 
@@ -212,6 +215,9 @@ namespace api.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<double>("NPV")
+                        .HasColumnType("float");
+
+                    b.Property<double>("NPVOverride")
                         .HasColumnType("float");
 
                     b.Property<string>("Name")

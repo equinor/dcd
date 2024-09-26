@@ -8,7 +8,9 @@ interface TableCompareCase {
     cases: string,
     description: string,
     npv: number,
+    npvOverride: number,
     breakEven: number,
+    breakEvenOverride: number,
     oilProduction: number,
     gasProduction: number,
     totalExportedVolumes: number,
@@ -49,11 +51,13 @@ export const useProjectChartData = () => {
         const npvObject = apiData.cases.map((caseItem) => ({
             cases: caseItem.name,
             npv: caseItem.npv,
+            npvOverride: caseItem.npvOverride ?? null,
         }))
 
         const breakEvenObject = apiData.cases.map((caseItem) => ({
             cases: caseItem.name,
             breakEven: caseItem.breakEven,
+            breakEvenOverride: caseItem.breakEvenOverride ?? null,
         }))
 
         const productionProfilesObject = apiData.cases.map((caseItem) => {
@@ -113,7 +117,9 @@ export const useProjectChartData = () => {
                             cases: c.name ?? "",
                             description: c.description ?? "",
                             npv: Math.round(c.npv ?? 0 * 1) / 1,
+                            npvOverride: Math.round(c.npvOverride ?? 0 * 1) / 1,
                             breakEven: Math.round(c.breakEven ?? 0 * 1) / 1,
+                            breakEvenOverride: Math.round(c.breakEvenOverride ?? 0 * 1) / 1,
                             oilProduction: Math.round(matchingCase.totalOilProduction * 10) / 10,
                             gasProduction: Math.round(matchingCase.totalGasProduction * 10) / 10,
                             totalExportedVolumes: Math.round(matchingCase.totalExportedVolumes * 10) / 10,

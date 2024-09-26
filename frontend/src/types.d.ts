@@ -14,7 +14,9 @@ declare namespace Components {
             capexFactorFeasibilityStudies?: number; // double
             capexFactorFEEDStudies?: number; // double
             npv?: number; // double
+            npvOverride?: number; // double
             breakEven?: number; // double
+            breakEvenOverride?: number; // double
             host?: string | null;
             dgaDate?: string; // date-time
             dgbDate?: string; // date-time
@@ -175,7 +177,9 @@ declare namespace Components {
             capexFactorFeasibilityStudies: number; // double
             capexFactorFEEDStudies: number; // double
             npv: number; // double
+            npvOverride: number; // double
             breakEven: number; // double
+            breakEvenOverride: number; // double
             host?: string | null;
             dgaDate: string; // date-time
             dgbDate: string; // date-time
@@ -294,7 +298,9 @@ declare namespace Components {
             capexFactorFeasibilityStudies: number; // double
             capexFactorFEEDStudies: number; // double
             npv: number; // double
+            npvOverride: number; // double
             breakEven: number; // double
+            breakEvenOverride: number; // double
             host?: string | null;
             dgaDate: string; // date-time
             dgbDate: string; // date-time
@@ -1975,11 +1981,11 @@ declare namespace Paths {
         namespace Delete {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type ProjectId = string;
+                export type ProjectId = string; // uuid
             }
             export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                projectId: Parameters.ProjectId;
             }
             namespace Responses {
                 export type $200 = Components.Schemas.ProjectWithAssetsDto;
@@ -1988,11 +1994,11 @@ declare namespace Paths {
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
-                export type ProjectId = string;
+                export type ProjectId = string; // uuid
             }
             export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
-                projectId: Parameters.ProjectId;
             }
             export type RequestBody = Components.Schemas.APIUpdateCaseDto;
             namespace Responses {

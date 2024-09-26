@@ -37,8 +37,11 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
     const [cashflowProfile, setCashflowProfile] = useState<ITimeSeries | undefined>(undefined)
-    const [breakevenOilPrice, setBreakevenOilPrice] = useState<number | undefined>(undefined)
     const [npvValue, setNpvValue] = useState<number | undefined>(undefined)
+    const [npvOverride, setNpvOverride] = useState<number | undefined>(undefined)
+    const [breakEvenOilPrice, setbreakEvenOilPrice] = useState<number | undefined>(undefined)
+    const [breakEvenOverride, setbreakEvenOverride] = useState<number | undefined>(undefined)
+
     const { data: projectData } = useQuery({
         queryKey: ["projectApiData", projectId],
         queryFn: () => projectQueryFn(projectId),
@@ -79,7 +82,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         }
     }
 
-    const calculateBreakEvenOilPrice = () => {
+    const calculatebreakEvenOilPrice = () => {
         if (!apiData) { return }
 
         const discountRate = projectData?.discountRate || 8
@@ -107,12 +110,12 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             PA = (gasPriceNOK * 1000) / (exchangeRateUSDToNOK * 6.29 * defaultOilPrice)
         }
 
-        const breakEvenOilPrice = discountedTotalCost / ((GOR * PA) + 1) / discountedOilVolume / 6.29
+        const breakEvenPrice = discountedTotalCost / ((GOR * PA) + 1) / discountedOilVolume / 6.29
 
-        setBreakevenOilPrice(breakEvenOilPrice)
+        setbreakEvenOilPrice(breakEvenPrice)
 
-        if (caseData) {
-            caseData.breakEven = breakEvenOilPrice
+        if (caseData && breakEvenOilPrice !== undefined) {
+            caseData.breakEven = breakEvenPrice
         }
     }
 
@@ -270,7 +273,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         if (activeTabCase === 7 && apiData) {
             const newCashflowProfile = calculateCashflowProfile()
             setCashflowProfile(newCashflowProfile)
-            calculateBreakEvenOilPrice()
+            calculatebreakEvenOilPrice()
             calculateNPV()
             const tableYearsData = [
                 handleTotalExplorationCost(),
@@ -420,12 +423,28 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     resourceName="case"
                     resourcePropertyKey="npv"
                     label={`NPV before tax (${projectData?.currency === 1 ? "MNOK" : "MUSD"})`}
-                    value={npvValue ? Number(npvValue.toFixed(2)) : undefined}
+                    value={caseData.npv ? Number(caseData.npv.toFixed(2)) : undefined}
                     previousResourceObject={caseData}
                     integer={false}
                     allowNegative
                     min={0}
                     max={1000000}
+                    disabled
+                />
+            </Grid>
+            <Grid item xs={12} md={6}>
+                <SwitchableNumberInput
+                    addEdit={addEdit}
+                    resourceName="case"
+                    resourcePropertyKey="npvOverride"
+                    label={`Manually inputted NPV before tax (${projectData?.currency === 1 ? "MNOK" : "MUSD"})`}
+                    value={caseData.npvOverride ? Number(caseData.npvOverride.toFixed(2)) : undefined}
+                    previousResourceObject={caseData}
+                    integer={false}
+                    allowNegative
+                    min={0}
+                    max={1000000}
+                    resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -435,10 +454,26 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     resourcePropertyKey="breakEven"
                     previousResourceObject={caseData}
                     label={`B/E before tax (${projectData?.currency === 1 ? "NOK/bbl" : "USD/bbl"})`}
-                    value={breakevenOilPrice ? Number(breakevenOilPrice.toFixed(2)) : undefined}
+                    value={breakEvenOilPrice ? Number(breakEvenOilPrice.toFixed(2)) : undefined}
                     integer={false}
                     min={0}
                     max={1000000}
+                    disabled
+                />
+            </Grid>
+            <Grid item xs={12} md={6}>
+                <SwitchableNumberInput
+                    addEdit={addEdit}
+                    resourceName="case"
+                    resourcePropertyKey="breakEvenOverride"
+                    label={`Manually inputted B/E before tax (${projectData?.currency === 1 ? "MNOK" : "MUSD"})`}
+                    value={caseData.breakEvenOverride ? Number(caseData.breakEvenOverride.toFixed(2)) : undefined} // her for å sette default når ingen verdi er satt
+                    previousResourceObject={caseData}
+                    integer={false}
+                    allowNegative
+                    min={0}
+                    max={1000000}
+                    resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12}>
