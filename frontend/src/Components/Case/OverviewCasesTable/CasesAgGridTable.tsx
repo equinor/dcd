@@ -192,7 +192,7 @@ const CasesAgGridTable = ({
 
     const casesToRowData = (isArchived: boolean) => {
         if (apiData.cases) {
-            let cases = isArchived ? apiData.cases.filter((c) => c.archived === false) : apiData.cases.filter((c) => c.archived === true)
+            let cases = isArchived ? apiData.cases.filter((c) => !c.archived) : apiData.cases.filter((c) => c.archived)
             const tableCases: TableCase[] = []
             cases.forEach((c) => {
                 const tableCase: TableCase = {

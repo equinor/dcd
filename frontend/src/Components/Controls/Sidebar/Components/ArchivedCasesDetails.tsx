@@ -25,7 +25,8 @@ const ArchivedCasesDetails: React.FC = () => {
                 </Header>
                 {sidebarOpen && (
                     <Grid item>
-                        {!expandList ? (<Tooltip title="Expand Archived Cases">
+                        {!expandList ? (
+                        <Tooltip title="Expand Archived Cases">
                             <Button variant="ghost_icon" className="GhostButton"><Icon data={arrow_drop_down} onClick={() => setExpandList(true)} /></Button>
                         </Tooltip>) : (
                         <Tooltip title="Collapse Archived Cases">
