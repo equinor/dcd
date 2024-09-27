@@ -141,7 +141,6 @@ public class DcdDbContext : DbContext
         if (rerunTotalIncome)
         {
             await _serviceProvider.GetRequiredService<IEconomicsCalculationHelper>().CalculateTotalIncome(caseId);
-            // add check if rerunCalculateNPV is false, if its false run calculateNPV()
             if (!rerunCalculateNPV)
             {
                 await _serviceProvider.GetRequiredService<IEconomicsCalculationHelper>().CalculateNPV(caseId);

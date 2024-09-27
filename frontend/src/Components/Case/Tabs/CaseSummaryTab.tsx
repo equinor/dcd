@@ -62,69 +62,6 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         }
     }, [apiData])
 
-    // const calculateDiscountedVolume = (volumeArray: number[], discountRate: number, startIndex: number): number => volumeArray.reduce(
-    //     (accumulatedVolume, volume, i) => accumulatedVolume + (volume / (1 + (discountRate / 100)) ** (startIndex + i + 1)),
-    //     0,
-    // )
-    // const calculateNPV = () => {
-    //     if (!apiData) { return }
-
-    //     const currentYear = new Date().getFullYear()
-    //     const nextYear = currentYear + 1
-    //     const dg4Year = new Date(apiData.case.dG4Date).getFullYear()
-    //     const nextYearInRelationToDg4Year = nextYear - dg4Year
-    //     const calculateNpvValue = cashflowProfile && cashflowProfile.values && projectData?.discountRate
-    //         ? calculateDiscountedVolume(cashflowProfile.values, projectData.discountRate, (cashflowProfile?.startYear ?? 0) + Math.abs(nextYearInRelationToDg4Year))
-    //         : 0
-    //     setNpvValue(calculateNpvValue)
-    //     if (caseData) {
-    //         caseData.npv = calculateNpvValue
-    //     }
-    // }
-
-    // const calculatebreakEvenOilPrice = () => {
-    //     if (!apiData) { return }
-
-    //     const discountRate = projectData?.discountRate || 8
-    //     const defaultOilPrice = projectData?.oilPriceUSD || 75
-    //     const gasPriceNOK = projectData?.gasPriceNOK
-    //     const exchangeRateUSDToNOK = projectData?.exchangeRateUSDToNOK ?? 10
-    //     const oilVolume = mergeTimeseries(apiData.productionProfileOil, apiData.additionalProductionProfileOil)
-    //     console.log("frontend oilVolume", oilVolume)
-    //     const gasVolume = mergeTimeseries(apiData.productionProfileGas, apiData.additionalProductionProfileGas)
-    //     console.log("frontend gasVolume", gasVolume)
-
-    //     const currentYear = new Date().getFullYear()
-    //     const nextYear = currentYear + 1
-    //     const dg4Year = new Date(apiData.case.dG4Date).getFullYear()
-    //     const nextYearInRelationToDg4Year = nextYear - dg4Year
-
-    //     const discountedGasVolume = calculateDiscountedVolume(gasVolume?.values || [], discountRate, gasVolume.startYear + Math.abs(nextYearInRelationToDg4Year))
-    //     const discountedOilVolume = calculateDiscountedVolume(oilVolume.values || [], discountRate, oilVolume.startYear + Math.abs(nextYearInRelationToDg4Year))
-    //     const discountedTotalCost = calculateDiscountedVolume(apiData?.calculatedTotalCostCostProfile?.values || [], discountRate, (apiData?.calculatedTotalCostCostProfile?.startYear ?? 0) + Math.abs(nextYearInRelationToDg4Year))
-    //     console.log("frontend discountedGasVolume", discountedGasVolume)
-    //     console.log("frontend discountedOilVolume", discountedOilVolume)
-    //     console.log("frontend discountedTotalCost", discountedTotalCost)
-
-    //     const GOR = discountedGasVolume / discountedOilVolume
-    //     console.log("frontend GOR", GOR)
-
-    //     let PA = 0
-    //     if (gasPriceNOK) {
-    //         PA = (gasPriceNOK * 1000) / (exchangeRateUSDToNOK * 6.29 * defaultOilPrice)
-    //     }
-    //     console.log("frontend PA", PA)
-
-    //     const breakEvenPrice = discountedTotalCost / ((GOR * PA) + 1) / discountedOilVolume / 6.29
-
-    //     setbreakEvenOilPrice(breakEvenPrice)
-
-    //     if (caseData && breakEvenOilPrice !== undefined) {
-    //         caseData.breakEven = breakEvenPrice
-    //     }
-    //     console.log("frontend caseData.breakEven", caseData?.breakEven)
-    // }
-
     const calculateCashflowProfile = (): ITimeSeries => {
         if (!apiData) {
             return {
@@ -279,8 +216,6 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         if (activeTabCase === 7 && apiData) {
             const newCashflowProfile = calculateCashflowProfile()
             setCashflowProfile(newCashflowProfile)
-            // calculatebreakEvenOilPrice()
-            // calculateNPV()
             const tableYearsData = [
                 handleTotalExplorationCost(),
                 handleDrilling(),
@@ -473,7 +408,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     resourceName="case"
                     resourcePropertyKey="breakEvenOverride"
                     label={`Manually inputted B/E before tax (${projectData?.currency === 1 ? "MNOK" : "MUSD"})`}
-                    value={caseData.breakEvenOverride ? Number(caseData.breakEvenOverride.toFixed(2)) : undefined} // her for å sette default når ingen verdi er satt
+                    value={caseData.breakEvenOverride ? Number(caseData.breakEvenOverride.toFixed(2)) : undefined}
                     previousResourceObject={caseData}
                     integer={false}
                     allowNegative
