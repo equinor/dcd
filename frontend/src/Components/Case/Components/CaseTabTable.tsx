@@ -13,7 +13,8 @@ import {
 } from "@ag-grid-community/core"
 import isEqual from "lodash/isEqual"
 import { CircularProgress } from "@equinor/eds-core-react"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import styled from "styled-components"
+
 import {
     extractTableTimeSeriesValues,
     generateProfile,
@@ -24,10 +25,11 @@ import {
     formatColumnSum,
 } from "../../../Utils/common"
 import { useAppContext } from "../../../Context/AppContext"
+import { TABLE_VALIDATION_RULES } from "../../../Utils/constants"
 import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
-import { TABLE_VALIDATION_RULES } from "../../../Utils/constants"
+import { useProjectContext } from "../../../Context/ProjectContext"
 
 interface Props {
     timeSeriesData: any[]
@@ -41,7 +43,15 @@ interface Props {
     calculatedFields?: string[]
     ongoingCalculation?: boolean
     addEdit: any
+    isProsp?: boolean
+    sharepointFileId?: string
 }
+
+const CenterGridIcons = styled.div`
+    padding-top: 0px;
+    padding-left: 0px;
+    height: 100%;
+`
 
 const CaseTabTable = ({
     timeSeriesData,
@@ -55,6 +65,8 @@ const CaseTabTable = ({
     calculatedFields,
     ongoingCalculation,
     addEdit,
+    isProsp,
+    sharepointFileId,
 }: Props) => {
     const { editMode, setSnackBarMessage } = useAppContext()
     const styles = useStyles()
@@ -62,8 +74,7 @@ const CaseTabTable = ({
     const [stagedEdit, setStagedEdit] = useState<any>()
     const firstTriggerRef = useRef<boolean>(true)
     const timerRef = useRef<NodeJS.Timeout | null>(null)
-    const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const { projectId } = useProjectContext()
 
     useEffect(() => {
         if (stagedEdit) {
@@ -165,10 +176,14 @@ const CaseTabTable = ({
         }
 
         return (
-            <ClickableLockIcon
-                clickedElement={params}
-                addEdit={addEdit}
-            />
+            <CenterGridIcons>
+                <ClickableLockIcon
+                    isProsp={isProsp}
+                    sharepointFileId={sharepointFileId}
+                    clickedElement={params}
+                    addEdit={addEdit}
+                />
+            </CenterGridIcons>
         )
     }
 

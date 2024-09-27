@@ -4,6 +4,7 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import NumberInputWithValidation from "./Components/NumberInputWithValidation"
 import InputSwitcher from "./Components/InputSwitcher"
 import { ResourcePropertyKey, ResourceName, ResourceObject } from "../../Models/Interfaces"
+import { useProjectContext } from "../../Context/ProjectContext"
 
 interface CaseEditInputProps {
     label: string;
@@ -37,10 +38,9 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
     addEdit,
 }: CaseEditInputProps) => {
     const { caseId, tab } = useParams()
-    const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const { projectId } = useProjectContext()
     const addToEditsAndSubmit = (insertedValue: number) => {
-        if (!caseId || !projectId) { return }
+        if (!caseId || projectId === "") { return }
 
         const newResourceObject: ResourceObject = structuredClone(previousResourceObject)
         newResourceObject[resourcePropertyKey as keyof ResourceObject] = insertedValue as any

@@ -4,19 +4,18 @@ import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import { useEffect, useState } from "react"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
 import Gallery from "../../Gallery/Gallery"
 import { useAppContext } from "../../../Context/AppContext"
 import CaseDescriptionTabSkeleton from "../../LoadingSkeletons/CaseDescriptionTabSkeleton"
 import { caseQueryFn } from "../../../Services/QueryFunctions"
+import { useProjectContext } from "../../../Context/ProjectContext"
 
 const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
-    const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
     const { editMode } = useAppContext()
     const { caseId, tab } = useParams()
+    const { projectId } = useProjectContext()
 
     const [description, setDescription] = useState("")
 

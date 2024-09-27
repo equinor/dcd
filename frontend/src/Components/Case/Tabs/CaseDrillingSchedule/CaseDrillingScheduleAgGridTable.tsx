@@ -20,6 +20,7 @@ import {
     numberValueParser,
 } from "../../../../Utils/common"
 import { useAppContext } from "../../../../Context/AppContext"
+import { useProjectContext } from "../../../../Context/ProjectContext"
 
 interface Props {
     dg4Year: number
@@ -56,14 +57,13 @@ const CaseDrillingScheduleTabTable = ({
     isExplorationTable,
     addEdit,
 }: Props) => {
-    const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
-    const styles = useStyles()
-    const [rowData, setRowData] = useState<any[]>([])
-    const [stagedEdit, setStagedEdit] = useState<any>()
-
     const { editMode, setSnackBarMessage } = useAppContext()
     const { caseId, tab } = useParams()
+    const { projectId } = useProjectContext()
+    const styles = useStyles()
+
+    const [rowData, setRowData] = useState<any[]>([])
+    const [stagedEdit, setStagedEdit] = useState<any>()
 
     const firstTriggerRef = useRef<boolean>(true)
     const timerRef = useRef<NodeJS.Timeout | null>(null)
@@ -193,7 +193,7 @@ const CaseDrillingScheduleTabTable = ({
             newProfile.values = []
         }
 
-        if (!caseId || !projectId || !newProfile) { return }
+        if (!caseId || projectId === "" || !newProfile) { return }
 
         const rowWells = params.data.assetWells
         if (rowWells) {

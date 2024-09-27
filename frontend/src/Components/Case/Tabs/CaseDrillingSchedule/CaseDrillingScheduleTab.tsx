@@ -7,7 +7,6 @@ import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import SwitchableNumberInput from "../../../Input/SwitchableNumberInput"
 import CaseDrillingScheduleTabTable from "./CaseDrillingScheduleAgGridTable"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
@@ -15,12 +14,12 @@ import { useCaseContext } from "../../../../Context/CaseContext"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
 import CaseProductionProfilesTabSkeleton from "../../../LoadingSkeletons/CaseProductionProfilesTabSkeleton"
 import { caseQueryFn, projectQueryFn } from "../../../../Services/QueryFunctions"
+import { useProjectContext } from "../../../../Context/ProjectContext"
 
 const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()
     const { caseId } = useParams()
-    const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const { projectId } = useProjectContext()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)

@@ -29,12 +29,12 @@ const Header: React.FC<HeaderProps> = ({
     addEdit,
 }) => {
     const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const externalId = currentContext?.externalId
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
 
     const handleTableYearsClick = () => {
@@ -50,7 +50,7 @@ const Header: React.FC<HeaderProps> = ({
         return ""
     })()
 
-    if (!projectId) {
+    if (!apiData) {
         return null
     }
 
@@ -71,7 +71,7 @@ const Header: React.FC<HeaderProps> = ({
             <Grid item xs={12} md={4}>
                 <Maturity
                     surfData={surfData}
-                    projectId={projectId}
+                    projectId={apiData.id}
                     addEdit={addEdit}
                 />
             </Grid>

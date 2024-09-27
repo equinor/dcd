@@ -36,12 +36,12 @@ const CasesDropMenu = ({
     const { addProjectEdit } = useEditProject()
 
     const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const externalId = currentContext?.externalId
 
     const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
 
     const [confirmDelete, setConfirmDelete] = useState(false)

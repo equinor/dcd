@@ -20,12 +20,12 @@ import DateRangePicker from "../../../Input/TableDateRangePicker"
 import { ITimeSeriesData } from "../../../../Models/Interfaces"
 import CaseCo2TabSkeleton from "../../../LoadingSkeletons/CaseCo2TabSkeleton"
 import { caseQueryFn, projectQueryFn } from "../../../../Services/QueryFunctions"
+import { useProjectContext } from "../../../../Context/ProjectContext"
 
 const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const { caseId } = useParams()
     const { activeTabCase } = useCaseContext()
-    const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
+    const { projectId } = useProjectContext()
 
     const { data: apiData } = useQuery({
         queryKey: ["caseApiData", projectId, caseId],

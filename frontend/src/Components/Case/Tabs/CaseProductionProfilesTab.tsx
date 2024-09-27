@@ -7,7 +7,6 @@ import { NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../AgGrid/AgChartsTimeseries"
 import InputSwitcher from "../../Input/Components/InputSwitcher"
@@ -18,13 +17,12 @@ import CaseProductionProfilesTabSkeleton from "../../LoadingSkeletons/CaseProduc
 import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 import { caseQueryFn } from "../../../Services/QueryFunctions"
+import { useProjectContext } from "../../../Context/ProjectContext"
 
 const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     const { caseId } = useParams()
     const { activeTabCase } = useCaseContext()
-    const { currentContext } = useModuleCurrentContext()
-    const projectId = currentContext?.externalId
-
+    const { projectId } = useProjectContext()
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])

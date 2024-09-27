@@ -165,7 +165,7 @@ const useEditCase = (): {
      * we only need to submit the the latest edit for each modified resource object to update the data the API
      */
     const processQueue = async () => {
-        const uniqueEditsQueue = _.uniqBy(apiQueue.reverse(), (edit) => edit.resourceName + edit.resourceId)
+        const uniqueEditsQueue = _.uniqBy(apiQueue.reverse(), (edit) => edit.resourceName + edit.resourceId + (edit.wellId ? edit.wellId : ""))
         const registedEdits = await Promise.all(uniqueEditsQueue.map((editInstance) => HandleApiSubmissionResults(editInstance)))
 
         // todo: make sure that when the registered edit method returns an edit with a resourceProfileId,
