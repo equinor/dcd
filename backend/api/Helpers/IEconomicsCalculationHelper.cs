@@ -18,6 +18,9 @@ namespace api.Helpers
         Task<TimeSeries<double>> CalculateTotalExplorationCostAsync(Case caseItem);
 
         TimeSeries<double> CalculateCashFlow(TimeSeries<double> income, TimeSeries<double> totalCost);
+        Task CalculateNPV(Guid caseId);
+        Task CalculateBreakEvenOilPrice(Guid caseId);
+
 
     }
 }

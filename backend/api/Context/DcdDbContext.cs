@@ -89,6 +89,8 @@ public class DcdDbContext : DbContext
         var rerunCo2Emissions = CalculateCo2Emissions();
         var rerunTotalIncome = CalculateTotalIncome();
         var rerunTotalCost = CalculateTotalCost();
+        var rerunCalculateNPV = CalculateNPV();
+        var rerunCalculateBreakEven = CalculateBreakEvenOilPrice();
 
         await base.SaveChangesAsync(); // TODO: This is a hack to find the updated values in the calculate services. Need to find a better way to do this.
         if (wells.Count != 0 || drillingScheduleIds.Count != 0)
@@ -139,11 +141,40 @@ public class DcdDbContext : DbContext
         if (rerunTotalIncome)
         {
             await _serviceProvider.GetRequiredService<IEconomicsCalculationHelper>().CalculateTotalIncome(caseId);
+            // add check if rerunCalculateNPV is false, if its false run calculateNPV()
+            if (!rerunCalculateNPV)
+            {
+                await _serviceProvider.GetRequiredService<IEconomicsCalculationHelper>().CalculateNPV(caseId);
+            }
+            if (!rerunCalculateBreakEven)
+            {
+                await _serviceProvider.GetRequiredService<IEconomicsCalculationHelper>().CalculateBreakEvenOilPrice(caseId);
+            }
         }
         if (rerunTotalCost)
         {
             await _serviceProvider.GetRequiredService<IEconomicsCalculationHelper>().CalculateTotalCost(caseId);
+            if (!rerunCalculateNPV)
+            {
+                await _serviceProvider.GetRequiredService<IEconomicsCalculationHelper>().CalculateNPV(caseId);
+            }
+            if (!rerunCalculateBreakEven)
+            {
+                await _serviceProvider.GetRequiredService<IEconomicsCalculationHelper>().CalculateBreakEvenOilPrice(caseId);
+            }
+
         }
+        if (rerunCalculateNPV)
+        {
+            await _serviceProvider.GetRequiredService<IEconomicsCalculationHelper>().CalculateNPV(caseId);
+
+        }
+        if (rerunCalculateBreakEven)
+        {
+            await _serviceProvider.GetRequiredService<IEconomicsCalculationHelper>().CalculateBreakEvenOilPrice(caseId);
+
+        }
+
     }
 
     private (List<Well> wells, List<Guid> drillingScheduleIds) CalculateExplorationAndWellProjectCost()
@@ -1093,8 +1124,40 @@ public class DcdDbContext : DbContext
             || sidetrackChanges;
     }
 
+    private bool CalculateNPV()
+    {
+        var projectChanges = ChangeTracker.Entries<Project>()
+            .Any(e => e.State == EntityState.Modified &&
+                (e.Property(nameof(Project.DiscountRate)).IsModified ||
+                e.Property(nameof(Project.ExchangeRateUSDToNOK)).IsModified ||
+                e.Property(nameof(Project.OilPriceUSD)).IsModified ||
+                e.Property(nameof(Project.GasPriceNOK)).IsModified));
 
+        var caseChanges = ChangeTracker.Entries<Case>()
+            .Any(e => e.State == EntityState.Modified &&
+                e.Property(nameof(Case.DG4Date)).IsModified);
 
+        return projectChanges
+            || caseChanges;
+
+    }
+
+    private bool CalculateBreakEvenOilPrice()
+    {
+        var projectChanges = ChangeTracker.Entries<Project>()
+            .Any(e => e.State == EntityState.Modified &&
+                (e.Property(nameof(Project.DiscountRate)).IsModified ||
+                e.Property(nameof(Project.ExchangeRateUSDToNOK)).IsModified ||
+                e.Property(nameof(Project.OilPriceUSD)).IsModified ||
+                e.Property(nameof(Project.GasPriceNOK)).IsModified));
+
+        var caseChanges = ChangeTracker.Entries<Case>()
+            .Any(e => e.State == EntityState.Modified &&
+                e.Property(nameof(Case.DG4Date)).IsModified);
+
+        return projectChanges
+            || caseChanges;
+    }
 
     public DbSet<Project> Projects { get; set; } = null!;
     public DbSet<ExplorationOperationalWellCosts> ExplorationOperationalWellCosts { get; set; } = null!;
