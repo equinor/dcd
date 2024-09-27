@@ -6,13 +6,13 @@ using Fusion.Integration.Profile;
 
 namespace api.Authorization;
 
-public class ClaimsMiddelware
+public class ClaimsMiddleware
 {
     public static string ApplicationRoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
-    private readonly ILogger<ClaimsMiddelware> _logger;
+    private readonly ILogger<ClaimsMiddleware> _logger;
     private readonly RequestDelegate _nextMiddleware;
-    public ClaimsMiddelware(RequestDelegate nextMiddleware,
-        ILogger<ClaimsMiddelware> logger,
+    public ClaimsMiddleware(RequestDelegate nextMiddleware,
+        ILogger<ClaimsMiddleware> logger,
         IConfiguration configuration)
     {
         _nextMiddleware = nextMiddleware;

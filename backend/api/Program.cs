@@ -322,7 +322,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors(_accessControlPolicyName);
 
 app.UseAuthentication();
-app.UseMiddleware<ClaimsMiddelware>();
+app.UseMiddleware<ClaimsMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();
