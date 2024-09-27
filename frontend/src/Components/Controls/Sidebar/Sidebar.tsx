@@ -49,6 +49,11 @@ export const Timeline = styled(Grid)`
 
 `
 
+const HorizontalScrollContent = styled(Content)`
+    overflow-x: scroll;
+    white-space: nowrap;
+`
+
 export const TimelineElement = styled(Button)`
     text-align: left;
     height: 28px;
@@ -67,14 +72,14 @@ const Sidebar = () => {
         <Wrapper>
             <Sticky>
                 <StyledSideBar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>
-                    <Content>
+                    <HorizontalScrollContent>
                         <ProjectDetails />
                         <Divider />
                         <CasesDetails />
                         <Divider />
                         <CurrentCaseEditHistory />
                         <Divider />
-                    </Content>
+                    </HorizontalScrollContent>
                     <Footer>
                         <Toggle />
                     </Footer>

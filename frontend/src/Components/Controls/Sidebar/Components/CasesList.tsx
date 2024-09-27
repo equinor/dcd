@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
 import { useQuery } from "@tanstack/react-query"
+
 import { productionStrategyOverviewToString, casePath } from "../../../../Utils/common"
 import { TimelineElement } from "../Sidebar"
 import { useAppContext } from "../../../../Context/AppContext"
@@ -39,6 +40,10 @@ const CasesList: React.FC = () => {
         return null
     }
 
+    function truncateText(text: string, maxLength: number): string {
+        return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+    }
+
     return (
         <>
             {apiData.cases.sort((a, b) => new Date(a.createTime).getDate() - new Date(b.createTime).getDate()).map((projectCase, index) => (
@@ -50,7 +55,7 @@ const CasesList: React.FC = () => {
                     data-timeline-active={location.pathname.includes(projectCase.id)}
                 >
                     <Tooltip
-                        title={`${projectCase.name ? projectCase.name : "Untitled"} - Strategy: ${productionStrategyOverviewToString(projectCase.productionStrategyOverview)}`}
+                        title={`${projectCase.name ? truncateText(projectCase.name, 155) : "Untitled"} - Strategy: ${productionStrategyOverviewToString(projectCase.productionStrategyOverview)}`}
                         placement="right"
                     >
                         <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.id)}>
@@ -59,7 +64,7 @@ const CasesList: React.FC = () => {
                                     <SideBarRefCaseWrapper>
 
                                         {!sidebarOpen && `#${index + 1}`}
-                                        {(sidebarOpen && projectCase.name) && projectCase.name}
+                                        {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 60)}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
                                         {apiData?.referenceCaseId === projectCase?.id && (
                                             <ReferenceCaseIcon iconPlacement="sideBar" />
@@ -69,7 +74,7 @@ const CasesList: React.FC = () => {
                                 : (
                                     <>
                                         {!sidebarOpen && `#${index + 1}`}
-                                        {(sidebarOpen && projectCase.name) && projectCase.name}
+                                        {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 60)}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
                                     </>
                                 )}

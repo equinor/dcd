@@ -30,7 +30,7 @@ const ProjectDetails: React.FC = () => {
 
     return caseId
         ? (
-            <Grid item container justifyContent={sidebarOpen ? "space-between" : "center"} alignItems="center">
+            <Grid item container justifyContent={sidebarOpen ? "start" : "center"} alignItems="center">
                 <Grid item xs={12} container>
                     <Header>
                         <ProjectTitle variant="overline">{sidebarOpen ? currentContext?.title : "Project"}</ProjectTitle>
