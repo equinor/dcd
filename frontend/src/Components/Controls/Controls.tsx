@@ -50,7 +50,7 @@ const Controls = () => {
     }
 
     const handleEdit = () => {
-        if (editMode && caseId) {
+        if (editMode) {
             cancelEdit()
         } else {
             setEditMode(true)
