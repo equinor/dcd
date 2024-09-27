@@ -38,11 +38,11 @@ public class CaseDto
     [Required]
     public double NPV { get; set; }
     [Required]
-    public double NPVOverride { get; set; }
+    public double? NPVOverride { get; set; }
     [Required]
     public double BreakEven { get; set; }
     [Required]
-    public double BreakEvenOverride { get; set; }
+    public double? BreakEvenOverride { get; set; }
     public string? Host { get; set; }
 
     [Required]
