@@ -913,7 +913,7 @@ public class DcdDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new ProjectConfiguration());
-        
+
         modelBuilder.Entity<WellProjectWell>()
             .HasKey(wc => new { wc.WellProjectId, wc.WellId });
 
