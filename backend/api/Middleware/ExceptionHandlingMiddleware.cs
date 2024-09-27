@@ -79,6 +79,10 @@ public class ExceptionHandlingMiddleware
                 statusCode = HttpStatusCode.Conflict;
                 message = exception.Message;
                 break;
+            case ModifyRevisionException _:
+                statusCode = HttpStatusCode.Forbidden;
+                message = exception.Message;
+                break;
             default:
                 statusCode = HttpStatusCode.InternalServerError;
                 message = "An unexpected error occurred.";

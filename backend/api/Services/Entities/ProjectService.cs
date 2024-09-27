@@ -325,7 +325,7 @@ public class ProjectService : IProjectService
             .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
-            .FirstOrDefaultAsync(p => p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId));
+            .FirstOrDefaultAsync(p => (p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId)) && !p.IsRevision);
 
         if (project?.Cases?.Count > 0)
         {

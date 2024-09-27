@@ -4,6 +4,7 @@ public class Project
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
+    public bool IsRevision { get; set; }
     public Guid CommonLibraryId { get; set; }
     public Guid FusionProjectId { get; set; } // ExternalId?
     public Guid ReferenceCaseId { get; set; }
@@ -27,6 +28,7 @@ public class Project
     public virtual ICollection<DrainageStrategy>? DrainageStrategies { get; set; }
     public virtual ICollection<WellProject>? WellProjects { get; set; }
     public virtual ICollection<Exploration>? Explorations { get; set; }
+    public virtual ICollection<Project>? Revisions { get; set; }
 
     public string? SharepointSiteUrl { get; set; }
     public double CO2RemovedFromGas { get; set; }
