@@ -238,8 +238,8 @@ const CasesAgGridTable = ({
                     Download input to STEA
                 </Button>
             </DownloadButton>
-            {archivedRowData && archivedRowData.length > 0 ?
-                (<div>
+            {archivedRowData && archivedRowData.length > 0 ? (
+                <div>
                     <ArchivedTitle>
                         <Typography variant="h3">Archived Cases</Typography>
                         {!expandList ? (
@@ -256,19 +256,20 @@ const CasesAgGridTable = ({
                             </Tooltip>
                         )}
                     </ArchivedTitle>
-                    {expandList && (<AgTableContainer>
-                        <AgGridReact
-                            ref={gridRef}
-                            rowData={archivedRowData}
-                            columnDefs={columnDefs}
-                            defaultColDef={defaultColDef}
-                            animateRows
-                            domLayout="autoHeight"
-                        />
-                    </AgTableContainer>)}
-                </div>)
-                : null
-            }
+                    {expandList && (
+                        <AgTableContainer>
+                            <AgGridReact
+                                ref={gridRef}
+                                rowData={archivedRowData}
+                                columnDefs={columnDefs}
+                                defaultColDef={defaultColDef}
+                                animateRows
+                                domLayout="autoHeight"
+                            />
+                        </AgTableContainer>
+                    )}
+                </div>
+                ) : null}
         </div>
     )
 }
