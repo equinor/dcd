@@ -6,12 +6,12 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import styled from "styled-components"
 import { useQuery } from "@tanstack/react-query"
 
-import { productionStrategyOverviewToString, casePath } from "../../../../Utils/common"
+import { useAppContext } from "@/Context/AppContext"
+import { EMPTY_GUID } from "@/Utils/constants"
+import { productionStrategyOverviewToString, casePath } from "@/Utils/common"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 import { TimelineElement } from "../Sidebar"
-import { useAppContext } from "../../../../Context/AppContext"
 import { ReferenceCaseIcon } from "../../../Case/Components/ReferenceCaseIcon"
-import { EMPTY_GUID } from "../../../../Utils/constants"
-import { projectQueryFn } from "../../../../Services/QueryFunctions"
 
 const SideBarRefCaseWrapper = styled.div`
     justify-content: center;
@@ -19,20 +19,21 @@ const SideBarRefCaseWrapper = styled.div`
     display: inline-flex;
 `
 
-const CasesList: React.FC = () => {
+const ArchivedCasesList: React.FC = () => {
     const { sidebarOpen } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
 
-    const { data: apiData } = useQuery({
+    const externalId = currentContext?.externalId
+    const { data: projectData } = useQuery({
         queryKey: ["projectApiData", externalId],
         queryFn: () => projectQueryFn(externalId),
         enabled: !!externalId,
     })
 
+    if (!projectData || !currentContext) { return null }
+
     const location = useLocation()
     const navigate = useNavigate()
-    if (!apiData || !currentContext) { return null }
 
     const selectCase = (caseId: string) => {
         if (!currentContext || !caseId) { return null }
@@ -40,17 +41,13 @@ const CasesList: React.FC = () => {
         return null
     }
 
-    function truncateText(text: string, maxLength: number): string {
-        return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
-    }
-
-    const cases = useMemo(() =>
-        apiData.cases.filter((c) => !c.archived),
-    [apiData.cases]);
+    const archivedCases = useMemo(() => 
+        projectData.cases.filter((c) => c.archived),
+    [projectData.cases]);
 
     return (
         <>
-            {cases.sort((a, b) => new Date(a.createTime).getDate() - new Date(b.createTime).getDate()).map((projectCase, index) => (
+            {archivedCases.sort((a, b) => new Date(a.createTime).getDate() - new Date(b.createTime).getDate()).map((projectCase, index) => (
                 <Grid
                     item
                     container
@@ -59,18 +56,18 @@ const CasesList: React.FC = () => {
                     data-timeline-active={location.pathname.includes(projectCase.id)}
                 >
                     <Tooltip
-                        title={`${projectCase.name ? truncateText(projectCase.name, 155) : "Untitled"} - Strategy: ${productionStrategyOverviewToString(projectCase.productionStrategyOverview)}`}
+                        title={`${projectCase.name ? projectCase.name : "Untitled"} - Strategy: ${productionStrategyOverviewToString(projectCase.productionStrategyOverview)}`}
                         placement="right"
                     >
                         <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.id)}>
-                            {apiData?.referenceCaseId !== EMPTY_GUID
+                            {projectData?.referenceCaseId !== EMPTY_GUID
                                 ? (
                                     <SideBarRefCaseWrapper>
 
                                         {!sidebarOpen && `#${index + 1}`}
-                                        {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 30)}
+                                        {(sidebarOpen && projectCase.name) && projectCase.name}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
-                                        {apiData?.referenceCaseId === projectCase?.id && (
+                                        {projectData?.referenceCaseId === projectCase?.id && (
                                             <ReferenceCaseIcon iconPlacement="sideBar" />
                                         )}
                                     </SideBarRefCaseWrapper>
@@ -78,7 +75,7 @@ const CasesList: React.FC = () => {
                                 : (
                                     <>
                                         {!sidebarOpen && `#${index + 1}`}
-                                        {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 30)}
+                                        {(sidebarOpen && projectCase.name) && projectCase.name}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
                                     </>
                                 )}
@@ -90,4 +87,4 @@ const CasesList: React.FC = () => {
     )
 }
 
-export default CasesList
+export default ArchivedCasesList

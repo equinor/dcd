@@ -13,18 +13,19 @@ import { useNavigate, useLocation } from "react-router-dom"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import styled from "styled-components"
-import { useAppContext } from "../../Context/AppContext"
-import { ChooseReferenceCase, ReferenceCaseIcon } from "../Case/Components/ReferenceCaseIcon"
-import Classification from "./Classification"
-import { EMPTY_GUID, caseTabNames } from "../../Utils/constants"
-import { GetProjectService } from "../../Services/ProjectService"
-import useEditCase from "../../Hooks/useEditCase"
-import { useCaseContext } from "../../Context/CaseContext"
-import CaseDropMenu from "../Case/Components/CaseDropMenu"
-import { formatDateAndTime } from "../../Utils/common"
+
+import { useAppContext } from "@/Context/AppContext"
+import { EMPTY_GUID, caseTabNames } from "@/Utils/constants"
+import { GetProjectService } from "@/Services/ProjectService"
+import { useCaseContext } from "@/Context/CaseContext"
+import useEditCase from "@/Hooks/useEditCase"
+import { formatDateAndTime } from "@/Utils/common"
 import UndoControls from "./UndoControls"
-import { caseQueryFn, projectQueryFn } from "../../Services/QueryFunctions"
-import useEditProject from "../../Hooks/useEditProject"
+import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
+import useEditProject from "@/Hooks/useEditProject"
+import { ChooseReferenceCase, ReferenceCaseIcon } from "../Case/Components/ReferenceCaseIcon"
+import CaseDropMenu from "../Case/Components/CaseDropMenu"
+import Classification from "./Classification"
 
 const Header = styled.div`
     display: flex;
@@ -225,6 +226,7 @@ const CaseControls: React.FC<props> = ({
                         setIsMenuOpen={setIsMenuOpen}
                         menuAnchorEl={menuAnchorEl}
                         caseId={caseId}
+                        isArchived={caseData.archived}
                     />
                 </div>
             </Header>
