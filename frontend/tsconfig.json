@@ -14,7 +14,17 @@
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
         "noEmit": true,
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "paths": {
+            "@/Components/*": ["./src/components/*"],
+            "@/Context/*": ["./src/Context/*"],
+            "@/Hooks/*": ["./src/Hooks/*"],
+            "@/Models/*": ["./src/Models/*"],
+            "@/Services/*": ["./src/Services/*"],
+            "@/Utils/*": ["./src/Utils/*"],
+            "@/Views/*": ["./src/Views/*"],
+            "@/*": ["./src/*"]
+          }
     },
     "include": [
         "src",

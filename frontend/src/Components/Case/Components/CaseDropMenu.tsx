@@ -8,21 +8,28 @@ import {
     delete_to_trash,
     bookmark_outlined,
     bookmark_filled,
+    archive,
+    unarchive
 } from "@equinor/eds-icons"
 import { useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery } from "@tanstack/react-query"
-import { deleteCase, duplicateCase, setCaseAsReference } from "../../../Utils/CaseController"
-import { useModalContext } from "../../../Context/ModalContext"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+
+import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
+import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseController"
+import { useModalContext } from "@/Context/ModalContext"
+import { ResourceObject } from "@/Models/Interfaces"
+import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
+import useEditProject from "@/Hooks/useEditProject"
+import { useProjectContext } from "@/Context/ProjectContext"
 import Modal from "../../Modal/Modal"
-import { projectQueryFn } from "../../../Services/QueryFunctions"
-import useEditProject from "../../../Hooks/useEditProject"
 
 interface CaseDropMenuProps {
     isMenuOpen: boolean
     setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
     menuAnchorEl: HTMLElement | null
     caseId: string
+    isArchived: boolean
 }
 
 const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
@@ -30,25 +37,46 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     setIsMenuOpen,
     menuAnchorEl,
     caseId,
+    isArchived
 }) => {
     const navigate = useNavigate()
     const { currentContext } = useModuleCurrentContext()
+    const queryClient = useQueryClient()
     const externalId = currentContext?.externalId
     const { addNewCase } = useModalContext()
     const [confirmDelete, setConfirmDelete] = useState(false)
     const { addProjectEdit } = useEditProject()
-
-    const { data: apiData } = useQuery({
+    const { projectId } = useProjectContext()
+    const { updateCase } = useSubmitToApi()
+    
+    const { data: projectData } = useQuery({
         queryKey: ["projectApiData", externalId],
         queryFn: () => projectQueryFn(externalId),
         enabled: !!externalId,
     })
 
-    const deleteAndGoToProject = async () => {
-        if (!caseId || !apiData) { return }
+    const { data: caseApiData } = useQuery({
+        queryKey: ["caseApiData", projectId, caseId],
+        queryFn: () => caseQueryFn(projectId, caseId),
+        enabled: !!projectId && !!caseId,
+    })
 
-        if (await deleteCase(caseId, apiData, addProjectEdit)) {
-            if (apiData.fusionProjectId) { navigate(`/${apiData.fusionProjectId}`) }
+    const deleteAndGoToProject = async () => {
+        if (!caseId || !projectData) { return }
+        
+        if (await deleteCase(caseId, projectData, addProjectEdit)) {
+            if (projectData.fusionProjectId) { navigate(`/${projectData.fusionProjectId}`) }
+        }
+    }
+
+    const archiveCase = async (archived: boolean) => {
+        if(!caseApiData?.case || !caseId || !projectData?.id) { return }
+        const newResourceObject = { ...caseApiData?.case, archived } as ResourceObject
+        const result = await updateCase({ projectId: projectData.id , caseId, resourceObject: newResourceObject })
+        if(result) {
+            queryClient.invalidateQueries(
+                { queryKey: ["projectApiData", projectData.id] },
+            )
         }
     }
 
@@ -83,22 +111,39 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                         Add New Case
                     </Typography>
                 </Menu.Item>
-                <Menu.Item onClick={() => apiData && duplicateCase(caseId, apiData, addProjectEdit)}>
+                <Menu.Item disabled={isArchived} onClick={() => projectData && duplicateCase(caseId, projectData, addProjectEdit)}>
                     <Icon data={library_add} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
                         Duplicate
                     </Typography>
                 </Menu.Item>
-                <Menu.Item onClick={() => apiData && setConfirmDelete(true)}>
+                {isArchived 
+                    ? (
+                        <Menu.Item onClick={() => archiveCase(false)}>
+                            <Icon data={unarchive} size={16} />
+                            <Typography group="navigation" variant="menu_title" as="span">
+                                Restore Case
+                            </Typography>
+                        </Menu.Item>
+                    ):(
+                        <Menu.Item onClick={() => archiveCase(true)}>
+                            <Icon data={archive} size={16} />
+                            <Typography group="navigation" variant="menu_title" as="span">
+                                Archive Case
+                            </Typography>
+                        </Menu.Item>
+                )}
+                <Menu.Item onClick={() => projectData && setConfirmDelete(true)}>
                     <Icon data={delete_to_trash} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
                         Delete
                     </Typography>
                 </Menu.Item>
-                {apiData?.referenceCaseId === caseId
+                {projectData?.referenceCaseId === caseId
                     ? (
                         <Menu.Item
-                            onClick={() => apiData && setCaseAsReference(caseId, apiData, addProjectEdit)}
+                            disabled={isArchived}
+                            onClick={() => projectData && setCaseAsReference(caseId, projectData, addProjectEdit)}
                         >
                             <Icon data={bookmark_outlined} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">
@@ -108,7 +153,8 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                     )
                     : (
                         <Menu.Item
-                            onClick={() => apiData && setCaseAsReference(caseId, apiData, addProjectEdit)}
+                            disabled={isArchived}
+                            onClick={() => projectData && setCaseAsReference(caseId, projectData, addProjectEdit)}
                         >
                             <Icon data={bookmark_filled} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">
