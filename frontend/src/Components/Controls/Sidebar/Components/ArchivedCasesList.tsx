@@ -41,9 +41,9 @@ const ArchivedCasesList: React.FC = () => {
         return null
     }
 
-    const archivedCases = useMemo(() => {
-        return projectData.cases.filter((c) => c.archived);
-      }, [projectData.cases]);
+    const archivedCases = useMemo(() => 
+        projectData.cases.filter((c) => c.archived),
+    [projectData.cases]);
 
     return (
         <>

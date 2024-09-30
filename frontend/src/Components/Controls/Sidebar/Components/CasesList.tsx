@@ -39,9 +39,9 @@ const CasesList: React.FC = () => {
         return null
     }
 
-    const cases = useMemo(() => {
-        return apiData.cases.filter((c) => !c.archived);
-      }, [apiData.cases]);
+    const cases = useMemo(() =>
+        apiData.cases.filter((c) => !c.archived),
+    [apiData.cases]);
 
     return (
         <>

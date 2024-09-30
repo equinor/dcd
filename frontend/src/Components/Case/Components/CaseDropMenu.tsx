@@ -69,9 +69,9 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
         }
     }
 
-    const archiveCase = async (isArchived: boolean) => {
+    const archiveCase = async (archived: boolean) => {
         if(!caseApiData?.case || !caseId || !projectData?.id) { return }
-        const newResourceObject = { ...caseApiData?.case, archived: isArchived } as ResourceObject
+        const newResourceObject = { ...caseApiData?.case, archived } as ResourceObject
         const result = await updateCase({ projectId: projectData.id , caseId, resourceObject: newResourceObject })
         if(result) {
             queryClient.invalidateQueries(
@@ -126,12 +126,12 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                             </Typography>
                         </Menu.Item>
                     ):(
-                    <Menu.Item onClick={() => archiveCase(true)}>
-                        <Icon data={archive} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Archive Case
-                        </Typography>
-                    </Menu.Item>
+                        <Menu.Item onClick={() => archiveCase(true)}>
+                            <Icon data={archive} size={16} />
+                            <Typography group="navigation" variant="menu_title" as="span">
+                                Archive Case
+                            </Typography>
+                        </Menu.Item>
                 )}
                 <Menu.Item onClick={() => projectData && setConfirmDelete(true)}>
                     <Icon data={delete_to_trash} size={16} />

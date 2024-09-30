@@ -89,11 +89,12 @@ const Sidebar = () => {
                     <Divider />
                     <CasesDetails />
                     <Divider />
-                    {archivedCases.length > 0 &&
+                    {archivedCases.length > 0 && (
                         <>
                             <ArchivedCasesDetails />
                             <Divider />
-                        </>}
+                        </>
+                    )}
                     <CurrentCaseEditHistory />
                     <Divider />
                 </Content>

@@ -14,10 +14,9 @@ import {
 import { useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { AgGridReact } from "@ag-grid-community/react"
-import { arrow_drop_down, arrow_drop_up, more_vertical } from "@equinor/eds-icons"
+import { arrow_drop_down, arrow_drop_up, more_vertical, archive } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
-import { archive } from "@equinor/eds-icons"
 import { useQuery } from "@tanstack/react-query"
 
 import { casePath, productionStrategyOverviewToString, cellStyleRightAlign, unwrapProjectId } from "@/Utils/common"
@@ -114,7 +113,7 @@ const CasesAgGridTable = ({
         </Button>
     )
 
-    const selectCase = (p:any) => {
+    const selectCase = (p: any) => {
         if (!currentContext || !p.node.data) { return null }
         navigate(casePath(currentContext.id, p.node.data.id))
         return null
@@ -192,7 +191,7 @@ const CasesAgGridTable = ({
 
     const casesToRowData = (isArchived: boolean) => {
         if (apiData.cases) {
-            let cases = isArchived ? apiData.cases.filter((c) => !c.archived) : apiData.cases.filter((c) => c.archived)
+            const cases = isArchived ? apiData.cases.filter((c) => !c.archived) : apiData.cases.filter((c) => c.archived)
             const tableCases: TableCase[] = []
             cases.forEach((c) => {
                 const tableCase: TableCase = {
@@ -208,7 +207,11 @@ const CasesAgGridTable = ({
                 }
                 tableCases.push(tableCase)
             })
-            isArchived ? setRowData(tableCases) : setArchivedRowData(tableCases)
+            if (isArchived) {
+                setRowData(tableCases);
+            } else {
+                setArchivedRowData(tableCases);
+            }
         }
     }
 
@@ -235,29 +238,37 @@ const CasesAgGridTable = ({
                     Download input to STEA
                 </Button>
             </DownloadButton>
-            {archivedRowData && archivedRowData.length > 0 ? (
-            <div>
-                <ArchivedTitle>
-                    <Typography variant="h3">Archived Cases</Typography>
-                    {!expandList ? (
-                    <Tooltip title="Expand Archived Cases">
-                        <Button variant="ghost_icon" className="GhostButton"><Icon data={arrow_drop_down} onClick={() => setExpandList(true)} /></Button>
-                        </Tooltip>) : (
-                    <Tooltip title="Collapse Archived Cases">
-                        <Button variant="ghost_icon" className="GhostButton"><Icon data={arrow_drop_up} onClick={() => setExpandList(false)} /></Button>
-                    </Tooltip>)}
-                </ArchivedTitle>
-                {expandList && <AgTableContainer>
-                    <AgGridReact
-                        ref={gridRef}
-                        rowData={archivedRowData}
-                        columnDefs={columnDefs}
-                        defaultColDef={defaultColDef}
-                        animateRows
-                        domLayout="autoHeight"
-                    />
-                </AgTableContainer>}
-            </div>) : null }
+            {archivedRowData && archivedRowData.length > 0 ?
+                (<div>
+                    <ArchivedTitle>
+                        <Typography variant="h3">Archived Cases</Typography>
+                        {!expandList ? (
+                            <Tooltip title="Expand Archived Cases">
+                                <Button variant="ghost_icon" className="GhostButton">
+                                    <Icon data={arrow_drop_down} onClick={() => setExpandList(true)} />
+                                </Button>
+                            </Tooltip>
+                        ) : (
+                            <Tooltip title="Collapse Archived Cases">
+                                <Button variant="ghost_icon" className="GhostButton">
+                                    <Icon data={arrow_drop_up} onClick={() => setExpandList(false)} />
+                                </Button>
+                            </Tooltip>
+                        )}
+                    </ArchivedTitle>
+                    {expandList && (<AgTableContainer>
+                        <AgGridReact
+                            ref={gridRef}
+                            rowData={archivedRowData}
+                            columnDefs={columnDefs}
+                            defaultColDef={defaultColDef}
+                            animateRows
+                            domLayout="autoHeight"
+                        />
+                    </AgTableContainer>)}
+                </div>)
+                : null
+            }
         </div>
     )
 }
