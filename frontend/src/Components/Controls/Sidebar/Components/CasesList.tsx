@@ -6,12 +6,12 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import styled from "styled-components"
 import { useQuery } from "@tanstack/react-query"
 
-import { productionStrategyOverviewToString, casePath } from "../../../../Utils/common"
-import { TimelineElement } from "../Sidebar"
-import { useAppContext } from "../../../../Context/AppContext"
+import { productionStrategyOverviewToString, casePath, truncateText } from "@/Utils/common"
+import { projectQueryFn } from "@/Services/QueryFunctions"
+import { useAppContext } from "@/Context/AppContext"
+import { EMPTY_GUID } from "@/Utils/constants"
 import { ReferenceCaseIcon } from "../../../Case/Components/ReferenceCaseIcon"
-import { EMPTY_GUID } from "../../../../Utils/constants"
-import { projectQueryFn } from "../../../../Services/QueryFunctions"
+import { TimelineElement } from "../Sidebar"
 
 const SideBarRefCaseWrapper = styled.div`
     justify-content: center;
@@ -40,10 +40,6 @@ const CasesList: React.FC = () => {
         return null
     }
 
-    function truncateText(text: string, maxLength: number): string {
-        return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
-    }
-
     const cases = useMemo(() =>
         apiData.cases.filter((c) => !c.archived),
     [apiData.cases]);
@@ -59,7 +55,7 @@ const CasesList: React.FC = () => {
                     data-timeline-active={location.pathname.includes(projectCase.id)}
                 >
                     <Tooltip
-                        title={`${projectCase.name ? truncateText(projectCase.name, 155) : "Untitled"} - Strategy: ${productionStrategyOverviewToString(projectCase.productionStrategyOverview)}`}
+                        title={`${projectCase.name ? truncateText(projectCase.name, 120) : "Untitled"} - Strategy: ${productionStrategyOverviewToString(projectCase.productionStrategyOverview)}`}
                         placement="right"
                     >
                         <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.id)}>
