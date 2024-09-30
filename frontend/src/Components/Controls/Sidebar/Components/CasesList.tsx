@@ -64,7 +64,7 @@ const CasesList: React.FC = () => {
                                     <SideBarRefCaseWrapper>
 
                                         {!sidebarOpen && `#${index + 1}`}
-                                        {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 60)}
+                                        {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 30)}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
                                         {apiData?.referenceCaseId === projectCase?.id && (
                                             <ReferenceCaseIcon iconPlacement="sideBar" />
@@ -74,7 +74,7 @@ const CasesList: React.FC = () => {
                                 : (
                                     <>
                                         {!sidebarOpen && `#${index + 1}`}
-                                        {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 60)}
+                                        {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 30)}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
                                     </>
                                 )}

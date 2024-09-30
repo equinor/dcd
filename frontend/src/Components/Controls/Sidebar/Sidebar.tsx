@@ -50,8 +50,7 @@ export const Timeline = styled(Grid)`
 `
 
 const HorizontalScrollContent = styled(Content)`
-    overflow-x: scroll;
-    white-space: nowrap;
+    overflow-x: hidden;
 `
 
 export const TimelineElement = styled(Button)`

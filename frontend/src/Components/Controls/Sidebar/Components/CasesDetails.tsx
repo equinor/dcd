@@ -18,7 +18,7 @@ const CasesDetails: React.FC = () => {
     return (
         <>
 
-            <Grid item xs={12} container alignItems="center" justifyContent={sidebarOpen ? "space-between" : "center"}>
+            <Grid item xs={12} container alignItems="center" justifyContent={sidebarOpen ? "start" : "center"}>
                 <Header>
                     <Typography variant="overline">Cases</Typography>
                 </Header>
