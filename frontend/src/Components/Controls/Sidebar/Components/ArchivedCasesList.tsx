@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query"
 
 import { useAppContext } from "@/Context/AppContext"
 import { EMPTY_GUID } from "@/Utils/constants"
-import { productionStrategyOverviewToString, casePath } from "@/Utils/common"
+import { productionStrategyOverviewToString, casePath, truncateText } from "@/Utils/common"
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import { TimelineElement } from "../Sidebar"
 import { ReferenceCaseIcon } from "../../../Case/Components/ReferenceCaseIcon"
@@ -56,7 +56,7 @@ const ArchivedCasesList: React.FC = () => {
                     data-timeline-active={location.pathname.includes(projectCase.id)}
                 >
                     <Tooltip
-                        title={`${projectCase.name ? projectCase.name : "Untitled"} - Strategy: ${productionStrategyOverviewToString(projectCase.productionStrategyOverview)}`}
+                        title={`${projectCase.name ? truncateText(projectCase.name, 120) : "Untitled"} - Strategy: ${productionStrategyOverviewToString(projectCase.productionStrategyOverview)}`}
                         placement="right"
                     >
                         <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.id)}>
@@ -65,7 +65,7 @@ const ArchivedCasesList: React.FC = () => {
                                     <SideBarRefCaseWrapper>
 
                                         {!sidebarOpen && `#${index + 1}`}
-                                        {(sidebarOpen && projectCase.name) && projectCase.name}
+                                        {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 30)}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
                                         {projectData?.referenceCaseId === projectCase?.id && (
                                             <ReferenceCaseIcon iconPlacement="sideBar" />
@@ -75,7 +75,7 @@ const ArchivedCasesList: React.FC = () => {
                                 : (
                                     <>
                                         {!sidebarOpen && `#${index + 1}`}
-                                        {(sidebarOpen && projectCase.name) && projectCase.name}
+                                        {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 30)}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
                                     </>
                                 )}

@@ -54,6 +54,11 @@ export const Timeline = styled(Grid)`
 
 `
 
+const HorizontalScrollContent = styled(Content)`
+    overflow-x: auto;
+    white-space: nowrap;
+`
+
 export const TimelineElement = styled(Button)`
     text-align: left;
     height: 28px;
@@ -73,7 +78,7 @@ const Sidebar = () => {
     })
 
     const [archivedCases, setArchivedCases] = useState<Components.Schemas.CaseWithProfilesDto[]>([])
-    
+
     useEffect(() => {
         if (!projectData) { return }
         setArchivedCases(projectData.cases.filter((c) => c.archived))
@@ -82,27 +87,29 @@ const Sidebar = () => {
     if (!projectData) { return null }
 
     return (
-        <Sticky>
-            <StyledSideBar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>
-                <Content>
-                    <ProjectDetails />
-                    <Divider />
-                    <CasesDetails />
-                    <Divider />
-                    {archivedCases.length > 0 && (
-                        <>
-                            <ArchivedCasesDetails />
-                            <Divider />
-                        </>
-                    )}
-                    <CurrentCaseEditHistory />
-                    <Divider />
-                </Content>
-                <Footer>
-                    <Toggle />
-                </Footer>
-            </StyledSideBar>
-        </Sticky>
+        <Wrapper>
+            <Sticky>
+                <StyledSideBar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>
+                    <HorizontalScrollContent>
+                        <ProjectDetails />
+                        <Divider />
+                        <CasesDetails />
+                        <Divider />
+                        {archivedCases.length > 0 && (
+                            <>
+                                <ArchivedCasesDetails />
+                                <Divider />
+                            </>
+                        )}
+                        <CurrentCaseEditHistory />
+                        <Divider />
+                    </HorizontalScrollContent>
+                    <Footer>
+                        <Toggle />
+                    </Footer>
+                </StyledSideBar>
+            </Sticky>
+        </Wrapper>
     )
 }
 

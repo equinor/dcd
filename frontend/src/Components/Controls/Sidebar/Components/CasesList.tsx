@@ -5,12 +5,13 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
 import { useQuery } from "@tanstack/react-query"
-import { productionStrategyOverviewToString, casePath } from "../../../../Utils/common"
-import { TimelineElement } from "../Sidebar"
-import { useAppContext } from "../../../../Context/AppContext"
+
+import { productionStrategyOverviewToString, casePath, truncateText } from "@/Utils/common"
+import { projectQueryFn } from "@/Services/QueryFunctions"
+import { useAppContext } from "@/Context/AppContext"
+import { EMPTY_GUID } from "@/Utils/constants"
 import { ReferenceCaseIcon } from "../../../Case/Components/ReferenceCaseIcon"
-import { EMPTY_GUID } from "../../../../Utils/constants"
-import { projectQueryFn } from "../../../../Services/QueryFunctions"
+import { TimelineElement } from "../Sidebar"
 
 const SideBarRefCaseWrapper = styled.div`
     justify-content: center;
@@ -54,7 +55,7 @@ const CasesList: React.FC = () => {
                     data-timeline-active={location.pathname.includes(projectCase.id)}
                 >
                     <Tooltip
-                        title={`${projectCase.name ? projectCase.name : "Untitled"} - Strategy: ${productionStrategyOverviewToString(projectCase.productionStrategyOverview)}`}
+                        title={`${projectCase.name ? truncateText(projectCase.name, 120) : "Untitled"} - Strategy: ${productionStrategyOverviewToString(projectCase.productionStrategyOverview)}`}
                         placement="right"
                     >
                         <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.id)}>
@@ -63,7 +64,7 @@ const CasesList: React.FC = () => {
                                     <SideBarRefCaseWrapper>
 
                                         {!sidebarOpen && `#${index + 1}`}
-                                        {(sidebarOpen && projectCase.name) && projectCase.name}
+                                        {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 30)}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
                                         {apiData?.referenceCaseId === projectCase?.id && (
                                             <ReferenceCaseIcon iconPlacement="sideBar" />
@@ -73,7 +74,7 @@ const CasesList: React.FC = () => {
                                 : (
                                     <>
                                         {!sidebarOpen && `#${index + 1}`}
-                                        {(sidebarOpen && projectCase.name) && projectCase.name}
+                                        {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 30)}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
                                     </>
                                 )}
