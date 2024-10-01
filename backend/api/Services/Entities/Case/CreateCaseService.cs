@@ -69,6 +69,10 @@ public class CreateCaseService : ICreateCaseService
         {
             Name = "Topside",
             Project = project,
+            CostProfileOverride = new TopsideCostProfileOverride
+            {
+                Override = true,
+            },
         };
     }
 
@@ -78,6 +82,10 @@ public class CreateCaseService : ICreateCaseService
         {
             Name = "Surf",
             Project = project,
+            CostProfileOverride = new SurfCostProfileOverride
+            {
+                Override = true,
+            },
         };
     }
 
@@ -87,6 +95,10 @@ public class CreateCaseService : ICreateCaseService
         {
             Name = "Substructure",
             Project = project,
+            CostProfileOverride = new SubstructureCostProfileOverride
+            {
+                Override = true,
+            },
         };
     }
 
@@ -96,6 +108,10 @@ public class CreateCaseService : ICreateCaseService
         {
             Name = "Transport",
             Project = project,
+            CostProfileOverride = new TransportCostProfileOverride
+            {
+                Override = true,
+            },
         };
     }
 
