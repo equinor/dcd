@@ -23,16 +23,19 @@ public class CasesController : ControllerBase
     private readonly ICaseService _caseService;
     private readonly ICaseTimeSeriesService _caseTimeSeriesService;
     private readonly IDuplicateCaseService _duplicateCaseService;
+    private readonly IBlobStorageService _blobStorageService;
 
     public CasesController(
         ICaseService caseService,
         ICaseTimeSeriesService caseTimeSeriesService,
-        IDuplicateCaseService duplicateCaseService
+        IDuplicateCaseService duplicateCaseService,
+        IBlobStorageService blobStorageService
         )
     {
         _caseService = caseService;
         _caseTimeSeriesService = caseTimeSeriesService;
         _duplicateCaseService = duplicateCaseService;
+        _blobStorageService = blobStorageService;
     }
 
     [HttpPost]
@@ -63,6 +66,11 @@ public class CasesController : ControllerBase
         [FromRoute] Guid caseId
         )
     {
+        var images = await _blobStorageService.GetCaseImages(caseId);
+        foreach (var image in images)
+        {
+            await _blobStorageService.DeleteImage(image.Id);
+        }
         return await _caseService.DeleteCase(projectId, caseId);
     }
 
