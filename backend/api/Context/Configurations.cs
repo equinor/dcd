@@ -34,6 +34,47 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
     }
 }
 
+public class CaseConfiguration : IEntityTypeConfiguration<Case>
+{
+    public void Configure(EntityTypeBuilder<Case> builder)
+    {
+        builder.HasOne(c => c.DrainageStrategy)
+            .WithMany()
+            .HasForeignKey(c => c.DrainageStrategyLink)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(c => c.WellProject)
+            .WithMany()
+            .HasForeignKey(c => c.WellProjectLink)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(c => c.Exploration)
+            .WithMany()
+            .HasForeignKey(c => c.ExplorationLink)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(c => c.Transport)
+            .WithMany()
+            .HasForeignKey(c => c.TransportLink)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(c => c.Topside)
+            .WithMany()
+            .HasForeignKey(c => c.TopsideLink)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(c => c.Substructure)
+            .WithMany()
+            .HasForeignKey(c => c.SubstructureLink)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(c => c.Surf)
+            .WithMany()
+            .HasForeignKey(c => c.SurfLink)
+            .OnDelete(DeleteBehavior.NoAction);
+    }
+}
+
 public class WellProjectWellConfiguration : IEntityTypeConfiguration<WellProjectWell>
 {
     public void Configure(EntityTypeBuilder<WellProjectWell> builder)

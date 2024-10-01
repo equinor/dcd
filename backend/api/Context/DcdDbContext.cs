@@ -915,6 +915,7 @@ public class DcdDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new ProjectConfiguration());
+        modelBuilder.ApplyConfiguration(new CaseConfiguration());
         modelBuilder.ApplyConfiguration(new WellProjectWellConfiguration());
         modelBuilder.ApplyConfiguration(new ExplorationWellConfiguration());
     }
