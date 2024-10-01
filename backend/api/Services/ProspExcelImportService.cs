@@ -357,7 +357,7 @@ public class ProspExcelImportService
         await _transportTimeSeriesService.AddOrUpdateTransportCostProfile(projectId, sourceCaseId, transportLink, costProfile);
     }
 
-    public async Task<ProjectWithAssetsDto> ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets,
+    public async Task ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets,
         string sharepointFileId, string? sharepointFileName, string? sharepointFileUrl)
     {
         using var document = SpreadsheetDocument.Open(stream, false);
@@ -422,10 +422,8 @@ public class ProspExcelImportService
                 SharepointFileUrl = sharepointFileUrl,
             };
 
-            return await _caseService.UpdateCaseAndProfiles(sourceCaseId, caseDto);
+            await _caseService.UpdateCase(projectId, sourceCaseId, caseDto);
         }
-
-        return await _projectService.GetProjectDto(projectId);
     }
 
     public async Task ClearImportedProspData(Guid sourceCaseId, Guid projectId)
@@ -447,7 +445,7 @@ public class ProspExcelImportService
             throw new Exception();
         }
 
-        await _caseService.UpdateCaseAndProfiles(sourceCaseId, caseDto);
+        await _caseService.UpdateCase(projectId, sourceCaseId, caseDto);
     }
 
     private async Task ClearImportedSurf(Case caseItem)

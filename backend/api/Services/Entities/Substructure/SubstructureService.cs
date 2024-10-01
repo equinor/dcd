@@ -1,4 +1,6 @@
 
+using System.Linq.Expressions;
+
 using api.Context;
 using api.Dtos;
 using api.Exceptions;
@@ -43,44 +45,10 @@ public class SubstructureService : ISubstructureService
         _projectAccessService = projectAccessService;
     }
 
-    public async Task<Substructure> CreateSubstructure(Guid projectId, Guid sourceCaseId, CreateSubstructureDto substructureDto)
+    public async Task<Substructure> GetSubstructureWithIncludes(Guid substructureId, params Expression<Func<Substructure, object>>[] includes)
     {
-        var substructure = _mapper.Map<Substructure>(substructureDto);
-        if (substructure == null)
-        {
-            throw new ArgumentNullException(nameof(substructure));
-        }
-        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
-        substructure.Project = project;
-        substructure.LastChangedDate = DateTimeOffset.UtcNow;
-        var createdSubstructure = _context.Substructures!.Add(substructure);
-        SetCaseLink(substructure, sourceCaseId, project);
-        await _context.SaveChangesAsync();
-        return createdSubstructure.Entity;
-    }
-
-    private static void SetCaseLink(Substructure substructure, Guid sourceCaseId, Project project)
-    {
-        var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
-        if (case_ == null)
-        {
-            throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
-        }
-        case_.SubstructureLink = substructure.Id;
-    }
-
-    public async Task<Substructure> GetSubstructure(Guid substructureId)
-    {
-        var substructure = await _context.Substructures!
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
-            .FirstOrDefaultAsync(o => o.Id == substructureId);
-        if (substructure == null)
-        {
-            throw new ArgumentException(string.Format("Substructure {0} not found.", substructureId));
-        }
-        return substructure;
+        return await _repository.GetSubstructureWithIncludes(substructureId, includes)
+            ?? throw new NotFoundInDBException($"Substructure with id {substructureId} not found.");
     }
 
     public async Task<SubstructureDto> UpdateSubstructure<TDto>(
