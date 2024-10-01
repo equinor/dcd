@@ -26,7 +26,7 @@ const Sticky = styled.div`
 `
 
 const StyledSideBar = styled(SideBar)`
-    height: auto;
+    height: 100%;
     `
 
 export const Header = styled.div`
@@ -57,13 +57,20 @@ export const Timeline = styled(Grid)`
 const HorizontalScrollContent = styled(Content)`
     overflow-x: auto;
     white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+`
+
+const StyledDivider = styled(Divider)`
+    margin-left: 1px;
+    margin-right: 1px;
+    height: 1px;
 `
 
 export const TimelineElement = styled(Button)`
     text-align: left;
     height: 28px;
-    padding: 10px 5px 10px 10px;  
-    
+    padding: 10px 5px 10px 10px;
 `
 
 const Sidebar = () => {
@@ -92,17 +99,17 @@ const Sidebar = () => {
                 <StyledSideBar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>
                     <HorizontalScrollContent>
                         <ProjectDetails />
-                        <Divider />
+                        <StyledDivider />
                         <CasesDetails />
-                        <Divider />
+                        <StyledDivider />
                         {archivedCases.length > 0 && (
                             <>
                                 <ArchivedCasesDetails />
-                                <Divider />
+                                <StyledDivider />
                             </>
                         )}
                         <CurrentCaseEditHistory />
-                        <Divider />
+                        <StyledDivider />
                     </HorizontalScrollContent>
                     <Footer>
                         <Toggle />

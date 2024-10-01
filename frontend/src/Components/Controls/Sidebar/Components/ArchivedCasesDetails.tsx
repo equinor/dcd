@@ -18,8 +18,7 @@ const ArchivedCasesDetails: React.FC = () => {
 
     return (
         <>
-
-            <Grid item xs={12} container alignItems="center" justifyContent={sidebarOpen ? "space-between" : "center"}>
+            <Grid item container alignItems="start" justifyContent={sidebarOpen ? "space-between" : "start"}>
                 <Header>
                     <Typography variant="overline">Archived Cases</Typography>
                 </Header>
@@ -38,7 +37,7 @@ const ArchivedCasesDetails: React.FC = () => {
                 )}
             </Grid>
             {!expandList ? null : (
-                <Timeline data-timeline container justifyContent="flex-start" alignItems="flex-start" direction="column">
+                <Timeline data-timeline container minHeight={"150px"} justifyContent="flex-start" alignItems="flex-start" direction="column">
                     <ArchivedCasesList />
                 </Timeline>
             )}
