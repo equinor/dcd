@@ -12,7 +12,6 @@ const CasesTable = () => {
 
     return (
         <div>
-
             <CasesAgGridTable
                 setSelectedCaseId={setSelectedCaseId}
                 setMenuAnchorEl={setMenuAnchorEl}
