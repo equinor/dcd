@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction } from "react"
-import { ITimeSeries } from "../Models/ITimeSeries"
-import { TABLE_VALIDATION_RULES } from "../Utils/constants"
-import { EditEntry } from "../Models/Interfaces"
+
+import { ITimeSeries } from "@/Models/ITimeSeries"
+import { TABLE_VALIDATION_RULES } from "@/Utils/constants"
+import { EditEntry } from "@/Models/Interfaces"
 
 export const loginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
@@ -402,4 +403,8 @@ export const generateProfile = (
         startYear,
         values,
     }
+}
+
+export function truncateText(text: string, maxLength: number): string {
+    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 }

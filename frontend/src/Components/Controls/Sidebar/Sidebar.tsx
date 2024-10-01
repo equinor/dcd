@@ -1,11 +1,16 @@
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 import { SideBar, Button, Divider } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useAppContext } from "../../../Context/AppContext"
+import { useQuery } from "@tanstack/react-query"
+
+import { useAppContext } from "@/Context/AppContext"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 import ProjectDetails from "./Components/ProjectDetails"
 import CasesDetails from "./Components/CasesDetails"
 import CurrentCaseEditHistory from "./Components/CurrentCaseEditHistory"
+import ArchivedCasesDetails from "./Components/ArchivedCasesDetails"
 
 const { Toggle, Content, Footer } = SideBar
 const Wrapper = styled.div`
@@ -49,6 +54,11 @@ export const Timeline = styled(Grid)`
 
 `
 
+const HorizontalScrollContent = styled(Content)`
+    overflow-x: auto;
+    white-space: nowrap;
+`
+
 export const TimelineElement = styled(Button)`
     text-align: left;
     height: 28px;
@@ -61,20 +71,39 @@ const Sidebar = () => {
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
 
-    if (!externalId) { return null }
+    const { data: projectData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
+    })
+
+    const [archivedCases, setArchivedCases] = useState<Components.Schemas.CaseWithProfilesDto[]>([])
+
+    useEffect(() => {
+        if (!projectData) { return }
+        setArchivedCases(projectData.cases.filter((c) => c.archived))
+    }, [projectData])
+
+    if (!projectData) { return null }
 
     return (
         <Wrapper>
             <Sticky>
                 <StyledSideBar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>
-                    <Content>
+                    <HorizontalScrollContent>
                         <ProjectDetails />
                         <Divider />
                         <CasesDetails />
                         <Divider />
+                        {archivedCases.length > 0 && (
+                            <>
+                                <ArchivedCasesDetails />
+                                <Divider />
+                            </>
+                        )}
                         <CurrentCaseEditHistory />
                         <Divider />
-                    </Content>
+                    </HorizontalScrollContent>
                     <Footer>
                         <Toggle />
                     </Footer>
