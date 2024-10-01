@@ -17,10 +17,7 @@ namespace api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -262,21 +259,7 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DrainageStrategyLink");
-
-                    b.HasIndex("ExplorationLink");
-
                     b.HasIndex("ProjectId");
-
-                    b.HasIndex("SubstructureLink");
-
-                    b.HasIndex("SurfLink");
-
-                    b.HasIndex("TopsideLink");
-
-                    b.HasIndex("TransportLink");
-
-                    b.HasIndex("WellProjectLink");
 
                     b.ToTable("Cases");
                 });
@@ -2719,69 +2702,13 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Case", b =>
                 {
-                    b.HasOne("api.Models.DrainageStrategy", "DrainageStrategy")
-                        .WithMany()
-                        .HasForeignKey("DrainageStrategyLink")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("api.Models.Exploration", "Exploration")
-                        .WithMany()
-                        .HasForeignKey("ExplorationLink")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("api.Models.Project", "Project")
                         .WithMany("Cases")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("api.Models.Substructure", "Substructure")
-                        .WithMany()
-                        .HasForeignKey("SubstructureLink")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("api.Models.Surf", "Surf")
-                        .WithMany()
-                        .HasForeignKey("SurfLink")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("api.Models.Topside", "Topside")
-                        .WithMany()
-                        .HasForeignKey("TopsideLink")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("api.Models.Transport", "Transport")
-                        .WithMany()
-                        .HasForeignKey("TransportLink")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("api.Models.WellProject", "WellProject")
-                        .WithMany()
-                        .HasForeignKey("WellProjectLink")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("DrainageStrategy");
-
-                    b.Navigation("Exploration");
-
                     b.Navigation("Project");
-
-                    b.Navigation("Substructure");
-
-                    b.Navigation("Surf");
-
-                    b.Navigation("Topside");
-
-                    b.Navigation("Transport");
-
-                    b.Navigation("WellProject");
                 });
 
             modelBuilder.Entity("api.Models.CessationOffshoreFacilitiesCost", b =>
