@@ -86,44 +86,17 @@ public class RevisionService : IRevisionService
         var type = obj.GetType();
         var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-
-        Console.WriteLine("---------------------------------------------------------");
-        Console.WriteLine("Type: " + type.Name);
         foreach (var property in properties)
         {
-            if (property.PropertyType == typeof(Project) || property.PropertyType ==  typeof(ICollection<Project>))
+            var propertyType = property.PropertyType;
+
+            if (propertyType == typeof(Guid) && property.Name.EndsWith("Id"))
             {
-                continue;
-            }
-            if (property.PropertyType == typeof(ICollection<Case>)) {
-                Console.WriteLine("Property is ICollection<Case>");
-                Console.WriteLine("Result: " + property.PropertyType.IsClass);
-                Console.WriteLine("Result: " + property.PropertyType.IsCollectible);
-                Console.WriteLine("Result: " + property.PropertyType.IsEnum);
-                Console.WriteLine("Result: " + property.PropertyType.IsInterface);
-            }
-            if (typeof(IEnumerable).IsAssignableFrom(property.PropertyType) && property.PropertyType != typeof(string))
-            {
-                Console.WriteLine("Property is IEnumerable");
-                var childObject = property.GetValue(obj);
-                if (childObject is IEnumerable enumerable)
-                {
-                    foreach (var item in enumerable)
-                    {
-                        SetIdsToEmptyGuids(item, visited);
-                    }
-                }
-            }
-            Console.WriteLine("Property: " + property.Name);
-            if (property.PropertyType == typeof(Guid) && property.Name.EndsWith("Id"))
-            {
-                Console.WriteLine("Setting property to empty guid");
                 property.SetValue(obj, Guid.Empty);
             }
-            else if ((property.PropertyType.IsClass || property.PropertyType.IsCollectible) && property.PropertyType != typeof(string))
+            else if (typeof(IEnumerable).IsAssignableFrom(propertyType) && propertyType != typeof(string))
             {
                 var childObject = property.GetValue(obj);
-                Console.WriteLine("childObject is enumerable: " + (childObject is IEnumerable));
                 if (childObject is IEnumerable enumerable)
                 {
                     foreach (var item in enumerable)
@@ -131,10 +104,11 @@ public class RevisionService : IRevisionService
                         SetIdsToEmptyGuids(item, visited);
                     }
                 }
-                else
-                {
-                    SetIdsToEmptyGuids(childObject, visited);
-                }
+            }
+            else if (propertyType.IsClass && propertyType != typeof(string))
+            {
+                var childObject = property.GetValue(obj);
+                SetIdsToEmptyGuids(childObject, visited);
             }
         }
     }
