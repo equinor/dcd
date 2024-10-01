@@ -2,23 +2,28 @@ import {
     Button,
     Icon,
     Tooltip,
+    Typography,
 } from "@equinor/eds-core-react"
 import {
     useState,
     useEffect,
     useMemo,
     useRef,
+    MouseEventHandler,
 } from "react"
 import { useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { AgGridReact } from "@ag-grid-community/react"
-import { more_vertical } from "@equinor/eds-icons"
+import { arrow_drop_down, arrow_drop_up, more_vertical, archive } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
 import { useQuery } from "@tanstack/react-query"
-import { casePath, productionStrategyOverviewToString, cellStyleRightAlign } from "../../../Utils/common"
+
+import { casePath, productionStrategyOverviewToString, cellStyleRightAlign, unwrapProjectId } from "@/Utils/common"
+import { GetProjectService } from "@/Services/ProjectService"
+import { GetSTEAService } from "@/Services/STEAService"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 import { ReferenceCaseIcon } from "../Components/ReferenceCaseIcon"
-import { projectQueryFn } from "../../../Services/QueryFunctions"
 
 const AgTableContainer = styled.div`
     overflow: auto;
@@ -28,6 +33,15 @@ const Wrapper = styled.div`
     justify-content: center;
     align-items: center;
     display: inline-flex;
+`
+const DownloadButton = styled.div`
+    margin-top: 12px;
+    margin-bottom: 24px;
+`
+
+const ArchivedTitle = styled.div`
+    margin-bottom: 12px;
+    display: flex;
 `
 
 interface TableCase {
@@ -57,6 +71,8 @@ const CasesAgGridTable = ({
 }: CasesAgGridTableProps): JSX.Element => {
     const gridRef = useRef<AgGridReact>(null)
     const [rowData, setRowData] = useState<TableCase[]>()
+    const [archivedRowData, setArchivedRowData] = useState<TableCase[]>()
+    const [expandList, setExpandList] = useState<boolean>(false)
     const { currentContext } = useModuleCurrentContext()
     const navigate = useNavigate()
     const externalId = currentContext?.externalId
@@ -114,6 +130,20 @@ const CasesAgGridTable = ({
         </Tooltip>
     )
 
+    const submitToSTEA: MouseEventHandler<HTMLButtonElement> = async (e) => {
+        e.preventDefault()
+
+        if (apiData) {
+            try {
+                const projectId = unwrapProjectId(apiData.id)
+                const projectResult = await (await GetProjectService()).getProject(projectId)
+                await (await GetSTEAService()).excelToSTEA(projectResult)
+            } catch (error) {
+                console.error("[ProjectView] error while submitting form data", error)
+            }
+        }
+    }
+
     const [columnDefs] = useState<ColDef[]>([
         {
             field: "name",
@@ -159,10 +189,11 @@ const CasesAgGridTable = ({
         },
     ])
 
-    const casesToRowData = () => {
+    const casesToRowData = (isArchived: boolean) => {
         if (apiData.cases) {
+            const cases = isArchived ? apiData.cases.filter((c) => !c.archived) : apiData.cases.filter((c) => c.archived)
             const tableCases: TableCase[] = []
-            apiData.cases.forEach((c) => {
+            cases.forEach((c) => {
                 const tableCase: TableCase = {
                     id: c.id!,
                     name: c.name ?? "",
@@ -176,12 +207,17 @@ const CasesAgGridTable = ({
                 }
                 tableCases.push(tableCase)
             })
-            setRowData(tableCases)
+            if (isArchived) {
+                setRowData(tableCases);
+            } else {
+                setArchivedRowData(tableCases);
+            }
         }
     }
 
     useEffect(() => {
-        casesToRowData()
+        casesToRowData(true)
+        casesToRowData(false)
     }, [apiData])
 
     return (
@@ -196,6 +232,44 @@ const CasesAgGridTable = ({
                     domLayout="autoHeight"
                 />
             </AgTableContainer>
+            <DownloadButton>
+                <Button variant="outlined" onClick={submitToSTEA}>
+                    <Icon data={archive} size={18} />
+                    Download input to STEA
+                </Button>
+            </DownloadButton>
+            {archivedRowData && archivedRowData.length > 0 ? (
+                <div>
+                    <ArchivedTitle>
+                        <Typography variant="h3">Archived Cases</Typography>
+                        {!expandList ? (
+                            <Tooltip title="Expand Archived Cases">
+                                <Button variant="ghost_icon" className="GhostButton">
+                                    <Icon data={arrow_drop_down} onClick={() => setExpandList(true)} />
+                                </Button>
+                            </Tooltip>
+                        ) : (
+                            <Tooltip title="Collapse Archived Cases">
+                                <Button variant="ghost_icon" className="GhostButton">
+                                    <Icon data={arrow_drop_up} onClick={() => setExpandList(false)} />
+                                </Button>
+                            </Tooltip>
+                        )}
+                    </ArchivedTitle>
+                    {expandList && (
+                        <AgTableContainer>
+                            <AgGridReact
+                                ref={gridRef}
+                                rowData={archivedRowData}
+                                columnDefs={columnDefs}
+                                defaultColDef={defaultColDef}
+                                animateRows
+                                domLayout="autoHeight"
+                            />
+                        </AgTableContainer>
+                    )}
+                </div>
+                ) : null}
         </div>
     )
 }
