@@ -90,7 +90,7 @@ public class RevisionService : IRevisionService
         {
             var propertyType = property.PropertyType;
 
-            if (propertyType == typeof(Guid) && property.Name.EndsWith("Id"))
+            if (propertyType == typeof(Guid) && (property.Name.EndsWith("Id") || property.Name.EndsWith("Link")))
             {
                 property.SetValue(obj, Guid.Empty);
             }
