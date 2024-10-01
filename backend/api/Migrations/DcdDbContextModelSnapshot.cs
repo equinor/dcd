@@ -17,10 +17,7 @@ namespace api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -138,68 +135,6 @@ namespace api.Migrations
                     b.ToTable("AppraisalWellCostProfile");
                 });
 
-            modelBuilder.Entity("api.Models.CalculatedTotalCostCostProfile", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("Case.Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Currency")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InternalData")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StartYear")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Case.Id")
-                        .IsUnique();
-
-                    b.ToTable("CalculatedTotalCostCostProfile");
-                });
-
-            modelBuilder.Entity("api.Models.CalculatedTotalIncomeCostProfile", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("Case.Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Currency")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InternalData")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StartYear")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Case.Id")
-                        .IsUnique();
-
-                    b.ToTable("CalculatedTotalIncomeCostProfile");
-                });
-
             modelBuilder.Entity("api.Models.Case", b =>
                 {
                     b.Property<Guid>("Id")
@@ -279,9 +214,6 @@ namespace api.Migrations
                     b.Property<double>("NPV")
                         .HasColumnType("float");
 
-                    b.Property<double?>("NPVOverride")
-                        .HasColumnType("float");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -324,9 +256,6 @@ namespace api.Migrations
 
                     b.Property<Guid>("WellProjectLink")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<double?>("breakEvenOverride")
-                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
@@ -2771,28 +2700,6 @@ namespace api.Migrations
                     b.Navigation("Exploration");
                 });
 
-            modelBuilder.Entity("api.Models.CalculatedTotalCostCostProfile", b =>
-                {
-                    b.HasOne("api.Models.Case", "Case")
-                        .WithOne("CalculatedTotalCostCostProfile")
-                        .HasForeignKey("api.Models.CalculatedTotalCostCostProfile", "Case.Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Case");
-                });
-
-            modelBuilder.Entity("api.Models.CalculatedTotalIncomeCostProfile", b =>
-                {
-                    b.HasOne("api.Models.Case", "Case")
-                        .WithOne("CalculatedTotalIncomeCostProfile")
-                        .HasForeignKey("api.Models.CalculatedTotalIncomeCostProfile", "Case.Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Case");
-                });
-
             modelBuilder.Entity("api.Models.Case", b =>
                 {
                     b.HasOne("api.Models.Project", "Project")
@@ -3601,10 +3508,6 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Case", b =>
                 {
                     b.Navigation("AdditionalOPEXCostProfile");
-
-                    b.Navigation("CalculatedTotalCostCostProfile");
-
-                    b.Navigation("CalculatedTotalIncomeCostProfile");
 
                     b.Navigation("CessationOffshoreFacilitiesCost");
 

@@ -38,7 +38,7 @@ public class Case : IHasProjectId
     public double NPV { get; set; }
     public double? NPVOverride { get; set; }
     public double BreakEven { get; set; }
-    public double? breakEvenOverride { get; set; }
+    public double? BreakEvenOverride { get; set; }
 
     public string? Host { get; set; }
     public virtual ICollection<Image>? Images { get; set; }
