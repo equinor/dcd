@@ -17,9 +17,7 @@ namespace tests.Services
     public class TopsideServiceTests
     {
         private readonly TopsideService _topsideService;
-        private readonly IProjectService _projectService = Substitute.For<IProjectService>();
         private readonly ILoggerFactory _loggerFactory = Substitute.For<ILoggerFactory>();
-        private readonly IMapper _mapper = Substitute.For<IMapper>();
         private readonly ITopsideRepository _repository = Substitute.For<ITopsideRepository>();
         private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
         private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
@@ -28,16 +26,8 @@ namespace tests.Services
 
         public TopsideServiceTests()
         {
-            var options = new DbContextOptionsBuilder<DcdDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDb")
-                .Options;
-
-            var context = Substitute.For<DcdDbContext>(options);
             _topsideService = new TopsideService(
-                context,
-                _projectService,
                 _loggerFactory,
-                _mapper,
                 _repository,
                 _caseRepository,
                 _mapperService,
