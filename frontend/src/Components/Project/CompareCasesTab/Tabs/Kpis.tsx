@@ -1,6 +1,9 @@
 import React from "react"
 import Grid from "@mui/material/Grid"
+import { useQuery } from "@tanstack/react-query"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { AgChartsCompareCases } from "../../../AgGrid/AgChartsCompareCases"
+import { projectQueryFn } from "../../../../Services/QueryFunctions"
 
 interface KpisProps {
     npvChartData?: object
@@ -9,7 +12,13 @@ interface KpisProps {
 
 const Kpis: React.FC<KpisProps> = ({ npvChartData, breakEvenChartData }) => {
     if (!npvChartData || !breakEvenChartData) { return <div>No data available</div> }
-
+    const { currentContext } = useModuleCurrentContext()
+    const externalId = currentContext?.externalId
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
+    })
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
@@ -19,7 +28,7 @@ const Kpis: React.FC<KpisProps> = ({ npvChartData, breakEvenChartData }) => {
                     barColors={["#005F57", "#b4260d"]}
                     barProfiles={["npv", "npvOverride"]}
                     barNames={["Calculated NPV", "Manually set NPV"]}
-                    unit="mill USD"
+                    unit={apiData?.currency === 1 ? "MNOK" : "MUSD"}
                     enableLegend={false}
                 />
             </Grid>
@@ -30,7 +39,7 @@ const Kpis: React.FC<KpisProps> = ({ npvChartData, breakEvenChartData }) => {
                     barColors={["#00977B", "#FF6347"]}
                     barProfiles={["breakEven", "breakEvenOverride"]}
                     barNames={["Calculated Break Even", "Manually set Break Even"]}
-                    unit="USD/bbl"
+                    unit={apiData?.currency === 1 ? "NOK/bbl" : "USD/bbl"}
                     enableLegend={false}
                 />
             </Grid>

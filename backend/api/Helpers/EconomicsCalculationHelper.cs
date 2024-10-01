@@ -9,57 +9,37 @@ namespace api.Helpers
 {
     public class EconomicsCalculationHelper : IEconomicsCalculationHelper
     {
-        private const int Cd = 365;
-        private readonly IStudyCostProfileService _studyCostProfileService;
-        private readonly IOpexCostProfileService _opexCostProfileService;
-        private readonly ICessationCostProfileService _cessationCostProfileService;
         private readonly IExplorationRepository _explorationRepository;
         private readonly ISubstructureRepository _substructureRepository;
         private readonly ISurfRepository _surfRepository;
         private readonly ITopsideRepository _topsideRepository;
         private readonly ITransportRepository _transportRepository;
         private readonly IWellProjectRepository _wellProjectRepository;
-        private readonly ICo2IntensityTotalService _co2IntensityTotalService;
-        private readonly IProjectService _projectService;
-        private readonly ISubstructureTimeSeriesRepository _substructureTimeSeriesRepository;
         private readonly ICaseService _caseService;
         private readonly IDrainageStrategyService _drainageStrategyService;
-
-        protected readonly DcdDbContext _context;
+        private readonly IDrainageStrategyRepository _drainageStrategyRepository;
 
         public EconomicsCalculationHelper(
             ICaseService caseService,
-            IStudyCostProfileService studyCostProfileService,
-            IOpexCostProfileService opexCostProfileService,
-            ICessationCostProfileService cessationCostProfileService,
             IExplorationRepository explorationRepository,
             ISubstructureRepository substructureRepository,
             ISurfRepository surfRepository,
             ITopsideRepository topsideRepository,
             ITransportRepository transportRepository,
             IWellProjectRepository wellProjectRepository,
-            ICo2IntensityTotalService co2IntensityTotalService,
-            IProjectService projectService,
-            ISubstructureTimeSeriesRepository substructureTimeSeriesRepository,
-            DcdDbContext context,
-            IDrainageStrategyService drainageStrategyService
+            IDrainageStrategyService drainageStrategyService,
+            IDrainageStrategyRepository drainageStrategyRepository
 )
         {
             _caseService = caseService;
-            _studyCostProfileService = studyCostProfileService;
-            _opexCostProfileService = opexCostProfileService;
-            _cessationCostProfileService = cessationCostProfileService;
             _explorationRepository = explorationRepository;
             _substructureRepository = substructureRepository;
             _surfRepository = surfRepository;
             _topsideRepository = topsideRepository;
             _transportRepository = transportRepository;
             _wellProjectRepository = wellProjectRepository;
-            _co2IntensityTotalService = co2IntensityTotalService;
-            _projectService = projectService;
-            _substructureTimeSeriesRepository = substructureTimeSeriesRepository;
-            _context = context;
             _drainageStrategyService = drainageStrategyService;
+            _drainageStrategyRepository = drainageStrategyRepository;
         }
 
         public async Task CalculateTotalIncome(Guid caseId)
@@ -157,7 +137,8 @@ namespace api.Helpers
         public async Task CalculateTotalCost(Guid caseId)
         {
             var caseItem = await _caseService.GetCaseWithIncludes(
-                caseId
+                caseId,
+                c => c.Project
             );
             var totalStudyCost = CalculateStudyCost(caseItem);
 
@@ -228,8 +209,43 @@ namespace api.Helpers
 
             return;
         }
+        public TimeSeries<double> CalculateCashFlow(TimeSeries<double> income, TimeSeries<double> totalCost)
+        {
+            var startYear = Math.Min(income.StartYear, totalCost.StartYear);
+            var endYear = Math.Max(
+                income.StartYear + income.Values.Length - 1,
+                totalCost.StartYear + totalCost.Values.Length - 1
+            );
 
-        private double CalculateDiscountedVolume(double[] values, double discountRate, int startIndex)
+            var incomeValues = new double[endYear - startYear + 1];
+            var costValues = new double[endYear - startYear + 1];
+
+            for (int i = 0; i < income.Values.Length; i++)
+            {
+                int yearIndex = income.StartYear + i - startYear;
+                incomeValues[yearIndex] = income.Values[i];
+            }
+
+            for (int i = 0; i < totalCost.Values.Length; i++)
+            {
+                int yearIndex = totalCost.StartYear + i - startYear;
+                costValues[yearIndex] = totalCost.Values[i];
+            }
+
+            var cashFlowValues = new double[incomeValues.Length];
+            for (int i = 0; i < cashFlowValues.Length; i++)
+            {
+                cashFlowValues[i] = incomeValues[i] - costValues[i];
+            }
+
+            return new TimeSeries<double>
+            {
+                StartYear = startYear,
+                Values = cashFlowValues
+            };
+        }
+
+        public double CalculateDiscountedVolume(double[] values, double discountRate, int startIndex)
         {
             double accumulatedVolume = 0;
             for (int i = 0; i < values.Length; i++)
@@ -281,7 +297,7 @@ namespace api.Helpers
 
             var discountRate = caseItem.Project?.DiscountRate ?? 8;
             var defaultOilPrice = caseItem.Project?.OilPriceUSD ?? 75;
-            var gasPriceNOK = caseItem.Project?.GasPriceNOK ?? 0;
+            var gasPriceNOK = caseItem.Project?.GasPriceNOK ?? 3;
             var exchangeRateUSDToNOK = caseItem.Project?.ExchangeRateUSDToNOK ?? 10;
             var oilVolume = TimeSeriesCost.MergeCostProfiles(
                 new TimeSeries<double> { StartYear = drainageStrategy.ProductionProfileOil?.StartYear ?? 0, Values = drainageStrategy.ProductionProfileOil?.Values ?? Array.Empty<double>() },
@@ -782,41 +798,7 @@ namespace api.Helpers
             return totalExplorationCost;
         }
 
-        public TimeSeries<double> CalculateCashFlow(TimeSeries<double> income, TimeSeries<double> totalCost)
-        {
-            var startYear = Math.Min(income.StartYear, totalCost.StartYear);
-            var endYear = Math.Max(
-                income.StartYear + income.Values.Length - 1,
-                totalCost.StartYear + totalCost.Values.Length - 1
-            );
 
-            var incomeValues = new double[endYear - startYear + 1];
-            var costValues = new double[endYear - startYear + 1];
-
-            for (int i = 0; i < income.Values.Length; i++)
-            {
-                int yearIndex = income.StartYear + i - startYear;
-                incomeValues[yearIndex] = income.Values[i];
-            }
-
-            for (int i = 0; i < totalCost.Values.Length; i++)
-            {
-                int yearIndex = totalCost.StartYear + i - startYear;
-                costValues[yearIndex] = totalCost.Values[i];
-            }
-
-            var cashFlowValues = new double[incomeValues.Length];
-            for (int i = 0; i < cashFlowValues.Length; i++)
-            {
-                cashFlowValues[i] = incomeValues[i] - costValues[i];
-            }
-
-            return new TimeSeries<double>
-            {
-                StartYear = startYear,
-                Values = cashFlowValues
-            };
-        }
 
     }
 }

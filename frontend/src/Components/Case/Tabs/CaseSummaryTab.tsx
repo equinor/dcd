@@ -16,6 +16,7 @@ import { SetSummaryTableYearsFromProfiles } from "../Components/CaseTabTableHelp
 import CaseSummarySkeleton from "../../LoadingSkeletons/CaseSummarySkeleton"
 import { caseQueryFn, projectQueryFn } from "../../../Services/QueryFunctions"
 import { useProjectContext } from "../../../Context/ProjectContext"
+import { useAppContext } from "../../../Context/AppContext"
 
 interface ITimeSeriesData {
     group?: string
@@ -35,6 +36,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
+    const { editMode } = useAppContext()
 
     const [cashflowProfile, setCashflowProfile] = useState<ITimeSeries | undefined>(undefined)
     const [npvValue, setNpvValue] = useState<number | undefined>(undefined)
@@ -373,6 +375,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     disabled
                 />
             </Grid>
+
             <Grid item xs={12} md={6}>
                 <SwitchableNumberInput
                     addEdit={addEdit}

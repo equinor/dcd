@@ -67,7 +67,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Calculated NPV",
-                            unit: "mill USD",
+                            unit: `${apiData?.currency === 1 ? "MNOK" : "MUSD"}`,
                         },
                         cellStyle: cellStyleRightAlign,
                     },
@@ -79,7 +79,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Manually set NPV",
-                            unit: "mill USD",
+                            unit: `${apiData?.currency === 1 ? "MNOK" : "MUSD"}`,
                         },
                         cellStyle: cellStyleRightAlign,
                     },
@@ -91,7 +91,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Calculated Break even",
-                            unit: "USD/bbl",
+                            unit: `${apiData?.currency === 1 ? "NOK/bbl" : "USD/bbl"}`,
                         },
                         cellStyle: cellStyleRightAlign,
                     },
@@ -103,7 +103,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Manually set Break even",
-                            unit: "USD/bbl",
+                            unit: `${apiData?.currency === 1 ? "NOK/bbl" : "USD/bbl"}`,
                         },
                         cellStyle: cellStyleRightAlign,
                     },
