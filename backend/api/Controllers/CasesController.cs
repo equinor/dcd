@@ -21,16 +21,19 @@ namespace api.Controllers;
 public class CasesController : ControllerBase
 {
     private readonly ICaseService _caseService;
+    private readonly ICreateCaseService _createCaseService;
     private readonly ICaseTimeSeriesService _caseTimeSeriesService;
     private readonly IDuplicateCaseService _duplicateCaseService;
 
     public CasesController(
         ICaseService caseService,
+        ICreateCaseService createCaseService,
         ICaseTimeSeriesService caseTimeSeriesService,
         IDuplicateCaseService duplicateCaseService
         )
     {
         _caseService = caseService;
+        _createCaseService = createCaseService;
         _caseTimeSeriesService = caseTimeSeriesService;
         _duplicateCaseService = duplicateCaseService;
     }
@@ -38,7 +41,7 @@ public class CasesController : ControllerBase
     [HttpPost]
     public async Task<ProjectWithAssetsDto> CreateCase([FromRoute] Guid projectId, [FromBody] CreateCaseDto caseDto)
     {
-        return await _caseService.CreateCase(projectId, caseDto);
+        return await _createCaseService.CreateCase(projectId, caseDto);
     }
 
     [HttpPost("copy", Name = "Duplicate")]

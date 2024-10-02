@@ -1,13 +1,10 @@
 using System.Linq.Expressions;
 
-using api.Context;
 using api.Dtos;
-using api.Enums;
 using api.Exceptions;
 using api.Models;
 using api.Repositories;
 
-using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -15,77 +12,25 @@ namespace api.Services;
 
 public class ExplorationService : IExplorationService
 {
-    private readonly DcdDbContext _context;
-    private readonly IProjectService _projectService;
     private readonly IProjectAccessService _projectAccessService;
     private readonly ILogger<ExplorationService> _logger;
-    private readonly IMapper _mapper;
     private readonly ICaseRepository _caseRepository;
     private readonly IExplorationRepository _repository;
     private readonly IMapperService _mapperService;
 
     public ExplorationService(
-        DcdDbContext context,
-        IProjectService projectService,
         ILoggerFactory loggerFactory,
-        IMapper mapper,
         ICaseRepository caseRepository,
         IExplorationRepository repository,
         IMapperService mapperService,
         IProjectAccessService projectAccessService
         )
     {
-        _context = context;
-        _projectService = projectService;
         _logger = loggerFactory.CreateLogger<ExplorationService>();
-        _mapper = mapper;
         _caseRepository = caseRepository;
         _repository = repository;
         _mapperService = mapperService;
         _projectAccessService = projectAccessService;
-    }
-
-    public async Task<Exploration> CreateExploration(Guid projectId, Guid sourceCaseId, CreateExplorationDto explorationDto)
-    {
-        var exploration = _mapper.Map<Exploration>(explorationDto);
-        if (exploration == null)
-        {
-            throw new ArgumentNullException(nameof(exploration));
-        }
-        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
-        exploration.Project = project;
-        var createdExploration = _context.Explorations!.Add(exploration);
-        SetCaseLink(exploration, sourceCaseId, project);
-        await _context.SaveChangesAsync();
-        return createdExploration.Entity;
-    }
-
-    private static void SetCaseLink(Exploration exploration, Guid sourceCaseId, Project project)
-    {
-        var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
-        if (case_ == null)
-        {
-            throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
-        }
-        case_.ExplorationLink = exploration.Id;
-    }
-
-    public async Task<Exploration> GetExploration(Guid explorationId)
-    {
-        var exploration = await _context.Explorations!
-            .Include(c => c.ExplorationWellCostProfile)
-            .Include(c => c.AppraisalWellCostProfile)
-            .Include(c => c.SidetrackCostProfile)
-            .Include(c => c.GAndGAdminCost)
-            .Include(c => c.GAndGAdminCostOverride)
-            .Include(c => c.SeismicAcquisitionAndProcessing)
-            .Include(c => c.CountryOfficeCost)
-            .FirstOrDefaultAsync(o => o.Id == explorationId);
-        if (exploration == null)
-        {
-            throw new ArgumentException(string.Format("Exploration {0} not found.", explorationId));
-        }
-        return exploration;
     }
 
     public async Task<Exploration> GetExplorationWithIncludes(Guid explorationId, params Expression<Func<Exploration, object>>[] includes)

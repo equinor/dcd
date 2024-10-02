@@ -78,17 +78,10 @@ public class PROSPController : ControllerBase
     {
         try
         {
-            var projectDto = await _prospSharepointImportService.ConvertSharepointFilesToProjectDto(projectId, dtos);
+            await _prospSharepointImportService.ConvertSharepointFilesToProjectDto(projectId, dtos);
+            var projectDto = await _projectService.GetProjectDto(projectId);
 
-            if (projectDto.Id == projectId)
-            {
-                return Ok(projectDto);
-            }
-            else
-            {
-                var fallbackDto = _projectService.GetProjectDto(projectId);
-                return Ok(fallbackDto);
-            }
+            return Ok(projectDto);
         }
         catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {
