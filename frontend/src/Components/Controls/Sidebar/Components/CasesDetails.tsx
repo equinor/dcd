@@ -19,6 +19,12 @@ export const CasesTimeline = styled(Grid)`
     ${sharedTimelineStyles}
 `
 
+const GrowBox = styled.div`
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow-y: auto;
+`
+
 const CasesDetails: React.FC = () => {
     const { sidebarOpen } = useAppContext()
     const { addNewCase } = useModalContext()
@@ -37,9 +43,11 @@ const CasesDetails: React.FC = () => {
                     </Grid>
                 )}
             </Grid>
-            <CasesTimeline data-timeline container justifyContent="flex-start" alignItems="flex-start" direction="column">
-                <CasesList />
-            </CasesTimeline>
+            <GrowBox>
+                <CasesTimeline data-timeline container justifyContent="flex-start" alignItems="flex-start" direction="column">
+                    <CasesList />
+                </CasesTimeline>
+            </GrowBox>
         </>
     )
 }

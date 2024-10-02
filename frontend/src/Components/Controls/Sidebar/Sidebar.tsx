@@ -35,12 +35,6 @@ const StyledSideBar = styled(SideBar)`
     flex-direction: column;
 `
 
-const GrowBox = styled.div`
-    flex-grow: 1;
-    flex-shrink: 1;
-    overflow-y: auto;
-`
-
 export const Header = styled.div`
     margin: 15px 10px;
 `
@@ -86,11 +80,9 @@ const Sidebar = () => {
         <Wrapper>
             <Sticky>
                 <StyledSideBar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>
-                        <ProjectDetails />
-                        <StyledDivider />
-                    <GrowBox>
-                        <CasesDetails />
-                    </GrowBox>
+                    <ProjectDetails />
+                    <StyledDivider />
+                    <CasesDetails />
                     <StyledDivider />
                     <>
                         {archivedCases.length > 0 && (
@@ -100,7 +92,7 @@ const Sidebar = () => {
                             </>
                         )}
                     </>
-                        <CurrentCaseEditHistory />
+                    <CurrentCaseEditHistory />
                     <Footer>
                         <Toggle />
                     </Footer>
