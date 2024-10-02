@@ -164,12 +164,12 @@ public class ProspSharepointImportService
             : null;
     }
 
-    public async Task<ProjectWithAssetsDto> ConvertSharepointFilesToProjectDto(Guid projectId, SharePointImportDto[] dtos)
+    public async Task ConvertSharepointFilesToProjectDto(Guid projectId, SharePointImportDto[] dtos)
     {
         var projectDto = new ProjectWithAssetsDto();
         if (string.IsNullOrWhiteSpace(dtos.FirstOrDefault()?.SharePointSiteUrl))
         {
-            return projectDto;
+            return;
         }
 
         foreach (var importDto in dtos)
@@ -186,7 +186,7 @@ public class ProspSharepointImportService
         var siteId = GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()!.SharePointSiteUrl)?.Result[0];
         if (siteId == null)
         {
-            return projectDto;
+            return;
         }
 
         var driveId = await GetDriveIdFromSharePointSiteUrl(dtos, siteId);
@@ -224,7 +224,7 @@ public class ProspSharepointImportService
                 var assets = MapAssets(iteminfo.Surf, iteminfo.Substructure, iteminfo.Topside,
                     iteminfo.Transport);
 
-                projectDto = await _prospExcelImportService.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
+                await _prospExcelImportService.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
                     projectId,
                     assets,
                     iteminfo.SharePointFileId,
@@ -232,8 +232,6 @@ public class ProspSharepointImportService
                     iteminfo.SharePointFileUrl);
             }
         }
-
-        return projectDto;
     }
 
     private async Task<string?> GetDriveIdFromSharePointSiteUrl(SharePointImportDto[] dtos, string siteId)

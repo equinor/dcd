@@ -28,7 +28,15 @@ public class Co2IntensityTotalService : ICo2IntensityTotalService
     {
         var caseItem = await _caseService.GetCase(caseId);
         var project = await _projectService.GetProjectWithCasesAndAssets(caseItem.ProjectId);
-        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategy(caseItem.DrainageStrategyLink);
+        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
+            caseItem.DrainageStrategyLink,
+            d => d.Co2Emissions!,
+            d => d.Co2EmissionsOverride!,
+            d => d.ProductionProfileOil!,
+            d => d.AdditionalProductionProfileOil!,
+            d => d.ProductionProfileGas!,
+            d => d.AdditionalProductionProfileGas!
+        );
 
         var generateCo2EmissionsProfile = new Co2EmissionsDto();
         if (drainageStrategy.Co2EmissionsOverride?.Override == true)

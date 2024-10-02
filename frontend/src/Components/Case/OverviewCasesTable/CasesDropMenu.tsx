@@ -114,7 +114,6 @@ const CasesDropMenu = ({
                 placement="right"
             >
                 <Menu.Item
-                    disabled={selectedCase?.archived}
                     onClick={openCase}
                 >
                     <Icon data={folder} size={16} />
