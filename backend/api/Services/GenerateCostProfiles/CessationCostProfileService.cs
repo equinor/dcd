@@ -72,9 +72,8 @@ public class CessationCostProfileService : ICessationCostProfileService
             return;
         }
 
-        var wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
         caseItem.CessationWellsCost = await GenerateCessationWellsCost(
-            wellProject,
+            caseItem.WellProjectLink,
             project,
             lastYear.Value,
             caseItem.CessationWellsCost ?? new CessationWellsCost()
@@ -94,7 +93,7 @@ public class CessationCostProfileService : ICessationCostProfileService
             return;
         }
 
-        var surf = await _surfService.GetSurf(caseItem.SurfLink);
+        var surf = await _surfService.GetSurfWithIncludes(caseItem.SurfLink);
         caseItem.CessationOffshoreFacilitiesCost = GenerateCessationOffshoreFacilitiesCost(
             surf,
             lastYear.Value,
@@ -102,9 +101,9 @@ public class CessationCostProfileService : ICessationCostProfileService
         );
     }
 
-    private async Task<CessationWellsCost> GenerateCessationWellsCost(WellProject wellProject, Project project, int lastYear, CessationWellsCost cessationWells)
+    private async Task<CessationWellsCost> GenerateCessationWellsCost(Guid wellProjectId, Project project, int lastYear, CessationWellsCost cessationWells)
     {
-        var linkedWells = await _wellProjectWellService.GetWellProjectWellsForWellProject(wellProject.Id);
+        var linkedWells = await _wellProjectWellService.GetWellProjectWellsForWellProject(wellProjectId);
         if (linkedWells == null)
         {
             return cessationWells;

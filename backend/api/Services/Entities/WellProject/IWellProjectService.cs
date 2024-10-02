@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 using api.Dtos;
 using api.Models;
 
@@ -5,8 +7,7 @@ namespace api.Services;
 
 public interface IWellProjectService
 {
-    Task<WellProject> CreateWellProject(Guid projectId, Guid sourceCaseId, CreateWellProjectDto wellProjectDto);
-    Task<WellProject> GetWellProject(Guid wellProjectId);
+    Task<WellProject> GetWellProjectWithIncludes(Guid wellProjectId, params Expression<Func<WellProject, object>>[] includes);
     Task<WellProjectDto> UpdateWellProject(
         Guid projectId,
         Guid caseId,

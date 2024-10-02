@@ -173,6 +173,7 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IRevisionService, RevisionService>();
 builder.Services.AddScoped<IFusionService, FusionService>();
 builder.Services.AddScoped<ICaseService, CaseService>();
+builder.Services.AddScoped<ICreateCaseService, CreateCaseService>();
 builder.Services.AddScoped<IDrainageStrategyService, DrainageStrategyService>();
 builder.Services.AddScoped<IWellProjectService, WellProjectService>();
 builder.Services.AddScoped<IExplorationService, ExplorationService>();

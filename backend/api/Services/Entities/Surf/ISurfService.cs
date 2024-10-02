@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 using api.Dtos;
 using api.Models;
 
@@ -5,8 +7,7 @@ namespace api.Services;
 
 public interface ISurfService
 {
-    Task<Surf> GetSurf(Guid surfId);
-    Task<Surf> CreateSurf(Guid projectId, Guid sourceCaseId, CreateSurfDto surfDto);
+    Task<Surf> GetSurfWithIncludes(Guid surfId, params Expression<Func<Surf, object>>[] includes);
     Task<SurfDto> UpdateSurf<TDto>(
         Guid projectId,
         Guid caseId,

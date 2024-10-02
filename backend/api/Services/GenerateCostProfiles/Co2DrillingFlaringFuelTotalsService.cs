@@ -44,11 +44,10 @@ public class Co2DrillingFlaringFuelTotalsService : ICo2DrillingFlaringFuelTotals
             d => d.AdditionalProductionProfileGas!,
             d => d.ProductionProfileWaterInjection!
         );
-        var wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
 
         var fuelConsumptionsTotal = GetFuelConsumptionsProfileTotal(project, caseItem, topside, drainageStrategy);
         var flaringsTotal = GetFlaringsProfileTotal(project, drainageStrategy);
-        var drillingEmissionsTotal = await CalculateDrillingEmissionsTotal(project, wellProject);
+        var drillingEmissionsTotal = await CalculateDrillingEmissionsTotal(project, caseItem.WellProjectLink);
 
         var co2DrillingFlaringFuelTotals = new Co2DrillingFlaringFuelTotalsDto
         {
@@ -90,9 +89,9 @@ public class Co2DrillingFlaringFuelTotalsService : ICo2DrillingFlaringFuelTotals
         return fuelConsumptionsProfile.Values.Sum() / 1000;
     }
 
-    private async Task<double> CalculateDrillingEmissionsTotal(Project project, WellProject wellProject)
+    private async Task<double> CalculateDrillingEmissionsTotal(Project project, Guid wellProjectId)
     {
-        var linkedWells = await _wellProjectWellService.GetWellProjectWellsForWellProject(wellProject.Id);
+        var linkedWells = await _wellProjectWellService.GetWellProjectWellsForWellProject(wellProjectId);
         if (linkedWells == null)
         {
             return 0.0;

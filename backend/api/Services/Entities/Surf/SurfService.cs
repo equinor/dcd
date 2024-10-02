@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 using api.Context;
 using api.Dtos;
 using api.Exceptions;
@@ -12,73 +14,30 @@ namespace api.Services;
 
 public class SurfService : ISurfService
 {
-    private readonly DcdDbContext _context;
-    private readonly IProjectService _projectService;
     private readonly IProjectAccessService _projectAccessService;
     private readonly ILogger<SurfService> _logger;
-    private readonly IMapper _mapper;
     private readonly ISurfRepository _repository;
     private readonly ICaseRepository _caseRepository;
     private readonly IMapperService _mapperService;
     public SurfService(
-        DcdDbContext context,
-        IProjectService projectService,
         ILoggerFactory loggerFactory,
-        IMapper mapper,
         ISurfRepository repository,
         ICaseRepository caseRepository,
         IMapperService mapperService,
         IProjectAccessService projectAccessService
         )
     {
-        _context = context;
-        _projectService = projectService;
         _logger = loggerFactory.CreateLogger<SurfService>();
-        _mapper = mapper;
         _repository = repository;
         _caseRepository = caseRepository;
         _mapperService = mapperService;
         _projectAccessService = projectAccessService;
     }
 
-    public async Task<Surf> GetSurf(Guid surfId)
+    public async Task<Surf> GetSurfWithIncludes(Guid surfId, params Expression<Func<Surf, object>>[] includes)
     {
-        var surf = await _context.Surfs!
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
-            .FirstOrDefaultAsync(o => o.Id == surfId);
-        if (surf == null)
-        {
-            throw new ArgumentException(string.Format("Surf {0} not found.", surfId));
-        }
-        return surf;
-    }
-
-    public async Task<Surf> CreateSurf(Guid projectId, Guid sourceCaseId, CreateSurfDto surfDto)
-    {
-        var surf = _mapper.Map<Surf>(surfDto);
-        if (surf == null)
-        {
-            throw new ArgumentNullException(nameof(surf));
-        }
-        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
-        surf.Project = project;
-        surf.LastChangedDate = DateTimeOffset.UtcNow;
-        var createdSurf = _context.Surfs!.Add(surf);
-        SetCaseLink(surf, sourceCaseId, project);
-        await _context.SaveChangesAsync();
-        return createdSurf.Entity;
-    }
-
-    private static void SetCaseLink(Surf surf, Guid sourceCaseId, Project project)
-    {
-        var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
-        if (case_ == null)
-        {
-            throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
-        }
-        case_.SurfLink = surf.Id;
+        return await _repository.GetSurfWithIncludes(surfId, includes)
+            ?? throw new NotFoundInDBException($"Topside with id {surfId} not found.");
     }
 
     public async Task<SurfDto> UpdateSurf<TDto>(

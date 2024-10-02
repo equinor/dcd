@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 using api.Context;
 using api.Models;
 
@@ -16,6 +18,11 @@ public class SurfRepository : BaseRepository, ISurfRepository
     public async Task<Surf?> GetSurf(Guid surfId)
     {
         return await Get<Surf>(surfId);
+    }
+
+    public async Task<Surf?> GetSurfWithIncludes(Guid surfId, params Expression<Func<Surf, object>>[] includes)
+    {
+        return await GetWithIncludes(surfId, includes);
     }
 
     public async Task<Surf?> GetSurfWithCostProfile(Guid surfId)
