@@ -20,9 +20,9 @@ export const useProjectEdits = () => {
     const mutation = useMutation({
         mutationFn,
         onSuccess: (variables) => {
-            const { id } = variables
+            const { fusionProjectId } = variables
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", id] },
+                { queryKey: ["projectApiData", fusionProjectId] },
             )
             setIsSaving(false)
         },
@@ -37,7 +37,7 @@ export const useProjectEdits = () => {
         projectEdit: Components.Schemas.UpdateProjectDto,
     ) => {
         setIsSaving(true)
-        mutation.mutate({ projectId, body: projectEdit })
+        mutation.mutate({ projectId, body: projectEdit }) // it does not go into mutation
     }
 
     return {

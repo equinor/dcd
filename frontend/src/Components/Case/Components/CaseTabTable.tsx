@@ -299,17 +299,8 @@ const CaseTabTable = ({
         const rule = TABLE_VALIDATION_RULES[params.data.profileName]
         if (rule && (params.newValue < rule.min || params.newValue > rule.max)) {
             setSnackBarMessage(`Value must be between ${rule.min} and ${rule.max}. Please correct the input to save the input.`)
-        } else if (firstTriggerRef.current) {
-            firstTriggerRef.current = false
+        } else {
             stageEdit(params)
-
-            if (timerRef.current) {
-                clearTimeout(timerRef.current)
-            }
-
-            timerRef.current = setTimeout(() => {
-                firstTriggerRef.current = true
-            }, 0) // TODO: Can this be removed?
         }
     }, [stageEdit, timeSeriesData, dg4Year, caseId])
 
