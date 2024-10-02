@@ -48,12 +48,18 @@ public class RevisionService : IRevisionService
             Console.WriteLine("CaseItem: " + caseItem?.Name);
         }
 
-        SetIdsToEmptyGuids(project);
+        if (project == null)
+        {
+            throw new NotFoundInDBException($"Project with id {projectId} not found.");
+        }
+
+        SetProjectAndRelatedEntitiesToEmptyGuids(project);
         if (project == null)
         {
             throw new NotFoundInDBException($"Project with id {projectId} not found.");
         }
         project.OriginalProjectId = projectId;
+        project.IsRevision = true;
 
         var revision = await _revisionRepository.AddRevision(project);
 
@@ -64,6 +70,101 @@ public class RevisionService : IRevisionService
                     });
 
         // return revision;
+    }
+
+    private void SetProjectAndRelatedEntitiesToEmptyGuids(Project project)
+    {
+        project.Id = Guid.Empty;
+
+        project.DevelopmentOperationalWellCosts!.Id = Guid.Empty;
+        project.ExplorationOperationalWellCosts!.Id = Guid.Empty;
+
+        var drainageStrategies = new List<DrainageStrategy>();
+        var topsides = new List<Topside>();
+        var substructures = new List<Substructure>();
+        var surf = new List<Surf>();
+        var transport = new List<Transport>();
+        var wellProjects = new List<WellProject>();
+        var exploration = new List<Exploration>();
+
+
+        if (project.Cases == null)
+        {
+            return;
+        }
+
+        foreach (var caseItem in project.Cases)
+        {
+            caseItem.Id = Guid.Empty;
+            caseItem.ProjectId = Guid.Empty;
+
+            if (caseItem.CessationOffshoreFacilitiesCost != null)
+            {
+                caseItem.CessationOffshoreFacilitiesCost.Id = Guid.Empty;
+                SetIdsToEmptyGuids(caseItem.CessationOffshoreFacilitiesCost);
+            }
+
+            if (caseItem.DrainageStrategy != null)
+            {
+                caseItem.DrainageStrategy.Id = Guid.Empty;
+                SetIdsToEmptyGuids(caseItem.DrainageStrategy);
+                drainageStrategies.Add(caseItem.DrainageStrategy);
+            }
+
+            if (caseItem.Topside != null)
+            {
+                caseItem.Topside.Id = Guid.Empty;
+                SetIdsToEmptyGuids(caseItem.Topside);
+                topsides.Add(caseItem.Topside);
+            }
+
+            if (caseItem.Substructure != null)
+            {
+                caseItem.Substructure.Id = Guid.Empty;
+                SetIdsToEmptyGuids(caseItem.Substructure);
+                substructures.Add(caseItem.Substructure);
+            }
+
+            if (caseItem.Surf != null)
+            {
+                caseItem.Surf.Id = Guid.Empty;
+                SetIdsToEmptyGuids(caseItem.Surf);
+                surf.Add(caseItem.Surf);
+            }
+
+            if (caseItem.Transport != null)
+            {
+                caseItem.Transport.Id = Guid.Empty;
+                SetIdsToEmptyGuids(caseItem.Transport);
+                transport.Add(caseItem.Transport);
+            }
+
+            if (caseItem.WellProject != null)
+            {
+                caseItem.WellProject.Id = Guid.Empty;
+                SetIdsToEmptyGuids(caseItem.WellProject);
+                wellProjects.Add(caseItem.WellProject);
+            }
+
+            if (caseItem.Exploration != null)
+            {
+                caseItem.Exploration.Id = Guid.Empty;
+                SetIdsToEmptyGuids(caseItem.Exploration);
+                exploration.Add(caseItem.Exploration);
+            }
+
+
+        }
+
+        project.DrainageStrategies = drainageStrategies;
+        project.Topsides = topsides;
+        project.Substructures = substructures;
+        project.Surfs = surf;
+        project.Transports = transport;
+        project.WellProjects = wellProjects;
+        project.Explorations = exploration;
+
+
     }
 
     private static void SetIdsToEmptyGuids(object? obj)
@@ -79,16 +180,27 @@ public class RevisionService : IRevisionService
     /// <param name="visited">A set of already visited objects to avoid infinite recursion.</param>
     private static void SetIdsToEmptyGuids(object? obj, HashSet<object> visited)
     {
-        if (obj == null || visited.Contains(obj)) { return; }
+        if (obj == null || visited.Contains(obj))
+        {
+            return;
+        }
 
         visited.Add(obj);
 
         var type = obj.GetType();
+
+        Console.WriteLine("Type: " + type.Name);
+
         var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
         foreach (var property in properties)
         {
             var propertyType = property.PropertyType;
+
+            if (propertyType == typeof(Project))
+            {
+                continue;
+            }
 
             if (propertyType == typeof(Guid) && (property.Name.EndsWith("Id") || property.Name.EndsWith("Link")))
             {
