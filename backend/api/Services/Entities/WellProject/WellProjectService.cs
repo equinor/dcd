@@ -1,11 +1,9 @@
-using api.Context;
+using System.Linq.Expressions;
+
 using api.Dtos;
-using api.Enums;
 using api.Exceptions;
 using api.Models;
 using api.Repositories;
-
-using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -13,83 +11,31 @@ namespace api.Services;
 
 public class WellProjectService : IWellProjectService
 {
-    private readonly DcdDbContext _context;
-    private readonly IProjectService _projectService;
     private readonly IProjectAccessService _projectAccessService;
     private readonly ILogger<WellProjectService> _logger;
-    private readonly IMapper _mapper;
     private readonly IWellProjectRepository _repository;
     private readonly ICaseRepository _caseRepository;
     private readonly IMapperService _mapperService;
 
     public WellProjectService(
-        DcdDbContext context,
-        IProjectService projectService,
         ILoggerFactory loggerFactory,
-        IMapper mapper,
         IWellProjectRepository repository,
         ICaseRepository caseRepository,
         IMapperService mapperService,
         IProjectAccessService projectAccessService
-        )
+    )
     {
-        _context = context;
-        _projectService = projectService;
         _logger = loggerFactory.CreateLogger<WellProjectService>();
-        _mapper = mapper;
         _repository = repository;
         _caseRepository = caseRepository;
         _mapperService = mapperService;
         _projectAccessService = projectAccessService;
     }
 
-    public async Task<WellProject> CreateWellProject(
-        Guid projectId,
-        Guid sourceCaseId,
-        CreateWellProjectDto wellProjectDto
-        )
+    public async Task<WellProject> GetWellProjectWithIncludes(Guid wellProjectId, params Expression<Func<WellProject, object>>[] includes)
     {
-        var wellProject = _mapper.Map<WellProject>(wellProjectDto);
-        if (wellProject == null)
-        {
-            throw new ArgumentNullException(nameof(wellProject));
-        }
-        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
-        wellProject.Project = project;
-        var createdWellProject = _context.WellProjects!.Add(wellProject);
-        await _context.SaveChangesAsync();
-        await SetCaseLink(wellProject, sourceCaseId, project);
-        return createdWellProject.Entity;
-    }
-
-    private async Task SetCaseLink(WellProject wellProject, Guid sourceCaseId, Project project)
-    {
-        var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
-        if (case_ == null)
-        {
-            throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
-        }
-        case_.WellProjectLink = wellProject.Id;
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task<WellProject> GetWellProject(Guid wellProjectId)
-    {
-        var wellProject = await _context.WellProjects!
-            .Include(c => c.OilProducerCostProfile)
-            .Include(c => c.OilProducerCostProfileOverride)
-            .Include(c => c.GasProducerCostProfile)
-            .Include(c => c.GasProducerCostProfileOverride)
-            .Include(c => c.WaterInjectorCostProfile)
-            .Include(c => c.WaterInjectorCostProfileOverride)
-            .Include(c => c.GasInjectorCostProfile)
-            .Include(c => c.GasInjectorCostProfileOverride)
-            .FirstOrDefaultAsync(o => o.Id == wellProjectId);
-        if (wellProject == null)
-        {
-            throw new ArgumentException(string.Format("Well project {0} not found.", wellProjectId));
-        }
-        return wellProject;
+        return await _repository.GetWellProjectWithIncludes(wellProjectId, includes)
+            ?? throw new NotFoundInDBException($"WellProject with id {wellProjectId} not found.");
     }
 
     public async Task<WellProjectDto> UpdateWellProject(

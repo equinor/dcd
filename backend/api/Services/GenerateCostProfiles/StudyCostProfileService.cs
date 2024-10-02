@@ -171,7 +171,11 @@ public class StudyCostProfileService : IStudyCostProfileService
     {
         var sumFacilityCost = 0.0;
 
-        var substructure = await _substructureService.GetSubstructure(caseItem.SubstructureLink);
+        var substructure = await _substructureService.GetSubstructureWithIncludes(
+            caseItem.SubstructureLink,
+            s => s.CostProfileOverride!,
+            s => s.CostProfile!
+        );
         if (substructure.CostProfileOverride?.Override == true)
         {
             sumFacilityCost += substructure.CostProfileOverride.Values.Sum();
@@ -182,7 +186,11 @@ public class StudyCostProfileService : IStudyCostProfileService
         }
 
 
-        var surf = await _surfService.GetSurf(caseItem.SurfLink);
+        var surf = await _surfService.GetSurfWithIncludes(
+            caseItem.SurfLink,
+            s => s.CostProfileOverride!,
+            s => s.CostProfile!
+        );
         if (surf.CostProfileOverride?.Override == true)
         {
             sumFacilityCost += surf.CostProfileOverride.Values.Sum();
@@ -193,7 +201,11 @@ public class StudyCostProfileService : IStudyCostProfileService
         }
 
 
-        var topside = await _topsideService.GetTopside(caseItem.TopsideLink);
+        var topside = await _topsideService.GetTopsideWithIncludes(
+            caseItem.TopsideLink,
+            t => t.CostProfileOverride!,
+            t => t.CostProfile!
+        );
         if (topside.CostProfileOverride?.Override == true)
         {
             sumFacilityCost += topside.CostProfileOverride.Values.Sum();
@@ -204,7 +216,11 @@ public class StudyCostProfileService : IStudyCostProfileService
         }
 
 
-        var transport = await _transportService.GetTransport(caseItem.TransportLink);
+        var transport = await _transportService.GetTransportWithIncludes(
+            caseItem.TransportLink,
+            t => t.CostProfileOverride!,
+            t => t.CostProfile!
+        );
         if (transport.CostProfileOverride?.Override == true)
         {
             sumFacilityCost += transport.CostProfileOverride.Values.Sum();
@@ -221,7 +237,17 @@ public class StudyCostProfileService : IStudyCostProfileService
     {
         var sumWellCost = 0.0;
 
-        var wellProject = await _wellProjectService.GetWellProject(caseItem.WellProjectLink);
+        var wellProject = await _wellProjectService.GetWellProjectWithIncludes(
+            caseItem.WellProjectLink,
+            w => w.OilProducerCostProfileOverride!,
+            w => w.OilProducerCostProfile!,
+            w => w.GasProducerCostProfileOverride!,
+            w => w.GasProducerCostProfile!,
+            w => w.WaterInjectorCostProfileOverride!,
+            w => w.WaterInjectorCostProfile!,
+            w => w.GasInjectorCostProfileOverride!,
+            w => w.GasInjectorCostProfile!
+        );
 
         if (wellProject.OilProducerCostProfileOverride?.Override == true)
         {

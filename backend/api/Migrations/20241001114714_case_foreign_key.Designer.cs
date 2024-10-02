@@ -12,8 +12,8 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20241001112331_case_index")]
-    partial class case_index
+    [Migration("20241001114714_case_foreign_key")]
+    partial class case_foreign_key
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -2725,13 +2725,13 @@ namespace api.Migrations
                     b.HasOne("api.Models.DrainageStrategy", "DrainageStrategy")
                         .WithMany()
                         .HasForeignKey("DrainageStrategyLink")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("api.Models.Exploration", "Exploration")
                         .WithMany()
                         .HasForeignKey("ExplorationLink")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("api.Models.Project", "Project")
@@ -2743,31 +2743,31 @@ namespace api.Migrations
                     b.HasOne("api.Models.Substructure", "Substructure")
                         .WithMany()
                         .HasForeignKey("SubstructureLink")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("api.Models.Surf", "Surf")
                         .WithMany()
                         .HasForeignKey("SurfLink")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("api.Models.Topside", "Topside")
                         .WithMany()
                         .HasForeignKey("TopsideLink")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("api.Models.Transport", "Transport")
                         .WithMany()
                         .HasForeignKey("TransportLink")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("api.Models.WellProject", "WellProject")
                         .WithMany()
                         .HasForeignKey("WellProjectLink")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("DrainageStrategy");

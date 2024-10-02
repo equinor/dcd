@@ -7,8 +7,6 @@ namespace api.Services;
 
 public interface IDrainageStrategyService
 {
-    Task<DrainageStrategy> CreateDrainageStrategy(Guid projectId, Guid sourceCaseId, CreateDrainageStrategyDto drainageStrategyDto);
-    Task<DrainageStrategy> GetDrainageStrategy(Guid drainageStrategyId);
     Task<DrainageStrategy> GetDrainageStrategyWithIncludes(
         Guid drainageStrategyId,
         params Expression<Func<DrainageStrategy, object>>[] includes
