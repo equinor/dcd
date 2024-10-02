@@ -51,7 +51,7 @@ public class RevisionRepository : BaseRepository, IRevisionRepository
     private static IQueryable<Project> IncludeProjectDetails(IQueryable<Project> query)
     {
         return query
-            .Include(p => p.Wells)
+            // .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts);
     }
@@ -75,7 +75,9 @@ public class RevisionRepository : BaseRepository, IRevisionRepository
             .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCostOverride)
             .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCost)
             .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCostOverride)
-            .Include(p => p.Cases)!.ThenInclude(c => c.CessationOnshoreFacilitiesCostProfile);
+            .Include(p => p.Cases)!.ThenInclude(c => c.CessationOnshoreFacilitiesCostProfile)
+            .Include(p => p.Cases)!.ThenInclude(c => c.WellProject).ThenInclude(wp => wp!.WellProjectWells)!.ThenInclude(c => c.Well)
+            .Include(p => p.Cases)!.ThenInclude(c => c.Exploration).ThenInclude(wp => wp!.ExplorationWells)!.ThenInclude(c => c.Well);
     }
 
     private static IQueryable<Project> IncludeDrainageStrategyDetails(IQueryable<Project> query)
@@ -110,7 +112,8 @@ public class RevisionRepository : BaseRepository, IRevisionRepository
             .Include(p => p.Explorations)!.ThenInclude(c => c.GAndGAdminCostOverride)
             .Include(p => p.Explorations)!.ThenInclude(c => c.SeismicAcquisitionAndProcessing)
             .Include(p => p.Explorations)!.ThenInclude(c => c.CountryOfficeCost)
-            .Include(p => p.Explorations)!.ThenInclude(c => c.ExplorationWells)!.ThenInclude(c => c.DrillingSchedule);
+            .Include(p => p.Explorations)!.ThenInclude(c => c.ExplorationWells)!.ThenInclude(c => c.DrillingSchedule)
+            .Include(p => p.Explorations)!.ThenInclude(c => c.ExplorationWells)!.ThenInclude(c => c.Well);
     }
 
     private static IQueryable<Project> IncludeWellProjectDetails(IQueryable<Project> query)
@@ -124,6 +127,7 @@ public class RevisionRepository : BaseRepository, IRevisionRepository
             .Include(p => p.WellProjects)!.ThenInclude(c => c.WaterInjectorCostProfileOverride)
             .Include(p => p.WellProjects)!.ThenInclude(c => c.GasInjectorCostProfile)
             .Include(p => p.WellProjects)!.ThenInclude(c => c.GasInjectorCostProfileOverride)
+            .Include(p => p.WellProjects)!.ThenInclude(c => c.WellProjectWells)!.ThenInclude(c => c.Well)
             .Include(p => p.WellProjects)!.ThenInclude(c => c.WellProjectWells)!.ThenInclude(c => c.DrillingSchedule);
     }
 

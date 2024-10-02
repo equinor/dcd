@@ -5,5 +5,6 @@ namespace api.Services;
 
 public interface IRevisionService
 {
+    Task<ProjectWithAssetsDto> GetRevision(Guid projectId);
     Task<string> CreateRevision(Guid projectId);
 }

@@ -28,17 +28,17 @@ public class RevisionsController : ControllerBase
         _revisionService = revisionService;
     }
 
-    // [RequiresApplicationRoles(
-    //     ApplicationRole.Admin,
-    //     ApplicationRole.ReadOnly,
-    //     ApplicationRole.User
-    // )]
-    // [HttpGet("{projectId}")]
-    // [ActionType(ActionType.Read)]
-    // public async Task<ProjectWithAssetsDto?> Get(Guid projectId)
-    // {
-    //     throw notim
-    // }
+    [RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+    )]
+    [HttpGet]
+    [ActionType(ActionType.Read)]
+    public async Task<ProjectWithAssetsDto?> Get(Guid projectId)
+    {
+        return await _revisionService.GetRevision(projectId);
+    }
 
     [HttpPost]
     [RequiresApplicationRoles(
