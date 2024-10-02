@@ -11,10 +11,12 @@ import Grid from "@mui/material/Grid"
 import { useModalContext } from "@/Context/ModalContext"
 import { useAppContext } from "@/Context/AppContext"
 import CasesList from "../Components/CasesList"
-import { Timeline, Header } from "../Sidebar"
+import { sharedTimelineStyles } from "../sharedStyles"
+import { Header } from "../Sidebar"
 
-export const FillHeightContainer = styled.div`
+export const CasesTimeline = styled(Grid)`
     height: 100%;
+    ${sharedTimelineStyles}
 `
 
 const CasesDetails: React.FC = () => {
@@ -22,8 +24,8 @@ const CasesDetails: React.FC = () => {
     const { addNewCase } = useModalContext()
 
     return (
-        <FillHeightContainer>
-            <Grid item xs={12} container alignItems="center" justifyContent={sidebarOpen ? "space-between" : "start"}>
+        <>
+            <Grid item container alignItems="flex-start" justifyContent={sidebarOpen ? "space-between" : "start"}>
                 <Header>
                     <Typography variant="overline">Cases</Typography>
                 </Header>
@@ -35,10 +37,10 @@ const CasesDetails: React.FC = () => {
                     </Grid>
                 )}
             </Grid>
-            <Timeline data-timeline container maxHeight={"350px"} justifyContent="flex-start" alignItems="flex-start" direction="column">
+            <CasesTimeline data-timeline container justifyContent="flex-start" alignItems="flex-start" direction="column">
                 <CasesList />
-            </Timeline>
-        </FillHeightContainer>
+            </CasesTimeline>
+        </>
     )
 }
 

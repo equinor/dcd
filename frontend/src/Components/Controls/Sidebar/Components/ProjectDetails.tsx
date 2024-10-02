@@ -13,12 +13,17 @@ import {
     settings,
     compare,
 } from "@equinor/eds-icons"
-import { projectPath } from "../../../../Utils/common"
+
+import { projectPath } from "@/Utils/common"
+import { useAppContext } from "@/Context/AppContext"
 import { TimelineElement, Timeline, Header } from "../Sidebar"
-import { useAppContext } from "../../../../Context/AppContext"
 
 const ProjectTitle = styled(Typography)`
     line-break: anywhere;
+`
+
+const CenterIcon = styled.div`
+    padding-right: 20px;
 `
 
 const ProjectDetails: React.FC = () => {
@@ -46,7 +51,7 @@ const ProjectDetails: React.FC = () => {
                         >
                             {sidebarOpen
                                 ? "Overview"
-                                : <Tooltip title="Overview" placement="right"><Icon data={dashboard} /></Tooltip>}
+                                : <CenterIcon><Tooltip title="Overview" placement="right"><Icon data={dashboard} /></Tooltip></CenterIcon>}
                         </TimelineElement>
                     </Grid>
                     <Grid item>

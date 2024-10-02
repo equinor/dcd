@@ -7,10 +7,15 @@ import {
 } from "@equinor/eds-core-react"
 import { arrow_drop_up, arrow_drop_down } from "@equinor/eds-icons"
 import Grid from "@mui/material/Grid"
+import styled from "styled-components"
 
 import { useAppContext } from "@/Context/AppContext"
 import { Timeline, Header } from "../Sidebar"
 import ArchivedCasesList from "./ArchivedCasesList"
+
+const ClickableTitle = styled.div`
+    cursor: pointer;
+    `
 
 const ArchivedCasesDetails: React.FC = () => {
     const [expandList, setExpandList] = useState(false);
@@ -20,7 +25,15 @@ const ArchivedCasesDetails: React.FC = () => {
         <>
             <Grid item container alignItems="start" justifyContent={sidebarOpen ? "space-between" : "start"}>
                 <Header>
-                    <Typography variant="overline">Archived Cases</Typography>
+                    {sidebarOpen ? (
+                        <Typography variant="overline">Archived Cases</Typography>
+                    ) : (
+                        <Tooltip placement="right" title="Expand Archived Cases">
+                            <ClickableTitle onClick={() => setExpandList(!expandList)}>
+                                <Typography variant="overline">Archived</Typography>
+                            </ClickableTitle>
+                        </Tooltip>
+                    )}
                 </Header>
                 {sidebarOpen && (
                     <Grid item>
