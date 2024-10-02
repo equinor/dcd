@@ -20,6 +20,14 @@ public class CaseRepository : BaseRepository, ICaseRepository
         _logger = logger;
     }
 
+    public async Task<Case> AddCase(Case caseItem)
+    {
+        _context.Cases.Add(caseItem);
+        await _context.SaveChangesAsync();
+
+        return caseItem;
+    }
+
     public async Task<Case?> GetCase(Guid caseId)
     {
         return await Get<Case>(caseId);
