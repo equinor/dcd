@@ -74,7 +74,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 hideIfEmpty: true,
             },
             {
-                profileName: "Gas production",
+                profileName: "Rich gas production",
                 unit: `${projectData?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: gasProductionData,
                 resourceName: "productionProfileGas",
@@ -85,7 +85,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
                 overridable: false,
             },
             {
-                profileName: "Additional Gas production",
+                profileName: "Additional Rich gas production",
                 unit: `${projectData?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: additionalGasProductionData,
                 resourceName: "additionalProductionProfileGas",
