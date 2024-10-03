@@ -37,7 +37,7 @@ export const useProjectEdits = () => {
         projectEdit: Components.Schemas.UpdateProjectDto,
     ) => {
         setIsSaving(true)
-        mutation.mutate({ projectId, body: projectEdit }) // it does not go into mutation
+        mutation.mutate({ projectId, body: projectEdit })
     }
 
     return {
