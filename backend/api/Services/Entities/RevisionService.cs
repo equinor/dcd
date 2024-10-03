@@ -254,14 +254,6 @@ public class RevisionService : IRevisionService
             project.ExplorationOperationalWellCosts.Id = Guid.Empty;
         }
 
-        // if (project.Wells != null)
-        // {
-        //     foreach (var well in project.Wells)
-        //     {
-        //         well.Id = Guid.Empty;
-        //     }
-        // }
-
         var drainageStrategies = new List<DrainageStrategy>();
         var topsides = new List<Topside>();
         var substructures = new List<Substructure>();
@@ -393,8 +385,6 @@ public class RevisionService : IRevisionService
         visited.Add(obj);
 
         var type = obj.GetType();
-
-        Console.WriteLine("Type: " + type.Name);
 
         var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
