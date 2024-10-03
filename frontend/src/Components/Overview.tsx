@@ -4,7 +4,6 @@ import {
     Button,
     Snackbar,
     Typography,
-    Switch,
 } from "@equinor/eds-core-react"
 import { useCurrentUser } from "@equinor/fusion-framework-react/hooks"
 import styled from "styled-components"
