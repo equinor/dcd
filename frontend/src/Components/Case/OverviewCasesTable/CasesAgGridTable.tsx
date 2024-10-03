@@ -230,8 +230,8 @@ const CasesAgGridTable = ({
 
         if (apiData) {
             try {
-                const projectId = unwrapProjectId(apiData.id)
-                const projectResult = await (await GetProjectService()).getProject(projectId)
+                const unwrappedProjectId = unwrapProjectId(apiData.id)
+                const projectResult = await (await GetProjectService()).getProject(unwrappedProjectId)
                 await (await GetSTEAService()).excelToSTEA(projectResult)
             } catch (error) {
                 console.error("[ProjectView] error while submitting form data", error)

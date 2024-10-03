@@ -23,7 +23,7 @@ const RouteCoordinator = (): JSX.Element => {
             if (!currentContext?.externalId) {
                 return "/"
             }
-            else if (location.pathname.includes("/revision")) {
+            if (location.pathname.includes("/revision")) {
                 setIsRevision(true)
                 return location.pathname
             }

@@ -39,10 +39,6 @@ const Header = styled.div`
     }
 `
 
-const DropWrapper = styled.div`
-    position: relative;
-`
-
 const Status = styled.div`
    display: flex;
    align-items: center;

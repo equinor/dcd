@@ -3,13 +3,13 @@ import {
     Menu, Typography, Icon, Button,
 } from "@equinor/eds-core-react"
 import { add, exit_to_app } from "@equinor/eds-icons"
+import { useNavigate } from "react-router"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useProjectContext } from "../../Context/ProjectContext"
 import Modal from "../Modal/Modal"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { projectQueryFn } from "@/Services/QueryFunctions"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { GetProjectService } from "@/Services/ProjectService"
-import { useNavigate } from "react-router"
 
 type RevisionsDropMenuProps = {
     isMenuOpen: boolean;

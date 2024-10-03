@@ -26,18 +26,6 @@ const ControlsWrapper = styled.div`
     z-index: 1;
 `
 
-const SwitchWrapper = styled.div`
-    position: absolute;
-    right: 80px;
-    bottom: 12px;
-    background-color: white;
-    padding: 0 10px;
-    border-radius: 20px;
-    z-index: 10;
-    border: 1px solid #f2f2f2;
-    box-shadow: 4.0px 8.0px 8.0px hsl(0deg 0% 0% / 0.18);
-
-`
 const ContentWrapper = styled.div`
     display: flex;
     padding-bottom: 20px;
@@ -61,7 +49,7 @@ const Overview = () => {
         snackBarMessage,
         setSnackBarMessage,
     } = useAppContext()
-    const { setProjectId, setIsRevision, isRevision } = useProjectContext()
+    const { setProjectId } = useProjectContext()
     const { featuresModalIsOpen } = useModalContext()
     const [warnedProjects, setWarnedProjects] = useState<WarnedProjectInterface | null>(null)
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)

@@ -5,6 +5,7 @@ import { add } from "@equinor/eds-icons"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
+import { useParams } from "react-router"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
 import { getProjectPhaseName, getProjectCategoryName } from "@/Utils/common"
@@ -15,7 +16,6 @@ import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import CasesTable from "../Case/OverviewCasesTable/CasesTable"
 import Gallery from "../Gallery/Gallery"
 import { useProjectContext } from "@/Context/ProjectContext"
-import { useParams } from "react-router"
 
 const ProjectOverviewTab = () => {
     const { isRevision } = useProjectContext()
