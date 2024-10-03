@@ -9,6 +9,11 @@ export class __ProjectService extends __BaseService {
         return project
     }
 
+    async getRevision(projectId: string, revisionId: string) {
+        const project: Components.Schemas.ProjectWithAssetsDto = await this.get<Components.Schemas.ProjectWithAssetsDto>(`/${projectId}/revisions/${revisionId}`)
+        return project
+    }
+
     public async createProject(contextId: string): Promise<Components.Schemas.ProjectWithAssetsDto> {
         const res: Components.Schemas.ProjectWithAssetsDto = await this.postWithParams(
             "",

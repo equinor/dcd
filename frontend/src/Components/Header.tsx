@@ -7,8 +7,10 @@ import { GetProjectService } from "../Services/ProjectService"
 import CreateCaseModal from "./Modal/CreateCaseModal"
 import { useAppContext } from "../Context/AppContext"
 import useEditProject from "../Hooks/useEditProject"
+import { useProjectContext } from "@/Context/ProjectContext"
 
 const RouteCoordinator = (): JSX.Element => {
+    const { setIsRevision } = useProjectContext()
     const { setIsCreating, setIsLoading, setSnackBarMessage } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
     const { addProjectEdit } = useEditProject()
@@ -16,19 +18,23 @@ const RouteCoordinator = (): JSX.Element => {
     const navigate = useNavigate()
     const location = useLocation()
 
-    // useEffect(() => {
-    //     const getPathToNavigate = () => {
-    //         if (!currentContext?.externalId) {
-    //             return "/"
-    //         }
-    //         return location.pathname.includes("/case") ? location.pathname : currentContext.id
-    //     }
+    useEffect(() => {
+        const getPathToNavigate = () => {
+            if (!currentContext?.externalId) {
+                return "/"
+            }
+            else if (location.pathname.includes("/revision")) {
+                setIsRevision(true)
+                return location.pathname
+            }
+            return location.pathname.includes("/case") ? location.pathname : currentContext.id
+        }
 
-    //     const pathToNavigate = getPathToNavigate()
-    //     if (location.pathname !== pathToNavigate) {
-    //         navigate(pathToNavigate)
-    //     }
-    // }, [currentContext, location.pathname, navigate])
+        const pathToNavigate = getPathToNavigate()
+        if (location.pathname !== pathToNavigate) {
+            navigate(pathToNavigate)
+        }
+    }, [currentContext, location.pathname, navigate])
 
     useEffect(() => {
         const fetchAndSetProject = async () => {

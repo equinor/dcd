@@ -5,7 +5,7 @@ import {
 import { add, exit_to_app } from "@equinor/eds-icons"
 import { useProjectContext } from "../../Context/ProjectContext"
 import Modal from "../Modal/Modal"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { GetProjectService } from "@/Services/ProjectService"
@@ -26,6 +26,7 @@ interface Revision {
 const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIsMenuOpen }) => {
     const { setIsRevision, isRevision, projectId } = useProjectContext()
     const navigate = useNavigate()
+    const queryClient = useQueryClient()
 
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
@@ -66,10 +67,24 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIs
 
     const navigateToRevision = (revisionId: string) => {
         setIsRevision(true)
+        queryClient.invalidateQueries(
+            { queryKey: ["projectApiData", externalId] },
+        )
         navigate(`revision/${revisionId}`)
     }
 
     const exitRevisionView = () => {
+        setIsRevision(false)
+        queryClient.invalidateQueries(
+            { queryKey: ["projectApiData", externalId] },
+        )
+
+        if (currentContext) {
+            navigate(`/${currentContext.id}`)
+        }
+        else {
+            navigate("/")
+        }
         console.log("Exiting revision view")
     }
 

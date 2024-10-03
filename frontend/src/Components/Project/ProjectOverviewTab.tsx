@@ -11,11 +11,15 @@ import { getProjectPhaseName, getProjectCategoryName } from "@/Utils/common"
 import { useModalContext } from "@/Context/ModalContext"
 import { useAppContext } from "@/Context/AppContext"
 import useEditProject from "@/Hooks/useEditProject"
-import { projectQueryFn } from "@/Services/QueryFunctions"
+import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import CasesTable from "../Case/OverviewCasesTable/CasesTable"
 import Gallery from "../Gallery/Gallery"
+import { useProjectContext } from "@/Context/ProjectContext"
+import { useParams } from "react-router"
 
 const ProjectOverviewTab = () => {
+    const { isRevision } = useProjectContext()
+    const { revisionId } = useParams()
     const { editMode } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
     const { addProjectEdit } = useEditProject()
@@ -27,6 +31,12 @@ const ProjectOverviewTab = () => {
         queryKey: ["projectApiData", externalId],
         queryFn: () => projectQueryFn(externalId),
         enabled: !!externalId,
+    })
+
+    const { data: apiRevisionData } = useQuery({
+        queryKey: ["revisionApiData", externalId],
+        queryFn: () => revisionQueryFn(externalId, revisionId),
+        enabled: !!externalId && isRevision,
     })
 
     const handleBlur = (e: any) => {
@@ -76,7 +86,7 @@ const ProjectOverviewTab = () => {
                             {apiData.description ?? ""}
                         </MarkdownEditor>
                     )
-                    : <MarkdownViewer value={apiData.description ?? ""} />}
+                    : <MarkdownViewer value={isRevision ? apiRevisionData?.description : apiData.description ?? ""} />}
             </Grid>
             <Grid item xs={12} container spacing={1} justifyContent="space-between">
                 <Grid item>

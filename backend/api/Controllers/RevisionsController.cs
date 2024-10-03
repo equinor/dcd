@@ -33,11 +33,11 @@ public class RevisionsController : ControllerBase
         ApplicationRole.ReadOnly,
         ApplicationRole.User
     )]
-    [HttpGet]
+    [HttpGet("{revisionId}")]
     [ActionType(ActionType.Read)]
-    public async Task<ProjectWithAssetsDto?> Get(Guid projectId)
+    public async Task<ProjectWithAssetsDto?> Get(Guid projectId, Guid revisionId)
     {
-        return await _revisionService.GetRevision(projectId);
+        return await _revisionService.GetRevision(revisionId);
     }
 
     [HttpPost]
