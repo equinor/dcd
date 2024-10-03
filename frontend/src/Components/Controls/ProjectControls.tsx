@@ -11,15 +11,19 @@ import {
     edit,
     visibility,
     check_circle_outlined,
+    history,
 } from "@equinor/eds-icons"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
-import Classification from "./Classification"
+import { useState } from "react"
+import Classification from "./ClassificationChip"
 import { useAppContext } from "../../Context/AppContext"
 import { formatDateAndTime } from "../../Utils/common"
 import { projectTabNames } from "../../Utils/constants"
 import { useProjectContext } from "../../Context/ProjectContext"
 import FullPageLoading from "../fullPageLoading"
+import RevisionsDropMenu from "./RevisionsDropMenu"
+import RevisionChip from "./RevisionChip"
 
 const Header = styled.div`
     display: flex;
@@ -34,6 +38,11 @@ const Header = styled.div`
         gap: 10px;
     }
 `
+
+const DropWrapper = styled.div`
+    position: relative;
+`
+
 const Status = styled.div`
    display: flex;
    align-items: center;
@@ -47,8 +56,10 @@ interface props {
 const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
     const { currentContext } = useModuleCurrentContext()
     const { editMode } = useAppContext()
-    const { activeTabProject, setActiveTabProject } = useProjectContext()
+    const { activeTabProject, setActiveTabProject, isRevision } = useProjectContext()
     const { isSaving } = useAppContext()
+
+    const [isMenuOpen, setIsMenuOpen] = useState(false)
 
     const handleTabChange = (index: number) => {
         setActiveTabProject(index)
@@ -63,6 +74,9 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                         {currentContext?.title}
                     </Typography>
                     <Classification />
+                    {isRevision && (
+                        <RevisionChip />
+                    )}
                 </div>
                 <div>
                     {!editMode
@@ -89,22 +103,34 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                             </Tooltip>
                         )
                     )}
-                    <Button onClick={handleEdit} variant={editMode ? "outlined" : "contained"}>
-
-                        {editMode && (
-                            <>
-                                <Icon data={visibility} />
-                                <span>View</span>
-                            </>
-                        )}
-                        {!editMode && (
-                            <>
-                                <Icon data={edit} />
-                                <span>Edit</span>
-                            </>
-                        )}
-                    </Button>
-
+                    <Tooltip title={isRevision ? "Revisions are locked for editing" : ""}>
+                        <Button onClick={handleEdit} variant={editMode ? "outlined" : "contained"} disabled={isRevision}>
+                            {editMode && (
+                                <>
+                                    <Icon data={visibility} />
+                                    <span>View</span>
+                                </>
+                            )}
+                            {!editMode && (
+                                <>
+                                    <Icon data={edit} />
+                                    <span>Edit</span>
+                                </>
+                            )}
+                        </Button>
+                    </Tooltip>
+                    <div>
+                        <Tooltip title="This is a revision">
+                            <Button variant="outlined" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                                <Icon data={history} />
+                                Project revisions
+                            </Button>
+                        </Tooltip>
+                        <RevisionsDropMenu
+                            isMenuOpen={isMenuOpen}
+                            setIsMenuOpen={setIsMenuOpen}
+                        />
+                    </div>
                 </div>
             </Header>
             <Tabs
