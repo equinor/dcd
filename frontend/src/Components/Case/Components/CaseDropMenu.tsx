@@ -105,7 +105,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                 onClose={() => setIsMenuOpen(false)}
                 placement="bottom"
             >
-                <Menu.Item onClick={() => addNewCase()}>
+                <Menu.Item disabled={isArchived} onClick={() => addNewCase()}>
                     <Icon data={add} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
                         Add New Case

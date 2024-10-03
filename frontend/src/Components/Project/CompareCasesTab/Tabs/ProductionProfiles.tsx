@@ -16,7 +16,7 @@ const ProductionProfiles: React.FC<ProductionProfilesProps> = ({ productionProfi
             barProfiles={["oilProduction", "gasProduction", "totalExportedVolumes"]}
             barNames={[
                 "Oil production (MSm3)",
-                "Gas production (GSm3)",
+                "Rich gas production (GSm3)",
                 "Total exported volumes (MSm3)",
             ]}
         />
