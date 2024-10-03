@@ -1,14 +1,7 @@
 using api.Authorization;
 using api.Dtos;
-using api.Exceptions;
-using api.Models;
-using api.Models.Fusion;
 using api.Services;
-using api.Services.FusionIntegration;
 
-using AutoMapper;
-
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 
@@ -28,15 +21,16 @@ public class RevisionsController : ControllerBase
         _revisionService = revisionService;
     }
 
+    [HttpGet("{revisionId}")]
     [RequiresApplicationRoles(
         ApplicationRole.Admin,
         ApplicationRole.ReadOnly,
         ApplicationRole.User
     )]
-    [HttpGet("{revisionId}")]
     [ActionType(ActionType.Read)]
     public async Task<ProjectWithAssetsDto?> Get(Guid projectId, Guid revisionId)
     {
+        // TODO: Need to verify that the project from the URL is the same as the project of the resource
         return await _revisionService.GetRevision(revisionId);
     }
 
@@ -50,15 +44,4 @@ public class RevisionsController : ControllerBase
     {
         return await _revisionService.CreateRevision(projectId);
     }
-
-    // [RequiresApplicationRoles(
-    //     ApplicationRole.Admin,
-    //     ApplicationRole.User
-    // )]
-    // [HttpPut("{projectId}")]
-    // [ActionType(ActionType.Edit)]
-    // public async Task<ProjectWithCasesDto> UpdateProject([FromRoute] Guid projectId, [FromBody] UpdateProjectDto projectDto)
-    // {
-
-    // }
 }
