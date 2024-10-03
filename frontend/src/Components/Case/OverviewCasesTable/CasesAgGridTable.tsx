@@ -99,6 +99,13 @@ const CasesAgGridTable = ({
         enabled: !!externalId && isRevision,
     })
 
+
+    const selectCase = (p: any) => {
+        if (!currentContext || !p.node.data) { return null }
+        navigate(casePath(currentContext.id, p.node.data.id))
+        return null
+    }
+
     const nameWithReferenceCase = (p: any) => (
         <Tooltip title={p.value} placement="bottom-start">
             <Wrapper>
@@ -109,6 +116,12 @@ const CasesAgGridTable = ({
             </Wrapper>
         </Tooltip>
     )
+
+    const onMoreClick = (data: TableCase, target: HTMLElement) => {
+        setSelectedCaseId(data.id)
+        setMenuAnchorEl(target)
+        setIsMenuOpen(!isMenuOpen)
+    }
 
     const menuButton = (p: any) => (
         <Button
@@ -210,18 +223,6 @@ const CasesAgGridTable = ({
     }
     if (isRevision && !apiRevisionData) {
         return <p>revision not found</p>
-    }
-
-    const onMoreClick = (data: TableCase, target: HTMLElement) => {
-        setSelectedCaseId(data.id)
-        setMenuAnchorEl(target)
-        setIsMenuOpen(!isMenuOpen)
-    }
-
-    const selectCase = (p: any) => {
-        if (!currentContext || !p.node.data) { return null }
-        navigate(casePath(currentContext.id, p.node.data.id))
-        return null
     }
 
     const submitToSTEA: MouseEventHandler<HTMLButtonElement> = async (e) => {

@@ -47,6 +47,7 @@ public class RevisionService : IRevisionService
         _mapper = mapper;
     }
 
+    // TODO: Rewrite when CaseWithAssetsDto is no longer needed
     public async Task<Project> GetProjectWithCasesAndAssets(Guid projectId)
     {
         Project project = await _context.Projects
@@ -223,36 +224,18 @@ public class RevisionService : IRevisionService
         return projectDto;
     }
 
-    public async Task<string> CreateRevision(Guid projectId)
+    public async Task<ProjectWithAssetsDto> CreateRevision(Guid projectId)
     {
-        var project = await _revisionRepository.GetProjectAndAssetsNoTracking(projectId);
-
-        if (project != null)
-        {
-            var caseItem = project.Cases?.FirstOrDefault();
-            Console.WriteLine("CaseItem: " + caseItem?.Name);
-        }
-
-        if (project == null)
-        {
-            throw new NotFoundInDBException($"Project with id {projectId} not found.");
-        }
+        var project = await _revisionRepository.GetProjectAndAssetsNoTracking(projectId)
+            ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
 
         SetProjectAndRelatedEntitiesToEmptyGuids(project, projectId);
-        if (project == null)
-        {
-            throw new NotFoundInDBException($"Project with id {projectId} not found.");
-        }
 
         var revision = await _revisionRepository.AddRevision(project);
 
-        return JsonConvert.SerializeObject(revision, Formatting.None,
-                    new JsonSerializerSettings
-                    {
-                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                    });
+        var revisionDto = _mapper.Map<Project, ProjectWithAssetsDto>(revision, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 
-        // return revision;
+        return revisionDto;
     }
 
     private void SetProjectAndRelatedEntitiesToEmptyGuids(Project project, Guid originalProjectId)
