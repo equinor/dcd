@@ -152,7 +152,10 @@ public class TopsideTimeSeriesService : ITopsideTimeSeriesService
         };
 
         var newProfile = _mapperService.MapToEntity(dto, topsideCostProfile, topsideId);
-
+        if (newProfile.Topside.CostProfileOverride != null)
+        {
+            newProfile.Topside.CostProfileOverride.Override = false;
+        }
         try
         {
             _repository.CreateTopsideCostProfile(newProfile);
@@ -187,6 +190,14 @@ public class TopsideTimeSeriesService : ITopsideTimeSeriesService
 
         // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<Topside>(projectId, existingProfile.Topside.Id);
+
+        if (existingProfile.Topside.ProspVersion == null)
+        {
+            if (existingProfile.Topside.CostProfileOverride != null)
+            {
+                existingProfile.Topside.CostProfileOverride.Override = true;
+            }
+        }
 
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, topsideId);
 

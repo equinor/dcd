@@ -133,6 +133,11 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
 
         var newProfile = _mapperService.MapToEntity(dto, surfCostProfile, surfId);
 
+        if (newProfile.Surf.CostProfileOverride != null)
+        {
+            newProfile.Surf.CostProfileOverride.Override = false;
+        }
+
         try
         {
             _repository.CreateSurfCostProfile(newProfile);
@@ -186,6 +191,14 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
 
         // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<Surf>(projectId, existingProfile.Surf.Id);
+
+        if (existingProfile.Surf.ProspVersion == null)
+        {
+            if (existingProfile.Surf.CostProfileOverride != null)
+            {
+                existingProfile.Surf.CostProfileOverride.Override = true;
+            }
+        }
 
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, surfId);
 
