@@ -23,6 +23,7 @@ const GrowBox = styled.div`
     flex-grow: 1;
     flex-shrink: 1;
     overflow-y: auto;
+    min-height: 100px;
 `
 
 const CasesDetails: React.FC = () => {

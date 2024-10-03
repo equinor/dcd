@@ -45,9 +45,10 @@ export const Timeline = styled(Grid)`
 `
 
 export const StyledDivider = styled(Divider)`
-    margin-left: 1px;
-    margin-right: 1px;
-    height: 1px;
+    height: 0px;
+    margin-left: 2px;
+    margin-right: 2px;
+    border: 0.5px solid rgba(220, 220, 220, 1);
 `
 
 export const TimelineElement = styled(Button)`
@@ -84,14 +85,12 @@ const Sidebar = () => {
                     <StyledDivider />
                     <CasesDetails />
                     <StyledDivider />
-                    <>
                         {archivedCases.length > 0 && (
                             <>
                                 <ArchivedCasesDetails />
                                 <StyledDivider />
                             </>
                         )}
-                    </>
                     <CurrentCaseEditHistory />
                     <Footer>
                         <Toggle />

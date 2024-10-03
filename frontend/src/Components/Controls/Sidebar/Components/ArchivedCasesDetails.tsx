@@ -50,7 +50,7 @@ const ArchivedCasesDetails: React.FC = () => {
                 )}
             </Grid>
             {!expandList ? null : (
-                <Timeline data-timeline container minHeight={"150px"} justifyContent="flex-start" alignItems="flex-start" direction="column">
+                <Timeline data-timeline container minHeight="100px" justifyContent="flex-start" alignItems="flex-start" direction="column">
                     <ArchivedCasesList />
                 </Timeline>
             )}
