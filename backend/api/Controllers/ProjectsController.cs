@@ -47,7 +47,7 @@ public class ProjectsController : ControllerBase
     )]
     [HttpGet("{projectId}")]
     [ActionType(ActionType.Read)]
-    public async Task<ProjectWithAssetsDto?> Get(Guid projectId)
+    public async Task<ProjectWithAssetsDto> Get(Guid projectId)
     {
         return await _projectService.GetProjectDto(projectId);
     }

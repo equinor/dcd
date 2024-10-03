@@ -18,6 +18,14 @@ export class __ProjectService extends __BaseService {
         return res
     }
 
+    public async createRevision(projectId: string): Promise<Components.Schemas.ProjectWithAssetsDto> {
+        const res: Components.Schemas.ProjectWithAssetsDto = await this.post(
+            `${projectId}/revisions`,
+            {},
+        )
+        return res
+    }
+
     public async updateProject(projectId: string, body: Components.Schemas.UpdateProjectDto): Promise<Components.Schemas.ProjectWithAssetsDto> {
         const res = await this.put(`${projectId}`, { body })
         return res

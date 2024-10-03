@@ -16,19 +16,19 @@ const RouteCoordinator = (): JSX.Element => {
     const navigate = useNavigate()
     const location = useLocation()
 
-    useEffect(() => {
-        const getPathToNavigate = () => {
-            if (!currentContext?.externalId) {
-                return "/"
-            }
-            return location.pathname.includes("/case") ? location.pathname : currentContext.id
-        }
+    // useEffect(() => {
+    //     const getPathToNavigate = () => {
+    //         if (!currentContext?.externalId) {
+    //             return "/"
+    //         }
+    //         return location.pathname.includes("/case") ? location.pathname : currentContext.id
+    //     }
 
-        const pathToNavigate = getPathToNavigate()
-        if (location.pathname !== pathToNavigate) {
-            navigate(pathToNavigate)
-        }
-    }, [currentContext, location.pathname, navigate])
+    //     const pathToNavigate = getPathToNavigate()
+    //     if (location.pathname !== pathToNavigate) {
+    //         navigate(pathToNavigate)
+    //     }
+    // }, [currentContext, location.pathname, navigate])
 
     useEffect(() => {
         const fetchAndSetProject = async () => {

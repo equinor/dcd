@@ -1,45 +1,72 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
     Menu, Typography, Icon, Button,
 } from "@equinor/eds-core-react"
 import { add, exit_to_app } from "@equinor/eds-icons"
 import { useProjectContext } from "../../Context/ProjectContext"
 import Modal from "../Modal/Modal"
+import { useQuery } from "@tanstack/react-query"
+import { projectQueryFn } from "@/Services/QueryFunctions"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { GetProjectService } from "@/Services/ProjectService"
+import { useNavigate } from "react-router"
 
 type RevisionsDropMenuProps = {
     isMenuOpen: boolean;
     setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+interface Revision {
+    id: string;
+    name: string;
+    description: string;
+    date: string;
+}
+
 const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIsMenuOpen }) => {
-    const { isRevision } = useProjectContext()
+    const { setIsRevision, isRevision, projectId } = useProjectContext()
+    const navigate = useNavigate()
+
+    const { currentContext } = useModuleCurrentContext()
+    const externalId = currentContext?.externalId
 
     const [creatingRevision, setCreatingRevision] = useState(false)
+    const [revisions, setRevisions] = useState<Revision[]>([])
 
-    const mockRevisionInfo = [
-        {
-            id: "1",
-            name: "Revision 1",
-            description: "This is the first revision",
-            date: "2021-10-01",
-        },
-        {
-            id: "2",
-            name: "Revision 2",
-            description: "This is the second revision",
-            date: "2021-10-02",
-        },
-        {
-            id: "3",
-            name: "Revision 3",
-            description: "This is the third revision",
-            date: "2021-10-03",
-        },
-    ]
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
+    })
 
-    const createRevision = () => {
+    useEffect(() => {
+        if (apiData) {
+            const revisionsResult = apiData.revisions.map((r: Components.Schemas.ProjectDto) => ({
+                id: r.id,
+                name: r.name,
+                description: r.description,
+                date: r.createDate,
+            }))
+            setRevisions(revisionsResult)
+        }
+    }, [apiData])
+
+    const openRevisionModal = () => {
         console.log("Creating revision")
         setCreatingRevision(true)
+    }
+
+    const createRevision = async () => {
+        const projectService = await GetProjectService()
+        const newRevision = await projectService.createRevision(projectId)
+        if (newRevision) {
+            setCreatingRevision(false)
+        }
+    }
+
+    const navigateToRevision = (revisionId: string) => {
+        setIsRevision(true)
+        navigate(`revision/${revisionId}`)
     }
 
     const exitRevisionView = () => {
@@ -71,8 +98,8 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIs
                 placement="bottom"
             >
                 {
-                    mockRevisionInfo.map((revision) => (
-                        <Menu.Item onClick={() => createRevision()}>
+                    revisions.map((revision) => (
+                        <Menu.Item onClick={() => navigateToRevision(revision.id)}>
                             <Typography group="navigation" variant="menu_title" as="span">
                                 {revision.name}
                                 {" "}
@@ -84,7 +111,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIs
                     ))
                 }
                 {!isRevision ? (
-                    <Menu.Item onClick={() => createRevision()}>
+                    <Menu.Item onClick={() => openRevisionModal()}>
                         <Icon data={add} size={16} />
                         <Typography group="navigation" variant="menu_title" as="span">
                             Create new revision

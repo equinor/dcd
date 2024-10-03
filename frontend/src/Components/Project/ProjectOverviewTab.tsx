@@ -27,7 +27,6 @@ const ProjectOverviewTab = () => {
         queryKey: ["projectApiData", externalId],
         queryFn: () => projectQueryFn(externalId),
         enabled: !!externalId,
-
     })
 
     const handleBlur = (e: any) => {
