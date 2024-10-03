@@ -35,7 +35,6 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
-
     const [cashflowProfile, setCashflowProfile] = useState<ITimeSeries | undefined>(undefined)
 
     const { data: projectData } = useQuery({
@@ -49,14 +48,6 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         queryFn: () => caseQueryFn(projectId, caseId),
         enabled: !!projectId && !!caseId,
     })
-
-    const [caseData, setCaseData] = useState(apiData?.case)
-
-    useEffect(() => {
-        if (apiData) {
-            setCaseData(apiData.case)
-        }
-    }, [apiData])
 
     const calculateCashflowProfile = (): ITimeSeries => {
         if (!apiData) {
@@ -347,6 +338,8 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             ])
         }
     }, [apiData, projectData])
+
+    const caseData = apiData?.case
 
     if (!caseData) { return <CaseSummarySkeleton /> }
 
