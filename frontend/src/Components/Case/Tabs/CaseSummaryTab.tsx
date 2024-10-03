@@ -370,8 +370,6 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     previousResourceObject={caseData}
                     integer={false}
                     allowNegative
-                    min={0}
-                    max={1000000}
                     disabled
                 />
             </Grid>

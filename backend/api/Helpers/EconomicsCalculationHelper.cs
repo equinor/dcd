@@ -299,18 +299,19 @@ namespace api.Helpers
             var defaultOilPrice = caseItem.Project?.OilPriceUSD ?? 75;
             var gasPriceNOK = caseItem.Project?.GasPriceNOK ?? 3;
             var exchangeRateUSDToNOK = caseItem.Project?.ExchangeRateUSDToNOK ?? 10;
+
             var oilVolume = TimeSeriesCost.MergeCostProfiles(
                 new TimeSeries<double> { StartYear = drainageStrategy.ProductionProfileOil?.StartYear ?? 0, Values = drainageStrategy.ProductionProfileOil?.Values ?? Array.Empty<double>() },
                 new TimeSeries<double> { StartYear = drainageStrategy.AdditionalProductionProfileOil?.StartYear ?? 0, Values = drainageStrategy.AdditionalProductionProfileOil?.Values ?? Array.Empty<double>() }
             );
+            if (!oilVolume.Values.Any()) return;
             oilVolume.Values = oilVolume.Values.Select(v => v / 1_000_000).ToArray();
-
 
             var gasVolume = TimeSeriesCost.MergeCostProfiles(
                 new TimeSeries<double> { StartYear = drainageStrategy.ProductionProfileGas?.StartYear ?? 0, Values = drainageStrategy.ProductionProfileGas?.Values ?? Array.Empty<double>() },
                 new TimeSeries<double> { StartYear = drainageStrategy.AdditionalProductionProfileGas?.StartYear ?? 0, Values = drainageStrategy.AdditionalProductionProfileGas?.Values ?? Array.Empty<double>() }
             );
-            gasVolume.Values = gasVolume.Values.Select(v => v / 1_000_000_000).ToArray();
+            gasVolume.Values = gasVolume.Values.Any() ? gasVolume.Values.Select(v => v / 1_000_000_000).ToArray() : Array.Empty<double>();
 
             var currentYear = DateTime.Now.Year;
             var nextYear = currentYear + 1;
@@ -319,6 +320,9 @@ namespace api.Helpers
 
             var discountedGasVolume = CalculateDiscountedVolume(gasVolume.Values, discountRate, gasVolume.StartYear + Math.Abs(nextYearInRelationToDg4Year));
             var discountedOilVolume = CalculateDiscountedVolume(oilVolume.Values, discountRate, oilVolume.StartYear + Math.Abs(nextYearInRelationToDg4Year));
+
+            if (discountedOilVolume == 0 || discountedGasVolume == 0) return;
+
             var discountedTotalCost = CalculateDiscountedVolume(caseItem?.CalculatedTotalCostCostProfile?.Values ?? Array.Empty<double>(), discountRate, (caseItem?.CalculatedTotalCostCostProfile?.StartYear ?? 0) + Math.Abs(nextYearInRelationToDg4Year));
 
             var GOR = discountedGasVolume / discountedOilVolume;
@@ -331,9 +335,8 @@ namespace api.Helpers
             {
                 caseItem.BreakEven = breakEvenPrice;
             }
-
-
         }
+
 
 
         public TimeSeries<double> CalculateStudyCost(Case caseItem)
