@@ -3641,7 +3641,7 @@ declare namespace Paths {
         }
     }
     namespace Projects$ProjectIdRevisions {
-        namespace Get {
+        namespace Post {
             namespace Parameters {
                 export type ProjectId = string; // uuid
             }
@@ -3652,15 +3652,19 @@ declare namespace Paths {
                 export type $200 = Components.Schemas.ProjectWithAssetsDto;
             }
         }
-        namespace Post {
+    }
+    namespace Projects$ProjectIdRevisions$RevisionId {
+        namespace Get {
             namespace Parameters {
                 export type ProjectId = string; // uuid
+                export type RevisionId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
+                revisionId: Parameters.RevisionId /* uuid */;
             }
             namespace Responses {
-                export type $200 = string;
+                export type $200 = Components.Schemas.ProjectWithAssetsDto;
             }
         }
     }

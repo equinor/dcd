@@ -169,14 +169,6 @@ const Overview = () => {
                     <Outlet />
                 </MainView>
             </ContentWrapper>
-            <SwitchWrapper>
-                <Switch
-                    checked={isRevision}
-                    label="Revision"
-                    onChange={() => setIsRevision((prev) => !prev)}
-                />
-            </SwitchWrapper>
-
         </>
     )
 }
