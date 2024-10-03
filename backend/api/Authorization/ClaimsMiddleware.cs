@@ -8,7 +8,7 @@ namespace api.Authorization;
 
 public class ClaimsMiddleware
 {
-    public static string ApplicationRoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+    public static readonly string ApplicationRoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
     private readonly ILogger<ClaimsMiddleware> _logger;
     private readonly RequestDelegate _nextMiddleware;
     public ClaimsMiddleware(RequestDelegate nextMiddleware,
