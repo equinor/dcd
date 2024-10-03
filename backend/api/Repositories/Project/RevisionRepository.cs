@@ -51,7 +51,6 @@ public class RevisionRepository : BaseRepository, IRevisionRepository
     private static IQueryable<Project> IncludeProjectDetails(IQueryable<Project> query)
     {
         return query
-            // .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts);
     }
