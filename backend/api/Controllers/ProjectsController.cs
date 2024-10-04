@@ -1,14 +1,7 @@
 using api.Authorization;
 using api.Dtos;
-using api.Exceptions;
-using api.Models;
-using api.Models.Fusion;
 using api.Services;
-using api.Services.FusionIntegration;
 
-using AutoMapper;
-
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 
@@ -19,25 +12,19 @@ namespace api.Controllers;
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class ProjectsController : ControllerBase
 {
-    private readonly IFusionService _fusionService;
     private readonly IProjectService _projectService;
     private readonly ICompareCasesService _compareCasesService;
     private readonly ITechnicalInputService _technicalInputService;
-    private readonly IMapper _mapper;
 
     public ProjectsController(
         IProjectService projectService,
-        IFusionService fusionService,
         ICompareCasesService compareCasesService,
-        ITechnicalInputService technicalInputService,
-        IMapper mapper
+        ITechnicalInputService technicalInputService
     )
     {
         _projectService = projectService;
-        _fusionService = fusionService;
         _compareCasesService = compareCasesService;
         _technicalInputService = technicalInputService;
-        _mapper = mapper;
     }
 
     [RequiresApplicationRoles(
@@ -60,22 +47,7 @@ public class ProjectsController : ControllerBase
     [ActionType(ActionType.Edit)]
     public async Task<ProjectWithAssetsDto> CreateProject([FromQuery] Guid contextId)
     {
-        var projectMaster = await _fusionService.ProjectMasterAsync(contextId);
-        if (projectMaster != null)
-        {
-            var project = _mapper.Map<Project>(projectMaster);
-
-            if (project == null)
-            {
-                throw new ArgumentNullException(nameof(project));
-            }
-
-            project.CreateDate = DateTimeOffset.UtcNow;
-
-            return await _projectService.CreateProject(project);
-        }
-
-        return new ProjectWithAssetsDto();
+        return await _projectService.CreateProject(contextId);
     }
 
     [RequiresApplicationRoles(

@@ -10,7 +10,10 @@ public class ExceptionHandlingMiddleware
     private readonly RequestDelegate _next;
     private readonly ILogger _logger;
 
-    public ExceptionHandlingMiddleware(RequestDelegate requestDelegate, ILogger<ExceptionHandlingMiddleware> logger)
+    public ExceptionHandlingMiddleware(
+        RequestDelegate requestDelegate,
+        ILogger<ExceptionHandlingMiddleware> logger
+    )
     {
         _next = requestDelegate;
         _logger = logger;
@@ -47,35 +50,37 @@ public class ExceptionHandlingMiddleware
 
         switch (exception)
         {
-            case NotFoundInDBException _:
+            case KeyNotFoundException:
+            case NotFoundInDBException:
                 statusCode = HttpStatusCode.NotFound;
                 message = exception.Message;
                 break;
-            case UnauthorizedAccessException _:
+            case UnauthorizedAccessException:
                 statusCode = HttpStatusCode.Unauthorized;
                 message = exception.Message;
                 break;
-            case InvalidInputException _:
+            case InvalidInputException:
                 statusCode = HttpStatusCode.BadRequest;
                 message = exception.Message;
                 break;
-            case ProjectAccessMismatchException _:
+            case ProjectAccessMismatchException:
                 statusCode = HttpStatusCode.Forbidden;
                 message = exception.Message;
                 break;
-            case ProjectClassificationException _:
+            case ProjectClassificationException:
                 statusCode = HttpStatusCode.Forbidden;
                 message = exception.Message;
                 break;
-            case ProjectMembershipException _:
+            case ProjectMembershipException:
                 statusCode = HttpStatusCode.Forbidden;
                 message = exception.Message;
                 break;
-            case WellChangeTypeException _:
+            case WellChangeTypeException:
                 statusCode = HttpStatusCode.BadRequest;
                 message = exception.Message;
                 break;
-            case ResourceAlreadyExistsException _:
+            case ProjectAlreadyExistsException:
+            case ResourceAlreadyExistsException:
                 statusCode = HttpStatusCode.Conflict;
                 message = exception.Message;
                 break;
