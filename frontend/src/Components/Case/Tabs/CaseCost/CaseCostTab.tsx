@@ -51,8 +51,8 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
         studyColor: "#004F55",
         opexColor: "#007079",
         cessationColor: "#97CACE",
-        offshoreFacilityColor: "#79c591",
-        developmentWellColor: "#b39eeb",
+        offshoreFacilityColor: "#79C591",
+        developmentWellColor: "#B39EEB",
         explorationWellColor: "#FF7D7D",
         totalIncomeColor: "#9F9F9F",
     }

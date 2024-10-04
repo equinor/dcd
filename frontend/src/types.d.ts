@@ -14,9 +14,9 @@ declare namespace Components {
             capexFactorFeasibilityStudies?: number; // double
             capexFactorFEEDStudies?: number; // double
             npv?: number; // double
-            npvOverride?: number; // double
+            npvOverride?: number | null; // double
             breakEven?: number; // double
-            breakEvenOverride?: number; // double
+            breakEvenOverride?: number | null; // double
             host?: string | null;
             dgaDate?: string; // date-time
             dgbDate?: string; // date-time
@@ -432,6 +432,7 @@ declare namespace Components {
             explorationWellCosts: number; // double
             totalCo2Emissions: number; // double
             co2Intensity: number; // double
+            npv: number; // double
         }
         export type Concept = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12; // int32
         export interface CountryOfficeCostDto {
@@ -454,16 +455,6 @@ declare namespace Components {
         export interface CreateAdditionalProductionProfileOilDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
-        }
-        export interface CreateCalculatedTotalCostCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
-        export interface CreateCalculatedTotalIncomeCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
         }
         export interface CreateCaseDto {
             name?: string | null;
@@ -2041,20 +2032,6 @@ declare namespace Paths {
         }
     }
     namespace Projects$ProjectIdCases$CaseIdCalculatedTotalCost {
-        namespace Post {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.CreateCalculatedTotalCostCostProfileDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.CalculatedTotalCostCostProfileDto;
-            }
-        }
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid
@@ -2073,20 +2050,6 @@ declare namespace Paths {
         }
     }
     namespace Projects$ProjectIdCases$CaseIdCalculatedTotalIncome {
-        namespace Post {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.CreateCalculatedTotalIncomeCostProfileDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.CalculatedTotalIncomeCostProfileDto;
-            }
-        }
         namespace Put {
             namespace Parameters {
                 export type CaseId = string; // uuid

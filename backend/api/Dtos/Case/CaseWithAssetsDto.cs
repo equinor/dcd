@@ -103,5 +103,4 @@ public class CaseWithAssetsDto
     public WaterInjectorCostProfileOverrideDto? WaterInjectorCostProfileOverride { get; set; }
     public GasInjectorCostProfileDto? GasInjectorCostProfile { get; set; }
     public GasInjectorCostProfileOverrideDto? GasInjectorCostProfileOverride { get; set; }
-
 }

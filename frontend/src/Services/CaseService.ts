@@ -350,56 +350,6 @@ class CaseService extends __BaseService {
         )
         return res
     }
-
-    public async createCalculatedTotalIncomeCostProfile(
-        projectId: string,
-        caseId: string,
-        dto: Components.Schemas.CreateCalculatedTotalIncomeCostProfileDto,
-    ): Promise<Components.Schemas.CalculatedTotalIncomeCostProfileDto> {
-        const res: Components.Schemas.CalculatedTotalIncomeCostProfileDto = await this.post(
-            `projects/${projectId}/cases/${caseId}/calculated-total-income-cost-profile/`,
-            { body: dto },
-        )
-        return res
-    }
-
-    public async updateCalculatedTotalIncomeCostProfile(
-        projectId: string,
-        caseId: string,
-        costProfileId: string,
-        dto: Components.Schemas.UpdateCalculatedTotalIncomeCostProfileDto,
-    ): Promise<Components.Schemas.CalculatedTotalIncomeCostProfileDto> {
-        const res: Components.Schemas.CalculatedTotalIncomeCostProfileDto = await this.put(
-            `projects/${projectId}/cases/${caseId}/calculated-total-income-cost-profile/${costProfileId}`,
-            { body: dto },
-        )
-        return res
-    }
-
-    public async createCalculatedTotalCostCostProfile(
-        projectId: string,
-        caseId: string,
-        dto: Components.Schemas.CreateCalculatedTotalCostCostProfileDto,
-    ): Promise<Components.Schemas.CalculatedTotalCostCostProfileDto> {
-        const res: Components.Schemas.CalculatedTotalCostCostProfileDto = await this.post(
-            `projects/${projectId}/cases/${caseId}/calculated-total-cost-cost-profile/`,
-            { body: dto },
-        )
-        return res
-    }
-
-    public async updateCalculatedTotalCostCostProfile(
-        projectId: string,
-        caseId: string,
-        costProfileId: string,
-        dto: Components.Schemas.UpdateCalculatedTotalCostCostProfileDto,
-    ): Promise<Components.Schemas.CalculatedTotalCostCostProfileDto> {
-        const res: Components.Schemas.CalculatedTotalCostCostProfileDto = await this.put(
-            `projects/${projectId}/cases/${caseId}/calculated-total-cost-cost-profile/${costProfileId}`,
-            { body: dto },
-        )
-        return res
-    }
 }
 
 export const GetCaseService = async () => new CaseService({

@@ -5,7 +5,7 @@ interface Props {
     data: any
     chartTitle: string
     barColors: string[]
-        barProfiles: string[]
+    barProfiles: string[]
     barNames: string[]
     unit?: string
     lineChart?: object

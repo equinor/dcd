@@ -2,8 +2,8 @@ import React from "react"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { AgChartsCompareCases } from "../../../AgGrid/AgChartsCompareCases"
-import { projectQueryFn } from "../../../../Services/QueryFunctions"
+import { AgChartsCompareCases } from "@/Components/AgGrid/AgChartsCompareCases"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 
 interface KpisProps {
     npvChartData?: object

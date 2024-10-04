@@ -1,6 +1,5 @@
 using api.Authorization;
 using api.Context;
-using api.Dtos;
 using api.Helpers;
 using api.Mappings;
 using api.Middleware;
@@ -243,7 +242,6 @@ builder.Services.AddScoped<ISurfTimeSeriesRepository, SurfTimeSeriesRepository>(
 
 builder.Services.AddScoped<IWellRepository, WellRepository>();
 builder.Services.AddScoped<ICaseWithAssetsRepository, CaseWithAssetsRepository>();
-builder.Services.AddScoped<ProjectWithAssetsDto>();
 
 
 
