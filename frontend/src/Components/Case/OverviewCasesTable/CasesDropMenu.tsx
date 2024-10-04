@@ -10,7 +10,7 @@ import {
     folder,
     library_add,
     archive,
-    unarchive
+    unarchive,
 } from "@equinor/eds-icons"
 import { useMemo, useState } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
@@ -50,13 +50,12 @@ const CasesDropMenu = ({
         queryFn: () => projectQueryFn(externalId),
         enabled: !!externalId,
     })
-    
+
     const [confirmDelete, setConfirmDelete] = useState(false)
-    
+
     const selectedCase = useMemo(() => projectData?.cases.find((c) => c.id === selectedCaseId), [projectData, selectedCaseId])
 
     if (!projectData) { return <p>project not found</p> }
-
 
     const openCase = async () => {
         try {
@@ -77,12 +76,12 @@ const CasesDropMenu = ({
     }
 
     const archiveCase = async (isArchived: boolean) => {
-        if(!selectedCase || selectedCaseId === undefined || !projectData.id) { return }
+        if (!selectedCase || selectedCaseId === undefined || !projectData.id) { return }
         const newResourceObject = { ...selectedCase, archived: isArchived } as ResourceObject
-        const result = await updateCase({ projectId: projectData.id , caseId: selectedCaseId, resourceObject: newResourceObject })
-        if(result) {
+        const result = await updateCase({ projectId: projectData.id, caseId: selectedCaseId, resourceObject: newResourceObject })
+        if (result) {
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", projectData.id] },
+                { queryKey: ["projectApiData", projectData.fusionProjectId] },
             )
         }
     }
@@ -114,7 +113,6 @@ const CasesDropMenu = ({
                 placement="right"
             >
                 <Menu.Item
-                    disabled={selectedCase?.archived}
                     onClick={openCase}
                 >
                     <Icon data={folder} size={16} />
@@ -139,14 +137,14 @@ const CasesDropMenu = ({
                                 Restore Case
                             </Typography>
                         </Menu.Item>
-                    ):(
+                    ) : (
                         <Menu.Item onClick={() => archiveCase(true)}>
                             <Icon data={archive} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">
                                 Archive Case
                             </Typography>
                         </Menu.Item>
-                )}
+                    )}
                 <Menu.Item
                     disabled={selectedCase?.archived}
                     onClick={() => editCase()}

@@ -102,12 +102,12 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                     },
                     {
                         field: "gasProduction",
-                        headerName: `Gas production (${apiData?.physicalUnit === 0 ? "GSm3" : "Bscf"})`,
+                        headerName: `Rich gas production (${apiData?.physicalUnit === 0 ? "GSm3" : "Bscf"})`,
                         width: 175,
                         editable: false,
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
-                            columnHeader: "Gas production",
+                            columnHeader: "Rich gas production",
                             unit: apiData?.physicalUnit === 0 ? "GSm3" : "Bscf",
                         },
                         cellStyle: cellStyleRightAlign,

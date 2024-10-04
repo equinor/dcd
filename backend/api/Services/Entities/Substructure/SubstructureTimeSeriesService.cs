@@ -91,7 +91,10 @@ public class SubstructureTimeSeriesService : ISubstructureTimeSeriesService
         };
 
         var newProfile = _mapperService.MapToEntity(dto, substructureCostProfile, substructureId);
-
+        if (newProfile.Substructure.CostProfileOverride != null)
+        {
+            newProfile.Substructure.CostProfileOverride.Override = false;
+        }
         try
         {
             _repository.CreateSubstructureCostProfile(newProfile);
@@ -168,7 +171,7 @@ public class SubstructureTimeSeriesService : ISubstructureTimeSeriesService
         dto,
         _repository.GetSubstructureCostProfileOverride,
         _repository.UpdateSubstructureCostProfileOverride
-);
+    );
     }
 
     private async Task<TDto> UpdateSubstructureTimeSeries<TProfile, TDto, TUpdateDto>(
@@ -190,6 +193,13 @@ public class SubstructureTimeSeriesService : ISubstructureTimeSeriesService
         // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<Substructure>(projectId, existingProfile.Substructure.Id);
 
+        if (existingProfile.Substructure.ProspVersion == null)
+        {
+            if (existingProfile.Substructure.CostProfileOverride != null)
+            {
+                existingProfile.Substructure.CostProfileOverride.Override = true;
+            }
+        }
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, substructureId);
 
         try

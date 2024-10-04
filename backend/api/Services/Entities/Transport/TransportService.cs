@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 using api.Context;
 using api.Dtos;
 using api.Exceptions;
@@ -12,75 +14,31 @@ namespace api.Services;
 
 public class TransportService : ITransportService
 {
-    private readonly DcdDbContext _context;
-    private readonly IProjectService _projectService;
     private readonly IProjectAccessService _projectAccessService;
     private readonly ILogger<TransportService> _logger;
-    private readonly IMapper _mapper;
     private readonly ICaseRepository _caseRepository;
     private readonly ITransportRepository _repository;
     private readonly IMapperService _mapperService;
 
     public TransportService(
-        DcdDbContext context,
-        IProjectService projectService,
         ILoggerFactory loggerFactory,
-        IMapper mapper,
         ICaseRepository caseRepository,
         ITransportRepository transportRepository,
         IMapperService mapperService,
         IProjectAccessService projectAccessService
         )
     {
-        _context = context;
-        _projectService = projectService;
         _logger = loggerFactory.CreateLogger<TransportService>();
-        _mapper = mapper;
         _caseRepository = caseRepository;
         _repository = transportRepository;
         _mapperService = mapperService;
         _projectAccessService = projectAccessService;
     }
 
-    public async Task<Transport> CreateTransport(Guid projectId, Guid sourceCaseId, CreateTransportDto transportDto)
+    public async Task<Transport> GetTransportWithIncludes(Guid transportId, params Expression<Func<Transport, object>>[] includes)
     {
-        var transport = _mapper.Map<Transport>(transportDto);
-        if (transport == null)
-        {
-            throw new ArgumentNullException(nameof(transport));
-        }
-        var project = await _projectService.GetProjectWithCasesAndAssets(projectId);
-        transport.Project = project;
-        transport.LastChangedDate = DateTimeOffset.UtcNow;
-        var createdTransport = _context.Transports!.Add(transport);
-        await _context.SaveChangesAsync();
-        await SetCaseLink(transport, sourceCaseId, project);
-        return createdTransport.Entity;
-    }
-
-    private async Task SetCaseLink(Transport transport, Guid sourceCaseId, Project project)
-    {
-        var case_ = project.Cases!.FirstOrDefault(o => o.Id == sourceCaseId);
-        if (case_ == null)
-        {
-            throw new NotFoundInDBException(string.Format("Case {0} not found in database.", sourceCaseId));
-        }
-        case_.TransportLink = transport.Id;
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task<Transport> GetTransport(Guid transportId)
-    {
-        var transport = await _context.Transports!
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
-            .FirstOrDefaultAsync(c => c.Id == transportId);
-        if (transport == null)
-        {
-            throw new ArgumentException(string.Format("Transport {0} not found.", transportId));
-        }
-        return transport;
+        return await _repository.GetTransportWithIncludes(transportId, includes)
+            ?? throw new NotFoundInDBException($"Transport with id {transportId} not found.");
     }
 
     public async Task<TransportDto> UpdateTransport<TDto>(Guid projectId, Guid caseId, Guid transportId, TDto updatedTransportDto)

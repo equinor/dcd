@@ -947,6 +947,48 @@ public class DcdDbContext : DbContext
         modelBuilder.Entity<Project>()
             .Property(p => p.ExchangeRateUSDToNOK)
             .HasDefaultValue(10);
+
+        modelBuilder.Entity<Case>()
+            .HasOne(c => c.DrainageStrategy)
+            .WithMany()
+            .HasForeignKey(c => c.DrainageStrategyLink)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<Case>()
+            .HasOne(c => c.WellProject)
+            .WithMany()
+            .HasForeignKey(c => c.WellProjectLink)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<Case>()
+            .HasOne(c => c.Exploration)
+            .WithMany()
+            .HasForeignKey(c => c.ExplorationLink)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<Case>()
+            .HasOne(c => c.Transport)
+            .WithMany()
+            .HasForeignKey(c => c.TransportLink)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<Case>()
+            .HasOne(c => c.Topside)
+            .WithMany()
+            .HasForeignKey(c => c.TopsideLink)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<Case>()
+            .HasOne(c => c.Substructure)
+            .WithMany()
+            .HasForeignKey(c => c.SubstructureLink)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<Case>()
+            .HasOne(c => c.Surf)
+            .WithMany()
+            .HasForeignKey(c => c.SurfLink)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

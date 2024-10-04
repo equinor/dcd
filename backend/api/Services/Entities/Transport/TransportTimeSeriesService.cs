@@ -149,6 +149,11 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
 
         var newProfile = _mapperService.MapToEntity(dto, transportCostProfile, transportId);
 
+        if (newProfile.Transport.CostProfileOverride != null)
+        {
+            newProfile.Transport.CostProfileOverride.Override = false;
+        }
+
         try
         {
             _repository.CreateTransportCostProfile(newProfile);
@@ -183,6 +188,14 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
 
         // Need to verify that the project from the URL is the same as the project of the resource
         await _projectAccessService.ProjectExists<Transport>(projectId, existingProfile.Transport.Id);
+
+        if (existingProfile.Transport.ProspVersion == null)
+        {
+            if (existingProfile.Transport.CostProfileOverride != null)
+            {
+                existingProfile.Transport.CostProfileOverride.Override = true;
+            }
+        }
 
         _mapperService.MapToEntity(updatedProfileDto, existingProfile, transportId);
 
