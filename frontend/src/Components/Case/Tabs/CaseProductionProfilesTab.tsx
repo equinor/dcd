@@ -254,8 +254,8 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
                     barNames={[
                         "Oil production (MSm3)",
                         "Additional Oil production (MSm3)",
-                        "Gas production (GSm3)",
-                        "Additional Gas production (MSm3)",
+                        "Rich gas production (GSm3)",
+                        "Additional rich gas production (MSm3)",
                         "Water production (MSm3)",
                     ]}
                 />
