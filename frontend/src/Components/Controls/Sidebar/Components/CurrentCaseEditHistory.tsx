@@ -2,11 +2,12 @@ import React from "react"
 import styled from "styled-components"
 import { Typography, Tooltip } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
-import { useCaseContext } from "../../../../Context/CaseContext"
-import { useAppContext } from "../../../../Context/AppContext"
-import HistoryButton from "../../../Buttons/HistoryButton"
-import CaseEditHistory from "../../../Case/Components/CaseEditHistory"
-import { Header } from "../Sidebar"
+
+import { useCaseContext } from "@/Context/CaseContext"
+import { useAppContext } from "@/Context/AppContext"
+import HistoryButton from "@/Components/Buttons/HistoryButton"
+import CaseEditHistory from "@/Components/Case/Components/CaseEditHistory"
+import { Header, StyledDivider } from "../Sidebar"
 
 const Container = styled.div<{ $sidebarOpen: boolean }>`
     display: flex;
@@ -50,6 +51,7 @@ const CurrentCaseEditHistory: React.FC = () => {
                 {sidebarOpen && caseId && <CaseEditHistory caseId={caseId} />}
                 {sidebarOpen && caseEditsBelongingToCurrentCase?.length === 0 && <NextValue>No recent edits..</NextValue>}
             </Content>
+            <StyledDivider />
         </Container>
     )
 }
