@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { projectQueryFn, compareCasesQueryFn } from "../Services/QueryFunctions"
 import { useProjectContext } from "../Context/ProjectContext"
@@ -46,21 +46,26 @@ export const useProjectChartData = () => {
         enabled: !!projectId,
     })
 
+    const cases = useMemo(() => 
+        apiData?.cases.filter((c) => !c.archived) || [],
+    [apiData]);
+
     const generateAllCharts = () => {
         if (!compareCasesTotals || !apiData) { return }
-        const npvObject = apiData.cases.map((caseItem) => ({
+        
+        const npvObject = cases.map((caseItem) => ({
             cases: caseItem.name,
             npv: caseItem.npv,
             npvOverride: caseItem.npvOverride ?? null,
         }))
 
-        const breakEvenObject = apiData.cases.map((caseItem) => ({
+        const breakEvenObject = cases.map((caseItem) => ({
             cases: caseItem.name,
             breakEven: caseItem.breakEven,
             breakEvenOverride: caseItem.breakEvenOverride ?? null,
         }))
 
-        const productionProfilesObject = apiData.cases.map((caseItem) => {
+        const productionProfilesObject = cases.map((caseItem) => {
             const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.id)
             return {
                 cases: caseItem.name,
@@ -70,7 +75,7 @@ export const useProjectChartData = () => {
             }
         })
 
-        const investmentProfilesObject = apiData.cases.map((caseItem) => {
+        const investmentProfilesObject = cases.map((caseItem) => {
             const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.id)
             return {
                 cases: caseItem.name,
@@ -80,7 +85,7 @@ export const useProjectChartData = () => {
             }
         })
 
-        const totalCo2EmissionsObject = apiData.cases.map((caseItem) => {
+        const totalCo2EmissionsObject = cases.map((caseItem) => {
             const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.id)
             return {
                 cases: caseItem.name,
@@ -88,7 +93,7 @@ export const useProjectChartData = () => {
             }
         })
 
-        const co2IntensityObject = apiData.cases.map((caseItem) => {
+        const co2IntensityObject = cases.map((caseItem) => {
             const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.id)
             return {
                 cases: caseItem.name,
@@ -109,7 +114,7 @@ export const useProjectChartData = () => {
         if (apiData) {
             const tableCompareCases: TableCompareCase[] = []
             if (compareCasesTotals) {
-                apiData.cases.forEach((c) => {
+                cases.forEach((c) => {
                     const matchingCase = compareCasesTotals.find((checkMatchingCase: any) => checkMatchingCase.caseId === c.id)
                     if (matchingCase) {
                         const tableCase: TableCompareCase = {

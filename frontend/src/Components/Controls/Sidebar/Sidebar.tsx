@@ -11,11 +11,14 @@ import ProjectDetails from "./Components/ProjectDetails"
 import CasesDetails from "./Components/CasesDetails"
 import CurrentCaseEditHistory from "./Components/CurrentCaseEditHistory"
 import ArchivedCasesDetails from "./Components/ArchivedCasesDetails"
+import { sharedTimelineStyles } from "./sharedStyles"
 
-const { Toggle, Content, Footer } = SideBar
+const { Toggle, Footer } = SideBar
+
 const Wrapper = styled.div`
     position: relative;
-    `
+`
+
 const Sticky = styled.div`
     position: sticky;
     top: 0;
@@ -26,44 +29,32 @@ const Sticky = styled.div`
 `
 
 const StyledSideBar = styled(SideBar)`
-    height: auto;
-    `
+    height: 100%;
+    border-right: 0px;
+    display: flex;
+    flex-direction: column;
+`
 
 export const Header = styled.div`
     margin: 15px 10px;
 `
 
 export const Timeline = styled(Grid)`
-    padding-left: 10px;
     max-height: 200px;
-    overflow: auto;
-    &[data-timeline="true"] {
-        overflow-y: auto;
-        display: flex;
-        flex-wrap: nowrap;
-        flex-direction: column;
-        scrollbar-width: none;
-        & > * {
-            border-left: 2px solid #DCDCDC;
-
-            &[data-timeline-active="true"]{
-                border-left: 2px solid #007079;
-            }
-        }
-    }
-
+    ${sharedTimelineStyles}
 `
 
-const HorizontalScrollContent = styled(Content)`
-    overflow-x: auto;
-    white-space: nowrap;
+export const StyledDivider = styled(Divider)`
+    height: 0px;
+    margin-left: 2px;
+    margin-right: 2px;
+    border: 0.5px solid rgba(220, 220, 220, 1);
 `
 
 export const TimelineElement = styled(Button)`
     text-align: left;
     height: 28px;
-    padding: 10px 5px 10px 10px;  
-    
+    padding: 10px 0px 10px 5px;
 `
 
 const Sidebar = () => {
@@ -90,20 +81,17 @@ const Sidebar = () => {
         <Wrapper>
             <Sticky>
                 <StyledSideBar open={sidebarOpen} onToggle={(toggle) => setSidebarOpen(toggle)}>
-                    <HorizontalScrollContent>
-                        <ProjectDetails />
-                        <Divider />
-                        <CasesDetails />
-                        <Divider />
+                    <ProjectDetails />
+                    <StyledDivider />
+                    <CasesDetails />
+                    <StyledDivider />
                         {archivedCases.length > 0 && (
                             <>
                                 <ArchivedCasesDetails />
-                                <Divider />
+                                <StyledDivider />
                             </>
                         )}
-                        <CurrentCaseEditHistory />
-                        <Divider />
-                    </HorizontalScrollContent>
+                    <CurrentCaseEditHistory />
                     <Footer>
                         <Toggle />
                     </Footer>
