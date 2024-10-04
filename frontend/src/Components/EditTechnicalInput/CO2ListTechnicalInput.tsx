@@ -27,16 +27,14 @@ const CO2ListTechnicalInput = () => {
         enabled: !!externalId,
     })
 
-    if (!apiData) { return null }
-
     const [check, setCheck] = useState(false)
-    const [cO2RemovedFromGas, setCO2RemovedFromGas] = useState<number>(apiData.cO2RemovedFromGas ?? 0)
-    const [cO2EmissionsFromFuelGas, setCO2EmissionsFromFuelGas] = useState<number>(apiData.cO2EmissionFromFuelGas ?? 0)
-    const [flaredGasPerProducedVolume, setFlaredGasPerProducedVolume] = useState<number>(apiData.flaredGasPerProducedVolume ?? 0)
-    const [cO2EmissionsFromFlaredGas, setCO2EmissionsFromFlaredGas] = useState<number>(apiData.cO2EmissionsFromFlaredGas ?? 0)
-    const [cO2Vented, setCO2Vented] = useState<number>(apiData.cO2Vented ?? 0)
-    const [averageDevelopmentWellDrillingDays, setAverageDevelopmentWellDrillingDays] = useState<number>(apiData.averageDevelopmentDrillingDays ?? 0)
-    const [dailyEmissionsFromDrillingRig, setDailyEmissionsFromDrillingRig] = useState<number>(apiData.dailyEmissionFromDrillingRig ?? 0)
+    const [cO2RemovedFromGas, setCO2RemovedFromGas] = useState<number>(apiData?.cO2RemovedFromGas ?? 0)
+    const [cO2EmissionsFromFuelGas, setCO2EmissionsFromFuelGas] = useState<number>(apiData?.cO2EmissionFromFuelGas ?? 0)
+    const [flaredGasPerProducedVolume, setFlaredGasPerProducedVolume] = useState<number>(apiData?.flaredGasPerProducedVolume ?? 0)
+    const [cO2EmissionsFromFlaredGas, setCO2EmissionsFromFlaredGas] = useState<number>(apiData?.cO2EmissionsFromFlaredGas ?? 0)
+    const [cO2Vented, setCO2Vented] = useState<number>(apiData?.cO2Vented ?? 0)
+    const [averageDevelopmentWellDrillingDays, setAverageDevelopmentWellDrillingDays] = useState<number>(apiData?.averageDevelopmentDrillingDays ?? 0)
+    const [dailyEmissionsFromDrillingRig, setDailyEmissionsFromDrillingRig] = useState<number>(apiData?.dailyEmissionFromDrillingRig ?? 0)
     const [rowData, setRowData] = useState([{}])
     const { editMode } = useAppContext()
     const { addProjectEdit } = useEditProject()
@@ -190,6 +188,8 @@ const CO2ListTechnicalInput = () => {
         averageDevelopmentWellDrillingDays,
         dailyEmissionsFromDrillingRig,
     ])
+
+    if (!apiData) { return null }
 
     return (
         <Grid container spacing={1} justifyContent="flex-end">
