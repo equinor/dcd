@@ -420,36 +420,6 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
         );
     }
 
-    public async Task<CalculatedTotalIncomeCostProfileDto> CreateCalculatedTotalIncomeCostProfile(
-        Guid projectId,
-        Guid caseId,
-        CreateCalculatedTotalIncomeCostProfileDto createProfileDto
-    )
-    {
-        return await CreateCaseProfile<CalculatedTotalIncomeCostProfile, CalculatedTotalIncomeCostProfileDto, CreateCalculatedTotalIncomeCostProfileDto>(
-            projectId,
-            caseId,
-            createProfileDto,
-            _repository.CreateCalculatedTotalIncomeCostProfile,
-            CaseProfileNames.CalculatedTotalIncomeCostProfile
-        );
-    }
-
-    public async Task<CalculatedTotalCostCostProfileDto> CreateCalculatedTotalCostCostProfile(
-        Guid projectId,
-        Guid caseId,
-        CreateCalculatedTotalCostCostProfileDto createProfileDto
-    )
-    {
-        return await CreateCaseProfile<CalculatedTotalCostCostProfile, CalculatedTotalCostCostProfileDto, CreateCalculatedTotalCostCostProfileDto>(
-            projectId,
-            caseId,
-            createProfileDto,
-            _repository.CreateCalculatedTotalCostCostProfile,
-            CaseProfileNames.CalculatedTotalCostCostProfile
-        );
-    }
-
     private async Task<TDto> UpdateCaseCostProfile<TProfile, TDto, TUpdateDto>(
         Guid projectId,
         Guid caseId,

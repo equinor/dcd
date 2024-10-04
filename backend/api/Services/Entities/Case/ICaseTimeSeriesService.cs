@@ -30,7 +30,5 @@ public interface ICaseTimeSeriesService
     Task<WellInterventionCostProfileOverrideDto> CreateWellInterventionCostProfileOverride(Guid projectId, Guid caseId, CreateWellInterventionCostProfileOverrideDto createProfileDto);
     Task<OnshoreRelatedOPEXCostProfileDto> CreateOnshoreRelatedOPEXCostProfile(Guid projectId, Guid caseId, CreateOnshoreRelatedOPEXCostProfileDto createProfileDto);
     Task<AdditionalOPEXCostProfileDto> CreateAdditionalOPEXCostProfile(Guid projectId, Guid caseId, CreateAdditionalOPEXCostProfileDto createProfileDto);
-    Task<CalculatedTotalIncomeCostProfileDto> CreateCalculatedTotalIncomeCostProfile(Guid projectId, Guid caseId, CreateCalculatedTotalIncomeCostProfileDto createProfileDto);
-    Task<CalculatedTotalCostCostProfileDto> CreateCalculatedTotalCostCostProfile(Guid projectId, Guid caseId, CreateCalculatedTotalCostCostProfileDto createProfileDto);
 
 }
