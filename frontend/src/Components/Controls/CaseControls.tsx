@@ -69,7 +69,9 @@ const CaseControls: React.FC<props> = ({
 
     const [caseName, setCaseName] = useState("")
     const [menuAnchorEl, setMenuAnchorEl] = useState<any | null>(null)
+    const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+    const [isRevisionMenuOpen, setIsRevisionMenuOpen] = useState<boolean>(false)
 
     const { data: apiData, error } = useQuery({
         queryKey: ["caseApiData", projectId, caseId],
@@ -224,7 +226,11 @@ const CaseControls: React.FC<props> = ({
                     <CaseDropMenu
                         isMenuOpen={isMenuOpen}
                         setIsMenuOpen={setIsMenuOpen}
+                        isRevisionMenuOpen={isRevisionMenuOpen}
+                        setIsRevisionMenuOpen={setIsRevisionMenuOpen}
                         menuAnchorEl={menuAnchorEl}
+                        setRevisionMenuAnchorEl={setRevisionMenuAnchorEl}
+                        revisionMenuAnchorEl={revisionMenuAnchorEl}
                         caseId={caseId}
                         isArchived={caseData.archived}
                     />
