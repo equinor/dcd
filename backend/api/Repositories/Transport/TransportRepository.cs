@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 using api.Context;
 using api.Models;
 
@@ -16,6 +18,11 @@ public class TransportRepository : BaseRepository, ITransportRepository
     public async Task<Transport?> GetTransport(Guid transportId)
     {
         return await Get<Transport>(transportId);
+    }
+
+    public async Task<Transport?> GetTransportWithIncludes(Guid transportId, params Expression<Func<Transport, object>>[] includes)
+    {
+        return await GetWithIncludes(transportId, includes);
     }
 
     public async Task<Transport?> GetTransportWithCostProfile(Guid transportId)

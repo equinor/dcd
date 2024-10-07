@@ -60,12 +60,33 @@ public class Case : IHasProjectId
     public virtual AdditionalOPEXCostProfile? AdditionalOPEXCostProfile { get; set; }
 
     public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
+    [ForeignKey("DrainageStrategyLink")]
+    public virtual DrainageStrategy? DrainageStrategy { get; set; }
+
     public Guid WellProjectLink { get; set; } = Guid.Empty;
+    [ForeignKey("WellProjectLink")]
+    public virtual WellProject? WellProject { get; set; }
+
     public Guid SurfLink { get; set; } = Guid.Empty;
+    [ForeignKey("SurfLink")]
+    public virtual Surf? Surf { get; set; }
+
     public Guid SubstructureLink { get; set; } = Guid.Empty;
+    [ForeignKey("SubstructureLink")]
+    public virtual Substructure? Substructure { get; set; }
+
     public Guid TopsideLink { get; set; } = Guid.Empty;
+    [ForeignKey("TopsideLink")]
+    public virtual Topside? Topside { get; set; }
+
     public Guid TransportLink { get; set; } = Guid.Empty;
+    [ForeignKey("TransportLink")]
+    public virtual Transport? Transport { get; set; }
+
     public Guid ExplorationLink { get; set; } = Guid.Empty;
+    [ForeignKey("ExplorationLink")]
+    public virtual Exploration? Exploration { get; set; }
+
 
     public string? SharepointFileId { get; set; }
     public string? SharepointFileName { get; set; }

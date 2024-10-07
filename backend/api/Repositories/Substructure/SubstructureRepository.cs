@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+
 using api.Context;
 using api.Models;
 
@@ -16,6 +18,11 @@ public class SubstructureRepository : BaseRepository, ISubstructureRepository
     public async Task<Substructure?> GetSubstructure(Guid substructureId)
     {
         return await Get<Substructure>(substructureId);
+    }
+
+    public async Task<Substructure?> GetSubstructureWithIncludes(Guid substructureId, params Expression<Func<Substructure, object>>[] includes)
+    {
+        return await GetWithIncludes(substructureId, includes);
     }
 
     public async Task<Substructure?> GetSubstructureWithCostProfile(Guid substructureId)

@@ -17,9 +17,7 @@ namespace tests.Services
     public class TransportServiceTests
     {
         private readonly TransportService _transportService;
-        private readonly IProjectService _projectService = Substitute.For<IProjectService>();
         private readonly ILoggerFactory _loggerFactory = Substitute.For<ILoggerFactory>();
-        private readonly IMapper _mapper = Substitute.For<IMapper>();
         private readonly ITransportRepository _repository = Substitute.For<ITransportRepository>();
         private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
         private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
@@ -28,16 +26,8 @@ namespace tests.Services
 
         public TransportServiceTests()
         {
-            var options = new DbContextOptionsBuilder<DcdDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDb")
-                .Options;
-
-            var context = Substitute.For<DcdDbContext>(options);
             _transportService = new TransportService(
-                context,
-                _projectService,
                 _loggerFactory,
-                _mapper,
                 _caseRepository,
                 _repository,
                 _mapperService,

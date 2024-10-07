@@ -16,7 +16,7 @@
         "noEmit": true,
         "moduleResolution": "node",
         "paths": {
-            "@/Components/*": ["./src/components/*"],
+            "@/Components/*": ["./src/Components/*"],
             "@/Context/*": ["./src/Context/*"],
             "@/Hooks/*": ["./src/Hooks/*"],
             "@/Models/*": ["./src/Models/*"],
