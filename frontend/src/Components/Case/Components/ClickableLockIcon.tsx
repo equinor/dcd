@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { microsoft_excel } from "@equinor/eds-icons"
-import { Icon, Tooltip, Button } from "@equinor/eds-core-react"
+import { Icon, Tooltip, Button, CircularProgress } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
 import { useProjectContext } from "../../../Context/ProjectContext"
 
@@ -8,7 +8,7 @@ import { ExcelHideIcon } from "../../../Media/Icons/ExcelHideIcon"
 import { CalculatorIcon } from "../../../Media/Icons/CalculatorIcon"
 import { CalculatorHideIcon } from "../../../Media/Icons/CalculatorHideIcon"
 import { DisabledExcelHideIcon } from "../../../Media/Icons/DisabledExcelHideIcon"
-
+import { useAppContext } from "@/Context/AppContext"
 
 interface LockIconProps {
     clickedElement: any
@@ -21,11 +21,12 @@ const LockIcon: React.FC<LockIconProps> = ({
     clickedElement,
     addEdit,
     isProsp,
-    sharepointFileId
+    sharepointFileId,
 }) => {
     const { caseId } = useParams()
     const { projectId } = useProjectContext()
     const [sharepointId] = useState(sharepointFileId)
+    const { isSaving } = useAppContext()
 
     const handleLockIconClick = (params: any) => {
         if (params?.data?.override !== undefined && caseId) {
@@ -57,13 +58,23 @@ const LockIcon: React.FC<LockIconProps> = ({
         }
     }
 
+    if (isSaving) {
+        return (
+            <Button variant="ghost_icon" color="secondary" disabled>
+                <CircularProgress value={0} size={16} />
+            </Button>
+        )
+    }
+
     if (isProsp && !sharepointId) {
         return (
             <Tooltip title="To show numbers from PROSP, please add a PROSP file to the case.">
                 <Button variant="ghost_icon" color="secondary" disabled>
                     <DisabledExcelHideIcon size={20} />
                 </Button>
-            </Tooltip>)}
+            </Tooltip>
+        )
+    }
 
     if (clickedElement.data?.overridable) {
         return (clickedElement.data.overrideProfile?.override) ? (
