@@ -1,5 +1,3 @@
-import { ITimeSeries } from "./ITimeSeries"
-
 export type ResourceName =
     "case" |
     "topside" |
@@ -145,19 +143,4 @@ export interface EditInstance {
 export interface EditEntry {
     caseId: string;
     currentEditId: string;
-}
-
-export interface ITimeSeriesData {
-    profileName: string
-    unit: string,
-    profile: ITimeSeries | undefined
-    overrideProfile?: ITimeSeries | undefined
-    resourceId: string
-    resourcePropertyKey: string
-    resourceName: ProfileNames
-    resourceProfileId?: string
-    overridable: boolean
-    editable: boolean
-    total?: string
-    hideIfEmpty?: boolean
 }

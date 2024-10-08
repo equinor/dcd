@@ -1,18 +1,25 @@
 import React, { useState } from "react"
 import { microsoft_excel } from "@equinor/eds-icons"
-import { Icon, Tooltip, Button, CircularProgress } from "@equinor/eds-core-react"
+import {
+    Icon,
+    Tooltip,
+    Button,
+    CircularProgress,
+} from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
-import { useProjectContext } from "../../../Context/ProjectContext"
+import { ICellRendererParams } from "@ag-grid-community/core"
 
-import { ExcelHideIcon } from "../../../Media/Icons/ExcelHideIcon"
-import { CalculatorIcon } from "../../../Media/Icons/CalculatorIcon"
-import { CalculatorHideIcon } from "../../../Media/Icons/CalculatorHideIcon"
-import { DisabledExcelHideIcon } from "../../../Media/Icons/DisabledExcelHideIcon"
+import { ExcelHideIcon } from "@/Media/Icons/ExcelHideIcon"
+import { CalculatorIcon } from "@/Media/Icons/CalculatorIcon"
+import { CalculatorHideIcon } from "@/Media/Icons/CalculatorHideIcon"
+import { DisabledExcelHideIcon } from "@/Media/Icons/DisabledExcelHideIcon"
+import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppContext } from "@/Context/AppContext"
-import { ProfileNames, ResourceName } from "@/Models/Interfaces"
+import { ProfileNames } from "@/Models/Interfaces"
+import { ITimeSeriesTableDataOverrideWithSet } from "@/Models/ITimeSeries"
 
 interface LockIconProps {
-    clickedElement: any
+    clickedElement: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>
     addEdit: any
     isProsp?: boolean
     sharepointFileId?: string
@@ -29,7 +36,7 @@ const LockIcon: React.FC<LockIconProps> = ({
     const [sharepointId] = useState(sharepointFileId)
     const { apiQueue } = useAppContext()
 
-    const handleLockIconClick = (params: any) => {
+    const handleLockIconClick = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
         if (params?.data?.override !== undefined && caseId) {
             const profile = {
                 ...params.data.overrideProfile,
@@ -59,7 +66,7 @@ const LockIcon: React.FC<LockIconProps> = ({
         }
     }
 
-    if (apiQueue.find((item) => item.resourceName as ProfileNames === clickedElement.data?.resourceName as ProfileNames)) {
+    if (apiQueue.find((item) => item.resourceName === clickedElement.data?.resourceName as ProfileNames)) {
         return (
             <Button variant="ghost_icon" color="secondary" disabled>
                 <CircularProgress value={0} size={16} />
@@ -80,18 +87,19 @@ const LockIcon: React.FC<LockIconProps> = ({
     if (clickedElement.data?.overridable) {
         return (clickedElement.data.overrideProfile?.override) ? (
             <>
-
                 {isProsp ? (
                     <Tooltip title="Show numbers from PROSP file">
                         <Button variant="ghost_icon" color="secondary" onClick={() => handleLockIconClick(clickedElement)}>
-                            <ExcelHideIcon size={20} /></Button>
+                            <ExcelHideIcon size={20} />
+                        </Button>
                     </Tooltip>
                 ) : (
                     <Tooltip title="Show calculated numbers">
                         <Button variant="ghost_icon" color="secondary" onClick={() => handleLockIconClick(clickedElement)}>
                             <CalculatorHideIcon size={20} />
                         </Button>
-                    </Tooltip>)}
+                    </Tooltip>
+                )}
             </>
         ) : (
             <>
@@ -100,7 +108,8 @@ const LockIcon: React.FC<LockIconProps> = ({
                         <Button variant="ghost_icon" color="secondary" onClick={() => handleLockIconClick(clickedElement)}>
                             <Icon
                                 data={microsoft_excel}
-                                color="#007079" />
+                                color="#007079"
+                            />
                         </Button>
                     </Tooltip>
                 ) : (
@@ -108,9 +117,10 @@ const LockIcon: React.FC<LockIconProps> = ({
                         <Button variant="ghost_icon" color="secondary" onClick={() => handleLockIconClick(clickedElement)}>
                             <CalculatorIcon size={20} />
                         </Button>
-                    </Tooltip>)}
+                    </Tooltip>
+                )}
             </>
-            )
+        )
     }
     return null
 }

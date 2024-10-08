@@ -1,39 +1,26 @@
 import {
-    Dispatch, SetStateAction, useState, useEffect,
+    useState, useEffect,
 } from "react"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+
+import { useCaseContext } from "@/Context/CaseContext"
+import { mergeTimeseriesList } from "@/Utils/common"
+import { useProjectContext } from "@/Context/ProjectContext"
+import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
+import { ITimeSeries, ITimeSeriesDataWithGroup } from "@/Models/ITimeSeries"
 import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
-import { ITimeSeries } from "../../../Models/ITimeSeries"
-import { ITimeSeriesCost } from "../../../Models/ITimeSeriesCost"
-import { useCaseContext } from "../../../Context/CaseContext"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
-import { ITimeSeriesCostOverride } from "../../../Models/ITimeSeriesCostOverride"
-import { mergeTimeseriesList } from "../../../Utils/common"
 import { SetSummaryTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 import CaseSummarySkeleton from "../../LoadingSkeletons/CaseSummarySkeleton"
-import { caseQueryFn, projectQueryFn } from "../../../Services/QueryFunctions"
-import { useProjectContext } from "../../../Context/ProjectContext"
-
-interface ITimeSeriesData {
-    group?: string
-    profileName: string
-    unit: string,
-    set?: Dispatch<SetStateAction<ITimeSeriesCost | undefined>>,
-    overrideProfileSet?: Dispatch<SetStateAction<ITimeSeriesCostOverride | undefined>>,
-    profile: ITimeSeries | undefined
-    overrideProfile?: ITimeSeries | undefined
-    overridable?: boolean
-}
 
 const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()
     const { caseId } = useParams()
     const { projectId } = useProjectContext()
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
-    const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
+    const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesDataWithGroup[][]>([])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
     const { data: projectData } = useQuery({
@@ -187,7 +174,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const onshoreRelatedOPEXCostProfileData = apiData?.onshoreRelatedOPEXCostProfile
             const additionalOPEXCostProfileData = apiData?.additionalOPEXCostProfile
 
-            const newExplorationTimeSeriesData: ITimeSeriesData[] = [
+            const newExplorationTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Exploration cost",
                     unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
@@ -196,7 +183,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 },
             ]
 
-            const newCapexTimeSeriesData: ITimeSeriesData[] = [
+            const newCapexTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Drilling",
                     unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
@@ -223,7 +210,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 },
             ]
 
-            const newStudycostTimeSeriesData: ITimeSeriesData[] = [
+            const newStudycostTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Feasibility & Conceptual studies",
                     unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
@@ -244,7 +231,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 },
             ]
 
-            const newOpexTimeSeriesData: ITimeSeriesData[] = [
+            const newOpexTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Historic cost",
                     unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
