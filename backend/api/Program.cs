@@ -170,6 +170,7 @@ builder.Services.AddScoped<IFusionPeopleService, FusionPeopleService>();
 builder.Services.AddScoped<IProjectAccessService, ProjectAccessService>();
 
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IRevisionService, RevisionService>();
 builder.Services.AddScoped<IFusionService, FusionService>();
 builder.Services.AddScoped<ICaseService, CaseService>();
 builder.Services.AddScoped<ICreateCaseService, CreateCaseService>();
@@ -220,6 +221,7 @@ builder.Services.AddScoped<ISTEAService, STEAService>();
 builder.Services.AddScoped<IProjectAccessRepository, ProjectAccessRepository>();
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IRevisionRepository, RevisionRepository>();
 builder.Services.AddScoped<ICaseRepository, CaseRepository>();
 builder.Services.AddScoped<ISubstructureRepository, SubstructureRepository>();
 builder.Services.AddScoped<ITopsideRepository, TopsideRepository>();
@@ -323,7 +325,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors(_accessControlPolicyName);
 
 app.UseAuthentication();
-app.UseMiddleware<ClaimsMiddelware>();
+app.UseMiddleware<ClaimsMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();

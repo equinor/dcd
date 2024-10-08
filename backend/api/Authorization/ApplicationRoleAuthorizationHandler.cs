@@ -2,6 +2,7 @@ using System.Reflection;
 
 using api.Authorization.Extensions;
 using api.Controllers;
+using api.Exceptions;
 using api.Models;
 using api.Repositories;
 
@@ -32,7 +33,7 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         _projectRepository = projectRepository;
         _cache = cache;
     }
-    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ApplicationRoleRequirement requirement)
+    protected override async Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context, ApplicationRoleRequirement requirement)
     {
         var requestPath = _httpContextAccessor.HttpContext?.Request.Path;
 
@@ -50,7 +51,7 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         }
 
         var userRoles = context.User.AssignedApplicationRoles();
-        if (!IsAuthorized(context, requirement, userRoles))
+        if (!await IsAuthorized(context, requirement, userRoles))
         {
             HandleUnauthorizedRequest(context, requestPath, requirement.Roles, userRoles);
             return Task.CompletedTask;
@@ -66,7 +67,7 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         return requestPath?.StartsWithSegments(swaggerPath) == true;
     }
 
-    private bool IsAuthorized(AuthorizationHandlerContext context, ApplicationRoleRequirement roleRequirement, List<ApplicationRole> userRoles)
+    private async Task<bool> IsAuthorized(AuthorizationHandlerContext context, ApplicationRoleRequirement roleRequirement, List<ApplicationRole> userRoles)
     {
         var userHasRequiredRole = userRoles.Any(role => roleRequirement.Roles.Contains(role));
 
@@ -77,9 +78,14 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
             throw new InvalidOperationException("AzureUniqueId not found in user profile");
 
         // TODO: Implement check for classification and project phase
-        // var project = await GetCurrentProject(context);
+        var project = await GetCurrentProject(context);
 
         var actionType = GetActionTypeFromEndpoint();
+
+        if (project != null && project.IsRevision && actionType == ActionType.Edit)
+        {
+            throw new ModifyRevisionException("Cannot modify a revision", project.Id);
+        }
 
         var requiredRolesForEdit = new List<ApplicationRole> { ApplicationRole.Admin, ApplicationRole.User };
         var requiredRolesForView = new List<ApplicationRole> { ApplicationRole.ReadOnly, ApplicationRole.Admin, ApplicationRole.User };

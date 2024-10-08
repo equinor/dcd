@@ -24,8 +24,8 @@ import UndoControls from "./UndoControls"
 import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
 import { ChooseReferenceCase, ReferenceCaseIcon } from "../Case/Components/ReferenceCaseIcon"
+import ClassificationChip from "./ClassificationChip"
 import CaseDropMenu from "../Case/Components/CaseDropMenu"
-import Classification from "./Classification"
 
 const Header = styled.div`
     display: flex;
@@ -85,21 +85,6 @@ const CaseControls: React.FC<props> = ({
         queryFn: () => projectQueryFn(projectId),
         enabled: !!projectId,
     })
-
-    /*
-        // divides the data into separate queries for each resource
-        useEffect(() => {
-        if (isSuccess && apiData) {
-            console.log("refreshing case data")
-            const defaultParams = { projectId, caseId }
-            Object.entries(apiData).forEach(([key, data]) => {
-                if (data) {
-                    queryClient.setQueryData([key, defaultParams], data)
-                }
-            })
-        }
-    }, [isSuccess, apiData, projectId, caseId])
-    */
 
     if (error) {
         setSnackBarMessage(error.message)
@@ -184,7 +169,7 @@ const CaseControls: React.FC<props> = ({
                             <>
                                 {projectData?.referenceCaseId === caseId && <ReferenceCaseIcon />}
                                 <Typography variant="h4">{caseData.name}</Typography>
-                                <Classification />
+                                <ClassificationChip />
                             </>
                         )}
                     </div>
@@ -236,7 +221,6 @@ const CaseControls: React.FC<props> = ({
                     />
                 </div>
             </Header>
-
             <Tabs
                 value={activeTabCase}
                 onChange={(_, index) => handleTabChange(index)}
