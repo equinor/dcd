@@ -3,7 +3,7 @@ import {
     Menu, Typography, Icon, Button,
 } from "@equinor/eds-core-react"
 import { add, exit_to_app } from "@equinor/eds-icons"
-import { useNavigate } from "react-router"
+import { useLocation, useNavigate } from "react-router"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useProjectContext } from "../../Context/ProjectContext"
@@ -26,6 +26,7 @@ interface Revision {
 const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIsMenuOpen }) => {
     const { setIsRevision, isRevision, projectId } = useProjectContext()
     const navigate = useNavigate()
+    const location = useLocation()
     const queryClient = useQueryClient()
 
     const { currentContext } = useModuleCurrentContext()
@@ -81,11 +82,18 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIs
 
         if (currentContext) {
             navigate(`/${currentContext.id}`)
-        }
-        else {
+        } else {
             navigate("/")
         }
         console.log("Exiting revision view")
+    }
+
+    const disableCurrentRevision = (revisionId: string) => {
+        // this is stupid
+        const currentRevisionId = location.pathname.split("/revision/")[1]
+        if (isRevision && currentRevisionId === revisionId) {
+            return true
+        } return false
     }
 
     return (
@@ -114,7 +122,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIs
             >
                 {
                     revisions.map((revision) => (
-                        <Menu.Item onClick={() => navigateToRevision(revision.id)}>
+                        <Menu.Item onClick={() => navigateToRevision(revision.id)} disabled={disableCurrentRevision(revision.id)}>
                             <Typography group="navigation" variant="menu_title" as="span">
                                 {revision.name}
                                 {" "}
