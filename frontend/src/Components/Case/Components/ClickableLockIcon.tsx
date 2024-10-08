@@ -9,6 +9,7 @@ import { CalculatorIcon } from "../../../Media/Icons/CalculatorIcon"
 import { CalculatorHideIcon } from "../../../Media/Icons/CalculatorHideIcon"
 import { DisabledExcelHideIcon } from "../../../Media/Icons/DisabledExcelHideIcon"
 import { useAppContext } from "@/Context/AppContext"
+import { ProfileNames, ResourceName } from "@/Models/Interfaces"
 
 interface LockIconProps {
     clickedElement: any
@@ -26,7 +27,7 @@ const LockIcon: React.FC<LockIconProps> = ({
     const { caseId } = useParams()
     const { projectId } = useProjectContext()
     const [sharepointId] = useState(sharepointFileId)
-    const { isSaving } = useAppContext()
+    const { apiQueue } = useAppContext()
 
     const handleLockIconClick = (params: any) => {
         if (params?.data?.override !== undefined && caseId) {
@@ -58,7 +59,7 @@ const LockIcon: React.FC<LockIconProps> = ({
         }
     }
 
-    if (isSaving) {
+    if (apiQueue.find((item) => item.resourceName as ProfileNames === clickedElement.data?.resourceName as ProfileNames)) {
         return (
             <Button variant="ghost_icon" color="secondary" disabled>
                 <CircularProgress value={0} size={16} />
