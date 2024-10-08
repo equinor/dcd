@@ -102,7 +102,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIs
                 actions={(
                     <div>
                         <Button variant="ghost" onClick={() => setCreatingRevision(false)}>Cancel</Button>
-                        <Button onClick={() => createRevision()}> Create Reision </Button>
+                        <Button onClick={() => createRevision()}>Create revision</Button>
                     </div>
                 )}
             />
