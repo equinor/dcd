@@ -11,10 +11,8 @@ import {
     archive,
     unarchive,
     history,
-    more_vertical,
-    exit_to_app,
 } from "@equinor/eds-icons"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 
@@ -23,19 +21,11 @@ import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
 import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseController"
 import { useModalContext } from "@/Context/ModalContext"
 import { ResourceObject } from "@/Models/Interfaces"
-import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
+import { caseQueryFn, projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
 import { useProjectContext } from "@/Context/ProjectContext"
 import Modal from "../../Modal/Modal"
-
-const DropButton = styled(Icon)`
-    cursor: pointer;
-    padding: 0 5px;
-`
-const DropText = styled(Typography)`
-    cursor: pointer;
-    padding: 0 5px;
-`
+import RevisionsCaseDropMenu from "@/Components/Controls/RevisionsCaseDropMenu"
 
 interface CaseDropMenuProps {
     isMenuOpen: boolean
@@ -67,7 +57,8 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     const { addNewCase } = useModalContext()
     const [confirmDelete, setConfirmDelete] = useState(false)
     const { addProjectEdit } = useEditProject()
-    const { projectId } = useProjectContext()
+    const { projectId, isRevision } = useProjectContext()
+    const { revisionId } = useParams()
     const { updateCase } = useSubmitToApi()
 
     const { data: projectData } = useQuery({
@@ -99,48 +90,6 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                 { queryKey: ["projectApiData", projectData.id] },
             )
         }
-    }
-
-    const openRevisionMenu = () => {
-        console.log("revision menu open")
-        return (
-            <>
-                <div>
-                    <DropButton
-                        ref={setRevisionMenuAnchorEl}
-                        onClick={() => setIsRevisionMenuOpen(!isRevisionMenuOpen)}
-                        data={more_vertical}
-                        size={32}
-                    />
-                </div>
-                <Menu
-                    id="menu-complex"
-                    open={isRevisionMenuOpen}
-                    anchorEl={revisionMenuAnchorEl}
-                    onClose={() => setIsRevisionMenuOpen(false)}
-                    placement="left"
-                >
-                    <Menu.Item>
-                        <Icon data={add} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Create new revision
-                        </Typography>
-                    </Menu.Item>
-                    <Menu.Item>
-                        <Icon data={add} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Create new revision
-                        </Typography>
-                    </Menu.Item>
-                    <Menu.Item>
-                        <Icon data={add} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Create new revision
-                        </Typography>
-                    </Menu.Item>
-                </Menu>
-            </>
-        )
     }
 
     return (
@@ -234,34 +183,11 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                         Project revisions
                     </Typography>
                 </Menu.Item>
-                <Menu
-                    id="menu-complex"
-                    open={isRevisionMenuOpen}
-                    anchorEl={revisionMenuAnchorEl}
-                    onClose={() => setIsRevisionMenuOpen(false)}
-                    placement="left"
-                >
-                    <Menu.Item>
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Revision placeholder
-                        </Typography>
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            30 Nov 2022
-                        </Typography>
-                    </Menu.Item>
-                    <Menu.Item>
-                        <Icon data={add} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Create new revision
-                        </Typography>
-                    </Menu.Item>
-                    <Menu.Item>
-                        <Icon data={exit_to_app} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Exit revision view
-                        </Typography>
-                    </Menu.Item>
-                </Menu>
+                <RevisionsCaseDropMenu
+                    isMenuOpen={isRevisionMenuOpen}
+                    setIsMenuOpen={setIsRevisionMenuOpen}
+                    menuAnchorEl={revisionMenuAnchorEl}
+                />
             </Menu>
         </>
     )
