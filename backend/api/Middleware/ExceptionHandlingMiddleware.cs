@@ -56,23 +56,15 @@ public class ExceptionHandlingMiddleware
                 message = exception.Message;
                 break;
             case InvalidInputException _:
+            case WellChangeTypeException _:
                 statusCode = HttpStatusCode.BadRequest;
                 message = exception.Message;
                 break;
             case ProjectAccessMismatchException _:
-                statusCode = HttpStatusCode.Forbidden;
-                message = exception.Message;
-                break;
             case ProjectClassificationException _:
-                statusCode = HttpStatusCode.Forbidden;
-                message = exception.Message;
-                break;
             case ProjectMembershipException _:
+            case ModifyRevisionException _:
                 statusCode = HttpStatusCode.Forbidden;
-                message = exception.Message;
-                break;
-            case WellChangeTypeException _:
-                statusCode = HttpStatusCode.BadRequest;
                 message = exception.Message;
                 break;
             case ResourceAlreadyExistsException _:

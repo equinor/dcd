@@ -11,7 +11,7 @@ import {
     useRef,
     MouseEventHandler,
 } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { AgGridReact } from "@ag-grid-community/react"
 import { arrow_drop_down, arrow_drop_up, more_vertical, archive } from "@equinor/eds-icons"
@@ -22,8 +22,9 @@ import { useQuery } from "@tanstack/react-query"
 import { casePath, productionStrategyOverviewToString, cellStyleRightAlign, unwrapProjectId } from "@/Utils/common"
 import { GetProjectService } from "@/Services/ProjectService"
 import { GetSTEAService } from "@/Services/STEAService"
-import { projectQueryFn } from "@/Services/QueryFunctions"
+import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import { ReferenceCaseIcon } from "../Components/ReferenceCaseIcon"
+import { useProjectContext } from "@/Context/ProjectContext"
 
 const AgTableContainer = styled.div`
     overflow: auto;
@@ -69,6 +70,8 @@ const CasesAgGridTable = ({
     setIsMenuOpen,
     isMenuOpen,
 }: CasesAgGridTableProps): JSX.Element => {
+    const { isRevision, projectId } = useProjectContext()
+    const { revisionId } = useParams()
     const gridRef = useRef<AgGridReact>(null)
     const [rowData, setRowData] = useState<TableCase[]>()
     const [archivedRowData, setArchivedRowData] = useState<TableCase[]>()
@@ -90,28 +93,12 @@ const CasesAgGridTable = ({
         enabled: !!externalId,
     })
 
-    if (!apiData) { return <p>project not found</p> }
+    const { data: apiRevisionData } = useQuery({
+        queryKey: ["revisionApiData", revisionId],
+        queryFn: () => revisionQueryFn(projectId, revisionId),
+        enabled: !!externalId && isRevision,
+    })
 
-    const productionStrategyToString = (p: any) => {
-        const stringValue = productionStrategyOverviewToString(p.value)
-        return <div>{stringValue}</div>
-    }
-
-    const onMoreClick = (data: TableCase, target: HTMLElement) => {
-        setSelectedCaseId(data.id)
-        setMenuAnchorEl(target)
-        setIsMenuOpen(!isMenuOpen)
-    }
-
-    const menuButton = (p: any) => (
-        <Button
-            variant="ghost"
-            onClick={(e) => onMoreClick(p.node.data, e.currentTarget)}
-
-        >
-            <Icon data={more_vertical} />
-        </Button>
-    )
 
     const selectCase = (p: any) => {
         if (!currentContext || !p.node.data) { return null }
@@ -130,18 +117,25 @@ const CasesAgGridTable = ({
         </Tooltip>
     )
 
-    const submitToSTEA: MouseEventHandler<HTMLButtonElement> = async (e) => {
-        e.preventDefault()
+    const onMoreClick = (data: TableCase, target: HTMLElement) => {
+        setSelectedCaseId(data.id)
+        setMenuAnchorEl(target)
+        setIsMenuOpen(!isMenuOpen)
+    }
 
-        if (apiData) {
-            try {
-                const projectId = unwrapProjectId(apiData.id)
-                const projectResult = await (await GetProjectService()).getProject(projectId)
-                await (await GetSTEAService()).excelToSTEA(projectResult)
-            } catch (error) {
-                console.error("[ProjectView] error while submitting form data", error)
-            }
-        }
+    const menuButton = (p: any) => (
+        <Button
+            variant="ghost"
+            onClick={(e) => onMoreClick(p.node.data, e.currentTarget)}
+
+        >
+            <Icon data={more_vertical} />
+        </Button>
+    )
+
+    const productionStrategyToString = (p: any) => {
+        const stringValue = productionStrategyOverviewToString(p.value)
+        return <div>{stringValue}</div>
     }
 
     const [columnDefs] = useState<ColDef[]>([
@@ -190,8 +184,12 @@ const CasesAgGridTable = ({
     ])
 
     const casesToRowData = (isArchived: boolean) => {
-        if (apiData.cases) {
-            const cases = isArchived ? apiData.cases.filter((c) => !c.archived) : apiData.cases.filter((c) => c.archived)
+        let data = apiData
+        if (isRevision && apiRevisionData) {
+            data = apiRevisionData
+        }
+        if (data && data.cases) {
+            const cases = isArchived ? data.cases.filter((c) => !c.archived) : data.cases.filter((c) => c.archived)
             const tableCases: TableCase[] = []
             cases.forEach((c) => {
                 const tableCase: TableCase = {
@@ -203,7 +201,7 @@ const CasesAgGridTable = ({
                     waterInjectorCount: c.waterInjectorCount ?? 0,
                     gasInjectorCount: c.gasInjectorCount ?? 0,
                     createdAt: c.createTime?.substring(0, 10),
-                    referenceCaseId: apiData.referenceCaseId,
+                    referenceCaseId: data.referenceCaseId,
                 }
                 tableCases.push(tableCase)
             })
@@ -219,6 +217,27 @@ const CasesAgGridTable = ({
         casesToRowData(true)
         casesToRowData(false)
     }, [apiData])
+
+    if (!apiData) {
+        return <p>project not found</p>
+    }
+    if (isRevision && !apiRevisionData) {
+        return <p>revision not found</p>
+    }
+
+    const submitToSTEA: MouseEventHandler<HTMLButtonElement> = async (e) => {
+        e.preventDefault()
+
+        if (apiData) {
+            try {
+                const unwrappedProjectId = unwrapProjectId(apiData.id)
+                const projectResult = await (await GetProjectService()).getProject(unwrappedProjectId)
+                await (await GetSTEAService()).excelToSTEA(projectResult)
+            } catch (error) {
+                console.error("[ProjectView] error while submitting form data", error)
+            }
+        }
+    }
 
     return (
         <div>
@@ -269,7 +288,7 @@ const CasesAgGridTable = ({
                         </AgTableContainer>
                     )}
                 </div>
-                ) : null}
+            ) : null}
         </div>
     )
 }
