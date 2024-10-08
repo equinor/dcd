@@ -1250,83 +1250,12 @@ public class DcdDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<WellProjectWell>()
-            .HasKey(wc => new { wc.WellProjectId, wc.WellId });
+        base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<WellProjectWell>()
-            .HasOne(w => w.Well)
-            .WithMany(w => w.WellProjectWells)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        modelBuilder.Entity<ExplorationWell>()
-            .HasKey(ew => new { ew.ExplorationId, ew.WellId });
-
-        modelBuilder.Entity<ExplorationWell>()
-            .HasOne(w => w.Well)
-            .WithMany(w => w.ExplorationWells)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        modelBuilder.Entity<Project>()
-            .Property(p => p.Classification)
-            .HasDefaultValue(ProjectClassification.Internal);
-
-        modelBuilder.Entity<Project>()
-            .Property(p => p.DiscountRate)
-            .HasDefaultValue(8.0);
-
-        modelBuilder.Entity<Project>()
-            .Property(p => p.OilPriceUSD)
-            .HasDefaultValue(75.0);
-
-        modelBuilder.Entity<Project>()
-            .Property(p => p.GasPriceNOK)
-            .HasDefaultValue(3.0);
-
-        modelBuilder.Entity<Project>()
-            .Property(p => p.ExchangeRateUSDToNOK)
-            .HasDefaultValue(10);
-
-        modelBuilder.Entity<Case>()
-            .HasOne(c => c.DrainageStrategy)
-            .WithMany()
-            .HasForeignKey(c => c.DrainageStrategyLink)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        modelBuilder.Entity<Case>()
-            .HasOne(c => c.WellProject)
-            .WithMany()
-            .HasForeignKey(c => c.WellProjectLink)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        modelBuilder.Entity<Case>()
-            .HasOne(c => c.Exploration)
-            .WithMany()
-            .HasForeignKey(c => c.ExplorationLink)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        modelBuilder.Entity<Case>()
-            .HasOne(c => c.Transport)
-            .WithMany()
-            .HasForeignKey(c => c.TransportLink)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        modelBuilder.Entity<Case>()
-            .HasOne(c => c.Topside)
-            .WithMany()
-            .HasForeignKey(c => c.TopsideLink)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        modelBuilder.Entity<Case>()
-            .HasOne(c => c.Substructure)
-            .WithMany()
-            .HasForeignKey(c => c.SubstructureLink)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        modelBuilder.Entity<Case>()
-            .HasOne(c => c.Surf)
-            .WithMany()
-            .HasForeignKey(c => c.SurfLink)
-            .OnDelete(DeleteBehavior.NoAction);
+        modelBuilder.ApplyConfiguration(new ProjectConfiguration());
+        modelBuilder.ApplyConfiguration(new CaseConfiguration());
+        modelBuilder.ApplyConfiguration(new WellProjectWellConfiguration());
+        modelBuilder.ApplyConfiguration(new ExplorationWellConfiguration());
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

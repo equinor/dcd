@@ -990,10 +990,11 @@ declare namespace Components {
         export type ProductionStrategyOverview = 0 | 1 | 2 | 3 | 4; // int32
         export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
         export type ProjectClassification = 0 | 1 | 2 | 3; // int32
-        export type ProjectPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
-        export interface ProjectWithAssetsDto {
+        export interface ProjectDto {
             classification: ProjectClassification /* int32 */;
             id: string; // uuid
+            isRevision: boolean;
+            originalProjectId: string; // uuid
             name: string;
             commonLibraryId: string; // uuid
             fusionProjectId: string; // uuid
@@ -1006,17 +1007,6 @@ declare namespace Components {
             createDate: string; // date-time
             projectPhase: ProjectPhase /* int32 */;
             projectCategory: ProjectCategory /* int32 */;
-            explorationOperationalWellCosts: ExplorationOperationalWellCostsDto;
-            developmentOperationalWellCosts: DevelopmentOperationalWellCostsDto;
-            cases: CaseWithProfilesDto[];
-            wells: WellDto[];
-            explorations: ExplorationWithProfilesDto[];
-            surfs: SurfWithProfilesDto[];
-            substructures: SubstructureWithProfilesDto[];
-            topsides: TopsideWithProfilesDto[];
-            transports: TransportWithProfilesDto[];
-            drainageStrategies: DrainageStrategyWithProfilesDto[];
-            wellProjects: WellProjectWithProfilesDto[];
             sharepointSiteUrl?: string | null;
             cO2RemovedFromGas: number; // double
             cO2EmissionFromFuelGas: number; // double
@@ -1025,15 +1015,17 @@ declare namespace Components {
             cO2Vented: number; // double
             dailyEmissionFromDrillingRig: number; // double
             averageDevelopmentDrillingDays: number; // double
-            modifyTime: string; // date-time
             oilPriceUSD: number; // double
             gasPriceNOK: number; // double
             discountRate: number; // double
             exchangeRateUSDToNOK: number; // double
         }
-        export interface ProjectWithCasesDto {
+        export type ProjectPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
+        export interface ProjectWithAssetsDto {
             classification: ProjectClassification /* int32 */;
             id: string; // uuid
+            isRevision: boolean;
+            originalProjectId: string; // uuid
             name: string;
             commonLibraryId: string; // uuid
             fusionProjectId: string; // uuid
@@ -1046,7 +1038,7 @@ declare namespace Components {
             createDate: string; // date-time
             projectPhase: ProjectPhase /* int32 */;
             projectCategory: ProjectCategory /* int32 */;
-            sharepointSiteUrl: string;
+            sharepointSiteUrl?: string | null;
             cO2RemovedFromGas: number; // double
             cO2EmissionFromFuelGas: number; // double
             flaredGasPerProducedVolume: number; // double
@@ -1054,11 +1046,59 @@ declare namespace Components {
             cO2Vented: number; // double
             dailyEmissionFromDrillingRig: number; // double
             averageDevelopmentDrillingDays: number; // double
+            oilPriceUSD: number; // double
+            gasPriceNOK: number; // double
+            discountRate: number; // double
+            exchangeRateUSDToNOK: number; // double
+            explorationOperationalWellCosts: ExplorationOperationalWellCostsDto;
+            developmentOperationalWellCosts: DevelopmentOperationalWellCostsDto;
+            cases: CaseWithProfilesDto[];
+            revisions: ProjectDto[];
+            wells: WellDto[];
+            explorations: ExplorationWithProfilesDto[];
+            surfs: SurfWithProfilesDto[];
+            substructures: SubstructureWithProfilesDto[];
+            topsides: TopsideWithProfilesDto[];
+            transports: TransportWithProfilesDto[];
+            drainageStrategies: DrainageStrategyWithProfilesDto[];
+            wellProjects: WellProjectWithProfilesDto[];
+            modifyTime: string; // date-time
+        }
+        export interface ProjectWithCasesDto {
+            classification: ProjectClassification /* int32 */;
+            id: string; // uuid
+            isRevision: boolean;
+            originalProjectId: string; // uuid
+            name: string;
+            commonLibraryId: string; // uuid
+            fusionProjectId: string; // uuid
+            referenceCaseId: string; // uuid
+            commonLibraryName: string;
+            description: string;
+            country: string;
+            currency: Currency /* int32 */;
+            physicalUnit: PhysUnit /* int32 */;
+            createDate: string; // date-time
+            projectPhase: ProjectPhase /* int32 */;
+            projectCategory: ProjectCategory /* int32 */;
+            sharepointSiteUrl?: string | null;
+            cO2RemovedFromGas: number; // double
+            cO2EmissionFromFuelGas: number; // double
+            flaredGasPerProducedVolume: number; // double
+            cO2EmissionsFromFlaredGas: number; // double
+            cO2Vented: number; // double
+            dailyEmissionFromDrillingRig: number; // double
+            averageDevelopmentDrillingDays: number; // double
+            oilPriceUSD: number; // double
+            gasPriceNOK: number; // double
+            discountRate: number; // double
+            exchangeRateUSDToNOK: number; // double
             cases: CaseDto[];
             oilPriceUSD: number; // double
             gasPriceNOK: number; // double
             discountRate: number; // double
             exchangeRateUSDToNOK: number; // double
+            revisions: ProjectDto[];
         }
         export interface STEACaseDto {
             name?: string | null;
@@ -3674,6 +3714,34 @@ declare namespace Paths {
             namespace Responses {
                 export interface $200 {
                 }
+            }
+        }
+    }
+    namespace Projects$ProjectIdRevisions {
+        namespace Post {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.ProjectWithAssetsDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdRevisions$RevisionId {
+        namespace Get {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+                export type RevisionId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                revisionId: Parameters.RevisionId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.ProjectWithAssetsDto;
             }
         }
     }

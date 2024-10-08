@@ -325,9 +325,10 @@ public class ProjectService : IProjectService
             .Include(p => p.Cases)!.ThenInclude(c => c.CalculatedTotalIncomeCostProfile)
             .Include(p => p.Cases)!.ThenInclude(c => c.CalculatedTotalCostCostProfile)
             .Include(p => p.Wells)
+            .Include(p => p.Revisions)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
-            .FirstOrDefaultAsync(p => p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId));
+            .FirstOrDefaultAsync(p => (p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId)) && !p.IsRevision);
 
         if (project?.Cases?.Count > 0)
         {
@@ -449,151 +450,96 @@ public class ProjectService : IProjectService
 
     public async Task<IEnumerable<Well>> GetWells(Guid projectId)
     {
-        if (_context.Wells != null)
-        {
-            return await _context.Wells
-                .Where(d => d.ProjectId.Equals(projectId)).ToListAsync();
-        }
-        else
-        {
-            return new List<Well>();
-        }
+        return await _context.Wells
+            .Where(d => d.ProjectId.Equals(projectId)).ToListAsync();
+
     }
 
     public async Task<IEnumerable<Exploration>> GetExplorations(Guid projectId)
     {
-        if (_context.Explorations != null)
-        {
-            return await _context.Explorations
-                .Include(c => c.ExplorationWellCostProfile)
-                .Include(c => c.AppraisalWellCostProfile)
-                .Include(c => c.SidetrackCostProfile)
-                .Include(c => c.GAndGAdminCost)
-                .Include(c => c.GAndGAdminCostOverride)
-                .Include(c => c.SeismicAcquisitionAndProcessing)
-                .Include(c => c.CountryOfficeCost)
-                .Include(c => c.ExplorationWells!).ThenInclude(ew => ew.DrillingSchedule)
-                .Where(d => d.Project.Id.Equals(projectId)).ToListAsync();
-        }
-        else
-        {
-            return new List<Exploration>();
-        }
+        return await _context.Explorations
+            .Include(c => c.ExplorationWellCostProfile)
+            .Include(c => c.AppraisalWellCostProfile)
+            .Include(c => c.SidetrackCostProfile)
+            .Include(c => c.GAndGAdminCost)
+            .Include(c => c.GAndGAdminCostOverride)
+            .Include(c => c.SeismicAcquisitionAndProcessing)
+            .Include(c => c.CountryOfficeCost)
+            .Include(c => c.ExplorationWells!).ThenInclude(ew => ew.DrillingSchedule)
+            .Where(d => d.Project.Id.Equals(projectId)).ToListAsync();
     }
 
     public async Task<IEnumerable<Transport>> GetTransports(Guid projectId)
     {
-        if (_context.Transports != null)
-        {
-            return await _context.Transports
-                .Include(c => c.CostProfile)
-                .Include(c => c.CostProfileOverride)
-                .Include(c => c.CessationCostProfile)
-                .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
-        }
-        else
-        {
-            return new List<Transport>();
-        }
+        return await _context.Transports
+            .Include(c => c.CostProfile)
+            .Include(c => c.CostProfileOverride)
+            .Include(c => c.CessationCostProfile)
+            .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
     }
 
     public async Task<IEnumerable<Topside>> GetTopsides(Guid projectId)
     {
-        if (_context.Topsides != null)
-        {
-            return await _context.Topsides
-                .Include(c => c.CostProfile)
-                .Include(c => c.CostProfileOverride)
-                .Include(c => c.CessationCostProfile)
-                .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
-        }
-        else
-        {
-            return new List<Topside>();
-        }
+        return await _context.Topsides
+            .Include(c => c.CostProfile)
+            .Include(c => c.CostProfileOverride)
+            .Include(c => c.CessationCostProfile)
+            .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
     }
 
     public async Task<IEnumerable<Surf>> GetSurfs(Guid projectId)
     {
-        if (_context.Surfs != null)
-        {
-            return await _context.Surfs
-                .Include(c => c.CostProfile)
-                .Include(c => c.CostProfileOverride)
-                .Include(c => c.CessationCostProfile)
-                .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
-        }
-        else
-        {
-            return new List<Surf>();
-        }
+        return await _context.Surfs
+            .Include(c => c.CostProfile)
+            .Include(c => c.CostProfileOverride)
+            .Include(c => c.CessationCostProfile)
+            .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
     }
 
     public async Task<IEnumerable<DrainageStrategy>> GetDrainageStrategies(Guid projectId)
     {
-        if (_context.DrainageStrategies != null)
-        {
-            return await _context.DrainageStrategies
-                .Include(c => c.ProductionProfileOil)
-                .Include(c => c.AdditionalProductionProfileOil)
-                .Include(c => c.ProductionProfileGas)
-                .Include(c => c.AdditionalProductionProfileGas)
-                .Include(c => c.ProductionProfileWater)
-                .Include(c => c.ProductionProfileWaterInjection)
-                .Include(c => c.FuelFlaringAndLosses)
-                .Include(c => c.FuelFlaringAndLossesOverride)
-                .Include(c => c.NetSalesGas)
-                .Include(c => c.NetSalesGasOverride)
-                .Include(c => c.Co2Emissions)
-                .Include(c => c.Co2EmissionsOverride)
-                .Include(c => c.ProductionProfileNGL)
-                .Include(c => c.ImportedElectricity)
-                .Include(c => c.ImportedElectricityOverride)
-                .Include(c => c.DeferredOilProduction)
-                .Include(c => c.DeferredGasProduction)
-                .Where(d => d.Project.Id.Equals(projectId)).ToListAsync();
-        }
-        else
-        {
-            return new List<DrainageStrategy>();
-        }
+        return await _context.DrainageStrategies
+            .Include(c => c.ProductionProfileOil)
+            .Include(c => c.AdditionalProductionProfileOil)
+            .Include(c => c.ProductionProfileGas)
+            .Include(c => c.AdditionalProductionProfileGas)
+            .Include(c => c.ProductionProfileWater)
+            .Include(c => c.ProductionProfileWaterInjection)
+            .Include(c => c.FuelFlaringAndLosses)
+            .Include(c => c.FuelFlaringAndLossesOverride)
+            .Include(c => c.NetSalesGas)
+            .Include(c => c.NetSalesGasOverride)
+            .Include(c => c.Co2Emissions)
+            .Include(c => c.Co2EmissionsOverride)
+            .Include(c => c.ProductionProfileNGL)
+            .Include(c => c.ImportedElectricity)
+            .Include(c => c.ImportedElectricityOverride)
+            .Include(c => c.DeferredOilProduction)
+            .Include(c => c.DeferredGasProduction)
+            .Where(d => d.Project.Id.Equals(projectId)).ToListAsync();
     }
 
     public async Task<IEnumerable<WellProject>> GetWellProjects(Guid projectId)
     {
-        if (_context.WellProjects != null)
-        {
-            return await _context.WellProjects
-                .Include(c => c.OilProducerCostProfile)
-                .Include(c => c.OilProducerCostProfileOverride)
-                .Include(c => c.GasProducerCostProfile)
-                .Include(c => c.GasProducerCostProfileOverride)
-                .Include(c => c.WaterInjectorCostProfile)
-                .Include(c => c.WaterInjectorCostProfileOverride)
-                .Include(c => c.GasInjectorCostProfile)
-                .Include(c => c.GasInjectorCostProfileOverride)
-                .Include(c => c.WellProjectWells!).ThenInclude(wpw => wpw.DrillingSchedule)
-                .Where(d => d.Project.Id.Equals(projectId)).ToListAsync();
-        }
-        else
-        {
-            return new List<WellProject>();
-        }
+        return await _context.WellProjects
+            .Include(c => c.OilProducerCostProfile)
+            .Include(c => c.OilProducerCostProfileOverride)
+            .Include(c => c.GasProducerCostProfile)
+            .Include(c => c.GasProducerCostProfileOverride)
+            .Include(c => c.WaterInjectorCostProfile)
+            .Include(c => c.WaterInjectorCostProfileOverride)
+            .Include(c => c.GasInjectorCostProfile)
+            .Include(c => c.GasInjectorCostProfileOverride)
+            .Include(c => c.WellProjectWells!).ThenInclude(wpw => wpw.DrillingSchedule)
+            .Where(d => d.Project.Id.Equals(projectId)).ToListAsync();
     }
 
     public async Task<IEnumerable<Substructure>> GetSubstructures(Guid projectId)
     {
-        if (_context.Substructures != null)
-        {
-            return await _context.Substructures
-                .Include(c => c.CostProfile)
-                .Include(c => c.CostProfileOverride)
-                .Include(c => c.CessationCostProfile)
-                .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
-        }
-        else
-        {
-            return new List<Substructure>();
-        }
+        return await _context.Substructures
+            .Include(c => c.CostProfile)
+            .Include(c => c.CostProfileOverride)
+            .Include(c => c.CessationCostProfile)
+            .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
     }
 }
