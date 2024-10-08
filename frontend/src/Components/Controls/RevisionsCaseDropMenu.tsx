@@ -3,7 +3,7 @@ import {
     Menu, Typography, Icon, Button,
 } from "@equinor/eds-core-react"
 import { add, exit_to_app } from "@equinor/eds-icons"
-import { useNavigate } from "react-router"
+import { useLocation, useNavigate } from "react-router"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useProjectContext } from "../../Context/ProjectContext"
@@ -29,6 +29,7 @@ const RevisionsCaseDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, s
     const { setIsRevision, isRevision, projectId } = useProjectContext()
     const navigate = useNavigate()
     const queryClient = useQueryClient()
+    const location = useLocation()
 
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
@@ -68,6 +69,7 @@ const RevisionsCaseDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, s
     }
 
     const navigateToRevision = (revisionId: string) => {
+        // disable for current revision
         setIsRevision(true)
         queryClient.invalidateQueries(
             { queryKey: ["projectApiData", externalId] },
@@ -87,6 +89,14 @@ const RevisionsCaseDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, s
             navigate("/")
         }
         console.log("Exiting revision view")
+    }
+
+    const disableCurrentRevision = (revisionId: string) => {
+        // this is stupid
+        const currentRevisionId = location.pathname.split("/revision/")[1]
+        if (isRevision && currentRevisionId === revisionId) {
+            return true
+        } return false
     }
 
     return (
@@ -116,7 +126,7 @@ const RevisionsCaseDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, s
             >
                 {
                     revisions.map((revision) => (
-                        <Menu.Item onClick={() => navigateToRevision(revision.id)}>
+                        <Menu.Item onClick={() => navigateToRevision(revision.id)} disabled={disableCurrentRevision(revision.id)}>
                             <Typography group="navigation" variant="menu_title" as="span">
                                 {revision.name}
                                 {" "}
