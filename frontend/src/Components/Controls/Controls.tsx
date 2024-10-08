@@ -10,7 +10,7 @@ import { useAppContext } from "../../Context/AppContext"
 import CaseControls from "./CaseControls"
 import WhatsNewModal from "../Modal/WhatsNewModal"
 import ProjectControls from "./ProjectControls"
-import { caseQueryFn, projectQueryFn } from "../../Services/QueryFunctions"
+import { caseQueryFn, projectQueryFn, revisionQueryFn } from "../../Services/QueryFunctions"
 
 const Wrapper = styled(Grid)`
     padding-top: 20px;
@@ -22,8 +22,8 @@ const Controls = () => {
     const navigate = useNavigate()
     const { currentContext } = useModuleCurrentContext()
     const { editMode, setEditMode } = useAppContext()
-    const { caseId } = useParams()
-    const { projectId } = useProjectContext()
+    const { caseId, revisionId } = useParams()
+    const { projectId, isRevision } = useProjectContext()
 
     const [projectLastUpdated, setProjectLastUpdated] = useState<string>("")
     const [caseLastUpdated, setCaseLastUpdated] = useState<string>("")
@@ -38,6 +38,12 @@ const Controls = () => {
         queryKey: ["projectApiData", projectId],
         queryFn: () => projectQueryFn(projectId),
         enabled: !!projectId,
+    })
+
+    const { data: revisionData } = useQuery({
+        queryKey: ["revisionApiData", revisionId],
+        queryFn: () => revisionQueryFn(projectId, revisionId),
+        enabled: !!revisionId,
     })
 
     const cancelEdit = async () => {
@@ -64,10 +70,12 @@ const Controls = () => {
     }, [caseId])
 
     useEffect(() => {
-        if (projectData) {
+        if (isRevision && revisionData) {
+            setProjectLastUpdated(revisionData.modifyTime)
+        } else if (projectData) {
             setProjectLastUpdated(projectData.modifyTime)
         }
-    }, [projectData])
+    }, [projectData, isRevision, revisionData])
 
     useEffect(() => {
         if (apiData) {
@@ -97,6 +105,7 @@ const Controls = () => {
     //         setProjectLastUpdated(caseData?.modifyTime ?? "")
     //     }
     // }, [location.pathname, caseData, projectData])
+
     return (
         <Wrapper>
             <WhatsNewModal />
