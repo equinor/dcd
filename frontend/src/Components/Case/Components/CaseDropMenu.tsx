@@ -16,12 +16,11 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 
-import styled from "styled-components"
 import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
 import { deleteCase, duplicateCase, setCaseAsReference } from "@/Utils/CaseController"
 import { useModalContext } from "@/Context/ModalContext"
 import { ResourceObject } from "@/Models/Interfaces"
-import { caseQueryFn, projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
+import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
 import { useProjectContext } from "@/Context/ProjectContext"
 import Modal from "../../Modal/Modal"
@@ -175,7 +174,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                         </Menu.Item>
                     )}
                 {/* Uncomment to show project revisions button */}
-                <Menu.Item
+                {/* <Menu.Item
                     ref={setRevisionMenuAnchorEl}
                     onMouseOver={() => setIsRevisionMenuOpen(!isRevisionMenuOpen)}
                 >
@@ -189,7 +188,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                     isRevisionMenuOpen={isRevisionMenuOpen}
                     setIsRevisionMenuOpen={setIsRevisionMenuOpen}
                     menuAnchorEl={revisionMenuAnchorEl}
-                />
+                /> */}
             </Menu>
         </>
     )
