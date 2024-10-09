@@ -15,8 +15,9 @@ import {
 } from "@/Utils/RevisionUtils"
 
 type RevisionsDropMenuProps = {
-    isMenuOpen: boolean
-    setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setIsMenuOpen: (isMenuOpen: boolean) => void
+    isRevisionMenuOpen: boolean
+    setIsRevisionMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
     menuAnchorEl: HTMLElement | null
 }
 
@@ -27,7 +28,9 @@ interface Revision {
     date: string
 }
 
-const RevisionsCaseDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIsMenuOpen, menuAnchorEl }) => {
+const RevisionsCaseDropMenu: React.FC<RevisionsDropMenuProps> = ({
+    setIsMenuOpen, isRevisionMenuOpen, setIsRevisionMenuOpen, menuAnchorEl,
+}) => {
     const { setIsRevision, isRevision, projectId } = useProjectContext()
     const navigate = useNavigate()
     const queryClient = useQueryClient()
@@ -57,6 +60,16 @@ const RevisionsCaseDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, s
         }
     }, [apiData])
 
+    const navToRevision = (revision: Revision) => {
+        setIsMenuOpen(false)
+        navigateToRevision(revision.id, setIsRevision, queryClient, externalId, navigate)
+    }
+
+    const exitRevision = () => {
+        setIsMenuOpen(false)
+        exitRevisionView(setIsRevision, queryClient, externalId, currentContext, navigate)
+    }
+
     return (
         <>
             <Modal
@@ -77,15 +90,15 @@ const RevisionsCaseDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, s
             />
             <Menu
                 id="menu-complex"
-                open={isMenuOpen}
+                open={isRevisionMenuOpen}
                 anchorEl={menuAnchorEl}
-                onClose={() => setIsMenuOpen(false)}
+                onClose={() => setIsRevisionMenuOpen(false)}
                 placement="left"
             >
                 {
                     revisions.map((revision) => (
                         <Menu.Item
-                            onClick={() => navigateToRevision(revision.id, setIsRevision, queryClient, externalId, navigate)}
+                            onClick={() => navToRevision(revision)}
                             disabled={disableCurrentRevision(revision.id, isRevision, location)}
                         >
                             <Typography group="navigation" variant="menu_title" as="span">
@@ -106,7 +119,7 @@ const RevisionsCaseDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, s
                         </Typography>
                     </Menu.Item>
                 ) : (
-                    <Menu.Item onClick={() => exitRevisionView(setIsRevision, queryClient, externalId, currentContext, navigate)}>
+                    <Menu.Item onClick={() => exitRevision()}>
                         <Icon data={exit_to_app} size={16} />
                         <Typography group="navigation" variant="menu_title" as="span">
                             Exit revision view
