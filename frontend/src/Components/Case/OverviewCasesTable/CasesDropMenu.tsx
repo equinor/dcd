@@ -195,7 +195,8 @@ const CasesDropMenu = ({
                             </Typography>
                         </Menu.Item>
                     )}
-                <Menu.Item
+                {/* Uncomment to show project revisions button */}
+                {/* <Menu.Item
                     ref={setRevisionMenuAnchorEl}
                     onMouseOver={() => setIsRevisionMenuOpen(!isRevisionMenuOpen)}
                 >
@@ -208,7 +209,7 @@ const CasesDropMenu = ({
                     isMenuOpen={isRevisionMenuOpen}
                     setIsMenuOpen={setIsRevisionMenuOpen}
                     menuAnchorEl={revisionMenuAnchorEl}
-                />
+                /> */}
             </Menu>
         </>
     )

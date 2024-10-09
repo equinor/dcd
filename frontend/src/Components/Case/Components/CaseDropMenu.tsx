@@ -174,7 +174,8 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                             </Typography>
                         </Menu.Item>
                     )}
-                <Menu.Item
+                {/* Uncomment to show project revisions button */}
+                {/* <Menu.Item
                     ref={setRevisionMenuAnchorEl}
                     onMouseOver={() => setIsRevisionMenuOpen(!isRevisionMenuOpen)}
                 >
@@ -187,7 +188,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                     isMenuOpen={isRevisionMenuOpen}
                     setIsMenuOpen={setIsRevisionMenuOpen}
                     menuAnchorEl={revisionMenuAnchorEl}
-                />
+                /> */}
             </Menu>
         </>
     )
