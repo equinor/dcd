@@ -79,6 +79,17 @@ export const getProjectPhaseName = (key?: Components.Schemas.ProjectPhase): stri
     }[key]
 }
 
+export const getInternalProjectPhaseName = (key?: Components.Schemas.InternalProjectPhase): string => {
+    if (key === undefined) {
+        return ""
+    }
+    return {
+        0: "Approval Point Business Oppertunity",
+        1: "Business Opportunity Reconfirmation",
+        2: "Valid Point Business Opportunity",
+    }[key]
+}
+
 export const toMonthDate = (date?: Date | null): string | undefined => {
     if (Number.isNaN(date?.getTime())) {
         return undefined
@@ -383,5 +394,5 @@ export const generateProfile = (
 }
 
 export function truncateText(text: string, maxLength: number): string {
-    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text
 }

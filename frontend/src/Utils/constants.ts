@@ -95,22 +95,21 @@ export const totalStudyCostOverrideResources = [
 export const INTERNAL_PROJECT_PHASE: { [key: number]: ProjectClassification } = {
     0: {
         label: "APbo",
-        description: "",
+        description: "Approval Point Business Oppertunity",
         icon: visibility,
         color: "active",
         warn: false,
     },
     1: {
         label: "BOR",
-        description: "",
+        description: "Business Opportunity Reconfirmation",
         icon: visibility,
         color: "active",
         warn: false,
     },
     2: {
         label: "VPbo",
-        // eslint-disable-next-line max-len
-        description: "",
+        description: "Valid Point Business Opportunity",
         icon: lock,
         color: "error",
         warn: true,
