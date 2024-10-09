@@ -33,8 +33,8 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const { projectId } = useProjectContext()
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
-    const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
-    const [cashflowProfile, setCashflowProfile] = useState<ITimeSeries | undefined>(undefined)
+    const [, setYearRangeSetFromProfiles] = useState<boolean>(false)
+    const [, setCashflowProfile] = useState<ITimeSeries | undefined>(undefined)
 
     const { data: projectData } = useQuery({
         queryKey: ["projectApiData", projectId],
