@@ -13,6 +13,7 @@ public class ProjectProfile : Profile
     {
         CreateMap<Project, ProjectWithAssetsDto>();
         CreateMap<Project, ProjectWithCasesDto>();
+        CreateMap<Project, ProjectDto>();
         CreateMap<UpdateProjectDto, Project>();
 
         CreateMap<UpdateExplorationOperationalWellCostsDto, ExplorationOperationalWellCosts>();

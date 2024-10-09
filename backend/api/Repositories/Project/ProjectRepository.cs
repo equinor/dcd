@@ -18,9 +18,10 @@ public class ProjectRepository : BaseRepository, IProjectRepository
         _logger = logger;
     }
 
-    public async Task<Project?> GetProject(Guid projectId)
+    public async Task<Project?> GetProject(Guid id)
     {
-        return await Get<Project>(projectId);
+        return await _context.Projects
+            .FirstOrDefaultAsync(p => (p.Id == id || p.FusionProjectId == id) && !p.IsRevision);
     }
 
     public async Task<Project?> GetProjectByIdOrExternalId(Guid id)

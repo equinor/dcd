@@ -59,24 +59,16 @@ public class ExceptionHandlingMiddleware
                 statusCode = HttpStatusCode.Unauthorized;
                 message = exception.Message;
                 break;
+            case WellChangeTypeException:
             case InvalidInputException:
                 statusCode = HttpStatusCode.BadRequest;
                 message = exception.Message;
                 break;
             case ProjectAccessMismatchException:
-                statusCode = HttpStatusCode.Forbidden;
-                message = exception.Message;
-                break;
             case ProjectClassificationException:
-                statusCode = HttpStatusCode.Forbidden;
-                message = exception.Message;
-                break;
             case ProjectMembershipException:
+            case ModifyRevisionException:
                 statusCode = HttpStatusCode.Forbidden;
-                message = exception.Message;
-                break;
-            case WellChangeTypeException:
-                statusCode = HttpStatusCode.BadRequest;
                 message = exception.Message;
                 break;
             case ProjectAlreadyExistsException:

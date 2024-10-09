@@ -19,6 +19,15 @@ export const projectQueryFn = async (projectId: string | undefined) => {
     return projectService.getProject(projectId!)
 }
 
+export const revisionQueryFn = async (projectId: string | undefined, revisionId: string | undefined) => {
+    if (!revisionId || !projectId) {
+        console.error("projectId or revisionId is undefined")
+        return null
+    }
+    const projectService = await GetProjectService()
+    return projectService.getRevision(projectId, revisionId)
+}
+
 export const compareCasesQueryFn = async (projectId: string | undefined) => {
     if (!projectId) {
         console.error("projectId is undefined")

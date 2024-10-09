@@ -11,9 +11,11 @@ import {
 
 interface ProjectContextType {
     activeTabProject: number;
-    setActiveTabProject: Dispatch<SetStateAction<number>>,
+    setActiveTabProject: Dispatch<SetStateAction<number>>
     projectId: string
     setProjectId: Dispatch<SetStateAction<string>>
+    isRevision: boolean
+    setIsRevision: Dispatch<SetStateAction<boolean>>
 }
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined)
@@ -21,18 +23,23 @@ const ProjectContext = createContext<ProjectContextType | undefined>(undefined)
 const ProjectContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [activeTabProject, setActiveTabProject] = useState<number>(0)
     const [projectId, setProjectId] = useState<string>("")
+    const [isRevision, setIsRevision] = useState<boolean>(false)
 
     const value = useMemo(() => ({
         activeTabProject,
         setActiveTabProject,
         projectId,
         setProjectId,
+        isRevision,
+        setIsRevision,
     }), [
 
         activeTabProject,
         setActiveTabProject,
         projectId,
         setProjectId,
+        isRevision,
+        setIsRevision,
     ])
 
     return (
