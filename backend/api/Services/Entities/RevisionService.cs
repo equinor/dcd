@@ -244,6 +244,7 @@ public class RevisionService : IRevisionService
 
         project.IsRevision = true;
         project.OriginalProjectId = originalProjectId;
+        project.CreateDate = DateTimeOffset.UtcNow;
 
         if (project.DevelopmentOperationalWellCosts != null)
         {
