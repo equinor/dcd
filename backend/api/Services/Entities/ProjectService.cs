@@ -147,7 +147,7 @@ public class ProjectService : IProjectService
 
         if (existingProject != null)
         {
-            throw new ProjectAlreadyExistsException($"Project with externalId {projectMaster.Identity} already exists"); // TODO: Use a more specific exception
+            throw new ProjectAlreadyExistsException($"Project with externalId {projectMaster.Identity} already exists");
         }
 
         var project = new Project();
