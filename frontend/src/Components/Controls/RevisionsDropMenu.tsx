@@ -10,20 +10,22 @@ import { useProjectContext } from "../../Context/ProjectContext"
 import Modal from "../Modal/Modal"
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import { GetProjectService } from "@/Services/ProjectService"
+import { formatFullDate } from "@/Utils/common"
 
 type RevisionsDropMenuProps = {
-    isMenuOpen: boolean;
-    setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-interface Revision {
-    id: string;
-    name: string;
-    description: string;
-    date: string;
+    isMenuOpen: boolean
+    setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
+    menuAnchorEl: HTMLElement | null
 }
 
-const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIsMenuOpen }) => {
+interface Revision {
+    id: string
+    name: string
+    description: string
+    date: string
+}
+
+const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIsMenuOpen, menuAnchorEl }) => {
     const { setIsRevision, isRevision, projectId } = useProjectContext()
     const navigate = useNavigate()
     const location = useLocation()
@@ -117,8 +119,9 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIs
             <Menu
                 id="menu-complex"
                 open={isMenuOpen}
+                anchorEl={menuAnchorEl}
                 onClose={() => setIsMenuOpen(false)}
-                placement="bottom"
+                placement="left"
             >
                 {
                     revisions.map((revision) => (
@@ -128,7 +131,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIs
                                 {" "}
                                 -
                                 {" "}
-                                {revision.date}
+                                {formatFullDate(revision.date)}
                             </Typography>
                         </Menu.Item>
                     ))

@@ -56,6 +56,7 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
     const { isSaving } = useAppContext()
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
 
     const handleTabChange = (index: number) => {
         setActiveTabProject(index)
@@ -118,7 +119,7 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                     {/* Uncomment to show project revisions button */}
                     {/* <div>
                         <Tooltip title="This is a revision">
-                            <Button variant="outlined" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                            <Button variant="outlined" onClick={() => setIsMenuOpen(!isMenuOpen)} ref={setRevisionMenuAnchorEl}>
                                 <Icon data={history} />
                                 Project revisions
                             </Button>
@@ -126,6 +127,7 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                         <RevisionsDropMenu
                             isMenuOpen={isMenuOpen}
                             setIsMenuOpen={setIsMenuOpen}
+                            menuAnchorEl={revisionMenuAnchorEl}
                         />
                     </div> */}
                 </div>
