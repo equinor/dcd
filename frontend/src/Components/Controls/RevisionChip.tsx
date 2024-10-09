@@ -36,9 +36,16 @@ const RevisionChip = () => {
         </Tooltip>
     )
 
+    const toggleChipBackgroundColor = () => {
+        if (showCloseIcon) {
+            return "#f7f7f7"
+        }
+        return "white"
+    }
+
     return (
         <>
-            <Chip onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>
+            <Chip onMouseOver={handleMouseOver} onMouseOut={handleMouseOut} style={{ backgroundColor: toggleChipBackgroundColor() }}>
                 {!showCloseIcon ? revisionName() : (
                     <>
                         {revisionName()}
