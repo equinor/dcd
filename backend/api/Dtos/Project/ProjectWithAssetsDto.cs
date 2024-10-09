@@ -41,6 +41,7 @@ public class ProjectWithAssetsDto : ProjectDto, IEquatable<ProjectWithAssetsDto>
                Country == projectDto?.Country &&
                Id == projectDto?.Id &&
                ProjectCategory == projectDto?.ProjectCategory &&
-               ProjectPhase == projectDto?.ProjectPhase;
+               ProjectPhase == projectDto?.ProjectPhase &&
+               InternalProjectPhase == projectDto?.InternalProjectPhase;
     }
 }

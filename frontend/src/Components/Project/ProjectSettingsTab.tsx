@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import InputSwitcher from "../Input/Components/InputSwitcher"
-import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
+import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "../../Utils/constants"
 import { projectQueryFn } from "../../Services/QueryFunctions"
 import useEditProject from "../../Hooks/useEditProject"
 
@@ -22,12 +22,14 @@ const ProjectSettingsTab = () => {
     const [oilPriceUSD, setOilPriceUSD] = useState(apiData?.oilPriceUSD || 0)
     const [gasPriceNOK, setGasPriceNOK] = useState(apiData?.gasPriceNOK || 0)
     const [discountRate, setDiscountRate] = useState(apiData?.discountRate || 0)
+    const [internalProjectPhase, setInternalProjectPhase] = useState(apiData?.internalProjectPhase || 0)
 
     useEffect(() => {
         if (apiData) {
             setOilPriceUSD(apiData.oilPriceUSD)
             setGasPriceNOK(apiData.gasPriceNOK)
             setDiscountRate(apiData.discountRate)
+            setInternalProjectPhase(apiData.internalProjectPhase)
         }
     }, [apiData])
 
@@ -54,6 +56,15 @@ const ProjectSettingsTab = () => {
             const newClassification: Components.Schemas.ProjectClassification = Number(e.currentTarget.value) as unknown as Components.Schemas.ProjectClassification
             const newProject: Components.Schemas.ProjectWithAssetsDto = { ...apiData }
             newProject.classification = newClassification
+            addProjectEdit(apiData.id, newProject)
+        }
+    }
+
+    const handleInternalProjectPhaseChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
+        if ([0, 1, 2].indexOf(Number(e.currentTarget.value)) !== -1 && apiData) {
+            const newInternalProjectPhase: Components.Schemas.InternalProjectPhase = Number(e.currentTarget.value) as unknown as Components.Schemas.InternalProjectPhase
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...apiData }
+            newProject.internalProjectPhase = newInternalProjectPhase
             addProjectEdit(apiData.id, newProject)
         }
     }
@@ -133,6 +144,25 @@ const ProjectSettingsTab = () => {
                             value={apiData ? apiData.classification : undefined}
                         >
                             {Object.entries(PROJECT_CLASSIFICATION).map(([key, value]) => (
+                                <option key={key} value={key}>{value.label}</option>
+                            ))}
+                        </NativeSelect>
+                    </InputSwitcher>
+                )}
+            </Grid>
+            <Grid item>
+                {dummyRole === 0 && (
+                    <InputSwitcher
+                        value={INTERNAL_PROJECT_PHASE[apiData.internalProjectPhase].label}
+                        label="Internal Project Phase"
+                    >
+                        <NativeSelect
+                            id="internalProjectPhase"
+                            label=""
+                            onChange={(e) => handleInternalProjectPhaseChange(e)}
+                            value={apiData ? apiData.internalProjectPhase : undefined}
+                        >
+                            {Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => (
                                 <option key={key} value={key}>{value.label}</option>
                             ))}
                         </NativeSelect>

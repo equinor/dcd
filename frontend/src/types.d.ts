@@ -849,6 +849,7 @@ declare namespace Components {
             sum?: number; // double
             override: boolean;
         }
+        export type InternalProjectPhase = 0 | 1 | 2; // int32
         export type Maturity = 0 | 1 | 2 | 3; // int32
         export interface NetSalesGasDto {
             id: string; // uuid
@@ -979,6 +980,7 @@ declare namespace Components {
             physicalUnit: PhysUnit /* int32 */;
             createDate: string; // date-time
             projectPhase: ProjectPhase /* int32 */;
+            internalProjectPhase: InternalProjectPhase /* int32 */;
             projectCategory: ProjectCategory /* int32 */;
             sharepointSiteUrl?: string | null;
             cO2RemovedFromGas: number; // double
@@ -1010,6 +1012,7 @@ declare namespace Components {
             physicalUnit: PhysUnit /* int32 */;
             createDate: string; // date-time
             projectPhase: ProjectPhase /* int32 */;
+            internalProjectPhase: InternalProjectPhase /* int32 */;
             projectCategory: ProjectCategory /* int32 */;
             sharepointSiteUrl?: string | null;
             cO2RemovedFromGas: number; // double
@@ -1053,6 +1056,7 @@ declare namespace Components {
             physicalUnit: PhysUnit /* int32 */;
             createDate: string; // date-time
             projectPhase: ProjectPhase /* int32 */;
+            internalProjectPhase: InternalProjectPhase /* int32 */;
             projectCategory: ProjectCategory /* int32 */;
             sharepointSiteUrl?: string | null;
             cO2RemovedFromGas: number; // double
@@ -1654,6 +1658,7 @@ declare namespace Components {
             physicalUnit?: PhysUnit /* int32 */;
             classification?: ProjectClassification /* int32 */;
             projectPhase?: ProjectPhase /* int32 */;
+            internalProjectPhase?: InternalProjectPhase /* int32 */;
             projectCategory?: ProjectCategory /* int32 */;
             sharepointSiteUrl?: string | null;
             cO2RemovedFromGas?: number; // double

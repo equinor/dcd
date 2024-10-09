@@ -21,6 +21,7 @@ public class Project
     public virtual ICollection<Topside>? Topsides { get; set; }
     public virtual ICollection<Transport>? Transports { get; set; }
     public ProjectPhase ProjectPhase { get; set; }
+    public InternalProjectPhase InternalProjectPhase { get; set; }
     public ProjectClassification Classification { get; set; }
     public ProjectCategory ProjectCategory { get; set; }
     public virtual ExplorationOperationalWellCosts? ExplorationOperationalWellCosts { get; set; }
@@ -60,6 +61,11 @@ public enum Currency
     USD = 2,
 }
 
+public enum InternalProjectPhase {
+    APbo,
+    BOR,
+    VPbo,
+}
 public enum ProjectPhase
 {
     Null,

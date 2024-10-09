@@ -59,9 +59,12 @@ const ProjectOverviewTab = () => {
                 <Grid item>
                     <Typography group="input" variant="label">Project Phase</Typography>
                     <Typography aria-label="Project phase">
-                        {getProjectPhaseName(apiData.projectPhase)}
+                        {[3, 4, 6, 7, 8].includes(apiData.projectPhase)
+                            ? getProjectPhaseName(apiData.projectPhase)
+                            : getProjectPhaseName(apiData.internalProjectPhase)}
                     </Typography>
                 </Grid>
+
                 <Grid item>
                     <Typography group="input" variant="label">Project Category</Typography>
                     <Typography aria-label="Project category">

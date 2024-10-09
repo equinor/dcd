@@ -91,3 +91,28 @@ export const totalStudyCostOverrideResources = [
     "substructureCostOverride",
     "case",
 ]
+
+export const INTERNAL_PROJECT_PHASE: { [key: number]: ProjectClassification } = {
+    0: {
+        label: "APbo",
+        description: "",
+        icon: visibility,
+        color: "active",
+        warn: false,
+    },
+    1: {
+        label: "BOR",
+        description: "",
+        icon: visibility,
+        color: "active",
+        warn: false,
+    },
+    2: {
+        label: "VPbo",
+        // eslint-disable-next-line max-len
+        description: "",
+        icon: lock,
+        color: "error",
+        warn: true,
+    },
+}
