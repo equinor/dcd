@@ -111,21 +111,24 @@ const RevisionsCaseDropMenu: React.FC<RevisionsDropMenuProps> = ({
                         </Menu.Item>
                     ))
                 }
-                {!isRevision ? (
-                    <Menu.Item onClick={() => openRevisionModal(setCreatingRevision)}>
-                        <Icon data={add} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Create new revision
-                        </Typography>
-                    </Menu.Item>
-                ) : (
-                    <Menu.Item onClick={() => exitRevision()}>
-                        <Icon data={exit_to_app} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Exit revision view
-                        </Typography>
-                    </Menu.Item>
-                )}
+                <Menu.Item
+                    onClick={() => openRevisionModal(setCreatingRevision)}
+                    disabled={isRevision}
+                >
+                    <Icon data={add} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Create new revision
+                    </Typography>
+                </Menu.Item>
+                <Menu.Item
+                    onClick={() => exitRevision()}
+                    disabled={!isRevision}
+                >
+                    <Icon data={exit_to_app} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Exit revision view
+                    </Typography>
+                </Menu.Item>
             </Menu>
         </>
     )
