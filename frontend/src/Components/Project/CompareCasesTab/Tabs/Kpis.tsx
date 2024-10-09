@@ -25,7 +25,7 @@ const Kpis: React.FC<KpisProps> = ({ npvChartData, breakEvenChartData }) => {
                 <AgChartsCompareCases
                     data={npvChartData}
                     chartTitle="NPV before tax"
-                    barColors={["#005F57", "#b4260d"]}
+                    barColors={["#005F57", "#B4260D"]}
                     barProfiles={["npv", "npvOverride"]}
                     barNames={["Calculated NPV", "Manually set NPV"]}
                     unit={apiData?.currency === 1 ? "MNOK" : "MUSD"}
