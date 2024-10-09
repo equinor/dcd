@@ -16,50 +16,48 @@ using Xunit;
 
 namespace api.Tests.Helpers
 {
-    public class EconomicsCalculationHelperTests
+    public class EconomicsCalculationServiceTests
     {
-        private readonly EconomicsCalculationHelper _economicsCalculationHelper;
-        private readonly IExplorationRepository _explorationRepository;
-        private readonly ISubstructureRepository _substructureRepository;
-        private readonly ISurfRepository _surfRepository;
-        private readonly ITopsideRepository _topsideRepository;
-        private readonly ITransportRepository _transportRepository;
-        private readonly IWellProjectRepository _wellProjectRepository;
+        private readonly EconomicsCalculationService _economicsCalculationService;
+        private readonly IExplorationService _explorationService;
+        private readonly ISubstructureService _substructureService;
+        private readonly ISurfService _surfService;
+        private readonly ITopsideService _topsideService;
+        private readonly ITransportService _transportService;
+        private readonly IWellProjectService _wellProjectService;
         private readonly IDrainageStrategyService _drainageStrategyService;
         private readonly IStudyCostProfileService _studyCostProfileService;
-        private readonly IDrainageStrategyRepository _drainageStrategyRepository = Substitute.For<IDrainageStrategyRepository>();
         private readonly IOpexCostProfileService _opexCostProfileService;
         private readonly ICessationCostProfileService _cessationCostProfileService;
-
         protected readonly DcdDbContext _context;
         private readonly ICaseService _caseService;
 
-        public EconomicsCalculationHelperTests()
+        public EconomicsCalculationServiceTests()
         {
             _caseService = Substitute.For<ICaseService>();
-            _explorationRepository = Substitute.For<IExplorationRepository>();
-            _substructureRepository = Substitute.For<ISubstructureRepository>();
-            _surfRepository = Substitute.For<ISurfRepository>();
-            _topsideRepository = Substitute.For<ITopsideRepository>();
-            _transportRepository = Substitute.For<ITransportRepository>();
-            _opexCostProfileService = Substitute.For<IOpexCostProfileService>();
-            _studyCostProfileService = Substitute.For<IStudyCostProfileService>();
-            _cessationCostProfileService = Substitute.For<ICessationCostProfileService>();
-            _wellProjectRepository = Substitute.For<IWellProjectRepository>();
+            _explorationService = Substitute.For<IExplorationService>();
+            _substructureService = Substitute.For<ISubstructureService>();
+            _surfService = Substitute.For<ISurfService>();
             _drainageStrategyService = Substitute.For<IDrainageStrategyService>();
-            _economicsCalculationHelper = new EconomicsCalculationHelper(
-            _caseService,
-            _explorationRepository,
-            _substructureRepository,
-            _surfRepository,
-            _topsideRepository,
-            _transportRepository,
-            _wellProjectRepository,
-            _drainageStrategyService,
-            _drainageStrategyRepository
+            _cessationCostProfileService = Substitute.For<ICessationCostProfileService>();
+            _drainageStrategyService = Substitute.For<IDrainageStrategyService>();
+            _opexCostProfileService = Substitute.For<IOpexCostProfileService>();
+            _drainageStrategyService = Substitute.For<IDrainageStrategyService>();
+            _studyCostProfileService = Substitute.For<IStudyCostProfileService>();
+            _drainageStrategyService = Substitute.For<IDrainageStrategyService>();
 
+            _economicsCalculationService = new EconomicsCalculationService(
+                _caseService,
+                _explorationService,
+                _substructureService,
+                _surfService,
+                _topsideService,
+                _transportService,
+                _wellProjectService,
+                _drainageStrategyService
             );
         }
+
 
         [Fact]
         public async Task CalculateIncome_ValidInput_ReturnsCorrectIncome()
@@ -121,7 +119,7 @@ namespace api.Tests.Helpers
             ).Returns(drainageStrategy);
 
             // Act
-            await _economicsCalculationHelper.CalculateTotalIncome(caseId);
+            await _economicsCalculationService.CalculateTotalIncome(caseId);
 
             // Assert
             var expectedFirstYearIncome = (2 * 1000000.0 * 75 * 6.29 * 10 + 2 * 1000000000.0 * 3) / 1000000;
@@ -164,7 +162,7 @@ namespace api.Tests.Helpers
             ).Returns((DrainageStrategy)null);
 
             // Act & Assert
-            await Assert.ThrowsAsync<NullReferenceException>(async () => await _economicsCalculationHelper.CalculateTotalIncome(caseId));
+            await Assert.ThrowsAsync<NullReferenceException>(async () => await _economicsCalculationService.CalculateTotalIncome(caseId));
         }
 
         [Fact]
@@ -215,7 +213,7 @@ namespace api.Tests.Helpers
             ).Returns(drainageStrategy);
 
             // Act
-            await _economicsCalculationHelper.CalculateTotalIncome(caseId);
+            await _economicsCalculationService.CalculateTotalIncome(caseId);
 
             // Assert
             Assert.NotNull(caseItem.CalculatedTotalIncomeCostProfile);
@@ -373,17 +371,17 @@ namespace api.Tests.Helpers
                 }
             };
 
-            _substructureRepository.GetSubstructure(caseItem.SubstructureLink).Returns(Task.FromResult(substructure));
-            _surfRepository.GetSurf(caseItem.SurfLink).Returns(Task.FromResult(surf));
-            _topsideRepository.GetTopside(caseItem.TopsideLink).Returns(Task.FromResult(topside));
-            _transportRepository.GetTransport(caseItem.TransportLink).Returns(Task.FromResult(transport));
-            _wellProjectRepository.GetWellProject(caseItem.WellProjectLink).Returns(Task.FromResult(wellProject));
-            _explorationRepository.GetExploration(caseItem.ExplorationLink).Returns(Task.FromResult(exploration));
+            _substructureService.GetSubstructureWithIncludes(caseItem.SubstructureLink).Returns(Task.FromResult(substructure));
+            _surfService.GetSurfWithIncludes(caseItem.SurfLink).Returns(Task.FromResult(surf));
+            _topsideService.GetTopsideWithIncludes(caseItem.TopsideLink).Returns(Task.FromResult(topside));
+            _transportService.GetTransportWithIncludes(caseItem.TransportLink).Returns(Task.FromResult(transport));
+            _wellProjectService.GetWellProjectWithIncludes(caseItem.WellProjectLink).Returns(Task.FromResult(wellProject));
+            _explorationService.GetExplorationWithIncludes(caseItem.ExplorationLink).Returns(Task.FromResult(exploration));
             _caseService.GetCaseWithIncludes(caseId, Arg.Any<Expression<Func<Case, object>>>())
                 .Returns(caseItem);
 
             // Act
-            await _economicsCalculationHelper.CalculateTotalCost(caseId);
+            await _economicsCalculationService.CalculateTotalCost(caseId);
 
             // Assert
             Assert.Equal(2020, caseItem.CalculatedTotalCostCostProfile.StartYear);
@@ -440,11 +438,11 @@ namespace api.Tests.Helpers
                 }
             };
 
-            _explorationRepository.GetExploration(caseItem.ExplorationLink)
+            _explorationService.GetExplorationWithIncludes(caseItem.ExplorationLink)
                 .Returns(Task.FromResult(exploration));
 
             // Act
-            var result = await _economicsCalculationHelper.CalculateTotalExplorationCostAsync(caseItem);
+            var result = EconomicsCalculationService.CalculateTotalExplorationCost(exploration);
 
             // Assert
             var expectedStartYear = 2020;
@@ -480,7 +478,7 @@ namespace api.Tests.Helpers
             var expectedValues = new double[] { 300.0, 400.0, 500.0, -500.0 };
 
             // Act
-            var result = _economicsCalculationHelper.CalculateCashFlow(income, totalCost);
+            var result = _economicsCalculationService.CalculateCashFlow(income, totalCost);
 
             // Assert
             Assert.Equal(expectedStartYear, result.StartYear);
@@ -501,7 +499,7 @@ namespace api.Tests.Helpers
             var startIndex = 0; // Assuming starting from 2030
 
             // Act
-            var discountedVolume = _economicsCalculationHelper.CalculateDiscountedVolume(values, discountRate, startIndex);
+            var discountedVolume = _economicsCalculationService.CalculateDiscountedVolume(values, discountRate, startIndex);
 
             // Assert
             var expectedDiscountedVolume = (1.0 / Math.Pow(1 + 0.08, 1)) +
@@ -547,7 +545,7 @@ namespace api.Tests.Helpers
             _caseService.GetCaseWithIncludes(caseId, Arg.Any<Expression<Func<Case, object>>>())
                 .Returns(caseItem);
 
-            await _economicsCalculationHelper.CalculateNPV(caseId);
+            await _economicsCalculationService.CalculateNPV(caseId);
 
             var actualNpvValue = 10816.2;
             Assert.Equal(actualNpvValue, caseItem.NPV, precision: 1);
@@ -608,7 +606,7 @@ namespace api.Tests.Helpers
             ).Returns(drainageStrategy);
 
             // Act
-            await _economicsCalculationHelper.CalculateBreakEvenOilPrice(caseId);
+            await _economicsCalculationService.CalculateBreakEvenOilPrice(caseId);
 
             // Assert
             var expectedBreakEvenPrice = 262.9;

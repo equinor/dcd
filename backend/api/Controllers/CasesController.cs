@@ -307,27 +307,4 @@ public class CasesController : ControllerBase
     {
         return await _caseTimeSeriesService.UpdateAdditionalOPEXCostProfile(projectId, caseId, costProfileId, dto);
     }
-
-
-    [HttpPut("{caseId}/calculated-total-income")]
-    public async Task<CalculatedTotalIncomeCostProfileDto> UpdateCalculatedTotalIncomeCostProfile(
-    [FromRoute] Guid projectId,
-    [FromRoute] Guid caseId,
-    [FromRoute] Guid costProfileId,
-    [FromBody] UpdateCalculatedTotalIncomeCostProfileDto dto
-    )
-    {
-        return await _caseTimeSeriesService.UpdateCalculatedTotalIncomeCostProfile(projectId, caseId, costProfileId, dto);
-    }
-
-    [HttpPut("{caseId}/calculated-total-cost")]
-    public async Task<CalculatedTotalCostCostProfileDto> UpdateCalculatedTotalCostCostProfile(
-    [FromRoute] Guid projectId,
-    [FromRoute] Guid caseId,
-    [FromRoute] Guid costProfileId,
-    [FromBody] UpdateCalculatedTotalCostCostProfileDto dto
-    )
-    {
-        return await _caseTimeSeriesService.UpdateCalculatedTotalCostCostProfile(projectId, caseId, costProfileId, dto);
-    }
 }

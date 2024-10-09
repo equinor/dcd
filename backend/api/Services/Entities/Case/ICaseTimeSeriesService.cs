@@ -16,9 +16,6 @@ public interface ICaseTimeSeriesService
     Task<OffshoreFacilitiesOperationsCostProfileOverrideDto> UpdateOffshoreFacilitiesOperationsCostProfileOverride(Guid projectId, Guid caseId, Guid costProfileId, UpdateOffshoreFacilitiesOperationsCostProfileOverrideDto updatedCostProfileDto);
     Task<OnshoreRelatedOPEXCostProfileDto> UpdateOnshoreRelatedOPEXCostProfile(Guid projectId, Guid caseId, Guid costProfileId, UpdateOnshoreRelatedOPEXCostProfileDto updatedCostProfileDto);
     Task<AdditionalOPEXCostProfileDto> UpdateAdditionalOPEXCostProfile(Guid projectId, Guid caseId, Guid costProfileId, UpdateAdditionalOPEXCostProfileDto updatedCostProfileDto);
-    Task<CalculatedTotalIncomeCostProfileDto> UpdateCalculatedTotalIncomeCostProfile(Guid projectId, Guid caseId, Guid costProfileId, UpdateCalculatedTotalIncomeCostProfileDto updatedCostProfileDto);
-    Task<CalculatedTotalCostCostProfileDto> UpdateCalculatedTotalCostCostProfile(Guid projectId, Guid caseId, Guid costProfileId, UpdateCalculatedTotalCostCostProfileDto updatedCostProfileDto);
-
     Task<OffshoreFacilitiesOperationsCostProfileOverrideDto> CreateOffshoreFacilitiesOperationsCostProfileOverride(Guid projectId, Guid caseId, CreateOffshoreFacilitiesOperationsCostProfileOverrideDto createProfileDto);
     Task<CessationWellsCostOverrideDto> CreateCessationWellsCostOverride(Guid projectId, Guid caseId, CreateCessationWellsCostOverrideDto createProfileDto);
     Task<CessationOffshoreFacilitiesCostOverrideDto> CreateCessationOffshoreFacilitiesCostOverride(Guid projectId, Guid caseId, CreateCessationOffshoreFacilitiesCostOverrideDto createProfileDto);

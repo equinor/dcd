@@ -101,11 +101,3 @@ public class UpdateOnshoreRelatedOPEXCostProfileDto : UpdateTimeSeriesCostDto
 public class UpdateAdditionalOPEXCostProfileDto : UpdateTimeSeriesCostDto
 {
 }
-
-public class UpdateCalculatedTotalIncomeCostProfileDto : UpdateTimeSeriesCostDto
-{
-}
-
-public class UpdateCalculatedTotalCostCostProfileDto : UpdateTimeSeriesCostDto
-{
-}

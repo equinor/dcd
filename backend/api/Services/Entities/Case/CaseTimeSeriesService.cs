@@ -205,40 +205,6 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
         );
     }
 
-    public async Task<CalculatedTotalIncomeCostProfileDto> UpdateCalculatedTotalIncomeCostProfile(
-    Guid projectId,
-    Guid caseId,
-    Guid costProfileId,
-    UpdateCalculatedTotalIncomeCostProfileDto updatedCostProfileDto
-    )
-    {
-        return await UpdateCaseCostProfile<CalculatedTotalIncomeCostProfile, CalculatedTotalIncomeCostProfileDto, UpdateCalculatedTotalIncomeCostProfileDto>(
-            projectId,
-            caseId,
-            costProfileId,
-            updatedCostProfileDto,
-            _repository.GetCalculatedTotalIncomeCostProfile,
-            _repository.UpdateCalculatedTotalIncomeCostProfile
-        );
-    }
-
-    public async Task<CalculatedTotalCostCostProfileDto> UpdateCalculatedTotalCostCostProfile(
-    Guid projectId,
-    Guid caseId,
-    Guid costProfileId,
-    UpdateCalculatedTotalCostCostProfileDto updatedCostProfileDto
-    )
-    {
-        return await UpdateCaseCostProfile<CalculatedTotalCostCostProfile, CalculatedTotalCostCostProfileDto, UpdateCalculatedTotalCostCostProfileDto>(
-            projectId,
-            caseId,
-            costProfileId,
-            updatedCostProfileDto,
-            _repository.GetCalculatedTotalCostCostProfile,
-            _repository.UpdateCalculatedTotalCostCostProfile
-        );
-    }
-
     public async Task<OffshoreFacilitiesOperationsCostProfileOverrideDto> CreateOffshoreFacilitiesOperationsCostProfileOverride(
         Guid projectId,
         Guid caseId,

@@ -1,45 +1,38 @@
-using api.Context;
-using api.Dtos;
 using api.Models;
-using api.Repositories;
-using api.Services;
-using api.Services.GenerateCostProfiles;
 
-namespace api.Helpers
+namespace api.Services
 {
-    public class EconomicsCalculationHelper : IEconomicsCalculationHelper
+    public class EconomicsCalculationService : IEconomicsCalculationService
     {
-        private readonly IExplorationRepository _explorationRepository;
-        private readonly ISubstructureRepository _substructureRepository;
-        private readonly ISurfRepository _surfRepository;
-        private readonly ITopsideRepository _topsideRepository;
-        private readonly ITransportRepository _transportRepository;
-        private readonly IWellProjectRepository _wellProjectRepository;
+        private readonly IExplorationService _explorationService;
+        private readonly ISubstructureService _substructureService;
+
+        private readonly ISurfService _surfService;
+        private readonly ITopsideService _topsideService;
+        private readonly ITransportService _transportService;
+        private readonly IWellProjectService _wellProjectService;
         private readonly ICaseService _caseService;
         private readonly IDrainageStrategyService _drainageStrategyService;
-        private readonly IDrainageStrategyRepository _drainageStrategyRepository;
 
-        public EconomicsCalculationHelper(
+        public EconomicsCalculationService(
             ICaseService caseService,
-            IExplorationRepository explorationRepository,
-            ISubstructureRepository substructureRepository,
-            ISurfRepository surfRepository,
-            ITopsideRepository topsideRepository,
-            ITransportRepository transportRepository,
-            IWellProjectRepository wellProjectRepository,
-            IDrainageStrategyService drainageStrategyService,
-            IDrainageStrategyRepository drainageStrategyRepository
+            IExplorationService explorationService,
+            ISubstructureService substructureService,
+            ISurfService surfService,
+            ITopsideService topsideService,
+            ITransportService transportService,
+            IWellProjectService wellProjectService,
+            IDrainageStrategyService drainageStrategyService
 )
         {
             _caseService = caseService;
-            _explorationRepository = explorationRepository;
-            _substructureRepository = substructureRepository;
-            _surfRepository = surfRepository;
-            _topsideRepository = topsideRepository;
-            _transportRepository = transportRepository;
-            _wellProjectRepository = wellProjectRepository;
+            _explorationService = explorationService;
+            _substructureService = substructureService;
+            _surfService = surfService;
+            _topsideService = topsideService;
+            _transportService = transportService;
+            _wellProjectService = wellProjectService;
             _drainageStrategyService = drainageStrategyService;
-            _drainageStrategyRepository = drainageStrategyRepository;
         }
 
         public async Task CalculateTotalIncome(Guid caseId)
@@ -138,7 +131,23 @@ namespace api.Helpers
         {
             var caseItem = await _caseService.GetCaseWithIncludes(
                 caseId,
-                c => c.Project
+                c => c.TotalFeasibilityAndConceptStudies!,
+                c => c.TotalFeasibilityAndConceptStudiesOverride!,
+                c => c.TotalFEEDStudies!,
+                c => c.TotalFEEDStudiesOverride!,
+                c => c.TotalOtherStudiesCostProfile!,
+                c => c.HistoricCostCostProfile!,
+                c => c.WellInterventionCostProfile!,
+                c => c.WellInterventionCostProfileOverride!,
+                c => c.OffshoreFacilitiesOperationsCostProfile!,
+                c => c.OffshoreFacilitiesOperationsCostProfileOverride!,
+                c => c.OnshoreRelatedOPEXCostProfile!,
+                c => c.AdditionalOPEXCostProfile!,
+                c => c.CessationWellsCost!,
+                c => c.CessationWellsCostOverride!,
+                c => c.CessationOffshoreFacilitiesCost!,
+                c => c.CessationOffshoreFacilitiesCostOverride!,
+                c => c.CessationOnshoreFacilitiesCostProfile!
             );
             var totalStudyCost = CalculateStudyCost(caseItem);
 
@@ -162,21 +171,67 @@ namespace api.Helpers
                 Values = totalCessationCost.Values ?? Array.Empty<double>()
             };
 
-            var totalOffshoreFacilityCost = await CalculateTotalOffshoreFacilityCostAsync(caseItem);
+            var substructure = await _substructureService.GetSubstructureWithIncludes(
+                caseItem.SubstructureLink,
+                s => s.CostProfileOverride!,
+                s => s.CostProfile!
+            );
+
+            var surf = await _surfService.GetSurfWithIncludes(
+                caseItem.SurfLink,
+                s => s.CostProfileOverride!,
+                s => s.CostProfile!
+            );
+
+            var topside = await _topsideService.GetTopsideWithIncludes(
+                caseItem.TopsideLink,
+                t => t.CostProfileOverride!,
+                t => t.CostProfile!
+            );
+
+            var transport = await _transportService.GetTransportWithIncludes(
+                caseItem.TransportLink,
+                t => t.CostProfileOverride!,
+                t => t.CostProfile!
+            );
+
+            var totalOffshoreFacilityCost = CalculateTotalOffshoreFacilityCost(substructure, surf, topside, transport);
             var totalOffshoreFacilityProfile = new TimeSeries<double>
             {
                 StartYear = totalOffshoreFacilityCost.StartYear,
                 Values = totalOffshoreFacilityCost.Values
             };
 
-            var totalDevelopmentCost = await CalculateTotalDevelopmentCostAsync(caseItem);
+
+            var wellProject = await _wellProjectService.GetWellProjectWithIncludes(
+                caseItem.WellProjectLink,
+                w => w.OilProducerCostProfileOverride!,
+                w => w.OilProducerCostProfile!,
+                w => w.GasProducerCostProfileOverride!,
+                w => w.GasProducerCostProfile!,
+                w => w.WaterInjectorCostProfileOverride!,
+                w => w.WaterInjectorCostProfile!,
+                w => w.GasInjectorCostProfileOverride!,
+                w => w.GasInjectorCostProfile!
+            );
+
+            var totalDevelopmentCost = CalculateTotalDevelopmentCost(wellProject);
             var developmentProfile = new TimeSeries<double>
             {
                 StartYear = totalDevelopmentCost.StartYear,
                 Values = totalDevelopmentCost.Values
             };
 
-            var explorationCost = await CalculateTotalExplorationCostAsync(caseItem);
+            var exploration = await _explorationService.GetExplorationWithIncludes(
+                caseItem.ExplorationLink,
+                e => e.GAndGAdminCost!,
+                e => e.CountryOfficeCost!,
+                e => e.SeismicAcquisitionAndProcessing!,
+                e => e.ExplorationWellCostProfile!,
+                e => e.AppraisalWellCostProfile!,
+                e => e.SidetrackCostProfile!);
+
+            var explorationCost = CalculateTotalExplorationCost(exploration);
             var explorationProfile = new TimeSeries<double>
             {
                 StartYear = explorationCost.StartYear,
@@ -536,13 +591,12 @@ namespace api.Helpers
         }
 
 
-        public async Task<TimeSeries<double>> CalculateTotalOffshoreFacilityCostAsync(Case caseItem)
+        public static TimeSeries<double> CalculateTotalOffshoreFacilityCost(
+            Substructure? substructure,
+            Surf? surf,
+            Topside? topside,
+            Transport? transport)
         {
-            var substructure = await _substructureRepository.GetSubstructure(caseItem.SubstructureLink);
-            var surf = await _surfRepository.GetSurf(caseItem.SurfLink);
-            var topside = await _topsideRepository.GetTopside(caseItem.TopsideLink);
-            var transport = await _transportRepository.GetTransport(caseItem.TransportLink);
-
             TimeSeries<double> substructureProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
             TimeSeries<double> surfProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
             TimeSeries<double> topsideProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
@@ -628,9 +682,8 @@ namespace api.Helpers
         }
 
 
-        public async Task<TimeSeries<double>> CalculateTotalDevelopmentCostAsync(Case caseItem)
+        public static TimeSeries<double> CalculateTotalDevelopmentCost(WellProject wellProject)
         {
-            var wellProject = await _wellProjectRepository.GetWellProject(caseItem.WellProjectLink);
 
             TimeSeries<double> oilProducerProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
             TimeSeries<double> gasProducerProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
@@ -715,9 +768,9 @@ namespace api.Helpers
             return totalDevelopmentCost;
         }
 
-        public async Task<TimeSeries<double>> CalculateTotalExplorationCostAsync(Case caseItem)
+        public static TimeSeries<double> CalculateTotalExplorationCost(Exploration exploration)
         {
-            var explorationCost = await _explorationRepository.GetExploration(caseItem.ExplorationLink);
+
 
             TimeSeries<double> gAndGAdminCostProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
             TimeSeries<double> seismicAcquisitionAndProcessingProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
@@ -726,69 +779,69 @@ namespace api.Helpers
             TimeSeries<double> appraisalWellCostProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
             TimeSeries<double> sidetrackCostProfile = new TimeSeries<double> { StartYear = 0, Values = Array.Empty<double>() };
 
-            if (explorationCost?.GAndGAdminCostOverride?.Override == true)
+            if (exploration?.GAndGAdminCostOverride?.Override == true)
             {
                 gAndGAdminCostProfile = new TimeSeries<double>
                 {
-                    StartYear = explorationCost.GAndGAdminCostOverride.StartYear,
-                    Values = explorationCost.GAndGAdminCostOverride.Values ?? Array.Empty<double>()
+                    StartYear = exploration.GAndGAdminCostOverride.StartYear,
+                    Values = exploration.GAndGAdminCostOverride.Values ?? Array.Empty<double>()
                 };
             }
-            else if (explorationCost?.GAndGAdminCost != null)
+            else if (exploration?.GAndGAdminCost != null)
             {
                 gAndGAdminCostProfile = new TimeSeries<double>
                 {
-                    StartYear = explorationCost.GAndGAdminCost.StartYear,
-                    Values = explorationCost.GAndGAdminCost.Values ?? Array.Empty<double>()
+                    StartYear = exploration.GAndGAdminCost.StartYear,
+                    Values = exploration.GAndGAdminCost.Values ?? Array.Empty<double>()
                 };
             }
 
-            if (explorationCost?.SeismicAcquisitionAndProcessing != null)
+            if (exploration?.SeismicAcquisitionAndProcessing != null)
             {
                 seismicAcquisitionAndProcessingProfile = new TimeSeries<double>
                 {
-                    StartYear = explorationCost.SeismicAcquisitionAndProcessing.StartYear,
-                    Values = explorationCost.SeismicAcquisitionAndProcessing.Values ?? Array.Empty<double>()
+                    StartYear = exploration.SeismicAcquisitionAndProcessing.StartYear,
+                    Values = exploration.SeismicAcquisitionAndProcessing.Values ?? Array.Empty<double>()
                 };
             }
 
-            if (explorationCost?.CountryOfficeCost != null)
+            if (exploration?.CountryOfficeCost != null)
             {
                 countryOfficeCostProfile = new TimeSeries<double>
                 {
-                    StartYear = explorationCost.CountryOfficeCost.StartYear,
-                    Values = explorationCost.CountryOfficeCost.Values ?? Array.Empty<double>()
+                    StartYear = exploration.CountryOfficeCost.StartYear,
+                    Values = exploration.CountryOfficeCost.Values ?? Array.Empty<double>()
                 };
             }
 
-            if (explorationCost?.ExplorationWellCostProfile != null)
+            if (exploration?.ExplorationWellCostProfile != null)
             {
                 explorationWellCostProfile = new TimeSeries<double>
                 {
-                    StartYear = explorationCost.ExplorationWellCostProfile.StartYear,
-                    Values = explorationCost.ExplorationWellCostProfile.Values ?? Array.Empty<double>()
+                    StartYear = exploration.ExplorationWellCostProfile.StartYear,
+                    Values = exploration.ExplorationWellCostProfile.Values ?? Array.Empty<double>()
                 };
             }
 
-            if (explorationCost?.AppraisalWellCostProfile != null)
+            if (exploration?.AppraisalWellCostProfile != null)
             {
                 appraisalWellCostProfile = new TimeSeries<double>
                 {
-                    StartYear = explorationCost.AppraisalWellCostProfile.StartYear,
-                    Values = explorationCost.AppraisalWellCostProfile.Values ?? Array.Empty<double>()
+                    StartYear = exploration.AppraisalWellCostProfile.StartYear,
+                    Values = exploration.AppraisalWellCostProfile.Values ?? Array.Empty<double>()
                 };
             }
 
-            if (explorationCost?.SidetrackCostProfile != null)
+            if (exploration?.SidetrackCostProfile != null)
             {
                 sidetrackCostProfile = new TimeSeries<double>
                 {
-                    StartYear = explorationCost.SidetrackCostProfile.StartYear,
-                    Values = explorationCost.SidetrackCostProfile.Values ?? Array.Empty<double>()
+                    StartYear = exploration.SidetrackCostProfile.StartYear,
+                    Values = exploration.SidetrackCostProfile.Values ?? Array.Empty<double>()
                 };
             }
 
-            var totalExplorationCost = TimeSeriesCost.MergeCostProfilesList(
+            var totalexploration = TimeSeriesCost.MergeCostProfilesList(
             [
                 gAndGAdminCostProfile,
                 seismicAcquisitionAndProcessingProfile,
@@ -798,7 +851,7 @@ namespace api.Helpers
                 sidetrackCostProfile
             ]);
 
-            return totalExplorationCost;
+            return totalexploration;
         }
 
 

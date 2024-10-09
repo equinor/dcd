@@ -138,41 +138,28 @@ public class DcdDbContext : DbContext
             await _serviceProvider.GetRequiredService<ICo2EmissionsProfileService>().Generate(caseId);
         }
 
+        var economicsHelper = _serviceProvider.GetRequiredService<IEconomicsCalculationService>();
+
         if (rerunTotalIncome)
         {
-            await _serviceProvider.GetRequiredService<IEconomicsCalculationHelper>().CalculateTotalIncome(caseId);
-            if (!rerunCalculateNPV)
-            {
-                await _serviceProvider.GetRequiredService<IEconomicsCalculationHelper>().CalculateNPV(caseId);
-            }
-            if (!rerunCalculateBreakEven)
-            {
-                await _serviceProvider.GetRequiredService<IEconomicsCalculationHelper>().CalculateBreakEvenOilPrice(caseId);
-            }
+            await economicsHelper.CalculateTotalIncome(caseId);
         }
+
         if (rerunTotalCost)
         {
-            await _serviceProvider.GetRequiredService<IEconomicsCalculationHelper>().CalculateTotalCost(caseId);
-            if (!rerunCalculateNPV)
-            {
-                await _serviceProvider.GetRequiredService<IEconomicsCalculationHelper>().CalculateNPV(caseId);
-            }
-            if (!rerunCalculateBreakEven)
-            {
-                await _serviceProvider.GetRequiredService<IEconomicsCalculationHelper>().CalculateBreakEvenOilPrice(caseId);
-            }
-
+            await economicsHelper.CalculateTotalCost(caseId);
         }
-        if (rerunCalculateNPV)
+
+        if (rerunTotalIncome || rerunTotalCost || rerunCalculateNPV)
         {
-            await _serviceProvider.GetRequiredService<IEconomicsCalculationHelper>().CalculateNPV(caseId);
-
+            await economicsHelper.CalculateNPV(caseId);
         }
-        if (rerunCalculateBreakEven)
+
+        if (rerunTotalIncome || rerunTotalCost || rerunCalculateBreakEven)
         {
-            await _serviceProvider.GetRequiredService<IEconomicsCalculationHelper>().CalculateBreakEvenOilPrice(caseId);
-
+            await economicsHelper.CalculateBreakEvenOilPrice(caseId);
         }
+
 
     }
 

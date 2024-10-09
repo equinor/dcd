@@ -1094,10 +1094,6 @@ declare namespace Components {
             discountRate: number; // double
             exchangeRateUSDToNOK: number; // double
             cases: CaseDto[];
-            oilPriceUSD: number; // double
-            gasPriceNOK: number; // double
-            discountRate: number; // double
-            exchangeRateUSDToNOK: number; // double
             revisions: ProjectDto[];
         }
         export interface STEACaseDto {
@@ -1520,16 +1516,6 @@ declare namespace Components {
             values?: number /* double */[] | null;
         }
         export interface UpdateAppraisalWellCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
-        export interface UpdateCalculatedTotalCostCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
-        export interface UpdateCalculatedTotalIncomeCostProfileDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
@@ -2068,42 +2054,6 @@ declare namespace Paths {
             export type RequestBody = Components.Schemas.UpdateAdditionalOPEXCostProfileDto;
             namespace Responses {
                 export type $200 = Components.Schemas.AdditionalOPEXCostProfileDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdCalculatedTotalCost {
-        namespace Put {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type CostProfileId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                costProfileId: Parameters.CostProfileId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.UpdateCalculatedTotalCostCostProfileDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.CalculatedTotalCostCostProfileDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdCalculatedTotalIncome {
-        namespace Put {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type CostProfileId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                costProfileId: Parameters.CostProfileId /* uuid */;
-            }
-            export type RequestBody = Components.Schemas.UpdateCalculatedTotalIncomeCostProfileDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.CalculatedTotalIncomeCostProfileDto;
             }
         }
     }
