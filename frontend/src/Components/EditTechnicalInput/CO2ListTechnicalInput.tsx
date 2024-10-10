@@ -41,7 +41,7 @@ const CO2ListTechnicalInput = () => {
 
     let cO2VentedRow = true
 
-    const getColumnDefs = (editMode: boolean): ColDef[] => {
+    const getColumnDefs = (edit: boolean): ColDef[] => {
         return [
             {
                 field: "profile",
@@ -59,8 +59,8 @@ const CO2ListTechnicalInput = () => {
                 field: "value",
                 headerName: "Value",
                 flex: 1,
-                editable: editMode,
-                cellClass: editMode ? "editableCell" : undefined,
+                editable: edit,
+                cellClass: edit ? "editableCell" : undefined,
                 cellStyle: cellStyleRightAlign,
             },
         ]
