@@ -7,20 +7,20 @@ import { Typography } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import SwitchableNumberInput from "../../../Input/SwitchableNumberInput"
-import CaseTabTable from "../../Components/CaseTabTable"
-import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
-import { GetGenerateProfileService } from "../../../../Services/CaseGeneratedProfileService"
+
+import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
+import { useCaseContext } from "@/Context/CaseContext"
+import { useProjectContext } from "@/Context/ProjectContext"
+import { GetGenerateProfileService } from "@/Services/CaseGeneratedProfileService"
+import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
 import CaseCO2DistributionTable from "./Co2EmissionsAgGridTable"
-import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../../AgGrid/AgChartsTimeseries"
+import CaseTabTable from "../../Components/CaseTabTable"
 import { AgChartsPie } from "../../../AgGrid/AgChartsPie"
-import { useCaseContext } from "../../../../Context/CaseContext"
 import DateRangePicker from "../../../Input/TableDateRangePicker"
-import { ITimeSeriesData } from "../../../../Models/Interfaces"
+import SwitchableNumberInput from "../../../Input/SwitchableNumberInput"
 import CaseCo2TabSkeleton from "../../../LoadingSkeletons/CaseCo2TabSkeleton"
-import { caseQueryFn, projectQueryFn } from "../../../../Services/QueryFunctions"
-import { useProjectContext } from "../../../../Context/ProjectContext"
+import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
+import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../../AgGrid/AgChartsTimeseries"
 
 const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const { caseId } = useParams()
@@ -52,7 +52,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
-    const [timeSeriesData, setTimeSeriesData] = useState<ITimeSeriesData[]>([])
+    const [timeSeriesData, setTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
     const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
     const co2GridRef = useRef<any>(null)
@@ -123,7 +123,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     }, [activeTabCase])
 
     useEffect(() => {
-        const newTimeSeriesData: ITimeSeriesData[] = [
+        const newTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Annual CO2 emissions",
                 unit: `${projectData?.physicalUnit === 0 ? "MTPA" : "MTPA"}`,
