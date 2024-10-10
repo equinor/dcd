@@ -12,7 +12,7 @@ import {
     unarchive,
     history,
 } from "@equinor/eds-icons"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 
@@ -24,16 +24,12 @@ import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
 import { useProjectContext } from "@/Context/ProjectContext"
 import Modal from "../../Modal/Modal"
-import RevisionsCaseDropMenu from "@/Components/Controls/RevisionsCaseDropMenu"
+import RevisionsDropMenu from "@/Components/Controls/RevisionsDropMenu"
 
 interface CaseDropMenuProps {
     isMenuOpen: boolean
     setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
-    isRevisionMenuOpen: boolean
-    setIsRevisionMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
     menuAnchorEl: HTMLElement | null
-    revisionMenuAnchorEl: HTMLElement | null
-    setRevisionMenuAnchorEl: React.Dispatch<any>
     caseId: string
     isArchived: boolean
 }
@@ -41,11 +37,7 @@ interface CaseDropMenuProps {
 const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     isMenuOpen,
     setIsMenuOpen,
-    isRevisionMenuOpen,
-    setIsRevisionMenuOpen,
     menuAnchorEl,
-    revisionMenuAnchorEl,
-    setRevisionMenuAnchorEl,
     caseId,
     isArchived,
 }) => {
@@ -56,9 +48,11 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     const { addNewCase } = useModalContext()
     const [confirmDelete, setConfirmDelete] = useState(false)
     const { addProjectEdit } = useEditProject()
-    const { projectId, isRevision } = useProjectContext()
-    const { revisionId } = useParams()
+    const { projectId } = useProjectContext()
     const { updateCase } = useSubmitToApi()
+
+    const [isRevisionMenuOpen, setIsRevisionMenuOpen] = useState<boolean>(false)
+    const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
 
     const { data: projectData } = useQuery({
         queryKey: ["projectApiData", externalId],
@@ -183,11 +177,12 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                         Project revisions
                     </Typography>
                 </Menu.Item>
-                <RevisionsCaseDropMenu
+                <RevisionsDropMenu
                     setIsMenuOpen={setIsMenuOpen}
-                    isRevisionMenuOpen={isRevisionMenuOpen}
+                    isMenuOpen={isRevisionMenuOpen}
                     setIsRevisionMenuOpen={setIsRevisionMenuOpen}
                     menuAnchorEl={revisionMenuAnchorEl}
+                    isCaseMenu
                 /> */}
             </Menu>
         </>

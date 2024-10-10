@@ -128,6 +128,7 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                             isMenuOpen={isMenuOpen}
                             setIsMenuOpen={setIsMenuOpen}
                             menuAnchorEl={revisionMenuAnchorEl}
+                            isCaseMenu={false}
                         />
                     </div> */}
                 </div>

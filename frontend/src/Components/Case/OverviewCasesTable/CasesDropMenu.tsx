@@ -23,16 +23,12 @@ import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
 import Modal from "../../Modal/Modal"
-import RevisionsCaseDropMenu from "@/Components/Controls/RevisionsCaseDropMenu"
+import RevisionsDropMenu from "@/Components/Controls/RevisionsDropMenu"
 
 interface CasesDropMenuProps {
     isMenuOpen: boolean
     setIsMenuOpen: (isMenuOpen: boolean) => void
-    isRevisionMenuOpen: boolean
-    setIsRevisionMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
     menuAnchorEl: HTMLElement | null
-    revisionMenuAnchorEl: HTMLElement | null
-    setRevisionMenuAnchorEl: React.Dispatch<any>
     selectedCaseId: string | undefined
     editCase: () => void
 }
@@ -40,11 +36,7 @@ interface CasesDropMenuProps {
 const CasesDropMenu = ({
     isMenuOpen,
     setIsMenuOpen,
-    isRevisionMenuOpen,
-    setIsRevisionMenuOpen,
     menuAnchorEl,
-    revisionMenuAnchorEl,
-    setRevisionMenuAnchorEl,
     selectedCaseId,
     editCase,
 }: CasesDropMenuProps): JSX.Element => {
@@ -54,6 +46,8 @@ const CasesDropMenu = ({
     const { updateCase } = useSubmitToApi()
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
+    const [isRevisionMenuOpen, setIsRevisionMenuOpen] = useState<boolean>(false)
+    const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
 
     const { data: projectData } = useQuery({
         queryKey: ["projectApiData", externalId],
@@ -205,11 +199,12 @@ const CasesDropMenu = ({
                         Project revisions
                     </Typography>
                 </Menu.Item>
-                <RevisionsCaseDropMenu
+                <RevisionsDropMenu
+                    isMenuOpen={isRevisionMenuOpen}
                     setIsMenuOpen={setIsMenuOpen}
-                    isRevisionMenuOpen={isRevisionMenuOpen}
                     setIsRevisionMenuOpen={setIsRevisionMenuOpen}
                     menuAnchorEl={revisionMenuAnchorEl}
+                    isCaseMenu
                 /> */}
             </Menu>
         </>

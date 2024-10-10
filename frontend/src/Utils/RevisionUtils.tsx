@@ -5,7 +5,6 @@ import { ContextItem } from "@equinor/fusion-framework-react-module-context"
 import { GetProjectService } from "@/Services/ProjectService"
 
 export const openRevisionModal = (setCreatingRevision: React.Dispatch<React.SetStateAction<boolean>>) => {
-    console.log("Creating revision")
     setCreatingRevision(true)
 }
 
@@ -34,7 +33,6 @@ export const navigateToRevision = (
     navigate(`revision/${revisionId}`)
 }
 
-// export this function
 export const exitRevisionView = (
     setIsRevision: React.Dispatch<React.SetStateAction<boolean>>,
     queryClient: QueryClient,
@@ -52,7 +50,6 @@ export const exitRevisionView = (
     } else {
         navigate("/")
     }
-    console.log("Exiting revision view")
 }
 
 export const disableCurrentRevision = (revisionId: string, isRevision: boolean, currentRevisionId: string | undefined) => {
