@@ -41,28 +41,36 @@ const CO2ListTechnicalInput = () => {
 
     let cO2VentedRow = true
 
-    const [columnDefs] = useState<ColDef[]>([
-        {
-            field: "profile",
-            headerName: "CO2 emission",
-            flex: 2,
-            editable: false,
-        },
-        {
-            field: "unit",
-            headerName: "Unit",
-            flex: 1,
-            editable: false,
-        },
-        {
-            field: "value",
-            headerName: "Value",
-            flex: 1,
-            editable: editMode,
-            cellClass: editMode ? "editableCell" : undefined,
-            cellStyle: cellStyleRightAlign,
-        },
-    ])
+    const getColumnDefs = (editMode: boolean): ColDef[] => {
+        return [
+            {
+                field: "profile",
+                headerName: "CO2 emission",
+                flex: 2,
+                editable: false,
+            },
+            {
+                field: "unit",
+                headerName: "Unit",
+                flex: 1,
+                editable: false,
+            },
+            {
+                field: "value",
+                headerName: "Value",
+                flex: 1,
+                editable: editMode,
+                cellClass: editMode ? "editableCell" : undefined,
+                cellStyle: cellStyleRightAlign,
+            },
+        ]
+    }
+
+    const [columnDefs, setColumnDefs] = useState<ColDef[]>(getColumnDefs(editMode))
+
+    useEffect(() => {
+        setColumnDefs(getColumnDefs(editMode))
+    }, [editMode, columnDefs])
 
     const co2Data = [
         {
@@ -168,7 +176,7 @@ const CO2ListTechnicalInput = () => {
     useEffect(() => {
         setRowData(co2Data)
 
-        if (apiData) {
+        if (apiData && editMode) {
             const newProject: Components.Schemas.ProjectWithAssetsDto = { ...apiData }
             newProject.cO2RemovedFromGas = cO2RemovedFromGas
             newProject.cO2EmissionFromFuelGas = cO2EmissionsFromFuelGas
@@ -187,6 +195,7 @@ const CO2ListTechnicalInput = () => {
         cO2Vented,
         averageDevelopmentWellDrillingDays,
         dailyEmissionsFromDrillingRig,
+        editMode
     ])
 
     if (!apiData) { return null }
