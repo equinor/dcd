@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
+
+import { projectQueryFn } from "@/Services/QueryFunctions"
+import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
 import CaseTabTable from "../../../Components/CaseTabTable"
-import { ITimeSeriesData } from "../../../../../Models/Interfaces"
-import { projectQueryFn } from "../../../../../Services/QueryFunctions"
 
 interface OffshoreFacillityCostsProps {
     tableYears: [number, number];
@@ -29,7 +30,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
         enabled: !!externalId,
     })
 
-    const [capexTimeSeriesData, setCapexTimeSeriesData] = useState<ITimeSeriesData[]>([])
+    const [capexTimeSeriesData, setCapexTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
 
     useEffect(() => {
         const surf = apiData?.surf
@@ -50,7 +51,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             return
         }
 
-        const newCapexTimeSeriesData: ITimeSeriesData[] = [
+        const newCapexTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Subsea production system",
                 unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
@@ -115,7 +116,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             includeFooter
             totalRowName="Total"
             addEdit={addEdit}
-            isProsp={true}
+            isProsp
             sharepointFileId={apiData.case.sharepointFileId ?? undefined}
         />
     )
