@@ -55,9 +55,7 @@ export const exitRevisionView = (
     console.log("Exiting revision view")
 }
 
-export const disableCurrentRevision = (revisionId: string, isRevision: boolean, location: any) => {
-    // this is stupid
-    const currentRevisionId = location.pathname.split("/revision/")[1]
+export const disableCurrentRevision = (revisionId: string, isRevision: boolean, currentRevisionId: string | undefined) => {
     if (isRevision && currentRevisionId === revisionId) {
         return true
     } return false

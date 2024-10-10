@@ -3,7 +3,7 @@ import {
     Menu, Typography, Icon, Button,
 } from "@equinor/eds-core-react"
 import { add, exit_to_app } from "@equinor/eds-icons"
-import { useLocation, useNavigate } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useProjectContext } from "../../Context/ProjectContext"
@@ -30,8 +30,8 @@ interface Revision {
 const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIsMenuOpen, menuAnchorEl }) => {
     const { setIsRevision, isRevision, projectId } = useProjectContext()
     const navigate = useNavigate()
-    const location = useLocation()
     const queryClient = useQueryClient()
+    const { revisionId } = useParams()
 
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
@@ -80,13 +80,13 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIs
                 open={isMenuOpen}
                 anchorEl={menuAnchorEl}
                 onClose={() => setIsMenuOpen(false)}
-                placement="left"
+                placement="bottom"
             >
                 {
                     revisions.map((revision) => (
                         <Menu.Item
                             onClick={() => navigateToRevision(revision.id, setIsRevision, queryClient, externalId, navigate)}
-                            disabled={disableCurrentRevision(revision.id, isRevision, location)}
+                            disabled={disableCurrentRevision(revision.id, isRevision, revisionId)}
                         >
                             <Typography group="navigation" variant="menu_title" as="span">
                                 {revision.name}

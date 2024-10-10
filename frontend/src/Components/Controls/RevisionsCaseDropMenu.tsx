@@ -3,7 +3,7 @@ import {
     Menu, Typography, Icon, Button,
 } from "@equinor/eds-core-react"
 import { add, exit_to_app } from "@equinor/eds-icons"
-import { useLocation, useNavigate } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useProjectContext } from "../../Context/ProjectContext"
@@ -34,7 +34,7 @@ const RevisionsCaseDropMenu: React.FC<RevisionsDropMenuProps> = ({
     const { setIsRevision, isRevision, projectId } = useProjectContext()
     const navigate = useNavigate()
     const queryClient = useQueryClient()
-    const location = useLocation()
+    const { revisionId } = useParams()
 
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
@@ -99,7 +99,7 @@ const RevisionsCaseDropMenu: React.FC<RevisionsDropMenuProps> = ({
                     revisions.map((revision) => (
                         <Menu.Item
                             onClick={() => navToRevision(revision)}
-                            disabled={disableCurrentRevision(revision.id, isRevision, location)}
+                            disabled={disableCurrentRevision(revision.id, isRevision, revisionId)}
                         >
                             <Typography group="navigation" variant="menu_title" as="span">
                                 {revision.name}
