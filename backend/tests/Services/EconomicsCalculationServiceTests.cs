@@ -45,6 +45,9 @@ namespace api.Tests.Helpers
             _drainageStrategyService = Substitute.For<IDrainageStrategyService>();
             _studyCostProfileService = Substitute.For<IStudyCostProfileService>();
             _drainageStrategyService = Substitute.For<IDrainageStrategyService>();
+            _topsideService = Substitute.For<ITopsideService>();
+            _transportService = Substitute.For<ITransportService>();
+            _wellProjectService = Substitute.For<IWellProjectService>();
 
             _economicsCalculationService = new EconomicsCalculationService(
                 _caseService,
