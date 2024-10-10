@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
-import { getProjectPhaseName, getProjectCategoryName } from "@/Utils/common"
+import { getProjectPhaseName, getProjectCategoryName, getInternalProjectPhaseName } from "@/Utils/common"
 import { useModalContext } from "@/Context/ModalContext"
 import { useAppContext } from "@/Context/AppContext"
 import useEditProject from "@/Hooks/useEditProject"
@@ -61,7 +61,7 @@ const ProjectOverviewTab = () => {
                     <Typography aria-label="Project phase">
                         {[3, 4, 6, 7, 8].includes(apiData.projectPhase)
                             ? getProjectPhaseName(apiData.projectPhase)
-                            : getProjectPhaseName(apiData.internalProjectPhase)}
+                            : getInternalProjectPhaseName(apiData.internalProjectPhase)}
                     </Typography>
                 </Grid>
 
