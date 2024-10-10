@@ -1,154 +1,59 @@
 using api.Models;
+using api.Services;
 
-namespace api.Services
+namespace EconomicsServices
 {
-    public class EconomicsCalculationService : IEconomicsCalculationService
+    public class CalculateTotalCostService : ICalculateTotalCostService
     {
-        private readonly IExplorationService _explorationService;
+        private readonly ICaseService _caseService;
         private readonly ISubstructureService _substructureService;
-
         private readonly ISurfService _surfService;
         private readonly ITopsideService _topsideService;
         private readonly ITransportService _transportService;
         private readonly IWellProjectService _wellProjectService;
-        private readonly ICaseService _caseService;
-        private readonly IDrainageStrategyService _drainageStrategyService;
+        private readonly IExplorationService _explorationService;
 
-        public EconomicsCalculationService(
+        public CalculateTotalCostService(
             ICaseService caseService,
-            IExplorationService explorationService,
             ISubstructureService substructureService,
             ISurfService surfService,
             ITopsideService topsideService,
             ITransportService transportService,
             IWellProjectService wellProjectService,
-            IDrainageStrategyService drainageStrategyService
-)
+            IExplorationService explorationService)
         {
             _caseService = caseService;
-            _explorationService = explorationService;
             _substructureService = substructureService;
             _surfService = surfService;
             _topsideService = topsideService;
             _transportService = transportService;
+            _explorationService = explorationService;
             _wellProjectService = wellProjectService;
-            _drainageStrategyService = drainageStrategyService;
         }
 
-        public async Task CalculateTotalIncome(Guid caseId)
-        {
-
-            var caseItem = await _caseService.GetCaseWithIncludes(
-                caseId,
-                c => c.Project
-            );
-
-            var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
-                        caseItem.DrainageStrategyLink,
-                        d => d.ProductionProfileGas!,
-                        d => d.AdditionalProductionProfileGas!,
-                        d => d.ProductionProfileOil!,
-                        d => d.AdditionalProductionProfileOil!
-                    );
-
-            var gasPriceNok = caseItem.Project.GasPriceNOK;
-            var oilPrice = caseItem.Project.OilPriceUSD;
-            var exchangeRateUSDToNOK = caseItem.Project.ExchangeRateUSDToNOK;
-            var cubicMetersToBarrelsFactor = 6.29;
-            var exchangeRateNOKToUSD = 1 / exchangeRateUSDToNOK;
-
-            var oilProfile = drainageStrategy.ProductionProfileOil?.Values ?? Array.Empty<double>();
-            var additionalOilProfile = drainageStrategy.AdditionalProductionProfileOil?.Values ?? Array.Empty<double>();
-
-            var totalOilProductionInMegaCubics = TimeSeriesCost.MergeCostProfiles(
-                new TimeSeries<double>
-                {
-                    StartYear = drainageStrategy.ProductionProfileOil?.StartYear ?? 0,
-                    Values = oilProfile
-                },
-                new TimeSeries<double>
-                {
-                    StartYear = drainageStrategy.AdditionalProductionProfileOil?.StartYear ?? 0,
-                    Values = additionalOilProfile
-                }
-            );
-
-            // Convert oil production from million sm³ to barrels in millions
-            var oilProductionInMillionsOfBarrels = totalOilProductionInMegaCubics.Values.Select(v => v * cubicMetersToBarrelsFactor).ToArray();
-
-            var oilIncome = new TimeSeries<double>
-            {
-                StartYear = totalOilProductionInMegaCubics.StartYear,
-                Values = oilProductionInMillionsOfBarrels.Select(v => v * oilPrice * exchangeRateUSDToNOK).ToArray(),
-            };
-
-            var gasProfile = drainageStrategy.ProductionProfileGas?.Values ?? Array.Empty<double>();
-            var additionalGasProfile = drainageStrategy.AdditionalProductionProfileGas?.Values ?? Array.Empty<double>();
-
-            var totalGasProductionInGigaCubics = TimeSeriesCost.MergeCostProfiles(
-                new TimeSeries<double>
-                {
-                    StartYear = drainageStrategy.ProductionProfileGas?.StartYear ?? 0,
-                    Values = gasProfile
-                },
-                new TimeSeries<double>
-                {
-                    StartYear = drainageStrategy.AdditionalProductionProfileGas?.StartYear ?? 0,
-                    Values = additionalGasProfile
-                }
-            );
-
-            var gasIncome = new TimeSeries<double>
-            {
-                StartYear = totalGasProductionInGigaCubics.StartYear,
-                Values = totalGasProductionInGigaCubics.Values.Select(v => v * gasPriceNok).ToArray()
-            };
-
-            var totalIncome = TimeSeriesCost.MergeCostProfiles(oilIncome, gasIncome);
-
-            // Divide the totalIncome by 1 million before assigning it to CalculatedTotalIncomeCostProfile to get correct unit
-            var scaledTotalIncomeValues = totalIncome.Values.Select(v => v / 1_000_000).ToArray();
-
-            if (caseItem.CalculatedTotalIncomeCostProfile != null)
-            {
-                caseItem.CalculatedTotalIncomeCostProfile.Values = scaledTotalIncomeValues;
-                caseItem.CalculatedTotalIncomeCostProfile.StartYear = totalIncome.StartYear;
-            }
-            else
-            {
-                caseItem.CalculatedTotalIncomeCostProfile = new CalculatedTotalIncomeCostProfile
-                {
-                    Values = scaledTotalIncomeValues,
-                    StartYear = totalIncome.StartYear
-                };
-            }
-
-
-            return;
-        }
 
         public async Task CalculateTotalCost(Guid caseId)
         {
             var caseItem = await _caseService.GetCaseWithIncludes(
-                caseId,
-                c => c.TotalFeasibilityAndConceptStudies!,
-                c => c.TotalFeasibilityAndConceptStudiesOverride!,
-                c => c.TotalFEEDStudies!,
-                c => c.TotalFEEDStudiesOverride!,
-                c => c.TotalOtherStudiesCostProfile!,
-                c => c.HistoricCostCostProfile!,
-                c => c.WellInterventionCostProfile!,
-                c => c.WellInterventionCostProfileOverride!,
-                c => c.OffshoreFacilitiesOperationsCostProfile!,
-                c => c.OffshoreFacilitiesOperationsCostProfileOverride!,
-                c => c.OnshoreRelatedOPEXCostProfile!,
-                c => c.AdditionalOPEXCostProfile!,
-                c => c.CessationWellsCost!,
-                c => c.CessationWellsCostOverride!,
-                c => c.CessationOffshoreFacilitiesCost!,
-                c => c.CessationOffshoreFacilitiesCostOverride!,
-                c => c.CessationOnshoreFacilitiesCostProfile!
-            );
+                            caseId,
+                            c => c.TotalFeasibilityAndConceptStudies!,
+                            c => c.TotalFeasibilityAndConceptStudiesOverride!,
+                            c => c.TotalFEEDStudies!,
+                            c => c.TotalFEEDStudiesOverride!,
+                            c => c.TotalOtherStudiesCostProfile!,
+                            c => c.HistoricCostCostProfile!,
+                            c => c.WellInterventionCostProfile!,
+                            c => c.WellInterventionCostProfileOverride!,
+                            c => c.OffshoreFacilitiesOperationsCostProfile!,
+                            c => c.OffshoreFacilitiesOperationsCostProfileOverride!,
+                            c => c.OnshoreRelatedOPEXCostProfile!,
+                            c => c.AdditionalOPEXCostProfile!,
+                            c => c.CessationWellsCost!,
+                            c => c.CessationWellsCostOverride!,
+                            c => c.CessationOffshoreFacilitiesCost!,
+                            c => c.CessationOffshoreFacilitiesCostOverride!,
+                            c => c.CessationOnshoreFacilitiesCostProfile!
+                        );
             var totalStudyCost = CalculateStudyCost(caseItem);
 
             var studiesProfile = new TimeSeries<double>
@@ -264,135 +169,6 @@ namespace api.Services
 
             return;
         }
-        public TimeSeries<double> CalculateCashFlow(TimeSeries<double> income, TimeSeries<double> totalCost)
-        {
-            var startYear = Math.Min(income.StartYear, totalCost.StartYear);
-            var endYear = Math.Max(
-                income.StartYear + income.Values.Length - 1,
-                totalCost.StartYear + totalCost.Values.Length - 1
-            );
-
-            var incomeValues = new double[endYear - startYear + 1];
-            var costValues = new double[endYear - startYear + 1];
-
-            for (int i = 0; i < income.Values.Length; i++)
-            {
-                int yearIndex = income.StartYear + i - startYear;
-                incomeValues[yearIndex] = income.Values[i];
-            }
-
-            for (int i = 0; i < totalCost.Values.Length; i++)
-            {
-                int yearIndex = totalCost.StartYear + i - startYear;
-                costValues[yearIndex] = totalCost.Values[i];
-            }
-
-            var cashFlowValues = new double[incomeValues.Length];
-            for (int i = 0; i < cashFlowValues.Length; i++)
-            {
-                cashFlowValues[i] = incomeValues[i] - costValues[i];
-            }
-
-            return new TimeSeries<double>
-            {
-                StartYear = startYear,
-                Values = cashFlowValues
-            };
-        }
-
-        public double CalculateDiscountedVolume(double[] values, double discountRate, int startIndex)
-        {
-            double accumulatedVolume = 0;
-            for (int i = 0; i < values.Length; i++)
-            {
-                accumulatedVolume += values[i] / Math.Pow(1 + (discountRate / 100), startIndex + i + 1);
-            }
-            return accumulatedVolume;
-        }
-
-        public async Task CalculateNPV(Guid caseId)
-        {
-            var caseItem = await _caseService.GetCaseWithIncludes(
-                caseId,
-                c => c.Project
-            );
-
-            var cashflowProfile = caseItem.CalculatedTotalIncomeCostProfile != null && caseItem.CalculatedTotalCostCostProfile != null
-                ? CalculateCashFlow(caseItem.CalculatedTotalIncomeCostProfile, caseItem.CalculatedTotalCostCostProfile)
-                : null;
-            var discountRate = caseItem.Project?.DiscountRate ?? 8;
-
-            var currentYear = DateTime.Now.Year;
-            var nextYear = currentYear + 1;
-            var dg4Year = caseItem.DG4Date.Year;
-            var nextYearInRelationToDg4Year = nextYear - dg4Year;
-
-            var npvValue = cashflowProfile != null && discountRate > 0
-                ? CalculateDiscountedVolume(cashflowProfile.Values, discountRate, cashflowProfile.StartYear + Math.Abs(nextYearInRelationToDg4Year))
-                : 0;
-
-            caseItem.NPV = npvValue;
-            return;
-        }
-
-        public async Task CalculateBreakEvenOilPrice(Guid caseId)
-        {
-            var caseItem = await _caseService.GetCaseWithIncludes(
-                caseId,
-                c => c.Project
-            );
-
-            var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
-                caseItem.DrainageStrategyLink,
-                d => d.ProductionProfileOil!,
-                d => d.AdditionalProductionProfileOil!,
-                d => d.ProductionProfileGas!,
-                d => d.AdditionalProductionProfileGas!
-            );
-
-            var discountRate = caseItem.Project?.DiscountRate ?? 8;
-            var defaultOilPrice = caseItem.Project?.OilPriceUSD ?? 75;
-            var gasPriceNOK = caseItem.Project?.GasPriceNOK ?? 3;
-            var exchangeRateUSDToNOK = caseItem.Project?.ExchangeRateUSDToNOK ?? 10;
-
-            var oilVolume = TimeSeriesCost.MergeCostProfiles(
-                new TimeSeries<double> { StartYear = drainageStrategy.ProductionProfileOil?.StartYear ?? 0, Values = drainageStrategy.ProductionProfileOil?.Values ?? Array.Empty<double>() },
-                new TimeSeries<double> { StartYear = drainageStrategy.AdditionalProductionProfileOil?.StartYear ?? 0, Values = drainageStrategy.AdditionalProductionProfileOil?.Values ?? Array.Empty<double>() }
-            );
-            if (!oilVolume.Values.Any()) return;
-            oilVolume.Values = oilVolume.Values.Select(v => v / 1_000_000).ToArray();
-
-            var gasVolume = TimeSeriesCost.MergeCostProfiles(
-                new TimeSeries<double> { StartYear = drainageStrategy.ProductionProfileGas?.StartYear ?? 0, Values = drainageStrategy.ProductionProfileGas?.Values ?? Array.Empty<double>() },
-                new TimeSeries<double> { StartYear = drainageStrategy.AdditionalProductionProfileGas?.StartYear ?? 0, Values = drainageStrategy.AdditionalProductionProfileGas?.Values ?? Array.Empty<double>() }
-            );
-            gasVolume.Values = gasVolume.Values.Any() ? gasVolume.Values.Select(v => v / 1_000_000_000).ToArray() : Array.Empty<double>();
-
-            var currentYear = DateTime.Now.Year;
-            var nextYear = currentYear + 1;
-            var dg4Year = caseItem.DG4Date.Year;
-            var nextYearInRelationToDg4Year = nextYear - dg4Year;
-
-            var discountedGasVolume = CalculateDiscountedVolume(gasVolume.Values, discountRate, gasVolume.StartYear + Math.Abs(nextYearInRelationToDg4Year));
-            var discountedOilVolume = CalculateDiscountedVolume(oilVolume.Values, discountRate, oilVolume.StartYear + Math.Abs(nextYearInRelationToDg4Year));
-
-            if (discountedOilVolume == 0 || discountedGasVolume == 0) return;
-
-            var discountedTotalCost = CalculateDiscountedVolume(caseItem?.CalculatedTotalCostCostProfile?.Values ?? Array.Empty<double>(), discountRate, (caseItem?.CalculatedTotalCostCostProfile?.StartYear ?? 0) + Math.Abs(nextYearInRelationToDg4Year));
-
-            var GOR = discountedGasVolume / discountedOilVolume;
-
-            var PA = gasPriceNOK > 0 ? gasPriceNOK * 1000 / (exchangeRateUSDToNOK * 6.29 * defaultOilPrice) : 0;
-
-            var breakEvenPrice = discountedTotalCost / ((GOR * PA) + 1) / discountedOilVolume / 6.29;
-
-            if (caseItem != null)
-            {
-                caseItem.BreakEven = breakEvenPrice;
-            }
-        }
-
-
 
         public TimeSeries<double> CalculateStudyCost(Case caseItem)
         {
@@ -853,8 +629,5 @@ namespace api.Services
 
             return totalexploration;
         }
-
-
-
     }
 }

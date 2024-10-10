@@ -11,6 +11,8 @@ using api.Services.GenerateCostProfiles;
 using Azure.Identity;
 using Azure.Storage.Blobs;
 
+using EconomicsServices;
+
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -304,7 +306,10 @@ builder.Services.AddScoped(x => new BlobServiceClient(azureBlobStorageConnection
 
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
-builder.Services.AddScoped<IEconomicsCalculationService, EconomicsCalculationService>();
+builder.Services.AddScoped<ICalculateBreakEvenOilPriceService, CalculateBreakEvenOilPriceService>();
+builder.Services.AddScoped<ICalculateNPVService, CalculateNPVService>();
+builder.Services.AddScoped<ICalculateTotalCostService, CalculateTotalCostService>();
+builder.Services.AddScoped<ICalculateTotalIncomeService, CalculateTotalIncomeService>();
 
 builder.Host.UseSerilog();
 

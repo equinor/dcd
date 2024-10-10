@@ -138,26 +138,29 @@ public class DcdDbContext : DbContext
             await _serviceProvider.GetRequiredService<ICo2EmissionsProfileService>().Generate(caseId);
         }
 
-        var economicsHelper = _serviceProvider.GetRequiredService<IEconomicsCalculationService>();
+        var calculateIncomeHelper = _serviceProvider.GetRequiredService<ICalculateTotalIncomeService>();
 
         if (rerunTotalIncome)
         {
-            await economicsHelper.CalculateTotalIncome(caseId);
+            await calculateIncomeHelper.CalculateTotalIncome(caseId);
         }
 
+        var calculateCostHelper = _serviceProvider.GetRequiredService<ICalculateTotalCostService>();
         if (rerunTotalCost)
         {
-            await economicsHelper.CalculateTotalCost(caseId);
+            await calculateCostHelper.CalculateTotalCost(caseId);
         }
 
+        var calculateNPVHelper = _serviceProvider.GetRequiredService<ICalculateNPVService>();
         if (rerunTotalIncome || rerunTotalCost || rerunCalculateNPV)
         {
-            await economicsHelper.CalculateNPV(caseId);
+            await calculateNPVHelper.CalculateNPV(caseId);
         }
 
+        var calculateBreakEvenHelper = _serviceProvider.GetRequiredService<ICalculateBreakEvenOilPriceService>();
         if (rerunTotalIncome || rerunTotalCost || rerunCalculateBreakEven)
         {
-            await economicsHelper.CalculateBreakEvenOilPrice(caseId);
+            await calculateBreakEvenHelper.CalculateBreakEvenOilPrice(caseId);
         }
 
 

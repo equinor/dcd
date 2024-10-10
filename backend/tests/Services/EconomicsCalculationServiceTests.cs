@@ -9,6 +9,8 @@ using api.Repositories;
 using api.Services;
 using api.Services.GenerateCostProfiles;
 
+using EconomicsServices;
+
 using NSubstitute;
 
 using Xunit;
@@ -18,7 +20,6 @@ namespace api.Tests.Helpers
 {
     public class EconomicsCalculationServiceTests
     {
-        private readonly EconomicsCalculationService _economicsCalculationService;
         private readonly IExplorationService _explorationService;
         private readonly ISubstructureService _substructureService;
         private readonly ISurfService _surfService;
@@ -31,6 +32,10 @@ namespace api.Tests.Helpers
         private readonly ICessationCostProfileService _cessationCostProfileService;
         protected readonly DcdDbContext _context;
         private readonly ICaseService _caseService;
+        private readonly CalculateTotalIncomeService _calculateTotalIncomeService;
+        private readonly CalculateBreakEvenOilPriceService _calculateBreakEvenOilPriceService;
+        private readonly CalculateTotalCostService _calculateTotalCostService;
+        private readonly CalculateNPVService _calculateNPVService;
 
         public EconomicsCalculationServiceTests()
         {
@@ -48,17 +53,10 @@ namespace api.Tests.Helpers
             _topsideService = Substitute.For<ITopsideService>();
             _transportService = Substitute.For<ITransportService>();
             _wellProjectService = Substitute.For<IWellProjectService>();
-
-            _economicsCalculationService = new EconomicsCalculationService(
-                _caseService,
-                _explorationService,
-                _substructureService,
-                _surfService,
-                _topsideService,
-                _transportService,
-                _wellProjectService,
-                _drainageStrategyService
-            );
+            _calculateTotalIncomeService = (CalculateTotalIncomeService)Substitute.For<ICalculateTotalIncomeService>();
+            _calculateBreakEvenOilPriceService = (CalculateBreakEvenOilPriceService)Substitute.For<ICalculateBreakEvenOilPriceService>();
+            _calculateTotalCostService = (CalculateTotalCostService)Substitute.For<ICalculateTotalCostService>();
+            _calculateNPVService = (CalculateNPVService)Substitute.For<ICalculateNPVService>();
         }
 
 
@@ -122,7 +120,7 @@ namespace api.Tests.Helpers
             ).Returns(drainageStrategy);
 
             // Act
-            await _economicsCalculationService.CalculateTotalIncome(caseId);
+            await _calculateTotalIncomeService.CalculateTotalIncome(caseId);
 
             // Assert
             var expectedFirstYearIncome = (2 * 1000000.0 * 75 * 6.29 * 10 + 2 * 1000000000.0 * 3) / 1000000;
@@ -165,7 +163,7 @@ namespace api.Tests.Helpers
             ).Returns((DrainageStrategy)null);
 
             // Act & Assert
-            await Assert.ThrowsAsync<NullReferenceException>(async () => await _economicsCalculationService.CalculateTotalIncome(caseId));
+            await Assert.ThrowsAsync<NullReferenceException>(async () => await _calculateTotalIncomeService.CalculateTotalIncome(caseId));
         }
 
         [Fact]
@@ -216,7 +214,7 @@ namespace api.Tests.Helpers
             ).Returns(drainageStrategy);
 
             // Act
-            await _economicsCalculationService.CalculateTotalIncome(caseId);
+            await _calculateTotalIncomeService.CalculateTotalIncome(caseId);
 
             // Assert
             Assert.NotNull(caseItem.CalculatedTotalIncomeCostProfile);
@@ -384,7 +382,7 @@ namespace api.Tests.Helpers
                 .Returns(caseItem);
 
             // Act
-            await _economicsCalculationService.CalculateTotalCost(caseId);
+            await _calculateTotalCostService.CalculateTotalCost(caseId);
 
             // Assert
             Assert.Equal(2020, caseItem.CalculatedTotalCostCostProfile.StartYear);
@@ -445,7 +443,7 @@ namespace api.Tests.Helpers
                 .Returns(Task.FromResult(exploration));
 
             // Act
-            var result = EconomicsCalculationService.CalculateTotalExplorationCost(exploration);
+            var result = CalculateTotalCostService.CalculateTotalExplorationCost(exploration);
 
             // Assert
             var expectedStartYear = 2020;
@@ -481,7 +479,7 @@ namespace api.Tests.Helpers
             var expectedValues = new double[] { 300.0, 400.0, 500.0, -500.0 };
 
             // Act
-            var result = _economicsCalculationService.CalculateCashFlow(income, totalCost);
+            var result = EconomicsHelper.CalculateCashFlow(income, totalCost);
 
             // Assert
             Assert.Equal(expectedStartYear, result.StartYear);
@@ -502,7 +500,7 @@ namespace api.Tests.Helpers
             var startIndex = 0; // Assuming starting from 2030
 
             // Act
-            var discountedVolume = _economicsCalculationService.CalculateDiscountedVolume(values, discountRate, startIndex);
+            var discountedVolume = EconomicsHelper.CalculateDiscountedVolume(values, discountRate, startIndex);
 
             // Assert
             var expectedDiscountedVolume = (1.0 / Math.Pow(1 + 0.08, 1)) +
@@ -548,7 +546,7 @@ namespace api.Tests.Helpers
             _caseService.GetCaseWithIncludes(caseId, Arg.Any<Expression<Func<Case, object>>>())
                 .Returns(caseItem);
 
-            await _economicsCalculationService.CalculateNPV(caseId);
+            await _calculateNPVService.CalculateNPV(caseId);
 
             var actualNpvValue = 10816.2;
             Assert.Equal(actualNpvValue, caseItem.NPV, precision: 1);
@@ -609,7 +607,7 @@ namespace api.Tests.Helpers
             ).Returns(drainageStrategy);
 
             // Act
-            await _economicsCalculationService.CalculateBreakEvenOilPrice(caseId);
+            await _calculateBreakEvenOilPriceService.CalculateBreakEvenOilPrice(caseId);
 
             // Assert
             var expectedBreakEvenPrice = 262.9;
