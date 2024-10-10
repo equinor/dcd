@@ -1,5 +1,5 @@
 import {
-    Button, Icon, Typography,
+    Button, Icon, Typography, NativeSelect,
 } from "@equinor/eds-core-react"
 import { add } from "@equinor/eds-icons"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
@@ -7,7 +7,8 @@ import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-
+import { ChangeEventHandler } from "react"
+import InputSwitcher from "../Input/Components/InputSwitcher"
 import { getProjectPhaseName, getProjectCategoryName, getInternalProjectPhaseName } from "@/Utils/common"
 import { useModalContext } from "@/Context/ModalContext"
 import { useAppContext } from "@/Context/AppContext"
@@ -16,6 +17,7 @@ import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import CasesTable from "../Case/OverviewCasesTable/CasesTable"
 import Gallery from "../Gallery/Gallery"
 import { useProjectContext } from "@/Context/ProjectContext"
+import { INTERNAL_PROJECT_PHASE } from "../../Utils/constants"
 
 const ProjectOverviewTab = () => {
     const { isRevision } = useProjectContext()
@@ -48,6 +50,15 @@ const ProjectOverviewTab = () => {
         }
     }
 
+    const handleInternalProjectPhaseChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
+        if ([0, 1, 2].indexOf(Number(e.currentTarget.value)) !== -1 && apiData) {
+            const newInternalProjectPhase: Components.Schemas.InternalProjectPhase = Number(e.currentTarget.value) as unknown as Components.Schemas.InternalProjectPhase
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...apiData }
+            newProject.internalProjectPhase = newInternalProjectPhase
+            addProjectEdit(apiData.id, newProject)
+        }
+    }
+
     if (!apiData) {
         return <div>Loading project data...</div>
     }
@@ -61,7 +72,24 @@ const ProjectOverviewTab = () => {
                     <Typography aria-label="Project phase">
                         {[3, 4, 6, 7, 8].includes(apiData.projectPhase)
                             ? getProjectPhaseName(apiData.projectPhase)
-                            : getInternalProjectPhaseName(apiData.internalProjectPhase)}
+                            : (
+                                // Check if the internal project phase is to be used
+                                <InputSwitcher
+                                    value={INTERNAL_PROJECT_PHASE[apiData.internalProjectPhase].label}
+                                    label="Internal Project Phase"
+                                >
+                                    <NativeSelect
+                                        id="internalProjectPhase"
+                                        label=""
+                                        onChange={(e) => handleInternalProjectPhaseChange(e)}
+                                        value={apiData ? apiData.internalProjectPhase : undefined}
+                                    >
+                                        {Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => (
+                                            <option key={key} value={key}>{value.label}</option>
+                                        ))}
+                                    </NativeSelect>
+                                </InputSwitcher>
+                            )}
                     </Typography>
                 </Grid>
 
