@@ -41,30 +41,28 @@ const CO2ListTechnicalInput = () => {
 
     let cO2VentedRow = true
 
-    const getColumnDefs = (edit: boolean): ColDef[] => {
-        return [
-            {
-                field: "profile",
-                headerName: "CO2 emission",
-                flex: 2,
-                editable: false,
-            },
-            {
-                field: "unit",
-                headerName: "Unit",
-                flex: 1,
-                editable: false,
-            },
-            {
-                field: "value",
-                headerName: "Value",
-                flex: 1,
-                editable: edit,
-                cellClass: edit ? "editableCell" : undefined,
-                cellStyle: cellStyleRightAlign,
-            },
-        ]
-    }
+    const getColumnDefs = (edit: boolean): ColDef[] => ([
+        {
+            field: "profile",
+            headerName: "CO2 emission",
+            flex: 2,
+            editable: false,
+        },
+        {
+            field: "unit",
+            headerName: "Unit",
+            flex: 1,
+            editable: false,
+        },
+        {
+            field: "value",
+            headerName: "Value",
+            flex: 1,
+            editable: edit,
+            cellClass: edit ? "editableCell" : undefined,
+            cellStyle: cellStyleRightAlign,
+        },
+    ])
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(getColumnDefs(editMode))
 
