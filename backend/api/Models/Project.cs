@@ -61,7 +61,8 @@ public enum Currency
     USD = 2,
 }
 
-public enum InternalProjectPhase {
+public enum InternalProjectPhase
+{
     APbo,
     BOR,
     VPbo,
