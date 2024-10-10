@@ -15,9 +15,9 @@ namespace EconomicsServices
         public async Task CalculateNPV(Guid caseId)
         {
             var caseItem = await _caseService.GetCaseWithIncludes(
-                           caseId,
-                           c => c.Project
-                       );
+                            caseId,
+                            c => c.Project
+                        );
 
             var cashflowProfile = caseItem.CalculatedTotalIncomeCostProfile != null && caseItem.CalculatedTotalCostCostProfile != null
                 ? EconomicsHelper.CalculateCashFlow(caseItem.CalculatedTotalIncomeCostProfile, caseItem.CalculatedTotalCostCostProfile)
@@ -34,7 +34,6 @@ namespace EconomicsServices
                 : 0;
 
             caseItem.NPV = npvValue;
-            return;
         }
     }
 }

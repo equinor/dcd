@@ -33,7 +33,6 @@ namespace EconomicsServices
             var oilPrice = caseItem.Project.OilPriceUSD;
             var exchangeRateUSDToNOK = caseItem.Project.ExchangeRateUSDToNOK;
             var cubicMetersToBarrelsFactor = 6.29;
-            var exchangeRateNOKToUSD = 1 / exchangeRateUSDToNOK;
 
             var oilProfile = drainageStrategy.ProductionProfileOil?.Values ?? Array.Empty<double>();
             var additionalOilProfile = drainageStrategy.AdditionalProductionProfileOil?.Values ?? Array.Empty<double>();
@@ -100,9 +99,6 @@ namespace EconomicsServices
                     StartYear = totalIncome.StartYear
                 };
             }
-
-
-            return;
         }
     }
 }

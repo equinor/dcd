@@ -1,5 +1,6 @@
 using api.Models;
 using api.Services;
+
 using EconomicsServices;
 
 namespace EconomicsServices
@@ -39,7 +40,7 @@ namespace EconomicsServices
                 new TimeSeries<double> { StartYear = drainageStrategy.ProductionProfileOil?.StartYear ?? 0, Values = drainageStrategy.ProductionProfileOil?.Values ?? Array.Empty<double>() },
                 new TimeSeries<double> { StartYear = drainageStrategy.AdditionalProductionProfileOil?.StartYear ?? 0, Values = drainageStrategy.AdditionalProductionProfileOil?.Values ?? Array.Empty<double>() }
             );
-            if (!oilVolume.Values.Any()) return;
+            if (!oilVolume.Values.Any()) { return; }
             oilVolume.Values = oilVolume.Values.Select(v => v / 1_000_000).ToArray();
 
             var gasVolume = TimeSeriesCost.MergeCostProfiles(
@@ -56,7 +57,7 @@ namespace EconomicsServices
             var discountedGasVolume = EconomicsHelper.CalculateDiscountedVolume(gasVolume.Values, discountRate, gasVolume.StartYear + Math.Abs(nextYearInRelationToDg4Year));
             var discountedOilVolume = EconomicsHelper.CalculateDiscountedVolume(oilVolume.Values, discountRate, oilVolume.StartYear + Math.Abs(nextYearInRelationToDg4Year));
 
-            if (discountedOilVolume == 0 || discountedGasVolume == 0) return;
+            if (discountedOilVolume == 0 || discountedGasVolume == 0) { return; };
 
             var discountedTotalCost = EconomicsHelper.CalculateDiscountedVolume(caseItem?.CalculatedTotalCostCostProfile?.Values ?? Array.Empty<double>(), discountRate, (caseItem?.CalculatedTotalCostCostProfile?.StartYear ?? 0) + Math.Abs(nextYearInRelationToDg4Year));
 
