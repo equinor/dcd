@@ -57,7 +57,7 @@ namespace EconomicsServices
             var discountedGasVolume = EconomicsHelper.CalculateDiscountedVolume(gasVolume.Values, discountRate, gasVolume.StartYear + Math.Abs(nextYearInRelationToDg4Year));
             var discountedOilVolume = EconomicsHelper.CalculateDiscountedVolume(oilVolume.Values, discountRate, oilVolume.StartYear + Math.Abs(nextYearInRelationToDg4Year));
 
-            if (discountedOilVolume == 0 || discountedGasVolume == 0) { return; };
+            if (discountedOilVolume == 0 || discountedGasVolume == 0) { return; }
 
             var discountedTotalCost = EconomicsHelper.CalculateDiscountedVolume(caseItem?.CalculatedTotalCostCostProfile?.Values ?? Array.Empty<double>(), discountRate, (caseItem?.CalculatedTotalCostCostProfile?.StartYear ?? 0) + Math.Abs(nextYearInRelationToDg4Year));
 
