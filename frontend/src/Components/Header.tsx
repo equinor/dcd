@@ -49,8 +49,7 @@ const RouteCoordinator = (): JSX.Element => {
 
                 // Perform access check
                 const access = await projectService.getAccess(currentContext.externalId)
-                const accessTest = {...access, canEdit: false}
-                setAccessRights(accessTest)
+                setAccessRights(access)
 
                 if (access.canView) {
                     let fetchedProject
