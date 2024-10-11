@@ -14,12 +14,16 @@ import {
 import { useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { AgGridReact } from "@ag-grid-community/react"
-import { arrow_drop_down, arrow_drop_up, more_vertical, archive } from "@equinor/eds-icons"
+import {
+    arrow_drop_down, arrow_drop_up, more_vertical, archive,
+} from "@equinor/eds-icons"
 import styled from "styled-components"
 import { ColDef } from "@ag-grid-community/core"
 import { useQuery } from "@tanstack/react-query"
 
-import { casePath, productionStrategyOverviewToString, cellStyleRightAlign, unwrapProjectId } from "@/Utils/common"
+import {
+    casePath, productionStrategyOverviewToString, cellStyleRightAlign, unwrapProjectId,
+} from "@/Utils/common"
 import { GetProjectService } from "@/Services/ProjectService"
 import { GetSTEAService } from "@/Services/STEAService"
 import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
@@ -98,7 +102,6 @@ const CasesAgGridTable = ({
         queryFn: () => revisionQueryFn(projectId, revisionId),
         enabled: !!externalId && isRevision,
     })
-
 
     const selectCase = (p: any) => {
         if (!currentContext || !p.node.data) { return null }
@@ -206,9 +209,9 @@ const CasesAgGridTable = ({
                 tableCases.push(tableCase)
             })
             if (isArchived) {
-                setRowData(tableCases);
+                setRowData(tableCases)
             } else {
-                setArchivedRowData(tableCases);
+                setArchivedRowData(tableCases)
             }
         }
     }
@@ -216,7 +219,7 @@ const CasesAgGridTable = ({
     useEffect(() => {
         casesToRowData(true)
         casesToRowData(false)
-    }, [apiData])
+    }, [apiData, apiRevisionData])
 
     if (!apiData) {
         return <p>project not found</p>

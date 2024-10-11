@@ -53,7 +53,6 @@ export const exitRevisionView = (
 }
 
 export const disableCurrentRevision = (revisionId: string, isRevision: boolean, currentRevisionId: string | undefined) => {
-    if (isRevision && currentRevisionId === revisionId) {
-        return true
-    } return false
+    if (isRevision && currentRevisionId === revisionId) { return true }
+    return false
 }
