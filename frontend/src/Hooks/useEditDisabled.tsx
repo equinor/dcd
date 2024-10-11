@@ -10,7 +10,7 @@ const useEditDisabled = () => {
             return "Project revisions are not editable"
         }
         if (!accessRights?.canEdit) {
-            return "You do not have edit access to this project"
+            return "You do not have access to edit this project"
         }
         return ""
     }
