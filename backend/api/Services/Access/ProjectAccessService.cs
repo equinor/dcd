@@ -61,11 +61,15 @@ public class ProjectAccessService : IProjectAccessService
         var _ = await _projectAccessRepository.GetProjectByExternalId(externalId)
             ?? throw new NotFoundInDBException($"Project with external ID {externalId} not found.");
 
+        bool isAdmin = userRoles.Contains(ApplicationRole.Admin);
+        bool isUser = userRoles.Contains(ApplicationRole.User);
+        bool isReadOnly = userRoles.Contains(ApplicationRole.ReadOnly);
+
         var accessRights = new AccessRightsDto
         {
-            CanEdit = userRoles.Contains(ApplicationRole.Admin) || userRoles.Contains(ApplicationRole.User),
-            CanView = userRoles.Contains(ApplicationRole.Admin) || userRoles.Contains(ApplicationRole.User) || userRoles.Contains(ApplicationRole.ReadOnly),
-            IsAdmin = userRoles.Contains(ApplicationRole.Admin)
+            CanEdit = isAdmin || isUser,
+            CanView = isAdmin || isUser || isReadOnly,
+            IsAdmin = isAdmin
         };
 
         return accessRights;

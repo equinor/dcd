@@ -49,7 +49,7 @@ const CasesDropMenu = ({
     const externalId = currentContext?.externalId
     const [isRevisionMenuOpen, setIsRevisionMenuOpen] = useState<boolean>(false)
     const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
-    const { isEditDisabled, getEditDisabledText } = useEditDisabled()
+    const { isEditDisabled } = useEditDisabled()
 
     const { data: projectData } = useQuery({
         queryKey: ["projectApiData", externalId],

@@ -13,6 +13,7 @@ import { formatFullDate } from "@/Utils/common"
 import {
     createRevision, disableCurrentRevision, exitRevisionView, navigateToRevision, openRevisionModal,
 } from "@/Utils/RevisionUtils"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 type RevisionsDropMenuProps = {
     isMenuOpen: boolean
@@ -36,6 +37,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
     const navigate = useNavigate()
     const queryClient = useQueryClient()
     const { revisionId } = useParams()
+    const { isEditDisabled } = useEditDisabled()
 
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
@@ -114,7 +116,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
                 }
                 <Menu.Item
                     onClick={() => openRevisionModal(setCreatingRevision)}
-                    disabled={isRevision}
+                    disabled={isEditDisabled}
                 >
                     <Icon data={add} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">

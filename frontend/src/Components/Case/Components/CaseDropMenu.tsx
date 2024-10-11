@@ -51,7 +51,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     const { addProjectEdit } = useEditProject()
     const { projectId } = useProjectContext()
     const { updateCase } = useSubmitToApi()
-    const { isEditDisabled, getEditDisabledText } = useEditDisabled()
+    const { isEditDisabled } = useEditDisabled()
 
     const [isRevisionMenuOpen, setIsRevisionMenuOpen] = useState<boolean>(false)
     const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
