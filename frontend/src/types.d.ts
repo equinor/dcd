@@ -998,6 +998,11 @@ declare namespace Components {
             discountRate: number; // double
             exchangeRateUSDToNOK: number; // double
         }
+        export interface ProjectMemberDto {
+            azureId: string; // uuid
+            role: ProjectMemberRole /* int32 */;
+        }
+        export type ProjectMemberRole = 0 | 1 | 2; // int32
         export type ProjectPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
         export interface ProjectWithAssetsDto {
             classification: ProjectClassification /* int32 */;
@@ -1040,6 +1045,7 @@ declare namespace Components {
             transports: TransportWithProfilesDto[];
             drainageStrategies: DrainageStrategyWithProfilesDto[];
             wellProjects: WellProjectWithProfilesDto[];
+            projectMembers: ProjectMemberDto[];
             modifyTime: string; // date-time
         }
         export interface ProjectWithCasesDto {
