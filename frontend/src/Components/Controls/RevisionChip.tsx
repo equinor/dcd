@@ -1,52 +1,81 @@
-import styled from "styled-components"
 import { Chip, Tooltip, Icon } from "@equinor/eds-core-react"
 import { useState } from "react"
 import { Typography } from "@mui/material"
 import { close } from "@equinor/eds-icons"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useNavigate, useParams } from "react-router"
 import RevisionDetailsModal from "./RevisionDetailsModal"
 import { useProjectContext } from "../../Context/ProjectContext"
-
-const StyledChip = styled(Chip)`
-    border-width: 0;
-    font-size: 1rem;
-    line-height: 1.8rem;
-    height: auto;
-    padding: 0 0.7rem 0 0.5rem;
-    cursor: help;
-    color: #797979;
-    svg {
-        fill: #358132;
-    }
-`
-
-const SmallTooltip = styled(Tooltip)`
-    white-space: pre-wrap !important;
-    max-width: 300px !important;
-    font-size: 1rem !important;
-    text-align: center !important;
-    div[class*="Arrow"] {
-        top: -10px !important;
-    }
-`
+import { exitRevisionView } from "@/Utils/RevisionUtils"
+import { revisionQueryFn } from "@/Services/QueryFunctions"
 
 const RevisionChip = () => {
-    const { setIsRevision } = useProjectContext()
+    const { setIsRevision, projectId } = useProjectContext()
     const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const [showCloseIcon, setShowCloseIcon] = useState(false)
+
+    const navigate = useNavigate()
+    const queryClient = useQueryClient()
+
+    const { revisionId } = useParams()
+
+    const { currentContext } = useModuleCurrentContext()
+    const externalId = currentContext?.externalId
+
+    const { data: revisionData } = useQuery({
+        queryKey: ["revisionApiData", revisionId],
+        queryFn: () => revisionQueryFn(projectId, revisionId),
+        enabled: !!revisionId,
+    })
+
+    const handleMouseOver = () => {
+        setShowCloseIcon(true)
+    }
+
+    const handleMouseOut = () => {
+        setShowCloseIcon(false)
+    }
+
+    const revisionName = () => (
+        <Tooltip title="View details">
+            <Typography
+                onClick={() => setIsMenuOpen(true)}
+                variant="body2"
+                sx={{ textDecoration: "underline" }}
+            >
+                {revisionData?.name}
+            </Typography>
+        </Tooltip>
+    )
+
+    const toggleChipBackgroundColor = () => {
+        if (showCloseIcon) {
+            return "#f7f7f7"
+        }
+        return "white"
+    }
 
     return (
         <>
-            <SmallTooltip placement="bottom-start" title="View details">
-                <StyledChip
-                    variant="default"
-
-                >
-                    <Typography onClick={() => setIsMenuOpen(true)} variant="body2">
-                        APx Rev 1
-                    </Typography>
-                    <Icon data={close} onClick={() => setIsRevision(false)} />
-
-                </StyledChip>
-            </SmallTooltip>
+            <Chip
+                onMouseOver={handleMouseOver}
+                onMouseOut={handleMouseOut}
+                style={{ backgroundColor: toggleChipBackgroundColor() }}
+            >
+                {!showCloseIcon ? revisionName() : (
+                    <>
+                        {revisionName()}
+                        <Tooltip title="Exit revision">
+                            <Icon
+                                data={close}
+                                size={16}
+                                onClick={() => exitRevisionView(setIsRevision, queryClient, externalId, currentContext, navigate)}
+                            />
+                        </Tooltip>
+                    </>
+                )}
+            </Chip>
             <RevisionDetailsModal isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
         </>
     )
