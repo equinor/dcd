@@ -1,3 +1,6 @@
+using api.Authorization;
+using api.Authorization.Extensions;
+using api.Dtos.Access;
 using api.Exceptions;
 using api.Models.Interfaces;
 using api.Repositories;
@@ -8,13 +11,16 @@ public class ProjectAccessService : IProjectAccessService
 {
     private readonly ILogger<ProjectAccessService> _logger;
     private readonly IProjectAccessRepository _projectAccessRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public ProjectAccessService(
         IProjectAccessRepository projectAccessRepository,
+        IHttpContextAccessor httpContextAccessor,
         ILoggerFactory loggerFactory
         )
     {
         _projectAccessRepository = projectAccessRepository;
+        _httpContextAccessor = httpContextAccessor;
         _logger = loggerFactory.CreateLogger<ProjectAccessService>();
     }
 
@@ -38,8 +44,30 @@ public class ProjectAccessService : IProjectAccessService
         }
     }
 
-    public async Task GetUserProjectAccess(Guid projectId)
+    public async Task<AccessRightsDto> GetUserProjectAccess(Guid externalId)
     {
-        
+        var userRoles = _httpContextAccessor.HttpContext?.User.AssignedApplicationRoles();
+
+        if (userRoles == null)
+        {
+            return new AccessRightsDto
+            {
+                CanEdit = false,
+                CanView = false,
+                IsAdmin = false
+            };
+        }
+
+        var _ = await _projectAccessRepository.GetProjectByExternalId(externalId)
+            ?? throw new NotFoundInDBException($"Project with external ID {externalId} not found.");
+
+        var accessRights = new AccessRightsDto
+        {
+            CanEdit = userRoles.Contains(ApplicationRole.Admin) || userRoles.Contains(ApplicationRole.User),
+            CanView = userRoles.Contains(ApplicationRole.Admin) || userRoles.Contains(ApplicationRole.User) || userRoles.Contains(ApplicationRole.ReadOnly),
+            IsAdmin = userRoles.Contains(ApplicationRole.Admin)
+        };
+
+        return accessRights;
     }
 }

@@ -99,6 +99,11 @@ declare namespace Components {
             source?: Source /* int32 */;
             maturity?: Maturity /* int32 */;
         }
+        export interface AccessRightsDto {
+            canEdit?: boolean;
+            canView?: boolean;
+            isAdmin?: boolean;
+        }
         export interface AdditionalOPEXCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
@@ -1937,6 +1942,19 @@ declare namespace Paths {
             export type RequestBody = Components.Schemas.UpdateProjectDto;
             namespace Responses {
                 export type $200 = Components.Schemas.ProjectWithCasesDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdAccess {
+        namespace Get {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.AccessRightsDto;
             }
         }
     }

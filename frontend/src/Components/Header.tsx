@@ -10,7 +10,7 @@ import useEditProject from "../Hooks/useEditProject"
 import { useProjectContext } from "@/Context/ProjectContext"
 
 const RouteCoordinator = (): JSX.Element => {
-    const { setIsRevision } = useProjectContext()
+    const { setIsRevision, setAccessRights, accessRights } = useProjectContext()
     const { setIsCreating, setIsLoading, setSnackBarMessage } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
     const { addProjectEdit } = useEditProject()
@@ -46,24 +46,36 @@ const RouteCoordinator = (): JSX.Element => {
             try {
                 setIsLoading(true)
                 const projectService = await GetProjectService()
-                let fetchedProject
-                try {
-                    fetchedProject = await projectService.getProject(currentContext.externalId)
-                } catch (error) {
-                    if (!fetchedProject || fetchedProject.id === "") {
-                        setIsCreating(true)
-                        setSnackBarMessage("No project found for this search. Creating new.")
-                        fetchedProject = await projectService.createProject(currentContext.id)
-                    }
-                }
 
-                if (fetchedProject) {
-                    setIsCreating(false)
+                // Perform access check
+                const access = await projectService.getAccess(currentContext.externalId)
+                const accessTest = {...access, canEdit: false}
+                setAccessRights(accessTest)
+
+                if (access.canView) {
+                    let fetchedProject
+                    try {
+                        fetchedProject = await projectService.getProject(currentContext.externalId)
+                    } catch (error) {
+                        if (!fetchedProject || fetchedProject.id === "") {
+                            setIsCreating(true)
+                            setSnackBarMessage("No project found for this search. Creating new.")
+                            fetchedProject = await projectService.createProject(currentContext.id)
+                        }
+                    }
+
+                    if (fetchedProject) {
+                        setIsCreating(false)
+                        setIsLoading(false)
+                    }
+                } else {
+                    setSnackBarMessage("You do not have access to view this project")
                     setIsLoading(false)
                 }
             } catch (error) {
                 console.error("Error fetching or setting project in context:", error)
                 setSnackBarMessage("Error fetching or setting project in context")
+                setIsLoading(false)
             }
         }
 
@@ -81,11 +93,24 @@ const RouteCoordinator = (): JSX.Element => {
                 </Banner.Message>
             </Banner>
         )
-    } return (
-        <>
-            <CreateCaseModal />
-            <Outlet />
-        </>
+    }
+    if (accessRights?.canView) {
+        return (
+            <>
+                <CreateCaseModal />
+                <Outlet />
+            </>
+        )
+    }
+    return (
+        <Banner>
+            <Banner.Icon variant="info">
+                <Icon data={info_circle} />
+            </Banner.Icon>
+            <Banner.Message>
+                You do not have access to view this project
+            </Banner.Message>
+        </Banner>
     )
 }
 
