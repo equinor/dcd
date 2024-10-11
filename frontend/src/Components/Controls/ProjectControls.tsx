@@ -24,6 +24,7 @@ import { useProjectContext } from "../../Context/ProjectContext"
 import FullPageLoading from "../fullPageLoading"
 import RevisionsDropMenu from "./RevisionsDropMenu"
 import RevisionChip from "./RevisionChip"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 const Header = styled.div`
     display: flex;
@@ -54,6 +55,7 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
     const { editMode } = useAppContext()
     const { activeTabProject, setActiveTabProject, isRevision } = useProjectContext()
     const { isSaving } = useAppContext()
+    const { isEditDisabled, getEditDisabledText } = useEditDisabled()
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
@@ -100,8 +102,12 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                             </Tooltip>
                         )
                     )}
-                    <Tooltip title={isRevision ? "Revisions are locked for editing" : ""}>
-                        <Button onClick={handleEdit} variant={editMode ? "outlined" : "contained"} disabled={isRevision}>
+                    <Tooltip title={getEditDisabledText()}>
+                        <Button
+                            onClick={handleEdit}
+                            variant={editMode ? "outlined" : "contained"}
+                            disabled={isEditDisabled}
+                        >
                             {editMode && (
                                 <>
                                     <Icon data={visibility} />

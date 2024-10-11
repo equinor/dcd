@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import {
     Icon, Button, Input, Typography,
+    Tooltip,
 } from "@equinor/eds-core-react"
 import {
     arrow_back,
@@ -26,6 +27,7 @@ import useEditProject from "@/Hooks/useEditProject"
 import { ChooseReferenceCase, ReferenceCaseIcon } from "../Case/Components/ReferenceCaseIcon"
 import ClassificationChip from "./ClassificationChip"
 import CaseDropMenu from "../Case/Components/CaseDropMenu"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 const Header = styled.div`
     display: flex;
@@ -66,6 +68,7 @@ const CaseControls: React.FC<props> = ({
     const navigate = useNavigate()
     const { activeTabCase } = useCaseContext()
     const location = useLocation()
+    const { isEditDisabled, getEditDisabledText } = useEditDisabled()
 
     const [caseName, setCaseName] = useState("")
     const [menuAnchorEl, setMenuAnchorEl] = useState<any | null>(null)
@@ -182,22 +185,27 @@ const CaseControls: React.FC<props> = ({
                             </Typography>
                         )
                         : <UndoControls />}
-                    <Button onClick={handleEdit} variant={editMode ? "outlined" : "contained"}>
+                    <Tooltip title={getEditDisabledText()}>
+                        <Button
+                            onClick={handleEdit}
+                            disabled={isEditDisabled}
+                            variant={editMode ? "outlined" : "contained"}
+                        >
+                            {editMode && (
+                                <>
+                                    <Icon data={visibility} />
+                                    <span>View</span>
+                                </>
+                            )}
+                            {!editMode && (
+                                <>
+                                    <Icon data={edit} />
+                                    <span>Edit</span>
+                                </>
+                            )}
 
-                        {editMode && (
-                            <>
-                                <Icon data={visibility} />
-                                <span>View</span>
-                            </>
-                        )}
-                        {!editMode && (
-                            <>
-                                <Icon data={edit} />
-                                <span>Edit</span>
-                            </>
-                        )}
-
-                    </Button>
+                        </Button>
+                    </Tooltip>
                     <div>
                         <DropButton
                             ref={setMenuAnchorEl}

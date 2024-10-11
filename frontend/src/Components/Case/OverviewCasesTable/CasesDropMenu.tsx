@@ -24,6 +24,7 @@ import { projectQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
 import Modal from "../../Modal/Modal"
 import RevisionsDropMenu from "@/Components/Controls/RevisionsDropMenu"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 interface CasesDropMenuProps {
     isMenuOpen: boolean
@@ -48,6 +49,7 @@ const CasesDropMenu = ({
     const externalId = currentContext?.externalId
     const [isRevisionMenuOpen, setIsRevisionMenuOpen] = useState<boolean>(false)
     const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
+    const { isEditDisabled } = useEditDisabled()
 
     const { data: projectData } = useQuery({
         queryKey: ["projectApiData", externalId],
@@ -125,7 +127,7 @@ const CasesDropMenu = ({
                     </Typography>
                 </Menu.Item>
                 <Menu.Item
-                    disabled={selectedCase?.archived}
+                    disabled={selectedCase?.archived || isEditDisabled}
                     onClick={() => (projectData && selectedCaseId) && duplicateCase(selectedCaseId, projectData, addProjectEdit)}
                 >
                     <Icon data={library_add} size={16} />
@@ -135,14 +137,20 @@ const CasesDropMenu = ({
                 </Menu.Item>
                 {selectedCase?.archived
                     ? (
-                        <Menu.Item onClick={() => archiveCase(false)}>
+                        <Menu.Item
+                            onClick={() => archiveCase(false)}
+                            disabled={isEditDisabled}
+                        >
                             <Icon data={unarchive} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">
                                 Restore Case
                             </Typography>
                         </Menu.Item>
                     ) : (
-                        <Menu.Item onClick={() => archiveCase(true)}>
+                        <Menu.Item
+                            onClick={() => archiveCase(true)}
+                            disabled={isEditDisabled}
+                        >
                             <Icon data={archive} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">
                                 Archive Case
@@ -150,7 +158,7 @@ const CasesDropMenu = ({
                         </Menu.Item>
                     )}
                 <Menu.Item
-                    disabled={selectedCase?.archived}
+                    disabled={selectedCase?.archived || isEditDisabled}
                     onClick={() => editCase()}
                 >
                     <Icon data={edit} size={16} />
@@ -160,6 +168,7 @@ const CasesDropMenu = ({
                 </Menu.Item>
                 <Menu.Item
                     onClick={() => setConfirmDelete(true)}
+                    disabled={isEditDisabled}
                 >
                     <Icon data={delete_to_trash} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
@@ -169,7 +178,7 @@ const CasesDropMenu = ({
                 {projectData.referenceCaseId === selectedCaseId
                     ? (
                         <Menu.Item
-                            disabled={selectedCase?.archived}
+                            disabled={selectedCase?.archived || isEditDisabled}
                             onClick={() => projectData && setCaseAsReference(selectedCaseId, projectData, addProjectEdit)}
                         >
                             <Icon data={bookmark_outlined} size={16} />
@@ -180,7 +189,7 @@ const CasesDropMenu = ({
                     )
                     : (
                         <Menu.Item
-                            disabled={selectedCase?.archived}
+                            disabled={selectedCase?.archived || isEditDisabled}
                             onClick={() => projectData && setCaseAsReference(selectedCaseId, projectData, addProjectEdit)}
                         >
                             <Icon data={bookmark_filled} size={16} />
