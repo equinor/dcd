@@ -37,4 +37,9 @@ public class ProjectAccessService : IProjectAccessService
             throw new ProjectAccessMismatchException($"Entity of type {typeof(T)} with id {entityId} does not belong to project with id {projectIdFromUrl}.", projectIdFromUrl, entityId);
         }
     }
+
+    public async Task GetUserProjectAccess(Guid projectId)
+    {
+        
+    }
 }

@@ -123,17 +123,17 @@ public class ProjectsController : ControllerBase
         return new List<CompareCasesDto>(await _compareCasesService.Calculate(projectId));
     }
 
-    // [RequiresApplicationRoles(
-    //     ApplicationRole.Admin,
-    //     ApplicationRole.ReadOnly,
-    //     ApplicationRole.User
-    // )]
-    // [HttpGet("{projectId}/access")]
-    // [ActionType(ActionType.Read)]
-    // public async Task<List<CompareCasesDto>> GetAccess(Guid projectId)
-    // {
-    //     return new List<CompareCasesDto>(await _compareCasesService.Calculate(projectId));
-    // }
+    [RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+    )]
+    [HttpGet("{projectId}/access")]
+    [ActionType(ActionType.Read)]
+    public async Task<string> GetAccess(Guid projectId)
+    {
+        throw new NotImplementedException();
+    }
 
     [RequiresApplicationRoles(
         ApplicationRole.Admin,
