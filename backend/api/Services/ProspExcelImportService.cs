@@ -1,6 +1,5 @@
-using api.Adapters;
 using api.Dtos;
-using api.Helpers;
+using api.Helpers.Prosp;
 using api.Models;
 
 using AutoMapper;
@@ -8,8 +7,8 @@ using AutoMapper;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-using Surf = api.Helpers.Surf;
-using Transport = api.Helpers.Transport;
+using Surf = api.Helpers.Prosp.Surf;
+using Transport = api.Helpers.Prosp.Transport;
 
 namespace api.Services;
 
@@ -17,7 +16,6 @@ public class ProspExcelImportService
 {
     private const string SheetName = "main";
     private readonly ICaseService _caseService;
-    private readonly IProjectService _projectService;
     private readonly Prosp _prospConfig;
     private readonly ISubstructureService _substructureService;
     private readonly ISurfService _surfService;
@@ -31,7 +29,6 @@ public class ProspExcelImportService
 
 
     public ProspExcelImportService(
-        IProjectService projectService,
         ICaseService caseService,
         ILoggerFactory loggerFactory,
         ISurfService surfService,
@@ -43,9 +40,9 @@ public class ProspExcelImportService
         ITopsideTimeSeriesService topsideTimeSeriesService,
         ITransportTimeSeriesService transportTimeSeriesService,
         IConfiguration config,
-        IMapper mapper)
+        IMapper mapper
+    )
     {
-        _projectService = projectService;
         loggerFactory.CreateLogger<ProspExcelImportService>();
         _surfService = surfService;
         _substructureService = substructureService;

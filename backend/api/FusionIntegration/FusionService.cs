@@ -19,7 +19,7 @@ public class FusionService : IFusionService
         _logger = logger;
     }
 
-    public async Task<FusionProjectMaster> ProjectMasterAsync(Guid contextId)
+    public async Task<FusionProjectMaster?> GetProjectMasterFromFusionContextId(Guid contextId)
     {
         var projectMasterContext = await ResolveProjectMasterContext(contextId);
 
@@ -28,10 +28,8 @@ public class FusionService : IFusionService
         {
             // -> No, still not found. Then we log this and fail hard, as the callee should have provided with a
             // valid ProjectMaster (context) ID.
-            Console.WriteLine(
-                "Could not resolve ProjectMaster context from Fusion using GUID '{ProjectMasterId}'" +
-                contextId);
-            throw new Exception();
+            _logger.LogInformation($"Could not resolve ProjectMaster context from Fusion using GUID '{{contextId}}'", contextId);
+            return null;
         }
 
         var serializedProjectMaster = JsonConvert.SerializeObject(projectMasterContext.Value);
@@ -39,11 +37,8 @@ public class FusionService : IFusionService
 
         if (fusionProjectMaster == null)
         {
-            Console.WriteLine(
-                "Project Master with ID '{ProjectMasterId}' was obtained from Fusion, but conversion to explicit " +
-                "type failed" +
-                contextId);
-            throw new Exception();
+            _logger.LogError("Project Master with ID '{contextId}' was obtained from Fusion, but conversion to explicit type failed", contextId);
+            return null;
         }
 
         return fusionProjectMaster;

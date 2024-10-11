@@ -14,8 +14,12 @@ public class ProspSharepointImportService
     private readonly GraphServiceClient _graphServiceClient;
     private readonly ProspExcelImportService _prospExcelImportService;
 
-    public ProspSharepointImportService(IConfiguration config, GraphServiceClient graphServiceClient,
-        ProspExcelImportService prospExcelImportService, ILoggerFactory loggerFactory)
+    public ProspSharepointImportService(
+        IConfiguration config,
+        GraphServiceClient graphServiceClient,
+        ProspExcelImportService prospExcelImportService,
+        ILoggerFactory loggerFactory
+    )
     {
         _graphServiceClient = graphServiceClient;
         _config = config;
