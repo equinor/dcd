@@ -99,7 +99,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
                 {
                     revisions.map((revision) => (
                         <Menu.Item
-                            onClick={() => (isCaseMenu ? navToRevision(revision) : navigateToRevision(revision.id, setIsRevision, queryClient, externalId, navigate))}
+                            onClick={() => (isCaseMenu ? navToRevision(revision) : navigateToRevision(revision.id, setIsRevision, queryClient, projectId, navigate))}
                             disabled={disableCurrentRevision(revision.id, isRevision, revisionId)}
                         >
                             <Typography group="navigation" variant="menu_title" as="span">
@@ -122,7 +122,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
                     </Typography>
                 </Menu.Item>
                 <Menu.Item
-                    onClick={() => (isCaseMenu ? exitRevision() : exitRevisionView(setIsRevision, queryClient, externalId, currentContext, navigate))}
+                    onClick={() => (isCaseMenu ? exitRevision() : exitRevisionView(setIsRevision, queryClient, projectId, currentContext, navigate))}
                     disabled={!isRevision}
                 >
                     <Icon data={exit_to_app} size={16} />

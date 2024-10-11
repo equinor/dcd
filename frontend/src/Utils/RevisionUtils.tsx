@@ -23,12 +23,12 @@ export const navigateToRevision = (
     revisionId: string,
     setIsRevision: React.Dispatch<React.SetStateAction<boolean>>,
     queryClient: QueryClient,
-    externalId: string | undefined,
+    projectId: string | undefined,
     navigate: NavigateFunction,
 ) => {
     setIsRevision(true)
     queryClient.invalidateQueries(
-        { queryKey: ["projectApiData", externalId] },
+        { queryKey: ["projectApiData", projectId] },
     )
     navigate(`revision/${revisionId}`)
 }
@@ -36,13 +36,13 @@ export const navigateToRevision = (
 export const exitRevisionView = (
     setIsRevision: React.Dispatch<React.SetStateAction<boolean>>,
     queryClient: QueryClient,
-    externalId: string | undefined,
+    projectId: string | undefined,
     currentContext: ContextItem | null | undefined,
     navigate: NavigateFunction,
 ) => {
     setIsRevision(false)
     queryClient.invalidateQueries(
-        { queryKey: ["projectApiData", externalId] },
+        { queryKey: ["projectApiData", projectId] },
     )
 
     if (currentContext) {
@@ -52,7 +52,8 @@ export const exitRevisionView = (
     }
 }
 
-export const disableCurrentRevision = (revisionId: string, isRevision: boolean, currentRevisionId: string | undefined) => {
-    if (isRevision && currentRevisionId === revisionId) { return true }
-    return false
-}
+export const disableCurrentRevision = (
+    revisionId: string,
+    isRevision: boolean,
+    currentRevisionId: string | undefined,
+) => isRevision && currentRevisionId === revisionId
