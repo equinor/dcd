@@ -7,12 +7,13 @@ import { useNavigate, useParams } from "react-router"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useProjectContext } from "../../Context/ProjectContext"
-import Modal from "../Modal/Modal"
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import { formatFullDate } from "@/Utils/common"
 import {
-    createRevision, disableCurrentRevision, exitRevisionView, navigateToRevision, openRevisionModal,
+    createRevision,
+    disableCurrentRevision, exitRevisionView, navigateToRevision, openRevisionModal,
 } from "@/Utils/RevisionUtils"
+import CreateRevisionModal from "../Modal/CreateRevisionModal"
 
 type RevisionsDropMenuProps = {
     isMenuOpen: boolean
@@ -73,21 +74,9 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
 
     return (
         <>
-            <Modal
-                title="Create revision"
-                size="sm"
+            <CreateRevisionModal
                 isOpen={creatingRevision}
-                content={(
-                    <Typography variant="body_short">
-                        Create revision
-                    </Typography>
-                )}
-                actions={(
-                    <div>
-                        <Button variant="ghost" onClick={() => setCreatingRevision(false)}>Cancel</Button>
-                        <Button onClick={() => createRevision(projectId, setCreatingRevision)}>Create revision</Button>
-                    </div>
-                )}
+                setCreatingRevision={setCreatingRevision}
             />
             <Menu
                 id="menu-complex"
