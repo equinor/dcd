@@ -30,6 +30,12 @@ public class ProjectRepository : BaseRepository, IProjectRepository
             .FirstOrDefaultAsync(p => p.Id == id || p.FusionProjectId == id);
     }
 
+    public async Task<Project?> GetProjectByExternalId(Guid id)
+    {
+        return await _context.Projects
+            .FirstOrDefaultAsync(p => p.FusionProjectId == id);
+    }
+
     public async Task<Project?> GetProjectWithCases(Guid projectId)
     {
         return await _context.Projects
