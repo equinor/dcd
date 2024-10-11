@@ -11,6 +11,7 @@ import {
     library_add,
     archive,
     unarchive,
+    history,
 } from "@equinor/eds-icons"
 import { useMemo, useState } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
@@ -22,6 +23,7 @@ import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
 import Modal from "../../Modal/Modal"
+import RevisionsDropMenu from "@/Components/Controls/RevisionsDropMenu"
 
 interface CasesDropMenuProps {
     isMenuOpen: boolean
@@ -44,6 +46,8 @@ const CasesDropMenu = ({
     const { updateCase } = useSubmitToApi()
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
+    const [isRevisionMenuOpen, setIsRevisionMenuOpen] = useState<boolean>(false)
+    const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
 
     const { data: projectData } = useQuery({
         queryKey: ["projectApiData", externalId],
@@ -185,6 +189,23 @@ const CasesDropMenu = ({
                             </Typography>
                         </Menu.Item>
                     )}
+                {/* Uncomment to show project revisions button */}
+                {/* <Menu.Item
+                    ref={setRevisionMenuAnchorEl}
+                    onMouseEnter={() => setIsRevisionMenuOpen(!isRevisionMenuOpen)}
+                >
+                    <Icon data={history} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Project revisions
+                    </Typography>
+                </Menu.Item>
+                <RevisionsDropMenu
+                    isMenuOpen={isRevisionMenuOpen}
+                    setIsMenuOpen={setIsMenuOpen}
+                    setIsRevisionMenuOpen={setIsRevisionMenuOpen}
+                    menuAnchorEl={revisionMenuAnchorEl}
+                    isCaseMenu
+                /> */}
             </Menu>
         </>
     )

@@ -26,7 +26,21 @@ export const AgChartsCompareCases = ({
                     fontSize: 24,
                 },
             },
-            column: { axes: { category: { label: { rotation: -20 } } } },
+            column: {
+                axes: {
+                    category: {
+                        label: {
+                            rotation: -20,
+                            formatter(params: any) {
+                                if (params.value.length > 18) {
+                                    return `${params.value.substr(0, 16)}...`
+                                }
+                                return params.value
+                            },
+                        },
+                    },
+                },
+            },
         },
     }
 

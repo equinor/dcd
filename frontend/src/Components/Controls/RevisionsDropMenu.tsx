@@ -3,30 +3,39 @@ import {
     Menu, Typography, Icon, Button,
 } from "@equinor/eds-core-react"
 import { add, exit_to_app } from "@equinor/eds-icons"
-import { useNavigate } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useProjectContext } from "../../Context/ProjectContext"
 import Modal from "../Modal/Modal"
 import { projectQueryFn } from "@/Services/QueryFunctions"
-import { GetProjectService } from "@/Services/ProjectService"
+import { formatFullDate } from "@/Utils/common"
+import {
+    createRevision, disableCurrentRevision, exitRevisionView, navigateToRevision, openRevisionModal,
+} from "@/Utils/RevisionUtils"
 
 type RevisionsDropMenuProps = {
-    isMenuOpen: boolean;
-    setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-interface Revision {
-    id: string;
-    name: string;
-    description: string;
-    date: string;
+    isMenuOpen: boolean
+    setIsMenuOpen: (isMenuOpen: boolean) => void
+    menuAnchorEl: HTMLElement | null
+    setIsRevisionMenuOpen?: React.Dispatch<React.SetStateAction<boolean>>
+    isCaseMenu: boolean
 }
 
-const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIsMenuOpen }) => {
+interface Revision {
+    id: string
+    name: string
+    description: string
+    date: string
+}
+
+const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
+    isMenuOpen, setIsMenuOpen, menuAnchorEl, isCaseMenu, setIsRevisionMenuOpen,
+}) => {
     const { setIsRevision, isRevision, projectId } = useProjectContext()
     const navigate = useNavigate()
     const queryClient = useQueryClient()
+    const { revisionId } = useParams()
 
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
@@ -52,40 +61,14 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIs
         }
     }, [apiData])
 
-    const openRevisionModal = () => {
-        console.log("Creating revision")
-        setCreatingRevision(true)
+    const navToRevision = (revision: Revision) => {
+        setIsMenuOpen(false)
+        navigateToRevision(revision.id, setIsRevision, queryClient, externalId, navigate)
     }
 
-    const createRevision = async () => {
-        const projectService = await GetProjectService()
-        const newRevision = await projectService.createRevision(projectId)
-        if (newRevision) {
-            setCreatingRevision(false)
-        }
-    }
-
-    const navigateToRevision = (revisionId: string) => {
-        setIsRevision(true)
-        queryClient.invalidateQueries(
-            { queryKey: ["projectApiData", externalId] },
-        )
-        navigate(`revision/${revisionId}`)
-    }
-
-    const exitRevisionView = () => {
-        setIsRevision(false)
-        queryClient.invalidateQueries(
-            { queryKey: ["projectApiData", externalId] },
-        )
-
-        if (currentContext) {
-            navigate(`/${currentContext.id}`)
-        }
-        else {
-            navigate("/")
-        }
-        console.log("Exiting revision view")
+    const exitRevision = () => {
+        setIsMenuOpen(false)
+        exitRevisionView(setIsRevision, queryClient, externalId, currentContext, navigate)
     }
 
     return (
@@ -102,44 +85,51 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({ isMenuOpen, setIs
                 actions={(
                     <div>
                         <Button variant="ghost" onClick={() => setCreatingRevision(false)}>Cancel</Button>
-                        <Button onClick={() => createRevision()}>Create revision</Button>
+                        <Button onClick={() => createRevision(projectId, setCreatingRevision)}>Create revision</Button>
                     </div>
                 )}
             />
             <Menu
                 id="menu-complex"
                 open={isMenuOpen}
-                onClose={() => setIsMenuOpen(false)}
-                placement="bottom"
+                anchorEl={menuAnchorEl}
+                onClose={() => (isCaseMenu && setIsRevisionMenuOpen ? setIsRevisionMenuOpen(false) : setIsMenuOpen(false))}
+                placement={isCaseMenu ? "left" : "bottom"}
             >
                 {
                     revisions.map((revision) => (
-                        <Menu.Item onClick={() => navigateToRevision(revision.id)}>
+                        <Menu.Item
+                            onClick={() => (isCaseMenu ? navToRevision(revision) : navigateToRevision(revision.id, setIsRevision, queryClient, projectId, navigate))}
+                            disabled={disableCurrentRevision(revision.id, isRevision, revisionId)}
+                        >
                             <Typography group="navigation" variant="menu_title" as="span">
                                 {revision.name}
                                 {" "}
                                 -
                                 {" "}
-                                {revision.date}
+                                {formatFullDate(revision.date)}
                             </Typography>
                         </Menu.Item>
                     ))
                 }
-                {!isRevision ? (
-                    <Menu.Item onClick={() => openRevisionModal()}>
-                        <Icon data={add} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Create new revision
-                        </Typography>
-                    </Menu.Item>
-                ) : (
-                    <Menu.Item onClick={() => exitRevisionView()}>
-                        <Icon data={exit_to_app} size={16} />
-                        <Typography group="navigation" variant="menu_title" as="span">
-                            Exit revision view
-                        </Typography>
-                    </Menu.Item>
-                )}
+                <Menu.Item
+                    onClick={() => openRevisionModal(setCreatingRevision)}
+                    disabled={isRevision}
+                >
+                    <Icon data={add} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Create new revision
+                    </Typography>
+                </Menu.Item>
+                <Menu.Item
+                    onClick={() => (isCaseMenu ? exitRevision() : exitRevisionView(setIsRevision, queryClient, projectId, currentContext, navigate))}
+                    disabled={!isRevision}
+                >
+                    <Icon data={exit_to_app} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Exit revision view
+                    </Typography>
+                </Menu.Item>
             </Menu>
         </>
     )
