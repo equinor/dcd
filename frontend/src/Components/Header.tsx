@@ -58,7 +58,6 @@ const RouteCoordinator = (): JSX.Element => {
                 }
 
                 if (fetchedProject) {
-                    addProjectEdit(fetchedProject.id, fetchedProject)
                     setIsCreating(false)
                     setIsLoading(false)
                 }
