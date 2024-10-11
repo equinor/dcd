@@ -11,7 +11,7 @@ public static class ClaimsPrincipalExtensions
     public static List<ApplicationRole> AssignedApplicationRoles(this ClaimsPrincipal principal)
     {
         return principal.Claims
-            .Where(claim => claim.Type == ClaimsMiddelware.ApplicationRoleClaimType && claim.Issuer == AzureClaimIssuer)
+            .Where(claim => claim.Type == ClaimsMiddleware.ApplicationRoleClaimType && claim.Issuer == AzureClaimIssuer)
             .Select(roleClaim => Enum.Parse<ApplicationRole>(roleClaim.Value))
             .ToList();
     }

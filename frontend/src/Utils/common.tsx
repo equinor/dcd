@@ -7,18 +7,9 @@ import { EditEntry } from "@/Models/Interfaces"
 export const loginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
 
-export const getDrainageStrategy = (
-    project: Components.Schemas.ProjectWithAssetsDto,
-    drainageStrategyId?: string,
-) => project.drainageStrategies?.find((o) => o.id === drainageStrategyId)
-
 export const projectPath = (projectId: string) => `/${projectId}`
 
 export const casePath = (projectId: string, caseId: string) => `${projectPath(projectId)}/case/${caseId}`
-
-export const storeToken = (keyName: string, token: string) => {
-    window.sessionStorage.setItem(keyName, token)
-}
 
 export const storeAppId = (appId: string) => {
     window.sessionStorage.setItem("appId", appId)
@@ -33,25 +24,11 @@ export const getToken = (keyName: string) => {
     return window.Fusion.modules.auth.acquireAccessToken({ scopes })
 }
 
-export const unwrapCase = (_case?: Components.Schemas.CaseDto | undefined): Components.Schemas.CaseDto => {
-    if (_case === undefined || _case === null) {
-        throw new Error("Attempted to Create a case from which has not been created")
-    }
-    return _case
-}
-
 export const unwrapProjectId = (projectId?: string | undefined | null): string => {
     if (projectId === undefined || projectId === null) {
         throw new Error("Attempted to use a Project ID which does not exist")
     }
     return projectId
-}
-
-export const unwrapCaseId = (caseId?: string | undefined): string => {
-    if (caseId === undefined || caseId === null) {
-        throw new Error("Attempted to use a Case ID which does not exist")
-    }
-    return caseId
 }
 
 export const getProjectCategoryName = (key?: Components.Schemas.ProjectCategory): string => {
@@ -220,6 +197,19 @@ export const formatDateAndTime = (dateString: string | undefined | null) => {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
+    }
+    return new Intl.DateTimeFormat("en-GB", options)
+        .format(date)
+        .replace(",", "")
+}
+
+export const formatFullDate = (dateString: string | undefined | null) => {
+    if (!dateString) { return "" }
+    const date = new Date(dateString)
+    const options: Intl.DateTimeFormatOptions = {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
     }
     return new Intl.DateTimeFormat("en-GB", options)
         .format(date)

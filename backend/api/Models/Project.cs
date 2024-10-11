@@ -2,10 +2,11 @@ namespace api.Models;
 
 public class Project
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } // If the project is a revision, this is the revision's id
     public string Name { get; set; } = string.Empty;
+    public bool IsRevision { get; set; }
     public Guid CommonLibraryId { get; set; }
-    public Guid FusionProjectId { get; set; } // ExternalId?
+    public Guid FusionProjectId { get; set; } // ExternalId
     public Guid ReferenceCaseId { get; set; }
     public string CommonLibraryName { get; set; } = null!;
     public string Description { get; set; } = string.Empty;
@@ -27,6 +28,10 @@ public class Project
     public virtual ICollection<DrainageStrategy>? DrainageStrategies { get; set; }
     public virtual ICollection<WellProject>? WellProjects { get; set; }
     public virtual ICollection<Exploration>? Explorations { get; set; }
+
+    public Guid? OriginalProjectId { get; set; } // Id of the project the revision is based on
+    public virtual Project? OriginalProject { get; set; }
+    public virtual ICollection<Project>? Revisions { get; set; }
 
     public string? SharepointSiteUrl { get; set; }
     public double CO2RemovedFromGas { get; set; }

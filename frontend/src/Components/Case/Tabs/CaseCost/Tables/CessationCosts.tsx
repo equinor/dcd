@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
-import CaseTabTable from "../../../Components/CaseTabTable"
-import { ITimeSeriesData } from "../../../../../Models/Interfaces"
 
-import { projectQueryFn } from "../../../../../Services/QueryFunctions"
+import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
+import { projectQueryFn } from "@/Services/QueryFunctions"
+import CaseTabTable from "../../../Components/CaseTabTable"
 
 interface CessationCostsProps {
     tableYears: [number, number];
@@ -30,7 +30,7 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
         enabled: !!externalId,
     })
 
-    const [cessationTimeSeriesData, setCessationTimeSeriesData] = useState<ITimeSeriesData[]>([])
+    const [cessationTimeSeriesData, setCessationTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
 
     useEffect(() => {
         const cessationWellsCostData = apiData.cessationWellsCost
@@ -40,7 +40,7 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
         const cessationOnshoreFacilitiesCostProfileData = apiData.cessationOnshoreFacilitiesCostProfile
         const caseData = apiData.case
 
-        const newCessationTimeSeriesData: ITimeSeriesData[] = [
+        const newCessationTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Cessation - Development wells",
                 unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,

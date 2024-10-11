@@ -22,9 +22,9 @@ import { useProjectContext } from "../Context/ProjectContext"
 const ControlsWrapper = styled.div`
     position: sticky;
     top: 0;
-    z-index: 1;
-
+    z-index: 3;
 `
+
 const ContentWrapper = styled.div`
     display: flex;
     padding-bottom: 20px;
@@ -156,7 +156,6 @@ const Overview = () => {
                     <Outlet />
                 </MainView>
             </ContentWrapper>
-
         </>
     )
 }
