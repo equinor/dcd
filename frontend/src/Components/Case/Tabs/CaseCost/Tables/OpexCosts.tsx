@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
+
+import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 import CaseTabTable from "../../../Components/CaseTabTable"
-import { ITimeSeriesData } from "../../../../../Models/Interfaces"
-import { projectQueryFn } from "../../../../../Services/QueryFunctions"
 
 interface OpexCostsProps {
     tableYears: [number, number]
@@ -18,7 +19,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
 }) => {
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
-    const [opexTimeSeriesData, setOpexTimeSeriesData] = useState<ITimeSeriesData[]>([])
+    const [opexTimeSeriesData, setOpexTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
 
     const { data: projectData } = useQuery({
         queryKey: ["projectApiData", externalId],
@@ -35,7 +36,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
         const additionalOPEXCostProfileData = apiData.additionalOPEXCostProfile
         const caseData = apiData.case
 
-        const newOpexTimeSeriesData: ITimeSeriesData[] = [
+        const newOpexTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Historic cost",
                 unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
