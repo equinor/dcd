@@ -24,7 +24,7 @@ const ProjectContext = createContext<ProjectContextType | undefined>(undefined)
 
 const ProjectContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [activeTabProject, setActiveTabProject] = useState<number | boolean>(0)
-    const [accessRights, setAccessRights]   = useState<Components.Schemas.AccessRightsDto>()
+    const [accessRights, setAccessRights] = useState<Components.Schemas.AccessRightsDto>()
     const [projectId, setProjectId] = useState<string>("")
     const [isRevision, setIsRevision] = useState<boolean>(false)
 
