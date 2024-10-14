@@ -10,6 +10,7 @@ import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { useParams } from "react-router"
 import {
     CellKeyDownEvent, ColDef, GridReadyEvent,
+    ICellRendererParams,
 } from "@ag-grid-community/core"
 import isEqual from "lodash/isEqual"
 import { CircularProgress } from "@equinor/eds-core-react"
@@ -23,16 +24,21 @@ import {
     getCaseRowStyle,
     validateInput,
     formatColumnSum,
-} from "../../../Utils/common"
-import { useAppContext } from "../../../Context/AppContext"
-import { TABLE_VALIDATION_RULES } from "../../../Utils/constants"
+} from "@/Utils/common"
+import { useAppContext } from "@/Context/AppContext"
+import { useProjectContext } from "@/Context/ProjectContext"
+import { TABLE_VALIDATION_RULES } from "@/Utils/constants"
+import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
 import ErrorCellRenderer from "./ErrorCellRenderer"
 import ClickableLockIcon from "./ClickableLockIcon"
-import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
-import { useProjectContext } from "../../../Context/ProjectContext"
+import {
+    ITimeSeriesTableData,
+    ITimeSeriesTableDataOverrideWithSet,
+    ITimeSeriesTableDataWithSet,
+} from "@/Models/ITimeSeries"
 
 interface Props {
-    timeSeriesData: any[]
+    timeSeriesData: ITimeSeriesTableDataWithSet[]
     dg4Year: number
     tableYears: [number, number]
     tableName: string
@@ -87,7 +93,7 @@ const CaseTabTable = ({
     }, [ongoingCalculation])
 
     const profilesToRowData = () => {
-        const tableRows: any[] = []
+        const tableRows: ITimeSeriesTableData[] = []
         timeSeriesData.forEach((ts) => {
             const isOverridden = ts.overrideProfile?.override === true
             const rowObject: any = {}
@@ -123,7 +129,7 @@ const CaseTabTable = ({
                             (v: number) => (v + Number.EPSILON),
                         ).reduce((x: number, y: number) => x + y) * 10000) / 10000
                         if (ts.total !== undefined) {
-                            rowObject.total = Math.round(ts.total * 1000) / 1000
+                            rowObject.total = Math.round(Number(ts.total) * 1000) / 1000
                         }
                     }
                 } else {
@@ -160,7 +166,7 @@ const CaseTabTable = ({
         }
     }, [gridRowData])
 
-    const lockIconRenderer = (params: any) => {
+    const lockIconRenderer = (params: ICellRendererParams<ITimeSeriesTableDataOverrideWithSet>) => {
         if (!params.data || !editMode) {
             return null
         }

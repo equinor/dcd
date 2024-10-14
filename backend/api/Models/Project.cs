@@ -6,7 +6,7 @@ public class Project
     public string Name { get; set; } = string.Empty;
     public bool IsRevision { get; set; }
     public Guid CommonLibraryId { get; set; }
-    public Guid FusionProjectId { get; set; } // ExternalId?
+    public Guid FusionProjectId { get; set; } // ExternalId
     public Guid ReferenceCaseId { get; set; }
     public string CommonLibraryName { get; set; } = null!;
     public string Description { get; set; } = string.Empty;

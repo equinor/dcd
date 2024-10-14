@@ -10,6 +10,8 @@ import {
 } from "react"
 
 interface ProjectContextType {
+    accessRights: Components.Schemas.AccessRightsDto | undefined;
+    setAccessRights: Dispatch<SetStateAction<Components.Schemas.AccessRightsDto | undefined>>
     activeTabProject: number;
     setActiveTabProject: Dispatch<SetStateAction<number>>
     projectId: string
@@ -21,11 +23,14 @@ interface ProjectContextType {
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined)
 
 const ProjectContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
+    const [accessRights, setAccessRights]   = useState<Components.Schemas.AccessRightsDto>()
     const [activeTabProject, setActiveTabProject] = useState<number>(0)
     const [projectId, setProjectId] = useState<string>("")
     const [isRevision, setIsRevision] = useState<boolean>(false)
 
     const value = useMemo(() => ({
+        accessRights,
+        setAccessRights,
         activeTabProject,
         setActiveTabProject,
         projectId,
@@ -33,7 +38,8 @@ const ProjectContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         isRevision,
         setIsRevision,
     }), [
-
+        accessRights,
+        setAccessRights,
         activeTabProject,
         setActiveTabProject,
         projectId,

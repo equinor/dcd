@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
+
 import CaseTabTable from "../../../Components/CaseTabTable"
-import { ITimeSeriesData } from "../../../../../Models/Interfaces"
-import { useAppContext } from "../../../../../Context/AppContext"
-import { projectQueryFn } from "../../../../../Services/QueryFunctions"
+import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
+import { useAppContext } from "@/Context/AppContext"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 
 interface TotalStudyCostsProps {
     tableYears: [number, number];
@@ -36,7 +37,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
         "totalFEEDStudiesOverride",
     ]
 
-    const [studyTimeSeriesData, setStudyTimeSeriesData] = useState<ITimeSeriesData[]>([])
+    const [studyTimeSeriesData, setStudyTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
 
     useEffect(() => {
         const totalFeasibilityAndConceptStudiesData = apiData.totalFeasibilityAndConceptStudies
@@ -46,7 +47,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
         const totalOtherStudiesCostProfileData = apiData.totalOtherStudiesCostProfile
         const caseData = apiData.case
 
-        const newStudyTimeSeriesData: ITimeSeriesData[] = [
+        const newStudyTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Feasibility & conceptual stud.",
                 unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,

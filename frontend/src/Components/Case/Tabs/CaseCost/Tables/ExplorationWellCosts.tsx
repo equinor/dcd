@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
+
+import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 import CaseTabTable from "../../../Components/CaseTabTable"
-import { ITimeSeriesData } from "../../../../../Models/Interfaces"
-import { projectQueryFn } from "../../../../../Services/QueryFunctions"
 
 interface ExplorationWellCostsProps {
     tableYears: [number, number];
@@ -29,7 +30,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
         enabled: !!externalId,
     })
 
-    const [explorationTimeSeriesData, setExplorationTimeSeriesData] = useState<ITimeSeriesData[]>([])
+    const [explorationTimeSeriesData, setExplorationTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
 
     useEffect(() => {
         const exploration = apiData?.exploration
@@ -47,7 +48,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             return
         }
 
-        const newExplorationTimeSeriesData: ITimeSeriesData[] = [
+        const newExplorationTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "G&G and admin",
                 unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
