@@ -203,6 +203,19 @@ export const formatDateAndTime = (dateString: string | undefined | null) => {
         .replace(",", "")
 }
 
+export const formatFullDate = (dateString: string | undefined | null) => {
+    if (!dateString) { return "" }
+    const date = new Date(dateString)
+    const options: Intl.DateTimeFormatOptions = {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    }
+    return new Intl.DateTimeFormat("en-GB", options)
+        .format(date)
+        .replace(",", "")
+}
+
 export const isWithinRange = (number: number, max: number, min: number) => number >= max && number <= min
 
 export const preventNonDigitInput = (e: React.KeyboardEvent<HTMLInputElement>): void => {

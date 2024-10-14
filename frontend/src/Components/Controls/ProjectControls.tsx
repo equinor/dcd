@@ -28,6 +28,7 @@ import FullPageLoading from "../fullPageLoading"
 import RevisionsDropMenu from "./RevisionsDropMenu"
 import Classification from "./ClassificationChip"
 import RevisionChip from "./RevisionChip"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 const Header = styled.div`
     display: flex;
@@ -73,8 +74,10 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
     const { isSaving } = useAppContext()
     const leftTabs = projectTabNames.filter((name) => name !== "Access Management" && name !== "Settings")
     const rightTabs = projectTabNames.filter((name) => name === "Access Management" || name === "Settings")
+    const { isEditDisabled, getEditDisabledText } = useEditDisabled()
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
 
     const handleTabChange = (index: number) => {
         setActiveTabProject(index)
@@ -125,8 +128,12 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                             </Tooltip>
                         )
                     )}
-                    <Tooltip title={isRevision ? "Revisions are locked for editing" : ""}>
-                        <Button onClick={handleEdit} variant={editMode ? "outlined" : "contained"} disabled={isRevision}>
+                    <Tooltip title={getEditDisabledText()}>
+                        <Button
+                            onClick={handleEdit}
+                            variant={editMode ? "outlined" : "contained"}
+                            disabled={isEditDisabled}
+                        >
                             {editMode && (
                                 <>
                                     <Icon data={visibility} />
@@ -144,7 +151,7 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                     {/* Uncomment to show project revisions button */}
                     <div>
                         <Tooltip title="This is a revision">
-                            <Button variant="outlined" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                            <Button variant="outlined" onClick={() => setIsMenuOpen(!isMenuOpen)} ref={setRevisionMenuAnchorEl}>
                                 <Icon data={history} />
                                 Project revisions
                             </Button>
@@ -152,6 +159,8 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                         <RevisionsDropMenu
                             isMenuOpen={isMenuOpen}
                             setIsMenuOpen={setIsMenuOpen}
+                            menuAnchorEl={revisionMenuAnchorEl}
+                            isCaseMenu={false}
                         />
                     </div>
                 </div>

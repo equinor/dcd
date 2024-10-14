@@ -1,5 +1,5 @@
 import {
-    Button, Icon, Typography,
+    Button, Icon, Tooltip, Typography,
 } from "@equinor/eds-core-react"
 import { add } from "@equinor/eds-icons"
 import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
@@ -16,14 +16,16 @@ import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import CasesTable from "../Case/OverviewCasesTable/CasesTable"
 import Gallery from "../Gallery/Gallery"
 import { useProjectContext } from "@/Context/ProjectContext"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 const ProjectOverviewTab = () => {
-    const { isRevision } = useProjectContext()
+    const { isRevision, accessRights } = useProjectContext()
     const { revisionId } = useParams()
     const { editMode } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
     const { addProjectEdit } = useEditProject()
     const { addNewCase } = useModalContext()
+    const { isEditDisabled, getEditDisabledText } = useEditDisabled()
 
     const externalId = currentContext?.externalId
 
@@ -93,10 +95,15 @@ const ProjectOverviewTab = () => {
                     <Typography variant="h3">Cases</Typography>
                 </Grid>
                 <Grid item>
-                    <Button onClick={() => addNewCase()}>
-                        <Icon data={add} size={24} />
-                        Add new Case
-                    </Button>
+                    <Tooltip title={getEditDisabledText()}>
+                        <Button
+                            disabled={isEditDisabled}
+                            onClick={() => addNewCase()}
+                        >
+                            <Icon data={add} size={24} />
+                            Add new Case
+                        </Button>
+                    </Tooltip>
                 </Grid>
                 <Grid item xs={12}>
                     <CasesTable />
