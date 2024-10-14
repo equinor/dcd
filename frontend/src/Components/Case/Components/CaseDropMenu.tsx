@@ -9,7 +9,8 @@ import {
     bookmark_outlined,
     bookmark_filled,
     archive,
-    unarchive
+    unarchive,
+    history,
 } from "@equinor/eds-icons"
 import { useNavigate } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
@@ -23,6 +24,8 @@ import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
 import { useProjectContext } from "@/Context/ProjectContext"
 import Modal from "../../Modal/Modal"
+import RevisionsDropMenu from "@/Components/Controls/RevisionsDropMenu"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 interface CaseDropMenuProps {
     isMenuOpen: boolean
@@ -37,7 +40,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     setIsMenuOpen,
     menuAnchorEl,
     caseId,
-    isArchived
+    isArchived,
 }) => {
     const navigate = useNavigate()
     const { currentContext } = useModuleCurrentContext()
@@ -48,7 +51,11 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     const { addProjectEdit } = useEditProject()
     const { projectId } = useProjectContext()
     const { updateCase } = useSubmitToApi()
-    
+    const { isEditDisabled } = useEditDisabled()
+
+    const [isRevisionMenuOpen, setIsRevisionMenuOpen] = useState<boolean>(false)
+    const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
+
     const { data: projectData } = useQuery({
         queryKey: ["projectApiData", externalId],
         queryFn: () => projectQueryFn(externalId),
@@ -63,17 +70,17 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
 
     const deleteAndGoToProject = async () => {
         if (!caseId || !projectData) { return }
-        
+
         if (await deleteCase(caseId, projectData, addProjectEdit)) {
             if (projectData.fusionProjectId) { navigate(`/${projectData.fusionProjectId}`) }
         }
     }
 
     const archiveCase = async (archived: boolean) => {
-        if(!caseApiData?.case || !caseId || !projectData?.id) { return }
+        if (!caseApiData?.case || !caseId || !projectData?.id) { return }
         const newResourceObject = { ...caseApiData?.case, archived } as ResourceObject
-        const result = await updateCase({ projectId: projectData.id , caseId, resourceObject: newResourceObject })
-        if(result) {
+        const result = await updateCase({ projectId: projectData.id, caseId, resourceObject: newResourceObject })
+        if (result) {
             queryClient.invalidateQueries(
                 { queryKey: ["projectApiData", projectData.id] },
             )
@@ -105,35 +112,50 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                 onClose={() => setIsMenuOpen(false)}
                 placement="bottom"
             >
-                <Menu.Item disabled={isArchived} onClick={() => addNewCase()}>
+                <Menu.Item
+                    disabled={isArchived || isEditDisabled}
+                    onClick={() => addNewCase()}
+                >
                     <Icon data={add} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
                         Add New Case
                     </Typography>
                 </Menu.Item>
-                <Menu.Item disabled={isArchived} onClick={() => projectData && duplicateCase(caseId, projectData, addProjectEdit)}>
+                <Menu.Item
+                    disabled={isArchived || isEditDisabled}
+                    onClick={() => projectData && duplicateCase(caseId, projectData, addProjectEdit)}
+                >
                     <Icon data={library_add} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
                         Duplicate
                     </Typography>
                 </Menu.Item>
-                {isArchived 
+                {isArchived
                     ? (
-                        <Menu.Item onClick={() => archiveCase(false)}>
+                        <Menu.Item
+                            onClick={() => archiveCase(false)}
+                            disabled={isEditDisabled}
+                        >
                             <Icon data={unarchive} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">
                                 Restore Case
                             </Typography>
                         </Menu.Item>
-                    ):(
-                        <Menu.Item onClick={() => archiveCase(true)}>
+                    ) : (
+                        <Menu.Item
+                            onClick={() => archiveCase(true)}
+                            disabled={isEditDisabled}
+                        >
                             <Icon data={archive} size={16} />
                             <Typography group="navigation" variant="menu_title" as="span">
                                 Archive Case
                             </Typography>
                         </Menu.Item>
-                )}
-                <Menu.Item onClick={() => projectData && setConfirmDelete(true)}>
+                    )}
+                <Menu.Item
+                    onClick={() => projectData && setConfirmDelete(true)}
+                    disabled={isArchived || isEditDisabled}
+                >
                     <Icon data={delete_to_trash} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
                         Delete
@@ -142,7 +164,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                 {projectData?.referenceCaseId === caseId
                     ? (
                         <Menu.Item
-                            disabled={isArchived}
+                            disabled={isArchived || isEditDisabled}
                             onClick={() => projectData && setCaseAsReference(caseId, projectData, addProjectEdit)}
                         >
                             <Icon data={bookmark_outlined} size={16} />
@@ -153,7 +175,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                     )
                     : (
                         <Menu.Item
-                            disabled={isArchived}
+                            disabled={isArchived || isEditDisabled}
                             onClick={() => projectData && setCaseAsReference(caseId, projectData, addProjectEdit)}
                         >
                             <Icon data={bookmark_filled} size={16} />
@@ -162,6 +184,23 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                             </Typography>
                         </Menu.Item>
                     )}
+                {/* Uncomment to show project revisions button */}
+                {/* <Menu.Item
+                    ref={setRevisionMenuAnchorEl}
+                    onMouseEnter={() => setIsRevisionMenuOpen(!isRevisionMenuOpen)}
+                >
+                    <Icon data={history} size={16} />
+                    <Typography group="navigation" variant="menu_title" as="span">
+                        Project revisions
+                    </Typography>
+                </Menu.Item>
+                <RevisionsDropMenu
+                    setIsMenuOpen={setIsMenuOpen}
+                    isMenuOpen={isRevisionMenuOpen}
+                    setIsRevisionMenuOpen={setIsRevisionMenuOpen}
+                    menuAnchorEl={revisionMenuAnchorEl}
+                    isCaseMenu
+                /> */}
             </Menu>
         </>
     )

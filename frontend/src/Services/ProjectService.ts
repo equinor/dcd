@@ -14,6 +14,11 @@ export class __ProjectService extends __BaseService {
         return project
     }
 
+    async getAccess(projectId: string) {
+        const access: Components.Schemas.AccessRightsDto = await this.get<Components.Schemas.AccessRightsDto>(`/${projectId}/access`)
+        return access
+    }
+
     public async createProject(contextId: string): Promise<Components.Schemas.ProjectWithAssetsDto> {
         const res: Components.Schemas.ProjectWithAssetsDto = await this.postWithParams(
             "",

@@ -4,13 +4,14 @@ import {
     useState,
     useEffect,
 } from "react"
-
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
 import { ColDef } from "@ag-grid-community/core"
-import { formatColumnSum, isInteger, tableCellisEditable } from "../../../Utils/common"
-import { EMPTY_GUID } from "../../../Utils/constants"
-import { useAppContext } from "../../../Context/AppContext"
+
+import { formatColumnSum, tableCellisEditable } from "@/Utils/common"
+import { EMPTY_GUID } from "@/Utils/constants"
+import { useAppContext } from "@/Context/AppContext"
+import { ITimeSeriesTableDataWithSet } from "@/Models/ITimeSeries"
 import profileAndUnitInSameCell from "./ProfileAndUnitInSameCell"
 
 interface Props {
@@ -35,9 +36,9 @@ const CaseTabTableWithGrouping = ({
     const { editMode } = useAppContext()
 
     const profilesToRowData = () => {
-        const tableRows: any[] = []
+        const tableRows: ITimeSeriesTableDataWithSet[] = []
         const timeSeriesData = allTimeSeriesData?.flat()
-        timeSeriesData?.forEach((ts: { overrideProfile?: any; total?: any; overrideProfileSet?: any; set?: any; profile?: any; group?: any; profileName?: any; unit?: any }) => {
+        timeSeriesData?.forEach((ts: ITimeSeriesTableDataWithSet) => {
             const isOverridden = ts.overrideProfile?.override === true
             const rowObject: any = {}
             const { group, profileName, unit } = ts
@@ -68,7 +69,7 @@ const CaseTabTableWithGrouping = ({
                 const totalValue = rowObject.profile.values.reduce((acc: any, value: any) => acc + value, 0)
                 rowObject.total = Math.round((totalValue + Number.EPSILON) * 100) / 100 // Adjust rounding logic as needed
                 if (ts.total !== undefined) {
-                    rowObject.total = Math.round(ts.total * 100) / 100
+                    rowObject.total = Math.round(Number(ts.total) * 100) / 100
                 }
             }
             tableRows.push(rowObject)

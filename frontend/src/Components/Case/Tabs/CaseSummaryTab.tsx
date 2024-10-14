@@ -1,15 +1,17 @@
 import {
-    Dispatch, SetStateAction, useState, useEffect,
+    useState, useEffect,
+    Dispatch,
+    SetStateAction,
 } from "react"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
-import { ITimeSeries } from "@/Models/ITimeSeries"
-import { ITimeSeriesCost } from "@/Models/ITimeSeriesCost"
+import {
+    ITimeSeries, ITimeSeriesDataWithGroup, ITimeSeriesCost, ITimeSeriesCostOverride,
+} from "@/Models/ITimeSeries"
 import { useCaseContext } from "@/Context/CaseContext"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
-import { ITimeSeriesCostOverride } from "@/Models/ITimeSeriesCostOverride"
 import { mergeTimeseries, mergeTimeseriesList } from "@/Utils/common"
 import { SetSummaryTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 import CaseSummarySkeleton from "@/Components/LoadingSkeletons/CaseSummarySkeleton"
@@ -245,7 +247,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const onshoreRelatedOPEXCostProfileData = apiData?.onshoreRelatedOPEXCostProfile
             const additionalOPEXCostProfileData = apiData?.additionalOPEXCostProfile
 
-            const newExplorationTimeSeriesData: ITimeSeriesData[] = [
+            const newExplorationTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Exploration cost",
                     unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
@@ -254,7 +256,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 },
             ]
 
-            const newCapexTimeSeriesData: ITimeSeriesData[] = [
+            const newCapexTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Drilling",
                     unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
@@ -281,7 +283,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 },
             ]
 
-            const newStudycostTimeSeriesData: ITimeSeriesData[] = [
+            const newStudycostTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Feasibility & Conceptual studies",
                     unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
@@ -302,7 +304,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 },
             ]
 
-            const newOpexTimeSeriesData: ITimeSeriesData[] = [
+            const newOpexTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Historic cost",
                     unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,

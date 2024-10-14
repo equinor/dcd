@@ -10,5 +10,5 @@ public interface IFusionService
     /// <param name="contextId">The projectMaster ID to query for.</param>
     /// <returns>A <see cref="ProjectMaster"/> for the given id.</returns>
     /// <exception cref="OperationFailed">If no projectMaster was found for the given ID.</exception>
-    public Task<FusionProjectMaster> ProjectMasterAsync(Guid contextId);
+    Task<FusionProjectMaster?> GetProjectMasterFromFusionContextId(Guid contextId);
 }

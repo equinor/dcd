@@ -3,10 +3,11 @@ import { AgChartsReact } from "ag-charts-react"
 import { Grid } from "@mui/material"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
-import { ITimeSeriesData, ProfileNames } from "../../../../../Models/Interfaces"
-import { ITimeSeries } from "../../../../../Models/ITimeSeries"
-import { mergeTimeseries } from "../../../../../Utils/common"
-import { projectQueryFn } from "../../../../../Services/QueryFunctions"
+
+import { ProfileNames } from "@/Models/Interfaces"
+import { ITimeSeries, ITimeSeriesTableData } from "@/Models/ITimeSeries"
+import { mergeTimeseries } from "@/Utils/common"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 
 interface AggregatedTotalsProps {
     tableYears: [number, number];
@@ -41,7 +42,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         enabled: !!externalId,
     })
 
-    const [aggregatedTimeSeriesData, setAggregatedTimeSeriesData] = useState<ITimeSeriesData[]>([])
+    const [aggregatedTimeSeriesData, setAggregatedTimeSeriesData] = useState<ITimeSeriesTableData[]>([])
 
     const aggregateProfiles = (profiles: any[], dg4Year: number): ITimeSeries => {
         const totals: { [key: number]: number } = {}
@@ -109,7 +110,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 ],
             }
 
-            const newTimeSeriesData: ITimeSeriesData[] = []
+            const newTimeSeriesData: ITimeSeriesTableData[] = []
 
             Object.entries(profiles).forEach(([profileName, profileData]) => {
                 const aggregatedProfile = aggregateProfiles(profileData, dg4Year)

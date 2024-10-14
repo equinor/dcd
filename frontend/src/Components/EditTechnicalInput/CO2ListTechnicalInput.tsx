@@ -41,7 +41,7 @@ const CO2ListTechnicalInput = () => {
 
     let cO2VentedRow = true
 
-    const [columnDefs] = useState<ColDef[]>([
+    const getColumnDefs = (edit: boolean): ColDef[] => ([
         {
             field: "profile",
             headerName: "CO2 emission",
@@ -58,11 +58,17 @@ const CO2ListTechnicalInput = () => {
             field: "value",
             headerName: "Value",
             flex: 1,
-            editable: editMode,
-            cellClass: editMode ? "editableCell" : undefined,
+            editable: edit,
+            cellClass: edit ? "editableCell" : undefined,
             cellStyle: cellStyleRightAlign,
         },
     ])
+
+    const [columnDefs, setColumnDefs] = useState<ColDef[]>(getColumnDefs(editMode))
+
+    useEffect(() => {
+        setColumnDefs(getColumnDefs(editMode))
+    }, [editMode])
 
     const co2Data = [
         {
@@ -168,7 +174,7 @@ const CO2ListTechnicalInput = () => {
     useEffect(() => {
         setRowData(co2Data)
 
-        if (apiData) {
+        if (apiData && editMode) {
             const newProject: Components.Schemas.ProjectWithAssetsDto = { ...apiData }
             newProject.cO2RemovedFromGas = cO2RemovedFromGas
             newProject.cO2EmissionFromFuelGas = cO2EmissionsFromFuelGas
@@ -187,6 +193,7 @@ const CO2ListTechnicalInput = () => {
         cO2Vented,
         averageDevelopmentWellDrillingDays,
         dailyEmissionsFromDrillingRig,
+        editMode
     ])
 
     if (!apiData) { return null }

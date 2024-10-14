@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
+
+import { ITimeSeriesTableData } from "@/Models/ITimeSeries"
+import { useAppContext } from "@/Context/AppContext"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 import CaseTabTable from "../../../Components/CaseTabTable"
-import { ITimeSeriesData } from "../../../../../Models/Interfaces"
-import { useAppContext } from "../../../../../Context/AppContext"
-import { projectQueryFn } from "../../../../../Services/QueryFunctions"
 
 interface CaseProductionProfilesProps {
     apiData: Components.Schemas.CaseWithAssetsDto,
@@ -19,7 +20,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
     const { isCalculatingProductionOverrides } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
-    const [CaseProductionProfilesData, setCaseProductionProfilesData] = useState<ITimeSeriesData[]>([])
+    const [CaseProductionProfilesData, setCaseProductionProfilesData] = useState<ITimeSeriesTableData[]>([])
     const calculatedFields = [
         "productionProfileFuelFlaringAndLossesOverride",
         "productionProfileNetSalesGasOverride",
@@ -49,7 +50,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
         const deferredOilData = apiData.deferredOilProduction
         const deferredGasData = apiData.deferredGasProduction
 
-        const newTimeSeriesData: ITimeSeriesData[] = [
+        const newTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Oil production",
                 unit: `${projectData?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
