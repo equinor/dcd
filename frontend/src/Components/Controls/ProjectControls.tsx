@@ -1,3 +1,4 @@
+import { useState } from "react"
 import styled from "styled-components"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
@@ -12,17 +13,20 @@ import {
     visibility,
     check_circle_outlined,
     history,
+    settings,
+    users_circle,
 } from "@equinor/eds-icons"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
-import { useState } from "react"
-import Classification from "./ClassificationChip"
-import { useAppContext } from "../../Context/AppContext"
-import { formatDateAndTime } from "../../Utils/common"
-import { projectTabNames } from "../../Utils/constants"
-import { useProjectContext } from "../../Context/ProjectContext"
+import { Box } from "@mui/material"
+
+import { formatDateAndTime } from "@/Utils/common"
+import { projectTabNames } from "@/Utils/constants"
+import { useProjectContext } from "@/Context/ProjectContext"
+import { useAppContext } from "@/Context/AppContext"
 import FullPageLoading from "../fullPageLoading"
 import RevisionsDropMenu from "./RevisionsDropMenu"
+import Classification from "./ClassificationChip"
 import RevisionChip from "./RevisionChip"
 
 const Header = styled.div`
@@ -39,11 +43,20 @@ const Header = styled.div`
     }
 `
 
+const TabContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    border-bottom: 1px solid #DCDCDC;
+`
+
 const Status = styled.div`
    display: flex;
    align-items: center;
    gap: 5px;
 `
+
 interface props {
     projectLastUpdated: string
     handleEdit: () => void
@@ -52,13 +65,26 @@ interface props {
 const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
     const { currentContext } = useModuleCurrentContext()
     const { editMode } = useAppContext()
-    const { activeTabProject, setActiveTabProject, isRevision } = useProjectContext()
+    const {
+        activeTabProject,
+        setActiveTabProject,
+        isRevision,
+    } = useProjectContext()
     const { isSaving } = useAppContext()
+    const leftTabs = projectTabNames.filter((name) => name !== "Access Management" && name !== "Settings")
+    const rightTabs = projectTabNames.filter((name) => name === "Access Management" || name === "Settings")
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
 
     const handleTabChange = (index: number) => {
         setActiveTabProject(index)
+    }
+
+    const getTabIndex = (index: number, isRightTabs: boolean) => {
+        if (isRightTabs) {
+            return index + leftTabs.length
+        }
+        return index
     }
 
     return (
@@ -116,7 +142,7 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                         </Button>
                     </Tooltip>
                     {/* Uncomment to show project revisions button */}
-                    {/* <div>
+                    <div>
                         <Tooltip title="This is a revision">
                             <Button variant="outlined" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                                 <Icon data={history} />
@@ -127,17 +153,29 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                             isMenuOpen={isMenuOpen}
                             setIsMenuOpen={setIsMenuOpen}
                         />
-                    </div> */}
+                    </div>
                 </div>
             </Header>
-            <Tabs
-                value={activeTabProject}
-                onChange={(_, index) => handleTabChange(index)}
-                variant="scrollable"
-            >
-                {projectTabNames.map((tabName) => <Tab key={tabName} label={tabName} />)}
-            </Tabs>
-
+            <TabContainer>
+                <Tabs
+                    value={typeof activeTabProject === "number" && activeTabProject < leftTabs.length ? activeTabProject : false}
+                    onChange={(_, index) => handleTabChange(getTabIndex(index, false))}
+                    variant="scrollable"
+                >
+                    {leftTabs.map((tabName) => <Tab key={tabName} label={tabName} />)}
+                </Tabs>
+                <Box flexGrow={1} />
+                <Tabs
+                    sx={{ marginRight: "5px" }}
+                    value={typeof activeTabProject === "number" && activeTabProject >= leftTabs.length ? activeTabProject - leftTabs.length : false}
+                    onChange={(_, index) => handleTabChange(getTabIndex(index, true))}
+                    variant="scrollable"
+                >
+                    {rightTabs.map((tabName) => (
+                        <Tab key={tabName} sx={{ minWidth: "48px" }} icon={tabName === "Access Management" ? <Icon data={users_circle} /> : <Icon data={settings} />} />
+                    ))}
+                </Tabs>
+            </TabContainer>
         </>
     )
 }

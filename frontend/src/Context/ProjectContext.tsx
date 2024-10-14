@@ -10,8 +10,8 @@ import {
 } from "react"
 
 interface ProjectContextType {
-    activeTabProject: number;
-    setActiveTabProject: Dispatch<SetStateAction<number>>
+    activeTabProject: number | boolean;
+    setActiveTabProject: Dispatch<SetStateAction<number | boolean>>
     projectId: string
     setProjectId: Dispatch<SetStateAction<string>>
     isRevision: boolean
@@ -21,7 +21,7 @@ interface ProjectContextType {
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined)
 
 const ProjectContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [activeTabProject, setActiveTabProject] = useState<number>(0)
+    const [activeTabProject, setActiveTabProject] = useState<number | boolean>(0)
     const [projectId, setProjectId] = useState<string>("")
     const [isRevision, setIsRevision] = useState<boolean>(false)
 
@@ -33,7 +33,6 @@ const ProjectContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         isRevision,
         setIsRevision,
     }), [
-
         activeTabProject,
         setActiveTabProject,
         projectId,
