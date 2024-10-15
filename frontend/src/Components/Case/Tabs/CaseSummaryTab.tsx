@@ -1,33 +1,22 @@
 import {
     useState, useEffect,
-    Dispatch,
-    SetStateAction,
 } from "react"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import {
-    ITimeSeries, ITimeSeriesDataWithGroup, ITimeSeriesCost, ITimeSeriesCostOverride,
+    ITimeSeries,
+    ITimeSeriesDataWithGroup,
+    ITimeSeriesData,
 } from "@/Models/ITimeSeries"
 import { useCaseContext } from "@/Context/CaseContext"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
-import { mergeTimeseries, mergeTimeseriesList } from "@/Utils/common"
+import { mergeTimeseriesList } from "@/Utils/common"
 import { SetSummaryTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 import CaseSummarySkeleton from "@/Components/LoadingSkeletons/CaseSummarySkeleton"
 import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Context/ProjectContext"
-
-interface ITimeSeriesData {
-    group?: string
-    profileName: string
-    unit: string,
-    set?: Dispatch<SetStateAction<ITimeSeriesCost | undefined>>,
-    overrideProfileSet?: Dispatch<SetStateAction<ITimeSeriesCostOverride | undefined>>,
-    profile: ITimeSeries | undefined
-    overrideProfile?: ITimeSeries | undefined
-    overridable?: boolean
-}
 
 const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()
@@ -35,8 +24,6 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const { projectId } = useProjectContext()
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
-    const [, setYearRangeSetFromProfiles] = useState<boolean>(false)
-    const [, setCashflowProfile] = useState<ITimeSeries | undefined>(undefined)
 
     const { data: projectData } = useQuery({
         queryKey: ["projectApiData", projectId],
@@ -49,60 +36,6 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         queryFn: () => caseQueryFn(projectId, caseId),
         enabled: !!projectId && !!caseId,
     })
-
-    const calculateCashflowProfile = (): ITimeSeries => {
-        if (!apiData) {
-            return {
-                id: "cashflow",
-                startYear: 0,
-                values: [],
-            }
-        }
-
-        const currentYear = new Date().getFullYear()
-        const nextYear = currentYear + 1
-
-        const dg4Year = new Date(apiData.case.dG4Date).getFullYear()
-        const totalCostProfile = apiData.calculatedTotalCostCostProfile
-        const totalIncomeProfile = apiData.calculatedTotalIncomeCostProfile
-
-        if (!totalCostProfile?.values || !totalIncomeProfile?.values) {
-            return {
-                id: "cashflow",
-                startYear: Math.min(
-                    totalCostProfile?.startYear ?? 0,
-                    totalIncomeProfile?.startYear ?? 0,
-                ),
-                values: [],
-            }
-        }
-
-        const negatedCostProfile = {
-            ...totalCostProfile,
-            values: totalCostProfile.values.map((value) => -value),
-        }
-
-        const mergedProfile = mergeTimeseries(negatedCostProfile, totalIncomeProfile)
-        if (!mergedProfile.values) {
-            return {
-                id: "cashflow",
-                startYear: mergedProfile.startYear,
-                values: [],
-            }
-        }
-
-        const nextYearOffset = nextYear - dg4Year
-
-        const startYearIndex = nextYearOffset - mergedProfile.startYear
-
-        const filteredValues = mergedProfile.values.slice(Math.max(startYearIndex, 0))
-
-        return {
-            id: "cashflow",
-            startYear: mergedProfile.startYear,
-            values: filteredValues,
-        }
-    }
 
     const handleOffshoreFacilitiesCost = () => mergeTimeseriesList([
         (apiData?.surfCostProfileOverride?.override === true
@@ -202,8 +135,6 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
 
     useEffect(() => {
         if (activeTabCase === 7 && apiData) {
-            const newCashflowProfile = calculateCashflowProfile()
-            setCashflowProfile(newCashflowProfile)
             const tableYearsData = [
                 handleTotalExplorationCost(),
                 handleDrilling(),
@@ -225,7 +156,6 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const yearsFromDate = apiData.case.dG4Date ? new Date(apiData.case.dG4Date).getFullYear() : 2030
 
             SetSummaryTableYearsFromProfiles(tableYearsData, yearsFromDate, setTableYears)
-            setYearRangeSetFromProfiles(true)
         }
     }, [activeTabCase, apiData, projectData])
 

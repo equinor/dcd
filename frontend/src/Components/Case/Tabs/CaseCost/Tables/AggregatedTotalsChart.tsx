@@ -141,7 +141,6 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         const totalIncomeData = apiData.calculatedTotalIncomeCostProfile
 
         const income = {
-            id: "",
             startYear: totalIncomeData?.startYear !== undefined
                 ? totalIncomeData.startYear + new Date(apiData.case.dG4Date).getFullYear()
                 : 0,
@@ -189,7 +188,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             text: "Annual Cost Profile", // (${project?.currency === 1 ? "MNOK" : "MUSD"})`, add this to dynamically show what MNOK or MUSD on graph based on project.currency
             fontSize: 24,
         },
-        subtitle: { text: "(MNOK)" ?? "" },
+        subtitle: { text: "(MNOK)" },
 
         padding: {
             top: 10,
@@ -261,7 +260,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             text: "Cost Distribution",
             fontSize: 22,
         },
-        subtitle: { text: "(MNOK)" ?? "" },
+        subtitle: { text: "(MNOK)" },
         padding: {
             top: 10,
             right: 10,

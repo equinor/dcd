@@ -12,7 +12,7 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20241001093703_calculations")]
+    [Migration("20241015131744_calculations")]
     partial class calculations
     {
         /// <inheritdoc />
@@ -333,7 +333,21 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DrainageStrategyLink");
+
+                    b.HasIndex("ExplorationLink");
+
                     b.HasIndex("ProjectId");
+
+                    b.HasIndex("SubstructureLink");
+
+                    b.HasIndex("SurfLink");
+
+                    b.HasIndex("TopsideLink");
+
+                    b.HasIndex("TransportLink");
+
+                    b.HasIndex("WellProjectLink");
 
                     b.ToTable("Cases");
                 });
@@ -1594,6 +1608,12 @@ namespace api.Migrations
                         .HasColumnType("float")
                         .HasDefaultValue(3.0);
 
+                    b.Property<int>("InternalProjectPhase")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsRevision")
+                        .HasColumnType("bit");
+
                     b.Property<DateTimeOffset>("ModifyTime")
                         .HasColumnType("datetimeoffset");
 
@@ -1605,6 +1625,9 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("float")
                         .HasDefaultValue(75.0);
+
+                    b.Property<Guid?>("OriginalProjectId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("PhysicalUnit")
                         .HasColumnType("int");
@@ -1622,6 +1645,11 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FusionProjectId")
+                        .HasDatabaseName("IX_Project_FusionProjectId");
+
+                    b.HasIndex("OriginalProjectId");
 
                     b.ToTable("Projects");
                 });
@@ -2798,13 +2826,69 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.Case", b =>
                 {
+                    b.HasOne("api.Models.DrainageStrategy", "DrainageStrategy")
+                        .WithMany()
+                        .HasForeignKey("DrainageStrategyLink")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.Exploration", "Exploration")
+                        .WithMany()
+                        .HasForeignKey("ExplorationLink")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("api.Models.Project", "Project")
                         .WithMany("Cases")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("api.Models.Substructure", "Substructure")
+                        .WithMany()
+                        .HasForeignKey("SubstructureLink")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.Surf", "Surf")
+                        .WithMany()
+                        .HasForeignKey("SurfLink")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.Topside", "Topside")
+                        .WithMany()
+                        .HasForeignKey("TopsideLink")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.Transport", "Transport")
+                        .WithMany()
+                        .HasForeignKey("TransportLink")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.WellProject", "WellProject")
+                        .WithMany()
+                        .HasForeignKey("WellProjectLink")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("DrainageStrategy");
+
+                    b.Navigation("Exploration");
+
                     b.Navigation("Project");
+
+                    b.Navigation("Substructure");
+
+                    b.Navigation("Surf");
+
+                    b.Navigation("Topside");
+
+                    b.Navigation("Transport");
+
+                    b.Navigation("WellProject");
                 });
 
             modelBuilder.Entity("api.Models.CessationOffshoreFacilitiesCost", b =>
@@ -3255,6 +3339,16 @@ namespace api.Migrations
                         .IsRequired();
 
                     b.Navigation("DrainageStrategy");
+                });
+
+            modelBuilder.Entity("api.Models.Project", b =>
+                {
+                    b.HasOne("api.Models.Project", "OriginalProject")
+                        .WithMany("Revisions")
+                        .HasForeignKey("OriginalProjectId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("OriginalProject");
                 });
 
             modelBuilder.Entity("api.Models.SeismicAcquisitionAndProcessing", b =>
@@ -3711,6 +3805,8 @@ namespace api.Migrations
                     b.Navigation("ExplorationOperationalWellCosts");
 
                     b.Navigation("Explorations");
+
+                    b.Navigation("Revisions");
 
                     b.Navigation("Substructures");
 

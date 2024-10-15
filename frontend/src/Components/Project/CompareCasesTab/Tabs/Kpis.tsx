@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { AgChartsCompareCases } from "@/Components/AgGrid/AgChartsCompareCases"
 import { projectQueryFn } from "@/Services/QueryFunctions"
+import { useProjectContext } from "@/Context/ProjectContext"
 
 interface KpisProps {
     npvChartData?: object
@@ -13,11 +14,11 @@ interface KpisProps {
 const Kpis: React.FC<KpisProps> = ({ npvChartData, breakEvenChartData }) => {
     if (!npvChartData || !breakEvenChartData) { return <div>No data available</div> }
     const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
+    const { projectId } = useProjectContext()
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!currentContext?.externalId,
     })
     return (
         <Grid container spacing={2}>
@@ -38,7 +39,7 @@ const Kpis: React.FC<KpisProps> = ({ npvChartData, breakEvenChartData }) => {
                     chartTitle="Break even before tax"
                     barColors={["#00977B", "#FF6347"]}
                     barProfiles={["breakEven", "breakEvenOverride"]}
-                    barNames={["Calculated Break Even", "Manually set Break Even"]}
+                    barNames={["Calculated break even", "Manually set break even"]}
                     unit={apiData?.currency === 1 ? "NOK/bbl" : "USD/bbl"}
                     enableLegend={false}
                 />

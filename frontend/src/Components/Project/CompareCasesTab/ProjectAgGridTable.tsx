@@ -85,24 +85,24 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                     },
                     {
                         field: "breakEven",
-                        headerName: "Calculated Break even (USD/bbl)",
+                        headerName: "Calculated break even (USD/bbl)",
                         width: 190,
                         editable: false,
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
-                            columnHeader: "Calculated Break even",
+                            columnHeader: "Calculated break even",
                             unit: `${apiData?.currency === 1 ? "NOK/bbl" : "USD/bbl"}`,
                         },
                         cellStyle: cellStyleRightAlign,
                     },
                     {
                         field: "breakEvenOverride",
-                        headerName: "Manually set Break even (USD/bbl)",
+                        headerName: "Manually set break even (USD/bbl)",
                         width: 190,
                         editable: false,
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
-                            columnHeader: "Manually set Break even",
+                            columnHeader: "Manually set break even",
                             unit: `${apiData?.currency === 1 ? "NOK/bbl" : "USD/bbl"}`,
                         },
                         cellStyle: cellStyleRightAlign,
