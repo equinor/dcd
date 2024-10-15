@@ -1,4 +1,3 @@
-using api.Dtos;
 using api.Models;
 using api.Services;
 
@@ -36,25 +35,26 @@ public class CalculateTotalCostService : ICalculateTotalCostService
     public async Task CalculateTotalCost(Guid caseId)
     {
         var caseItem = await _caseService.GetCaseWithIncludes(
-                        caseId,
-                        c => c.TotalFeasibilityAndConceptStudies!,
-                        c => c.TotalFeasibilityAndConceptStudiesOverride!,
-                        c => c.TotalFEEDStudies!,
-                        c => c.TotalFEEDStudiesOverride!,
-                        c => c.TotalOtherStudiesCostProfile!,
-                        c => c.HistoricCostCostProfile!,
-                        c => c.WellInterventionCostProfile!,
-                        c => c.WellInterventionCostProfileOverride!,
-                        c => c.OffshoreFacilitiesOperationsCostProfile!,
-                        c => c.OffshoreFacilitiesOperationsCostProfileOverride!,
-                        c => c.OnshoreRelatedOPEXCostProfile!,
-                        c => c.AdditionalOPEXCostProfile!,
-                        c => c.CessationWellsCost!,
-                        c => c.CessationWellsCostOverride!,
-                        c => c.CessationOffshoreFacilitiesCost!,
-                        c => c.CessationOffshoreFacilitiesCostOverride!,
-                        c => c.CessationOnshoreFacilitiesCostProfile!
-                    );
+            caseId,
+            c => c.TotalFeasibilityAndConceptStudies!,
+            c => c.TotalFeasibilityAndConceptStudiesOverride!,
+            c => c.TotalFEEDStudies!,
+            c => c.TotalFEEDStudiesOverride!,
+            c => c.TotalOtherStudiesCostProfile!,
+            c => c.HistoricCostCostProfile!,
+            c => c.WellInterventionCostProfile!,
+            c => c.WellInterventionCostProfileOverride!,
+            c => c.OffshoreFacilitiesOperationsCostProfile!,
+            c => c.OffshoreFacilitiesOperationsCostProfileOverride!,
+            c => c.OnshoreRelatedOPEXCostProfile!,
+            c => c.AdditionalOPEXCostProfile!,
+            c => c.CessationWellsCost!,
+            c => c.CessationWellsCostOverride!,
+            c => c.CessationOffshoreFacilitiesCost!,
+            c => c.CessationOffshoreFacilitiesCostOverride!,
+            c => c.CessationOnshoreFacilitiesCostProfile!
+        );
+
         var totalStudyCost = CalculateStudyCost(caseItem);
 
         var studiesProfile = new TimeSeries<double>
@@ -107,7 +107,6 @@ public class CalculateTotalCostService : ICalculateTotalCostService
             StartYear = totalOffshoreFacilityCost.StartYear,
             Values = totalOffshoreFacilityCost.Values
         };
-
 
         var wellProject = await _wellProjectService.GetWellProjectWithIncludes(
             caseItem.WellProjectLink,
@@ -169,28 +168,6 @@ public class CalculateTotalCostService : ICalculateTotalCostService
         }
 
         return;
-    }
-
-    private static TimeSeries<double> UseOverrideOrProfile<T>(TimeSeries<double>? profile, T? profileOverride)
-        where T : TimeSeries<double>, ITimeSeriesOverride
-    {
-        if (profileOverride?.Override == true)
-        {
-            return new TimeSeries<double>
-            {
-                StartYear = profileOverride.StartYear,
-                Values = profileOverride.Values ?? []
-            };
-        }
-        else if (profile != null)
-        {
-            return new TimeSeries<double>
-            {
-                StartYear = profile.StartYear,
-                Values = profile.Values ?? []
-            };
-        }
-        return new TimeSeries<double> { StartYear = 0, Values = [] };
     }
 
     public TimeSeries<double> CalculateStudyCost(Case caseItem)
@@ -267,7 +244,6 @@ public class CalculateTotalCostService : ICalculateTotalCostService
         return totalCessationCost;
     }
 
-
     public static TimeSeries<double> CalculateTotalOffshoreFacilityCost(
         Substructure? substructure,
         Surf? surf,
@@ -305,7 +281,6 @@ public class CalculateTotalCostService : ICalculateTotalCostService
 
     public static TimeSeries<double> CalculateTotalDevelopmentCost(WellProject wellProject)
     {
-
         TimeSeries<double> oilProducerProfile = UseOverrideOrProfile(
             wellProject.OilProducerCostProfile,
             wellProject.OilProducerCostProfileOverride
@@ -336,8 +311,6 @@ public class CalculateTotalCostService : ICalculateTotalCostService
 
     public static TimeSeries<double> CalculateTotalExplorationCost(Exploration exploration)
     {
-
-
         TimeSeries<double> gAndGAdminCostProfile = UseOverrideOrProfile(
             exploration.GAndGAdminCost,
             exploration.GAndGAdminCostOverride
@@ -368,6 +341,28 @@ public class CalculateTotalCostService : ICalculateTotalCostService
         ]);
 
         return totalexploration;
+    }
+
+    private static TimeSeries<double> UseOverrideOrProfile<T>(TimeSeries<double>? profile, T? profileOverride)
+        where T : TimeSeries<double>, ITimeSeriesOverride
+    {
+        if (profileOverride?.Override == true)
+        {
+            return new TimeSeries<double>
+            {
+                StartYear = profileOverride.StartYear,
+                Values = profileOverride.Values ?? []
+            };
+        }
+        else if (profile != null)
+        {
+            return new TimeSeries<double>
+            {
+                StartYear = profile.StartYear,
+                Values = profile.Values ?? []
+            };
+        }
+        return new TimeSeries<double> { StartYear = 0, Values = [] };
     }
 }
 

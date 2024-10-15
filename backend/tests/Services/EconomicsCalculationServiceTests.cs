@@ -562,7 +562,7 @@ namespace api.Tests.Helpers
                 },
             };
 
-            _caseService.GetCaseWithIncludes(caseId, Arg.Any<Expression<Func<Case, object>>>())
+            _caseService.GetCaseWithIncludes(caseId, Arg.Any<Expression<Func<Case, object>>[]>())
                 .Returns(caseItem);
 
             await _calculateNPVService.CalculateNPV(caseId);

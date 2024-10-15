@@ -1,9 +1,5 @@
 using api.Models;
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace api.Services.EconomicsServices;
 
 public static class EconomicsHelper
@@ -12,41 +8,34 @@ public static class EconomicsHelper
     public static double CalculateDiscountedVolume(double[] values, double discountRate, int startIndex)
     {
         double accumulatedVolume = 0;
+        double discountFactor = 1 + (discountRate / 100);
+
         for (int i = 0; i < values.Length; i++)
         {
-            accumulatedVolume += values[i] / Math.Pow(1 + (discountRate / 100), startIndex + i + 1);
+            accumulatedVolume += values[i] / Math.Pow(discountFactor, startIndex + i + 1);
         }
+
         return accumulatedVolume;
     }
 
-
     public static TimeSeries<double> CalculateCashFlow(TimeSeries<double> income, TimeSeries<double> totalCost)
     {
-        var startYear = Math.Min(income.StartYear, totalCost.StartYear);
-        var endYear = Math.Max(
-            income.StartYear + income.Values.Length - 1,
-            totalCost.StartYear + totalCost.Values.Length - 1
-        );
+        int startYear = Math.Min(income.StartYear, totalCost.StartYear);
+        int endYear = Math.Max(income.StartYear + income.Values.Length - 1, totalCost.StartYear + totalCost.Values.Length - 1);
 
-        var incomeValues = new double[endYear - startYear + 1];
-        var costValues = new double[endYear - startYear + 1];
+        int numberOfYears = endYear - startYear + 1;
+        var cashFlowValues = new double[numberOfYears];
 
-        for (int i = 0; i < income.Values.Length; i++)
+        for (int yearIndex = 0; yearIndex < numberOfYears; yearIndex++)
         {
-            int yearIndex = income.StartYear + i - startYear;
-            incomeValues[yearIndex] = income.Values[i];
-        }
+            int currentYear = startYear + yearIndex;
+            int incomeIndex = currentYear - income.StartYear;
+            int costIndex = currentYear - totalCost.StartYear;
 
-        for (int i = 0; i < totalCost.Values.Length; i++)
-        {
-            int yearIndex = totalCost.StartYear + i - startYear;
-            costValues[yearIndex] = totalCost.Values[i];
-        }
+            double incomeValue = (incomeIndex >= 0 && incomeIndex < income.Values.Length) ? income.Values[incomeIndex] : 0;
+            double costValue = (costIndex >= 0 && costIndex < totalCost.Values.Length) ? totalCost.Values[costIndex] : 0;
 
-        var cashFlowValues = new double[incomeValues.Length];
-        for (int i = 0; i < cashFlowValues.Length; i++)
-        {
-            cashFlowValues[i] = incomeValues[i] - costValues[i];
+            cashFlowValues[yearIndex] = incomeValue - costValue;
         }
 
         return new TimeSeries<double>
@@ -54,5 +43,21 @@ public static class EconomicsHelper
             StartYear = startYear,
             Values = cashFlowValues
         };
+    }
+
+    public static TimeSeries<double> MergeProductionAndAdditionalProduction(TimeSeries<double>? t1, TimeSeries<double>? t2)
+    {
+        return TimeSeriesCost.MergeCostProfiles(
+            new TimeSeries<double>
+            {
+                StartYear = t1?.StartYear ?? 0,
+                Values = t1?.Values ?? []
+            },
+            new TimeSeries<double>
+            {
+                StartYear = t2?.StartYear ?? 0,
+                Values = t2?.Values ?? []
+            }
+        );
     }
 }

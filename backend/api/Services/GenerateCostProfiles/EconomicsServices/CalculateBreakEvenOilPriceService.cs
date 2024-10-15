@@ -7,7 +7,10 @@ public class CalculateBreakEvenOilPriceService : ICalculateBreakEvenOilPriceServ
     private readonly ICaseService _caseService;
     private readonly IDrainageStrategyService _drainageStrategyService;
 
-    public CalculateBreakEvenOilPriceService(ICaseService caseService, IDrainageStrategyService drainageStrategyService)
+    public CalculateBreakEvenOilPriceService(
+        ICaseService caseService,
+        IDrainageStrategyService drainageStrategyService
+    )
     {
         _caseService = caseService;
         _drainageStrategyService = drainageStrategyService;
@@ -16,9 +19,9 @@ public class CalculateBreakEvenOilPriceService : ICalculateBreakEvenOilPriceServ
     public async Task CalculateBreakEvenOilPrice(Guid caseId)
     {
         var caseItem = await _caseService.GetCaseWithIncludes(
-                        caseId,
-                        c => c.Project
-                    );
+            caseId,
+            c => c.Project
+        );
 
         var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
             caseItem.DrainageStrategyLink,
@@ -28,35 +31,51 @@ public class CalculateBreakEvenOilPriceService : ICalculateBreakEvenOilPriceServ
             d => d.AdditionalProductionProfileGas!
         );
 
-        var discountRate = caseItem.Project?.DiscountRate ?? 8;
-        var defaultOilPrice = caseItem.Project?.OilPriceUSD ?? 75;
-        var gasPriceNOK = caseItem.Project?.GasPriceNOK ?? 3;
-        var exchangeRateUSDToNOK = caseItem.Project?.ExchangeRateUSDToNOK ?? 10;
+        var discountRate = caseItem.Project.DiscountRate;
+        var defaultOilPrice = caseItem.Project.OilPriceUSD;
+        var gasPriceNOK = caseItem.Project.GasPriceNOK;
+        var exchangeRateUSDToNOK = caseItem.Project.ExchangeRateUSDToNOK;
 
-        var oilVolume = TimeSeriesCost.MergeCostProfiles(
-            new TimeSeries<double> { StartYear = drainageStrategy.ProductionProfileOil?.StartYear ?? 0, Values = drainageStrategy.ProductionProfileOil?.Values ?? Array.Empty<double>() },
-            new TimeSeries<double> { StartYear = drainageStrategy.AdditionalProductionProfileOil?.StartYear ?? 0, Values = drainageStrategy.AdditionalProductionProfileOil?.Values ?? Array.Empty<double>() }
+        var oilVolume = EconomicsHelper.MergeProductionAndAdditionalProduction(
+            drainageStrategy.ProductionProfileOil,
+            drainageStrategy.AdditionalProductionProfileOil
         );
-        if (!oilVolume.Values.Any()) { return; }
+
+        if (oilVolume.Values.Length == 0) { return; }
+
         oilVolume.Values = oilVolume.Values.Select(v => v / 1_000_000).ToArray();
 
-        var gasVolume = TimeSeriesCost.MergeCostProfiles(
-            new TimeSeries<double> { StartYear = drainageStrategy.ProductionProfileGas?.StartYear ?? 0, Values = drainageStrategy.ProductionProfileGas?.Values ?? Array.Empty<double>() },
-            new TimeSeries<double> { StartYear = drainageStrategy.AdditionalProductionProfileGas?.StartYear ?? 0, Values = drainageStrategy.AdditionalProductionProfileGas?.Values ?? Array.Empty<double>() }
+        var gasVolume = EconomicsHelper.MergeProductionAndAdditionalProduction(
+            drainageStrategy.ProductionProfileGas,
+            drainageStrategy.AdditionalProductionProfileGas
         );
-        gasVolume.Values = gasVolume.Values.Any() ? gasVolume.Values.Select(v => v / 1_000_000_000).ToArray() : Array.Empty<double>();
+
+        gasVolume.Values = gasVolume.Values.Length != 0 ? gasVolume.Values.Select(v => v / 1_000_000_000).ToArray() : [];
 
         var currentYear = DateTime.Now.Year;
         var nextYear = currentYear + 1;
         var dg4Year = caseItem.DG4Date.Year;
         var nextYearInRelationToDg4Year = nextYear - dg4Year;
 
-        var discountedGasVolume = EconomicsHelper.CalculateDiscountedVolume(gasVolume.Values, discountRate, gasVolume.StartYear + Math.Abs(nextYearInRelationToDg4Year));
-        var discountedOilVolume = EconomicsHelper.CalculateDiscountedVolume(oilVolume.Values, discountRate, oilVolume.StartYear + Math.Abs(nextYearInRelationToDg4Year));
+        var discountedGasVolume = EconomicsHelper.CalculateDiscountedVolume(
+            gasVolume.Values,
+            discountRate,
+            gasVolume.StartYear + Math.Abs(nextYearInRelationToDg4Year)
+        );
+
+        var discountedOilVolume = EconomicsHelper.CalculateDiscountedVolume(
+            oilVolume.Values,
+            discountRate,
+            oilVolume.StartYear + Math.Abs(nextYearInRelationToDg4Year)
+        );
 
         if (discountedOilVolume == 0 || discountedGasVolume == 0) { return; }
 
-        var discountedTotalCost = EconomicsHelper.CalculateDiscountedVolume(caseItem?.CalculatedTotalCostCostProfile?.Values ?? Array.Empty<double>(), discountRate, (caseItem?.CalculatedTotalCostCostProfile?.StartYear ?? 0) + Math.Abs(nextYearInRelationToDg4Year));
+        var discountedTotalCost = EconomicsHelper.CalculateDiscountedVolume(
+            caseItem?.CalculatedTotalCostCostProfile?.Values ?? [],
+            discountRate,
+            (caseItem?.CalculatedTotalCostCostProfile?.StartYear ?? 0) + Math.Abs(nextYearInRelationToDg4Year)
+        );
 
         var GOR = discountedGasVolume / discountedOilVolume;
 
