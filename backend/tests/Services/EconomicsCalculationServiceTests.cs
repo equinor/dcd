@@ -379,13 +379,26 @@ namespace api.Tests.Helpers
                 }
             };
 
-            _substructureService.GetSubstructureWithIncludes(caseItem.SubstructureLink).Returns(Task.FromResult(substructure));
-            _surfService.GetSurfWithIncludes(caseItem.SurfLink).Returns(Task.FromResult(surf));
-            _topsideService.GetTopsideWithIncludes(caseItem.TopsideLink).Returns(Task.FromResult(topside));
-            _transportService.GetTransportWithIncludes(caseItem.TransportLink).Returns(Task.FromResult(transport));
-            _wellProjectService.GetWellProjectWithIncludes(caseItem.WellProjectLink).Returns(Task.FromResult(wellProject));
-            _explorationService.GetExplorationWithIncludes(caseItem.ExplorationLink).Returns(Task.FromResult(exploration));
-            _caseService.GetCaseWithIncludes(caseId, Arg.Any<Expression<Func<Case, object>>>())
+
+            _substructureService.GetSubstructureWithIncludes(caseItem.SubstructureLink, Arg.Any<Expression<Func<Substructure, object>>[]>())
+                .Returns(Task.FromResult(substructure));
+
+            _surfService.GetSurfWithIncludes(caseItem.SurfLink, Arg.Any<Expression<Func<Surf, object>>[]>())
+                .Returns(Task.FromResult(surf));
+
+            _topsideService.GetTopsideWithIncludes(caseItem.TopsideLink, Arg.Any<Expression<Func<Topside, object>>[]>())
+                .Returns(Task.FromResult(topside));
+
+            _transportService.GetTransportWithIncludes(caseItem.TransportLink, Arg.Any<Expression<Func<Transport, object>>[]>())
+                .Returns(Task.FromResult(transport));
+
+            _wellProjectService.GetWellProjectWithIncludes(caseItem.WellProjectLink, Arg.Any<Expression<Func<WellProject, object>>[]>())
+                .Returns(Task.FromResult(wellProject));
+
+            _explorationService.GetExplorationWithIncludes(caseItem.ExplorationLink, Arg.Any<Expression<Func<Exploration, object>>[]>())
+                .Returns(Task.FromResult(exploration));
+
+            _caseService.GetCaseWithIncludes(caseId, Arg.Any<Expression<Func<Case, object>>[]>())
                 .Returns(caseItem);
 
             // Act
