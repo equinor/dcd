@@ -22,14 +22,12 @@ const ProjectSettingsTab = () => {
     const [oilPriceUSD, setOilPriceUSD] = useState(apiData?.oilPriceUSD || 0)
     const [gasPriceNOK, setGasPriceNOK] = useState(apiData?.gasPriceNOK || 0)
     const [discountRate, setDiscountRate] = useState(apiData?.discountRate || 0)
-    const [internalProjectPhase, setInternalProjectPhase] = useState(apiData?.internalProjectPhase || 0)
 
     useEffect(() => {
         if (apiData) {
             setOilPriceUSD(apiData.oilPriceUSD)
             setGasPriceNOK(apiData.gasPriceNOK)
             setDiscountRate(apiData.discountRate)
-            setInternalProjectPhase(apiData.internalProjectPhase)
         }
     }, [apiData])
 
