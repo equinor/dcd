@@ -99,6 +99,11 @@ declare namespace Components {
             source?: Source /* int32 */;
             maturity?: Maturity /* int32 */;
         }
+        export interface AccessRightsDto {
+            canEdit?: boolean;
+            canView?: boolean;
+            isAdmin?: boolean;
+        }
         export interface AdditionalOPEXCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
@@ -849,6 +854,7 @@ declare namespace Components {
             sum?: number; // double
             override: boolean;
         }
+        export type InternalProjectPhase = 0 | 1 | 2; // int32
         export type Maturity = 0 | 1 | 2 | 3; // int32
         export interface NetSalesGasDto {
             id: string; // uuid
@@ -979,6 +985,7 @@ declare namespace Components {
             physicalUnit: PhysUnit /* int32 */;
             createDate: string; // date-time
             projectPhase: ProjectPhase /* int32 */;
+            internalProjectPhase: InternalProjectPhase /* int32 */;
             projectCategory: ProjectCategory /* int32 */;
             sharepointSiteUrl?: string | null;
             cO2RemovedFromGas: number; // double
@@ -993,6 +1000,11 @@ declare namespace Components {
             discountRate: number; // double
             exchangeRateUSDToNOK: number; // double
         }
+        export interface ProjectMemberDto {
+            azureId: string; // uuid
+            role: ProjectMemberRole /* int32 */;
+        }
+        export type ProjectMemberRole = 0 | 1 | 2; // int32
         export type ProjectPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
         export interface ProjectWithAssetsDto {
             classification: ProjectClassification /* int32 */;
@@ -1010,6 +1022,7 @@ declare namespace Components {
             physicalUnit: PhysUnit /* int32 */;
             createDate: string; // date-time
             projectPhase: ProjectPhase /* int32 */;
+            internalProjectPhase: InternalProjectPhase /* int32 */;
             projectCategory: ProjectCategory /* int32 */;
             sharepointSiteUrl?: string | null;
             cO2RemovedFromGas: number; // double
@@ -1035,6 +1048,7 @@ declare namespace Components {
             transports: TransportWithProfilesDto[];
             drainageStrategies: DrainageStrategyWithProfilesDto[];
             wellProjects: WellProjectWithProfilesDto[];
+            projectMembers: ProjectMemberDto[];
             modifyTime: string; // date-time
         }
         export interface ProjectWithCasesDto {
@@ -1053,6 +1067,7 @@ declare namespace Components {
             physicalUnit: PhysUnit /* int32 */;
             createDate: string; // date-time
             projectPhase: ProjectPhase /* int32 */;
+            internalProjectPhase: InternalProjectPhase /* int32 */;
             projectCategory: ProjectCategory /* int32 */;
             sharepointSiteUrl?: string | null;
             cO2RemovedFromGas: number; // double
@@ -1654,6 +1669,7 @@ declare namespace Components {
             physicalUnit?: PhysUnit /* int32 */;
             classification?: ProjectClassification /* int32 */;
             projectPhase?: ProjectPhase /* int32 */;
+            internalProjectPhase?: InternalProjectPhase /* int32 */;
             projectCategory?: ProjectCategory /* int32 */;
             sharepointSiteUrl?: string | null;
             cO2RemovedFromGas?: number; // double
@@ -1937,6 +1953,19 @@ declare namespace Paths {
             export type RequestBody = Components.Schemas.UpdateProjectDto;
             namespace Responses {
                 export type $200 = Components.Schemas.ProjectWithCasesDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdAccess {
+        namespace Get {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.AccessRightsDto;
             }
         }
     }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import {
-    Menu, Typography, Icon, Button,
+    Menu, Typography, Icon,
 } from "@equinor/eds-core-react"
 import { add, exit_to_app } from "@equinor/eds-icons"
 import { useNavigate, useParams } from "react-router"
@@ -10,10 +10,10 @@ import { useProjectContext } from "../../Context/ProjectContext"
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import { formatFullDate } from "@/Utils/common"
 import {
-    createRevision,
     disableCurrentRevision, exitRevisionView, navigateToRevision, openRevisionModal,
 } from "@/Utils/RevisionUtils"
 import CreateRevisionModal from "../Modal/CreateRevisionModal"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 type RevisionsDropMenuProps = {
     isMenuOpen: boolean
@@ -37,6 +37,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
     const navigate = useNavigate()
     const queryClient = useQueryClient()
     const { revisionId } = useParams()
+    const { isEditDisabled } = useEditDisabled()
 
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
@@ -103,7 +104,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
                 }
                 <Menu.Item
                     onClick={() => openRevisionModal(setCreatingRevision)}
-                    disabled={isRevision}
+                    disabled={isEditDisabled}
                 >
                     <Icon data={add} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">

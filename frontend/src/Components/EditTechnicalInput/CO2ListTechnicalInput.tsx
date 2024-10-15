@@ -68,7 +68,7 @@ const CO2ListTechnicalInput = () => {
 
     useEffect(() => {
         setColumnDefs(getColumnDefs(editMode))
-    }, [editMode, columnDefs])
+    }, [editMode])
 
     const co2Data = [
         {
