@@ -8,12 +8,12 @@ import CreateCaseModal from "./Modal/CreateCaseModal"
 import { useAppContext } from "../Context/AppContext"
 import useEditProject from "../Hooks/useEditProject"
 import { useProjectContext } from "@/Context/ProjectContext"
+import { AxiosError } from "axios"
 
 const RouteCoordinator = (): JSX.Element => {
     const { setIsRevision, setAccessRights, accessRights } = useProjectContext()
     const { setIsCreating, setIsLoading, setSnackBarMessage } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
-    const { addProjectEdit } = useEditProject()
 
     const navigate = useNavigate()
     const location = useLocation()
@@ -43,43 +43,56 @@ const RouteCoordinator = (): JSX.Element => {
                 return
             }
 
-            try {
-                setIsLoading(true)
-                const projectService = await GetProjectService()
+            setIsLoading(true)
+            const projectService = await GetProjectService()
 
-                // Perform access check
-                const access = await projectService.getAccess(currentContext.externalId)
+            try {
+                let access
+                try {
+                    access = await projectService.getAccess(currentContext.externalId)
+                } catch (error) {
+                    if (isAxiosError(error) && error.response?.status === 404) {
+                        // Project not found, attempt to create it
+                        setIsCreating(true)
+                        setSnackBarMessage("No project found for this search. Creating new.")
+                        const createdProject = await projectService.createProject(currentContext.id)
+                        access = await projectService.getAccess(createdProject.fusionProjectId)
+                    } else {
+                        handleError("Error fetching access rights", error)
+                        return
+                    }
+                }
+
                 setAccessRights(access)
 
-                if (access.canView) {
-                    let fetchedProject
-                    try {
-                        fetchedProject = await projectService.getProject(currentContext.externalId)
-                    } catch (error) {
-                        if (!fetchedProject || fetchedProject.id === "") {
-                            setIsCreating(true)
-                            setSnackBarMessage("No project found for this search. Creating new.")
-                            fetchedProject = await projectService.createProject(currentContext.id)
-                        }
-                    }
+                if (!access.canView) {
+                    setSnackBarMessage("You do not have access to view this project")
+                    setIsLoading(false)
+                    return
+                }
 
+                try {
+                    const fetchedProject = await projectService.getProject(currentContext.externalId)
                     if (fetchedProject) {
                         setIsCreating(false)
                         setIsLoading(false)
                     }
-                } else {
-                    setSnackBarMessage("You do not have access to view this project")
-                    setIsLoading(false)
+                } catch (error) {
+                    handleError("Error fetching project", error)
                 }
             } catch (error) {
-                console.error("Error fetching or setting project in context:", error)
-                setSnackBarMessage("Error fetching or setting project in context")
-                setIsLoading(false)
+                handleError("Error fetching or setting project in context", error)
             }
         }
 
         fetchAndSetProject()
     }, [currentContext?.externalId])
+
+    const handleError = (message: string, error: unknown) => {
+        console.error(message, error)
+        setSnackBarMessage(message)
+        setIsLoading(false)
+    }
 
     if (!currentContext) {
         return (
@@ -114,3 +127,7 @@ const RouteCoordinator = (): JSX.Element => {
 }
 
 export default RouteCoordinator
+
+function isAxiosError(error: unknown): error is AxiosError {
+    return (error as AxiosError).isAxiosError !== undefined
+}
