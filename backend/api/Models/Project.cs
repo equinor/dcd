@@ -63,9 +63,9 @@ public enum Currency
 
 public enum InternalProjectPhase
 {
-    APbo,
-    BOR,
-    VPbo,
+    APbo, // Approval Point Business Oppertunity
+    BOR, // Business Opportunity Reconfirmation
+    VPbo, // Valid Point Business Opportunity
 }
 public enum ProjectPhase
 {
