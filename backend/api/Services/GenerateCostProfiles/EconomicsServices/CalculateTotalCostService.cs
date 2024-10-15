@@ -146,11 +146,11 @@ public class CalculateTotalCostService : ICalculateTotalCostService
         var totalCost = TimeSeriesCost.MergeCostProfilesList(
         [
             studiesProfile,
-                opexProfile,
-                cessationProfile,
-                totalOffshoreFacilityProfile,
-                developmentProfile,
-                explorationProfile
+            opexProfile,
+            cessationProfile,
+            totalOffshoreFacilityProfile,
+            developmentProfile,
+            explorationProfile
         ]);
 
         if (caseItem.CalculatedTotalCostCostProfile != null)

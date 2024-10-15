@@ -4,13 +4,12 @@ using api.Mappings;
 using api.Middleware;
 using api.Repositories;
 using api.Services;
+using api.Services.EconomicsServices;
 using api.Services.FusionIntegration;
 using api.Services.GenerateCostProfiles;
 
 using Azure.Identity;
 using Azure.Storage.Blobs;
-
-using api.Services.EconomicsServices;
 
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
