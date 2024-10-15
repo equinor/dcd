@@ -15,6 +15,7 @@ public class UpdateProjectDto
     public PhysUnit PhysicalUnit { get; set; }
     public ProjectClassification Classification { get; set; }
     public ProjectPhase ProjectPhase { get; set; }
+    public InternalProjectPhase InternalProjectPhase { get; set; }
     public ProjectCategory ProjectCategory { get; set; }
     public string? SharepointSiteUrl { get; set; }
     public double CO2RemovedFromGas { get; set; }
