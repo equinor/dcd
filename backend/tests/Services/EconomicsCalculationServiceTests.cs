@@ -1,14 +1,8 @@
 using System.Linq.Expressions;
 
-using api.Context;
-using api.Dtos;
-using api.Enums;
-using api.Helpers;
 using api.Models;
-using api.Repositories;
 using api.Services;
 using api.Services.EconomicsServices;
-using api.Services.GenerateCostProfiles;
 
 using NSubstitute;
 
@@ -29,7 +23,6 @@ namespace api.Tests.Helpers
         private readonly IStudyCostProfileService _studyCostProfileService;
         private readonly IOpexCostProfileService _opexCostProfileService;
         private readonly ICessationCostProfileService _cessationCostProfileService;
-        protected readonly DcdDbContext _context;
         private readonly ICaseService _caseService;
         private readonly CalculateTotalIncomeService _calculateTotalIncomeService;
         private readonly CalculateBreakEvenOilPriceService _calculateBreakEvenOilPriceService;
@@ -39,21 +32,27 @@ namespace api.Tests.Helpers
         public EconomicsCalculationServiceTests()
         {
             _caseService = Substitute.For<ICaseService>();
-            _explorationService = Substitute.For<IExplorationService>();
+            _drainageStrategyService = Substitute.For<IDrainageStrategyService>();
             _substructureService = Substitute.For<ISubstructureService>();
             _surfService = Substitute.For<ISurfService>();
-            _drainageStrategyService = Substitute.For<IDrainageStrategyService>();
-            _cessationCostProfileService = Substitute.For<ICessationCostProfileService>();
-            _drainageStrategyService = Substitute.For<IDrainageStrategyService>();
-            _opexCostProfileService = Substitute.For<IOpexCostProfileService>();
-            _drainageStrategyService = Substitute.For<IDrainageStrategyService>();
-            _studyCostProfileService = Substitute.For<IStudyCostProfileService>();
-            _drainageStrategyService = Substitute.For<IDrainageStrategyService>();
             _topsideService = Substitute.For<ITopsideService>();
             _transportService = Substitute.For<ITransportService>();
+            _explorationService = Substitute.For<IExplorationService>();
             _wellProjectService = Substitute.For<IWellProjectService>();
-            _calculateTotalIncomeService = new CalculateTotalIncomeService(_caseService, _drainageStrategyService);
-            _calculateBreakEvenOilPriceService = new CalculateBreakEvenOilPriceService(_caseService, _drainageStrategyService);
+
+            _cessationCostProfileService = Substitute.For<ICessationCostProfileService>();
+            _opexCostProfileService = Substitute.For<IOpexCostProfileService>();
+            _studyCostProfileService = Substitute.For<IStudyCostProfileService>();
+
+            _calculateTotalIncomeService = new CalculateTotalIncomeService(
+                _caseService,
+                _drainageStrategyService
+            );
+
+            _calculateBreakEvenOilPriceService = new CalculateBreakEvenOilPriceService(
+                _caseService,
+                _drainageStrategyService
+            );
             _calculateTotalCostService = new CalculateTotalCostService(
                 _caseService,
                 _substructureService,
