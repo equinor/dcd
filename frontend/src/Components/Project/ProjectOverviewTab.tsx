@@ -65,6 +65,36 @@ const ProjectOverviewTab = () => {
         return <div>Loading project data...</div>
     }
 
+    const renderProjectPhase = () => {
+        if (!apiData) { return null }
+
+        const { projectPhase, internalProjectPhase } = apiData
+
+        if ([3, 4, 6, 7, 8].includes(projectPhase)) {
+            return getProjectPhaseName(projectPhase)
+        }
+
+        const internalProjectPhaseOptions = Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => (
+            <option key={key} value={key}>{value.label}</option>
+        ))
+
+        return (
+            <InputSwitcher
+                value={INTERNAL_PROJECT_PHASE[internalProjectPhase].label}
+                label="Internal Project Phase"
+            >
+                <NativeSelect
+                    id="internalProjectPhase"
+                    label=""
+                    onChange={handleInternalProjectPhaseChange}
+                    value={internalProjectPhase}
+                >
+                    {internalProjectPhaseOptions}
+                </NativeSelect>
+            </InputSwitcher>
+        )
+    }
+
     return (
         <Grid container columnSpacing={2} rowSpacing={3}>
             <Gallery />
@@ -72,29 +102,9 @@ const ProjectOverviewTab = () => {
                 <Grid item>
                     <Typography group="input" variant="label">Project Phase</Typography>
                     <Typography aria-label="Project phase">
-                        {[3, 4, 6, 7, 8].includes(apiData.projectPhase)
-                            ? getProjectPhaseName(apiData.projectPhase)
-                            : (
-                                // Check if the internal project phase is to be used
-                                <InputSwitcher
-                                    value={INTERNAL_PROJECT_PHASE[apiData.internalProjectPhase].label}
-                                    label="Internal Project Phase"
-                                >
-                                    <NativeSelect
-                                        id="internalProjectPhase"
-                                        label=""
-                                        onChange={(e) => handleInternalProjectPhaseChange(e)}
-                                        value={apiData ? apiData.internalProjectPhase : undefined}
-                                    >
-                                        {Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => (
-                                            <option key={key} value={key}>{value.label}</option>
-                                        ))}
-                                    </NativeSelect>
-                                </InputSwitcher>
-                            )}
+                        {renderProjectPhase()}
                     </Typography>
                 </Grid>
-
                 <Grid item>
                     <Typography group="input" variant="label">Project Category</Typography>
                     <Typography aria-label="Project category">
