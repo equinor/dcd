@@ -1,9 +1,8 @@
-using api.Dtos;
 
-namespace api.Services
+namespace api.Services.EconomicsServices;
+
+public interface ICalculateBreakEvenOilPriceService
 {
-    public interface ICalculateBreakEvenOilPriceService
-    {
-        Task CalculateBreakEvenOilPrice(Guid caseId);
-    }
+    Task CalculateBreakEvenOilPrice(Guid caseId);
 }
+

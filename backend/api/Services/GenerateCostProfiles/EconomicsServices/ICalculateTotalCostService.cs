@@ -1,9 +1,8 @@
 using api.Dtos;
 
-namespace api.Services
+namespace api.Services.EconomicsServices;
+
+public interface ICalculateTotalCostService
 {
-    public interface ICalculateTotalCostService
-    {
-        Task CalculateTotalCost(Guid caseId);
-    }
+    Task CalculateTotalCost(Guid caseId);
 }

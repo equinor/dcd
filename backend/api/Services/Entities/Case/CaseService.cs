@@ -78,12 +78,9 @@ public class CaseService : ICaseService
             .Include(c => c.CessationOnshoreFacilitiesCostProfile)
             .Include(c => c.CalculatedTotalIncomeCostProfile)
             .Include(c => c.CalculatedTotalCostCostProfile)
+            .FirstOrDefaultAsync(c => c.Id == caseId)
+        ?? throw new NotFoundInDBException(string.Format("Case {0} not found.", caseId));
 
-            .FirstOrDefaultAsync(c => c.Id == caseId);
-        if (caseItem == null)
-        {
-            throw new NotFoundInDBException(string.Format("Case {0} not found.", caseId));
-        }
         return caseItem;
     }
 

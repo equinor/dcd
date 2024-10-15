@@ -1,6 +1,6 @@
-using api.Helpers;
 using api.Models;
 using api.Services;
+using api.Services.EconomicsServices;
 using api.Services.GenerateCostProfiles;
 
 using Microsoft.EntityFrameworkCore;
@@ -138,32 +138,29 @@ public class DcdDbContext : DbContext
             await _serviceProvider.GetRequiredService<ICo2EmissionsProfileService>().Generate(caseId);
         }
 
-        var calculateIncomeHelper = _serviceProvider.GetRequiredService<ICalculateTotalIncomeService>();
-
         if (rerunTotalIncome)
         {
+            var calculateIncomeHelper = _serviceProvider.GetRequiredService<ICalculateTotalIncomeService>();
             await calculateIncomeHelper.CalculateTotalIncome(caseId);
         }
 
-        var calculateCostHelper = _serviceProvider.GetRequiredService<ICalculateTotalCostService>();
         if (rerunTotalCost)
         {
+            var calculateCostHelper = _serviceProvider.GetRequiredService<ICalculateTotalCostService>();
             await calculateCostHelper.CalculateTotalCost(caseId);
         }
 
-        var calculateNPVHelper = _serviceProvider.GetRequiredService<ICalculateNPVService>();
         if (rerunTotalIncome || rerunTotalCost || rerunCalculateNPV)
         {
+            var calculateNPVHelper = _serviceProvider.GetRequiredService<ICalculateNPVService>();
             await calculateNPVHelper.CalculateNPV(caseId);
         }
 
-        var calculateBreakEvenHelper = _serviceProvider.GetRequiredService<ICalculateBreakEvenOilPriceService>();
         if (rerunTotalIncome || rerunTotalCost || rerunCalculateBreakEven)
         {
+            var calculateBreakEvenHelper = _serviceProvider.GetRequiredService<ICalculateBreakEvenOilPriceService>();
             await calculateBreakEvenHelper.CalculateBreakEvenOilPrice(caseId);
         }
-
-
     }
 
     private (List<Well> wells, List<Guid> drillingScheduleIds) CalculateExplorationAndWellProjectCost()
@@ -664,10 +661,10 @@ public class DcdDbContext : DbContext
         var additionalProductionProfileOilAdded = ChangeTracker.Entries<AdditionalProductionProfileOil>()
             .Any(e => e.State == EntityState.Added);
 
-        var surfChanges = ChangeTracker.Entries<Models.Surf>()
+        var surfChanges = ChangeTracker.Entries<Surf>()
             .Any(e => e.State == EntityState.Modified &&
             (
-                e.Property(nameof(Models.Surf.CessationCost)).IsModified
+                e.Property(nameof(Surf.CessationCost)).IsModified
             ));
 
         var developmentOperationalWellCostsChanges = ChangeTracker.Entries<DevelopmentOperationalWellCosts>()
@@ -1170,7 +1167,7 @@ public class DcdDbContext : DbContext
     public DbSet<WellProjectWell> WellProjectWell { get; set; } = null!;
     public DbSet<ExplorationWell> ExplorationWell { get; set; } = null!;
 
-    public DbSet<Models.Surf> Surfs { get; set; } = null!;
+    public DbSet<Surf> Surfs { get; set; } = null!;
     public DbSet<SurfCostProfile> SurfCostProfile { get; set; } = null!;
     public DbSet<SurfCostProfileOverride> SurfCostProfileOverride { get; set; } = null!;
     public DbSet<SurfCessationCostProfile> SurfCessationCostProfiles { get; set; } = null!;
@@ -1185,7 +1182,7 @@ public class DcdDbContext : DbContext
     public DbSet<TopsideCostProfileOverride> TopsideCostProfileOverride { get; set; } = null!;
     public DbSet<TopsideCessationCostProfile> TopsideCessationCostProfiles { get; set; } = null!;
 
-    public DbSet<Models.Transport> Transports { get; set; } = null!;
+    public DbSet<Transport> Transports { get; set; } = null!;
     public DbSet<TransportCostProfile> TransportCostProfile { get; set; } = null!;
     public DbSet<TransportCostProfileOverride> TransportCostProfileOverride { get; set; } = null!;
     public DbSet<TransportCessationCostProfile> TransportCessationCostProfiles { get; set; } = null!;

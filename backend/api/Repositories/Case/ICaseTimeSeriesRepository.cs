@@ -17,6 +17,7 @@ public interface ICaseTimeSeriesRepository : IBaseRepository
     OffshoreFacilitiesOperationsCostProfileOverride CreateOffshoreFacilitiesOperationsCostProfileOverride(OffshoreFacilitiesOperationsCostProfileOverride profile);
     OnshoreRelatedOPEXCostProfile CreateOnshoreRelatedOPEXCostProfile(OnshoreRelatedOPEXCostProfile profile);
     AdditionalOPEXCostProfile CreateAdditionalOPEXCostProfile(AdditionalOPEXCostProfile profile);
+
     Task<CessationWellsCostOverride?> GetCessationWellsCostOverride(Guid costProfileId);
     CessationWellsCostOverride UpdateCessationWellsCostOverride(CessationWellsCostOverride costProfile);
     Task<CessationOffshoreFacilitiesCostOverride?> GetCessationOffshoreFacilitiesCostOverride(Guid costProfileId);

@@ -33,7 +33,6 @@ public class CaseProfile : Profile
 
         CreateMap<Image, ImageDto>();
 
-        CreateMap<APIUpdateCaseWithProfilesDto, Case>().ReverseMap();
         CreateMap<APIUpdateCaseDto, Case>();
         CreateMap<PROSPUpdateCaseDto, Case>();
         CreateMap<UpdateCessationWellsCostOverrideDto, CessationWellsCostOverride>();

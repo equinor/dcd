@@ -7,9 +7,8 @@ using api.Helpers;
 using api.Models;
 using api.Repositories;
 using api.Services;
+using api.Services.EconomicsServices;
 using api.Services.GenerateCostProfiles;
-
-using EconomicsServices;
 
 using NSubstitute;
 
@@ -53,10 +52,18 @@ namespace api.Tests.Helpers
             _topsideService = Substitute.For<ITopsideService>();
             _transportService = Substitute.For<ITransportService>();
             _wellProjectService = Substitute.For<IWellProjectService>();
-            _calculateTotalIncomeService = (CalculateTotalIncomeService)Substitute.For<ICalculateTotalIncomeService>();
-            _calculateBreakEvenOilPriceService = (CalculateBreakEvenOilPriceService)Substitute.For<ICalculateBreakEvenOilPriceService>();
-            _calculateTotalCostService = (CalculateTotalCostService)Substitute.For<ICalculateTotalCostService>();
-            _calculateNPVService = (CalculateNPVService)Substitute.For<ICalculateNPVService>();
+            _calculateTotalIncomeService = new CalculateTotalIncomeService(_caseService, _drainageStrategyService);
+            _calculateBreakEvenOilPriceService = new CalculateBreakEvenOilPriceService(_caseService, _drainageStrategyService);
+            _calculateTotalCostService = new CalculateTotalCostService(
+                _caseService,
+                _substructureService,
+                _surfService,
+                _topsideService,
+                _transportService,
+                _wellProjectService,
+                _explorationService
+            );
+            _calculateNPVService = new CalculateNPVService(_caseService);
         }
 
 
@@ -279,7 +286,7 @@ namespace api.Tests.Helpers
                 }
             };
 
-            var surf = new Models.Surf
+            var surf = new Surf
             {
                 CostProfileOverride = new SurfCostProfileOverride
                 {
@@ -299,7 +306,7 @@ namespace api.Tests.Helpers
                 }
             };
 
-            var transport = new Models.Transport
+            var transport = new Transport
             {
                 CostProfileOverride = new TransportCostProfileOverride
                 {

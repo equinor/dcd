@@ -70,10 +70,10 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
     }
 
     public async Task<CessationOnshoreFacilitiesCostProfileDto> UpdateCessationOnshoreFacilitiesCostProfile(
-    Guid projectId,
-    Guid caseId,
-    Guid costProfileId,
-    UpdateCessationOnshoreFacilitiesCostProfileDto updatedCostProfileDto
+        Guid projectId,
+        Guid caseId,
+        Guid costProfileId,
+        UpdateCessationOnshoreFacilitiesCostProfileDto updatedCostProfileDto
     )
     {
         return await UpdateCaseCostProfile<CessationOnshoreFacilitiesCostProfile, CessationOnshoreFacilitiesCostProfileDto, UpdateCessationOnshoreFacilitiesCostProfileDto>(
@@ -121,10 +121,10 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
     }
 
     public async Task<TotalOtherStudiesCostProfileDto> UpdateTotalOtherStudiesCostProfile(
-    Guid projectId,
-    Guid caseId,
-    Guid costProfileId,
-    UpdateTotalOtherStudiesCostProfileDto updatedCostProfileDto
+        Guid projectId,
+        Guid caseId,
+        Guid costProfileId,
+        UpdateTotalOtherStudiesCostProfileDto updatedCostProfileDto
     )
     {
         return await UpdateCaseCostProfile<TotalOtherStudiesCostProfile, TotalOtherStudiesCostProfileDto, UpdateTotalOtherStudiesCostProfileDto>(
@@ -250,9 +250,9 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
     }
 
     public async Task<CessationOnshoreFacilitiesCostProfileDto> CreateCessationOnshoreFacilitiesCostProfile(
-    Guid projectId,
-    Guid caseId,
-    CreateCessationOnshoreFacilitiesCostProfileDto createProfileDto
+        Guid projectId,
+        Guid caseId,
+        CreateCessationOnshoreFacilitiesCostProfileDto createProfileDto
     )
     {
         return await CreateCaseProfile<CessationOnshoreFacilitiesCostProfile, CessationOnshoreFacilitiesCostProfileDto, CreateCessationOnshoreFacilitiesCostProfileDto>(

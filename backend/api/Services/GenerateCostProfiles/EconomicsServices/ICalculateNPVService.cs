@@ -1,9 +1,8 @@
-using api.Dtos;
 
-namespace api.Services
+namespace api.Services.EconomicsServices;
+
+public interface ICalculateNPVService
 {
-    public interface ICalculateNPVService
-    {
-        Task CalculateNPV(Guid caseId);
-    }
+    Task CalculateNPV(Guid caseId);
 }
+
