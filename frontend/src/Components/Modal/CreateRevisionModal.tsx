@@ -1,5 +1,5 @@
 import React, {
-    ChangeEventHandler, FunctionComponent, ReactNode, useState,
+    ChangeEventHandler, FunctionComponent, ReactNode, useEffect, useState,
 } from "react"
 import {
     Divider, Icon, Typography, Button,
@@ -15,8 +15,12 @@ import DialogActions from "@mui/material/DialogActions"
 import { checkbox_outline, info_circle } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { Grid } from "@mui/material"
+import { useQuery } from "@tanstack/react-query"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { createRevision } from "@/Utils/RevisionUtils"
 import { useProjectContext } from "@/Context/ProjectContext"
+import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "@/Utils/constants"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 
 const Wrapper = styled.div`
     flex-direction: row;
@@ -49,12 +53,60 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
 }) => {
     if (!isOpen) { return null }
     const { projectId } = useProjectContext()
+    const { currentContext } = useModuleCurrentContext()
 
     const [revisionName, setRevisionName] = useState<string>("")
+    const [project, setProject] = useState<Components.Schemas.ProjectWithAssetsDto>()
+
+    const externalId = currentContext?.externalId
+
+    const { data: apiData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
+    })
+
+    useEffect(() => {
+        if (apiData) {
+            setProject(apiData)
+        }
+    }, [apiData])
 
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setRevisionName(e.currentTarget.value)
     }
+
+    const handleClassificationChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
+        if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
+            const newClassification: Components.Schemas.ProjectClassification = Number(e.currentTarget.value) as unknown as Components.Schemas.ProjectClassification
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
+            newProject.classification = newClassification
+            setProject(newProject)
+        }
+    }
+
+    const handleInternalProjectPhaseChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
+        if ([0, 1, 2].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
+            const newInternalProjectPhase: Components.Schemas.InternalProjectPhase = Number(e.currentTarget.value) as unknown as Components.Schemas.InternalProjectPhase
+            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
+            newProject.internalProjectPhase = newInternalProjectPhase
+            setProject(newProject)
+        }
+    }
+
+    const internalProjectPhaseOptions = Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => (
+        <option key={key} value={key}>{value.label}</option>
+    ))
+
+    const classificationOptions = Object.entries(PROJECT_CLASSIFICATION).map(([key, value]) => (
+        <option key={key} value={key}>{value.label}</option>
+    ))
+
+    const disableAfterDG0 = () => {
+        // if after DG0 => disable
+    }
+
+    if (!project) { return null }
 
     return (
         <Dialog
@@ -98,18 +150,20 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                             <NativeSelect
                                 id="projectPhase"
                                 label="Project phase"
+                                onChange={handleInternalProjectPhaseChange}
+                                value={project.internalProjectPhase}
                             >
-                                <option key={0} value={0}>APx1</option>
-                                <option key={1} value={1}>APx2</option>
+                                {internalProjectPhaseOptions}
                             </NativeSelect>
                         </ColumnWrapper>
                         <ColumnWrapper>
                             <NativeSelect
                                 id="projectClassification"
                                 label="Project classification"
+                                onChange={handleClassificationChange}
+                                value={project.classification}
                             >
-                                <option key={0} value={0}>Internal</option>
-                                <option key={1} value={1}>Open</option>
+                                {classificationOptions}
                             </NativeSelect>
                         </ColumnWrapper>
                     </ColumnWrapper>
@@ -135,7 +189,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             <DialogActions>
                 <div>
                     <Button variant="ghost" onClick={() => setCreatingRevision(false)}>Cancel</Button>
-                    <Button onClick={() => createRevision(projectId, setCreatingRevision)}>Create revision</Button>
+                    <Button onClick={() => createRevision(projectId, project, setCreatingRevision)}>Create revision</Button>
                 </div>
             </DialogActions>
         </Dialog>

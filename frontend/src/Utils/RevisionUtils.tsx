@@ -10,10 +10,11 @@ export const openRevisionModal = (setCreatingRevision: React.Dispatch<React.SetS
 
 export const createRevision = async (
     projectId: string,
+    project: Components.Schemas.ProjectWithAssetsDto,
     setCreatingRevision: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
     const projectService = await GetProjectService()
-    const newRevision = await projectService.createRevision(projectId)
+    const newRevision = await projectService.createRevision(projectId, project)
     if (newRevision) {
         setCreatingRevision(false)
     }
