@@ -7,9 +7,9 @@ import styled from "styled-components"
 import { useQuery } from "@tanstack/react-query"
 
 import {
-    productionStrategyOverviewToString, casePath, truncateText, caseRevisionPath,
+    productionStrategyOverviewToString, truncateText, caseRevisionPath,
 } from "@/Utils/common"
-import { projectQueryFn } from "@/Services/QueryFunctions"
+import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import { useAppContext } from "@/Context/AppContext"
 import { EMPTY_GUID } from "@/Utils/constants"
 import { ReferenceCaseIcon } from "../../../Case/Components/ReferenceCaseIcon"
@@ -26,7 +26,7 @@ const CasesList: React.FC = () => {
     const { sidebarOpen } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
-    const { isRevision, projectId } = useProjectContext()
+    const { isRevision } = useProjectContext()
     const { revisionId } = useParams()
 
     const { data: apiData } = useQuery({
@@ -35,19 +35,29 @@ const CasesList: React.FC = () => {
         enabled: !!externalId,
     })
 
+    const { data: apiRevisionData } = useQuery({
+        queryKey: ["revisionApiData", externalId],
+        queryFn: () => revisionQueryFn(externalId, revisionId),
+        enabled: !!externalId && isRevision,
+    })
+
     const location = useLocation()
     const navigate = useNavigate()
-    if (!apiData || !currentContext) { return null }
+    if ((!apiData && !isRevision) || (!apiRevisionData && isRevision) || !currentContext) { return null }
 
     const selectCase = (caseId: string) => {
         if (!currentContext || !caseId) { return null }
+        console.log("isRevision CasesList", isRevision)
         navigate(caseRevisionPath(currentContext.id, caseId, isRevision, revisionId))
         return null
     }
 
     const cases = useMemo(
-        () => apiData.cases.filter((c) => !c.archived),
-        [apiData.cases],
+        () => {
+            const filteredCases = isRevision ? apiRevisionData?.cases : apiData?.cases
+            return filteredCases ? filteredCases.filter((c) => !c.archived) : []
+        },
+        [apiData, apiRevisionData, isRevision],
     )
 
     return (

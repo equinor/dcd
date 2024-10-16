@@ -106,6 +106,8 @@ const CasesAgGridTable = ({
 
     const selectCase = (p: any) => {
         if (!currentContext || !p.node.data) { return null }
+        console.log("isRevision AgGridTable", isRevision)
+
         navigate(caseRevisionPath(currentContext.id, p.node.data.id, isRevision, revisionId))
         return null
     }

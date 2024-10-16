@@ -64,7 +64,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
         enabled: !!externalId,
     })
 
-    const { data: caseApiData, error } = useQuery({
+    const { data: caseApiData } = useQuery({
         queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
         queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
