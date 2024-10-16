@@ -12,5 +12,7 @@ public enum CaseProfileNames
     WellInterventionCostProfileOverride,
     OffshoreFacilitiesOperationsCostProfileOverride,
     OnshoreRelatedOPEXCostProfile,
-    AdditionalOPEXCostProfile
+    AdditionalOPEXCostProfile,
+    CalculatedTotalIncomeCostProfile,
+    CalculatedTotalCostCostProfile
 }

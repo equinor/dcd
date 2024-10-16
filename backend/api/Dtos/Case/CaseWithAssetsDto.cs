@@ -26,7 +26,8 @@ public class CaseWithAssetsDto
     public OffshoreFacilitiesOperationsCostProfileOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
     public OnshoreRelatedOPEXCostProfileDto? OnshoreRelatedOPEXCostProfile { get; set; }
     public AdditionalOPEXCostProfileDto? AdditionalOPEXCostProfile { get; set; }
-
+    public CalculatedTotalIncomeCostProfileDto? CalculatedTotalIncomeCostProfile { get; set; }
+    public CalculatedTotalCostCostProfileDto? CalculatedTotalCostCostProfile { get; set; }
 
     [Required]
     public TopsideDto Topside { get; set; } = null!;

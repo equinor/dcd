@@ -76,11 +76,11 @@ public class CaseService : ICaseService
             .Include(c => c.CessationOffshoreFacilitiesCost)
             .Include(c => c.CessationOffshoreFacilitiesCostOverride)
             .Include(c => c.CessationOnshoreFacilitiesCostProfile)
-            .FirstOrDefaultAsync(c => c.Id == caseId);
-        if (caseItem == null)
-        {
-            throw new NotFoundInDBException(string.Format("Case {0} not found.", caseId));
-        }
+            .Include(c => c.CalculatedTotalIncomeCostProfile)
+            .Include(c => c.CalculatedTotalCostCostProfile)
+            .FirstOrDefaultAsync(c => c.Id == caseId)
+        ?? throw new NotFoundInDBException(string.Format("Case {0} not found.", caseId));
+
         return caseItem;
     }
 

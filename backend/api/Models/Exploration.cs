@@ -46,7 +46,7 @@ public class GAndGAdminCost : TimeSeriesCost, IExplorationTimeSeries
     [ForeignKey("Exploration.Id")]
     public virtual Exploration Exploration { get; set; } = null!;
 }
-public class GAndGAdminCostOverride : TimeSeriesCost, IExplorationTimeSeries
+public class GAndGAdminCostOverride : TimeSeriesCost, IExplorationTimeSeries, ITimeSeriesOverride
 {
     [ForeignKey("Exploration.Id")]
     public virtual Exploration Exploration { get; set; } = null!;
