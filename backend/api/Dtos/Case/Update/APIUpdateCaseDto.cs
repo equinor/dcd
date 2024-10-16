@@ -20,7 +20,9 @@ public class APIUpdateCaseDto : BaseUpdateCaseDto
     public double CapexFactorFeasibilityStudies { get; set; }
     public double CapexFactorFEEDStudies { get; set; }
     public double NPV { get; set; }
+    public double? NPVOverride { get; set; }
     public double BreakEven { get; set; }
+    public double? BreakEvenOverride { get; set; }
     public string? Host { get; set; }
 
     public DateTimeOffset DGADate { get; set; }

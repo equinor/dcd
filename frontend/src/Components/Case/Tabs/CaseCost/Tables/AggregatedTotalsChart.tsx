@@ -133,54 +133,19 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         }
     }, [apiData, tableYears, projectData])
 
-    const calculateIncome = () => {
-        const oilPrice = projectData?.oilPriceUSD ?? 75.0
-        const gasPrice = projectData?.gasPriceNOK ?? 3
-        const cubicMetersToBarrelsFactor = 6.29
-        const exchangeRateUSDToNOK = projectData?.exchangeRateUSDToNOK ?? 10.0
-        const exchangeRateNOKToUSD = 1 / exchangeRateUSDToNOK
-
-        const totalOilProductionInMegaCubics = mergeTimeseries(apiData.productionProfileOil, apiData.additionalProductionProfileOil)
-
-        const oilProductionInBarrels = (totalOilProductionInMegaCubics.values || []).map((v) => v * cubicMetersToBarrelsFactor)
-        // finally one should have multiplied oilProduction by 1 million because the oilProduction used in the calculation is in mega cubics.
-        // But because the OilIncome in the diagram is in MNOK/MUSD, we would divide by 1 million to get the correct oilincome
-        // We can therefore ignore these multiplications and divisions
-
-        const oilIncome = {
-            id: "",
-            startYear: totalOilProductionInMegaCubics.startYear + new Date(apiData.case.dG4Date).getFullYear(),
-            values: oilProductionInBarrels.map((v) => v * oilPrice * exchangeRateUSDToNOK),
-        }
-
-        const totalGasProductionInGigaCubics = mergeTimeseries(apiData.productionProfileGas, apiData.additionalProductionProfileGas)
-        const gasIncome = {
-            id: "",
-            startYear: totalGasProductionInGigaCubics.startYear + new Date(apiData.case.dG4Date).getFullYear(),
-            values: (totalGasProductionInGigaCubics.values || []).map((v) => v * gasPrice * 1000),
-        }
-        // similar to previous comment, we should have multiplied the totalGasProduction value by 1 billion since its set in giga cubics, but since the diagram is in MNOK/MUSD
-        // We only need to multiply by 1000 to get the correct gas Income
-
-        const totalIncome = mergeTimeseries(oilIncome, gasIncome)
-
-        // Uncomment this to adjust income based on currency
-        // if (project?.currency === 2 && totalIncome.values) {
-        //     totalIncome = {
-        //         ...totalIncome,
-        //         values: totalIncome.values.map((v) => v * exchangeRateNOKToUSD),
-        //     }
-        // }
-
-        return totalIncome
-    }
-
     const chartData = useMemo(() => {
         const data: number[] = []
         const dg4Year = new Date(apiData.case.dG4Date).getFullYear()
         const years = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => tableYears[0] + i)
 
-        const totalIncomeData = calculateIncome()
+        const totalIncomeData = apiData.calculatedTotalIncomeCostProfile
+
+        const income = {
+            startYear: totalIncomeData?.startYear !== undefined
+                ? totalIncomeData.startYear + new Date(apiData.case.dG4Date).getFullYear()
+                : 0,
+            values: (totalIncomeData?.values || []).map((v) => v) ?? [],
+        }
 
         let cumulativeSum = 0
         years.forEach((year) => {
@@ -190,8 +155,8 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                 yearData[series.profileName] = value
                 cumulativeSum += value
             })
-            yearData.cumulativeSum = (totalIncomeData.values || []).reduce((acc, value, index) => {
-                if (totalIncomeData.startYear + index === year) {
+            yearData.cumulativeSum = (income.values || []).reduce((acc, value, index) => {
+                if (income.startYear + index === year) {
                     return acc + value
                 }
                 return acc
@@ -223,7 +188,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             text: "Annual Cost Profile", // (${project?.currency === 1 ? "MNOK" : "MUSD"})`, add this to dynamically show what MNOK or MUSD on graph based on project.currency
             fontSize: 24,
         },
-        subtitle: { text: "(MNOK)" ?? "" },
+        subtitle: { text: "(MNOK)" },
 
         padding: {
             top: 10,
@@ -295,7 +260,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
             text: "Cost Distribution",
             fontSize: 22,
         },
-        subtitle: { text: "(MNOK)" ?? "" },
+        subtitle: { text: "(MNOK)" },
         padding: {
             top: 10,
             right: 10,
