@@ -22,7 +22,8 @@ import { ColDef } from "@ag-grid-community/core"
 import { useQuery } from "@tanstack/react-query"
 
 import {
-    casePath, productionStrategyOverviewToString, cellStyleRightAlign, unwrapProjectId,
+    productionStrategyOverviewToString, cellStyleRightAlign, unwrapProjectId,
+    caseRevisionPath,
 } from "@/Utils/common"
 import { GetProjectService } from "@/Services/ProjectService"
 import { GetSTEAService } from "@/Services/STEAService"
@@ -105,7 +106,7 @@ const CasesAgGridTable = ({
 
     const selectCase = (p: any) => {
         if (!currentContext || !p.node.data) { return null }
-        navigate(casePath(currentContext.id, p.node.data.id))
+        navigate(caseRevisionPath(currentContext.id, p.node.data.id, isRevision, revisionId))
         return null
     }
 

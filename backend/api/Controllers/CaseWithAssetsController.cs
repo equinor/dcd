@@ -34,6 +34,7 @@ public class CaseWithAssetsController : ControllerBase
         [FromRoute] Guid caseId
     )
     {
+        Console.WriteLine("projectId Controller", projectId);
         var dto = await _caseWithAssetsService.GetCaseWithAssetsNoTracking(projectId, caseId);
         return Ok(dto);
     }

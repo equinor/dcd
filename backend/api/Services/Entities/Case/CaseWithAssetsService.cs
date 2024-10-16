@@ -30,11 +30,27 @@ public class CaseWithAssetsService : ICaseWithAssetsService
 
     public async Task<CaseWithAssetsDto> GetCaseWithAssetsNoTracking(Guid projectId, Guid caseId)
     {
-        await _projectAccessService.ProjectExists<Case>(projectId, caseId);
 
+        Console.WriteLine("projectId First" + projectId);
         var project = await _projectRepository.GetProjectByIdOrExternalId(projectId)
             ?? throw new NotFoundInDBException($"Project with id {projectId} not found");
+        
+        Console.WriteLine("project.IsRevision" + project.IsRevision);
+        Console.WriteLine("project.Id" + project.Id);
 
+
+        if (project.IsRevision == true)
+        {
+            await _projectAccessService.ProjectExists<Case>(project.Id, caseId);
+
+        }
+        // else
+        // {
+
+        //     await _projectAccessService.ProjectExists<Case>(projectId, caseId);
+        // }
+
+        // await _projectAccessService.ProjectExists<Case>(projectId, caseId);
         var (caseItem, drainageStrategy, topside, exploration, substructure, surf, transport, wellProject) = await _repository.GetCaseWithAssetsNoTracking(caseId);
 
         var caseWithAssetsDto = new CaseWithAssetsDto

@@ -10,7 +10,7 @@ import {
     visibility,
     edit,
 } from "@equinor/eds-icons"
-import { useNavigate, useLocation } from "react-router-dom"
+import { useNavigate, useLocation, useParams } from "react-router-dom"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import styled from "styled-components"
@@ -28,6 +28,7 @@ import { ChooseReferenceCase, ReferenceCaseIcon } from "../Case/Components/Refer
 import ClassificationChip from "./ClassificationChip"
 import CaseDropMenu from "../Case/Components/CaseDropMenu"
 import useEditDisabled from "@/Hooks/useEditDisabled"
+import { useProjectContext } from "@/Context/ProjectContext"
 
 const Header = styled.div`
     display: flex;
@@ -73,10 +74,12 @@ const CaseControls: React.FC<props> = ({
     const [caseName, setCaseName] = useState("")
     const [menuAnchorEl, setMenuAnchorEl] = useState<any | null>(null)
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+    const { isRevision } = useProjectContext()
+    const { revisionId } = useParams()
 
     const { data: apiData, error } = useQuery({
-        queryKey: ["caseApiData", projectId, caseId],
-        queryFn: () => caseQueryFn(projectId, caseId),
+        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
+        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
         refetchInterval: 20000,
     })

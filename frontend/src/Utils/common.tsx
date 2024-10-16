@@ -11,6 +11,12 @@ export const projectPath = (projectId: string) => `/${projectId}`
 
 export const casePath = (projectId: string, caseId: string) => `${projectPath(projectId)}/case/${caseId}`
 
+export const caseRevisionPath = (projectId: string, caseId: string, isRevision: boolean, revisionId?: string) => {
+    if (isRevision && revisionId) {
+        return `${projectPath(projectId)}/revision/${revisionId}/case/${caseId}`
+    }
+    return `${projectPath(projectId)}/case/${caseId}`
+}
 export const storeAppId = (appId: string) => {
     window.sessionStorage.setItem("appId", appId)
 }
@@ -396,5 +402,5 @@ export const generateProfile = (
 }
 
 export function truncateText(text: string, maxLength: number): string {
-    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text
 }

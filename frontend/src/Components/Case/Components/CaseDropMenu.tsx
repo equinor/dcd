@@ -12,7 +12,7 @@ import {
     unarchive,
     history,
 } from "@equinor/eds-icons"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 
@@ -55,6 +55,8 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
 
     const [isRevisionMenuOpen, setIsRevisionMenuOpen] = useState<boolean>(false)
     const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
+    const { isRevision } = useProjectContext()
+    const { revisionId } = useParams()
 
     const { data: projectData } = useQuery({
         queryKey: ["projectApiData", externalId],
@@ -62,10 +64,11 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
         enabled: !!externalId,
     })
 
-    const { data: caseApiData } = useQuery({
-        queryKey: ["caseApiData", projectId, caseId],
-        queryFn: () => caseQueryFn(projectId, caseId),
+    const { data: caseApiData, error } = useQuery({
+        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
+        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
+        refetchInterval: 20000,
     })
 
     const deleteAndGoToProject = async () => {
@@ -185,7 +188,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                         </Menu.Item>
                     )}
                 {/* Uncomment to show project revisions button */}
-                {/* <Menu.Item
+                <Menu.Item
                     ref={setRevisionMenuAnchorEl}
                     onMouseEnter={() => setIsRevisionMenuOpen(!isRevisionMenuOpen)}
                 >
@@ -200,7 +203,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                     setIsRevisionMenuOpen={setIsRevisionMenuOpen}
                     menuAnchorEl={revisionMenuAnchorEl}
                     isCaseMenu
-                /> */}
+                />
             </Menu>
         </>
     )

@@ -1,17 +1,20 @@
 import React, { useMemo } from "react"
 import { Grid } from "@mui/material"
 import { Tooltip } from "@equinor/eds-core-react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
 import { useQuery } from "@tanstack/react-query"
 
-import { productionStrategyOverviewToString, casePath, truncateText } from "@/Utils/common"
+import {
+    productionStrategyOverviewToString, casePath, truncateText, caseRevisionPath,
+} from "@/Utils/common"
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import { useAppContext } from "@/Context/AppContext"
 import { EMPTY_GUID } from "@/Utils/constants"
 import { ReferenceCaseIcon } from "../../../Case/Components/ReferenceCaseIcon"
 import { TimelineElement } from "../Sidebar"
+import { useProjectContext } from "@/Context/ProjectContext"
 
 const SideBarRefCaseWrapper = styled.div`
     justify-content: center;
@@ -23,6 +26,8 @@ const CasesList: React.FC = () => {
     const { sidebarOpen } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
+    const { isRevision, projectId } = useProjectContext()
+    const { revisionId } = useParams()
 
     const { data: apiData } = useQuery({
         queryKey: ["projectApiData", externalId],
@@ -36,13 +41,14 @@ const CasesList: React.FC = () => {
 
     const selectCase = (caseId: string) => {
         if (!currentContext || !caseId) { return null }
-        navigate(casePath(currentContext.id, caseId))
+        navigate(caseRevisionPath(currentContext.id, caseId, isRevision, revisionId))
         return null
     }
 
-    const cases = useMemo(() =>
-        apiData.cases.filter((c) => !c.archived),
-    [apiData.cases]);
+    const cases = useMemo(
+        () => apiData.cases.filter((c) => !c.archived),
+        [apiData.cases],
+    )
 
     return (
         <>
