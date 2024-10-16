@@ -14,6 +14,7 @@ import { useNavigate, useLocation, useParams } from "react-router-dom"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import styled from "styled-components"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
 import { useAppContext } from "@/Context/AppContext"
 import { EMPTY_GUID, caseTabNames } from "@/Utils/constants"
@@ -25,9 +26,10 @@ import UndoControls from "./UndoControls"
 import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
 import { ChooseReferenceCase, ReferenceCaseIcon } from "../Case/Components/ReferenceCaseIcon"
-import ClassificationChip from "./ClassificationChip"
 import CaseDropMenu from "../Case/Components/CaseDropMenu"
 import useEditDisabled from "@/Hooks/useEditDisabled"
+import Classification from "./ClassificationChip"
+import RevisionChip from "./RevisionChip"
 import { useProjectContext } from "@/Context/ProjectContext"
 
 const Header = styled.div`
@@ -36,17 +38,38 @@ const Header = styled.div`
     justify-content: space-between;
     gap: 10px;
     padding: 0 5px;
-
-    & div {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
 `
+
+const CenteringContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+`
+
+const CaseTitleEdit = styled.div`
+    display: flex;
+    gap: 10px;
+`
+
 const DropButton = styled(Icon)`
     cursor: pointer;
     padding: 0 5px;
 `
+
+const ProjectAndCaseContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+`
+
+const Project = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-left: 25px;
+`
+
 interface props {
     backToProject: () => void;
     projectId: string;
@@ -62,6 +85,8 @@ const CaseControls: React.FC<props> = ({
     caseLastUpdated,
     handleEdit,
 }) => {
+    const { currentContext } = useModuleCurrentContext()
+    const { isRevision } = useProjectContext()
     const nameInputRef = useRef<HTMLInputElement>(null)
     const { addProjectEdit } = useEditProject()
     const { setSnackBarMessage, editMode } = useAppContext()
@@ -74,7 +99,6 @@ const CaseControls: React.FC<props> = ({
     const [caseName, setCaseName] = useState("")
     const [menuAnchorEl, setMenuAnchorEl] = useState<any | null>(null)
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
-    const { isRevision } = useProjectContext()
     const { revisionId } = useParams()
 
     const { data: apiData, error } = useQuery({
@@ -148,37 +172,47 @@ const CaseControls: React.FC<props> = ({
     return (
         <>
             <Header>
-                <div>
-                    <Button onClick={backToProject} variant="ghost_icon">
-                        <Icon data={arrow_back} />
-                    </Button>
-                    <div>
-                        {editMode ? (
-                            <>
-                                <ChooseReferenceCase
-                                    projectRefCaseId={projectData?.referenceCaseId}
-                                    projectCaseId={caseId}
-                                    handleReferenceCaseChange={() => handleReferenceCaseChange(caseId)}
-                                />
-                                <Input
-                                    id="caseName"
-                                    ref={nameInputRef}
-                                    type="text"
-                                    value={caseName}
-                                    onChange={(e: any) => setCaseName(e.target.value)}
-                                    onBlur={() => handleCaseNameChange(nameInputRef.current?.value || "")}
-                                />
-                            </>
-                        ) : (
-                            <>
-                                {projectData?.referenceCaseId === caseId && <ReferenceCaseIcon />}
-                                <Typography variant="h4">{caseData.name}</Typography>
-                                <ClassificationChip />
-                            </>
+                <ProjectAndCaseContainer>
+                    <Project>
+                        <Typography variant="h6" color="var(--text-static-icons-tertiary, #6F6F6F);">
+                            {currentContext?.title}
+                        </Typography>
+                        <Classification />
+                        {isRevision && (
+                            <RevisionChip />
                         )}
-                    </div>
-                </div>
-                <div>
+                    </Project>
+                    <CenteringContainer>
+                        <Button onClick={backToProject} variant="ghost_icon">
+                            <Icon data={arrow_back} />
+                        </Button>
+                        <div>
+                            {editMode ? (
+                                <CaseTitleEdit>
+                                    <ChooseReferenceCase
+                                        projectRefCaseId={projectData?.referenceCaseId}
+                                        projectCaseId={caseId}
+                                        handleReferenceCaseChange={() => handleReferenceCaseChange(caseId)}
+                                    />
+                                    <Input
+                                        id="caseName"
+                                        ref={nameInputRef}
+                                        type="text"
+                                        value={caseName}
+                                        onChange={(e: any) => setCaseName(e.target.value)}
+                                        onBlur={() => handleCaseNameChange(nameInputRef.current?.value || "")}
+                                    />
+                                </CaseTitleEdit>
+                            ) : (
+                                <>
+                                    {projectData?.referenceCaseId === caseId && <ReferenceCaseIcon />}
+                                    <Typography variant="h4">{caseData.name}</Typography>
+                                </>
+                            )}
+                        </div>
+                    </CenteringContainer>
+                </ProjectAndCaseContainer>
+                <CenteringContainer>
                     {!editMode
                         ? (
                             <Typography variant="caption">
@@ -224,7 +258,7 @@ const CaseControls: React.FC<props> = ({
                         caseId={caseId}
                         isArchived={caseData.archived}
                     />
-                </div>
+                </CenteringContainer>
             </Header>
             <Tabs
                 value={activeTabCase}

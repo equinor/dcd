@@ -51,8 +51,8 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
         studyColor: "#004F55",
         opexColor: "#007079",
         cessationColor: "#97CACE",
-        offshoreFacilityColor: "#C3F3D2",
-        developmentWellColor: "#E6FAEC",
+        offshoreFacilityColor: "#79C591",
+        developmentWellColor: "#B39EEB",
         explorationWellColor: "#FF7D7D",
         totalIncomeColor: "#9F9F9F",
     }
@@ -144,6 +144,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                         barColors.studyColor,
                         barColors.opexColor,
                         barColors.cessationColor,
+                        barColors.offshoreFacilityColor,
                         barColors.developmentWellColor,
                         barColors.explorationWellColor,
                         barColors.totalIncomeColor]}

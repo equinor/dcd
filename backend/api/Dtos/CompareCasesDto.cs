@@ -28,4 +28,6 @@ public class CompareCasesDto
     public double TotalCo2Emissions { get; set; }
     [Required]
     public double Co2Intensity { get; set; }
+    [Required]
+    public double NPV { get; set; }
 }
