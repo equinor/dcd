@@ -45,6 +45,8 @@ public class DuplicateCaseService : IDuplicateCaseService
             .Include(c => c.CessationOffshoreFacilitiesCost)
             .Include(c => c.CessationOffshoreFacilitiesCostOverride)
             .Include(c => c.CessationOnshoreFacilitiesCostProfile)
+            .Include(c => c.CalculatedTotalIncomeCostProfile)
+            .Include(c => c.CalculatedTotalCostCostProfile)
             .FirstOrDefaultAsync(c => c.Id == caseId);
         if (caseItem == null)
         {
