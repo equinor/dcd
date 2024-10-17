@@ -28,7 +28,6 @@ public class RevisionService : IRevisionService
     private readonly IProjectService _projectService;
     private readonly DcdDbContext _context;
     private readonly IMapper _mapper;
-    private readonly IMapperService _mapperService;
 
 
     public RevisionService(
@@ -37,8 +36,7 @@ public class RevisionService : IRevisionService
         IRevisionRepository revisionRepository,
         IProjectAccessService projectAccessService,
         IProjectService projectService,
-        IMapper mapper,
-        IMapperService mapperService
+        IMapper mapper
     )
     {
         _context = context;
@@ -47,7 +45,6 @@ public class RevisionService : IRevisionService
         _projectAccessService = projectAccessService;
         _projectService = projectService;
         _mapper = mapper;
-        _mapperService = mapperService;
     }
 
     // TODO: Rewrite when CaseWithAssetsDto is no longer needed
@@ -227,14 +224,12 @@ public class RevisionService : IRevisionService
         return projectDto;
     }
 
-    public async Task<ProjectWithAssetsDto> CreateRevision(Guid projectId, ProjectDto projectDto)
+    public async Task<ProjectWithAssetsDto> CreateRevision(Guid projectId, CreateRevisionDto createRevisionDto)
     {
         var project = await _revisionRepository.GetProjectAndAssetsNoTracking(projectId)
             ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
 
-        _mapperService.MapToEntity(projectDto, project, projectId);
-
-        SetProjectAndRelatedEntitiesToEmptyGuids(project, projectId);
+        SetProjectAndRelatedEntitiesToEmptyGuids(project, projectId, createRevisionDto);
 
         var revision = await _revisionRepository.AddRevision(project);
 
@@ -243,13 +238,16 @@ public class RevisionService : IRevisionService
         return revisionDto;
     }
 
-    private void SetProjectAndRelatedEntitiesToEmptyGuids(Project project, Guid originalProjectId)
+    private void SetProjectAndRelatedEntitiesToEmptyGuids(Project project, Guid originalProjectId, CreateRevisionDto createRevisionDto)
     {
         project.Id = Guid.Empty;
 
         project.IsRevision = true;
         project.OriginalProjectId = originalProjectId;
         project.CreateDate = DateTimeOffset.UtcNow;
+        project.Name = createRevisionDto.Name;
+        project.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
+        project.Classification = createRevisionDto.Classification;
 
         if (project.DevelopmentOperationalWellCosts != null)
         {

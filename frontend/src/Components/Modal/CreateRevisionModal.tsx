@@ -58,7 +58,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     const [revisionName, setRevisionName] = useState<string>("")
     const [project, setProject] = useState<Components.Schemas.ProjectWithAssetsDto>()
     const [classification, setClassification] = useState<Components.Schemas.ProjectClassification>()
-    const [projectPhase, setProjectPhase] = useState<Components.Schemas.InternalProjectPhase>()
+    const [projectPhase, setProjectPhase] = useState<Components.Schemas.InternalProjectPhase | undefined>()
 
     const externalId = currentContext?.externalId
 
@@ -106,17 +106,18 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
         <option key={key} value={key}>{value.label}</option>
     ))
 
-    const disableAfterDG0 = () => project?.projectPhase! >= 3
+    if (!project) { return null }
+
+    const disableAfterDG0 = () => project.projectPhase! >= 3
 
     const submitRevision = () => {
-        const newRevision = { ...project }
-        newRevision.name = revisionName
-        newRevision.classification = classification
-        newRevision.internalProjectPhase = projectPhase
+        const newRevision: Components.Schemas.CreateRevisionDto = {
+            name: revisionName,
+            internalProjectPhase: projectPhase || project.internalProjectPhase,
+            classification: classification || project.classification,
+        }
         return newRevision
     }
-
-    if (!project) { return null }
 
     return (
         <Dialog
@@ -202,7 +203,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                     <Button variant="ghost" onClick={() => setCreatingRevision(false)}>Cancel</Button>
                     <Button onClick={() => createRevision(
                         projectId,
-                        submitRevision() as Components.Schemas.ProjectWithAssetsDto,
+                        submitRevision() as Components.Schemas.CreateRevisionDto,
                         setCreatingRevision,
                     )}
                     >

@@ -10,7 +10,7 @@ export const openRevisionModal = (setCreatingRevision: React.Dispatch<React.SetS
 
 export const createRevision = async (
     projectId: string,
-    project: Components.Schemas.ProjectWithAssetsDto,
+    project: Components.Schemas.CreateRevisionDto,
     setCreatingRevision: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
     const projectService = await GetProjectService()
