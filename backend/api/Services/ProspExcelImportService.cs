@@ -435,7 +435,7 @@ public class ProspExcelImportService
         await ClearImportedSubstructure(caseItem);
         await ClearImportedTransport(caseItem);
 
-        var caseDto = _mapper.Map<APIUpdateCaseWithProfilesDto>(caseItem);
+        var caseDto = _mapper.Map<PROSPUpdateCaseDto>(caseItem);
 
         if (caseDto == null)
         {

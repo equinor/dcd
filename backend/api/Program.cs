@@ -4,6 +4,7 @@ using api.Mappings;
 using api.Middleware;
 using api.Repositories;
 using api.Services;
+using api.Services.EconomicsServices;
 using api.Services.FusionIntegration;
 using api.Services.GenerateCostProfiles;
 
@@ -303,6 +304,10 @@ builder.Services.AddScoped(x => new BlobServiceClient(azureBlobStorageConnection
 
 builder.Services.AddScoped<IImageRepository, ImageRepository>();
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
+builder.Services.AddScoped<ICalculateBreakEvenOilPriceService, CalculateBreakEvenOilPriceService>();
+builder.Services.AddScoped<ICalculateNPVService, CalculateNPVService>();
+builder.Services.AddScoped<ICalculateTotalCostService, CalculateTotalCostService>();
+builder.Services.AddScoped<ICalculateTotalIncomeService, CalculateTotalIncomeService>();
 
 builder.Host.UseSerilog();
 
