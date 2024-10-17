@@ -1,8 +1,6 @@
 
 using api.Dtos;
-
-using Microsoft.IdentityModel.Tokens;
-
+using API.Helpers;
 namespace api.Adapters;
 
 public static class STEAProjectDtoBuilder
@@ -22,7 +20,7 @@ public static class STEAProjectDtoBuilder
             sTEAprojectDto.STEACases.Add(c);
         }
 
-        if (!startYears.IsNullOrEmpty())
+        if (startYears.IsNullOrEmpty())
         {
             Array.Sort(startYears);
             sTEAprojectDto.StartYear = Array.Find(startYears, e => e > 0);
