@@ -1,8 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Models;
-
 using api.Helpers;
+using api.Models;
 
 using Microsoft.IdentityModel.Tokens;
 
