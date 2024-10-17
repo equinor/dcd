@@ -102,9 +102,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
         <option key={key} value={key}>{value.label}</option>
     ))
 
-    const disableAfterDG0 = () => {
-        // if after DG0 => disable
-    }
+    const disableAfterDG0 = () => project?.projectPhase! >= 3
 
     if (!project) { return null }
 
@@ -152,6 +150,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                                 label="Project phase"
                                 onChange={handleInternalProjectPhaseChange}
                                 value={project.internalProjectPhase}
+                                disabled={disableAfterDG0()}
                             >
                                 {internalProjectPhaseOptions}
                             </NativeSelect>
