@@ -140,7 +140,7 @@ builder.Services.AddFusionIntegration(options =>
     options.UseDefaultEndpointResolver(fusionEnvironment);
     options.UseDefaultTokenProvider(opts =>
     {
-        opts.ClientId = config["AzureAd:ClientId"];
+        opts.ClientId = config["AzureAd:ClientId"] ?? throw new ArgumentNullException("AzureAd:ClientId");
         opts.ClientSecret = config["AzureAd:ClientSecret"];
     });
     options.AddFusionRoles();
