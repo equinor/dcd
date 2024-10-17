@@ -224,12 +224,12 @@ public class RevisionService : IRevisionService
         return projectDto;
     }
 
-    public async Task<ProjectWithAssetsDto> CreateRevision(Guid projectId)
+    public async Task<ProjectWithAssetsDto> CreateRevision(Guid projectId, CreateRevisionDto createRevisionDto)
     {
         var project = await _revisionRepository.GetProjectAndAssetsNoTracking(projectId)
             ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
 
-        SetProjectAndRelatedEntitiesToEmptyGuids(project, projectId);
+        SetProjectAndRelatedEntitiesToEmptyGuids(project, projectId, createRevisionDto);
 
         var revision = await _revisionRepository.AddRevision(project);
 
@@ -238,13 +238,16 @@ public class RevisionService : IRevisionService
         return revisionDto;
     }
 
-    private void SetProjectAndRelatedEntitiesToEmptyGuids(Project project, Guid originalProjectId)
+    private void SetProjectAndRelatedEntitiesToEmptyGuids(Project project, Guid originalProjectId, CreateRevisionDto createRevisionDto)
     {
         project.Id = Guid.Empty;
 
         project.IsRevision = true;
         project.OriginalProjectId = originalProjectId;
         project.CreateDate = DateTimeOffset.UtcNow;
+        project.Name = createRevisionDto.Name;
+        project.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
+        project.Classification = createRevisionDto.Classification;
 
         if (project.DevelopmentOperationalWellCosts != null)
         {
