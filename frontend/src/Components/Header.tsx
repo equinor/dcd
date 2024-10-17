@@ -6,13 +6,12 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import { GetProjectService } from "../Services/ProjectService"
 import CreateCaseModal from "./Modal/CreateCaseModal"
 import { useAppContext } from "../Context/AppContext"
-import useEditProject from "../Hooks/useEditProject"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { AxiosError } from "axios"
 
 const RouteCoordinator = (): JSX.Element => {
     const { setIsRevision, setAccessRights, accessRights } = useProjectContext()
-    const { setIsCreating, setIsLoading, setSnackBarMessage } = useAppContext()
+    const { setIsCreating, setIsLoading, setSnackBarMessage, isLoading } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
 
     const navigate = useNavigate()
@@ -62,7 +61,6 @@ const RouteCoordinator = (): JSX.Element => {
                         return
                     }
                 }
-
                 setAccessRights(access)
 
                 if (!access.canView) {
@@ -112,6 +110,15 @@ const RouteCoordinator = (): JSX.Element => {
                 <CreateCaseModal />
                 <Outlet />
             </>
+        )
+    }
+    if (isLoading) {
+        return (
+            <Banner>
+                <Banner.Message>
+                    Loading project...
+                </Banner.Message>
+            </Banner>
         )
     }
     return (
