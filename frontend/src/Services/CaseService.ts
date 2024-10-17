@@ -48,12 +48,8 @@ class CaseService extends __BaseService {
 
     public async getCaseWithAssets(
         projectId: string,
-        // revisionId: string,
         caseId: string,
     ): Promise<Components.Schemas.CaseWithAssetsDto> {
-        console.log("projectId", projectId)
-
-        // console.log("revisionId", revisionId)
         const res = await this.get(`projects/${projectId}/cases/${caseId}/case-with-assets`)
         return res
     }

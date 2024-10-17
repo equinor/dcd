@@ -68,7 +68,6 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
         queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
         queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
-        refetchInterval: 20000,
     })
 
     const deleteAndGoToProject = async () => {

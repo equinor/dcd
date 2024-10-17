@@ -43,7 +43,6 @@ const CasesList: React.FC = () => {
 
     const location = useLocation()
     const navigate = useNavigate()
-    if ((!apiData && !isRevision) || (!apiRevisionData && isRevision) || !currentContext) { return null }
 
     const selectCase = (caseId: string) => {
         if (!currentContext || !caseId) { return null }
@@ -59,6 +58,14 @@ const CasesList: React.FC = () => {
         },
         [apiData, apiRevisionData, isRevision],
     )
+
+    if (
+        (!apiData && !isRevision) ||
+        (!apiRevisionData && isRevision) ||
+        !currentContext
+    ) {
+        return null
+    }
 
     return (
         <>

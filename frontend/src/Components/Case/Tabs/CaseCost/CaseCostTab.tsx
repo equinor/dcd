@@ -23,8 +23,8 @@ import { useProjectContext } from "../../../../Context/ProjectContext"
 
 const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()
-    const { caseId } = useParams()
-    const { projectId } = useProjectContext()
+    const { caseId, revisionId } = useParams()
+    const { projectId, isRevision } = useProjectContext()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -58,8 +58,8 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", projectId, caseId],
-        queryFn: () => caseQueryFn(projectId, caseId),
+        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
+        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
     })
 
