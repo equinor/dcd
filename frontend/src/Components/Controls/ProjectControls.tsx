@@ -15,7 +15,7 @@ import {
 } from "@equinor/eds-icons"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Classification from "./ClassificationChip"
 import { useAppContext } from "../../Context/AppContext"
 import { formatDateAndTime } from "../../Utils/common"
@@ -52,7 +52,7 @@ interface props {
 
 const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
     const { currentContext } = useModuleCurrentContext()
-    const { editMode } = useAppContext()
+    const { editMode, setEditMode } = useAppContext()
     const { activeTabProject, setActiveTabProject, isRevision } = useProjectContext()
     const { isSaving } = useAppContext()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
@@ -63,6 +63,12 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
     const handleTabChange = (index: number) => {
         setActiveTabProject(index)
     }
+
+    useEffect(() => {
+        if (isRevision) {
+            setEditMode(false)
+        }
+    }, [isRevision])
 
     return (
         <>

@@ -5,7 +5,7 @@ import {
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { Switch } from "@equinor/eds-core-react"
+import { Switch, Tooltip } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
@@ -14,12 +14,15 @@ import { useAppContext } from "../../Context/AppContext"
 import { cellStyleRightAlign } from "../../Utils/common"
 import { projectQueryFn } from "../../Services/QueryFunctions"
 import useEditProject from "../../Hooks/useEditProject"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 const CO2ListTechnicalInput = () => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
+    const { isEditDisabled, getEditDisabledText } = useEditDisabled()
+
 
     const { data: apiData } = useQuery({
         queryKey: ["projectApiData", externalId],
@@ -201,7 +204,9 @@ const CO2ListTechnicalInput = () => {
     return (
         <Grid container spacing={1} justifyContent="flex-end">
             <Grid item>
+            <Tooltip title={getEditDisabledText()}>
                 <Switch
+                    disabled={isEditDisabled || !editMode}
                     onChange={(e: ChangeEvent<HTMLInputElement>) => {
                         setCheck(e.target.checked)
                     }}
@@ -209,6 +214,7 @@ const CO2ListTechnicalInput = () => {
                     checked={check}
                     label={switchLabel()}
                 />
+                </Tooltip>
             </Grid>
             <Grid item xs={12} className={styles.root}>
                 <div
