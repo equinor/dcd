@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Context;
 
@@ -11,9 +12,11 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    partial class DcdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241010104936_internalprojectphase")]
+    partial class internalprojectphase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -138,68 +141,6 @@ namespace api.Migrations
                     b.ToTable("AppraisalWellCostProfile");
                 });
 
-            modelBuilder.Entity("api.Models.CalculatedTotalCostCostProfile", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("Case.Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Currency")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InternalData")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StartYear")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Case.Id")
-                        .IsUnique();
-
-                    b.ToTable("CalculatedTotalCostCostProfile");
-                });
-
-            modelBuilder.Entity("api.Models.CalculatedTotalIncomeCostProfile", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("Case.Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Currency")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EPAVersion")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InternalData")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StartYear")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Case.Id")
-                        .IsUnique();
-
-                    b.ToTable("CalculatedTotalIncomeCostProfile");
-                });
-
             modelBuilder.Entity("api.Models.Case", b =>
                 {
                     b.Property<Guid>("Id")
@@ -219,9 +160,6 @@ namespace api.Migrations
                         .HasColumnType("int");
 
                     b.Property<double>("BreakEven")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("BreakEvenOverride")
                         .HasColumnType("float");
 
                     b.Property<double>("CapexFactorFEEDStudies")
@@ -280,9 +218,6 @@ namespace api.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<double>("NPV")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("NPVOverride")
                         .HasColumnType("float");
 
                     b.Property<string>("Name")
@@ -2799,28 +2734,6 @@ namespace api.Migrations
                     b.Navigation("Exploration");
                 });
 
-            modelBuilder.Entity("api.Models.CalculatedTotalCostCostProfile", b =>
-                {
-                    b.HasOne("api.Models.Case", "Case")
-                        .WithOne("CalculatedTotalCostCostProfile")
-                        .HasForeignKey("api.Models.CalculatedTotalCostCostProfile", "Case.Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Case");
-                });
-
-            modelBuilder.Entity("api.Models.CalculatedTotalIncomeCostProfile", b =>
-                {
-                    b.HasOne("api.Models.Case", "Case")
-                        .WithOne("CalculatedTotalIncomeCostProfile")
-                        .HasForeignKey("api.Models.CalculatedTotalIncomeCostProfile", "Case.Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Case");
-                });
-
             modelBuilder.Entity("api.Models.Case", b =>
                 {
                     b.HasOne("api.Models.DrainageStrategy", "DrainageStrategy")
@@ -3695,10 +3608,6 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Case", b =>
                 {
                     b.Navigation("AdditionalOPEXCostProfile");
-
-                    b.Navigation("CalculatedTotalCostCostProfile");
-
-                    b.Navigation("CalculatedTotalIncomeCostProfile");
 
                     b.Navigation("CessationOffshoreFacilitiesCost");
 

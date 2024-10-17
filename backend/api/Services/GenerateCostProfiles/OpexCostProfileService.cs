@@ -153,17 +153,25 @@ public class OpexCostProfileService : IOpexCostProfileService
         var topside = await _topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
 
         var facilityOpex = topside.FacilityOpex;
-        var values = new List<double>
-        {
-            (facilityOpex - 1) / 8,
-            (facilityOpex - 1) / 4,
-            (facilityOpex - 1) / 2
-        };
 
-        for (int i = firstYear; i < lastYear; i++)
+        var values = new List<double>();
+
+        if (facilityOpex > 0)
         {
-            values.Add(facilityOpex);
+            values.Add((facilityOpex - 1) / 8);
+            values.Add((facilityOpex - 1) / 4);
+            values.Add((facilityOpex - 1) / 2);
+
+            for (int i = firstYear; i < lastYear; i++)
+            {
+                values.Add(facilityOpex);
+            }
         }
+        else
+        {
+            values.AddRange(Enumerable.Repeat(0.0, lastYear - firstYear + 3));
+        }
+
         const int preOpexCostYearOffset = 3;
 
         var offshoreFacilitiesOperationsCost = new OffshoreFacilitiesOperationsCostProfile

@@ -14,7 +14,9 @@ declare namespace Components {
             capexFactorFeasibilityStudies?: number; // double
             capexFactorFEEDStudies?: number; // double
             npv?: number; // double
+            npvOverride?: number | null; // double
             breakEven?: number; // double
+            breakEvenOverride?: number | null; // double
             host?: string | null;
             dgaDate?: string; // date-time
             dgbDate?: string; // date-time
@@ -133,6 +135,22 @@ declare namespace Components {
             currency: Currency /* int32 */;
         }
         export type ArtificialLift = 0 | 1 | 2 | 3; // int32
+        export interface CalculatedTotalCostCostProfileDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion: string;
+            currency: Currency /* int32 */;
+        }
+        export interface CalculatedTotalIncomeCostProfileDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion: string;
+            currency: Currency /* int32 */;
+        }
         export interface CapexDto {
             id: string; // uuid
             startYear: number; // int32
@@ -164,7 +182,9 @@ declare namespace Components {
             capexFactorFeasibilityStudies: number; // double
             capexFactorFEEDStudies: number; // double
             npv: number; // double
+            npvOverride: number; // double
             breakEven: number; // double
+            breakEvenOverride: number; // double
             host?: string | null;
             dgaDate: string; // date-time
             dgbDate: string; // date-time
@@ -210,6 +230,8 @@ declare namespace Components {
             offshoreFacilitiesOperationsCostProfileOverride?: OffshoreFacilitiesOperationsCostProfileOverrideDto;
             onshoreRelatedOPEXCostProfile?: OnshoreRelatedOPEXCostProfileDto;
             additionalOPEXCostProfile?: AdditionalOPEXCostProfileDto;
+            calculatedTotalIncomeCostProfile?: CalculatedTotalIncomeCostProfileDto;
+            calculatedTotalCostCostProfile?: CalculatedTotalCostCostProfileDto;
             topside: TopsideDto;
             topsideCostProfile?: TopsideCostProfileDto;
             topsideCostProfileOverride?: TopsideCostProfileOverrideDto;
@@ -281,7 +303,9 @@ declare namespace Components {
             capexFactorFeasibilityStudies: number; // double
             capexFactorFEEDStudies: number; // double
             npv: number; // double
+            npvOverride: number; // double
             breakEven: number; // double
+            breakEvenOverride: number; // double
             host?: string | null;
             dgaDate: string; // date-time
             dgbDate: string; // date-time
@@ -312,6 +336,8 @@ declare namespace Components {
             offshoreFacilitiesOperationsCostProfileOverride: OffshoreFacilitiesOperationsCostProfileOverrideDto;
             onshoreRelatedOPEXCostProfile: OnshoreRelatedOPEXCostProfileDto;
             additionalOPEXCostProfile: AdditionalOPEXCostProfileDto;
+            calculatedTotalIncomeCostProfile: CalculatedTotalIncomeCostProfileDto;
+            calculatedTotalCostCostProfile: CalculatedTotalCostCostProfileDto;
             drainageStrategyLink: string; // uuid
             wellProjectLink: string; // uuid
             surfLink: string; // uuid
@@ -411,6 +437,7 @@ declare namespace Components {
             explorationWellCosts: number; // double
             totalCo2Emissions: number; // double
             co2Intensity: number; // double
+            npv: number; // double
         }
         export type Concept = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12; // int32
         export interface CountryOfficeCostDto {
@@ -854,6 +881,7 @@ declare namespace Components {
             sum?: number; // double
             override: boolean;
         }
+        export type InternalProjectPhase = 0 | 1 | 2; // int32
         export type Maturity = 0 | 1 | 2 | 3; // int32
         export interface NetSalesGasDto {
             id: string; // uuid
@@ -984,6 +1012,7 @@ declare namespace Components {
             physicalUnit: PhysUnit /* int32 */;
             createDate: string; // date-time
             projectPhase: ProjectPhase /* int32 */;
+            internalProjectPhase: InternalProjectPhase /* int32 */;
             projectCategory: ProjectCategory /* int32 */;
             sharepointSiteUrl?: string | null;
             cO2RemovedFromGas: number; // double
@@ -1020,6 +1049,7 @@ declare namespace Components {
             physicalUnit: PhysUnit /* int32 */;
             createDate: string; // date-time
             projectPhase: ProjectPhase /* int32 */;
+            internalProjectPhase: InternalProjectPhase /* int32 */;
             projectCategory: ProjectCategory /* int32 */;
             sharepointSiteUrl?: string | null;
             cO2RemovedFromGas: number; // double
@@ -1064,6 +1094,7 @@ declare namespace Components {
             physicalUnit: PhysUnit /* int32 */;
             createDate: string; // date-time
             projectPhase: ProjectPhase /* int32 */;
+            internalProjectPhase: InternalProjectPhase /* int32 */;
             projectCategory: ProjectCategory /* int32 */;
             sharepointSiteUrl?: string | null;
             cO2RemovedFromGas: number; // double
@@ -1665,6 +1696,7 @@ declare namespace Components {
             physicalUnit?: PhysUnit /* int32 */;
             classification?: ProjectClassification /* int32 */;
             projectPhase?: ProjectPhase /* int32 */;
+            internalProjectPhase?: InternalProjectPhase /* int32 */;
             projectCategory?: ProjectCategory /* int32 */;
             sharepointSiteUrl?: string | null;
             cO2RemovedFromGas?: number; // double
