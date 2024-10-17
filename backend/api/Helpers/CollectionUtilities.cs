@@ -2,11 +2,11 @@ namespace api.Helpers
 {
     public static class CollectionUtilities
     {
-        public static bool IsNullOrEmpty<T>(this IEnumerable<T> array)
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> enumerable)
         {
-            if (array != null)
+            if (enumerable != null)
             {
-                return !array.Any();
+                return !enumerable.Any();
             }
             return true;
         }
