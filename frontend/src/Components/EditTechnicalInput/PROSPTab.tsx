@@ -11,12 +11,13 @@ import React, { ChangeEvent, useEffect, useState } from "react"
 import Grid from "@mui/material/Grid"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
-import { GetProspService } from "../../Services/ProspService"
-import { GetProjectService } from "../../Services/ProjectService"
-import { DriveItem } from "../../Models/sharepoint/DriveItem"
+
+import { GetProspService } from "@/Services/ProspService"
+import { GetProjectService } from "@/Services/ProjectService"
+import { DriveItem } from "@/Models/sharepoint/DriveItem"
+import { projectQueryFn } from "@/Services/QueryFunctions"
+import useEditProject from "@/Hooks/useEditProject"
 import PROSPCaseList from "./PROSPCaseList"
-import { projectQueryFn } from "../../Services/QueryFunctions"
-import useEditProject from "../../Hooks/useEditProject"
 
 const PROSPTab = () => {
     const { currentContext } = useModuleCurrentContext()
@@ -89,7 +90,7 @@ const PROSPTab = () => {
                             id="textfield-normal"
                             placeholder="Paste Uri here"
                             onChange={handleSharePointUrl}
-                            value={sharepointUrl}
+                            value={sharepointUrl || ""}
                         />
                     </InputWrapper>
                 </Grid>

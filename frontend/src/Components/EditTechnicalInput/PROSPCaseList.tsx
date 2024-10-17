@@ -273,6 +273,7 @@ const PROSPCaseList = ({
             field: "driveItem",
             headerName: "SharePoint file",
             cellRenderer: fileSelectorRenderer,
+            valueFormatter: (p: any) => (p.value?.[1] ?? ""),
             sortable: false,
             flex: 3,
         },

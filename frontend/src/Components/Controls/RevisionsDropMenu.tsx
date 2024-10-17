@@ -101,6 +101,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
                 {
                     revisions.map((revision) => (
                         <Menu.Item
+                            key={revision.id}
                             onClick={() => (isCaseMenu ? navToRevision(revision) : navigateToRevision(revision.id, setIsRevision, queryClient, projectId, navigate))}
                             disabled={disableCurrentRevision(revision.id, isRevision, revisionId)}
                         >

@@ -6,7 +6,7 @@ import {
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { ColDef } from "@ag-grid-community/core"
+import { CellKeyDownEvent, ColDef } from "@ag-grid-community/core"
 
 import { formatColumnSum, tableCellisEditable } from "@/Utils/common"
 import { EMPTY_GUID } from "@/Utils/constants"
@@ -33,7 +33,7 @@ const CaseTabTableWithGrouping = ({
 }: Props) => {
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
-    const { editMode } = useAppContext()
+    const { editMode, setShowRevisionReminder } = useAppContext()
 
     const profilesToRowData = () => {
         const tableRows: ITimeSeriesTableDataWithSet[] = []
@@ -83,6 +83,13 @@ const CaseTabTableWithGrouping = ({
             return { fontWeight: "bold" }
         }
         return undefined
+    }
+
+    const handleCopy = (gridEvent: CellKeyDownEvent) => {
+        const keyboardEvent = gridEvent.event as KeyboardEvent
+        if ((keyboardEvent.ctrlKey || keyboardEvent.metaKey) && keyboardEvent.key === "c") {
+            setShowRevisionReminder(true)
+        }
     }
 
     const generateTableYearColDefs = () => {
@@ -210,6 +217,7 @@ const CaseTabTableWithGrouping = ({
                     groupDefaultExpanded={groupDefaultExpanded}
                     stopEditingWhenCellsLoseFocus
                     defaultExcelExportParams={defaultExcelExportParams}
+                    onCellKeyDown={handleCopy}
                 />
             </div>
         </div>

@@ -21,6 +21,8 @@ interface AppContextType {
     setEditMode: Dispatch<SetStateAction<boolean>>,
     sidebarOpen: boolean,
     setSidebarOpen: Dispatch<SetStateAction<boolean>>,
+    showRevisionReminder: boolean,
+    setShowRevisionReminder: Dispatch<SetStateAction<boolean>>,
     snackBarMessage: string | undefined;
     setSnackBarMessage: Dispatch<SetStateAction<string | undefined>>;
     isCalculatingProductionOverrides: boolean,
@@ -40,6 +42,7 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [isSaving, setIsSaving] = useState<boolean>(false)
     const [editMode, setEditMode] = useState<boolean>(false)
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(true)
+    const [showRevisionReminder, setShowRevisionReminder] = useState<boolean>(false)
     const [snackBarMessage, setSnackBarMessage] = useState<string | undefined>(undefined)
     const [isCalculatingProductionOverrides, setIsCalculatingProductionOverrides] = useState<boolean>(false)
     const [isCalculatingTotalStudyCostOverrides, setIsCalculatingTotalStudyCostOverrides] = useState<boolean>(false)
@@ -56,6 +59,8 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setEditMode,
         sidebarOpen,
         setSidebarOpen,
+        showRevisionReminder,
+        setShowRevisionReminder,
         snackBarMessage,
         setSnackBarMessage,
         isCalculatingProductionOverrides,
@@ -75,6 +80,8 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setEditMode,
         sidebarOpen,
         setSidebarOpen,
+        showRevisionReminder,
+        setShowRevisionReminder,
         snackBarMessage,
         setSnackBarMessage,
         isCalculatingProductionOverrides,

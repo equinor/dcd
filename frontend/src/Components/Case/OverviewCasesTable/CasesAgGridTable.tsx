@@ -29,6 +29,7 @@ import { GetSTEAService } from "@/Services/STEAService"
 import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import { ReferenceCaseIcon } from "../Components/ReferenceCaseIcon"
 import { useProjectContext } from "@/Context/ProjectContext"
+import { useAppContext } from "@/Context/AppContext"
 
 const AgTableContainer = styled.div`
     overflow: auto;
@@ -81,6 +82,7 @@ const CasesAgGridTable = ({
     const [archivedRowData, setArchivedRowData] = useState<TableCase[]>()
     const [expandList, setExpandList] = useState<boolean>(false)
     const { currentContext } = useModuleCurrentContext()
+    const { setShowRevisionReminder } = useAppContext()
     const navigate = useNavigate()
     const externalId = currentContext?.externalId
 
@@ -233,6 +235,7 @@ const CasesAgGridTable = ({
 
         if (apiData) {
             try {
+                setShowRevisionReminder(true)
                 const unwrappedProjectId = unwrapProjectId(apiData.id)
                 const projectResult = await (await GetProjectService()).getProject(unwrappedProjectId)
                 await (await GetSTEAService()).excelToSTEA(projectResult)
