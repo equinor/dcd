@@ -3,6 +3,7 @@ import {
     Button,
     Progress,
     Tabs,
+    Tooltip,
 } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
@@ -17,6 +18,7 @@ import { useModalContext } from "../../Context/ModalContext"
 import { useAppContext } from "../../Context/AppContext"
 import { projectQueryFn } from "../../Services/QueryFunctions"
 import useEditProject from "../../Hooks/useEditProject"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 const {
     List, Tab, Panels, Panel,
@@ -25,10 +27,8 @@ const {
 const EditTechnicalInputModal = () => {
     const { editMode } = useAppContext()
     const [isSaving, setIsSaving] = useState<boolean>(false)
-    const {
-        editTechnicalInput,
-        setEditTechnicalInput,
-    } = useModalContext()
+    const { isEditDisabled, getEditDisabledText } = useEditDisabled()
+
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
     const { addProjectEdit } = useEditProject()
@@ -96,36 +96,12 @@ const EditTechnicalInputModal = () => {
 
             // Reset the changes made flag as changes have been successfully saved
             setIsSaving(false) // End saving process
-            setEditTechnicalInput(undefined)
         } catch (error) {
             console.error("Error when saving technical input: ", error)
             setIsSaving(false)
         } finally {
             setIsSaving(false)
         }
-    }
-
-    const handleSaveAndClose = async () => {
-        try {
-            await handleSave()
-            setEditTechnicalInput(undefined)
-        } catch (e) {
-            console.error("Error during save operation: ", e)
-        }
-    }
-
-    const handleCancel = () => {
-        // Revert the operational costs to their original state
-        setExplorationOperationalWellCosts(originalExplorationOperationalWellCosts)
-        setDevelopmentOperationalWellCosts(originalDevelopmentOperationalWellCosts)
-
-        // Revert the wells to their original state
-        setWellProjectWells([...originalWellProjectWells])
-        setExplorationWells([...originalExplorationWells])
-
-        // Close the modal in all cases
-        setEditTechnicalInput(undefined)
-        setActiveTab(0)
     }
 
     useEffect(() => {
@@ -179,35 +155,25 @@ const EditTechnicalInputModal = () => {
             </Grid>
 
             <Grid container justifyContent="flex-end">
-                <Grid item>
-                    <Button
-                        type="button"
-                        variant="outlined"
-                        onClick={handleCancel}
-                    >
-                        {(editMode || editTechnicalInput) ? "Cancel" : "Close"}
-                    </Button>
-                </Grid>
-                {(editMode || editTechnicalInput) && !isSaving && (
+                {!isSaving && (
                     <>
                         <Grid item>
-                            <Button onClick={handleSave}>Save</Button>
-                        </Grid>
-                        <Grid item>
-                            <Button onClick={handleSaveAndClose}>Save and Close</Button>
+                            <Tooltip title={getEditDisabledText()}>
+                                <Button
+                                    onClick={handleSave}
+                                    disabled={isEditDisabled || !editMode}
+                                >
+                                    Save
+                                </Button>
+                            </Tooltip>
                         </Grid>
                     </>
                 )}
-                {(editMode || editTechnicalInput) && isSaving && (
+                {(editMode) && isSaving && (
                     <Grid item>
                         <Button>
                             <Progress.Dots />
                         </Button>
-                    </Grid>
-                )}
-                {!(editMode || editTechnicalInput) && (
-                    <Grid item>
-                        <Button onClick={() => setEditTechnicalInput(true)}>Edit</Button>
                     </Grid>
                 )}
             </Grid>
