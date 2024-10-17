@@ -57,6 +57,8 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
 
     const [revisionName, setRevisionName] = useState<string>("")
     const [project, setProject] = useState<Components.Schemas.ProjectWithAssetsDto>()
+    const [classification, setClassification] = useState<Components.Schemas.ProjectClassification>()
+    const [projectPhase, setProjectPhase] = useState<Components.Schemas.InternalProjectPhase>()
 
     const externalId = currentContext?.externalId
 
@@ -82,6 +84,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
             newProject.classification = newClassification
             setProject(newProject)
+            setClassification(newClassification)
         }
     }
 
@@ -91,6 +94,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
             newProject.internalProjectPhase = newInternalProjectPhase
             setProject(newProject)
+            setProjectPhase(newInternalProjectPhase)
         }
     }
 
@@ -103,6 +107,14 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     ))
 
     const disableAfterDG0 = () => project?.projectPhase! >= 3
+
+    const submitRevision = () => {
+        const newRevision = { ...project }
+        newRevision.name = revisionName
+        newRevision.classification = classification
+        newRevision.internalProjectPhase = projectPhase
+        return newRevision
+    }
 
     if (!project) { return null }
 
@@ -174,11 +186,11 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                         </Typography>
                     </ColumnWrapper>
                     <Wrapper>
-                        <Chip>
+                        <Chip disabled>
                             <Icon data={checkbox_outline} />
                             MDQC
                         </Chip>
-                        <Chip>
+                        <Chip disabled>
                             <Icon data={checkbox_outline} />
                             Arena
                         </Chip>
@@ -188,7 +200,14 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             <DialogActions>
                 <div>
                     <Button variant="ghost" onClick={() => setCreatingRevision(false)}>Cancel</Button>
-                    <Button onClick={() => createRevision(projectId, project, setCreatingRevision)}>Create revision</Button>
+                    <Button onClick={() => createRevision(
+                        projectId,
+                        submitRevision() as Components.Schemas.ProjectWithAssetsDto,
+                        setCreatingRevision,
+                    )}
+                    >
+                        Create revision
+                    </Button>
                 </div>
             </DialogActions>
         </Dialog>
