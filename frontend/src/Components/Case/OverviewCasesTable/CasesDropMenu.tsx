@@ -199,7 +199,7 @@ const CasesDropMenu = ({
                         </Menu.Item>
                     )}
                 {/* Uncomment to show project revisions button */}
-                {/* <Menu.Item
+                <Menu.Item
                     ref={setRevisionMenuAnchorEl}
                     onMouseEnter={() => setIsRevisionMenuOpen(!isRevisionMenuOpen)}
                 >
@@ -214,7 +214,7 @@ const CasesDropMenu = ({
                     setIsRevisionMenuOpen={setIsRevisionMenuOpen}
                     menuAnchorEl={revisionMenuAnchorEl}
                     isCaseMenu
-                /> */}
+                />
             </Menu>
         </>
     )
