@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 using api.Models;
 
-using API.Helpers;
+using api.Helpers;
 
 using Microsoft.IdentityModel.Tokens;
 

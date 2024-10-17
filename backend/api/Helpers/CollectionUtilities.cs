@@ -1,8 +1,8 @@
-namespace API.Helpers
+namespace api.Helpers
 {
     public static class CollectionUtilities
     {
-        public static bool IsNullOrEmpty<T>(this T[] array)
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> array)
         {
             if (array != null)
             {
