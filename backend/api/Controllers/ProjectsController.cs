@@ -106,9 +106,9 @@ public class ProjectsController : ControllerBase
     )]
     [HttpGet("{projectId}/access")]
     [ActionType(ActionType.Read)]
-    public async Task<AccessRightsDto> GetAccess(Guid externalId)
+    public async Task<AccessRightsDto> GetAccess(Guid projectId)
     {
-        return await _projectAccessService.GetUserProjectAccess(externalId);
+        return await _projectAccessService.GetUserProjectAccess(projectId);
     }
 
     [RequiresApplicationRoles(

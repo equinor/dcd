@@ -64,6 +64,9 @@ public class CaseWithAssetsRepository : ICaseWithAssetsRepository
                 .Include(c => c.CessationOffshoreFacilitiesCost)
                 .Include(c => c.CessationOffshoreFacilitiesCostOverride)
                 .Include(c => c.CessationOnshoreFacilitiesCostProfile)
+                .Include(c => c.CalculatedTotalIncomeCostProfile)
+                .Include(c => c.CalculatedTotalCostCostProfile)
+
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id)
             ?? throw new NotFoundInDBException($"Case with id {id} not found.");

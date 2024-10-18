@@ -1,10 +1,10 @@
 import styled from "styled-components"
 import { Icon, Chip, Tooltip } from "@equinor/eds-core-react"
-import { useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
-import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
-import { projectQueryFn } from "../../Services/QueryFunctions"
+
+import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 
 const StyledChip = styled(Chip)`
     border-width: 0;
@@ -40,7 +40,6 @@ const SmallTooltip = styled(Tooltip)`
 `
 
 const Classification = () => {
-    const { caseId } = useParams()
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
 
@@ -51,7 +50,7 @@ const Classification = () => {
     })
 
     return (
-        apiData && !caseId
+        apiData
             ? (
                 <SmallTooltip placement="bottom-start" title={PROJECT_CLASSIFICATION[apiData.classification].description}>
                     <StyledChip

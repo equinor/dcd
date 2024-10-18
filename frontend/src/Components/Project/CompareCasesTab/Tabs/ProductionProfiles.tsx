@@ -1,5 +1,5 @@
 import React from "react"
-import { AgChartsCompareCases } from "../../../AgGrid/AgChartsCompareCases"
+import { AgChartsCompareCases } from "@/Components/AgGrid/AgChartsCompareCases"
 
 interface ProductionProfilesProps {
     productionProfilesChartData?: object

@@ -16,7 +16,6 @@ const OperationalWellCost = ({
     title, setValue, value,
 }: Props) => {
     const { editMode } = useAppContext()
-    const { editTechnicalInput } = useModalContext()
     const onValueChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         setValue(Number(e.target.value))
     }
@@ -26,7 +25,7 @@ const OperationalWellCost = ({
                 {title}
             </Table.Cell>
             <Table.Cell>
-                {editMode || editTechnicalInput
+                {editMode
                     ? (
                         <Input
                             id="WellCost"

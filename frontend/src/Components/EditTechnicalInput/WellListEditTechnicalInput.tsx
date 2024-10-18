@@ -17,6 +17,7 @@ import Modal from "../Modal/Modal"
 import { cellStyleRightAlign } from "../../Utils/common"
 import { GetWellService } from "../../Services/WellService"
 import { projectQueryFn } from "../../Services/QueryFunctions"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 interface Props {
     wells: Components.Schemas.WellDto[] | undefined
@@ -48,6 +49,8 @@ const WellListEditTechnicalInput = ({
     const externalId = currentContext?.externalId
     const gridRef = useRef(null)
     const styles = useStyles()
+    const { isEditDisabled } = useEditDisabled()
+
     const onGridReady = (params: any) => { gridRef.current = params.api }
 
     const { data: apiData } = useQuery({
@@ -113,6 +116,7 @@ const WellListEditTechnicalInput = ({
                 id="wellCategory"
                 label=""
                 value={value}
+                disabled={!editMode || isEditDisabled}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => handleWellCategoryChange(e, p)}
             >
                 {!explorationWells ? (
@@ -158,6 +162,7 @@ const WellListEditTechnicalInput = ({
     const deleteWellRenderer = (p: any) => (
         <Button
             variant="ghost_icon"
+            disabled={!editMode || isEditDisabled}
             onClick={async () => {
                 if (!apiData) { return }
                 const wellsInUse = await (await GetWellService()).checkWellIsInUse(apiData.id, p.data.id)
@@ -183,43 +188,55 @@ const WellListEditTechnicalInput = ({
         cellClass: editMode ? "editableCell" : undefined,
     }), [])
 
-    const [columnDefs] = useState<ColDef[]>([
-        {
-            field: "name",
-            flex: 2,
-        },
-        {
-            field: "wellCategory",
-            headerName: "Well type",
-            cellRenderer: wellCategoryRenderer,
-            editable: false,
-            flex: 2,
-        },
-        {
-            field: "drillingDays",
-            headerName: "Drilling days",
-            flex: 1,
-            cellStyle: cellStyleRightAlign,
-        },
-        {
-            field: "wellCost",
-            headerName: `Cost (${apiData?.currency === 1 ? "mill NOK" : "mill USD"})`,
-            flex: 1,
-            headerComponent: CustomHeaderForSecondaryHeader,
-            headerComponentParams: {
-                columnHeader: "Cost",
-                unit: apiData?.currency === 1 ? "mill NOK" : "mill USD",
+    const GetColumnDefs = () => {
+        return [
+            {
+                field: "name",
+                flex: 2,
+                editable: editMode,
             },
-            cellStyle: cellStyleRightAlign,
-        },
-        {
-            field: "delete",
-            headerName: "",
-            cellRenderer: deleteWellRenderer,
-            editable: false,
-            width: 80,
-        },
-    ])
+            {
+                field: "wellCategory",
+                headerName: "Well type",
+                cellRenderer: wellCategoryRenderer,
+                editable: false,
+                flex: 2,
+            },
+            {
+                field: "drillingDays",
+                headerName: "Drilling days",
+                flex: 1,
+                cellStyle: cellStyleRightAlign,
+                editable: editMode,
+            },
+            {
+                field: "wellCost",
+                headerName: `Cost (${apiData?.currency === 1 ? "mill NOK" : "mill USD"})`,
+                flex: 1,
+                headerComponent: CustomHeaderForSecondaryHeader,
+                headerComponentParams: {
+                    columnHeader: "Cost",
+                    unit: apiData?.currency === 1 ? "mill NOK" : "mill USD",
+                },
+                cellStyle: cellStyleRightAlign,
+                editable: editMode,
+            },
+            {
+                field: "delete",
+                headerName: "",
+                cellRenderer: deleteWellRenderer,
+                editable: false,
+                width: 80,
+            },
+        ]
+    }
+
+    const [columnDefs, setColumnDefs] = useState<ColDef[]>(GetColumnDefs())
+
+    useEffect(() => {
+        console.log("editable: ", editMode || isEditDisabled)
+        setColumnDefs(GetColumnDefs())
+    }, [editMode])
 
     useEffect(() => {
         wellsToRowData()
