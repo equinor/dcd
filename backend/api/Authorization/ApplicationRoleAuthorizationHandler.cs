@@ -70,39 +70,70 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         return requestPath?.StartsWithSegments(swaggerPath) == true;
     }
 
-    private async Task<bool> IsAuthorized(AuthorizationHandlerContext context, ApplicationRoleRequirement roleRequirement, List<ApplicationRole> userRoles)
+    private static Guid GetAzureUniqueId(AuthorizationHandlerContext context)
     {
-        var userHasRequiredRole = userRoles.Any(role => roleRequirement.Roles.Contains(role));
-
         var fusionIdentity = context.User.Identities.FirstOrDefault(i => i is Fusion.Integration.Authentication.FusionIdentity)
             as Fusion.Integration.Authentication.FusionIdentity;
 
-        var azureUniqueId = fusionIdentity?.Profile?.AzureUniqueId ??
+        return fusionIdentity?.Profile?.AzureUniqueId ??
             throw new InvalidOperationException("AzureUniqueId not found in user profile");
+    }
+
+    private async Task<bool> IsAuthorized(
+        AuthorizationHandlerContext context,
+        ApplicationRoleRequirement roleRequirement,
+        List<ApplicationRole> userRoles
+    )
+    {
+        var userHasRequiredRole = userRoles.Any(roleRequirement.Roles.Contains);
 
         // TODO: Implement check for classification and project phase
         var project = await GetCurrentProject(context);
 
+        if (project == null)
+        {
+            return userHasRequiredRole;
+        }
+
         var actionType = GetActionTypeFromEndpoint();
 
-        if (project != null && project.IsRevision && actionType == ActionType.Edit)
+        if (project.IsRevision && actionType == ActionType.Edit)
         {
             throw new ModifyRevisionException("Cannot modify a revision", project.Id);
         }
 
-        var requiredRolesForEdit = new List<ApplicationRole> { ApplicationRole.Admin, ApplicationRole.User };
-        var requiredRolesForView = new List<ApplicationRole> { ApplicationRole.ReadOnly, ApplicationRole.Admin, ApplicationRole.User };
+        var azureUniqueId = GetAzureUniqueId(context);
+        var userMembershipRole = GetUserMembershipRole(project, azureUniqueId);
+
+        var requiredRolesForEdit = new List<ApplicationRole> {
+            ApplicationRole.Admin,
+            ApplicationRole.User
+        };
+        var requiredRolesForView = new List<ApplicationRole> {
+            ApplicationRole.ReadOnly,
+            ApplicationRole.Admin,
+            ApplicationRole.User
+        };
 
         if (actionType == ActionType.Edit)
         {
-            userHasRequiredRole = userRoles.Any(role => requiredRolesForEdit.Contains(role));
+            userHasRequiredRole = userRoles.Any(requiredRolesForEdit.Contains)
+            || userMembershipRole == ProjectMemberRole.Editor;
         }
         else if (actionType == ActionType.Read)
         {
-            userHasRequiredRole = userRoles.Any(role => requiredRolesForView.Contains(role));
+            userHasRequiredRole = userRoles.Any(requiredRolesForView.Contains)
+            || userMembershipRole == ProjectMemberRole.Editor
+            || userMembershipRole == ProjectMemberRole.Observer;
         }
 
         return userHasRequiredRole;
+    }
+
+    private static ProjectMemberRole? GetUserMembershipRole(Project project, Guid azureUniqueId)
+    {
+        var projectMember = project.ProjectMembers?.FirstOrDefault(pm => pm.UserId == azureUniqueId);
+        return projectMember?.Role;
     }
 
     private ActionType? GetActionTypeFromEndpoint()
@@ -137,7 +168,7 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         if (!_cache.TryGetValue(projectIdGuid, out Project? project))
         {
             // Get the project from the database
-            project = await _projectRepository.GetProjectByIdOrExternalId(projectIdGuid);
+            project = await _projectRepository.GetProjectWithMembersByIdOrExternalId(projectIdGuid);
 
             // Store the project in the cache
             var cacheEntryOptions = new MemoryCacheEntryOptions()
