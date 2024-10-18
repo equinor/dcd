@@ -2,19 +2,15 @@ using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
 
-using api.Adapters;
 using api.Context;
 using api.Dtos;
 using api.Exceptions;
-using api.Mappings;
 using api.Models;
 using api.Repositories;
-using api.Services.FusionIntegration;
 
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 
 using Newtonsoft.Json;
 
@@ -28,6 +24,7 @@ public class RevisionService : IRevisionService
     private readonly IProjectService _projectService;
     private readonly DcdDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IProjectRepository _projectRepository;
 
 
     public RevisionService(
@@ -36,7 +33,8 @@ public class RevisionService : IRevisionService
         IRevisionRepository revisionRepository,
         IProjectAccessService projectAccessService,
         IProjectService projectService,
-        IMapper mapper
+        IMapper mapper,
+        IProjectRepository projectRepository
     )
     {
         _context = context;
@@ -45,6 +43,7 @@ public class RevisionService : IRevisionService
         _projectAccessService = projectAccessService;
         _projectService = projectService;
         _mapper = mapper;
+        _projectRepository = projectRepository;
     }
 
     // TODO: Rewrite when CaseWithAssetsDto is no longer needed
@@ -230,12 +229,24 @@ public class RevisionService : IRevisionService
             ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
 
         SetProjectAndRelatedEntitiesToEmptyGuids(project, projectId, createRevisionDto);
+        await UpdateProjectWithRevisionChanges(projectId, createRevisionDto);
 
         var revision = await _revisionRepository.AddRevision(project);
 
         var revisionDto = _mapper.Map<Project, ProjectWithAssetsDto>(revision, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 
         return revisionDto;
+    }
+
+    private async Task<Project> UpdateProjectWithRevisionChanges(Guid projectId, CreateRevisionDto createRevisionDto)
+    {
+        var existingProject = await _projectRepository.GetProject(projectId)
+            ?? throw new NotFoundInDBException($"Project {projectId} not found");
+
+        existingProject.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
+        existingProject.Classification = createRevisionDto.Classification;
+
+        return existingProject;
     }
 
     private void SetProjectAndRelatedEntitiesToEmptyGuids(Project project, Guid originalProjectId, CreateRevisionDto createRevisionDto)
@@ -245,6 +256,8 @@ public class RevisionService : IRevisionService
         project.IsRevision = true;
         project.OriginalProjectId = originalProjectId;
         project.CreateDate = DateTimeOffset.UtcNow;
+
+        // update revision with properties from create revision modal
         project.Name = createRevisionDto.Name;
         project.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
         project.Classification = createRevisionDto.Classification;
