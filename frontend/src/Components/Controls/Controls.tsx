@@ -52,7 +52,11 @@ const Controls = () => {
 
     const backToProject = async () => {
         cancelEdit()
-        navigate(projectPath(currentContext?.id!))
+        if (isRevision && revisionId) {
+            navigate(`${projectPath(currentContext?.id!)}/revision/${revisionId}`)
+        } else {
+            navigate(projectPath(currentContext?.id!))
+        }
     }
 
     const handleEdit = () => {

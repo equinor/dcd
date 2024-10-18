@@ -198,23 +198,6 @@ const CasesDropMenu = ({
                             </Typography>
                         </Menu.Item>
                     )}
-                {/* Uncomment to show project revisions button */}
-                <Menu.Item
-                    ref={setRevisionMenuAnchorEl}
-                    onMouseEnter={() => setIsRevisionMenuOpen(!isRevisionMenuOpen)}
-                >
-                    <Icon data={history} size={16} />
-                    <Typography group="navigation" variant="menu_title" as="span">
-                        Project revisions
-                    </Typography>
-                </Menu.Item>
-                <RevisionsDropMenu
-                    isMenuOpen={isRevisionMenuOpen}
-                    setIsMenuOpen={setIsMenuOpen}
-                    setIsRevisionMenuOpen={setIsRevisionMenuOpen}
-                    menuAnchorEl={revisionMenuAnchorEl}
-                    isCaseMenu
-                />
             </Menu>
         </>
     )
