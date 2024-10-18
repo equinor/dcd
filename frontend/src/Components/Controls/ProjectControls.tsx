@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import styled from "styled-components"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
@@ -65,7 +65,7 @@ interface props {
 
 const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
     const { currentContext } = useModuleCurrentContext()
-    const { editMode } = useAppContext()
+    const { editMode, setEditMode } = useAppContext()
     const {
         activeTabProject,
         setActiveTabProject,
@@ -89,6 +89,11 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
         }
         return index
     }
+    useEffect(() => {
+        if (isRevision) {
+            setEditMode(false)
+        }
+    }, [isRevision])
 
     return (
         <>

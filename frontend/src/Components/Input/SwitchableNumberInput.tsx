@@ -64,7 +64,7 @@ const SwitchableNumberInput: React.FC<CaseEditInputProps> = ({
     return (
         <InputSwitcher
             label={label}
-            value={`${value ?? ""}`}
+            value={`${value ?? ""} ${unit ?? ""}`}
         >
             <NumberInputWithValidation
                 label={label}

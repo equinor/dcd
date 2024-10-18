@@ -53,7 +53,6 @@ const WellCostsTab = ({
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
 
-    const { editTechnicalInput } = useModalContext()
     const { editMode } = useAppContext()
 
     const { data: apiData } = useQuery({
@@ -84,7 +83,7 @@ const WellCostsTab = ({
             <Section>
                 <SectionHeader>
                     <Typography variant="h2">Exploration Well Costs</Typography>
-                    {(editMode || editTechnicalInput) && (
+                    {editMode && (
                         <Button
                             onClick={
                                 () => CreateWell(explorationWells, setExplorationWells, 4)
@@ -111,7 +110,7 @@ const WellCostsTab = ({
             <Section>
                 <SectionHeader>
                     <Typography variant="h2">Development Well Costs</Typography>
-                    {(editMode || editTechnicalInput) && (
+                    {editMode && (
                         <Button
                             onClick={() => CreateWell(wellProjectWells, setWellProjectWells, 0)}
                             variant="outlined"
