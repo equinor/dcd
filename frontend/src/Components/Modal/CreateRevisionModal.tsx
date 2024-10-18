@@ -56,9 +56,8 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     const { currentContext } = useModuleCurrentContext()
 
     const [revisionName, setRevisionName] = useState<string>("")
-    const [project, setProject] = useState<Components.Schemas.ProjectWithAssetsDto>()
     const [classification, setClassification] = useState<Components.Schemas.ProjectClassification>()
-    const [projectPhase, setProjectPhase] = useState<Components.Schemas.InternalProjectPhase | undefined>()
+    const [internalProjectPhase, setInternalProjectPhase] = useState<Components.Schemas.InternalProjectPhase | undefined>()
 
     const externalId = currentContext?.externalId
 
@@ -68,33 +67,21 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
         enabled: !!externalId,
     })
 
-    useEffect(() => {
-        if (apiData) {
-            setProject(apiData)
-        }
-    }, [apiData])
-
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setRevisionName(e.currentTarget.value)
     }
 
     const handleClassificationChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
+        if ([0, 1, 2, 3].indexOf(Number(e.currentTarget.value)) !== -1) {
             const newClassification: Components.Schemas.ProjectClassification = Number(e.currentTarget.value) as unknown as Components.Schemas.ProjectClassification
-            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
-            newProject.classification = newClassification
-            setProject(newProject)
             setClassification(newClassification)
         }
     }
 
     const handleInternalProjectPhaseChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
-        if ([0, 1, 2].indexOf(Number(e.currentTarget.value)) !== -1 && project) {
+        if ([0, 1, 2].indexOf(Number(e.currentTarget.value)) !== -1) {
             const newInternalProjectPhase: Components.Schemas.InternalProjectPhase = Number(e.currentTarget.value) as unknown as Components.Schemas.InternalProjectPhase
-            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...project }
-            newProject.internalProjectPhase = newInternalProjectPhase
-            setProject(newProject)
-            setProjectPhase(newInternalProjectPhase)
+            setInternalProjectPhase(newInternalProjectPhase)
         }
     }
 
@@ -106,15 +93,15 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
         <option key={key} value={key}>{value.label}</option>
     ))
 
-    if (!project) { return null }
+    if (!apiData) { return null }
 
-    const disableAfterDG0 = () => project.projectPhase! >= 3
+    const disableAfterDG0 = () => apiData?.projectPhase! >= 3
 
     const submitRevision = () => {
         const newRevision: Components.Schemas.CreateRevisionDto = {
             name: revisionName,
-            internalProjectPhase: projectPhase || project.internalProjectPhase,
-            classification: classification || project.classification,
+            internalProjectPhase: internalProjectPhase || apiData.internalProjectPhase,
+            classification: classification || apiData.classification,
         }
         return newRevision
     }
@@ -159,10 +146,10 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                         </ColumnWrapper>
                         <ColumnWrapper>
                             <NativeSelect
-                                id="projectPhase"
+                                id="internalProjectPhase"
                                 label="Project phase"
                                 onChange={handleInternalProjectPhaseChange}
-                                value={project.internalProjectPhase}
+                                value={internalProjectPhase}
                                 disabled={disableAfterDG0()}
                             >
                                 {internalProjectPhaseOptions}
@@ -173,7 +160,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                                 id="projectClassification"
                                 label="Project classification"
                                 onChange={handleClassificationChange}
-                                value={project.classification}
+                                value={classification}
                             >
                                 {classificationOptions}
                             </NativeSelect>
