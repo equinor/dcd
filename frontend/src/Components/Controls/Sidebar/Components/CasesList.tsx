@@ -46,7 +46,6 @@ const CasesList: React.FC = () => {
 
     const selectCase = (caseId: string) => {
         if (!currentContext || !caseId) { return null }
-        console.log("isRevision CasesList", isRevision)
         navigate(caseRevisionPath(currentContext.id, caseId, isRevision, revisionId))
         return null
     }
@@ -60,9 +59,9 @@ const CasesList: React.FC = () => {
     )
 
     if (
-        (!apiData && !isRevision) ||
-        (!apiRevisionData && isRevision) ||
-        !currentContext
+        (!apiData && !isRevision)
+        || (!apiRevisionData && isRevision)
+        || !currentContext
     ) {
         return null
     }

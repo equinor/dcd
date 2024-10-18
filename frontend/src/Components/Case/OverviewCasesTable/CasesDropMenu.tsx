@@ -11,7 +11,6 @@ import {
     library_add,
     archive,
     unarchive,
-    history,
 } from "@equinor/eds-icons"
 import { useMemo, useState } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
@@ -23,7 +22,6 @@ import { useSubmitToApi } from "@/Hooks/UseSubmitToApi"
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
 import Modal from "../../Modal/Modal"
-import RevisionsDropMenu from "@/Components/Controls/RevisionsDropMenu"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 
 interface CasesDropMenuProps {
@@ -47,8 +45,6 @@ const CasesDropMenu = ({
     const { updateCase } = useSubmitToApi()
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
-    const [isRevisionMenuOpen, setIsRevisionMenuOpen] = useState<boolean>(false)
-    const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
     const { isEditDisabled } = useEditDisabled()
 
     const { data: projectData } = useQuery({
