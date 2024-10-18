@@ -143,50 +143,58 @@ const CasesAgGridTable = ({
         return <div>{stringValue}</div>
     }
 
-    const [columnDefs] = useState<ColDef[]>([
-        {
-            field: "name",
-            cellRenderer: nameWithReferenceCase,
-            minWidth: 150,
-            maxWidth: 500,
-            flex: 1,
-        },
-        {
-            field: "productionStrategyOverview",
-            headerName: "Production Strategy Overview",
-            headerTooltip: "Production Strategy Overview",
-            cellRenderer: productionStrategyToString,
-            width: 280,
-        },
-        {
-            field: "producerCount",
-            headerName: "Producers",
-            width: 130,
-            cellStyle: cellStyleRightAlign,
-        },
-        {
-            field: "gasInjectorCount",
-            headerName: "Gas injectors",
-            width: 155,
-            cellStyle: cellStyleRightAlign,
-        },
-        {
-            field: "waterInjectorCount",
-            headerName: "Water injectors",
-            width: 170,
-            cellStyle: cellStyleRightAlign,
-        },
-        {
-            field: "createdAt",
-            headerName: "Created",
-            width: 120,
-        },
-        {
-            field: "Options",
-            cellRenderer: menuButton,
-            width: 120,
-        },
-    ])
+    const GetColumnDefs = () => {
+        return [
+            {
+                field: "name",
+                cellRenderer: nameWithReferenceCase,
+                minWidth: 150,
+                maxWidth: 500,
+                flex: 1,
+            },
+            {
+                field: "productionStrategyOverview",
+                headerName: "Production Strategy Overview",
+                headerTooltip: "Production Strategy Overview",
+                cellRenderer: productionStrategyToString,
+                width: 280,
+            },
+            {
+                field: "producerCount",
+                headerName: "Producers",
+                width: 130,
+                cellStyle: cellStyleRightAlign,
+            },
+            {
+                field: "gasInjectorCount",
+                headerName: "Gas injectors",
+                width: 155,
+                cellStyle: cellStyleRightAlign,
+            },
+            {
+                field: "waterInjectorCount",
+                headerName: "Water injectors",
+                width: 170,
+                cellStyle: cellStyleRightAlign,
+            },
+            {
+                field: "createdAt",
+                headerName: "Created",
+                width: 120,
+            },
+            {
+                field: "Options",
+                cellRenderer: menuButton,
+                width: 120,
+            },
+        ]
+    }
+
+    const [columnDefs, setColumnDefs] = useState<ColDef[]>(GetColumnDefs())
+
+    useEffect(() => {
+        setColumnDefs(GetColumnDefs())
+    }, [isRevision])
 
     const casesToRowData = (isArchived: boolean) => {
         let data = apiData
