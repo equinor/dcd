@@ -25,11 +25,12 @@ import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../../AgGrid
 const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const { caseId } = useParams()
     const { activeTabCase } = useCaseContext()
-    const { projectId } = useProjectContext()
+    const { projectId, isRevision } = useProjectContext()
+    const { revisionId } = useParams()
 
     const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", projectId, caseId],
-        queryFn: () => caseQueryFn(projectId, caseId),
+        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
+        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
     })
 

@@ -13,8 +13,8 @@ import { useProjectContext } from "../../../Context/ProjectContext"
 const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
-    const { caseId } = useParams()
-    const { projectId } = useProjectContext()
+    const { caseId, revisionId } = useParams()
+    const { projectId, isRevision } = useProjectContext()
 
     const platformConceptValues: { [key: number]: string } = {
         0: "No Concept",
@@ -54,8 +54,8 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
     })
 
     const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", projectId, caseId],
-        queryFn: () => caseQueryFn(projectId, caseId),
+        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
+        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
     })
 

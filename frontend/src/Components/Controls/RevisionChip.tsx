@@ -26,7 +26,7 @@ const RevisionChip = () => {
     const { data: revisionData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
-        enabled: !!revisionId,
+        enabled: !!revisionId && !!projectId,
     })
 
     const handleMouseOver = () => {
