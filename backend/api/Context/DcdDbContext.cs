@@ -1,5 +1,6 @@
 using api.Models;
 using api.Services;
+using api.Services.EconomicsServices;
 using api.Services.GenerateCostProfiles;
 
 using Microsoft.EntityFrameworkCore;
@@ -86,6 +87,10 @@ public class DcdDbContext : DbContext
         var rerunNetSalesGas = CalculateNetSalesGas();
         var rerunOpex = CalculateOpex();
         var rerunCo2Emissions = CalculateCo2Emissions();
+        var rerunTotalIncome = CalculateTotalIncome();
+        var rerunTotalCost = CalculateTotalCost();
+        var rerunCalculateNPV = CalculateNPV();
+        var rerunCalculateBreakEven = CalculateBreakEvenOilPrice();
 
         await base.SaveChangesAsync(); // TODO: This is a hack to find the updated values in the calculate services. Need to find a better way to do this.
         if (wells.Count != 0 || drillingScheduleIds.Count != 0)
@@ -131,6 +136,30 @@ public class DcdDbContext : DbContext
         if (rerunCo2Emissions)
         {
             await _serviceProvider.GetRequiredService<ICo2EmissionsProfileService>().Generate(caseId);
+        }
+
+        if (rerunTotalIncome)
+        {
+            var calculateIncomeHelper = _serviceProvider.GetRequiredService<ICalculateTotalIncomeService>();
+            await calculateIncomeHelper.CalculateTotalIncome(caseId);
+        }
+
+        if (rerunTotalCost)
+        {
+            var calculateCostHelper = _serviceProvider.GetRequiredService<ICalculateTotalCostService>();
+            await calculateCostHelper.CalculateTotalCost(caseId);
+        }
+
+        if (rerunTotalIncome || rerunTotalCost || rerunCalculateNPV)
+        {
+            var calculateNPVHelper = _serviceProvider.GetRequiredService<ICalculateNPVService>();
+            await calculateNPVHelper.CalculateNPV(caseId);
+        }
+
+        if (rerunTotalIncome || rerunTotalCost || rerunCalculateBreakEven)
+        {
+            var calculateBreakEvenHelper = _serviceProvider.GetRequiredService<ICalculateBreakEvenOilPriceService>();
+            await calculateBreakEvenHelper.CalculateBreakEvenOilPrice(caseId);
         }
     }
 
@@ -823,6 +852,299 @@ public class DcdDbContext : DbContext
             || wellProjectGasInjectorOverrideAdded;
     }
 
+    private bool CalculateTotalIncome()
+    {
+        var productionProfileOilChanges = ChangeTracker.Entries<ProductionProfileOil>()
+            .Any(e => e.State == EntityState.Modified &&
+                (
+                    e.Property(nameof(Models.ProductionProfileOil.InternalData)).IsModified ||
+                    e.Property(nameof(Models.ProductionProfileOil.StartYear)).IsModified
+                ));
+
+        var productionProfileOilAdded = ChangeTracker.Entries<ProductionProfileOil>()
+            .Any(e => e.State == EntityState.Added);
+
+
+        var additionalProductionProfileOilChanges = ChangeTracker.Entries<AdditionalProductionProfileOil>()
+            .Any(e => e.State == EntityState.Modified &&
+                        (e.Property(nameof(Models.AdditionalProductionProfileOil.InternalData)).IsModified ||
+                        e.Property(nameof(Models.AdditionalProductionProfileOil.StartYear)).IsModified));
+
+        var additionalProductionProfileOilAdded = ChangeTracker.Entries<AdditionalProductionProfileOil>()
+            .Any(e => e.State == EntityState.Added);
+
+        var productionProfileGasChanges = ChangeTracker.Entries<ProductionProfileGas>()
+            .Any(e => e.State == EntityState.Modified &&
+                (
+                    e.Property(nameof(Models.ProductionProfileGas.InternalData)).IsModified ||
+                    e.Property(nameof(Models.ProductionProfileGas.StartYear)).IsModified
+                ));
+
+        var productionProfileGasAdded = ChangeTracker.Entries<ProductionProfileGas>()
+            .Any(e => e.State == EntityState.Added);
+
+        var additionalProductionProfileGasChanges = ChangeTracker.Entries<AdditionalProductionProfileGas>()
+            .Any(e => e.State == EntityState.Modified &&
+                      (e.Property(nameof(Models.AdditionalProductionProfileGas.InternalData)).IsModified ||
+                       e.Property(nameof(Models.AdditionalProductionProfileGas.StartYear)).IsModified));
+
+        var additionalProductionProfileGasAdded = ChangeTracker.Entries<AdditionalProductionProfileGas>()
+            .Any(e => e.State == EntityState.Added);
+
+        return productionProfileGasChanges
+            || productionProfileGasAdded
+            || additionalProductionProfileGasChanges
+            || additionalProductionProfileGasAdded
+            || productionProfileOilChanges
+            || productionProfileOilAdded
+            || additionalProductionProfileOilChanges
+            || additionalProductionProfileOilAdded;
+    }
+
+    private bool CalculateTotalCost()
+    {
+
+        var totalFeasibilityAdded = ChangeTracker.Entries<TotalFeasibilityAndConceptStudies>()
+            .Any(e => e.State == EntityState.Added);
+
+        var totalFeasibilityOverrideChanges = ChangeTracker.Entries<TotalFeasibilityAndConceptStudiesOverride>()
+            .Any(e => e.State == EntityState.Modified &&
+            (
+                e.Property(nameof(Models.TotalFeasibilityAndConceptStudiesOverride.Override)).IsModified
+                || e.Property(nameof(Models.TotalFeasibilityAndConceptStudiesOverride.InternalData)).IsModified
+            ));
+
+
+        var totalFEEDChanges = ChangeTracker.Entries<TotalFEEDStudies>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var totalFEEDOverrideChanges = ChangeTracker.Entries<TotalFEEDStudiesOverride>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var totalOtherStudiesChanges = ChangeTracker.Entries<TotalOtherStudiesCostProfile>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var historicCostChanges = ChangeTracker.Entries<HistoricCostCostProfile>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var wellInterventionChanges = ChangeTracker.Entries<WellInterventionCostProfile>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var wellInterventionOverrideChanges = ChangeTracker.Entries<WellInterventionCostProfileOverride>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var offshoreFacilitiesOperationsChanges = ChangeTracker.Entries<OffshoreFacilitiesOperationsCostProfile>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var offshoreFacilitiesOperationsOverrideChanges = ChangeTracker.Entries<OffshoreFacilitiesOperationsCostProfileOverride>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var onshoreRelatedOPEXChanges = ChangeTracker.Entries<OnshoreRelatedOPEXCostProfile>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var additionalOPEXChanges = ChangeTracker.Entries<AdditionalOPEXCostProfile>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var cessationWellsChanges = ChangeTracker.Entries<CessationWellsCost>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var cessationWellsOverrideChanges = ChangeTracker.Entries<CessationWellsCostOverride>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var cessationOffshoreFacilitiesChanges = ChangeTracker.Entries<CessationOffshoreFacilitiesCost>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var cessationOffshoreFacilitiesOverrideChanges = ChangeTracker.Entries<CessationOffshoreFacilitiesCostOverride>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var cessationOnshoreFacilitiesChanges = ChangeTracker.Entries<CessationOnshoreFacilitiesCostProfile>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var surfChanges = ChangeTracker.Entries<SurfCostProfile>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var surfOverrideChanges = ChangeTracker.Entries<SurfCostProfileOverride>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var substructureChanges = ChangeTracker.Entries<SubstructureCostProfile>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var substructureOverrideChanges = ChangeTracker.Entries<SubstructureCostProfileOverride>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var topsideChanges = ChangeTracker.Entries<TopsideCostProfile>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var topsideOverrideChanges = ChangeTracker.Entries<TopsideCostProfileOverride>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var transportChanges = ChangeTracker.Entries<TransportCostProfile>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var transportOverrideChanges = ChangeTracker.Entries<TransportCostProfileOverride>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var oilProducerChanges = ChangeTracker.Entries<OilProducerCostProfile>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var oilProducerOverrideChanges = ChangeTracker.Entries<OilProducerCostProfileOverride>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var gasProducerChanges = ChangeTracker.Entries<GasProducerCostProfile>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var gasProducerOverrideChanges = ChangeTracker.Entries<GasProducerCostProfileOverride>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var waterInjectorChanges = ChangeTracker.Entries<WaterInjectorCostProfile>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var waterInjectorOverrideChanges = ChangeTracker.Entries<WaterInjectorCostProfileOverride>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var gasInjectorChanges = ChangeTracker.Entries<GasInjectorCostProfile>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var gasInjectorOverrideChanges = ChangeTracker.Entries<GasInjectorCostProfileOverride>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var gAndGAdminChanges = ChangeTracker.Entries<GAndGAdminCost>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var gAndGAdminOverrideChanges = ChangeTracker.Entries<GAndGAdminCostOverride>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var seismicChanges = ChangeTracker.Entries<SeismicAcquisitionAndProcessing>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var countryOfficeChanges = ChangeTracker.Entries<CountryOfficeCost>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var explorationWellChanges = ChangeTracker.Entries<ExplorationWellCostProfile>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var appraisalWellChanges = ChangeTracker.Entries<AppraisalWellCostProfile>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        var sidetrackChanges = ChangeTracker.Entries<SidetrackCostProfile>()
+            .Any(e => e.State == EntityState.Modified ||
+            e.State == EntityState.Added);
+
+        return
+            totalFeasibilityAdded
+            || totalFeasibilityOverrideChanges
+            || totalFEEDChanges
+            || totalFEEDOverrideChanges
+            || totalOtherStudiesChanges
+            || historicCostChanges
+            || wellInterventionChanges
+            || wellInterventionOverrideChanges
+            || offshoreFacilitiesOperationsChanges
+            || offshoreFacilitiesOperationsOverrideChanges
+            || onshoreRelatedOPEXChanges
+            || additionalOPEXChanges
+            || cessationWellsChanges
+            || cessationWellsOverrideChanges
+            || cessationOffshoreFacilitiesChanges
+            || cessationOffshoreFacilitiesOverrideChanges
+            || cessationOnshoreFacilitiesChanges
+            || surfChanges
+            || surfOverrideChanges
+            || substructureChanges
+            || substructureOverrideChanges
+            || topsideChanges
+            || topsideOverrideChanges
+            || transportChanges
+            || transportOverrideChanges
+            || oilProducerChanges
+            || oilProducerOverrideChanges
+            || gasProducerChanges
+            || gasProducerOverrideChanges
+            || waterInjectorChanges
+            || waterInjectorOverrideChanges
+            || gasInjectorChanges
+            || gasInjectorOverrideChanges
+            || gAndGAdminChanges
+            || gAndGAdminOverrideChanges
+            || seismicChanges
+            || countryOfficeChanges
+            || explorationWellChanges
+            || appraisalWellChanges
+            || sidetrackChanges;
+    }
+
+    private bool CalculateNPV()
+    {
+        var projectChanges = ChangeTracker.Entries<Project>()
+            .Any(e => e.State == EntityState.Modified &&
+                (e.Property(nameof(Project.DiscountRate)).IsModified ||
+                e.Property(nameof(Project.ExchangeRateUSDToNOK)).IsModified ||
+                e.Property(nameof(Project.OilPriceUSD)).IsModified ||
+                e.Property(nameof(Project.GasPriceNOK)).IsModified));
+
+        var caseChanges = ChangeTracker.Entries<Case>()
+            .Any(e => e.State == EntityState.Modified &&
+                e.Property(nameof(Case.DG4Date)).IsModified);
+
+        return projectChanges
+            || caseChanges;
+
+    }
+
+    private bool CalculateBreakEvenOilPrice()
+    {
+        var projectChanges = ChangeTracker.Entries<Project>()
+            .Any(e => e.State == EntityState.Modified &&
+                (e.Property(nameof(Project.DiscountRate)).IsModified ||
+                e.Property(nameof(Project.ExchangeRateUSDToNOK)).IsModified ||
+                e.Property(nameof(Project.OilPriceUSD)).IsModified ||
+                e.Property(nameof(Project.GasPriceNOK)).IsModified));
+
+        var caseChanges = ChangeTracker.Entries<Case>()
+            .Any(e => e.State == EntityState.Modified &&
+                e.Property(nameof(Case.DG4Date)).IsModified);
+
+        return projectChanges
+            || caseChanges;
+    }
+
     public DbSet<Project> Projects { get; set; } = null!;
     public DbSet<ExplorationOperationalWellCosts> ExplorationOperationalWellCosts { get; set; } = null!;
     public DbSet<DevelopmentOperationalWellCosts> DevelopmentOperationalWellCosts { get; set; } = null!;
@@ -908,6 +1230,9 @@ public class DcdDbContext : DbContext
     public DbSet<ExplorationWellCostProfile> ExplorationWellCostProfile { get; set; } = null!;
     public DbSet<AppraisalWellCostProfile> AppraisalWellCostProfile { get; set; } = null!;
     public DbSet<SidetrackCostProfile> SidetrackCostProfile { get; set; } = null!;
+
+    public DbSet<CalculatedTotalIncomeCostProfile> CalculatedTotalIncomeCostProfile { get; set; } = null!;
+    public DbSet<CalculatedTotalCostCostProfile> CalculatedTotalCostCostProfile { get; set; } = null!;
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

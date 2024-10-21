@@ -37,6 +37,8 @@ public class ProjectDto
     [Required]
     public ProjectPhase ProjectPhase { get; set; }
     [Required]
+    public InternalProjectPhase InternalProjectPhase { get; set; }
+    [Required]
     public ProjectCategory ProjectCategory { get; set; }
     public string? SharepointSiteUrl { get; set; }
     [Required]

@@ -15,7 +15,7 @@ import {
 } from "@equinor/eds-icons"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Classification from "./ClassificationChip"
 import { useAppContext } from "../../Context/AppContext"
 import { formatDateAndTime } from "../../Utils/common"
@@ -24,6 +24,7 @@ import { useProjectContext } from "../../Context/ProjectContext"
 import FullPageLoading from "../fullPageLoading"
 import RevisionsDropMenu from "./RevisionsDropMenu"
 import RevisionChip from "./RevisionChip"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 const Header = styled.div`
     display: flex;
@@ -51,9 +52,10 @@ interface props {
 
 const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
     const { currentContext } = useModuleCurrentContext()
-    const { editMode } = useAppContext()
+    const { editMode, setEditMode } = useAppContext()
     const { activeTabProject, setActiveTabProject, isRevision } = useProjectContext()
     const { isSaving } = useAppContext()
+    const { isEditDisabled, getEditDisabledText } = useEditDisabled()
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
@@ -61,6 +63,12 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
     const handleTabChange = (index: number) => {
         setActiveTabProject(index)
     }
+
+    useEffect(() => {
+        if (isRevision) {
+            setEditMode(false)
+        }
+    }, [isRevision])
 
     return (
         <>
@@ -100,8 +108,12 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                             </Tooltip>
                         )
                     )}
-                    <Tooltip title={isRevision ? "Revisions are locked for editing" : ""}>
-                        <Button onClick={handleEdit} variant={editMode ? "outlined" : "contained"} disabled={isRevision}>
+                    <Tooltip title={getEditDisabledText()}>
+                        <Button
+                            onClick={handleEdit}
+                            variant={editMode ? "outlined" : "contained"}
+                            disabled={isEditDisabled}
+                        >
                             {editMode && (
                                 <>
                                     <Icon data={visibility} />

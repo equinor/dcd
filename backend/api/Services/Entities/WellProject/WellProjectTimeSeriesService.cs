@@ -240,7 +240,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
         where TCreateDto : class
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await _projectAccessService.ProjectExists<Exploration>(projectId, wellProjectId);
+        await _projectAccessService.ProjectExists<WellProject>(projectId, wellProjectId);
 
         var wellProject = await _wellProjectRepository.GetWellProject(wellProjectId)
             ?? throw new NotFoundInDBException($"Well project with id {wellProjectId} not found.");

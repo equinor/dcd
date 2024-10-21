@@ -28,9 +28,11 @@ public class CaseProfile : Profile
         CreateMap<HistoricCostCostProfile, HistoricCostCostProfileDto>();
         CreateMap<OnshoreRelatedOPEXCostProfile, OnshoreRelatedOPEXCostProfileDto>();
         CreateMap<AdditionalOPEXCostProfile, AdditionalOPEXCostProfileDto>();
+        CreateMap<CalculatedTotalIncomeCostProfile, CalculatedTotalIncomeCostProfileDto>();
+        CreateMap<CalculatedTotalCostCostProfile, CalculatedTotalCostCostProfileDto>();
+
         CreateMap<Image, ImageDto>();
 
-        CreateMap<APIUpdateCaseWithProfilesDto, Case>().ReverseMap();
         CreateMap<APIUpdateCaseDto, Case>();
         CreateMap<PROSPUpdateCaseDto, Case>();
         CreateMap<UpdateCessationWellsCostOverrideDto, CessationWellsCostOverride>();

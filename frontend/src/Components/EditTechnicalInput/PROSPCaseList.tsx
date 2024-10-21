@@ -21,6 +21,8 @@ import { ImportStatusEnum } from "./ImportStatusEnum"
 import { GetProspService } from "../../Services/ProspService"
 import { projectQueryFn } from "../../Services/QueryFunctions"
 import useEditProject from "../../Hooks/useEditProject"
+import { useAppContext } from "@/Context/AppContext"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 interface Props {
     driveItems: DriveItem[] | undefined
@@ -53,6 +55,8 @@ const PROSPCaseList = ({
     const { currentContext } = useModuleCurrentContext()
     const { addProjectEdit } = useEditProject()
     const externalId = currentContext?.externalId
+    const { isEditDisabled, getEditDisabledText } = useEditDisabled()
+    const { editMode } = useAppContext()
 
     const [rowData, setRowData] = useState<RowData[]>()
     const [isApplying, setIsApplying] = useState<boolean>()
@@ -155,6 +159,7 @@ const PROSPCaseList = ({
             return (
                 <Checkbox
                     checked
+                    disabled={isEditDisabled || !editMode}
                     onChange={() => handleAdvancedSettingsChange(p, ImportStatusEnum.NotSelected)}
                 />
             )
@@ -163,6 +168,8 @@ const PROSPCaseList = ({
             return (
                 <Checkbox
                     checked={false}
+                    disabled={isEditDisabled || !editMode}
+
                     onChange={() => handleAdvancedSettingsChange(p, ImportStatusEnum.Selected)}
                 />
             )
@@ -170,6 +177,7 @@ const PROSPCaseList = ({
         return (
             <Checkbox
                 checked
+                disabled={isEditDisabled || !editMode}
                 onChange={() => handleAdvancedSettingsChange(p, ImportStatusEnum.Selected)}
             />
         )
@@ -237,6 +245,7 @@ const PROSPCaseList = ({
                 label=""
                 value={fileId}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => handleFileChange(e, p)}
+                disabled={isEditDisabled || !editMode}
             >
                 {sharePointFileDropdownOptions(items)}
                 <option aria-label="empty value" key="" value="" />
@@ -261,56 +270,64 @@ const PROSPCaseList = ({
         return null
     }
 
-    const [columnDefs, setColumnDefs] = useState([
-        {
-            field: "name",
-            flex: 2,
-            headerCheckboxSelection: true,
-            checkboxSelection: true,
-            showDisabledCheckboxes: true,
-        },
-        {
-            field: "driveItem",
-            headerName: "SharePoint file",
-            cellRenderer: fileSelectorRenderer,
-            sortable: false,
-            flex: 3,
-        },
-        {
-            field: "fileLink",
-            headerName: "Link",
-            cellRenderer: fileLinkRenderer,
-            flex: 1,
-        },
-        {
-            field: "surfState",
-            headerName: "Surf",
-            flex: 1,
-            cellRenderer: advancedSettingsRenderer,
-            hide: check,
-        },
-        {
-            field: "substructureState",
-            headerName: "Substructure",
-            flex: 1,
-            cellRenderer: advancedSettingsRenderer,
-            hide: check,
-        },
-        {
-            field: "topsideState",
-            headerName: "Topside",
-            flex: 1,
-            cellRenderer: advancedSettingsRenderer,
-            hide: check,
-        },
-        {
-            field: "transportState",
-            headerName: "Transport",
-            flex: 1,
-            cellRenderer: advancedSettingsRenderer,
-            hide: check,
-        },
-    ])
+    const GetColumnDefs = () => {
+        return [
+            {
+                field: "name",
+                flex: 2,
+                headerCheckboxSelection: true,
+                checkboxSelection: true,
+                showDisabledCheckboxes: true,
+            },
+            {
+                field: "driveItem",
+                headerName: "SharePoint file",
+                cellRenderer: fileSelectorRenderer,
+                sortable: false,
+                flex: 3,
+            },
+            {
+                field: "fileLink",
+                headerName: "Link",
+                cellRenderer: fileLinkRenderer,
+                flex: 1,
+            },
+            {
+                field: "surfState",
+                headerName: "Surf",
+                flex: 1,
+                cellRenderer: advancedSettingsRenderer,
+                hide: check,
+            },
+            {
+                field: "substructureState",
+                headerName: "Substructure",
+                flex: 1,
+                cellRenderer: advancedSettingsRenderer,
+                hide: check,
+            },
+            {
+                field: "topsideState",
+                headerName: "Topside",
+                flex: 1,
+                cellRenderer: advancedSettingsRenderer,
+                hide: check,
+            },
+            {
+                field: "transportState",
+                headerName: "Transport",
+                flex: 1,
+                cellRenderer: advancedSettingsRenderer,
+                hide: check,
+            },
+        ]
+    }
+
+    const [columnDefs, setColumnDefs] = useState(GetColumnDefs())
+
+    useEffect(() => {
+        setColumnDefs(GetColumnDefs())
+    }, [editMode])
 
     const onGridReady = (params: any) => {
         gridRef.current = params.api
@@ -408,6 +425,7 @@ const PROSPCaseList = ({
                     <Button
                         onClick={() => save(apiData)}
                         color="secondary"
+                        disabled={isEditDisabled || !editMode}
                     >
                         Apply changes
                     </Button>

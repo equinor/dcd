@@ -1,3 +1,6 @@
+using api.Authorization;
+using api.Authorization.Extensions;
+using api.Dtos.Access;
 using api.Exceptions;
 using api.Models.Interfaces;
 using api.Repositories;
@@ -8,13 +11,16 @@ public class ProjectAccessService : IProjectAccessService
 {
     private readonly ILogger<ProjectAccessService> _logger;
     private readonly IProjectAccessRepository _projectAccessRepository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public ProjectAccessService(
         IProjectAccessRepository projectAccessRepository,
+        IHttpContextAccessor httpContextAccessor,
         ILoggerFactory loggerFactory
         )
     {
         _projectAccessRepository = projectAccessRepository;
+        _httpContextAccessor = httpContextAccessor;
         _logger = loggerFactory.CreateLogger<ProjectAccessService>();
     }
 
@@ -36,5 +42,36 @@ public class ProjectAccessService : IProjectAccessService
         {
             throw new ProjectAccessMismatchException($"Entity of type {typeof(T)} with id {entityId} does not belong to project with id {projectIdFromUrl}.", projectIdFromUrl, entityId);
         }
+    }
+
+    public async Task<AccessRightsDto> GetUserProjectAccess(Guid externalId)
+    {
+        var userRoles = _httpContextAccessor.HttpContext?.User.AssignedApplicationRoles();
+
+        if (userRoles == null)
+        {
+            return new AccessRightsDto
+            {
+                CanEdit = false,
+                CanView = false,
+                IsAdmin = false
+            };
+        }
+
+        var _ = await _projectAccessRepository.GetProjectByExternalId(externalId)
+            ?? throw new NotFoundInDBException($"Project with external ID {externalId} not found.");
+
+        bool isAdmin = userRoles.Contains(ApplicationRole.Admin);
+        bool isUser = userRoles.Contains(ApplicationRole.User);
+        bool isReadOnly = userRoles.Contains(ApplicationRole.ReadOnly);
+
+        var accessRights = new AccessRightsDto
+        {
+            CanEdit = isAdmin || isUser,
+            CanView = isAdmin || isUser || isReadOnly,
+            IsAdmin = isAdmin
+        };
+
+        return accessRights;
     }
 }

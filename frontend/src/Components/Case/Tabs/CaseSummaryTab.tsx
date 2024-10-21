@@ -4,24 +4,26 @@ import {
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
-
+import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
+import {
+    ITimeSeries,
+    ITimeSeriesDataWithGroup,
+    ITimeSeriesData,
+} from "@/Models/ITimeSeries"
 import { useCaseContext } from "@/Context/CaseContext"
-import { mergeTimeseriesList } from "@/Utils/common"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
-import { ITimeSeries, ITimeSeriesDataWithGroup } from "@/Models/ITimeSeries"
-import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
+import { mergeTimeseriesList } from "@/Utils/common"
 import { SetSummaryTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
-import CaseSummarySkeleton from "../../LoadingSkeletons/CaseSummarySkeleton"
+import CaseSummarySkeleton from "@/Components/LoadingSkeletons/CaseSummarySkeleton"
+import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
+import { useProjectContext } from "@/Context/ProjectContext"
 
 const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()
     const { caseId } = useParams()
     const { projectId } = useProjectContext()
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
-    const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesDataWithGroup[][]>([])
-    const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
+    const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
 
     const { data: projectData } = useQuery({
         queryKey: ["projectApiData", projectId],
@@ -132,10 +134,8 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     useEffect(() => {
-        if (activeTabCase === 7 && apiData && !yearRangeSetFromProfiles) {
-            const caseData = apiData.case as Components.Schemas.CaseDto
-
-            SetSummaryTableYearsFromProfiles([
+        if (activeTabCase === 7 && apiData) {
+            const tableYearsData = [
                 handleTotalExplorationCost(),
                 handleDrilling(),
                 handleOffshoreFacilitiesCost(),
@@ -151,8 +151,11 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 handleOffshoreOpexPlussWellIntervention(),
                 apiData.onshoreRelatedOPEXCostProfile,
                 apiData.additionalOPEXCostProfile,
-            ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setTableYears)
-            setYearRangeSetFromProfiles(true)
+            ]
+
+            const yearsFromDate = apiData.case.dG4Date ? new Date(apiData.case.dG4Date).getFullYear() : 2030
+
+            SetSummaryTableYearsFromProfiles(tableYearsData, yearsFromDate, setTableYears)
         }
     }, [activeTabCase, apiData, projectData])
 
@@ -280,13 +283,28 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="npv"
-                    label="NPV before tax"
-                    value={caseData.npv}
+                    label={`NPV before tax (${projectData?.currency === 1 ? "MNOK" : "MUSD"})`}
+                    value={caseData.npv ? Number(caseData.npv.toFixed(2)) : undefined}
+                    previousResourceObject={caseData}
+                    integer={false}
+                    allowNegative
+                    disabled
+                />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+                <SwitchableNumberInput
+                    addEdit={addEdit}
+                    resourceName="case"
+                    resourcePropertyKey="npvOverride"
+                    label={`Manually inputted NPV before tax (${projectData?.currency === 1 ? "MNOK" : "MUSD"})`}
+                    value={caseData.npvOverride ? Number(caseData.npvOverride.toFixed(2)) : undefined}
                     previousResourceObject={caseData}
                     integer={false}
                     allowNegative
                     min={0}
                     max={1000000}
+                    resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -295,11 +313,27 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     resourceName="case"
                     resourcePropertyKey="breakEven"
                     previousResourceObject={caseData}
-                    label="B/E before tax"
-                    value={caseData.breakEven}
+                    label={`B/E before tax (${projectData?.currency === 1 ? "NOK/bbl" : "USD/bbl"})`}
+                    value={caseData.breakEven ? Number(caseData.breakEven.toFixed(2)) : undefined}
                     integer={false}
                     min={0}
                     max={1000000}
+                    disabled
+                />
+            </Grid>
+            <Grid item xs={12} md={6}>
+                <SwitchableNumberInput
+                    addEdit={addEdit}
+                    resourceName="case"
+                    resourcePropertyKey="breakEvenOverride"
+                    label={`Manually inputted B/E before tax (${projectData?.currency === 1 ? "MNOK" : "MUSD"})`}
+                    value={caseData.breakEvenOverride ? Number(caseData.breakEvenOverride.toFixed(2)) : undefined}
+                    previousResourceObject={caseData}
+                    integer={false}
+                    allowNegative
+                    min={0}
+                    max={1000000}
+                    resourceId={caseData.id}
                 />
             </Grid>
             <Grid item xs={12}>

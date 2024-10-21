@@ -33,7 +33,10 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         _projectRepository = projectRepository;
         _cache = cache;
     }
-    protected override async Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context, ApplicationRoleRequirement requirement)
+    protected override async Task<Task> HandleRequirementAsync(
+        AuthorizationHandlerContext context,
+        ApplicationRoleRequirement requirement
+    )
     {
         var requestPath = _httpContextAccessor.HttpContext?.Request.Path;
 

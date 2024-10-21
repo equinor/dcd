@@ -91,3 +91,27 @@ export const totalStudyCostOverrideResources = [
     "substructureCostOverride",
     "case",
 ]
+
+export const INTERNAL_PROJECT_PHASE: { [key: number]: ProjectClassification } = {
+    0: {
+        label: "APbo",
+        description: "Approval Point Business Oppertunity",
+        icon: visibility,
+        color: "active",
+        warn: false,
+    },
+    1: {
+        label: "BOR",
+        description: "Business Opportunity Reconfirmation",
+        icon: visibility,
+        color: "active",
+        warn: false,
+    },
+    2: {
+        label: "VPbo",
+        description: "Valid Point Business Opportunity",
+        icon: lock,
+        color: "error",
+        warn: true,
+    },
+}

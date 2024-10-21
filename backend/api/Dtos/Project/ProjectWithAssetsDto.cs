@@ -31,6 +31,8 @@ public class ProjectWithAssetsDto : ProjectDto, IEquatable<ProjectWithAssetsDto>
     [Required]
     public ICollection<WellProjectWithProfilesDto>? WellProjects { get; set; } = [];
     [Required]
+    public ICollection<ProjectMemberDto> ProjectMembers { get; set; } = [];
+    [Required]
     public DateTimeOffset ModifyTime { get; set; }
 
     public bool Equals(ProjectWithAssetsDto? projectDto)
@@ -41,6 +43,22 @@ public class ProjectWithAssetsDto : ProjectDto, IEquatable<ProjectWithAssetsDto>
                Country == projectDto?.Country &&
                Id == projectDto?.Id &&
                ProjectCategory == projectDto?.ProjectCategory &&
-               ProjectPhase == projectDto?.ProjectPhase;
+               ProjectPhase == projectDto?.ProjectPhase &&
+               InternalProjectPhase == projectDto?.InternalProjectPhase;
     }
+}
+
+public class ProjectMemberDto
+{
+    [Required]
+    public Guid AzureId { get; set; }
+    [Required]
+    public ProjectMemberRole Role { get; set; }
+}
+
+public enum ProjectMemberRole
+{
+    Admin,
+    Member,
+    Observer
 }

@@ -1,5 +1,6 @@
 using api.Authorization;
 using api.Dtos;
+using api.Dtos.Access;
 using api.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -13,16 +14,19 @@ namespace api.Controllers;
 public class ProjectsController : ControllerBase
 {
     private readonly IProjectService _projectService;
+    private readonly IProjectAccessService _projectAccessService;
     private readonly ICompareCasesService _compareCasesService;
     private readonly ITechnicalInputService _technicalInputService;
 
     public ProjectsController(
         IProjectService projectService,
+        IProjectAccessService projectAccessService,
         ICompareCasesService compareCasesService,
         ITechnicalInputService technicalInputService
     )
     {
         _projectService = projectService;
+        _projectAccessService = projectAccessService;
         _compareCasesService = compareCasesService;
         _technicalInputService = technicalInputService;
     }
@@ -95,17 +99,17 @@ public class ProjectsController : ControllerBase
         return new List<CompareCasesDto>(await _compareCasesService.Calculate(projectId));
     }
 
-    // [RequiresApplicationRoles(
-    //     ApplicationRole.Admin,
-    //     ApplicationRole.ReadOnly,
-    //     ApplicationRole.User
-    // )]
-    // [HttpGet("{projectId}/access")]
-    // [ActionType(ActionType.Read)]
-    // public async Task<List<CompareCasesDto>> GetAccess(Guid projectId)
-    // {
-    //     return new List<CompareCasesDto>(await _compareCasesService.Calculate(projectId));
-    // }
+    [RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.ReadOnly,
+        ApplicationRole.User
+    )]
+    [HttpGet("{projectId}/access")]
+    [ActionType(ActionType.Read)]
+    public async Task<AccessRightsDto> GetAccess(Guid projectId)
+    {
+        return await _projectAccessService.GetUserProjectAccess(projectId);
+    }
 
     [RequiresApplicationRoles(
         ApplicationRole.Admin,
