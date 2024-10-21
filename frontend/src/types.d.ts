@@ -580,6 +580,11 @@ declare namespace Components {
             startYear?: number; // int32
             values?: number /* double */[] | null;
         }
+        export interface CreateRevisionDto {
+            name: string;
+            internalProjectPhase: InternalProjectPhase /* int32 */;
+            classification: ProjectClassification /* int32 */;
+        }
         export interface CreateSeismicAcquisitionAndProcessingDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -1986,10 +1991,14 @@ declare namespace Paths {
     namespace Projects$ProjectIdAccess {
         namespace Get {
             namespace Parameters {
-                export type ProjectId = string; // uuid
+                export type ExternalId = string; // uuid
+                export type ProjectId = string;
             }
             export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
+                projectId: Parameters.ProjectId;
+            }
+            export interface QueryParameters {
+                externalId?: Parameters.ExternalId /* uuid */;
             }
             namespace Responses {
                 export type $200 = Components.Schemas.AccessRightsDto;
@@ -3704,6 +3713,7 @@ declare namespace Paths {
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
             }
+            export type RequestBody = Components.Schemas.CreateRevisionDto;
             namespace Responses {
                 export type $200 = Components.Schemas.ProjectWithAssetsDto;
             }

@@ -40,8 +40,8 @@ public class RevisionsController : ControllerBase
         ApplicationRole.User
     )]
     [ActionType(ActionType.Edit)]
-    public async Task<ProjectWithAssetsDto> CreateProject([FromRoute] Guid projectId)
+    public async Task<ProjectWithAssetsDto> CreateProject([FromRoute] Guid projectId, [FromBody] CreateRevisionDto createRevisionDto)
     {
-        return await _revisionService.CreateRevision(projectId);
+        return await _revisionService.CreateRevision(projectId, createRevisionDto);
     }
 }

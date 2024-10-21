@@ -17,12 +17,16 @@ import { GetProjectService } from "@/Services/ProjectService"
 import { DriveItem } from "@/Models/sharepoint/DriveItem"
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
+import useEditDisabled from "@/Hooks/useEditDisabled"
+import { useAppContext } from "@/Context/AppContext"
 import PROSPCaseList from "./PROSPCaseList"
 
 const PROSPTab = () => {
     const { currentContext } = useModuleCurrentContext()
     const { addProjectEdit } = useEditProject()
     const externalId = currentContext?.externalId
+    const { isEditDisabled } = useEditDisabled()
+    const { editMode } = useAppContext()
 
     const [sharepointUrl, setSharepointUrl] = useState<string>()
     const [check, setCheck] = useState(false)
@@ -91,13 +95,21 @@ const PROSPTab = () => {
                             placeholder="Paste Uri here"
                             onChange={handleSharePointUrl}
                             value={sharepointUrl || ""}
+                            disabled={isEditDisabled || !editMode}
                         />
                     </InputWrapper>
                 </Grid>
                 <Grid item>
                     {!isRefreshing
-                        ? <Button variant="outlined" onClick={saveUrl}>Refresh</Button>
-                        : (
+                        ? (
+                            <Button
+                                variant="outlined"
+                                onClick={saveUrl}
+                                disabled={isEditDisabled || !editMode}
+                            >
+                                Refresh
+                            </Button>
+                        ) : (
                             <Button variant="outlined">
                                 <Progress.Dots color="primary" />
                             </Button>
@@ -122,6 +134,7 @@ const PROSPTab = () => {
                         }}
                         checked={check}
                         label="Advance settings"
+                        disabled={isEditDisabled || !editMode}
                     />
                 </Grid>
                 <Grid item xs={12}>
