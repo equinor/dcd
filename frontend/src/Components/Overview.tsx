@@ -18,10 +18,10 @@ import { useModalContext } from "@/Context/ModalContext"
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Context/ProjectContext"
 import ProjectSkeleton from "./LoadingSkeletons/ProjectSkeleton"
-import Controls from "./Controls/Controls"
+import CreateRevisionModal from "./Modal/CreateRevisionModal"
 import Sidebar from "./Controls/Sidebar/Sidebar"
+import Controls from "./Controls/Controls"
 import Modal from "./Modal/Modal"
-import { createRevision } from "@/Utils/RevisionUtils"
 
 const ControlsWrapper = styled.div`
     position: sticky;
@@ -60,7 +60,7 @@ const Overview = () => {
         showRevisionReminder,
         setShowRevisionReminder,
     } = useAppContext()
-    const { setProjectId, projectId } = useProjectContext()
+    const { setProjectId } = useProjectContext()
     const { featuresModalIsOpen } = useModalContext()
     const [warnedProjects, setWarnedProjects] = useState<WarnedProjectInterface | null>(null)
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
@@ -178,21 +178,9 @@ const Overview = () => {
                     </Snackbar.Action>
                 </SnackbarCentering>
             </Snackbar>
-            <Modal
-                title="Create revision"
-                size="sm"
+            <CreateRevisionModal
                 isOpen={isRevisionModalOpen}
-                content={(
-                    <Typography variant="body_short">
-                        Create revision
-                    </Typography>
-                )}
-                actions={(
-                    <div>
-                        <Button variant="ghost" onClick={() => setIsRevisionModalOpen(false)}>Cancel</Button>
-                        <Button onClick={() => createRevision(projectId, setIsRevisionModalOpen)}>Create revision</Button>
-                    </div>
-                )}
+                setCreatingRevision={setIsRevisionModalOpen}
             />
             <ContentWrapper>
                 <Sidebar />
