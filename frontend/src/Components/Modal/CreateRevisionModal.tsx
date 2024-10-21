@@ -51,7 +51,6 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     onClose,
     setCreatingRevision,
 }) => {
-    if (!isOpen) { return null }
     const { projectId } = useProjectContext()
     const { currentContext } = useModuleCurrentContext()
 
@@ -93,7 +92,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
         <option key={key} value={key}>{value.label}</option>
     ))
 
-    if (!apiData) { return null }
+    if (!apiData || !isOpen) { return null }
 
     const disableAfterDG0 = () => apiData?.projectPhase! >= 3
 
@@ -186,17 +185,21 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                 </Grid>
             </DialogContent>
             <DialogActions>
-                <div>
-                    <Button variant="ghost" onClick={() => setCreatingRevision(false)}>Cancel</Button>
-                    <Button onClick={() => createRevision(
-                        projectId,
-                        submitRevision() as Components.Schemas.CreateRevisionDto,
-                        setCreatingRevision,
-                    )}
-                    >
-                        Create revision
-                    </Button>
-                </div>
+                <Grid container spacing={1} justifyContent="flex-end">
+                    <Grid item>
+                        <Button variant="ghost" onClick={() => setCreatingRevision(false)}>Cancel</Button>
+                    </Grid>
+                    <Grid item>
+                        <Button onClick={() => createRevision(
+                            projectId,
+                            submitRevision() as Components.Schemas.CreateRevisionDto,
+                            setCreatingRevision,
+                        )}
+                        >
+                            Create revision
+                        </Button>
+                    </Grid>
+                </Grid>
             </DialogActions>
         </Dialog>
     )
