@@ -15,8 +15,9 @@ import DialogActions from "@mui/material/DialogActions"
 import { checkbox_outline, info_circle } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { Grid } from "@mui/material"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useNavigate } from "react-router"
 import { createRevision } from "@/Utils/RevisionUtils"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "@/Utils/constants"
@@ -51,8 +52,10 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     onClose,
     setCreatingRevision,
 }) => {
-    const { projectId } = useProjectContext()
+    const { projectId, setIsRevision } = useProjectContext()
     const { currentContext } = useModuleCurrentContext()
+    const queryClient = useQueryClient()
+    const navigate = useNavigate()
 
     const [revisionName, setRevisionName] = useState<string>("")
     const [classification, setClassification] = useState<Components.Schemas.ProjectClassification>()
@@ -102,7 +105,14 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             internalProjectPhase: internalProjectPhase || apiData.internalProjectPhase,
             classification: classification || apiData.classification,
         }
-        return newRevision
+        createRevision(
+            projectId,
+            newRevision,
+            setCreatingRevision,
+            queryClient,
+            setIsRevision,
+            navigate,
+        )
     }
 
     return (
@@ -190,12 +200,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                         <Button variant="ghost" onClick={() => setCreatingRevision(false)}>Cancel</Button>
                     </Grid>
                     <Grid item>
-                        <Button onClick={() => createRevision(
-                            projectId,
-                            submitRevision() as Components.Schemas.CreateRevisionDto,
-                            setCreatingRevision,
-                        )}
-                        >
+                        <Button onClick={() => submitRevision()}>
                             Create revision
                         </Button>
                     </Grid>
