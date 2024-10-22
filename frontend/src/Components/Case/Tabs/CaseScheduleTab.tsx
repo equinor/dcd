@@ -18,13 +18,13 @@ import { caseQueryFn } from "../../../Services/QueryFunctions"
 import { useProjectContext } from "../../../Context/ProjectContext"
 
 const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
-    const { caseId, tab } = useParams()
     const { editMode } = useAppContext()
-    const { projectId } = useProjectContext()
+    const { caseId, revisionId, tab } = useParams()
+    const { projectId, isRevision } = useProjectContext()
 
     const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", projectId, caseId],
-        queryFn: () => caseQueryFn(projectId, caseId),
+        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
+        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
     })
 
