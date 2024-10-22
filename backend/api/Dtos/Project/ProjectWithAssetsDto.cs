@@ -34,6 +34,9 @@ public class ProjectWithAssetsDto : ProjectDto, IEquatable<ProjectWithAssetsDto>
     public ICollection<ProjectMemberDto> ProjectMembers { get; set; } = [];
     [Required]
     public DateTimeOffset ModifyTime { get; set; }
+    // [Required]
+    // public ICollection<RevisionDetailsDto> RevisionDetails { get; set; } = [];
+
 
     public bool Equals(ProjectWithAssetsDto? projectDto)
     {

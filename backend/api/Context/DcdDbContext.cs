@@ -1146,6 +1146,7 @@ public class DcdDbContext : DbContext
     }
 
     public DbSet<Project> Projects { get; set; } = null!;
+    public DbSet<RevisionDetails> RevisionDetails { get; set; } = null!;
     public DbSet<ExplorationOperationalWellCosts> ExplorationOperationalWellCosts { get; set; } = null!;
     public DbSet<DevelopmentOperationalWellCosts> DevelopmentOperationalWellCosts { get; set; } = null!;
 

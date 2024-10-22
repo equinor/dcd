@@ -360,8 +360,12 @@ public class ProjectService : IProjectService
         {
             projectLastUpdated = project.ModifyTime;
         }
+        var revisionDetails = _context.RevisionDetails.Where(r => r.OriginalProjectId == project.Id).ToList();
 
         var destination = _mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+
+        // Convert revision details to revision details dto and add to project dto
+        // _mapper.Map(revisionDetails, destination.RevisionDetails);
 
         var projectDto = destination;
 
