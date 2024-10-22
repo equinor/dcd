@@ -47,6 +47,21 @@ public class Project
     public double GasPriceNOK { get; set; }
     public double DiscountRate { get; set; }
     public double ExchangeRateUSDToNOK { get; set; }
+    public virtual RevisionDetails? RevisionDetails { get; set; }
+}
+
+public class RevisionDetails
+{
+    public Guid Id { get; set; }
+    public Guid OriginalProjectId { get; set; }
+
+    public virtual Project Revision { get; set; } = null!;
+    public Guid RevisionId { get; set; }
+
+    public string? RevisionName { get; set; }
+    public DateTimeOffset RevisionDate { get; set; }
+    public bool Arena { get; set; }
+    public bool Mdqc { get; set; }
 }
 
 public enum PhysUnit
