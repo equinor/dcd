@@ -6,5 +6,6 @@ namespace api.Repositories
     {
         Task<T?> Get<T>(Guid id) where T : class;
         Task<Project?> GetProjectByExternalId(Guid externalId);
+        Task<Project?> GetProjectById(Guid id);
     }
 }
