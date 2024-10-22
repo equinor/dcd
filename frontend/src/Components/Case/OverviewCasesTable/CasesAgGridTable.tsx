@@ -22,7 +22,8 @@ import { ColDef } from "@ag-grid-community/core"
 import { useQuery } from "@tanstack/react-query"
 
 import {
-    casePath, productionStrategyOverviewToString, cellStyleRightAlign, unwrapProjectId,
+    productionStrategyOverviewToString, cellStyleRightAlign, unwrapProjectId,
+    caseRevisionPath,
 } from "@/Utils/common"
 import { GetProjectService } from "@/Services/ProjectService"
 import { GetSTEAService } from "@/Services/STEAService"
@@ -107,7 +108,8 @@ const CasesAgGridTable = ({
 
     const selectCase = (p: any) => {
         if (!currentContext || !p.node.data) { return null }
-        navigate(casePath(currentContext.id, p.node.data.id))
+
+        navigate(caseRevisionPath(currentContext.id, p.node.data.id, isRevision, revisionId))
         return null
     }
 
@@ -143,7 +145,7 @@ const CasesAgGridTable = ({
         return <div>{stringValue}</div>
     }
 
-    const [columnDefs] = useState<ColDef[]>([
+    const GetColumnDefs = () => [
         {
             field: "name",
             cellRenderer: nameWithReferenceCase,
@@ -186,7 +188,13 @@ const CasesAgGridTable = ({
             cellRenderer: menuButton,
             width: 120,
         },
-    ])
+    ]
+
+    const [columnDefs, setColumnDefs] = useState<ColDef[]>(GetColumnDefs())
+
+    useEffect(() => {
+        setColumnDefs(GetColumnDefs())
+    }, [isRevision])
 
     const casesToRowData = (isArchived: boolean) => {
         let data = apiData

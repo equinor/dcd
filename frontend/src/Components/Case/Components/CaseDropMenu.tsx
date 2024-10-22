@@ -12,7 +12,7 @@ import {
     unarchive,
     history,
 } from "@equinor/eds-icons"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 
@@ -55,6 +55,8 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
 
     const [isRevisionMenuOpen, setIsRevisionMenuOpen] = useState<boolean>(false)
     const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
+    const { isRevision } = useProjectContext()
+    const { revisionId } = useParams()
 
     const { data: projectData } = useQuery({
         queryKey: ["projectApiData", externalId],
@@ -63,8 +65,8 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     })
 
     const { data: caseApiData } = useQuery({
-        queryKey: ["caseApiData", projectId, caseId],
-        queryFn: () => caseQueryFn(projectId, caseId),
+        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
+        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
     })
 
