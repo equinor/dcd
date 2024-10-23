@@ -15,14 +15,14 @@ namespace api.Authorization;
 public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<ApplicationRoleRequirement>
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IProjectRepository _projectRepository;
+    private readonly IProjectAccessRepository _projectAccessRepository;
     private readonly IMemoryCache _cache;
     private readonly ILogger<ApplicationRoleAuthorizationHandler> _logger;
 
 
 
     public ApplicationRoleAuthorizationHandler(
-        IProjectRepository projectRepository,
+        IProjectAccessRepository projectAccessRepository,
         IHttpContextAccessor httpContextAccessor,
         ILogger<ApplicationRoleAuthorizationHandler> logger,
         IMemoryCache cache
@@ -30,7 +30,7 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
     {
         _httpContextAccessor = httpContextAccessor;
         _logger = logger;
-        _projectRepository = projectRepository;
+        _projectAccessRepository = projectAccessRepository;
         _cache = cache;
     }
     protected override async Task<Task> HandleRequirementAsync(
@@ -137,7 +137,19 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         if (!_cache.TryGetValue(projectIdGuid, out Project? project))
         {
             // Get the project from the database
-            project = await _projectRepository.GetProjectByIdOrExternalId(projectIdGuid);
+            project = await _projectAccessRepository.GetProjectById(projectIdGuid);
+
+            /*
+            Some projects have the external id set as the id.
+            This may cause updates to projects where the external id is the same as the project id
+            to return a revision with the same external id instead.
+            Updates to revsions are not allowed and an error is thrown.
+            Therefore, we split the database call into two separate calls, first looking for the project by project id.
+            */
+            if (project == null)
+            {
+                project = await _projectAccessRepository.GetProjectByExternalId(projectIdGuid);
+            }
 
             // Store the project in the cache
             var cacheEntryOptions = new MemoryCacheEntryOptions()
