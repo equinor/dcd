@@ -90,11 +90,11 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     if (!apiData || !isOpen) { return null }
 
     const internalProjectPhaseOptions = Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => (
-        <option key={key} value={key} selected={apiData.internalProjectPhase === Number(key)}>{value.label}</option>
+        <option key={key} value={key}>{value.label}</option>
     ))
 
     const classificationOptions = Object.entries(PROJECT_CLASSIFICATION).map(([key, value]) => (
-        <option key={key} value={key} selected={apiData.classification === Number(key)}>{value.label}</option>
+        <option key={key} value={key}>{value.label}</option>
     ))
 
     const disableAfterDG0 = () => apiData.projectPhase >= 3
@@ -160,6 +160,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                                 onChange={handleInternalProjectPhaseChange}
                                 value={internalProjectPhase}
                                 disabled={disableAfterDG0()}
+                                defaultValue={apiData.internalProjectPhase}
                             >
                                 {internalProjectPhaseOptions}
                             </NativeSelect>
@@ -170,6 +171,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                                 label="Project classification"
                                 onChange={handleClassificationChange}
                                 value={classification}
+                                defaultValue={apiData.classification}
                             >
                                 {classificationOptions}
                             </NativeSelect>
