@@ -20,6 +20,17 @@ export const createRevision = async (
     }
 }
 
+export const updateRevisionName = async (
+    projectId: string,
+    revisionId: string,
+    name: string,
+) => {
+    const projectService = await GetProjectService()
+    const updateRevisionDto = { name }
+    const updatedRevision = await projectService.updateRevision(projectId, revisionId, updateRevisionDto)
+    return updatedRevision
+}
+
 export const navigateToRevision = (
     revisionId: string,
     setIsRevision: React.Dispatch<React.SetStateAction<boolean>>,

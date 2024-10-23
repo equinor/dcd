@@ -36,6 +36,11 @@ export class __ProjectService extends __BaseService {
         return res
     }
 
+    public async updateRevision(projectId: string, revisionId: string, body: Components.Schemas.UpdateProjectDto): Promise<Components.Schemas.ProjectWithAssetsDto> {
+        const res = await this.put(`${projectId}/revisions/${revisionId}`, { body })
+        return res
+    }
+
     public async updateProject(projectId: string, body: Components.Schemas.UpdateProjectDto): Promise<Components.Schemas.ProjectWithAssetsDto> {
         const res = await this.put(`${projectId}`, { body })
         return res

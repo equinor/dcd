@@ -14,6 +14,10 @@ const RouteCoordinator = (): JSX.Element => {
     const { setIsCreating, setIsLoading, setSnackBarMessage, isLoading } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
 
+    function isAxiosError(error: unknown): error is AxiosError {
+        return (error as AxiosError).isAxiosError !== undefined
+    }
+
     const navigate = useNavigate()
     const location = useLocation()
 
@@ -135,6 +139,3 @@ const RouteCoordinator = (): JSX.Element => {
 
 export default RouteCoordinator
 
-function isAxiosError(error: unknown): error is AxiosError {
-    return (error as AxiosError).isAxiosError !== undefined
-}
