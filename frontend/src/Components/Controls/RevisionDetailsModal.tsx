@@ -104,7 +104,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
 
     return (
         <Modal
-            title="APx Rev 1. Revision details"
+            title={`${revisionName} revision details`}
             size="sm"
             isOpen={isMenuOpen}
             content={(
