@@ -8,18 +8,6 @@ export const openRevisionModal = (setCreatingRevision: React.Dispatch<React.SetS
     setCreatingRevision(true)
 }
 
-export const createRevision = async (
-    projectId: string,
-    project: Components.Schemas.CreateRevisionDto,
-    setCreatingRevision: React.Dispatch<React.SetStateAction<boolean>>,
-) => {
-    const projectService = await GetProjectService()
-    const newRevision = await projectService.createRevision(projectId, project)
-    if (newRevision) {
-        setCreatingRevision(false)
-    }
-}
-
 export const navigateToRevision = (
     revisionId: string,
     setIsRevision: React.Dispatch<React.SetStateAction<boolean>>,
@@ -32,6 +20,22 @@ export const navigateToRevision = (
         { queryKey: ["projectApiData", projectId] },
     )
     navigate(`revision/${revisionId}`)
+}
+
+export const createRevision = async (
+    projectId: string,
+    project: Components.Schemas.CreateRevisionDto,
+    setCreatingRevision: React.Dispatch<React.SetStateAction<boolean>>,
+    queryClient: QueryClient,
+    setIsRevision: React.Dispatch<React.SetStateAction<boolean>>,
+    navigate: NavigateFunction,
+) => {
+    const projectService = await GetProjectService()
+    const newRevision = await projectService.createRevision(projectId, project)
+    if (newRevision) {
+        setCreatingRevision(false)
+    }
+    navigateToRevision(newRevision.id, setIsRevision, queryClient, projectId, navigate)
 }
 
 export const exitRevisionView = (
