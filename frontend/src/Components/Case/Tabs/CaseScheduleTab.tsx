@@ -42,7 +42,7 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
             key: "dgcDate",
         },
         {
-            label: "APBO",
+            label: "APbo",
             key: "apboDate",
         },
         {

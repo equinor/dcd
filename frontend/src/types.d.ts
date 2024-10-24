@@ -21,8 +21,9 @@ declare namespace Components {
             dgaDate?: string; // date-time
             dgbDate?: string; // date-time
             dgcDate?: string; // date-time
-            apxDate?: string; // date-time
-            apzDate?: string; // date-time
+            apboDate?: string; // date-time
+            borDate?: string; // date-time
+            vpboDate?: string; // date-time
             dG0Date?: string; // date-time
             dG1Date?: string; // date-time
             dG2Date?: string; // date-time
@@ -189,8 +190,9 @@ declare namespace Components {
             dgaDate: string; // date-time
             dgbDate: string; // date-time
             dgcDate: string; // date-time
-            apxDate: string; // date-time
-            apzDate: string; // date-time
+            apboDate: string; // date-time
+            borDate: string; // date-time
+            vpboDate: string; // date-time
             dG0Date: string; // date-time
             dG1Date: string; // date-time
             dG2Date: string; // date-time
@@ -310,8 +312,9 @@ declare namespace Components {
             dgaDate: string; // date-time
             dgbDate: string; // date-time
             dgcDate: string; // date-time
-            apxDate: string; // date-time
-            apzDate: string; // date-time
+            apboDate: string; // date-time
+            borDate: string; // date-time
+            vpboDate: string; // date-time
             dG0Date: string; // date-time
             dG1Date: string; // date-time
             dG2Date: string; // date-time
