@@ -582,8 +582,8 @@ declare namespace Components {
         }
         export interface CreateRevisionDto {
             name: string;
-            internalProjectPhase: InternalProjectPhase /* int32 */;
-            classification: ProjectClassification /* int32 */;
+            internalProjectPhase?: InternalProjectPhase /* int32 */;
+            classification?: ProjectClassification /* int32 */;
         }
         export interface CreateSeismicAcquisitionAndProcessingDto {
             startYear?: number; // int32
@@ -1716,6 +1716,9 @@ declare namespace Components {
             discountRate?: number; // double
             exchangeRateUSDToNOK?: number; // double
         }
+        export interface UpdateRevisionDto {
+            name?: string | null;
+        }
         export interface UpdateSeismicAcquisitionAndProcessingDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -1991,14 +1994,10 @@ declare namespace Paths {
     namespace Projects$ProjectIdAccess {
         namespace Get {
             namespace Parameters {
-                export type ExternalId = string; // uuid
-                export type ProjectId = string;
+                export type ProjectId = string; // uuid
             }
             export interface PathParameters {
-                projectId: Parameters.ProjectId;
-            }
-            export interface QueryParameters {
-                externalId?: Parameters.ExternalId /* uuid */;
+                projectId: Parameters.ProjectId /* uuid */;
             }
             namespace Responses {
                 export type $200 = Components.Schemas.AccessRightsDto;
@@ -3731,6 +3730,20 @@ declare namespace Paths {
             }
             namespace Responses {
                 export type $200 = Components.Schemas.ProjectWithAssetsDto;
+            }
+        }
+        namespace Put {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+                export type RevisionId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                revisionId: Parameters.RevisionId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateRevisionDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.ProjectDto;
             }
         }
     }

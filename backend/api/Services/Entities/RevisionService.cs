@@ -25,6 +25,7 @@ public class RevisionService : IRevisionService
     private readonly DcdDbContext _context;
     private readonly IMapper _mapper;
     private readonly IProjectRepository _projectRepository;
+    private readonly IMapperService _mapperService;
 
 
     public RevisionService(
@@ -34,7 +35,8 @@ public class RevisionService : IRevisionService
         IProjectAccessService projectAccessService,
         IProjectService projectService,
         IMapper mapper,
-        IProjectRepository projectRepository
+        IProjectRepository projectRepository,
+        IMapperService mapperService
     )
     {
         _context = context;
@@ -44,6 +46,7 @@ public class RevisionService : IRevisionService
         _projectService = projectService;
         _mapper = mapper;
         _projectRepository = projectRepository;
+        _mapperService = mapperService;
     }
 
     // TODO: Rewrite when CaseWithAssetsDto is no longer needed
@@ -247,6 +250,28 @@ public class RevisionService : IRevisionService
         existingProject.Classification = createRevisionDto.Classification;
 
         return existingProject;
+    }
+
+    public async Task<ProjectDto> UpdateRevision(Guid projectId, Guid revisionId, UpdateRevisionDto updateRevisionDto)
+    {
+        var project = await _projectRepository.GetProjectWithCases(projectId)
+            ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
+
+        var revision = project.Revisions?.FirstOrDefault(r => r.Id == revisionId)
+            ?? throw new NotFoundInDBException($"Revision with id {revisionId} not found.");
+
+        revision.Name = updateRevisionDto.Name;
+
+        _context.Projects.Update(project);
+        await _context.SaveChangesAsync();
+
+        Activity.Current?.AddBaggage(nameof(project), JsonConvert.SerializeObject(project, Formatting.None,
+            new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            }));
+        var projectDto = _mapperService.MapToDto<Project, ProjectDto>(project, projectId);
+        return projectDto;
     }
 
     private void SetProjectAndRelatedEntitiesToEmptyGuids(Project project, Guid originalProjectId, CreateRevisionDto createRevisionDto)

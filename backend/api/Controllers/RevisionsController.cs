@@ -1,5 +1,6 @@
 using api.Authorization;
 using api.Dtos;
+using api.Models;
 using api.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -43,5 +44,16 @@ public class RevisionsController : ControllerBase
     public async Task<ProjectWithAssetsDto> CreateProject([FromRoute] Guid projectId, [FromBody] CreateRevisionDto createRevisionDto)
     {
         return await _revisionService.CreateRevision(projectId, createRevisionDto);
+    }
+
+    [HttpPut("{revisionId}")]
+    [RequiresApplicationRoles(
+            ApplicationRole.Admin,
+            ApplicationRole.User
+        )]
+    [ActionType(ActionType.Edit)]
+    public async Task<ProjectDto> UpdateRevision([FromRoute] Guid projectId, [FromRoute] Guid revisionId, [FromBody] UpdateRevisionDto updateRevisionDto)
+    {
+        return await _revisionService.UpdateRevision(projectId, revisionId, updateRevisionDto);
     }
 }
