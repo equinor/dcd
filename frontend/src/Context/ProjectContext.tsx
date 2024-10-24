@@ -10,10 +10,10 @@ import {
 } from "react"
 
 interface ProjectContextType {
+    activeTabProject: number | boolean;
+    setActiveTabProject: Dispatch<SetStateAction<number | boolean>>
     accessRights: Components.Schemas.AccessRightsDto | undefined;
     setAccessRights: Dispatch<SetStateAction<Components.Schemas.AccessRightsDto | undefined>>
-    activeTabProject: number;
-    setActiveTabProject: Dispatch<SetStateAction<number>>
     projectId: string
     setProjectId: Dispatch<SetStateAction<string>>
     isRevision: boolean
@@ -23,8 +23,8 @@ interface ProjectContextType {
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined)
 
 const ProjectContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
+    const [activeTabProject, setActiveTabProject] = useState<number | boolean>(0)
     const [accessRights, setAccessRights] = useState<Components.Schemas.AccessRightsDto>()
-    const [activeTabProject, setActiveTabProject] = useState<number>(0)
     const [projectId, setProjectId] = useState<string>("")
     const [isRevision, setIsRevision] = useState<boolean>(false)
 
