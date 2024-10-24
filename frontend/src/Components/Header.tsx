@@ -7,11 +7,13 @@ import { GetProjectService } from "../Services/ProjectService"
 import CreateCaseModal from "./Modal/CreateCaseModal"
 import { useAppContext } from "../Context/AppContext"
 import { useProjectContext } from "@/Context/ProjectContext"
-import { AxiosError } from "axios"
+import { isAxiosError } from "@/Utils/common"
 
 const RouteCoordinator = (): JSX.Element => {
     const { setIsRevision, setAccessRights, accessRights } = useProjectContext()
-    const { setIsCreating, setIsLoading, setSnackBarMessage, isLoading } = useAppContext()
+    const {
+        setIsCreating, setIsLoading, setSnackBarMessage, isLoading,
+    } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
 
     const navigate = useNavigate()
@@ -34,6 +36,12 @@ const RouteCoordinator = (): JSX.Element => {
             navigate(pathToNavigate)
         }
     }, [currentContext, location.pathname, navigate])
+
+    const handleError = (message: string, error: unknown) => {
+        console.error(message, error)
+        setSnackBarMessage(message)
+        setIsLoading(false)
+    }
 
     useEffect(() => {
         const fetchAndSetProject = async () => {
@@ -86,12 +94,6 @@ const RouteCoordinator = (): JSX.Element => {
         fetchAndSetProject()
     }, [currentContext?.externalId])
 
-    const handleError = (message: string, error: unknown) => {
-        console.error(message, error)
-        setSnackBarMessage(message)
-        setIsLoading(false)
-    }
-
     if (!currentContext) {
         return (
             <Banner>
@@ -134,7 +136,3 @@ const RouteCoordinator = (): JSX.Element => {
 }
 
 export default RouteCoordinator
-
-function isAxiosError(error: unknown): error is AxiosError {
-    return (error as AxiosError).isAxiosError !== undefined
-}

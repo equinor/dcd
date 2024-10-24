@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react"
 
+import { AxiosError } from "axios"
 import { ITimeSeries } from "@/Models/ITimeSeries"
 import { TABLE_VALIDATION_RULES } from "@/Utils/constants"
 import { EditEntry } from "@/Models/Interfaces"
@@ -403,4 +404,8 @@ export const generateProfile = (
 
 export function truncateText(text: string, maxLength: number): string {
     return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text
+}
+
+export function isAxiosError(error: unknown): error is AxiosError {
+    return (error as AxiosError).isAxiosError !== undefined
 }

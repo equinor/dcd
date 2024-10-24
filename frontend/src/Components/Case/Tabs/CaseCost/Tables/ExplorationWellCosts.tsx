@@ -119,7 +119,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
         ]
 
         setExplorationTimeSeriesData(newExplorationTimeSeriesData)
-    }, [apiData, projectData])
+    }, [apiData, projectData, tableYears])
 
     return (
         <CaseTabTable

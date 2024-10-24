@@ -100,7 +100,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
         ]
 
         setDevelopmentTimeSeriesData(newDevelopmentTimeSeriesData)
-    }, [apiData, projectData])
+    }, [apiData, projectData, tableYears])
 
     return (
         <CaseTabTable

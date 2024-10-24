@@ -86,7 +86,7 @@ const TotalStudyCosts: React.FC<TotalStudyCostsProps> = ({
         ]
 
         setStudyTimeSeriesData(newStudyTimeSeriesData)
-    }, [apiData, projectData])
+    }, [apiData, projectData, tableYears])
 
     return (
         <CaseTabTable
