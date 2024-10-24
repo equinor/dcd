@@ -6,7 +6,12 @@ import {
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { CellKeyDownEvent, ColDef } from "@ag-grid-community/core"
+import {
+    CellKeyDownEvent,
+    ColDef,
+    GetContextMenuItemsParams,
+    MenuItemDef,
+} from "@ag-grid-community/core"
 
 import { formatColumnSum, tableCellisEditable } from "@/Utils/common"
 import { EMPTY_GUID } from "@/Utils/constants"
@@ -179,6 +184,28 @@ const CaseTabTableWithGrouping = ({
         return undefined
     }
 
+    const getContextMenuItems = (params: GetContextMenuItemsParams): (MenuItemDef | string)[] => {
+        const defaultItems = params.defaultItems || []
+        const copyItem = defaultItems.find((item) => item === "copy")
+
+        if (copyItem) {
+            return defaultItems.map((item) => {
+                if (item === "copy") {
+                    return {
+                        name: "Copy",
+                        action: () => {
+                            params.api.copySelectedRangeToClipboard()
+                            setShowRevisionReminder(true)
+                        },
+                    } as MenuItemDef
+                }
+                return item
+            })
+        }
+
+        return defaultItems
+    }
+
     const defaultExcelExportParams = useMemo(() => {
         const yearColumnKeys = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => (tableYears[0] + i).toString())
         const columnKeys = ["profileName", "unit", ...yearColumnKeys, "total"]
@@ -217,6 +244,7 @@ const CaseTabTableWithGrouping = ({
                     groupDefaultExpanded={groupDefaultExpanded}
                     stopEditingWhenCellsLoseFocus
                     defaultExcelExportParams={defaultExcelExportParams}
+                    getContextMenuItems={getContextMenuItems}
                     onCellKeyDown={handleCopy}
                 />
             </div>

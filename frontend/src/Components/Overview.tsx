@@ -59,8 +59,9 @@ const Overview = () => {
         setSnackBarMessage,
         showRevisionReminder,
         setShowRevisionReminder,
+        editMode,
     } = useAppContext()
-    const { setProjectId } = useProjectContext()
+    const { setProjectId, isRevision } = useProjectContext()
     const { featuresModalIsOpen } = useModalContext()
     const [warnedProjects, setWarnedProjects] = useState<WarnedProjectInterface | null>(null)
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
@@ -73,6 +74,11 @@ const Overview = () => {
         enabled: !!externalId,
     })
 
+    function handleCreateRevision() {
+        setIsRevisionModalOpen(true)
+        setShowRevisionReminder(false)
+    }
+
     function checkIfNewRevisionIsRecommended() {
         if (!apiData) { return }
 
@@ -82,7 +88,7 @@ const Overview = () => {
         const timeDifferenceInDays = (currentTime.getTime() - lastModified.getTime()) / (1000 * 60 * 60 * 24)
         const hasChangesSinceLastRevision = apiData.revisions.some((r) => new Date(r.createDate) < lastModified)
 
-        if (timeDifferenceInDays > 30 && hasChangesSinceLastRevision) {
+        if (timeDifferenceInDays > 30 && hasChangesSinceLastRevision && editMode && !isRevision) {
             setShowRevisionReminder(true)
         }
     }
@@ -131,7 +137,7 @@ const Overview = () => {
         if (apiData) {
             checkIfNewRevisionIsRecommended()
         }
-    }, [apiData])
+    }, [apiData, editMode])
 
     useEffect(() => {
         if (apiData && currentUserId) {
@@ -174,7 +180,7 @@ const Overview = () => {
                         Remember to create a new revision after completing a project phase!
                     </Typography>
                     <Snackbar.Action>
-                        <Button variant="ghost" onClick={() => setIsRevisionModalOpen(true)}>Create revision</Button>
+                        <Button variant="ghost" onClick={() => handleCreateRevision()}>Create revision</Button>
                     </Snackbar.Action>
                 </SnackbarCentering>
             </Snackbar>
