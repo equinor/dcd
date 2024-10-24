@@ -186,24 +186,19 @@ const CaseTabTableWithGrouping = ({
 
     const getContextMenuItems = (params: GetContextMenuItemsParams): (MenuItemDef | string)[] => {
         const defaultItems = params.defaultItems || []
-        const copyItem = defaultItems.find((item) => item === "copy")
 
-        if (copyItem) {
-            return defaultItems.map((item) => {
-                if (item === "copy") {
-                    return {
-                        name: "Copy",
-                        action: () => {
-                            params.api.copySelectedRangeToClipboard()
-                            setShowRevisionReminder(true)
-                        },
-                    } as MenuItemDef
-                }
-                return item
-            })
-        }
-
-        return defaultItems
+        return defaultItems.map((item) => {
+            if (item === "copy") {
+                return {
+                    name: "Copy",
+                    action: () => {
+                        params.api.copySelectedRangeToClipboard()
+                        setShowRevisionReminder(true)
+                    },
+                } as MenuItemDef
+            }
+            return item
+        })
     }
 
     const defaultExcelExportParams = useMemo(() => {

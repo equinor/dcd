@@ -171,7 +171,7 @@ const Overview = () => {
             <Snackbar open={snackBarMessage !== undefined} autoHideDuration={6000} onClose={() => setSnackBarMessage(undefined)}>
                 {snackBarMessage}
             </Snackbar>
-            <Snackbar open={showRevisionReminder} placement="bottom-right" autoHideDuration={300000000} onClose={() => setShowRevisionReminder(false)}>
+            {/* <Snackbar open={showRevisionReminder} placement="bottom-right" autoHideDuration={300000000} onClose={() => setShowRevisionReminder(false)}>
                 <SnackbarCentering>
                     <Button variant="ghost_icon" onClick={() => setShowRevisionReminder(false)}>
                         <Icon data={clear} />
@@ -183,7 +183,7 @@ const Overview = () => {
                         <Button variant="ghost" onClick={() => handleCreateRevision()}>Create revision</Button>
                     </Snackbar.Action>
                 </SnackbarCentering>
-            </Snackbar>
+            </Snackbar> */}
             <CreateRevisionModal
                 isOpen={isRevisionModalOpen}
                 setCreatingRevision={setIsRevisionModalOpen}
