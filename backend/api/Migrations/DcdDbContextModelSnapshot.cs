@@ -206,7 +206,10 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("APBODate")
+                    b.Property<DateTimeOffset>("APXDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("APZDate")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<bool>("Archived")
@@ -214,9 +217,6 @@ namespace api.Migrations
 
                     b.Property<int>("ArtificialLift")
                         .HasColumnType("int");
-
-                    b.Property<DateTimeOffset>("BORDate")
-                        .HasColumnType("datetimeoffset");
 
                     b.Property<double>("BreakEven")
                         .HasColumnType("float");
@@ -321,9 +321,6 @@ namespace api.Migrations
 
                     b.Property<Guid>("TransportLink")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTimeOffset>("VPBODate")
-                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("WaterInjectorCount")
                         .HasColumnType("int");
