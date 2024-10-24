@@ -52,9 +52,11 @@ public class CaseDto
     [Required]
     public DateTimeOffset DGCDate { get; set; }
     [Required]
-    public DateTimeOffset APXDate { get; set; }
+    public DateTimeOffset APBODate { get; set; }
     [Required]
-    public DateTimeOffset APZDate { get; set; }
+    public DateTimeOffset BORDate { get; set; }
+    [Required]
+    public DateTimeOffset VPBODate { get; set; }
     [Required]
     public DateTimeOffset DG0Date { get; set; }
     [Required]
