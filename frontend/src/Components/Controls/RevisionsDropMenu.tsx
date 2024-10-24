@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react"
 import {
-    Menu, Typography, Icon, Button,
+    Menu, Typography, Icon,
 } from "@equinor/eds-core-react"
 import { add, exit_to_app } from "@equinor/eds-icons"
 import { useNavigate, useParams } from "react-router"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useProjectContext } from "../../Context/ProjectContext"
-import Modal from "../Modal/Modal"
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import { formatFullDate } from "@/Utils/common"
 import {
-    createRevision, disableCurrentRevision, exitRevisionView, navigateToRevision, openRevisionModal,
+    disableCurrentRevision, exitRevisionView, navigateToRevision, openRevisionModal,
 } from "@/Utils/RevisionUtils"
+import CreateRevisionModal from "../Modal/CreateRevisionModal"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 
 type RevisionsDropMenuProps = {
@@ -75,21 +75,9 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
 
     return (
         <>
-            <Modal
-                title="Create revision"
-                size="sm"
+            <CreateRevisionModal
                 isOpen={creatingRevision}
-                content={(
-                    <Typography variant="body_short">
-                        Create revision
-                    </Typography>
-                )}
-                actions={(
-                    <div>
-                        <Button variant="ghost" onClick={() => setCreatingRevision(false)}>Cancel</Button>
-                        <Button onClick={() => createRevision(projectId, setCreatingRevision)}>Create revision</Button>
-                    </div>
-                )}
+                setCreatingRevision={setCreatingRevision}
             />
             <Menu
                 id="menu-complex"
@@ -101,6 +89,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
                 {
                     revisions.map((revision) => (
                         <Menu.Item
+                            key={revision.id}
                             onClick={() => (isCaseMenu ? navToRevision(revision) : navigateToRevision(revision.id, setIsRevision, queryClient, projectId, navigate))}
                             disabled={disableCurrentRevision(revision.id, isRevision, revisionId)}
                         >
