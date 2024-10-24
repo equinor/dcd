@@ -126,24 +126,29 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     function handleDateChange(dateKey: string, dateValue: string) {
-        const caseDataCopy: any = { ...caseData }
-        const newDate = Number.isNaN(new Date(dateValue).getTime())
-            ? defaultDate()
-            : new Date(dateValue)
-        const dg0Object = dateKey === "dG0Date" && getDGOChangesObject(newDate)
+        const dateValueYear = Number(dateValue.substring(0, 4))
+        const deleteDate = ""
 
-        addEdit({
-            inputLabel: dateKey,
-            projectId: caseData.projectId,
-            resourceName: "case",
-            resourcePropertyKey: dateKey as ResourcePropertyKey,
-            caseId: caseData.id,
-            newDisplayValue: formatDate(newDate.toISOString()),
-            previousDisplayValue: formatDate(caseDataCopy[dateKey]),
-            newResourceObject: dg0Object || getNewCaseObject(dateKey, newDate),
-            previousResourceObject: dg0Object && caseDataCopy,
-            tabName: tab,
-        })
+        if (dateValueYear >= 1500 || deleteDate) {
+            const caseDataCopy: any = { ...caseData }
+            const newDate = Number.isNaN(new Date(dateValue).getTime())
+                ? defaultDate()
+                : new Date(dateValue)
+            const dg0Object = dateKey === "dG0Date" && getDGOChangesObject(newDate)
+
+            addEdit({
+                inputLabel: dateKey,
+                projectId: caseData.projectId,
+                resourceName: "case",
+                resourcePropertyKey: dateKey as ResourcePropertyKey,
+                caseId: caseData.id,
+                newDisplayValue: formatDate(newDate.toISOString()),
+                previousDisplayValue: formatDate(caseDataCopy[dateKey]),
+                newResourceObject: dg0Object || getNewCaseObject(dateKey, newDate),
+                previousResourceObject: dg0Object && caseDataCopy,
+                tabName: tab,
+            })
+        }
     }
 
     const findMinDate = (dates: Date[]) => {
