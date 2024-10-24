@@ -206,10 +206,13 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("APXDate")
+                    b.Property<DateTimeOffset>("APboDate")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<DateTimeOffset>("APZDate")
+                    b.Property<DateTimeOffset>("BORDate")
+                        .HasColumnType("datetimeoffset");                    
+
+                    b.Property<DateTimeOffset>("VPboDate")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<bool>("Archived")
