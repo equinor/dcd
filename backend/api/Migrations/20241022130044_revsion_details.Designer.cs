@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Context;
 
@@ -11,9 +12,11 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    partial class DcdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241022130044_revsion_details")]
+    partial class revsion_details
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -206,7 +209,10 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("APBODate")
+                    b.Property<DateTimeOffset>("APXDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset>("APZDate")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<bool>("Archived")
@@ -214,9 +220,6 @@ namespace api.Migrations
 
                     b.Property<int>("ArtificialLift")
                         .HasColumnType("int");
-
-                    b.Property<DateTimeOffset>("BORDate")
-                        .HasColumnType("datetimeoffset");
 
                     b.Property<double>("BreakEven")
                         .HasColumnType("float");
@@ -321,9 +324,6 @@ namespace api.Migrations
 
                     b.Property<Guid>("TransportLink")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTimeOffset>("VPBODate")
-                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("WaterInjectorCount")
                         .HasColumnType("int");
