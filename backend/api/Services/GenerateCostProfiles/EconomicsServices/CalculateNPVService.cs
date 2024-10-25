@@ -28,7 +28,7 @@ public class CalculateNPVService : ICalculateNPVService
             c => c.Project,
             c => c.CalculatedTotalIncomeCostProfile!,
             c => c.CalculatedTotalCostCostProfile!
-            
+
         );
 
         var cashflowProfile = GetCashflowProfile(caseItem);
