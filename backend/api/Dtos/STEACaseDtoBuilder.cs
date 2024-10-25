@@ -277,7 +277,9 @@ public static class STEACaseDtoBuilder
         {
             TotalAndAnnualOil = new ProductionProfileOilDto(),
             TotalAndAnnualSalesGas = new NetSalesGasDto(),
-            Co2Emissions = new Co2EmissionsDto()
+            Co2Emissions = new Co2EmissionsDto(),
+            AdditionalOil = new AdditionalProductionProfileOilDto(),
+            AdditionalGas = new AdditionalProductionProfileGasDto(),
         };
         int dg4Year = c.DG4Date.Year;
         if (c.DrainageStrategyLink != Guid.Empty)
@@ -365,6 +367,24 @@ public static class STEACaseDtoBuilder
             if (startYearsProductionSalesAndVolumes.Count > 0)
             {
                 sTEACaseDto.ProductionAndSalesVolumes.StartYear = startYearsProductionSalesAndVolumes.Min();
+            }
+            if (drainageStrategyDto.AdditionalProductionProfileOil != null)
+            {
+                var additionalOilProfile = new AdditionalProductionProfileOilDto
+                {
+                    StartYear = drainageStrategyDto.AdditionalProductionProfileOil.StartYear + dg4Year,
+                    Values = drainageStrategyDto.AdditionalProductionProfileOil.Values,
+                };
+                sTEACaseDto.ProductionAndSalesVolumes.AdditionalOil = additionalOilProfile;
+            }
+            if (drainageStrategyDto.AdditionalProductionProfileGas != null)
+            {
+                var additionalGasProfile = new AdditionalProductionProfileGasDto
+                {
+                    StartYear = drainageStrategyDto.AdditionalProductionProfileGas.StartYear + dg4Year,
+                    Values = drainageStrategyDto.AdditionalProductionProfileGas.Values,
+                };
+                sTEACaseDto.ProductionAndSalesVolumes.AdditionalGas = additionalGasProfile;
             }
         }
     }
