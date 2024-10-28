@@ -72,7 +72,6 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     useEffect(() => {
         if (activeTabCase === 5 && apiData && !yearRangeSetFromProfiles) {
             const caseData = apiData?.case as Components.Schemas.CaseDto
-            console.log("startYear", apiData.surfCostProfile?.startYear, apiData.topsideCostProfileOverride?.startYear, apiData.substructureCostProfileOverride?.startYear, apiData.transportCostProfileOverride?.startYear)
             SetTableYearsFromProfiles([
                 apiData.totalFeasibilityAndConceptStudies,
                 apiData.totalFEEDStudies,

@@ -43,9 +43,7 @@ export const SetTableYearsFromProfiles = (
     let lastYear: number | undefined
     profiles.forEach((profile) => {
         if (profile?.startYear !== undefined) {
-            console.log("profile", profile)
             const { startYear } = profile
-            console.log("startyear", startYear)
 
             const profileStartYear: number = startYear + dG4Year
             if (firstYear === undefined) {
@@ -73,19 +71,13 @@ export const SetTableYearsFromProfiles = (
     if (lastYear !== undefined) {
         setEndYear(lastYear)
     }
-    // if (firstYear !== undefined && lastYear !== undefined) {
-    //     setTableYears([firstYear, lastYear])
-    // }
-    console.log("firstYear, lastYear", firstYear, lastYear)
     if (
         firstYear !== undefined
         && lastYear !== undefined
         && lastYear - firstYear + 1 < 5
     ) {
-        console.log("setting table years", firstYear)
         setTableYears([firstYear, firstYear + 4])
         setEndYear(firstYear + 4)
-        console.log("last year", lastYear)
     } else if (firstYear !== undefined && lastYear !== undefined) {
         setTableYears([firstYear, lastYear])
     }
