@@ -50,6 +50,12 @@ public class Project
     public virtual RevisionDetails? RevisionDetails { get; set; }
 }
 
+// Hva er forskjellen på RevisionsDetails og den DTOen jeg lagde (modell vs dto??)?
+// Hvorfor kan ikke denne eksporteres og brukes der dtoen jeg lagde brukes? (prøvde det, og da fikk jeg en feilmelding)
+
+// denne (modellen?) brukes i RevisionService, der blir den brukt med keywordet "new" for å lage en ny instans av den
+
+// Hva er grunnen til at vi har id og revisionId? og trenger dtoen disse også?
 public class RevisionDetails
 {
     public Guid Id { get; set; }

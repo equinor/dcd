@@ -20,7 +20,7 @@ public class ProjectProfile : Profile
         CreateMap<ExplorationOperationalWellCosts, ExplorationOperationalWellCostsDto>();
         CreateMap<UpdateDevelopmentOperationalWellCostsDto, DevelopmentOperationalWellCosts>();
         CreateMap<DevelopmentOperationalWellCosts, DevelopmentOperationalWellCostsDto>();
-        // CreateMap<RevisionDetails, RevisionDetailsDto>();
+        CreateMap<RevisionDetails, RevisionDetailsDto>();
 
         CreateMap<FusionProjectMaster, Project>()
             .ForMember(

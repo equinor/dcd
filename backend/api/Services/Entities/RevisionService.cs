@@ -269,6 +269,7 @@ public class RevisionService : IRevisionService
         project.OriginalProjectId = originalProjectId;
         // project.CreateDate = DateTimeOffset.UtcNow;
 
+        // er dette noe jeg skal gjøre noe med i denne tasken?
         // update revision with properties from create revision modal
         // project.Name = createRevisionDto.Name;
         project.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
