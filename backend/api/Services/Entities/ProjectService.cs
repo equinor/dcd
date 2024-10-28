@@ -364,8 +364,7 @@ public class ProjectService : IProjectService
 
         var destination = _mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 
-        // Convert revision details to revision details dto and add to project dto
-        // _mapper.Map(revisionDetails, destination.RevisionDetails);
+        destination.RevisionDetails = _mapper.Map(revisionDetails, destination.RevisionDetails);
 
         var projectDto = destination;
 
