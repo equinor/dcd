@@ -362,9 +362,17 @@ public class ProjectService : IProjectService
         }
         var revisionDetails = _context.RevisionDetails.Where(r => r.OriginalProjectId == project.Id).ToList();
 
+        var revisionDetailsDtos = new List<RevisionDetailsDto>();
+
+        foreach (var revisionDetail in revisionDetails)
+        {
+            var revisionDetailDto = _mapper.Map<RevisionDetailsDto>(revisionDetail);
+            revisionDetailsDtos.Add(revisionDetailDto);
+        }
+
         var destination = _mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 
-        destination.RevisionDetails = _mapper.Map(revisionDetails, destination.RevisionDetails);
+        destination.RevisionDetails = revisionDetailsDtos;
 
         var projectDto = destination;
 
