@@ -83,6 +83,8 @@ public class DuplicateCaseService : IDuplicateCaseService
         SetNewGuidTimeSeries(caseItem.HistoricCostCostProfile);
         SetNewGuidTimeSeries(caseItem.OnshoreRelatedOPEXCostProfile);
         SetNewGuidTimeSeries(caseItem.AdditionalOPEXCostProfile);
+        SetNewGuidTimeSeries(caseItem.CalculatedTotalIncomeCostProfile);
+        SetNewGuidTimeSeries(caseItem.CalculatedTotalCostCostProfile);
 
         var project = await _projectService.GetProjectWithCasesAndAssets(caseItem.ProjectId);
         caseItem.Project = project;
