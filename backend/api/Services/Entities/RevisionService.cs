@@ -269,8 +269,6 @@ public class RevisionService : IRevisionService
         project.OriginalProjectId = originalProjectId;
         // project.CreateDate = DateTimeOffset.UtcNow;
 
-        // update revision with properties from create revision modal
-        // project.Name = createRevisionDto.Name;
         project.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
         project.Classification = createRevisionDto.Classification;
 
