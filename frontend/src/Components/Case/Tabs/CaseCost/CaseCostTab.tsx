@@ -72,7 +72,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     useEffect(() => {
         if (activeTabCase === 5 && apiData && !yearRangeSetFromProfiles) {
             const caseData = apiData?.case as Components.Schemas.CaseDto
-
+            console.log("startYear", apiData.surfCostProfile?.startYear, apiData.topsideCostProfileOverride?.startYear, apiData.substructureCostProfileOverride?.startYear, apiData.transportCostProfileOverride?.startYear)
             SetTableYearsFromProfiles([
                 apiData.totalFeasibilityAndConceptStudies,
                 apiData.totalFEEDStudies,
@@ -89,13 +89,13 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 apiData.cessationWellsCostOverride,
                 apiData.cessationOffshoreFacilitiesCostOverride,
                 apiData.surfCostProfile,
-                apiData.surfCostProfileOverride,
+                apiData.surfCostProfileOverride?.values?.length ? apiData.surfCostProfileOverride : undefined,
                 apiData.topsideCostProfile,
-                apiData.topsideCostProfileOverride,
+                apiData.topsideCostProfileOverride?.values?.length ? apiData.topsideCostProfileOverride : undefined,
                 apiData.substructureCostProfile,
-                apiData.substructureCostProfileOverride,
-                apiData.transportCostProfileOverride,
+                apiData.substructureCostProfileOverride?.values?.length ? apiData.substructureCostProfileOverride : undefined,
                 apiData.transportCostProfile,
+                apiData.transportCostProfileOverride?.values?.length ? apiData.transportCostProfileOverride : undefined,
                 apiData.oilProducerCostProfile,
                 apiData.gasProducerCostProfile,
                 apiData.waterInjectorCostProfile,
@@ -117,7 +117,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
             ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
             setYearRangeSetFromProfiles(true)
         }
-    }, [activeTabCase, apiData, projectData]) // is projectData even needed here?
+    }, [activeTabCase, apiData]) // is projectData even needed here?
 
     if (activeTabCase !== 5) { return null }
 

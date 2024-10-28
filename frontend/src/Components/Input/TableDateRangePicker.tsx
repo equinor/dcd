@@ -40,6 +40,9 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
             setStartYear(2010)
             return
         }
+        if (endYear - newStartYear < 4) {
+            setEndYear(newStartYear + 4)
+        }
         setStartYear(newStartYear)
     }
 
@@ -48,6 +51,9 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
         if (newEndYear > 2100) {
             setEndYear(2100)
             return
+        }
+        if (newEndYear - startYear < 4) {
+            setStartYear(newEndYear - 4)
         }
         setEndYear(newEndYear)
     }
