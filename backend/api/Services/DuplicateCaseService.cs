@@ -65,7 +65,6 @@ public class DuplicateCaseService : IDuplicateCaseService
         caseItem.CreateTime = DateTimeOffset.UtcNow;
         caseItem.ModifyTime = DateTimeOffset.UtcNow;
         caseItem.Id = new Guid();
-
         SetNewGuidTimeSeries(caseItem.TotalFeasibilityAndConceptStudies);
         SetNewGuidTimeSeries(caseItem.TotalFeasibilityAndConceptStudiesOverride);
         SetNewGuidTimeSeries(caseItem.TotalFEEDStudies);
