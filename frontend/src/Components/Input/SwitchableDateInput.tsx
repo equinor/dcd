@@ -8,6 +8,7 @@ import {
     toMonthDate,
 } from "../../Utils/common"
 import { ResourcePropertyKey } from "../../Models/Interfaces"
+import { useAppContext } from "@/Context/AppContext"
 
 interface SwitchableDateInputProps {
     value: string | undefined
@@ -25,6 +26,15 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
     min,
     max,
 }) => {
+    const { setSnackBarMessage } = useAppContext()
+
+    const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
+        const dateValueYear = event.target.value.substring(0, 4)
+        if (Number(dateValueYear) < 1500 && dateValueYear !== "") {
+            setSnackBarMessage(`The input for ${label} was not saved, because the year has to be at least 1500.`)
+        }
+    }
+
     const toScheduleValue = (date: string) => {
         const dateString = dateFromString(date)
         if (isDefaultDate(dateString)) {
@@ -39,6 +49,7 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
             label={label}
         >
             <Input
+                onBlur={handleBlur}
                 type="month"
                 id={resourcePropertyKey}
                 name={resourcePropertyKey}
