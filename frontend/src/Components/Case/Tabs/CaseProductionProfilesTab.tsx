@@ -80,10 +80,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
             )
             setYearRangeSetFromProfiles(true)
         }
-    }, [
-        apiData,
-        activeTabCase,
-    ])
+    }, [apiData, activeTabCase, tableYears])
 
     if (activeTabCase !== 1) { return null }
 

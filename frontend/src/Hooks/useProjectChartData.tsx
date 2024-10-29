@@ -46,13 +46,14 @@ export const useProjectChartData = () => {
         enabled: !!projectId,
     })
 
-    const cases = useMemo(() => 
-        apiData?.cases.filter((c) => !c.archived) || [],
-    [apiData]);
+    const cases = useMemo(
+        () => apiData?.cases.filter((c) => !c.archived) || [],
+        [apiData],
+    )
 
     const generateAllCharts = () => {
         if (!compareCasesTotals || !apiData) { return }
-        
+
         const npvObject = cases.map((caseItem) => ({
             cases: caseItem.name,
             npv: caseItem.npv,
