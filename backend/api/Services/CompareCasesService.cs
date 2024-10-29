@@ -80,8 +80,10 @@ public class CompareCasesService : ICompareCasesService
                     e => e.AppraisalWellCostProfile!,
                     e => e.SidetrackCostProfile!);
 
-                var totalOilProduction = CalculateTotalOilProduction(caseItem, project, drainageStrategy, false);
-                var totalGasProduction = CalculateTotalGasProduction(caseItem, project, drainageStrategy, false);
+                var totalOilProduction = drainageStrategy.ProductionProfileOil?.Values.Sum()/1000000 ?? 0;
+                var additionalOilProduction = drainageStrategy.AdditionalProductionProfileOil?.Values.Sum()/1000000 ?? 0;
+                var totalGasProduction = drainageStrategy.ProductionProfileGas?.Values.Sum()/1000000000 ?? 0;
+                var additionalGasProduction = drainageStrategy.AdditionalProductionProfileGas?.Values.Sum()/1000000000 ?? 0;
                 var totalExportedVolumes = CalculateTotalExportedVolumes(caseItem, project, drainageStrategy, false);
 
                 var explorationCosts = CalculateExplorationWellCosts(caseItem, exploration);
@@ -101,7 +103,9 @@ public class CompareCasesService : ICompareCasesService
                 {
                     CaseId = caseItem.Id,
                     TotalOilProduction = totalOilProduction,
+                    AdditionalOilProduction = additionalOilProduction,
                     TotalGasProduction = totalGasProduction,
+                    AdditionalGasProduction = additionalGasProduction,
                     TotalExportedVolumes = totalExportedVolumes,
                     TotalStudyCostsPlusOpex = totalStudyCostsPlusOpex,
                     TotalCessationCosts = totalCessationCosts,
