@@ -15,8 +15,9 @@ import DialogActions from "@mui/material/DialogActions"
 import { checkbox_outline, info_circle } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { Grid } from "@mui/material"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+import { useNavigate } from "react-router"
 import { createRevision } from "@/Utils/RevisionUtils"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "@/Utils/constants"
@@ -51,12 +52,14 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     onClose,
     setCreatingRevision,
 }) => {
-    const { projectId } = useProjectContext()
+    const { projectId, setIsRevision } = useProjectContext()
     const { currentContext } = useModuleCurrentContext()
+    const queryClient = useQueryClient()
+    const navigate = useNavigate()
 
     const [revisionName, setRevisionName] = useState<string>("")
     const [classification, setClassification] = useState<Components.Schemas.ProjectClassification>()
-    const [internalProjectPhase, setInternalProjectPhase] = useState<Components.Schemas.InternalProjectPhase | undefined>()
+    const [internalProjectPhase, setInternalProjectPhase] = useState<Components.Schemas.InternalProjectPhase>()
 
     const externalId = currentContext?.externalId
 
@@ -84,6 +87,8 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
         }
     }
 
+    if (!apiData || !isOpen) { return null }
+
     const internalProjectPhaseOptions = Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => (
         <option key={key} value={key}>{value.label}</option>
     ))
@@ -92,17 +97,22 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
         <option key={key} value={key}>{value.label}</option>
     ))
 
-    if (!apiData || !isOpen) { return null }
-
-    const disableAfterDG0 = () => apiData?.projectPhase! >= 3
+    const disableAfterDG0 = () => apiData.projectPhase >= 3
 
     const submitRevision = () => {
         const newRevision: Components.Schemas.CreateRevisionDto = {
             name: revisionName,
-            internalProjectPhase: internalProjectPhase || apiData.internalProjectPhase,
-            classification: classification || apiData.classification,
+            internalProjectPhase: internalProjectPhase as Components.Schemas.InternalProjectPhase,
+            classification: classification as Components.Schemas.ProjectClassification,
         }
-        return newRevision
+        createRevision(
+            projectId,
+            newRevision,
+            setCreatingRevision,
+            queryClient,
+            setIsRevision,
+            navigate,
+        )
     }
 
     return (
@@ -150,6 +160,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                                 onChange={handleInternalProjectPhaseChange}
                                 value={internalProjectPhase}
                                 disabled={disableAfterDG0()}
+                                defaultValue={apiData.internalProjectPhase}
                             >
                                 {internalProjectPhaseOptions}
                             </NativeSelect>
@@ -160,6 +171,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                                 label="Project classification"
                                 onChange={handleClassificationChange}
                                 value={classification}
+                                defaultValue={apiData.classification}
                             >
                                 {classificationOptions}
                             </NativeSelect>
@@ -190,12 +202,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                         <Button variant="ghost" onClick={() => setCreatingRevision(false)}>Cancel</Button>
                     </Grid>
                     <Grid item>
-                        <Button onClick={() => createRevision(
-                            projectId,
-                            submitRevision() as Components.Schemas.CreateRevisionDto,
-                            setCreatingRevision,
-                        )}
-                        >
+                        <Button onClick={() => submitRevision()}>
                             Create revision
                         </Button>
                     </Grid>

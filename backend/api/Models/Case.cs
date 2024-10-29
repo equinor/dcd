@@ -18,8 +18,9 @@ public class Case : IHasProjectId
     public DateTimeOffset DGADate { get; set; }
     public DateTimeOffset DGBDate { get; set; }
     public DateTimeOffset DGCDate { get; set; }
-    public DateTimeOffset APXDate { get; set; }
-    public DateTimeOffset APZDate { get; set; }
+    public DateTimeOffset APBODate { get; set; }
+    public DateTimeOffset BORDate { get; set; }
+    public DateTimeOffset VPBODate { get; set; }
     public DateTimeOffset DG0Date { get; set; }
     public DateTimeOffset DG1Date { get; set; }
     public DateTimeOffset DG2Date { get; set; }

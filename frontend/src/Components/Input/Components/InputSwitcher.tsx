@@ -1,6 +1,7 @@
 import { Typography, InputWrapper } from "@equinor/eds-core-react"
 import styled from "styled-components"
-import { useAppContext } from "../../../Context/AppContext"
+
+import { useAppContext } from "@/Context/AppContext"
 
 const ViewValue = styled(Typography)`
     margin-top: 10px;
