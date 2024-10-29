@@ -12,7 +12,7 @@ import Dialog from "@mui/material/Dialog"
 import DialogTitle from "@mui/material/DialogTitle"
 import DialogContent from "@mui/material/DialogContent"
 import DialogActions from "@mui/material/DialogActions"
-import { checkbox_outline, info_circle } from "@equinor/eds-icons"
+import { checkbox, checkbox_outline, info_circle } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { Grid } from "@mui/material"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
@@ -60,6 +60,10 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     const [revisionName, setRevisionName] = useState<string>("")
     const [classification, setClassification] = useState<Components.Schemas.ProjectClassification>()
     const [internalProjectPhase, setInternalProjectPhase] = useState<Components.Schemas.InternalProjectPhase>()
+    const [mDQC, setMDQC] = useState(false)
+    const [arena, setArena] = useState(false)
+    const [isMDQCCheckboxClicked, setIsMDQCCheckboxClicked] = useState(false)
+    const [isArenaCheckboxClicked, setIsArenaCheckboxClicked] = useState(false)
 
     const externalId = currentContext?.externalId
 
@@ -104,6 +108,8 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             name: revisionName,
             internalProjectPhase: internalProjectPhase as Components.Schemas.InternalProjectPhase,
             classification: classification as Components.Schemas.ProjectClassification,
+            // mdqc: mdqc || apiData.mdqc,
+            // arena: arena || apiData.arena,
         }
         createRevision(
             projectId,
@@ -113,6 +119,16 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             setIsRevision,
             navigate,
         )
+    }
+
+    const checkboxMDQC = () => {
+        setIsMDQCCheckboxClicked(!isMDQCCheckboxClicked)
+        setMDQC(!mDQC)
+    }
+
+    const checkboxArena = () => {
+        setIsArenaCheckboxClicked(!isArenaCheckboxClicked)
+        setArena(!arena)
     }
 
     return (
@@ -180,19 +196,35 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                 </Grid>
                 <Grid item xs={12} md={8}>
                     <ColumnWrapper>
-                        <Typography>
+                        <Typography group="ui" variant="chart">
                             Quality checks performed
                         </Typography>
                     </ColumnWrapper>
                     <Wrapper>
-                        <Chip disabled>
-                            <Icon data={checkbox_outline} />
-                            MDQC
-                        </Chip>
-                        <Chip disabled>
-                            <Icon data={checkbox_outline} />
-                            Arena
-                        </Chip>
+                        <Grid container spacing={1} justifyContent="flex-start">
+                            <Grid item>
+                                <Chip
+                                    onClick={() => checkboxMDQC()}
+                                    variant={isMDQCCheckboxClicked ? "active" : "default"}
+                                >
+                                    <Icon
+                                        data={isMDQCCheckboxClicked ? checkbox : checkbox_outline}
+                                    />
+                                    MDQC
+                                </Chip>
+                            </Grid>
+                            <Grid item>
+                                <Chip
+                                    onClick={() => checkboxArena()}
+                                    variant={isArenaCheckboxClicked ? "active" : "default"}
+                                >
+                                    <Icon
+                                        data={isArenaCheckboxClicked ? checkbox : checkbox_outline}
+                                    />
+                                    Arena
+                                </Chip>
+                            </Grid>
+                        </Grid>
                     </Wrapper>
                 </Grid>
             </DialogContent>
