@@ -62,8 +62,6 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     const [internalProjectPhase, setInternalProjectPhase] = useState<Components.Schemas.InternalProjectPhase>()
     const [mDQC, setMDQC] = useState(false)
     const [arena, setArena] = useState(false)
-    const [isMDQCCheckboxClicked, setIsMDQCCheckboxClicked] = useState(false)
-    const [isArenaCheckboxClicked, setIsArenaCheckboxClicked] = useState(false)
 
     const externalId = currentContext?.externalId
 
@@ -119,16 +117,6 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             setIsRevision,
             navigate,
         )
-    }
-
-    const checkboxMDQC = () => {
-        setIsMDQCCheckboxClicked(!isMDQCCheckboxClicked)
-        setMDQC(!mDQC)
-    }
-
-    const checkboxArena = () => {
-        setIsArenaCheckboxClicked(!isArenaCheckboxClicked)
-        setArena(!arena)
     }
 
     return (
@@ -204,22 +192,22 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                         <Grid container spacing={1} justifyContent="flex-start">
                             <Grid item>
                                 <Chip
-                                    onClick={() => checkboxMDQC()}
-                                    variant={isMDQCCheckboxClicked ? "active" : "default"}
+                                    onClick={() => setMDQC(!mDQC)}
+                                    variant={mDQC ? "active" : "default"}
                                 >
                                     <Icon
-                                        data={isMDQCCheckboxClicked ? checkbox : checkbox_outline}
+                                        data={mDQC ? checkbox : checkbox_outline}
                                     />
                                     MDQC
                                 </Chip>
                             </Grid>
                             <Grid item>
                                 <Chip
-                                    onClick={() => checkboxArena()}
-                                    variant={isArenaCheckboxClicked ? "active" : "default"}
+                                    onClick={() => setArena(!arena)}
+                                    variant={arena ? "active" : "default"}
                                 >
                                     <Icon
-                                        data={isArenaCheckboxClicked ? checkbox : checkbox_outline}
+                                        data={arena ? checkbox : checkbox_outline}
                                     />
                                     Arena
                                 </Chip>
