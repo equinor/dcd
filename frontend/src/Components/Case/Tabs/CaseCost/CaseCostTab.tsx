@@ -116,7 +116,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
             ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
             setYearRangeSetFromProfiles(true)
         }
-    }, [activeTabCase, apiData]) // is projectData even needed here?
+    }, [activeTabCase, apiData])
 
     if (activeTabCase !== 5) { return null }
 
