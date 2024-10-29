@@ -79,7 +79,7 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
         ]
 
         setCessationTimeSeriesData(newCessationTimeSeriesData)
-    }, [apiData, projectData])
+    }, [apiData, projectData, tableYears])
 
     return (
         <CaseTabTable
