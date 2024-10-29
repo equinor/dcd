@@ -18,13 +18,13 @@ import { caseQueryFn } from "../../../Services/QueryFunctions"
 import { useProjectContext } from "../../../Context/ProjectContext"
 
 const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
-    const { caseId, tab } = useParams()
     const { editMode } = useAppContext()
-    const { projectId } = useProjectContext()
+    const { caseId, revisionId, tab } = useParams()
+    const { projectId, isRevision } = useProjectContext()
 
     const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", projectId, caseId],
-        queryFn: () => caseQueryFn(projectId, caseId),
+        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
+        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
     })
 
@@ -42,12 +42,16 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
             key: "dgcDate",
         },
         {
-            label: "APX",
-            key: "apxDate",
+            label: "APbo",
+            key: "apboDate",
         },
         {
-            label: "APZ",
-            key: "apzDate",
+            label: "BOR",
+            key: "borDate",
+        },
+        {
+            label: "VPbo",
+            key: "vpboDate",
         },
         {
             visible: true,
@@ -145,7 +149,6 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
             tabName: tab,
         })
     }
-
     const findMinDate = (dates: Date[]) => {
         const filteredDates = dates.filter((d) => !isDefaultDate(d))
         if (filteredDates.length === 0) { return undefined }

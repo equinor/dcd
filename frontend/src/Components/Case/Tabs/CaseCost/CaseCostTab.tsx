@@ -23,8 +23,8 @@ import { useProjectContext } from "../../../../Context/ProjectContext"
 
 const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()
-    const { caseId } = useParams()
-    const { projectId } = useProjectContext()
+    const { caseId, revisionId } = useParams()
+    const { projectId, isRevision } = useProjectContext()
 
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
@@ -58,8 +58,8 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", projectId, caseId],
-        queryFn: () => caseQueryFn(projectId, caseId),
+        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
+        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
     })
 
@@ -72,7 +72,6 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     useEffect(() => {
         if (activeTabCase === 5 && apiData && !yearRangeSetFromProfiles) {
             const caseData = apiData?.case as Components.Schemas.CaseDto
-
             SetTableYearsFromProfiles([
                 apiData.totalFeasibilityAndConceptStudies,
                 apiData.totalFEEDStudies,
@@ -89,13 +88,13 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 apiData.cessationWellsCostOverride,
                 apiData.cessationOffshoreFacilitiesCostOverride,
                 apiData.surfCostProfile,
-                apiData.surfCostProfileOverride,
+                apiData.surfCostProfileOverride?.values?.length ? apiData.surfCostProfileOverride : undefined,
                 apiData.topsideCostProfile,
-                apiData.topsideCostProfileOverride,
+                apiData.topsideCostProfileOverride?.values?.length ? apiData.topsideCostProfileOverride : undefined,
                 apiData.substructureCostProfile,
-                apiData.substructureCostProfileOverride,
-                apiData.transportCostProfileOverride,
+                apiData.substructureCostProfileOverride?.values?.length ? apiData.substructureCostProfileOverride : undefined,
                 apiData.transportCostProfile,
+                apiData.transportCostProfileOverride?.values?.length ? apiData.transportCostProfileOverride : undefined,
                 apiData.oilProducerCostProfile,
                 apiData.gasProducerCostProfile,
                 apiData.waterInjectorCostProfile,
@@ -117,7 +116,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
             ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
             setYearRangeSetFromProfiles(true)
         }
-    }, [activeTabCase, apiData, projectData]) // is projectData even needed here?
+    }, [activeTabCase, apiData])
 
     if (activeTabCase !== 5) { return null }
 

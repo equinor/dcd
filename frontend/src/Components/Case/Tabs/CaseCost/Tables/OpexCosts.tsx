@@ -97,7 +97,7 @@ const OpexCosts: React.FC<OpexCostsProps> = ({
         ]
 
         setOpexTimeSeriesData(newOpexTimeSeriesData)
-    }, [apiData, projectData])
+    }, [apiData, projectData, tableYears])
 
     return (
         <CaseTabTable

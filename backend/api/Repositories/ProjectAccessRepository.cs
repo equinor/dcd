@@ -23,6 +23,11 @@ public class ProjectAccessRepository : IProjectAccessRepository
 
     public async Task<Project?> GetProjectByExternalId(Guid externalId)
     {
-        return await _context.Projects.FirstOrDefaultAsync(p => p.FusionProjectId == externalId);
+        return await _context.Projects.AsNoTracking().FirstOrDefaultAsync(p => p.FusionProjectId == externalId);
+    }
+
+    public async Task<Project?> GetProjectById(Guid id)
+    {
+        return await _context.Projects.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
     }
 }
