@@ -188,48 +188,46 @@ const WellListEditTechnicalInput = ({
         cellClass: editMode ? "editableCell" : undefined,
     }), [])
 
-    const GetColumnDefs = () => {
-        return [
-            {
-                field: "name",
-                flex: 2,
-                editable: editMode,
+    const GetColumnDefs = () => [
+        {
+            field: "name",
+            flex: 2,
+            editable: editMode,
+        },
+        {
+            field: "wellCategory",
+            headerName: "Well type",
+            cellRenderer: wellCategoryRenderer,
+            editable: false,
+            flex: 2,
+        },
+        {
+            field: "drillingDays",
+            headerName: "Drilling days",
+            flex: 1,
+            cellStyle: cellStyleRightAlign,
+            editable: editMode,
+        },
+        {
+            field: "wellCost",
+            headerName: `Cost (${apiData?.currency === 1 ? "mill NOK" : "mill USD"})`,
+            flex: 1,
+            headerComponent: CustomHeaderForSecondaryHeader,
+            headerComponentParams: {
+                columnHeader: "Cost",
+                unit: apiData?.currency === 1 ? "mill NOK" : "mill USD",
             },
-            {
-                field: "wellCategory",
-                headerName: "Well type",
-                cellRenderer: wellCategoryRenderer,
-                editable: false,
-                flex: 2,
-            },
-            {
-                field: "drillingDays",
-                headerName: "Drilling days",
-                flex: 1,
-                cellStyle: cellStyleRightAlign,
-                editable: editMode,
-            },
-            {
-                field: "wellCost",
-                headerName: `Cost (${apiData?.currency === 1 ? "mill NOK" : "mill USD"})`,
-                flex: 1,
-                headerComponent: CustomHeaderForSecondaryHeader,
-                headerComponentParams: {
-                    columnHeader: "Cost",
-                    unit: apiData?.currency === 1 ? "mill NOK" : "mill USD",
-                },
-                cellStyle: cellStyleRightAlign,
-                editable: editMode,
-            },
-            {
-                field: "delete",
-                headerName: "",
-                cellRenderer: deleteWellRenderer,
-                editable: false,
-                width: 80,
-            },
-        ]
-    }
+            cellStyle: cellStyleRightAlign,
+            editable: editMode,
+        },
+        {
+            field: "delete",
+            headerName: "",
+            cellRenderer: deleteWellRenderer,
+            editable: false,
+            width: 80,
+        },
+    ]
 
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(GetColumnDefs())
 

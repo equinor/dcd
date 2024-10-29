@@ -8,17 +8,18 @@ import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { ChangeEventHandler } from "react"
-import InputSwitcher from "../Input/Components/InputSwitcher"
+
 import { getProjectPhaseName, getProjectCategoryName } from "@/Utils/common"
 import { useModalContext } from "@/Context/ModalContext"
 import { useAppContext } from "@/Context/AppContext"
 import useEditProject from "@/Hooks/useEditProject"
 import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
+import { useProjectContext } from "@/Context/ProjectContext"
+import { INTERNAL_PROJECT_PHASE } from "@/Utils/constants"
+import useEditDisabled from "@/Hooks/useEditDisabled"
+import InputSwitcher from "../Input/Components/InputSwitcher"
 import CasesTable from "../Case/OverviewCasesTable/CasesTable"
 import Gallery from "../Gallery/Gallery"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { INTERNAL_PROJECT_PHASE } from "../../Utils/constants"
-import useEditDisabled from "@/Hooks/useEditDisabled"
 
 const ProjectOverviewTab = () => {
     const { isRevision, accessRights } = useProjectContext()
@@ -101,9 +102,7 @@ const ProjectOverviewTab = () => {
             <Grid item xs={12} container spacing={1} justifyContent="space-between">
                 <Grid item>
                     <Typography group="input" variant="label">Project Phase</Typography>
-                    <Typography aria-label="Project phase">
-                        {renderProjectPhase()}
-                    </Typography>
+                    {renderProjectPhase()}
                 </Grid>
                 <Grid item>
                     <Typography group="input" variant="label">Project Category</Typography>
