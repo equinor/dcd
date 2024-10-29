@@ -67,7 +67,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Calculated NPV",
-                            unit: `${apiData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                            unit: "MUSD",
                         },
                         cellStyle: cellStyleRightAlign,
                     },
@@ -79,7 +79,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Manually set NPV",
-                            unit: `${apiData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                            unit: "MUSD",
                         },
                         cellStyle: cellStyleRightAlign,
                     },
@@ -91,7 +91,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Calculated break even",
-                            unit: `${apiData?.currency === 1 ? "NOK/bbl" : "USD/bbl"}`,
+                            unit: "USD/bbl",
                         },
                         cellStyle: cellStyleRightAlign,
                     },
@@ -103,7 +103,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Manually set break even",
-                            unit: `${apiData?.currency === 1 ? "NOK/bbl" : "USD/bbl"}`,
+                            unit: "USD/bbl",
                         },
                         cellStyle: cellStyleRightAlign,
                     },

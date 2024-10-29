@@ -85,7 +85,7 @@ public class CalculateBreakEvenOilPriceService : ICalculateBreakEvenOilPriceServ
 
         if (caseItem != null)
         {
-            caseItem.BreakEven = breakEvenPrice;
+            caseItem.BreakEven = breakEvenPrice / caseItem.Project.ExchangeRateUSDToNOK;
         }
     }
 }
