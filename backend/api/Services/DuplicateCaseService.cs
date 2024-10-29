@@ -65,7 +65,6 @@ public class DuplicateCaseService : IDuplicateCaseService
         caseItem.CreateTime = DateTimeOffset.UtcNow;
         caseItem.ModifyTime = DateTimeOffset.UtcNow;
         caseItem.Id = new Guid();
-
         SetNewGuidTimeSeries(caseItem.TotalFeasibilityAndConceptStudies);
         SetNewGuidTimeSeries(caseItem.TotalFeasibilityAndConceptStudiesOverride);
         SetNewGuidTimeSeries(caseItem.TotalFEEDStudies);
@@ -83,6 +82,8 @@ public class DuplicateCaseService : IDuplicateCaseService
         SetNewGuidTimeSeries(caseItem.HistoricCostCostProfile);
         SetNewGuidTimeSeries(caseItem.OnshoreRelatedOPEXCostProfile);
         SetNewGuidTimeSeries(caseItem.AdditionalOPEXCostProfile);
+        SetNewGuidTimeSeries(caseItem.CalculatedTotalIncomeCostProfile);
+        SetNewGuidTimeSeries(caseItem.CalculatedTotalCostCostProfile);
 
         var project = await _projectService.GetProjectWithCasesAndAssets(caseItem.ProjectId);
         caseItem.Project = project;
