@@ -36,23 +36,32 @@ const CurrentCaseEditHistory: React.FC = () => {
     const { caseEditsBelongingToCurrentCase } = useCaseContext()
     const { caseId } = useParams()
 
-    const { sidebarOpen } = useAppContext()
+    const { sidebarOpen, showEditHistory } = useAppContext()
 
-    return (
-        // <Container $sidebarOpen={sidebarOpen}>
-        //     {!sidebarOpen ? <HistoryButton /> : (
-        //         <Tooltip title="Displays all edits you made to the case in the past hour" placement="right">
-        //             <Header>
-        //                 <Typography variant="overline">Edit history</Typography>
-        //             </Header>
-        //         </Tooltip>
-        //     )}
+    if (!showEditHistory) {
+        return (
+
             <Content>
                 {sidebarOpen && caseId && <CaseEditHistory caseId={caseId} />}
-                {/* {sidebarOpen && caseEditsBelongingToCurrentCase?.length === 0 && <NextValue>No recent edits..</NextValue>} */}
             </Content>
-        //     <StyledDivider />
-        // </Container>
+        )
+    }
+
+    return (
+        <Container $sidebarOpen={sidebarOpen}>
+            {!sidebarOpen ? <HistoryButton /> : (
+                <Tooltip title="Displays all edits you made to the case in the past hour" placement="right">
+                    <Header>
+                        <Typography variant="overline">Edit history</Typography>
+                    </Header>
+                </Tooltip>
+            )}
+            <Content>
+                {sidebarOpen && caseId && <CaseEditHistory caseId={caseId} />}
+                {sidebarOpen && caseEditsBelongingToCurrentCase?.length === 0 && <NextValue>No recent edits..</NextValue>}
+            </Content>
+            <StyledDivider />
+        </Container>
     )
 }
 

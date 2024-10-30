@@ -11,6 +11,7 @@ import {
 import { EditInstance } from "../Models/Interfaces"
 
 interface AppContextType {
+    showEditHistory: boolean,
     isCreating: boolean,
     setIsCreating: Dispatch<SetStateAction<boolean>>,
     isLoading: boolean,
@@ -37,6 +38,8 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined)
 
 const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
+    const [showEditHistory, setShowEditHistory] = useState<boolean>(false)
+
     const [isCreating, setIsCreating] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isSaving, setIsSaving] = useState<boolean>(false)
@@ -49,6 +52,7 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [apiQueue, setApiQueue] = useState<EditInstance[]>([])
 
     const value = useMemo(() => ({
+        showEditHistory,
         isCreating,
         setIsCreating,
         isLoading,
@@ -70,6 +74,7 @@ const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         apiQueue,
         setApiQueue,
     }), [
+        showEditHistory,
         isCreating,
         setIsCreating,
         isLoading,

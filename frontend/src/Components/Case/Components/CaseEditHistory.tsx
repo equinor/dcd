@@ -55,6 +55,7 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
     const {
         apiQueue,
         setIsSaving,
+        showEditHistory,
     } = useAppContext()
     const {
         caseEdits,
@@ -98,9 +99,13 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
         }
     }, [activeEdit])
 
+    if (!showEditHistory) {
+        return (<></>)
+    }
+
     return (
         <>
-            {/* {caseEdits.map((edit) => {
+            {caseEdits.map((edit) => {
                 const isActive = edit.uuid === activeEdit
                 return edit.caseId === caseId ? (
                     <EditInstanceWrapper
@@ -125,7 +130,7 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
                         </ChangeView>
                     </EditInstanceWrapper>
                 ) : null
-            })} */}
+            })}
         </>
     )
 }
