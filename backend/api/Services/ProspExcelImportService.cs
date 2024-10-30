@@ -234,7 +234,6 @@ public class ProspExcelImportService
         var topsideLink = (await _caseService.GetCase(sourceCaseId)).TopsideLink;
         var updateTopsideDto = new PROSPUpdateTopsideDto
         {
-            CostProfile = costProfile,
             DG3Date = dG3Date,
             DG4Date = dG4Date,
             DryWeight = dryWeight,
