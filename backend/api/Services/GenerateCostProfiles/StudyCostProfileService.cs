@@ -126,7 +126,7 @@ public class StudyCostProfileService : IStudyCostProfileService
             return;
         }
 
-        if (dg3.DayOfYear == 1) { dg3 = dg3.AddDays(-1); } // Treat the 1st of January as the 31st of December
+        if (!DateIsEqual(dg2, dg3) && dg3.DayOfYear == 1) { dg3 = dg3.AddDays(-1); } // Treat the 1st of January as the 31st of December, only if dates are not equal
 
         var totalDays = (dg3 - dg2).Days + 1;
 
@@ -176,59 +176,29 @@ public class StudyCostProfileService : IStudyCostProfileService
             s => s.CostProfileOverride!,
             s => s.CostProfile!
         );
-        if (substructure.CostProfileOverride?.Override == true)
-        {
-            sumFacilityCost += substructure.CostProfileOverride.Values.Sum();
-        }
-        else if (substructure.CostProfile != null)
-        {
-            sumFacilityCost += substructure.CostProfile.Values.Sum();
-        }
-
 
         var surf = await _surfService.GetSurfWithIncludes(
             caseItem.SurfLink,
             s => s.CostProfileOverride!,
             s => s.CostProfile!
         );
-        if (surf.CostProfileOverride?.Override == true)
-        {
-            sumFacilityCost += surf.CostProfileOverride.Values.Sum();
-        }
-        else if (surf.CostProfile != null)
-        {
-            sumFacilityCost += surf.CostProfile.Values.Sum();
-        }
-
 
         var topside = await _topsideService.GetTopsideWithIncludes(
             caseItem.TopsideLink,
             t => t.CostProfileOverride!,
             t => t.CostProfile!
         );
-        if (topside.CostProfileOverride?.Override == true)
-        {
-            sumFacilityCost += topside.CostProfileOverride.Values.Sum();
-        }
-        else if (topside.CostProfile != null)
-        {
-            sumFacilityCost += topside.CostProfile.Values.Sum();
-        }
-
 
         var transport = await _transportService.GetTransportWithIncludes(
             caseItem.TransportLink,
             t => t.CostProfileOverride!,
             t => t.CostProfile!
         );
-        if (transport.CostProfileOverride?.Override == true)
-        {
-            sumFacilityCost += transport.CostProfileOverride.Values.Sum();
-        }
-        else if (transport.CostProfile != null)
-        {
-            sumFacilityCost += transport.CostProfile.Values.Sum();
-        }
+
+        sumFacilityCost += SumOverrideOrProfile(substructure.CostProfile, substructure.CostProfileOverride);
+        sumFacilityCost += SumOverrideOrProfile(surf.CostProfile, surf.CostProfileOverride);
+        sumFacilityCost += SumOverrideOrProfile(topside.CostProfile, topside.CostProfileOverride);
+        sumFacilityCost += SumOverrideOrProfile(transport.CostProfile, transport.CostProfileOverride);
 
         return sumFacilityCost;
     }
@@ -249,42 +219,30 @@ public class StudyCostProfileService : IStudyCostProfileService
             w => w.GasInjectorCostProfile!
         );
 
-        if (wellProject.OilProducerCostProfileOverride?.Override == true)
-        {
-            sumWellCost += wellProject.OilProducerCostProfileOverride.Values.Sum();
-        }
-        else if (wellProject.OilProducerCostProfile != null)
-        {
-            sumWellCost += wellProject.OilProducerCostProfile.Values.Sum();
-        }
-
-        if (wellProject.GasProducerCostProfileOverride?.Override == true)
-        {
-            sumWellCost += wellProject.GasProducerCostProfileOverride.Values.Sum();
-        }
-        else if (wellProject.GasProducerCostProfile != null)
-        {
-            sumWellCost += wellProject.GasProducerCostProfile.Values.Sum();
-        }
-
-        if (wellProject.WaterInjectorCostProfileOverride?.Override == true)
-        {
-            sumWellCost += wellProject.WaterInjectorCostProfileOverride.Values.Sum();
-        }
-        else if (wellProject.WaterInjectorCostProfile != null)
-        {
-            sumWellCost += wellProject.WaterInjectorCostProfile.Values.Sum();
-        }
-
-        if (wellProject.GasInjectorCostProfileOverride?.Override == true)
-        {
-            sumWellCost += wellProject.GasInjectorCostProfileOverride.Values.Sum();
-        }
-        else if (wellProject.GasInjectorCostProfile != null)
-        {
-            sumWellCost += wellProject.GasInjectorCostProfile.Values.Sum();
-        }
+        sumWellCost += SumOverrideOrProfile(wellProject.OilProducerCostProfile, wellProject.OilProducerCostProfileOverride);
+        sumWellCost += SumOverrideOrProfile(wellProject.GasProducerCostProfile, wellProject.GasProducerCostProfileOverride);
+        sumWellCost += SumOverrideOrProfile(wellProject.WaterInjectorCostProfile, wellProject.WaterInjectorCostProfileOverride);
+        sumWellCost += SumOverrideOrProfile(wellProject.GasInjectorCostProfile, wellProject.GasInjectorCostProfileOverride);
 
         return sumWellCost;
+    }
+
+    private static bool DateIsEqual(DateTimeOffset date1, DateTimeOffset date2)
+    {
+        return date1.Year == date2.Year && date1.DayOfYear == date2.DayOfYear;
+    }
+
+    private static double SumOverrideOrProfile<T>(TimeSeries<double>? profile, T? profileOverride)
+        where T : TimeSeries<double>, ITimeSeriesOverride
+    {
+        if (profileOverride?.Override == true)
+        {
+            return profileOverride.Values.Sum();
+        }
+        else if (profile != null)
+        {
+            return profile.Values.Sum();
+        }
+        return 0;
     }
 }
