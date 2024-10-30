@@ -55,6 +55,7 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
     const {
         apiQueue,
         setIsSaving,
+        showEditHistory,
     } = useAppContext()
     const {
         caseEdits,
@@ -97,6 +98,10 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
             activeRef.current.scrollIntoView({ behavior: "smooth", block: "center" })
         }
     }, [activeEdit])
+
+    if (!showEditHistory) {
+        return (<div></div>)
+    }
 
     return (
         <>
