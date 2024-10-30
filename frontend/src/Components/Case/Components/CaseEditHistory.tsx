@@ -100,7 +100,7 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
     }, [activeEdit])
 
     if (!showEditHistory) {
-        return (<></>)
+        return (<div></div>)
     }
 
     return (

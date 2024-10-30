@@ -38,7 +38,7 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined)
 
 const AppContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [showEditHistory, setShowEditHistory] = useState<boolean>(false)
+    const [showEditHistory] = useState<boolean>(false)
 
     const [isCreating, setIsCreating] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
