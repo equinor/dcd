@@ -100,7 +100,7 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
 
     return (
         <>
-            {caseEdits.map((edit) => {
+            {/* {caseEdits.map((edit) => {
                 const isActive = edit.uuid === activeEdit
                 return edit.caseId === caseId ? (
                     <EditInstanceWrapper
@@ -125,7 +125,7 @@ const CaseEditHistory: React.FC<CaseEditHistoryProps> = ({ caseId }) => {
                         </ChangeView>
                     </EditInstanceWrapper>
                 ) : null
-            })}
+            })} */}
         </>
     )
 }

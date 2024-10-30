@@ -19,11 +19,11 @@ const Content = styled.div`
     max-height: 220px;
     padding: 0 10px;
     overflow: auto;
-    -ms-overflow-style: none; 
-    scrollbar-width: none; 
-    
-    &::-webkit-scrollbar { 
-        display: none;  
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
     }
 `
 
@@ -39,20 +39,20 @@ const CurrentCaseEditHistory: React.FC = () => {
     const { sidebarOpen } = useAppContext()
 
     return (
-        <Container $sidebarOpen={sidebarOpen}>
-            {!sidebarOpen ? <HistoryButton /> : (
-                <Tooltip title="Displays all edits you made to the case in the past hour" placement="right">
-                    <Header>
-                        <Typography variant="overline">Edit history</Typography>
-                    </Header>
-                </Tooltip>
-            )}
+        // <Container $sidebarOpen={sidebarOpen}>
+        //     {!sidebarOpen ? <HistoryButton /> : (
+        //         <Tooltip title="Displays all edits you made to the case in the past hour" placement="right">
+        //             <Header>
+        //                 <Typography variant="overline">Edit history</Typography>
+        //             </Header>
+        //         </Tooltip>
+        //     )}
             <Content>
                 {sidebarOpen && caseId && <CaseEditHistory caseId={caseId} />}
-                {sidebarOpen && caseEditsBelongingToCurrentCase?.length === 0 && <NextValue>No recent edits..</NextValue>}
+                {/* {sidebarOpen && caseEditsBelongingToCurrentCase?.length === 0 && <NextValue>No recent edits..</NextValue>} */}
             </Content>
-            <StyledDivider />
-        </Container>
+        //     <StyledDivider />
+        // </Container>
     )
 }
 
