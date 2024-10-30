@@ -1,11 +1,12 @@
-import React, { ChangeEventHandler } from "react"
-import { Input } from "@equinor/eds-core-react"
+import React, { ChangeEventHandler, useState } from "react"
+import { Input, InputWrapper } from "@equinor/eds-core-react"
 import InputSwitcher from "../Input/Components/InputSwitcher"
 import {
     formatDate,
     dateFromString,
     isDefaultDate,
     toMonthDate,
+    isWithinRange,
 } from "../../Utils/common"
 import { ResourcePropertyKey } from "../../Models/Interfaces"
 import { useAppContext } from "@/Context/AppContext"
@@ -26,12 +27,26 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
     min,
     max,
 }) => {
+    const [hasError, setHasError] = useState(false)
+    const [helperText, setHelperText] = useState("\u200B")
     const { setSnackBarMessage } = useAppContext()
+
+    const validateInput = (newValue: number) => {
+        if (!isWithinRange(newValue, 2010, 2110)) {
+            setHelperText(`(min: ${2010}, max: ${2110})`)
+            setHasError(true)
+            return false
+        }
+        setHasError(false)
+        setHelperText("\u200B")
+
+        return true
+    }
 
     const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
         const dateValueYear = event.target.value.substring(0, 4)
-        if (Number(dateValueYear) < 1500 && dateValueYear !== "") {
-            setSnackBarMessage(`The input for ${label} was not saved, because the year has to be at least 1500.`)
+        if (Number(dateValueYear) <= 2010 && dateValueYear !== "") {
+            setSnackBarMessage(`The input for ${label} was not saved, because the year has to be between 2010 and 2110.`)
         }
     }
 
@@ -43,22 +58,37 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
         return toMonthDate(dateString)
     }
 
+    const handleDateChange = (e: any) => {
+        const dateValueYear = e.target.value.substring(0, 4)
+        if ((Number(dateValueYear) <= 2010 && Number(dateValueYear) >= 2110) || dateValueYear !== "") {
+            validateInput(Number(dateValueYear))
+        }
+        onChange(e)
+    }
+
     return (
-        <InputSwitcher
-            value={value ? formatDate(value) : ""}
-            label={label}
+        <InputWrapper
+            color={hasError ? "error" : undefined}
+            helperProps={{
+                text: helperText,
+            }}
         >
-            <Input
-                onBlur={handleBlur}
-                type="month"
-                id={resourcePropertyKey}
-                name={resourcePropertyKey}
-                onChange={(e: any) => onChange(e)}
-                defaultValue={toScheduleValue(value || "")}
-                min={min}
-                max={max}
-            />
-        </InputSwitcher>
+            <InputSwitcher
+                value={value ? formatDate(value) : ""}
+                label={label}
+            >
+                <Input
+                    onBlur={handleBlur}
+                    type="month"
+                    id={resourcePropertyKey}
+                    name={resourcePropertyKey}
+                    onChange={(e: any) => handleDateChange(e)}
+                    defaultValue={toScheduleValue(value || "")}
+                    min={min}
+                    max={max}
+                />
+            </InputSwitcher>
+        </InputWrapper>
     )
 }
 

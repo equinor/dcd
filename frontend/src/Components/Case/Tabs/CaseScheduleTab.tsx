@@ -127,9 +127,8 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
 
     function handleDateChange(dateKey: string, dateValue: string) {
         const dateValueYear = Number(dateValue.substring(0, 4))
-        const deleteDate = ""
 
-        if (dateValueYear >= 1500 || deleteDate) {
+        if ((dateValueYear >= 2010 && dateValueYear <= 2110) || dateValue === "") {
             const caseDataCopy: any = { ...caseData }
             const newDate = Number.isNaN(new Date(dateValue).getTime())
                 ? defaultDate()
