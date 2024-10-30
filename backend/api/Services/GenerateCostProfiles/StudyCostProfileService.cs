@@ -130,6 +130,11 @@ public class StudyCostProfileService : IStudyCostProfileService
 
         var totalDays = (dg3 - dg2).Days + 1;
 
+        if (totalDays == 0) // Might want to throw an exception here
+        {
+            totalDays = 1;
+        }
+
         var firstYearDays = (new DateTimeOffset(dg2.Year, 12, 31, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero) - dg2).Days + 1;
         var firstYearPercentage = firstYearDays / (double)totalDays;
 
