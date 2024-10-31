@@ -40,14 +40,14 @@ const ColumnWrapper = styled.div`
 `
 
 type Props = {
-    isOpen: boolean;
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+    isModalOpen: boolean;
+    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     size?: false | "xs" | "sm" | "md" | "lg" | "xl" | undefined;
 }
 
 const CreateRevisionModal: FunctionComponent<Props> = ({
-    isOpen,
-    setIsOpen,
+    isModalOpen,
+    setIsModalOpen,
     size,
 }) => {
     const { currentContext } = useModuleCurrentContext()
@@ -86,7 +86,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
         }
     }
 
-    if (!apiData || !isOpen) { return null }
+    if (!apiData || !isModalOpen) { return null }
 
     const internalProjectPhaseOptions = Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => (
         <option key={key} value={key}>{value.label}</option>
@@ -104,12 +104,12 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             internalProjectPhase: internalProjectPhase as Components.Schemas.InternalProjectPhase,
             classification: classification as Components.Schemas.ProjectClassification,
         }
-        createRevision(newRevision, setIsOpen)
+        createRevision(newRevision, setIsModalOpen)
     }
 
     return (
         <Dialog
-            open={isOpen}
+            open={isModalOpen}
             fullWidth
             maxWidth={size || "sm"}
             className="ConceptApp ag-theme-alpine-fusion"
@@ -190,7 +190,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             <DialogActions>
                 <Grid container spacing={1} justifyContent="flex-end">
                     <Grid item>
-                        {!isRevisionsLoading ? (<Button variant="ghost" onClick={() => setIsOpen(false)}>Cancel</Button>) : null}
+                        {!isRevisionsLoading ? (<Button variant="ghost" onClick={() => setIsModalOpen(false)}>Cancel</Button>) : null}
                     </Grid>
                     <Grid item>
                         <Button disabled={isRevisionsLoading} onClick={() => submitRevision()}>

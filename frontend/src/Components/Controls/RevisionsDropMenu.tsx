@@ -76,8 +76,8 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
     return (
         <>
             <CreateRevisionModal
-                isOpen={isRevisionModalOpen}
-                setIsOpen={setIsRevisionModalOpen}
+                isModalOpen={isRevisionModalOpen}
+                setIsModalOpen={setIsRevisionModalOpen}
             />
             <Menu
                 id="menu-complex"

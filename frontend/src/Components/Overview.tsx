@@ -185,8 +185,8 @@ const Overview = () => {
                 </SnackbarCentering>
             </Snackbar> */}
             <CreateRevisionModal
-                isOpen={isRevisionModalOpen}
-                setIsOpen={setIsRevisionModalOpen}
+                isModalOpen={isRevisionModalOpen}
+                setIsModalOpen={setIsRevisionModalOpen}
             />
             <ContentWrapper>
                 <Sidebar />
