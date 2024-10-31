@@ -23,7 +23,6 @@ const RevisionChip = () => {
     } = useRevisions()
     const { revisionId } = useParams()
     const [isMenuOpen, setIsMenuOpen] = useState(false)
-    const [showCloseIcon, setShowCloseIcon] = useState(false)
 
     const { data: revisionData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
@@ -31,52 +30,31 @@ const RevisionChip = () => {
         enabled: !!revisionId && !!projectId,
     })
 
-    const handleMouseOver = () => {
-        setShowCloseIcon(true)
-    }
-
-    const handleMouseOut = () => {
-        setShowCloseIcon(false)
-    }
-
     const revisionName = () => (
-        <Tooltip title={`View details for: ${truncateText(revisionData?.name ?? "", 120)}`}>
+        <Tooltip title={`View details for ${truncateText(revisionData?.name ?? "", 120)}`}>
             <Typography
                 onClick={() => setIsMenuOpen(true)}
                 variant="body2"
-                sx={{ textDecoration: "underline", cursor: "pointer" }}
+                sx={{ textDecoration: "underline", cursor: "pointer", whiteSpace: "nowrap" }}
             >
-                {truncateText(revisionData?.name ?? "", 10)}
+                {truncateText(revisionData?.name ?? "", 12)}
             </Typography>
         </Tooltip>
     )
 
-    const toggleChipBackgroundColor = () => {
-        if (showCloseIcon) {
-            return "#f7f7f7"
-        }
-        return "white"
-    }
-
     return (
         <>
-            <Chip
-                onMouseOver={handleMouseOver}
-                onMouseOut={handleMouseOut}
-                style={{ backgroundColor: toggleChipBackgroundColor() }}
-            >
-                {!showCloseIcon ? revisionName() : (
-                    <CloseRevision>
-                        {revisionName()}
-                        <Tooltip title="Exit revision">
-                            <Icon
-                                data={close}
-                                size={16}
-                                onClick={() => exitRevisionView()}
-                            />
-                        </Tooltip>
-                    </CloseRevision>
-                )}
+            <Chip>
+                <CloseRevision>
+                    {revisionName()}
+                    <Tooltip title="Exit revision">
+                        <Icon
+                            data={close}
+                            size={16}
+                            onClick={() => exitRevisionView()}
+                        />
+                    </Tooltip>
+                </CloseRevision>
             </Chip>
             <RevisionDetailsModal isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
         </>

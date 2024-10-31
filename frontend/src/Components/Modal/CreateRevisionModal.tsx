@@ -16,11 +16,9 @@ import DialogActions from "@mui/material/DialogActions"
 import { checkbox_outline, info_circle } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { Grid } from "@mui/material"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useNavigate } from "react-router"
-// import { createRevision } from "@/Utils/RevisionUtils"
-import { useProjectContext } from "@/Context/ProjectContext"
+
 import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "@/Utils/constants"
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import { useRevisions } from "@/Hooks/useRevision"
@@ -52,10 +50,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     setIsOpen,
     size,
 }) => {
-    const { projectId, setIsRevision } = useProjectContext()
     const { currentContext } = useModuleCurrentContext()
-    const queryClient = useQueryClient()
-    const navigate = useNavigate()
     const {
         isRevisionsLoading,
         createRevision,
@@ -109,14 +104,6 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             internalProjectPhase: internalProjectPhase as Components.Schemas.InternalProjectPhase,
             classification: classification as Components.Schemas.ProjectClassification,
         }
-        // createRevision(
-        //     projectId,
-        //     newRevision,
-        //     setIsOpen,
-        //     queryClient,
-        //     setIsRevision,
-        //     navigate,
-        // )
         createRevision(newRevision, setIsOpen)
     }
 
@@ -203,7 +190,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             <DialogActions>
                 <Grid container spacing={1} justifyContent="flex-end">
                     <Grid item>
-                        <Button variant="ghost" onClick={() => setIsOpen(false)}>Cancel</Button>
+                        {!isRevisionsLoading ? (<Button variant="ghost" onClick={() => setIsOpen(false)}>Cancel</Button>) : null}
                     </Grid>
                     <Grid item>
                         <Button disabled={isRevisionsLoading} onClick={() => submitRevision()}>
