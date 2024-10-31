@@ -91,6 +91,14 @@ public class STEAController : ControllerBase
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
+            foreach (ExcelTableCell etc in businessCase.AdditionalOil)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
+            foreach (ExcelTableCell etc in businessCase.AdditionalGas)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
             foreach (ExcelTableCell etc in businessCase.NetSalesGas)
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
