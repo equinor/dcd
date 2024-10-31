@@ -43,9 +43,10 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
         return true
     }
 
-    const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-        const dateValueYear = event.target.value.substring(0, 4)
-        if (Number(dateValueYear) <= 2010 && dateValueYear !== "") {
+    const dateValueYear = (e: React.FocusEvent<HTMLInputElement>) => e.target.value.substring(0, 4)
+
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        if ((Number(dateValueYear(e)) <= 2010 && Number(dateValueYear(e)) >= 2110) || dateValueYear(e) !== "") {
             setSnackBarMessage(`The input for ${label} was not saved, because the year has to be between 2010 and 2110.`)
         }
     }
@@ -58,9 +59,8 @@ const SwitchableDateInput: React.FC<SwitchableDateInputProps> = ({
         return toMonthDate(dateString)
     }
 
-    const handleDateChange = (e: any) => {
-        const dateValueYear = e.target.value.substring(0, 4)
-        if ((Number(dateValueYear) <= 2010 && Number(dateValueYear) >= 2110) || dateValueYear !== "") {
+    const handleDateChange = (e: React.FocusEvent<HTMLInputElement>) => {
+        if ((Number(dateValueYear) <= 2010 && Number(dateValueYear) >= 2110) || dateValueYear(e) !== "") {
             validateInput(Number(dateValueYear))
         }
         onChange(e)
