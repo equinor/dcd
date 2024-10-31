@@ -40,6 +40,16 @@ const Header = styled.div`
     }
 `
 
+const LastUpdated = styled.div`
+    flex-direction: column;
+    gap: 0!important;
+`
+
+const ChipsContainer = styled.div`
+    flex-direction: column;
+    padding: 0 10px 0 10px;
+`
+
 const Status = styled.div`
    display: flex;
    align-items: center;
@@ -78,19 +88,24 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                     <Typography variant="h4">
                         {currentContext?.title}
                     </Typography>
-                    <Classification />
-                    {isRevision && (
-                        <RevisionChip />
-                    )}
+                    <ChipsContainer>
+                        <Classification />
+                        {isRevision && (
+                            <RevisionChip />
+                        )}
+                    </ChipsContainer>
                 </div>
                 <div>
                     {!editMode
                         && (
-                            <Typography variant="caption">
-                                Project last updated
-                                {" "}
-                                {formatDateAndTime(projectLastUpdated)}
-                            </Typography>
+                            <LastUpdated>
+                                <Typography variant="caption">
+                                    Project last updated:
+                                </Typography>
+                                <Typography variant="caption">
+                                    {formatDateAndTime(projectLastUpdated)}
+                                </Typography>
+                            </LastUpdated>
                         )}
 
                     {editMode && (

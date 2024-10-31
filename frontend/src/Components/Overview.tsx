@@ -186,7 +186,7 @@ const Overview = () => {
             </Snackbar> */}
             <CreateRevisionModal
                 isOpen={isRevisionModalOpen}
-                setCreatingRevision={setIsRevisionModalOpen}
+                setIsOpen={setIsRevisionModalOpen}
             />
             <ContentWrapper>
                 <Sidebar />
