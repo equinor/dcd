@@ -43,7 +43,7 @@ const Controls = () => {
     const { data: revisionData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
-        enabled: !!revisionId,
+        enabled: !!revisionId && !!projectId,
     })
 
     const cancelEdit = async () => {
