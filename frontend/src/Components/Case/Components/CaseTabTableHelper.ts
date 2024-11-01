@@ -26,12 +26,12 @@ export const GetTimeSeriesLastYear = (
 export const SetTableYearsFromProfiles = (
     profiles: (
         | {
-            id?: string;
-            startYear?: number;
-            name?: string;
-            values?: number[] | null;
-            sum?: number | undefined;
-        }
+              id?: string;
+              startYear?: number;
+              name?: string;
+              values?: number[] | null;
+              sum?: number | undefined;
+          }
         | undefined
     )[],
     dG4Year: number,
@@ -41,7 +41,6 @@ export const SetTableYearsFromProfiles = (
 ) => {
     let firstYear: number | undefined
     let lastYear: number | undefined
-
     profiles.forEach((profile) => {
         if (profile?.startYear !== undefined) {
             const { startYear } = profile
@@ -70,6 +69,22 @@ export const SetTableYearsFromProfiles = (
     }
     if (lastYear !== undefined) {
         setEndYear(lastYear)
+    }
+
+    const totalYears = (lastYear !== undefined && firstYear !== undefined) ? lastYear - firstYear + 1 : 0
+    const desiredYears = 11
+    if (totalYears < desiredYears) {
+        const additionalYears = desiredYears - totalYears
+        const additionalYearsBefore = Math.floor(additionalYears / 2)
+        const additionalYearsAfter = additionalYears - additionalYearsBefore
+
+        if (firstYear !== undefined && lastYear !== undefined) {
+            firstYear -= additionalYearsBefore
+            lastYear += additionalYearsAfter
+            setStartYear(firstYear)
+            setEndYear(lastYear)
+            setTableYears([firstYear, lastYear])
+        }
     }
     if (firstYear !== undefined && lastYear !== undefined) {
         setTableYears([firstYear, lastYear])

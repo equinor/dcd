@@ -54,7 +54,7 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
     const { currentContext } = useModuleCurrentContext()
     const { editMode, setEditMode } = useAppContext()
     const { activeTabProject, setActiveTabProject, isRevision } = useProjectContext()
-    const { isSaving } = useAppContext()
+    const { isSaving, showEditHistory } = useAppContext()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -150,7 +150,9 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                 onChange={(_, index) => handleTabChange(index)}
                 variant="scrollable"
             >
-                {projectTabNames.map((tabName) => <Tab key={tabName} label={tabName} />)}
+                {projectTabNames
+                    .filter(tabName => showEditHistory || tabName !== "Case edit history")
+                    .map(tabName => <Tab key={tabName} label={tabName} />)}
             </Tabs>
 
         </>

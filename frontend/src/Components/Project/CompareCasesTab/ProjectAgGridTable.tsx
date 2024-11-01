@@ -67,7 +67,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Calculated NPV",
-                            unit: `${apiData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                            unit: "MUSD",
                         },
                         cellStyle: cellStyleRightAlign,
                     },
@@ -79,7 +79,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Manually set NPV",
-                            unit: `${apiData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                            unit: "MUSD",
                         },
                         cellStyle: cellStyleRightAlign,
                     },
@@ -91,7 +91,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Calculated break even",
-                            unit: `${apiData?.currency === 1 ? "NOK/bbl" : "USD/bbl"}`,
+                            unit: "USD/bbl",
                         },
                         cellStyle: cellStyleRightAlign,
                     },
@@ -103,7 +103,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Manually set break even",
-                            unit: `${apiData?.currency === 1 ? "NOK/bbl" : "USD/bbl"}`,
+                            unit: "USD/bbl",
                         },
                         cellStyle: cellStyleRightAlign,
                     },
@@ -125,6 +125,18 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         cellStyle: cellStyleRightAlign,
                     },
                     {
+                        field: "additionalOilProduction",
+                        headerName: `Additional Oil production (${apiData?.physicalUnit === 0 ? "MSm3" : "mill bbl"})`,
+                        width: 175,
+                        editable: false,
+                        headerComponent: CustomHeaderForSecondaryHeader,
+                        headerComponentParams: {
+                            columnHeader: "Additional Oil production",
+                            unit: apiData?.physicalUnit === 0 ? "MSm3" : "mill bbl",
+                        },
+                        cellStyle: cellStyleRightAlign,
+                    },
+                    {
                         field: "gasProduction",
                         headerName: `Rich gas production (${apiData?.physicalUnit === 0 ? "GSm3" : "Bscf"})`,
                         width: 175,
@@ -132,6 +144,18 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Rich gas production",
+                            unit: apiData?.physicalUnit === 0 ? "GSm3" : "Bscf",
+                        },
+                        cellStyle: cellStyleRightAlign,
+                    },
+                    {
+                        field: "additionalGasProduction",
+                        headerName: `Additional rich gas production (${apiData?.physicalUnit === 0 ? "GSm3" : "Bscf"})`,
+                        width: 175,
+                        editable: false,
+                        headerComponent: CustomHeaderForSecondaryHeader,
+                        headerComponentParams: {
+                            columnHeader: "Additional rich gas production",
                             unit: apiData?.physicalUnit === 0 ? "GSm3" : "Bscf",
                         },
                         cellStyle: cellStyleRightAlign,

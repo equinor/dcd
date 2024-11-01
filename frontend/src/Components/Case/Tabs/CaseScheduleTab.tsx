@@ -42,12 +42,16 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
             key: "dgcDate",
         },
         {
-            label: "APX",
-            key: "apxDate",
+            label: "APbo",
+            key: "apboDate",
         },
         {
-            label: "APZ",
-            key: "apzDate",
+            label: "BOR",
+            key: "borDate",
+        },
+        {
+            label: "VPbo",
+            key: "vpboDate",
         },
         {
             visible: true,
@@ -149,7 +153,6 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
             })
         }
     }
-
     const findMinDate = (dates: Date[]) => {
         const filteredDates = dates.filter((d) => !isDefaultDate(d))
         if (filteredDates.length === 0) { return undefined }

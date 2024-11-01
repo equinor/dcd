@@ -47,6 +47,14 @@ public static class ExportToSTEA
                 c.ProductionAndSalesVolumes.TotalAndAnnualOil, rowCount, 1);
 
             rowCount++;
+            businessCase.AdditionalOil = CreateExcelRow("Additional Oil Production [MSm3]", project.StartYear,
+                c.ProductionAndSalesVolumes.AdditionalOil, rowCount, 1);
+
+            rowCount++;
+            businessCase.AdditionalGas = CreateExcelRow("Additional Rich Gas Production [GSm3]", project.StartYear,
+                c.ProductionAndSalesVolumes.AdditionalGas, rowCount, 1);
+
+            rowCount++;
             businessCase.NetSalesGas = CreateExcelRow("Net Sales Gas [GSm3]", project.StartYear,
                 c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas, rowCount, 1);
 
@@ -83,6 +91,14 @@ public static class ExportToSTEA
             if (c.ProductionAndSalesVolumes.TotalAndAnnualOil.Values != null)
             {
                 allRows.Add(c.ProductionAndSalesVolumes.TotalAndAnnualOil.Values.Length + c.ProductionAndSalesVolumes.TotalAndAnnualOil.StartYear);
+            }
+            if (c.ProductionAndSalesVolumes.AdditionalOil.Values != null)
+            {
+                allRows.Add(c.ProductionAndSalesVolumes.AdditionalOil.Values.Length + c.ProductionAndSalesVolumes.AdditionalOil.StartYear);
+            }
+            if (c.ProductionAndSalesVolumes.AdditionalGas.Values != null)
+            {
+                allRows.Add(c.ProductionAndSalesVolumes.AdditionalGas.Values.Length + c.ProductionAndSalesVolumes.AdditionalGas.StartYear);
             }
             if (c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas.Values != null)
             {
@@ -172,6 +188,8 @@ public class BusinessCase
     public ExcelTableCell ProductionAndSalesVolumes { get; set; } = null!;
 
     public List<ExcelTableCell> TotalAndAnnualOil { get; set; }
+    public List<ExcelTableCell> AdditionalOil { get; set; }
+    public List<ExcelTableCell> AdditionalGas { get; set; }
 
     public List<ExcelTableCell> NetSalesGas { get; set; }
 
@@ -191,6 +209,8 @@ public class BusinessCase
         Cessation = new List<ExcelTableCell>();
         Drilling = new List<ExcelTableCell>();
         TotalAndAnnualOil = new List<ExcelTableCell>();
+        AdditionalOil = new List<ExcelTableCell>();
+        AdditionalGas = new List<ExcelTableCell>();
         NetSalesGas = new List<ExcelTableCell>();
         Co2Emissions = new List<ExcelTableCell>();
         StudyCost = new List<ExcelTableCell>();

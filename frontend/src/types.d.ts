@@ -21,8 +21,9 @@ declare namespace Components {
             dgaDate?: string; // date-time
             dgbDate?: string; // date-time
             dgcDate?: string; // date-time
-            apxDate?: string; // date-time
-            apzDate?: string; // date-time
+            apboDate?: string; // date-time
+            borDate?: string; // date-time
+            vpboDate?: string; // date-time
             dG0Date?: string; // date-time
             dG1Date?: string; // date-time
             dG2Date?: string; // date-time
@@ -189,8 +190,9 @@ declare namespace Components {
             dgaDate: string; // date-time
             dgbDate: string; // date-time
             dgcDate: string; // date-time
-            apxDate: string; // date-time
-            apzDate: string; // date-time
+            apboDate: string; // date-time
+            borDate: string; // date-time
+            vpboDate: string; // date-time
             dG0Date: string; // date-time
             dG1Date: string; // date-time
             dG2Date: string; // date-time
@@ -310,8 +312,9 @@ declare namespace Components {
             dgaDate: string; // date-time
             dgbDate: string; // date-time
             dgcDate: string; // date-time
-            apxDate: string; // date-time
-            apzDate: string; // date-time
+            apboDate: string; // date-time
+            borDate: string; // date-time
+            vpboDate: string; // date-time
             dG0Date: string; // date-time
             dG1Date: string; // date-time
             dG2Date: string; // date-time
@@ -428,7 +431,9 @@ declare namespace Components {
         export interface CompareCasesDto {
             caseId: string; // uuid
             totalOilProduction: number; // double
+            additionalOilProduction: number; // double
             totalGasProduction: number; // double
+            additionalGasProduction: number; // double
             totalExportedVolumes: number; // double
             totalStudyCostsPlusOpex: number; // double
             totalCessationCosts: number; // double
@@ -582,8 +587,8 @@ declare namespace Components {
         }
         export interface CreateRevisionDto {
             name: string;
-            internalProjectPhase: InternalProjectPhase /* int32 */;
-            classification: ProjectClassification /* int32 */;
+            internalProjectPhase?: InternalProjectPhase /* int32 */;
+            classification?: ProjectClassification /* int32 */;
         }
         export interface CreateSeismicAcquisitionAndProcessingDto {
             startYear?: number; // int32
@@ -966,6 +971,8 @@ declare namespace Components {
             totalAndAnnualSalesGas?: NetSalesGasDto;
             co2Emissions?: Co2EmissionsDto;
             importedElectricity?: ImportedElectricityDto;
+            additionalOil?: AdditionalProductionProfileOilDto;
+            additionalGas?: AdditionalProductionProfileGasDto;
         }
         export type ProductionFlowline = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13; // int32
         export interface ProductionProfileGasDto {
@@ -1991,14 +1998,10 @@ declare namespace Paths {
     namespace Projects$ProjectIdAccess {
         namespace Get {
             namespace Parameters {
-                export type ExternalId = string; // uuid
-                export type ProjectId = string;
+                export type ProjectId = string; // uuid
             }
             export interface PathParameters {
-                projectId: Parameters.ProjectId;
-            }
-            export interface QueryParameters {
-                externalId?: Parameters.ExternalId /* uuid */;
+                projectId: Parameters.ProjectId /* uuid */;
             }
             namespace Responses {
                 export type $200 = Components.Schemas.AccessRightsDto;

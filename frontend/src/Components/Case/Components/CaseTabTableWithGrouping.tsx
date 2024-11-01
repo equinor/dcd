@@ -6,7 +6,12 @@ import {
 } from "react"
 import { AgGridReact } from "@ag-grid-community/react"
 import useStyles from "@equinor/fusion-react-ag-grid-styles"
-import { ColDef } from "@ag-grid-community/core"
+import {
+    CellKeyDownEvent,
+    ColDef,
+    GetContextMenuItemsParams,
+    MenuItemDef,
+} from "@ag-grid-community/core"
 
 import { formatColumnSum, tableCellisEditable } from "@/Utils/common"
 import { EMPTY_GUID } from "@/Utils/constants"
@@ -33,7 +38,7 @@ const CaseTabTableWithGrouping = ({
 }: Props) => {
     const styles = useStyles()
     const [rowData, setRowData] = useState<any[]>([{ name: "as" }])
-    const { editMode } = useAppContext()
+    const { editMode, setShowRevisionReminder } = useAppContext()
 
     const profilesToRowData = () => {
         const tableRows: ITimeSeriesTableDataWithSet[] = []
@@ -83,6 +88,13 @@ const CaseTabTableWithGrouping = ({
             return { fontWeight: "bold" }
         }
         return undefined
+    }
+
+    const handleCopy = (gridEvent: CellKeyDownEvent) => {
+        const keyboardEvent = gridEvent.event as KeyboardEvent
+        if ((keyboardEvent.ctrlKey || keyboardEvent.metaKey) && keyboardEvent.key === "c") {
+            setShowRevisionReminder(true)
+        }
     }
 
     const generateTableYearColDefs = () => {
@@ -172,6 +184,23 @@ const CaseTabTableWithGrouping = ({
         return undefined
     }
 
+    const getContextMenuItems = (params: GetContextMenuItemsParams): (MenuItemDef | string)[] => {
+        const defaultItems = params.defaultItems || []
+
+        return defaultItems.map((item) => {
+            if (item === "copy") {
+                return {
+                    name: "Copy",
+                    action: () => {
+                        params.api.copySelectedRangeToClipboard()
+                        setShowRevisionReminder(true)
+                    },
+                } as MenuItemDef
+            }
+            return item
+        })
+    }
+
     const defaultExcelExportParams = useMemo(() => {
         const yearColumnKeys = Array.from({ length: tableYears[1] - tableYears[0] + 1 }, (_, i) => (tableYears[0] + i).toString())
         const columnKeys = ["profileName", "unit", ...yearColumnKeys, "total"]
@@ -210,6 +239,8 @@ const CaseTabTableWithGrouping = ({
                     groupDefaultExpanded={groupDefaultExpanded}
                     stopEditingWhenCellsLoseFocus
                     defaultExcelExportParams={defaultExcelExportParams}
+                    getContextMenuItems={getContextMenuItems}
+                    onCellKeyDown={handleCopy}
                 />
             </div>
         </div>
