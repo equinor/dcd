@@ -8,7 +8,6 @@ using api.Repositories;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace api.Authorization;
 
@@ -16,7 +15,6 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IProjectAccessRepository _projectAccessRepository;
-    private readonly IMemoryCache _cache;
     private readonly ILogger<ApplicationRoleAuthorizationHandler> _logger;
 
 
@@ -24,14 +22,12 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
     public ApplicationRoleAuthorizationHandler(
         IProjectAccessRepository projectAccessRepository,
         IHttpContextAccessor httpContextAccessor,
-        ILogger<ApplicationRoleAuthorizationHandler> logger,
-        IMemoryCache cache
+        ILogger<ApplicationRoleAuthorizationHandler> logger
         )
     {
         _httpContextAccessor = httpContextAccessor;
         _logger = logger;
         _projectAccessRepository = projectAccessRepository;
-        _cache = cache;
     }
     protected override async Task<Task> HandleRequirementAsync(
         AuthorizationHandlerContext context,
@@ -164,29 +160,18 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
             return null;
         }
 
-        // Check if the project exists in the cache
-        if (!_cache.TryGetValue(projectIdGuid, out Project? project))
+        var project = await _projectAccessRepository.GetProjectById(projectIdGuid);
+
+        /*
+        Some projects have the external id set as the id.
+        This may cause updates to projects where the external id is the same as the project id
+        to return a revision with the same external id instead.
+        Updates to revsions are not allowed and an error is thrown.
+        Therefore, we split the database call into two separate calls, first looking for the project by project id.
+        */
+        if (project == null)
         {
-            // Get the project from the database
-            project = await _projectAccessRepository.GetProjectById(projectIdGuid);
-
-            /*
-            Some projects have the external id set as the id.
-            This may cause updates to projects where the external id is the same as the project id
-            to return a revision with the same external id instead.
-            Updates to revsions are not allowed and an error is thrown.
-            Therefore, we split the database call into two separate calls, first looking for the project by project id.
-            */
-            if (project == null)
-            {
-                project = await _projectAccessRepository.GetProjectByExternalId(projectIdGuid);
-            }
-
-            // Store the project in the cache
-            var cacheEntryOptions = new MemoryCacheEntryOptions()
-                .SetSlidingExpiration(TimeSpan.FromMinutes(5));
-
-            _cache.Set(projectIdGuid, project, cacheEntryOptions);
+            project = await _projectAccessRepository.GetProjectByExternalId(projectIdGuid);
         }
 
         return project;

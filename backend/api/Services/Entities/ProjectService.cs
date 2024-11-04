@@ -23,7 +23,6 @@ public class ProjectService : IProjectService
     private readonly IFusionService _fusionService;
     private readonly ILogger<ProjectService> _logger;
     private readonly IMapper _mapper;
-    private readonly IMemoryCache _cache;
     private readonly IMapperService _mapperService;
     private readonly IProjectRepository _projectRepository;
 
@@ -33,7 +32,6 @@ public class ProjectService : IProjectService
         IMapper mapper,
         IProjectRepository projectRepository,
         IMapperService mapperService,
-        IMemoryCache cache,
         IFusionService fusionService
     )
     {
@@ -43,7 +41,6 @@ public class ProjectService : IProjectService
         _mapper = mapper;
         _projectRepository = projectRepository;
         _mapperService = mapperService;
-        _cache = cache;
     }
 
     public async Task<ProjectWithCasesDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto)
@@ -57,7 +54,6 @@ public class ProjectService : IProjectService
 
         try
         {
-            _cache.Remove(projectId);
             await _projectRepository.SaveChangesAsync();
         }
         catch (DbUpdateException e)
