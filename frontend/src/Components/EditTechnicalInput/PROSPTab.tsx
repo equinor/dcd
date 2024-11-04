@@ -11,14 +11,15 @@ import React, { ChangeEvent, useEffect, useState } from "react"
 import Grid from "@mui/material/Grid"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
-import { GetProspService } from "../../Services/ProspService"
-import { GetProjectService } from "../../Services/ProjectService"
-import { DriveItem } from "../../Models/sharepoint/DriveItem"
-import PROSPCaseList from "./PROSPCaseList"
-import { projectQueryFn } from "../../Services/QueryFunctions"
-import useEditProject from "../../Hooks/useEditProject"
+
+import { GetProspService } from "@/Services/ProspService"
+import { GetProjectService } from "@/Services/ProjectService"
+import { DriveItem } from "@/Models/sharepoint/DriveItem"
+import { projectQueryFn } from "@/Services/QueryFunctions"
+import useEditProject from "@/Hooks/useEditProject"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import { useAppContext } from "@/Context/AppContext"
+import PROSPCaseList from "./PROSPCaseList"
 
 const PROSPTab = () => {
     const { currentContext } = useModuleCurrentContext()
@@ -93,20 +94,22 @@ const PROSPTab = () => {
                             id="textfield-normal"
                             placeholder="Paste Uri here"
                             onChange={handleSharePointUrl}
-                            value={sharepointUrl}
+                            value={sharepointUrl || ""}
                             disabled={isEditDisabled || !editMode}
                         />
                     </InputWrapper>
                 </Grid>
                 <Grid item>
                     {!isRefreshing
-                        ? <Button
-                            variant="outlined"
-                            onClick={saveUrl}
-                            disabled={isEditDisabled || !editMode}
-                        >
-                            Refresh</Button>
-                        : (
+                        ? (
+                            <Button
+                                variant="outlined"
+                                onClick={saveUrl}
+                                disabled={isEditDisabled || !editMode}
+                            >
+                                Refresh
+                            </Button>
+                        ) : (
                             <Button variant="outlined">
                                 <Progress.Dots color="primary" />
                             </Button>

@@ -32,7 +32,7 @@ class CaseService extends __BaseService {
         body: Components.Schemas.APIUpdateCaseDto,
     ): Promise<Components.Schemas.ProjectWithAssetsDto> {
         const res: Components.Schemas.ProjectWithAssetsDto = await this.put(
-            `projects/${projectId}/cases/${caseId}/update-case-and-profiles`,
+            `projects/${projectId}/cases/${caseId}`,
             { body },
         )
         return res

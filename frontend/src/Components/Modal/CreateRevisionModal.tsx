@@ -7,6 +7,7 @@ import {
     TextField,
     NativeSelect,
     Chip,
+    Progress,
 } from "@equinor/eds-core-react"
 import Dialog from "@mui/material/Dialog"
 import DialogTitle from "@mui/material/DialogTitle"
@@ -17,10 +18,10 @@ import styled from "styled-components"
 import { Grid } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { createRevision } from "@/Utils/RevisionUtils"
-import { useProjectContext } from "@/Context/ProjectContext"
+
 import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "@/Utils/constants"
 import { projectQueryFn } from "@/Services/QueryFunctions"
+import { useRevisions } from "@/Hooks/useRevision"
 
 const Wrapper = styled.div`
     flex-direction: row;
@@ -39,24 +40,25 @@ const ColumnWrapper = styled.div`
 `
 
 type Props = {
-    isOpen: boolean;
+    isModalOpen: boolean;
+    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     size?: false | "xs" | "sm" | "md" | "lg" | "xl" | undefined;
-    onClose?: () => void;
-    setCreatingRevision: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const CreateRevisionModal: FunctionComponent<Props> = ({
-    isOpen,
+    isModalOpen,
+    setIsModalOpen,
     size,
-    onClose,
-    setCreatingRevision,
 }) => {
-    const { projectId } = useProjectContext()
     const { currentContext } = useModuleCurrentContext()
+    const {
+        isRevisionsLoading,
+        createRevision,
+    } = useRevisions()
 
     const [revisionName, setRevisionName] = useState<string>("")
     const [classification, setClassification] = useState<Components.Schemas.ProjectClassification>()
-    const [internalProjectPhase, setInternalProjectPhase] = useState<Components.Schemas.InternalProjectPhase | undefined>()
+    const [internalProjectPhase, setInternalProjectPhase] = useState<Components.Schemas.InternalProjectPhase>()
 
     const externalId = currentContext?.externalId
 
@@ -84,6 +86,8 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
         }
     }
 
+    if (!apiData || !isModalOpen) { return null }
+
     const internalProjectPhaseOptions = Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => (
         <option key={key} value={key}>{value.label}</option>
     ))
@@ -92,26 +96,23 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
         <option key={key} value={key}>{value.label}</option>
     ))
 
-    if (!apiData || !isOpen) { return null }
-
-    const disableAfterDG0 = () => apiData?.projectPhase! >= 3
+    const disableAfterDG0 = () => apiData.projectPhase >= 3
 
     const submitRevision = () => {
         const newRevision: Components.Schemas.CreateRevisionDto = {
             name: revisionName,
-            internalProjectPhase: internalProjectPhase || apiData.internalProjectPhase,
-            classification: classification || apiData.classification,
+            internalProjectPhase: internalProjectPhase as Components.Schemas.InternalProjectPhase,
+            classification: classification as Components.Schemas.ProjectClassification,
         }
-        return newRevision
+        createRevision(newRevision, setIsModalOpen)
     }
 
     return (
         <Dialog
-            open={isOpen}
+            open={isModalOpen}
             fullWidth
             maxWidth={size || "sm"}
             className="ConceptApp ag-theme-alpine-fusion"
-            onClose={onClose}
         >
             <DialogTitle>
                 <Typography variant="h5" as="p">Create new project revision</Typography>
@@ -150,6 +151,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                                 onChange={handleInternalProjectPhaseChange}
                                 value={internalProjectPhase}
                                 disabled={disableAfterDG0()}
+                                defaultValue={apiData.internalProjectPhase}
                             >
                                 {internalProjectPhaseOptions}
                             </NativeSelect>
@@ -160,6 +162,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                                 label="Project classification"
                                 onChange={handleClassificationChange}
                                 value={classification}
+                                defaultValue={apiData.classification}
                             >
                                 {classificationOptions}
                             </NativeSelect>
@@ -187,16 +190,11 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             <DialogActions>
                 <Grid container spacing={1} justifyContent="flex-end">
                     <Grid item>
-                        <Button variant="ghost" onClick={() => setCreatingRevision(false)}>Cancel</Button>
+                        {!isRevisionsLoading ? (<Button variant="ghost" onClick={() => setIsModalOpen(false)}>Cancel</Button>) : null}
                     </Grid>
                     <Grid item>
-                        <Button onClick={() => createRevision(
-                            projectId,
-                            submitRevision() as Components.Schemas.CreateRevisionDto,
-                            setCreatingRevision,
-                        )}
-                        >
-                            Create revision
+                        <Button disabled={isRevisionsLoading} onClick={() => submitRevision()}>
+                            {isRevisionsLoading ? <Progress.Dots /> : "Create revision"}
                         </Button>
                     </Grid>
                 </Grid>

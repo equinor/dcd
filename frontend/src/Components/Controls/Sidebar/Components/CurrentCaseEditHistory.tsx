@@ -19,11 +19,11 @@ const Content = styled.div`
     max-height: 220px;
     padding: 0 10px;
     overflow: auto;
-    -ms-overflow-style: none; 
-    scrollbar-width: none; 
-    
-    &::-webkit-scrollbar { 
-        display: none;  
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
     }
 `
 
@@ -36,7 +36,16 @@ const CurrentCaseEditHistory: React.FC = () => {
     const { caseEditsBelongingToCurrentCase } = useCaseContext()
     const { caseId } = useParams()
 
-    const { sidebarOpen } = useAppContext()
+    const { sidebarOpen, showEditHistory } = useAppContext()
+
+    if (!showEditHistory) {
+        return (
+
+            <Content>
+                {sidebarOpen && caseId && <CaseEditHistory caseId={caseId} />}
+            </Content>
+        )
+    }
 
     return (
         <Container $sidebarOpen={sidebarOpen}>
