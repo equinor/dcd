@@ -13,8 +13,6 @@ public class ProjectWithAssetsDto : ProjectDto, IEquatable<ProjectWithAssetsDto>
     [Required]
     public ICollection<CaseWithProfilesDto> Cases { get; set; } = [];
     [Required]
-    public ICollection<ProjectDto> Revisions { get; set; } = [];
-    [Required]
     public ICollection<WellDto> Wells { get; set; } = [];
     [Required]
     public ICollection<ExplorationWithProfilesDto> Explorations { get; set; } = [];

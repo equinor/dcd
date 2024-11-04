@@ -323,7 +323,6 @@ public class ProjectService : IProjectService
             .Include(p => p.Cases)!.ThenInclude(c => c.CalculatedTotalIncomeCostProfile)
             .Include(p => p.Cases)!.ThenInclude(c => c.CalculatedTotalCostCostProfile)
             .Include(p => p.Wells)
-            .Include(p => p.Revisions)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
             .FirstOrDefaultAsync(p => (p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId)) && !p.IsRevision);
