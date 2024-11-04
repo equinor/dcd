@@ -23,7 +23,6 @@ public class ProjectService : IProjectService
     private readonly IFusionService _fusionService;
     private readonly ILogger<ProjectService> _logger;
     private readonly IMapper _mapper;
-    private readonly IMemoryCache _cache;
     private readonly IMapperService _mapperService;
     private readonly IProjectRepository _projectRepository;
 
@@ -33,7 +32,6 @@ public class ProjectService : IProjectService
         IMapper mapper,
         IProjectRepository projectRepository,
         IMapperService mapperService,
-        IMemoryCache cache,
         IFusionService fusionService
     )
     {
@@ -43,7 +41,6 @@ public class ProjectService : IProjectService
         _mapper = mapper;
         _projectRepository = projectRepository;
         _mapperService = mapperService;
-        _cache = cache;
     }
 
     public async Task<ProjectWithCasesDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto)
@@ -57,7 +54,6 @@ public class ProjectService : IProjectService
 
         try
         {
-            _cache.Remove(projectId);
             await _projectRepository.SaveChangesAsync();
         }
         catch (DbUpdateException e)
@@ -323,7 +319,6 @@ public class ProjectService : IProjectService
             .Include(p => p.Cases)!.ThenInclude(c => c.CalculatedTotalIncomeCostProfile)
             .Include(p => p.Cases)!.ThenInclude(c => c.CalculatedTotalCostCostProfile)
             .Include(p => p.Wells)
-            .Include(p => p.Revisions)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
             .FirstOrDefaultAsync(p => (p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId)) && !p.IsRevision);
@@ -360,8 +355,11 @@ public class ProjectService : IProjectService
         {
             projectLastUpdated = project.ModifyTime;
         }
+        var revisionDetails = _context.RevisionDetails.Where(r => r.OriginalProjectId == project.Id).ToList();
 
         var destination = _mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+
+        destination.RevisionsDetailsList = _mapper.Map<List<RevisionDetailsDto>>(revisionDetails);
 
         var projectDto = destination;
 

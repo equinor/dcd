@@ -1146,6 +1146,8 @@ public class DcdDbContext : DbContext
     }
 
     public DbSet<Project> Projects { get; set; } = null!;
+    public DbSet<ProjectMember> ProjectMembers { get; set; } = null!;
+    public DbSet<RevisionDetails> RevisionDetails { get; set; } = null!;
     public DbSet<ExplorationOperationalWellCosts> ExplorationOperationalWellCosts { get; set; } = null!;
     public DbSet<DevelopmentOperationalWellCosts> DevelopmentOperationalWellCosts { get; set; } = null!;
 
@@ -1240,6 +1242,8 @@ public class DcdDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new ProjectConfiguration());
+        modelBuilder.ApplyConfiguration(new ProjectMemberConfiguration());
+        modelBuilder.ApplyConfiguration(new RevisionDetailsConfiguration());
         modelBuilder.ApplyConfiguration(new CaseConfiguration());
         modelBuilder.ApplyConfiguration(new WellProjectWellConfiguration());
         modelBuilder.ApplyConfiguration(new ExplorationWellConfiguration());

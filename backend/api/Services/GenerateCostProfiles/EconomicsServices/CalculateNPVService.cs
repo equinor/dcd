@@ -1,5 +1,3 @@
-
-
 using api.Models;
 
 namespace api.Services.EconomicsServices;
@@ -30,6 +28,7 @@ public class CalculateNPVService : ICalculateNPVService
             c => c.Project,
             c => c.CalculatedTotalIncomeCostProfile!,
             c => c.CalculatedTotalCostCostProfile!
+
         );
 
         var cashflowProfile = GetCashflowProfile(caseItem);
@@ -59,7 +58,7 @@ public class CalculateNPVService : ICalculateNPVService
                 cashflowProfile.StartYear + Math.Abs(nextYearInRelationToDg4Year)
             );
 
-        caseItem.NPV = npvValue;
+        caseItem.NPV = npvValue / caseItem.Project.ExchangeRateUSDToNOK;
     }
 }
 

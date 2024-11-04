@@ -34,6 +34,8 @@ public class Project
     public virtual Project? OriginalProject { get; set; }
     public virtual ICollection<Project>? Revisions { get; set; }
 
+    public virtual ICollection<ProjectMember>? ProjectMembers { get; set; }
+
     public string? SharepointSiteUrl { get; set; }
     public double CO2RemovedFromGas { get; set; }
     public double CO2EmissionFromFuelGas { get; set; } = 2.34;
@@ -47,6 +49,21 @@ public class Project
     public double GasPriceNOK { get; set; }
     public double DiscountRate { get; set; }
     public double ExchangeRateUSDToNOK { get; set; }
+    public virtual RevisionDetails? RevisionDetails { get; set; }
+}
+
+public class RevisionDetails
+{
+    public Guid Id { get; set; }
+    public Guid OriginalProjectId { get; set; }
+
+    public virtual Project Revision { get; set; } = null!;
+    public Guid RevisionId { get; set; }
+
+    public string? RevisionName { get; set; }
+    public DateTimeOffset RevisionDate { get; set; }
+    public bool Arena { get; set; }
+    public bool Mdqc { get; set; }
 }
 
 public enum PhysUnit

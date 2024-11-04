@@ -103,7 +103,7 @@ const CasesAgGridTable = ({
     const { data: apiRevisionData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
-        enabled: !!externalId && isRevision,
+        enabled: !!projectId && !!revisionId && !!externalId && isRevision,
     })
 
     const selectCase = (p: any) => {

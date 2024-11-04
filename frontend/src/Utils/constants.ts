@@ -80,7 +80,9 @@ export const projectTabNames = [
 
 export const productionOverrideResources = [
     "productionProfileOil",
+    "additionalProductionProfileOil",
     "productionProfileGas",
+    "additionalProductionProfileGas",
     "productionProfileWater",
     "productionProfileWaterInjection",
 ]

@@ -18,17 +18,17 @@ import {
 } from "@equinor/eds-icons"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
-import { Box } from "@mui/material"
+import { useMediaQuery, Box } from "@mui/material"
 
+import { useProjectContext } from "@/Context/ProjectContext"
+import useEditDisabled from "@/Hooks/useEditDisabled"
+import { useAppContext } from "@/Context/AppContext"
 import { formatDateAndTime } from "@/Utils/common"
 import { projectTabNames } from "@/Utils/constants"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useAppContext } from "@/Context/AppContext"
-import FullPageLoading from "../fullPageLoading"
 import RevisionsDropMenu from "./RevisionsDropMenu"
 import Classification from "./ClassificationChip"
+import FullPageLoading from "../fullPageLoading"
 import RevisionChip from "./RevisionChip"
-import useEditDisabled from "@/Hooks/useEditDisabled"
 
 const Header = styled.div`
     display: flex;
@@ -52,6 +52,15 @@ const TabContainer = styled.div`
     border-bottom: 1px solid #DCDCDC;
 `
 
+const LastUpdated = styled.div`
+    flex-direction: column;
+    gap: 0!important;
+`
+
+const ChipsContainer = styled.div<{ $isSmallScreen: boolean }>`
+    flex-direction: ${({ $isSmallScreen }) => ($isSmallScreen ? "column" : "row")};
+`
+
 const Status = styled.div`
    display: flex;
    align-items: center;
@@ -71,10 +80,11 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
         setActiveTabProject,
         isRevision,
     } = useProjectContext()
-    const { isSaving } = useAppContext()
     const leftTabs = projectTabNames.filter((name) => name !== "Access Management" && name !== "Settings")
     const rightTabs = projectTabNames.filter((name) => name === "Access Management" || name === "Settings")
+    const { isSaving } = useAppContext()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
+    const isSmallScreen = useMediaQuery("(max-width: 968px)")
 
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
@@ -103,19 +113,24 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                     <Typography variant="h4">
                         {currentContext?.title}
                     </Typography>
-                    <Classification />
-                    {isRevision && (
-                        <RevisionChip />
-                    )}
+                    <ChipsContainer $isSmallScreen={isSmallScreen}>
+                        <Classification />
+                        {isRevision && (
+                            <RevisionChip />
+                        )}
+                    </ChipsContainer>
                 </div>
                 <div>
                     {!editMode
                         && (
-                            <Typography variant="caption">
-                                Project last updated
-                                {" "}
-                                {formatDateAndTime(projectLastUpdated)}
-                            </Typography>
+                            <LastUpdated>
+                                <Typography variant="caption">
+                                    Project last updated
+                                </Typography>
+                                <Typography variant="caption">
+                                    {formatDateAndTime(projectLastUpdated)}
+                                </Typography>
+                            </LastUpdated>
                         )}
 
                     {editMode && (
@@ -142,13 +157,13 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                             {editMode && (
                                 <>
                                     <Icon data={visibility} />
-                                    <span>View</span>
+                                    {!isSmallScreen && <span>View</span>}
                                 </>
                             )}
                             {!editMode && (
                                 <>
                                     <Icon data={edit} />
-                                    <span>Edit</span>
+                                    {!isSmallScreen && <span>Edit</span>}
                                 </>
                             )}
                         </Button>
@@ -158,7 +173,7 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                         <Tooltip title="This is a revision">
                             <Button variant="outlined" onClick={() => setIsMenuOpen(!isMenuOpen)} ref={setRevisionMenuAnchorEl}>
                                 <Icon data={history} />
-                                Project revisions
+                                {!isSmallScreen && "Project revisions"}
                             </Button>
                         </Tooltip>
                         <RevisionsDropMenu
