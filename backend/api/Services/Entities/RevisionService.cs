@@ -267,7 +267,6 @@ public class RevisionService : IRevisionService
 
         project.IsRevision = true;
         project.OriginalProjectId = originalProjectId;
-        // project.CreateDate = DateTimeOffset.UtcNow;
 
         project.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
         project.Classification = createRevisionDto.Classification;
