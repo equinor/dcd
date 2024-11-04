@@ -234,6 +234,18 @@ public class RevisionService : IRevisionService
         SetProjectAndRelatedEntitiesToEmptyGuids(project, projectId, createRevisionDto);
         await UpdateProjectWithRevisionChanges(projectId, createRevisionDto);
 
+        var revisionDetails = new RevisionDetails
+        {
+            OriginalProjectId = projectId,
+            RevisionName = createRevisionDto.Name,
+            Mdqc = createRevisionDto.Mdqc,
+            Arena = createRevisionDto.Arena,
+            RevisionDate = DateTimeOffset.UtcNow,
+            Revision = project,
+        };
+
+        project.RevisionDetails = revisionDetails;
+
         var revision = await _revisionRepository.AddRevision(project);
 
         var revisionDto = _mapper.Map<Project, ProjectWithAssetsDto>(revision, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
@@ -280,10 +292,7 @@ public class RevisionService : IRevisionService
 
         project.IsRevision = true;
         project.OriginalProjectId = originalProjectId;
-        project.CreateDate = DateTimeOffset.UtcNow;
 
-        // update revision with properties from create revision modal
-        project.Name = createRevisionDto.Name;
         project.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
         project.Classification = createRevisionDto.Classification;
 

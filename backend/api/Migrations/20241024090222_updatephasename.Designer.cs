@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Context;
 
@@ -11,9 +12,11 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    partial class DcdDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241024090222_updatephasename")]
+    partial class updatephasename
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1652,41 +1655,6 @@ namespace api.Migrations
                     b.HasIndex("OriginalProjectId");
 
                     b.ToTable("Projects");
-                });
-
-            modelBuilder.Entity("api.Models.RevisionDetails", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Arena")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Mdqc")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("OriginalProjectId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTimeOffset>("RevisionDate")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<Guid>("RevisionId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("RevisionName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OriginalProjectId")
-                        .HasDatabaseName("IX_RevisionDetails_OriginalProjectId");
-
-                    b.HasIndex("RevisionId")
-                        .IsUnique();
-
-                    b.ToTable("RevisionDetails");
                 });
 
             modelBuilder.Entity("api.Models.SeismicAcquisitionAndProcessing", b =>
@@ -3386,17 +3354,6 @@ namespace api.Migrations
                     b.Navigation("OriginalProject");
                 });
 
-            modelBuilder.Entity("api.Models.RevisionDetails", b =>
-                {
-                    b.HasOne("api.Models.Project", "Revision")
-                        .WithOne("RevisionDetails")
-                        .HasForeignKey("api.Models.RevisionDetails", "RevisionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Revision");
-                });
-
             modelBuilder.Entity("api.Models.SeismicAcquisitionAndProcessing", b =>
                 {
                     b.HasOne("api.Models.Exploration", "Exploration")
@@ -3851,8 +3808,6 @@ namespace api.Migrations
                     b.Navigation("ExplorationOperationalWellCosts");
 
                     b.Navigation("Explorations");
-
-                    b.Navigation("RevisionDetails");
 
                     b.Navigation("Revisions");
 
