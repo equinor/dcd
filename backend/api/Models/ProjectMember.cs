@@ -1,6 +1,6 @@
 namespace api.Models;
 
-    public class ProjectMember
+public class ProjectMember
 {
     public Guid Id { get; set; }
     public Guid UserId { get; set; } // Azure AD user id
