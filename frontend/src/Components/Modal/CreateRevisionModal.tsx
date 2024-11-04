@@ -7,6 +7,7 @@ import {
     TextField,
     NativeSelect,
     Chip,
+    Progress,
 } from "@equinor/eds-core-react"
 import Dialog from "@mui/material/Dialog"
 import DialogTitle from "@mui/material/DialogTitle"
@@ -15,13 +16,12 @@ import DialogActions from "@mui/material/DialogActions"
 import { checkbox, checkbox_outline, info_circle } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { Grid } from "@mui/material"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useNavigate } from "react-router"
-import { createRevision } from "@/Utils/RevisionUtils"
-import { useProjectContext } from "@/Context/ProjectContext"
+
 import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "@/Utils/constants"
 import { projectQueryFn } from "@/Services/QueryFunctions"
+import { useRevisions } from "@/Hooks/useRevision"
 
 const Wrapper = styled.div`
     flex-direction: row;
@@ -40,22 +40,21 @@ const ColumnWrapper = styled.div`
 `
 
 type Props = {
-    isOpen: boolean;
+    isModalOpen: boolean;
+    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     size?: false | "xs" | "sm" | "md" | "lg" | "xl" | undefined;
-    onClose?: () => void;
-    setCreatingRevision: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const CreateRevisionModal: FunctionComponent<Props> = ({
-    isOpen,
+    isModalOpen,
+    setIsModalOpen,
     size,
-    onClose,
-    setCreatingRevision,
 }) => {
-    const { projectId, setIsRevision } = useProjectContext()
     const { currentContext } = useModuleCurrentContext()
-    const queryClient = useQueryClient()
-    const navigate = useNavigate()
+    const {
+        isRevisionsLoading,
+        createRevision,
+    } = useRevisions()
 
     const [revisionName, setRevisionName] = useState<string>("")
     const [classification, setClassification] = useState<Components.Schemas.ProjectClassification>()
@@ -89,7 +88,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
         }
     }
 
-    if (!apiData || !isOpen) { return null }
+    if (!apiData || !isModalOpen) { return null }
 
     const internalProjectPhaseOptions = Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => (
         <option key={key} value={key}>{value.label}</option>
@@ -109,23 +108,15 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             // mdqc: mdqc || apiData.mdqc,
             // arena: arena || apiData.arena,
         }
-        createRevision(
-            projectId,
-            newRevision,
-            setCreatingRevision,
-            queryClient,
-            setIsRevision,
-            navigate,
-        )
+        createRevision(newRevision, setIsModalOpen)
     }
 
     return (
         <Dialog
-            open={isOpen}
+            open={isModalOpen}
             fullWidth
             maxWidth={size || "sm"}
             className="ConceptApp ag-theme-alpine-fusion"
-            onClose={onClose}
         >
             <DialogTitle>
                 <Typography variant="h5" as="p">Create new project revision</Typography>
@@ -219,11 +210,11 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             <DialogActions>
                 <Grid container spacing={1} justifyContent="flex-end">
                     <Grid item>
-                        <Button variant="ghost" onClick={() => setCreatingRevision(false)}>Cancel</Button>
+                        {!isRevisionsLoading ? (<Button variant="ghost" onClick={() => setIsModalOpen(false)}>Cancel</Button>) : null}
                     </Grid>
                     <Grid item>
-                        <Button onClick={() => submitRevision()}>
-                            Create revision
+                        <Button disabled={isRevisionsLoading} onClick={() => submitRevision()}>
+                            {isRevisionsLoading ? <Progress.Dots /> : "Create revision"}
                         </Button>
                     </Grid>
                 </Grid>

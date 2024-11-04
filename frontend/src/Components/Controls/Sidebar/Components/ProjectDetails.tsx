@@ -27,7 +27,7 @@ const CenterIcon = styled.div`
 `
 
 const ProjectDetails: React.FC = () => {
-    const { sidebarOpen } = useAppContext()
+    const { sidebarOpen, showEditHistory } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
     const { caseId } = useParams()
 
@@ -87,17 +87,19 @@ const ProjectDetails: React.FC = () => {
                                 : <Tooltip title="Case edit history" placement="right"><Icon data={settings} /></Tooltip>}
                         </TimelineElement>
                     </Grid>
-                    <Grid item>
-                        <TimelineElement
-                            variant="ghost"
-                            className="GhostButton"
-                            onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 4 } })}
-                        >
-                            {sidebarOpen
-                                ? "Settings"
-                                : <Tooltip title="Settings" placement="right"><Icon data={settings} /></Tooltip>}
-                        </TimelineElement>
-                    </Grid>
+                    {showEditHistory && (
+                        <Grid item>
+                            <TimelineElement
+                                variant="ghost"
+                                className="GhostButton"
+                                onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 4 } })}
+                            >
+                                {sidebarOpen
+                                    ? "Settings"
+                                    : <Tooltip title="Settings" placement="right"><Icon data={settings} /></Tooltip>}
+                            </TimelineElement>
+                        </Grid>
+                    )}
                 </Timeline>
             </Grid>
         ) : null
