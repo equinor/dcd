@@ -34,6 +34,8 @@ public class Project
     public virtual Project? OriginalProject { get; set; }
     public virtual ICollection<Project>? Revisions { get; set; }
 
+    public virtual ICollection<ProjectMember>? ProjectMembers { get; set; }
+
     public string? SharepointSiteUrl { get; set; }
     public double CO2RemovedFromGas { get; set; }
     public double CO2EmissionFromFuelGas { get; set; } = 2.34;

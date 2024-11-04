@@ -585,6 +585,10 @@ declare namespace Components {
             startYear?: number; // int32
             values?: number /* double */[] | null;
         }
+        export interface CreateProjectMemberDto {
+            role?: ProjectMemberRole /* int32 */;
+            userId?: string; // uuid
+        }
         export interface CreateRevisionDto {
             name: string;
             internalProjectPhase?: InternalProjectPhase /* int32 */;
@@ -1042,10 +1046,11 @@ declare namespace Components {
             exchangeRateUSDToNOK: number; // double
         }
         export interface ProjectMemberDto {
-            azureId: string; // uuid
+            projectId: string; // uuid
+            userId: string; // uuid
             role: ProjectMemberRole /* int32 */;
         }
-        export type ProjectMemberRole = 0 | 1 | 2; // int32
+        export type ProjectMemberRole = 0 | 1; // int32
         export type ProjectPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
         export interface ProjectWithAssetsDto {
             classification: ProjectClassification /* int32 */;
@@ -3712,6 +3717,36 @@ declare namespace Paths {
             export interface PathParameters {
                 imageId: Parameters.ImageId /* uuid */;
                 projectId: Parameters.ProjectId;
+            }
+            namespace Responses {
+                export interface $200 {
+                }
+            }
+        }
+    }
+    namespace Projects$ProjectIdMembers {
+        namespace Post {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.CreateProjectMemberDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.ProjectMemberDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdMembers$UserId {
+        namespace Delete {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+                export type UserId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                userId: Parameters.UserId /* uuid */;
             }
             namespace Responses {
                 export interface $200 {

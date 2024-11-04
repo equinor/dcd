@@ -15,6 +15,7 @@ public class ProjectProfile : Profile
         CreateMap<Project, ProjectWithCasesDto>();
         CreateMap<Project, ProjectDto>();
         CreateMap<UpdateProjectDto, Project>();
+        CreateMap<ProjectMember, ProjectMemberDto>();
 
         CreateMap<UpdateExplorationOperationalWellCostsDto, ExplorationOperationalWellCosts>();
         CreateMap<ExplorationOperationalWellCosts, ExplorationOperationalWellCostsDto>();
