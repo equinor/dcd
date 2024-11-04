@@ -59,7 +59,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     const [revisionName, setRevisionName] = useState<string>("")
     const [classification, setClassification] = useState<Components.Schemas.ProjectClassification>()
     const [internalProjectPhase, setInternalProjectPhase] = useState<Components.Schemas.InternalProjectPhase>()
-    const [mDQC, setMDQC] = useState(false)
+    const [mdqc, setMdqc] = useState(false)
     const [arena, setArena] = useState(false)
 
     const externalId = currentContext?.externalId
@@ -105,8 +105,8 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             name: revisionName,
             internalProjectPhase: internalProjectPhase as Components.Schemas.InternalProjectPhase,
             classification: classification as Components.Schemas.ProjectClassification,
-            // mdqc: mdqc || apiData.mdqc,
-            // arena: arena || apiData.arena,
+            mdqc,
+            arena,
         }
         createRevision(newRevision, setIsModalOpen)
     }
@@ -183,11 +183,11 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                         <Grid container spacing={1} justifyContent="flex-start">
                             <Grid item>
                                 <Chip
-                                    onClick={() => setMDQC(!mDQC)}
-                                    variant={mDQC ? "active" : "default"}
+                                    onClick={() => setMdqc(!mdqc)}
+                                    variant={mdqc ? "active" : "default"}
                                 >
                                     <Icon
-                                        data={mDQC ? checkbox : checkbox_outline}
+                                        data={mdqc ? checkbox : checkbox_outline}
                                     />
                                     MDQC
                                 </Chip>
