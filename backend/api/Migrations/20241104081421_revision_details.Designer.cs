@@ -12,8 +12,8 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20241022130044_revsion_details")]
-    partial class revsion_details
+    [Migration("20241104081421_revision_details")]
+    partial class revision_details
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -209,10 +209,7 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTimeOffset>("APXDate")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTimeOffset>("APZDate")
+                    b.Property<DateTimeOffset>("APBODate")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<bool>("Archived")
@@ -220,6 +217,9 @@ namespace api.Migrations
 
                     b.Property<int>("ArtificialLift")
                         .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("BORDate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<double>("BreakEven")
                         .HasColumnType("float");
@@ -324,6 +324,9 @@ namespace api.Migrations
 
                     b.Property<Guid>("TransportLink")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("VPBODate")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("WaterInjectorCount")
                         .HasColumnType("int");
@@ -1679,6 +1682,9 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OriginalProjectId")
+                        .HasDatabaseName("IX_RevisionDetails_OriginalProjectId");
 
                     b.HasIndex("RevisionId")
                         .IsUnique();

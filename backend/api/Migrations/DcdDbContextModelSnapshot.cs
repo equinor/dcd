@@ -1680,6 +1680,9 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OriginalProjectId")
+                        .HasDatabaseName("IX_RevisionDetails_OriginalProjectId");
+
                     b.HasIndex("RevisionId")
                         .IsUnique();
 

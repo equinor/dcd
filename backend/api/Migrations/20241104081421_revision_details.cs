@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace api.Migrations
 {
     /// <inheritdoc />
-    public partial class revsion_details : Migration
+    public partial class revision_details : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,6 +33,11 @@ namespace api.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RevisionDetails_OriginalProjectId",
+                table: "RevisionDetails",
+                column: "OriginalProjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RevisionDetails_RevisionId",
