@@ -86,7 +86,7 @@ const Overview = () => {
         const currentTime = new Date()
 
         const timeDifferenceInDays = (currentTime.getTime() - lastModified.getTime()) / (1000 * 60 * 60 * 24)
-        const hasChangesSinceLastRevision = apiData.revisions.some((r) => new Date(r.createDate) < lastModified)
+        const hasChangesSinceLastRevision = apiData.revisionsDetailsList.some((r) => new Date(r.revisionDate) < lastModified)
 
         if (timeDifferenceInDays > 30 && hasChangesSinceLastRevision && editMode && !isRevision) {
             setShowRevisionReminder(true)

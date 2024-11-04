@@ -589,6 +589,8 @@ declare namespace Components {
             name: string;
             internalProjectPhase?: InternalProjectPhase /* int32 */;
             classification?: ProjectClassification /* int32 */;
+            arena?: boolean;
+            mdqc?: boolean;
         }
         export interface CreateSeismicAcquisitionAndProcessingDto {
             startYear?: number; // int32
@@ -1078,7 +1080,6 @@ declare namespace Components {
             explorationOperationalWellCosts: ExplorationOperationalWellCostsDto;
             developmentOperationalWellCosts: DevelopmentOperationalWellCostsDto;
             cases: CaseWithProfilesDto[];
-            revisions: ProjectDto[];
             wells: WellDto[];
             explorations: ExplorationWithProfilesDto[];
             surfs: SurfWithProfilesDto[];
@@ -1089,6 +1090,7 @@ declare namespace Components {
             wellProjects: WellProjectWithProfilesDto[];
             projectMembers: ProjectMemberDto[];
             modifyTime: string; // date-time
+            revisionsDetailsList: RevisionDetailsDto[];
         }
         export interface ProjectWithCasesDto {
             classification: ProjectClassification /* int32 */;
@@ -1122,6 +1124,15 @@ declare namespace Components {
             exchangeRateUSDToNOK: number; // double
             cases: CaseDto[];
             revisions: ProjectDto[];
+        }
+        export interface RevisionDetailsDto {
+            id: string; // uuid
+            originalProjectId: string; // uuid
+            revisionId: string; // uuid
+            revisionName: string;
+            revisionDate: string; // date-time
+            arena: boolean;
+            mdqc: boolean;
         }
         export interface STEACaseDto {
             name?: string | null;

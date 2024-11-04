@@ -34,6 +34,14 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
     }
 }
 
+public class RevisionDetailsConfiguration : IEntityTypeConfiguration<RevisionDetails>
+{
+    public void Configure(EntityTypeBuilder<RevisionDetails> builder)
+    {
+        builder.HasIndex(rd => rd.OriginalProjectId).HasDatabaseName("IX_RevisionDetails_OriginalProjectId");
+    }
+}
+
 public class CaseConfiguration : IEntityTypeConfiguration<Case>
 {
     public void Configure(EntityTypeBuilder<Case> builder)
