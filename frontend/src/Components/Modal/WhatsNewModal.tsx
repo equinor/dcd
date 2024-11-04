@@ -75,6 +75,26 @@ const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } }
             { description: "Fix navigating to project view when changing project context"},
         ],
     },
+    "2.2.0": {
+        "New Functionalities": [
+            { description: "Show manual input for facility cost profiles before PROSP import" },
+            { description: "Add loading indicator to calculated time series when calculations are running" },
+            { description: "Disable/enable inputs based on access" },
+            { description: "Add calculations for NPV and Break even" },
+
+        ],
+        "UI Improvements": [
+            { description: "Rename \"Gas production\" to \"Rich gas production\""},
+            { description: "Always show a minimum number of columns in tables"},
+        ],
+        Bugfixes: [
+            { description: "Fixed issue with deleting case with an image"},
+            { description: "Remove archived cases from case comparison graph"},
+            { description: "Add units to facilities tab in view mode"},
+            { description: "Fix study cost calculation in cases where DG2 and DG3 were both set to Jan 1st of the same year"},
+            { description: "Fix updating case from the cases table in project view"},
+        ],
+    }
 
 }
 

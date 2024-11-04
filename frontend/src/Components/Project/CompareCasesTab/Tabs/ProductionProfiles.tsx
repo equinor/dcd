@@ -12,11 +12,13 @@ const ProductionProfiles: React.FC<ProductionProfilesProps> = ({ productionProfi
         <AgChartsCompareCases
             data={productionProfilesChartData}
             chartTitle="Production profiles"
-            barColors={["#243746", "#EB0037", "#8C1159"]}
-            barProfiles={["oilProduction", "gasProduction", "totalExportedVolumes"]}
+            barColors={["#243746", "#281457", "#EB0037", "#FF5733", "#8C1159"]}
+            barProfiles={["oilProduction", "additionalOilProduction", "gasProduction", "additionalGasProduction", "totalExportedVolumes"]}
             barNames={[
                 "Oil production (MSm3)",
+                "Additional oil production (MSm3)",
                 "Rich gas production (GSm3)",
+                "Additional rich gas production (GSm3)",
                 "Total exported volumes (MSm3)",
             ]}
         />
