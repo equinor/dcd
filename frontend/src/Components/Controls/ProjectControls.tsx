@@ -19,6 +19,7 @@ import {
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import { useMediaQuery, Box } from "@mui/material"
+import { useQuery } from "@tanstack/react-query"
 
 import { useProjectContext } from "@/Context/ProjectContext"
 import useEditDisabled from "@/Hooks/useEditDisabled"
@@ -29,6 +30,8 @@ import RevisionsDropMenu from "./RevisionsDropMenu"
 import Classification from "./ClassificationChip"
 import FullPageLoading from "../fullPageLoading"
 import RevisionChip from "./RevisionChip"
+import { projectQueryFn } from "@/Services/QueryFunctions"
+import { User } from "@/Models/AccessManagement"
 
 const Header = styled.div`
     display: flex;
@@ -79,15 +82,26 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
         activeTabProject,
         setActiveTabProject,
         isRevision,
+        projectId,
     } = useProjectContext()
     const leftTabs = projectTabNames.filter((name) => name !== "Access Management" && name !== "Settings")
     const rightTabs = projectTabNames.filter((name) => name === "Access Management" || name === "Settings")
-    const { isSaving } = useAppContext()
+    const { isSaving, showEditHistory } = useAppContext()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
     const isSmallScreen = useMediaQuery("(max-width: 968px)")
 
+    const [editors, setEditors] = useState<User[] | undefined>([])
+    const [viewers, setViewers] = useState<User[] | undefined>([])
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
+
+    const { data: projectApiData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
+    })
+
+    console.log(projectApiData?.projectMembers)
 
     const handleTabChange = (index: number) => {
         setActiveTabProject(index)
@@ -104,6 +118,13 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
             setEditMode(false)
         }
     }, [isRevision])
+
+    useEffect(() => {
+        const viewersToAdd = projectApiData?.projectMembers?.filter((m) => m.role === 0) as User[]
+        const editorsToAdd = projectApiData?.projectMembers?.filter((m) => m.role === 1) as User[]
+        setViewers(viewersToAdd)
+        setEditors(editorsToAdd)
+    }, [projectApiData])
 
     return (
         <>
@@ -191,7 +212,7 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                     onChange={(_, index) => handleTabChange(getTabIndex(index, false))}
                     variant="scrollable"
                 >
-                    {leftTabs.map((tabName) => <Tab key={tabName} label={tabName} />)}
+                    {leftTabs.filter((tabName) => showEditHistory || tabName !== "Case edit history").map((tabName) => <Tab key={tabName} label={tabName} />)}
                 </Tabs>
                 <Box flexGrow={1} />
                 <Tabs
