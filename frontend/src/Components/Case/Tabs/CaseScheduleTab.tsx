@@ -18,13 +18,13 @@ import { caseQueryFn } from "../../../Services/QueryFunctions"
 import { useProjectContext } from "../../../Context/ProjectContext"
 
 const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
-    const { caseId, tab } = useParams()
     const { editMode } = useAppContext()
-    const { projectId } = useProjectContext()
+    const { caseId, revisionId, tab } = useParams()
+    const { projectId, isRevision } = useProjectContext()
 
     const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", projectId, caseId],
-        queryFn: () => caseQueryFn(projectId, caseId),
+        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
+        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
     })
 
@@ -42,12 +42,16 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
             key: "dgcDate",
         },
         {
-            label: "APX",
-            key: "apxDate",
+            label: "APbo",
+            key: "apboDate",
         },
         {
-            label: "APZ",
-            key: "apzDate",
+            label: "BOR",
+            key: "borDate",
+        },
+        {
+            label: "VPbo",
+            key: "vpboDate",
         },
         {
             visible: true,
@@ -126,26 +130,29 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     function handleDateChange(dateKey: string, dateValue: string) {
-        const caseDataCopy: any = { ...caseData }
-        const newDate = Number.isNaN(new Date(dateValue).getTime())
-            ? defaultDate()
-            : new Date(dateValue)
-        const dg0Object = dateKey === "dG0Date" && getDGOChangesObject(newDate)
+        const dateValueYear = Number(dateValue.substring(0, 4))
 
-        addEdit({
-            inputLabel: dateKey,
-            projectId: caseData.projectId,
-            resourceName: "case",
-            resourcePropertyKey: dateKey as ResourcePropertyKey,
-            caseId: caseData.id,
-            newDisplayValue: formatDate(newDate.toISOString()),
-            previousDisplayValue: formatDate(caseDataCopy[dateKey]),
-            newResourceObject: dg0Object || getNewCaseObject(dateKey, newDate),
-            previousResourceObject: dg0Object && caseDataCopy,
-            tabName: tab,
-        })
+        if ((dateValueYear >= 2010 && dateValueYear <= 2110) || dateValue === "") {
+            const caseDataCopy: any = { ...caseData }
+            const newDate = Number.isNaN(new Date(dateValue).getTime())
+                ? defaultDate()
+                : new Date(dateValue)
+            const dg0Object = dateKey === "dG0Date" && getDGOChangesObject(newDate)
+
+            addEdit({
+                inputLabel: dateKey,
+                projectId: caseData.projectId,
+                resourceName: "case",
+                resourcePropertyKey: dateKey as ResourcePropertyKey,
+                caseId: caseData.id,
+                newDisplayValue: formatDate(newDate.toISOString()),
+                previousDisplayValue: formatDate(caseDataCopy[dateKey]),
+                newResourceObject: dg0Object || getNewCaseObject(dateKey, newDate),
+                previousResourceObject: dg0Object && caseDataCopy,
+                tabName: tab,
+            })
+        }
     }
-
     const findMinDate = (dates: Date[]) => {
         const filteredDates = dates.filter((d) => !isDefaultDate(d))
         if (filteredDates.length === 0) { return undefined }

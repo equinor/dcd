@@ -21,7 +21,8 @@ import { useProjectContext } from "@/Context/ProjectContext"
 const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()
     const { caseId } = useParams()
-    const { projectId } = useProjectContext()
+    const { projectId, isRevision } = useProjectContext()
+    const { revisionId } = useParams()
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
 
@@ -32,8 +33,8 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     })
 
     const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", projectId, caseId],
-        queryFn: () => caseQueryFn(projectId, caseId),
+        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
+        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
     })
 
@@ -283,7 +284,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="npv"
-                    label={`NPV before tax (${projectData?.currency === 1 ? "MNOK" : "MUSD"})`}
+                    label="NPV before tax (MUSD)"
                     value={caseData.npv ? Number(caseData.npv.toFixed(2)) : undefined}
                     previousResourceObject={caseData}
                     integer={false}
@@ -297,7 +298,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="npvOverride"
-                    label={`Manually inputted NPV before tax (${projectData?.currency === 1 ? "MNOK" : "MUSD"})`}
+                    label="Manually inputted NPV before tax (MUSD)"
                     value={caseData.npvOverride ? Number(caseData.npvOverride.toFixed(2)) : undefined}
                     previousResourceObject={caseData}
                     integer={false}
@@ -313,7 +314,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     resourceName="case"
                     resourcePropertyKey="breakEven"
                     previousResourceObject={caseData}
-                    label={`B/E before tax (${projectData?.currency === 1 ? "NOK/bbl" : "USD/bbl"})`}
+                    label="B/E before tax (USD/bbl)"
                     value={caseData.breakEven ? Number(caseData.breakEven.toFixed(2)) : undefined}
                     integer={false}
                     min={0}
@@ -326,7 +327,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="breakEvenOverride"
-                    label={`Manually inputted B/E before tax (${projectData?.currency === 1 ? "MNOK" : "MUSD"})`}
+                    label="Manually inputted B/E before tax (MUSD)"
                     value={caseData.breakEvenOverride ? Number(caseData.breakEvenOverride.toFixed(2)) : undefined}
                     previousResourceObject={caseData}
                     integer={false}

@@ -20,9 +20,9 @@ import { caseQueryFn } from "../../../Services/QueryFunctions"
 import { useProjectContext } from "../../../Context/ProjectContext"
 
 const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
-    const { caseId } = useParams()
+    const { caseId, revisionId } = useParams()
     const { activeTabCase } = useCaseContext()
-    const { projectId } = useProjectContext()
+    const { projectId, isRevision } = useProjectContext()
     const [startYear, setStartYear] = useState<number>(2020)
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
@@ -50,8 +50,8 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     const { data: apiData, isLoading } = useQuery({
-        queryKey: ["caseApiData", projectId, caseId],
-        queryFn: () => caseQueryFn(projectId, caseId),
+        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
+        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
     })
 
@@ -61,7 +61,9 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
                 [
                     apiData.drainageStrategy,
                     apiData.productionProfileOil,
+                    apiData.additionalProductionProfileOil,
                     apiData.productionProfileGas,
+                    apiData.additionalProductionProfileGas,
                     apiData.productionProfileWater,
                     apiData.productionProfileWaterInjection,
                     apiData.fuelFlaringAndLosses,
@@ -80,10 +82,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
             )
             setYearRangeSetFromProfiles(true)
         }
-    }, [
-        apiData,
-        activeTabCase,
-    ])
+    }, [apiData, activeTabCase, tableYears])
 
     if (activeTabCase !== 1) { return null }
 

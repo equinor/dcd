@@ -2,79 +2,59 @@ import { Chip, Tooltip, Icon } from "@equinor/eds-core-react"
 import { useState } from "react"
 import { Typography } from "@mui/material"
 import { close } from "@equinor/eds-icons"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { useNavigate, useParams } from "react-router"
-import RevisionDetailsModal from "./RevisionDetailsModal"
-import { useProjectContext } from "../../Context/ProjectContext"
-import { exitRevisionView } from "@/Utils/RevisionUtils"
+import { useQuery } from "@tanstack/react-query"
+import { useParams } from "react-router"
+import styled from "styled-components"
+
+import { useProjectContext } from "@/Context/ProjectContext"
 import { revisionQueryFn } from "@/Services/QueryFunctions"
+import { truncateText } from "@/Utils/common"
+import RevisionDetailsModal from "./RevisionDetailsModal"
+import { useRevisions } from "@/Hooks/useRevision"
+
+const CloseRevision = styled.div`
+    cursor: pointer;
+`
 
 const RevisionChip = () => {
-    const { setIsRevision, projectId } = useProjectContext()
-    const [isMenuOpen, setIsMenuOpen] = useState(false)
-    const [showCloseIcon, setShowCloseIcon] = useState(false)
-
-    const navigate = useNavigate()
-    const queryClient = useQueryClient()
-
+    const { projectId } = useProjectContext()
+    const {
+        exitRevisionView,
+    } = useRevisions()
     const { revisionId } = useParams()
-
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
+    const [isMenuOpen, setIsMenuOpen] = useState(false)
 
     const { data: revisionData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
-        enabled: !!revisionId,
+        enabled: !!revisionId && !!projectId,
     })
 
-    const handleMouseOver = () => {
-        setShowCloseIcon(true)
-    }
-
-    const handleMouseOut = () => {
-        setShowCloseIcon(false)
-    }
-
     const revisionName = () => (
-        <Tooltip title="View details">
+        <Tooltip title={`View details for ${truncateText(revisionData?.name ?? "", 120)}`}>
             <Typography
                 onClick={() => setIsMenuOpen(true)}
                 variant="body2"
-                sx={{ textDecoration: "underline" }}
+                sx={{ textDecoration: "underline", cursor: "pointer", whiteSpace: "nowrap" }}
             >
-                {revisionData?.name}
+                {truncateText(revisionData?.name ?? "", 12)}
             </Typography>
         </Tooltip>
     )
 
-    const toggleChipBackgroundColor = () => {
-        if (showCloseIcon) {
-            return "#f7f7f7"
-        }
-        return "white"
-    }
-
     return (
         <>
-            <Chip
-                onMouseOver={handleMouseOver}
-                onMouseOut={handleMouseOut}
-                style={{ backgroundColor: toggleChipBackgroundColor() }}
-            >
-                {!showCloseIcon ? revisionName() : (
-                    <>
-                        {revisionName()}
-                        <Tooltip title="Exit revision">
-                            <Icon
-                                data={close}
-                                size={16}
-                                onClick={() => exitRevisionView(setIsRevision, queryClient, externalId, currentContext, navigate)}
-                            />
-                        </Tooltip>
-                    </>
-                )}
+            <Chip>
+                <CloseRevision>
+                    {revisionName()}
+                    <Tooltip title="Exit revision">
+                        <Icon
+                            data={close}
+                            size={16}
+                            onClick={() => exitRevisionView()}
+                        />
+                    </Tooltip>
+                </CloseRevision>
             </Chip>
             <RevisionDetailsModal isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
         </>

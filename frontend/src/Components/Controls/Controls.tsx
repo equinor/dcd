@@ -29,8 +29,8 @@ const Controls = () => {
     const [caseLastUpdated, setCaseLastUpdated] = useState<string>("")
 
     const { data: apiData } = useQuery({
-        queryKey: ["caseApiData", projectId, caseId],
-        queryFn: () => caseQueryFn(projectId, caseId),
+        queryKey: ["caseApiData", isRevision ? revisionId : projectId, caseId],
+        queryFn: () => caseQueryFn(isRevision ? revisionId ?? "" : projectId, caseId),
         enabled: !!projectId && !!caseId,
     })
 
@@ -43,7 +43,7 @@ const Controls = () => {
     const { data: revisionData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
-        enabled: !!revisionId,
+        enabled: !!revisionId && !!projectId,
     })
 
     const cancelEdit = async () => {
@@ -52,7 +52,11 @@ const Controls = () => {
 
     const backToProject = async () => {
         cancelEdit()
-        navigate(projectPath(currentContext?.id!))
+        if (isRevision && revisionId) {
+            navigate(`${projectPath(currentContext?.id!)}/revision/${revisionId}`)
+        } else {
+            navigate(projectPath(currentContext?.id!))
+        }
     }
 
     const handleEdit = () => {

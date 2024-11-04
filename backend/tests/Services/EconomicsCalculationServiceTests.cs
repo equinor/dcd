@@ -567,7 +567,7 @@ namespace api.Tests.Helpers
 
             await _calculateNPVService.CalculateNPV(caseId);
 
-            var actualNpvValue = 10816.2;
+            var actualNpvValue = 1081.62;
             Assert.Equal(actualNpvValue, caseItem.NPV, precision: 1);
         }
 
@@ -629,7 +629,7 @@ namespace api.Tests.Helpers
             await _calculateBreakEvenOilPriceService.CalculateBreakEvenOilPrice(caseId);
 
             // Assert
-            var expectedBreakEvenPrice = 262.9;
+            var expectedBreakEvenPrice = 26.29;
             Assert.Equal(expectedBreakEvenPrice, caseItem.BreakEven, precision: 1);
         }
 

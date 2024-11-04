@@ -31,6 +31,9 @@ public class ProductionAndSalesVolumesDto
     public NetSalesGasDto TotalAndAnnualSalesGas { get; set; } = new();
     public Co2EmissionsDto Co2Emissions { get; set; } = new();
     public ImportedElectricityDto ImportedElectricity { get; set; } = new();
+    public AdditionalProductionProfileOilDto AdditionalOil { get; set; } = new();
+    public AdditionalProductionProfileGasDto AdditionalGas { get; set; } = new();
+
 }
 
 public class OffshoreFacilitiesCostProfileDto : TimeSeriesCostDto

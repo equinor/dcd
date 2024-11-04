@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react"
 
+import { AxiosError } from "axios"
 import { ITimeSeries } from "@/Models/ITimeSeries"
 import { TABLE_VALIDATION_RULES } from "@/Utils/constants"
 import { EditEntry } from "@/Models/Interfaces"
@@ -11,6 +12,12 @@ export const projectPath = (projectId: string) => `/${projectId}`
 
 export const casePath = (projectId: string, caseId: string) => `${projectPath(projectId)}/case/${caseId}`
 
+export const caseRevisionPath = (projectId: string, caseId: string, isRevision: boolean, revisionId?: string) => {
+    if (isRevision && revisionId) {
+        return `${projectPath(projectId)}/revision/${revisionId}/case/${caseId}`
+    }
+    return `${projectPath(projectId)}/case/${caseId}`
+}
 export const storeAppId = (appId: string) => {
     window.sessionStorage.setItem("appId", appId)
 }
@@ -396,5 +403,9 @@ export const generateProfile = (
 }
 
 export function truncateText(text: string, maxLength: number): string {
-    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text
+    return (text.length + 3) > maxLength ? `${text.slice(0, maxLength)}...` : text
+}
+
+export function isAxiosError(error: unknown): error is AxiosError {
+    return (error as AxiosError).isAxiosError !== undefined
 }

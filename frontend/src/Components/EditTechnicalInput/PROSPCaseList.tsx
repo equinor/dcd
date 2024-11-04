@@ -130,21 +130,21 @@ const PROSPCaseList = ({
             const rowNode = gridRef.current?.getRowNode(p.node?.data.id)
             if (projectCase) {
                 switch (p.column.colId) {
-                    case "surfState":
-                        rowNode.data.surfStateChanged = (SharePointImport.surfStatus(projectCase, apiData) !== value)
-                        break
-                    case "substructureState":
-                        rowNode.data.substructureStateChanged = (
-                            SharePointImport.substructureStatus(projectCase, apiData) !== value)
-                        break
-                    case "topsideState":
-                        rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(projectCase, apiData) !== value)
-                        break
-                    case "transportState":
-                        rowNode.data.transportStateChanged = (SharePointImport.transportStatus(projectCase, apiData) !== value)
-                        break
-                    default:
-                        break
+                case "surfState":
+                    rowNode.data.surfStateChanged = (SharePointImport.surfStatus(projectCase, apiData) !== value)
+                    break
+                case "substructureState":
+                    rowNode.data.substructureStateChanged = (
+                        SharePointImport.substructureStatus(projectCase, apiData) !== value)
+                    break
+                case "topsideState":
+                    rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(projectCase, apiData) !== value)
+                    break
+                case "transportState":
+                    rowNode.data.transportStateChanged = (SharePointImport.transportStatus(projectCase, apiData) !== value)
+                    break
+                default:
+                    break
                 }
             }
         }
@@ -169,7 +169,6 @@ const PROSPCaseList = ({
                 <Checkbox
                     checked={false}
                     disabled={isEditDisabled || !editMode}
-
                     onChange={() => handleAdvancedSettingsChange(p, ImportStatusEnum.Selected)}
                 />
             )
@@ -270,58 +269,57 @@ const PROSPCaseList = ({
         return null
     }
 
-    const GetColumnDefs = () => {
-        return [
-            {
-                field: "name",
-                flex: 2,
-                headerCheckboxSelection: true,
-                checkboxSelection: true,
-                showDisabledCheckboxes: true,
-            },
-            {
-                field: "driveItem",
-                headerName: "SharePoint file",
-                cellRenderer: fileSelectorRenderer,
-                sortable: false,
-                flex: 3,
-            },
-            {
-                field: "fileLink",
-                headerName: "Link",
-                cellRenderer: fileLinkRenderer,
-                flex: 1,
-            },
-            {
-                field: "surfState",
-                headerName: "Surf",
-                flex: 1,
-                cellRenderer: advancedSettingsRenderer,
-                hide: check,
-            },
-            {
-                field: "substructureState",
-                headerName: "Substructure",
-                flex: 1,
-                cellRenderer: advancedSettingsRenderer,
-                hide: check,
-            },
-            {
-                field: "topsideState",
-                headerName: "Topside",
-                flex: 1,
-                cellRenderer: advancedSettingsRenderer,
-                hide: check,
-            },
-            {
-                field: "transportState",
-                headerName: "Transport",
-                flex: 1,
-                cellRenderer: advancedSettingsRenderer,
-                hide: check,
-            },
-        ]
-    }
+    const GetColumnDefs = () => [
+        {
+            field: "name",
+            flex: 2,
+            headerCheckboxSelection: true,
+            checkboxSelection: true,
+            showDisabledCheckboxes: true,
+        },
+        {
+            field: "driveItem",
+            headerName: "SharePoint file",
+            cellRenderer: fileSelectorRenderer,
+            valueFormatter: (p: any) => (p.value?.[1] ?? ""),
+            sortable: false,
+            flex: 3,
+        },
+        {
+            field: "fileLink",
+            headerName: "Link",
+            cellRenderer: fileLinkRenderer,
+            flex: 1,
+        },
+        {
+            field: "surfState",
+            headerName: "Surf",
+            flex: 1,
+            cellRenderer: advancedSettingsRenderer,
+            hide: check,
+        },
+        {
+            field: "substructureState",
+            headerName: "Substructure",
+            flex: 1,
+            cellRenderer: advancedSettingsRenderer,
+            hide: check,
+        },
+        {
+            field: "topsideState",
+            headerName: "Topside",
+            flex: 1,
+            cellRenderer: advancedSettingsRenderer,
+            hide: check,
+        },
+        {
+            field: "transportState",
+            headerName: "Transport",
+            flex: 1,
+            cellRenderer: advancedSettingsRenderer,
+            hide: check,
+        },
+    ]
 
     const [columnDefs, setColumnDefs] = useState(GetColumnDefs())
 
