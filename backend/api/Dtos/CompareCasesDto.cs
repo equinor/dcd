@@ -11,7 +11,11 @@ public class CompareCasesDto
     [Required]
     public double TotalOilProduction { get; set; }
     [Required]
+    public double AdditionalOilProduction { get; set; }
+    [Required]
     public double TotalGasProduction { get; set; }
+    [Required]
+    public double AdditionalGasProduction { get; set; }
     [Required]
     public double TotalExportedVolumes { get; set; }
     [Required]

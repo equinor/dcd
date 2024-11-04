@@ -431,7 +431,9 @@ declare namespace Components {
         export interface CompareCasesDto {
             caseId: string; // uuid
             totalOilProduction: number; // double
+            additionalOilProduction: number; // double
             totalGasProduction: number; // double
+            additionalGasProduction: number; // double
             totalExportedVolumes: number; // double
             totalStudyCostsPlusOpex: number; // double
             totalCessationCosts: number; // double
@@ -971,6 +973,8 @@ declare namespace Components {
             totalAndAnnualSalesGas?: NetSalesGasDto;
             co2Emissions?: Co2EmissionsDto;
             importedElectricity?: ImportedElectricityDto;
+            additionalOil?: AdditionalProductionProfileOilDto;
+            additionalGas?: AdditionalProductionProfileGasDto;
         }
         export type ProductionFlowline = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13; // int32
         export interface ProductionProfileGasDto {

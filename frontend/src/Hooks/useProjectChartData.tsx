@@ -12,7 +12,9 @@ interface TableCompareCase {
     breakEven: number,
     breakEvenOverride?: number,
     oilProduction: number,
+    additionalOilProduction: number,
     gasProduction: number,
+    additionalGasProduction: number,
     totalExportedVolumes: number,
     studyCostsPlusOpex: number,
     cessationCosts: number,
@@ -71,8 +73,10 @@ export const useProjectChartData = () => {
             return {
                 cases: caseItem.name,
                 oilProduction: compareCase?.totalOilProduction,
+                additionalOilProduction: compareCase?.additionalOilProduction,
                 gasProduction: compareCase?.totalGasProduction,
-                totalExportedVolumes: compareCase?.totalExportedVolumes,
+                additionalGasProduction: compareCase?.additionalGasProduction,
+                totalExportedVolumes: (compareCase?.totalExportedVolumes ?? 0), // + (compareCase?.additionalOilProduction ?? 0) + (compareCase?.additionalGasProduction ?? 0),
             }
         })
 
@@ -127,7 +131,9 @@ export const useProjectChartData = () => {
                             breakEven: Math.round(c.breakEven ?? 0 * 1) / 1,
                             breakEvenOverride: Math.round(c.breakEvenOverride ?? 0 * 1) / 1,
                             oilProduction: Math.round(matchingCase.totalOilProduction * 10) / 10,
+                            additionalOilProduction: Math.round(matchingCase.additionalOilProduction * 10) / 10,
                             gasProduction: Math.round(matchingCase.totalGasProduction * 10) / 10,
+                            additionalGasProduction: Math.round(matchingCase.additionalGasProduction * 10) / 10,
                             totalExportedVolumes: Math.round(matchingCase.totalExportedVolumes * 10) / 10,
                             studyCostsPlusOpex: Math.round(matchingCase.totalStudyCostsPlusOpex * 1) / 1,
                             cessationCosts: Math.round(matchingCase.totalCessationCosts * 1) / 1,
