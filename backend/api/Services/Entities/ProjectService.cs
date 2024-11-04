@@ -319,7 +319,6 @@ public class ProjectService : IProjectService
             .Include(p => p.Cases)!.ThenInclude(c => c.CalculatedTotalIncomeCostProfile)
             .Include(p => p.Cases)!.ThenInclude(c => c.CalculatedTotalCostCostProfile)
             .Include(p => p.Wells)
-            .Include(p => p.Revisions)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
             .FirstOrDefaultAsync(p => (p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId)) && !p.IsRevision);
@@ -356,8 +355,11 @@ public class ProjectService : IProjectService
         {
             projectLastUpdated = project.ModifyTime;
         }
+        var revisionDetails = _context.RevisionDetails.Where(r => r.OriginalProjectId == project.Id).ToList();
 
         var destination = _mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+
+        destination.RevisionsDetailsList = _mapper.Map<List<RevisionDetailsDto>>(revisionDetails);
 
         var projectDto = destination;
 

@@ -13,8 +13,6 @@ public class ProjectWithAssetsDto : ProjectDto, IEquatable<ProjectWithAssetsDto>
     [Required]
     public ICollection<CaseWithProfilesDto> Cases { get; set; } = [];
     [Required]
-    public ICollection<ProjectDto> Revisions { get; set; } = [];
-    [Required]
     public ICollection<WellDto> Wells { get; set; } = [];
     [Required]
     public ICollection<ExplorationWithProfilesDto> Explorations { get; set; } = [];
@@ -34,6 +32,9 @@ public class ProjectWithAssetsDto : ProjectDto, IEquatable<ProjectWithAssetsDto>
     public ICollection<ProjectMemberDto> ProjectMembers { get; set; } = [];
     [Required]
     public DateTimeOffset ModifyTime { get; set; }
+    [Required]
+    public ICollection<RevisionDetailsDto> RevisionsDetailsList { get; set; } = [];
+
 
     public bool Equals(ProjectWithAssetsDto? projectDto)
     {
