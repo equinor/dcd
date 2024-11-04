@@ -1,18 +1,17 @@
 import React, {
-    ChangeEventHandler, useEffect, useRef, useState,
+    ChangeEventHandler, useEffect, useState,
 } from "react"
 import {
     Typography, Icon, Button,
-    Divider,
     InputWrapper,
     TextField,
     Chip,
 } from "@equinor/eds-core-react"
-import { checkbox_outline, exit_to_app, info_circle } from "@equinor/eds-icons"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { checkbox_outline, info_circle } from "@equinor/eds-icons"
+import { useQuery } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
-import { useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import DialogContent from "@mui/material/DialogContent"
 import { Grid } from "@mui/material"
 import DialogActions from "@mui/material/DialogActions"
@@ -20,10 +19,9 @@ import Modal from "../Modal/Modal"
 
 import { formatFullDate } from "@/Utils/common"
 import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
-import { exitRevisionView, updateRevisionName } from "@/Utils/RevisionUtils"
+import { updateRevisionName } from "@/Utils/RevisionUtils"
 import { useProjectContext } from "@/Context/ProjectContext"
 import useEditProject from "@/Hooks/useEditProject"
-import { GetProjectService } from "@/Services/ProjectService"
 import { PROJECT_CLASSIFICATION, INTERNAL_PROJECT_PHASE } from "@/Utils/constants"
 
 type RevisionDetailsModalProps = {
