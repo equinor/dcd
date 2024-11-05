@@ -1,4 +1,4 @@
-﻿namespace api.Authorization;
+namespace api.Authorization;
 
 public class CurrentUser
 {

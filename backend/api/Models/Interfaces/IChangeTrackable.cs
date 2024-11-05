@@ -1,4 +1,4 @@
-﻿namespace api.Models.Interfaces;
+namespace api.Models.Interfaces;
 
 public interface IChangeTrackable
 {

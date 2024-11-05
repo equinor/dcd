@@ -1,4 +1,4 @@
-﻿namespace api.Models;
+namespace api.Models;
 
 public class ChangeLog
 {
