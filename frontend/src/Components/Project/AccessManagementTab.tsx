@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
     Icon,
     Search,
@@ -6,7 +6,6 @@ import {
 } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
 import {
     edit,
@@ -16,11 +15,14 @@ import {
     chevron_up,
     external_link,
 } from "@equinor/eds-icons"
-import { useMediaQuery } from "@mui/material"
+import { Button, useMediaQuery } from "@mui/material"
 
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import Person from "./Components/Person"
 import { useAppContext } from "@/Context/AppContext"
+import { User } from "@/Models/AccessManagement"
+import { GetAccessService } from "@/Services/AccessService"
+import { useProjectContext } from "@/Context/ProjectContext"
 
 const PeopleMock = {
     admins: [
@@ -133,20 +135,40 @@ const ClickableHeading = styled(Grid)`
 `
 
 const AccessManagementTab = () => {
-    const { currentContext } = useModuleCurrentContext()
     const { editMode } = useAppContext()
+    const { projectId } = useProjectContext()
     const isSmallScreen = useMediaQuery("(max-width:960px)", { noSsr: true })
     const [expandAllAccess, setExpandAllAccess] = useState<boolean>(true)
-    const externalId = currentContext?.externalId
+    const [editors, setEditors] = useState<User[] | undefined>([])
+    const [viewers, setViewers] = useState<User[] | undefined>([])
+    const [editorToAdd, setEditorToAdd] = useState<string>("")
+    const [viewerToAdd, setViewerToAdd] = useState<string>("")
 
-    const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
+    const { data: projectApiData } = useQuery({
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
     })
 
+    const handleAddPerson = async (personId: string) => {
+        if (!personId && !projectId) { return null }
+        const addPerson = await (await GetAccessService()).addPerson(projectId, { projectId, userId: personId, role: 1 })
+        if (addPerson) {
+            console.log(addPerson)
+            // gjøre en invalidering av project query for å få oppdatert personer???
+        }
+        return true
+    }
+
+    useEffect(() => {
+        const viewersToAdd = projectApiData?.projectMembers?.filter((m) => m.role === 0) as User[]
+        const editorsToAdd = projectApiData?.projectMembers?.filter((m) => m.role === 1) as User[]
+        setViewers(viewersToAdd)
+        setEditors(editorsToAdd)
+    }, [projectApiData])
+
     // Lag skeletons for loading state, når vi får persondata fra api
-    if (!apiData) {
+    if (!projectApiData) {
         return <div>Loading project data...</div>
     }
 
@@ -163,26 +185,6 @@ const AccessManagementTab = () => {
                     Project members from Org chart with “PMT” are automatically added as project editors after DG0. External users can also be added here.
                 </Typography>
             </Grid>
-            <Grid item marginTop="15px">
-                <Typography variant="h5">Project admins</Typography>
-                <Typography variant="body_short">
-                    Here you can add valuation leads and concept architects to manage who has access to the project.
-                </Typography>
-            </Grid>
-            {editMode && (
-                <Grid item>
-                    <Search placeholder="Add new" />
-                </Grid>
-            )}
-            {PeopleMock.admins.map((person) => (
-                <Person
-                    key={person.email}
-                    name={person.name}
-                    email={person.email}
-                    action={deleteFunctionMock}
-                    hideAction={!editMode}
-                />
-            ))}
             <EditorViewerContainer $isSmallScreen={isSmallScreen}>
                 <EditorViewerContent>
                     <EditorViewerHeading>
@@ -191,7 +193,8 @@ const AccessManagementTab = () => {
                     </EditorViewerHeading>
                     {editMode && (
                         <Grid item>
-                            <Search placeholder="Add new" />
+                            <Search value={editorToAdd} onChange={(e) => setEditorToAdd(e.target.value)} placeholder="Add new" />
+                            <Button onClick={() => handleAddPerson(editorToAdd)}>Add</Button>
                         </Grid>
                     )}
                     <PeopleContainer>
