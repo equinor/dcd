@@ -8,7 +8,7 @@ import {
     Chip,
 } from "@equinor/eds-core-react"
 import { checkbox_outline, info_circle } from "@equinor/eds-icons"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
 import { useParams } from "react-router-dom"
@@ -19,10 +19,10 @@ import Modal from "../Modal/Modal"
 
 import { formatFullDate } from "@/Utils/common"
 import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
-import { updateRevisionName } from "@/Utils/RevisionUtils"
 import { useProjectContext } from "@/Context/ProjectContext"
 import useEditProject from "@/Hooks/useEditProject"
 import { PROJECT_CLASSIFICATION, INTERNAL_PROJECT_PHASE } from "@/Utils/constants"
+import { GetProjectService } from "@/Services/ProjectService"
 
 type RevisionDetailsModalProps = {
     isMenuOpen: boolean;
@@ -57,6 +57,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
     const [isNameChanged, setIsNameChanged] = useState(false)
     const { addProjectEdit } = useEditProject()
     const [revisionName, setRevisionName] = useState<string>("")
+    const queryClient = useQueryClient()
 
     const { revisionId } = useParams()
 
@@ -80,11 +81,22 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
         setIsMenuOpen(false)
     }
 
+    console.log(revisionId)
+    const updateRevisionName = async (
+        name: string,
+    ) => {
+        const projectService = await GetProjectService()
+        const updateRevisionDto = { name }
+        const updatedRevision = await projectService.updateRevision(projectId, revisionId ?? "", updateRevisionDto)
+        return updatedRevision
+    }
+
     const handleRevisionNameChange = async () => {
         if (revisionApiData && projectId && revisionId) {
-            const updatedRevision = await updateRevisionName(projectId, revisionId, revisionName)
+            const updatedRevision = await updateRevisionName(revisionName)
             if (updatedRevision) {
                 addProjectEdit(updatedRevision.id, updatedRevision)
+                queryClient.invalidateQueries({ queryKey: ["revisionApiData", revisionId] }) // Invalidate the revision query
                 closeMenu()
             }
         }

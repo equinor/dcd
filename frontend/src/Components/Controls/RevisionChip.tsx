@@ -28,6 +28,7 @@ const RevisionChip = () => {
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
         enabled: !!revisionId && !!projectId,
+        refetchOnWindowFocus: false, // Optional: Adjust as necessary
     })
 
     const revisionName = () => (
