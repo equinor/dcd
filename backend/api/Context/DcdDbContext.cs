@@ -1,3 +1,4 @@
+using api.Authorization;
 using api.Models;
 using api.Services;
 using api.Services.EconomicsServices;
@@ -11,19 +12,22 @@ namespace api.Context;
 public class DcdDbContext : DbContext
 {
     private readonly IServiceProvider _serviceProvider = null!;
+    private readonly CurrentUser? _currentUser;
+
     private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
-    public DcdDbContext(DbContextOptions<DcdDbContext> options) : base(options)
+    public DcdDbContext(DbContextOptions<DcdDbContext> options,
+        CurrentUser? currentUser) : base(options)
     {
-
+        _currentUser = currentUser;
     }
 
-    public DcdDbContext(
-        DbContextOptions<DcdDbContext> options,
-        IServiceProvider serviceProvider
-        ) : base(options)
+    public DcdDbContext(DbContextOptions<DcdDbContext> options,
+                        IServiceProvider serviceProvider,
+                        CurrentUser currentUser) : base(options)
     {
         _serviceProvider = serviceProvider;
+        _currentUser = currentUser;
     }
 
     // TODO: This is not pretty, need to move this logic out of the context
@@ -1236,6 +1240,8 @@ public class DcdDbContext : DbContext
     public DbSet<CalculatedTotalIncomeCostProfile> CalculatedTotalIncomeCostProfile { get; set; } = null!;
     public DbSet<CalculatedTotalCostCostProfile> CalculatedTotalCostCostProfile { get; set; } = null!;
 
+    public DbSet<ChangeLog> ChangeLogs { get; set; } = null!;
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -1247,11 +1253,21 @@ public class DcdDbContext : DbContext
         modelBuilder.ApplyConfiguration(new CaseConfiguration());
         modelBuilder.ApplyConfiguration(new WellProjectWellConfiguration());
         modelBuilder.ApplyConfiguration(new ExplorationWellConfiguration());
+        modelBuilder.ApplyConfiguration(new ChangeLogConfiguration());
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
         optionsBuilder.EnableSensitiveDataLogging();
+    }
+
+    public override int SaveChanges()
+    {
+        var utcNow = DateTime.UtcNow;
+
+        ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, _currentUser, utcNow));
+
+        return base.SaveChanges();
     }
 }

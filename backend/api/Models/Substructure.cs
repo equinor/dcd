@@ -4,7 +4,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Substructure : IHasProjectId
+public class Substructure : IHasProjectId, IChangeTrackable
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty!;

@@ -1,5 +1,7 @@
+using api.Models.Interfaces;
+
 namespace api.Models;
 
-public class DrillingSchedule : TimeSeriesSchedule
+public class DrillingSchedule : TimeSeriesSchedule, IChangeTrackable
 {
 }

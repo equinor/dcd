@@ -1,6 +1,8 @@
+using api.Models.Interfaces;
+
 namespace api.Models;
 
-public class Project
+public class Project : IChangeTrackable
 {
     public Guid Id { get; set; } // If the project is a revision, this is the revision's id
     public string Name { get; set; } = string.Empty;
