@@ -49,17 +49,4 @@ public class ProjectWithAssetsDto : ProjectDto, IEquatable<ProjectWithAssetsDto>
     }
 }
 
-public class ProjectMemberDto
-{
-    [Required]
-    public Guid AzureId { get; set; }
-    [Required]
-    public ProjectMemberRole Role { get; set; }
-}
 
-public enum ProjectMemberRole
-{
-    Admin,
-    Member,
-    Observer
-}

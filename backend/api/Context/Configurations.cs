@@ -42,6 +42,14 @@ public class RevisionDetailsConfiguration : IEntityTypeConfiguration<RevisionDet
     }
 }
 
+public class ProjectMemberConfiguration : IEntityTypeConfiguration<ProjectMember>
+{
+    public void Configure(EntityTypeBuilder<ProjectMember> builder)
+    {
+        builder.HasIndex(ew => new { ew.UserId, ew.ProjectId }).IsUnique();
+    }
+}
+
 public class CaseConfiguration : IEntityTypeConfiguration<Case>
 {
     public void Configure(EntityTypeBuilder<Case> builder)
@@ -106,3 +114,4 @@ public class ExplorationWellConfiguration : IEntityTypeConfiguration<Exploration
             .OnDelete(DeleteBehavior.NoAction);
     }
 }
+
