@@ -1,13 +1,15 @@
 import React, {
-    ChangeEventHandler, useEffect, useState,
+    ChangeEventHandler, useEffect, useRef, useState,
 } from "react"
 import {
-    Typography, Icon, Button,
+    Typography,
+    Icon,
+    Button,
     InputWrapper,
     TextField,
     Chip,
 } from "@equinor/eds-core-react"
-import { checkbox_outline, info_circle } from "@equinor/eds-icons"
+import { checkbox, checkbox_outline, info_circle } from "@equinor/eds-icons"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import styled from "styled-components"
@@ -18,9 +20,8 @@ import DialogActions from "@mui/material/DialogActions"
 import Modal from "../Modal/Modal"
 
 import { formatFullDate } from "@/Utils/common"
-import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
+import { revisionQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Context/ProjectContext"
-import useEditProject from "@/Hooks/useEditProject"
 import { PROJECT_CLASSIFICATION, INTERNAL_PROJECT_PHASE } from "@/Utils/constants"
 import { GetProjectService } from "@/Services/ProjectService"
 
@@ -41,10 +42,10 @@ const InfoIcon = styled(Icon)`
 `
 
 const ColumnWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 15px;
-  gap: 8px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    gap: 8px;
 `
 
 const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
@@ -54,67 +55,103 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
     const { projectId } = useProjectContext()
-    const [isNameChanged, setIsNameChanged] = useState(false)
-    const [revisionName, setRevisionName] = useState<string>("")
-    const [originalRevisionName, setOriginalRevisionName] = useState<string>("") // Track the original name
-    const [savedRevisionName, setSavedRevisionName] = useState<string>("") // Track the name for the title after saving
     const queryClient = useQueryClient()
-
     const { revisionId } = useParams()
+
+    const [revisionDetails, setRevisionDetails] = useState({
+        revisionName: "",
+        mdqc: false,
+        arena: false,
+    })
+
+    const [savedRevisionName, setSavedRevisionName] = useState<string>("")
+    const [savedMdqc, setSavedMdqc] = useState<boolean>(false)
+    const [savedArena, setSavedArena] = useState<boolean>(false)
+    const [isRevisionModified, setIsRevisionModified] = useState(false)
 
     const { data: revisionApiData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
         enabled: !!revisionId,
     })
-    console.log("revisionApiData", revisionApiData)
 
     useEffect(() => {
-        if (revisionApiData?.revisionDetails.revisionName) {
-            setOriginalRevisionName(revisionApiData?.revisionDetails.revisionName || "")
-            setRevisionName(revisionApiData?.revisionDetails.revisionName || "")
-            setSavedRevisionName(revisionApiData?.revisionDetails.revisionName || "") // Initialize saved name
+        if (revisionApiData?.revisionDetails) {
+            const { revisionName, mdqc, arena } = revisionApiData.revisionDetails
+            setRevisionDetails({ revisionName, mdqc, arena })
+            setSavedRevisionName(revisionName || "")
+            setSavedMdqc(mdqc || false)
+            setSavedArena(arena || false)
         }
     }, [revisionApiData])
 
     const closeMenu = () => {
         setIsMenuOpen(false)
+        setRevisionDetails({
+            revisionName: savedRevisionName,
+            mdqc: savedMdqc,
+            arena: savedArena,
+        })
+        setIsRevisionModified(false)
     }
 
-    const updateRevisionName = async (
-        name: string,
-    ) => {
+    const updateRevisionName = async () => {
         const projectService = await GetProjectService()
-        const updateRevisionDto = { name }
-        const updatedRevision = await projectService.updateRevision(projectId, revisionId ?? "", updateRevisionDto)
-        return updatedRevision
-    }
-
-    const handleRevisionNameChange = async () => {
-        if (revisionApiData && projectId && revisionId) {
-            const updatedRevision = await updateRevisionName(revisionName)
-            if (updatedRevision) {
-                setSavedRevisionName(revisionName) // Update the saved name when the save button is clicked
-                queryClient.invalidateQueries({ queryKey: ["revisionApiData", revisionId] })
-                queryClient.invalidateQueries({ queryKey: ["projectApiData", externalId] })
-                closeMenu()
-            }
+        const { revisionName, mdqc, arena } = revisionDetails
+        const updateRevisionDto = { name: revisionName, mdqc, arena }
+        const updatedRevision = await projectService.updateRevision(
+            projectId,
+            revisionId ?? "",
+            updateRevisionDto,
+        )
+        if (updatedRevision) {
+            setSavedRevisionName(revisionName)
+            setSavedMdqc(mdqc)
+            setSavedArena(arena)
+            queryClient.invalidateQueries({ queryKey: ["revisionApiData", revisionId] })
+            queryClient.invalidateQueries({ queryKey: ["projectApiData", externalId] })
+            closeMenu()
         }
     }
 
-    const handleNameInputChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setRevisionName(e.currentTarget.value)
-        setIsNameChanged(true)
+    const checkIfModified = (
+        newRevisionName: string,
+        newMdqc: boolean,
+        newArena: boolean,
+    ) => {
+        setIsRevisionModified(
+            newRevisionName !== savedRevisionName
+            || newMdqc !== savedMdqc
+            || newArena !== savedArena,
+        )
     }
 
-    const newClassification = PROJECT_CLASSIFICATION[revisionApiData?.classification as keyof typeof PROJECT_CLASSIFICATION]?.label
-    const newInternalProjectPhase = revisionApiData?.internalProjectPhase as keyof typeof INTERNAL_PROJECT_PHASE
+    const handleRevisionNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+        const { value } = e.currentTarget
+        setRevisionDetails((prevDetails) => ({
+            ...prevDetails,
+            revisionName: value,
+        }))
+        checkIfModified(value, revisionDetails.mdqc, revisionDetails.arena)
+    }
+
+    const handleQualityCheckToggle = (check: "mdqc" | "arena") => {
+        setRevisionDetails((prevDetails) => ({
+            ...prevDetails,
+            [check]: !prevDetails[check],
+        }))
+        checkIfModified(
+            revisionDetails.revisionName,
+            check === "mdqc" ? !revisionDetails.mdqc : revisionDetails.mdqc,
+            check === "arena" ? !revisionDetails.arena : revisionDetails.arena,
+        )
+    }
 
     if (!revisionApiData) { return null }
 
     return (
         <Modal
-            title={`${savedRevisionName} revision details`} // Use saved name for title after save
+            title={`${savedRevisionName} revision details`}
             size="sm"
             isOpen={isMenuOpen}
             content={(
@@ -132,24 +169,25 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                                 <TextField
                                     id="name"
                                     name="name"
-                                    onChange={handleNameInputChange}
-                                    value={revisionName}
+                                    onChange={handleRevisionNameChange}
+                                    value={revisionDetails.revisionName}
                                 />
                             </InputWrapper>
                             <InputWrapper labelProps={{ label: "Created Date" }}>
                                 <Typography variant="body_short">
-                                    {revisionApiData.revisionDetails?.revisionDate ? formatFullDate(revisionApiData.revisionDetails?.revisionDate) : "N/A"}
+                                    {revisionApiData.revisionDetails?.revisionDate
+                                        ? formatFullDate(revisionApiData.revisionDetails?.revisionDate)
+                                        : "N/A"}
                                 </Typography>
                             </InputWrapper>
                             <InputWrapper labelProps={{ label: "Project Phase" }}>
                                 <Typography variant="body_short">
-                                    {INTERNAL_PROJECT_PHASE[newInternalProjectPhase]?.label ?? "N/A"}
+                                    {INTERNAL_PROJECT_PHASE[revisionApiData?.internalProjectPhase]?.label ?? "N/A"}
                                 </Typography>
                             </InputWrapper>
-
                             <InputWrapper labelProps={{ label: "Project Classification" }}>
                                 <Typography variant="body_short">
-                                    {newClassification ?? "N/A"}
+                                    {PROJECT_CLASSIFICATION[revisionApiData?.classification]?.label ?? "N/A"}
                                 </Typography>
                             </InputWrapper>
                         </ColumnWrapper>
@@ -160,14 +198,26 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                             <Typography>Quality checks performed</Typography>
                         </ColumnWrapper>
                         <Wrapper>
-                            <Chip disabled>
-                                <Icon data={checkbox_outline} />
-                                MDQC
-                            </Chip>
-                            <Chip disabled>
-                                <Icon data={checkbox_outline} />
-                                Arena
-                            </Chip>
+                            <Grid container spacing={1} justifyContent="flex-start">
+                                <Grid item>
+                                    <Chip
+                                        onClick={() => handleQualityCheckToggle("mdqc")}
+                                        variant={revisionDetails.mdqc ? "active" : "default"}
+                                    >
+                                        <Icon data={revisionDetails.mdqc ? checkbox : checkbox_outline} />
+                                        MDQC
+                                    </Chip>
+                                </Grid>
+                                <Grid item>
+                                    <Chip
+                                        onClick={() => handleQualityCheckToggle("arena")}
+                                        variant={revisionDetails.arena ? "active" : "default"}
+                                    >
+                                        <Icon data={revisionDetails.arena ? checkbox : checkbox_outline} />
+                                        Arena
+                                    </Chip>
+                                </Grid>
+                            </Grid>
                         </Wrapper>
                     </Grid>
                 </DialogContent>
@@ -176,8 +226,8 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                 <DialogActions>
                     <Button onClick={closeMenu}>Close details</Button>
                     <Button
-                        disabled={!isNameChanged}
-                        onClick={handleRevisionNameChange}
+                        disabled={!isRevisionModified}
+                        onClick={updateRevisionName}
                     >
                         Close and Save
                     </Button>

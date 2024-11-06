@@ -24,31 +24,14 @@ const RevisionChip = () => {
     } = useRevisions()
     const { revisionId } = useParams()
     const [isMenuOpen, setIsMenuOpen] = useState(false)
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
 
     const { data: revisionApiData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
         enabled: !!revisionId && !!projectId,
-        refetchOnWindowFocus: false, // Optional: Adjust as necessary
-    })
-    const { data: projectApiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
     })
 
-    const revisionDetailsList = projectApiData?.revisionsDetailsList || []
-    const matchingRevision = revisionDetailsList.find(
-        (revision) => revision.revisionId === revisionId,
-    )
     const revisionName = revisionApiData?.revisionDetails.revisionName
-    // console.log("revisiondetails ID", projectApiData?.revisionsDetailsList[1].id)
-
-    console.log("revisionId", revisionId)
-
-    console.log("revisionName", revisionName)
 
     const revName = () => (
         <Tooltip title={`View details for ${truncateText(revisionName ?? "", 120)}`}>
