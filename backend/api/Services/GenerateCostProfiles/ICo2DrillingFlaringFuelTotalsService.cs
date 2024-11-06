@@ -1,9 +1,8 @@
 using api.Dtos;
 
-namespace api.Services.GenerateCostProfiles
+namespace api.Services.GenerateCostProfiles;
+
+public interface ICo2DrillingFlaringFuelTotalsService
 {
-    public interface ICo2DrillingFlaringFuelTotalsService
-    {
-        Task<Co2DrillingFlaringFuelTotalsDto> Generate(Guid caseId);
-    }
+    Task<Co2DrillingFlaringFuelTotalsDto> Generate(Guid caseId);
 }

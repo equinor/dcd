@@ -1,7 +1,6 @@
-namespace api.Services
+namespace api.Services;
+
+public interface ICessationCostProfileService
 {
-    public interface ICessationCostProfileService
-    {
-        Task Generate(Guid caseId);
-    }
+    Task Generate(Guid caseId);
 }

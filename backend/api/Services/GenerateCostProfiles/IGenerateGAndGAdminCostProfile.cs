@@ -1,7 +1,6 @@
-namespace api.Services
+namespace api.Services;
+
+public interface IGenerateGAndGAdminCostProfile
 {
-    public interface IGenerateGAndGAdminCostProfile
-    {
-        Task Generate(Guid caseId);
-    }
+    Task Generate(Guid caseId);
 }
