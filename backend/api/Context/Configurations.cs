@@ -42,6 +42,14 @@ public class RevisionDetailsConfiguration : IEntityTypeConfiguration<RevisionDet
     }
 }
 
+public class ProjectMemberConfiguration : IEntityTypeConfiguration<ProjectMember>
+{
+    public void Configure(EntityTypeBuilder<ProjectMember> builder)
+    {
+        builder.HasIndex(ew => new { ew.UserId, ew.ProjectId }).IsUnique();
+    }
+}
+
 public class CaseConfiguration : IEntityTypeConfiguration<Case>
 {
     public void Configure(EntityTypeBuilder<Case> builder)
@@ -104,5 +112,16 @@ public class ExplorationWellConfiguration : IEntityTypeConfiguration<Exploration
         builder.HasOne(w => w.Well)
             .WithMany(w => w.ExplorationWells)
             .OnDelete(DeleteBehavior.NoAction);
+    }
+}
+
+public class ChangeLogConfiguration : IEntityTypeConfiguration<ChangeLog>
+{
+    public void Configure(EntityTypeBuilder<ChangeLog> builder)
+    {
+        builder.HasIndex(x => x.EntityId);
+        builder.HasIndex(x => x.EntityName);
+        builder.HasIndex(x => x.PropertyName);
+        builder.HasIndex(x => x.TimestampUtc);
     }
 }

@@ -4,7 +4,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Case : IHasProjectId
+public class Case : IHasProjectId, IChangeTrackable
 {
     public Guid Id { get; set; }
     public Guid ProjectId { get; set; }

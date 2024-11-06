@@ -30,6 +30,13 @@ public class ProjectRepository : BaseRepository, IProjectRepository
             .FirstOrDefaultAsync(p => p.Id == id || p.FusionProjectId == id);
     }
 
+    public async Task<Project?> GetProjectWithMembersByIdOrExternalId(Guid id)
+    {
+        return await _context.Projects
+            .Include(p => p.ProjectMembers)
+            .FirstOrDefaultAsync(p => p.Id == id || p.FusionProjectId == id);
+    }
+
     public async Task<Project?> GetProjectByExternalId(Guid id)
     {
         return await _context.Projects

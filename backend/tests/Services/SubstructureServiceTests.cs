@@ -32,7 +32,7 @@ namespace tests.Services
                 .UseInMemoryDatabase(databaseName: "TestDb")
                 .Options;
 
-            var context = Substitute.For<DcdDbContext>(options);
+            var context = Substitute.For<DcdDbContext>(options, null);
             _substructureService = new SubstructureService(
                 context,
                 _projectService,

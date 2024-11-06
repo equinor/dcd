@@ -18,12 +18,15 @@ public class ClaimsMiddleware
         _nextMiddleware = nextMiddleware;
         _logger = logger;
     }
-    public async Task InvokeAsync(HttpContext httpContext)
+    public async Task InvokeAsync(HttpContext httpContext, CurrentUser currentUser)
     {
         if (httpContext.User == null)
         {
             _logger.LogError("User null");
         }
+
+        currentUser.Username = httpContext.User?.Identity?.Name;
+
         var userId = httpContext.User?.GetAzureUniqueId();
         if (userId != null)
         {

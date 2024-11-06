@@ -3,7 +3,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Well : IHasProjectId
+public class Well : IHasProjectId, IChangeTrackable
 {
     public Guid Id { get; set; }
     public virtual Project Project { get; set; } = null!;

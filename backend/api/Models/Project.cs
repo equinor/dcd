@@ -1,6 +1,8 @@
+using api.Models.Interfaces;
+
 namespace api.Models;
 
-public class Project
+public class Project : IChangeTrackable
 {
     public Guid Id { get; set; } // If the project is a revision, this is the revision's id
     public string Name { get; set; } = string.Empty;
@@ -34,6 +36,8 @@ public class Project
     public virtual Project? OriginalProject { get; set; }
     public virtual ICollection<Project>? Revisions { get; set; }
 
+    public virtual ICollection<ProjectMember>? ProjectMembers { get; set; }
+
     public string? SharepointSiteUrl { get; set; }
     public double CO2RemovedFromGas { get; set; }
     public double CO2EmissionFromFuelGas { get; set; } = 2.34;
@@ -50,7 +54,7 @@ public class Project
     public virtual RevisionDetails? RevisionDetails { get; set; }
 }
 
-public class RevisionDetails
+public class RevisionDetails : IChangeTrackable
 {
     public Guid Id { get; set; }
     public Guid OriginalProjectId { get; set; }
