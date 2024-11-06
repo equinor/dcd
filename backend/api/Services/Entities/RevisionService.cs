@@ -17,43 +17,18 @@ using Newtonsoft.Json;
 
 namespace api.Services;
 
-public class RevisionService : IRevisionService
+public class RevisionService(
+    DcdDbContext context,
+    IRevisionRepository revisionRepository,
+    IMapper mapper,
+    IProjectRepository projectRepository)
+    : IRevisionService
 {
-    private readonly ILogger<RevisionService> _logger;
-    private readonly IRevisionRepository _revisionRepository;
-    private readonly IProjectAccessService _projectAccessService;
-    private readonly IProjectService _projectService;
-    private readonly DcdDbContext _context;
-    private readonly IMapper _mapper;
-    private readonly IProjectRepository _projectRepository;
-    private readonly IMapperService _mapperService;
-
-
-    public RevisionService(
-        DcdDbContext context,
-        ILoggerFactory loggerFactory,
-        IRevisionRepository revisionRepository,
-        IProjectAccessService projectAccessService,
-        IProjectService projectService,
-        IMapper mapper,
-        IProjectRepository projectRepository,
-        IMapperService mapperService
-    )
-    {
-        _context = context;
-        _logger = loggerFactory.CreateLogger<RevisionService>();
-        _revisionRepository = revisionRepository;
-        _projectAccessService = projectAccessService;
-        _projectService = projectService;
-        _mapper = mapper;
-        _projectRepository = projectRepository;
-        _mapperService = mapperService;
-    }
 
     // TODO: Rewrite when CaseWithAssetsDto is no longer needed
     public async Task<Project> GetProjectWithCasesAndAssets(Guid projectId)
     {
-        Project project = await _context.Projects
+        Project project = await context.Projects
             .Include(p => p.Cases)
             .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
@@ -74,14 +49,14 @@ public class RevisionService : IRevisionService
         var project = await GetProjectWithCasesAndAssets(projectId)
             ?? throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
 
-        var projectDto = _mapper.Map<Project, RevisionWithCasesDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+        var projectDto = mapper.Map<Project, RevisionWithCasesDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 
         return projectDto;
     }
 
     public async Task<RevisionWithCasesDto> CreateRevision(Guid projectId, CreateRevisionDto createRevisionDto)
     {
-        var project = await _revisionRepository.GetProjectAndAssetsNoTracking(projectId)
+        var project = await revisionRepository.GetProjectAndAssetsNoTracking(projectId)
             ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
 
         SetProjectAndRelatedEntitiesToEmptyGuids(project, projectId, createRevisionDto);
@@ -99,16 +74,16 @@ public class RevisionService : IRevisionService
 
         project.RevisionDetails = revisionDetails;
 
-        var revision = await _revisionRepository.AddRevision(project);
+        var revision = await revisionRepository.AddRevision(project);
 
-        var revisionDto = _mapper.Map<Project, RevisionWithCasesDto>(revision, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+        var revisionDto = mapper.Map<Project, RevisionWithCasesDto>(revision, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 
         return revisionDto;
     }
 
     private async Task<Project> UpdateProjectWithRevisionChanges(Guid projectId, CreateRevisionDto createRevisionDto)
     {
-        var existingProject = await _projectRepository.GetProject(projectId)
+        var existingProject = await projectRepository.GetProject(projectId)
             ?? throw new NotFoundInDBException($"Project {projectId} not found");
 
         existingProject.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
@@ -119,7 +94,7 @@ public class RevisionService : IRevisionService
 
     public async Task<RevisionWithCasesDto> UpdateRevision(Guid projectId, Guid revisionId, UpdateRevisionDto updateRevisionDto)
     {
-        var revision = _context.Projects
+        var revision = context.Projects
                         .Include(p => p.RevisionDetails)
                         .FirstOrDefault(r => r.Id == revisionId)
                     ?? throw new NotFoundInDBException($"Revision with id {revisionId} not found.");
@@ -133,10 +108,10 @@ public class RevisionService : IRevisionService
         revision.RevisionDetails.Arena = updateRevisionDto.Arena;
         revision.RevisionDetails.Mdqc = updateRevisionDto.Mdqc;
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
-        var projectDto = _mapperService.MapToDto<Project, RevisionWithCasesDto>(revision, revisionId);
-        return projectDto;
+        var revisionDto = mapper.Map<Project, RevisionWithCasesDto>(revision, opts => opts.Items["ConversionUnit"] = revision.PhysicalUnit.ToString());
+        return revisionDto;
     }
 
     private static void SetProjectAndRelatedEntitiesToEmptyGuids(Project project, Guid originalProjectId, CreateRevisionDto createRevisionDto)

@@ -1,40 +1,21 @@
-using api.Context;
 using api.Dtos;
 using api.Exceptions;
 using api.Models;
 using api.Repositories;
 
-using AutoMapper;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class SurfTimeSeriesService : ISurfTimeSeriesService
+public class SurfTimeSeriesService(
+    ILogger<SurfService> logger,
+    ISurfTimeSeriesRepository repository,
+    ISurfRepository surfRepository,
+    ICaseRepository caseRepository,
+    IMapperService mapperService,
+    IProjectAccessService projectAccessService)
+    : ISurfTimeSeriesService
 {
-    private readonly ILogger<SurfService> _logger;
-    private readonly IProjectAccessService _projectAccessService;
-    private readonly ISurfRepository _surfRepository;
-    private readonly ISurfTimeSeriesRepository _repository;
-    private readonly ICaseRepository _caseRepository;
-    private readonly IMapperService _mapperService;
-    public SurfTimeSeriesService(
-        ILoggerFactory loggerFactory,
-        ISurfTimeSeriesRepository repository,
-        ISurfRepository surfRepository,
-        ICaseRepository caseRepository,
-        IMapperService mapperService,
-        IProjectAccessService projectAccessService
-        )
-    {
-        _logger = loggerFactory.CreateLogger<SurfService>();
-        _repository = repository;
-        _surfRepository = surfRepository;
-        _caseRepository = caseRepository;
-        _mapperService = mapperService;
-        _projectAccessService = projectAccessService;
-    }
-
     public async Task<SurfCostProfileOverrideDto> CreateSurfCostProfileOverride(
         Guid projectId,
         Guid caseId,
@@ -43,12 +24,12 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
     )
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await _projectAccessService.ProjectExists<Surf>(projectId, surfId);
+        await projectAccessService.ProjectExists<Surf>(projectId, surfId);
 
-        var surf = await _surfRepository.GetSurf(surfId)
+        var surf = await surfRepository.GetSurf(surfId)
             ?? throw new NotFoundInDBException($"Surf with id {surfId} not found.");
 
-        var resourceHasProfile = await _surfRepository.SurfHasCostProfileOverride(surfId);
+        var resourceHasProfile = await surfRepository.SurfHasCostProfileOverride(surfId);
 
         if (resourceHasProfile)
         {
@@ -60,22 +41,22 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
             Surf = surf,
         };
 
-        var newProfile = _mapperService.MapToEntity(dto, profile, surfId);
+        var newProfile = mapperService.MapToEntity(dto, profile, surfId);
 
         SurfCostProfileOverride createdProfile;
         try
         {
-            createdProfile = _repository.CreateSurfCostProfileOverride(newProfile);
-            await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            createdProfile = repository.CreateSurfCostProfileOverride(newProfile);
+            await caseRepository.UpdateModifyTime(caseId);
+            await repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to create profile SurfCostProfileOverride for case id {caseId}.", caseId);
+            logger.LogError(ex, "Failed to create profile SurfCostProfileOverride for case id {caseId}.", caseId);
             throw;
         }
 
-        var updatedDto = _mapperService.MapToDto<SurfCostProfileOverride, SurfCostProfileOverrideDto>(createdProfile, createdProfile.Id);
+        var updatedDto = mapperService.MapToDto<SurfCostProfileOverride, SurfCostProfileOverrideDto>(createdProfile, createdProfile.Id);
         return updatedDto;
     }
 
@@ -87,9 +68,9 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
     )
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await _projectAccessService.ProjectExists<Surf>(projectId, surfId);
+        await projectAccessService.ProjectExists<Surf>(projectId, surfId);
 
-        var surf = await _surfRepository.GetSurfWithCostProfile(surfId)
+        var surf = await surfRepository.GetSurfWithCostProfile(surfId)
             ?? throw new NotFoundInDBException($"Surf with id {surfId} not found.");
 
         if (surf.CostProfile != null)
@@ -114,8 +95,8 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
             surfId,
             profileId,
             dto,
-            _repository.GetSurfCostProfile,
-            _repository.UpdateSurfCostProfile
+            repository.GetSurfCostProfile,
+            repository.UpdateSurfCostProfile
         );
     }
 
@@ -131,7 +112,7 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
             Surf = surf
         };
 
-        var newProfile = _mapperService.MapToEntity(dto, surfCostProfile, surfId);
+        var newProfile = mapperService.MapToEntity(dto, surfCostProfile, surfId);
 
         if (newProfile.Surf.CostProfileOverride != null)
         {
@@ -140,17 +121,17 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
 
         try
         {
-            _repository.CreateSurfCostProfile(newProfile);
-            await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            repository.CreateSurfCostProfile(newProfile);
+            await caseRepository.UpdateModifyTime(caseId);
+            await repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to create cost profile for surf with id {surfId} for case id {caseId}.", surfId, caseId);
+            logger.LogError(ex, "Failed to create cost profile for surf with id {surfId} for case id {caseId}.", surfId, caseId);
             throw;
         }
 
-        var newDto = _mapperService.MapToDto<SurfCostProfile, SurfCostProfileDto>(newProfile, newProfile.Id);
+        var newDto = mapperService.MapToDto<SurfCostProfile, SurfCostProfileDto>(newProfile, newProfile.Id);
         return newDto;
     }
 
@@ -168,8 +149,8 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
             surfId,
             costProfileId,
             updatedSurfCostProfileOverrideDto,
-            _repository.GetSurfCostProfileOverride,
-            _repository.UpdateSurfCostProfileOverride
+            repository.GetSurfCostProfileOverride,
+            repository.UpdateSurfCostProfileOverride
         );
     }
 
@@ -190,7 +171,7 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
             ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
-        await _projectAccessService.ProjectExists<Surf>(projectId, existingProfile.Surf.Id);
+        await projectAccessService.ProjectExists<Surf>(projectId, existingProfile.Surf.Id);
 
         if (existingProfile.Surf.ProspVersion == null)
         {
@@ -200,23 +181,23 @@ public class SurfTimeSeriesService : ISurfTimeSeriesService
             }
         }
 
-        _mapperService.MapToEntity(updatedProfileDto, existingProfile, surfId);
+        mapperService.MapToEntity(updatedProfileDto, existingProfile, surfId);
 
         // TProfile updatedProfile;
         try
         {
             // updatedProfile = updateProfile(existingProfile);
-            await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await caseRepository.UpdateModifyTime(caseId);
+            await repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
             var profileName = typeof(TProfile).Name;
-            _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
+            logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
             throw;
         }
 
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
+        var updatedDto = mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
         return updatedDto;
     }
 }

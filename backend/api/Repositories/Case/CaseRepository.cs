@@ -8,22 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories;
 
-public class CaseRepository : BaseRepository, ICaseRepository
+public class CaseRepository(DcdDbContext context) : BaseRepository(context), ICaseRepository
 {
-    private readonly ILogger<CaseRepository> _logger;
-
-    public CaseRepository(
-        DcdDbContext context,
-        ILogger<CaseRepository> logger
-    ) : base(context)
-    {
-        _logger = logger;
-    }
-
     public async Task<Case> AddCase(Case caseItem)
     {
-        _context.Cases.Add(caseItem);
-        await _context.SaveChangesAsync();
+        Context.Cases.Add(caseItem);
+        await Context.SaveChangesAsync();
 
         return caseItem;
     }
@@ -57,7 +47,7 @@ public class CaseRepository : BaseRepository, ICaseRepository
             CaseProfileNames.CalculatedTotalCostCostProfile => d => d.CalculatedTotalCostCostProfile != null,
         };
 
-        bool hasProfile = await _context.Cases
+        bool hasProfile = await Context.Cases
             .Where(d => d.Id == caseId)
             .AnyAsync(profileExistsExpression);
 
@@ -76,7 +66,7 @@ public class CaseRepository : BaseRepository, ICaseRepository
             throw new ArgumentException("The case id cannot be empty.", nameof(caseId));
         }
 
-        var caseItem = await _context.Cases.SingleOrDefaultAsync(c => c.Id == caseId)
+        var caseItem = await Context.Cases.SingleOrDefaultAsync(c => c.Id == caseId)
             ?? throw new KeyNotFoundException($"Case with id {caseId} not found.");
 
         caseItem.ModifyTime = DateTimeOffset.UtcNow;

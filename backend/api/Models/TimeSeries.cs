@@ -1,9 +1,11 @@
 
 using System.ComponentModel.DataAnnotations.Schema;
 
+using api.Models.Interfaces;
+
 namespace api.Models;
 
-public class TimeSeries<T>
+public class TimeSeries<T> : IChangeTrackable
 {
     public TimeSeries()
     {

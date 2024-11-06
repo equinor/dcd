@@ -5,25 +5,17 @@ using api.Exceptions;
 
 namespace api.Middleware;
 
-public class ExceptionHandlingMiddleware
+public class ExceptionHandlingMiddleware(
+    RequestDelegate requestDelegate,
+    ILogger<ExceptionHandlingMiddleware> logger)
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger _logger;
-
-    public ExceptionHandlingMiddleware(
-        RequestDelegate requestDelegate,
-        ILogger<ExceptionHandlingMiddleware> logger
-    )
-    {
-        _next = requestDelegate;
-        _logger = logger;
-    }
+    private readonly ILogger _logger = logger;
 
     public async Task Invoke(HttpContext context)
     {
         try
         {
-            await _next(context);
+            await requestDelegate(context);
         }
         catch (Exception ex)
         {

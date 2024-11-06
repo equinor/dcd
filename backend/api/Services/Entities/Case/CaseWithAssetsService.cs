@@ -5,41 +5,26 @@ using api.Repositories;
 
 namespace api.Services;
 
-public class CaseWithAssetsService : ICaseWithAssetsService
+public class CaseWithAssetsService(
+    ICaseWithAssetsRepository repository,
+    IProjectRepository projectRepository,
+    IMapperService mapperService,
+    IConversionMapperService conversionMapperService,
+    IProjectAccessService projectAccessService)
+    : ICaseWithAssetsService
 {
-
-    private readonly ICaseWithAssetsRepository _repository;
-    private readonly IProjectRepository _projectRepository;
-    private readonly IMapperService _mapperService;
-    private readonly IConversionMapperService _conversionMapperService;
-    private readonly IProjectAccessService _projectAccessService;
-    public CaseWithAssetsService(
-        ICaseWithAssetsRepository repository,
-        IProjectRepository projectRepository,
-        IMapperService mapperService,
-        IConversionMapperService conversionMapperService,
-        IProjectAccessService projectAccessService
-    )
-    {
-        _repository = repository;
-        _projectRepository = projectRepository;
-        _mapperService = mapperService;
-        _conversionMapperService = conversionMapperService;
-        _projectAccessService = projectAccessService;
-    }
-
     public async Task<CaseWithAssetsDto> GetCaseWithAssetsNoTracking(Guid projectId, Guid caseId)
     {
-        await _projectAccessService.ProjectExists<Case>(projectId, caseId);
+        await projectAccessService.ProjectExists<Case>(projectId, caseId);
 
-        var project = await _projectRepository.GetProjectByIdOrExternalId(projectId)
+        var project = await projectRepository.GetProjectByIdOrExternalId(projectId)
             ?? throw new NotFoundInDBException($"Project with id {projectId} not found");
 
-        var (caseItem, drainageStrategy, topside, exploration, substructure, surf, transport, wellProject) = await _repository.GetCaseWithAssetsNoTracking(caseId);
+        var (caseItem, drainageStrategy, topside, exploration, substructure, surf, transport, wellProject) = await repository.GetCaseWithAssetsNoTracking(caseId);
 
         var caseWithAssetsDto = new CaseWithAssetsDto
         {
-            Case = _mapperService.MapToDto<Case, CaseDto>(caseItem, caseItem.Id),
+            Case = mapperService.MapToDto<Case, CaseDto>(caseItem, caseItem.Id),
             CessationWellsCost = MapToDto<CessationWellsCost, CessationWellsCostDto>(caseItem.CessationWellsCost, caseItem.CessationWellsCost?.Id),
             CessationWellsCostOverride = MapToDto<CessationWellsCostOverride, CessationWellsCostOverrideDto>(caseItem.CessationWellsCostOverride, caseItem.CessationWellsCostOverride?.Id),
             CessationOffshoreFacilitiesCost = MapToDto<CessationOffshoreFacilitiesCost, CessationOffshoreFacilitiesCostDto>(caseItem.CessationOffshoreFacilitiesCost, caseItem.CessationOffshoreFacilitiesCost?.Id),
@@ -60,7 +45,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
             CalculatedTotalIncomeCostProfile = MapToDto<CalculatedTotalIncomeCostProfile, CalculatedTotalIncomeCostProfileDto>(caseItem.CalculatedTotalIncomeCostProfile, caseItem.CalculatedTotalIncomeCostProfile?.Id),
             CalculatedTotalCostCostProfile = MapToDto<CalculatedTotalCostCostProfile, CalculatedTotalCostCostProfileDto>(caseItem.CalculatedTotalCostCostProfile, caseItem.CalculatedTotalCostCostProfile?.Id),
 
-            DrainageStrategy = _conversionMapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(drainageStrategy, drainageStrategy.Id, project.PhysicalUnit),
+            DrainageStrategy = conversionMapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(drainageStrategy, drainageStrategy.Id, project.PhysicalUnit),
             ProductionProfileOil = ConversionMapToDto<ProductionProfileOil, ProductionProfileOilDto>(drainageStrategy?.ProductionProfileOil, drainageStrategy?.ProductionProfileOil?.Id, project.PhysicalUnit),
             AdditionalProductionProfileOil = ConversionMapToDto<AdditionalProductionProfileOil, AdditionalProductionProfileOilDto>(drainageStrategy?.AdditionalProductionProfileOil, drainageStrategy?.AdditionalProductionProfileOil?.Id, project.PhysicalUnit),
             ProductionProfileGas = ConversionMapToDto<ProductionProfileGas, ProductionProfileGasDto>(drainageStrategy?.ProductionProfileGas, drainageStrategy?.ProductionProfileGas?.Id, project.PhysicalUnit),
@@ -80,28 +65,28 @@ public class CaseWithAssetsService : ICaseWithAssetsService
             DeferredOilProduction = ConversionMapToDto<DeferredOilProduction, DeferredOilProductionDto>(drainageStrategy?.DeferredOilProduction, drainageStrategy?.DeferredOilProduction?.Id, project.PhysicalUnit),
             DeferredGasProduction = ConversionMapToDto<DeferredGasProduction, DeferredGasProductionDto>(drainageStrategy?.DeferredGasProduction, drainageStrategy?.DeferredGasProduction?.Id, project.PhysicalUnit),
 
-            Topside = _mapperService.MapToDto<Topside, TopsideDto>(topside, topside.Id),
+            Topside = mapperService.MapToDto<Topside, TopsideDto>(topside, topside.Id),
             TopsideCostProfile = MapToDto<TopsideCostProfile, TopsideCostProfileDto>(topside.CostProfile, topside.CostProfile?.Id),
             TopsideCostProfileOverride = MapToDto<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>(topside.CostProfileOverride, topside.CostProfileOverride?.Id),
             TopsideCessationCostProfile = MapToDto<TopsideCessationCostProfile, TopsideCessationCostProfileDto>(topside.CessationCostProfile, topside.CessationCostProfile?.Id),
 
-            Substructure = _mapperService.MapToDto<Substructure, SubstructureDto>(substructure, substructure.Id),
+            Substructure = mapperService.MapToDto<Substructure, SubstructureDto>(substructure, substructure.Id),
             SubstructureCostProfile = MapToDto<SubstructureCostProfile, SubstructureCostProfileDto>(substructure.CostProfile, substructure.CostProfile?.Id),
             SubstructureCostProfileOverride = MapToDto<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>(substructure.CostProfileOverride, substructure.CostProfileOverride?.Id),
             SubstructureCessationCostProfile = MapToDto<SubstructureCessationCostProfile, SubstructureCessationCostProfileDto>(substructure.CessationCostProfile, substructure.CessationCostProfile?.Id),
 
-            Surf = _mapperService.MapToDto<Surf, SurfDto>(surf, surf.Id),
+            Surf = mapperService.MapToDto<Surf, SurfDto>(surf, surf.Id),
             SurfCostProfile = MapToDto<SurfCostProfile, SurfCostProfileDto>(surf.CostProfile, surf.CostProfile?.Id),
             SurfCostProfileOverride = MapToDto<SurfCostProfileOverride, SurfCostProfileOverrideDto>(surf.CostProfileOverride, surf.CostProfileOverride?.Id),
             SurfCessationCostProfile = MapToDto<SurfCessationCostProfile, SurfCessationCostProfileDto>(surf.CessationCostProfile, surf.CessationCostProfile?.Id),
 
-            Transport = _mapperService.MapToDto<Transport, TransportDto>(transport, transport.Id),
+            Transport = mapperService.MapToDto<Transport, TransportDto>(transport, transport.Id),
             TransportCostProfile = MapToDto<TransportCostProfile, TransportCostProfileDto>(transport.CostProfile, transport.CostProfile?.Id),
             TransportCostProfileOverride = MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(transport.CostProfileOverride, transport.CostProfileOverride?.Id),
             TransportCessationCostProfile = MapToDto<TransportCessationCostProfile, TransportCessationCostProfileDto>(transport.CessationCostProfile, transport.CessationCostProfile?.Id),
 
-            Exploration = _mapperService.MapToDto<Exploration, ExplorationDto>(exploration, exploration.Id),
-            ExplorationWells = exploration.ExplorationWells?.Select(w => _mapperService.MapToDto<ExplorationWell, ExplorationWellDto>(w, w.ExplorationId)).ToList() ?? new List<ExplorationWellDto>(),
+            Exploration = mapperService.MapToDto<Exploration, ExplorationDto>(exploration, exploration.Id),
+            ExplorationWells = exploration.ExplorationWells?.Select(w => mapperService.MapToDto<ExplorationWell, ExplorationWellDto>(w, w.ExplorationId)).ToList() ?? new List<ExplorationWellDto>(),
             ExplorationWellCostProfile = MapToDto<ExplorationWellCostProfile, ExplorationWellCostProfileDto>(exploration.ExplorationWellCostProfile, exploration.ExplorationWellCostProfile?.Id),
             AppraisalWellCostProfile = MapToDto<AppraisalWellCostProfile, AppraisalWellCostProfileDto>(exploration.AppraisalWellCostProfile, exploration.AppraisalWellCostProfile?.Id),
             SidetrackCostProfile = MapToDto<SidetrackCostProfile, SidetrackCostProfileDto>(exploration.SidetrackCostProfile, exploration.SidetrackCostProfile?.Id),
@@ -110,8 +95,8 @@ public class CaseWithAssetsService : ICaseWithAssetsService
             SeismicAcquisitionAndProcessing = MapToDto<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto>(exploration.SeismicAcquisitionAndProcessing, exploration.SeismicAcquisitionAndProcessing?.Id),
             CountryOfficeCost = MapToDto<CountryOfficeCost, CountryOfficeCostDto>(exploration.CountryOfficeCost, exploration.CountryOfficeCost?.Id),
 
-            WellProject = _mapperService.MapToDto<WellProject, WellProjectDto>(wellProject, wellProject.Id),
-            WellProjectWells = wellProject.WellProjectWells?.Select(w => _mapperService.MapToDto<WellProjectWell, WellProjectWellDto>(w, w.WellProjectId)).ToList() ?? new List<WellProjectWellDto>(),
+            WellProject = mapperService.MapToDto<WellProject, WellProjectDto>(wellProject, wellProject.Id),
+            WellProjectWells = wellProject.WellProjectWells?.Select(w => mapperService.MapToDto<WellProjectWell, WellProjectWellDto>(w, w.WellProjectId)).ToList() ?? new List<WellProjectWellDto>(),
             OilProducerCostProfile = MapToDto<OilProducerCostProfile, OilProducerCostProfileDto>(wellProject.OilProducerCostProfile, wellProject.OilProducerCostProfile?.Id),
             OilProducerCostProfileOverride = MapToDto<OilProducerCostProfileOverride, OilProducerCostProfileOverrideDto>(wellProject.OilProducerCostProfileOverride, wellProject.OilProducerCostProfileOverride?.Id),
             GasProducerCostProfile = MapToDto<GasProducerCostProfile, GasProducerCostProfileDto>(wellProject.GasProducerCostProfile, wellProject.GasProducerCostProfile?.Id),
@@ -131,7 +116,7 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         {
             return null;
         }
-        return _mapperService.MapToDto<T, TDto>(source, (Guid)id);
+        return mapperService.MapToDto<T, TDto>(source, (Guid)id);
     }
 
     private TDto? ConversionMapToDto<T, TDto>(T? source, Guid? id, PhysUnit physUnit) where T : class where TDto : class
@@ -140,6 +125,6 @@ public class CaseWithAssetsService : ICaseWithAssetsService
         {
             return null;
         }
-        return _conversionMapperService.MapToDto<T, TDto>(source, (Guid)id, physUnit);
+        return conversionMapperService.MapToDto<T, TDto>(source, (Guid)id, physUnit);
     }
 }

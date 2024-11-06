@@ -1,12 +1,6 @@
 namespace api.Exceptions;
 
-public class ProjectClassificationException : Exception
+public class ProjectClassificationException(string message, Guid entityId) : Exception(message)
 {
-    public Guid EntityId { get; }
-
-    public ProjectClassificationException(string message, Guid entityId)
-        : base(message)
-    {
-        EntityId = entityId;
-    }
+    public Guid EntityId { get; } = entityId;
 }

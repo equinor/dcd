@@ -1,34 +1,21 @@
-using api.Context;
 using api.Dtos;
 using api.Models;
 using api.Repositories;
 
 namespace api.Services;
 
-public class CreateCaseService : ICreateCaseService
+public class CreateCaseService(
+    ICaseRepository caseRepository,
+    IProjectService projectService,
+    IMapperService mapperService)
+    : ICreateCaseService
 {
-    private readonly ICaseRepository _caseRepository;
-    private readonly IProjectService _projectService;
-    private readonly IMapperService _mapperService;
-
-    public CreateCaseService(
-        DcdDbContext context,
-        ICaseRepository caseRepository,
-        IProjectService projectService,
-        IMapperService mapperService
-    )
-    {
-        _caseRepository = caseRepository;
-        _projectService = projectService;
-        _mapperService = mapperService;
-    }
-
     public async Task<ProjectWithAssetsDto> CreateCase(Guid projectId, CreateCaseDto createCaseDto)
     {
         var caseItem = new Case();
-        _mapperService.MapToEntity(createCaseDto, caseItem, Guid.Empty);
+        mapperService.MapToEntity(createCaseDto, caseItem, Guid.Empty);
 
-        var project = await _projectService.GetProject(projectId);
+        var project = await projectService.GetProject(projectId);
         caseItem.Project = project;
         caseItem.CapexFactorFeasibilityStudies = 0.015;
         caseItem.CapexFactorFEEDStudies = 0.015;
@@ -48,9 +35,9 @@ public class CreateCaseService : ICreateCaseService
         caseItem.Exploration = CreateExploration(project);
         caseItem.WellProject = CreateWellProject(project);
 
-        await _caseRepository.AddCase(caseItem);
+        await caseRepository.AddCase(caseItem);
 
-        return await _projectService.GetProjectDto(project.Id);
+        return await projectService.GetProjectDto(project.Id);
     }
 
     private static DrainageStrategy CreateDrainageStrategy(Project project)

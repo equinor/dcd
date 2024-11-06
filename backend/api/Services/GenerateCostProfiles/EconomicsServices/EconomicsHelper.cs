@@ -4,7 +4,6 @@ namespace api.Services.EconomicsServices;
 
 public static class EconomicsHelper
 {
-
     public static double CalculateDiscountedVolume(double[] values, double discountRate, int startIndex)
     {
         double accumulatedVolume = 0;
