@@ -55,8 +55,9 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
     const externalId = currentContext?.externalId
     const { projectId } = useProjectContext()
     const [isNameChanged, setIsNameChanged] = useState(false)
-    const { addProjectEdit } = useEditProject()
     const [revisionName, setRevisionName] = useState<string>("")
+    const [originalRevisionName, setOriginalRevisionName] = useState<string>("") // Track the original name
+    const [savedRevisionName, setSavedRevisionName] = useState<string>("") // Track the name for the title after saving
     const queryClient = useQueryClient()
 
     const { revisionId } = useParams()
@@ -67,8 +68,13 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
         enabled: !!revisionId,
     })
     console.log("revisionApiData", revisionApiData)
+
     useEffect(() => {
-        setRevisionName(revisionApiData?.revisionDetails.revisionName || "")
+        if (revisionApiData?.revisionDetails.revisionName) {
+            setOriginalRevisionName(revisionApiData?.revisionDetails.revisionName || "")
+            setRevisionName(revisionApiData?.revisionDetails.revisionName || "")
+            setSavedRevisionName(revisionApiData?.revisionDetails.revisionName || "") // Initialize saved name
+        }
     }, [revisionApiData])
 
     const closeMenu = () => {
@@ -88,6 +94,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
         if (revisionApiData && projectId && revisionId) {
             const updatedRevision = await updateRevisionName(revisionName)
             if (updatedRevision) {
+                setSavedRevisionName(revisionName) // Update the saved name when the save button is clicked
                 queryClient.invalidateQueries({ queryKey: ["revisionApiData", revisionId] })
                 queryClient.invalidateQueries({ queryKey: ["projectApiData", externalId] })
                 closeMenu()
@@ -107,7 +114,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
 
     return (
         <Modal
-            title={`${revisionName} revision details`}
+            title={`${savedRevisionName} revision details`} // Use saved name for title after save
             size="sm"
             isOpen={isMenuOpen}
             content={(

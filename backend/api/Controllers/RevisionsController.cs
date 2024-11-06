@@ -46,6 +46,6 @@ public class RevisionsController(IRevisionService revisionService) : ControllerB
     public async Task<RevisionWithCasesDto> UpdateRevision([FromRoute] Guid projectId, [FromRoute] Guid revisionId,
         [FromBody] UpdateRevisionDto updateRevisionDto)
     {
-        return await _revisionService.UpdateRevision(projectId, revisionId, updateRevisionDto);
+        return await revisionService.UpdateRevision(projectId, revisionId, updateRevisionDto);
     }
 }
