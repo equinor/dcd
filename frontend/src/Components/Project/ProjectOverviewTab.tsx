@@ -71,7 +71,7 @@ const ProjectOverviewTab = () => {
 
         const { projectPhase, internalProjectPhase } = apiData
 
-        if ([3, 4, 5, 6, 7, 8, 9].includes(projectPhase)) {
+        if ([3, 4, 5, 6, 7, 8].includes(projectPhase)) {
             return getProjectPhaseName(projectPhase)
         }
 

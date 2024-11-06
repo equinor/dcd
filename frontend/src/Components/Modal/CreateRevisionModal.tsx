@@ -91,7 +91,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
 
     if (!apiData || !isModalOpen) { return null }
 
-    const disableAfterDG0 = () => (apiData.projectPhase >= 3)
+    const disableAfterDG0 = () => [3, 4, 5, 6, 7, 8].includes(apiData.projectPhase)
 
     const internalProjectPhaseOptions = Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => {
         if (disableAfterDG0()) {
