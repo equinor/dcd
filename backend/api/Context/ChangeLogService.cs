@@ -28,7 +28,7 @@ public static class ChangeLogService
             {
                 TimestampUtc = utcNow,
                 Username = currentUser?.Username,
-                EntityId = ((IChangeTrackable) x.Entity).Id,
+                EntityId = ((IChangeTrackable)x.Entity).Id,
                 EntityName = x.Entity.GetType().Name,
                 EntityState = x.State.ToString(),
                 Payload = GenerateInitialState(x.Properties)
