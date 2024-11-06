@@ -5,35 +5,21 @@ using api.Services.GenerateCostProfiles;
 
 namespace api.Services;
 
-public class CompareCasesService : ICompareCasesService
+public class CompareCasesService(
+    IProjectService projectService,
+    ILoggerFactory loggerFactory,
+    IExplorationService explorationService,
+    IDrainageStrategyService drainageStrategyService,
+    IStudyCostProfileService generateStudyCostProfile,
+    ICaseService caseService)
+    : ICompareCasesService
 {
-    private readonly IProjectService _projectService;
-    private readonly ILogger<CompareCasesService> _logger;
-    private readonly IExplorationService _explorationService;
-    private readonly IDrainageStrategyService _drainageStrategyService;
-    private readonly IStudyCostProfileService _generateStudyCostProfile;
-    private readonly ICaseService _caseService;
+    private readonly ILogger<CompareCasesService> _logger = loggerFactory.CreateLogger<CompareCasesService>();
 
-
-    public CompareCasesService(
-        IProjectService projectService,
-        ILoggerFactory loggerFactory,
-        IExplorationService explorationService,
-        IDrainageStrategyService drainageStrategyService,
-        IStudyCostProfileService generateStudyCostProfile,
-        ICaseService caseService)
-    {
-        _projectService = projectService;
-        _logger = loggerFactory.CreateLogger<CompareCasesService>();
-        _explorationService = explorationService;
-        _drainageStrategyService = drainageStrategyService;
-        _generateStudyCostProfile = generateStudyCostProfile;
-        _caseService = caseService;
-    }
 
     public async Task<IEnumerable<CompareCasesDto>> Calculate(Guid projectId)
     {
-        var project = await _projectService.GetProjectWithoutAssetsNoTracking(projectId);
+        var project = await projectService.GetProjectWithoutAssetsNoTracking(projectId);
         var caseList = new List<CompareCasesDto>();
         if (project.Cases != null)
         {
@@ -42,7 +28,7 @@ public class CompareCasesService : ICompareCasesService
             foreach (var caseItem in project.Cases)
             {
                 if (caseItem.Archived) { continue; }
-                var caseWithProfiles = await _caseService.GetCaseWithIncludes(
+                var caseWithProfiles = await caseService.GetCaseWithIncludes(
                     caseItem.Id,
                     c => c.CessationWellsCostOverride!,
                     c => c.CessationWellsCost!,
@@ -62,7 +48,7 @@ public class CompareCasesService : ICompareCasesService
                     c => c.OnshoreRelatedOPEXCostProfile!,
                     c => c.AdditionalOPEXCostProfile!);
 
-                drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
+                drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
                     caseItem.DrainageStrategyLink,
                     d => d.ProductionProfileOil!,
                     d => d.AdditionalProductionProfileOil!,
@@ -71,7 +57,7 @@ public class CompareCasesService : ICompareCasesService
                     d => d.Co2EmissionsOverride!,
                     d => d.Co2Emissions!);
 
-                exploration = await _explorationService.GetExplorationWithIncludes(
+                exploration = await explorationService.GetExplorationWithIncludes(
                     caseItem.ExplorationLink,
                     e => e.GAndGAdminCost!,
                     e => e.CountryOfficeCost!,
@@ -243,12 +229,12 @@ public class CompareCasesService : ICompareCasesService
 
     private async Task<double> CalculateOffshorePlusOnshoreFacilityCosts(Case caseItem)
     {
-        return await _generateStudyCostProfile.SumAllCostFacility(caseItem);
+        return await generateStudyCostProfile.SumAllCostFacility(caseItem);
     }
 
     private async Task<double> CalculateDevelopmentWellCosts(Case caseItem)
     {
-        return await _generateStudyCostProfile.SumWellCost(caseItem);
+        return await generateStudyCostProfile.SumWellCost(caseItem);
     }
 
     private double CalculateExplorationWellCosts(Case caseItem, Exploration exploration)

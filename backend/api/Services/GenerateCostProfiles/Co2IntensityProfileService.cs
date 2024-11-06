@@ -7,34 +7,18 @@ using AutoMapper;
 
 namespace api.Services.GenerateCostProfiles;
 
-public class Co2IntensityProfileService : ICo2IntensityProfileService
+public class Co2IntensityProfileService(
+    ICaseService caseService,
+    IDrainageStrategyService drainageStrategyService,
+    IProjectService projectService,
+    IMapper mapper)
+    : ICo2IntensityProfileService
 {
-    private readonly ICaseService _caseService;
-    private readonly IDrainageStrategyService _drainageStrategyService;
-    private readonly IProjectService _projectService;
-    private readonly ICo2EmissionsProfileService _generateCo2EmissionsProfile;
-    private readonly IMapper _mapper;
-
-    public Co2IntensityProfileService(
-        ICaseService caseService,
-        IDrainageStrategyService drainageStrategyService,
-        IProjectService projectService,
-        ICo2EmissionsProfileService generateCo2EmissionsProfile,
-        IMapper mapper
-        )
-    {
-        _caseService = caseService;
-        _projectService = projectService;
-        _drainageStrategyService = drainageStrategyService;
-        _generateCo2EmissionsProfile = generateCo2EmissionsProfile;
-        _mapper = mapper;
-    }
-
     public async Task<Co2IntensityDto> Generate(Guid caseId)
     {
-        var caseItem = await _caseService.GetCase(caseId);
-        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
-        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
+        var caseItem = await caseService.GetCase(caseId);
+        var project = await projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
             caseItem.DrainageStrategyLink,
             d => d.Co2Emissions!,
             d => d.Co2EmissionsOverride!,
@@ -87,7 +71,7 @@ public class Co2IntensityProfileService : ICo2IntensityProfileService
             Values = co2IntensityValues.ToArray(),
         };
 
-        var dto = _mapper.Map<Co2IntensityDto>(co2Intensity);
+        var dto = mapper.Map<Co2IntensityDto>(co2Intensity);
 
         return dto ?? new Co2IntensityDto();
     }

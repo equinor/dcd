@@ -16,20 +16,11 @@ namespace api.Controllers;
     ApplicationRole.User
 )]
 [ActionType(ActionType.Edit)]
-public class ExplorationsController : ControllerBase
+public class ExplorationsController(
+    IExplorationService explorationService,
+    IExplorationTimeSeriesService explorationTimeSeriesService)
+    : ControllerBase
 {
-    private readonly IExplorationService _explorationService;
-    private readonly IExplorationTimeSeriesService _explorationTimeSeriesService;
-
-    public ExplorationsController(
-        IExplorationService explorationService,
-        IExplorationTimeSeriesService explorationTimeSeriesService
-    )
-    {
-        _explorationService = explorationService;
-        _explorationTimeSeriesService = explorationTimeSeriesService;
-    }
-
     [HttpPut("{explorationId}")]
     public async Task<ExplorationDto> UpdateExploration(
         [FromRoute] Guid projectId,
@@ -37,7 +28,7 @@ public class ExplorationsController : ControllerBase
         [FromRoute] Guid explorationId,
         [FromBody] UpdateExplorationDto dto)
     {
-        return await _explorationService.UpdateExploration(projectId, caseId, explorationId, dto);
+        return await explorationService.UpdateExploration(projectId, caseId, explorationId, dto);
     }
 
     [HttpPut("{explorationId}/wells/{wellId}/drilling-schedule/{drillingScheduleId}")]
@@ -49,7 +40,7 @@ public class ExplorationsController : ControllerBase
         [FromRoute] Guid drillingScheduleId,
         [FromBody] UpdateDrillingScheduleDto dto)
     {
-        return await _explorationService.UpdateExplorationWellDrillingSchedule(projectId, caseId, explorationId, wellId, drillingScheduleId, dto);
+        return await explorationService.UpdateExplorationWellDrillingSchedule(projectId, caseId, explorationId, wellId, drillingScheduleId, dto);
     }
 
     [HttpPost("{explorationId}/wells/{wellId}/drilling-schedule")]
@@ -60,7 +51,7 @@ public class ExplorationsController : ControllerBase
         [FromRoute] Guid wellId,
         [FromBody] CreateDrillingScheduleDto dto)
     {
-        return await _explorationService.CreateExplorationWellDrillingSchedule(projectId, caseId, explorationId, wellId, dto);
+        return await explorationService.CreateExplorationWellDrillingSchedule(projectId, caseId, explorationId, wellId, dto);
     }
 
 
@@ -73,7 +64,7 @@ public class ExplorationsController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateGAndGAdminCostOverrideDto dto)
     {
-        return await _explorationTimeSeriesService.UpdateGAndGAdminCostOverride(projectId, caseId, explorationId, costProfileId, dto);
+        return await explorationTimeSeriesService.UpdateGAndGAdminCostOverride(projectId, caseId, explorationId, costProfileId, dto);
     }
 
     [HttpPost("{explorationId}/g-and-g-and-admin-cost-override")]
@@ -83,7 +74,7 @@ public class ExplorationsController : ControllerBase
     [FromRoute] Guid explorationId,
     [FromBody] CreateGAndGAdminCostOverrideDto dto)
     {
-        return await _explorationTimeSeriesService.CreateGAndGAdminCostOverride(projectId, caseId, explorationId, dto);
+        return await explorationTimeSeriesService.CreateGAndGAdminCostOverride(projectId, caseId, explorationId, dto);
     }
 
     [HttpPut("{explorationId}/seismic-acquisition-and-processing/{costProfileId}")]
@@ -94,7 +85,7 @@ public class ExplorationsController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateSeismicAcquisitionAndProcessingDto dto)
     {
-        return await _explorationTimeSeriesService.UpdateSeismicAcquisitionAndProcessing(projectId, caseId, explorationId, costProfileId, dto);
+        return await explorationTimeSeriesService.UpdateSeismicAcquisitionAndProcessing(projectId, caseId, explorationId, costProfileId, dto);
     }
 
     [HttpPost("{explorationId}/seismic-acquisition-and-processing")]
@@ -104,7 +95,7 @@ public class ExplorationsController : ControllerBase
         [FromRoute] Guid explorationId,
         [FromBody] CreateSeismicAcquisitionAndProcessingDto dto)
     {
-        return await _explorationTimeSeriesService.CreateSeismicAcquisitionAndProcessing(projectId, caseId, explorationId, dto);
+        return await explorationTimeSeriesService.CreateSeismicAcquisitionAndProcessing(projectId, caseId, explorationId, dto);
     }
 
     [HttpPut("{explorationId}/country-office-cost/{costProfileId}")]
@@ -115,7 +106,7 @@ public class ExplorationsController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateCountryOfficeCostDto dto)
     {
-        return await _explorationTimeSeriesService.UpdateCountryOfficeCost(projectId, caseId, explorationId, costProfileId, dto);
+        return await explorationTimeSeriesService.UpdateCountryOfficeCost(projectId, caseId, explorationId, costProfileId, dto);
     }
 
     [HttpPost("{explorationId}/country-office-cost")]
@@ -125,6 +116,6 @@ public class ExplorationsController : ControllerBase
         [FromRoute] Guid explorationId,
         [FromBody] CreateCountryOfficeCostDto dto)
     {
-        return await _explorationTimeSeriesService.CreateCountryOfficeCost(projectId, caseId, explorationId, dto);
+        return await explorationTimeSeriesService.CreateCountryOfficeCost(projectId, caseId, explorationId, dto);
     }
 }

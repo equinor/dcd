@@ -1,10 +1,7 @@
-using api.Context;
 using api.Dtos;
 using api.Models;
 using api.Repositories;
 using api.Services;
-
-using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 

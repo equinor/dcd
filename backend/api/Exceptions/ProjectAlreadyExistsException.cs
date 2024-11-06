@@ -1,8 +1,3 @@
 namespace api.Exceptions;
 
-public class ProjectAlreadyExistsException : Exception
-{
-    public ProjectAlreadyExistsException(string message) : base(message)
-    {
-    }
-}
+public class ProjectAlreadyExistsException(string message) : Exception(message);

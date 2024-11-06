@@ -2,28 +2,18 @@ using api.Models;
 
 namespace api.Services.EconomicsServices;
 
-public class CalculateBreakEvenOilPriceService : ICalculateBreakEvenOilPriceService
+public class CalculateBreakEvenOilPriceService(
+    ICaseService caseService,
+    IDrainageStrategyService drainageStrategyService) : ICalculateBreakEvenOilPriceService
 {
-    private readonly ICaseService _caseService;
-    private readonly IDrainageStrategyService _drainageStrategyService;
-
-    public CalculateBreakEvenOilPriceService(
-        ICaseService caseService,
-        IDrainageStrategyService drainageStrategyService
-    )
-    {
-        _caseService = caseService;
-        _drainageStrategyService = drainageStrategyService;
-    }
-
     public async Task CalculateBreakEvenOilPrice(Guid caseId)
     {
-        var caseItem = await _caseService.GetCaseWithIncludes(
+        var caseItem = await caseService.GetCaseWithIncludes(
             caseId,
             c => c.Project
         );
 
-        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
+        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
             caseItem.DrainageStrategyLink,
             d => d.ProductionProfileOil!,
             d => d.AdditionalProductionProfileOil!,

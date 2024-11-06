@@ -7,26 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class DuplicateCaseService : IDuplicateCaseService
+public class DuplicateCaseService(
+    DcdDbContext context,
+    IProjectService projectService) : IDuplicateCaseService
 {
-    private readonly DcdDbContext _context;
-    private readonly IProjectService _projectService;
-    private readonly ILogger<DuplicateCaseService> _logger;
-
-    public DuplicateCaseService(
-        DcdDbContext context,
-        IProjectService projectService,
-        ILoggerFactory loggerFactory
-    )
-    {
-        _context = context;
-        _projectService = projectService;
-        _logger = loggerFactory.CreateLogger<DuplicateCaseService>();
-    }
-
     private async Task<Case> GetCaseNoTracking(Guid caseId)
     {
-        var caseItem = await _context.Cases
+        var caseItem = await context.Cases
             .AsNoTracking()
             .Include(c => c.TotalFeasibilityAndConceptStudies)
             .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
@@ -85,7 +72,7 @@ public class DuplicateCaseService : IDuplicateCaseService
         SetNewGuidTimeSeries(caseItem.CalculatedTotalIncomeCostProfile);
         SetNewGuidTimeSeries(caseItem.CalculatedTotalCostCostProfile);
 
-        var project = await _projectService.GetProjectWithCasesAndAssets(caseItem.ProjectId);
+        var project = await projectService.GetProjectWithCasesAndAssets(caseItem.ProjectId);
         caseItem.Project = project;
         if (project.Cases != null)
         {
@@ -113,10 +100,10 @@ public class DuplicateCaseService : IDuplicateCaseService
         caseItem.WellProjectLink = newWellProject.Id;
         caseItem.ExplorationLink = newExploration.Id;
 
-        _context.Cases.Add(caseItem);
+        context.Cases.Add(caseItem);
 
-        await _context.SaveChangesAsync();
-        return await _projectService.GetProjectDto(project.Id);
+        await context.SaveChangesAsync();
+        return await projectService.GetProjectDto(project.Id);
     }
 
     private async Task<List<ExplorationWell>> CopyExplorationWell(Guid sourceExplorationId, Guid targetExplorationId)
@@ -128,14 +115,14 @@ public class DuplicateCaseService : IDuplicateCaseService
             explorationWell.ExplorationId = targetExplorationId;
             SetNewGuidTimeSeries(explorationWell.DrillingSchedule);
 
-            _context.ExplorationWell.Add(explorationWell);
+            context.ExplorationWell.Add(explorationWell);
         }
         return sourceExplorationWells;
     }
 
     private async Task<List<ExplorationWell>> GetAllExplorationWellForExplorationNoTracking(Guid guid)
     {
-        return await _context.ExplorationWell
+        return await context.ExplorationWell
                    .AsNoTracking()
                    .Where(ew => ew.ExplorationId == guid)
                    .Include(ew => ew.DrillingSchedule)
@@ -151,14 +138,14 @@ public class DuplicateCaseService : IDuplicateCaseService
             wellProjectWell.WellProjectId = targetWellProjectId;
             SetNewGuidTimeSeries(wellProjectWell.DrillingSchedule);
 
-            _context.WellProjectWell.Add(wellProjectWell);
+            context.WellProjectWell.Add(wellProjectWell);
         }
         return sourceWellProjectWells;
     }
 
     private async Task<List<WellProjectWell>> GetAllWellProjectWellForWellProjectNoTracking(Guid guid)
     {
-        return await _context.WellProjectWell
+        return await context.WellProjectWell
             .AsNoTracking()
             .Where(wpw => wpw.WellProjectId == guid)
             .Include(wpw => wpw.DrillingSchedule)
@@ -176,13 +163,13 @@ public class DuplicateCaseService : IDuplicateCaseService
         SetNewGuidTimeSeries(newTopside.CostProfileOverride);
         SetNewGuidTimeSeries(newTopside.CessationCostProfile);
 
-        _context.Topsides.Add(newTopside);
+        context.Topsides.Add(newTopside);
         return newTopside;
     }
 
     private async Task<Topside> GetTopsideNoTracking(Guid topsideId)
     {
-        var topside = await _context.Topsides
+        var topside = await context.Topsides
             .AsNoTracking()
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
@@ -204,13 +191,13 @@ public class DuplicateCaseService : IDuplicateCaseService
         SetNewGuidTimeSeries(newTransport.CostProfileOverride);
         SetNewGuidTimeSeries(newTransport.CessationCostProfile);
 
-        _context.Transports.Add(newTransport);
+        context.Transports.Add(newTransport);
         return newTransport;
     }
 
     private async Task<Transport> GetTransportNoTracking(Guid transportId)
     {
-        var transport = await _context.Transports
+        var transport = await context.Transports
             .AsNoTracking()
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
@@ -232,13 +219,13 @@ public class DuplicateCaseService : IDuplicateCaseService
         SetNewGuidTimeSeries(newSubstructure.CostProfileOverride);
         SetNewGuidTimeSeries(newSubstructure.CessationCostProfile);
 
-        _context.Substructures.Add(newSubstructure);
+        context.Substructures.Add(newSubstructure);
         return newSubstructure;
     }
 
     private async Task<Substructure> GetSubstructureNoTracking(Guid substructureId)
     {
-        var substructure = await _context.Substructures
+        var substructure = await context.Substructures
             .AsNoTracking()
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
@@ -260,13 +247,13 @@ public class DuplicateCaseService : IDuplicateCaseService
         SetNewGuidTimeSeries(newSurf.CostProfileOverride);
         SetNewGuidTimeSeries(newSurf.CessationCostProfile);
 
-        _context.Surfs.Add(newSurf);
+        context.Surfs.Add(newSurf);
         return newSurf;
     }
 
     private async Task<Surf> GetSurfNoTracking(Guid surfId)
     {
-        var surf = await _context.Surfs
+        var surf = await context.Surfs
             .AsNoTracking()
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
@@ -302,13 +289,13 @@ public class DuplicateCaseService : IDuplicateCaseService
         SetNewGuidTimeSeries(newDrainageStrategy.DeferredOilProduction);
         SetNewGuidTimeSeries(newDrainageStrategy.DeferredGasProduction);
 
-        _context.DrainageStrategies.Add(newDrainageStrategy);
+        context.DrainageStrategies.Add(newDrainageStrategy);
         return newDrainageStrategy;
     }
 
     private async Task<DrainageStrategy> GetDrainageStrategyNoTracking(Guid drainageStrategyId)
     {
-        var drainageStrategy = await _context.DrainageStrategies
+        var drainageStrategy = await context.DrainageStrategies
             .AsNoTracking()
             .Include(c => c.ProductionProfileOil)
             .Include(c => c.AdditionalProductionProfileOil)
@@ -348,13 +335,13 @@ public class DuplicateCaseService : IDuplicateCaseService
         SetNewGuidTimeSeries(newExploration.SeismicAcquisitionAndProcessing);
         SetNewGuidTimeSeries(newExploration.CountryOfficeCost);
 
-        _context.Explorations.Add(newExploration);
+        context.Explorations.Add(newExploration);
         return newExploration;
     }
 
     private async Task<Exploration> GetExplorationNoTracking(Guid explorationId)
     {
-        var exploration = await _context.Explorations
+        var exploration = await context.Explorations
             .AsNoTracking()
             .Include(c => c.ExplorationWellCostProfile)
             .Include(c => c.AppraisalWellCostProfile)
@@ -385,7 +372,7 @@ public class DuplicateCaseService : IDuplicateCaseService
         SetNewGuidTimeSeries(newWellProject.GasInjectorCostProfile);
         SetNewGuidTimeSeries(newWellProject.GasInjectorCostProfileOverride);
 
-        _context.WellProjects.Add(newWellProject);
+        context.WellProjects.Add(newWellProject);
         return newWellProject;
     }
 
@@ -393,7 +380,7 @@ public class DuplicateCaseService : IDuplicateCaseService
 
     private async Task<WellProject> GetWellProjectNoTracking(Guid wellProjectId)
     {
-        var wellProject = await _context.WellProjects
+        var wellProject = await context.WellProjects
             .AsNoTracking()
             .Include(c => c.OilProducerCostProfile)
             .Include(c => c.OilProducerCostProfileOverride)

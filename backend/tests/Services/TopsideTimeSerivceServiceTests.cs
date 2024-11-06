@@ -1,12 +1,7 @@
-using api.Context;
 using api.Dtos;
 using api.Models;
 using api.Repositories;
 using api.Services;
-
-using AutoMapper;
-
-using Microsoft.EntityFrameworkCore;
 
 using NSubstitute;
 
@@ -17,9 +12,7 @@ namespace tests.Services
     public class TopsideTimeSerivceServiceTests
     {
         private readonly TopsideTimeSeriesService _topsideService;
-        private readonly IProjectService _projectService = Substitute.For<IProjectService>();
         private readonly ILoggerFactory _loggerFactory = Substitute.For<ILoggerFactory>();
-        private readonly IMapper _mapper = Substitute.For<IMapper>();
         private readonly ITopsideRepository _topsideRepository = Substitute.For<ITopsideRepository>();
         private readonly ITopsideTimeSeriesRepository _repository = Substitute.For<ITopsideTimeSeriesRepository>();
         private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();

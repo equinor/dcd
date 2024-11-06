@@ -6,13 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories;
 
-public class TopsideTimeSeriesRepository : BaseRepository, ITopsideTimeSeriesRepository
+public class TopsideTimeSeriesRepository(DcdDbContext context) : BaseRepository(context), ITopsideTimeSeriesRepository
 {
-
-    public TopsideTimeSeriesRepository(DcdDbContext context) : base(context)
-    {
-    }
-
     public async Task<TopsideCostProfile?> GetTopsideCostProfile(Guid topsideCostProfileId)
     {
         return await GetWithIncludes<TopsideCostProfile>(topsideCostProfileId, t => t.Topside);
@@ -20,7 +15,7 @@ public class TopsideTimeSeriesRepository : BaseRepository, ITopsideTimeSeriesRep
 
     public TopsideCostProfile CreateTopsideCostProfile(TopsideCostProfile topsideCostProfile)
     {
-        _context.TopsideCostProfiles.Add(topsideCostProfile);
+        Context.TopsideCostProfiles.Add(topsideCostProfile);
         return topsideCostProfile;
     }
 
@@ -31,7 +26,7 @@ public class TopsideTimeSeriesRepository : BaseRepository, ITopsideTimeSeriesRep
 
     public TopsideCostProfileOverride CreateTopsideCostProfileOverride(TopsideCostProfileOverride profile)
     {
-        _context.TopsideCostProfileOverride.Add(profile);
+        Context.TopsideCostProfileOverride.Add(profile);
         return profile;
     }
 

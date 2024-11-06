@@ -6,31 +6,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories;
 
-public class ProjectMemberRepository : BaseRepository, IProjectMemberRepository
+public class ProjectMemberRepository(DcdDbContext context) : BaseRepository(context), IProjectMemberRepository
 {
-    private readonly ILogger<ProjectRepository> _logger;
-
-    public ProjectMemberRepository(
-        DcdDbContext context,
-        ILogger<ProjectRepository> logger
-    ) : base(context)
-    {
-        _logger = logger;
-    }
-
     public async Task<ProjectMember> CreateProjectMember(ProjectMember projectMember)
     {
-        return (await _context.ProjectMembers.AddAsync(projectMember)).Entity;
+        return (await Context.ProjectMembers.AddAsync(projectMember)).Entity;
     }
 
     public void DeleteProjectMember(ProjectMember projectMember)
     {
-        _context.ProjectMembers.Remove(projectMember);
+        Context.ProjectMembers.Remove(projectMember);
     }
 
     public async Task<ProjectMember?> GetProjectMember(Guid projectId, Guid userId)
     {
-        return await _context.ProjectMembers
+        return await Context.ProjectMembers
             .SingleOrDefaultAsync(c => c.ProjectId == projectId && c.UserId == userId);
     }
 }

@@ -15,31 +15,13 @@ namespace api.Controllers;
     ApplicationRole.User
 )]
 [ActionType(ActionType.Edit)]
-public class PROSPController : ControllerBase
+public class PROSPController(
+    ProspSharepointImportService prospSharepointImportImportService,
+    IProjectService projectService,
+    ILoggerFactory loggerFactory)
+    : ControllerBase
 {
-    private const string isCheckedAsset = "true";
-    private readonly IConfiguration _config;
-    private readonly GraphServiceClient _graphServiceClient;
-    private readonly ILogger<PROSPController> _logger;
-    private readonly IProjectService _projectService;
-    private readonly ProspExcelImportService _prospExcelImportService;
-    private readonly ProspSharepointImportService _prospSharepointImportService;
-
-
-    public PROSPController(ProspExcelImportService prospExcelImportService,
-        GraphServiceClient graphService,
-        IConfiguration config,
-        ProspSharepointImportService prospSharepointImportImportService,
-        IProjectService projectService,
-        ILoggerFactory loggerFactory)
-    {
-        _prospExcelImportService = prospExcelImportService;
-        _graphServiceClient = graphService;
-        _config = config;
-        _prospSharepointImportService = prospSharepointImportImportService;
-        _projectService = projectService;
-        _logger = loggerFactory.CreateLogger<PROSPController>();
-    }
+    private readonly ILogger<PROSPController> _logger = loggerFactory.CreateLogger<PROSPController>();
 
     [HttpPost("sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
     public async Task<ActionResult<List<DriveItemDto>>> GetSharePointFileNamesAndId([FromBody] urlDto urlDto)
@@ -51,7 +33,7 @@ public class PROSPController : ControllerBase
 
         try
         {
-            var driveItems = await _prospSharepointImportService.GetDeltaDriveItemCollectionFromSite(urlDto.url);
+            var driveItems = await prospSharepointImportImportService.GetDeltaDriveItemCollectionFromSite(urlDto.url);
             return Ok(driveItems);
         }
         catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
@@ -78,8 +60,8 @@ public class PROSPController : ControllerBase
     {
         try
         {
-            await _prospSharepointImportService.ConvertSharepointFilesToProjectDto(projectId, dtos);
-            var projectDto = await _projectService.GetProjectDto(projectId);
+            await prospSharepointImportImportService.ConvertSharepointFilesToProjectDto(projectId, dtos);
+            var projectDto = await projectService.GetProjectDto(projectId);
 
             return Ok(projectDto);
         }

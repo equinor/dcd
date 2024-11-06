@@ -6,16 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories;
 
-public class SubstructureTimeSeriesRepository : BaseRepository, ISubstructureTimeSeriesRepository
+public class SubstructureTimeSeriesRepository(DcdDbContext context) : BaseRepository(context), ISubstructureTimeSeriesRepository
 {
-
-    public SubstructureTimeSeriesRepository(DcdDbContext context) : base(context)
-    {
-    }
-
     public SubstructureCostProfile CreateSubstructureCostProfile(SubstructureCostProfile substructureCostProfile)
     {
-        _context.SubstructureCostProfiles.Add(substructureCostProfile);
+        Context.SubstructureCostProfiles.Add(substructureCostProfile);
         return substructureCostProfile;
     }
 
@@ -31,7 +26,7 @@ public class SubstructureTimeSeriesRepository : BaseRepository, ISubstructureTim
 
     public SubstructureCostProfileOverride CreateSubstructureCostProfileOverride(SubstructureCostProfileOverride profile)
     {
-        _context.SubstructureCostProfileOverride.Add(profile);
+        Context.SubstructureCostProfileOverride.Add(profile);
         return profile;
     }
 

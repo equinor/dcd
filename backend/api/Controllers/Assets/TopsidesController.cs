@@ -16,20 +16,10 @@ namespace api.Controllers;
     ApplicationRole.User
 )]
 [ActionType(ActionType.Edit)]
-public class TopsidesController : ControllerBase
+public class TopsidesController(
+    ITopsideService topsideService,
+    ITopsideTimeSeriesService topsideTimeSeriesService) : ControllerBase
 {
-    private readonly ITopsideService _topsideService;
-    private readonly ITopsideTimeSeriesService _topsideTimeSeriesService;
-
-    public TopsidesController(
-        ITopsideService topsideService,
-        ITopsideTimeSeriesService topsideTimeSeriesService
-    )
-    {
-        _topsideService = topsideService;
-        _topsideTimeSeriesService = topsideTimeSeriesService;
-    }
-
     [HttpPut("{topsideId}")]
     public async Task<TopsideDto> UpdateTopside(
         [FromRoute] Guid projectId,
@@ -37,7 +27,7 @@ public class TopsidesController : ControllerBase
         [FromRoute] Guid topsideId,
         [FromBody] APIUpdateTopsideDto dto)
     {
-        return await _topsideService.UpdateTopside(projectId, caseId, topsideId, dto);
+        return await topsideService.UpdateTopside(projectId, caseId, topsideId, dto);
     }
 
     [HttpPost("{topsideId}/cost-profile-override/")]
@@ -47,7 +37,7 @@ public class TopsidesController : ControllerBase
         [FromRoute] Guid topsideId,
         [FromBody] CreateTopsideCostProfileOverrideDto dto)
     {
-        return await _topsideTimeSeriesService.CreateTopsideCostProfileOverride(projectId, caseId, topsideId, dto);
+        return await topsideTimeSeriesService.CreateTopsideCostProfileOverride(projectId, caseId, topsideId, dto);
     }
 
     [HttpPut("{topsideId}/cost-profile-override/{costProfileId}")]
@@ -58,6 +48,6 @@ public class TopsidesController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateTopsideCostProfileOverrideDto dto)
     {
-        return await _topsideTimeSeriesService.UpdateTopsideCostProfileOverride(projectId, caseId, topsideId, costProfileId, dto);
+        return await topsideTimeSeriesService.UpdateTopsideCostProfileOverride(projectId, caseId, topsideId, costProfileId, dto);
     }
 }

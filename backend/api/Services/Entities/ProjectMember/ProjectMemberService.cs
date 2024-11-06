@@ -7,18 +7,8 @@ using api.Repositories;
 
 namespace api.Services;
 
-public class ProjectMemberService : IProjectMemberService
+public class ProjectMemberService(IProjectMemberRepository projectMemberRepository) : IProjectMemberService
 {
-
-    private readonly IProjectMemberRepository _projectMemberRepository;
-
-    public ProjectMemberService(
-        IProjectMemberRepository projectMemberRepository
-    )
-    {
-        _projectMemberRepository = projectMemberRepository;
-    }
-
     public async Task<ProjectMemberDto> CreateProjectMember(Guid projectId, CreateProjectMemberDto dto)
     {
         var projectMember = new ProjectMember
@@ -28,15 +18,15 @@ public class ProjectMemberService : IProjectMemberService
             Role = dto.Role
         };
 
-        var existingProjectMember = await _projectMemberRepository.GetProjectMember(projectId, dto.UserId);
+        var existingProjectMember = await projectMemberRepository.GetProjectMember(projectId, dto.UserId);
 
         if (existingProjectMember != null)
         {
             throw new ResourceAlreadyExistsException("Project member already exists");
         }
 
-        await _projectMemberRepository.CreateProjectMember(projectMember);
-        await _projectMemberRepository.SaveChangesAsync();
+        await projectMemberRepository.CreateProjectMember(projectMember);
+        await projectMemberRepository.SaveChangesAsync();
 
         return new ProjectMemberDto
         {
@@ -48,14 +38,14 @@ public class ProjectMemberService : IProjectMemberService
 
     public async Task DeleteProjectMember(Guid projectId, Guid userId)
     {
-        var projectMember = await _projectMemberRepository.GetProjectMember(projectId, userId);
+        var projectMember = await projectMemberRepository.GetProjectMember(projectId, userId);
 
         if (projectMember == null)
         {
             throw new NotFoundInDBException("Project member not found");
         }
 
-        _projectMemberRepository.DeleteProjectMember(projectMember);
-        await _projectMemberRepository.SaveChangesAsync();
+        projectMemberRepository.DeleteProjectMember(projectMember);
+        await projectMemberRepository.SaveChangesAsync();
     }
 }

@@ -7,58 +7,38 @@ using api.Exceptions;
 using api.Models;
 using api.Repositories;
 
-using AutoMapper;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class CaseService : ICaseService
+public class CaseService(
+    DcdDbContext context,
+    IProjectService projectService,
+    ILoggerFactory loggerFactory,
+    ICaseRepository repository,
+    IMapperService mapperService,
+    IProjectAccessService projectAccessService)
+    : ICaseService
 {
-    private readonly DcdDbContext _context;
-    private readonly IProjectService _projectService;
-    private readonly IProjectAccessService _projectAccessService;
-    private readonly ILogger<CaseService> _logger;
-    private readonly IMapper _mapper;
-    private readonly IMapperService _mapperService;
-    private readonly ICaseRepository _repository;
-
-    public CaseService(
-        DcdDbContext context,
-        IProjectService projectService,
-        ILoggerFactory loggerFactory,
-        ICaseRepository repository,
-        IMapperService mapperService,
-        IMapper mapper,
-        IProjectAccessService projectAccessService
-        )
-    {
-        _context = context;
-        _projectService = projectService;
-        _logger = loggerFactory.CreateLogger<CaseService>();
-        _mapper = mapper;
-        _mapperService = mapperService;
-        _repository = repository;
-        _projectAccessService = projectAccessService;
-    }
+    private readonly ILogger<CaseService> _logger = loggerFactory.CreateLogger<CaseService>();
 
     public async Task<ProjectWithAssetsDto> DeleteCase(Guid projectId, Guid caseId)
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await _projectAccessService.ProjectExists<Case>(projectId, caseId);
+        await projectAccessService.ProjectExists<Case>(projectId, caseId);
 
         var caseItem = await GetCase(caseId);
 
-        _context.Cases!.Remove(caseItem);
+        context.Cases!.Remove(caseItem);
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
-        return await _projectService.GetProjectDto(caseItem.ProjectId);
+        return await projectService.GetProjectDto(caseItem.ProjectId);
     }
 
     public async Task<Case> GetCase(Guid caseId)
     {
-        var caseItem = await _context.Cases!
+        var caseItem = await context.Cases!
             .Include(c => c.TotalFeasibilityAndConceptStudies)
             .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)
@@ -79,21 +59,21 @@ public class CaseService : ICaseService
             .Include(c => c.CalculatedTotalIncomeCostProfile)
             .Include(c => c.CalculatedTotalCostCostProfile)
             .FirstOrDefaultAsync(c => c.Id == caseId)
-        ?? throw new NotFoundInDBException(string.Format("Case {0} not found.", caseId));
+        ?? throw new NotFoundInDBException($"Case {caseId} not found.");
 
         return caseItem;
     }
 
     public async Task<Case> GetCaseWithIncludes(Guid caseId, params Expression<Func<Case, object>>[] includes)
     {
-        return await _repository.GetCaseWithIncludes(caseId, includes)
+        return await repository.GetCaseWithIncludes(caseId, includes)
             ?? throw new NotFoundInDBException($"Case with id {caseId} not found.");
     }
 
     // TODO: Delete this method
     public async Task<IEnumerable<Case>> GetAll()
     {
-        return await _context.Cases.ToListAsync();
+        return await context.Cases.ToListAsync();
     }
 
     public async Task<CaseDto> UpdateCase<TDto>(
@@ -104,18 +84,18 @@ public class CaseService : ICaseService
         where TDto : BaseUpdateCaseDto
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await _projectAccessService.ProjectExists<Case>(projectId, caseId);
+        await projectAccessService.ProjectExists<Case>(projectId, caseId);
 
-        var existingCase = await _repository.GetCase(caseId)
+        var existingCase = await repository.GetCase(caseId)
             ?? throw new NotFoundInDBException($"Case with id {caseId} not found.");
 
-        _mapperService.MapToEntity(updatedCaseDto, existingCase, caseId);
+        mapperService.MapToEntity(updatedCaseDto, existingCase, caseId);
 
         existingCase.ModifyTime = DateTimeOffset.UtcNow;
 
         try
         {
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -123,8 +103,8 @@ public class CaseService : ICaseService
             throw;
         }
 
-        await _repository.UpdateModifyTime(caseId);
-        var dto = _mapperService.MapToDto<Case, CaseDto>(existingCase, caseId);
+        await repository.UpdateModifyTime(caseId);
+        var dto = mapperService.MapToDto<Case, CaseDto>(existingCase, caseId);
         return dto;
     }
 }

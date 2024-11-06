@@ -30,7 +30,7 @@ namespace api.Helpers
                 "TIE-IN" => ProjectCategory.TieIn,
                 "RENEWABLE_OTHER" => ProjectCategory.RenewableOther,
                 "CCS" => ProjectCategory.Ccs,
-                _ => throw new ArgumentException(string.Format("Category {0} does not exist in DCD.", category)),
+                _ => throw new ArgumentException($"Category {category} does not exist in DCD."),
             };
         }
 
@@ -48,7 +48,7 @@ namespace api.Helpers
                 "Execution" => ProjectPhase.Execution,
                 "Operation" => ProjectPhase.Operation,
                 "Screening business opportunities" => ProjectPhase.ScreeningBusinessOpportunities,
-                _ => throw new ArgumentException(string.Format("Phase {0} does not exist in DCD.", phase)),
+                _ => throw new ArgumentException($"Phase {phase} does not exist in DCD."),
             };
         }
     }

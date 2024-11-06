@@ -21,21 +21,12 @@ namespace api.Controllers;
 
     )]
 [ActionType(ActionType.Read)]
-public class STEAController : ControllerBase
+public class STEAController(ISTEAService sTeaService) : ControllerBase
 {
-    private readonly ISTEAService _sTEAService;
-    private readonly ILogger<STEAController> _logger;
-
-    public STEAController(ILogger<STEAController> logger, ISTEAService sTEAService)
-    {
-        _logger = logger;
-        _sTEAService = sTEAService;
-    }
-
     [HttpGet("{ProjectId}", Name = "GetInputToSTEA")]
     public async Task<STEAProjectDto> GetInputToSTEA(Guid ProjectId)
     {
-        return await _sTEAService.GetInputToSTEA(ProjectId);
+        return await sTeaService.GetInputToSTEA(ProjectId);
     }
 
     [HttpPost("{ProjectId}", Name = "ExcelToSTEA")]

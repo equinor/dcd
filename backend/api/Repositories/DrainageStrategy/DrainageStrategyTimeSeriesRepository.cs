@@ -9,16 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories;
 
-public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStrategyTimeSeriesRepository
+public class DrainageStrategyTimeSeriesRepository(DcdDbContext context) : BaseRepository(context), IDrainageStrategyTimeSeriesRepository
 {
-
-    public DrainageStrategyTimeSeriesRepository(DcdDbContext context) : base(context)
-    {
-    }
-
     public ProductionProfileOil CreateProductionProfileOil(ProductionProfileOil productionProfileOil)
     {
-        _context.ProductionProfileOil.Add(productionProfileOil);
+        Context.ProductionProfileOil.Add(productionProfileOil);
         return productionProfileOil;
     }
 
@@ -34,7 +29,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public AdditionalProductionProfileOil CreateAdditionalProductionProfileOil(AdditionalProductionProfileOil additionalProductionProfileOil)
     {
-        _context.AdditionalProductionProfileOil.Add(additionalProductionProfileOil);
+        Context.AdditionalProductionProfileOil.Add(additionalProductionProfileOil);
         return additionalProductionProfileOil;
     }
 
@@ -50,7 +45,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public ProductionProfileGas CreateProductionProfileGas(ProductionProfileGas profile)
     {
-        _context.ProductionProfileGas.Add(profile);
+        Context.ProductionProfileGas.Add(profile);
         return profile;
     }
 
@@ -66,7 +61,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public AdditionalProductionProfileGas CreateAdditionalProductionProfileGas(AdditionalProductionProfileGas profile)
     {
-        _context.AdditionalProductionProfileGas.Add(profile);
+        Context.AdditionalProductionProfileGas.Add(profile);
         return profile;
     }
 
@@ -82,7 +77,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public ProductionProfileWater CreateProductionProfileWater(ProductionProfileWater profile)
     {
-        _context.ProductionProfileWater.Add(profile);
+        Context.ProductionProfileWater.Add(profile);
         return profile;
     }
 
@@ -98,7 +93,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public ProductionProfileWaterInjection CreateProductionProfileWaterInjection(ProductionProfileWaterInjection profile)
     {
-        _context.ProductionProfileWaterInjection.Add(profile);
+        Context.ProductionProfileWaterInjection.Add(profile);
         return profile;
     }
     public async Task<ProductionProfileWaterInjection?> GetProductionProfileWaterInjection(Guid productionProfileId)
@@ -114,7 +109,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public FuelFlaringAndLossesOverride CreateFuelFlaringAndLossesOverride(FuelFlaringAndLossesOverride profile)
     {
-        _context.FuelFlaringAndLossesOverride.Add(profile);
+        Context.FuelFlaringAndLossesOverride.Add(profile);
         return profile;
     }
 
@@ -131,7 +126,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public NetSalesGasOverride CreateNetSalesGasOverride(NetSalesGasOverride profile)
     {
-        _context.NetSalesGasOverride.Add(profile);
+        Context.NetSalesGasOverride.Add(profile);
         return profile;
     }
 
@@ -148,7 +143,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public Co2EmissionsOverride CreateCo2EmissionsOverride(Co2EmissionsOverride profile)
     {
-        _context.Co2EmissionsOverride.Add(profile);
+        Context.Co2EmissionsOverride.Add(profile);
         return profile;
     }
 
@@ -165,7 +160,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public ImportedElectricityOverride CreateImportedElectricityOverride(ImportedElectricityOverride profile)
     {
-        _context.ImportedElectricityOverride.Add(profile);
+        Context.ImportedElectricityOverride.Add(profile);
         return profile;
     }
 
@@ -182,7 +177,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public DeferredOilProduction CreateDeferredOilProduction(DeferredOilProduction profile)
     {
-        _context.DeferredOilProduction.Add(profile);
+        Context.DeferredOilProduction.Add(profile);
         return profile;
     }
 
@@ -199,7 +194,7 @@ public class DrainageStrategyTimeSeriesRepository : BaseRepository, IDrainageStr
 
     public DeferredGasProduction CreateDeferredGasProduction(DeferredGasProduction profile)
     {
-        _context.DeferredGasProduction.Add(profile);
+        Context.DeferredGasProduction.Add(profile);
         return profile;
     }
 

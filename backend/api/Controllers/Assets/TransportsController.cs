@@ -16,20 +16,10 @@ namespace api.Controllers;
     ApplicationRole.User
 )]
 [ActionType(ActionType.Edit)]
-public class TransportsController : ControllerBase
+public class TransportsController(
+    ITransportService transportService,
+    ITransportTimeSeriesService transportTimeSeriesService) : ControllerBase
 {
-    private readonly ITransportService _transportService;
-    private readonly ITransportTimeSeriesService _transportTimeSeriesService;
-
-    public TransportsController(
-        ITransportService transportService,
-        ITransportTimeSeriesService transportTimeSeriesService
-    )
-    {
-        _transportService = transportService;
-        _transportTimeSeriesService = transportTimeSeriesService;
-    }
-
     [HttpPut("{transportId}")]
     public async Task<TransportDto> UpdateTransport(
         [FromRoute] Guid projectId,
@@ -37,7 +27,7 @@ public class TransportsController : ControllerBase
         [FromRoute] Guid transportId,
         [FromBody] APIUpdateTransportDto dto)
     {
-        return await _transportService.UpdateTransport(projectId, caseId, transportId, dto);
+        return await transportService.UpdateTransport(projectId, caseId, transportId, dto);
     }
 
     [HttpPost("{transportId}/cost-profile-override")]
@@ -47,7 +37,7 @@ public class TransportsController : ControllerBase
         [FromRoute] Guid transportId,
         [FromBody] CreateTransportCostProfileOverrideDto dto)
     {
-        return await _transportTimeSeriesService.CreateTransportCostProfileOverride(projectId, caseId, transportId, dto);
+        return await transportTimeSeriesService.CreateTransportCostProfileOverride(projectId, caseId, transportId, dto);
     }
 
     [HttpPut("{transportId}/cost-profile-override/{costProfileId}")]
@@ -58,6 +48,6 @@ public class TransportsController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateTransportCostProfileOverrideDto dto)
     {
-        return await _transportTimeSeriesService.UpdateTransportCostProfileOverride(projectId, caseId, transportId, costProfileId, dto);
+        return await transportTimeSeriesService.UpdateTransportCostProfileOverride(projectId, caseId, transportId, costProfileId, dto);
     }
 }

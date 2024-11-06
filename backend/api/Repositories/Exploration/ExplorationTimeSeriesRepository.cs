@@ -9,15 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories;
 
-public class ExplorationTimeSeriesRepository : BaseRepository, IExplorationTimeSeriesRepository
+public class ExplorationTimeSeriesRepository(DcdDbContext context) : BaseRepository(context), IExplorationTimeSeriesRepository
 {
-
-    public ExplorationTimeSeriesRepository(DcdDbContext context) : base(context)
-    {
-    }
     public GAndGAdminCostOverride CreateGAndGAdminCostOverride(GAndGAdminCostOverride profile)
     {
-        _context.GAndGAdminCostOverride.Add(profile);
+        Context.GAndGAdminCostOverride.Add(profile);
         return profile;
     }
     public async Task<GAndGAdminCostOverride?> GetGAndGAdminCostOverride(Guid profileId)
@@ -37,13 +33,13 @@ public class ExplorationTimeSeriesRepository : BaseRepository, IExplorationTimeS
 
     public SeismicAcquisitionAndProcessing CreateSeismicAcquisitionAndProcessing(SeismicAcquisitionAndProcessing profile)
     {
-        _context.SeismicAcquisitionAndProcessing.Add(profile);
+        Context.SeismicAcquisitionAndProcessing.Add(profile);
         return profile;
     }
 
     public CountryOfficeCost CreateCountryOfficeCost(CountryOfficeCost profile)
     {
-        _context.CountryOfficeCost.Add(profile);
+        Context.CountryOfficeCost.Add(profile);
         return profile;
     }
 
