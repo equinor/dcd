@@ -1270,4 +1270,13 @@ public class DcdDbContext : DbContext
 
         return await base.SaveChangesAsync(cancellationToken);
     }
+
+    public override int SaveChanges()
+    {
+        var utcNow = DateTime.UtcNow;
+
+        ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, _currentUser, utcNow));
+
+        return base.SaveChanges();
+    }
 }
