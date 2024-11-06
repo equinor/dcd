@@ -1,6 +1,4 @@
 using api.Context;
-using api.Dtos;
-using api.Exceptions;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;

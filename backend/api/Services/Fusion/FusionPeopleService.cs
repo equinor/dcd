@@ -2,7 +2,6 @@ using api.Models.Fusion;
 
 using Fusion.Integration;
 
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Identity.Abstractions;
 
 namespace api.Services;

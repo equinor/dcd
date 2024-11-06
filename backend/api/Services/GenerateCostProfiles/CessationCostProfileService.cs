@@ -1,7 +1,5 @@
 using api.Models;
 
-using AutoMapper;
-
 namespace api.Services;
 
 public class CessationCostProfileService(

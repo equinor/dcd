@@ -1,12 +1,9 @@
 using System.Linq.Expressions;
 
-using api.Context;
 using api.Dtos;
 using api.Exceptions;
 using api.Models;
 using api.Repositories;
-
-using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 

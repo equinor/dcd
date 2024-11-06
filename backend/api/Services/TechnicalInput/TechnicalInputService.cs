@@ -1,10 +1,6 @@
-using System.Globalization;
-
-using api.Adapters;
 using api.Context;
 using api.Dtos;
 using api.Models;
-using api.Repositories;
 
 using AutoMapper;
 

@@ -1,8 +1,5 @@
-using api.Context;
 using api.Helpers;
 using api.Models;
-
-using AutoMapper;
 
 namespace api.Services.GenerateCostProfiles;
 

@@ -1,8 +1,6 @@
 using api.Context;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 
 namespace api.Repositories;
 

@@ -1,6 +1,4 @@
-using api.Adapters;
 using api.Dtos;
-using api.Helpers;
 using api.Models;
 
 using AutoMapper;

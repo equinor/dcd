@@ -1,9 +1,5 @@
 using api.Context;
-using api.Dtos;
-using api.Exceptions;
 using api.Models;
-
-using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 

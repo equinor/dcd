@@ -1,7 +1,6 @@
 using System.Linq.Expressions;
 
 using api.Context;
-using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 

@@ -11,7 +11,6 @@ using api.Services.FusionIntegration;
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 
 using Newtonsoft.Json;
 

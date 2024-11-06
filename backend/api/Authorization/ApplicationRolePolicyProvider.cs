@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 using Microsoft.AspNetCore.Authorization;
 
 namespace api.Authorization;
