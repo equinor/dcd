@@ -1,9 +1,7 @@
 using System.Collections;
-using System.Diagnostics;
 using System.Reflection;
 
 using api.Context;
-using api.Dtos;
 using api.Dtos.Project.Revision;
 using api.Exceptions;
 using api.Models;
@@ -13,7 +11,6 @@ using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 
-using Newtonsoft.Json;
 
 namespace api.Services;
 
@@ -44,12 +41,21 @@ public class RevisionService(
         return project;
     }
 
+    private static DateTimeOffset GetLatestModifyTime(Project project)
+    {
+        return project.Cases?.Select(c => c.ModifyTime)
+            .Append(project.ModifyTime)
+            .Max() ?? project.ModifyTime;
+    }
+
     public async Task<RevisionWithCasesDto> GetRevision(Guid projectId)
     {
         var project = await GetProjectWithCasesAndAssets(projectId)
             ?? throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
 
         var projectDto = mapper.Map<Project, RevisionWithCasesDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+
+        projectDto.ModifyTime = GetLatestModifyTime(project);
 
         return projectDto;
     }
@@ -78,6 +84,8 @@ public class RevisionService(
 
         var revisionDto = mapper.Map<Project, RevisionWithCasesDto>(revision, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 
+        revisionDto.ModifyTime = GetLatestModifyTime(revision);
+
         return revisionDto;
     }
 
@@ -95,6 +103,7 @@ public class RevisionService(
     public async Task<RevisionWithCasesDto> UpdateRevision(Guid projectId, Guid revisionId, UpdateRevisionDto updateRevisionDto)
     {
         var revision = context.Projects
+                        .Include(p => p.Cases)
                         .Include(p => p.RevisionDetails)
                         .FirstOrDefault(r => r.Id == revisionId)
                     ?? throw new NotFoundInDBException($"Revision with id {revisionId} not found.");
@@ -111,6 +120,9 @@ public class RevisionService(
         await context.SaveChangesAsync();
 
         var revisionDto = mapper.Map<Project, RevisionWithCasesDto>(revision, opts => opts.Items["ConversionUnit"] = revision.PhysicalUnit.ToString());
+
+        revisionDto.ModifyTime = GetLatestModifyTime(revision);
+
         return revisionDto;
     }
 
