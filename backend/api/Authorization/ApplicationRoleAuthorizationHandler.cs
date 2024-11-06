@@ -9,7 +9,6 @@ using api.Repositories;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace api.Authorization;
 
@@ -17,7 +16,6 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IProjectAccessRepository _projectAccessRepository;
-    private readonly IMemoryCache _cache;
     private readonly ILogger<ApplicationRoleAuthorizationHandler> _logger;
 
 
@@ -25,14 +23,12 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
     public ApplicationRoleAuthorizationHandler(
         IProjectAccessRepository projectAccessRepository,
         IHttpContextAccessor httpContextAccessor,
-        ILogger<ApplicationRoleAuthorizationHandler> logger,
-        IMemoryCache cache
+        ILogger<ApplicationRoleAuthorizationHandler> logger
         )
     {
         _httpContextAccessor = httpContextAccessor;
         _logger = logger;
         _projectAccessRepository = projectAccessRepository;
-        _cache = cache;
     }
     protected override async Task<Task> HandleRequirementAsync(
         AuthorizationHandlerContext context,
@@ -71,49 +67,70 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         return requestPath?.StartsWithSegments(swaggerPath) == true;
     }
 
-    private async Task<bool> IsAuthorized(AuthorizationHandlerContext context, ApplicationRoleRequirement roleRequirement, List<ApplicationRole> userRoles)
+    private static Guid GetAzureUniqueId(AuthorizationHandlerContext context)
     {
-        var userHasRequiredRole = userRoles.Any(role => roleRequirement.Roles.Contains(role));
-
         var fusionIdentity = context.User.Identities.FirstOrDefault(i => i is Fusion.Integration.Authentication.FusionIdentity)
             as Fusion.Integration.Authentication.FusionIdentity;
 
-        var azureUniqueId = fusionIdentity?.Profile?.AzureUniqueId ??
+        return fusionIdentity?.Profile?.AzureUniqueId ??
             throw new InvalidOperationException("AzureUniqueId not found in user profile");
+    }
+
+    private async Task<bool> IsAuthorized(
+        AuthorizationHandlerContext context,
+        ApplicationRoleRequirement roleRequirement,
+        List<ApplicationRole> userRoles
+    )
+    {
+        var userHasRequiredRole = userRoles.Any(roleRequirement.Roles.Contains);
 
         // TODO: Implement check for classification and project phase
         var project = await GetCurrentProject(context);
 
-        var actionType = GetActionTypeFromEndpoint();
-
-        if (project != null && project.IsRevision && actionType == ActionType.Edit)
+        if (project == null)
         {
-            var requestPath = _httpContextAccessor.HttpContext?.Request.Path.Value;
-            if (requestPath == null || !IsValidRevisionPath(requestPath))
-            {
-                throw new ModifyRevisionException("Cannot modify resources that are a part of revisions", project.Id);
-            }
+            return userHasRequiredRole;
         }
 
-        var requiredRolesForEdit = new List<ApplicationRole> { ApplicationRole.Admin, ApplicationRole.User };
-        var requiredRolesForView = new List<ApplicationRole> { ApplicationRole.ReadOnly, ApplicationRole.Admin, ApplicationRole.User };
+        var actionType = GetActionTypeFromEndpoint();
+
+        if (project.IsRevision && actionType == ActionType.Edit)
+        {
+            throw new ModifyRevisionException("Cannot modify a revision", project.Id);
+        }
+
+        var azureUniqueId = GetAzureUniqueId(context);
+        var userMembershipRole = GetUserMembershipRole(project, azureUniqueId);
+
+        var requiredRolesForEdit = new List<ApplicationRole> {
+            ApplicationRole.Admin,
+            ApplicationRole.User
+        };
+        var requiredRolesForView = new List<ApplicationRole> {
+            ApplicationRole.ReadOnly,
+            ApplicationRole.Admin,
+            ApplicationRole.User
+        };
 
         if (actionType == ActionType.Edit)
         {
-            userHasRequiredRole = userRoles.Any(role => requiredRolesForEdit.Contains(role));
+            userHasRequiredRole = userRoles.Any(requiredRolesForEdit.Contains)
+            || userMembershipRole == ProjectMemberRole.Editor;
         }
         else if (actionType == ActionType.Read)
         {
-            userHasRequiredRole = userRoles.Any(role => requiredRolesForView.Contains(role));
+            userHasRequiredRole = userRoles.Any(requiredRolesForView.Contains)
+            || userMembershipRole == ProjectMemberRole.Editor
+            || userMembershipRole == ProjectMemberRole.Observer;
         }
 
         return userHasRequiredRole;
     }
 
-    private static bool IsValidRevisionPath(string requestPath)
+    private static ProjectMemberRole? GetUserMembershipRole(Project project, Guid azureUniqueId)
     {
-        var regex = new Regex(@"/projects/[0-9a-fA-F-]+/revisions", RegexOptions.IgnoreCase);
-        return regex.IsMatch(requestPath);
+        var projectMember = project.ProjectMembers?.FirstOrDefault(pm => pm.UserId == azureUniqueId);
+        return projectMember?.Role;
     }
 
     private ActionType? GetActionTypeFromEndpoint()
@@ -141,33 +158,25 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
 
         if (!Guid.TryParse(projectId.ToString(), out Guid projectIdGuid))
         {
+            // TODO: Should this throw an error?
             return null;
         }
 
-        // Check if the project exists in the cache
-        if (!_cache.TryGetValue(projectIdGuid, out Project? project))
-        {
-            // Get the project from the database
-            project = await _projectAccessRepository.GetProjectById(projectIdGuid);
+        var project = await _projectAccessRepository.GetProjectById(projectIdGuid);
 
-            /*
-            Some projects have the external id set as the id.
-            This may cause updates to projects where the external id is the same as the project id
-            to return a revision with the same external id instead.
-            Updates to revsions are not allowed and an error is thrown.
-            Therefore, we split the database call into two separate calls, first looking for the project by project id.
-            */
-            if (project == null)
-            {
-                project = await _projectAccessRepository.GetProjectByExternalId(projectIdGuid);
-            }
+        // /*
+        // Some projects have the external id set as the id.
+        // This may cause updates to projects where the external id is the same as the project id
+        // to return a revision with the same external id instead.
+        // Updates to revsions are not allowed and an error is thrown.
+        // Therefore, we split the database call into two separate calls, first looking for the project by project id.
+        // */
+        // if (project == null)
+        // {
+        //     project = await _projectAccessRepository.GetProjectByExternalId(projectIdGuid);
+        // }
 
-            // Store the project in the cache
-            var cacheEntryOptions = new MemoryCacheEntryOptions()
-                .SetSlidingExpiration(TimeSpan.FromMinutes(5));
-
-            _cache.Set(projectIdGuid, project, cacheEntryOptions);
-        }
+        // TODO: If no project is found, should this throw an error?
 
         return project;
     }

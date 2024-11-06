@@ -171,6 +171,7 @@ builder.Services.AddScoped<IFusionPeopleService, FusionPeopleService>();
 builder.Services.AddScoped<IProjectAccessService, ProjectAccessService>();
 
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IProjectMemberService, ProjectMemberService>();
 builder.Services.AddScoped<IRevisionService, RevisionService>();
 builder.Services.AddScoped<IFusionService, FusionService>();
 builder.Services.AddScoped<ICaseService, CaseService>();
@@ -222,6 +223,7 @@ builder.Services.AddScoped<ISTEAService, STEAService>();
 builder.Services.AddScoped<IProjectAccessRepository, ProjectAccessRepository>();
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
 builder.Services.AddScoped<IRevisionRepository, RevisionRepository>();
 builder.Services.AddScoped<ICaseRepository, CaseRepository>();
 builder.Services.AddScoped<ISubstructureRepository, SubstructureRepository>();
