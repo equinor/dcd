@@ -61,12 +61,6 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
 
     const { revisionId } = useParams()
 
-    const { data: projectApiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
-    })
-
     const { data: revisionApiData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
@@ -74,14 +68,13 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
     })
     console.log("revisionApiData", revisionApiData)
     useEffect(() => {
-        setRevisionName(revisionApiData?.name || "")
+        setRevisionName(revisionApiData?.revisionDetails.revisionName || "")
     }, [revisionApiData])
 
     const closeMenu = () => {
         setIsMenuOpen(false)
     }
 
-    console.log(projectApiData)
     const updateRevisionName = async (
         name: string,
     ) => {
@@ -95,7 +88,6 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
         if (revisionApiData && projectId && revisionId) {
             const updatedRevision = await updateRevisionName(revisionName)
             if (updatedRevision) {
-                addProjectEdit(updatedRevision.id, updatedRevision)
                 queryClient.invalidateQueries({ queryKey: ["revisionApiData", revisionId] })
                 queryClient.invalidateQueries({ queryKey: ["projectApiData", externalId] })
                 closeMenu()
@@ -111,7 +103,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
     const newClassification = PROJECT_CLASSIFICATION[revisionApiData?.classification as keyof typeof PROJECT_CLASSIFICATION]?.label
     const newInternalProjectPhase = revisionApiData?.internalProjectPhase as keyof typeof INTERNAL_PROJECT_PHASE
 
-    if (!projectApiData && !revisionApiData) { return null }
+    if (!revisionApiData) { return null }
 
     return (
         <Modal
@@ -139,7 +131,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                             </InputWrapper>
                             <InputWrapper labelProps={{ label: "Created Date" }}>
                                 <Typography variant="body_short">
-                                    {projectApiData?.createDate ? formatFullDate(projectApiData.createDate) : "N/A"}
+                                    {revisionApiData.revisionDetails?.revisionDate ? formatFullDate(revisionApiData.revisionDetails?.revisionDate) : "N/A"}
                                 </Typography>
                             </InputWrapper>
                             <InputWrapper labelProps={{ label: "Project Phase" }}>

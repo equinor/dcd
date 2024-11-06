@@ -43,7 +43,7 @@ const RevisionChip = () => {
     const matchingRevision = revisionDetailsList.find(
         (revision) => revision.revisionId === revisionId,
     )
-    const revisionName = revisionApiData?.name
+    const revisionName = revisionApiData?.revisionDetails.revisionName
     // console.log("revisiondetails ID", projectApiData?.revisionsDetailsList[1].id)
 
     console.log("revisionId", revisionId)

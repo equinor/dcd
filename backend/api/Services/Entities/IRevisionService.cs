@@ -1,12 +1,11 @@
-using api.Dtos;
-using api.Models;
+using api.Dtos.Project.Revision;
 
 namespace api.Services;
 
 public interface IRevisionService
 {
-    Task<ProjectWithAssetsDto> GetRevision(Guid projectId);
-    Task<ProjectWithAssetsDto> CreateRevision(Guid projectId, CreateRevisionDto createRevisionDto);
-    Task<ProjectDto> UpdateRevision(Guid projectId, Guid revisionId, UpdateRevisionDto updateRevisionDto);
+    Task<RevisionWithCasesDto> GetRevision(Guid projectId);
+    Task<RevisionWithCasesDto> CreateRevision(Guid projectId, CreateRevisionDto createRevisionDto);
+    Task<RevisionWithCasesDto> UpdateRevision(Guid projectId, Guid revisionId, UpdateRevisionDto updateRevisionDto);
 
 }

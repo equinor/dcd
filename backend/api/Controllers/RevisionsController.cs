@@ -1,6 +1,5 @@
 using api.Authorization;
-using api.Dtos;
-using api.Models;
+using api.Dtos.Project.Revision;
 using api.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +28,7 @@ public class RevisionsController : ControllerBase
         ApplicationRole.User
     )]
     [ActionType(ActionType.Read)]
-    public async Task<ProjectWithAssetsDto?> Get(Guid projectId, Guid revisionId)
+    public async Task<RevisionWithCasesDto?> Get(Guid projectId, Guid revisionId)
     {
         // TODO: Need to verify that the project from the URL is the same as the project of the resource
         return await _revisionService.GetRevision(revisionId);
@@ -41,18 +40,20 @@ public class RevisionsController : ControllerBase
         ApplicationRole.User
     )]
     [ActionType(ActionType.Edit)]
-    public async Task<ProjectWithAssetsDto> CreateRevision([FromRoute] Guid projectId, [FromBody] CreateRevisionDto createRevisionDto)
+    public async Task<RevisionWithCasesDto> CreateRevision([FromRoute] Guid projectId,
+        [FromBody] CreateRevisionDto createRevisionDto)
     {
         return await _revisionService.CreateRevision(projectId, createRevisionDto);
     }
 
     [HttpPut("{revisionId}")]
     [RequiresApplicationRoles(
-            ApplicationRole.Admin,
-            ApplicationRole.User
-        )]
+        ApplicationRole.Admin,
+        ApplicationRole.User
+    )]
     [ActionType(ActionType.Edit)]
-    public async Task<ProjectDto> UpdateRevision([FromRoute] Guid projectId, [FromRoute] Guid revisionId, [FromBody] UpdateRevisionDto updateRevisionDto)
+    public async Task<RevisionWithCasesDto> UpdateRevision([FromRoute] Guid projectId, [FromRoute] Guid revisionId,
+        [FromBody] UpdateRevisionDto updateRevisionDto)
     {
         return await _revisionService.UpdateRevision(projectId, revisionId, updateRevisionDto);
     }
