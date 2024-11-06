@@ -86,7 +86,6 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
         if (revisionApiData && projectId && revisionId) {
             const updatedRevision = await updateRevisionName(projectId, revisionId, revisionName)
             if (updatedRevision) {
-                addProjectEdit(updatedRevision.id, updatedRevision)
                 closeMenu()
             }
         }

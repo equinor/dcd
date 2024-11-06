@@ -266,23 +266,23 @@ public class RevisionService : IRevisionService
 
     public async Task<ProjectDto> UpdateRevision(Guid projectId, Guid revisionId, UpdateRevisionDto updateRevisionDto)
     {
-        var project = await _projectRepository.GetProjectWithCases(projectId)
-            ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
+        var revision = _context.Projects
+                        .Include(p => p.RevisionDetails)
+                        .FirstOrDefault(r => r.Id == revisionId)
+                    ?? throw new NotFoundInDBException($"Revision with id {revisionId} not found.");
 
-        var revision = project.Revisions?.FirstOrDefault(r => r.Id == revisionId)
-            ?? throw new NotFoundInDBException($"Revision with id {revisionId} not found.");
+        if (revision.RevisionDetails == null)
+        {
+            throw new InvalidOperationException("RevisionDetails cannot be null.");
+        }
 
-        revision.Name = updateRevisionDto.Name;
+        revision.RevisionDetails.RevisionName = updateRevisionDto.Name;
+        revision.RevisionDetails.Arena = updateRevisionDto.Arena;
+        revision.RevisionDetails.Mdqc = updateRevisionDto.Mdqc;
 
-        _context.Projects.Update(project);
         await _context.SaveChangesAsync();
 
-        Activity.Current?.AddBaggage(nameof(project), JsonConvert.SerializeObject(project, Formatting.None,
-            new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            }));
-        var projectDto = _mapperService.MapToDto<Project, ProjectDto>(project, projectId);
+        var projectDto = _mapperService.MapToDto<Project, ProjectDto>(revision, revisionId);
         return projectDto;
     }
 

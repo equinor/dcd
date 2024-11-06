@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 using api.Authorization.Extensions;
 using api.Controllers;
@@ -87,7 +88,11 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
 
         if (project != null && project.IsRevision && actionType == ActionType.Edit)
         {
-            throw new ModifyRevisionException("Cannot modify a revision", project.Id);
+            var requestPath = _httpContextAccessor.HttpContext?.Request.Path.Value;
+            if (requestPath == null || !IsValidRevisionPath(requestPath))
+            {
+                throw new ModifyRevisionException("Cannot modify resources that are a part of revisions", project.Id);
+            }
         }
 
         var requiredRolesForEdit = new List<ApplicationRole> { ApplicationRole.Admin, ApplicationRole.User };
@@ -103,6 +108,12 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         }
 
         return userHasRequiredRole;
+    }
+
+    private static bool IsValidRevisionPath(string requestPath)
+    {
+        var regex = new Regex(@"/projects/[0-9a-fA-F-]+/revisions", RegexOptions.IgnoreCase);
+        return regex.IsMatch(requestPath);
     }
 
     private ActionType? GetActionTypeFromEndpoint()

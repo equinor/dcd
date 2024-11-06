@@ -16,10 +16,6 @@ const RouteCoordinator = (): JSX.Element => {
     } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
 
-    function isAxiosError(error: unknown): error is AxiosError {
-        return (error as AxiosError).isAxiosError !== undefined
-    }
-
     const navigate = useNavigate()
     const location = useLocation()
 
