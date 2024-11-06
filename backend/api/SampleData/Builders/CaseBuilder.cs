@@ -10,7 +10,7 @@ public class CaseBuilder : Case
         var drainageStrategy = project.DrainageStrategies!.FirstOrDefault(d => d.Name.Equals(drainageStrategyName));
         if (drainageStrategy == null)
         {
-            throw new Exception(string.Format("Drainage strategy {0} not found", drainageStrategyName));
+            throw new Exception($"Drainage strategy {drainageStrategyName} not found");
         }
         DrainageStrategyLink = drainageStrategy.Id;
         return this;
@@ -20,7 +20,7 @@ public class CaseBuilder : Case
         var wellProject = project.WellProjects!.FirstOrDefault(d => d.Name.Equals(wellProjectName));
         if (wellProject == null)
         {
-            throw new Exception(string.Format("Drainage strategy {0} not found", wellProjectName));
+            throw new Exception($"Drainage strategy {wellProjectName} not found");
         }
         WellProjectLink = wellProject.Id;
         return this;
@@ -30,7 +30,7 @@ public class CaseBuilder : Case
         var surf = project.Surfs!.FirstOrDefault(d => d.Name.Equals(surfName));
         if (surf == null)
         {
-            throw new Exception(string.Format("Surf {0} not found", surfName));
+            throw new Exception($"Surf {surfName} not found");
         }
         SurfLink = surf.Id;
         return this;
@@ -40,7 +40,7 @@ public class CaseBuilder : Case
         var substructure = project.Substructures!.FirstOrDefault(d => d.Name.Equals(substructureName));
         if (substructure == null)
         {
-            throw new Exception(string.Format("Substructure {0} not found", substructureName));
+            throw new Exception($"Substructure {substructureName} not found");
         }
         SubstructureLink = substructure.Id;
         return this;
@@ -50,7 +50,7 @@ public class CaseBuilder : Case
         var topside = project.Topsides!.FirstOrDefault(d => d.Name.Equals(topsideName));
         if (topside == null)
         {
-            throw new Exception(string.Format("Topside {0} not found", topsideName));
+            throw new Exception($"Topside {topsideName} not found");
         }
         TopsideLink = topside.Id;
         return this;
@@ -60,7 +60,7 @@ public class CaseBuilder : Case
         var transport = project.Transports!.FirstOrDefault(d => d.Name.Equals(transportName));
         if (transport == null)
         {
-            throw new Exception(string.Format("Transport {0} not found", transportName));
+            throw new Exception($"Transport {transportName} not found");
         }
         TransportLink = transport.Id;
         return this;
@@ -70,7 +70,7 @@ public class CaseBuilder : Case
         var transport = project.Explorations!.FirstOrDefault(d => d.Name.Equals(explorationName));
         if (transport == null)
         {
-            throw new Exception(string.Format("Exploration {0} not found", explorationName));
+            throw new Exception($"Exploration {explorationName} not found");
         }
         ExplorationLink = transport.Id;
         return this;

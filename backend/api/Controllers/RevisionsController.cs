@@ -11,17 +11,8 @@ namespace api.Controllers;
 [ApiController]
 [Route("projects/{projectId}/revisions")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-public class RevisionsController : ControllerBase
+public class RevisionsController(IRevisionService revisionService) : ControllerBase
 {
-    private readonly IRevisionService _revisionService;
-
-    public RevisionsController(
-        IRevisionService revisionService
-    )
-    {
-        _revisionService = revisionService;
-    }
-
     [HttpGet("{revisionId}")]
     [RequiresApplicationRoles(
         ApplicationRole.Admin,
@@ -32,7 +23,7 @@ public class RevisionsController : ControllerBase
     public async Task<ProjectWithAssetsDto?> Get(Guid projectId, Guid revisionId)
     {
         // TODO: Need to verify that the project from the URL is the same as the project of the resource
-        return await _revisionService.GetRevision(revisionId);
+        return await revisionService.GetRevision(revisionId);
     }
 
     [HttpPost]
@@ -43,7 +34,7 @@ public class RevisionsController : ControllerBase
     [ActionType(ActionType.Edit)]
     public async Task<ProjectWithAssetsDto> CreateRevision([FromRoute] Guid projectId, [FromBody] CreateRevisionDto createRevisionDto)
     {
-        return await _revisionService.CreateRevision(projectId, createRevisionDto);
+        return await revisionService.CreateRevision(projectId, createRevisionDto);
     }
 
     [HttpPut("{revisionId}")]

@@ -1,7 +1,5 @@
 using Microsoft.Graph;
 
-using File = Microsoft.Graph.File;
-
 namespace api.Dtos;
 
 public class DriveItemDto

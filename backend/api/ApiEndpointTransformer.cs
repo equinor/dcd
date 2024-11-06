@@ -10,6 +10,6 @@ public class ApiEndpointTransformer : IOutboundParameterTransformer
             return string.Empty;
         }
         var endpoint = value.ToString();
-        return Regex.Replace(endpoint!, "([a-z])([A-Z])", o => string.Format("{0}-{1}", o.Groups[1].Value, o.Groups[2].Value));
+        return Regex.Replace(endpoint!, "([a-z])([A-Z])", o => $"{o.Groups[1].Value}-{o.Groups[2].Value}");
     }
 }

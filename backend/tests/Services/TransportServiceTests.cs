@@ -1,10 +1,7 @@
-using api.Context;
 using api.Dtos;
 using api.Models;
 using api.Repositories;
 using api.Services;
-
-using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -17,17 +14,16 @@ namespace tests.Services
     public class TransportServiceTests
     {
         private readonly TransportService _transportService;
-        private readonly ILoggerFactory _loggerFactory = Substitute.For<ILoggerFactory>();
+        private readonly ILogger<TransportService> _logger = Substitute.For<ILogger<TransportService>>();
         private readonly ITransportRepository _repository = Substitute.For<ITransportRepository>();
         private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
         private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
         private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
 
-
         public TransportServiceTests()
         {
             _transportService = new TransportService(
-                _loggerFactory,
+                _logger,
                 _caseRepository,
                 _repository,
                 _mapperService,

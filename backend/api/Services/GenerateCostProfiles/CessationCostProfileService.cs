@@ -1,41 +1,18 @@
 using api.Models;
 
-using AutoMapper;
-
 namespace api.Services;
 
-public class CessationCostProfileService : ICessationCostProfileService
+public class CessationCostProfileService(
+    ICaseService caseService,
+    IDrainageStrategyService drainageStrategyService,
+    IWellProjectWellService wellProjectWellService,
+    ISurfService surfService,
+    IProjectService projectService)
+    : ICessationCostProfileService
 {
-    private readonly ICaseService _caseService;
-    private readonly ILogger<CessationCostProfileService> _logger;
-    private readonly IDrainageStrategyService _drainageStrategyService;
-    private readonly IWellProjectService _wellProjectService;
-    private readonly IWellProjectWellService _wellProjectWellService;
-    private readonly ISurfService _surfService;
-    private readonly IProjectService _projectService;
-
-    public CessationCostProfileService(
-        ILoggerFactory loggerFactory,
-        ICaseService caseService,
-        IDrainageStrategyService drainageStrategyService,
-        IWellProjectService wellProjectService,
-        IWellProjectWellService wellProjectWellService,
-        ISurfService surfService,
-        IProjectService projectService
-        )
-    {
-        _logger = loggerFactory.CreateLogger<CessationCostProfileService>();
-        _caseService = caseService;
-        _drainageStrategyService = drainageStrategyService;
-        _wellProjectService = wellProjectService;
-        _wellProjectWellService = wellProjectWellService;
-        _surfService = surfService;
-        _projectService = projectService;
-    }
-
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await _caseService.GetCaseWithIncludes(
+        var caseItem = await caseService.GetCaseWithIncludes(
             caseId,
             c => c.CessationWellsCostOverride!,
             c => c.CessationWellsCost!,
@@ -43,7 +20,7 @@ public class CessationCostProfileService : ICessationCostProfileService
             c => c.CessationOffshoreFacilitiesCost!
         );
 
-        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
+        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
             caseItem.DrainageStrategyLink,
             d => d.ProductionProfileOil!,
             d => d.AdditionalProductionProfileOil!,
@@ -53,7 +30,7 @@ public class CessationCostProfileService : ICessationCostProfileService
 
         var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(drainageStrategy);
 
-        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var project = await projectService.GetProjectWithoutAssets(caseItem.ProjectId);
 
         await CalculateCessationWellsCost(caseItem, project, lastYearOfProduction);
         await GetCessationOffshoreFacilitiesCost(caseItem, lastYearOfProduction);
@@ -93,7 +70,7 @@ public class CessationCostProfileService : ICessationCostProfileService
             return;
         }
 
-        var surf = await _surfService.GetSurfWithIncludes(caseItem.SurfLink);
+        var surf = await surfService.GetSurfWithIncludes(caseItem.SurfLink);
         caseItem.CessationOffshoreFacilitiesCost = GenerateCessationOffshoreFacilitiesCost(
             surf,
             lastYear.Value,
@@ -103,7 +80,7 @@ public class CessationCostProfileService : ICessationCostProfileService
 
     private async Task<CessationWellsCost> GenerateCessationWellsCost(Guid wellProjectId, Project project, int lastYear, CessationWellsCost cessationWells)
     {
-        var linkedWells = await _wellProjectWellService.GetWellProjectWellsForWellProject(wellProjectId);
+        var linkedWells = await wellProjectWellService.GetWellProjectWellsForWellProject(wellProjectId);
         if (linkedWells == null)
         {
             return cessationWells;

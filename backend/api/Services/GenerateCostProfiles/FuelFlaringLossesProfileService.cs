@@ -1,35 +1,19 @@
-using api.Context;
 using api.Helpers;
 using api.Models;
 
-using AutoMapper;
-
 namespace api.Services.GenerateCostProfiles;
 
-public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
+public class FuelFlaringLossesProfileService(
+    ICaseService caseService,
+    IProjectService projectService,
+    ITopsideService topsideService,
+    IDrainageStrategyService drainageStrategyService)
+    : IFuelFlaringLossesProfileService
 {
-    private readonly ICaseService _caseService;
-    private readonly IDrainageStrategyService _drainageStrategyService;
-    private readonly IProjectService _projectService;
-    private readonly ITopsideService _topsideService;
-
-    public FuelFlaringLossesProfileService(
-        ICaseService caseService,
-        IProjectService projectService,
-        ITopsideService topsideService,
-        IDrainageStrategyService drainageStrategyService
-    )
-    {
-        _caseService = caseService;
-        _projectService = projectService;
-        _topsideService = topsideService;
-        _drainageStrategyService = drainageStrategyService;
-    }
-
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await _caseService.GetCaseWithIncludes(caseId);
-        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
+        var caseItem = await caseService.GetCaseWithIncludes(caseId);
+        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
             caseItem.DrainageStrategyLink,
             d => d.FuelFlaringAndLosses!,
             d => d.FuelFlaringAndLossesOverride!,
@@ -45,8 +29,8 @@ public class FuelFlaringLossesProfileService : IFuelFlaringLossesProfileService
             return;
         }
 
-        var topside = await _topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
-        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var topside = await topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
+        var project = await projectService.GetProjectWithoutAssets(caseItem.ProjectId);
 
         var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
         var flaring = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);

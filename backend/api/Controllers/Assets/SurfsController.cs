@@ -2,7 +2,6 @@ using api.Authorization;
 using api.Dtos;
 using api.Services;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 
@@ -16,20 +15,10 @@ namespace api.Controllers;
     ApplicationRole.User
 )]
 [ActionType(ActionType.Edit)]
-public class SurfsController : ControllerBase
+public class SurfsController(
+    ISurfService surfService,
+    ISurfTimeSeriesService surfTimeSeriesService) : ControllerBase
 {
-    private readonly ISurfService _surfService;
-    private readonly ISurfTimeSeriesService _surfTimeSeriesService;
-
-    public SurfsController(
-        ISurfService surfService,
-        ISurfTimeSeriesService surfTimeSeriesService
-    )
-    {
-        _surfService = surfService;
-        _surfTimeSeriesService = surfTimeSeriesService;
-    }
-
     [HttpPut("{surfId}")]
     public async Task<SurfDto> UpdateSurf(
         [FromRoute] Guid projectId,
@@ -37,7 +26,7 @@ public class SurfsController : ControllerBase
         [FromRoute] Guid surfId,
         [FromBody] APIUpdateSurfDto dto)
     {
-        return await _surfService.UpdateSurf(projectId, caseId, surfId, dto);
+        return await surfService.UpdateSurf(projectId, caseId, surfId, dto);
     }
 
     [HttpPost("{surfId}/cost-profile-override/")]
@@ -47,7 +36,7 @@ public class SurfsController : ControllerBase
         [FromRoute] Guid surfId,
         [FromBody] CreateSurfCostProfileOverrideDto dto)
     {
-        return await _surfTimeSeriesService.CreateSurfCostProfileOverride(projectId, caseId, surfId, dto);
+        return await surfTimeSeriesService.CreateSurfCostProfileOverride(projectId, caseId, surfId, dto);
     }
 
     [HttpPut("{surfId}/cost-profile-override/{costProfileId}")]
@@ -58,6 +47,6 @@ public class SurfsController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateSurfCostProfileOverrideDto dto)
     {
-        return await _surfTimeSeriesService.UpdateSurfCostProfileOverride(projectId, caseId, surfId, costProfileId, dto);
+        return await surfTimeSeriesService.UpdateSurfCostProfileOverride(projectId, caseId, surfId, costProfileId, dto);
     }
 }

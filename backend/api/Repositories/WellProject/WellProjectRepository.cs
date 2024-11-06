@@ -9,13 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories;
 
-public class WellProjectRepository : BaseRepository, IWellProjectRepository
+public class WellProjectRepository(DcdDbContext context) : BaseRepository(context), IWellProjectRepository
 {
-
-    public WellProjectRepository(DcdDbContext context) : base(context)
-    {
-    }
-
     public async Task<WellProject?> GetWellProject(Guid wellProjectId)
     {
         return await Get<WellProject>(wellProjectId);
@@ -41,7 +36,7 @@ public class WellProjectRepository : BaseRepository, IWellProjectRepository
             WellProjectProfileNames.GasInjectorCostProfileOverride => d => d.GasInjectorCostProfileOverride != null,
         };
 
-        bool hasProfile = await _context.WellProjects
+        bool hasProfile = await Context.WellProjects
             .Where(d => d.Id == WellProjectId)
             .AnyAsync(profileExistsExpression);
 
@@ -60,7 +55,7 @@ public class WellProjectRepository : BaseRepository, IWellProjectRepository
 
     public async Task<WellProject?> GetWellProjectWithDrillingSchedule(Guid drillingScheduleId)
     {
-        var wellProject = await _context.WellProjects
+        var wellProject = await Context.WellProjects
             .Include(e => e.WellProjectWells)!
             .ThenInclude(w => w.DrillingSchedule)
             .FirstOrDefaultAsync(e => e.WellProjectWells != null && e.WellProjectWells.Any(w => w.DrillingScheduleId == drillingScheduleId));
@@ -75,7 +70,7 @@ public class WellProjectRepository : BaseRepository, IWellProjectRepository
 
     public WellProjectWell CreateWellProjectWellDrillingSchedule(WellProjectWell wellProjectWellWithDrillingSchedule)
     {
-        _context.WellProjectWell.Add(wellProjectWellWithDrillingSchedule);
+        Context.WellProjectWell.Add(wellProjectWellWithDrillingSchedule);
         return wellProjectWellWithDrillingSchedule;
     }
 }

@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 using api.Models;
 
 namespace api.Dtos;

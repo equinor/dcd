@@ -2,8 +2,6 @@ using api.Authorization;
 using api.Dtos;
 using api.Services;
 
-
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 
@@ -16,43 +14,33 @@ namespace api.Controllers;
     ApplicationRole.Admin,
     ApplicationRole.User
 )]
-public class WellsController : ControllerBase
+public class WellsController(IWellService wellService) : ControllerBase
 {
-
-    private readonly IWellService _wellService;
-
-    public WellsController(
-        IWellService wellService
-    )
-    {
-        _wellService = wellService;
-    }
-
     [HttpPut("{wellId}")]
     [ActionType(ActionType.Edit)]
     public async Task<WellDto> UpdateWell([FromRoute] Guid projectId, [FromRoute] Guid wellId, [FromBody] UpdateWellDto wellDto)
     {
-        return await _wellService.UpdateWell(projectId, wellId, wellDto);
+        return await wellService.UpdateWell(projectId, wellId, wellDto);
     }
 
     [HttpPost]
     [ActionType(ActionType.Edit)]
     public async Task<WellDto> CreateWell([FromRoute] Guid projectId, [FromBody] CreateWellDto wellDto)
     {
-        return await _wellService.CreateWell(projectId, wellDto);
+        return await wellService.CreateWell(projectId, wellDto);
     }
 
     [HttpDelete("{wellId}")]
     [ActionType(ActionType.Edit)]
     public async Task DeleteWell([FromRoute] Guid projectId, [FromRoute] Guid wellId)
     {
-        await _wellService.DeleteWell(projectId, wellId);
+        await wellService.DeleteWell(projectId, wellId);
     }
 
     [HttpGet("{wellId}/affected-cases")]
     [ActionType(ActionType.Edit)]
     public async Task<IEnumerable<CaseDto>> GetAffectedCases([FromRoute] Guid projectId, [FromRoute] Guid wellId)
     {
-        return await _wellService.GetAffectedCases(wellId);
+        return await wellService.GetAffectedCases(wellId);
     }
 }

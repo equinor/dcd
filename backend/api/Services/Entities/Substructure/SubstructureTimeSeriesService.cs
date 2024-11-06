@@ -1,43 +1,21 @@
-
-using api.Context;
 using api.Dtos;
 using api.Exceptions;
 using api.Models;
 using api.Repositories;
 
-using AutoMapper;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class SubstructureTimeSeriesService : ISubstructureTimeSeriesService
+public class SubstructureTimeSeriesService(
+    ILogger<SubstructureService> logger,
+    ISubstructureRepository substructureRepository,
+    ISubstructureTimeSeriesRepository repository,
+    ICaseRepository caseRepository,
+    IMapperService mapperService,
+    IProjectAccessService projectAccessService)
+    : ISubstructureTimeSeriesService
 {
-    private readonly ILogger<SubstructureService> _logger;
-    private readonly ISubstructureRepository _substructureRepository;
-    private readonly ISubstructureTimeSeriesRepository _repository;
-    private readonly ICaseRepository _caseRepository;
-    private readonly IMapperService _mapperService;
-    private readonly IProjectAccessService _projectAccessService;
-
-
-    public SubstructureTimeSeriesService(
-        ILoggerFactory loggerFactory,
-        ISubstructureRepository substructureRepository,
-        ISubstructureTimeSeriesRepository repository,
-        ICaseRepository caseRepository,
-        IMapperService mapperService,
-        IProjectAccessService projectAccessService
-        )
-    {
-        _logger = loggerFactory.CreateLogger<SubstructureService>();
-        _repository = repository;
-        _substructureRepository = substructureRepository;
-        _caseRepository = caseRepository;
-        _mapperService = mapperService;
-        _projectAccessService = projectAccessService;
-    }
-
     public async Task<SubstructureCostProfileDto> AddOrUpdateSubstructureCostProfile(
         Guid projectId,
         Guid caseId,
@@ -46,9 +24,9 @@ public class SubstructureTimeSeriesService : ISubstructureTimeSeriesService
     )
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await _projectAccessService.ProjectExists<Substructure>(projectId, substructureId);
+        await projectAccessService.ProjectExists<Substructure>(projectId, substructureId);
 
-        var substructure = await _substructureRepository.GetSubstructureWithCostProfile(substructureId)
+        var substructure = await substructureRepository.GetSubstructureWithCostProfile(substructureId)
             ?? throw new NotFoundInDBException($"Substructure with id {substructureId} not found.");
 
         if (substructure.CostProfile != null)
@@ -73,8 +51,8 @@ public class SubstructureTimeSeriesService : ISubstructureTimeSeriesService
             substructureId,
             profileId,
             dto,
-            _repository.GetSubstructureCostProfile,
-            _repository.UpdateSubstructureCostProfile
+            repository.GetSubstructureCostProfile,
+            repository.UpdateSubstructureCostProfile
         );
     }
 
@@ -90,24 +68,24 @@ public class SubstructureTimeSeriesService : ISubstructureTimeSeriesService
             Substructure = substructure
         };
 
-        var newProfile = _mapperService.MapToEntity(dto, substructureCostProfile, substructureId);
+        var newProfile = mapperService.MapToEntity(dto, substructureCostProfile, substructureId);
         if (newProfile.Substructure.CostProfileOverride != null)
         {
             newProfile.Substructure.CostProfileOverride.Override = false;
         }
         try
         {
-            _repository.CreateSubstructureCostProfile(newProfile);
-            await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            repository.CreateSubstructureCostProfile(newProfile);
+            await caseRepository.UpdateModifyTime(caseId);
+            await repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to create cost profile for substructure with id {substructureId} for case id {caseId}.", substructureId, caseId);
+            logger.LogError(ex, "Failed to create cost profile for substructure with id {substructureId} for case id {caseId}.", substructureId, caseId);
             throw;
         }
 
-        var newDto = _mapperService.MapToDto<SubstructureCostProfile, SubstructureCostProfileDto>(newProfile, newProfile.Id);
+        var newDto = mapperService.MapToDto<SubstructureCostProfile, SubstructureCostProfileDto>(newProfile, newProfile.Id);
         return newDto;
     }
 
@@ -119,12 +97,12 @@ public class SubstructureTimeSeriesService : ISubstructureTimeSeriesService
     )
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await _projectAccessService.ProjectExists<Substructure>(projectId, substructureId);
+        await projectAccessService.ProjectExists<Substructure>(projectId, substructureId);
 
-        var substructure = await _substructureRepository.GetSubstructure(substructureId)
+        var substructure = await substructureRepository.GetSubstructure(substructureId)
             ?? throw new NotFoundInDBException($"Substructure with id {substructureId} not found.");
 
-        var resourceHasProfile = await _substructureRepository.SubstructureHasCostProfileOverride(substructureId);
+        var resourceHasProfile = await substructureRepository.SubstructureHasCostProfileOverride(substructureId);
 
         if (resourceHasProfile)
         {
@@ -136,22 +114,22 @@ public class SubstructureTimeSeriesService : ISubstructureTimeSeriesService
             Substructure = substructure,
         };
 
-        var newProfile = _mapperService.MapToEntity(dto, profile, substructureId);
+        var newProfile = mapperService.MapToEntity(dto, profile, substructureId);
 
         SubstructureCostProfileOverride createdProfile;
         try
         {
-            createdProfile = _repository.CreateSubstructureCostProfileOverride(newProfile);
-            await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            createdProfile = repository.CreateSubstructureCostProfileOverride(newProfile);
+            await caseRepository.UpdateModifyTime(caseId);
+            await repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to create profile SubstructureCostProfileOverride for case id {caseId}.", caseId);
+            logger.LogError(ex, "Failed to create profile SubstructureCostProfileOverride for case id {caseId}.", caseId);
             throw;
         }
 
-        var updatedDto = _mapperService.MapToDto<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>(createdProfile, createdProfile.Id);
+        var updatedDto = mapperService.MapToDto<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>(createdProfile, createdProfile.Id);
         return updatedDto;
     }
 
@@ -169,8 +147,8 @@ public class SubstructureTimeSeriesService : ISubstructureTimeSeriesService
         substructureId,
         costProfileId,
         dto,
-        _repository.GetSubstructureCostProfileOverride,
-        _repository.UpdateSubstructureCostProfileOverride
+        repository.GetSubstructureCostProfileOverride,
+        repository.UpdateSubstructureCostProfileOverride
     );
     }
 
@@ -191,7 +169,7 @@ public class SubstructureTimeSeriesService : ISubstructureTimeSeriesService
             ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
-        await _projectAccessService.ProjectExists<Substructure>(projectId, existingProfile.Substructure.Id);
+        await projectAccessService.ProjectExists<Substructure>(projectId, existingProfile.Substructure.Id);
 
         if (existingProfile.Substructure.ProspVersion == null)
         {
@@ -200,21 +178,21 @@ public class SubstructureTimeSeriesService : ISubstructureTimeSeriesService
                 existingProfile.Substructure.CostProfileOverride.Override = true;
             }
         }
-        _mapperService.MapToEntity(updatedProfileDto, existingProfile, substructureId);
+        mapperService.MapToEntity(updatedProfileDto, existingProfile, substructureId);
 
         try
         {
-            await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await caseRepository.UpdateModifyTime(caseId);
+            await repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
             var profileName = typeof(TProfile).Name;
-            _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
+            logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
             throw;
         }
 
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
+        var updatedDto = mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
         return updatedDto;
     }
 }

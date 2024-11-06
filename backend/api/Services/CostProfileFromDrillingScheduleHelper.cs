@@ -9,25 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingScheduleHelper
+public class CostProfileFromDrillingScheduleHelper(
+    DcdDbContext context,
+    ICaseService caseService,
+    IMapper mapper) : ICostProfileFromDrillingScheduleHelper
 {
-    private readonly ILogger<ExplorationService> _logger;
-    private readonly ICaseService _caseService;
-    private readonly DcdDbContext _context;
-    private readonly IMapper _mapper;
-
-    public CostProfileFromDrillingScheduleHelper(
-        DcdDbContext context,
-        ILoggerFactory loggerFactory,
-        ICaseService caseService,
-        IMapper mapper)
-    {
-        _logger = loggerFactory.CreateLogger<ExplorationService>();
-        _caseService = caseService;
-        _context = context;
-        _mapper = mapper;
-    }
-
     public async Task UpdateCostProfilesForWells(List<Guid> wellIds)
     {
         var explorationWells = GetAllExplorationWells().Where(ew => wellIds.Contains(ew.WellId));
@@ -37,8 +23,8 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         var uniqueExplorationIds = explorationWells.Select(ew => ew.ExplorationId).Distinct();
         var uniqueWellProjectIds = wellProjectWells.Select(wpw => wpw.WellProjectId).Distinct();
 
-        var explorationCases = (await _caseService.GetAll()).Where(c => uniqueExplorationIds.Contains(c.ExplorationLink));
-        var wellProjectCases = (await _caseService.GetAll()).Where(c => uniqueWellProjectIds.Contains(c.WellProjectLink));
+        var explorationCases = (await caseService.GetAll()).Where(c => uniqueExplorationIds.Contains(c.ExplorationLink));
+        var wellProjectCases = (await caseService.GetAll()).Where(c => uniqueWellProjectIds.Contains(c.WellProjectLink));
 
         var explorationCaseIds = explorationCases.Select(c => c.Id).Distinct();
         var wellProjectCaseIds = wellProjectCases.Select(c => c.Id).Distinct();
@@ -61,7 +47,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
 
         UpdateWellProjects(updatedWellProjectDtoList.ToArray());
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 
     private WellProjectWithProfilesDto[] UpdateWellProjects(WellProject[] updatedWellProjects)
@@ -69,8 +55,8 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         var updatedWellProjectDtoList = new List<WellProjectWithProfilesDto>();
         foreach (var updatedWellProject in updatedWellProjects)
         {
-            var wellProject = _context.WellProjects!.Update(updatedWellProject);
-            var wellProjectDto = _mapper.Map<WellProjectWithProfilesDto>(wellProject.Entity);
+            var wellProject = context.WellProjects!.Update(updatedWellProject);
+            var wellProjectDto = mapper.Map<WellProjectWithProfilesDto>(wellProject.Entity);
             if (wellProjectDto == null)
             {
                 throw new ArgumentNullException(nameof(wellProjectDto));
@@ -86,8 +72,8 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
         var updatedExplorationDtoList = new List<ExplorationWithProfilesDto>();
         foreach (var updatedExploration in updatedExplorations)
         {
-            var exploration = _context.Explorations!.Update(updatedExploration);
-            var explorationDto = _mapper.Map<ExplorationWithProfilesDto>(exploration.Entity);
+            var exploration = context.Explorations!.Update(updatedExploration);
+            var explorationDto = mapper.Map<ExplorationWithProfilesDto>(exploration.Entity);
             if (explorationDto == null)
             {
                 throw new ArgumentNullException(nameof(explorationDto));
@@ -100,21 +86,21 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
 
     private async Task<Exploration> GetExploration(Guid explorationId)
     {
-        var exploration = await _context.Explorations!.FindAsync(explorationId)
-            ?? throw new NotFoundInDBException(string.Format("Exploration {0} not found in database.", explorationId));
+        var exploration = await context.Explorations!.FindAsync(explorationId)
+            ?? throw new NotFoundInDBException($"Exploration {explorationId} not found in database.");
         return exploration;
     }
 
     private async Task<WellProject> GetWellProject(Guid wellProjectId)
     {
-        var wellProject = await _context.WellProjects!.FindAsync(wellProjectId)
-            ?? throw new NotFoundInDBException(string.Format("WellProject {0} not found in database.", wellProjectId));
+        var wellProject = await context.WellProjects!.FindAsync(wellProjectId)
+            ?? throw new NotFoundInDBException($"WellProject {wellProjectId} not found in database.");
         return wellProject;
     }
 
     private async Task<Exploration> UpdateExplorationCostProfilesForCase(Guid caseId)
     {
-        var caseItem = await _caseService.GetCase(caseId);
+        var caseItem = await caseService.GetCase(caseId);
 
         return await UpdateExplorationCostProfiles(caseItem.ExplorationLink);
     }
@@ -194,7 +180,7 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
 
     private async Task<WellProject> UpdateWellProjectCostProfilesForCase(Guid caseId)
     {
-        var caseItem = await _caseService.GetCase(caseId);
+        var caseItem = await caseService.GetCase(caseId);
 
         return await UpdateWellProjectCostProfiles(caseItem.WellProjectLink);
     }
@@ -284,9 +270,9 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
 
     private IQueryable<Well> GetAllWells()
     {
-        if (_context.Wells != null)
+        if (context.Wells != null)
         {
-            return _context.Wells;
+            return context.Wells;
         }
         else
         {
@@ -296,11 +282,11 @@ public class CostProfileFromDrillingScheduleHelper : ICostProfileFromDrillingSch
 
     private IQueryable<ExplorationWell> GetAllExplorationWells()
     {
-        return _context.ExplorationWell.Include(ew => ew.DrillingSchedule);
+        return context.ExplorationWell.Include(ew => ew.DrillingSchedule);
     }
 
     private IQueryable<WellProjectWell> GetAllWellProjectWells()
     {
-        return _context.WellProjectWell.Include(wpw => wpw.DrillingSchedule);
+        return context.WellProjectWell.Include(wpw => wpw.DrillingSchedule);
     }
 }

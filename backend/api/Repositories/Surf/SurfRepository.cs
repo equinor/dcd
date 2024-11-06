@@ -8,13 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories;
 
-public class SurfRepository : BaseRepository, ISurfRepository
+public class SurfRepository(DcdDbContext context) : BaseRepository(context), ISurfRepository
 {
-
-    public SurfRepository(DcdDbContext context) : base(context)
-    {
-    }
-
     public async Task<Surf?> GetSurf(Guid surfId)
     {
         return await Get<Surf>(surfId);
@@ -27,14 +22,14 @@ public class SurfRepository : BaseRepository, ISurfRepository
 
     public async Task<Surf?> GetSurfWithCostProfile(Guid surfId)
     {
-        return await _context.Surfs
+        return await Context.Surfs
                         .Include(t => t.CostProfile)
                         .FirstOrDefaultAsync(t => t.Id == surfId);
     }
 
     public async Task<bool> SurfHasCostProfileOverride(Guid surfId)
     {
-        return await _context.Surfs
+        return await Context.Surfs
             .AnyAsync(t => t.Id == surfId && t.CostProfileOverride != null);
     }
 

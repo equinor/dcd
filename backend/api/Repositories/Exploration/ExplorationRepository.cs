@@ -9,13 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories;
 
-public class ExplorationRepository : BaseRepository, IExplorationRepository
+public class ExplorationRepository(DcdDbContext context) : BaseRepository(context), IExplorationRepository
 {
-
-    public ExplorationRepository(DcdDbContext context) : base(context)
-    {
-    }
-
     public async Task<Exploration?> GetExploration(Guid explorationId)
     {
         return await Get<Exploration>(explorationId);
@@ -40,7 +35,7 @@ public class ExplorationRepository : BaseRepository, IExplorationRepository
             ExplorationProfileNames.CountryOfficeCost => d => d.CountryOfficeCost != null,
         };
 
-        bool hasProfile = await _context.Explorations
+        bool hasProfile = await Context.Explorations
             .Where(d => d.Id == ExplorationId)
             .AnyAsync(profileExistsExpression);
 
@@ -54,7 +49,7 @@ public class ExplorationRepository : BaseRepository, IExplorationRepository
 
     public async Task<ExplorationWell?> GetExplorationWell(Guid explorationId, Guid wellId)
     {
-        return await _context.ExplorationWell.FindAsync(explorationId, wellId);
+        return await Context.ExplorationWell.FindAsync(explorationId, wellId);
     }
 
     public async Task<DrillingSchedule?> GetExplorationWellDrillingSchedule(Guid drillingScheduleId)
@@ -64,7 +59,7 @@ public class ExplorationRepository : BaseRepository, IExplorationRepository
 
     public async Task<Exploration?> GetExplorationWithDrillingSchedule(Guid drillingScheduleId)
     {
-        var exploration = await _context.Explorations
+        var exploration = await Context.Explorations
             .Include(e => e.ExplorationWells)!
             .ThenInclude(w => w.DrillingSchedule)
             .FirstOrDefaultAsync(e => e.ExplorationWells != null && e.ExplorationWells.Any(w => w.DrillingScheduleId == drillingScheduleId));
@@ -79,7 +74,7 @@ public class ExplorationRepository : BaseRepository, IExplorationRepository
 
     public ExplorationWell CreateExplorationWellDrillingSchedule(ExplorationWell explorationWellWithDrillingSchedule)
     {
-        _context.ExplorationWell.Add(explorationWellWithDrillingSchedule);
+        Context.ExplorationWell.Add(explorationWellWithDrillingSchedule);
         return explorationWellWithDrillingSchedule;
     }
 }

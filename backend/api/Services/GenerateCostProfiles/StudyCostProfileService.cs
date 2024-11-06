@@ -4,37 +4,18 @@ using api.Models;
 
 namespace api.Services;
 
-public class StudyCostProfileService : IStudyCostProfileService
+public class StudyCostProfileService(
+    ICaseService caseService,
+    IWellProjectService wellProjectService,
+    ITopsideService topsideService,
+    ISubstructureService substructureService,
+    ISurfService surfService,
+    ITransportService transportService)
+    : IStudyCostProfileService
 {
-    private readonly ICaseService _caseService;
-    private readonly ILogger<StudyCostProfileService> _logger;
-    private readonly IWellProjectService _wellProjectService;
-    private readonly ITopsideService _topsideService;
-    private readonly ISubstructureService _substructureService;
-    private readonly ISurfService _surfService;
-    private readonly ITransportService _transportService;
-
-    public StudyCostProfileService(
-        ILoggerFactory loggerFactory,
-        ICaseService caseService,
-        IWellProjectService wellProjectService,
-        ITopsideService topsideService,
-        ISubstructureService substructureService,
-        ISurfService surfService,
-        ITransportService transportService)
-    {
-        _logger = loggerFactory.CreateLogger<StudyCostProfileService>();
-        _caseService = caseService;
-        _wellProjectService = wellProjectService;
-        _topsideService = topsideService;
-        _substructureService = substructureService;
-        _surfService = surfService;
-        _transportService = transportService;
-    }
-
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await _caseService.GetCaseWithIncludes(
+        var caseItem = await caseService.GetCaseWithIncludes(
             caseId,
             c => c.TotalFeasibilityAndConceptStudies!,
             c => c.TotalFeasibilityAndConceptStudiesOverride!,
@@ -176,25 +157,25 @@ public class StudyCostProfileService : IStudyCostProfileService
     {
         var sumFacilityCost = 0.0;
 
-        var substructure = await _substructureService.GetSubstructureWithIncludes(
+        var substructure = await substructureService.GetSubstructureWithIncludes(
             caseItem.SubstructureLink,
             s => s.CostProfileOverride!,
             s => s.CostProfile!
         );
 
-        var surf = await _surfService.GetSurfWithIncludes(
+        var surf = await surfService.GetSurfWithIncludes(
             caseItem.SurfLink,
             s => s.CostProfileOverride!,
             s => s.CostProfile!
         );
 
-        var topside = await _topsideService.GetTopsideWithIncludes(
+        var topside = await topsideService.GetTopsideWithIncludes(
             caseItem.TopsideLink,
             t => t.CostProfileOverride!,
             t => t.CostProfile!
         );
 
-        var transport = await _transportService.GetTransportWithIncludes(
+        var transport = await transportService.GetTransportWithIncludes(
             caseItem.TransportLink,
             t => t.CostProfileOverride!,
             t => t.CostProfile!
@@ -212,7 +193,7 @@ public class StudyCostProfileService : IStudyCostProfileService
     {
         var sumWellCost = 0.0;
 
-        var wellProject = await _wellProjectService.GetWellProjectWithIncludes(
+        var wellProject = await wellProjectService.GetWellProjectWithIncludes(
             caseItem.WellProjectLink,
             w => w.OilProducerCostProfileOverride!,
             w => w.OilProducerCostProfile!,

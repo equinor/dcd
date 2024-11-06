@@ -4,7 +4,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Exploration : IHasProjectId
+public class Exploration : IHasProjectId, IChangeTrackable
 {
     public Guid Id { get; set; }
     public virtual Project Project { get; set; } = null!;
