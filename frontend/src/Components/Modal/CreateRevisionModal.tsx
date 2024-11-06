@@ -154,7 +154,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                         </ColumnWrapper>
                         <ColumnWrapper>
                             <InputWrapper
-                                color="error"
+                                color="warning"
                                 helperProps={disableAfterDG0() ? {
                                     text: "Project phase after DG0 is collected from project master",
                                 } : undefined}
