@@ -154,9 +154,10 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                         </ColumnWrapper>
                         <ColumnWrapper>
                             <InputWrapper
-                                color="warning"
+                                disabled
                                 helperProps={disableAfterDG0() ? {
-                                    text: "Project phase after DG0 is collected from project master",
+                                    icon: <Icon data={info_circle} size={16} />,
+                                    text: "Project phases after DG0 are set in Common Library",
                                 } : undefined}
                             >
                                 <NativeSelect
