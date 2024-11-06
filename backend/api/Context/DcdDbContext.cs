@@ -46,7 +46,7 @@ public class DcdDbContext : DbContext
                 saveFailed = false;
                 try
                 {
-                    result = await base.SaveChangesAsync(cancellationToken);
+                    result = await SaveChangesAsync(cancellationToken);
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
@@ -96,7 +96,7 @@ public class DcdDbContext : DbContext
         var rerunCalculateNPV = CalculateNPV();
         var rerunCalculateBreakEven = CalculateBreakEvenOilPrice();
 
-        await base.SaveChangesAsync(); // TODO: This is a hack to find the updated values in the calculate services. Need to find a better way to do this.
+        await SaveChangesAsync(); // TODO: This is a hack to find the updated values in the calculate services. Need to find a better way to do this.
         if (wells.Count != 0 || drillingScheduleIds.Count != 0)
         {
             await _serviceProvider.GetRequiredService<IWellCostProfileService>().UpdateCostProfilesForWellsFromDrillingSchedules(drillingScheduleIds);
@@ -1262,12 +1262,12 @@ public class DcdDbContext : DbContext
         optionsBuilder.EnableSensitiveDataLogging();
     }
 
-    public override int SaveChanges()
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         var utcNow = DateTime.UtcNow;
 
         ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, _currentUser, utcNow));
 
-        return base.SaveChanges();
+        return await base.SaveChangesAsync(cancellationToken);
     }
 }
