@@ -6,8 +6,9 @@ import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import styled from "styled-components"
 
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useProjectContext } from "@/Context/ProjectContext"
-import { revisionQueryFn } from "@/Services/QueryFunctions"
+import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import { truncateText } from "@/Utils/common"
 import RevisionDetailsModal from "./RevisionDetailsModal"
 import { useRevisions } from "@/Hooks/useRevision"
@@ -23,22 +24,40 @@ const RevisionChip = () => {
     } = useRevisions()
     const { revisionId } = useParams()
     const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const { currentContext } = useModuleCurrentContext()
+    const externalId = currentContext?.externalId
 
-    const { data: revisionData } = useQuery({
+    const { data: revisionApiData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
         enabled: !!revisionId && !!projectId,
         refetchOnWindowFocus: false, // Optional: Adjust as necessary
     })
+    const { data: projectApiData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
+    })
 
-    const revisionName = () => (
-        <Tooltip title={`View details for ${truncateText(revisionData?.name ?? "", 120)}`}>
+    const revisionDetailsList = projectApiData?.revisionsDetailsList || []
+    const matchingRevision = revisionDetailsList.find(
+        (revision) => revision.revisionId === revisionId,
+    )
+    const revisionName = revisionApiData?.name
+    // console.log("revisiondetails ID", projectApiData?.revisionsDetailsList[1].id)
+
+    console.log("revisionId", revisionId)
+
+    console.log("revisionName", revisionName)
+
+    const revName = () => (
+        <Tooltip title={`View details for ${truncateText(revisionName ?? "", 120)}`}>
             <Typography
                 onClick={() => setIsMenuOpen(true)}
                 variant="body2"
                 sx={{ textDecoration: "underline", cursor: "pointer", whiteSpace: "nowrap" }}
             >
-                {truncateText(revisionData?.name ?? "", 12)}
+                {truncateText(revisionName ?? "", 12)}
             </Typography>
         </Tooltip>
     )
@@ -47,7 +66,7 @@ const RevisionChip = () => {
         <>
             <Chip>
                 <CloseRevision>
-                    {revisionName()}
+                    {revName()}
                     <Tooltip title="Exit revision">
                         <Icon
                             data={close}

@@ -72,7 +72,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
         queryFn: () => revisionQueryFn(projectId, revisionId),
         enabled: !!revisionId,
     })
-
+    console.log("revisionApiData", revisionApiData)
     useEffect(() => {
         setRevisionName(revisionApiData?.name || "")
     }, [revisionApiData])
@@ -81,7 +81,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
         setIsMenuOpen(false)
     }
 
-    console.log(revisionId)
+    console.log(projectApiData)
     const updateRevisionName = async (
         name: string,
     ) => {
@@ -95,7 +95,9 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
         if (revisionApiData && projectId && revisionId) {
             const updatedRevision = await updateRevisionName(revisionName)
             if (updatedRevision) {
-                queryClient.invalidateQueries({ queryKey: ["revisionApiData", revisionId] }) // Invalidate the revision query
+                addProjectEdit(updatedRevision.id, updatedRevision)
+                queryClient.invalidateQueries({ queryKey: ["revisionApiData", revisionId] })
+                queryClient.invalidateQueries({ queryKey: ["projectApiData", externalId] })
                 closeMenu()
             }
         }

@@ -485,7 +485,7 @@ const useEditCase = (): {
         addEdit,
         undoEdit,
         redoEdit,
-        processQueue
+        processQueue,
     }
 }
 
