@@ -35,17 +35,12 @@ public class TransportWithProfilesDto
     public DateTimeOffset? DG4Date { get; set; }
 }
 
-public class TransportCostProfileDto : TimeSeriesCostDto
-{
+public class TransportCostProfileDto : TimeSeriesCostDto;
 
-}
 public class TransportCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
 {
     [Required]
     public bool Override { get; set; }
 }
 
-public class TransportCessationCostProfileDto : TimeSeriesCostDto
-{
-
-}
+public class TransportCessationCostProfileDto : TimeSeriesCostDto;

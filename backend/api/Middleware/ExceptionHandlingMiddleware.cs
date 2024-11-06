@@ -9,8 +9,6 @@ public class ExceptionHandlingMiddleware(
     RequestDelegate requestDelegate,
     ILogger<ExceptionHandlingMiddleware> logger)
 {
-    private readonly ILogger _logger = logger;
-
     public async Task Invoke(HttpContext context)
     {
         try
@@ -23,19 +21,19 @@ public class ExceptionHandlingMiddleware(
         }
         finally
         {
-            _logger.LogInformation(
-            "Request {trace} {user} {method} {url} => {statusCode}",
-            context.TraceIdentifier,
-            context.User?.Identity?.Name,
-            context.Request?.Method,
-            context.Request?.Path.Value,
-            context.Response?.StatusCode);
+            logger.LogInformation(
+                "Request {trace} {user} {method} {url} => {statusCode}",
+                context.TraceIdentifier,
+                context.User.Identity?.Name,
+                context.Request.Method,
+                context.Request.Path.Value,
+                context.Response.StatusCode);
         }
     }
 
     private Task HandleException(HttpContext context, Exception exception)
     {
-        _logger.LogError(exception.ToString());
+        logger.LogError(exception.ToString());
 
         HttpStatusCode statusCode;
         string message;
@@ -73,6 +71,7 @@ public class ExceptionHandlingMiddleware(
                 message = "An unexpected error occurred.";
                 break;
         }
+
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)statusCode;
 

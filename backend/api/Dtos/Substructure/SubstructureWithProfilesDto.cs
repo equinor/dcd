@@ -38,15 +38,12 @@ public class SubstructureWithProfilesDto
     public DateTimeOffset? DG4Date { get; set; }
 }
 
-public class SubstructureCostProfileDto : TimeSeriesCostDto
-{
-}
+public class SubstructureCostProfileDto : TimeSeriesCostDto;
+
 public class SubstructureCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
 {
     [Required]
     public bool Override { get; set; }
 }
 
-public class SubstructureCessationCostProfileDto : TimeSeriesCostDto
-{
-}
+public class SubstructureCessationCostProfileDto : TimeSeriesCostDto;

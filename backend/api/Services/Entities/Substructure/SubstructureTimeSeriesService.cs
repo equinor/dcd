@@ -106,7 +106,7 @@ public class SubstructureTimeSeriesService(
 
         if (resourceHasProfile)
         {
-            throw new ResourceAlreadyExistsException($"Substructure with id {substructureId} already has a profile of type {typeof(SubstructureCostProfileOverride).Name}.");
+            throw new ResourceAlreadyExistsException($"Substructure with id {substructureId} already has a profile of type {nameof(SubstructureCostProfileOverride)}.");
         }
 
         SubstructureCostProfileOverride profile = new()
