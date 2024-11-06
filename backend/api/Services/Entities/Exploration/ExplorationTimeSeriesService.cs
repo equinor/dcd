@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Services;
 
 public class ExplorationTimeSeriesService(
-    ILoggerFactory loggerFactory,
+    ILogger<ExplorationService> logger,
     ICaseRepository caseRepository,
     IExplorationTimeSeriesRepository repository,
     IExplorationRepository explorationRepository,
@@ -17,8 +17,6 @@ public class ExplorationTimeSeriesService(
     IProjectAccessService projectAccessService)
     : IExplorationTimeSeriesService
 {
-    private readonly ILogger<ExplorationService> _logger = loggerFactory.CreateLogger<ExplorationService>();
-
     public async Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
         Guid projectId,
             Guid caseId,
@@ -156,7 +154,7 @@ public class ExplorationTimeSeriesService(
         catch (DbUpdateException ex)
         {
             var profileName = typeof(TProfile).Name;
-            _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
+            logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
             throw;
         }
 
@@ -205,7 +203,7 @@ public class ExplorationTimeSeriesService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
+            logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
             throw;
         }
 

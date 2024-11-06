@@ -14,14 +14,12 @@ namespace api.Services;
 public class CaseService(
     DcdDbContext context,
     IProjectService projectService,
-    ILoggerFactory loggerFactory,
+    ILogger<CaseService> logger,
     ICaseRepository repository,
     IMapperService mapperService,
     IProjectAccessService projectAccessService)
     : ICaseService
 {
-    private readonly ILogger<CaseService> _logger = loggerFactory.CreateLogger<CaseService>();
-
     public async Task<ProjectWithAssetsDto> DeleteCase(Guid projectId, Guid caseId)
     {
         // Need to verify that the project from the URL is the same as the project of the resource
@@ -99,7 +97,7 @@ public class CaseService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update case with id {caseId}.", caseId);
+            logger.LogError(ex, "Failed to update case with id {caseId}.", caseId);
             throw;
         }
 

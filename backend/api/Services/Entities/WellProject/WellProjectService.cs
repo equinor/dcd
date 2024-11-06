@@ -10,15 +10,13 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Services;
 
 public class WellProjectService(
-    ILoggerFactory loggerFactory,
+    ILogger<WellProjectService> logger,
     IWellProjectRepository repository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
     IProjectAccessService projectAccessService)
     : IWellProjectService
 {
-    private readonly ILogger<WellProjectService> _logger = loggerFactory.CreateLogger<WellProjectService>();
-
     public async Task<WellProject> GetWellProjectWithIncludes(Guid wellProjectId, params Expression<Func<WellProject, object>>[] includes)
     {
         return await repository.GetWellProjectWithIncludes(wellProjectId, includes)
@@ -47,7 +45,7 @@ public class WellProjectService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update well project with id {wellProjectId} for case id {caseId}.", wellProjectId, caseId);
+            logger.LogError(ex, "Failed to update well project with id {wellProjectId} for case id {caseId}.", wellProjectId, caseId);
             throw;
         }
 
@@ -84,7 +82,7 @@ public class WellProjectService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update drilling schedule with id {drillingScheduleId}", drillingScheduleId);
+            logger.LogError(ex, "Failed to update drilling schedule with id {drillingScheduleId}", drillingScheduleId);
             throw;
         }
 
@@ -128,7 +126,7 @@ public class WellProjectService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update drilling schedule with id {drillingScheduleId}", wellProjectId);
+            logger.LogError(ex, "Failed to update drilling schedule with id {drillingScheduleId}", wellProjectId);
             throw;
         }
 

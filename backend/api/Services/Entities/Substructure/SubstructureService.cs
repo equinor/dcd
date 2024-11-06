@@ -11,15 +11,13 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Services;
 
 public class SubstructureService(
-    ILoggerFactory loggerFactory,
+    ILogger<SubstructureService> logger,
     ISubstructureRepository substructureRepository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
     IProjectAccessService projectAccessService)
     : ISubstructureService
 {
-    private readonly ILogger<SubstructureService> _logger = loggerFactory.CreateLogger<SubstructureService>();
-
     public async Task<Substructure> GetSubstructureWithIncludes(Guid substructureId, params Expression<Func<Substructure, object>>[] includes)
     {
         return await substructureRepository.GetSubstructureWithIncludes(substructureId, includes)
@@ -52,7 +50,7 @@ public class SubstructureService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update substructure with id {SubstructureId} for case id {CaseId}.", substructureId, caseId);
+            logger.LogError(ex, "Failed to update substructure with id {SubstructureId} for case id {CaseId}.", substructureId, caseId);
             throw;
         }
 

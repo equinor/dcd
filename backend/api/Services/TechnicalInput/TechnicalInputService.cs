@@ -18,13 +18,10 @@ public class TechnicalInputService(
     IExplorationOperationalWellCostsService explorationOperationalWellCostsService,
     IDevelopmentOperationalWellCostsService developmentOperationalWellCostsService,
     ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
-    ILoggerFactory loggerFactory,
+    ILogger<TechnicalInputService> logger,
     IMapper mapper)
     : ITechnicalInputService
 {
-    private readonly ILogger<TechnicalInputService> _logger = loggerFactory.CreateLogger<TechnicalInputService>();
-
-
     public async Task<TechnicalInputDto> UpdateTehnicalInput(Guid projectId, UpdateTechnicalInputDto technicalInputDto)
     {
         var project = await projectService.GetProjectWithCasesAndAssets(projectId);
@@ -58,7 +55,7 @@ public class TechnicalInputService(
 
         if (returnProjectDto == null)
         {
-            _logger.LogError("Failed to map project to dto");
+            logger.LogError("Failed to map project to dto");
             throw new Exception("Failed to map project to dto");
         }
 
@@ -160,7 +157,7 @@ public class TechnicalInputService(
             .FirstOrDefaultAsync(w => w.Id == wellId);
         if (well == null)
         {
-            throw new ArgumentException(string.Format("Well {0} not found.", wellId));
+            throw new ArgumentException($"Well {wellId} not found.");
         }
         return well;
     }
@@ -174,7 +171,7 @@ public class TechnicalInputService(
         var projectDto = mapper.Map<ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
         if (projectDto == null)
         {
-            _logger.LogError("Failed to map project to dto");
+            logger.LogError("Failed to map project to dto");
             throw new Exception("Failed to map project to dto");
         }
 
@@ -185,7 +182,7 @@ public class TechnicalInputService(
     {
         if (project.ExplorationOperationalWellCosts == null)
         {
-            _logger.LogError("Exploration operational well costs not found");
+            logger.LogError("Exploration operational well costs not found");
             throw new Exception("Exploration operational well costs not found");
         }
         var item = await explorationOperationalWellCostsService.GetOperationalWellCosts(project.ExplorationOperationalWellCosts.Id) ?? new ExplorationOperationalWellCosts();
@@ -195,7 +192,7 @@ public class TechnicalInputService(
         var explorationOperationalWellCostsDto = mapper.Map<ExplorationOperationalWellCostsDto>(updatedItem.Entity);
         if (explorationOperationalWellCostsDto == null)
         {
-            _logger.LogError("Failed to map exploration operational well costs to dto");
+            logger.LogError("Failed to map exploration operational well costs to dto");
             throw new Exception("Failed to map exploration operational well costs to dto");
         }
         return explorationOperationalWellCostsDto;
@@ -205,7 +202,7 @@ public class TechnicalInputService(
     {
         if (project.DevelopmentOperationalWellCosts == null)
         {
-            _logger.LogError("Development operational well costs not found");
+            logger.LogError("Development operational well costs not found");
             throw new Exception("Development operational well costs not found");
         }
         var item = await developmentOperationalWellCostsService.GetOperationalWellCosts(project.DevelopmentOperationalWellCosts.Id) ?? new DevelopmentOperationalWellCosts();
@@ -215,7 +212,7 @@ public class TechnicalInputService(
         var developmentOperationalWellCostsDto = mapper.Map<DevelopmentOperationalWellCostsDto>(updatedItem.Entity);
         if (developmentOperationalWellCostsDto == null)
         {
-            _logger.LogError("Failed to map development operational well costs to dto");
+            logger.LogError("Failed to map development operational well costs to dto");
             throw new Exception("Failed to map development operational well costs to dto");
         }
         return developmentOperationalWellCostsDto;

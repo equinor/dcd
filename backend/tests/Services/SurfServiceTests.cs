@@ -14,17 +14,16 @@ namespace tests.Services
     public class SurfServiceTests
     {
         private readonly SurfService _surfService;
-        private readonly ILoggerFactory _loggerFactory = Substitute.For<ILoggerFactory>();
+        private readonly ILogger<SurfService> _logger = Substitute.For<ILogger<SurfService>>();
         private readonly ISurfRepository _repository = Substitute.For<ISurfRepository>();
         private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
         private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
         private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
 
-
         public SurfServiceTests()
         {
             _surfService = new SurfService(
-                _loggerFactory,
+                _logger,
                 _repository,
                 _caseRepository,
                 _mapperService,

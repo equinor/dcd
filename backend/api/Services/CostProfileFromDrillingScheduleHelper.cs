@@ -87,14 +87,14 @@ public class CostProfileFromDrillingScheduleHelper(
     private async Task<Exploration> GetExploration(Guid explorationId)
     {
         var exploration = await context.Explorations!.FindAsync(explorationId)
-            ?? throw new NotFoundInDBException(string.Format("Exploration {0} not found in database.", explorationId));
+            ?? throw new NotFoundInDBException($"Exploration {explorationId} not found in database.");
         return exploration;
     }
 
     private async Task<WellProject> GetWellProject(Guid wellProjectId)
     {
         var wellProject = await context.WellProjects!.FindAsync(wellProjectId)
-            ?? throw new NotFoundInDBException(string.Format("WellProject {0} not found in database.", wellProjectId));
+            ?? throw new NotFoundInDBException($"WellProject {wellProjectId} not found in database.");
         return wellProject;
     }
 

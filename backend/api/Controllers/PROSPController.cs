@@ -18,11 +18,9 @@ namespace api.Controllers;
 public class PROSPController(
     ProspSharepointImportService prospSharepointImportImportService,
     IProjectService projectService,
-    ILoggerFactory loggerFactory)
+    ILogger<PROSPController> logger)
     : ControllerBase
 {
-    private readonly ILogger<PROSPController> _logger = loggerFactory.CreateLogger<PROSPController>();
-
     [HttpPost("sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
     public async Task<ActionResult<List<DriveItemDto>>> GetSharePointFileNamesAndId([FromBody] urlDto urlDto)
     {
@@ -38,17 +36,17 @@ public class PROSPController(
         }
         catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {
-            _logger.LogError(ex, "Access Denied when attempting to access SharePoint site: {Url}", urlDto.url);
+            logger.LogError(ex, "Access Denied when attempting to access SharePoint site: {Url}", urlDto.url);
             return StatusCode(StatusCodes.Status403Forbidden, "Access to SharePoint resource was denied.");
         }
         catch (ProspSharepointImportService.AccessDeniedException ex)
         {
-            _logger.LogError(ex, "Custom Access Denied when attempting to access SharePoint site: {Url}", urlDto.url);
+            logger.LogError(ex, "Custom Access Denied when attempting to access SharePoint site: {Url}", urlDto.url);
             return StatusCode(StatusCodes.Status403Forbidden, ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while processing your request for URL: {Url}", urlDto.url);
+            logger.LogError(ex, "An error occurred while processing your request for URL: {Url}", urlDto.url);
             return StatusCode(StatusCodes.Status500InternalServerError, "An internal server error occurred.");
         }
     }
@@ -67,13 +65,13 @@ public class PROSPController(
         }
         catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {
-            _logger.LogError($"Access denied when trying to import files from SharePoint for project {projectId}: {ex.Message}");
+            logger.LogError($"Access denied when trying to import files from SharePoint for project {projectId}: {ex.Message}");
             return StatusCode(StatusCodes.Status403Forbidden, "Access to SharePoint resource was denied.");
         }
         // Handle other potential ServiceException cases, if necessary
         catch (Exception e)
         {
-            _logger.LogError($"An error occurred while importing files from SharePoint for project {projectId}: {e.Message}");
+            logger.LogError($"An error occurred while importing files from SharePoint for project {projectId}: {e.Message}");
             // Consider returning a more generic error message to avoid exposing sensitive details
             // and ensure it's a client-friendly message
             return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");

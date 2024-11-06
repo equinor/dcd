@@ -13,15 +13,13 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Services;
 
 public class TopsideService(
-    ILoggerFactory loggerFactory,
+    ILogger<TopsideService> logger,
     ITopsideRepository repository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
     IProjectAccessService projectAccessService)
     : ITopsideService
 {
-    private readonly ILogger<TopsideService> _logger = loggerFactory.CreateLogger<TopsideService>();
-
     public async Task<Topside> GetTopsideWithIncludes(Guid topsideId, params Expression<Func<Topside, object>>[] includes)
     {
         return await repository.GetTopsideWithIncludes(topsideId, includes)
@@ -52,7 +50,7 @@ public class TopsideService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update topside with id {topsideId} for case id {caseId}.", topsideId, caseId);
+            logger.LogError(ex, "Failed to update topside with id {topsideId} for case id {caseId}.", topsideId, caseId);
             throw;
         }
 

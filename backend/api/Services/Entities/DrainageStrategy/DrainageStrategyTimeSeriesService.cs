@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Services;
 
 public class DrainageStrategyTimeSeriesService(
-    ILoggerFactory loggerFactory,
+    ILogger<DrainageStrategyService> logger,
     ICaseRepository caseRepository,
     IDrainageStrategyTimeSeriesRepository repository,
     IDrainageStrategyRepository drainageStrategyTimeSeriesRepository,
@@ -20,8 +20,6 @@ public class DrainageStrategyTimeSeriesService(
     IProjectAccessService projectAccessService)
     : IDrainageStrategyTimeSeriesService
 {
-    private readonly ILogger<DrainageStrategyService> _logger = loggerFactory.CreateLogger<DrainageStrategyService>();
-
     public async Task<ProductionProfileOilDto> CreateProductionProfileOil(
         Guid projectId,
         Guid caseId,
@@ -488,7 +486,7 @@ public class DrainageStrategyTimeSeriesService(
         catch (DbUpdateException ex)
         {
             var profileName = typeof(TProfile).Name;
-            _logger.LogError(ex, "Failed to update profile {profileName} with id {productionProfileId} for case id {caseId}.", profileName, productionProfileId, caseId);
+            logger.LogError(ex, "Failed to update profile {profileName} with id {productionProfileId} for case id {caseId}.", profileName, productionProfileId, caseId);
             throw;
         }
 
@@ -540,7 +538,7 @@ public class DrainageStrategyTimeSeriesService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
+            logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
             throw;
         }
 

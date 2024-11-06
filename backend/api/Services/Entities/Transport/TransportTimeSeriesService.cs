@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Services;
 
 public class TransportTimeSeriesService(
-    ILoggerFactory loggerFactory,
+    ILogger<TransportService> logger,
     ICaseRepository caseRepository,
     ITransportRepository transportRepository,
     ITransportTimeSeriesRepository repository,
@@ -19,8 +19,6 @@ public class TransportTimeSeriesService(
     IProjectAccessService projectAccessService)
     : ITransportTimeSeriesService
 {
-    private readonly ILogger<TransportService> _logger = loggerFactory.CreateLogger<TransportService>();
-
     public async Task<TransportCostProfileOverrideDto> CreateTransportCostProfileOverride(
         Guid projectId,
         Guid caseId,
@@ -57,7 +55,7 @@ public class TransportTimeSeriesService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to create profile TransportCostProfileOverride for case id {caseId}.", caseId);
+            logger.LogError(ex, "Failed to create profile TransportCostProfileOverride for case id {caseId}.", caseId);
             throw;
         }
 
@@ -147,7 +145,7 @@ public class TransportTimeSeriesService(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to create cost profile for transport with id {transportId} for case id {caseId}.", transportId, caseId);
+            logger.LogError(ex, "Failed to create cost profile for transport with id {transportId} for case id {caseId}.", transportId, caseId);
             throw;
         }
 
@@ -192,7 +190,7 @@ public class TransportTimeSeriesService(
         catch (DbUpdateException ex)
         {
             var profileName = typeof(TProfile).Name;
-            _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
+            logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
             throw;
         }
 

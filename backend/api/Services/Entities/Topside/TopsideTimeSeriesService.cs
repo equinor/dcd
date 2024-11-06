@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Services;
 
 public class TopsideTimeSeriesService(
-    ILoggerFactory loggerFactory,
+    ILogger<TopsideService> logger,
     ITopsideTimeSeriesRepository repository,
     ITopsideRepository topsideRepository,
     ICaseRepository caseRepository,
@@ -19,8 +19,6 @@ public class TopsideTimeSeriesService(
     IProjectAccessService projectAccessService)
     : ITopsideTimeSeriesService
 {
-    private readonly ILogger<TopsideService> _logger = loggerFactory.CreateLogger<TopsideService>();
-
     public async Task<TopsideCostProfileOverrideDto> CreateTopsideCostProfileOverride(
         Guid projectId,
         Guid caseId,
@@ -57,7 +55,7 @@ public class TopsideTimeSeriesService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to create profile TopsideCostProfileOverride for case id {caseId}.", caseId);
+            logger.LogError(ex, "Failed to create profile TopsideCostProfileOverride for case id {caseId}.", caseId);
             throw;
         }
 
@@ -149,7 +147,7 @@ public class TopsideTimeSeriesService(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to create cost profile for topside with id {topsideId} for case id {caseId}.", topsideId, caseId);
+            logger.LogError(ex, "Failed to create cost profile for topside with id {topsideId} for case id {caseId}.", topsideId, caseId);
             throw;
         }
 
@@ -194,7 +192,7 @@ public class TopsideTimeSeriesService(
         catch (DbUpdateException ex)
         {
             var profileName = typeof(TProfile).Name;
-            _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
+            logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
             throw;
         }
 

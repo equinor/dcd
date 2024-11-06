@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Services;
 
 public class WellProjectTimeSeriesService(
-    ILoggerFactory loggerFactory,
+    ILogger<WellProjectService> logger,
     IWellProjectTimeSeriesRepository repository,
     IWellProjectRepository wellProjectRepository,
     ICaseRepository caseRepository,
@@ -17,8 +17,6 @@ public class WellProjectTimeSeriesService(
     IProjectAccessService projectAccessService)
     : IWellProjectTimeSeriesService
 {
-    private readonly ILogger<WellProjectService> _logger = loggerFactory.CreateLogger<WellProjectService>();
-
     public async Task<OilProducerCostProfileOverrideDto> UpdateOilProducerCostProfileOverride(
         Guid projectId,
         Guid caseId,
@@ -192,7 +190,7 @@ public class WellProjectTimeSeriesService(
         catch (DbUpdateException ex)
         {
             var profileName = typeof(TProfile).Name;
-            _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
+            logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
             throw;
         }
 
@@ -241,7 +239,7 @@ public class WellProjectTimeSeriesService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
+            logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
             throw;
         }
 

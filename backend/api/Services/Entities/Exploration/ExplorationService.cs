@@ -11,15 +11,13 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Services;
 
 public class ExplorationService(
-    ILoggerFactory loggerFactory,
+    ILogger<ExplorationService> logger,
     ICaseRepository caseRepository,
     IExplorationRepository repository,
     IMapperService mapperService,
     IProjectAccessService projectAccessService)
     : IExplorationService
 {
-    private readonly ILogger<ExplorationService> _logger = loggerFactory.CreateLogger<ExplorationService>();
-
     public async Task<Exploration> GetExplorationWithIncludes(Guid explorationId, params Expression<Func<Exploration, object>>[] includes)
     {
         return await repository.GetExplorationWithIncludes(explorationId, includes)
@@ -48,7 +46,7 @@ public class ExplorationService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update exploration with id {explorationId} for case id {caseId}.", explorationId, caseId);
+            logger.LogError(ex, "Failed to update exploration with id {explorationId} for case id {caseId}.", explorationId, caseId);
             throw;
         }
 
@@ -83,7 +81,7 @@ public class ExplorationService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update drilling schedule with id {drillingScheduleId}", drillingScheduleId);
+            logger.LogError(ex, "Failed to update drilling schedule with id {drillingScheduleId}", drillingScheduleId);
             throw;
         }
 
@@ -127,7 +125,7 @@ public class ExplorationService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update drilling schedule with id {drillingScheduleId}", explorationId);
+            logger.LogError(ex, "Failed to update drilling schedule with id {drillingScheduleId}", explorationId);
             throw;
         }
 

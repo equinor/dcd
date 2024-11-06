@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Services;
 
 public class DrainageStrategyService(
-    ILoggerFactory loggerFactory,
+    ILogger<DrainageStrategyService> logger,
     ICaseRepository caseRepository,
     IDrainageStrategyRepository repository,
     IConversionMapperService conversionMapperService,
@@ -22,8 +22,6 @@ public class DrainageStrategyService(
     IProjectAccessService projectAccessService)
     : IDrainageStrategyService
 {
-    private readonly ILogger<DrainageStrategyService> _logger = loggerFactory.CreateLogger<DrainageStrategyService>();
-
     public async Task<DrainageStrategy> GetDrainageStrategyWithIncludes(
         Guid drainageStrategyId,
         params Expression<Func<DrainageStrategy, object>>[] includes
@@ -58,7 +56,7 @@ public class DrainageStrategyService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update drainage strategy with id {drainageStrategyId} for case id {caseId}.", drainageStrategyId, caseId);
+            logger.LogError(ex, "Failed to update drainage strategy with id {drainageStrategyId} for case id {caseId}.", drainageStrategyId, caseId);
             throw;
         }
 

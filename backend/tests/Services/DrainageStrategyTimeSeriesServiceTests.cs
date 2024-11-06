@@ -14,7 +14,7 @@ namespace tests.Services
     public class DrainageStrategyTimeSeriesServiceTests
     {
         private readonly IDrainageStrategyTimeSeriesService _drainageStrategyTimeSeriesService;
-        private readonly ILoggerFactory _loggerFactory = Substitute.For<ILoggerFactory>();
+        private readonly ILogger<DrainageStrategyService> _logger = Substitute.For<ILogger<DrainageStrategyService>>();
         private readonly IDrainageStrategyTimeSeriesRepository _repository = Substitute.For<IDrainageStrategyTimeSeriesRepository>();
         private readonly IDrainageStrategyRepository _drainageStrategyRepository = Substitute.For<IDrainageStrategyRepository>();
         private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
@@ -25,7 +25,7 @@ namespace tests.Services
         public DrainageStrategyTimeSeriesServiceTests()
         {
             _drainageStrategyTimeSeriesService = new DrainageStrategyTimeSeriesService(
-                _loggerFactory,
+                _logger,
                 _caseRepository,
                 _repository,
                 _drainageStrategyRepository,

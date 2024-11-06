@@ -37,7 +37,7 @@ public class DuplicateCaseService(
             .FirstOrDefaultAsync(c => c.Id == caseId);
         if (caseItem == null)
         {
-            throw new NotFoundInDBException(string.Format("Case {0} not found.", caseId));
+            throw new NotFoundInDBException($"Case {caseId} not found.");
         }
         return caseItem;
     }
@@ -177,7 +177,7 @@ public class DuplicateCaseService(
             .FirstOrDefaultAsync(o => o.Id == topsideId);
         if (topside == null)
         {
-            throw new NotFoundInDBException(string.Format("Topside {0} not found.", topsideId));
+            throw new NotFoundInDBException($"Topside {topsideId} not found.");
         }
         return topside;
     }
@@ -205,7 +205,7 @@ public class DuplicateCaseService(
             .FirstOrDefaultAsync(c => c.Id == transportId);
         if (transport == null)
         {
-            throw new NotFoundInDBException(string.Format("Transport {0} not found.", transportId));
+            throw new NotFoundInDBException($"Transport {transportId} not found.");
         }
         return transport;
     }
@@ -233,7 +233,7 @@ public class DuplicateCaseService(
             .FirstOrDefaultAsync(o => o.Id == substructureId);
         if (substructure == null)
         {
-            throw new NotFoundInDBException(string.Format("Substructure {0} not found.", substructureId));
+            throw new NotFoundInDBException($"Substructure {substructureId} not found.");
         }
         return substructure;
     }
@@ -261,7 +261,7 @@ public class DuplicateCaseService(
             .FirstOrDefaultAsync(o => o.Id == surfId);
         if (surf == null)
         {
-            throw new NotFoundInDBException(string.Format("Surf {0} not found.", surfId));
+            throw new NotFoundInDBException($"Surf {surfId} not found.");
         }
         return surf;
     }
@@ -317,7 +317,7 @@ public class DuplicateCaseService(
             .FirstOrDefaultAsync(o => o.Id == drainageStrategyId);
         if (drainageStrategy == null)
         {
-            throw new NotFoundInDBException(string.Format("Drainage strategy {0} not found.", drainageStrategyId));
+            throw new NotFoundInDBException($"Drainage strategy {drainageStrategyId} not found.");
         }
         return drainageStrategy;
     }
@@ -353,7 +353,7 @@ public class DuplicateCaseService(
             .FirstOrDefaultAsync(o => o.Id == explorationId);
         if (exploration == null)
         {
-            throw new NotFoundInDBException(string.Format("Exploration {0} not found.", explorationId));
+            throw new NotFoundInDBException($"Exploration {explorationId} not found.");
         }
         return exploration;
     }
@@ -393,7 +393,7 @@ public class DuplicateCaseService(
             .FirstOrDefaultAsync(o => o.Id == wellProjectId);
         if (wellProject == null)
         {
-            throw new NotFoundInDBException(string.Format("Well project {0} not found.", wellProjectId));
+            throw new NotFoundInDBException($"Well project {wellProjectId} not found.");
         }
         return wellProject;
     }

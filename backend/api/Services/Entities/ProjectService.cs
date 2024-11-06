@@ -19,15 +19,13 @@ namespace api.Services;
 
 public class ProjectService(
     DcdDbContext context,
-    ILoggerFactory loggerFactory,
+    ILogger<ProjectService> logger,
     IMapper mapper,
     IProjectRepository projectRepository,
     IMapperService mapperService,
     IFusionService fusionService)
     : IProjectService
 {
-    private readonly ILogger<ProjectService> _logger = loggerFactory.CreateLogger<ProjectService>();
-
     public async Task<ProjectWithCasesDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto)
     {
         var existingProject = await projectRepository.GetProjectWithCases(projectId)
@@ -43,7 +41,7 @@ public class ProjectService(
         }
         catch (DbUpdateException e)
         {
-            _logger.LogError(e, "Failed to update project {projectId}", projectId);
+            logger.LogError(e, "Failed to update project {projectId}", projectId);
             throw;
         }
 
@@ -69,7 +67,7 @@ public class ProjectService(
         }
         catch (DbUpdateException e)
         {
-            _logger.LogError(e, "Failed to update exploration operational well costs {explorationOperationalWellCostsId}", explorationOperationalWellCostsId);
+            logger.LogError(e, "Failed to update exploration operational well costs {explorationOperationalWellCostsId}", explorationOperationalWellCostsId);
             throw;
         }
 
@@ -95,7 +93,7 @@ public class ProjectService(
         }
         catch (DbUpdateException e)
         {
-            _logger.LogError(e, "Failed to update development operational well costs {developmentOperationalWellCostsId}", developmentOperationalWellCostsId);
+            logger.LogError(e, "Failed to update development operational well costs {developmentOperationalWellCostsId}", developmentOperationalWellCostsId);
             throw;
         }
 
@@ -236,7 +234,7 @@ public class ProjectService(
             return project;
         }
 
-        _logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
+        logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
         throw new NotFoundInDBException("The database contains no projects");
     }
 
@@ -265,7 +263,7 @@ public class ProjectService(
             return project;
         }
 
-        _logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
+        logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
         throw new NotFoundInDBException("The database contains no projects");
     }
 
@@ -315,7 +313,7 @@ public class ProjectService(
 
         if (project == null)
         {
-            throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
+            throw new NotFoundInDBException($"Project {projectId} not found");
         }
 
         Activity.Current?.AddBaggage(nameof(projectId), JsonConvert.SerializeObject(projectId, Formatting.None,
@@ -350,7 +348,7 @@ public class ProjectService(
 
         if (projectDto == null)
         {
-            throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
+            throw new NotFoundInDBException($"Project {projectId} not found");
         }
 
         projectDto.ModifyTime = projectLastUpdated;
@@ -373,25 +371,25 @@ public class ProjectService(
             var projectMaster = await GetProjectDtoFromProjectMaster(project.Id);
             if (projectMaster == null)
             {
-                _logger.LogWarning("ProjectMaster not found for project {projectName} ({projectId})", project.Name,
+                logger.LogWarning("ProjectMaster not found for project {projectName} ({projectId})", project.Name,
                     project.Id);
                 continue;
             }
             if (!project.Equals(projectMaster))
             {
-                _logger.LogWarning("Project {projectName} ({projectId}) differs from ProjectMaster", project.Name,
+                logger.LogWarning("Project {projectName} ({projectId}) differs from ProjectMaster", project.Name,
                     project.Id);
                 numberOfDeviations++;
                 await UpdateProjectFromProjectMaster(projectMaster);
             }
             else
             {
-                _logger.LogInformation("Project {projectName} ({projectId}) is identical to ProjectMaster",
+                logger.LogInformation("Project {projectName} ({projectId}) is identical to ProjectMaster",
                     project.Name, project.Id);
             }
         }
 
-        _logger.LogInformation("Number of projects which differs from ProjectMaster: {count} / {total}",
+        logger.LogInformation("Number of projects which differs from ProjectMaster: {count} / {total}",
             numberOfDeviations, totalNumberOfProjects);
     }
 
@@ -415,7 +413,7 @@ public class ProjectService(
         }
         catch (ArgumentException ex)
         {
-            _logger.LogError(ex, "Invalid category or phase for project with ID {ProjectId}", projectGuid);
+            logger.LogError(ex, "Invalid category or phase for project with ID {ProjectId}", projectGuid);
             return null;
         }
 

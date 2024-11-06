@@ -7,16 +7,13 @@ namespace api.Services;
 
 public class CompareCasesService(
     IProjectService projectService,
-    ILoggerFactory loggerFactory,
+    ILogger<CompareCasesService> logger,
     IExplorationService explorationService,
     IDrainageStrategyService drainageStrategyService,
     IStudyCostProfileService generateStudyCostProfile,
     ICaseService caseService)
     : ICompareCasesService
 {
-    private readonly ILogger<CompareCasesService> _logger = loggerFactory.CreateLogger<CompareCasesService>();
-
-
     public async Task<IEnumerable<CompareCasesDto>> Calculate(Guid projectId)
     {
         var project = await projectService.GetProjectWithoutAssetsNoTracking(projectId);
@@ -126,7 +123,7 @@ public class CompareCasesService(
         }
         catch (ArgumentException)
         {
-            _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
+            logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
         }
 
         if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
@@ -156,7 +153,7 @@ public class CompareCasesService(
         }
         catch (ArgumentException)
         {
-            _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
+            logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
         }
 
         if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
@@ -270,7 +267,7 @@ public class CompareCasesService(
         }
         catch (ArgumentException)
         {
-            _logger.LogInformation("Exploration {0} not found.", caseItem.ExplorationLink);
+            logger.LogInformation("Exploration {0} not found.", caseItem.ExplorationLink);
         }
 
         return sumExplorationWellCost;

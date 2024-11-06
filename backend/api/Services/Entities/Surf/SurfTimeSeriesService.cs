@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Services;
 
 public class SurfTimeSeriesService(
-    ILoggerFactory loggerFactory,
+    ILogger<SurfService> logger,
     ISurfTimeSeriesRepository repository,
     ISurfRepository surfRepository,
     ICaseRepository caseRepository,
@@ -19,8 +19,6 @@ public class SurfTimeSeriesService(
     IProjectAccessService projectAccessService)
     : ISurfTimeSeriesService
 {
-    private readonly ILogger<SurfService> _logger = loggerFactory.CreateLogger<SurfService>();
-
     public async Task<SurfCostProfileOverrideDto> CreateSurfCostProfileOverride(
         Guid projectId,
         Guid caseId,
@@ -57,7 +55,7 @@ public class SurfTimeSeriesService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to create profile SurfCostProfileOverride for case id {caseId}.", caseId);
+            logger.LogError(ex, "Failed to create profile SurfCostProfileOverride for case id {caseId}.", caseId);
             throw;
         }
 
@@ -132,7 +130,7 @@ public class SurfTimeSeriesService(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to create cost profile for surf with id {surfId} for case id {caseId}.", surfId, caseId);
+            logger.LogError(ex, "Failed to create cost profile for surf with id {surfId} for case id {caseId}.", surfId, caseId);
             throw;
         }
 
@@ -198,7 +196,7 @@ public class SurfTimeSeriesService(
         catch (DbUpdateException ex)
         {
             var profileName = typeof(TProfile).Name;
-            _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
+            logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
             throw;
         }
 

@@ -13,15 +13,13 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Services;
 
 public class SurfService(
-    ILoggerFactory loggerFactory,
+    ILogger<SurfService> logger,
     ISurfRepository repository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
     IProjectAccessService projectAccessService)
     : ISurfService
 {
-    private readonly ILogger<SurfService> _logger = loggerFactory.CreateLogger<SurfService>();
-
     public async Task<Surf> GetSurfWithIncludes(Guid surfId, params Expression<Func<Surf, object>>[] includes)
     {
         return await repository.GetSurfWithIncludes(surfId, includes)
@@ -40,7 +38,7 @@ public class SurfService(
         await projectAccessService.ProjectExists<Surf>(projectId, surfId);
 
         var existingSurf = await repository.GetSurf(surfId)
-            ?? throw new ArgumentException(string.Format($"Surf with id {surfId} not found."));
+            ?? throw new ArgumentException($"Surf with id {surfId} not found.");
 
         mapperService.MapToEntity(updatedSurfDto, existingSurf, surfId);
         existingSurf.LastChangedDate = DateTimeOffset.UtcNow;
@@ -52,7 +50,7 @@ public class SurfService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update surf with id {surfId} for case id {caseId}.", surfId, caseId);
+            logger.LogError(ex, "Failed to update surf with id {surfId} for case id {caseId}.", surfId, caseId);
             throw;
         }
 

@@ -187,7 +187,7 @@ public class RevisionService(
 
         if (projectDto == null)
         {
-            throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
+            throw new NotFoundInDBException($"Project {projectId} not found");
         }
 
         projectDto.ModifyTime = projectLastUpdated;

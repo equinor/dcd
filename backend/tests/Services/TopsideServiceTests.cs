@@ -14,17 +14,16 @@ namespace tests.Services
     public class TopsideServiceTests
     {
         private readonly TopsideService _topsideService;
-        private readonly ILoggerFactory _loggerFactory = Substitute.For<ILoggerFactory>();
+        private readonly ILogger<TopsideService> _logger = Substitute.For<ILogger<TopsideService>>();
         private readonly ITopsideRepository _repository = Substitute.For<ITopsideRepository>();
         private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
         private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
         private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
 
-
         public TopsideServiceTests()
         {
             _topsideService = new TopsideService(
-                _loggerFactory,
+                _logger,
                 _repository,
                 _caseRepository,
                 _mapperService,

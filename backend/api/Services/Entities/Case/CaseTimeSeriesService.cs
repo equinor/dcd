@@ -12,15 +12,13 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Services;
 
 public class CaseTimeSeriesService(
-    ILoggerFactory loggerFactory,
+    ILogger<CaseService> logger,
     ICaseTimeSeriesRepository repository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
     IProjectAccessService projectAccessService)
     : ICaseTimeSeriesService
 {
-    private readonly ILogger<CaseService> _logger = loggerFactory.CreateLogger<CaseService>();
-
     public async Task<CessationWellsCostOverrideDto> UpdateCessationWellsCostOverride(
         Guid projectId,
         Guid caseId,
@@ -401,7 +399,7 @@ public class CaseTimeSeriesService(
         catch (DbUpdateException ex)
         {
             var profileName = typeof(TProfile).Name;
-            _logger.LogError(ex, "Failed to update profile {profileName} with id {costProfileId} for case id {caseId}.", profileName, costProfileId, caseId);
+            logger.LogError(ex, "Failed to update profile {profileName} with id {costProfileId} for case id {caseId}.", profileName, costProfileId, caseId);
             throw;
         }
 
@@ -450,7 +448,7 @@ public class CaseTimeSeriesService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
+            logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
             throw;
         }
 

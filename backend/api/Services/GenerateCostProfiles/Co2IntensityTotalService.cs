@@ -6,13 +6,11 @@ namespace api.Services.GenerateCostProfiles;
 
 public class Co2IntensityTotalService(
     IProjectService projectService,
-    ILoggerFactory loggerFactory,
+    ILogger<Co2IntensityTotalService> logger,
     ICaseService caseService,
     IDrainageStrategyService drainageStrategyService)
     : ICo2IntensityTotalService
 {
-    private readonly ILogger<Co2IntensityTotalService> _logger = loggerFactory.CreateLogger<Co2IntensityTotalService>();
-
     public async Task<double> Calculate(Guid caseId)
     {
         var caseItem = await caseService.GetCase(caseId);
@@ -60,7 +58,7 @@ public class Co2IntensityTotalService(
         }
         catch (ArgumentException)
         {
-            _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
+            logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
         }
 
         if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
@@ -89,7 +87,7 @@ public class Co2IntensityTotalService(
         }
         catch (ArgumentException)
         {
-            _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
+            logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
         }
 
         if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)

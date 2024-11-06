@@ -8,14 +8,12 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Services;
 
 public class WellService(
-    ILoggerFactory loggerFactory,
+    ILogger<WellService> logger,
     IWellRepository repository,
     IMapperService mapperService,
     IProjectRepository projectRepository)
     : IWellService
 {
-    private readonly ILogger<WellService> _logger = loggerFactory.CreateLogger<WellService>();
-
     private static bool UpdateChangesWellType(Well well, UpdateWellDto updatedWellDto)
     {
         var isWellProjectWell = Well.IsWellProjectWell(well.WellCategory);
@@ -61,7 +59,7 @@ public class WellService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to update well with id {wellId}", wellId);
+            logger.LogError(ex, "Failed to update well with id {wellId}", wellId);
             throw;
         }
 
@@ -90,7 +88,7 @@ public class WellService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to create well");
+            logger.LogError(ex, "Failed to create well");
             throw;
         }
 

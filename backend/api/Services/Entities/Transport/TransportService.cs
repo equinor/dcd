@@ -13,15 +13,13 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Services;
 
 public class TransportService(
-    ILoggerFactory loggerFactory,
+    ILogger<TransportService> logger,
     ICaseRepository caseRepository,
     ITransportRepository transportRepository,
     IMapperService mapperService,
     IProjectAccessService projectAccessService)
     : ITransportService
 {
-    private readonly ILogger<TransportService> _logger = loggerFactory.CreateLogger<TransportService>();
-
     public async Task<Transport> GetTransportWithIncludes(Guid transportId, params Expression<Func<Transport, object>>[] includes)
     {
         return await transportRepository.GetTransportWithIncludes(transportId, includes)
@@ -49,7 +47,7 @@ public class TransportService(
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            _logger.LogError(ex, "Failed to update transport with id {transportId} for case id {caseId}.", transportId, caseId);
+            logger.LogError(ex, "Failed to update transport with id {transportId} for case id {caseId}.", transportId, caseId);
             throw;
         }
 

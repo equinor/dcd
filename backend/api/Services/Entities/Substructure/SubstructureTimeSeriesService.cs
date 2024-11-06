@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Services;
 
 public class SubstructureTimeSeriesService(
-    ILoggerFactory loggerFactory,
+    ILogger<SubstructureService> logger,
     ISubstructureRepository substructureRepository,
     ISubstructureTimeSeriesRepository repository,
     ICaseRepository caseRepository,
@@ -20,8 +20,6 @@ public class SubstructureTimeSeriesService(
     IProjectAccessService projectAccessService)
     : ISubstructureTimeSeriesService
 {
-    private readonly ILogger<SubstructureService> _logger = loggerFactory.CreateLogger<SubstructureService>();
-
     public async Task<SubstructureCostProfileDto> AddOrUpdateSubstructureCostProfile(
         Guid projectId,
         Guid caseId,
@@ -87,7 +85,7 @@ public class SubstructureTimeSeriesService(
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to create cost profile for substructure with id {substructureId} for case id {caseId}.", substructureId, caseId);
+            logger.LogError(ex, "Failed to create cost profile for substructure with id {substructureId} for case id {caseId}.", substructureId, caseId);
             throw;
         }
 
@@ -131,7 +129,7 @@ public class SubstructureTimeSeriesService(
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to create profile SubstructureCostProfileOverride for case id {caseId}.", caseId);
+            logger.LogError(ex, "Failed to create profile SubstructureCostProfileOverride for case id {caseId}.", caseId);
             throw;
         }
 
@@ -194,7 +192,7 @@ public class SubstructureTimeSeriesService(
         catch (DbUpdateException ex)
         {
             var profileName = typeof(TProfile).Name;
-            _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
+            logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
             throw;
         }
 

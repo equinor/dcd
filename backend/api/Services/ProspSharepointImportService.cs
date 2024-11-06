@@ -10,10 +10,8 @@ namespace api.Services;
 public class ProspSharepointImportService(
     GraphServiceClient graphServiceClient,
     ProspExcelImportService prospExcelImportService,
-    ILoggerFactory loggerFactory)
+    ILogger<ProspSharepointImportService> logger)
 {
-    private readonly ILogger<ProspSharepointImportService> _logger = loggerFactory.CreateLogger<ProspSharepointImportService>();
-
     public async Task<List<DriveItem>> GetDeltaDriveItemCollectionFromSite(string? url)
     {
         var driveItems = new List<DriveItem>();
@@ -36,7 +34,7 @@ public class ProspSharepointImportService(
         }
         catch (Exception? e)
         {
-            _logger?.LogError(e, $"failed retrieving list of latest DriveItems in Site: {e.Message}");
+            logger.LogError(e, $"failed retrieving list of latest DriveItems in Site: {e.Message}");
         }
 
         return driveItems;
@@ -85,13 +83,7 @@ public class ProspSharepointImportService(
         return driveId;
     }
 
-    public class AccessDeniedException : Exception
-    {
-        public AccessDeniedException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
-    }
+    public class AccessDeniedException(string message, Exception innerException) : Exception(message, innerException);
 
     private async Task<List<string>> GetSiteIdAndParentReferencePath(string? url)
     {
@@ -131,17 +123,17 @@ public class ProspSharepointImportService(
         }
         catch (UriFormatException ex)
         {
-            _logger?.LogError(ex, "Invalid URI format: {Url}", url);
+            logger?.LogError(ex, "Invalid URI format: {Url}", url);
             throw; // Consider how to handle this error. Maybe wrap it in a custom exception for higher-level handling.
         }
         catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {
-            _logger?.LogError(ex, "Access Denied when attempting to access SharePoint site: {Url}", url);
+            logger?.LogError(ex, "Access Denied when attempting to access SharePoint site: {Url}", url);
             throw new AccessDeniedException("Access to SharePoint resource was denied.", ex);
         }
         catch (Exception ex)
         {
-            _logger?.LogError(ex, "An error occurred while attempting to access SharePoint site: {Url}", url);
+            logger?.LogError(ex, "An error occurred while attempting to access SharePoint site: {Url}", url);
             throw; // Re-throw the exception to be handled upstream.
         }
 
