@@ -1,5 +1,4 @@
 using api.Dtos;
-using api.Models;
 
 namespace api.Services;
 

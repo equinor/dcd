@@ -2,25 +2,16 @@ using api.Models;
 
 namespace api.Services.EconomicsServices;
 
-public class CalculateTotalIncomeService : ICalculateTotalIncomeService
+public class CalculateTotalIncomeService(ICaseService caseService, IDrainageStrategyService drainageStrategyService) : ICalculateTotalIncomeService
 {
-    private readonly ICaseService _caseService;
-    private readonly IDrainageStrategyService _drainageStrategyService;
-
-    public CalculateTotalIncomeService(ICaseService caseService, IDrainageStrategyService drainageStrategyService)
-    {
-        _caseService = caseService;
-        _drainageStrategyService = drainageStrategyService;
-    }
-
     public async Task CalculateTotalIncome(Guid caseId)
     {
-        var caseItem = await _caseService.GetCaseWithIncludes(
+        var caseItem = await caseService.GetCaseWithIncludes(
             caseId,
             c => c.Project
         );
 
-        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
+        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
             caseItem.DrainageStrategyLink,
             d => d.ProductionProfileGas!,
             d => d.AdditionalProductionProfileGas!,

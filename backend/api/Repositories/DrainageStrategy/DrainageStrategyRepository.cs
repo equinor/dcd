@@ -9,13 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories;
 
-public class DrainageStrategyRepository : BaseRepository, IDrainageStrategyRepository
+public class DrainageStrategyRepository(DcdDbContext context) : BaseRepository(context), IDrainageStrategyRepository
 {
-
-    public DrainageStrategyRepository(DcdDbContext context) : base(context)
-    {
-    }
-
     public async Task<DrainageStrategy?> GetDrainageStrategy(Guid drainageStrategyId)
     {
         return await Get<DrainageStrategy>(drainageStrategyId);
@@ -44,7 +39,7 @@ public class DrainageStrategyRepository : BaseRepository, IDrainageStrategyRepos
             DrainageStrategyProfileNames.DeferredGasProduction => d => d.DeferredGasProduction != null,
         };
 
-        bool hasProfile = await _context.DrainageStrategies
+        bool hasProfile = await Context.DrainageStrategies
             .Where(d => d.Id == drainageStrategyId)
             .AnyAsync(profileExistsExpression);
 

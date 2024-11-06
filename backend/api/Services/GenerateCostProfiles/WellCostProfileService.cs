@@ -1,27 +1,12 @@
 using api.Context;
-using api.Dtos;
-using api.Exceptions;
 using api.Models;
-
-using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class WellCostProfileService : IWellCostProfileService
+public class WellCostProfileService(DcdDbContext context) : IWellCostProfileService
 {
-    private readonly DcdDbContext _context;
-    private readonly IMapper _mapper;
-
-    public WellCostProfileService(
-        DcdDbContext context,
-        IMapper mapper)
-    {
-        _context = context;
-        _mapper = mapper;
-    }
-
     public async Task UpdateCostProfilesForWellsFromDrillingSchedules(List<Guid> drillingScheduleIds)
     {
         if (drillingScheduleIds.Count == 0)
@@ -202,7 +187,7 @@ public class WellCostProfileService : IWellCostProfileService
 
     private async Task<List<ExplorationWell>> GetAllExplorationWellsForExploration(Guid explorationId)
     {
-        return await _context.ExplorationWell
+        return await context.ExplorationWell
             .Include(ew => ew.DrillingSchedule)
             .Include(ew => ew.Well)
             .Where(ew => ew.ExplorationId == explorationId).ToListAsync();
@@ -210,7 +195,7 @@ public class WellCostProfileService : IWellCostProfileService
 
     private IQueryable<ExplorationWell> GetAllExplorationWells()
     {
-        return _context.ExplorationWell
+        return context.ExplorationWell
             .Include(ew => ew.DrillingSchedule)
             .Include(ew => ew.Well)
             .Include(ew => ew.Exploration)
@@ -223,7 +208,7 @@ public class WellCostProfileService : IWellCostProfileService
 
     private async Task<List<WellProjectWell>> GetAllWellProjectWellsForWellProject(Guid wellProjectId)
     {
-        return await _context.WellProjectWell
+        return await context.WellProjectWell
             .Include(ew => ew.DrillingSchedule)
             .Include(ew => ew.Well)
             .Where(ew => ew.WellProjectId == wellProjectId).ToListAsync();
@@ -231,7 +216,7 @@ public class WellCostProfileService : IWellCostProfileService
 
     private IQueryable<WellProjectWell> GetAllWellProjectWells()
     {
-        return _context.WellProjectWell
+        return context.WellProjectWell
             .Include(ew => ew.DrillingSchedule)
             .Include(ew => ew.Well)
             .Include(ew => ew.WellProject)

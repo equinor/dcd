@@ -7,12 +7,7 @@ public enum ActionType
 }
 
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
-public class ActionTypeAttribute : Attribute
+public class ActionTypeAttribute(ActionType actionType) : Attribute
 {
-    public ActionType ActionType { get; }
-
-    public ActionTypeAttribute(ActionType actionType)
-    {
-        ActionType = actionType;
-    }
+    public ActionType ActionType { get; } = actionType;
 }

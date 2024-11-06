@@ -1,21 +1,14 @@
 using api.Context;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 
 namespace api.Repositories;
 
-public class SurfTimeSeriesRepository : BaseRepository, ISurfTimeSeriesRepository
+public class SurfTimeSeriesRepository(DcdDbContext context) : BaseRepository(context), ISurfTimeSeriesRepository
 {
-
-    public SurfTimeSeriesRepository(DcdDbContext context) : base(context)
-    {
-    }
-
     public SurfCostProfile CreateSurfCostProfile(SurfCostProfile surfCostProfile)
     {
-        _context.SurfCostProfile.Add(surfCostProfile);
+        Context.SurfCostProfile.Add(surfCostProfile);
         return surfCostProfile;
     }
 
@@ -31,7 +24,7 @@ public class SurfTimeSeriesRepository : BaseRepository, ISurfTimeSeriesRepositor
 
     public SurfCostProfileOverride CreateSurfCostProfileOverride(SurfCostProfileOverride profile)
     {
-        _context.SurfCostProfileOverride.Add(profile);
+        Context.SurfCostProfileOverride.Add(profile);
         return profile;
     }
 

@@ -1,10 +1,7 @@
-using api.Context;
 using api.Dtos;
 using api.Models;
 using api.Repositories;
 using api.Services;
-
-using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -17,27 +14,15 @@ namespace tests.Services
     public class SubstructureServiceTests
     {
         private readonly SubstructureService _substructureService;
-        private readonly IProjectService _projectService = Substitute.For<IProjectService>();
-        private readonly ILoggerFactory _loggerFactory = Substitute.For<ILoggerFactory>();
-        private readonly IMapper _mapper = Substitute.For<IMapper>();
+        private readonly ILogger<SubstructureService> _logger = Substitute.For<ILogger<SubstructureService>>();
         private readonly ISubstructureRepository _repository = Substitute.For<ISubstructureRepository>();
         private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
         private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
         private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
 
-
         public SubstructureServiceTests()
         {
-            var options = new DbContextOptionsBuilder<DcdDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDb")
-                .Options;
-
-            var context = Substitute.For<DcdDbContext>(options, null);
-            _substructureService = new SubstructureService(
-                context,
-                _projectService,
-                _loggerFactory,
-                _mapper,
+            _substructureService = new SubstructureService(_logger,
                 _repository,
                 _caseRepository,
                 _mapperService,

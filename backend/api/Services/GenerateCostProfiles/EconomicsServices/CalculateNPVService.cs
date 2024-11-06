@@ -2,15 +2,8 @@ using api.Models;
 
 namespace api.Services.EconomicsServices;
 
-public class CalculateNPVService : ICalculateNPVService
+public class CalculateNPVService(ICaseService caseService) : ICalculateNPVService
 {
-    private readonly ICaseService _caseService;
-
-    public CalculateNPVService(ICaseService caseService)
-    {
-        _caseService = caseService;
-    }
-
     private static TimeSeries<double>? GetCashflowProfile(Case caseItem)
     {
         if (caseItem.CalculatedTotalIncomeCostProfile == null || caseItem.CalculatedTotalCostCostProfile == null)
@@ -23,7 +16,7 @@ public class CalculateNPVService : ICalculateNPVService
 
     public async Task CalculateNPV(Guid caseId)
     {
-        var caseItem = await _caseService.GetCaseWithIncludes(
+        var caseItem = await caseService.GetCaseWithIncludes(
             caseId,
             c => c.Project,
             c => c.CalculatedTotalIncomeCostProfile!,

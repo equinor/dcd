@@ -1,42 +1,32 @@
-using System.Linq.Expressions;
-
 using api.Context;
-using api.Enums;
 using api.Models;
-
-using Microsoft.EntityFrameworkCore;
 
 
 namespace api.Repositories;
 
-public class WellProjectTimeSeriesRepository : BaseRepository, IWellProjectTimeSeriesRepository
+public class WellProjectTimeSeriesRepository(DcdDbContext context) : BaseRepository(context), IWellProjectTimeSeriesRepository
 {
-
-    public WellProjectTimeSeriesRepository(DcdDbContext context) : base(context)
-    {
-    }
-
     public OilProducerCostProfileOverride CreateOilProducerCostProfileOverride(OilProducerCostProfileOverride profile)
     {
-        _context.OilProducerCostProfileOverride.Add(profile);
+        Context.OilProducerCostProfileOverride.Add(profile);
         return profile;
     }
 
     public GasProducerCostProfileOverride CreateGasProducerCostProfileOverride(GasProducerCostProfileOverride profile)
     {
-        _context.GasProducerCostProfileOverride.Add(profile);
+        Context.GasProducerCostProfileOverride.Add(profile);
         return profile;
     }
 
     public WaterInjectorCostProfileOverride CreateWaterInjectorCostProfileOverride(WaterInjectorCostProfileOverride profile)
     {
-        _context.WaterInjectorCostProfileOverride.Add(profile);
+        Context.WaterInjectorCostProfileOverride.Add(profile);
         return profile;
     }
 
     public GasInjectorCostProfileOverride CreateGasInjectorCostProfileOverride(GasInjectorCostProfileOverride profile)
     {
-        _context.GasInjectorCostProfileOverride.Add(profile);
+        Context.GasInjectorCostProfileOverride.Add(profile);
         return profile;
     }
 

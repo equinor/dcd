@@ -1,12 +1,6 @@
 namespace api.Exceptions;
 
-public class InvalidInputException : Exception
+public class InvalidInputException(string message, Guid entityId) : Exception(message)
 {
-    public Guid EntityId { get; }
-
-    public InvalidInputException(string message, Guid entityId)
-        : base(message)
-    {
-        EntityId = entityId;
-    }
+    public Guid EntityId { get; } = entityId;
 }

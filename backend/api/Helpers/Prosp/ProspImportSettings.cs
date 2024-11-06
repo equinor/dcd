@@ -2,18 +2,10 @@ namespace api.Helpers.Prosp;
 
 public class Prosp
 {
-    public SubStructure SubStructure;
-    public Surf Surf;
-    public TopSide TopSide;
-    public Transport Transport;
-
-    public Prosp()
-    {
-        Surf = new Surf();
-        TopSide = new TopSide();
-        SubStructure = new SubStructure();
-        Transport = new Transport();
-    }
+    public SubStructure SubStructure = new();
+    public Surf Surf = new();
+    public TopSide TopSide = new();
+    public Transport Transport = new();
 }
 
 public class Surf

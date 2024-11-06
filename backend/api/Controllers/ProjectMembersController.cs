@@ -10,17 +10,8 @@ namespace api.Controllers;
 [ApiController]
 [Route("projects/{projectId}/members")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-public class ProjectMembersController : ControllerBase
+public class ProjectMembersController(IProjectMemberService projectMemberService) : ControllerBase
 {
-    private readonly IProjectMemberService _projectMemberService;
-
-    public ProjectMembersController(
-        IProjectMemberService projectMemberService
-    )
-    {
-        _projectMemberService = projectMemberService;
-    }
-
     [RequiresApplicationRoles(
         ApplicationRole.Admin,
         ApplicationRole.User
@@ -29,7 +20,7 @@ public class ProjectMembersController : ControllerBase
     [ActionType(ActionType.Edit)]
     public async Task Get(Guid projectId, Guid userId)
     {
-        await _projectMemberService.DeleteProjectMember(projectId, userId);
+        await projectMemberService.DeleteProjectMember(projectId, userId);
     }
 
     [HttpPost]
@@ -40,7 +31,7 @@ public class ProjectMembersController : ControllerBase
     [ActionType(ActionType.Edit)]
     public async Task<ProjectMemberDto> CreateProjectMember([FromRoute] Guid projectId, [FromBody] CreateProjectMemberDto createProjectMemberDto)
     {
-        return await _projectMemberService.CreateProjectMember(projectId, createProjectMemberDto);
+        return await projectMemberService.CreateProjectMember(projectId, createProjectMemberDto);
     }
 
 }

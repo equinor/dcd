@@ -6,19 +6,10 @@ using Newtonsoft.Json;
 
 namespace api.Services.FusionIntegration;
 
-public class FusionService : IFusionService
+public class FusionService(
+    IFusionContextResolver fusionContextResolver,
+    ILogger<FusionService> logger) : IFusionService
 {
-    private readonly IFusionContextResolver _fusionContextResolver;
-    private readonly ILogger<FusionService> _logger;
-
-    public FusionService(
-        IFusionContextResolver fusionContextResolver,
-        ILogger<FusionService> logger)
-    {
-        _fusionContextResolver = fusionContextResolver;
-        _logger = logger;
-    }
-
     public async Task<FusionProjectMaster?> GetProjectMasterFromFusionContextId(Guid contextId)
     {
         var projectMasterContext = await ResolveProjectMasterContext(contextId);
@@ -28,7 +19,7 @@ public class FusionService : IFusionService
         {
             // -> No, still not found. Then we log this and fail hard, as the callee should have provided with a
             // valid ProjectMaster (context) ID.
-            _logger.LogInformation($"Could not resolve ProjectMaster context from Fusion using GUID '{{contextId}}'", contextId);
+            logger.LogInformation($"Could not resolve ProjectMaster context from Fusion using GUID '{{contextId}}'", contextId);
             return null;
         }
 
@@ -37,7 +28,7 @@ public class FusionService : IFusionService
 
         if (fusionProjectMaster == null)
         {
-            _logger.LogError("Project Master with ID '{contextId}' was obtained from Fusion, but conversion to explicit type failed", contextId);
+            logger.LogError("Project Master with ID '{contextId}' was obtained from Fusion, but conversion to explicit type failed", contextId);
             return null;
         }
 
@@ -46,7 +37,7 @@ public class FusionService : IFusionService
 
     private async Task<FusionContext?> ResolveProjectMasterContext(Guid contextId)
     {
-        FusionContext? projectMasterContext = await _fusionContextResolver.ResolveContextAsync(contextId, FusionContextType.ProjectMaster);
+        FusionContext? projectMasterContext = await fusionContextResolver.ResolveContextAsync(contextId, FusionContextType.ProjectMaster);
 
         Console.WriteLine("ResolveProjectMasterContext - contextId: " + contextId);
         Console.WriteLine("ResolveProjectMasterContext - projectMasterContext: " + projectMasterContext);
@@ -54,7 +45,7 @@ public class FusionService : IFusionService
         // thus attempt to query for the ProjectMaster "directly" if not found.
         if (projectMasterContext == null)
         {
-            IEnumerable<FusionContext> queryContextsAsync = await _fusionContextResolver.QueryContextsAsync(
+            IEnumerable<FusionContext> queryContextsAsync = await fusionContextResolver.QueryContextsAsync(
                 query =>
                 {
                     query
