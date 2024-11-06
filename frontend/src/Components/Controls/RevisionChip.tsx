@@ -6,9 +6,8 @@ import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
 import styled from "styled-components"
 
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useProjectContext } from "@/Context/ProjectContext"
-import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
+import { revisionQueryFn } from "@/Services/QueryFunctions"
 import { truncateText } from "@/Utils/common"
 import RevisionDetailsModal from "./RevisionDetailsModal"
 import { useRevisions } from "@/Hooks/useRevision"
@@ -33,7 +32,7 @@ const RevisionChip = () => {
 
     const revisionName = revisionApiData?.revisionDetails.revisionName
 
-    const revName = () => (
+    const revisionNameDisplay = () => (
         <Tooltip title={`View details for ${truncateText(revisionName ?? "", 120)}`}>
             <Typography
                 onClick={() => setIsMenuOpen(true)}
@@ -49,7 +48,7 @@ const RevisionChip = () => {
         <>
             <Chip>
                 <CloseRevision>
-                    {revName()}
+                    {revisionNameDisplay()}
                     <Tooltip title="Exit revision">
                         <Icon
                             data={close}
