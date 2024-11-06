@@ -6,7 +6,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class Image : IHasProjectId
+public class Image : IHasProjectId, IChangeTrackable
 {
     [Key]
     public Guid Id { get; set; }

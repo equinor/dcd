@@ -67,14 +67,14 @@ if (string.IsNullOrEmpty(sqlConnectionString) || string.IsNullOrEmpty(_sqlConnec
         _connectionToInMemorySqlite.Open();
         dBbuilder.UseSqlite(_connectionToInMemorySqlite);
 
-        using DcdDbContext context = new(dBbuilder.Options);
+        using DcdDbContext context = new(dBbuilder.Options, null);
         context.Database.EnsureCreated();
     }
     else
     {
         DbContextOptionsBuilder<DcdDbContext> dbBuilder = new();
         dbBuilder.UseSqlServer(sqlConnectionString);
-        using DcdDbContext context = new(dbBuilder.Options);
+        using DcdDbContext context = new(dbBuilder.Options, null);
     }
 }
 
@@ -255,6 +255,7 @@ builder.Services.AddScoped<IConversionMapperService, ConversionMapperService>();
 builder.Services.AddHostedService<RefreshProjectService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
+builder.Services.AddScoped<CurrentUser>();
 
 builder.Services.AddScoped<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
 builder.Services.AddMemoryCache();
