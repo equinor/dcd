@@ -54,7 +54,7 @@ public class Project : IChangeTrackable
     public virtual RevisionDetails? RevisionDetails { get; set; }
 }
 
-public class RevisionDetails
+public class RevisionDetails : IChangeTrackable
 {
     public Guid Id { get; set; }
     public Guid OriginalProjectId { get; set; }
