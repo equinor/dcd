@@ -1,12 +1,7 @@
-using api.Context;
 using api.Dtos;
 using api.Models;
 using api.Repositories;
 using api.Services;
-
-using AutoMapper;
-
-using Microsoft.EntityFrameworkCore;
 
 using NSubstitute;
 
@@ -17,18 +12,17 @@ namespace tests.Services
     public class TransportServiceTimeSeriesTests
     {
         private readonly TransportTimeSeriesService _transportService;
-        private readonly ILoggerFactory _loggerFactory = Substitute.For<ILoggerFactory>();
+        private readonly ILogger<TransportService> _logger = Substitute.For<ILogger<TransportService>>();
         private readonly ITransportTimeSeriesRepository _repository = Substitute.For<ITransportTimeSeriesRepository>();
         private readonly ITransportRepository _transportRepository = Substitute.For<ITransportRepository>();
         private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
         private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
         private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
 
-
         public TransportServiceTimeSeriesTests()
         {
             _transportService = new TransportTimeSeriesService(
-                _loggerFactory,
+                _logger,
                 _caseRepository,
                 _transportRepository,
                 _repository,

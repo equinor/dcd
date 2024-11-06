@@ -1,33 +1,25 @@
 using System.Linq.Expressions;
 
 using api.Context;
-using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 
 namespace api.Repositories;
 
-public class BaseRepository : IBaseRepository
+public class BaseRepository(DcdDbContext context) : IBaseRepository
 {
-    protected readonly DcdDbContext _context;
-
-    public BaseRepository(
-        DcdDbContext context
-    )
-    {
-        _context = context;
-    }
+    protected readonly DcdDbContext Context = context;
 
     protected async Task<T?> Get<T>(Guid id) where T : class
     {
-        return await _context.Set<T>().FindAsync(id);
+        return await Context.Set<T>().FindAsync(id);
     }
 
     protected async Task<T?> GetWithIncludes<T>(Guid id, params Expression<Func<T, object>>[] includes)
         where T : class
     {
-        IQueryable<T> query = _context.Set<T>();
+        IQueryable<T> query = Context.Set<T>();
 
         foreach (var include in includes)
         {
@@ -39,17 +31,17 @@ public class BaseRepository : IBaseRepository
 
     protected T Update<T>(T updated) where T : class
     {
-        _context.Set<T>().Update(updated);
+        Context.Set<T>().Update(updated);
         return updated;
     }
 
     public async Task SaveChangesAndRecalculateAsync(Guid caseId)
     {
-        await _context.SaveChangesAndRecalculateAsync(caseId);
+        await Context.SaveChangesAndRecalculateAsync(caseId);
     }
 
     public async Task SaveChangesAsync()
     {
-        await _context.SaveChangesAsync();
+        await Context.SaveChangesAsync();
     }
 }

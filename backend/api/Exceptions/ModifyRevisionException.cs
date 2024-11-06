@@ -1,12 +1,6 @@
 namespace api.Exceptions;
 
-public class ModifyRevisionException : Exception
+public class ModifyRevisionException(string message, Guid entityId) : Exception(message)
 {
-    public Guid EntityId { get; }
-
-    public ModifyRevisionException(string message, Guid entityId)
-        : base(message)
-    {
-        EntityId = entityId;
-    }
+    public Guid EntityId { get; } = entityId;
 }

@@ -1,5 +1,3 @@
-using api.Models;
-
 namespace api.Dtos;
 
 public class UpdateTechnicalInputDto

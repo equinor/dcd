@@ -13,7 +13,7 @@ import Dialog from "@mui/material/Dialog"
 import DialogTitle from "@mui/material/DialogTitle"
 import DialogContent from "@mui/material/DialogContent"
 import DialogActions from "@mui/material/DialogActions"
-import { checkbox_outline, info_circle } from "@equinor/eds-icons"
+import { checkbox, checkbox_outline, info_circle } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { Grid } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
@@ -59,6 +59,8 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     const [revisionName, setRevisionName] = useState<string>("")
     const [classification, setClassification] = useState<Components.Schemas.ProjectClassification>()
     const [internalProjectPhase, setInternalProjectPhase] = useState<Components.Schemas.InternalProjectPhase>()
+    const [mdqc, setMdqc] = useState(false)
+    const [arena, setArena] = useState(false)
 
     const externalId = currentContext?.externalId
 
@@ -103,6 +105,8 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             name: revisionName,
             internalProjectPhase: internalProjectPhase as Components.Schemas.InternalProjectPhase,
             classification: classification as Components.Schemas.ProjectClassification,
+            mdqc,
+            arena,
         }
         createRevision(newRevision, setIsModalOpen)
     }
@@ -171,19 +175,35 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                 </Grid>
                 <Grid item xs={12} md={8}>
                     <ColumnWrapper>
-                        <Typography>
+                        <Typography group="ui" variant="chart">
                             Quality checks performed
                         </Typography>
                     </ColumnWrapper>
                     <Wrapper>
-                        <Chip disabled>
-                            <Icon data={checkbox_outline} />
-                            MDQC
-                        </Chip>
-                        <Chip disabled>
-                            <Icon data={checkbox_outline} />
-                            Arena
-                        </Chip>
+                        <Grid container spacing={1} justifyContent="flex-start">
+                            <Grid item>
+                                <Chip
+                                    onClick={() => setMdqc(!mdqc)}
+                                    variant={mdqc ? "active" : "default"}
+                                >
+                                    <Icon
+                                        data={mdqc ? checkbox : checkbox_outline}
+                                    />
+                                    MDQC
+                                </Chip>
+                            </Grid>
+                            <Grid item>
+                                <Chip
+                                    onClick={() => setArena(!arena)}
+                                    variant={arena ? "active" : "default"}
+                                >
+                                    <Icon
+                                        data={arena ? checkbox : checkbox_outline}
+                                    />
+                                    Arena
+                                </Chip>
+                            </Grid>
+                        </Grid>
                     </Wrapper>
                 </Grid>
             </DialogContent>

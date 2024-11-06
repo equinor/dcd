@@ -4,31 +4,18 @@ using api.Models;
 
 namespace api.Services.GenerateCostProfiles;
 
-public class Co2IntensityTotalService : ICo2IntensityTotalService
+public class Co2IntensityTotalService(
+    IProjectService projectService,
+    ILogger<Co2IntensityTotalService> logger,
+    ICaseService caseService,
+    IDrainageStrategyService drainageStrategyService)
+    : ICo2IntensityTotalService
 {
-    private readonly ICaseService _caseService;
-    private readonly IProjectService _projectService;
-    private readonly ILogger<Co2IntensityTotalService> _logger;
-    private readonly IDrainageStrategyService _drainageStrategyService;
-
-    public Co2IntensityTotalService(
-        IProjectService projectService,
-        ILoggerFactory loggerFactory,
-        ICaseService caseService,
-        IDrainageStrategyService drainageStrategyService
-    )
-    {
-        _caseService = caseService;
-        _projectService = projectService;
-        _logger = loggerFactory.CreateLogger<Co2IntensityTotalService>();
-        _drainageStrategyService = drainageStrategyService;
-    }
-
     public async Task<double> Calculate(Guid caseId)
     {
-        var caseItem = await _caseService.GetCase(caseId);
-        var project = await _projectService.GetProjectWithCasesAndAssets(caseItem.ProjectId);
-        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
+        var caseItem = await caseService.GetCase(caseId);
+        var project = await projectService.GetProjectWithCasesAndAssets(caseItem.ProjectId);
+        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
             caseItem.DrainageStrategyLink,
             d => d.Co2Emissions!,
             d => d.Co2EmissionsOverride!,
@@ -71,7 +58,7 @@ public class Co2IntensityTotalService : ICo2IntensityTotalService
         }
         catch (ArgumentException)
         {
-            _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
+            logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
         }
 
         if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)
@@ -100,7 +87,7 @@ public class Co2IntensityTotalService : ICo2IntensityTotalService
         }
         catch (ArgumentException)
         {
-            _logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
+            logger.LogInformation("DrainageStrategy {0} not found.", caseItem.DrainageStrategyLink);
         }
 
         if (project.PhysicalUnit != 0 && !excludeOilFieldConversion)

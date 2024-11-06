@@ -22,9 +22,8 @@ type RevisionsDropMenuProps = {
 }
 
 interface Revision {
-    id: string
+    revisionId: string
     name: string
-    description: string
     date: string
 }
 
@@ -53,11 +52,11 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
 
     useEffect(() => {
         if (apiData) {
-            const revisionsResult = apiData.revisions.map((r: Components.Schemas.ProjectDto) => ({
+            const revisionsResult = apiData.revisionsDetailsList.map((r: Components.Schemas.RevisionDetailsDto) => ({
                 id: r.id,
-                name: r.name,
-                description: r.description,
-                date: r.createDate,
+                revisionId: r.revisionId,
+                name: r.revisionName,
+                date: r.revisionDate
             }))
             setRevisions(revisionsResult)
         }
@@ -65,7 +64,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
 
     const navToRevision = (revision: Revision) => {
         setIsMenuOpen(false)
-        navigateToRevision(revision.id)
+        navigateToRevision(revision.revisionId)
     }
 
     const exitRevision = () => {
@@ -89,9 +88,9 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
                 {
                     revisions.map((revision) => (
                         <Menu.Item
-                            key={revision.id}
-                            onClick={() => (isCaseMenu ? navToRevision(revision) : navigateToRevision(revision.id))}
-                            disabled={disableCurrentRevision(revision.id)}
+                            key={revision.revisionId}
+                            onClick={() => (isCaseMenu ? navToRevision(revision) : navigateToRevision(revision.revisionId))}
+                            disabled={disableCurrentRevision(revision.revisionId)}
                         >
                             <Typography group="navigation" variant="menu_title" as="span">
                                 {truncateText(revision.name, 50)}

@@ -7,29 +7,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories;
 
-public class RevisionRepository : BaseRepository, IRevisionRepository
+public class RevisionRepository(DcdDbContext context) : BaseRepository(context), IRevisionRepository
 {
-    private readonly ILogger<ProjectRepository> _logger;
-
-    public RevisionRepository(
-        DcdDbContext context,
-        ILogger<ProjectRepository> logger
-    ) : base(context)
-    {
-        _logger = logger;
-    }
-
     public async Task<Project> AddRevision(Project project)
     {
-        _context.Projects.Add(project);
-        await _context.SaveChangesAsync();
+        Context.Projects.Add(project);
+        await Context.SaveChangesAsync();
 
         return project;
     }
 
     public async Task<Project?> GetProjectAndAssetsNoTracking(Guid id)
     {
-        var projectQuery = _context.Projects.AsQueryable();
+        var projectQuery = Context.Projects.AsQueryable();
         projectQuery = IncludeProjectDetails(projectQuery);
         projectQuery = IncludeCaseDetails(projectQuery);
         projectQuery = IncludeDrainageStrategyDetails(projectQuery);

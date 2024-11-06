@@ -7,23 +7,10 @@ using api.Repositories;
 
 namespace api.Services;
 
-public class ProjectAccessService : IProjectAccessService
+public class ProjectAccessService(
+    IProjectAccessRepository projectAccessRepository,
+    IHttpContextAccessor httpContextAccessor) : IProjectAccessService
 {
-    private readonly ILogger<ProjectAccessService> _logger;
-    private readonly IProjectAccessRepository _projectAccessRepository;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public ProjectAccessService(
-        IProjectAccessRepository projectAccessRepository,
-        IHttpContextAccessor httpContextAccessor,
-        ILoggerFactory loggerFactory
-        )
-    {
-        _projectAccessRepository = projectAccessRepository;
-        _httpContextAccessor = httpContextAccessor;
-        _logger = loggerFactory.CreateLogger<ProjectAccessService>();
-    }
-
     /// <summary>
     /// Checks whether the project with the specified project ID exists on the entity with the given entity ID.
     /// This method is intended to be used to verify the project checked in the authorization handler is correct.
@@ -33,7 +20,7 @@ public class ProjectAccessService : IProjectAccessService
     public async Task ProjectExists<T>(Guid projectIdFromUrl, Guid entityId)
         where T : class, IHasProjectId
     {
-        var entity = await _projectAccessRepository.Get<T>(entityId);
+        var entity = await projectAccessRepository.Get<T>(entityId);
         if (entity == null)
         {
             throw new NotFoundInDBException($"Entity of type {typeof(T)} with id {entityId} not found.");
@@ -46,7 +33,7 @@ public class ProjectAccessService : IProjectAccessService
 
     public async Task<AccessRightsDto> GetUserProjectAccess(Guid externalId)
     {
-        var userRoles = _httpContextAccessor.HttpContext?.User.AssignedApplicationRoles();
+        var userRoles = httpContextAccessor.HttpContext?.User.AssignedApplicationRoles();
 
         if (userRoles == null)
         {
@@ -58,7 +45,7 @@ public class ProjectAccessService : IProjectAccessService
             };
         }
 
-        var _ = await _projectAccessRepository.GetProjectByExternalId(externalId)
+        var _ = await projectAccessRepository.GetProjectByExternalId(externalId)
             ?? throw new NotFoundInDBException($"Project with external ID {externalId} not found.");
 
         bool isAdmin = userRoles.Contains(ApplicationRole.Admin);

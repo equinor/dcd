@@ -1,3 +1,4 @@
+using api.Authorization;
 using api.Models;
 using api.Services;
 using api.Services.EconomicsServices;
@@ -11,19 +12,22 @@ namespace api.Context;
 public class DcdDbContext : DbContext
 {
     private readonly IServiceProvider _serviceProvider = null!;
+    private readonly CurrentUser? _currentUser;
+
     private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
-    public DcdDbContext(DbContextOptions<DcdDbContext> options) : base(options)
+    public DcdDbContext(DbContextOptions<DcdDbContext> options,
+        CurrentUser? currentUser) : base(options)
     {
-
+        _currentUser = currentUser;
     }
 
-    public DcdDbContext(
-        DbContextOptions<DcdDbContext> options,
-        IServiceProvider serviceProvider
-        ) : base(options)
+    public DcdDbContext(DbContextOptions<DcdDbContext> options,
+                        IServiceProvider serviceProvider,
+                        CurrentUser currentUser) : base(options)
     {
         _serviceProvider = serviceProvider;
+        _currentUser = currentUser;
     }
 
     // TODO: This is not pretty, need to move this logic out of the context
@@ -42,7 +46,7 @@ public class DcdDbContext : DbContext
                 saveFailed = false;
                 try
                 {
-                    result = await base.SaveChangesAsync(cancellationToken);
+                    result = await SaveChangesAsync(cancellationToken);
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
@@ -92,7 +96,7 @@ public class DcdDbContext : DbContext
         var rerunCalculateNPV = CalculateNPV();
         var rerunCalculateBreakEven = CalculateBreakEvenOilPrice();
 
-        await base.SaveChangesAsync(); // TODO: This is a hack to find the updated values in the calculate services. Need to find a better way to do this.
+        await SaveChangesAsync(); // TODO: This is a hack to find the updated values in the calculate services. Need to find a better way to do this.
         if (wells.Count != 0 || drillingScheduleIds.Count != 0)
         {
             await _serviceProvider.GetRequiredService<IWellCostProfileService>().UpdateCostProfilesForWellsFromDrillingSchedules(drillingScheduleIds);
@@ -1146,6 +1150,8 @@ public class DcdDbContext : DbContext
     }
 
     public DbSet<Project> Projects { get; set; } = null!;
+    public DbSet<ProjectMember> ProjectMembers { get; set; } = null!;
+    public DbSet<RevisionDetails> RevisionDetails { get; set; } = null!;
     public DbSet<ExplorationOperationalWellCosts> ExplorationOperationalWellCosts { get; set; } = null!;
     public DbSet<DevelopmentOperationalWellCosts> DevelopmentOperationalWellCosts { get; set; } = null!;
 
@@ -1234,20 +1240,43 @@ public class DcdDbContext : DbContext
     public DbSet<CalculatedTotalIncomeCostProfile> CalculatedTotalIncomeCostProfile { get; set; } = null!;
     public DbSet<CalculatedTotalCostCostProfile> CalculatedTotalCostCostProfile { get; set; } = null!;
 
+    public DbSet<ChangeLog> ChangeLogs { get; set; } = null!;
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new ProjectConfiguration());
+        modelBuilder.ApplyConfiguration(new ProjectMemberConfiguration());
+        modelBuilder.ApplyConfiguration(new RevisionDetailsConfiguration());
         modelBuilder.ApplyConfiguration(new CaseConfiguration());
         modelBuilder.ApplyConfiguration(new WellProjectWellConfiguration());
         modelBuilder.ApplyConfiguration(new ExplorationWellConfiguration());
+        modelBuilder.ApplyConfiguration(new ChangeLogConfiguration());
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);
         optionsBuilder.EnableSensitiveDataLogging();
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var utcNow = DateTime.UtcNow;
+
+        ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, _currentUser, utcNow));
+
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    public override int SaveChanges()
+    {
+        var utcNow = DateTime.UtcNow;
+
+        ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, _currentUser, utcNow));
+
+        return base.SaveChanges();
     }
 }

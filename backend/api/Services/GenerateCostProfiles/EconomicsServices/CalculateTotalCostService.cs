@@ -1,40 +1,20 @@
 using api.Models;
-using api.Services;
 
 namespace api.Services.EconomicsServices;
 
-public class CalculateTotalCostService : ICalculateTotalCostService
+public class CalculateTotalCostService(
+    ICaseService caseService,
+    ISubstructureService substructureService,
+    ISurfService surfService,
+    ITopsideService topsideService,
+    ITransportService transportService,
+    IWellProjectService wellProjectService,
+    IExplorationService explorationService)
+    : ICalculateTotalCostService
 {
-    private readonly ICaseService _caseService;
-    private readonly ISubstructureService _substructureService;
-    private readonly ISurfService _surfService;
-    private readonly ITopsideService _topsideService;
-    private readonly ITransportService _transportService;
-    private readonly IWellProjectService _wellProjectService;
-    private readonly IExplorationService _explorationService;
-
-    public CalculateTotalCostService(
-        ICaseService caseService,
-        ISubstructureService substructureService,
-        ISurfService surfService,
-        ITopsideService topsideService,
-        ITransportService transportService,
-        IWellProjectService wellProjectService,
-        IExplorationService explorationService)
-    {
-        _caseService = caseService;
-        _substructureService = substructureService;
-        _surfService = surfService;
-        _topsideService = topsideService;
-        _transportService = transportService;
-        _explorationService = explorationService;
-        _wellProjectService = wellProjectService;
-    }
-
-
     public async Task CalculateTotalCost(Guid caseId)
     {
-        var caseItem = await _caseService.GetCaseWithIncludes(
+        var caseItem = await caseService.GetCaseWithIncludes(
             caseId,
             c => c.TotalFeasibilityAndConceptStudies!,
             c => c.TotalFeasibilityAndConceptStudiesOverride!,
@@ -77,25 +57,25 @@ public class CalculateTotalCostService : ICalculateTotalCostService
             Values = totalCessationCost.Values ?? []
         };
 
-        var substructure = await _substructureService.GetSubstructureWithIncludes(
+        var substructure = await substructureService.GetSubstructureWithIncludes(
             caseItem.SubstructureLink,
             s => s.CostProfileOverride!,
             s => s.CostProfile!
         );
 
-        var surf = await _surfService.GetSurfWithIncludes(
+        var surf = await surfService.GetSurfWithIncludes(
             caseItem.SurfLink,
             s => s.CostProfileOverride!,
             s => s.CostProfile!
         );
 
-        var topside = await _topsideService.GetTopsideWithIncludes(
+        var topside = await topsideService.GetTopsideWithIncludes(
             caseItem.TopsideLink,
             t => t.CostProfileOverride!,
             t => t.CostProfile!
         );
 
-        var transport = await _transportService.GetTransportWithIncludes(
+        var transport = await transportService.GetTransportWithIncludes(
             caseItem.TransportLink,
             t => t.CostProfileOverride!,
             t => t.CostProfile!
@@ -108,7 +88,7 @@ public class CalculateTotalCostService : ICalculateTotalCostService
             Values = totalOffshoreFacilityCost.Values
         };
 
-        var wellProject = await _wellProjectService.GetWellProjectWithIncludes(
+        var wellProject = await wellProjectService.GetWellProjectWithIncludes(
             caseItem.WellProjectLink,
             w => w.OilProducerCostProfileOverride!,
             w => w.OilProducerCostProfile!,
@@ -127,7 +107,7 @@ public class CalculateTotalCostService : ICalculateTotalCostService
             Values = totalDevelopmentCost.Values
         };
 
-        var exploration = await _explorationService.GetExplorationWithIncludes(
+        var exploration = await explorationService.GetExplorationWithIncludes(
             caseItem.ExplorationLink,
             e => e.GAndGAdminCost!,
             e => e.CountryOfficeCost!,

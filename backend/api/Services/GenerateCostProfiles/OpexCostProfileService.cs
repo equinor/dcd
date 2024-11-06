@@ -1,46 +1,21 @@
-using api.Context;
-using api.Dtos;
-using api.Exceptions;
 using api.Models;
-
-using AutoMapper;
 
 namespace api.Services;
 
-public class OpexCostProfileService : IOpexCostProfileService
+public class OpexCostProfileService(
+    ICaseService caseService,
+    IProjectService projectService,
+    IDrainageStrategyService drainageStrategyService,
+    IWellProjectWellService wellProjectWellService,
+    ITopsideService topsideService)
+    : IOpexCostProfileService
 {
-    private readonly ICaseService _caseService;
-    private readonly IProjectService _projectService;
-    private readonly ILogger<OpexCostProfileService> _logger;
-    private readonly IDrainageStrategyService _drainageStrategyService;
-    private readonly IWellProjectService _wellProjectService;
-    private readonly IWellProjectWellService _wellProjectWellService;
-    private readonly ITopsideService _topsideService;
-
-    public OpexCostProfileService(
-        ILoggerFactory loggerFactory,
-        ICaseService caseService,
-        IProjectService projectService,
-        IDrainageStrategyService drainageStrategyService,
-        IWellProjectService wellProjectService,
-        IWellProjectWellService wellProjectWellService,
-        ITopsideService topsideService)
-    {
-        _logger = loggerFactory.CreateLogger<OpexCostProfileService>();
-        _projectService = projectService;
-        _drainageStrategyService = drainageStrategyService;
-        _caseService = caseService;
-        _wellProjectService = wellProjectService;
-        _wellProjectWellService = wellProjectWellService;
-        _topsideService = topsideService;
-    }
-
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await _caseService.GetCase(caseId);
-        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var caseItem = await caseService.GetCase(caseId);
+        var project = await projectService.GetProjectWithoutAssets(caseItem.ProjectId);
 
-        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
+        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
             caseItem.DrainageStrategyLink,
             d => d.ProductionProfileOil!,
             d => d.AdditionalProductionProfileOil!,
@@ -64,7 +39,7 @@ public class OpexCostProfileService : IOpexCostProfileService
 
         var lastYear = lastYearofProduction ?? 0;
 
-        var linkedWells = await _wellProjectWellService.GetWellProjectWellsForWellProject(caseItem.WellProjectLink);
+        var linkedWells = await wellProjectWellService.GetWellProjectWellsForWellProject(caseItem.WellProjectLink);
         if (linkedWells.Count == 0)
         {
             CalculationHelper.ResetTimeSeries(caseItem.WellInterventionCostProfile);
@@ -150,7 +125,7 @@ public class OpexCostProfileService : IOpexCostProfileService
         int firstYear = firstYearOfProduction.Value;
         int lastYear = lastYearofProduction.Value;
 
-        var topside = await _topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
+        var topside = await topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
 
         var facilityOpex = topside.FacilityOpex;
 

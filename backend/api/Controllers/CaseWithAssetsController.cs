@@ -2,7 +2,6 @@ using api.Authorization;
 using api.Dtos;
 using api.Services;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 
@@ -16,17 +15,8 @@ namespace api.Controllers;
     ApplicationRole.ReadOnly,
     ApplicationRole.User
 )]
-public class CaseWithAssetsController : ControllerBase
+public class CaseWithAssetsController(ICaseWithAssetsService caseWithAssetsService) : ControllerBase
 {
-    private readonly ICaseWithAssetsService _caseWithAssetsService;
-
-    public CaseWithAssetsController(
-        ICaseWithAssetsService caseWithAssetsService
-    )
-    {
-        _caseWithAssetsService = caseWithAssetsService;
-    }
-
     [HttpGet]
     [ActionType(ActionType.Read)]
     public async Task<ActionResult<CaseWithAssetsDto>> GetCaseWithAssets(
@@ -34,7 +24,7 @@ public class CaseWithAssetsController : ControllerBase
         [FromRoute] Guid caseId
     )
     {
-        var dto = await _caseWithAssetsService.GetCaseWithAssetsNoTracking(projectId, caseId);
+        var dto = await caseWithAssetsService.GetCaseWithAssetsNoTracking(projectId, caseId);
         return Ok(dto);
     }
 }

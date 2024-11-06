@@ -1,21 +1,14 @@
 using api.Context;
 using api.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 
 namespace api.Repositories;
 
-public class TransportTimeSeriesRepository : BaseRepository, ITransportTimeSeriesRepository
+public class TransportTimeSeriesRepository(DcdDbContext context) : BaseRepository(context), ITransportTimeSeriesRepository
 {
-
-    public TransportTimeSeriesRepository(DcdDbContext context) : base(context)
-    {
-    }
-
     public TransportCostProfile CreateTransportCostProfile(TransportCostProfile transportCostProfile)
     {
-        _context.TransportCostProfile.Add(transportCostProfile);
+        Context.TransportCostProfile.Add(transportCostProfile);
         return transportCostProfile;
     }
 
@@ -31,7 +24,7 @@ public class TransportTimeSeriesRepository : BaseRepository, ITransportTimeSerie
 
     public TransportCostProfileOverride CreateTransportCostProfileOverride(TransportCostProfileOverride profile)
     {
-        _context.TransportCostProfileOverride.Add(profile);
+        Context.TransportCostProfileOverride.Add(profile);
         return profile;
     }
 

@@ -513,6 +513,54 @@ namespace api.Migrations
                     b.ToTable("CessationWellsCostOverride");
                 });
 
+            modelBuilder.Entity("api.Models.ChangeLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EntityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("EntityState")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NewValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OldValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Payload")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PropertyName")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("TimestampUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityId");
+
+                    b.HasIndex("EntityName");
+
+                    b.HasIndex("PropertyName");
+
+                    b.HasIndex("TimestampUtc");
+
+                    b.ToTable("ChangeLogs");
+                });
+
             modelBuilder.Entity("api.Models.Co2Emissions", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1652,6 +1700,66 @@ namespace api.Migrations
                     b.HasIndex("OriginalProjectId");
 
                     b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("api.Models.ProjectMember", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("UserId", "ProjectId")
+                        .IsUnique();
+
+                    b.ToTable("ProjectMembers");
+                });
+
+            modelBuilder.Entity("api.Models.RevisionDetails", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Arena")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Mdqc")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("OriginalProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("RevisionDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("RevisionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RevisionName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OriginalProjectId")
+                        .HasDatabaseName("IX_RevisionDetails_OriginalProjectId");
+
+                    b.HasIndex("RevisionId")
+                        .IsUnique();
+
+                    b.ToTable("RevisionDetails");
                 });
 
             modelBuilder.Entity("api.Models.SeismicAcquisitionAndProcessing", b =>
@@ -3351,6 +3459,28 @@ namespace api.Migrations
                     b.Navigation("OriginalProject");
                 });
 
+            modelBuilder.Entity("api.Models.ProjectMember", b =>
+                {
+                    b.HasOne("api.Models.Project", "Project")
+                        .WithMany("ProjectMembers")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("api.Models.RevisionDetails", b =>
+                {
+                    b.HasOne("api.Models.Project", "Revision")
+                        .WithOne("RevisionDetails")
+                        .HasForeignKey("api.Models.RevisionDetails", "RevisionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Revision");
+                });
+
             modelBuilder.Entity("api.Models.SeismicAcquisitionAndProcessing", b =>
                 {
                     b.HasOne("api.Models.Exploration", "Exploration")
@@ -3805,6 +3935,10 @@ namespace api.Migrations
                     b.Navigation("ExplorationOperationalWellCosts");
 
                     b.Navigation("Explorations");
+
+                    b.Navigation("ProjectMembers");
+
+                    b.Navigation("RevisionDetails");
 
                     b.Navigation("Revisions");
 
