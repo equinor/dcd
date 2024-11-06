@@ -72,7 +72,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     })
 
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setRevisionName(e.currentTarget.value)
+        setRevisionName(e.currentTarget.value.trimStart())
     }
 
     const handleClassificationChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
