@@ -23,12 +23,12 @@ public static class ChangeLogService
         changes.AddRange(dbContext.ChangeTracker
             .Entries()
             .Where(x => x.Entity is IChangeTrackable)
-            .Where(x => x.Entity is EntityState.Added or EntityState.Deleted)
+            .Where(x => x.State is EntityState.Added or EntityState.Deleted)
             .Select(x => new ChangeLog
             {
                 TimestampUtc = utcNow,
                 Username = currentUser?.Username,
-                EntityId = ((IChangeTrackable)x.Entity).Id,
+                EntityId = ((IChangeTrackable) x.Entity).Id,
                 EntityName = x.Entity.GetType().Name,
                 EntityState = x.State.ToString(),
                 Payload = GenerateInitialState(x.Properties)
