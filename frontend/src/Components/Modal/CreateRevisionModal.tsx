@@ -71,12 +71,6 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
         enabled: !!externalId,
     })
 
-    useEffect(() => {
-        if (!isModalOpen) {
-            setRevisionName("")
-        }
-    }, [isModalOpen])
-
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setRevisionName(e.currentTarget.value.trimStart())
     }
@@ -119,6 +113,12 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             arena,
         }
         createRevision(newRevision, setIsModalOpen)
+        setRevisionName("")
+    }
+
+    const closeModal = () => {
+        setIsModalOpen(false)
+        setRevisionName("")
     }
 
     return (
@@ -228,7 +228,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
             <DialogActions>
                 <Grid container spacing={1} justifyContent="flex-end">
                     <Grid item>
-                        {!isRevisionsLoading ? (<Button variant="ghost" onClick={() => setIsModalOpen(false)}>Cancel</Button>) : null}
+                        {!isRevisionsLoading ? (<Button variant="ghost" onClick={() => closeModal()}>Cancel</Button>) : null}
                     </Grid>
                     <Grid item>
                         <Button disabled={isRevisionsLoading || revisionName === ""} onClick={() => submitRevision()}>
