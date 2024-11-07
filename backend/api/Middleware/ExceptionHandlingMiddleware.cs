@@ -54,6 +54,10 @@ public class ExceptionHandlingMiddleware(
                 statusCode = HttpStatusCode.BadRequest;
                 message = exception.Message;
                 break;
+            case InputValidationException:
+                statusCode = HttpStatusCode.UnprocessableContent;
+                message = exception.Message;
+                break;
             case ProjectAccessMismatchException:
             case ProjectClassificationException:
             case ProjectMembershipException:
