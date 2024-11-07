@@ -51,6 +51,7 @@ public class ExceptionHandlingMiddleware(
                 break;
             case WellChangeTypeException:
             case InvalidInputException:
+            case InputValidationException:
                 statusCode = HttpStatusCode.BadRequest;
                 message = exception.Message;
                 break;
