@@ -68,51 +68,35 @@ public class DrainageStrategyWithProfilesDto
     public DeferredGasProductionDto DeferredGasProduction { get; set; } = new DeferredGasProductionDto();
 }
 
-public class ProductionProfileOilDto : TimeSeriesVolumeDto
-{
-}
+public class ProductionProfileOilDto : TimeSeriesVolumeDto;
 
-public class AdditionalProductionProfileOilDto : TimeSeriesVolumeDto
-{
-}
+public class AdditionalProductionProfileOilDto : TimeSeriesVolumeDto;
 
-public class ProductionProfileGasDto : TimeSeriesVolumeDto
-{
-}
+public class ProductionProfileGasDto : TimeSeriesVolumeDto;
 
-public class AdditionalProductionProfileGasDto : TimeSeriesVolumeDto
-{
-}
+public class AdditionalProductionProfileGasDto : TimeSeriesVolumeDto;
 
-public class ProductionProfileWaterDto : TimeSeriesVolumeDto
-{
-}
+public class ProductionProfileWaterDto : TimeSeriesVolumeDto;
 
-public class ProductionProfileWaterInjectionDto : TimeSeriesVolumeDto
-{
-}
+public class ProductionProfileWaterInjectionDto : TimeSeriesVolumeDto;
 
-public class FuelFlaringAndLossesDto : TimeSeriesVolumeDto
-{
-}
+public class FuelFlaringAndLossesDto : TimeSeriesVolumeDto;
+
 public class FuelFlaringAndLossesOverrideDto : TimeSeriesVolumeDto, ITimeSeriesOverrideDto
 {
     [Required]
     public bool Override { get; set; }
 }
 
-public class NetSalesGasDto : TimeSeriesVolumeDto
-{
-}
+public class NetSalesGasDto : TimeSeriesVolumeDto;
+
 public class NetSalesGasOverrideDto : TimeSeriesVolumeDto, ITimeSeriesOverrideDto
 {
     [Required]
     public bool Override { get; set; }
 }
 
-public class Co2EmissionsDto : TimeSeriesMassDto
-{
-}
+public class Co2EmissionsDto : TimeSeriesMassDto;
 
 public class Co2EmissionsOverrideDto : TimeSeriesMassDto, ITimeSeriesOverrideDto
 {
@@ -120,9 +104,7 @@ public class Co2EmissionsOverrideDto : TimeSeriesMassDto, ITimeSeriesOverrideDto
     public bool Override { get; set; }
 }
 
-public class ImportedElectricityDto : TimeSeriesEnergyDto
-{
-}
+public class ImportedElectricityDto : TimeSeriesEnergyDto;
 
 public class ImportedElectricityOverrideDto : ImportedElectricityDto, ITimeSeriesOverrideDto
 {
@@ -130,18 +112,10 @@ public class ImportedElectricityOverrideDto : ImportedElectricityDto, ITimeSerie
     public bool Override { get; set; }
 }
 
-public class ProductionProfileNGLDto : TimeSeriesVolumeDto
-{
-}
+public class ProductionProfileNGLDto : TimeSeriesVolumeDto;
 
-public class Co2IntensityDto : TimeSeriesMassDto
-{
-}
+public class Co2IntensityDto : TimeSeriesMassDto;
 
-public class DeferredOilProductionDto : TimeSeriesVolumeDto
-{
-}
+public class DeferredOilProductionDto : TimeSeriesVolumeDto;
 
-public class DeferredGasProductionDto : TimeSeriesVolumeDto
-{
-}
+public class DeferredGasProductionDto : TimeSeriesVolumeDto;

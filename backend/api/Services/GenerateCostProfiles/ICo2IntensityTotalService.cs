@@ -1,7 +1,6 @@
-namespace api.Services.GenerateCostProfiles
+namespace api.Services.GenerateCostProfiles;
+
+public interface ICo2IntensityTotalService
 {
-    public interface ICo2IntensityTotalService
-    {
-        Task<double> Calculate(Guid caseId);
-    }
+    Task<double> Calculate(Guid caseId);
 }

@@ -27,29 +27,17 @@ public class UpdateDrainageStrategyWithProfilesDto
     public UpdateDeferredGasProductionDto? DeferredGasProduction { get; set; }
 }
 
-public class UpdateProductionProfileOilDto : UpdateTimeSeriesVolumeDto
-{
-}
+public class UpdateProductionProfileOilDto : UpdateTimeSeriesVolumeDto;
 
-public class UpdateAdditionalProductionProfileOilDto : UpdateTimeSeriesVolumeDto
-{
-}
+public class UpdateAdditionalProductionProfileOilDto : UpdateTimeSeriesVolumeDto;
 
-public class UpdateProductionProfileGasDto : UpdateTimeSeriesVolumeDto
-{
-}
+public class UpdateProductionProfileGasDto : UpdateTimeSeriesVolumeDto;
 
-public class UpdateAdditionalProductionProfileGasDto : UpdateTimeSeriesVolumeDto
-{
-}
+public class UpdateAdditionalProductionProfileGasDto : UpdateTimeSeriesVolumeDto;
 
-public class UpdateProductionProfileWaterDto : UpdateTimeSeriesVolumeDto
-{
-}
+public class UpdateProductionProfileWaterDto : UpdateTimeSeriesVolumeDto;
 
-public class UpdateProductionProfileWaterInjectionDto : UpdateTimeSeriesVolumeDto
-{
-}
+public class UpdateProductionProfileWaterInjectionDto : UpdateTimeSeriesVolumeDto;
 
 public class UpdateFuelFlaringAndLossesOverrideDto : UpdateTimeSeriesVolumeDto, ITimeSeriesOverrideDto
 {
@@ -70,10 +58,6 @@ public class UpdateImportedElectricityOverrideDto : UpdateTimeSeriesEnergyDto, I
     public bool Override { get; set; }
 }
 
-public class UpdateDeferredOilProductionDto : UpdateTimeSeriesVolumeDto
-{
-}
+public class UpdateDeferredOilProductionDto : UpdateTimeSeriesVolumeDto;
 
-public class UpdateDeferredGasProductionDto : UpdateTimeSeriesVolumeDto
-{
-}
+public class UpdateDeferredGasProductionDto : UpdateTimeSeriesVolumeDto;

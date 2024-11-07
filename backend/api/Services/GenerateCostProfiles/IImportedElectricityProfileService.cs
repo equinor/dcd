@@ -1,7 +1,6 @@
-namespace api.Services.GenerateCostProfiles
+namespace api.Services.GenerateCostProfiles;
+
+public interface IImportedElectricityProfileService
 {
-    public interface IImportedElectricityProfileService
-    {
-        Task Generate(Guid caseId);
-    }
+    Task Generate(Guid caseId);
 }

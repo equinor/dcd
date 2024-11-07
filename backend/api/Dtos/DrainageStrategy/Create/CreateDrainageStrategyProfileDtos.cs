@@ -1,28 +1,16 @@
 namespace api.Dtos;
 
-public class CreateProductionProfileOilDto : CreateTimeSeriesVolumeDto
-{
-}
+public class CreateProductionProfileOilDto : CreateTimeSeriesVolumeDto;
 
-public class CreateAdditionalProductionProfileOilDto : CreateTimeSeriesVolumeDto
-{
-}
+public class CreateAdditionalProductionProfileOilDto : CreateTimeSeriesVolumeDto;
 
-public class CreateProductionProfileGasDto : CreateTimeSeriesVolumeDto
-{
-}
+public class CreateProductionProfileGasDto : CreateTimeSeriesVolumeDto;
 
-public class CreateAdditionalProductionProfileGasDto : CreateTimeSeriesVolumeDto
-{
-}
+public class CreateAdditionalProductionProfileGasDto : CreateTimeSeriesVolumeDto;
 
-public class CreateProductionProfileWaterDto : CreateTimeSeriesVolumeDto
-{
-}
+public class CreateProductionProfileWaterDto : CreateTimeSeriesVolumeDto;
 
-public class CreateProductionProfileWaterInjectionDto : CreateTimeSeriesVolumeDto
-{
-}
+public class CreateProductionProfileWaterInjectionDto : CreateTimeSeriesVolumeDto;
 
 public class CreateFuelFlaringAndLossesOverrideDto : CreateTimeSeriesVolumeDto, ITimeSeriesOverrideDto
 {
@@ -43,10 +31,6 @@ public class CreateImportedElectricityOverrideDto : CreateTimeSeriesEnergyDto, I
     public bool Override { get; set; }
 }
 
-public class CreateDeferredOilProductionDto : CreateTimeSeriesVolumeDto
-{
-}
+public class CreateDeferredOilProductionDto : CreateTimeSeriesVolumeDto;
 
-public class CreateDeferredGasProductionDto : CreateTimeSeriesVolumeDto
-{
-}
+public class CreateDeferredGasProductionDto : CreateTimeSeriesVolumeDto;

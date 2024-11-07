@@ -89,16 +89,16 @@ public class ProspExcelImportService(
 
     private async Task ImportSurf(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
     {
-        List<string> costProfileCoords = new()
-        {
+        List<string> costProfileCoords =
+        [
             "J112",
             "K112",
             "L112",
             "M112",
             "N112",
             "O112",
-            "P112",
-        };
+            "P112"
+        ];
         var costProfileStartYear = ReadIntValue(cellData, _prospConfig.Surf.costProfileStartYear);
         var dG3Date = ReadDateValue(cellData, _prospConfig.Surf.dG3Date);
         var dG4Date = ReadDateValue(cellData, _prospConfig.Surf.dG4Date);
@@ -154,16 +154,16 @@ public class ProspExcelImportService(
 
     private async Task ImportTopside(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
     {
-        List<string> costProfileCoords = new()
-        {
+        List<string> costProfileCoords =
+        [
             "J104",
             "K104",
             "L104",
             "M104",
             "N104",
             "O104",
-            "P104",
-        };
+            "P104"
+        ];
         var costProfileStartYear = ReadIntValue(cellData, _prospConfig.TopSide.costProfileStartYear);
         var dG3Date = ReadDateValue(cellData, _prospConfig.TopSide.dG3Date);
         var dG4Date = ReadDateValue(cellData, _prospConfig.TopSide.dG4Date);
@@ -234,16 +234,16 @@ public class ProspExcelImportService(
 
     private async Task ImportSubstructure(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
     {
-        List<string> costProfileCoords = new()
-        {
+        List<string> costProfileCoords =
+        [
             "J105",
             "K105",
             "L105",
             "M105",
             "N105",
             "O105",
-            "P105",
-        };
+            "P105"
+        ];
         var costProfileStartYear = ReadIntValue(cellData, _prospConfig.SubStructure.costProfileStartYear);
         var dG3Date = ReadDateValue(cellData, _prospConfig.SubStructure.dG3Date);
         var dG4Date = ReadDateValue(cellData, _prospConfig.SubStructure.dG4Date);
@@ -281,16 +281,16 @@ public class ProspExcelImportService(
 
     private async Task ImportTransport(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
     {
-        List<string> costProfileCoords = new()
-        {
+        List<string> costProfileCoords =
+        [
             "J113",
             "K113",
             "L113",
             "M113",
             "N113",
             "O113",
-            "P113",
-        };
+            "P113"
+        ];
         var costProfileStartYear = ReadIntValue(cellData, _prospConfig.Transport.costProfileStartYear);
         var dG3Date = ReadDateValue(cellData, _prospConfig.Transport.dG3Date);
         var dG4Date = ReadDateValue(cellData, _prospConfig.Transport.dG4Date);

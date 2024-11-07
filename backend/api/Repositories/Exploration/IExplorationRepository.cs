@@ -10,7 +10,7 @@ public interface IExplorationRepository : IBaseRepository
     Task<Exploration?> GetExploration(Guid explorationId);
     Task<Exploration?> GetExplorationWithIncludes(Guid caseId, params Expression<Func<Exploration, object>>[] includes);
     Task<Well?> GetWell(Guid wellId);
-    Task<bool> ExplorationHasProfile(Guid ExplorationId, ExplorationProfileNames profileType);
+    Task<bool> ExplorationHasProfile(Guid explorationId, ExplorationProfileNames profileType);
     Exploration UpdateExploration(Exploration exploration);
     Task<DrillingSchedule?> GetExplorationWellDrillingSchedule(Guid drillingScheduleId);
     Task<Exploration?> GetExplorationWithDrillingSchedule(Guid drillingScheduleId);

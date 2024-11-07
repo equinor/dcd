@@ -70,9 +70,7 @@ public class TopsideWithProfilesDto
     public double PeakElectricityImported { get; set; }
 }
 
-public class TopsideCostProfileDto : TimeSeriesCostDto
-{
-}
+public class TopsideCostProfileDto : TimeSeriesCostDto;
 
 public class TopsideCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
 {
@@ -80,6 +78,4 @@ public class TopsideCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverr
     public bool Override { get; set; }
 }
 
-public class TopsideCessationCostProfileDto : TimeSeriesCostDto
-{
-}
+public class TopsideCessationCostProfileDto : TimeSeriesCostDto;

@@ -9,9 +9,7 @@ public class UpdateCessationOffshoreFacilitiesCostOverrideDto : UpdateTimeSeries
 {
     public bool Override { get; set; }
 }
-public class UpdateCessationOnshoreFacilitiesCostProfileDto : UpdateTimeSeriesCostDto
-{
-}
+public class UpdateCessationOnshoreFacilitiesCostProfileDto : UpdateTimeSeriesCostDto;
 
 public class UpdateWellInterventionCostProfileOverrideDto : UpdateTimeSeriesCostDto, ITimeSeriesOverrideDto
 {
@@ -33,17 +31,10 @@ public class UpdateTotalFEEDStudiesOverrideDto : UpdateTimeSeriesCostDto, ITimeS
     public bool Override { get; set; }
 }
 
-public class UpdateTotalOtherStudiesCostProfileDto : UpdateTimeSeriesCostDto
-{
-}
+public class UpdateTotalOtherStudiesCostProfileDto : UpdateTimeSeriesCostDto;
 
-public class UpdateHistoricCostCostProfileDto : UpdateTimeSeriesCostDto
-{
-}
-public class UpdateOnshoreRelatedOPEXCostProfileDto : UpdateTimeSeriesCostDto
-{
-}
+public class UpdateHistoricCostCostProfileDto : UpdateTimeSeriesCostDto;
 
-public class UpdateAdditionalOPEXCostProfileDto : UpdateTimeSeriesCostDto
-{
-}
+public class UpdateOnshoreRelatedOPEXCostProfileDto : UpdateTimeSeriesCostDto;
+
+public class UpdateAdditionalOPEXCostProfileDto : UpdateTimeSeriesCostDto;

@@ -33,7 +33,7 @@ public class SurfTimeSeriesService(
 
         if (resourceHasProfile)
         {
-            throw new ResourceAlreadyExistsException($"Surf with id {surfId} already has a profile of type {typeof(SurfCostProfileOverride).Name}.");
+            throw new ResourceAlreadyExistsException($"Surf with id {surfId} already has a profile of type {nameof(SurfCostProfileOverride)}.");
         }
 
         SurfCostProfileOverride profile = new()

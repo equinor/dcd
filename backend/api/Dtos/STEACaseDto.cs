@@ -36,6 +36,4 @@ public class ProductionAndSalesVolumesDto
 
 }
 
-public class OffshoreFacilitiesCostProfileDto : TimeSeriesCostDto
-{
-}
+public class OffshoreFacilitiesCostProfileDto : TimeSeriesCostDto;
