@@ -1,5 +1,5 @@
 import React, {
-    ChangeEventHandler, FunctionComponent, useEffect, useState,
+    ChangeEventHandler, FunctionComponent, useState,
 } from "react"
 import {
     Divider, Icon, Typography, Button,
