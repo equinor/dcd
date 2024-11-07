@@ -1,4 +1,4 @@
-﻿using api.Authorization;
+using api.Authorization;
 using api.Repositories;
 using api.Services;
 using api.Services.EconomicsServices;

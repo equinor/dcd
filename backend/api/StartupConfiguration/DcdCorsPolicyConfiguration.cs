@@ -1,4 +1,4 @@
-﻿namespace api.StartupConfiguration;
+namespace api.StartupConfiguration;
 
 public static class DcdCorsPolicyConfiguration
 {
