@@ -22,6 +22,7 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "@/Utils/constants"
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import { useRevisions } from "@/Hooks/useRevision"
+import { getProjectPhaseName } from "@/Utils/common"
 
 const Wrapper = styled.div`
     flex-direction: row;
@@ -71,7 +72,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     })
 
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setRevisionName(e.currentTarget.value)
+        setRevisionName(e.currentTarget.value.trimStart())
     }
 
     const handleClassificationChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
@@ -90,15 +91,18 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
 
     if (!apiData || !isModalOpen) { return null }
 
-    const internalProjectPhaseOptions = Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => (
-        <option key={key} value={key}>{value.label}</option>
-    ))
+    const disableAfterDG0 = () => [3, 4, 5, 6, 7, 8].includes(apiData.projectPhase)
+
+    const internalProjectPhaseOptions = Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => {
+        if (disableAfterDG0()) {
+            return <option>{getProjectPhaseName(apiData.projectPhase)}</option>
+        }
+        return <option key={key} value={key}>{value.label}</option>
+    })
 
     const classificationOptions = Object.entries(PROJECT_CLASSIFICATION).map(([key, value]) => (
         <option key={key} value={key}>{value.label}</option>
     ))
-
-    const disableAfterDG0 = () => apiData.projectPhase >= 3
 
     const submitRevision = () => {
         const newRevision: Components.Schemas.CreateRevisionDto = {
@@ -149,16 +153,24 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                             </InputWrapper>
                         </ColumnWrapper>
                         <ColumnWrapper>
-                            <NativeSelect
-                                id="internalProjectPhase"
-                                label="Project phase"
-                                onChange={handleInternalProjectPhaseChange}
-                                value={internalProjectPhase}
-                                disabled={disableAfterDG0()}
-                                defaultValue={apiData.internalProjectPhase}
+                            <InputWrapper
+                                disabled
+                                helperProps={disableAfterDG0() ? {
+                                    icon: <Icon data={info_circle} size={16} />,
+                                    text: "Project phases after DG0 are set in Common Library",
+                                } : undefined}
                             >
-                                {internalProjectPhaseOptions}
-                            </NativeSelect>
+                                <NativeSelect
+                                    id="internalProjectPhase"
+                                    label="Project phase"
+                                    onChange={handleInternalProjectPhaseChange}
+                                    value={internalProjectPhase}
+                                    disabled={disableAfterDG0()}
+                                    defaultValue={apiData.internalProjectPhase}
+                                >
+                                    {internalProjectPhaseOptions}
+                                </NativeSelect>
+                            </InputWrapper>
                         </ColumnWrapper>
                         <ColumnWrapper>
                             <NativeSelect
@@ -213,7 +225,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                         {!isRevisionsLoading ? (<Button variant="ghost" onClick={() => setIsModalOpen(false)}>Cancel</Button>) : null}
                     </Grid>
                     <Grid item>
-                        <Button disabled={isRevisionsLoading} onClick={() => submitRevision()}>
+                        <Button disabled={isRevisionsLoading || revisionName === ""} onClick={() => submitRevision()}>
                             {isRevisionsLoading ? <Progress.Dots /> : "Create revision"}
                         </Button>
                     </Grid>
