@@ -205,7 +205,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                             </InputWrapper>
                         </ColumnWrapper>
                         <ColumnWrapper>
-                            <InputWrapper labelProps={{ label: "Created Date" }}>
+                            <InputWrapper labelProps={{ label: "Created date" }}>
                                 <Typography variant="body_short">
                                     {revisionApiData.revisionDetails?.revisionDate
                                         ? formatFullDate(revisionApiData.revisionDetails?.revisionDate)
@@ -214,14 +214,14 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                             </InputWrapper>
                         </ColumnWrapper>
                         <ColumnWrapper>
-                            <InputWrapper labelProps={{ label: "Project Phase" }}>
+                            <InputWrapper labelProps={{ label: "Project phase" }}>
                                 <Typography variant="body_short">
                                     {INTERNAL_PROJECT_PHASE[revisionApiData?.internalProjectPhase]?.label ?? "N/A"}
                                 </Typography>
                             </InputWrapper>
                         </ColumnWrapper>
                         <ColumnWrapper>
-                            <InputWrapper labelProps={{ label: "Project Classification" }}>
+                            <InputWrapper labelProps={{ label: "Project classification" }}>
                                 <Typography variant="body_short">
                                     {PROJECT_CLASSIFICATION[projectApiData?.classification]?.label ?? "N/A"}
                                 </Typography>
