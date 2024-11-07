@@ -22,16 +22,16 @@ namespace api.Controllers;
 [ActionType(ActionType.Read)]
 public class STEAController(ISTEAService sTeaService) : ControllerBase
 {
-    [HttpGet("{ProjectId}", Name = "GetInputToSTEA")]
-    public async Task<STEAProjectDto> GetInputToSTEA(Guid ProjectId)
+    [HttpGet("{projectId}", Name = "GetInputToSTEA")]
+    public async Task<STEAProjectDto> GetInputToSTEA(Guid projectId)
     {
-        return await sTeaService.GetInputToSTEA(ProjectId);
+        return await sTeaService.GetInputToSTEA(projectId);
     }
 
-    [HttpPost("{ProjectId}", Name = "ExcelToSTEA")]
-    public async Task<FileResult> ExcelToSTEA(Guid ProjectId)
+    [HttpPost("{projectId}", Name = "ExcelToSTEA")]
+    public async Task<FileResult> ExcelToSTEA(Guid projectId)
     {
-        var project = await GetInputToSTEA(ProjectId);
+        var project = await GetInputToSTEA(projectId);
         List<BusinessCase> businessCases = ExportToSTEA.Export(project);
         string filename = project.Name + "ExportToSTEA.xlsx";
         return File(ExcelFile(businessCases, project.Name).ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename);

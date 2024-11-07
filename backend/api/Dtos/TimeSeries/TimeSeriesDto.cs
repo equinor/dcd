@@ -7,14 +7,12 @@ namespace api.Dtos;
 
 public class TimeSeriesDto<T>
 {
-
     [Required]
     public Guid Id { get; set; }
 
     [Required]
     public int StartYear { get; set; }
     public T[] Values { get; set; } = null!;
-
 }
 
 public class TimeSeriesDoubleDto : TimeSeriesDto<double>
@@ -35,7 +33,6 @@ public class TimeSeriesDoubleDto : TimeSeriesDto<double>
 
 public class TimeSeriesCostDto : TimeSeriesDoubleDto
 {
-
     [Required]
     public string EPAVersion { get; set; } = string.Empty;
 
@@ -161,27 +158,15 @@ public class TimeSeriesCostDto : TimeSeriesDoubleDto
     }
 }
 
-public class TimeSeriesVolumeDto : TimeSeriesDoubleDto
-{
-}
+public class TimeSeriesVolumeDto : TimeSeriesDoubleDto;
 
-public class TimeSeriesMassDto : TimeSeriesDoubleDto
-{
-}
+public class TimeSeriesMassDto : TimeSeriesDoubleDto;
 
+public class TimeSeriesEnergyDto : TimeSeriesDoubleDto;
 
-public class TimeSeriesEnergyDto : TimeSeriesDoubleDto
-{
-}
-
-
-
-public class TimeSeriesScheduleDto : TimeSeriesDto<int>
-{
-}
+public class TimeSeriesScheduleDto : TimeSeriesDto<int>;
 
 public interface ITimeSeriesOverrideDto
 {
     bool Override { get; set; }
 }
-

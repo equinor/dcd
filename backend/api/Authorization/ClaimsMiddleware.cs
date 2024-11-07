@@ -49,7 +49,8 @@ public class ClaimsMiddleware(
 
         var applicationRoleClaims = applicationRoles
             .DefaultIfEmpty(ApplicationRole.None)
-            .Select(role => new Claim(ApplicationRoleClaimType, role.ToString()));
+            .Select(role => new Claim(ApplicationRoleClaimType, role.ToString()))
+            .ToList();
 
         var rolesAsString = string.Join(",", applicationRoleClaims.Select(x => x.Value.ToString()));
 

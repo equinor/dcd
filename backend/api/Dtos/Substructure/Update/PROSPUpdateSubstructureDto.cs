@@ -5,6 +5,4 @@ public class PROSPUpdateSubstructureDto : BaseUpdateSubstructureDto
     public DateTimeOffset? ProspVersion { get; set; }
 }
 
-public class UpdateSubstructureCostProfileDto : UpdateTimeSeriesCostDto
-{
-}
+public class UpdateSubstructureCostProfileDto : UpdateTimeSeriesCostDto;

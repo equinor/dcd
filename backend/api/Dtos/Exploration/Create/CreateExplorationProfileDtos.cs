@@ -4,10 +4,6 @@ public class CreateGAndGAdminCostOverrideDto : CreateTimeSeriesCostDto, ITimeSer
 {
     public bool Override { get; set; }
 }
-public class CreateSeismicAcquisitionAndProcessingDto : CreateTimeSeriesCostDto
-{
-}
+public class CreateSeismicAcquisitionAndProcessingDto : CreateTimeSeriesCostDto;
 
-public class CreateCountryOfficeCostDto : CreateTimeSeriesCostDto
-{
-}
+public class CreateCountryOfficeCostDto : CreateTimeSeriesCostDto;

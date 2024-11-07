@@ -33,7 +33,7 @@ public class TopsideTimeSeriesService(
 
         if (resourceHasProfile)
         {
-            throw new ResourceAlreadyExistsException($"Topside with id {topsideId} already has a profile of type {typeof(TopsideCostProfileOverride).Name}.");
+            throw new ResourceAlreadyExistsException($"Topside with id {topsideId} already has a profile of type {nameof(TopsideCostProfileOverride)}.");
         }
 
         TopsideCostProfileOverride profile = new()

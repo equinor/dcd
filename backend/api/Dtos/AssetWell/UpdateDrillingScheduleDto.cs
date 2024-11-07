@@ -1,6 +1,4 @@
 
 namespace api.Dtos;
 
-public class UpdateDrillingScheduleDto : UpdateTimeSeriesScheduleDto
-{
-}
+public class UpdateDrillingScheduleDto : UpdateTimeSeriesScheduleDto;
