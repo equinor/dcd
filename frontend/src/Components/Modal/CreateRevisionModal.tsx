@@ -1,5 +1,5 @@
 import React, {
-    ChangeEventHandler, FunctionComponent, useState,
+    ChangeEventHandler, FunctionComponent, useEffect, useState,
 } from "react"
 import {
     Divider, Icon, Typography, Button,
@@ -69,6 +69,12 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
         queryFn: () => projectQueryFn(externalId),
         enabled: !!externalId,
     })
+
+    useEffect(() => {
+        if (!isModalOpen) {
+            setRevisionName("")
+        }
+    }, [isModalOpen])
 
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
         setRevisionName(e.currentTarget.value)
