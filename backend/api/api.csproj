@@ -26,7 +26,7 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8" />
         <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="4.5.1" />
         <PackageReference Include="Microsoft.Graph" Version="4.36.0" />
-        <PackageReference Include="Microsoft.Identity.Web" Version="3.0.1" />
+        <PackageReference Include="Microsoft.Identity.Web" Version="3.3.0" />
         <PackageReference Include="Microsoft.Identity.Web.MicrosoftGraph" Version="2.13.4" />
         <PackageReference Include="Microsoft.Identity.Web.DownstreamApi" Version="2.13.4" />
         
