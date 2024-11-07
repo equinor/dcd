@@ -26,6 +26,7 @@ public class CasesController(
     [HttpPost]
     public async Task<ProjectWithAssetsDto> CreateCase([FromRoute] Guid projectId, [FromBody] CreateCaseDto caseDto)
     {
+        CreateCaseDtoValidator.Validate(caseDto);
         return await createCaseService.CreateCase(projectId, caseDto);
     }
 
@@ -42,6 +43,7 @@ public class CasesController(
         [FromBody] APIUpdateCaseDto caseDto
         )
     {
+        UpdateCaseDtoValidator.Validate(caseDto);
         return await caseService.UpdateCase(projectId, caseId, caseDto);
     }
 

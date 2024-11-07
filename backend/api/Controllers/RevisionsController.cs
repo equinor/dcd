@@ -34,6 +34,10 @@ public class RevisionsController(IRevisionService revisionService) : ControllerB
     public async Task<RevisionWithCasesDto> CreateRevision([FromRoute] Guid projectId,
         [FromBody] CreateRevisionDto createRevisionDto)
     {
+        // Do not enable backend validation until frontend actually displays the name field.
+        // Probably done by the end of november 2024.
+
+        //CreateRevisionDtoValidator.Validate(createRevisionDto);
         return await revisionService.CreateRevision(projectId, createRevisionDto);
     }
 
