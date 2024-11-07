@@ -1,7 +1,8 @@
 using System.Text.RegularExpressions;
 
+namespace api.StartupConfiguration;
 
-public class ApiEndpointTransformer : IOutboundParameterTransformer
+public class DcdApiEndpointTransformer : IOutboundParameterTransformer
 {
     public string? TransformOutbound(object? value)
     {
@@ -9,6 +10,7 @@ public class ApiEndpointTransformer : IOutboundParameterTransformer
         {
             return string.Empty;
         }
+
         var endpoint = value.ToString();
         return Regex.Replace(endpoint!, "([a-z])([A-Z])", o => $"{o.Groups[1].Value}-{o.Groups[2].Value}");
     }
