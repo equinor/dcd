@@ -1,5 +1,5 @@
 import React, {
-    ChangeEventHandler, useEffect, useRef, useState,
+    ChangeEventHandler, useEffect, useState,
 } from "react"
 import {
     Typography,
@@ -8,6 +8,7 @@ import {
     InputWrapper,
     TextField,
     Chip,
+    Divider,
 } from "@equinor/eds-core-react"
 import {
     checkbox, checkbox_outline, info_circle, close as closeIcon,
@@ -17,10 +18,10 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import styled from "styled-components"
 import { useParams } from "react-router-dom"
 import DialogContent from "@mui/material/DialogContent"
-import { Grid, IconButton } from "@mui/material"
+import DialogTitle from "@mui/material/DialogTitle"
 import DialogActions from "@mui/material/DialogActions"
-import Modal from "../Modal/Modal"
-
+import Dialog from "@mui/material/Dialog"
+import { Grid } from "@mui/material"
 import { formatFullDate } from "@/Utils/common"
 import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Context/ProjectContext"
@@ -29,12 +30,12 @@ import { GetProjectService } from "@/Services/ProjectService"
 
 type RevisionDetailsModalProps = {
     isMenuOpen: boolean;
-    setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 const Wrapper = styled.div`
-    flex-direction: row;
     display: flex;
+    flex-direction: row;
     margin-bottom: 10px;
 `
 
@@ -44,18 +45,16 @@ const InfoIcon = styled(Icon)`
 `
 
 const ColumnWrapper = styled.div`
-    display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
-    gap: 16px;
+    margin-bottom: 15px;
 `
+
 const CloseRevision = styled.div`
     position: absolute;
     top: 8px;
     right: 8px;
     cursor: pointer;
     color: #007079;
-    
 `
 
 const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
@@ -166,103 +165,116 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
     if (!revisionApiData || !projectApiData) { return null }
 
     return (
-        <Modal
-            title={`${savedRevisionName} revision details`}
-            size="sm"
-            isOpen={isMenuOpen}
-            content={(
-                <>
-                    <CloseRevision onClick={closeMenu}>
-                        <Icon data={closeIcon} size={32} />
-                    </CloseRevision>
+        <Dialog
+            open={isMenuOpen}
+            onClose={closeMenu}
+            maxWidth="sm"
+            fullWidth
+            className="ConceptApp ag-theme-alpine-fusion"
+        >
+            <DialogTitle>
+                <Typography variant="h5" as="p">{`${savedRevisionName} revision details`}</Typography>
+                <Divider
+                    style={{
+                        width: "100%",
+                        marginBottom: 4,
+                        marginTop: 10,
+                    }}
+                />
+            </DialogTitle>
+            <DialogContent>
+                <Wrapper>
+                    <InfoIcon data={info_circle} size={18} />
+                    <Typography group="ui" variant="chart">
+                        Revisions are copies of a project at a given point in time. Revisions are locked for editing.
+                    </Typography>
+                </Wrapper>
+                <CloseRevision onClick={closeMenu}>
+                    <Icon data={closeIcon} size={32} />
+                </CloseRevision>
+                <Grid item xs={12} md={8}>
+                    <ColumnWrapper>
+                        <ColumnWrapper>
+                            <InputWrapper labelProps={{ label: "Revision name" }}>
+                                <TextField
+                                    id="name"
+                                    name="name"
+                                    onChange={handleRevisionNameChange}
+                                    value={revisionDetails.revisionName}
+                                />
+                            </InputWrapper>
+                        </ColumnWrapper>
+                        <ColumnWrapper>
+                            <InputWrapper labelProps={{ label: "Created Date" }}>
+                                <Typography variant="body_short">
+                                    {revisionApiData.revisionDetails?.revisionDate
+                                        ? formatFullDate(revisionApiData.revisionDetails?.revisionDate)
+                                        : "N/A"}
+                                </Typography>
+                            </InputWrapper>
+                        </ColumnWrapper>
+                        <ColumnWrapper>
+                            <InputWrapper labelProps={{ label: "Project Phase" }}>
+                                <Typography variant="body_short">
+                                    {INTERNAL_PROJECT_PHASE[revisionApiData?.internalProjectPhase]?.label ?? "N/A"}
+                                </Typography>
+                            </InputWrapper>
+                        </ColumnWrapper>
+                        <ColumnWrapper>
+                            <InputWrapper labelProps={{ label: "Project Classification" }}>
+                                <Typography variant="body_short">
+                                    {PROJECT_CLASSIFICATION[projectApiData?.classification]?.label ?? "N/A"}
+                                </Typography>
+                            </InputWrapper>
+                        </ColumnWrapper>
 
-                    <DialogContent>
-                        <Wrapper>
-                            <InfoIcon data={info_circle} size={18} />
-                            <Typography group="ui" variant="chart">
-                                Revisions are copies of a project at a given point in time.
-                                Revisions are locked for editing.
-                            </Typography>
-                        </Wrapper>
+                    </ColumnWrapper>
+                </Grid>
+                <Grid item xs={12} md={8}>
+                    <ColumnWrapper>
+                        <Typography>Quality checks performed</Typography>
+                    </ColumnWrapper>
+                    <Wrapper>
+                        <Grid container spacing={1} justifyContent="flex-start">
+                            <Grid item>
+                                <Chip
+                                    onClick={() => handleQualityCheckToggle("mdqc")}
+                                    variant={revisionDetails.mdqc ? "active" : "default"}
+                                >
+                                    <Icon data={revisionDetails.mdqc ? checkbox : checkbox_outline} />
+                                    MDQC
+                                </Chip>
+                            </Grid>
+                            <Grid item>
+                                <Chip
+                                    onClick={() => handleQualityCheckToggle("arena")}
+                                    variant={revisionDetails.arena ? "active" : "default"}
+                                >
+                                    <Icon data={revisionDetails.arena ? checkbox : checkbox_outline} />
+                                    Arena
+                                </Chip>
+                            </Grid>
+                        </Grid>
+                    </Wrapper>
+                </Grid>
+            </DialogContent>
 
-                        <Grid item xs={12} md={8}>
-                            <ColumnWrapper>
-                                <InputWrapper labelProps={{ label: "Revision name" }}>
-                                    <TextField
-                                        id="name"
-                                        name="name"
-                                        onChange={handleRevisionNameChange}
-                                        value={revisionDetails.revisionName}
-                                    />
-                                </InputWrapper>
-                                <InputWrapper labelProps={{ label: "Created Date" }}>
-                                    <Typography variant="body_short">
-                                        {revisionApiData.revisionDetails?.revisionDate
-                                            ? formatFullDate(revisionApiData.revisionDetails?.revisionDate)
-                                            : "N/A"}
-                                    </Typography>
-                                </InputWrapper>
-                                <InputWrapper labelProps={{ label: "Project Phase" }}>
-                                    <Typography variant="body_short">
-                                        {INTERNAL_PROJECT_PHASE[revisionApiData?.internalProjectPhase]?.label ?? "N/A"}
-                                    </Typography>
-                                </InputWrapper>
-                                <InputWrapper labelProps={{ label: "Project Classification" }}>
-                                    <Typography variant="body_short">
-                                        {PROJECT_CLASSIFICATION[projectApiData?.classification]?.label ?? "N/A"}
-                                    </Typography>
-                                </InputWrapper>
-                            </ColumnWrapper>
-                        </Grid>
-
-                        <Grid item xs={12} md={8}>
-                            <ColumnWrapper>
-                                <Typography>Quality checks performed</Typography>
-                            </ColumnWrapper>
-                            <Wrapper>
-                                <Grid container spacing={1} justifyContent="flex-start">
-                                    <Grid item>
-                                        <Chip
-                                            onClick={() => handleQualityCheckToggle("mdqc")}
-                                            variant={revisionDetails.mdqc ? "active" : "default"}
-                                        >
-                                            <Icon data={revisionDetails.mdqc ? checkbox : checkbox_outline} />
-                                            MDQC
-                                        </Chip>
-                                    </Grid>
-                                    <Grid item>
-                                        <Chip
-                                            onClick={() => handleQualityCheckToggle("arena")}
-                                            variant={revisionDetails.arena ? "active" : "default"}
-                                        >
-                                            <Icon data={revisionDetails.arena ? checkbox : checkbox_outline} />
-                                            Arena
-                                        </Chip>
-                                    </Grid>
-                                </Grid>
-                            </Wrapper>
-                        </Grid>
-                    </DialogContent>
-                </>
-            )}
-            actions={(
-                <DialogActions>
-                    <Grid container spacing={1} justifyContent="flex-end">
-                        <Grid item>
-                            <Button variant="outlined" onClick={closeMenu}>Cancel</Button>
-                        </Grid>
-                        <Grid item>
-                            <Button
-                                disabled={!isRevisionModified}
-                                onClick={updateRevisionName}
-                            >
-                                Close and Save
-                            </Button>
-                        </Grid>
+            <DialogActions>
+                <Grid container spacing={1} justifyContent="flex-end">
+                    <Grid item>
+                        <Button variant="outlined" onClick={closeMenu}>Cancel</Button>
                     </Grid>
-                </DialogActions>
-            )}
-        />
+                    <Grid item>
+                        <Button
+                            disabled={!isRevisionModified}
+                            onClick={updateRevisionName}
+                        >
+                            Close and Save
+                        </Button>
+                    </Grid>
+                </Grid>
+            </DialogActions>
+        </Dialog>
     )
 }
 
