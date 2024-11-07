@@ -26,7 +26,7 @@ public class ExplorationRepository(DcdDbContext context) : BaseRepository(contex
         return await Get<Well>(wellId);
     }
 
-    public async Task<bool> ExplorationHasProfile(Guid ExplorationId, ExplorationProfileNames profileType)
+    public async Task<bool> ExplorationHasProfile(Guid explorationId, ExplorationProfileNames profileType)
     {
         Expression<Func<Exploration, bool>> profileExistsExpression = profileType switch
         {
@@ -36,7 +36,7 @@ public class ExplorationRepository(DcdDbContext context) : BaseRepository(contex
         };
 
         bool hasProfile = await Context.Explorations
-            .Where(d => d.Id == ExplorationId)
+            .Where(d => d.Id == explorationId)
             .AnyAsync(profileExistsExpression);
 
         return hasProfile;
