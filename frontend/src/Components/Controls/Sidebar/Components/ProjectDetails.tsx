@@ -76,7 +76,7 @@ const ProjectDetails: React.FC = () => {
                                 : <Tooltip title="Technical input" placement="right"><Icon data={settings} /></Tooltip>}
                         </TimelineElement>
                     </Grid>
-                    <Grid item>
+                    {/* <Grid item>
                         <TimelineElement
                             variant="ghost"
                             className="GhostButton"
@@ -86,20 +86,20 @@ const ProjectDetails: React.FC = () => {
                                 ? "Case edit history"
                                 : <Tooltip title="Case edit history" placement="right"><Icon data={settings} /></Tooltip>}
                         </TimelineElement>
+                    </Grid> */}
+                    {/* {showEditHistory && ( */}
+                    <Grid item>
+                        <TimelineElement
+                            variant="ghost"
+                            className="GhostButton"
+                            onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 3 } })}
+                        >
+                            {sidebarOpen
+                                ? "Settings"
+                                : <Tooltip title="Settings" placement="right"><Icon data={settings} /></Tooltip>}
+                        </TimelineElement>
                     </Grid>
-                    {showEditHistory && (
-                        <Grid item>
-                            <TimelineElement
-                                variant="ghost"
-                                className="GhostButton"
-                                onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 4 } })}
-                            >
-                                {sidebarOpen
-                                    ? "Settings"
-                                    : <Tooltip title="Settings" placement="right"><Icon data={settings} /></Tooltip>}
-                            </TimelineElement>
-                        </Grid>
-                    )}
+                    {/* )} */}
                 </Timeline>
             </Grid>
         ) : null
