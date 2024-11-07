@@ -20,7 +20,7 @@ import DialogActions from "@mui/material/DialogActions"
 import Modal from "../Modal/Modal"
 
 import { formatFullDate } from "@/Utils/common"
-import { revisionQueryFn } from "@/Services/QueryFunctions"
+import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { PROJECT_CLASSIFICATION, INTERNAL_PROJECT_PHASE } from "@/Utils/constants"
 import { GetProjectService } from "@/Services/ProjectService"
@@ -73,6 +73,12 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
         enabled: !!revisionId,
+    })
+
+    const { data: projectApiData } = useQuery({
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
 
     useEffect(() => {
@@ -146,8 +152,8 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
             check === "arena" ? !revisionDetails.arena : revisionDetails.arena,
         )
     }
-
-    if (!revisionApiData) { return null }
+    
+    if (!revisionApiData || !projectApiData) { return null }
 
     return (
         <Modal
@@ -187,7 +193,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                             </InputWrapper>
                             <InputWrapper labelProps={{ label: "Project Classification" }}>
                                 <Typography variant="body_short">
-                                    {PROJECT_CLASSIFICATION[revisionApiData?.classification]?.label ?? "N/A"}
+                                    {PROJECT_CLASSIFICATION[projectApiData?.classification]?.label ?? "N/A"}
                                 </Typography>
                             </InputWrapper>
                         </ColumnWrapper>
