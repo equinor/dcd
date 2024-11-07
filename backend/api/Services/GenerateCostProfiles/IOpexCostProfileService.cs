@@ -1,10 +1,6 @@
-using api.Dtos;
-using api.Models;
+namespace api.Services;
 
-namespace api.Services
+public interface IOpexCostProfileService
 {
-    public interface IOpexCostProfileService
-    {
-        Task Generate(Guid caseId);
-    }
+    Task Generate(Guid caseId);
 }

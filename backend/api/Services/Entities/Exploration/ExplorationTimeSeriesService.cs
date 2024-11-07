@@ -1,50 +1,22 @@
-using api.Context;
 using api.Dtos;
 using api.Enums;
 using api.Exceptions;
 using api.Models;
 using api.Repositories;
 
-using AutoMapper;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
+public class ExplorationTimeSeriesService(
+    ILogger<ExplorationService> logger,
+    ICaseRepository caseRepository,
+    IExplorationTimeSeriesRepository repository,
+    IExplorationRepository explorationRepository,
+    IMapperService mapperService,
+    IProjectAccessService projectAccessService)
+    : IExplorationTimeSeriesService
 {
-    private readonly DcdDbContext _context;
-    private readonly IProjectService _projectService;
-    private readonly IProjectAccessService _projectAccessService;
-    private readonly ILogger<ExplorationService> _logger;
-    private readonly IMapper _mapper;
-    private readonly ICaseRepository _caseRepository;
-    private readonly IExplorationTimeSeriesRepository _repository;
-    private readonly IExplorationRepository _explorationRepository;
-    private readonly IMapperService _mapperService;
-
-    public ExplorationTimeSeriesService(
-        DcdDbContext context,
-        IProjectService projectService,
-        ILoggerFactory loggerFactory,
-        IMapper mapper,
-        ICaseRepository caseRepository,
-        IExplorationTimeSeriesRepository repository,
-        IExplorationRepository explorationRepository,
-        IMapperService mapperService,
-        IProjectAccessService projectAccessService
-        )
-    {
-        _context = context;
-        _projectService = projectService;
-        _logger = loggerFactory.CreateLogger<ExplorationService>();
-        _mapper = mapper;
-        _caseRepository = caseRepository;
-        _repository = repository;
-        _explorationRepository = explorationRepository;
-        _mapperService = mapperService;
-        _projectAccessService = projectAccessService;
-    }
     public async Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
         Guid projectId,
             Guid caseId,
@@ -57,7 +29,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
             caseId,
             explorationId,
             createProfileDto,
-            _repository.CreateGAndGAdminCostOverride,
+            repository.CreateGAndGAdminCostOverride,
             ExplorationProfileNames.GAndGAdminCostOverride
         );
     }
@@ -75,8 +47,8 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
             wellProjectId,
             profileId,
             updateDto,
-            _repository.GetGAndGAdminCostOverride,
-            _repository.UpdateGAndGAdminCostOverride
+            repository.GetGAndGAdminCostOverride,
+            repository.UpdateGAndGAdminCostOverride
         );
     }
     public async Task<SeismicAcquisitionAndProcessingDto> UpdateSeismicAcquisitionAndProcessing(
@@ -93,8 +65,8 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
             wellProjectId,
             profileId,
             updateDto,
-            _repository.GetSeismicAcquisitionAndProcessing,
-            _repository.UpdateSeismicAcquisitionAndProcessing
+            repository.GetSeismicAcquisitionAndProcessing,
+            repository.UpdateSeismicAcquisitionAndProcessing
         );
     }
 
@@ -112,8 +84,8 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
             wellProjectId,
             profileId,
             updateDto,
-            _repository.GetCountryOfficeCost,
-            _repository.UpdateCountryOfficeCost
+            repository.GetCountryOfficeCost,
+            repository.UpdateCountryOfficeCost
         );
     }
 
@@ -129,7 +101,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
             caseId,
             explorationId,
             createProfileDto,
-            _repository.CreateSeismicAcquisitionAndProcessing,
+            repository.CreateSeismicAcquisitionAndProcessing,
             ExplorationProfileNames.SeismicAcquisitionAndProcessing
         );
     }
@@ -146,7 +118,7 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
             caseId,
             explorationId,
             createProfileDto,
-            _repository.CreateCountryOfficeCost,
+            repository.CreateCountryOfficeCost,
             ExplorationProfileNames.CountryOfficeCost
         );
     }
@@ -168,25 +140,25 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
             ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
-        await _projectAccessService.ProjectExists<Exploration>(projectId, existingProfile.Exploration.Id);
+        await projectAccessService.ProjectExists<Exploration>(projectId, existingProfile.Exploration.Id);
 
-        _mapperService.MapToEntity(updatedProfileDto, existingProfile, explorationId);
+        mapperService.MapToEntity(updatedProfileDto, existingProfile, explorationId);
 
         TProfile updatedProfile;
         try
         {
             updatedProfile = updateProfile(existingProfile);
-            await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await caseRepository.UpdateModifyTime(caseId);
+            await repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
             var profileName = typeof(TProfile).Name;
-            _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
+            logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
             throw;
         }
 
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
+        var updatedDto = mapperService.MapToDto<TProfile, TDto>(updatedProfile, profileId);
         return updatedDto;
     }
 
@@ -203,12 +175,12 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
             where TCreateDto : class
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await _projectAccessService.ProjectExists<Exploration>(projectId, explorationId);
+        await projectAccessService.ProjectExists<Exploration>(projectId, explorationId);
 
-        var exploration = await _explorationRepository.GetExploration(explorationId)
+        var exploration = await explorationRepository.GetExploration(explorationId)
             ?? throw new NotFoundInDBException($"Exploration with id {explorationId} not found.");
 
-        var resourceHasProfile = await _explorationRepository.ExplorationHasProfile(explorationId, profileName);
+        var resourceHasProfile = await explorationRepository.ExplorationHasProfile(explorationId, profileName);
 
         if (resourceHasProfile)
         {
@@ -220,22 +192,22 @@ public class ExplorationTimeSeriesService : IExplorationTimeSeriesService
             Exploration = exploration,
         };
 
-        var newProfile = _mapperService.MapToEntity(createExplorationProfileDto, profile, explorationId);
+        var newProfile = mapperService.MapToEntity(createExplorationProfileDto, profile, explorationId);
 
         TProfile createdProfile;
         try
         {
             createdProfile = createProfile(newProfile);
-            await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await caseRepository.UpdateModifyTime(caseId);
+            await repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
+            logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
             throw;
         }
 
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
+        var updatedDto = mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
         return updatedDto;
     }
 }

@@ -1,51 +1,22 @@
-using api.Context;
 using api.Dtos;
 using api.Enums;
 using api.Exceptions;
 using api.Models;
 using api.Repositories;
 
-using AutoMapper;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
+public class WellProjectTimeSeriesService(
+    ILogger<WellProjectService> logger,
+    IWellProjectTimeSeriesRepository repository,
+    IWellProjectRepository wellProjectRepository,
+    ICaseRepository caseRepository,
+    IMapperService mapperService,
+    IProjectAccessService projectAccessService)
+    : IWellProjectTimeSeriesService
 {
-    private readonly DcdDbContext _context;
-    private readonly IProjectService _projectService;
-    private readonly IProjectAccessService _projectAccessService;
-    private readonly ILogger<WellProjectService> _logger;
-    private readonly IMapper _mapper;
-    private readonly IWellProjectTimeSeriesRepository _repository;
-    private readonly IWellProjectRepository _wellProjectRepository;
-    private readonly ICaseRepository _caseRepository;
-    private readonly IMapperService _mapperService;
-
-    public WellProjectTimeSeriesService(
-        DcdDbContext context,
-        IProjectService projectService,
-        ILoggerFactory loggerFactory,
-        IMapper mapper,
-        IWellProjectTimeSeriesRepository repository,
-        IWellProjectRepository wellProjectRepository,
-        ICaseRepository caseRepository,
-        IMapperService mapperService,
-        IProjectAccessService projectAccessService
-        )
-    {
-        _context = context;
-        _projectService = projectService;
-        _logger = loggerFactory.CreateLogger<WellProjectService>();
-        _mapper = mapper;
-        _repository = repository;
-        _wellProjectRepository = wellProjectRepository;
-        _caseRepository = caseRepository;
-        _mapperService = mapperService;
-        _projectAccessService = projectAccessService;
-    }
-
     public async Task<OilProducerCostProfileOverrideDto> UpdateOilProducerCostProfileOverride(
         Guid projectId,
         Guid caseId,
@@ -60,8 +31,8 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
             wellProjectId,
             profileId,
             updateDto,
-            _repository.GetOilProducerCostProfileOverride,
-            _repository.UpdateOilProducerCostProfileOverride
+            repository.GetOilProducerCostProfileOverride,
+            repository.UpdateOilProducerCostProfileOverride
         );
     }
 
@@ -79,8 +50,8 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
             wellProjectId,
             profileId,
             updateDto,
-            _repository.GetGasProducerCostProfileOverride,
-            _repository.UpdateGasProducerCostProfileOverride
+            repository.GetGasProducerCostProfileOverride,
+            repository.UpdateGasProducerCostProfileOverride
         );
     }
 
@@ -98,8 +69,8 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
             wellProjectId,
             profileId,
             updateDto,
-            _repository.GetWaterInjectorCostProfileOverride,
-            _repository.UpdateWaterInjectorCostProfileOverride
+            repository.GetWaterInjectorCostProfileOverride,
+            repository.UpdateWaterInjectorCostProfileOverride
         );
     }
 
@@ -117,8 +88,8 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
             wellProjectId,
             profileId,
             updateDto,
-            _repository.GetGasInjectorCostProfileOverride,
-            _repository.UpdateGasInjectorCostProfileOverride
+            repository.GetGasInjectorCostProfileOverride,
+            repository.UpdateGasInjectorCostProfileOverride
         );
     }
 
@@ -134,7 +105,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
             caseId,
             wellProjectId,
             createProfileDto,
-            _repository.CreateOilProducerCostProfileOverride,
+            repository.CreateOilProducerCostProfileOverride,
             WellProjectProfileNames.OilProducerCostProfileOverride
         );
     }
@@ -151,7 +122,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
             caseId,
             wellProjectId,
             createProfileDto,
-            _repository.CreateGasProducerCostProfileOverride,
+            repository.CreateGasProducerCostProfileOverride,
             WellProjectProfileNames.GasProducerCostProfileOverride
         );
     }
@@ -168,7 +139,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
             caseId,
             wellProjectId,
             createProfileDto,
-            _repository.CreateWaterInjectorCostProfileOverride,
+            repository.CreateWaterInjectorCostProfileOverride,
             WellProjectProfileNames.WaterInjectorCostProfileOverride
         );
     }
@@ -185,7 +156,7 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
             caseId,
             wellProjectId,
             createProfileDto,
-            _repository.CreateGasInjectorCostProfileOverride,
+            repository.CreateGasInjectorCostProfileOverride,
             WellProjectProfileNames.GasInjectorCostProfileOverride
         );
     }
@@ -207,23 +178,23 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
             ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
-        await _projectAccessService.ProjectExists<WellProject>(projectId, existingProfile.WellProject.Id);
+        await projectAccessService.ProjectExists<WellProject>(projectId, existingProfile.WellProject.Id);
 
-        _mapperService.MapToEntity(updatedProfileDto, existingProfile, wellProjectId);
+        mapperService.MapToEntity(updatedProfileDto, existingProfile, wellProjectId);
 
         try
         {
-            await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await caseRepository.UpdateModifyTime(caseId);
+            await repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
             var profileName = typeof(TProfile).Name;
-            _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
+            logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
             throw;
         }
 
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
+        var updatedDto = mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
         return updatedDto;
     }
 
@@ -240,12 +211,12 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
         where TCreateDto : class
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await _projectAccessService.ProjectExists<WellProject>(projectId, wellProjectId);
+        await projectAccessService.ProjectExists<WellProject>(projectId, wellProjectId);
 
-        var wellProject = await _wellProjectRepository.GetWellProject(wellProjectId)
+        var wellProject = await wellProjectRepository.GetWellProject(wellProjectId)
             ?? throw new NotFoundInDBException($"Well project with id {wellProjectId} not found.");
 
-        var resourceHasProfile = await _wellProjectRepository.WellProjectHasProfile(wellProjectId, profileName);
+        var resourceHasProfile = await wellProjectRepository.WellProjectHasProfile(wellProjectId, profileName);
 
         if (resourceHasProfile)
         {
@@ -257,22 +228,22 @@ public class WellProjectTimeSeriesService : IWellProjectTimeSeriesService
             WellProject = wellProject,
         };
 
-        var newProfile = _mapperService.MapToEntity(createWellProjectProfileDto, profile, wellProjectId);
+        var newProfile = mapperService.MapToEntity(createWellProjectProfileDto, profile, wellProjectId);
 
         TProfile createdProfile;
         try
         {
             createdProfile = createProfile(newProfile);
-            await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await caseRepository.UpdateModifyTime(caseId);
+            await repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
+            logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
             throw;
         }
 
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
+        var updatedDto = mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
         return updatedDto;
     }
 }

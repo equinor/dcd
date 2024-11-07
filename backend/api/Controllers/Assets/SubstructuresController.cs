@@ -2,7 +2,6 @@ using api.Authorization;
 using api.Dtos;
 using api.Services;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 
@@ -16,20 +15,11 @@ namespace api.Controllers;
     ApplicationRole.User
 )]
 [ActionType(ActionType.Edit)]
-public class SubstructuresController : ControllerBase
+public class SubstructuresController(
+    ISubstructureService substructureService,
+    ISubstructureTimeSeriesService substructureTimeSeriesService)
+    : ControllerBase
 {
-    private readonly ISubstructureService _substructureService;
-    private readonly ISubstructureTimeSeriesService _substructureTimeSeriesService;
-
-    public SubstructuresController(
-        ISubstructureService substructureService,
-        ISubstructureTimeSeriesService substructureTimeSeriesService
-    )
-    {
-        _substructureService = substructureService;
-        _substructureTimeSeriesService = substructureTimeSeriesService;
-    }
-
     [HttpPut("{substructureId}")]
     public async Task<SubstructureDto> UpdateSubstructure(
         [FromRoute] Guid projectId,
@@ -37,7 +27,7 @@ public class SubstructuresController : ControllerBase
         [FromRoute] Guid substructureId,
         [FromBody] APIUpdateSubstructureDto dto)
     {
-        return await _substructureService.UpdateSubstructure(projectId, caseId, substructureId, dto);
+        return await substructureService.UpdateSubstructure(projectId, caseId, substructureId, dto);
     }
 
     [HttpPost("{substructureId}/cost-profile-override")]
@@ -47,7 +37,7 @@ public class SubstructuresController : ControllerBase
         [FromRoute] Guid substructureId,
         [FromBody] CreateSubstructureCostProfileOverrideDto dto)
     {
-        return await _substructureTimeSeriesService.CreateSubstructureCostProfileOverride(projectId, caseId, substructureId, dto);
+        return await substructureTimeSeriesService.CreateSubstructureCostProfileOverride(projectId, caseId, substructureId, dto);
     }
 
     [HttpPut("{substructureId}/cost-profile-override/{costProfileId}")]
@@ -58,6 +48,6 @@ public class SubstructuresController : ControllerBase
         [FromRoute] Guid costProfileId,
         [FromBody] UpdateSubstructureCostProfileOverrideDto dto)
     {
-        return await _substructureTimeSeriesService.UpdateSubstructureCostProfileOverride(projectId, caseId, substructureId, costProfileId, dto);
+        return await substructureTimeSeriesService.UpdateSubstructureCostProfileOverride(projectId, caseId, substructureId, costProfileId, dto);
     }
 }

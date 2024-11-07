@@ -5,7 +5,6 @@ using api.Services;
 
 using ClosedXML.Excel;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 
@@ -21,27 +20,18 @@ namespace api.Controllers;
 
     )]
 [ActionType(ActionType.Read)]
-public class STEAController : ControllerBase
+public class STEAController(ISTEAService sTeaService) : ControllerBase
 {
-    private readonly ISTEAService _sTEAService;
-    private readonly ILogger<STEAController> _logger;
-
-    public STEAController(ILogger<STEAController> logger, ISTEAService sTEAService)
+    [HttpGet("{projectId}", Name = "GetInputToSTEA")]
+    public async Task<STEAProjectDto> GetInputToSTEA(Guid projectId)
     {
-        _logger = logger;
-        _sTEAService = sTEAService;
+        return await sTeaService.GetInputToSTEA(projectId);
     }
 
-    [HttpGet("{ProjectId}", Name = "GetInputToSTEA")]
-    public async Task<STEAProjectDto> GetInputToSTEA(Guid ProjectId)
+    [HttpPost("{projectId}", Name = "ExcelToSTEA")]
+    public async Task<FileResult> ExcelToSTEA(Guid projectId)
     {
-        return await _sTEAService.GetInputToSTEA(ProjectId);
-    }
-
-    [HttpPost("{ProjectId}", Name = "ExcelToSTEA")]
-    public async Task<FileResult> ExcelToSTEA(Guid ProjectId)
-    {
-        var project = await GetInputToSTEA(ProjectId);
+        var project = await GetInputToSTEA(projectId);
         List<BusinessCase> businessCases = ExportToSTEA.Export(project);
         string filename = project.Name + "ExportToSTEA.xlsx";
         return File(ExcelFile(businessCases, project.Name).ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename);

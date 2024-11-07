@@ -2,7 +2,6 @@ using api.Models.Fusion;
 
 using Fusion.Integration;
 
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Identity.Abstractions;
 
 namespace api.Services;
@@ -12,23 +11,13 @@ public interface IFusionPeopleService
     Task<List<FusionPersonV1>> GetAllPersonsOnProject(Guid projectMasterId, string search, int top, int skip);
 }
 
-public class FusionPeopleService : IFusionPeopleService
+public class FusionPeopleService(
+    IDownstreamApi downstreamApi,
+    IFusionContextResolver fusionContextResolver) : IFusionPeopleService
 {
-    private readonly IDownstreamApi _downstreamApi;
-    private readonly IFusionContextResolver _fusionContextResolver;
-
-
-    public FusionPeopleService(
-        IDownstreamApi downstreamApi,
-        IFusionContextResolver fusionContextResolver)
-    {
-        _downstreamApi = downstreamApi;
-        _fusionContextResolver = fusionContextResolver;
-    }
-
     public async Task<List<FusionPersonV1>> GetAllPersonsOnProject(Guid fusionContextId, string search, int top, int skip)
     {
-        var contextRelations = await _fusionContextResolver.GetContextRelationsAsync(fusionContextId);
+        var contextRelations = await fusionContextResolver.GetContextRelationsAsync(fusionContextId);
 
         string? orgChartId = contextRelations.FirstOrDefault(x => x.Type == FusionContextType.OrgChart)?.ExternalId?.ToString();
 
@@ -64,7 +53,7 @@ public class FusionPeopleService : IFusionPeopleService
 
     public async Task<List<FusionPersonResultV1>> QueryFusionPeopleService(FusionSearchObject fusionSearchObject)
     {
-        var response = await _downstreamApi.PostForUserAsync<FusionSearchObject, FusionPersonResponseV1>(
+        var response = await downstreamApi.PostForUserAsync<FusionSearchObject, FusionPersonResponseV1>(
             "FusionPeople", fusionSearchObject,
             opt => opt.RelativePath = "search/persons/query?api-version=1.0");
 

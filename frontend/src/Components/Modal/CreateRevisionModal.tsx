@@ -7,21 +7,22 @@ import {
     TextField,
     NativeSelect,
     Chip,
+    Progress,
 } from "@equinor/eds-core-react"
 import Dialog from "@mui/material/Dialog"
 import DialogTitle from "@mui/material/DialogTitle"
 import DialogContent from "@mui/material/DialogContent"
 import DialogActions from "@mui/material/DialogActions"
-import { checkbox_outline, info_circle } from "@equinor/eds-icons"
+import { checkbox, checkbox_outline, info_circle } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { Grid } from "@mui/material"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useNavigate } from "react-router"
-import { createRevision } from "@/Utils/RevisionUtils"
-import { useProjectContext } from "@/Context/ProjectContext"
+
 import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "@/Utils/constants"
 import { projectQueryFn } from "@/Services/QueryFunctions"
+import { useRevisions } from "@/Hooks/useRevision"
+import { getProjectPhaseName } from "@/Utils/common"
 
 const Wrapper = styled.div`
     flex-direction: row;
@@ -40,26 +41,27 @@ const ColumnWrapper = styled.div`
 `
 
 type Props = {
-    isOpen: boolean;
+    isModalOpen: boolean;
+    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     size?: false | "xs" | "sm" | "md" | "lg" | "xl" | undefined;
-    onClose?: () => void;
-    setCreatingRevision: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const CreateRevisionModal: FunctionComponent<Props> = ({
-    isOpen,
+    isModalOpen,
+    setIsModalOpen,
     size,
-    onClose,
-    setCreatingRevision,
 }) => {
-    const { projectId, setIsRevision } = useProjectContext()
     const { currentContext } = useModuleCurrentContext()
-    const queryClient = useQueryClient()
-    const navigate = useNavigate()
+    const {
+        isRevisionsLoading,
+        createRevision,
+    } = useRevisions()
 
     const [revisionName, setRevisionName] = useState<string>("")
     const [classification, setClassification] = useState<Components.Schemas.ProjectClassification>()
     const [internalProjectPhase, setInternalProjectPhase] = useState<Components.Schemas.InternalProjectPhase>()
+    const [mdqc, setMdqc] = useState(false)
+    const [arena, setArena] = useState(false)
 
     const externalId = currentContext?.externalId
 
@@ -70,7 +72,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     })
 
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setRevisionName(e.currentTarget.value)
+        setRevisionName(e.currentTarget.value.trimStart())
     }
 
     const handleClassificationChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
@@ -87,41 +89,38 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
         }
     }
 
-    if (!apiData || !isOpen) { return null }
+    if (!apiData || !isModalOpen) { return null }
 
-    const internalProjectPhaseOptions = Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => (
-        <option key={key} value={key}>{value.label}</option>
-    ))
+    const disableAfterDG0 = () => [3, 4, 5, 6, 7, 8].includes(apiData.projectPhase)
+
+    const internalProjectPhaseOptions = Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => {
+        if (disableAfterDG0()) {
+            return <option>{getProjectPhaseName(apiData.projectPhase)}</option>
+        }
+        return <option key={key} value={key}>{value.label}</option>
+    })
 
     const classificationOptions = Object.entries(PROJECT_CLASSIFICATION).map(([key, value]) => (
         <option key={key} value={key}>{value.label}</option>
     ))
-
-    const disableAfterDG0 = () => apiData.projectPhase >= 3
 
     const submitRevision = () => {
         const newRevision: Components.Schemas.CreateRevisionDto = {
             name: revisionName,
             internalProjectPhase: internalProjectPhase as Components.Schemas.InternalProjectPhase,
             classification: classification as Components.Schemas.ProjectClassification,
+            mdqc,
+            arena,
         }
-        createRevision(
-            projectId,
-            newRevision,
-            setCreatingRevision,
-            queryClient,
-            setIsRevision,
-            navigate,
-        )
+        createRevision(newRevision, setIsModalOpen)
     }
 
     return (
         <Dialog
-            open={isOpen}
+            open={isModalOpen}
             fullWidth
             maxWidth={size || "sm"}
             className="ConceptApp ag-theme-alpine-fusion"
-            onClose={onClose}
         >
             <DialogTitle>
                 <Typography variant="h5" as="p">Create new project revision</Typography>
@@ -154,16 +153,24 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                             </InputWrapper>
                         </ColumnWrapper>
                         <ColumnWrapper>
-                            <NativeSelect
-                                id="internalProjectPhase"
-                                label="Project phase"
-                                onChange={handleInternalProjectPhaseChange}
-                                value={internalProjectPhase}
-                                disabled={disableAfterDG0()}
-                                defaultValue={apiData.internalProjectPhase}
+                            <InputWrapper
+                                disabled
+                                helperProps={disableAfterDG0() ? {
+                                    icon: <Icon data={info_circle} size={16} />,
+                                    text: "Project phases after DG0 are set in Common Library",
+                                } : undefined}
                             >
-                                {internalProjectPhaseOptions}
-                            </NativeSelect>
+                                <NativeSelect
+                                    id="internalProjectPhase"
+                                    label="Project phase"
+                                    onChange={handleInternalProjectPhaseChange}
+                                    value={internalProjectPhase}
+                                    disabled={disableAfterDG0()}
+                                    defaultValue={apiData.internalProjectPhase}
+                                >
+                                    {internalProjectPhaseOptions}
+                                </NativeSelect>
+                            </InputWrapper>
                         </ColumnWrapper>
                         <ColumnWrapper>
                             <NativeSelect
@@ -180,30 +187,46 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                 </Grid>
                 <Grid item xs={12} md={8}>
                     <ColumnWrapper>
-                        <Typography>
+                        <Typography group="ui" variant="chart">
                             Quality checks performed
                         </Typography>
                     </ColumnWrapper>
                     <Wrapper>
-                        <Chip disabled>
-                            <Icon data={checkbox_outline} />
-                            MDQC
-                        </Chip>
-                        <Chip disabled>
-                            <Icon data={checkbox_outline} />
-                            Arena
-                        </Chip>
+                        <Grid container spacing={1} justifyContent="flex-start">
+                            <Grid item>
+                                <Chip
+                                    onClick={() => setMdqc(!mdqc)}
+                                    variant={mdqc ? "active" : "default"}
+                                >
+                                    <Icon
+                                        data={mdqc ? checkbox : checkbox_outline}
+                                    />
+                                    MDQC
+                                </Chip>
+                            </Grid>
+                            <Grid item>
+                                <Chip
+                                    onClick={() => setArena(!arena)}
+                                    variant={arena ? "active" : "default"}
+                                >
+                                    <Icon
+                                        data={arena ? checkbox : checkbox_outline}
+                                    />
+                                    Arena
+                                </Chip>
+                            </Grid>
+                        </Grid>
                     </Wrapper>
                 </Grid>
             </DialogContent>
             <DialogActions>
                 <Grid container spacing={1} justifyContent="flex-end">
                     <Grid item>
-                        <Button variant="ghost" onClick={() => setCreatingRevision(false)}>Cancel</Button>
+                        {!isRevisionsLoading ? (<Button variant="ghost" onClick={() => setIsModalOpen(false)}>Cancel</Button>) : null}
                     </Grid>
                     <Grid item>
-                        <Button onClick={() => submitRevision()}>
-                            Create revision
+                        <Button disabled={isRevisionsLoading || revisionName === ""} onClick={() => submitRevision()}>
+                            {isRevisionsLoading ? <Progress.Dots /> : "Create revision"}
                         </Button>
                     </Grid>
                 </Grid>

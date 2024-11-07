@@ -10,15 +10,8 @@ using Microsoft.AspNetCore.Mvc;
         ApplicationRole.Admin,
         ApplicationRole.User
     )]
-public class BlobStorageController : ControllerBase
+public class BlobStorageController(IBlobStorageService blobStorageService) : ControllerBase
 {
-    private readonly IBlobStorageService _blobStorageService;
-
-    public BlobStorageController(IBlobStorageService blobStorageService)
-    {
-        _blobStorageService = blobStorageService;
-    }
-
     private async Task<ActionResult<ImageDto>> UploadImage(Guid projectId, string projectName, Guid? caseId, IFormFile image)
     {
         const int maxFileSize = 5 * 1024 * 1024; // 5MB
@@ -44,12 +37,12 @@ public class BlobStorageController : ControllerBase
         {
             if (caseId.HasValue)
             {
-                var imageDto = await _blobStorageService.SaveImage(projectId, projectName, image, caseId.Value);
+                var imageDto = await blobStorageService.SaveImage(projectId, projectName, image, caseId.Value);
                 return Ok(imageDto);
             }
             else
             {
-                var imageDto = await _blobStorageService.SaveImage(projectId, projectName, image);
+                var imageDto = await blobStorageService.SaveImage(projectId, projectName, image);
                 return Ok(imageDto);
             }
         }
@@ -77,7 +70,7 @@ public class BlobStorageController : ControllerBase
     {
         try
         {
-            var imageDtos = await _blobStorageService.GetCaseImages(caseId);
+            var imageDtos = await blobStorageService.GetCaseImages(caseId);
             return Ok(imageDtos);
         }
         catch (Exception)
@@ -92,7 +85,7 @@ public class BlobStorageController : ControllerBase
     {
         try
         {
-            await _blobStorageService.DeleteImage(imageId);
+            await blobStorageService.DeleteImage(imageId);
             return NoContent();
         }
         catch (Exception)
@@ -119,7 +112,7 @@ public class BlobStorageController : ControllerBase
     {
         try
         {
-            var imageDtos = await _blobStorageService.GetProjectImages(projectId);
+            var imageDtos = await blobStorageService.GetProjectImages(projectId);
             return Ok(imageDtos);
         }
         catch (Exception)
@@ -134,7 +127,7 @@ public class BlobStorageController : ControllerBase
     {
         try
         {
-            await _blobStorageService.DeleteImage(imageId);
+            await blobStorageService.DeleteImage(imageId);
             return NoContent();
         }
         catch (Exception)

@@ -1,40 +1,21 @@
-using api.Context;
 using api.Dtos;
 using api.Enums;
 using api.Exceptions;
 using api.Models;
 using api.Repositories;
 
-using AutoMapper;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class CaseTimeSeriesService : ICaseTimeSeriesService
+public class CaseTimeSeriesService(
+    ILogger<CaseService> logger,
+    ICaseTimeSeriesRepository repository,
+    ICaseRepository caseRepository,
+    IMapperService mapperService,
+    IProjectAccessService projectAccessService)
+    : ICaseTimeSeriesService
 {
-    private readonly ILogger<CaseService> _logger;
-    private readonly IMapperService _mapperService;
-    private readonly ICaseTimeSeriesRepository _repository;
-    private readonly ICaseRepository _caseRepository;
-    private readonly IProjectAccessService _projectAccessService;
-
-
-    public CaseTimeSeriesService(
-        ILoggerFactory loggerFactory,
-        ICaseTimeSeriesRepository repository,
-        ICaseRepository caseRepository,
-        IMapperService mapperService,
-        IProjectAccessService projectAccessService
-    )
-    {
-        _logger = loggerFactory.CreateLogger<CaseService>();
-        _mapperService = mapperService;
-        _repository = repository;
-        _caseRepository = caseRepository;
-        _projectAccessService = projectAccessService;
-    }
-
     public async Task<CessationWellsCostOverrideDto> UpdateCessationWellsCostOverride(
         Guid projectId,
         Guid caseId,
@@ -47,8 +28,8 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            _repository.GetCessationWellsCostOverride,
-            _repository.UpdateCessationWellsCostOverride
+            repository.GetCessationWellsCostOverride,
+            repository.UpdateCessationWellsCostOverride
         );
     }
 
@@ -64,8 +45,8 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            _repository.GetCessationOffshoreFacilitiesCostOverride,
-            _repository.UpdateCessationOffshoreFacilitiesCostOverride
+            repository.GetCessationOffshoreFacilitiesCostOverride,
+            repository.UpdateCessationOffshoreFacilitiesCostOverride
         );
     }
 
@@ -81,8 +62,8 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            _repository.GetCessationOnshoreFacilitiesCostProfile,
-            _repository.UpdateCessationOnshoreFacilitiesCostProfile
+            repository.GetCessationOnshoreFacilitiesCostProfile,
+            repository.UpdateCessationOnshoreFacilitiesCostProfile
         );
     }
 
@@ -98,8 +79,8 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            _repository.GetTotalFeasibilityAndConceptStudiesOverride,
-            _repository.UpdateTotalFeasibilityAndConceptStudiesOverride
+            repository.GetTotalFeasibilityAndConceptStudiesOverride,
+            repository.UpdateTotalFeasibilityAndConceptStudiesOverride
         );
     }
 
@@ -115,8 +96,8 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            _repository.GetTotalFEEDStudiesOverride,
-            _repository.UpdateTotalFEEDStudiesOverride
+            repository.GetTotalFEEDStudiesOverride,
+            repository.UpdateTotalFEEDStudiesOverride
         );
     }
 
@@ -132,8 +113,8 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            _repository.GetTotalOtherStudiesCostProfile,
-            _repository.UpdateTotalOtherStudiesCostProfile
+            repository.GetTotalOtherStudiesCostProfile,
+            repository.UpdateTotalOtherStudiesCostProfile
         );
     }
 
@@ -149,8 +130,8 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            _repository.GetHistoricCostCostProfile,
-            _repository.UpdateHistoricCostCostProfile
+            repository.GetHistoricCostCostProfile,
+            repository.UpdateHistoricCostCostProfile
         );
     }
 
@@ -166,8 +147,8 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            _repository.GetWellInterventionCostProfileOverride,
-            _repository.UpdateWellInterventionCostProfileOverride
+            repository.GetWellInterventionCostProfileOverride,
+            repository.UpdateWellInterventionCostProfileOverride
         );
     }
 
@@ -183,8 +164,8 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            _repository.GetOffshoreFacilitiesOperationsCostProfileOverride,
-            _repository.UpdateOffshoreFacilitiesOperationsCostProfileOverride
+            repository.GetOffshoreFacilitiesOperationsCostProfileOverride,
+            repository.UpdateOffshoreFacilitiesOperationsCostProfileOverride
         );
     }
 
@@ -200,8 +181,8 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            _repository.GetOnshoreRelatedOPEXCostProfile,
-            _repository.UpdateOnshoreRelatedOPEXCostProfile
+            repository.GetOnshoreRelatedOPEXCostProfile,
+            repository.UpdateOnshoreRelatedOPEXCostProfile
         );
     }
 
@@ -215,7 +196,7 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             projectId,
             caseId,
             createProfileDto,
-            _repository.CreateOffshoreFacilitiesOperationsCostProfileOverride,
+            repository.CreateOffshoreFacilitiesOperationsCostProfileOverride,
             CaseProfileNames.OffshoreFacilitiesOperationsCostProfileOverride
         );
     }
@@ -229,7 +210,7 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             projectId,
             caseId,
             createProfileDto,
-            _repository.CreateCessationWellsCostOverride,
+            repository.CreateCessationWellsCostOverride,
             CaseProfileNames.CessationWellsCostOverride
         );
     }
@@ -244,7 +225,7 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             projectId,
             caseId,
             createProfileDto,
-            _repository.CreateCessationOffshoreFacilitiesCostOverride,
+            repository.CreateCessationOffshoreFacilitiesCostOverride,
             CaseProfileNames.CessationOffshoreFacilitiesCostOverride
         );
     }
@@ -259,7 +240,7 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             projectId,
             caseId,
             createProfileDto,
-            _repository.CreateCessationOnshoreFacilitiesCostProfile,
+            repository.CreateCessationOnshoreFacilitiesCostProfile,
             CaseProfileNames.CessationOnshoreFacilitiesCostProfile
         );
     }
@@ -274,7 +255,7 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             projectId,
             caseId,
             createProfileDto,
-            _repository.CreateTotalFeasibilityAndConceptStudiesOverride,
+            repository.CreateTotalFeasibilityAndConceptStudiesOverride,
             CaseProfileNames.TotalFeasibilityAndConceptStudiesOverride
         );
     }
@@ -289,7 +270,7 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             projectId,
             caseId,
             createProfileDto,
-            _repository.CreateTotalFEEDStudiesOverride,
+            repository.CreateTotalFEEDStudiesOverride,
             CaseProfileNames.TotalFEEDStudiesOverride
         );
     }
@@ -304,7 +285,7 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             projectId,
             caseId,
             createProfileDto,
-            _repository.CreateTotalOtherStudiesCostProfile,
+            repository.CreateTotalOtherStudiesCostProfile,
             CaseProfileNames.TotalOtherStudiesCostProfile
         );
     }
@@ -319,7 +300,7 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             projectId,
             caseId,
             createProfileDto,
-            _repository.CreateHistoricCostCostProfile,
+            repository.CreateHistoricCostCostProfile,
             CaseProfileNames.HistoricCostCostProfile
         );
     }
@@ -334,7 +315,7 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             projectId,
             caseId,
             createProfileDto,
-            _repository.CreateWellInterventionCostProfileOverride,
+            repository.CreateWellInterventionCostProfileOverride,
             CaseProfileNames.WellInterventionCostProfileOverride
         );
     }
@@ -349,7 +330,7 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             projectId,
             caseId,
             createProfileDto,
-            _repository.CreateOnshoreRelatedOPEXCostProfile,
+            repository.CreateOnshoreRelatedOPEXCostProfile,
             CaseProfileNames.OnshoreRelatedOPEXCostProfile
         );
     }
@@ -364,7 +345,7 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             projectId,
             caseId,
             createProfileDto,
-            _repository.CreateAdditionalOPEXCostProfile,
+            repository.CreateAdditionalOPEXCostProfile,
             CaseProfileNames.AdditionalOPEXCostProfile
         );
     }
@@ -381,8 +362,8 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             caseId,
             costProfileId,
             updatedCostProfileDto,
-            _repository.GetAdditionalOPEXCostProfile,
-            _repository.UpdateAdditionalOPEXCostProfile
+            repository.GetAdditionalOPEXCostProfile,
+            repository.UpdateAdditionalOPEXCostProfile
         );
     }
 
@@ -403,24 +384,24 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             ?? throw new NotFoundInDBException($"Production profile with id {costProfileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
-        await _projectAccessService.ProjectExists<Case>(projectId, existingProfile.Case.Id);
+        await projectAccessService.ProjectExists<Case>(projectId, existingProfile.Case.Id);
 
-        _mapperService.MapToEntity(updatedCostProfileDto, existingProfile, caseId);
+        mapperService.MapToEntity(updatedCostProfileDto, existingProfile, caseId);
 
         try
         {
-            await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await caseRepository.UpdateModifyTime(caseId);
+            await repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
             var profileName = typeof(TProfile).Name;
-            _logger.LogError(ex, "Failed to update profile {profileName} with id {costProfileId} for case id {caseId}.", profileName, costProfileId, caseId);
+            logger.LogError(ex, "Failed to update profile {profileName} with id {costProfileId} for case id {caseId}.", profileName, costProfileId, caseId);
             throw;
         }
 
 
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(existingProfile, costProfileId);
+        var updatedDto = mapperService.MapToDto<TProfile, TDto>(existingProfile, costProfileId);
         return updatedDto;
     }
 
@@ -436,12 +417,12 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
         where TCreateDto : class
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await _projectAccessService.ProjectExists<Case>(projectId, caseId);
+        await projectAccessService.ProjectExists<Case>(projectId, caseId);
 
-        var caseEntity = await _caseRepository.GetCase(caseId)
+        var caseEntity = await caseRepository.GetCase(caseId)
             ?? throw new NotFoundInDBException($"Case with id {caseId} not found.");
 
-        var resourceHasProfile = await _caseRepository.CaseHasProfile(caseId, profileName);
+        var resourceHasProfile = await caseRepository.CaseHasProfile(caseId, profileName);
 
         if (resourceHasProfile)
         {
@@ -453,22 +434,22 @@ public class CaseTimeSeriesService : ICaseTimeSeriesService
             Case = caseEntity,
         };
 
-        var newProfile = _mapperService.MapToEntity(createProfileDto, profile, caseId);
+        var newProfile = mapperService.MapToEntity(createProfileDto, profile, caseId);
 
         TProfile createdProfile;
         try
         {
             createdProfile = createProfile(newProfile);
-            await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await caseRepository.UpdateModifyTime(caseId);
+            await repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
+            logger.LogError(ex, "Failed to create profile {profileName} for case id {caseId}.", profileName, caseId);
             throw;
         }
 
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
+        var updatedDto = mapperService.MapToDto<TProfile, TDto>(createdProfile, createdProfile.Id);
         return updatedDto;
     }
 }

@@ -1,5 +1,3 @@
-using api.Models;
-
 namespace api.Dtos;
 
 public class PROSPUpdateTopsideDto : BaseUpdateTopsideDto
@@ -7,7 +5,4 @@ public class PROSPUpdateTopsideDto : BaseUpdateTopsideDto
     public DateTimeOffset? ProspVersion { get; set; }
 }
 
-
-public class UpdateTopsideCostProfileDto : UpdateTimeSeriesCostDto
-{
-}
+public class UpdateTopsideCostProfileDto : UpdateTimeSeriesCostDto;

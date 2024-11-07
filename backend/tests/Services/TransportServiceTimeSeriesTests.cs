@@ -1,137 +1,131 @@
-using api.Context;
 using api.Dtos;
 using api.Models;
 using api.Repositories;
 using api.Services;
 
-using AutoMapper;
-
-using Microsoft.EntityFrameworkCore;
-
 using NSubstitute;
 
 using Xunit;
 
-namespace tests.Services
+namespace tests.Services;
+
+public class TransportServiceTimeSeriesTests
 {
-    public class TransportServiceTimeSeriesTests
+    private readonly TransportTimeSeriesService _transportService;
+    private readonly ILogger<TransportService> _logger = Substitute.For<ILogger<TransportService>>();
+    private readonly ITransportTimeSeriesRepository _repository = Substitute.For<ITransportTimeSeriesRepository>();
+    private readonly ITransportRepository _transportRepository = Substitute.For<ITransportRepository>();
+    private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
+    private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
+    private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
+
+    public TransportServiceTimeSeriesTests()
     {
-        private readonly TransportTimeSeriesService _transportService;
-        private readonly ILoggerFactory _loggerFactory = Substitute.For<ILoggerFactory>();
-        private readonly ITransportTimeSeriesRepository _repository = Substitute.For<ITransportTimeSeriesRepository>();
-        private readonly ITransportRepository _transportRepository = Substitute.For<ITransportRepository>();
-        private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
-        private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
-        private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
+        _transportService = new TransportTimeSeriesService(
+            _logger,
+            _caseRepository,
+            _transportRepository,
+            _repository,
+            _mapperService,
+            _projectAccessService
+        );
+    }
 
+    [Fact]
+    public async Task UpdateTransportCostProfileOverride_ShouldUpdateTransportCostProfileOverride_WhenGivenValidInput()
+    {
+        // Arrange
+        var projectId = Guid.NewGuid();
+        var caseId = Guid.NewGuid();
+        var transportId = Guid.NewGuid();
+        var costProfileId = Guid.NewGuid();
+        var updatedTransportCostProfileOverrideDto = new UpdateTransportCostProfileOverrideDto();
 
-        public TransportServiceTimeSeriesTests()
+        var existingTransportCostProfileOverride = new TransportCostProfileOverride
         {
-            _transportService = new TransportTimeSeriesService(
-                _loggerFactory,
-                _caseRepository,
-                _transportRepository,
-                _repository,
-                _mapperService,
-                _projectAccessService
-            );
-        }
+            Id = costProfileId,
+            Transport = new Transport { Id = transportId }
+        };
+        _repository.GetTransportCostProfileOverride(costProfileId).Returns(existingTransportCostProfileOverride);
 
-        [Fact]
-        public async Task UpdateTransportCostProfileOverride_ShouldUpdateTransportCostProfileOverride_WhenGivenValidInput()
+        var updatedTransportCostProfileOverride = new TransportCostProfileOverride
         {
-            // Arrange
-            var projectId = Guid.NewGuid();
-            var caseId = Guid.NewGuid();
-            var transportId = Guid.NewGuid();
-            var costProfileId = Guid.NewGuid();
-            var updatedTransportCostProfileOverrideDto = new UpdateTransportCostProfileOverrideDto();
+            Id = costProfileId,
+            Transport = new Transport { Id = transportId }
+        };
+        _repository.UpdateTransportCostProfileOverride(existingTransportCostProfileOverride).Returns(updatedTransportCostProfileOverride);
 
-            var existingTransportCostProfileOverride = new TransportCostProfileOverride
-            {
-                Id = costProfileId,
-                Transport = new Transport { Id = transportId }
-            };
-            _repository.GetTransportCostProfileOverride(costProfileId).Returns(existingTransportCostProfileOverride);
+        var updatedTransportCostProfileOverrideDtoResult = new TransportCostProfileOverrideDto();
+        _mapperService.MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(existingTransportCostProfileOverride, costProfileId)
+            .Returns(updatedTransportCostProfileOverrideDtoResult);
 
-            var updatedTransportCostProfileOverride = new TransportCostProfileOverride
-            {
-                Id = costProfileId,
-                Transport = new Transport { Id = transportId }
-            };
-            _repository.UpdateTransportCostProfileOverride(existingTransportCostProfileOverride).Returns(updatedTransportCostProfileOverride);
+        // Act
+        var result = await _transportService.UpdateTransportCostProfileOverride(projectId, caseId, transportId, costProfileId, updatedTransportCostProfileOverrideDto);
 
-            var updatedTransportCostProfileOverrideDtoResult = new TransportCostProfileOverrideDto();
-            _mapperService.MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(existingTransportCostProfileOverride, costProfileId).Returns(updatedTransportCostProfileOverrideDtoResult);
+        // Assert
+        Assert.Equal(updatedTransportCostProfileOverrideDtoResult, result);
+        await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+    }
 
-            // Act
-            var result = await _transportService.UpdateTransportCostProfileOverride(projectId, caseId, transportId, costProfileId, updatedTransportCostProfileOverrideDto);
+    [Fact]
+    public async Task AddOrUpdateTransportCostProfile_ShouldUpdateTransportCostProfile_WhenGivenValidInputForExistingProfile()
+    {
+        // Arrange
+        var projectId = Guid.NewGuid();
+        var caseId = Guid.NewGuid();
+        var transportId = Guid.NewGuid();
+        var profileId = Guid.NewGuid();
+        var updatedTransportCostProfileDto = new UpdateTransportCostProfileDto();
 
-            // Assert
-            Assert.Equal(updatedTransportCostProfileOverrideDtoResult, result);
-            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
-        }
-
-        [Fact]
-        public async Task AddOrUpdateTransportCostProfile_ShouldUpdateTransportCostProfile_WhenGivenValidInputForExistingProfile()
+        var existingCostProfile = new TransportCostProfile
         {
-            // Arrange
-            var projectId = Guid.NewGuid();
-            var caseId = Guid.NewGuid();
-            var transportId = Guid.NewGuid();
-            var profileId = Guid.NewGuid();
-            var updatedTransportCostProfileDto = new UpdateTransportCostProfileDto();
+            Id = profileId,
+            Transport = new Transport { Id = transportId }
+        };
+        var existingTransport = new Transport { Id = transportId, CostProfile = existingCostProfile };
+        _transportRepository.GetTransportWithCostProfile(transportId).Returns(existingTransport);
 
-            var existingCostProfile = new TransportCostProfile
-            {
-                Id = profileId,
-                Transport = new Transport { Id = transportId }
-            };
-            var existingTransport = new Transport { Id = transportId, CostProfile = existingCostProfile };
-            _transportRepository.GetTransportWithCostProfile(transportId).Returns(existingTransport);
+        _repository.GetTransportCostProfile(profileId).Returns(existingCostProfile);
+        _repository.UpdateTransportCostProfile(existingCostProfile).Returns(existingCostProfile);
 
-            _repository.GetTransportCostProfile(profileId).Returns(existingCostProfile);
-            _repository.UpdateTransportCostProfile(existingCostProfile).Returns(existingCostProfile);
+        var updatedTransportCostProfileDtoResult = new TransportCostProfileDto { Id = profileId };
+        _mapperService.MapToDto<TransportCostProfile, TransportCostProfileDto>(existingCostProfile, existingCostProfile.Id).Returns(updatedTransportCostProfileDtoResult);
 
-            var updatedTransportCostProfileDtoResult = new TransportCostProfileDto { Id = profileId };
-            _mapperService.MapToDto<TransportCostProfile, TransportCostProfileDto>(existingCostProfile, existingCostProfile.Id).Returns(updatedTransportCostProfileDtoResult);
+        // Act
+        var result = await _transportService.AddOrUpdateTransportCostProfile(projectId, caseId, transportId, updatedTransportCostProfileDto);
 
-            // Act
-            var result = await _transportService.AddOrUpdateTransportCostProfile(projectId, caseId, transportId, updatedTransportCostProfileDto);
+        // Assert
+        Assert.Equal(updatedTransportCostProfileDtoResult, result);
+        await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+    }
 
-            // Assert
-            Assert.Equal(updatedTransportCostProfileDtoResult, result);
-            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
-        }
+    [Fact]
+    public async Task AddOrUpdateTransportCostProfile_ShouldAddTransportCostProfile_WhenGivenValidInputForNewProfile()
+    {
+        // Arrange
+        var projectId = Guid.NewGuid();
+        var caseId = Guid.NewGuid();
+        var transportId = Guid.NewGuid();
+        var profileId = Guid.NewGuid();
+        var updatedTransportCostProfileDto = new UpdateTransportCostProfileDto();
 
-        [Fact]
-        public async Task AddOrUpdateTransportCostProfile_ShouldAddTransportCostProfile_WhenGivenValidInputForNewProfile()
-        {
-            // Arrange
-            var projectId = Guid.NewGuid();
-            var caseId = Guid.NewGuid();
-            var transportId = Guid.NewGuid();
-            var profileId = Guid.NewGuid();
-            var updatedTransportCostProfileDto = new UpdateTransportCostProfileDto();
+        var existingTransport = new Transport { Id = transportId };
+        _transportRepository.GetTransportWithCostProfile(transportId).Returns(existingTransport);
 
-            var existingTransport = new Transport { Id = transportId };
-            _transportRepository.GetTransportWithCostProfile(transportId).Returns(existingTransport);
+        var newCostProfile = new TransportCostProfile { Transport = existingTransport };
+        _mapperService.MapToEntity(Arg.Any<UpdateTransportCostProfileDto>(), Arg.Any<TransportCostProfile>(), Arg.Any<Guid>())
+            .Returns(newCostProfile);
 
-            var newCostProfile = new TransportCostProfile { Transport = existingTransport };
-            _mapperService.MapToEntity(Arg.Any<UpdateTransportCostProfileDto>(), Arg.Any<TransportCostProfile>(), Arg.Any<Guid>())
-                          .Returns(newCostProfile);
+        _repository.CreateTransportCostProfile(newCostProfile).Returns(newCostProfile);
 
-            _repository.CreateTransportCostProfile(newCostProfile).Returns(newCostProfile);
+        var updatedTransportCostProfileDtoResult = new TransportCostProfileDto { Id = profileId };
+        _mapperService.MapToDto<TransportCostProfile, TransportCostProfileDto>(newCostProfile, newCostProfile.Id).Returns(updatedTransportCostProfileDtoResult);
 
-            var updatedTransportCostProfileDtoResult = new TransportCostProfileDto { Id = profileId };
-            _mapperService.MapToDto<TransportCostProfile, TransportCostProfileDto>(newCostProfile, newCostProfile.Id).Returns(updatedTransportCostProfileDtoResult);
+        // Act
+        var result = await _transportService.AddOrUpdateTransportCostProfile(projectId, caseId, transportId, updatedTransportCostProfileDto);
 
-            // Act
-            var result = await _transportService.AddOrUpdateTransportCostProfile(projectId, caseId, transportId, updatedTransportCostProfileDto);
-
-            // Assert
-            Assert.Equal(updatedTransportCostProfileDtoResult, result);
-            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
-        }
+        // Assert
+        Assert.Equal(updatedTransportCostProfileDtoResult, result);
+        await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
     }
 }

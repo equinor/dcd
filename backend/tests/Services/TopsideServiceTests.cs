@@ -1,10 +1,7 @@
-using api.Context;
 using api.Dtos;
 using api.Models;
 using api.Repositories;
 using api.Services;
-
-using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -12,71 +9,69 @@ using NSubstitute;
 
 using Xunit;
 
-namespace tests.Services
+namespace tests.Services;
+
+public class TopsideServiceTests
 {
-    public class TopsideServiceTests
+    private readonly TopsideService _topsideService;
+    private readonly ILogger<TopsideService> _logger = Substitute.For<ILogger<TopsideService>>();
+    private readonly ITopsideRepository _repository = Substitute.For<ITopsideRepository>();
+    private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
+    private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
+    private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
+
+    public TopsideServiceTests()
     {
-        private readonly TopsideService _topsideService;
-        private readonly ILoggerFactory _loggerFactory = Substitute.For<ILoggerFactory>();
-        private readonly ITopsideRepository _repository = Substitute.For<ITopsideRepository>();
-        private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
-        private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
-        private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
+        _topsideService = new TopsideService(
+            _logger,
+            _repository,
+            _caseRepository,
+            _mapperService,
+            _projectAccessService
+        );
+    }
 
+    [Fact]
+    public async Task UpdateTopside_ShouldUpdateTopside_WhenGivenValidInput()
+    {
+        // Arrange
+        var projectId = Guid.NewGuid();
+        var caseId = Guid.NewGuid();
+        var topsideId = Guid.NewGuid();
+        var updatedTopsideDto = new APIUpdateTopsideDto();
 
-        public TopsideServiceTests()
-        {
-            _topsideService = new TopsideService(
-                _loggerFactory,
-                _repository,
-                _caseRepository,
-                _mapperService,
-                _projectAccessService
-            );
-        }
+        var existingTopside = new Topside { Id = topsideId };
+        _repository.GetTopside(topsideId).Returns(existingTopside);
 
-        [Fact]
-        public async Task UpdateTopside_ShouldUpdateTopside_WhenGivenValidInput()
-        {
-            // Arrange
-            var projectId = Guid.NewGuid();
-            var caseId = Guid.NewGuid();
-            var topsideId = Guid.NewGuid();
-            var updatedTopsideDto = new APIUpdateTopsideDto();
+        var updatedTopside = new Topside { Id = topsideId };
+        _repository.UpdateTopside(existingTopside).Returns(updatedTopside);
 
-            var existingTopside = new Topside { Id = topsideId };
-            _repository.GetTopside(topsideId).Returns(existingTopside);
+        var updatedTopsideDtoResult = new TopsideDto();
+        _mapperService.MapToDto<Topside, TopsideDto>(existingTopside, topsideId).Returns(updatedTopsideDtoResult);
 
-            var updatedTopside = new Topside { Id = topsideId };
-            _repository.UpdateTopside(existingTopside).Returns(updatedTopside);
+        // Act
+        var result = await _topsideService.UpdateTopside<BaseUpdateTopsideDto>(projectId, caseId, topsideId, updatedTopsideDto);
 
-            var updatedTopsideDtoResult = new TopsideDto();
-            _mapperService.MapToDto<Topside, TopsideDto>(existingTopside, topsideId).Returns(updatedTopsideDtoResult);
+        // Assert
+        Assert.Equal(updatedTopsideDtoResult, result);
+        await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+    }
 
-            // Act
-            var result = await _topsideService.UpdateTopside<BaseUpdateTopsideDto>(projectId, caseId, topsideId, updatedTopsideDto);
+    [Fact]
+    public async Task UpdateTopside_ShouldThrowException_WhenDbUpdateExceptionOccurs()
+    {
+        // Arrange
+        var projectId = Guid.NewGuid();
+        var caseId = Guid.NewGuid();
+        var topsideId = Guid.NewGuid();
+        var updatedTopsideDto = new APIUpdateTopsideDto();
 
-            // Assert
-            Assert.Equal(updatedTopsideDtoResult, result);
-            await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
-        }
+        var existingTopside = new Topside { Id = topsideId };
+        _repository.GetTopside(topsideId).Returns(existingTopside);
 
-        [Fact]
-        public async Task UpdateTopside_ShouldThrowException_WhenDbUpdateExceptionOccurs()
-        {
-            // Arrange
-            var projectId = Guid.NewGuid();
-            var caseId = Guid.NewGuid();
-            var topsideId = Guid.NewGuid();
-            var updatedTopsideDto = new APIUpdateTopsideDto();
+        _repository.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(_ => throw new DbUpdateException());
 
-            var existingTopside = new Topside { Id = topsideId };
-            _repository.GetTopside(topsideId).Returns(existingTopside);
-
-            _repository.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(x => throw new DbUpdateException());
-
-            // Act & Assert
-            await Assert.ThrowsAsync<DbUpdateException>(() => _topsideService.UpdateTopside<BaseUpdateTopsideDto>(projectId, caseId, topsideId, updatedTopsideDto));
-        }
+        // Act & Assert
+        await Assert.ThrowsAsync<DbUpdateException>(() => _topsideService.UpdateTopside<BaseUpdateTopsideDto>(projectId, caseId, topsideId, updatedTopsideDto));
     }
 }

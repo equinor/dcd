@@ -403,7 +403,7 @@ export const generateProfile = (
 }
 
 export function truncateText(text: string, maxLength: number): string {
-    return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text
+    return (text.length + 3) > maxLength ? `${text.slice(0, maxLength)}...` : text
 }
 
 export function isAxiosError(error: unknown): error is AxiosError {

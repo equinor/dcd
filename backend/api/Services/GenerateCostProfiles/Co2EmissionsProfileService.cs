@@ -1,40 +1,20 @@
-using api.Adapters;
-using api.Context;
-using api.Dtos;
 using api.Helpers;
 using api.Models;
 
-using AutoMapper;
-
 namespace api.Services.GenerateCostProfiles;
 
-public class Co2EmissionsProfileService : ICo2EmissionsProfileService
+public class Co2EmissionsProfileService(
+    ICaseService caseService,
+    IDrainageStrategyService drainageStrategyService,
+    IProjectService projectService,
+    ITopsideService topsideService,
+    IWellProjectWellService wellProjectWellService)
+    : ICo2EmissionsProfileService
 {
-    private readonly ICaseService _caseService;
-    private readonly IDrainageStrategyService _drainageStrategyService;
-    private readonly IProjectService _projectService;
-    private readonly ITopsideService _topsideService;
-    private readonly IWellProjectWellService _wellProjectWellService;
-
-    public Co2EmissionsProfileService(
-        ICaseService caseService,
-        IDrainageStrategyService drainageStrategyService,
-        IProjectService projectService,
-        ITopsideService topsideService,
-        IWellProjectWellService wellProjectWellService
-        )
-    {
-        _caseService = caseService;
-        _projectService = projectService;
-        _topsideService = topsideService;
-        _drainageStrategyService = drainageStrategyService;
-        _wellProjectWellService = wellProjectWellService;
-    }
-
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await _caseService.GetCaseWithIncludes(caseId);
-        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
+        var caseItem = await caseService.GetCaseWithIncludes(caseId);
+        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
             caseItem.DrainageStrategyLink,
             d => d.ProductionProfileOil!,
             d => d.AdditionalProductionProfileOil!,
@@ -49,8 +29,8 @@ public class Co2EmissionsProfileService : ICo2EmissionsProfileService
             return;
         }
 
-        var topside = await _topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
-        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var topside = await topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
+        var project = await projectService.GetProjectWithoutAssets(caseItem.ProjectId);
 
         var fuelConsumptionsProfile = GetFuelConsumptionsProfile(project, caseItem, topside, drainageStrategy);
         var flaringsProfile = GetFlaringsProfile(project, drainageStrategy);
@@ -131,7 +111,7 @@ public class Co2EmissionsProfileService : ICo2EmissionsProfileService
 
     private async Task<TimeSeriesVolume> CalculateDrillingEmissions(Project project, Guid wellProjectId)
     {
-        var linkedWells = await _wellProjectWellService.GetWellProjectWellsForWellProject(wellProjectId);
+        var linkedWells = await wellProjectWellService.GetWellProjectWellsForWellProject(wellProjectId);
         if (linkedWells == null)
         {
             return new TimeSeriesVolume();

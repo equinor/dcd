@@ -1,42 +1,23 @@
-using api.Adapters;
 using api.Dtos;
 using api.Helpers;
 using api.Models;
 
 namespace api.Services.GenerateCostProfiles;
 
-public class Co2DrillingFlaringFuelTotalsService : ICo2DrillingFlaringFuelTotalsService
+public class Co2DrillingFlaringFuelTotalsService(
+    ICaseService caseService,
+    IProjectService projectService,
+    ITopsideService topsideService,
+    IDrainageStrategyService drainageStrategyService,
+    IWellProjectWellService wellProjectWellService)
+    : ICo2DrillingFlaringFuelTotalsService
 {
-    private readonly ICaseService _caseService;
-    private readonly IDrainageStrategyService _drainageStrategyService;
-    private readonly IProjectService _projectService;
-    private readonly ITopsideService _topsideService;
-    private readonly IWellProjectService _wellProjectService;
-    private readonly IWellProjectWellService _wellProjectWellService;
-
-    public Co2DrillingFlaringFuelTotalsService(
-        ICaseService caseService,
-        IProjectService projectService,
-        ITopsideService topsideService,
-        IDrainageStrategyService drainageStrategyService,
-        IWellProjectService wellProjectService,
-        IWellProjectWellService wellProjectWellService
-        )
-    {
-        _caseService = caseService;
-        _projectService = projectService;
-        _topsideService = topsideService;
-        _drainageStrategyService = drainageStrategyService;
-        _wellProjectService = wellProjectService;
-        _wellProjectWellService = wellProjectWellService;
-    }
-
     public async Task<Co2DrillingFlaringFuelTotalsDto> Generate(Guid caseId)
     {
-        var caseItem = await _caseService.GetCaseWithIncludes(caseId);
-        var topside = await _topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
-        var project = await _projectService.GetProjectWithoutAssets(caseItem.ProjectId);
-        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
+        var caseItem = await caseService.GetCaseWithIncludes(caseId);
+        var topside = await topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
+        var project = await projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
             caseItem.DrainageStrategyLink,
             d => d.ProductionProfileOil!,
             d => d.AdditionalProductionProfileOil!,
@@ -91,7 +72,7 @@ public class Co2DrillingFlaringFuelTotalsService : ICo2DrillingFlaringFuelTotals
 
     private async Task<double> CalculateDrillingEmissionsTotal(Project project, Guid wellProjectId)
     {
-        var linkedWells = await _wellProjectWellService.GetWellProjectWellsForWellProject(wellProjectId);
+        var linkedWells = await wellProjectWellService.GetWellProjectWellsForWellProject(wellProjectId);
         if (linkedWells == null)
         {
             return 0.0;

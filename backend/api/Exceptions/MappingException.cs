@@ -1,12 +1,6 @@
 namespace api.Exceptions;
 
-public class MappingException : Exception
+public class MappingException(string message, Guid entityId) : Exception(message)
 {
-    public Guid EntityId { get; }
-
-    public MappingException(string message, Guid entityId)
-        : base(message)
-    {
-        EntityId = entityId;
-    }
+    public Guid EntityId { get; } = entityId;
 }

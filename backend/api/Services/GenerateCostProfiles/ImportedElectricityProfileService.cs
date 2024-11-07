@@ -1,34 +1,18 @@
-using api.Adapters;
-using api.Context;
-using api.Dtos;
 using api.Helpers;
 using api.Models;
 
-using AutoMapper;
-
 namespace api.Services.GenerateCostProfiles;
 
-public class ImportedElectricityProfileService : IImportedElectricityProfileService
+public class ImportedElectricityProfileService(
+    ICaseService caseService,
+    ITopsideService topsideService,
+    IDrainageStrategyService drainageStrategyService)
+    : IImportedElectricityProfileService
 {
-    private readonly ICaseService _caseService;
-    private readonly IDrainageStrategyService _drainageStrategyService;
-    private readonly ITopsideService _topsideService;
-
-    public ImportedElectricityProfileService(
-        ICaseService caseService,
-        ITopsideService topsideService,
-        IDrainageStrategyService drainageStrategyService
-    )
-    {
-        _caseService = caseService;
-        _topsideService = topsideService;
-        _drainageStrategyService = drainageStrategyService;
-    }
-
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await _caseService.GetCaseWithIncludes(caseId);
-        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
+        var caseItem = await caseService.GetCaseWithIncludes(caseId);
+        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
             caseItem.DrainageStrategyLink,
             d => d.ImportedElectricity!,
             d => d.ImportedElectricityOverride!,
@@ -44,7 +28,7 @@ public class ImportedElectricityProfileService : IImportedElectricityProfileServ
             return;
         }
 
-        var topside = await _topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
+        var topside = await topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
 
         var facilitiesAvailability = caseItem.FacilitiesAvailability;
 

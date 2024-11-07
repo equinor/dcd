@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 using Microsoft.AspNetCore.Authorization;
 
 namespace api.Authorization;
@@ -52,7 +50,7 @@ public class ApplicationRolePolicyProvider : IAuthorizationPolicyProvider
 
     private static AuthorizationPolicy DefaultApplicationRole()
     {
-        return PolicyWithRequiredRole(new List<ApplicationRole> { ApplicationRoleRequirement.DefaultApplicationRole });
+        return PolicyWithRequiredRole([ApplicationRoleRequirement.DefaultApplicationRole]);
     }
 
     private static AuthorizationPolicy PolicyWithRequiredRole(List<ApplicationRole> requiredRoles)

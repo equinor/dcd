@@ -67,14 +67,14 @@ if (string.IsNullOrEmpty(sqlConnectionString) || string.IsNullOrEmpty(_sqlConnec
         _connectionToInMemorySqlite.Open();
         dBbuilder.UseSqlite(_connectionToInMemorySqlite);
 
-        using DcdDbContext context = new(dBbuilder.Options);
+        using DcdDbContext context = new(dBbuilder.Options, null);
         context.Database.EnsureCreated();
     }
     else
     {
         DbContextOptionsBuilder<DcdDbContext> dbBuilder = new();
         dbBuilder.UseSqlServer(sqlConnectionString);
-        using DcdDbContext context = new(dbBuilder.Options);
+        using DcdDbContext context = new(dbBuilder.Options, null);
     }
 }
 
@@ -171,6 +171,7 @@ builder.Services.AddScoped<IFusionPeopleService, FusionPeopleService>();
 builder.Services.AddScoped<IProjectAccessService, ProjectAccessService>();
 
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IProjectMemberService, ProjectMemberService>();
 builder.Services.AddScoped<IRevisionService, RevisionService>();
 builder.Services.AddScoped<IFusionService, FusionService>();
 builder.Services.AddScoped<ICaseService, CaseService>();
@@ -222,6 +223,7 @@ builder.Services.AddScoped<ISTEAService, STEAService>();
 builder.Services.AddScoped<IProjectAccessRepository, ProjectAccessRepository>();
 
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
 builder.Services.AddScoped<IRevisionRepository, RevisionRepository>();
 builder.Services.AddScoped<ICaseRepository, CaseRepository>();
 builder.Services.AddScoped<ISubstructureRepository, SubstructureRepository>();
@@ -253,6 +255,7 @@ builder.Services.AddScoped<IConversionMapperService, ConversionMapperService>();
 builder.Services.AddHostedService<RefreshProjectService>();
 builder.Services.AddScoped<ProspExcelImportService>();
 builder.Services.AddScoped<ProspSharepointImportService>();
+builder.Services.AddScoped<CurrentUser>();
 
 builder.Services.AddScoped<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
 builder.Services.AddMemoryCache();

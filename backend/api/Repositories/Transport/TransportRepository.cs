@@ -8,13 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories;
 
-public class TransportRepository : BaseRepository, ITransportRepository
+public class TransportRepository(DcdDbContext context) : BaseRepository(context), ITransportRepository
 {
-
-    public TransportRepository(DcdDbContext context) : base(context)
-    {
-    }
-
     public async Task<Transport?> GetTransport(Guid transportId)
     {
         return await Get<Transport>(transportId);
@@ -27,14 +22,14 @@ public class TransportRepository : BaseRepository, ITransportRepository
 
     public async Task<Transport?> GetTransportWithCostProfile(Guid transportId)
     {
-        return await _context.Transports
+        return await Context.Transports
                         .Include(t => t.CostProfile)
                         .FirstOrDefaultAsync(t => t.Id == transportId);
     }
 
     public async Task<bool> TransportHasCostProfileOverride(Guid transportId)
     {
-        return await _context.Transports
+        return await Context.Transports
             .AnyAsync(t => t.Id == transportId && t.CostProfileOverride != null);
     }
 

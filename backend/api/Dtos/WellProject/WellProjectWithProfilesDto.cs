@@ -36,9 +36,7 @@ public class WellProjectWithProfilesDto
     public List<WellProjectWellDto> WellProjectWells { get; set; } = [];
 }
 
-public class OilProducerCostProfileDto : TimeSeriesCostDto
-{
-}
+public class OilProducerCostProfileDto : TimeSeriesCostDto;
 
 public class OilProducerCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
 {
@@ -46,9 +44,7 @@ public class OilProducerCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesO
     public bool Override { get; set; }
 }
 
-public class GasProducerCostProfileDto : TimeSeriesCostDto
-{
-}
+public class GasProducerCostProfileDto : TimeSeriesCostDto;
 
 public class GasProducerCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
 {
@@ -56,9 +52,7 @@ public class GasProducerCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesO
     public bool Override { get; set; }
 }
 
-public class WaterInjectorCostProfileDto : TimeSeriesCostDto
-{
-}
+public class WaterInjectorCostProfileDto : TimeSeriesCostDto;
 
 public class WaterInjectorCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
 {
@@ -66,9 +60,7 @@ public class WaterInjectorCostProfileOverrideDto : TimeSeriesCostDto, ITimeSerie
     public bool Override { get; set; }
 }
 
-public class GasInjectorCostProfileDto : TimeSeriesCostDto
-{
-}
+public class GasInjectorCostProfileDto : TimeSeriesCostDto;
 
 public class GasInjectorCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
 {

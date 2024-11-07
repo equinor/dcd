@@ -22,7 +22,7 @@ import CasesTable from "../Case/OverviewCasesTable/CasesTable"
 import Gallery from "../Gallery/Gallery"
 
 const ProjectOverviewTab = () => {
-    const { isRevision, accessRights } = useProjectContext()
+    const { isRevision, accessRights, projectId } = useProjectContext()
     const { revisionId } = useParams()
     const { editMode } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
@@ -33,9 +33,9 @@ const ProjectOverviewTab = () => {
     const externalId = currentContext?.externalId
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
     })
 
     const { data: apiRevisionData } = useQuery({
@@ -82,7 +82,6 @@ const ProjectOverviewTab = () => {
         return (
             <InputSwitcher
                 value={INTERNAL_PROJECT_PHASE[internalProjectPhase].label}
-                label="Internal Project Phase"
             >
                 <NativeSelect
                     id="internalProjectPhase"

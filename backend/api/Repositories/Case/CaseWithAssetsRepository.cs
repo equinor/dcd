@@ -7,20 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories;
 
-public class CaseWithAssetsRepository : ICaseWithAssetsRepository
+public class CaseWithAssetsRepository(DcdDbContext context) : ICaseWithAssetsRepository
 {
-    private readonly DcdDbContext _context;
-    private readonly ILogger<CaseRepository> _logger;
-
-    public CaseWithAssetsRepository(
-        DcdDbContext context,
-        ILogger<CaseRepository> logger
-        )
-    {
-        _context = context;
-        _logger = logger;
-    }
-
     public async Task<(
         Case CaseItem,
         DrainageStrategy DrainageStrategy,
@@ -46,7 +34,7 @@ public class CaseWithAssetsRepository : ICaseWithAssetsRepository
 
     private async Task<Case> GetCaseNoTracking(Guid id)
     {
-        return await _context.Cases
+        return await context.Cases
                 .Include(c => c.TotalFeasibilityAndConceptStudies)
                 .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
                 .Include(c => c.TotalFEEDStudies)
@@ -74,7 +62,7 @@ public class CaseWithAssetsRepository : ICaseWithAssetsRepository
 
     private async Task<Transport> GetTransportNoTracking(Guid id)
     {
-        return await _context.Transports
+        return await context.Transports
                 .Include(c => c.CostProfile)
                 .Include(c => c.CostProfileOverride)
                 .Include(c => c.CessationCostProfile)
@@ -85,7 +73,7 @@ public class CaseWithAssetsRepository : ICaseWithAssetsRepository
 
     private async Task<Surf> GetSurfNoTracking(Guid id)
     {
-        return await _context.Surfs
+        return await context.Surfs
                 .Include(c => c.CostProfile)
                 .Include(c => c.CostProfileOverride)
                 .Include(c => c.CessationCostProfile)
@@ -96,7 +84,7 @@ public class CaseWithAssetsRepository : ICaseWithAssetsRepository
 
     private async Task<Substructure> GetSubstructureNoTracking(Guid id)
     {
-        return await _context.Substructures
+        return await context.Substructures
                 .Include(c => c.CostProfile)
                 .Include(c => c.CostProfileOverride)
                 .Include(c => c.CessationCostProfile)
@@ -107,7 +95,7 @@ public class CaseWithAssetsRepository : ICaseWithAssetsRepository
 
     private async Task<DrainageStrategy> GetDrainageStrategyNoTracking(Guid id)
     {
-        return await _context.DrainageStrategies
+        return await context.DrainageStrategies
             .Include(c => c.ProductionProfileOil)
             .Include(c => c.AdditionalProductionProfileOil)
             .Include(c => c.ProductionProfileGas)
@@ -132,7 +120,7 @@ public class CaseWithAssetsRepository : ICaseWithAssetsRepository
 
     private async Task<Topside> GetTopsideNoTracking(Guid id)
     {
-        return await _context.Topsides
+        return await context.Topsides
                 .Include(c => c.CostProfile)
                 .Include(c => c.CostProfileOverride)
                 .Include(c => c.CessationCostProfile)
@@ -143,7 +131,7 @@ public class CaseWithAssetsRepository : ICaseWithAssetsRepository
 
     private async Task<WellProject> GetWellProjectNoTracking(Guid id)
     {
-        return await _context.WellProjects
+        return await context.WellProjects
                 .Include(c => c.WellProjectWells)!.ThenInclude(c => c.DrillingSchedule)
                 .Include(c => c.OilProducerCostProfile)
                 .Include(c => c.OilProducerCostProfileOverride)
@@ -160,7 +148,7 @@ public class CaseWithAssetsRepository : ICaseWithAssetsRepository
 
     private async Task<Exploration> GetExplorationNoTracking(Guid id)
     {
-        return await _context.Explorations
+        return await context.Explorations
                 .Include(c => c.ExplorationWells)!.ThenInclude(c => c.DrillingSchedule)
                 .Include(c => c.ExplorationWellCostProfile)
                 .Include(c => c.AppraisalWellCostProfile)

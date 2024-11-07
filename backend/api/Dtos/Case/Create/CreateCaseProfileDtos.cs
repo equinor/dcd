@@ -9,9 +9,7 @@ public class CreateCessationOffshoreFacilitiesCostOverrideDto : CreateTimeSeries
 {
     public bool Override { get; set; }
 }
-public class CreateCessationOnshoreFacilitiesCostProfileDto : CreateTimeSeriesCostDto
-{
-}
+public class CreateCessationOnshoreFacilitiesCostProfileDto : CreateTimeSeriesCostDto;
 
 public class CreateWellInterventionCostProfileOverrideDto : CreateTimeSeriesCostDto, ITimeSeriesOverrideDto
 {
@@ -32,16 +30,11 @@ public class CreateTotalFEEDStudiesOverrideDto : CreateTimeSeriesCostDto, ITimeS
 {
     public bool Override { get; set; }
 }
-public class CreateTotalOtherStudiesCostProfileDto : CreateTimeSeriesCostDto
-{
-}
-public class CreateHistoricCostCostProfileDto : CreateTimeSeriesCostDto
-{
-}
-public class CreateOnshoreRelatedOPEXCostProfileDto : CreateTimeSeriesCostDto
-{
-}
 
-public class CreateAdditionalOPEXCostProfileDto : CreateTimeSeriesCostDto
-{
-}
+public class CreateTotalOtherStudiesCostProfileDto : CreateTimeSeriesCostDto;
+
+public class CreateHistoricCostCostProfileDto : CreateTimeSeriesCostDto;
+
+public class CreateOnshoreRelatedOPEXCostProfileDto : CreateTimeSeriesCostDto;
+
+public class CreateAdditionalOPEXCostProfileDto : CreateTimeSeriesCostDto;

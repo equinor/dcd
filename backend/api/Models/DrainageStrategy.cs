@@ -4,7 +4,7 @@ using api.Models.Interfaces;
 
 namespace api.Models;
 
-public class DrainageStrategy : IHasProjectId
+public class DrainageStrategy : IHasProjectId, IChangeTrackable
 {
     public Guid Id { get; set; }
     public virtual Project Project { get; set; } = null!;
@@ -141,10 +141,7 @@ public class ImportedElectricityOverride : TimeSeriesEnergy, ITimeSeriesOverride
     public bool Override { get; set; }
 }
 
-public class Co2Intensity : TimeSeriesMass
-{
-
-}
+public class Co2Intensity : TimeSeriesMass;
 
 public interface IDrainageStrategyTimeSeries
 {
