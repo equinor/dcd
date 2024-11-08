@@ -197,7 +197,7 @@ const CasesAgGridTable = ({
     }, [isRevision])
 
     const casesToRowData = (isArchived: boolean) => {
-        let data = apiData
+        let data: Components.Schemas.RevisionWithCasesDto | Components.Schemas.ProjectWithAssetsDto | null | undefined = apiData
         if (isRevision && apiRevisionData) {
             data = apiRevisionData
         }
