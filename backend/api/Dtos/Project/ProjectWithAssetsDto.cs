@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
+using api.Dtos.Project.Revision;
+
 namespace api.Dtos;
 
 public class ProjectWithAssetsDto : ProjectDto, IEquatable<ProjectWithAssetsDto>

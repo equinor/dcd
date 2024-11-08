@@ -21,6 +21,6 @@ public class ProjectAccessRepository(DcdDbContext context) : IProjectAccessRepos
     {
         return await context.Projects
             .Include(p => p.ProjectMembers)
-            .FirstOrDefaultAsync(p => (p.Id == id || p.FusionProjectId == id) && !p.IsRevision);
+            .FirstOrDefaultAsync(p => p.Id == id || (p.FusionProjectId == id && !p.IsRevision));
     }
 }

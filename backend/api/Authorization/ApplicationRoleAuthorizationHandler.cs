@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 using api.Authorization.Extensions;
 using api.Controllers;
@@ -145,6 +146,7 @@ public class ApplicationRoleAuthorizationHandler(
 
         if (!Guid.TryParse(projectId.ToString(), out Guid projectIdGuid))
         {
+            // TODO: Should this throw an error?
             return null;
         }
 
@@ -161,6 +163,8 @@ public class ApplicationRoleAuthorizationHandler(
         // {
         //     project = await _projectAccessRepository.GetProjectByExternalId(projectIdGuid);
         // }
+
+        // TODO: If no project is found, should this throw an error?
 
         return project;
     }
