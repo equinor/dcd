@@ -82,7 +82,7 @@ const CreateCaseModal = () => {
     }, [apiData, modalCaseId])
 
     const handleNameChange: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        setCaseName(e.currentTarget.value)
+        setCaseName(e.currentTarget.value.trimStart())
     }
 
     function handleDescriptionChange(value: string) {
