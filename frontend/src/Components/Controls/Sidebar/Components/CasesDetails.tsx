@@ -13,6 +13,7 @@ import { useAppContext } from "@/Context/AppContext"
 import CasesList from "../Components/CasesList"
 import { sharedTimelineStyles } from "../sharedStyles"
 import { Header } from "../Sidebar"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 
 export const CasesTimeline = styled(Grid)`
     height: 100%;
@@ -29,6 +30,7 @@ const GrowBox = styled.div`
 const CasesDetails: React.FC = () => {
     const { sidebarOpen } = useAppContext()
     const { addNewCase } = useModalContext()
+    const { isEditDisabled } = useEditDisabled()
 
     return (
         <>
@@ -36,7 +38,7 @@ const CasesDetails: React.FC = () => {
                 <Header>
                     <Typography variant="overline">Cases</Typography>
                 </Header>
-                {sidebarOpen && (
+                {sidebarOpen && !isEditDisabled && (
                     <Grid item>
                         <Tooltip title="Add new case">
                             <Button variant="ghost_icon" className="GhostButton" onClick={() => addNewCase()}><Icon data={add} /></Button>
