@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace api.Dtos;
+namespace api.Dtos.Project.Revision;
 
 public class RevisionDetailsDto
 {

@@ -24,20 +24,22 @@ const RevisionChip = () => {
     const { revisionId } = useParams()
     const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-    const { data: revisionData } = useQuery({
+    const { data: revisionApiData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
         enabled: !!revisionId && !!projectId,
     })
 
-    const revisionName = () => (
-        <Tooltip title={`View details for ${truncateText(revisionData?.name ?? "", 120)}`}>
+    const revisionName = revisionApiData?.revisionDetails.revisionName
+
+    const revisionNameDisplay = () => (
+        <Tooltip title={`View details for ${truncateText(revisionName ?? "", 120)}`}>
             <Typography
                 onClick={() => setIsMenuOpen(true)}
                 variant="body2"
                 sx={{ textDecoration: "underline", cursor: "pointer", whiteSpace: "nowrap" }}
             >
-                {truncateText(revisionData?.name ?? "", 12)}
+                {truncateText(revisionName ?? "", 12)}
             </Typography>
         </Tooltip>
     )
@@ -46,7 +48,7 @@ const RevisionChip = () => {
         <>
             <Chip>
                 <CloseRevision>
-                    {revisionName()}
+                    {revisionNameDisplay()}
                     <Tooltip title="Exit revision">
                         <Icon
                             data={close}

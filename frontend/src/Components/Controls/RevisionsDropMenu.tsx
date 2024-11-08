@@ -56,7 +56,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
                 id: r.id,
                 revisionId: r.revisionId,
                 name: r.revisionName,
-                date: r.revisionDate
+                date: r.revisionDate,
             }))
             setRevisions(revisionsResult)
         }
