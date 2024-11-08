@@ -5,11 +5,11 @@ import { Tooltip, Icon } from "@equinor/eds-core-react"
 import { bookmark_filled } from "@equinor/eds-icons"
 import styled from "styled-components"
 import { tokens } from "@equinor/eds-tokens"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
 import CustomHeaderForSecondaryHeader from "../../../CustomHeaderForSecondaryHeader"
 import { cellStyleRightAlign } from "../../../Utils/common"
 import { projectQueryFn } from "../../../Services/QueryFunctions"
+import { useProjectContext } from "@/Context/ProjectContext"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
@@ -24,13 +24,12 @@ interface props {
 const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
     const styles = useStyles()
     const gridRef = useRef(null)
-    const { currentContext } = useModuleCurrentContext()
-    const externalId = currentContext?.externalId
+    const { projectId } = useProjectContext()
 
     const { data: apiData } = useQuery({
-        queryKey: ["projectApiData", externalId],
-        queryFn: () => projectQueryFn(externalId),
-        enabled: !!externalId,
+        queryKey: ["projectApiData", projectId],
+        queryFn: () => projectQueryFn(projectId),
+        enabled: !!projectId,
     })
 
     const nameWithReferenceCase = (p: any) => (
