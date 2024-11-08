@@ -15,14 +15,17 @@ import {
     chevron_up,
     external_link,
 } from "@equinor/eds-icons"
-import { Button, useMediaQuery } from "@mui/material"
+import { useMediaQuery } from "@mui/material"
 
 import { projectQueryFn } from "@/Services/QueryFunctions"
-import Person from "./Components/Person"
 import { useAppContext } from "@/Context/AppContext"
-import { User } from "@/Models/AccessManagement"
+import { User, PersonDetails } from "@/Models/AccessManagement"
 import { GetAccessService } from "@/Services/AccessService"
 import { useProjectContext } from "@/Context/ProjectContext"
+import { usePeopleApi } from "@/Hooks/usePeopleApi"
+import PersonMock from "./Components/PersonMock"
+import SearchResultsMenu from "./Components/SearchResultsMenu"
+import { apiResponseToPersonDetails } from "@/Utils/common"
 
 const PeopleMock = {
     admins: [
@@ -134,21 +137,52 @@ const ClickableHeading = styled(Grid)`
     cursor: pointer;
 `
 
+const WRITE_DELAY_MS = 1000
+
 const AccessManagementTab = () => {
     const { editMode } = useAppContext()
     const { projectId } = useProjectContext()
+    const peopleApi = usePeopleApi()
     const isSmallScreen = useMediaQuery("(max-width:960px)", { noSsr: true })
+
+    const [searchQuery, setSearchQuery] = useState<string>("")
+    const [isSearching, setIsSearching] = useState<boolean>(false)
+    const [searchResults, setSearchResults] = useState<PersonDetails[] | undefined>([])
+    const [searchResultsMenuAnchorEl, setSearchResultsMenuAnchorEl] = useState<any | null>(null)
+
     const [expandAllAccess, setExpandAllAccess] = useState<boolean>(true)
     const [editors, setEditors] = useState<User[] | undefined>([])
     const [viewers, setViewers] = useState<User[] | undefined>([])
-    const [editorToAdd, setEditorToAdd] = useState<string>("")
-    const [viewerToAdd, setViewerToAdd] = useState<string>("")
 
     const { data: projectApiData } = useQuery({
         queryKey: ["projectApiData", projectId],
         queryFn: () => projectQueryFn(projectId),
         enabled: !!projectId,
     })
+
+    const searchPersons = () => {
+        if (searchQuery) {
+            setIsSearching(true)
+            peopleApi.search(searchQuery)
+                .then((res) => {
+                    const result = apiResponseToPersonDetails(res)
+                    setSearchResults(result)
+                })
+                .finally(() => {
+                    setIsSearching(false)
+                })
+        }
+    }
+
+    const handlePersonSelected = (person: PersonDetails) => {
+        console.log("adding person: ", person)
+    }
+
+    const isPersonSelected = (azureId: string) => {
+        // console.log("person allready selected: ", azureId)
+        console.log()
+        return false
+    }
 
     const handleAddPerson = async (personId: string) => {
         if (!personId && !projectId) { return null }
@@ -159,6 +193,20 @@ const AccessManagementTab = () => {
         }
         return true
     }
+
+    const handleBlur = () => {
+        setSearchResults([])
+        setSearchQuery("")
+    }
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            searchPersons()
+        }, WRITE_DELAY_MS)
+        return () => {
+            clearTimeout(timeout)
+        }
+    }, [searchQuery])
 
     useEffect(() => {
         const viewersToAdd = projectApiData?.projectMembers?.filter((m) => m.role === 0) as User[]
@@ -193,13 +241,26 @@ const AccessManagementTab = () => {
                     </EditorViewerHeading>
                     {editMode && (
                         <Grid item>
-                            <Search value={editorToAdd} onChange={(e) => setEditorToAdd(e.target.value)} placeholder="Add new" />
-                            <Button onClick={() => handleAddPerson(editorToAdd)}>Add</Button>
+                            <Search
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onBlur={() => handleBlur()}
+                                placeholder="Add new"
+                                ref={setSearchResultsMenuAnchorEl}
+                            />
+                            <SearchResultsMenu
+                                isMenuOpen={(searchResults?.length ?? 0) > 0 || isSearching}
+                                menuAnchorEl={searchResultsMenuAnchorEl}
+                                isSearching={isSearching}
+                                searchResults={searchResults || []}
+                                isPersonSelected={isPersonSelected}
+                                handlePersonSelected={handlePersonSelected}
+                            />
                         </Grid>
                     )}
                     <PeopleContainer>
                         {PeopleMock.editors.map((person) => (
-                            <Person
+                            <PersonMock
                                 key={person.email}
                                 name={person.name}
                                 email={person.email}
@@ -211,7 +272,7 @@ const AccessManagementTab = () => {
                     <Typography variant="h6">PMT members from the project orgchart:</Typography>
                     <PeopleContainer>
                         {PeopleMock.orgChart.map((person) => (
-                            <Person
+                            <PersonMock
                                 key={person.email}
                                 name={person.name}
                                 email={person.email}
@@ -233,7 +294,7 @@ const AccessManagementTab = () => {
                     )}
                     <PeopleContainer>
                         {PeopleMock.viewers.map((person) => (
-                            <Person
+                            <PersonMock
                                 key={person.email}
                                 name={person.name}
                                 email={person.email}

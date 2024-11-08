@@ -1,47 +1,43 @@
-import { Avatar, Button, Typography } from "@equinor/eds-core-react"
-import { Grid } from "@mui/material"
+import { Button, Typography } from "@equinor/eds-core-react"
+import { PersonAvatar } from "@equinor/fusion-react-person"
 import styled from "styled-components"
 
+import { PersonDetails } from "@/Models/AccessManagement"
+
 interface PersonProps {
-    name: string
-    email: string
-    hideAction?: boolean
-    action?: (name: string, email: string) => void
+    person: PersonDetails,
+    isPersonSelected?: (azureId: string) => boolean,
+    handlePersonSelected: (person: PersonDetails) => void
 }
 
-const StyledPerson = styled(Grid)`
+const PersonInfo = styled.div`
     display: flex;
+    flex-direction: row;
+    gap: 10px;
     align-items: center;
     justify-content: space-between;
-    & > div {
-        display: flex;
-        align-items: center;
-        & > div {
-            margin-left: 10px;
-        }
-    }
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 10px;
 `
 
 const Person = ({
-    name,
-    email,
-    hideAction,
-    action,
+    person,
+    isPersonSelected,
+    handlePersonSelected,
 }: PersonProps) => (
-    <StyledPerson item>
-        <div>
-            <Avatar size={48} alt="person1" src="https://picsum.photos/400/400" />
-            <div>
-                <Typography variant="h6">
-                    {name}
-                </Typography>
-                <Typography variant="body_short">
-                    {email}
-                </Typography>
-            </div>
-        </div>
-        {!hideAction && action && <Button onClick={() => action(name, email)} color="danger" variant="ghost">Remove</Button>}
-    </StyledPerson>
+    <PersonInfo style={{ marginBottom: 10 }}>
+        <PersonAvatar azureId={person.azureId} />
+        <Typography>{person.name}</Typography>
+        <Button
+            onClick={() => {
+                console.log("clicked")
+                handlePersonSelected(person)
+            }}
+            disabled={isPersonSelected ? isPersonSelected(person.azureId) : false}
+        >
+            Add
+        </Button>
+    </PersonInfo>
 )
 
 export default Person
