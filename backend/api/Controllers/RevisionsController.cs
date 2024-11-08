@@ -1,5 +1,5 @@
 using api.Authorization;
-using api.Dtos;
+using api.Dtos.Project.Revision;
 using api.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +19,7 @@ public class RevisionsController(IRevisionService revisionService) : ControllerB
         ApplicationRole.User
     )]
     [ActionType(ActionType.Read)]
-    public async Task<ProjectWithAssetsDto?> Get(Guid projectId, Guid revisionId)
+    public async Task<RevisionWithCasesDto?> Get(Guid projectId, Guid revisionId)
     {
         // TODO: Need to verify that the project from the URL is the same as the project of the resource
         return await revisionService.GetRevision(revisionId);
@@ -31,12 +31,25 @@ public class RevisionsController(IRevisionService revisionService) : ControllerB
         ApplicationRole.User
     )]
     [ActionType(ActionType.Edit)]
-    public async Task<ProjectWithAssetsDto> CreateRevision([FromRoute] Guid projectId, [FromBody] CreateRevisionDto createRevisionDto)
+    public async Task<RevisionWithCasesDto> CreateRevision([FromRoute] Guid projectId,
+        [FromBody] CreateRevisionDto createRevisionDto)
     {
         // Do not enable backend validation until frontend actually displays the name field.
         // Probably done by the end of november 2024.
 
         //CreateRevisionDtoValidator.Validate(createRevisionDto);
         return await revisionService.CreateRevision(projectId, createRevisionDto);
+    }
+
+    [HttpPut("{revisionId}")]
+    [RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.User
+    )]
+    [ActionType(ActionType.Edit)]
+    public async Task<RevisionWithCasesDto> UpdateRevision([FromRoute] Guid projectId, [FromRoute] Guid revisionId,
+        [FromBody] UpdateRevisionDto updateRevisionDto)
+    {
+        return await revisionService.UpdateRevision(projectId, revisionId, updateRevisionDto);
     }
 }

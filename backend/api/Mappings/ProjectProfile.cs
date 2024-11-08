@@ -1,4 +1,5 @@
 using api.Dtos;
+using api.Dtos.Project.Revision;
 using api.Models;
 
 using api.Services.FusionIntegration.Models;
@@ -22,6 +23,7 @@ public class ProjectProfile : Profile
         CreateMap<UpdateDevelopmentOperationalWellCostsDto, DevelopmentOperationalWellCosts>();
         CreateMap<DevelopmentOperationalWellCosts, DevelopmentOperationalWellCostsDto>();
         CreateMap<RevisionDetails, RevisionDetailsDto>();
+        CreateMap<Project, RevisionWithCasesDto>();
 
         CreateMap<FusionProjectMaster, Project>()
             .ForMember(

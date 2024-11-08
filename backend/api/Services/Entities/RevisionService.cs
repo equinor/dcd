@@ -1,9 +1,8 @@
 using System.Collections;
-using System.Diagnostics;
 using System.Reflection;
 
 using api.Context;
-using api.Dtos;
+using api.Dtos.Project.Revision;
 using api.Exceptions;
 using api.Models;
 using api.Repositories;
@@ -12,7 +11,6 @@ using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 
-using Newtonsoft.Json;
 
 namespace api.Services;
 
@@ -23,27 +21,12 @@ public class RevisionService(
     IProjectRepository projectRepository)
     : IRevisionService
 {
+
     // TODO: Rewrite when CaseWithAssetsDto is no longer needed
     public async Task<Project> GetProjectWithCasesAndAssets(Guid projectId)
     {
         Project project = await context.Projects
-            .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
-            .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudiesOverride)
-            .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudies)
-            .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudiesOverride)
-            .Include(p => p.Cases)!.ThenInclude(c => c.TotalOtherStudiesCostProfile)
-            .Include(p => p.Cases)!.ThenInclude(c => c.WellInterventionCostProfile)
-            .Include(p => p.Cases)!.ThenInclude(c => c.WellInterventionCostProfileOverride)
-            .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfile)
-            .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
-            .Include(p => p.Cases)!.ThenInclude(c => c.HistoricCostCostProfile)
-            .Include(p => p.Cases)!.ThenInclude(c => c.OnshoreRelatedOPEXCostProfile)
-            .Include(p => p.Cases)!.ThenInclude(c => c.AdditionalOPEXCostProfile)
-            .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCost)
-            .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCostOverride)
-            .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCost)
-            .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCostOverride)
-            .Include(p => p.Cases)!.ThenInclude(c => c.CessationOnshoreFacilitiesCostProfile)
+            .Include(p => p.Cases)
             .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
@@ -55,152 +38,29 @@ public class RevisionService(
             project.Cases = project.Cases.OrderBy(c => c.CreateTime).ToList();
         }
 
-        await AddAssetsToProject(project);
         return project;
     }
 
-    private async Task<Project> AddAssetsToProject(Project project)
+    private static DateTimeOffset GetLatestModifyTime(Project project)
     {
-        project.WellProjects = (await GetWellProjects(project.Id)).ToList();
-        project.DrainageStrategies = (await GetDrainageStrategies(project.Id)).ToList();
-        project.Surfs = (await GetSurfs(project.Id)).ToList();
-        project.Substructures = (await GetSubstructures(project.Id)).ToList();
-        project.Topsides = (await GetTopsides(project.Id)).ToList();
-        project.Transports = (await GetTransports(project.Id)).ToList();
-        project.Explorations = (await GetExplorations(project.Id)).ToList();
-        project.Wells = (await GetWells(project.Id)).ToList();
-
-        return project;
+        return project.Cases?.Select(c => c.ModifyTime)
+            .Append(project.ModifyTime)
+            .Max() ?? project.ModifyTime;
     }
 
-    public async Task<IEnumerable<Well>> GetWells(Guid projectId)
+    public async Task<RevisionWithCasesDto> GetRevision(Guid projectId)
     {
-        return await context.Wells
-            .Where(d => d.ProjectId.Equals(projectId)).ToListAsync();
+        var project = await GetProjectWithCasesAndAssets(projectId)
+            ?? throw new NotFoundInDBException(string.Format("Project {0} not found", projectId));
 
-    }
+        var projectDto = mapper.Map<Project, RevisionWithCasesDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 
-    public async Task<IEnumerable<Exploration>> GetExplorations(Guid projectId)
-    {
-        return await context.Explorations
-            .Include(c => c.ExplorationWellCostProfile)
-            .Include(c => c.AppraisalWellCostProfile)
-            .Include(c => c.SidetrackCostProfile)
-            .Include(c => c.GAndGAdminCost)
-            .Include(c => c.GAndGAdminCostOverride)
-            .Include(c => c.SeismicAcquisitionAndProcessing)
-            .Include(c => c.CountryOfficeCost)
-            .Include(c => c.ExplorationWells!).ThenInclude(ew => ew.DrillingSchedule)
-            .Where(d => d.Project.Id.Equals(projectId)).ToListAsync();
-    }
+        projectDto.ModifyTime = GetLatestModifyTime(project);
 
-    public async Task<IEnumerable<Transport>> GetTransports(Guid projectId)
-    {
-        return await context.Transports
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
-            .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
-    }
-
-    public async Task<IEnumerable<Topside>> GetTopsides(Guid projectId)
-    {
-        return await context.Topsides
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
-            .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
-    }
-
-    public async Task<IEnumerable<Surf>> GetSurfs(Guid projectId)
-    {
-        return await context.Surfs
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
-            .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
-    }
-
-    public async Task<IEnumerable<DrainageStrategy>> GetDrainageStrategies(Guid projectId)
-    {
-        return await context.DrainageStrategies
-            .Include(c => c.ProductionProfileOil)
-            .Include(c => c.AdditionalProductionProfileOil)
-            .Include(c => c.ProductionProfileGas)
-            .Include(c => c.AdditionalProductionProfileGas)
-            .Include(c => c.ProductionProfileWater)
-            .Include(c => c.ProductionProfileWaterInjection)
-            .Include(c => c.FuelFlaringAndLosses)
-            .Include(c => c.FuelFlaringAndLossesOverride)
-            .Include(c => c.NetSalesGas)
-            .Include(c => c.NetSalesGasOverride)
-            .Include(c => c.Co2Emissions)
-            .Include(c => c.Co2EmissionsOverride)
-            .Include(c => c.ProductionProfileNGL)
-            .Include(c => c.ImportedElectricity)
-            .Include(c => c.ImportedElectricityOverride)
-            .Include(c => c.DeferredOilProduction)
-            .Include(c => c.DeferredGasProduction)
-            .Where(d => d.Project.Id.Equals(projectId)).ToListAsync();
-    }
-
-    public async Task<IEnumerable<WellProject>> GetWellProjects(Guid projectId)
-    {
-        return await context.WellProjects
-            .Include(c => c.OilProducerCostProfile)
-            .Include(c => c.OilProducerCostProfileOverride)
-            .Include(c => c.GasProducerCostProfile)
-            .Include(c => c.GasProducerCostProfileOverride)
-            .Include(c => c.WaterInjectorCostProfile)
-            .Include(c => c.WaterInjectorCostProfileOverride)
-            .Include(c => c.GasInjectorCostProfile)
-            .Include(c => c.GasInjectorCostProfileOverride)
-            .Include(c => c.WellProjectWells!).ThenInclude(wpw => wpw.DrillingSchedule)
-            .Where(d => d.Project.Id.Equals(projectId)).ToListAsync();
-    }
-
-    public async Task<IEnumerable<Substructure>> GetSubstructures(Guid projectId)
-    {
-        return await context.Substructures
-            .Include(c => c.CostProfile)
-            .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
-            .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
-    }
-
-    public async Task<ProjectWithAssetsDto> GetRevision(Guid projectId)
-    {
-        DateTimeOffset projectLastUpdated;
-        var project = await GetProjectWithCasesAndAssets(projectId);
-        if (project.Cases?.Count > 0)
-        {
-            projectLastUpdated = new[] { project.ModifyTime }.Concat(project.Cases.Select(c => c.ModifyTime)).Max();
-        }
-        else
-        {
-            projectLastUpdated = project.ModifyTime;
-        }
-
-        var destination = mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
-
-        var projectDto = destination;
-
-        if (projectDto == null)
-        {
-            throw new NotFoundInDBException($"Project {projectId} not found");
-        }
-
-        projectDto.ModifyTime = projectLastUpdated;
-
-        Activity.Current?.AddBaggage(nameof(projectDto), JsonConvert.SerializeObject(projectDto, Formatting.None,
-            new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            }));
         return projectDto;
     }
 
-    public async Task<ProjectWithAssetsDto> CreateRevision(Guid projectId, CreateRevisionDto createRevisionDto)
+    public async Task<RevisionWithCasesDto> CreateRevision(Guid projectId, CreateRevisionDto createRevisionDto)
     {
         var project = await revisionRepository.GetProjectAndAssetsNoTracking(projectId)
             ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
@@ -222,7 +82,9 @@ public class RevisionService(
 
         var revision = await revisionRepository.AddRevision(project);
 
-        var revisionDto = mapper.Map<Project, ProjectWithAssetsDto>(revision, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+        var revisionDto = mapper.Map<Project, RevisionWithCasesDto>(revision, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+
+        revisionDto.ModifyTime = GetLatestModifyTime(revision);
 
         return revisionDto;
     }
@@ -238,7 +100,33 @@ public class RevisionService(
         return existingProject;
     }
 
-    private void SetProjectAndRelatedEntitiesToEmptyGuids(Project project, Guid originalProjectId, CreateRevisionDto createRevisionDto)
+    public async Task<RevisionWithCasesDto> UpdateRevision(Guid projectId, Guid revisionId, UpdateRevisionDto updateRevisionDto)
+    {
+        var revision = context.Projects
+                        .Include(p => p.Cases)
+                        .Include(p => p.RevisionDetails)
+                        .FirstOrDefault(r => r.Id == revisionId)
+                    ?? throw new NotFoundInDBException($"Revision with id {revisionId} not found.");
+
+        if (revision.RevisionDetails == null)
+        {
+            throw new InvalidOperationException("RevisionDetails cannot be null.");
+        }
+
+        revision.RevisionDetails.RevisionName = updateRevisionDto.Name;
+        revision.RevisionDetails.Arena = updateRevisionDto.Arena;
+        revision.RevisionDetails.Mdqc = updateRevisionDto.Mdqc;
+
+        await context.SaveChangesAsync();
+
+        var revisionDto = mapper.Map<Project, RevisionWithCasesDto>(revision, opts => opts.Items["ConversionUnit"] = revision.PhysicalUnit.ToString());
+
+        revisionDto.ModifyTime = GetLatestModifyTime(revision);
+
+        return revisionDto;
+    }
+
+    private static void SetProjectAndRelatedEntitiesToEmptyGuids(Project project, Guid originalProjectId, CreateRevisionDto createRevisionDto)
     {
         project.Id = Guid.Empty;
 
