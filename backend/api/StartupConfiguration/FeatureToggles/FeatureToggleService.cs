@@ -6,17 +6,10 @@ public static class FeatureToggleService
     {
         return new FeatureToggleDto
         {
-            FeatureAEnabled = FeatureAEnabled,
-            FeatureBEnabled = FeatureBEnabled,
-            FeatureCEnabled = FeatureCEnabled
+            RevisionEnabled = RevisionEnabled,
+            EnvironmentName = DcdEnvironments.CurrentEnvironment
         };
     }
 
-    public static readonly bool FeatureAEnabled = DcdEnvironments.CurrentEnvironment is DcdEnvironments.LocalDev;
-
-    public static readonly bool FeatureBEnabled = DcdEnvironments.CurrentEnvironment is DcdEnvironments.LocalDev;
-
-    public static readonly bool FeatureCEnabled = DcdEnvironments.CurrentEnvironment is DcdEnvironments.LocalDev
-        or DcdEnvironments.Dev
-        or DcdEnvironments.Qa;
+    public static readonly bool RevisionEnabled = DcdEnvironments.CurrentEnvironment is DcdEnvironments.LocalDev;
 }

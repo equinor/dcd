@@ -2,7 +2,7 @@ namespace api.StartupConfiguration;
 
 public static class DcdEnvironments
 {
-    public static string CurrentEnvironment => Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")!;
+    public static string CurrentEnvironment { get; set; } = null!;
 
     public const string LocalDev = "localdev";
     public const string Ci = "CI";
