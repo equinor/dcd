@@ -2,8 +2,9 @@ import styled from "styled-components"
 import { Icon, Chip, Tooltip } from "@equinor/eds-core-react"
 import { useQuery } from "@tanstack/react-query"
 
+import { useParams } from "react-router"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
-import { projectQueryFn } from "@/Services/QueryFunctions"
+import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Context/ProjectContext"
 
 const StyledChip = styled(Chip)`
@@ -42,26 +43,41 @@ const SmallTooltip = styled(Tooltip)`
 const Classification = () => {
     const { projectId } = useProjectContext()
 
-    const { data: apiData } = useQuery({
+    const { revisionId } = useParams()
+    const { data: projectApiData } = useQuery({
         queryKey: ["projectApiData", projectId],
         queryFn: () => projectQueryFn(projectId),
         enabled: !!projectId,
     })
 
+    const revisionClassification = projectApiData?.revisionsDetailsList?.find(
+        (revision) => revision.revisionId === revisionId,
+    )?.classification
+
+    const revisionClassificationNumber = Object.keys(PROJECT_CLASSIFICATION).find(
+        (key) => PROJECT_CLASSIFICATION[Number(key)].label === revisionClassification,
+    )
+
+    const selectedClassification = revisionClassificationNumber !== undefined
+        ? parseInt(revisionClassificationNumber, 10)
+        : projectApiData?.classification
+
+    const classification = selectedClassification !== undefined
+        ? PROJECT_CLASSIFICATION[selectedClassification]
+        : undefined
+
     return (
-        apiData
-            ? (
-                <SmallTooltip placement="bottom-start" title={PROJECT_CLASSIFICATION[apiData.classification].description}>
-                    <StyledChip
-                        variant={PROJECT_CLASSIFICATION[apiData?.classification].color}
-                        className={`ProjectClassification ${PROJECT_CLASSIFICATION[apiData.classification].color}`}
-                    >
-                        <Icon data={PROJECT_CLASSIFICATION[apiData.classification].icon} />
-                        {PROJECT_CLASSIFICATION[apiData.classification].label}
-                    </StyledChip>
-                </SmallTooltip>
-            )
-            : null
+        classification ? (
+            <SmallTooltip placement="bottom-start" title={classification.description}>
+                <StyledChip
+                    variant={classification.color}
+                    className={`classification ${classification.color}`}
+                >
+                    <Icon data={classification.icon} />
+                    {classification.label}
+                </StyledChip>
+            </SmallTooltip>
+        ) : null
     )
 }
 

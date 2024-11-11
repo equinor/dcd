@@ -76,6 +76,7 @@ public class RevisionService(
             Arena = createRevisionDto.Arena,
             RevisionDate = DateTimeOffset.UtcNow,
             Revision = project,
+            Classification = createRevisionDto.Classification,
         };
 
         project.RevisionDetails = revisionDetails;

@@ -1138,6 +1138,7 @@ declare namespace Components {
             revisionDate: string; // date-time
             arena: boolean;
             mdqc: boolean;
+            classification: string;
         }
         export interface RevisionWithCasesDto {
             classification: ProjectClassification /* int32 */;
@@ -1169,11 +1170,11 @@ declare namespace Components {
             gasPriceNOK: number; // double
             discountRate: number; // double
             exchangeRateUSDToNOK: number; // double
+            modifyTime: string; // date-time
             revisionDetails: RevisionDetailsDto;
             cases: CaseDto[];
             explorationOperationalWellCosts: ExplorationOperationalWellCostsDto;
             developmentOperationalWellCosts: DevelopmentOperationalWellCostsDto;
-            modifyTime: string; // date-time
         }
         export interface STEACaseDto {
             name?: string | null;
@@ -1975,7 +1976,7 @@ declare namespace Paths {
             export type ProjectId = string; // uuid
         }
         export interface PathParameters {
-            ProjectId: Parameters.ProjectId /* uuid */;
+            projectId: Parameters.ProjectId /* uuid */;
         }
         namespace Responses {
             export interface $200 {
@@ -1987,7 +1988,7 @@ declare namespace Paths {
             export type ProjectId = string; // uuid
         }
         export interface PathParameters {
-            ProjectId: Parameters.ProjectId /* uuid */;
+            projectId: Parameters.ProjectId /* uuid */;
         }
         namespace Responses {
             export type $200 = Components.Schemas.STEAProjectDto;
