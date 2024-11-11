@@ -1,6 +1,7 @@
 using api.Dtos;
 using api.Exceptions;
 using api.Models;
+using api.StartupConfiguration;
 
 using AutoMapper;
 
@@ -28,14 +29,14 @@ public class BlobStorageService : IBlobStorageService
         var environment = Environment.GetEnvironmentVariable("AppConfiguration__Environment") ?? "default";
         var containerKey = environment switch
         {
-            "localdev" => "AzureStorageAccountImageContainerCI",
-            "CI" => "AzureStorageAccountImageContainerCI",
-            "radix-dev" => "AzureStorageAccountImageContainerCI",
-            "dev" => "AzureStorageAccountImageContainerCI",
-            "qa" => "AzureStorageAccountImageContainerQA",
-            "radix-qa" => "AzureStorageAccountImageContainerQA",
-            "prod" => "AzureStorageAccountImageContainerProd",
-            "radix-prod" => "AzureStorageAccountImageContainerProd",
+            DcdEnvironments.LocalDev => "AzureStorageAccountImageContainerCI",
+            DcdEnvironments.Ci => "AzureStorageAccountImageContainerCI",
+            DcdEnvironments.RadixDev => "AzureStorageAccountImageContainerCI",
+            DcdEnvironments.Dev => "AzureStorageAccountImageContainerCI",
+            DcdEnvironments.Qa => "AzureStorageAccountImageContainerQA",
+            DcdEnvironments.RadixQa => "AzureStorageAccountImageContainerQA",
+            DcdEnvironments.Prod => "AzureStorageAccountImageContainerProd",
+            DcdEnvironments.RadixProd => "AzureStorageAccountImageContainerProd",
             _ => throw new InvalidOperationException($"Unknown fusion environment: {environment}")
         };
 
