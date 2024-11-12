@@ -28,10 +28,7 @@ public static class DcdAzureAppConfiguration
         {
             var azureAppConfigConnectionString = builder.Configuration["AppConfiguration:ConnectionString"];
             options.Connect(azureAppConfigConnectionString)
-                .ConfigureKeyVault(kv =>
-                {
-                    kv.SetCredential(new DefaultAzureCredential());
-                });
+                .ConfigureKeyVault(kv => { kv.SetCredential(new DefaultAzureCredential()); });
         });
     }
 }

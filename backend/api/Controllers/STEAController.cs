@@ -32,7 +32,7 @@ public class STEAController(ISTEAService sTeaService) : ControllerBase
     public async Task<FileResult> ExcelToSTEA(Guid projectId)
     {
         var project = await GetInputToSTEA(projectId);
-        List<BusinessCase> businessCases = ExportToSTEA.Export(project);
+        List<BusinessCase> businessCases = ExportToStea.Export(project);
         string filename = project.Name + "ExportToSTEA.xlsx";
         return File(ExcelFile(businessCases, project.Name).ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename);
     }
