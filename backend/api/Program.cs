@@ -13,8 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 var environment = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("Environment");
 
 Console.WriteLine($"Loading config for: {environment}");
-DcdEnvironments.CurrentEnvironment = environment!;
 
+DcdEnvironments.CurrentEnvironment = environment!;
 var config = builder.CreateDcdConfigurationRoot(environment);
 builder.Configuration.AddConfiguration(config);
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
