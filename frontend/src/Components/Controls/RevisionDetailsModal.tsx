@@ -22,7 +22,7 @@ import DialogTitle from "@mui/material/DialogTitle"
 import DialogActions from "@mui/material/DialogActions"
 import Dialog from "@mui/material/Dialog"
 import { Grid } from "@mui/material"
-import { formatFullDate } from "@/Utils/common"
+import { formatFullDate, getProjectPhaseName } from "@/Utils/common"
 import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { PROJECT_CLASSIFICATION, INTERNAL_PROJECT_PHASE } from "@/Utils/constants"
@@ -66,6 +66,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
     const { projectId } = useProjectContext()
     const queryClient = useQueryClient()
     const { revisionId } = useParams()
+    const [internalProjectPhase, setInternalProjectPhase] = useState<Components.Schemas.InternalProjectPhase>()
 
     const [revisionDetails, setRevisionDetails] = useState({
         revisionName: "",
@@ -163,6 +164,12 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
     }
 
     if (!revisionApiData || !projectApiData) { return null }
+    const isAfterDG0 = () => [3, 4, 5, 6, 7, 8].includes(projectApiData.projectPhase)
+
+    const displayedPhase = isAfterDG0()
+        ? getProjectPhaseName(projectApiData.projectPhase)
+        : INTERNAL_PROJECT_PHASE[projectApiData.internalProjectPhase]?.label ?? "N/A"
+
 
     return (
         <Dialog
@@ -216,7 +223,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                         <ColumnWrapper>
                             <InputWrapper labelProps={{ label: "Project phase" }}>
                                 <Typography variant="body_short">
-                                    {INTERNAL_PROJECT_PHASE[revisionApiData?.internalProjectPhase]?.label ?? "N/A"}
+                                    {displayedPhase}
                                 </Typography>
                             </InputWrapper>
                         </ColumnWrapper>
