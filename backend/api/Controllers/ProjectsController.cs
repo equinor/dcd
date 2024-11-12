@@ -83,7 +83,7 @@ public class ProjectsController(
     [ActionType(ActionType.Read)]
     public async Task<List<CompareCasesDto>> CaseComparison(Guid projectId)
     {
-        return new List<CompareCasesDto>(await compareCasesService.Calculate(projectId));
+        return [.. await compareCasesService.Calculate(projectId)];
     }
 
     [RequiresApplicationRoles(

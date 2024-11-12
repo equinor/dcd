@@ -1,6 +1,7 @@
 using api.Dtos;
 using api.Exceptions;
 using api.Models;
+using api.StartupConfiguration;
 
 using AutoMapper;
 
@@ -8,34 +9,27 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
 
-public class BlobStorageService : IBlobStorageService
+public class BlobStorageService(BlobServiceClient blobServiceClient,
+    IImageRepository imageRepository,
+    IConfiguration configuration,
+    IMapper mapper)
+    : IBlobStorageService
 {
-    private readonly BlobServiceClient _blobServiceClient;
-    private readonly IImageRepository _imageRepository;
-    private readonly IMapper _mapper;
-    private readonly string _containerName;
+    private readonly string _containerName = GetContainerName(configuration);
 
-    public BlobStorageService(BlobServiceClient blobServiceClient, IImageRepository imageRepository, IConfiguration configuration, IMapper mapper)
-    {
-        _blobServiceClient = blobServiceClient;
-        _imageRepository = imageRepository;
-        _mapper = mapper;
-        _containerName = GetContainerName(configuration);
-    }
-
-    private string GetContainerName(IConfiguration configuration)
+    private static string GetContainerName(IConfiguration configuration)
     {
         var environment = Environment.GetEnvironmentVariable("AppConfiguration__Environment") ?? "default";
         var containerKey = environment switch
         {
-            "localdev" => "AzureStorageAccountImageContainerCI",
-            "CI" => "AzureStorageAccountImageContainerCI",
-            "radix-dev" => "AzureStorageAccountImageContainerCI",
-            "dev" => "AzureStorageAccountImageContainerCI",
-            "qa" => "AzureStorageAccountImageContainerQA",
-            "radix-qa" => "AzureStorageAccountImageContainerQA",
-            "prod" => "AzureStorageAccountImageContainerProd",
-            "radix-prod" => "AzureStorageAccountImageContainerProd",
+            DcdEnvironments.LocalDev => "AzureStorageAccountImageContainerCI",
+            DcdEnvironments.Ci => "AzureStorageAccountImageContainerCI",
+            DcdEnvironments.RadixDev => "AzureStorageAccountImageContainerCI",
+            DcdEnvironments.Dev => "AzureStorageAccountImageContainerCI",
+            DcdEnvironments.Qa => "AzureStorageAccountImageContainerQA",
+            DcdEnvironments.RadixQa => "AzureStorageAccountImageContainerQA",
+            DcdEnvironments.Prod => "AzureStorageAccountImageContainerProd",
+            DcdEnvironments.RadixProd => "AzureStorageAccountImageContainerProd",
             _ => throw new InvalidOperationException($"Unknown fusion environment: {environment}")
         };
 
@@ -43,7 +37,7 @@ public class BlobStorageService : IBlobStorageService
                              ?? throw new InvalidOperationException($"Container name configuration for {environment} is missing.");
     }
 
-    private string SanitizeBlobName(string name)
+    private static string SanitizeBlobName(string name)
     {
         return name.Replace(" ", "-").Replace("/", "-").Replace("\\", "-");
     }
@@ -51,7 +45,7 @@ public class BlobStorageService : IBlobStorageService
     public async Task<ImageDto> SaveImage(Guid projectId, string projectName, IFormFile image, Guid? caseId = null)
     {
         var sanitizedProjectName = SanitizeBlobName(projectName);
-        var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+        var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
 
         var imageId = Guid.NewGuid();
 
@@ -82,9 +76,9 @@ public class BlobStorageService : IBlobStorageService
             ProjectName = sanitizedProjectName
         };
 
-        await _imageRepository.AddImage(imageEntity);
+        await imageRepository.AddImage(imageEntity);
 
-        var imageDto = _mapper.Map<ImageDto>(imageEntity);
+        var imageDto = mapper.Map<ImageDto>(imageEntity);
 
         if (imageDto == null)
         {
@@ -96,9 +90,9 @@ public class BlobStorageService : IBlobStorageService
 
     public async Task<List<ImageDto>> GetCaseImages(Guid caseId)
     {
-        var images = await _imageRepository.GetImagesByCaseId(caseId);
+        var images = await imageRepository.GetImagesByCaseId(caseId);
 
-        var imageDtos = _mapper.Map<List<ImageDto>>(images);
+        var imageDtos = mapper.Map<List<ImageDto>>(images);
 
         if (imageDtos == null)
         {
@@ -109,9 +103,9 @@ public class BlobStorageService : IBlobStorageService
 
     public async Task<List<ImageDto>> GetProjectImages(Guid projectId)
     {
-        var images = await _imageRepository.GetImagesByProjectId(projectId);
+        var images = await imageRepository.GetImagesByProjectId(projectId);
 
-        var imageDtos = _mapper.Map<List<ImageDto>>(images);
+        var imageDtos = mapper.Map<List<ImageDto>>(images);
 
         if (imageDtos == null)
         {
@@ -122,13 +116,13 @@ public class BlobStorageService : IBlobStorageService
 
     public async Task DeleteImage(Guid imageId)
     {
-        var image = await _imageRepository.GetImageById(imageId);
+        var image = await imageRepository.GetImageById(imageId);
         if (image == null)
         {
             throw new NotFoundInDBException("Image not found.");
         }
 
-        var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
+        var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
 
         var sanitizedProjectName = SanitizeBlobName(image.ProjectName);
         var blobName = image.CaseId.HasValue
@@ -138,6 +132,6 @@ public class BlobStorageService : IBlobStorageService
         var blobClient = containerClient.GetBlobClient(blobName);
 
         await blobClient.DeleteIfExistsAsync();
-        await _imageRepository.DeleteImage(image);
+        await imageRepository.DeleteImage(image);
     }
 }
