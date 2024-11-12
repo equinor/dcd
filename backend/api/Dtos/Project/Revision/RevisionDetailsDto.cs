@@ -21,5 +21,5 @@ public class RevisionDetailsDto
     [Required]
     public bool Mdqc { get; set; }
     [Required]
-    public string? Classification { get; set; }
+    public ProjectClassification? Classification { get; set; }
 }
