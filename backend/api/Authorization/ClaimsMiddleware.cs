@@ -62,6 +62,7 @@ public class ClaimsMiddleware(
             logger.LogError("ClaimsIdentity null");
             return;
         }
+
         claimsIdentity.AddClaims(applicationRoleClaims);
     }
 
@@ -74,6 +75,7 @@ public class ClaimsMiddleware(
         {
             return null;
         }
+
         if (httpContext.User.IsAccountType(FusionAccountType.Employee))
         {
             logger.LogInformation("Check for Fusion Account Type: " + ApplicationRole.User);
