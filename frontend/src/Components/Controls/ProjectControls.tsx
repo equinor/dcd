@@ -146,7 +146,7 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                         </Button>
                     </Tooltip>
                     {/* Uncomment to show project revisions button */}
-                    <div>
+                    {/* <div>
                         <Tooltip title="This is a revision">
                             <Button variant="outlined" onClick={() => setIsMenuOpen(!isMenuOpen)} ref={setRevisionMenuAnchorEl}>
                                 <Icon data={history} />
@@ -159,7 +159,7 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                             menuAnchorEl={revisionMenuAnchorEl}
                             isCaseMenu={false}
                         />
-                    </div>
+                    </div> */}
                 </div>
             </Header>
             <Tabs
