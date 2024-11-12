@@ -10,7 +10,7 @@ public static class DcdLogConfiguration
             .MinimumLevel.Debug()
             .ReadFrom.Configuration(config)
             .Enrich.WithMachineName()
-            .Enrich.WithProperty("Environment", environment ?? "localdev")
+            .Enrich.WithProperty("Environment", environment ?? DcdEnvironments.LocalDev)
             .Enrich.FromLogContext()
             .CreateBootstrapLogger();
     }

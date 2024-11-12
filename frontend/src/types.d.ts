@@ -789,6 +789,10 @@ declare namespace Components {
             currency: Currency /* int32 */;
             explorationWells: ExplorationWellDto[];
         }
+        export interface FeatureToggleDto {
+            revisionEnabled?: boolean;
+            environmentName?: string | null;
+        }
         export interface FuelFlaringAndLossesDto {
             id: string; // uuid
             startYear: number; // int32
@@ -1169,11 +1173,11 @@ declare namespace Components {
             gasPriceNOK: number; // double
             discountRate: number; // double
             exchangeRateUSDToNOK: number; // double
+            modifyTime: string; // date-time
             revisionDetails: RevisionDetailsDto;
             cases: CaseDto[];
             explorationOperationalWellCosts: ExplorationOperationalWellCostsDto;
             developmentOperationalWellCosts: DevelopmentOperationalWellCostsDto;
-            modifyTime: string; // date-time
         }
         export interface STEACaseDto {
             name?: string | null;
@@ -1975,10 +1979,17 @@ declare namespace Paths {
             export type ProjectId = string; // uuid
         }
         export interface PathParameters {
-            ProjectId: Parameters.ProjectId /* uuid */;
+            projectId: Parameters.ProjectId /* uuid */;
         }
         namespace Responses {
             export interface $200 {
+            }
+        }
+    }
+    namespace FeatureToggles {
+        namespace Get {
+            namespace Responses {
+                export type $200 = Components.Schemas.FeatureToggleDto;
             }
         }
     }
@@ -1987,7 +1998,7 @@ declare namespace Paths {
             export type ProjectId = string; // uuid
         }
         export interface PathParameters {
-            ProjectId: Parameters.ProjectId /* uuid */;
+            projectId: Parameters.ProjectId /* uuid */;
         }
         namespace Responses {
             export type $200 = Components.Schemas.STEAProjectDto;

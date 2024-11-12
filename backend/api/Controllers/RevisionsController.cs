@@ -1,6 +1,7 @@
 using api.Authorization;
 using api.Dtos.Project.Revision;
 using api.Services;
+using api.StartupConfiguration.FeatureToggles;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
@@ -34,10 +35,11 @@ public class RevisionsController(IRevisionService revisionService) : ControllerB
     public async Task<RevisionWithCasesDto> CreateRevision([FromRoute] Guid projectId,
         [FromBody] CreateRevisionDto createRevisionDto)
     {
-        // Do not enable backend validation until frontend actually displays the name field.
-        // Probably done by the end of november 2024.
+        if (FeatureToggleService.RevisionEnabled)
+        {
+            CreateRevisionDtoValidator.Validate(createRevisionDto);
+        }
 
-        //CreateRevisionDtoValidator.Validate(createRevisionDto);
         return await revisionService.CreateRevision(projectId, createRevisionDto);
     }
 
