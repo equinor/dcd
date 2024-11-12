@@ -66,7 +66,6 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
     const { projectId } = useProjectContext()
     const queryClient = useQueryClient()
     const { revisionId } = useParams()
-    const [internalProjectPhase, setInternalProjectPhase] = useState<Components.Schemas.InternalProjectPhase>()
 
     const [revisionDetails, setRevisionDetails] = useState({
         revisionName: "",
@@ -169,7 +168,6 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
     const displayedPhase = isAfterDG0()
         ? getProjectPhaseName(projectApiData.projectPhase)
         : INTERNAL_PROJECT_PHASE[projectApiData.internalProjectPhase]?.label ?? "N/A"
-
 
     return (
         <Dialog
