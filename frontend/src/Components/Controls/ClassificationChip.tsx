@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 
 import { useParams } from "react-router"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
-import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Context/ProjectContext"
 
 const StyledChip = styled(Chip)`
