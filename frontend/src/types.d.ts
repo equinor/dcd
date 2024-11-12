@@ -789,6 +789,10 @@ declare namespace Components {
             currency: Currency /* int32 */;
             explorationWells: ExplorationWellDto[];
         }
+        export interface FeatureToggleDto {
+            revisionEnabled?: boolean;
+            environmentName?: string | null;
+        }
         export interface FuelFlaringAndLossesDto {
             id: string; // uuid
             startYear: number; // int32
@@ -1138,7 +1142,6 @@ declare namespace Components {
             revisionDate: string; // date-time
             arena: boolean;
             mdqc: boolean;
-            classification: string;
         }
         export interface RevisionWithCasesDto {
             classification: ProjectClassification /* int32 */;
@@ -1980,6 +1983,13 @@ declare namespace Paths {
         }
         namespace Responses {
             export interface $200 {
+            }
+        }
+    }
+    namespace FeatureToggles {
+        namespace Get {
+            namespace Responses {
+                export type $200 = Components.Schemas.FeatureToggleDto;
             }
         }
     }
