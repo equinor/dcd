@@ -1,7 +1,7 @@
+using api.Authorization;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
-
-using api.Authorization;
 
 namespace api.StartupConfiguration.FeatureToggles;
 
