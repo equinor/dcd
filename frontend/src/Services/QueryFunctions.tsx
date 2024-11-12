@@ -1,4 +1,5 @@
 import { GetCaseService } from "./CaseService"
+import { GetFeatureToggleService } from "./FeatureToggleService"
 import { GetProjectService } from "./ProjectService"
 
 export const caseQueryFn = async (projectId: string, caseId: string | undefined) => {
@@ -35,4 +36,10 @@ export const compareCasesQueryFn = async (projectId: string | undefined) => {
     }
     const projectService = await GetProjectService()
     return projectService.compareCases(projectId!)
+}
+
+export const featureToggleQueryFn = async () => {
+    const featureToggleService = await GetFeatureToggleService()
+
+    return featureToggleService.getFeatureToggles()
 }

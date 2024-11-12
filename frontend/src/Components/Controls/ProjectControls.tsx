@@ -27,6 +27,7 @@ import RevisionsDropMenu from "./RevisionsDropMenu"
 import Classification from "./ClassificationChip"
 import FullPageLoading from "../fullPageLoading"
 import RevisionChip from "./RevisionChip"
+import { useFeatureContext } from "@/Context/FeatureContext"
 
 const Header = styled.div`
     display: flex;
@@ -69,6 +70,7 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
     const isSmallScreen = useMediaQuery("(max-width: 968px)")
 
+    const { Features } = useFeatureContext()
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
 
@@ -145,21 +147,23 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                             )}
                         </Button>
                     </Tooltip>
-                    {/* Uncomment to show project revisions button */}
-                    {/* <div>
-                        <Tooltip title="This is a revision">
-                            <Button variant="outlined" onClick={() => setIsMenuOpen(!isMenuOpen)} ref={setRevisionMenuAnchorEl}>
-                                <Icon data={history} />
-                                {!isSmallScreen && "Project revisions"}
-                            </Button>
-                        </Tooltip>
-                        <RevisionsDropMenu
-                            isMenuOpen={isMenuOpen}
-                            setIsMenuOpen={setIsMenuOpen}
-                            menuAnchorEl={revisionMenuAnchorEl}
-                            isCaseMenu={false}
-                        />
-                    </div> */}
+                    {Features?.revisionEnabled
+                        && (
+                            <div>
+                                <Tooltip title="This is a revision">
+                                    <Button variant="outlined" onClick={() => setIsMenuOpen(!isMenuOpen)} ref={setRevisionMenuAnchorEl}>
+                                        <Icon data={history} />
+                                        {!isSmallScreen && "Project revisions"}
+                                    </Button>
+                                </Tooltip>
+                                <RevisionsDropMenu
+                                    isMenuOpen={isMenuOpen}
+                                    setIsMenuOpen={setIsMenuOpen}
+                                    menuAnchorEl={revisionMenuAnchorEl}
+                                    isCaseMenu={false}
+                                />
+                            </div>
+                        )}
                 </div>
             </Header>
             <Tabs

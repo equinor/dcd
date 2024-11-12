@@ -1,6 +1,7 @@
 using api.Authorization;
 using api.Dtos;
 using api.Services;
+using api.StartupConfiguration.FeatureToggles;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
@@ -26,7 +27,11 @@ public class CasesController(
     [HttpPost]
     public async Task<ProjectWithAssetsDto> CreateCase([FromRoute] Guid projectId, [FromBody] CreateCaseDto caseDto)
     {
-        CreateCaseDtoValidator.Validate(caseDto);
+        if (FeatureToggleService.RevisionEnabled)
+        {
+            CreateCaseDtoValidator.Validate(caseDto);
+        }
+
         return await createCaseService.CreateCase(projectId, caseDto);
     }
 
@@ -43,7 +48,11 @@ public class CasesController(
         [FromBody] APIUpdateCaseDto caseDto
         )
     {
-        UpdateCaseDtoValidator.Validate(caseDto);
+        if (FeatureToggleService.RevisionEnabled)
+        {
+            UpdateCaseDtoValidator.Validate(caseDto);
+        }
+
         return await caseService.UpdateCase(projectId, caseId, caseDto);
     }
 

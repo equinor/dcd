@@ -5,7 +5,7 @@ using ClosedXML.Excel;
 
 namespace api.Excel;
 
-public static class ExportToSTEA
+public static class ExportToStea
 {
     public static List<BusinessCase> Export(STEAProjectDto project)
     {

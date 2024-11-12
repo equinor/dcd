@@ -8,13 +8,13 @@ public static class DcdFusionConfiguration
         {
             var fusionEnvironment = environment switch
             {
-                "dev" => "CI",
-                "qa" => "FQA",
-                "prod" => "FPRD",
-                "radix-prod" => "FPRD",
-                "radix-qa" => "FQA",
-                "radix-dev" => "CI",
-                _ => "CI",
+                DcdEnvironments.Dev => "CI",
+                DcdEnvironments.Qa => "FQA",
+                DcdEnvironments.Prod => "FPRD",
+                DcdEnvironments.RadixProd => "FPRD",
+                DcdEnvironments.RadixQa => "FQA",
+                DcdEnvironments.RadixDev => "CI",
+                _ => "CI"
             };
 
             Console.WriteLine("Fusion environment: " + fusionEnvironment);
