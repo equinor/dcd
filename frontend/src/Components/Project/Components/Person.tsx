@@ -6,8 +6,7 @@ import { PersonDetails } from "@/Models/AccessManagement"
 
 interface PersonProps {
     person: PersonDetails,
-    isPersonSelected?: (azureId: string) => boolean,
-    handlePersonSelected: (person: PersonDetails) => void
+    handleRemovePerson: (person: PersonDetails) => void
 }
 
 const PersonInfo = styled.div`
@@ -22,8 +21,7 @@ const PersonInfo = styled.div`
 
 const Person = ({
     person,
-    isPersonSelected,
-    handlePersonSelected,
+    handleRemovePerson,
 }: PersonProps) => (
     <PersonInfo style={{ marginBottom: 10 }}>
         <PersonAvatar azureId={person.azureId} />
@@ -31,11 +29,10 @@ const Person = ({
         <Button
             onClick={() => {
                 console.log("clicked")
-                handlePersonSelected(person)
+                handleRemovePerson(person)
             }}
-            disabled={isPersonSelected ? isPersonSelected(person.azureId) : false}
         >
-            Add
+            Remove
         </Button>
     </PersonInfo>
 )
