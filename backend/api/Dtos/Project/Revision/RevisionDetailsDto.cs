@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace api.Dtos;
+using api.Models;
+
+namespace api.Dtos.Project.Revision;
 
 public class RevisionDetailsDto
 {
@@ -18,4 +20,6 @@ public class RevisionDetailsDto
     public bool Arena { get; set; }
     [Required]
     public bool Mdqc { get; set; }
+    [Required]
+    public ProjectClassification Classification { get; set; }
 }

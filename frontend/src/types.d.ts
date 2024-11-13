@@ -789,6 +789,10 @@ declare namespace Components {
             currency: Currency /* int32 */;
             explorationWells: ExplorationWellDto[];
         }
+        export interface FeatureToggleDto {
+            revisionEnabled?: boolean;
+            environmentName?: string | null;
+        }
         export interface FuelFlaringAndLossesDto {
             id: string; // uuid
             startYear: number; // int32
@@ -1138,6 +1142,43 @@ declare namespace Components {
             revisionDate: string; // date-time
             arena: boolean;
             mdqc: boolean;
+            classification: ProjectClassification /* int32 */;
+        }
+        export interface RevisionWithCasesDto {
+            classification: ProjectClassification /* int32 */;
+            id: string; // uuid
+            isRevision: boolean;
+            originalProjectId: string; // uuid
+            name: string;
+            commonLibraryId: string; // uuid
+            fusionProjectId: string; // uuid
+            referenceCaseId: string; // uuid
+            commonLibraryName: string;
+            description: string;
+            country: string;
+            currency: Currency /* int32 */;
+            physicalUnit: PhysUnit /* int32 */;
+            createDate: string; // date-time
+            projectPhase: ProjectPhase /* int32 */;
+            internalProjectPhase: InternalProjectPhase /* int32 */;
+            projectCategory: ProjectCategory /* int32 */;
+            sharepointSiteUrl?: string | null;
+            cO2RemovedFromGas: number; // double
+            cO2EmissionFromFuelGas: number; // double
+            flaredGasPerProducedVolume: number; // double
+            cO2EmissionsFromFlaredGas: number; // double
+            cO2Vented: number; // double
+            dailyEmissionFromDrillingRig: number; // double
+            averageDevelopmentDrillingDays: number; // double
+            oilPriceUSD: number; // double
+            gasPriceNOK: number; // double
+            discountRate: number; // double
+            exchangeRateUSDToNOK: number; // double
+            modifyTime: string; // date-time
+            revisionDetails: RevisionDetailsDto;
+            cases: CaseDto[];
+            explorationOperationalWellCosts: ExplorationOperationalWellCostsDto;
+            developmentOperationalWellCosts: DevelopmentOperationalWellCostsDto;
         }
         export interface STEACaseDto {
             name?: string | null;
@@ -1739,6 +1780,11 @@ declare namespace Components {
             discountRate?: number; // double
             exchangeRateUSDToNOK?: number; // double
         }
+        export interface UpdateRevisionDto {
+            name?: string | null;
+            arena?: boolean;
+            mdqc?: boolean;
+        }
         export interface UpdateSeismicAcquisitionAndProcessingDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -1934,10 +1980,17 @@ declare namespace Paths {
             export type ProjectId = string; // uuid
         }
         export interface PathParameters {
-            ProjectId: Parameters.ProjectId /* uuid */;
+            projectId: Parameters.ProjectId /* uuid */;
         }
         namespace Responses {
             export interface $200 {
+            }
+        }
+    }
+    namespace FeatureToggles {
+        namespace Get {
+            namespace Responses {
+                export type $200 = Components.Schemas.FeatureToggleDto;
             }
         }
     }
@@ -1946,7 +1999,7 @@ declare namespace Paths {
             export type ProjectId = string; // uuid
         }
         export interface PathParameters {
-            ProjectId: Parameters.ProjectId /* uuid */;
+            projectId: Parameters.ProjectId /* uuid */;
         }
         namespace Responses {
             export type $200 = Components.Schemas.STEAProjectDto;
@@ -3764,7 +3817,7 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.CreateRevisionDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ProjectWithAssetsDto;
+                export type $200 = Components.Schemas.RevisionWithCasesDto;
             }
         }
     }
@@ -3779,7 +3832,21 @@ declare namespace Paths {
                 revisionId: Parameters.RevisionId /* uuid */;
             }
             namespace Responses {
-                export type $200 = Components.Schemas.ProjectWithAssetsDto;
+                export type $200 = Components.Schemas.RevisionWithCasesDto;
+            }
+        }
+        namespace Put {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+                export type RevisionId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                revisionId: Parameters.RevisionId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateRevisionDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.RevisionWithCasesDto;
             }
         }
     }

@@ -1,9 +1,6 @@
-using api.Dtos;
+namespace api.Services.GenerateCostProfiles;
 
-namespace api.Services.GenerateCostProfiles
+public interface ICo2EmissionsProfileService
 {
-    public interface ICo2EmissionsProfileService
-    {
-        Task Generate(Guid caseId);
-    }
+    Task Generate(Guid caseId);
 }

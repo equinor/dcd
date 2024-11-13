@@ -54,10 +54,7 @@ public class SurfWithProfilesDto
     public DateTimeOffset? DG4Date { get; set; }
 }
 
-public class SurfCostProfileDto : TimeSeriesCostDto
-{
-
-}
+public class SurfCostProfileDto : TimeSeriesCostDto;
 
 public class SurfCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
 {
@@ -65,10 +62,7 @@ public class SurfCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverride
     public bool Override { get; set; }
 }
 
-public class SurfCessationCostProfileDto : TimeSeriesCostDto
-{
-
-}
+public class SurfCessationCostProfileDto : TimeSeriesCostDto;
 
 public enum ProductionFlowlineDto
 {

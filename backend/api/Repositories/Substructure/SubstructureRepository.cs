@@ -8,13 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories;
 
-public class SubstructureRepository : BaseRepository, ISubstructureRepository
+public class SubstructureRepository(DcdDbContext context) : BaseRepository(context), ISubstructureRepository
 {
-
-    public SubstructureRepository(DcdDbContext context) : base(context)
-    {
-    }
-
     public async Task<Substructure?> GetSubstructure(Guid substructureId)
     {
         return await Get<Substructure>(substructureId);
@@ -27,14 +22,14 @@ public class SubstructureRepository : BaseRepository, ISubstructureRepository
 
     public async Task<Substructure?> GetSubstructureWithCostProfile(Guid substructureId)
     {
-        return await _context.Substructures
+        return await Context.Substructures
                         .Include(t => t.CostProfile)
                         .FirstOrDefaultAsync(t => t.Id == substructureId);
     }
 
     public async Task<bool> SubstructureHasCostProfileOverride(Guid substructureId)
     {
-        return await _context.Substructures
+        return await Context.Substructures
             .AnyAsync(t => t.Id == substructureId && t.CostProfileOverride != null);
     }
 

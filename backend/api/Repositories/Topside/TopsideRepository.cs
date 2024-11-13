@@ -8,13 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Repositories;
 
-public class TopsideRepository : BaseRepository, ITopsideRepository
+public class TopsideRepository(DcdDbContext context) : BaseRepository(context), ITopsideRepository
 {
-
-    public TopsideRepository(DcdDbContext context) : base(context)
-    {
-    }
-
     public async Task<Topside?> GetTopside(Guid topsideId)
     {
         return await Get<Topside>(topsideId);
@@ -27,14 +22,14 @@ public class TopsideRepository : BaseRepository, ITopsideRepository
 
     public async Task<Topside?> GetTopsideWithCostProfile(Guid topsideId)
     {
-        return await _context.Topsides
+        return await Context.Topsides
                         .Include(t => t.CostProfile)
                         .FirstOrDefaultAsync(t => t.Id == topsideId);
     }
 
     public async Task<bool> TopsideHasCostProfileOverride(Guid topsideId)
     {
-        return await _context.Topsides
+        return await Context.Topsides
             .AnyAsync(t => t.Id == topsideId && t.CostProfileOverride != null);
     }
 

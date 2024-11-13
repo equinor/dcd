@@ -13,6 +13,7 @@ import { ProjectContextProvider } from "./Context/ProjectContext"
 import { CaseContextProvider } from "./Context/CaseContext"
 import { AppContextProvider } from "./Context/AppContext"
 import Styles from "./styles"
+import { FeatureContextProvider } from "./Context/FeatureContext"
 
 const AppComponent: FC = () => {
     const queryClient = new QueryClient({
@@ -44,19 +45,21 @@ const AppComponent: FC = () => {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <ThemeProvider theme={theme}>
-                <ReactQueryDevtools />
-                <AppContextProvider>
-                    <ProjectContextProvider>
-                        <CaseContextProvider>
-                            <ModalContextProvider>
-                                <Styles />
-                                <AppRouter />
-                            </ModalContextProvider>
-                        </CaseContextProvider>
-                    </ProjectContextProvider>
-                </AppContextProvider>
-            </ThemeProvider>
+            <FeatureContextProvider>
+                <ThemeProvider theme={theme}>
+                    <ReactQueryDevtools />
+                    <AppContextProvider>
+                        <ProjectContextProvider>
+                            <CaseContextProvider>
+                                <ModalContextProvider>
+                                    <Styles />
+                                    <AppRouter />
+                                </ModalContextProvider>
+                            </CaseContextProvider>
+                        </ProjectContextProvider>
+                    </AppContextProvider>
+                </ThemeProvider>
+            </FeatureContextProvider>
         </QueryClientProvider>
     )
 }

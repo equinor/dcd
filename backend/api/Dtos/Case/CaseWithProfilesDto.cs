@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Dtos;
 using api.Models;
 
 namespace api.Dtos;
@@ -134,12 +133,10 @@ public class CaseWithProfilesDto
     public string? SharepointFileUrl { get; set; }
 }
 
-public class CessationCostDto : TimeSeriesCostDto
-{
-}
-public class CessationWellsCostDto : TimeSeriesCostDto
-{
-}
+public class CessationCostDto : TimeSeriesCostDto;
+
+public class CessationWellsCostDto : TimeSeriesCostDto;
+
 public class CessationWellsCostOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
 {
     [Required]
@@ -153,21 +150,14 @@ public class CessationOffshoreFacilitiesCostOverrideDto : TimeSeriesCostDto, ITi
     [Required]
     public bool Override { get; set; }
 }
-public class CessationOnshoreFacilitiesCostProfileDto : TimeSeriesCostDto
-{
-}
 
-public class OpexCostProfileDto : TimeSeriesCostDto
-{
-}
+public class CessationOnshoreFacilitiesCostProfileDto : TimeSeriesCostDto;
 
-public class HistoricCostCostProfileDto : TimeSeriesCostDto
-{
-}
+public class OpexCostProfileDto : TimeSeriesCostDto;
 
-public class WellInterventionCostProfileDto : TimeSeriesCostDto
-{
-}
+public class HistoricCostCostProfileDto : TimeSeriesCostDto;
+
+public class WellInterventionCostProfileDto : TimeSeriesCostDto;
 
 public class WellInterventionCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
 {
@@ -175,9 +165,7 @@ public class WellInterventionCostProfileOverrideDto : TimeSeriesCostDto, ITimeSe
     public bool Override { get; set; }
 }
 
-public class OffshoreFacilitiesOperationsCostProfileDto : TimeSeriesCostDto
-{
-}
+public class OffshoreFacilitiesOperationsCostProfileDto : TimeSeriesCostDto;
 
 public class OffshoreFacilitiesOperationsCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
 {
@@ -185,35 +173,29 @@ public class OffshoreFacilitiesOperationsCostProfileOverrideDto : TimeSeriesCost
     public bool Override { get; set; }
 }
 
-public class OnshoreRelatedOPEXCostProfileDto : TimeSeriesCostDto
-{
-}
-public class AdditionalOPEXCostProfileDto : TimeSeriesCostDto
-{
-}
+public class OnshoreRelatedOPEXCostProfileDto : TimeSeriesCostDto;
 
-public class StudyCostProfileDto : TimeSeriesCostDto
-{
-}
-public class TotalFeasibilityAndConceptStudiesDto : TimeSeriesCostDto
-{
-}
+public class AdditionalOPEXCostProfileDto : TimeSeriesCostDto;
+
+public class StudyCostProfileDto : TimeSeriesCostDto;
+
+public class TotalFeasibilityAndConceptStudiesDto : TimeSeriesCostDto;
+
 public class TotalFeasibilityAndConceptStudiesOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
 {
     [Required]
     public bool Override { get; set; }
 }
-public class TotalFEEDStudiesDto : TimeSeriesCostDto
-{
-}
+
+public class TotalFEEDStudiesDto : TimeSeriesCostDto;
+
 public class TotalFEEDStudiesOverrideDto : TimeSeriesCostDto, ITimeSeriesOverrideDto
 {
     [Required]
     public bool Override { get; set; }
 }
-public class TotalOtherStudiesCostProfileDto : TimeSeriesCostDto
-{
-}
+
+public class TotalOtherStudiesCostProfileDto : TimeSeriesCostDto;
 
 public class CessationCostWrapperDto
 {
@@ -233,7 +215,6 @@ public class OpexCostProfileWrapperDto
     public OffshoreFacilitiesOperationsCostProfileDto? OffshoreFacilitiesOperationsCostProfileDto { get; set; }
     public OnshoreRelatedOPEXCostProfileDto? OnshoreRelatedOPEXCostProfileDto { get; set; }
     public AdditionalOPEXCostProfileDto? AdditionalOPEXCostProfileDto { get; set; }
-
 }
 
 public class StudyCostProfileWrapperDto
@@ -250,9 +231,6 @@ public class CapexYear
     public int? StartYear { get; set; }
 }
 
-public class CalculatedTotalIncomeCostProfileDto : TimeSeriesCostDto
-{
-}
-public class CalculatedTotalCostCostProfileDto : TimeSeriesCostDto
-{
-}
+public class CalculatedTotalIncomeCostProfileDto : TimeSeriesCostDto;
+
+public class CalculatedTotalCostCostProfileDto : TimeSeriesCostDto;

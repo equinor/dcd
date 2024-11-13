@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 using api.Authorization.Extensions;
 using api.Controllers;
@@ -11,30 +12,18 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 
 namespace api.Authorization;
 
-public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<ApplicationRoleRequirement>
+public class ApplicationRoleAuthorizationHandler(
+    IProjectAccessRepository projectAccessRepository,
+    IHttpContextAccessor httpContextAccessor,
+    ILogger<ApplicationRoleAuthorizationHandler> logger)
+    : AuthorizationHandler<ApplicationRoleRequirement>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IProjectAccessRepository _projectAccessRepository;
-    private readonly ILogger<ApplicationRoleAuthorizationHandler> _logger;
-
-
-
-    public ApplicationRoleAuthorizationHandler(
-        IProjectAccessRepository projectAccessRepository,
-        IHttpContextAccessor httpContextAccessor,
-        ILogger<ApplicationRoleAuthorizationHandler> logger
-        )
-    {
-        _httpContextAccessor = httpContextAccessor;
-        _logger = logger;
-        _projectAccessRepository = projectAccessRepository;
-    }
     protected override async Task<Task> HandleRequirementAsync(
         AuthorizationHandlerContext context,
         ApplicationRoleRequirement requirement
     )
     {
-        var requestPath = _httpContextAccessor.HttpContext?.Request.Path;
+        var requestPath = httpContextAccessor.HttpContext?.Request.Path;
 
         // Accessing the swagger documentation is always allowed.
         if (IsAccessingSwagger(requestPath))
@@ -134,7 +123,7 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
 
     private ActionType? GetActionTypeFromEndpoint()
     {
-        var endpoint = _httpContextAccessor.HttpContext?.GetEndpoint();
+        var endpoint = httpContextAccessor.HttpContext?.GetEndpoint();
         if (endpoint == null) { return null; }
 
         var controllerActionDescriptor = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>();
@@ -149,7 +138,7 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
 
     private async Task<Project?> GetCurrentProject(AuthorizationHandlerContext context)
     {
-        var projectId = _httpContextAccessor.HttpContext?.Request.RouteValues["projectId"];
+        var projectId = httpContextAccessor.HttpContext?.Request.RouteValues["projectId"];
         if (projectId == null)
         {
             return null;
@@ -157,10 +146,11 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
 
         if (!Guid.TryParse(projectId.ToString(), out Guid projectIdGuid))
         {
+            // TODO: Should this throw an error?
             return null;
         }
 
-        var project = await _projectAccessRepository.GetProjectById(projectIdGuid);
+        var project = await projectAccessRepository.GetProjectById(projectIdGuid);
 
         // /*
         // Some projects have the external id set as the id.
@@ -174,6 +164,8 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
         //     project = await _projectAccessRepository.GetProjectByExternalId(projectIdGuid);
         // }
 
+        // TODO: If no project is found, should this throw an error?
+
         return project;
     }
 
@@ -186,7 +178,7 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
     {
         context.Fail();
         var username = context.User.Identity!.Name;
-        _logger.LogWarning(
+        logger.LogWarning(
             "User '{Username}' attempted to access '{RequestPath}' but was not authorized "
                 + "- one of the following roles '{RequiredRoles}' is required , while user has the roles '{UserRoles}'",
             username,
@@ -198,7 +190,7 @@ public class ApplicationRoleAuthorizationHandler : AuthorizationHandler<Applicat
 
     private void HandleUnauthenticatedRequest(AuthorizationHandlerContext context, PathString? requestPath)
     {
-        _logger.LogWarning("An unauthenticated user attempted to access '{RequestPath}'", requestPath);
+        logger.LogWarning("An unauthenticated user attempted to access '{RequestPath}'", requestPath);
         context.Fail();
     }
 }

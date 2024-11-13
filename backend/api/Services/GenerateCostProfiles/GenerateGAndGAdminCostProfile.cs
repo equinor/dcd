@@ -5,34 +5,18 @@ using api.Models;
 
 namespace api.Services;
 
-public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
+public class GenerateGAndGAdminCostProfile(
+    IProjectService projectService,
+    ICaseService caseService,
+    IExplorationService explorationService,
+    IExplorationWellService explorationWellService)
+    : IGenerateGAndGAdminCostProfile
 {
-    private readonly IProjectService _projectService;
-    private readonly ICaseService _caseService;
-    private readonly ILogger<GenerateGAndGAdminCostProfile> _logger;
-    private readonly IExplorationService _explorationService;
-    private readonly IExplorationWellService _explorationWellService;
-
-    public GenerateGAndGAdminCostProfile(
-        ILoggerFactory loggerFactory,
-        IProjectService projectService,
-        ICaseService caseService,
-        IExplorationService explorationService,
-        IExplorationWellService explorationWellService
-    )
-    {
-        _projectService = projectService;
-        _logger = loggerFactory.CreateLogger<GenerateGAndGAdminCostProfile>();
-        _caseService = caseService;
-        _explorationService = explorationService;
-        _explorationWellService = explorationWellService;
-    }
-
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await _caseService.GetCaseWithIncludes(caseId);
+        var caseItem = await caseService.GetCaseWithIncludes(caseId);
 
-        var exploration = await _explorationService.GetExplorationWithIncludes(
+        var exploration = await explorationService.GetExplorationWithIncludes(
             caseItem.ExplorationLink,
             e => e.GAndGAdminCost!,
             e => e.GAndGAdminCostOverride!
@@ -43,7 +27,7 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
             return;
         }
 
-        var linkedWells = await _explorationWellService.GetExplorationWellsForExploration(exploration.Id);
+        var linkedWells = await explorationWellService.GetExplorationWellsForExploration(exploration.Id);
         if (linkedWells?.Count > 0)
         {
             var drillingSchedules = linkedWells.Select(lw => lw.DrillingSchedule);
@@ -51,7 +35,7 @@ public class GenerateGAndGAdminCostProfile : IGenerateGAndGAdminCostProfile
             var dG1Date = caseItem.DG1Date;
             if (earliestYear != null && dG1Date.Year >= earliestYear)
             {
-                var project = await _projectService.GetProject(caseItem.ProjectId);
+                var project = await projectService.GetProject(caseItem.ProjectId);
                 var countryCost = MapCountry(project.Country);
                 var lastYear = new DateTimeOffset(dG1Date.Year, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
                 var lastYearMinutes = (dG1Date - lastYear).TotalMinutes;

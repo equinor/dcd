@@ -1,9 +1,11 @@
 
 using System.ComponentModel.DataAnnotations.Schema;
 
+using api.Models.Interfaces;
+
 namespace api.Models;
 
-public class TimeSeries<T>
+public class TimeSeries<T> : IChangeTrackable
 {
     public TimeSeries()
     {
@@ -38,17 +40,11 @@ public class TimeSeries<T>
     }
 }
 
-public class TimeSeriesVolume : TimeSeries<double>
-{
-}
+public class TimeSeriesVolume : TimeSeries<double>;
 
-public class TimeSeriesMass : TimeSeries<double>
-{
-}
+public class TimeSeriesMass : TimeSeries<double>;
 
-public class TimeSeriesEnergy : TimeSeries<double>
-{
-}
+public class TimeSeriesEnergy : TimeSeries<double>;
 
 public class TimeSeriesCost : TimeSeries<double>
 {
@@ -148,9 +144,7 @@ public class TimeSeriesCost : TimeSeries<double>
     }
 }
 
-public class TimeSeriesSchedule : TimeSeries<int>
-{
-}
+public class TimeSeriesSchedule : TimeSeries<int>;
 
 public interface ITimeSeriesOverride
 {

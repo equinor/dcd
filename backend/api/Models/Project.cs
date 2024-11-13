@@ -1,6 +1,8 @@
+using api.Models.Interfaces;
+
 namespace api.Models;
 
-public class Project
+public class Project : IChangeTrackable
 {
     public Guid Id { get; set; } // If the project is a revision, this is the revision's id
     public string Name { get; set; } = string.Empty;
@@ -52,7 +54,7 @@ public class Project
     public virtual RevisionDetails? RevisionDetails { get; set; }
 }
 
-public class RevisionDetails
+public class RevisionDetails : IChangeTrackable
 {
     public Guid Id { get; set; }
     public Guid OriginalProjectId { get; set; }
@@ -64,6 +66,7 @@ public class RevisionDetails
     public DateTimeOffset RevisionDate { get; set; }
     public bool Arena { get; set; }
     public bool Mdqc { get; set; }
+    public ProjectClassification Classification { get; set; }
 }
 
 public enum PhysUnit

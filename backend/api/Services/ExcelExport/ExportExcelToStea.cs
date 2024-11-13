@@ -5,7 +5,7 @@ using ClosedXML.Excel;
 
 namespace api.Excel;
 
-public static class ExportToSTEA
+public static class ExportToStea
 {
     public static List<BusinessCase> Export(STEAProjectDto project)
     {
@@ -117,13 +117,13 @@ public static class ExportToSTEA
         return businessCases;
     }
 
-    private static void ValueToCells(List<ExcelTableCell> tableCells, int columnCount, int rowCount, TimeSeriesDto<double> e, int ProjectStartYear, double factor)
+    private static void ValueToCells(List<ExcelTableCell> tableCells, int columnCount, int rowCount, TimeSeriesDto<double> e, int projectStartYear, double factor)
     {
         if (e.Values == null)
         {
             return;
         }
-        columnCount += e.StartYear - ProjectStartYear;
+        columnCount += e.StartYear - projectStartYear;
         columnCount++;
         for (int i = 0; i < e.Values.Length; i++)
         {
@@ -132,7 +132,7 @@ public static class ExportToSTEA
         }
     }
 
-    private static List<ExcelTableCell> CreateExcelRow(string title, int ProjectStartYear, TimeSeriesDoubleDto e, int rowCount, double factor)
+    private static List<ExcelTableCell> CreateExcelRow(string title, int projectStartYear, TimeSeriesDoubleDto e, int rowCount, double factor)
     {
         var tableCells = new List<ExcelTableCell>();
         int columnCount = 1;
@@ -141,12 +141,12 @@ public static class ExportToSTEA
 
         cellNo = ColumnNumber(columnCount) + rowCount.ToString();
         tableCells.Add(new ExcelTableCell(cellNo, (factor * e.Sum).ToString()));
-        ValueToCells(tableCells, columnCount, rowCount, e, ProjectStartYear, factor);
+        ValueToCells(tableCells, columnCount, rowCount, e, projectStartYear, factor);
 
         return tableCells;
     }
 
-    private static List<ExcelTableCell> CreateTableHeader(int StartYear, int EndYear, string caseName, int rowCount)
+    private static List<ExcelTableCell> CreateTableHeader(int startYear, int endYear, string caseName, int rowCount)
     {
         var tableCells = new List<ExcelTableCell>();
         int columnCount = 1;
@@ -154,7 +154,7 @@ public static class ExportToSTEA
         tableCells.Add(new ExcelTableCell(cellNo, caseName));
         cellNo = ColumnNumber(columnCount++) + rowCount;
         tableCells.Add(new ExcelTableCell(cellNo, "Total Cost"));
-        for (int i = StartYear; i <= EndYear; i++)
+        for (int i = startYear; i <= endYear; i++)
         {
             cellNo = ColumnNumber(columnCount++) + rowCount.ToString();
             tableCells.Add(new ExcelTableCell(cellNo, i.ToString()));
@@ -223,9 +223,9 @@ public class ExcelTableCell
 {
     public string CellNo { get; set; }
     public string Value { get; set; }
-    public ExcelTableCell(string CellNo, string Value)
+    public ExcelTableCell(string cellNo, string value)
     {
-        this.CellNo = CellNo;
-        this.Value = Value;
+        this.CellNo = cellNo;
+        this.Value = value;
     }
 }

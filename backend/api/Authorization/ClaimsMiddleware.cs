@@ -6,24 +6,21 @@ using Fusion.Integration.Profile;
 
 namespace api.Authorization;
 
-public class ClaimsMiddleware
+public class ClaimsMiddleware(
+    RequestDelegate nextMiddleware,
+    ILogger<ClaimsMiddleware> logger)
 {
-    public static readonly string ApplicationRoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
-    private readonly ILogger<ClaimsMiddleware> _logger;
-    private readonly RequestDelegate _nextMiddleware;
-    public ClaimsMiddleware(RequestDelegate nextMiddleware,
-        ILogger<ClaimsMiddleware> logger,
-        IConfiguration configuration)
-    {
-        _nextMiddleware = nextMiddleware;
-        _logger = logger;
-    }
-    public async Task InvokeAsync(HttpContext httpContext)
+    public const string ApplicationRoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+
+    public async Task InvokeAsync(HttpContext httpContext, CurrentUser currentUser)
     {
         if (httpContext.User == null)
         {
-            _logger.LogError("User null");
+            logger.LogError("User null");
         }
+
+        currentUser.Username = httpContext.User?.Identity?.Name;
+
         var userId = httpContext.User?.GetAzureUniqueId();
         if (userId != null)
         {
@@ -31,10 +28,10 @@ public class ClaimsMiddleware
         }
         else
         {
-            _logger.LogError("Unauthenticated access attempted on: " + httpContext.Request.Path);
+            logger.LogError("Unauthenticated access attempted on: " + httpContext.Request.Path);
         }
 
-        await _nextMiddleware(httpContext);
+        await nextMiddleware(httpContext);
     }
 
     private void SetAppRoleClaims(HttpContext httpContext)
@@ -47,23 +44,25 @@ public class ClaimsMiddleware
         var fusionApplicationRole = RoleForAccountType(httpContext);
         if (fusionApplicationRole != null)
         {
-            _logger.LogInformation("Fusion Application Role: " + fusionApplicationRole.Value);
+            logger.LogInformation("Fusion Application Role: " + fusionApplicationRole.Value);
         }
 
         var applicationRoleClaims = applicationRoles
             .DefaultIfEmpty(ApplicationRole.None)
-            .Select(role => new Claim(ApplicationRoleClaimType, role.ToString()));
+            .Select(role => new Claim(ApplicationRoleClaimType, role.ToString()))
+            .ToList();
 
         var rolesAsString = string.Join(",", applicationRoleClaims.Select(x => x.Value.ToString()));
 
-        _logger.LogInformation("Application Roles for User {UserName}: {roles}", httpContext.User?.Identity?.Name, rolesAsString);
+        logger.LogInformation("Application Roles for User {UserName}: {roles}", httpContext.User?.Identity?.Name, rolesAsString);
 
         var claimsIdentity = httpContext.User?.Identity as ClaimsIdentity;
         if (claimsIdentity == null)
         {
-            _logger.LogError("ClaimsIdentity null");
+            logger.LogError("ClaimsIdentity null");
             return;
         }
+
         claimsIdentity.AddClaims(applicationRoleClaims);
     }
 
@@ -76,25 +75,26 @@ public class ClaimsMiddleware
         {
             return null;
         }
+
         if (httpContext.User.IsAccountType(FusionAccountType.Employee))
         {
-            _logger.LogInformation("Check for Fusion Account Type: " + ApplicationRole.User);
+            logger.LogInformation("Check for Fusion Account Type: " + ApplicationRole.User);
             return ApplicationRole.User;
         }
 
         if (httpContext.User.IsAccountType(FusionAccountType.External))
         {
-            _logger.LogInformation("Check for Fusion Account Type: " + ApplicationRole.User);
+            logger.LogInformation("Check for Fusion Account Type: " + ApplicationRole.User);
             return ApplicationRole.Admin;
         }
 
         if (httpContext.User.IsAccountType(FusionAccountType.Consultant))
         {
-            _logger.LogInformation("Check for Fusion Account Type: " + ApplicationRole.User);
+            logger.LogInformation("Check for Fusion Account Type: " + ApplicationRole.User);
             return ApplicationRole.ReadOnly;
         }
 
-        _logger.LogInformation("Check for Fusion Account Type: null");
+        logger.LogInformation("Check for Fusion Account Type: null");
         return null;
     }
 

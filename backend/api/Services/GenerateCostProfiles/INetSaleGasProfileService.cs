@@ -1,9 +1,6 @@
-using api.Dtos;
+namespace api.Services.GenerateCostProfiles;
 
-namespace api.Services.GenerateCostProfiles
+public interface INetSaleGasProfileService
 {
-    public interface INetSaleGasProfileService
-    {
-        Task Generate(Guid caseId);
-    }
+    Task Generate(Guid caseId);
 }

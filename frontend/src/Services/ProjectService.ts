@@ -10,8 +10,8 @@ export class __ProjectService extends __BaseService {
     }
 
     async getRevision(projectId: string, revisionId: string) {
-        const project: Components.Schemas.ProjectWithAssetsDto = await this.get<Components.Schemas.ProjectWithAssetsDto>(`/${projectId}/revisions/${revisionId}`)
-        return project
+        const revision: Components.Schemas.RevisionWithCasesDto = await this.get<Components.Schemas.RevisionWithCasesDto>(`/${projectId}/revisions/${revisionId}`)
+        return revision
     }
 
     async getAccess(projectId: string) {
@@ -28,11 +28,16 @@ export class __ProjectService extends __BaseService {
         return res
     }
 
-    public async createRevision(projectId: string, body: Components.Schemas.CreateRevisionDto): Promise<Components.Schemas.ProjectWithAssetsDto> {
-        const res: Components.Schemas.ProjectWithAssetsDto = await this.post(
+    public async createRevision(projectId: string, body: Components.Schemas.CreateRevisionDto): Promise<Components.Schemas.RevisionWithCasesDto> {
+        const res: Components.Schemas.RevisionWithCasesDto = await this.post(
             `${projectId}/revisions`,
             { body },
         )
+        return res
+    }
+
+    public async updateRevision(projectId: string, revisionId: string, body: Components.Schemas.UpdateProjectDto): Promise<Components.Schemas.RevisionWithCasesDto> {
+        const res = await this.put(`${projectId}/revisions/${revisionId}`, { body })
         return res
     }
 

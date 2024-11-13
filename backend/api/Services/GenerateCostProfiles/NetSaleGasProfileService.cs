@@ -3,30 +3,17 @@ using api.Models;
 
 namespace api.Services.GenerateCostProfiles;
 
-public class NetSaleGasProfileService : INetSaleGasProfileService
+public class NetSaleGasProfileService(
+    ICaseService caseService,
+    IProjectService projectService,
+    ITopsideService topsideService,
+    IDrainageStrategyService drainageStrategyService)
+    : INetSaleGasProfileService
 {
-    private readonly ICaseService _caseService;
-    private readonly IDrainageStrategyService _drainageStrategyService;
-    private readonly IProjectService _projectService;
-    private readonly ITopsideService _topsideService;
-
-    public NetSaleGasProfileService(
-        ICaseService caseService,
-        IProjectService projectService,
-        ITopsideService topsideService,
-        IDrainageStrategyService drainageStrategyService
-        )
-    {
-        _caseService = caseService;
-        _projectService = projectService;
-        _topsideService = topsideService;
-        _drainageStrategyService = drainageStrategyService;
-    }
-
     public async Task Generate(Guid caseId)
     {
-        var caseItem = await _caseService.GetCaseWithIncludes(caseId);
-        var drainageStrategy = await _drainageStrategyService.GetDrainageStrategyWithIncludes(
+        var caseItem = await caseService.GetCaseWithIncludes(caseId);
+        var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
             caseItem.DrainageStrategyLink,
             d => d.NetSalesGas!,
             d => d.NetSalesGasOverride!,
@@ -42,8 +29,8 @@ public class NetSaleGasProfileService : INetSaleGasProfileService
             return;
         }
 
-        var topside = await _topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
-        var project = await _projectService.GetProject(caseItem.ProjectId);
+        var topside = await topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
+        var project = await projectService.GetProject(caseItem.ProjectId);
 
         var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
         var flarings = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);
@@ -87,7 +74,7 @@ public class NetSaleGasProfileService : INetSaleGasProfileService
         }
 
         var fuelFlaringLosses =
-            TimeSeriesCost.MergeCostProfilesList(new List<TimeSeries<double>?> { fuelConsumption, flarings, losses });
+            TimeSeriesCost.MergeCostProfilesList([fuelConsumption, flarings, losses]);
 
         if (drainageStrategy.FuelFlaringAndLossesOverride?.Override == true)
         {

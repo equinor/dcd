@@ -1,12 +1,10 @@
-using api.Dtos;
 using api.Models;
 
-namespace api.Services
+namespace api.Services;
+
+public interface IStudyCostProfileService
 {
-    public interface IStudyCostProfileService
-    {
-        Task Generate(Guid caseId);
-        Task<double> SumAllCostFacility(Case caseItem);
-        Task<double> SumWellCost(Case caseItem);
-    }
+    Task Generate(Guid caseId);
+    Task<double> SumAllCostFacility(Case caseItem);
+    Task<double> SumWellCost(Case caseItem);
 }

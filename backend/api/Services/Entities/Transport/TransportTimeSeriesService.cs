@@ -1,41 +1,21 @@
-using api.Context;
 using api.Dtos;
 using api.Exceptions;
 using api.Models;
 using api.Repositories;
 
-using AutoMapper;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Services;
 
-public class TransportTimeSeriesService : ITransportTimeSeriesService
+public class TransportTimeSeriesService(
+    ILogger<TransportService> logger,
+    ICaseRepository caseRepository,
+    ITransportRepository transportRepository,
+    ITransportTimeSeriesRepository repository,
+    IMapperService mapperService,
+    IProjectAccessService projectAccessService)
+    : ITransportTimeSeriesService
 {
-    private readonly ILogger<TransportService> _logger;
-    private readonly IProjectAccessService _projectAccessService;
-    private readonly ICaseRepository _caseRepository;
-    private readonly ITransportRepository _transportRepository;
-    private readonly ITransportTimeSeriesRepository _repository;
-    private readonly IMapperService _mapperService;
-
-    public TransportTimeSeriesService(
-        ILoggerFactory loggerFactory,
-        ICaseRepository caseRepository,
-        ITransportRepository transportRepository,
-        ITransportTimeSeriesRepository repository,
-        IMapperService mapperService,
-        IProjectAccessService projectAccessService
-        )
-    {
-        _logger = loggerFactory.CreateLogger<TransportService>();
-        _caseRepository = caseRepository;
-        _repository = repository;
-        _transportRepository = transportRepository;
-        _mapperService = mapperService;
-        _projectAccessService = projectAccessService;
-    }
-
     public async Task<TransportCostProfileOverrideDto> CreateTransportCostProfileOverride(
         Guid projectId,
         Guid caseId,
@@ -44,12 +24,12 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
     )
     {
         // Need to verify that the project from the URL is the same as the project of the resource
-        await _projectAccessService.ProjectExists<Transport>(projectId, transportId);
+        await projectAccessService.ProjectExists<Transport>(projectId, transportId);
 
-        var transport = await _transportRepository.GetTransport(transportId)
+        var transport = await transportRepository.GetTransport(transportId)
             ?? throw new NotFoundInDBException($"Transport with id {transportId} not found.");
 
-        var resourceHasProfile = await _transportRepository.TransportHasCostProfileOverride(transportId);
+        var resourceHasProfile = await transportRepository.TransportHasCostProfileOverride(transportId);
 
         if (resourceHasProfile)
         {
@@ -61,22 +41,22 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
             Transport = transport,
         };
 
-        var newProfile = _mapperService.MapToEntity(dto, profile, transportId);
+        var newProfile = mapperService.MapToEntity(dto, profile, transportId);
 
         TransportCostProfileOverride createdProfile;
         try
         {
-            createdProfile = _repository.CreateTransportCostProfileOverride(newProfile);
-            await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            createdProfile = repository.CreateTransportCostProfileOverride(newProfile);
+            await caseRepository.UpdateModifyTime(caseId);
+            await repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Failed to create profile TransportCostProfileOverride for case id {caseId}.", caseId);
+            logger.LogError(ex, "Failed to create profile TransportCostProfileOverride for case id {caseId}.", caseId);
             throw;
         }
 
-        var updatedDto = _mapperService.MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(createdProfile, createdProfile.Id);
+        var updatedDto = mapperService.MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(createdProfile, createdProfile.Id);
         return updatedDto;
     }
 
@@ -93,8 +73,8 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
             transportId,
             costProfileId,
             dto,
-            _repository.GetTransportCostProfileOverride,
-            _repository.UpdateTransportCostProfileOverride
+            repository.GetTransportCostProfileOverride,
+            repository.UpdateTransportCostProfileOverride
         );
     }
 
@@ -105,7 +85,7 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
         UpdateTransportCostProfileDto dto
     )
     {
-        var transport = await _transportRepository.GetTransportWithCostProfile(transportId)
+        var transport = await transportRepository.GetTransportWithCostProfile(transportId)
             ?? throw new NotFoundInDBException($"Transport with id {transportId} not found.");
 
         if (transport.CostProfile != null)
@@ -130,8 +110,8 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
             transportId,
             profileId,
             dto,
-            _repository.GetTransportCostProfile,
-            _repository.UpdateTransportCostProfile
+            repository.GetTransportCostProfile,
+            repository.UpdateTransportCostProfile
         );
     }
 
@@ -147,7 +127,7 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
             Transport = transport
         };
 
-        var newProfile = _mapperService.MapToEntity(dto, transportCostProfile, transportId);
+        var newProfile = mapperService.MapToEntity(dto, transportCostProfile, transportId);
 
         if (newProfile.Transport.CostProfileOverride != null)
         {
@@ -156,17 +136,17 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
 
         try
         {
-            _repository.CreateTransportCostProfile(newProfile);
-            await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            repository.CreateTransportCostProfile(newProfile);
+            await caseRepository.UpdateModifyTime(caseId);
+            await repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to create cost profile for transport with id {transportId} for case id {caseId}.", transportId, caseId);
+            logger.LogError(ex, "Failed to create cost profile for transport with id {transportId} for case id {caseId}.", transportId, caseId);
             throw;
         }
 
-        var newDto = _mapperService.MapToDto<TransportCostProfile, TransportCostProfileDto>(newProfile, newProfile.Id);
+        var newDto = mapperService.MapToDto<TransportCostProfile, TransportCostProfileDto>(newProfile, newProfile.Id);
         return newDto;
     }
 
@@ -187,7 +167,7 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
             ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
 
         // Need to verify that the project from the URL is the same as the project of the resource
-        await _projectAccessService.ProjectExists<Transport>(projectId, existingProfile.Transport.Id);
+        await projectAccessService.ProjectExists<Transport>(projectId, existingProfile.Transport.Id);
 
         if (existingProfile.Transport.ProspVersion == null)
         {
@@ -197,21 +177,21 @@ public class TransportTimeSeriesService : ITransportTimeSeriesService
             }
         }
 
-        _mapperService.MapToEntity(updatedProfileDto, existingProfile, transportId);
+        mapperService.MapToEntity(updatedProfileDto, existingProfile, transportId);
 
         try
         {
-            await _caseRepository.UpdateModifyTime(caseId);
-            await _repository.SaveChangesAndRecalculateAsync(caseId);
+            await caseRepository.UpdateModifyTime(caseId);
+            await repository.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
             var profileName = typeof(TProfile).Name;
-            _logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
+            logger.LogError(ex, "Failed to update profile {profileName} with id {profileId} for case id {caseId}.", profileName, profileId, caseId);
             throw;
         }
 
-        var updatedDto = _mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
+        var updatedDto = mapperService.MapToDto<TProfile, TDto>(existingProfile, profileId);
         return updatedDto;
     }
 }

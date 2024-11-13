@@ -35,3 +35,5 @@ frontend/cypress/screenshots
 #MacOS
 .DS_Store
 
+# Rider
+backend/*.DotSettings.user

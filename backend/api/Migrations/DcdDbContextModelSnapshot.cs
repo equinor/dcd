@@ -17,7 +17,7 @@ namespace api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
@@ -511,6 +511,54 @@ namespace api.Migrations
                         .IsUnique();
 
                     b.ToTable("CessationWellsCostOverride");
+                });
+
+            modelBuilder.Entity("api.Models.ChangeLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EntityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("EntityState")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NewValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OldValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Payload")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PropertyName")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("TimestampUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EntityId");
+
+                    b.HasIndex("EntityName");
+
+                    b.HasIndex("PropertyName");
+
+                    b.HasIndex("TimestampUtc");
+
+                    b.ToTable("ChangeLogs");
                 });
 
             modelBuilder.Entity("api.Models.Co2Emissions", b =>
@@ -1687,6 +1735,9 @@ namespace api.Migrations
 
                     b.Property<bool>("Arena")
                         .HasColumnType("bit");
+
+                    b.Property<int>("Classification")
+                        .HasColumnType("int");
 
                     b.Property<bool>("Mdqc")
                         .HasColumnType("bit");
