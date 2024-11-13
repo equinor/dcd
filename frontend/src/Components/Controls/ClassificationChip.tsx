@@ -2,10 +2,10 @@ import styled from "styled-components"
 import { Icon, Chip, Tooltip } from "@equinor/eds-core-react"
 import { useQuery } from "@tanstack/react-query"
 
-import { useParams } from "react-router-dom"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Context/ProjectContext"
+import { useParams } from "react-router-dom"
 
 const StyledChip = styled(Chip)`
     border-width: 0;
@@ -54,7 +54,8 @@ const Classification = () => {
     )?.classification
 
     const revisionClassificationNumber = Object.keys(PROJECT_CLASSIFICATION).find(
-        (key) => PROJECT_CLASSIFICATION[Number(key)].label === revisionClassification,
+        (key) => revisionClassification !== undefined
+            && PROJECT_CLASSIFICATION[Number(key)].label === PROJECT_CLASSIFICATION[revisionClassification].label,
     )
 
     const selectedClassification = revisionClassificationNumber !== undefined
