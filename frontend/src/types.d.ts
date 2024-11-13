@@ -1142,7 +1142,7 @@ declare namespace Components {
             revisionDate: string; // date-time
             arena: boolean;
             mdqc: boolean;
-            classification?: string | null;
+            classification: ProjectClassification /* int32 */;
         }
         export interface RevisionWithCasesDto {
             classification: ProjectClassification /* int32 */;

@@ -66,7 +66,7 @@ public class RevisionDetails : IChangeTrackable
     public DateTimeOffset RevisionDate { get; set; }
     public bool Arena { get; set; }
     public bool Mdqc { get; set; }
-    public ProjectClassification? Classification { get; set; }
+    public ProjectClassification Classification { get; set; }
 }
 
 public enum PhysUnit

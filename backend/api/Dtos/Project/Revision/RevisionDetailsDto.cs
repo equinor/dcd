@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Migrations;
+using api.Models;
 
 namespace api.Dtos.Project.Revision;
 
@@ -21,5 +21,5 @@ public class RevisionDetailsDto
     [Required]
     public bool Mdqc { get; set; }
     [Required]
-    public string? Classification { get; set; }
+    public ProjectClassification Classification { get; set; }
 }
