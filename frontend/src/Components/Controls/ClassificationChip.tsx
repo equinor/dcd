@@ -2,10 +2,10 @@ import styled from "styled-components"
 import { Icon, Chip, Tooltip } from "@equinor/eds-core-react"
 import { useQuery } from "@tanstack/react-query"
 
+import { useParams } from "react-router-dom"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
 import { projectQueryFn } from "@/Services/QueryFunctions"
-import { useProjectContext } from "@/Context/ProjectContext"
-import { useParams } from "react-router-dom"
 
 const StyledChip = styled(Chip)`
     border-width: 0;
@@ -41,13 +41,13 @@ const SmallTooltip = styled(Tooltip)`
 `
 
 const Classification = () => {
-    const { projectId } = useProjectContext()
-
     const { revisionId } = useParams()
+    const { currentContext } = useModuleCurrentContext()
+    const externalId = currentContext?.externalId
     const { data: projectApiData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
+        queryKey: ["projectApiData", externalId],
+        queryFn: () => projectQueryFn(externalId),
+        enabled: !!externalId,
     })
     const revisionClassification = projectApiData?.revisionsDetailsList?.find(
         (revision) => revision.revisionId === revisionId,
