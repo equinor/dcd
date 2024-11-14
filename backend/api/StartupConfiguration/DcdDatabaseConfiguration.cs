@@ -14,7 +14,7 @@ public static class DcdDatabaseConfiguration
 
         if (string.IsNullOrEmpty(sqlServerConnectionString) || string.IsNullOrEmpty(sqliteConnectionString))
         {
-            if (environment == "localdev")
+            if (environment == DcdEnvironments.LocalDev)
             {
                 var dbContextOptionsBuilder = new DbContextOptionsBuilder<DcdDbContext>();
                 sqliteConnectionString = new SqliteConnectionStringBuilder
@@ -40,7 +40,7 @@ public static class DcdDatabaseConfiguration
             }
         }
 
-        if (environment == "localdev")
+        if (environment == DcdEnvironments.LocalDev)
         {
             builder.Services.AddDbContext<DcdDbContext>(
                 options => options.UseLazyLoadingProxies()
