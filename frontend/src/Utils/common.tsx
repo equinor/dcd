@@ -1,10 +1,10 @@
-import { Dispatch, SetStateAction } from "react"
-
 import { AxiosError } from "axios"
+import { Dispatch, SetStateAction } from "react"
+import { PersonInfo } from "@equinor/fusion-react-person"
+
 import { ITimeSeries } from "@/Models/ITimeSeries"
 import { TABLE_VALIDATION_RULES } from "@/Utils/constants"
 import { EditEntry } from "@/Models/Interfaces"
-import { PersonDetails } from "@/Models/AccessManagement"
 
 export const loginAccessTokenKey = "loginAccessToken"
 export const FusionAccessTokenKey = "fusionAccessToken"
@@ -407,7 +407,7 @@ export function truncateText(text: string, maxLength: number): string {
     return (text.length + 3) > maxLength ? `${text.slice(0, maxLength)}...` : text
 }
 
-export const apiResponseToPersonDetails = (response: any[]): PersonDetails[] => response.map((person: any) => ({
+export const apiResponseToPersonDetails = (response: any[]): PersonInfo[] => response.map((person: any) => ({
     azureId: person.azureUniquePersonId,
     name: person.name,
     jobTitle: person.jobTitle,

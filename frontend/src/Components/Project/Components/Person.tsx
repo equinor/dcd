@@ -1,15 +1,13 @@
 import { Button, Typography } from "@equinor/eds-core-react"
-import { PersonAvatar } from "@equinor/fusion-react-person"
+import { PersonAvatar, PersonInfo } from "@equinor/fusion-react-person"
 import styled from "styled-components"
 
-import { PersonDetails } from "@/Models/AccessManagement"
-
 interface PersonProps {
-    person: PersonDetails,
-    handleRemovePerson: (person: PersonDetails) => void
+    person: PersonInfo,
+    handleRemovePerson: (person: PersonInfo) => void
 }
 
-const PersonInfo = styled.div`
+const PersonInfoContainer = styled.div`
     display: flex;
     flex-direction: row;
     gap: 10px;
@@ -23,7 +21,7 @@ const Person = ({
     person,
     handleRemovePerson,
 }: PersonProps) => (
-    <PersonInfo style={{ marginBottom: 10 }}>
+    <PersonInfoContainer style={{ marginBottom: 10 }}>
         <PersonAvatar azureId={person.azureId} />
         <Typography>{person.name}</Typography>
         <Button
@@ -34,7 +32,7 @@ const Person = ({
         >
             Remove
         </Button>
-    </PersonInfo>
+    </PersonInfoContainer>
 )
 
 export default Person

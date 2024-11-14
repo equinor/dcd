@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
     Button,
     Icon,
@@ -6,7 +6,7 @@ import {
 } from "@equinor/eds-core-react"
 import { PersonSelect, PersonListItem, PersonSelectEvent } from "@equinor/fusion-react-person"
 import Grid from "@mui/material/Grid"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import styled from "styled-components"
 import {
     edit,
@@ -20,59 +20,13 @@ import { useMediaQuery } from "@mui/material"
 
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import { useAppContext } from "@/Context/AppContext"
-import { User, PersonDetails, UserRole } from "@/Models/AccessManagement"
-import { GetAccessService } from "@/Services/AccessService"
+import { UserRole } from "@/Models/AccessManagement"
+import { GetProjectMembersService } from "@/Services/ProjectMembersService"
 import { useProjectContext } from "@/Context/ProjectContext"
-import { usePeopleApi } from "@/Hooks/usePeopleApi"
 import PersonMock from "./Components/PersonMock"
+import { GetProjectService } from "@/Services/ProjectService"
 
 const PeopleMock = {
-    admins: [
-        {
-            name: "Ola Nordmann",
-            email: "ola.nordmann@equinor.com",
-        },
-        {
-            name: "Kari Nordmann",
-            email: "kari.nordmann@equinor.com",
-        },
-    ],
-    editors: [
-        {
-            name: "Per Nordmann",
-            email: "per.nordmann@equinor.com",
-        },
-        {
-            name: "Pål Nordmann",
-            email: "pal.nordmann@equinor.com",
-        },
-        {
-            name: "Espen Nordmann",
-            email: "espen.nordmann@equinor.com",
-        },
-        {
-            name: "Grom Nordmann",
-            email: "grom.nordmann@equinor.com",
-        },
-    ],
-    viewers: [
-        {
-            name: "Tor Nordmann",
-            email: "tor.nordmann@equinor.com",
-        },
-        {
-            name: "Odin Nordmann",
-            email: "odin.nordmann@equinor.com",
-        },
-        {
-            name: "Olav Nordmann",
-            email: "olav.nordmann@equinor.com",
-        },
-        {
-            name: "Loke Nordmann",
-            email: "loke.nordmann@equinor.com",
-        },
-    ],
     orgChart: [
         {
             name: "Geir Nordmann",
@@ -134,32 +88,59 @@ const ClickableHeading = styled(Grid)`
 
 const AccessManagementTab = () => {
     const { editMode } = useAppContext()
-    const { projectId } = useProjectContext()
-    const peopleApi = usePeopleApi()
+    const { projectId, setAccessRights, accessRights } = useProjectContext()
+    const queryClient = useQueryClient()
     const isSmallScreen = useMediaQuery("(max-width:960px)", { noSsr: true })
     const [expandAllAccess, setExpandAllAccess] = useState<boolean>(true)
+    const { setSnackBarMessage } = useAppContext()
 
     const { data: projectApiData } = useQuery({
         queryKey: ["projectApiData", projectId],
         queryFn: () => projectQueryFn(projectId),
         enabled: !!projectId,
     })
+    // Hvem skal kunne fjerne personer fra prosjektet? sjekker foreløpig kun på editMode
 
-    const handleRemovePerson = (userId: string) => {
-        console.log("adding person: ", userId)
+    const handleRemovePerson = async (userId: string) => {
+        await (await GetProjectMembersService()).deletePerson(projectId, userId).then(() => {
+            queryClient.invalidateQueries(
+                { queryKey: ["projectApiData", projectId] },
+            )
+        })
     }
 
     const handleAddPerson = async (e: PersonSelectEvent, role: UserRole) => {
-        const personToAdd = e.target.controllers.element.listItems[0]
-        if (!personToAdd && !projectId) { return null }
+        const personToAdd = e.target.controllers.element.listItems[0].azureUniqueId
+        // return null if person is allready in it (to win it), can it be disabled in another way?
+        // det må finnes en måte å cleare ut selected person, kan ikke tro noe annet
+        if ((!personToAdd && !projectId) || projectApiData?.projectMembers.some((p) => p.userId === personToAdd)) { return null }
 
-        const addPerson = await (await GetAccessService()).addPerson(projectId, { projectId, userId: personToAdd, role })
+        const addPerson = await (await GetProjectMembersService()).addPerson(projectId, { UserId: personToAdd, Role: role })
         if (addPerson) {
-            console.log(addPerson, " lagt til i prosjekt som ", role)
-            // gjøre en invalidering av project query for å få oppdatert personer???
+            queryClient.invalidateQueries(
+                { queryKey: ["projectApiData", projectId] },
+            )
         }
-        return true
+        return null
     }
+
+    useEffect(() => {
+        const fetchAccess = async () => {
+            if (!projectId) {
+                return
+            }
+            const projectService = await GetProjectService()
+            try {
+                const access = await projectService.getAccess(projectId)
+                setAccessRights(access)
+            } catch (error) {
+                // hvorfor får vi error her??? externalId??
+                console.log(error)
+                setSnackBarMessage("A problem occured getting user access")
+            }
+        }
+        fetchAccess()
+    }, [projectId])
 
     // Lag skeletons for loading state, når vi får persondata fra api
     if (!projectApiData) {
@@ -185,7 +166,7 @@ const AccessManagementTab = () => {
                         <Icon data={edit} />
                         <Typography variant="h6">Project editors</Typography>
                     </EditorViewerHeading>
-                    {editMode && (
+                    {editMode && accessRights?.canEdit && (
                         <PersonSelect
                             placeholder="Add new"
                             onSelect={(selectedPerson) => handleAddPerson(selectedPerson as PersonSelectEvent, UserRole.Editor)}
@@ -194,7 +175,7 @@ const AccessManagementTab = () => {
                     <PeopleContainer>
                         {projectApiData?.projectMembers?.filter((m) => m.role === 1).map((person) => (
                             <PersonListItem key={person.userId} azureId={person.userId}>
-                                {editMode && <Button variant="ghost" color="danger" onClick={() => handleRemovePerson(person.userId)}>Remove</Button> }
+                                {editMode && accessRights?.canEdit && <Button variant="ghost" color="danger" onClick={() => handleRemovePerson(person.userId)}>Remove</Button> }
                             </PersonListItem>
                         ))}
                     </PeopleContainer>
@@ -216,13 +197,16 @@ const AccessManagementTab = () => {
                         <Icon data={visibility} />
                         <Typography variant="h6">Project viewers</Typography>
                     </EditorViewerHeading>
-                    {editMode && (
-                        <PersonSelect placeholder="Add new" />
+                    {editMode && accessRights?.canEdit && (
+                        <PersonSelect
+                            placeholder="Add new"
+                            onSelect={(selectedPerson) => handleAddPerson(selectedPerson as PersonSelectEvent, UserRole.Viewer)}
+                        />
                     )}
                     <PeopleContainer>
                         {projectApiData?.projectMembers?.filter((m) => m.role === 0).map((person) => (
                             <PersonListItem key={person.userId} azureId={person.userId}>
-                                {editMode && <Button variant="ghost" color="danger" onClick={() => handleRemovePerson(person.userId)}>Remove</Button> }
+                                {editMode && accessRights?.canEdit && <Button variant="ghost" color="danger" onClick={() => handleRemovePerson(person.userId)}>Remove</Button> }
                             </PersonListItem>
                         ))}
                     </PeopleContainer>
@@ -247,7 +231,13 @@ const AccessManagementTab = () => {
                                     <Typography variant="h6">Application editor</Typography>
                                 </EditorViewerHeading>
                                 <EditorViewerHeading $smallGap>
-                                    <Typography link href="https://google.com" target="_blank">Concept App - Editor</Typography>
+                                    <Typography
+                                        link
+                                        href="https://accessit.equinor.com/Search/Search?term=Fusion+-+Concept+App+-+Project+Member+%28FUSION%29"
+                                        target="_blank"
+                                    >
+                                        Concept App - Editor
+                                    </Typography>
                                     <Icon color="#007079" size={16} data={external_link} />
                                 </EditorViewerHeading>
                             </Grid>
@@ -256,7 +246,13 @@ const AccessManagementTab = () => {
                                     <Typography variant="h6">Application admin</Typography>
                                 </EditorViewerHeading>
                                 <EditorViewerHeading $smallGap>
-                                    <Typography link href="https://google.com" target="_blank">Concept App - Admin</Typography>
+                                    <Typography
+                                        link
+                                        href="https://accessit.equinor.com/Search/Search?term=Fusion+-+Concept+App+-+Admin+%28FUSION%29"
+                                        target="_blank"
+                                    >
+                                        Concept App - Admin
+                                    </Typography>
                                     <Icon color="#007079" size={16} data={external_link} />
                                 </EditorViewerHeading>
                             </Grid>
@@ -267,23 +263,47 @@ const AccessManagementTab = () => {
                                 <Typography variant="h6">Application viewers</Typography>
                             </EditorViewerHeading>
                             <EditorViewerHeading $smallGap>
-                                <Typography link href="https://google.com" target="_blank">Concept App - Viewer</Typography>
+                                <Typography
+                                    link
+                                    href="https://accessit.equinor.com/Search/Search?term=Fusion+-+Concept+App+-+Observer+%28FUSION%29"
+                                    target="_blank"
+                                >
+                                    Concept App - Viewer
+                                </Typography>
                                 <Icon color="#007079" size={16} data={external_link} />
                             </EditorViewerHeading>
-                            <Typography variant="body_short">
-                                The following AccessIT groups also have view access in the app:
-                            </Typography>
-                            <Grid item marginTop="20px" display="flex" flexDirection="column" gap="15px">
+                            <Grid item marginTop="50px" display="flex" flexDirection="column" gap="15px">
+                                <Typography variant="body_short">
+                                    The following AccessIT groups also have view access in the app:
+                                </Typography>
                                 <EditorViewerHeading $smallGap>
-                                    <Typography link href="https://google.com" target="_blank">Chief Engineers (FUSION)</Typography>
+                                    <Typography
+                                        link
+                                        href="https://accessit.equinor.com/Search/Search?term=Chief+Engineers+%28FUSION%29"
+                                        target="_blank"
+                                    >
+                                        Chief Engineers (FUSION)
+                                    </Typography>
                                     <Icon color="#007079" size={16} data={external_link} />
                                 </EditorViewerHeading>
                                 <EditorViewerHeading $smallGap>
-                                    <Typography link href="https://google.com" target="_blank">Leading Advisors Project Management & Control (FUSION)</Typography>
+                                    <Typography
+                                        link
+                                        href="https://accessit.equinor.com/Search/Search?term=Leading+Advisors+Project+Management+%26+Control+%28FUSION%29"
+                                        target="_blank"
+                                    >
+                                        Leading Advisors Project Management & Control (FUSION)
+                                    </Typography>
                                     <Icon color="#007079" size={16} data={external_link} />
                                 </EditorViewerHeading>
                                 <EditorViewerHeading $smallGap>
-                                    <Typography link href="https://google.com" target="_blank">Project Development Center - Management (FUSION)</Typography>
+                                    <Typography
+                                        link
+                                        href="https://accessit.equinor.com/Search/Search?term=Project+Development+Center+-+Management+%28FUSION%29"
+                                        target="_blank"
+                                    >
+                                        Project Development Center - Management (FUSION)
+                                    </Typography>
                                     <Icon color="#007079" size={16} data={external_link} />
                                 </EditorViewerHeading>
                             </Grid>
