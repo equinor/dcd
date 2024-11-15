@@ -24,31 +24,10 @@ import { useAppContext } from "@/Context/AppContext"
 import { FusionPersonV1, UserRole } from "@/Models/AccessManagement"
 import { GetProjectMembersService } from "@/Services/ProjectMembersService"
 import { useProjectContext } from "@/Context/ProjectContext"
-import PersonMock from "./Components/PersonMock"
+import { GetOrgChartMembersService } from "@/Services/OrgChartMembersService"
 import { GetProjectService } from "@/Services/ProjectService"
 
-const PeopleMock = {
-    orgChart: [
-        {
-            name: "Geir Nordmann",
-            email: "geir.nordmann@equinor.com",
-        },
-        {
-            name: "Egil Nordmann",
-            email: "Egil.nordmann@equinor.com",
-        },
-        {
-            name: "Erling Nordmann",
-            email: "erling.nordmann@equinor.com",
-        },
-        {
-            name: "Goggen Nordmann",
-            email: "goggen.nordmann@equinor.com",
-        },
-    ],
-}
-
-const EditorViewerContainer = styled(Grid)<{ $isSmallScreen: boolean }>`
+const EditorViewerContainer = styled(Grid) <{ $isSmallScreen: boolean }>`
     display: flex;
     justify-content: center;
     padding: 15px;
@@ -102,7 +81,6 @@ const AccessManagementTab = () => {
         queryFn: () => projectQueryFn(projectId),
         enabled: !!projectId,
     })
-    // Hvem skal kunne fjerne personer fra prosjektet? sjekker foreløpig kun på editMode
 
     const handleRemovePerson = async (userId: string) => {
         await (await GetProjectMembersService()).deletePerson(projectId, userId).then(() => {
@@ -129,21 +107,20 @@ const AccessManagementTab = () => {
 
     useEffect(() => {
         const fetchOrgChartPeople = async () => {
-            if (!currentContext?.id) {
+            if (!currentContext?.id || !projectId) {
                 return
             }
-            const projectMembersService = await GetProjectMembersService()
+            const projectMembersService = await GetOrgChartMembersService()
             try {
                 const peopleToAdd = await projectMembersService.getOrgChartPeople(currentContext.id)
-                console.log(peopleToAdd)
                 setOrgChartPeople(peopleToAdd)
             } catch (error) {
                 console.log(error)
-                setSnackBarMessage("A problem occured getting user access")
+                setSnackBarMessage("A problem occured while fetching OrgChart people")
             }
         }
         fetchOrgChartPeople()
-    }, [currentContext?.id])
+    }, [currentContext?.id, projectId])
 
     useEffect(() => {
         const fetchAccess = async () => {
@@ -196,20 +173,19 @@ const AccessManagementTab = () => {
                     <PeopleContainer>
                         {projectApiData?.projectMembers?.filter((m) => m.role === 1).map((person) => (
                             <PersonListItem key={person.userId} azureId={person.userId}>
-                                {editMode && accessRights?.canEdit && <Button variant="ghost" color="danger" onClick={() => handleRemovePerson(person.userId)}>Remove</Button> }
+                                {editMode && accessRights?.canEdit && <Button variant="ghost" color="danger" onClick={() => handleRemovePerson(person.userId)}>Remove</Button>}
                             </PersonListItem>
                         ))}
                     </PeopleContainer>
                     <Typography variant="h6">PMT members from the project orgchart:</Typography>
                     <PeopleContainer>
-                        {PeopleMock.orgChart.map((person) => (
-                            <PersonMock
-                                key={person.email}
-                                name={person.name}
-                                email={person.email}
-                                hideAction
-                            />
-                        ))}
+                        {orgChartPeople && orgChartPeople.length > 0 ? (
+                            <>
+                                {
+                                    orgChartPeople.map((p) => (<PersonListItem key={p.azureUniqueId} azureId={p.azureUniqueId} />))
+                                }
+                            </>
+                        ) : <Typography variant="body_short">No PMT members from the project orgchart to show</Typography>}
                     </PeopleContainer>
                 </EditorViewerContent>
                 <hr />
@@ -227,7 +203,7 @@ const AccessManagementTab = () => {
                     <PeopleContainer>
                         {projectApiData?.projectMembers?.filter((m) => m.role === 0).map((person) => (
                             <PersonListItem key={person.userId} azureId={person.userId}>
-                                {editMode && accessRights?.canEdit && <Button variant="ghost" color="danger" onClick={() => handleRemovePerson(person.userId)}>Remove</Button> }
+                                {editMode && accessRights?.canEdit && <Button variant="ghost" color="danger" onClick={() => handleRemovePerson(person.userId)}>Remove</Button>}
                             </PersonListItem>
                         ))}
                     </PeopleContainer>
