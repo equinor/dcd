@@ -40,6 +40,7 @@ public class ExceptionHandlingMiddleware(
 
         switch (exception)
         {
+            case FusionOrgNotFoundException:
             case KeyNotFoundException:
             case NotFoundInDBException:
                 statusCode = HttpStatusCode.NotFound;
