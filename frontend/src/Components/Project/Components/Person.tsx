@@ -26,7 +26,6 @@ const Person = ({
         <Typography>{person.name}</Typography>
         <Button
             onClick={() => {
-                console.log("clicked")
                 handleRemovePerson(person)
             }}
         >
