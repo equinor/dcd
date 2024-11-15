@@ -37,3 +37,4 @@ frontend/cypress/screenshots
 
 # Rider
 backend/*.DotSettings.user
+*.DotSettings.user
