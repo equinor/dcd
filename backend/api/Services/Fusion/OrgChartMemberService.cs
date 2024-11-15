@@ -1,3 +1,4 @@
+using api.Exceptions;
 using api.Models.Fusion;
 
 using Fusion.Integration;
@@ -5,11 +6,6 @@ using Fusion.Integration;
 using Microsoft.Identity.Abstractions;
 
 namespace api.Services.Fusion;
-
-public interface IOrgChartMemberService
-{
-    Task<List<FusionPersonV1>> GetAllPersonsOnProject(Guid projectMasterId, int top, int skip);
-}
 
 public class OrgChartMemberService(
     IDownstreamApi downstreamApi,
@@ -21,36 +17,32 @@ public class OrgChartMemberService(
         int skip
     )
     {
-        // Get relations from fusion context
         var contextRelations = await fusionContextResolver.GetContextRelationsAsync(fusionContextId);
 
-        var orgChartId = contextRelations.FirstOrDefault(x => x.Type == FusionContextType.OrgChart)?.ExternalId
+        var orgChartId = contextRelations.FirstOrDefault(x => x.Type == FusionContextType.OrgChart)
+            ?.ExternalId
             ?.ToString();
 
         if (string.IsNullOrEmpty(orgChartId))
         {
-            // TODO: Throw error that results in 404?
-            return [];
+            throw new FusionOrgNotFoundException("OrgChart not found");
         }
 
         var fusionSearchObject = BuildFusionSearchObject(orgChartId, top, skip);
 
         var result = await QueryFusionPeopleService(fusionSearchObject);
+
         return result.Select(x => x.Document).ToList();
     }
 
     private static FusionSearchObject BuildFusionSearchObject(string orgChartId, int top, int skip)
     {
-        var recordsToSkip = top * skip;
-
-        var fusionSearchObject = new FusionSearchObject
+        return new FusionSearchObject
         {
             Filter = $"positions/any(p: p/isActive eq true and p/project/id eq '{orgChartId}' and p/contract eq null)",
             Top = top,
-            Skip = recordsToSkip
+            Skip = top * skip
         };
-
-        return fusionSearchObject;
     }
 
     private async Task<List<FusionPersonResultV1>> QueryFusionPeopleService(FusionSearchObject fusionSearchObject)
