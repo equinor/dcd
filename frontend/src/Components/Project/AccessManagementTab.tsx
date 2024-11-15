@@ -17,10 +17,11 @@ import {
     external_link,
 } from "@equinor/eds-icons"
 import { useMediaQuery } from "@mui/material"
+import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import { useAppContext } from "@/Context/AppContext"
-import { UserRole } from "@/Models/AccessManagement"
+import { FusionPersonV1, UserRole } from "@/Models/AccessManagement"
 import { GetProjectMembersService } from "@/Services/ProjectMembersService"
 import { useProjectContext } from "@/Context/ProjectContext"
 import PersonMock from "./Components/PersonMock"
@@ -91,8 +92,10 @@ const AccessManagementTab = () => {
     const { projectId, setAccessRights, accessRights } = useProjectContext()
     const queryClient = useQueryClient()
     const isSmallScreen = useMediaQuery("(max-width:960px)", { noSsr: true })
-    const [expandAllAccess, setExpandAllAccess] = useState<boolean>(true)
     const { setSnackBarMessage } = useAppContext()
+    const { currentContext } = useModuleCurrentContext()
+    const [expandAllAccess, setExpandAllAccess] = useState<boolean>(true)
+    const [orgChartPeople, setOrgChartPeople] = useState<FusionPersonV1[] | null>(null)
 
     const { data: projectApiData } = useQuery({
         queryKey: ["projectApiData", projectId],
@@ -123,6 +126,24 @@ const AccessManagementTab = () => {
         }
         return null
     }
+
+    useEffect(() => {
+        const fetchOrgChartPeople = async () => {
+            if (!currentContext?.id) {
+                return
+            }
+            const projectMembersService = await GetProjectMembersService()
+            try {
+                const peopleToAdd = await projectMembersService.getOrgChartPeople(currentContext.id)
+                console.log(peopleToAdd)
+                setOrgChartPeople(peopleToAdd)
+            } catch (error) {
+                console.log(error)
+                setSnackBarMessage("A problem occured getting user access")
+            }
+        }
+        fetchOrgChartPeople()
+    }, [currentContext?.id])
 
     useEffect(() => {
         const fetchAccess = async () => {

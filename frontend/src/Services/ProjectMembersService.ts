@@ -2,7 +2,7 @@ import { config } from "./config"
 import { __BaseService } from "./__BaseService"
 
 import { getToken, loginAccessTokenKey } from "../Utils/common"
-import { User } from "@/Models/AccessManagement"
+import { FusionPersonV1, User } from "@/Models/AccessManagement"
 
 class __ProjectMembersService extends __BaseService {
     async deletePerson(projectId: string, userId: string) {
@@ -14,6 +14,15 @@ class __ProjectMembersService extends __BaseService {
         const res: Components.Schemas.ProjectMemberDto = await this.post<Components.Schemas.ProjectMemberDto>(
             `${projectId}/members`,
             { body },
+        )
+        return res
+    }
+
+    // hvordan finne rett context??? for i urlen er det bare project
+    public async getOrgChartPeople(contextId: string): Promise<FusionPersonV1[]> {
+        const res: FusionPersonV1[] = await this.getWithParams(
+            "",
+            { params: { contextId } },
         )
         return res
     }
