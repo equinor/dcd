@@ -25,7 +25,7 @@ import { FusionPersonV1, UserRole } from "@/Models/AccessManagement"
 import { GetProjectMembersService } from "@/Services/ProjectMembersService"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { GetOrgChartMembersService } from "@/Services/OrgChartMembersService"
-import { GetProjectService } from "@/Services/ProjectService"
+import AccessManagementSkeleton from "./Components/AccessManagementSkeleton"
 
 const EditorViewerContainer = styled(Grid) <{ $isSmallScreen: boolean }>`
     display: flex;
@@ -68,7 +68,7 @@ const ClickableHeading = styled(Grid)`
 
 const AccessManagementTab = () => {
     const { editMode } = useAppContext()
-    const { projectId, setAccessRights, accessRights } = useProjectContext()
+    const { projectId, accessRights } = useProjectContext()
     const queryClient = useQueryClient()
     const isSmallScreen = useMediaQuery("(max-width:960px)", { noSsr: true })
     const { setSnackBarMessage } = useAppContext()
@@ -92,8 +92,6 @@ const AccessManagementTab = () => {
 
     const handleAddPerson = async (e: PersonSelectEvent, role: UserRole) => {
         const personToAdd = e.target.controllers.element.listItems[0].azureUniqueId
-        // return null if person is allready in it (to win it), can it be disabled in another way?
-        // det må finnes en måte å cleare ut selected person, kan ikke tro noe annet
         if ((!personToAdd && !projectId) || projectApiData?.projectMembers.some((p) => p.userId === personToAdd)) { return null }
 
         const addPerson = await (await GetProjectMembersService()).addPerson(projectId, { UserId: personToAdd, Role: role })
@@ -107,7 +105,7 @@ const AccessManagementTab = () => {
 
     useEffect(() => {
         const fetchOrgChartPeople = async () => {
-            if (!currentContext?.id || !projectId) {
+            if (!currentContext?.id) {
                 return
             }
             const projectMembersService = await GetOrgChartMembersService()
@@ -115,34 +113,14 @@ const AccessManagementTab = () => {
                 const peopleToAdd = await projectMembersService.getOrgChartPeople(currentContext.id)
                 setOrgChartPeople(peopleToAdd)
             } catch (error) {
-                console.log(error)
                 setSnackBarMessage("A problem occured while fetching OrgChart people")
             }
         }
         fetchOrgChartPeople()
-    }, [currentContext?.id, projectId])
+    }, [currentContext?.id])
 
-    useEffect(() => {
-        const fetchAccess = async () => {
-            if (!projectId) {
-                return
-            }
-            const projectService = await GetProjectService()
-            try {
-                const access = await projectService.getAccess(projectId)
-                setAccessRights(access)
-            } catch (error) {
-                // hvorfor får vi error her??? externalId??
-                console.log(error)
-                setSnackBarMessage("A problem occured getting user access")
-            }
-        }
-        fetchAccess()
-    }, [projectId])
-
-    // Lag skeletons for loading state, når vi får persondata fra api
     if (!projectApiData) {
-        return <div>Loading project data...</div>
+        return <AccessManagementSkeleton />
     }
 
     return (
