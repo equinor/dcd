@@ -231,7 +231,6 @@ const WellListEditTechnicalInput = ({
     const [columnDefs, setColumnDefs] = useState<ColDef[]>(GetColumnDefs())
 
     useEffect(() => {
-        console.log("editable: ", editMode || isEditDisabled)
         setColumnDefs(GetColumnDefs())
     }, [editMode])
 
