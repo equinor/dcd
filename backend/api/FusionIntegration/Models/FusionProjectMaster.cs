@@ -56,7 +56,7 @@ public class FusionProjectMaster
 
     [DataMember]
     [JsonPropertyName("alternateNames")]
-    public List<string>? AlternateNames { get; init; } = new List<string>();
+    public List<string>? AlternateNames { get; init; } = [];
 
     [DataMember]
     [JsonPropertyName("documentManagementId")]

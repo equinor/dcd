@@ -13,11 +13,11 @@ public class TopsideWithProfilesDto
     [Required]
     public Guid ProjectId { get; set; }
     [Required]
-    public TopsideCostProfileDto CostProfile { get; set; } = new TopsideCostProfileDto();
+    public TopsideCostProfileDto CostProfile { get; set; } = new();
     [Required]
-    public TopsideCostProfileOverrideDto CostProfileOverride { get; set; } = new TopsideCostProfileOverrideDto();
+    public TopsideCostProfileOverrideDto CostProfileOverride { get; set; } = new();
     [Required]
-    public TopsideCessationCostProfileDto CessationCostProfile { get; set; } = new TopsideCessationCostProfileDto();
+    public TopsideCessationCostProfileDto CessationCostProfile { get; set; } = new();
     [Required]
     public double DryWeight { get; set; }
     [Required]

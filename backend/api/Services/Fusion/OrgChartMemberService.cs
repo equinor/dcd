@@ -58,7 +58,7 @@ public class OrgChartMemberService(
 public class FusionSearchObject
 {
     public string Filter { get; set; } = string.Empty;
-    public string[] OrderBy { get; set; } = Array.Empty<string>();
+    public string[] OrderBy { get; set; } = [];
     public int? Top { get; set; }
     public int? Skip { get; set; }
     public bool IncludeTotalResultCount { get; set; } = true;

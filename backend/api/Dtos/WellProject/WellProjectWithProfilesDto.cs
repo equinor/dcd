@@ -13,21 +13,21 @@ public class WellProjectWithProfilesDto
     [Required]
     public string Name { get; set; } = string.Empty;
     [Required]
-    public OilProducerCostProfileDto OilProducerCostProfile { get; set; } = new OilProducerCostProfileDto();
+    public OilProducerCostProfileDto OilProducerCostProfile { get; set; } = new();
     [Required]
-    public OilProducerCostProfileOverrideDto OilProducerCostProfileOverride { get; set; } = new OilProducerCostProfileOverrideDto();
+    public OilProducerCostProfileOverrideDto OilProducerCostProfileOverride { get; set; } = new();
     [Required]
-    public GasProducerCostProfileDto GasProducerCostProfile { get; set; } = new GasProducerCostProfileDto();
+    public GasProducerCostProfileDto GasProducerCostProfile { get; set; } = new();
     [Required]
-    public GasProducerCostProfileOverrideDto GasProducerCostProfileOverride { get; set; } = new GasProducerCostProfileOverrideDto();
+    public GasProducerCostProfileOverrideDto GasProducerCostProfileOverride { get; set; } = new();
     [Required]
-    public WaterInjectorCostProfileDto WaterInjectorCostProfile { get; set; } = new WaterInjectorCostProfileDto();
+    public WaterInjectorCostProfileDto WaterInjectorCostProfile { get; set; } = new();
     [Required]
-    public WaterInjectorCostProfileOverrideDto WaterInjectorCostProfileOverride { get; set; } = new WaterInjectorCostProfileOverrideDto();
+    public WaterInjectorCostProfileOverrideDto WaterInjectorCostProfileOverride { get; set; } = new();
     [Required]
-    public GasInjectorCostProfileDto GasInjectorCostProfile { get; set; } = new GasInjectorCostProfileDto();
+    public GasInjectorCostProfileDto GasInjectorCostProfile { get; set; } = new();
     [Required]
-    public GasInjectorCostProfileOverrideDto GasInjectorCostProfileOverride { get; set; } = new GasInjectorCostProfileOverrideDto();
+    public GasInjectorCostProfileOverrideDto GasInjectorCostProfileOverride { get; set; } = new();
     [Required]
     public ArtificialLift ArtificialLift { get; set; }
     [Required]
