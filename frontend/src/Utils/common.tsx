@@ -1,6 +1,5 @@
 import { AxiosError } from "axios"
 import { Dispatch, SetStateAction } from "react"
-import { PersonInfo } from "@equinor/fusion-react-person"
 
 import { ITimeSeries } from "@/Models/ITimeSeries"
 import { TABLE_VALIDATION_RULES } from "@/Utils/constants"
