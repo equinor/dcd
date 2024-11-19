@@ -92,7 +92,7 @@ const AccessManagementTab = () => {
 
     const handleAddPerson = async (e: PersonSelectEvent, role: UserRole) => {
         const personToAdd = e.target.controllers.element.listItems[0].azureUniqueId
-        if ((!personToAdd && !projectId) || projectApiData?.projectMembers.some((p) => p.userId === personToAdd)) { return null }
+        if ((!personToAdd && !projectId) || projectApiData?.projectMembers.some((p) => p.userId === personToAdd)) { return }
 
         const addPerson = await (await GetProjectMembersService()).addPerson(projectId, { UserId: personToAdd, Role: role })
         if (addPerson) {
@@ -100,7 +100,6 @@ const AccessManagementTab = () => {
                 { queryKey: ["projectApiData", projectId] },
             )
         }
-        return null
     }
 
     useEffect(() => {
@@ -145,16 +144,22 @@ const AccessManagementTab = () => {
                     {editMode && accessRights?.canEdit && (
                         <PersonSelect
                             placeholder="Add new"
+                            selectedPerson={null}
                             onSelect={(selectedPerson) => handleAddPerson(selectedPerson as PersonSelectEvent, UserRole.Editor)}
                         />
                     )}
-                    <PeopleContainer>
-                        {projectApiData?.projectMembers?.filter((m) => m.role === 1).map((person) => (
-                            <PersonListItem key={person.userId} azureId={person.userId}>
-                                {editMode && accessRights?.canEdit && <Button variant="ghost" color="danger" onClick={() => handleRemovePerson(person.userId)}>Remove</Button>}
-                            </PersonListItem>
-                        ))}
-                    </PeopleContainer>
+                    {projectApiData?.projectMembers?.filter((m) => m.role === 1).length > 0 ? (
+                        <PeopleContainer>
+                            {projectApiData?.projectMembers?.filter((m) => m.role === 1).map((person) => (
+                                <PersonListItem key={person.userId} azureId={person.userId}>
+                                    {editMode && accessRights?.canEdit && <Button variant="ghost" color="danger" onClick={() => handleRemovePerson(person.userId)}>Remove</Button>}
+                                </PersonListItem>
+                            ))}
+                        </PeopleContainer>
+                    ) : (
+                        <Typography style={{ marginBottom: "150px" }} variant="body_short">No project editors to show</Typography>
+                    )}
+
                     <Typography variant="h6">PMT members from the project orgchart:</Typography>
                     <PeopleContainer>
                         {orgChartPeople && orgChartPeople.length > 0 ? (
@@ -175,16 +180,20 @@ const AccessManagementTab = () => {
                     {editMode && accessRights?.canEdit && (
                         <PersonSelect
                             placeholder="Add new"
+                            selectedPerson={null}
                             onSelect={(selectedPerson) => handleAddPerson(selectedPerson as PersonSelectEvent, UserRole.Viewer)}
                         />
                     )}
-                    <PeopleContainer>
-                        {projectApiData?.projectMembers?.filter((m) => m.role === 0).map((person) => (
-                            <PersonListItem key={person.userId} azureId={person.userId}>
-                                {editMode && accessRights?.canEdit && <Button variant="ghost" color="danger" onClick={() => handleRemovePerson(person.userId)}>Remove</Button>}
-                            </PersonListItem>
-                        ))}
-                    </PeopleContainer>
+                    {projectApiData?.projectMembers?.filter((m) => m.role === 0).length > 0 ? (
+                        <PeopleContainer>
+                            {projectApiData?.projectMembers?.filter((m) => m.role === 0).map((person) => (
+                                <PersonListItem key={person.userId} azureId={person.userId}>
+                                    {editMode && accessRights?.canEdit && <Button variant="ghost" color="danger" onClick={() => handleRemovePerson(person.userId)}>Remove</Button>}
+                                </PersonListItem>
+                            ))}
+                        </PeopleContainer>
+                    ) : (<Typography variant="body_short">No project viewers to show</Typography>)}
+
                 </EditorViewerContent>
             </EditorViewerContainer>
             <ClickableHeading item onClick={() => setExpandAllAccess(!expandAllAccess)}>
