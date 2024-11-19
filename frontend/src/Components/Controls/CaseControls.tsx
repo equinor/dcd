@@ -227,6 +227,7 @@ const CaseControls: React.FC<props> = ({
                             onClick={handleEdit}
                             disabled={isEditDisabled}
                             variant={editMode ? "outlined" : "contained"}
+                            id="toggleCaseEditButton"
                         >
                             {editMode && (
                                 <>
@@ -245,6 +246,7 @@ const CaseControls: React.FC<props> = ({
                     </Tooltip>
                     <div>
                         <DropButton
+                            id="caseDropMenuButton"
                             ref={setMenuAnchorEl}
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                             data={more_vertical}

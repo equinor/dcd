@@ -85,6 +85,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                         id="Description"
                     >
                         <MarkdownEditor
+                            id="case-description-editor"
                             menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
                             value={description}
                             onBlur={(e) => handleBlur(e)}
@@ -94,7 +95,10 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                     <div
                         key="input"
                     >
-                        <MarkdownViewer value={caseData.description ?? ""} />
+                        <MarkdownViewer
+                            value={caseData.description ?? ""}
+                            id="case-description-viewer"
+                        />
                     </div>
                 )}
             </Grid>
