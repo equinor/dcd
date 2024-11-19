@@ -23,7 +23,7 @@ public static class DcdCorsPolicyConfiguration
                         "https://fusion-s-portal-ci.azurewebsites.net",
                         "https://fusion.ci.fusion-dev.net",
                         "https://fusion-s-portal-fqa.azurewebsites.net",
-                        "https://fusion.fqa.fusion-dev.net/",
+                        "https://fusion.fqa.fusion-dev.net",
                         "https://fusion-s-portal-fprd.azurewebsites.net",
                         "https://pr-3422.fusion-dev.net",
                         "https://pr-*.fusion-dev.net"
