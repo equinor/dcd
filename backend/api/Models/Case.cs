@@ -8,8 +8,8 @@ public class Case : IHasProjectId, IChangeTrackable
 {
     public Guid Id { get; set; }
     public Guid ProjectId { get; set; }
-    public string Name { get; set; } = string.Empty!;
-    public string Description { get; set; } = string.Empty!;
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
     public bool ReferenceCase { get; set; }
     public bool Archived { get; set; }
 

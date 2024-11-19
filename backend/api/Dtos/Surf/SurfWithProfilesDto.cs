@@ -8,7 +8,7 @@ public class SurfWithProfilesDto
     [Required]
     public Guid Id { get; set; }
     [Required]
-    public string Name { get; set; } = string.Empty!;
+    public string Name { get; set; } = string.Empty;
     [Required]
     public Guid ProjectId { get; set; }
     [Required]

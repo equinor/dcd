@@ -26,7 +26,7 @@ public class CaseService(
 
         var caseItem = await GetCase(caseId);
 
-        context.Cases!.Remove(caseItem);
+        context.Cases.Remove(caseItem);
 
         await context.SaveChangesAsync();
 
@@ -35,7 +35,7 @@ public class CaseService(
 
     public async Task<Case> GetCase(Guid caseId)
     {
-        var caseItem = await context.Cases!
+        var caseItem = await context.Cases
             .Include(c => c.TotalFeasibilityAndConceptStudies)
             .Include(c => c.TotalFeasibilityAndConceptStudiesOverride)
             .Include(c => c.TotalFEEDStudies)

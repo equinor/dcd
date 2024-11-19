@@ -9,7 +9,7 @@ public class WellProjectWellService(DcdDbContext context) : IWellProjectWellServ
 {
     public async Task<List<WellProjectWell>> GetWellProjectWellsForWellProject(Guid wellProjectId)
     {
-        return await context.WellProjectWell!
+        return await context.WellProjectWell
             .Include(wpw => wpw.DrillingSchedule)
             .Where(w => w.WellProjectId == wellProjectId).ToListAsync();
     }

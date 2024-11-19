@@ -107,7 +107,7 @@ public class ProjectService(
 
         mapper.Map(projectDto, existingProject);
 
-        context.Projects!.Update(existingProject);
+        context.Projects.Update(existingProject);
         await context.SaveChangesAsync();
         return await GetProjectDto(existingProject.Id);
     }
@@ -219,7 +219,7 @@ public class ProjectService(
                 throw new NotFoundInDBException($"Project {projectId} not found");
             }
 
-            var project = await context.Projects!
+            var project = await context.Projects
                 .Include(p => p.Cases)
                 .Include(p => p.Wells)
                 .Include(p => p.ExplorationOperationalWellCosts)
