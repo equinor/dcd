@@ -85,12 +85,12 @@ const Sidebar = () => {
                     <StyledDivider />
                     <CasesDetails />
                     <StyledDivider />
-                        {archivedCases.length > 0 && (
-                            <>
-                                <ArchivedCasesDetails />
-                                <StyledDivider />
-                            </>
-                        )}
+                    {archivedCases.length > 0 && (
+                        <>
+                            <ArchivedCasesDetails />
+                            <StyledDivider />
+                        </>
+                    )}
                     <CurrentCaseEditHistory />
                     <Footer>
                         <Toggle />

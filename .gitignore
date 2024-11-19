@@ -37,3 +37,8 @@ frontend/cypress/screenshots
 
 # Rider
 backend/*.DotSettings.user
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+tests/auth.json

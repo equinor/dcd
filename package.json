@@ -3,7 +3,10 @@
     "*.{j,t}s?(x)": "npx eslint --fix"
   },
   "devDependencies": {
+    "@playwright/test": "^1.48.2",
+    "@types/node": "^22.9.0",
     "husky": "^7.0.4",
     "lint-staged": "^12.3.4"
-  }
+  },
+  "scripts": {}
 }
