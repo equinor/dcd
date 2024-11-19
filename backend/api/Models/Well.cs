@@ -14,8 +14,8 @@ public class Well : IHasProjectId, IChangeTrackable
     public double DrillingDays { get; set; }
     public double PlugingAndAbandonmentCost { get; set; }
     public double WellInterventionCost { get; set; }
-    public virtual ICollection<WellProjectWell>? WellProjectWells { get; set; }
-    public virtual ICollection<ExplorationWell>? ExplorationWells { get; set; }
+    public virtual ICollection<WellProjectWell> WellProjectWells { get; set; } = [];
+    public virtual ICollection<ExplorationWell> ExplorationWells { get; set; } = [];
 
     public static bool IsWellProjectWell(WellCategory wellCategory) => new[] {
         WellCategory.Oil_Producer,

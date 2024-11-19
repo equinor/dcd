@@ -42,7 +42,7 @@ public class Case : IHasProjectId, IChangeTrackable
     public double? BreakEvenOverride { get; set; }
 
     public string? Host { get; set; }
-    public virtual ICollection<Image>? Images { get; set; }
+    public virtual ICollection<Image> Images { get; set; } = [];
 
     public virtual CessationWellsCost? CessationWellsCost { get; set; }
     public virtual CessationWellsCostOverride? CessationWellsCostOverride { get; set; }

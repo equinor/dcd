@@ -60,7 +60,7 @@ public class ExplorationRepository(DcdDbContext context) : BaseRepository(contex
     public async Task<Exploration?> GetExplorationWithDrillingSchedule(Guid drillingScheduleId)
     {
         var exploration = await Context.Explorations
-            .Include(e => e.ExplorationWells)!
+            .Include(e => e.ExplorationWells)
             .ThenInclude(w => w.DrillingSchedule)
             .FirstOrDefaultAsync(e => e.ExplorationWells != null && e.ExplorationWells.Any(w => w.DrillingScheduleId == drillingScheduleId));
 

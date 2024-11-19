@@ -16,27 +16,27 @@ public class Project : IChangeTrackable
     public Currency Currency { get; set; }
     public PhysUnit PhysicalUnit { get; set; }
     public DateTimeOffset CreateDate { get; set; }
-    public virtual ICollection<Case>? Cases { get; set; }
-    public virtual ICollection<Well>? Wells { get; set; }
-    public virtual ICollection<Surf>? Surfs { get; set; }
-    public virtual ICollection<Substructure>? Substructures { get; set; }
-    public virtual ICollection<Topside>? Topsides { get; set; }
-    public virtual ICollection<Transport>? Transports { get; set; }
+    public virtual ICollection<Case> Cases { get; set; } = [];
+    public virtual ICollection<Well> Wells { get; set; } = [];
+    public virtual ICollection<Surf> Surfs { get; set; } = [];
+    public virtual ICollection<Substructure> Substructures { get; set; } = [];
+    public virtual ICollection<Topside> Topsides { get; set; } = [];
+    public virtual ICollection<Transport> Transports { get; set; } = [];
     public ProjectPhase ProjectPhase { get; set; }
     public InternalProjectPhase InternalProjectPhase { get; set; }
     public ProjectClassification Classification { get; set; }
     public ProjectCategory ProjectCategory { get; set; }
     public virtual ExplorationOperationalWellCosts? ExplorationOperationalWellCosts { get; set; }
     public virtual DevelopmentOperationalWellCosts? DevelopmentOperationalWellCosts { get; set; }
-    public virtual ICollection<DrainageStrategy>? DrainageStrategies { get; set; }
-    public virtual ICollection<WellProject>? WellProjects { get; set; }
-    public virtual ICollection<Exploration>? Explorations { get; set; }
+    public virtual ICollection<DrainageStrategy> DrainageStrategies { get; set; } = [];
+    public virtual ICollection<WellProject> WellProjects { get; set; } = [];
+    public virtual ICollection<Exploration> Explorations { get; set; } = [];
 
     public Guid? OriginalProjectId { get; set; } // Id of the project the revision is based on
     public virtual Project? OriginalProject { get; set; }
-    public virtual ICollection<Project>? Revisions { get; set; }
+    public virtual ICollection<Project> Revisions { get; set; } = [];
 
-    public virtual ICollection<ProjectMember>? ProjectMembers { get; set; }
+    public virtual ICollection<ProjectMember> ProjectMembers { get; set; } = [];
 
     public string? SharepointSiteUrl { get; set; }
     public double CO2RemovedFromGas { get; set; }
