@@ -13,6 +13,9 @@ const getEnv = (): string => {
     case "fusion-s-portal-ci.azurewebsites.net":
         return "CI"
 
+    case "fusion.ci.fusion-dev.net":
+        return "CI"
+
     case "fusion.equinor.com":
     case "fusion-s-portal-fprd.azurewebsites.net":
         return "FPRD"
