@@ -7,7 +7,7 @@ public class UpdateExplorationWellDto
 {
     public UpdateDrillingScheduleDto? DrillingSchedule { get; set; }
     [Required]
-    public Guid ExplorationId { get; set; } = Guid.Empty!;
+    public Guid ExplorationId { get; set; } = Guid.Empty;
     [Required]
-    public Guid WellId { get; set; } = Guid.Empty!;
+    public Guid WellId { get; set; } = Guid.Empty;
 }

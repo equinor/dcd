@@ -9,7 +9,7 @@ public class DevelopmentOperationalWellCostsService(DcdDbContext context) : IDev
 {
     public async Task<DevelopmentOperationalWellCosts?> GetOperationalWellCosts(Guid id)
     {
-        var operationalWellCosts = await context.DevelopmentOperationalWellCosts!
+        var operationalWellCosts = await context.DevelopmentOperationalWellCosts
             .Include(dowc => dowc.Project)
             .FirstOrDefaultAsync(o => o.Id == id);
         return operationalWellCosts;

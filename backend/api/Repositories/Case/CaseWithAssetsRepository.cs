@@ -132,7 +132,7 @@ public class CaseWithAssetsRepository(DcdDbContext context) : ICaseWithAssetsRep
     private async Task<WellProject> GetWellProjectNoTracking(Guid id)
     {
         return await context.WellProjects
-                .Include(c => c.WellProjectWells)!.ThenInclude(c => c.DrillingSchedule)
+                .Include(c => c.WellProjectWells).ThenInclude(c => c.DrillingSchedule)
                 .Include(c => c.OilProducerCostProfile)
                 .Include(c => c.OilProducerCostProfileOverride)
                 .Include(c => c.GasProducerCostProfile)
@@ -149,7 +149,7 @@ public class CaseWithAssetsRepository(DcdDbContext context) : ICaseWithAssetsRep
     private async Task<Exploration> GetExplorationNoTracking(Guid id)
     {
         return await context.Explorations
-                .Include(c => c.ExplorationWells)!.ThenInclude(c => c.DrillingSchedule)
+                .Include(c => c.ExplorationWells).ThenInclude(c => c.DrillingSchedule)
                 .Include(c => c.ExplorationWellCostProfile)
                 .Include(c => c.AppraisalWellCostProfile)
                 .Include(c => c.SidetrackCostProfile)

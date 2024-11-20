@@ -9,7 +9,7 @@ public class ExplorationWellService(DcdDbContext context) : IExplorationWellServ
 {
     public async Task<List<ExplorationWell>> GetExplorationWellsForExploration(Guid explorationId)
     {
-        var explorationWells = await context.ExplorationWell!
+        var explorationWells = await context.ExplorationWell
             .Include(wpw => wpw.DrillingSchedule)
             .Where(w => w.ExplorationId == explorationId).ToListAsync();
 

@@ -7,9 +7,9 @@ namespace api.Dtos;
 public class ProjectWithAssetsDto : ProjectDto, IEquatable<ProjectWithAssetsDto>
 {
     [Required]
-    public ExplorationOperationalWellCostsDto ExplorationOperationalWellCosts { get; set; } = new ExplorationOperationalWellCostsDto();
+    public ExplorationOperationalWellCostsDto ExplorationOperationalWellCosts { get; set; } = new();
     [Required]
-    public DevelopmentOperationalWellCostsDto DevelopmentOperationalWellCosts { get; set; } = new DevelopmentOperationalWellCostsDto();
+    public DevelopmentOperationalWellCostsDto DevelopmentOperationalWellCosts { get; set; } = new();
     [Required]
     public ICollection<CaseWithProfilesDto> Cases { get; set; } = [];
     [Required]
