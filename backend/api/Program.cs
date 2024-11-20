@@ -1,3 +1,5 @@
+using System.Globalization;
+
 using api.Authorization;
 using api.Mappings;
 using api.Middleware;
@@ -8,6 +10,11 @@ using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.IdentityModel.Logging;
 
 using Serilog;
+
+var cultureInfo = new CultureInfo("en-US");
+
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 var builder = WebApplication.CreateBuilder(args);
 var environment = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("Environment");

@@ -17,6 +17,8 @@ public static class DcdEnvironments
     public const string Prod = "prod";
     public const string RadixProd = "radix-prod";
 
+    public static bool EnableVerboseEntityFrameworkLogging => false; // IsLocal() || IsCi();
+
     public static bool IsLocal() => CurrentEnvironment is LocalDev;
     public static bool IsCi() => CurrentEnvironment is Ci or Dev or RadixDev;
     public static bool IsQa() => CurrentEnvironment is Qa or RadixQa;
