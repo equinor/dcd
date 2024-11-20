@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import {
     Button,
     Icon,
+    Tooltip,
     Typography,
 } from "@equinor/eds-core-react"
 import { PersonSelect, PersonListItem, PersonSelectEvent } from "@equinor/fusion-react-person"
@@ -15,6 +16,8 @@ import {
     chevron_down,
     chevron_up,
     external_link,
+    delete_to_trash,
+    swap_horizontal,
 } from "@equinor/eds-icons"
 import { useMediaQuery } from "@mui/material"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
@@ -38,6 +41,7 @@ const EditorViewerContainer = styled(Grid) <{ $isSmallScreen: boolean }>`
 const EditorViewerContent = styled.div<{ $right?: boolean; $isSmallScreen?: boolean; }>`
     display: flex;
     flex-direction: column;
+    // justify-content: space-between;
     width: 100%;
     margin: ${(props) => (props.$right ? "0 0 0 50px" : "0 50px 0 0")};
     margin: ${(props) => (props.$isSmallScreen && "0")};
@@ -51,9 +55,9 @@ const EditorViewerHeading = styled.div<{ $smallGap?: boolean; }>`
     margin-bottom: 15px;
 `
 
-const PeopleContainer = styled.div`
+const PeopleContainer = styled.div<{ $orgChart?: boolean; }>`
     display: flex;
-    margin: 20px 0 40px 0;
+    margin: ${(props) => (props.$orgChart ? "0 0 0 0" : "20px 0 100px 0")};
     flex-direction: column;
     gap: 20px;
 `
@@ -61,8 +65,8 @@ const PeopleContainer = styled.div`
 const ClickableHeading = styled(Grid)`
     display: flex;
     align-items: center;
-    margin-top: 35px;
     gap: 10px;
+    margin-top: 100px!important;
     cursor: pointer;
 `
 
@@ -91,15 +95,19 @@ const AccessManagementTab = () => {
     }
 
     const handleAddPerson = async (e: PersonSelectEvent, role: UserRole) => {
-        const personToAdd = e.target.controllers.element.listItems[0].azureUniqueId
+        const personToAdd = e.nativeEvent.detail.selected?.azureId
         if ((!personToAdd && !projectId) || projectApiData?.projectMembers.some((p) => p.userId === personToAdd)) { return }
 
-        const addPerson = await (await GetProjectMembersService()).addPerson(projectId, { UserId: personToAdd, Role: role })
+        const addPerson = await (await GetProjectMembersService()).addPerson(projectId, { UserId: personToAdd || "", Role: role })
         if (addPerson) {
             queryClient.invalidateQueries(
                 { queryKey: ["projectApiData", projectId] },
             )
         }
+    }
+
+    const handleSwitchPerson = async (personId: string, role: UserRole) => {
+        console.log("switching person: ", personId, " with role: ", role)
     }
 
     useEffect(() => {
@@ -149,19 +157,39 @@ const AccessManagementTab = () => {
                         />
                     )}
                     {projectApiData?.projectMembers?.filter((m) => m.role === 1).length > 0 ? (
+                        //     <PeopleContainer>
+                        //     {projectApiData?.projectMembers?.filter((m) => m.role === 1).map((person) => (
+                        //         <PersonListItem key={person.userId} azureId={person.userId}>
+                        //             {editMode && accessRights?.canEdit && <Button variant="ghost" color="danger" onClick={() => handleRemovePerson(person.userId)}>Remove</Button>}
+                        //         </PersonListItem>
+                        //     ))}
+                        // </PeopleContainer>
                         <PeopleContainer>
                             {projectApiData?.projectMembers?.filter((m) => m.role === 1).map((person) => (
                                 <PersonListItem key={person.userId} azureId={person.userId}>
-                                    {editMode && accessRights?.canEdit && <Button variant="ghost" color="danger" onClick={() => handleRemovePerson(person.userId)}>Remove</Button>}
+                                    {editMode && accessRights?.canEdit && (
+                                        <>
+                                            <Tooltip title="Switch to viewer">
+                                                <Button variant="ghost_icon" onClick={() => handleSwitchPerson(person.userId, person.role)}>
+                                                    <Icon data={swap_horizontal} />
+                                                </Button>
+                                            </Tooltip>
+                                            <Tooltip title="Remove editor">
+                                                <Button variant="ghost_icon" color="danger" onClick={() => handleRemovePerson(person.userId)}>
+                                                    <Icon data={delete_to_trash} />
+                                                </Button>
+                                            </Tooltip>
+                                        </>
+                                    )}
                                 </PersonListItem>
                             ))}
                         </PeopleContainer>
                     ) : (
-                        <Typography style={{ marginBottom: "150px" }} variant="body_short">No project editors to show</Typography>
+                        <Typography style={{ marginBottom: "150px" }} variant="body_short">{!editMode && "No project editors to show"}</Typography>
                     )}
 
                     <Typography variant="h6">PMT members from the project orgchart:</Typography>
-                    <PeopleContainer>
+                    <PeopleContainer $orgChart>
                         {orgChartPeople && orgChartPeople.length > 0 ? (
                             <>
                                 {
@@ -187,12 +215,28 @@ const AccessManagementTab = () => {
                     {projectApiData?.projectMembers?.filter((m) => m.role === 0).length > 0 ? (
                         <PeopleContainer>
                             {projectApiData?.projectMembers?.filter((m) => m.role === 0).map((person) => (
+                                // <PersonListItem key={person.userId} azureId={person.userId}>
+                                //     {editMode && accessRights?.canEdit && <Button variant="ghost" color="danger" onClick={() => handleRemovePerson(person.userId)}>Remove</Button>}
+                                // </PersonListItem>
                                 <PersonListItem key={person.userId} azureId={person.userId}>
-                                    {editMode && accessRights?.canEdit && <Button variant="ghost" color="danger" onClick={() => handleRemovePerson(person.userId)}>Remove</Button>}
+                                    {editMode && accessRights?.canEdit && (
+                                        <>
+                                            <Tooltip title="Switch to editor">
+                                                <Button variant="ghost_icon" onClick={() => handleSwitchPerson(person.userId, person.role)}>
+                                                    <Icon data={swap_horizontal} />
+                                                </Button>
+                                            </Tooltip>
+                                            <Tooltip title="Remove viewer">
+                                                <Button variant="ghost_icon" color="danger" onClick={() => handleRemovePerson(person.userId)}>
+                                                    <Icon data={delete_to_trash} />
+                                                </Button>
+                                            </Tooltip>
+                                        </>
+                                    )}
                                 </PersonListItem>
                             ))}
                         </PeopleContainer>
-                    ) : (<Typography variant="body_short">No project viewers to show</Typography>)}
+                    ) : (<Typography variant="body_short">{!editMode && "No project viewers to show"}</Typography>)}
 
                 </EditorViewerContent>
             </EditorViewerContainer>
