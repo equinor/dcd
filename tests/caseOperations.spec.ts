@@ -19,7 +19,7 @@ test.describe('GOM Project case operation Tests', () => {
   test.beforeAll(async ({ browser }) => {
     const context = await browser.newContext()
     page = await context.newPage()
-    await page.goto(gomQA)
+    await page.goto(gomLocal)
 
     try {
       await page.waitForSelector('text=What\'s New', { timeout: 8000 })
