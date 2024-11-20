@@ -198,7 +198,7 @@ public static class STEACaseDtoBuilder
         sTEACaseDto.Capex.OffshoreFacilities = new OffshoreFacilitiesCostProfileDto();
         if (c.SubstructureLink != Guid.Empty)
         {
-            var substructureDto = p.Substructures!.First(l => l.Id == c.SubstructureLink);
+            var substructureDto = p.Substructures.First(l => l.Id == c.SubstructureLink);
 
             if (substructureDto.CostProfileOverride?.Override == true)
             {
@@ -216,7 +216,7 @@ public static class STEACaseDtoBuilder
 
         if (c.SurfLink != Guid.Empty)
         {
-            var surfDto = p.Surfs!.First(l => l.Id == c.SurfLink);
+            var surfDto = p.Surfs.First(l => l.Id == c.SurfLink);
 
             if (surfDto.CostProfileOverride?.Override == true)
             {
@@ -234,7 +234,7 @@ public static class STEACaseDtoBuilder
 
         if (c.TopsideLink != Guid.Empty)
         {
-            var topsideDto = p.Topsides!.First(l => l.Id == c.TopsideLink);
+            var topsideDto = p.Topsides.First(l => l.Id == c.TopsideLink);
 
             if (topsideDto.CostProfileOverride?.Override == true)
             {
@@ -252,7 +252,7 @@ public static class STEACaseDtoBuilder
 
         if (c.TransportLink != Guid.Empty)
         {
-            var transportDto = p.Transports!.First(l => l.Id == c.TransportLink);
+            var transportDto = p.Transports.First(l => l.Id == c.TransportLink);
 
             if (transportDto.CostProfileOverride?.Override == true)
             {
@@ -284,7 +284,7 @@ public static class STEACaseDtoBuilder
         int dg4Year = c.DG4Date.Year;
         if (c.DrainageStrategyLink != Guid.Empty)
         {
-            var drainageStrategyDto = p.DrainageStrategies!.First(d => d.Id == c.DrainageStrategyLink);
+            var drainageStrategyDto = p.DrainageStrategies.First(d => d.Id == c.DrainageStrategyLink);
             var startYearsProductionSalesAndVolumes = new List<int>();
 
             if (drainageStrategyDto.ProductionProfileOil != null || drainageStrategyDto.AdditionalProductionProfileOil != null)
@@ -394,7 +394,7 @@ public static class STEACaseDtoBuilder
         sTEACaseDto.Exploration = new TimeSeriesCostDto();
         if (caseDto.ExplorationLink != Guid.Empty)
         {
-            var exploration = p.Explorations!.First(e => e.Id == caseDto.ExplorationLink);
+            var exploration = p.Explorations.First(e => e.Id == caseDto.ExplorationLink);
             if (exploration != null)
             {
                 var costProfileDtos = new List<TimeSeriesCostDto>();

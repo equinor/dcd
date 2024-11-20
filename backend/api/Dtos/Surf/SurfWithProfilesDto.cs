@@ -8,15 +8,15 @@ public class SurfWithProfilesDto
     [Required]
     public Guid Id { get; set; }
     [Required]
-    public string Name { get; set; } = string.Empty!;
+    public string Name { get; set; } = string.Empty;
     [Required]
     public Guid ProjectId { get; set; }
     [Required]
-    public SurfCostProfileDto CostProfile { get; set; } = new SurfCostProfileDto();
+    public SurfCostProfileDto CostProfile { get; set; } = new();
     [Required]
-    public SurfCostProfileOverrideDto CostProfileOverride { get; set; } = new SurfCostProfileOverrideDto();
+    public SurfCostProfileOverrideDto CostProfileOverride { get; set; } = new();
     [Required]
-    public SurfCessationCostProfileDto CessationCostProfile { get; set; } = new SurfCessationCostProfileDto();
+    public SurfCessationCostProfileDto CessationCostProfile { get; set; } = new();
     [Required]
     public double CessationCost { get; set; }
     [Required]

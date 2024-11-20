@@ -7,7 +7,7 @@ namespace api.Models;
 public class Transport : IHasProjectId, IChangeTrackable
 {
     public Guid Id { get; set; }
-    public string Name { get; set; } = string.Empty!;
+    public string Name { get; set; } = string.Empty;
     public virtual Project Project { get; set; } = null!;
     public Guid ProjectId { get; set; }
     public virtual TransportCostProfile? CostProfile { get; set; }

@@ -55,7 +55,7 @@ public class CostProfileFromDrillingScheduleHelper(
         var updatedWellProjectDtoList = new List<WellProjectWithProfilesDto>();
         foreach (var updatedWellProject in updatedWellProjects)
         {
-            var wellProject = context.WellProjects!.Update(updatedWellProject);
+            var wellProject = context.WellProjects.Update(updatedWellProject);
             var wellProjectDto = mapper.Map<WellProjectWithProfilesDto>(wellProject.Entity);
             if (wellProjectDto == null)
             {
@@ -72,7 +72,7 @@ public class CostProfileFromDrillingScheduleHelper(
         var updatedExplorationDtoList = new List<ExplorationWithProfilesDto>();
         foreach (var updatedExploration in updatedExplorations)
         {
-            var exploration = context.Explorations!.Update(updatedExploration);
+            var exploration = context.Explorations.Update(updatedExploration);
             var explorationDto = mapper.Map<ExplorationWithProfilesDto>(exploration.Entity);
             if (explorationDto == null)
             {
@@ -86,14 +86,14 @@ public class CostProfileFromDrillingScheduleHelper(
 
     private async Task<Exploration> GetExploration(Guid explorationId)
     {
-        var exploration = await context.Explorations!.FindAsync(explorationId)
+        var exploration = await context.Explorations.FindAsync(explorationId)
             ?? throw new NotFoundInDBException($"Exploration {explorationId} not found in database.");
         return exploration;
     }
 
     private async Task<WellProject> GetWellProject(Guid wellProjectId)
     {
-        var wellProject = await context.WellProjects!.FindAsync(wellProjectId)
+        var wellProject = await context.WellProjects.FindAsync(wellProjectId)
             ?? throw new NotFoundInDBException($"WellProject {wellProjectId} not found in database.");
         return wellProject;
     }

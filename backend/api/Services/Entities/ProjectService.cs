@@ -107,7 +107,7 @@ public class ProjectService(
 
         mapper.Map(projectDto, existingProject);
 
-        context.Projects!.Update(existingProject);
+        context.Projects.Update(existingProject);
         await context.SaveChangesAsync();
         return await GetProjectDto(existingProject.Id);
     }
@@ -219,7 +219,7 @@ public class ProjectService(
                 throw new NotFoundInDBException($"Project {projectId} not found");
             }
 
-            var project = await context.Projects!
+            var project = await context.Projects
                 .Include(p => p.Cases)
                 .Include(p => p.Wells)
                 .Include(p => p.ExplorationOperationalWellCosts)
@@ -282,25 +282,25 @@ public class ProjectService(
         }
 
         var project = await context.Projects
-            .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
-            .Include(p => p.Cases)!.ThenInclude(c => c.TotalFeasibilityAndConceptStudiesOverride)
-            .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudies)
-            .Include(p => p.Cases)!.ThenInclude(c => c.TotalFEEDStudiesOverride)
-            .Include(p => p.Cases)!.ThenInclude(c => c.TotalOtherStudiesCostProfile)
-            .Include(p => p.Cases)!.ThenInclude(c => c.WellInterventionCostProfile)
-            .Include(p => p.Cases)!.ThenInclude(c => c.WellInterventionCostProfileOverride)
-            .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfile)
-            .Include(p => p.Cases)!.ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
-            .Include(p => p.Cases)!.ThenInclude(c => c.HistoricCostCostProfile)
-            .Include(p => p.Cases)!.ThenInclude(c => c.OnshoreRelatedOPEXCostProfile)
-            .Include(p => p.Cases)!.ThenInclude(c => c.AdditionalOPEXCostProfile)
-            .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCost)
-            .Include(p => p.Cases)!.ThenInclude(c => c.CessationWellsCostOverride)
-            .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCost)
-            .Include(p => p.Cases)!.ThenInclude(c => c.CessationOffshoreFacilitiesCostOverride)
-            .Include(p => p.Cases)!.ThenInclude(c => c.CessationOnshoreFacilitiesCostProfile)
-            .Include(p => p.Cases)!.ThenInclude(c => c.CalculatedTotalIncomeCostProfile)
-            .Include(p => p.Cases)!.ThenInclude(c => c.CalculatedTotalCostCostProfile)
+            .Include(p => p.Cases).ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
+            .Include(p => p.Cases).ThenInclude(c => c.TotalFeasibilityAndConceptStudiesOverride)
+            .Include(p => p.Cases).ThenInclude(c => c.TotalFEEDStudies)
+            .Include(p => p.Cases).ThenInclude(c => c.TotalFEEDStudiesOverride)
+            .Include(p => p.Cases).ThenInclude(c => c.TotalOtherStudiesCostProfile)
+            .Include(p => p.Cases).ThenInclude(c => c.WellInterventionCostProfile)
+            .Include(p => p.Cases).ThenInclude(c => c.WellInterventionCostProfileOverride)
+            .Include(p => p.Cases).ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfile)
+            .Include(p => p.Cases).ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
+            .Include(p => p.Cases).ThenInclude(c => c.HistoricCostCostProfile)
+            .Include(p => p.Cases).ThenInclude(c => c.OnshoreRelatedOPEXCostProfile)
+            .Include(p => p.Cases).ThenInclude(c => c.AdditionalOPEXCostProfile)
+            .Include(p => p.Cases).ThenInclude(c => c.CessationWellsCost)
+            .Include(p => p.Cases).ThenInclude(c => c.CessationWellsCostOverride)
+            .Include(p => p.Cases).ThenInclude(c => c.CessationOffshoreFacilitiesCost)
+            .Include(p => p.Cases).ThenInclude(c => c.CessationOffshoreFacilitiesCostOverride)
+            .Include(p => p.Cases).ThenInclude(c => c.CessationOnshoreFacilitiesCostProfile)
+            .Include(p => p.Cases).ThenInclude(c => c.CalculatedTotalIncomeCostProfile)
+            .Include(p => p.Cases).ThenInclude(c => c.CalculatedTotalCostCostProfile)
             .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
@@ -463,7 +463,7 @@ public class ProjectService(
             .Include(c => c.GAndGAdminCostOverride)
             .Include(c => c.SeismicAcquisitionAndProcessing)
             .Include(c => c.CountryOfficeCost)
-            .Include(c => c.ExplorationWells!).ThenInclude(ew => ew.DrillingSchedule)
+            .Include(c => c.ExplorationWells).ThenInclude(ew => ew.DrillingSchedule)
             .Where(d => d.Project.Id.Equals(projectId)).ToListAsync();
     }
 
@@ -528,7 +528,7 @@ public class ProjectService(
             .Include(c => c.WaterInjectorCostProfileOverride)
             .Include(c => c.GasInjectorCostProfile)
             .Include(c => c.GasInjectorCostProfileOverride)
-            .Include(c => c.WellProjectWells!).ThenInclude(wpw => wpw.DrillingSchedule)
+            .Include(c => c.WellProjectWells).ThenInclude(wpw => wpw.DrillingSchedule)
             .Where(d => d.Project.Id.Equals(projectId)).ToListAsync();
     }
 

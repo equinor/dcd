@@ -8,8 +8,8 @@ public class Case : IHasProjectId, IChangeTrackable
 {
     public Guid Id { get; set; }
     public Guid ProjectId { get; set; }
-    public string Name { get; set; } = string.Empty!;
-    public string Description { get; set; } = string.Empty!;
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
     public bool ReferenceCase { get; set; }
     public bool Archived { get; set; }
 
@@ -42,7 +42,7 @@ public class Case : IHasProjectId, IChangeTrackable
     public double? BreakEvenOverride { get; set; }
 
     public string? Host { get; set; }
-    public virtual ICollection<Image>? Images { get; set; }
+    public virtual ICollection<Image> Images { get; set; } = [];
 
     public virtual CessationWellsCost? CessationWellsCost { get; set; }
     public virtual CessationWellsCostOverride? CessationWellsCostOverride { get; set; }
