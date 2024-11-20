@@ -4,5 +4,5 @@ namespace api.Services;
 
 public interface ICompareCasesService
 {
-    Task<IEnumerable<CompareCasesDto>> Calculate(Guid projectId);
+    Task<List<CompareCasesDto>> Calculate(Guid projectId);
 }
