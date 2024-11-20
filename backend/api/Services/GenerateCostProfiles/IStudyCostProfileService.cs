@@ -5,6 +5,6 @@ namespace api.Services;
 public interface IStudyCostProfileService
 {
     Task Generate(Guid caseId);
-    Task<double> SumAllCostFacility(Case caseItem);
-    Task<double> SumWellCost(Case caseItem);
+    double SumAllCostFacilityWithPreloadedData(Case caseItem);
+    double SumWellCostWithPreloadedData(Case caseItem);
 }

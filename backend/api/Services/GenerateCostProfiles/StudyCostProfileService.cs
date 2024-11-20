@@ -189,6 +189,23 @@ public class StudyCostProfileService(
         return sumFacilityCost;
     }
 
+    public double SumAllCostFacilityWithPreloadedData(Case caseItem)
+    {
+        var sumFacilityCost = 0.0;
+
+        var substructure = caseItem.Substructure!;
+        var surf = caseItem.Surf!;
+        var topside = caseItem.Topside!;
+        var transport = caseItem.Transport!;
+
+        sumFacilityCost += SumOverrideOrProfile(substructure.CostProfile, substructure.CostProfileOverride);
+        sumFacilityCost += SumOverrideOrProfile(surf.CostProfile, surf.CostProfileOverride);
+        sumFacilityCost += SumOverrideOrProfile(topside.CostProfile, topside.CostProfileOverride);
+        sumFacilityCost += SumOverrideOrProfile(transport.CostProfile, transport.CostProfileOverride);
+
+        return sumFacilityCost;
+    }
+
     public async Task<double> SumWellCost(Case caseItem)
     {
         var sumWellCost = 0.0;
@@ -204,6 +221,20 @@ public class StudyCostProfileService(
             w => w.GasInjectorCostProfileOverride!,
             w => w.GasInjectorCostProfile!
         );
+
+        sumWellCost += SumOverrideOrProfile(wellProject.OilProducerCostProfile, wellProject.OilProducerCostProfileOverride);
+        sumWellCost += SumOverrideOrProfile(wellProject.GasProducerCostProfile, wellProject.GasProducerCostProfileOverride);
+        sumWellCost += SumOverrideOrProfile(wellProject.WaterInjectorCostProfile, wellProject.WaterInjectorCostProfileOverride);
+        sumWellCost += SumOverrideOrProfile(wellProject.GasInjectorCostProfile, wellProject.GasInjectorCostProfileOverride);
+
+        return sumWellCost;
+    }
+
+    public double SumWellCostWithPreloadedData(Case caseItem)
+    {
+        var sumWellCost = 0.0;
+
+        var wellProject = caseItem.WellProject!;
 
         sumWellCost += SumOverrideOrProfile(wellProject.OilProducerCostProfile, wellProject.OilProducerCostProfileOverride);
         sumWellCost += SumOverrideOrProfile(wellProject.GasProducerCostProfile, wellProject.GasProducerCostProfileOverride);
