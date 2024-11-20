@@ -9,11 +9,14 @@ public static class DcdFusionConfiguration
             var fusionEnvironment = environment switch
             {
                 DcdEnvironments.Dev => "CI",
+                DcdEnvironments.RadixDev => "CI",
+
                 DcdEnvironments.Qa => "FQA",
+                DcdEnvironments.RadixQa => "FQA",
+
                 DcdEnvironments.Prod => "FPRD",
                 DcdEnvironments.RadixProd => "FPRD",
-                DcdEnvironments.RadixQa => "FQA",
-                DcdEnvironments.RadixDev => "CI",
+
                 _ => "CI"
             };
 

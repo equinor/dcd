@@ -2,6 +2,7 @@ using api.Authorization;
 using api.Repositories;
 using api.Services;
 using api.Services.EconomicsServices;
+using api.Services.Fusion;
 using api.Services.FusionIntegration;
 using api.Services.GenerateCostProfiles;
 
@@ -13,7 +14,7 @@ public static class DcdIocConfiguration
 {
     public static void AddDcdIocConfiguration(this IServiceCollection services)
     {
-        services.AddScoped<IFusionPeopleService, FusionPeopleService>();
+        services.AddScoped<IOrgChartMemberService, OrgChartMemberService>();
 
         services.AddScoped<IProjectAccessService, ProjectAccessService>();
 

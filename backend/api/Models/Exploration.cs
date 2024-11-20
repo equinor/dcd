@@ -19,7 +19,7 @@ public class Exploration : IHasProjectId, IChangeTrackable
     public virtual GAndGAdminCostOverride? GAndGAdminCostOverride { get; set; }
     public double RigMobDemob { get; set; }
     public Currency Currency { get; set; }
-    public virtual ICollection<ExplorationWell>? ExplorationWells { get; set; }
+    public virtual ICollection<ExplorationWell> ExplorationWells { get; set; } = [];
 }
 
 public class ExplorationWellCostProfile : TimeSeriesCost, IExplorationTimeSeries

@@ -10,6 +10,6 @@ public class ChangeLog
     public string? NewValue { get; set; }
     public string? Username { get; set; }
     public DateTime TimestampUtc { get; set; }
-    public string EntityState { get; set; } = null!;
-    public string? Payload { get; set; } = null!;
+    public required string EntityState { get; set; }
+    public string? Payload { get; set; }
 }

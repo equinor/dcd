@@ -24,10 +24,13 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
         {
             DcdEnvironments.LocalDev => "AzureStorageAccountImageContainerCI",
             DcdEnvironments.Ci => "AzureStorageAccountImageContainerCI",
-            DcdEnvironments.RadixDev => "AzureStorageAccountImageContainerCI",
+
             DcdEnvironments.Dev => "AzureStorageAccountImageContainerCI",
+            DcdEnvironments.RadixDev => "AzureStorageAccountImageContainerCI",
+
             DcdEnvironments.Qa => "AzureStorageAccountImageContainerQA",
             DcdEnvironments.RadixQa => "AzureStorageAccountImageContainerQA",
+
             DcdEnvironments.Prod => "AzureStorageAccountImageContainerProd",
             DcdEnvironments.RadixProd => "AzureStorageAccountImageContainerProd",
             _ => throw new InvalidOperationException($"Unknown fusion environment: {environment}")
