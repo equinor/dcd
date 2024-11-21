@@ -104,7 +104,7 @@ const AccessManagementTab = () => {
         }
 
         fetchOrgChartPeople()
-    }, [currentContext?.id])
+    }, [currentContext?.id, projectId])
 
     if (!projectApiData) {
         return <AccessManagementSkeleton />
