@@ -238,35 +238,6 @@ public class ProjectService(
         throw new NotFoundInDBException("The database contains no projects");
     }
 
-    public async Task<Project> GetProjectWithoutAssetsNoTracking(Guid projectId)
-    {
-        if (context.Projects != null)
-        {
-            if (projectId == Guid.Empty)
-            {
-                throw new NotFoundInDBException($"Project {projectId} not found");
-            }
-
-            var project = await context.Projects
-                .AsNoTracking()
-                .Include(p => p.Cases)
-                .Include(p => p.Wells)
-                .Include(p => p.ExplorationOperationalWellCosts)
-                .Include(p => p.DevelopmentOperationalWellCosts)
-                .FirstOrDefaultAsync(p => p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId));
-
-            if (project == null)
-            {
-                throw new NotFoundInDBException($"Project {projectId} not found");
-            }
-
-            return project;
-        }
-
-        logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
-        throw new NotFoundInDBException("The database contains no projects");
-    }
-
     public async Task<Project> GetProject(Guid projectId)
     {
         return await projectRepository.GetProject(projectId)

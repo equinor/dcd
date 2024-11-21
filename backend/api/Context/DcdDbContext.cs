@@ -3,6 +3,7 @@ using api.Models;
 using api.Services;
 using api.Services.EconomicsServices;
 using api.Services.GenerateCostProfiles;
+using api.StartupConfiguration;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -1260,6 +1261,11 @@ public class DcdDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        if (DcdEnvironments.EnableVerboseEntityFrameworkLogging)
+        {
+            optionsBuilder.LogTo(Console.WriteLine);
+        }
+
         base.OnConfiguring(optionsBuilder);
         optionsBuilder.EnableSensitiveDataLogging();
     }

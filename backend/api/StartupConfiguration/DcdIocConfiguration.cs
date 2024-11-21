@@ -62,7 +62,8 @@ public static class DcdIocConfiguration
         services.AddScoped<INetSaleGasProfileService, NetSaleGasProfileService>();
         services.AddScoped<ICo2IntensityProfileService, Co2IntensityProfileService>();
         services.AddScoped<ICo2IntensityTotalService, Co2IntensityTotalService>();
-        services.AddScoped<ICompareCasesService, CompareCasesService>();
+        services.AddScoped<CaseComparisonService>();
+        services.AddScoped<CaseComparisonRepository>();
         services.AddScoped<ICo2DrillingFlaringFuelTotalsService, Co2DrillingFlaringFuelTotalsService>();
         services.AddScoped<IWellCostProfileService, WellCostProfileService>();
 
