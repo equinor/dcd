@@ -9,6 +9,11 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
     {
         var project = await caseComparisonRepository.LoadProject(projectId);
 
+        return CompareCases(project);
+    }
+
+    private static List<CompareCasesDto> CompareCases(Project project)
+    {
         var caseList = new List<CompareCasesDto>();
 
         foreach (var caseItem in project.Cases)
@@ -21,10 +26,10 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
             var drainageStrategy = caseItem.DrainageStrategy!;
             var exploration = caseItem.Exploration!;
 
-            var totalOilProduction = drainageStrategy.ProductionProfileOil?.Values.Sum() / 1000000 ?? 0;
-            var additionalOilProduction = drainageStrategy.AdditionalProductionProfileOil?.Values.Sum() / 1000000 ?? 0;
-            var totalGasProduction = drainageStrategy.ProductionProfileGas?.Values.Sum() / 1000000000 ?? 0;
-            var additionalGasProduction = drainageStrategy.AdditionalProductionProfileGas?.Values.Sum() / 1000000000 ?? 0;
+            var totalOilProduction = drainageStrategy.ProductionProfileOil?.Values.Sum() / 1_000_000 ?? 0;
+            var additionalOilProduction = drainageStrategy.AdditionalProductionProfileOil?.Values.Sum() / 1_000_000 ?? 0;
+            var totalGasProduction = drainageStrategy.ProductionProfileGas?.Values.Sum() / 1_000_000_000 ?? 0;
+            var additionalGasProduction = drainageStrategy.AdditionalProductionProfileGas?.Values.Sum() / 1_000_000_000 ?? 0;
             var totalExportedVolumes = CalculateTotalExportedVolumes(project, drainageStrategy, false);
 
             var explorationCosts = CalculateExplorationWellCosts(exploration);

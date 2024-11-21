@@ -24,7 +24,6 @@ public class CaseComparisonRepository(DcdDbContext context)
 
         var caseIds = project.Cases.Where(x => !x.Archived).Select(c => c.Id).ToList();
         await context.Cases
-            .Where(x => caseIds.Contains(x.Id))
             .Include(c => c.CessationWellsCostOverride)
             .Include(c => c.CessationWellsCost)
             .Include(c => c.CessationOffshoreFacilitiesCostOverride)
@@ -42,6 +41,7 @@ public class CaseComparisonRepository(DcdDbContext context)
             .Include(c => c.HistoricCostCostProfile)
             .Include(c => c.OnshoreRelatedOPEXCostProfile)
             .Include(c => c.AdditionalOPEXCostProfile)
+            .Where(x => caseIds.Contains(x.Id))
             .LoadAsync();
 
         var drainageStrategyLinks = project.Cases.Select(x => x.DrainageStrategyLink).ToList();
