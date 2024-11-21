@@ -3,9 +3,7 @@ using api.Models;
 
 namespace api.Services;
 
-public class CaseComparisonService(
-    IStudyCostProfileService generateStudyCostProfile,
-    CaseComparisonRepository caseComparisonRepository)
+public class CaseComparisonService(CaseComparisonRepository caseComparisonRepository)
 {
     public async Task<List<CompareCasesDto>> Calculate(Guid projectId)
     {
@@ -30,7 +28,7 @@ public class CaseComparisonService(
             var totalExportedVolumes = CalculateTotalExportedVolumes(project, drainageStrategy, false);
 
             var explorationCosts = CalculateExplorationWellCosts(exploration);
-            var developmentCosts = generateStudyCostProfile.SumWellCostWithPreloadedData(caseItem);
+            var developmentCosts = SumWellCostWithPreloadedData(caseItem);
 
             TimeSeriesMass? generateCo2EmissionsProfile = drainageStrategy.Co2EmissionsOverride?.Override == true ? drainageStrategy.Co2EmissionsOverride : drainageStrategy.Co2Emissions;
 
@@ -40,7 +38,7 @@ public class CaseComparisonService(
             var totalCessationCosts = CalculateTotalCessationCosts(caseItem);
 
             var totalStudyCostsPlusOpex = CalculateTotalStudyCostsPlusOpex(caseItem);
-            var offshorePlusOnshoreFacilityCosts = generateStudyCostProfile.SumAllCostFacilityWithPreloadedData(caseItem);
+            var offshorePlusOnshoreFacilityCosts = SumAllCostFacilityWithPreloadedData(caseItem);
 
             caseList.Add(new CompareCasesDto
             {
@@ -218,6 +216,53 @@ public class CaseComparisonService(
         if (totalExportedVolumes != 0 && totalCo2Emissions != 0)
         {
             return totalCo2Emissions / totalExportedVolumes / boeConversionFactor * tonnesToKgFactor;
+        }
+
+        return 0;
+    }
+
+    private static double SumWellCostWithPreloadedData(Case caseItem)
+    {
+        var sumWellCost = 0.0;
+
+        var wellProject = caseItem.WellProject!;
+
+        sumWellCost += SumOverrideOrProfile(wellProject.OilProducerCostProfile, wellProject.OilProducerCostProfileOverride);
+        sumWellCost += SumOverrideOrProfile(wellProject.GasProducerCostProfile, wellProject.GasProducerCostProfileOverride);
+        sumWellCost += SumOverrideOrProfile(wellProject.WaterInjectorCostProfile, wellProject.WaterInjectorCostProfileOverride);
+        sumWellCost += SumOverrideOrProfile(wellProject.GasInjectorCostProfile, wellProject.GasInjectorCostProfileOverride);
+
+        return sumWellCost;
+    }
+
+    private static double SumAllCostFacilityWithPreloadedData(Case caseItem)
+    {
+        var sumFacilityCost = 0.0;
+
+        var substructure = caseItem.Substructure!;
+        var surf = caseItem.Surf!;
+        var topside = caseItem.Topside!;
+        var transport = caseItem.Transport!;
+
+        sumFacilityCost += SumOverrideOrProfile(substructure.CostProfile, substructure.CostProfileOverride);
+        sumFacilityCost += SumOverrideOrProfile(surf.CostProfile, surf.CostProfileOverride);
+        sumFacilityCost += SumOverrideOrProfile(topside.CostProfile, topside.CostProfileOverride);
+        sumFacilityCost += SumOverrideOrProfile(transport.CostProfile, transport.CostProfileOverride);
+
+        return sumFacilityCost;
+    }
+
+    private static double SumOverrideOrProfile<T>(TimeSeries<double>? profile, T? profileOverride)
+        where T : TimeSeries<double>, ITimeSeriesOverride
+    {
+        if (profileOverride?.Override == true)
+        {
+            return profileOverride.Values.Sum();
+        }
+
+        if (profile != null)
+        {
+            return profile.Values.Sum();
         }
 
         return 0;
