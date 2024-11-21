@@ -65,19 +65,44 @@ const AccessManagementTab = () => {
         }
     }
 
+    // useEffect(() => {
+    //     const fetchOrgChartPeople = async () => {
+    //         if (!currentContext?.id) {
+    //             return
+    //         }
+    //         const projectMembersService = await GetOrgChartMembersService()
+    //         try {
+    //             const peopleToAdd = await projectMembersService.getOrgChartPeople(currentContext.id)
+    //             setOrgChartPeople(peopleToAdd)
+    //         } catch (error) {
+    //             setSnackBarMessage("A problem occured while fetching OrgChart people")
+    //         }
+    //     }
+    //     fetchOrgChartPeople()
+    // }, [currentContext?.id])
+
     useEffect(() => {
         const fetchOrgChartPeople = async () => {
-            if (!currentContext?.id) {
-                return
-            }
+            if (!currentContext?.id || !projectId) { return }
             const projectMembersService = await GetOrgChartMembersService()
             try {
                 const peopleToAdd = await projectMembersService.getOrgChartPeople(currentContext.id)
-                setOrgChartPeople(peopleToAdd)
+
+                await Promise.all(
+                    peopleToAdd.map(async (person) => {
+                        try {
+                            return await (await GetProjectMembersService()).addPerson(projectId, { userId: person.azureUniqueId || "", role: UserRole.Viewer })
+                        } catch (error) {
+                            console.error("Failed to add person from orgchart, with error: ", error)
+                            return null // bedre error handling?
+                        }
+                    }),
+                )
             } catch (error) {
-                setSnackBarMessage("A problem occured while fetching OrgChart people")
+                setSnackBarMessage("A problem occurred while fetching OrgChart people")
             }
         }
+
         fetchOrgChartPeople()
     }, [currentContext?.id])
 
@@ -86,7 +111,7 @@ const AccessManagementTab = () => {
     }
 
     return (
-        <Grid container direction="column" paddingX="10px" spacing={2}>
+        <Grid container direction="column" paddingX="10px" maxWidth={1200} spacing={2}>
             <Grid item>
                 <Typography variant="h3">Access Management</Typography>
             </Grid>

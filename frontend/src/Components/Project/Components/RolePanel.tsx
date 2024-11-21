@@ -30,39 +30,41 @@ const RolePanel = ({
 
     return (
         <EditorViewerContent $right={isViewers} $isSmallScreen={isSmallScreen}>
-            <EditorViewerHeading>
-                <Icon data={isViewers ? visibility : edit} />
-                <Typography variant="h6">{isViewers ? "Project viewers" : "Project editors"}</Typography>
-            </EditorViewerHeading>
-            {editMode && accessRights?.canEdit && (
-                <PersonSelect
-                    placeholder={`Add new ${isViewers ? "viewer" : "editor"}`}
-                    selectedPerson={null}
-                    onSelect={(selectedPerson) => handleAddPerson(selectedPerson as PersonSelectEvent, isViewers ? UserRole.Viewer : UserRole.Editor)}
-                />
-            )}
-            {people && people.length > 0 ? (
-                <PeopleContainer>
-                    {people.map((person) => (
-                        <PersonListItem key={person.userId} azureId={person.userId}>
-                            {editMode && accessRights?.canEdit && (
-                                <>
-                                    <Tooltip title={`Switch to ${isViewers ? "editor" : "viewer"}`}>
-                                        <Button variant="ghost_icon" onClick={() => handleSwitchPerson(person.userId, isViewers ? UserRole.Editor : UserRole.Viewer)}>
-                                            <Icon data={swap_horizontal} />
-                                        </Button>
-                                    </Tooltip>
-                                    <Tooltip title={`Remove ${isViewers ? "viewer" : "editor"}`}>
-                                        <Button variant="ghost_icon" color="danger" onClick={() => handleRemovePerson(person.userId)}>
-                                            <Icon data={delete_to_trash} />
-                                        </Button>
-                                    </Tooltip>
-                                </>
-                            )}
-                        </PersonListItem>
-                    ))}
-                </PeopleContainer>
-            ) : (<Typography style={{ marginBottom: "150px" }} variant="body_short">{!editMode && `No project ${isViewers ? "viewers" : "editors"} found`}</Typography>)}
+            <div>
+                <EditorViewerHeading>
+                    <Icon data={isViewers ? visibility : edit} />
+                    <Typography variant="h6">{isViewers ? "Project viewers" : "Project editors"}</Typography>
+                </EditorViewerHeading>
+                {editMode && accessRights?.canEdit && (
+                    <PersonSelect
+                        placeholder={`Add new ${isViewers ? "viewer" : "editor"}`}
+                        selectedPerson={null}
+                        onSelect={(selectedPerson) => handleAddPerson(selectedPerson as PersonSelectEvent, isViewers ? UserRole.Viewer : UserRole.Editor)}
+                    />
+                )}
+                {people && people.length > 0 ? (
+                    <PeopleContainer>
+                        {people.map((person) => (
+                            <PersonListItem key={person.userId} azureId={person.userId}>
+                                {editMode && accessRights?.canEdit && (
+                                    <>
+                                        <Tooltip title={`Switch to ${isViewers ? "editor" : "viewer"}`}>
+                                            <Button variant="ghost_icon" onClick={() => handleSwitchPerson(person.userId, isViewers ? UserRole.Editor : UserRole.Viewer)}>
+                                                <Icon data={swap_horizontal} />
+                                            </Button>
+                                        </Tooltip>
+                                        <Tooltip title={`Remove ${isViewers ? "viewer" : "editor"}`}>
+                                            <Button variant="ghost_icon" color="danger" onClick={() => handleRemovePerson(person.userId)}>
+                                                <Icon data={delete_to_trash} />
+                                            </Button>
+                                        </Tooltip>
+                                    </>
+                                )}
+                            </PersonListItem>
+                        ))}
+                    </PeopleContainer>
+                ) : (<Typography style={{ marginBottom: "150px" }} variant="body_short">{!editMode && `No project ${isViewers ? "viewers" : "editors"} found`}</Typography>)}
+            </div>
             <PeopleContainer $orgChart>
                 {orgChartPeople && orgChartPeople.length > 0 ? (
                     <>

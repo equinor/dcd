@@ -6,13 +6,14 @@ export const EditorViewerContainer = styled(Grid) <{ $isSmallScreen: boolean }>`
     justify-content: center;
     padding: 15px;
     margin-top: 35px;
+    min-height: 500px;
     flex-direction: ${(props) => (props.$isSmallScreen ? "column" : "row")}!important;
 `
 
 export const EditorViewerContent = styled.div<{ $right?: boolean; $isSmallScreen?: boolean; }>`
     display: flex;
     flex-direction: column;
-    // justify-content: space-between;
+    justify-content: space-between;
     width: 100%;
     margin: ${(props) => (props.$right ? "0 0 0 50px" : "0 50px 0 0")};
     margin: ${(props) => (props.$isSmallScreen && "0")};
