@@ -81,11 +81,17 @@ const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } }
             { description: "Add loading indicator to calculated time series when calculations are running" },
             { description: "Disable/enable inputs based on access" },
             { description: "Add calculations for NPV and Break even" },
+            { description: "Add additional fields for oil and gas production in production profiles and STEA export" },
+            { description: "Implemented archived cases" },
+            { description: "Projet phase pre dg0 can be manually changed. After dg0, phase is set from project master" },
+            { description: "Add cashflow graph to cost tab" },
 
         ],
         "UI Improvements": [
             { description: "Rename \"Gas production\" to \"Rich gas production\""},
             { description: "Always show a minimum number of columns in tables"},
+            { description: "Change phase names APx, APy and APz to APbo, BOR and VPbo" },
+            { description: "Added tooltips to certain buttons" },
         ],
         Bugfixes: [
             { description: "Fixed issue with deleting case with an image"},
@@ -94,6 +100,8 @@ const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } }
             { description: "Fix study cost calculation in cases where DG2 and DG3 were both set to Jan 1st of the same year"},
             { description: "Fix updating case from the cases table in project view"},
             { description: "Fix so the user can manually type dates in schedule tab"},
+            { description: "Fix issue with case comparison graph showing wrong data for the cases" },
+            { description: "fix so that undo/redo on pasted range should update all values" },
         ],
     }
 
