@@ -1,24 +1,8 @@
-import { useEffect, useState } from "react"
-import {
-    Button,
-    Icon,
-    Tooltip,
-    Typography,
-} from "@equinor/eds-core-react"
-import { PersonSelect, PersonListItem, PersonSelectEvent } from "@equinor/fusion-react-person"
+import { useEffect, useMemo, useState } from "react"
+import { Typography } from "@equinor/eds-core-react"
+import { PersonSelectEvent } from "@equinor/fusion-react-person"
 import Grid from "@mui/material/Grid"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import styled from "styled-components"
-import {
-    edit,
-    visibility,
-    info_circle,
-    chevron_down,
-    chevron_up,
-    external_link,
-    delete_to_trash,
-    swap_horizontal,
-} from "@equinor/eds-icons"
 import { useMediaQuery } from "@mui/material"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
@@ -29,55 +13,16 @@ import { GetProjectMembersService } from "@/Services/ProjectMembersService"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { GetOrgChartMembersService } from "@/Services/OrgChartMembersService"
 import AccessManagementSkeleton from "./Components/AccessManagementSkeleton"
-
-const EditorViewerContainer = styled(Grid) <{ $isSmallScreen: boolean }>`
-    display: flex;
-    justify-content: center;
-    padding: 15px;
-    margin-top: 35px;
-    flex-direction: ${(props) => (props.$isSmallScreen ? "column" : "row")}!important;
-`
-
-const EditorViewerContent = styled.div<{ $right?: boolean; $isSmallScreen?: boolean; }>`
-    display: flex;
-    flex-direction: column;
-    // justify-content: space-between;
-    width: 100%;
-    margin: ${(props) => (props.$right ? "0 0 0 50px" : "0 50px 0 0")};
-    margin: ${(props) => (props.$isSmallScreen && "0")};
-`
-
-const EditorViewerHeading = styled.div<{ $smallGap?: boolean; }>`
-    display: flex;
-    align-items: center;
-    width: 100%;
-    gap: ${(props) => (props.$smallGap ? "3px" : "10px")};
-    margin-bottom: 15px;
-`
-
-const PeopleContainer = styled.div<{ $orgChart?: boolean; }>`
-    display: flex;
-    margin: ${(props) => (props.$orgChart ? "0 0 0 0" : "20px 0 100px 0")};
-    flex-direction: column;
-    gap: 20px;
-`
-
-const ClickableHeading = styled(Grid)`
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 100px!important;
-    cursor: pointer;
-`
+import { EditorViewerContainer } from "./Components/AccessManagement.styles"
+import ExternalAccessInfo from "./Components/ExternalAccessInfo"
+import RolePanel from "./Components/RolePanel"
 
 const AccessManagementTab = () => {
-    const { editMode } = useAppContext()
-    const { projectId, accessRights } = useProjectContext()
+    const { projectId } = useProjectContext()
     const queryClient = useQueryClient()
     const isSmallScreen = useMediaQuery("(max-width:960px)", { noSsr: true })
     const { setSnackBarMessage } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
-    const [expandAllAccess, setExpandAllAccess] = useState<boolean>(true)
     const [orgChartPeople, setOrgChartPeople] = useState<FusionPersonV1[] | null>(null)
 
     const { data: projectApiData } = useQuery({
@@ -85,6 +30,9 @@ const AccessManagementTab = () => {
         queryFn: () => projectQueryFn(projectId),
         enabled: !!projectId,
     })
+
+    const viewers = useMemo(() => projectApiData?.projectMembers?.filter((m) => m.role === 0), [projectApiData?.projectMembers])
+    const editors = useMemo(() => projectApiData?.projectMembers?.filter((m) => m.role === 1), [projectApiData?.projectMembers])
 
     const handleRemovePerson = async (userId: string) => {
         await (await GetProjectMembersService()).deletePerson(projectId, userId).then(() => {
@@ -98,7 +46,7 @@ const AccessManagementTab = () => {
         const personToAdd = e.nativeEvent.detail.selected?.azureId
         if ((!personToAdd && !projectId) || projectApiData?.projectMembers.some((p) => p.userId === personToAdd)) { return }
 
-        const addPerson = await (await GetProjectMembersService()).addPerson(projectId, { UserId: personToAdd || "", Role: role })
+        const addPerson = await (await GetProjectMembersService()).addPerson(projectId, { userId: personToAdd || "", role })
         if (addPerson) {
             queryClient.invalidateQueries(
                 { queryKey: ["projectApiData", projectId] },
@@ -107,7 +55,14 @@ const AccessManagementTab = () => {
     }
 
     const handleSwitchPerson = async (personId: string, role: UserRole) => {
-        console.log("switching person: ", personId, " with role: ", role)
+        if (!personId && !projectId) { return }
+
+        const switchRoles = await (await GetProjectMembersService()).updatePerson(projectId, { userId: personId, role })
+        if (switchRoles) {
+            queryClient.invalidateQueries(
+                { queryKey: ["projectApiData", projectId] },
+            )
+        }
     }
 
     useEffect(() => {
@@ -144,200 +99,24 @@ const AccessManagementTab = () => {
                 </Typography>
             </Grid>
             <EditorViewerContainer $isSmallScreen={isSmallScreen}>
-                <EditorViewerContent>
-                    <EditorViewerHeading>
-                        <Icon data={edit} />
-                        <Typography variant="h6">Project editors</Typography>
-                    </EditorViewerHeading>
-                    {editMode && accessRights?.canEdit && (
-                        <PersonSelect
-                            placeholder="Add new"
-                            selectedPerson={null}
-                            onSelect={(selectedPerson) => handleAddPerson(selectedPerson as PersonSelectEvent, UserRole.Editor)}
-                        />
-                    )}
-                    {projectApiData?.projectMembers?.filter((m) => m.role === 1).length > 0 ? (
-                        //     <PeopleContainer>
-                        //     {projectApiData?.projectMembers?.filter((m) => m.role === 1).map((person) => (
-                        //         <PersonListItem key={person.userId} azureId={person.userId}>
-                        //             {editMode && accessRights?.canEdit && <Button variant="ghost" color="danger" onClick={() => handleRemovePerson(person.userId)}>Remove</Button>}
-                        //         </PersonListItem>
-                        //     ))}
-                        // </PeopleContainer>
-                        <PeopleContainer>
-                            {projectApiData?.projectMembers?.filter((m) => m.role === 1).map((person) => (
-                                <PersonListItem key={person.userId} azureId={person.userId}>
-                                    {editMode && accessRights?.canEdit && (
-                                        <>
-                                            <Tooltip title="Switch to viewer">
-                                                <Button variant="ghost_icon" onClick={() => handleSwitchPerson(person.userId, person.role)}>
-                                                    <Icon data={swap_horizontal} />
-                                                </Button>
-                                            </Tooltip>
-                                            <Tooltip title="Remove editor">
-                                                <Button variant="ghost_icon" color="danger" onClick={() => handleRemovePerson(person.userId)}>
-                                                    <Icon data={delete_to_trash} />
-                                                </Button>
-                                            </Tooltip>
-                                        </>
-                                    )}
-                                </PersonListItem>
-                            ))}
-                        </PeopleContainer>
-                    ) : (
-                        <Typography style={{ marginBottom: "150px" }} variant="body_short">{!editMode && "No project editors to show"}</Typography>
-                    )}
-
-                    <Typography variant="h6">PMT members from the project orgchart:</Typography>
-                    <PeopleContainer $orgChart>
-                        {orgChartPeople && orgChartPeople.length > 0 ? (
-                            <>
-                                {
-                                    orgChartPeople.map((p) => (<PersonListItem key={p.azureUniqueId} azureId={p.azureUniqueId} />))
-                                }
-                            </>
-                        ) : <Typography variant="body_short">No PMT members from the project orgchart to show</Typography>}
-                    </PeopleContainer>
-                </EditorViewerContent>
+                <RolePanel
+                    isSmallScreen={isSmallScreen}
+                    people={editors}
+                    handleAddPerson={handleAddPerson}
+                    handleSwitchPerson={handleSwitchPerson}
+                    handleRemovePerson={handleRemovePerson}
+                />
                 <hr />
-                <EditorViewerContent $right $isSmallScreen={isSmallScreen}>
-                    <EditorViewerHeading>
-                        <Icon data={visibility} />
-                        <Typography variant="h6">Project viewers</Typography>
-                    </EditorViewerHeading>
-                    {editMode && accessRights?.canEdit && (
-                        <PersonSelect
-                            placeholder="Add new"
-                            selectedPerson={null}
-                            onSelect={(selectedPerson) => handleAddPerson(selectedPerson as PersonSelectEvent, UserRole.Viewer)}
-                        />
-                    )}
-                    {projectApiData?.projectMembers?.filter((m) => m.role === 0).length > 0 ? (
-                        <PeopleContainer>
-                            {projectApiData?.projectMembers?.filter((m) => m.role === 0).map((person) => (
-                                // <PersonListItem key={person.userId} azureId={person.userId}>
-                                //     {editMode && accessRights?.canEdit && <Button variant="ghost" color="danger" onClick={() => handleRemovePerson(person.userId)}>Remove</Button>}
-                                // </PersonListItem>
-                                <PersonListItem key={person.userId} azureId={person.userId}>
-                                    {editMode && accessRights?.canEdit && (
-                                        <>
-                                            <Tooltip title="Switch to editor">
-                                                <Button variant="ghost_icon" onClick={() => handleSwitchPerson(person.userId, person.role)}>
-                                                    <Icon data={swap_horizontal} />
-                                                </Button>
-                                            </Tooltip>
-                                            <Tooltip title="Remove viewer">
-                                                <Button variant="ghost_icon" color="danger" onClick={() => handleRemovePerson(person.userId)}>
-                                                    <Icon data={delete_to_trash} />
-                                                </Button>
-                                            </Tooltip>
-                                        </>
-                                    )}
-                                </PersonListItem>
-                            ))}
-                        </PeopleContainer>
-                    ) : (<Typography variant="body_short">{!editMode && "No project viewers to show"}</Typography>)}
-
-                </EditorViewerContent>
+                <RolePanel
+                    isSmallScreen={isSmallScreen}
+                    isViewers
+                    people={viewers}
+                    handleAddPerson={handleAddPerson}
+                    handleSwitchPerson={handleSwitchPerson}
+                    handleRemovePerson={handleRemovePerson}
+                />
             </EditorViewerContainer>
-            <ClickableHeading item onClick={() => setExpandAllAccess(!expandAllAccess)}>
-                <Icon data={info_circle} />
-                <Typography variant="h4">Would you like to access all internal Concept App projects?</Typography>
-                <Icon data={expandAllAccess ? chevron_up : chevron_down} />
-            </ClickableHeading>
-            {expandAllAccess
-                && (
-                    <Grid container item>
-                        <Typography variant="body_short">
-                            In order to access all internal projects in Concept App, you need to apply for access in one of the AccessIT groups listed below.
-                            Keep in mind that “Restricted” or “Confidential” projects are only accesible to project members.
-                        </Typography>
-                        <Grid container item gap="100px" marginTop="25px">
-                            <Grid item>
-                                <EditorViewerHeading $smallGap>
-                                    <Icon data={edit} />
-                                    <Typography variant="h6">Application editor</Typography>
-                                </EditorViewerHeading>
-                                <EditorViewerHeading $smallGap>
-                                    <Typography
-                                        link
-                                        href="https://accessit.equinor.com/Search/Search?term=Fusion+-+Concept+App+-+Project+Member+%28FUSION%29"
-                                        target="_blank"
-                                    >
-                                        Concept App - Editor
-                                    </Typography>
-                                    <Icon color="#007079" size={16} data={external_link} />
-                                </EditorViewerHeading>
-                            </Grid>
-                            <Grid item>
-                                <EditorViewerHeading>
-                                    <Typography variant="h6">Application admin</Typography>
-                                </EditorViewerHeading>
-                                <EditorViewerHeading $smallGap>
-                                    <Typography
-                                        link
-                                        href="https://accessit.equinor.com/Search/Search?term=Fusion+-+Concept+App+-+Admin+%28FUSION%29"
-                                        target="_blank"
-                                    >
-                                        Concept App - Admin
-                                    </Typography>
-                                    <Icon color="#007079" size={16} data={external_link} />
-                                </EditorViewerHeading>
-                            </Grid>
-                        </Grid>
-                        <Grid item marginTop="20px">
-                            <EditorViewerHeading>
-                                <Icon data={visibility} />
-                                <Typography variant="h6">Application viewers</Typography>
-                            </EditorViewerHeading>
-                            <EditorViewerHeading $smallGap>
-                                <Typography
-                                    link
-                                    href="https://accessit.equinor.com/Search/Search?term=Fusion+-+Concept+App+-+Observer+%28FUSION%29"
-                                    target="_blank"
-                                >
-                                    Concept App - Viewer
-                                </Typography>
-                                <Icon color="#007079" size={16} data={external_link} />
-                            </EditorViewerHeading>
-                            <Grid item marginTop="50px" display="flex" flexDirection="column" gap="15px">
-                                <Typography variant="body_short">
-                                    The following AccessIT groups also have view access in the app:
-                                </Typography>
-                                <EditorViewerHeading $smallGap>
-                                    <Typography
-                                        link
-                                        href="https://accessit.equinor.com/Search/Search?term=Chief+Engineers+%28FUSION%29"
-                                        target="_blank"
-                                    >
-                                        Chief Engineers (FUSION)
-                                    </Typography>
-                                    <Icon color="#007079" size={16} data={external_link} />
-                                </EditorViewerHeading>
-                                <EditorViewerHeading $smallGap>
-                                    <Typography
-                                        link
-                                        href="https://accessit.equinor.com/Search/Search?term=Leading+Advisors+Project+Management+%26+Control+%28FUSION%29"
-                                        target="_blank"
-                                    >
-                                        Leading Advisors Project Management & Control (FUSION)
-                                    </Typography>
-                                    <Icon color="#007079" size={16} data={external_link} />
-                                </EditorViewerHeading>
-                                <EditorViewerHeading $smallGap>
-                                    <Typography
-                                        link
-                                        href="https://accessit.equinor.com/Search/Search?term=Project+Development+Center+-+Management+%28FUSION%29"
-                                        target="_blank"
-                                    >
-                                        Project Development Center - Management (FUSION)
-                                    </Typography>
-                                    <Icon color="#007079" size={16} data={external_link} />
-                                </EditorViewerHeading>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                )}
+            <ExternalAccessInfo />
         </Grid>
     )
 }

@@ -806,6 +806,13 @@ declare namespace Components {
             sum?: number; // double
             override: boolean;
         }
+        export interface FusionPersonV1 {
+            azureUniqueId?: string | null;
+            mail?: string | null;
+            name?: string | null;
+            accountType?: string | null;
+            accountClassification?: string | null;
+        }
         export interface GAndGAdminCostDto {
             id: string; // uuid
             startYear: number; // int32
@@ -1780,6 +1787,10 @@ declare namespace Components {
             discountRate?: number; // double
             exchangeRateUSDToNOK?: number; // double
         }
+        export interface UpdateProjectMemberDto {
+            role?: ProjectMemberRole /* int32 */;
+            userId?: string; // uuid
+        }
         export interface UpdateRevisionDto {
             name?: string | null;
             arena?: boolean;
@@ -1960,6 +1971,19 @@ declare namespace Components {
     }
 }
 declare namespace Paths {
+    namespace Context$ContextId {
+        namespace Get {
+            namespace Parameters {
+                export type ContextId = string; // uuid
+            }
+            export interface PathParameters {
+                contextId: Parameters.ContextId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.FusionPersonV1[];
+            }
+        }
+    }
     namespace Duplicate {
         namespace Parameters {
             export type CopyCaseId = string; // uuid
@@ -3786,6 +3810,18 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
             }
             export type RequestBody = Components.Schemas.CreateProjectMemberDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.ProjectMemberDto;
+            }
+        }
+        namespace Put {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateProjectMemberDto;
             namespace Responses {
                 export type $200 = Components.Schemas.ProjectMemberDto;
             }

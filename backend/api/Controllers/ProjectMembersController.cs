@@ -22,9 +22,20 @@ public class ProjectMembersController(
     )]
     [HttpDelete("{userId}")]
     [ActionType(ActionType.Edit)]
-    public async Task Get(Guid projectId, Guid userId)
+    public async Task Delete(Guid projectId, Guid userId)
     {
         await projectMemberService.DeleteProjectMember(projectId, userId);
+    }
+
+    [HttpPut]
+    [RequiresApplicationRoles(
+        ApplicationRole.Admin,
+        ApplicationRole.User
+    )]
+    [ActionType(ActionType.Edit)]
+    public async Task<ProjectMemberDto> UpdateProjectMember([FromRoute] Guid projectId, [FromBody] UpdateProjectMemberDto updateProjectMemberDto)
+    {
+        return await projectMemberService.UpdateProjectMember(projectId, updateProjectMemberDto);
     }
 
     [HttpPost]

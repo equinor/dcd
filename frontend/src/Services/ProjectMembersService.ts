@@ -2,7 +2,6 @@ import { config } from "./config"
 import { __BaseService } from "./__BaseService"
 
 import { getToken, loginAccessTokenKey } from "../Utils/common"
-import { User } from "@/Models/AccessManagement"
 
 class __ProjectMembersService extends __BaseService {
     async deletePerson(projectId: string, userId: string) {
@@ -10,8 +9,16 @@ class __ProjectMembersService extends __BaseService {
         return res
     }
 
-    public async addPerson(projectId: string, body: User): Promise<Components.Schemas.ProjectMemberDto> {
+    public async addPerson(projectId: string, body: Components.Schemas.CreateProjectMemberDto): Promise<Components.Schemas.ProjectMemberDto> {
         const res: Components.Schemas.ProjectMemberDto = await this.post<Components.Schemas.ProjectMemberDto>(
+            `${projectId}/members`,
+            { body },
+        )
+        return res
+    }
+
+    public async updatePerson(projectId: string, body: Components.Schemas.UpdateProjectMemberDto): Promise<Components.Schemas.ProjectMemberDto> {
+        const res: Components.Schemas.ProjectMemberDto = await this.put<Components.Schemas.ProjectMemberDto>(
             `${projectId}/members`,
             { body },
         )
