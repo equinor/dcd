@@ -93,6 +93,7 @@ const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } }
             { description: "Add units to facilities tab in view mode"},
             { description: "Fix study cost calculation in cases where DG2 and DG3 were both set to Jan 1st of the same year"},
             { description: "Fix updating case from the cases table in project view"},
+            { description: "Fix so the user can manually type dates in schedule tab"},
         ],
     }
 
