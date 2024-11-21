@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo } from "react"
 import { Typography } from "@equinor/eds-core-react"
 import { PersonSelectEvent } from "@equinor/fusion-react-person"
 import Grid from "@mui/material/Grid"
@@ -8,7 +8,7 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import { useAppContext } from "@/Context/AppContext"
-import { FusionPersonV1, UserRole } from "@/Models/AccessManagement"
+import { UserRole } from "@/Models/AccessManagement"
 import { GetProjectMembersService } from "@/Services/ProjectMembersService"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { GetOrgChartMembersService } from "@/Services/OrgChartMembersService"
@@ -23,7 +23,6 @@ const AccessManagementTab = () => {
     const isSmallScreen = useMediaQuery("(max-width:960px)", { noSsr: true })
     const { setSnackBarMessage } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
-    const [orgChartPeople, setOrgChartPeople] = useState<FusionPersonV1[] | null>(null)
 
     const { data: projectApiData } = useQuery({
         queryKey: ["projectApiData", projectId],

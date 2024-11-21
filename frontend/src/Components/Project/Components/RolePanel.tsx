@@ -1,3 +1,4 @@
+import { useMemo } from "react"
 import {
     delete_to_trash, edit, swap_horizontal, visibility,
 } from "@equinor/eds-icons"
@@ -7,15 +8,13 @@ import {
 import { PersonListItem, PersonSelect, PersonSelectEvent } from "@equinor/fusion-react-person"
 
 import { EditorViewerContent, EditorViewerHeading, PeopleContainer } from "./AccessManagement.styles"
-import { FusionPersonV1, UserRole } from "@/Models/AccessManagement"
+import { UserRole } from "@/Models/AccessManagement"
 import { useAppContext } from "@/Context/AppContext"
 import { useProjectContext } from "@/Context/ProjectContext"
 
-// kanskje orgchart people ikke skal sendes inn som props?
 interface RolePanelProps {
     isSmallScreen: boolean;
     isViewers?: boolean;
-    orgChartPeople?: FusionPersonV1[] | null;
     people?: Components.Schemas.ProjectMemberDto[] | undefined;
     handleAddPerson: (e: PersonSelectEvent, role: UserRole) => void;
     handleSwitchPerson: (userId: string, role: UserRole) => void;
@@ -23,10 +22,12 @@ interface RolePanelProps {
 }
 
 const RolePanel = ({
-    isSmallScreen, isViewers, people, handleAddPerson, handleSwitchPerson, handleRemovePerson, orgChartPeople,
+    isSmallScreen, isViewers, people, handleAddPerson, handleSwitchPerson, handleRemovePerson,
 }: RolePanelProps) => {
     const { editMode } = useAppContext()
     const { accessRights } = useProjectContext()
+
+    // const orgChartPeople = useMemo(() => people?.filter(person => person.isOrgChart === true), [people])
 
     return (
         <EditorViewerContent $right={isViewers} $isSmallScreen={isSmallScreen}>
@@ -65,7 +66,7 @@ const RolePanel = ({
                     </PeopleContainer>
                 ) : (<Typography style={{ marginBottom: "150px" }} variant="body_short">{!editMode && `No project ${isViewers ? "viewers" : "editors"} found`}</Typography>)}
             </div>
-            <PeopleContainer $orgChart>
+            {/* <PeopleContainer $orgChart>
                 {orgChartPeople && orgChartPeople.length > 0 ? (
                     <>
                         <Typography variant="h6">PMT members from the project orgchart:</Typography>
@@ -74,7 +75,7 @@ const RolePanel = ({
                         }
                     </>
                 ) : <Typography variant="h6">No PMT members from the project orgchart found</Typography>}
-            </PeopleContainer>
+            </PeopleContainer> */}
         </EditorViewerContent>
     )
 }
