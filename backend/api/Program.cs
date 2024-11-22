@@ -2,9 +2,9 @@ using System.Globalization;
 
 using api.Authorization;
 using api.Mappings;
-using api.Middleware;
 using api.Services;
 using api.StartupConfiguration;
+using api.StartupConfiguration.Middleware;
 
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.IdentityModel.Logging;
@@ -44,7 +44,7 @@ builder.AddDcdBlogStorage();
 builder.Host.UseSerilog();
 
 var app = builder.Build();
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<DcdExceptionHandlingMiddleware>();
 app.UseRouting();
 
 if (app.Environment.IsDevelopment())
