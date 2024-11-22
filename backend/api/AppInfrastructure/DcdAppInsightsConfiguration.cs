@@ -8,7 +8,7 @@ public static class DcdAppInsightsConfiguration
     {
         var appInsightTelemetryOptions = new ApplicationInsightsServiceOptions
         {
-            ConnectionString = config["ApplicationInsightInstrumentationConnectionString"],
+            ConnectionString = config["ApplicationInsightInstrumentationConnectionString"]
         };
 
         services.AddApplicationInsightsTelemetry(appInsightTelemetryOptions);

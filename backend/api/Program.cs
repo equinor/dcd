@@ -11,8 +11,6 @@ using Microsoft.IdentityModel.Logging;
 
 using Serilog;
 
-using DcdApiEndpointTransformer = api.AppInfrastructure.DcdApiEndpointTransformer;
-
 var cultureInfo = new CultureInfo("en-US");
 
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;

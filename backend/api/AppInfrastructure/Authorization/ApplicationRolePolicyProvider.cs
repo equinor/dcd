@@ -29,7 +29,6 @@ public class ApplicationRolePolicyProvider : IAuthorizationPolicyProvider
             throw new InvalidOperationException($"{nameof(ApplicationRolePolicyProvider)} received an unknown policy: \"{policy}\"");
         }
 
-
         return policy[PolicyPrefix.Length..]
             .Split(PolicyDivider)
             .Select(roleString =>

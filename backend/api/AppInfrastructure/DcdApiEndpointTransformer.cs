@@ -12,9 +12,9 @@ public partial class DcdApiEndpointTransformer : IOutboundParameterTransformer
         }
 
         var endpoint = value.ToString()!;
-        return MyRegex().Replace(endpoint, o => $"{o.Groups[1].Value}-{o.Groups[2].Value}");
+        return EndpointRegex().Replace(endpoint, o => $"{o.Groups[1].Value}-{o.Groups[2].Value}");
     }
 
     [GeneratedRegex("([a-z])([A-Z])")]
-    private static partial Regex MyRegex();
+    private static partial Regex EndpointRegex();
 }

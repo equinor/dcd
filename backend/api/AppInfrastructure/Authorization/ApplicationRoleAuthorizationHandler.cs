@@ -102,7 +102,7 @@ public class ApplicationRoleAuthorizationHandler(
 
     private static ProjectMemberRole? GetUserMembershipRole(Project project, Guid azureUniqueId)
     {
-        var projectMember = project.ProjectMembers?.FirstOrDefault(pm => pm.UserId == azureUniqueId);
+        var projectMember = project.ProjectMembers.FirstOrDefault(pm => pm.UserId == azureUniqueId);
         return projectMember?.Role;
     }
 
