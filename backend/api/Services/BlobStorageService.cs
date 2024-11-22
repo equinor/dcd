@@ -1,7 +1,7 @@
+using api.AppInfrastructure;
 using api.Dtos;
 using api.Exceptions;
 using api.Models;
-using api.StartupConfiguration;
 
 using AutoMapper;
 

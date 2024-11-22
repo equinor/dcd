@@ -1,4 +1,4 @@
-using api.Authorization;
+using api.AppInfrastructure.Authorization;
 using api.Controllers;
 using api.Dtos;
 
