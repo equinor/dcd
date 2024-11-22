@@ -15,7 +15,12 @@ public class DcdDbContext : DbContext
     private readonly IServiceProvider _serviceProvider = null!;
     private readonly CurrentUser? _currentUser;
 
-    private static readonly SemaphoreSlim _semaphore = new(1, 1);
+    private static readonly SemaphoreSlim Semaphore = new(1, 1);
+
+    public DcdDbContext(DbContextOptions<DcdDbContext> options) : base(options)
+    {
+        _currentUser = null;
+    }
 
     public DcdDbContext(DbContextOptions<DcdDbContext> options,
         CurrentUser? currentUser) : base(options)
@@ -34,7 +39,7 @@ public class DcdDbContext : DbContext
     // TODO: This is not pretty, need to move this logic out of the context
     public async Task<int> SaveChangesAndRecalculateAsync(Guid caseId, CancellationToken cancellationToken = default)
     {
-        await _semaphore.WaitAsync(cancellationToken);
+        await Semaphore.WaitAsync(cancellationToken);
         try
         {
             await DetectChangesAndCalculateEntities(caseId);
@@ -77,7 +82,7 @@ public class DcdDbContext : DbContext
         }
         finally
         {
-            _semaphore.Release();
+            Semaphore.Release();
         }
     }
 
