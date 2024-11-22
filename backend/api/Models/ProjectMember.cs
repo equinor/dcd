@@ -9,6 +9,7 @@ public class ProjectMember : IChangeTrackable
     public Guid ProjectId { get; set; }
     public virtual Project Project { get; set; } = null!;
     public ProjectMemberRole Role { get; set; }
+    public bool FromOrgChart { get; set; }
 }
 
 public enum ProjectMemberRole
