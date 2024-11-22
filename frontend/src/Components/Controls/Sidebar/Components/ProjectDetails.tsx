@@ -33,10 +33,16 @@ const ProjectDetails: React.FC = () => {
     const { caseId } = useParams()
     const { setActiveTabProject } = useProjectContext()
     const navigate = useNavigate()
+    const { isRevision, projectId } = useProjectContext()
+    const { revisionId } = useParams()
 
     const navigateToProjectTab = (index: number) => {
         setActiveTabProject(index)
-        navigate(projectPath(currentContext?.id!))
+        if (isRevision && revisionId) {
+            navigate(`${projectPath(projectId)}/revision/${revisionId}`)
+        } else {
+            navigate(projectPath(currentContext?.id!))
+        }
     }
     return caseId
         ? (
