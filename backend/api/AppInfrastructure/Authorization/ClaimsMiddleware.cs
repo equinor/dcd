@@ -4,7 +4,7 @@ using Fusion;
 using Fusion.Integration.Authentication;
 using Fusion.Integration.Profile;
 
-namespace api.Authorization;
+namespace api.AppInfrastructure.Authorization;
 
 public class ClaimsMiddleware(
     RequestDelegate nextMiddleware,
@@ -14,14 +14,9 @@ public class ClaimsMiddleware(
 
     public async Task InvokeAsync(HttpContext httpContext, CurrentUser currentUser)
     {
-        if (httpContext.User == null)
-        {
-            logger.LogError("User null");
-        }
+        currentUser.Username = httpContext.User.Identity?.Name;
 
-        currentUser.Username = httpContext.User?.Identity?.Name;
-
-        var userId = httpContext.User?.GetAzureUniqueId();
+        var userId = httpContext.User.GetAzureUniqueId();
         if (userId != null)
         {
             SetAppRoleClaims(httpContext);
@@ -54,10 +49,9 @@ public class ClaimsMiddleware(
 
         var rolesAsString = string.Join(",", applicationRoleClaims.Select(x => x.Value.ToString()));
 
-        logger.LogInformation("Application Roles for User {UserName}: {roles}", httpContext.User?.Identity?.Name, rolesAsString);
+        logger.LogInformation("Application Roles for User {UserName}: {roles}", httpContext.User.Identity?.Name, rolesAsString);
 
-        var claimsIdentity = httpContext.User?.Identity as ClaimsIdentity;
-        if (claimsIdentity == null)
+        if (httpContext.User.Identity is not ClaimsIdentity claimsIdentity)
         {
             logger.LogError("ClaimsIdentity null");
             return;
@@ -98,13 +92,11 @@ public class ClaimsMiddleware(
         return null;
     }
 
-    private IReadOnlySet<ApplicationRole> RolesFromAzure(IEnumerable<Claim> claims)
+    private static HashSet<ApplicationRole> RolesFromAzure(IEnumerable<Claim> claims)
     {
         return claims
             .Where(claim => claim.Type == ClaimsIdentity.DefaultRoleClaimType)
-            .Select(
-                claim => Enum.TryParse(claim.Value, out ApplicationRole parsedRole) ? parsedRole : (ApplicationRole?)null
-            )
+            .Select(claim => Enum.TryParse(claim.Value, out ApplicationRole parsedRole) ? parsedRole : (ApplicationRole?)null)
             .Where(role => role != null)
             .Select(role => role!.Value)
             .ToHashSet();

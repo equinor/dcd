@@ -1,15 +1,17 @@
 using System.Globalization;
 
-using api.Authorization;
+using api.AppInfrastructure;
+using api.AppInfrastructure.Authorization;
+using api.AppInfrastructure.Middleware;
 using api.Mappings;
 using api.Services;
-using api.StartupConfiguration;
-using api.StartupConfiguration.Middleware;
 
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.IdentityModel.Logging;
 
 using Serilog;
+
+using DcdApiEndpointTransformer = api.AppInfrastructure.DcdApiEndpointTransformer;
 
 var cultureInfo = new CultureInfo("en-US");
 

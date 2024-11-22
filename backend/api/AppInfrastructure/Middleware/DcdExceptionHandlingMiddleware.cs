@@ -3,7 +3,7 @@ using System.Text.Json;
 
 using api.Exceptions;
 
-namespace api.StartupConfiguration.Middleware;
+namespace api.AppInfrastructure.Middleware;
 
 public class DcdExceptionHandlingMiddleware(
     RequestDelegate requestDelegate,

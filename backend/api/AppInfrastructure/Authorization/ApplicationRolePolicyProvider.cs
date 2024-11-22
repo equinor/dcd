@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 
-namespace api.Authorization;
+namespace api.AppInfrastructure.Authorization;
 
 public class ApplicationRolePolicyProvider : IAuthorizationPolicyProvider
 {
@@ -12,24 +12,21 @@ public class ApplicationRolePolicyProvider : IAuthorizationPolicyProvider
         return PolicyPrefix + string.Join(PolicyDivider, applicationRoles);
     }
 
-    public Task<AuthorizationPolicy?> GetFallbackPolicyAsync() =>
-        Task.FromResult((AuthorizationPolicy?)DefaultApplicationRole());
+    public Task<AuthorizationPolicy?> GetFallbackPolicyAsync() => Task.FromResult<AuthorizationPolicy?>(DefaultApplicationRole());
 
     public Task<AuthorizationPolicy> GetDefaultPolicyAsync() => Task.FromResult(DefaultApplicationRole());
 
     public Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
     {
         var applicationRoles = PolicyToApplicationRoles(policyName).ToList();
-        return Task.FromResult((AuthorizationPolicy?)PolicyWithRequiredRole(applicationRoles));
+        return Task.FromResult<AuthorizationPolicy?>(PolicyWithRequiredRole(applicationRoles));
     }
 
     private static IEnumerable<ApplicationRole> PolicyToApplicationRoles(string policy)
     {
         if (!policy.StartsWith(PolicyPrefix, StringComparison.OrdinalIgnoreCase))
         {
-            throw new InvalidOperationException(
-                $"{nameof(ApplicationRolePolicyProvider)} received an unknown policy: \"{policy}\""
-            );
+            throw new InvalidOperationException($"{nameof(ApplicationRolePolicyProvider)} received an unknown policy: \"{policy}\"");
         }
 
 
@@ -39,9 +36,7 @@ public class ApplicationRolePolicyProvider : IAuthorizationPolicyProvider
             {
                 if (!Enum.IsDefined(typeof(ApplicationRole), roleString))
                 {
-                    throw new InvalidOperationException(
-                        $"{nameof(ApplicationRolePolicyProvider)} could not recognize the application role \"{roleString}\" in the policy \"{policy}\""
-                    );
+                    throw new InvalidOperationException($"{nameof(ApplicationRolePolicyProvider)} could not recognize the application role \"{roleString}\" in the policy \"{policy}\"");
                 }
 
                 return Enum.Parse<ApplicationRole>(roleString);

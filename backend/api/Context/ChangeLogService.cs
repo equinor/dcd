@@ -1,7 +1,7 @@
 using System.Reflection;
 using System.Text.Json;
 
-using api.Authorization;
+using api.AppInfrastructure.Authorization;
 using api.Models;
 using api.Models.Interfaces;
 

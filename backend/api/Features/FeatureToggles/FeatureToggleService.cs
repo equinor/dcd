@@ -1,4 +1,4 @@
-using api.StartupConfiguration;
+using api.AppInfrastructure;
 
 namespace api.Features.FeatureToggles;
 

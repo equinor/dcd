@@ -1,6 +1,6 @@
 using Azure.Storage.Blobs;
 
-namespace api.StartupConfiguration;
+namespace api.AppInfrastructure;
 
 public static class DcdBlogStorageConfiguration
 {

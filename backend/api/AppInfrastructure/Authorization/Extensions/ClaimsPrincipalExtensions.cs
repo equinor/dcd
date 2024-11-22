@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace api.Authorization.Extensions;
+namespace api.AppInfrastructure.Authorization.Extensions;
 
 public static class ClaimsPrincipalExtensions
 {
