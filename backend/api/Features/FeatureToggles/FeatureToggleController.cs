@@ -1,9 +1,9 @@
-using api.Authorization;
+using api.AppInfrastructure.Authorization;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 
-namespace api.StartupConfiguration.FeatureToggles;
+namespace api.Features.FeatureToggles;
 
 [ApiController]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]

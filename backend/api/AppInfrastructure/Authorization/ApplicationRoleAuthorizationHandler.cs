@@ -1,7 +1,6 @@
 using System.Reflection;
-using System.Text.RegularExpressions;
 
-using api.Authorization.Extensions;
+using api.AppInfrastructure.Authorization.Extensions;
 using api.Controllers;
 using api.Exceptions;
 using api.Models;
@@ -10,7 +9,7 @@ using api.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Controllers;
 
-namespace api.Authorization;
+namespace api.AppInfrastructure.Authorization;
 
 public class ApplicationRoleAuthorizationHandler(
     IProjectAccessRepository projectAccessRepository,
@@ -90,29 +89,15 @@ public class ApplicationRoleAuthorizationHandler(
         var azureUniqueId = GetAzureUniqueId(context);
         var userMembershipRole = GetUserMembershipRole(project, azureUniqueId);
 
-        var requiredRolesForEdit = new List<ApplicationRole> {
-            ApplicationRole.Admin,
-            ApplicationRole.User
-        };
-        var requiredRolesForView = new List<ApplicationRole> {
-            ApplicationRole.ReadOnly,
-            ApplicationRole.Admin,
-            ApplicationRole.User
-        };
+        List<ApplicationRole> requiredRolesForEdit = [ApplicationRole.Admin, ApplicationRole.User];
+        List<ApplicationRole> requiredRolesForView = [ApplicationRole.Admin, ApplicationRole.User, ApplicationRole.ReadOnly];
 
-        if (actionType == ActionType.Edit)
+        return actionType switch
         {
-            userHasRequiredRole = userRoles.Any(requiredRolesForEdit.Contains)
-            || userMembershipRole == ProjectMemberRole.Editor;
-        }
-        else if (actionType == ActionType.Read)
-        {
-            userHasRequiredRole = userRoles.Any(requiredRolesForView.Contains)
-            || userMembershipRole == ProjectMemberRole.Editor
-            || userMembershipRole == ProjectMemberRole.Observer;
-        }
-
-        return userHasRequiredRole;
+            ActionType.Edit => userRoles.Any(requiredRolesForEdit.Contains) || userMembershipRole == ProjectMemberRole.Editor,
+            ActionType.Read => userRoles.Any(requiredRolesForView.Contains) || userMembershipRole == ProjectMemberRole.Editor || userMembershipRole == ProjectMemberRole.Observer,
+            _ => userHasRequiredRole
+        };
     }
 
     private static ProjectMemberRole? GetUserMembershipRole(Project project, Guid azureUniqueId)
@@ -124,10 +109,12 @@ public class ApplicationRoleAuthorizationHandler(
     private ActionType? GetActionTypeFromEndpoint()
     {
         var endpoint = httpContextAccessor.HttpContext?.GetEndpoint();
-        if (endpoint == null) { return null; }
 
-        var controllerActionDescriptor = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>();
-        if (controllerActionDescriptor == null) { return null; }
+        var controllerActionDescriptor = endpoint?.Metadata.GetMetadata<ControllerActionDescriptor>();
+        if (controllerActionDescriptor == null)
+        {
+            return null;
+        }
 
         var actionTypeAttribute = controllerActionDescriptor.MethodInfo.GetCustomAttribute<ActionTypeAttribute>();
 
@@ -144,7 +131,7 @@ public class ApplicationRoleAuthorizationHandler(
             return null;
         }
 
-        if (!Guid.TryParse(projectId.ToString(), out Guid projectIdGuid))
+        if (!Guid.TryParse(projectId.ToString(), out var projectIdGuid))
         {
             // TODO: Should this throw an error?
             return null;

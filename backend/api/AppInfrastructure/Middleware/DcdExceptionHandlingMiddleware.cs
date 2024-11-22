@@ -3,11 +3,11 @@ using System.Text.Json;
 
 using api.Exceptions;
 
-namespace api.Middleware;
+namespace api.AppInfrastructure.Middleware;
 
-public class ExceptionHandlingMiddleware(
+public class DcdExceptionHandlingMiddleware(
     RequestDelegate requestDelegate,
-    ILogger<ExceptionHandlingMiddleware> logger)
+    ILogger<DcdExceptionHandlingMiddleware> logger)
 {
     public async Task Invoke(HttpContext context)
     {

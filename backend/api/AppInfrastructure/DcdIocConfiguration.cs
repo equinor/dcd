@@ -1,4 +1,4 @@
-using api.Authorization;
+using api.AppInfrastructure.Authorization;
 using api.Repositories;
 using api.Services;
 using api.Services.EconomicsServices;
@@ -8,7 +8,7 @@ using api.Services.GenerateCostProfiles;
 
 using Microsoft.AspNetCore.Authorization;
 
-namespace api.StartupConfiguration;
+namespace api.AppInfrastructure;
 
 public static class DcdIocConfiguration
 {

@@ -1,6 +1,6 @@
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 
-namespace api.StartupConfiguration;
+namespace api.AppInfrastructure;
 
 public static class DcdAppInsightsConfiguration
 {

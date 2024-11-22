@@ -1,4 +1,4 @@
-using api.Authorization;
+using api.AppInfrastructure.Authorization;
 using api.Dtos;
 using api.Services.GenerateCostProfiles;
 

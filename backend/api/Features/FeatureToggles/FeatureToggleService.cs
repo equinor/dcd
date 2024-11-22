@@ -1,4 +1,6 @@
-namespace api.StartupConfiguration.FeatureToggles;
+using api.AppInfrastructure;
+
+namespace api.Features.FeatureToggles;
 
 public static class FeatureToggleService
 {

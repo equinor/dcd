@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 
-namespace api.Authorization;
+namespace api.AppInfrastructure.Authorization;
 
 public class ApplicationRoleRequirement(List<ApplicationRole> roles) : IAuthorizationRequirement
 {

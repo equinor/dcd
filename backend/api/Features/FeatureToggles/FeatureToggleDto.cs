@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace api.StartupConfiguration.FeatureToggles;
+namespace api.Features.FeatureToggles;
 
 public class FeatureToggleDto
 {

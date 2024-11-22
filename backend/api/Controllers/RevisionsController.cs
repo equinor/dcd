@@ -1,7 +1,7 @@
-using api.Authorization;
+using api.AppInfrastructure.Authorization;
 using api.Dtos.Project.Revision;
+using api.Features.FeatureToggles;
 using api.Services;
-using api.StartupConfiguration.FeatureToggles;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;

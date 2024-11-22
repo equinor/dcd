@@ -1,6 +1,6 @@
 using Microsoft.OpenApi.Models;
 
-namespace api.StartupConfiguration;
+namespace api.AppInfrastructure;
 
 public static class DcdSwaggerConfiguration
 {

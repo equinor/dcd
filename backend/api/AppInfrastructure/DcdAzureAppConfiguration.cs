@@ -2,7 +2,7 @@ using Azure.Identity;
 
 using Microsoft.Extensions.Configuration.AzureAppConfiguration;
 
-namespace api.StartupConfiguration;
+namespace api.AppInfrastructure;
 
 public static class DcdAzureAppConfiguration
 {

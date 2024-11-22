@@ -1,6 +1,6 @@
 using Serilog;
 
-namespace api.StartupConfiguration;
+namespace api.AppInfrastructure;
 
 public static class DcdLogConfiguration
 {

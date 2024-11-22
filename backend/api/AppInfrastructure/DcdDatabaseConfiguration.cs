@@ -3,7 +3,7 @@ using api.Context;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.StartupConfiguration;
+namespace api.AppInfrastructure;
 
 public static class DcdDatabaseConfiguration
 {
@@ -29,14 +29,14 @@ public static class DcdDatabaseConfiguration
                 sqliteConnection.Open();
                 dbContextOptionsBuilder.UseSqlite(sqliteConnection);
 
-                using var context = new DcdDbContext(dbContextOptionsBuilder.Options, null);
+                using var context = new DcdDbContext(dbContextOptionsBuilder.Options);
                 context.Database.EnsureCreated();
             }
             else
             {
                 var dbBuilder = new DbContextOptionsBuilder<DcdDbContext>();
                 dbBuilder.UseSqlServer(sqlServerConnectionString);
-                using var context = new DcdDbContext(dbBuilder.Options, null);
+                using var context = new DcdDbContext(dbBuilder.Options);
             }
         }
 
