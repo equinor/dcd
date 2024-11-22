@@ -1,4 +1,4 @@
-namespace api.Dtos;
+namespace api.Features.Prosp.Models;
 
 public class SharePointImportDto
 {

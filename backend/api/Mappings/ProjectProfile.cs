@@ -1,8 +1,7 @@
 using api.Dtos;
 using api.Dtos.Project.Revision;
+using api.Features.FusionIntegration.ProjectMaster.Models;
 using api.Models;
-
-using api.Services.FusionIntegration.Models;
 
 using AutoMapper;
 

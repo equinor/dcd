@@ -1,11 +1,10 @@
 using api.AppInfrastructure.Authorization;
-using api.Dtos;
-using api.Services;
+using api.Controllers;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 
-namespace api.Controllers;
+namespace api.Features.Cases.CaseComparison;
 
 [ApiController]
 [Route("projects")]
