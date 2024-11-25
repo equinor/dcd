@@ -1,14 +1,14 @@
-namespace api.Helpers.Prosp;
+namespace api.Features.Prosp.Models;
 
-public class Prosp
+public class ProspAppConfigModel
 {
-    public SubStructure SubStructure = new();
-    public Surf Surf = new();
-    public TopSide TopSide = new();
-    public Transport Transport = new();
+    public SubStructureAppConfigModel SubStructure = new();
+    public SurfAppConfigModel Surf = new();
+    public TopSideAppConfigModel TopSide = new();
+    public TransportAppConfigModel Transport = new();
 }
 
-public class Surf
+public class SurfAppConfigModel
 {
     public string costProfileStartYear { get; set; } = null!;
     public string dG3Date { get; set; } = null!;
@@ -28,7 +28,7 @@ public class Surf
     public string cessationCost { get; set; } = null!;
 }
 
-public class TopSide
+public class TopSideAppConfigModel
 {
     public string costProfileStartYear { get; set; } = null!;
     public string dG3Date { get; set; } = null!;
@@ -56,7 +56,7 @@ public class TopSide
     public string peakElectricityImported { get; set; } = null!;
 }
 
-public class SubStructure
+public class SubStructureAppConfigModel
 {
     public string costProfileStartYear { get; set; } = null!;
 
@@ -71,7 +71,7 @@ public class SubStructure
     public string importedCurrency { get; set; } = null!;
 }
 
-public class Transport
+public class TransportAppConfigModel
 {
     public string costProfileStartYear { get; set; } = null!;
     public string dG3Date { get; set; } = null!;

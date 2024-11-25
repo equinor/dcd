@@ -1,4 +1,4 @@
-namespace api.Models.Fusion;
+namespace api.Features.FusionIntegration.OrgChart.Models;
 
 public record FusionPersonResponseV1(List<FusionPersonResultV1> Results, int Count);
 

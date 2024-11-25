@@ -1,11 +1,8 @@
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
-namespace api.Services.FusionIntegration.Models;
+namespace api.Features.FusionIntegration.ProjectMaster.Models;
 
-/// <summary>
-/// Representation of a Project Master in Fusion.
-/// </summary>
 [Serializable]
 [DataContract]
 public class FusionProjectMaster

@@ -1,27 +1,27 @@
 using System.Web;
 
-using api.Dtos;
+using api.Features.Prosp.Exceptions;
+using api.Features.Prosp.Models;
 using api.Models;
 
 using Microsoft.Graph;
 
-namespace api.Services;
+namespace api.Features.Prosp.Services;
 
 public class ProspSharepointImportService(
     GraphServiceClient graphServiceClient,
     ProspExcelImportService prospExcelImportService,
     ILogger<ProspSharepointImportService> logger)
 {
-    public async Task<List<DriveItem>> GetDeltaDriveItemCollectionFromSite(string? url)
+    public async Task<List<DriveItemDto>> GetDeltaDriveItemCollectionFromSite(string? url)
     {
-        var driveItems = new List<DriveItem>();
         var siteIdAndParentRef = await GetSiteIdAndParentReferencePath(url);
         var siteId = siteIdAndParentRef[0];
         var parentRefPath = siteIdAndParentRef.Count > 1 ? siteIdAndParentRef[1] : "";
 
         if (string.IsNullOrWhiteSpace(siteId))
         {
-            return driveItems;
+            return [];
         }
 
         try
@@ -30,18 +30,17 @@ public class ProspSharepointImportService(
             var itemPath = string.Join('/', parentRefPath?.Split('/').Skip(4) ?? Array.Empty<string>());
             var driveId = await GetDocumentLibraryDriveId(siteId, documentLibraryName);
 
-            return await GetDeltaDriveItemCollectionFromSite(itemPath, siteId, driveId, driveItems);
+            return await GetDeltaDriveItemCollectionFromSite(itemPath, siteId, driveId);
         }
-        catch (Exception? e)
+        catch (Exception e)
         {
             logger.LogError(e, $"failed retrieving list of latest DriveItems in Site: {e.Message}");
         }
 
-        return driveItems;
+        return [];
     }
 
-    private async Task<List<DriveItem>> GetDeltaDriveItemCollectionFromSite(string itemPath, string siteId,
-        string? driveId, List<DriveItem> driveItems)
+    private async Task<List<DriveItemDto>> GetDeltaDriveItemCollectionFromSite(string itemPath, string siteId, string? driveId)
     {
         IDriveItemDeltaCollectionPage? driveItemsDelta;
         if (!string.IsNullOrWhiteSpace(itemPath))
@@ -55,15 +54,25 @@ public class ProspSharepointImportService(
                 .Delta().Request().GetAsync();
         }
 
-
         if (driveItemsDelta == null)
         {
-            return driveItems;
+            return [];
         }
 
-        driveItems.AddRange(driveItemsDelta);
-
-        return driveItems;
+        return driveItemsDelta.Select(x => new DriveItemDto
+            {
+                Name = x.Name,
+                Id = x.Id,
+                SharepointFileUrl = null,
+                CreatedDateTime = x.CreatedDateTime,
+                Content = x.Content,
+                Size = x.Size,
+                SharepointIds = x.SharepointIds,
+                CreatedBy = x.CreatedBy,
+                LastModifiedBy = x.LastModifiedBy,
+                LastModifiedDateTime = x.LastModifiedDateTime
+            })
+            .ToList();
     }
 
     private async Task<string?> GetDocumentLibraryDriveId(string siteId, string? documentLibraryName)
@@ -79,11 +88,8 @@ public class ProspSharepointImportService(
 
         var driveIds = getDrivesInSite.Where(x => x.Name == decodedDocumentLibraryName).Select(i => i.Id).ToList();
 
-        var driveId = driveIds?.FirstOrDefault();
-        return driveId;
+        return driveIds.FirstOrDefault();
     }
-
-    public class AccessDeniedException(string message, Exception innerException) : Exception(message, innerException);
 
     private async Task<List<string>> GetSiteIdAndParentReferencePath(string? url)
     {
@@ -123,17 +129,17 @@ public class ProspSharepointImportService(
         }
         catch (UriFormatException ex)
         {
-            logger?.LogError(ex, "Invalid URI format: {Url}", url);
+            logger.LogError(ex, "Invalid URI format: {Url}", url);
             throw; // Consider how to handle this error. Maybe wrap it in a custom exception for higher-level handling.
         }
         catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {
-            logger?.LogError(ex, "Access Denied when attempting to access SharePoint site: {Url}", url);
+            logger.LogError(ex, "Access Denied when attempting to access SharePoint site: {Url}", url);
             throw new AccessDeniedException("Access to SharePoint resource was denied.", ex);
         }
         catch (Exception ex)
         {
-            logger?.LogError(ex, "An error occurred while attempting to access SharePoint site: {Url}", url);
+            logger.LogError(ex, "An error occurred while attempting to access SharePoint site: {Url}", url);
             throw; // Re-throw the exception to be handled upstream.
         }
 
@@ -149,7 +155,6 @@ public class ProspSharepointImportService(
 
     public async Task ConvertSharepointFilesToProjectDto(Guid projectId, SharePointImportDto[] dtos)
     {
-        var projectDto = new ProjectWithAssetsDto();
         if (string.IsNullOrWhiteSpace(dtos.FirstOrDefault()?.SharePointSiteUrl))
         {
             return;
@@ -201,30 +206,28 @@ public class ProspSharepointImportService(
                 continue;
             }
 
-            foreach (var iteminfo in dtos.Where(importDto =>
+            foreach (var itemInfo in dtos.Where(importDto =>
                          importDto.Id != null && new Guid(importDto.Id) == caseWithFileStream.Key))
             {
-                var assets = MapAssets(iteminfo.Surf, iteminfo.Substructure, iteminfo.Topside,
-                    iteminfo.Transport);
+                var assets = MapAssets(itemInfo.Surf, itemInfo.Substructure, itemInfo.Topside,
+                    itemInfo.Transport);
 
                 await prospExcelImportService.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
                     projectId,
                     assets,
-                    iteminfo.SharePointFileId,
-                    iteminfo.SharePointFileName,
-                    iteminfo.SharePointFileUrl);
+                    itemInfo.SharePointFileId,
+                    itemInfo.SharePointFileName,
+                    itemInfo.SharePointFileUrl);
             }
         }
     }
 
     private async Task<string?> GetDriveIdFromSharePointSiteUrl(SharePointImportDto[] dtos, string siteId)
     {
-        var siteIdAndParentRef =
-            GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()?.SharePointSiteUrl).Result;
+        var siteIdAndParentRef = GetSiteIdAndParentReferencePath(dtos.FirstOrDefault()?.SharePointSiteUrl).Result;
         var parentRefPath = siteIdAndParentRef.Count > 1 ? siteIdAndParentRef[1] : "";
         var documentLibraryName = parentRefPath.Split('/')[3];
-        var driveId = await GetDocumentLibraryDriveId(siteId, documentLibraryName);
-        return driveId;
+        return await GetDocumentLibraryDriveId(siteId, documentLibraryName);
     }
 
     private static Dictionary<string, bool> MapAssets(bool surf, bool substructure, bool topside, bool transport)
@@ -234,7 +237,7 @@ public class ProspSharepointImportService(
             { nameof(Surf), surf },
             { nameof(Topside), topside },
             { nameof(Substructure), substructure },
-            { nameof(Transport), transport },
+            { nameof(Transport), transport }
         };
     }
 }

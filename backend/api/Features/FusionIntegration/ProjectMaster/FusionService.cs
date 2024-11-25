@@ -1,10 +1,10 @@
-using api.Services.FusionIntegration.Models;
+using api.Features.FusionIntegration.ProjectMaster.Models;
 
 using Fusion.Integration;
 
 using Newtonsoft.Json;
 
-namespace api.Services.FusionIntegration;
+namespace api.Features.FusionIntegration.ProjectMaster;
 
 public class FusionService(
     IFusionContextResolver fusionContextResolver,
@@ -19,12 +19,12 @@ public class FusionService(
         {
             // -> No, still not found. Then we log this and fail hard, as the callee should have provided with a
             // valid ProjectMaster (context) ID.
-            logger.LogInformation($"Could not resolve ProjectMaster context from Fusion using GUID '{{contextId}}'", contextId);
+            logger.LogInformation($"Could not resolve ProjectMaster context from Fusion using GUID '{contextId}'");
             return null;
         }
 
         var serializedProjectMaster = JsonConvert.SerializeObject(projectMasterContext.Value);
-        FusionProjectMaster? fusionProjectMaster = JsonConvert.DeserializeObject<FusionProjectMaster>(serializedProjectMaster);
+        var fusionProjectMaster = JsonConvert.DeserializeObject<FusionProjectMaster>(serializedProjectMaster);
 
         if (fusionProjectMaster == null)
         {
@@ -37,21 +37,16 @@ public class FusionService(
 
     private async Task<FusionContext?> ResolveProjectMasterContext(Guid contextId)
     {
-        FusionContext? projectMasterContext = await fusionContextResolver.ResolveContextAsync(contextId, FusionContextType.ProjectMaster);
+        var projectMasterContext = await fusionContextResolver.ResolveContextAsync(contextId, FusionContextType.ProjectMaster);
 
-        Console.WriteLine("ResolveProjectMasterContext - contextId: " + contextId);
-        Console.WriteLine("ResolveProjectMasterContext - projectMasterContext: " + projectMasterContext);
         // It might be the GUID provided was the ProjectMaster ID and not the GUID of the Fusion Context. Will
         // thus attempt to query for the ProjectMaster "directly" if not found.
         if (projectMasterContext == null)
         {
-            IEnumerable<FusionContext> queryContextsAsync = await fusionContextResolver.QueryContextsAsync(
-                query =>
-                {
-                    query
-                        .WhereTypeIn(FusionContextType.ProjectMaster)
-                        .WhereExternalId(contextId.ToString(), QueryOperator.Equals);
-                });
+            var queryContextsAsync = await fusionContextResolver.QueryContextsAsync(
+                query => query
+                    .WhereTypeIn(FusionContextType.ProjectMaster)
+                    .WhereExternalId(contextId.ToString(), QueryOperator.Equals));
             projectMasterContext = queryContextsAsync.FirstOrDefault();
         }
 

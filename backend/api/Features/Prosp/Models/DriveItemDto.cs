@@ -1,6 +1,6 @@
 using Microsoft.Graph;
 
-namespace api.Dtos;
+namespace api.Features.Prosp.Models;
 
 public class DriveItemDto
 {

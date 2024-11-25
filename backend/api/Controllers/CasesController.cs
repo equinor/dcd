@@ -1,6 +1,8 @@
 using api.AppInfrastructure.Authorization;
 using api.Dtos;
 using api.Features.FeatureToggles;
+using api.Features.Images;
+using api.Features.Images.Service;
 using api.Services;
 
 using Microsoft.AspNetCore.Mvc;

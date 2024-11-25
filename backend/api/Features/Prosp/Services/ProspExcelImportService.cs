@@ -1,16 +1,14 @@
 using api.Dtos;
-using api.Helpers.Prosp;
+using api.Features.Prosp.Models;
 using api.Models;
+using api.Services;
 
 using AutoMapper;
 
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
-using Surf = api.Helpers.Prosp.Surf;
-using Transport = api.Helpers.Prosp.Transport;
-
-namespace api.Services;
+namespace api.Features.Prosp.Services;
 
 public class ProspExcelImportService(
     ICaseService caseService,
@@ -26,20 +24,23 @@ public class ProspExcelImportService(
     IMapper mapper)
 {
     private const string SheetName = "main";
-    private readonly Prosp _prospConfig = CreateConfig(config);
+    private readonly ProspAppConfigModel _prospConfig = CreateConfig(config);
 
-    private static Prosp CreateConfig(IConfiguration config)
+    private static ProspAppConfigModel CreateConfig(IConfiguration config)
     {
-        var prospImportConfig = config.GetSection("FileImportSettings:Prosp").Get<Prosp>();
-        if (prospImportConfig == null)
+        var prospAppConfigModel = config.GetSection("FileImportSettings:Prosp").Get<ProspAppConfigModel>();
+
+        if (prospAppConfigModel == null)
         {
             throw new Exception("Prosp import settings not found in appsettings.json");
         }
-        prospImportConfig.Surf = config.GetSection("FileImportSettings:Prosp:Surf").Get<Surf>() ?? new Surf();
-        prospImportConfig.SubStructure = config.GetSection("FileImportSettings:Prosp:SubStructure").Get<SubStructure>() ?? new SubStructure();
-        prospImportConfig.TopSide = config.GetSection("FileImportSettings:Prosp:TopSide").Get<TopSide>() ?? new TopSide();
-        prospImportConfig.Transport = config.GetSection("FileImportSettings:Prosp:Transport").Get<Transport>() ?? new Transport();
-        return prospImportConfig;
+
+        prospAppConfigModel.Surf = config.GetSection("FileImportSettings:Prosp:Surf").Get<SurfAppConfigModel>() ?? new SurfAppConfigModel();
+        prospAppConfigModel.SubStructure = config.GetSection("FileImportSettings:Prosp:SubStructure").Get<SubStructureAppConfigModel>() ?? new SubStructureAppConfigModel();
+        prospAppConfigModel.TopSide = config.GetSection("FileImportSettings:Prosp:TopSide").Get<TopSideAppConfigModel>() ?? new TopSideAppConfigModel();
+        prospAppConfigModel.Transport = config.GetSection("FileImportSettings:Prosp:Transport").Get<TransportAppConfigModel>() ?? new TransportAppConfigModel();
+
+        return prospAppConfigModel;
     }
 
     private static double ReadDoubleValue(IEnumerable<Cell> cellData, string coordinate)
@@ -67,7 +68,7 @@ public class ProspExcelImportService(
     private static double[] ReadDoubleValues(IEnumerable<Cell> cellData, List<string> coordinates)
     {
         var values = new List<double>();
-        foreach (var cell in cellData.Where(c => c?.CellReference != null && coordinates.Contains(c.CellReference!)))
+        foreach (var cell in cellData.Where(c => c.CellReference != null && coordinates.Contains(c.CellReference!)))
             if (double.TryParse(cell.CellValue?.InnerText.Replace(',', '.'), out var value))
             {
                 values.Add(value);
@@ -225,7 +226,7 @@ public class ProspExcelImportService(
             Currency = currency,
             CostYear = costYear,
             FacilityOpex = facilityOpex,
-            PeakElectricityImported = peakElectricityImported,
+            PeakElectricityImported = peakElectricityImported
         };
 
         await topsideService.UpdateTopside(projectId, sourceCaseId, topsideLink, updateTopsideDto);
@@ -253,7 +254,7 @@ public class ProspExcelImportService(
         var costProfile = new UpdateSubstructureCostProfileDto
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
-            StartYear = costProfileStartYear - dG4Date.Year,
+            StartYear = costProfileStartYear - dG4Date.Year
         };
 
         // Prosp meta data
@@ -272,7 +273,7 @@ public class ProspExcelImportService(
             Source = Source.Prosp,
             ProspVersion = versionDate,
             Currency = currency,
-            CostYear = costYear,
+            CostYear = costYear
         };
 
         await substructureService.UpdateSubstructure(projectId, sourceCaseId, substructureLink, updateSubstructureDto);
@@ -318,7 +319,7 @@ public class ProspExcelImportService(
             Currency = currency,
             CostYear = costYear,
             OilExportPipelineLength = oilExportPipelineLength,
-            GasExportPipelineLength = gasExportPipelineLength,
+            GasExportPipelineLength = gasExportPipelineLength
         };
 
         await transportService.UpdateTransport(projectId, sourceCaseId, transportLink, updateTransportDto);
@@ -387,7 +388,7 @@ public class ProspExcelImportService(
             {
                 SharepointFileId = sharepointFileId,
                 SharepointFileName = sharepointFileName,
-                SharepointFileUrl = sharepointFileUrl,
+                SharepointFileUrl = sharepointFileUrl
             };
 
             await caseService.UpdateCase(projectId, sourceCaseId, caseDto);
@@ -421,7 +422,7 @@ public class ProspExcelImportService(
         var surfLink = caseItem.SurfLink;
         var dto = new PROSPUpdateSurfDto
         {
-            Source = Source.ConceptApp,
+            Source = Source.ConceptApp
         };
 
         var costProfileDto = new UpdateSurfCostProfileDto();
@@ -435,7 +436,7 @@ public class ProspExcelImportService(
         var topsideLink = caseItem.TopsideLink;
         var dto = new PROSPUpdateTopsideDto
         {
-            Source = Source.ConceptApp,
+            Source = Source.ConceptApp
         };
 
         var costProfileDto = new UpdateTopsideCostProfileDto();
@@ -450,7 +451,7 @@ public class ProspExcelImportService(
         var substructureLink = caseItem.SubstructureLink;
         var dto = new PROSPUpdateSubstructureDto
         {
-            Source = Source.ConceptApp,
+            Source = Source.ConceptApp
         };
 
         var costProfileDto = new UpdateSubstructureCostProfileDto();
@@ -464,7 +465,7 @@ public class ProspExcelImportService(
         var transportLink = caseItem.TransportLink;
         var dto = new PROSPUpdateTransportDto
         {
-            Source = Source.ConceptApp,
+            Source = Source.ConceptApp
         };
 
         var costProfileDto = new UpdateTransportCostProfileDto();
@@ -489,7 +490,7 @@ public class ProspExcelImportService(
             9 => Concept.TANKER,
             10 => Concept.JACK_UP,
             11 => Concept.SUBSEA_TO_SHORE,
-            _ => Concept.NO_CONCEPT,
+            _ => Concept.NO_CONCEPT
         };
     }
 
@@ -501,7 +502,7 @@ public class ProspExcelImportService(
             1 => ArtificialLift.GasLift,
             2 => ArtificialLift.ElectricalSubmergedPumps,
             3 => ArtificialLift.SubseaBoosterPumps,
-            _ => ArtificialLift.NoArtificialLift,
+            _ => ArtificialLift.NoArtificialLift
         };
     }
 
@@ -522,7 +523,7 @@ public class ProspExcelImportService(
             32 => ProductionFlowline.SSClad_PIP,
             33 => ProductionFlowline.Cr13_PIP,
             41 => ProductionFlowline.HDPELinedCS,
-            _ => ProductionFlowline.No_production_flowline,
+            _ => ProductionFlowline.No_production_flowline
         };
     }
 }

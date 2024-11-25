@@ -1,4 +1,6 @@
-using api.Dtos;
+using api.Features.Images.Dto;
+
+namespace api.Features.Images.Service;
 
 public interface IBlobStorageService
 {
