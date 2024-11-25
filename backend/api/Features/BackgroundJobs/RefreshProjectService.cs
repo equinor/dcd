@@ -1,4 +1,4 @@
-namespace api.Services;
+namespace api.Features.BackgroundJobs;
 
 public class RefreshProjectService(
     IServiceScopeFactory scopeFactory,
@@ -6,35 +6,34 @@ public class RefreshProjectService(
     IConfiguration configuration)
     : BackgroundService
 {
-    private const int generalDelay = 1 * 1000 * 3600; // Each hour
+    private const int GeneralDelay = 1 * 1000 * 3600; // Each hour
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            await Task.Delay(generalDelay, stoppingToken);
+            await Task.Delay(GeneralDelay, stoppingToken);
             await UpdateProjects();
         }
     }
 
-    private Task UpdateProjects()
+    private async Task UpdateProjects()
     {
         logger.LogInformation("HostingService: Running");
         if (Showtime())
         {
             using var scope = scopeFactory.CreateScope();
-            var projectService = scope.ServiceProvider.GetRequiredService<IProjectService>();
+            var updateService = scope.ServiceProvider.GetRequiredService<UpdateProjectFromProjectMasterService>();
+
             try
             {
-                projectService.UpdateProjectFromProjectMaster();
+                await updateService.UpdateProjectFromProjectMaster();
             }
             catch (Exception e)
             {
                 logger.LogCritical("Update from Project Master failed: {}", e);
             }
         }
-
-        return Task.FromResult("Done");
     }
 
     private bool Showtime()
@@ -53,7 +52,7 @@ public class RefreshProjectService(
         var end = new TimeSpan(hour + 1, minute, second);
         var now = DateTime.Now.TimeOfDay;
 
-        if ((now > start) && (now < end))
+        if (now > start && now < end)
         {
             logger.LogInformation("HostingService: Running Update Project from Project Master");
             return true;

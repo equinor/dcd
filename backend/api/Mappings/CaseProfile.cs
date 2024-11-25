@@ -1,4 +1,5 @@
 using api.Dtos;
+using api.Features.Images.Dto;
 using api.Models;
 
 using AutoMapper;

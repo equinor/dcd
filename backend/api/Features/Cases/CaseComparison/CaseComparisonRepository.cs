@@ -4,7 +4,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Services;
+namespace api.Features.Cases.CaseComparison;
 
 public class CaseComparisonRepository(DcdDbContext context)
 {

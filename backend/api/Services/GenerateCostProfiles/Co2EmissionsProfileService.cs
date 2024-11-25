@@ -1,12 +1,13 @@
 using api.Helpers;
 using api.Models;
+using api.Repositories;
 
 namespace api.Services.GenerateCostProfiles;
 
 public class Co2EmissionsProfileService(
     ICaseService caseService,
     IDrainageStrategyService drainageStrategyService,
-    IProjectService projectService,
+    IProjectWithAssetsRepository projectWithAssetsRepository,
     ITopsideService topsideService,
     IWellProjectWellService wellProjectWellService)
     : ICo2EmissionsProfileService
@@ -30,7 +31,7 @@ public class Co2EmissionsProfileService(
         }
 
         var topside = await topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
-        var project = await projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var project = await projectWithAssetsRepository.GetProjectWithCases(caseItem.ProjectId);
 
         var fuelConsumptionsProfile = GetFuelConsumptionsProfile(project, caseItem, topside, drainageStrategy);
         var flaringsProfile = GetFlaringsProfile(project, drainageStrategy);

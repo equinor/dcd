@@ -1,9 +1,13 @@
 using api.AppInfrastructure.Authorization;
+using api.Features.BackgroundJobs;
+using api.Features.Cases.CaseComparison;
+using api.Features.FusionIntegration.OrgChart;
+using api.Features.FusionIntegration.ProjectMaster;
+using api.Features.Images.Service;
+using api.Features.Prosp.Services;
 using api.Repositories;
 using api.Services;
 using api.Services.EconomicsServices;
-using api.Services.Fusion;
-using api.Services.FusionIntegration;
 using api.Services.GenerateCostProfiles;
 
 using Microsoft.AspNetCore.Authorization;
@@ -101,11 +105,12 @@ public static class DcdIocConfiguration
         services.AddScoped<ProspExcelImportService>();
         services.AddScoped<ProspSharepointImportService>();
         services.AddScoped<CurrentUser>();
+        services.AddScoped<UpdateProjectFromProjectMasterService>();
+        services.AddScoped<IProjectWithAssetsRepository, ProjectWithCasesRepository>();
 
         services.AddScoped<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
         services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
 
-        services.AddScoped<IImageRepository, ImageRepository>();
         services.AddScoped<IBlobStorageService, BlobStorageService>();
         services.AddScoped<ICalculateBreakEvenOilPriceService, CalculateBreakEvenOilPriceService>();
         services.AddScoped<ICalculateNPVService, CalculateNPVService>();
