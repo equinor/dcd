@@ -8,6 +8,7 @@ using api.Mappings;
 using api.Services;
 
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.IdentityModel.Logging;
 
 using Serilog;
@@ -26,6 +27,12 @@ DcdEnvironments.CurrentEnvironment = environment!;
 var config = builder.CreateDcdConfigurationRoot(environment);
 builder.Configuration.AddConfiguration(config);
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.Providers.Add<BrotliCompressionProvider>();
+    options.Providers.Add<GzipCompressionProvider>();
+});
 builder.AddDcdAuthentication();
 builder.ConfigureDcdDatabase(environment, config);
 builder.Services.AddDcdCorsPolicy();
@@ -45,8 +52,16 @@ builder.AddDcdBlogStorage();
 builder.Host.UseSerilog();
 
 var app = builder.Build();
+
+app.Use(async (context, next) =>
+{
+    context.Request.EnableBuffering();
+    await next();
+});
+
 app.UseMiddleware<DcdExceptionHandlingMiddleware>();
 app.UseRouting();
+app.UseResponseCompression();
 
 if (app.Environment.IsDevelopment())
 {
