@@ -18,6 +18,7 @@ namespace api.Features.Prosp;
     ApplicationRole.User
 )]
 [ActionType(ActionType.Edit)]
+[ApiExplorerSettings(IgnoreApi = true)]
 public class ProspController(
     ProspSharepointImportService prospSharepointImportImportService,
     IProjectService projectService,
