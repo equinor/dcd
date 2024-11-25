@@ -11,7 +11,7 @@ public interface IProjectService
     Task<Project> GetProjectWithoutAssets(Guid projectId);
     Task<Project> GetProjectWithCasesAndAssets(Guid projectId);
     Task<ProjectWithAssetsDto> GetProjectDto(Guid projectId);
-    Task UpdateProjectFromProjectMaster();
+    Task<Project> AddAssetsToProject(Project project);
     Task<ExplorationOperationalWellCostsDto> UpdateExplorationOperationalWellCosts(
         Guid projectId,
         Guid explorationOperationalWellCostsId,

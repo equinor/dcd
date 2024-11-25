@@ -4,9 +4,7 @@ using api.Context;
 using api.Dtos;
 using api.Dtos.Project.Revision;
 using api.Exceptions;
-using api.Features.FusionIntegration;
 using api.Features.FusionIntegration.ProjectMaster;
-using api.Helpers;
 using api.Models;
 using api.Repositories;
 
@@ -102,17 +100,6 @@ public class ProjectService(
         return returnDto;
     }
 
-    public async Task<ProjectWithAssetsDto> UpdateProjectFromProjectMaster(ProjectWithAssetsDto projectDto)
-    {
-        var existingProject = await GetProjectWithCasesAndAssets(projectDto.Id);
-
-        mapper.Map(projectDto, existingProject);
-
-        context.Projects.Update(existingProject);
-        await context.SaveChangesAsync();
-        return await GetProjectDto(existingProject.Id);
-    }
-
     public async Task<ProjectWithAssetsDto> CreateProject(Guid contextId)
     {
         var projectMaster = await fusionService.GetProjectMasterFromFusionContextId(contextId);
@@ -160,83 +147,26 @@ public class ProjectService(
         return await GetProjectDto(project.Id);
     }
 
-    public async Task<IEnumerable<Project>> GetAll()
-    {
-        Activity.Current?.AddBaggage(nameof(context.Projects), JsonConvert.SerializeObject(context.Projects,
-            Formatting.None,
-            new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            }));
-        if (context.Projects != null)
-        {
-            var projects = context.Projects
-                .Include(c => c.Cases);
-
-            foreach (var project in projects)
-            {
-                await AddAssetsToProject(project);
-            }
-
-            return projects;
-        }
-
-        return new List<Project>();
-    }
-
-    public async Task<IEnumerable<ProjectWithAssetsDto>> GetAllDtos()
-    {
-        var projects = await GetAll();
-        if (projects != null)
-        {
-            var projectDtos = new List<ProjectWithAssetsDto>();
-            foreach (var project in projects)
-            {
-                var projectDto = mapper.Map<ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
-                if (projectDto != null)
-                {
-                    projectDtos.Add(projectDto);
-                }
-            }
-
-            Activity.Current?.AddBaggage(nameof(projectDtos), JsonConvert.SerializeObject(projectDtos, Formatting.None,
-                new JsonSerializerSettings
-                {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                }));
-
-            return projectDtos;
-        }
-
-        return new List<ProjectWithAssetsDto>();
-    }
-
     public async Task<Project> GetProjectWithoutAssets(Guid projectId)
     {
-        if (context.Projects != null)
+        if (projectId == Guid.Empty)
         {
-            if (projectId == Guid.Empty)
-            {
-                throw new NotFoundInDBException($"Project {projectId} not found");
-            }
-
-            var project = await context.Projects
-                .Include(p => p.Cases)
-                .Include(p => p.Wells)
-                .Include(p => p.ExplorationOperationalWellCosts)
-                .Include(p => p.DevelopmentOperationalWellCosts)
-                .FirstOrDefaultAsync(p => p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId));
-
-            if (project == null)
-            {
-                throw new NotFoundInDBException($"Project {projectId} not found");
-            }
-
-            return project;
+            throw new NotFoundInDBException($"Project {projectId} not found");
         }
 
-        logger.LogError(new NotFoundInDBException("The database contains no projects"), "no projects");
-        throw new NotFoundInDBException("The database contains no projects");
+        var project = await context.Projects
+            .Include(p => p.Cases)
+            .Include(p => p.Wells)
+            .Include(p => p.ExplorationOperationalWellCosts)
+            .Include(p => p.DevelopmentOperationalWellCosts)
+            .FirstOrDefaultAsync(p => p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId));
+
+        if (project == null)
+        {
+            throw new NotFoundInDBException($"Project {projectId} not found");
+        }
+
+        return project;
     }
 
     public async Task<Project> GetProject(Guid projectId)
@@ -278,14 +208,14 @@ public class ProjectService(
             .Include(p => p.DevelopmentOperationalWellCosts)
             .FirstOrDefaultAsync(p => (p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId)) && !p.IsRevision);
 
-        if (project?.Cases?.Count > 0)
-        {
-            project.Cases = project.Cases.OrderBy(c => c.CreateTime).ToList();
-        }
-
         if (project == null)
         {
             throw new NotFoundInDBException($"Project {projectId} not found");
+        }
+
+        if (project.Cases.Count > 0)
+        {
+            project.Cases = project.Cases.OrderBy(c => c.CreateTime).ToList();
         }
 
         Activity.Current?.AddBaggage(nameof(projectId), JsonConvert.SerializeObject(projectId, Formatting.None,
@@ -293,7 +223,9 @@ public class ProjectService(
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
             }));
+
         await AddAssetsToProject(project);
+
         return project;
     }
 
@@ -301,15 +233,10 @@ public class ProjectService(
     {
         var project = await GetProjectWithCasesAndAssets(projectId);
 
-        DateTimeOffset projectLastUpdated;
-        if (project.Cases?.Count > 0)
-        {
-            projectLastUpdated = new[] { project.ModifyTime }.Concat(project.Cases.Select(c => c.ModifyTime)).Max();
-        }
-        else
-        {
-            projectLastUpdated = project.ModifyTime;
-        }
+        var projectLastUpdated = project.Cases.Count > 0
+            ? new[] { project.ModifyTime }.Concat(project.Cases.Select(c => c.ModifyTime)).Max()
+            : project.ModifyTime;
+
         var revisionDetails = context.RevisionDetails.Where(r => r.OriginalProjectId == project.Id).ToList();
 
         var destination = mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
@@ -333,78 +260,7 @@ public class ProjectService(
         return projectDto;
     }
 
-    public async Task UpdateProjectFromProjectMaster()
-    {
-        var projectDtos = await GetAllDtos();
-        var numberOfDeviations = 0;
-        var totalNumberOfProjects = projectDtos.Count();
-        foreach (var project in projectDtos)
-        {
-            var projectMaster = await GetProjectDtoFromProjectMaster(project.Id);
-            if (projectMaster == null)
-            {
-                logger.LogWarning("ProjectMaster not found for project {projectName} ({projectId})", project.Name,
-                    project.Id);
-                continue;
-            }
-            if (!project.Equals(projectMaster))
-            {
-                logger.LogWarning("Project {projectName} ({projectId}) differs from ProjectMaster", project.Name,
-                    project.Id);
-                numberOfDeviations++;
-                await UpdateProjectFromProjectMaster(projectMaster);
-            }
-            else
-            {
-                logger.LogInformation("Project {projectName} ({projectId}) is identical to ProjectMaster",
-                    project.Name, project.Id);
-            }
-        }
-
-        logger.LogInformation("Number of projects which differs from ProjectMaster: {count} / {total}",
-            numberOfDeviations, totalNumberOfProjects);
-    }
-
-    private async Task<ProjectWithAssetsDto?> GetProjectDtoFromProjectMaster(Guid projectGuid)
-    {
-
-        var projectMaster = await fusionService.GetProjectMasterFromFusionContextId(projectGuid);
-
-        if (projectMaster == null)
-        {
-            return null;
-        }
-
-        ProjectCategory category;
-        ProjectPhase phase;
-
-        try
-        {
-            category = CommonLibraryHelper.ConvertCategory(projectMaster.ProjectCategory ?? "");
-            phase = CommonLibraryHelper.ConvertPhase(projectMaster.Phase ?? "");
-        }
-        catch (ArgumentException ex)
-        {
-            logger.LogError(ex, "Invalid category or phase for project with ID {ProjectId}", projectGuid);
-            return null;
-        }
-
-        ProjectWithAssetsDto projectDto = new()
-        {
-            Name = projectMaster.Description ?? "",
-            CommonLibraryName = projectMaster.Description ?? "",
-            FusionProjectId = projectMaster.Identity,
-            Country = projectMaster.Country ?? "",
-            Currency = Currency.NOK,
-            PhysicalUnit = PhysUnit.SI,
-            Id = projectMaster.Identity,
-            ProjectCategory = category,
-            ProjectPhase = phase,
-        };
-        return projectDto;
-    }
-
-    private async Task<Project> AddAssetsToProject(Project project)
+    public async Task<Project> AddAssetsToProject(Project project)
     {
         project.WellProjects = (await GetWellProjects(project.Id)).ToList();
         project.DrainageStrategies = (await GetDrainageStrategies(project.Id)).ToList();
@@ -418,14 +274,13 @@ public class ProjectService(
         return project;
     }
 
-    public async Task<IEnumerable<Well>> GetWells(Guid projectId)
+    private async Task<IEnumerable<Well>> GetWells(Guid projectId)
     {
         return await context.Wells
             .Where(d => d.ProjectId.Equals(projectId)).ToListAsync();
-
     }
 
-    public async Task<IEnumerable<Exploration>> GetExplorations(Guid projectId)
+    private async Task<IEnumerable<Exploration>> GetExplorations(Guid projectId)
     {
         return await context.Explorations
             .Include(c => c.ExplorationWellCostProfile)
@@ -439,7 +294,7 @@ public class ProjectService(
             .Where(d => d.Project.Id.Equals(projectId)).ToListAsync();
     }
 
-    public async Task<IEnumerable<Transport>> GetTransports(Guid projectId)
+    private async Task<IEnumerable<Transport>> GetTransports(Guid projectId)
     {
         return await context.Transports
             .Include(c => c.CostProfile)
@@ -448,7 +303,7 @@ public class ProjectService(
             .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
     }
 
-    public async Task<IEnumerable<Topside>> GetTopsides(Guid projectId)
+    private async Task<IEnumerable<Topside>> GetTopsides(Guid projectId)
     {
         return await context.Topsides
             .Include(c => c.CostProfile)
@@ -457,7 +312,7 @@ public class ProjectService(
             .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
     }
 
-    public async Task<IEnumerable<Surf>> GetSurfs(Guid projectId)
+    private async Task<IEnumerable<Surf>> GetSurfs(Guid projectId)
     {
         return await context.Surfs
             .Include(c => c.CostProfile)
@@ -466,7 +321,7 @@ public class ProjectService(
             .Where(c => c.Project.Id.Equals(projectId)).ToListAsync();
     }
 
-    public async Task<IEnumerable<DrainageStrategy>> GetDrainageStrategies(Guid projectId)
+    private async Task<IEnumerable<DrainageStrategy>> GetDrainageStrategies(Guid projectId)
     {
         return await context.DrainageStrategies
             .Include(c => c.ProductionProfileOil)
@@ -489,7 +344,7 @@ public class ProjectService(
             .Where(d => d.Project.Id.Equals(projectId)).ToListAsync();
     }
 
-    public async Task<IEnumerable<WellProject>> GetWellProjects(Guid projectId)
+    private async Task<IEnumerable<WellProject>> GetWellProjects(Guid projectId)
     {
         return await context.WellProjects
             .Include(c => c.OilProducerCostProfile)
@@ -504,7 +359,7 @@ public class ProjectService(
             .Where(d => d.Project.Id.Equals(projectId)).ToListAsync();
     }
 
-    public async Task<IEnumerable<Substructure>> GetSubstructures(Guid projectId)
+    private async Task<IEnumerable<Substructure>> GetSubstructures(Guid projectId)
     {
         return await context.Substructures
             .Include(c => c.CostProfile)
