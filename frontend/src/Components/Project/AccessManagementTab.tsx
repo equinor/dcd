@@ -43,8 +43,7 @@ const AccessManagementTab = () => {
 
     const handleAddPerson = async (e: PersonSelectEvent, role: UserRole) => {
         const personToAdd = e.nativeEvent.detail.selected?.azureId
-        if ((!personToAdd && !projectId) || projectApiData?.projectMembers.some((p) => p.userId === personToAdd)) { return }
-
+        if ((!personToAdd || !projectId) || projectApiData?.projectMembers.some((p) => p.userId === personToAdd)) { return }
         const addPerson = await (await GetProjectMembersService()).addPerson(projectId, { userId: personToAdd || "", role })
         if (addPerson) {
             queryClient.invalidateQueries(
@@ -86,17 +85,18 @@ const AccessManagementTab = () => {
             const projectMembersService = await GetOrgChartMembersService()
             try {
                 const peopleToAdd = await projectMembersService.getOrgChartPeople(currentContext.id)
+                console.log(peopleToAdd)
 
-                await Promise.all(
-                    peopleToAdd.map(async (person) => {
-                        try {
-                            return await (await GetProjectMembersService()).addPerson(projectId, { userId: person.azureUniqueId || "", role: UserRole.Viewer })
-                        } catch (error) {
-                            console.error("Failed to add person from orgchart, with error: ", error)
-                            return null // bedre error handling?
-                        }
-                    }),
-                )
+                // await Promise.all(
+                //     peopleToAdd.map(async (person) => {
+                //         try {
+                //             return await (await GetProjectMembersService()).addPerson(projectId, { userId: person.azureUniqueId || "", role: UserRole.Viewer })
+                //         } catch (error) {
+                //             console.error("Failed to add person from orgchart, with error: ", error)
+                //             return null // bedre error handling?
+                //         }
+                //     }),
+                // )
             } catch (error) {
                 setSnackBarMessage("A problem occurred while fetching OrgChart people")
             }
