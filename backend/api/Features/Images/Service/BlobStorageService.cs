@@ -1,18 +1,21 @@
 using api.AppInfrastructure;
-using api.Dtos;
+using api.Context;
 using api.Exceptions;
+using api.Features.Images.Dto;
 using api.Models;
-
-using AutoMapper;
+using api.Repositories;
 
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
+using Microsoft.EntityFrameworkCore;
+
+namespace api.Features.Images.Service;
 
 public class BlobStorageService(BlobServiceClient blobServiceClient,
-    IImageRepository imageRepository,
+    ICaseRepository caseRepository,
     IConfiguration configuration,
-    IMapper mapper)
+    DcdDbContext context)
     : IBlobStorageService
 {
     private readonly string _containerName = GetContainerName(configuration);
@@ -20,6 +23,7 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
     private static string GetContainerName(IConfiguration configuration)
     {
         var environment = Environment.GetEnvironmentVariable("AppConfiguration__Environment") ?? "default";
+
         var containerKey = environment switch
         {
             DcdEnvironments.LocalDev => "AzureStorageAccountImageContainerCI",
@@ -37,7 +41,7 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
         };
 
         return configuration[containerKey]
-                             ?? throw new InvalidOperationException($"Container name configuration for {environment} is missing.");
+               ?? throw new InvalidOperationException($"Container name configuration for {environment} is missing.");
     }
 
     private static string SanitizeBlobName(string name)
@@ -79,47 +83,39 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
             ProjectName = sanitizedProjectName
         };
 
-        await imageRepository.AddImage(imageEntity);
+        context.Images.Add(imageEntity);
 
-        var imageDto = mapper.Map<ImageDto>(imageEntity);
-
-        if (imageDto == null)
+        if (imageEntity.CaseId.HasValue)
         {
-            throw new InvalidOperationException("Image mapping failed.");
+            await caseRepository.UpdateModifyTime((Guid)imageEntity.CaseId);
         }
 
-        return imageDto;
+        await context.SaveChangesAsync();
+
+        return MapToDto(imageEntity);
     }
 
     public async Task<List<ImageDto>> GetCaseImages(Guid caseId)
     {
-        var images = await imageRepository.GetImagesByCaseId(caseId);
+        var images = await context.Images
+            .Where(img => img.CaseId == caseId)
+            .ToListAsync();
 
-        var imageDtos = mapper.Map<List<ImageDto>>(images);
-
-        if (imageDtos == null)
-        {
-            throw new InvalidOperationException("Image mapping failed.");
-        }
-        return imageDtos;
+        return images.Select(MapToDto).ToList();
     }
 
     public async Task<List<ImageDto>> GetProjectImages(Guid projectId)
     {
-        var images = await imageRepository.GetImagesByProjectId(projectId);
+        var images = await context.Images
+            .Where(img => img.ProjectId == projectId && img.CaseId == null)
+            .ToListAsync();
 
-        var imageDtos = mapper.Map<List<ImageDto>>(images);
-
-        if (imageDtos == null)
-        {
-            throw new InvalidOperationException("Image mapping failed.");
-        }
-        return imageDtos;
+        return images.Select(MapToDto).ToList();
     }
 
     public async Task DeleteImage(Guid imageId)
     {
-        var image = await imageRepository.GetImageById(imageId);
+        var image = await context.Images.FindAsync(imageId);
         if (image == null)
         {
             throw new NotFoundInDBException("Image not found.");
@@ -135,6 +131,22 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
         var blobClient = containerClient.GetBlobClient(blobName);
 
         await blobClient.DeleteIfExistsAsync();
-        await imageRepository.DeleteImage(image);
+
+        context.Images.Remove(image);
+        await context.SaveChangesAsync();
+    }
+
+    private static ImageDto MapToDto(Image imageEntity)
+    {
+        return new ImageDto
+        {
+            Id = imageEntity.Id,
+            Url = imageEntity.Url,
+            CreateTime = imageEntity.CreateTime,
+            Description = imageEntity.Description,
+            CaseId = imageEntity.CaseId,
+            ProjectName = imageEntity.ProjectName,
+            ProjectId = imageEntity.ProjectId
+        };
     }
 }

@@ -1,7 +1,6 @@
-using api.Dtos;
 using api.Models;
 
-namespace api.Services;
+namespace api.Features.Cases.CaseComparison;
 
 public class CaseComparisonService(CaseComparisonRepository caseComparisonRepository)
 {

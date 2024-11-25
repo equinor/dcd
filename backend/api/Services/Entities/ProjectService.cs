@@ -4,10 +4,11 @@ using api.Context;
 using api.Dtos;
 using api.Dtos.Project.Revision;
 using api.Exceptions;
+using api.Features.FusionIntegration;
+using api.Features.FusionIntegration.ProjectMaster;
 using api.Helpers;
 using api.Models;
 using api.Repositories;
-using api.Services.FusionIntegration;
 
 using AutoMapper;
 

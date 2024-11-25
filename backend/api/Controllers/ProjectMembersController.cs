@@ -1,8 +1,8 @@
 using api.AppInfrastructure.Authorization;
 using api.Dtos;
-using api.Models.Fusion;
+using api.Features.FusionIntegration.OrgChart;
+using api.Features.FusionIntegration.OrgChart.Models;
 using api.Services;
-using api.Services.Fusion;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;

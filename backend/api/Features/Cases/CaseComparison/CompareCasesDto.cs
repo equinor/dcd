@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace api.Dtos;
+namespace api.Features.Cases.CaseComparison;
 
 public class CompareCasesDto
 {

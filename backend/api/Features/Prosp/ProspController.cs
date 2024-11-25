@@ -1,11 +1,15 @@
 using api.AppInfrastructure.Authorization;
+using api.Controllers;
 using api.Dtos;
+using api.Features.Prosp.Exceptions;
+using api.Features.Prosp.Models;
+using api.Features.Prosp.Services;
 using api.Services;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph;
 
-namespace api.Controllers;
+namespace api.Features.Prosp;
 
 [Route("[controller]")]
 [ApiController]
@@ -14,38 +18,38 @@ namespace api.Controllers;
     ApplicationRole.User
 )]
 [ActionType(ActionType.Edit)]
-public class PROSPController(
+public class ProspController(
     ProspSharepointImportService prospSharepointImportImportService,
     IProjectService projectService,
-    ILogger<PROSPController> logger)
+    ILogger<ProspController> logger)
     : ControllerBase
 {
     [HttpPost("sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
-    public async Task<ActionResult<List<DriveItemDto>>> GetSharePointFileNamesAndId([FromBody] urlDto urlDto)
+    public async Task<ActionResult<List<DriveItem>>> GetSharePointFileNamesAndId([FromBody] UrlDto urlDto)
     {
-        if (urlDto == null || string.IsNullOrWhiteSpace(urlDto.url))
+        if (string.IsNullOrWhiteSpace(urlDto.Url))
         {
             return BadRequest("URL is required.");
         }
 
         try
         {
-            var driveItems = await prospSharepointImportImportService.GetDeltaDriveItemCollectionFromSite(urlDto.url);
+            var driveItems = await prospSharepointImportImportService.GetDeltaDriveItemCollectionFromSite(urlDto.Url);
             return Ok(driveItems);
         }
         catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {
-            logger.LogError(ex, "Access Denied when attempting to access SharePoint site: {Url}", urlDto.url);
+            logger.LogError(ex, "Access Denied when attempting to access SharePoint site: {Url}", urlDto.Url);
             return StatusCode(StatusCodes.Status403Forbidden, "Access to SharePoint resource was denied.");
         }
-        catch (ProspSharepointImportService.AccessDeniedException ex)
+        catch (AccessDeniedException ex)
         {
-            logger.LogError(ex, "Custom Access Denied when attempting to access SharePoint site: {Url}", urlDto.url);
+            logger.LogError(ex, "Custom Access Denied when attempting to access SharePoint site: {Url}", urlDto.Url);
             return StatusCode(StatusCodes.Status403Forbidden, ex.Message);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while processing your request for URL: {Url}", urlDto.url);
+            logger.LogError(ex, "An error occurred while processing your request for URL: {Url}", urlDto.Url);
             return StatusCode(StatusCodes.Status500InternalServerError, "An internal server error occurred.");
         }
     }
@@ -75,10 +79,5 @@ public class PROSPController(
             // and ensure it's a client-friendly message
             return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
         }
-    }
-
-    public class urlDto
-    {
-        public string? url { get; set; }
     }
 }

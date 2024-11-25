@@ -1,6 +1,6 @@
-using api.Models.Fusion;
+using api.Features.FusionIntegration.OrgChart.Models;
 
-namespace api.Services.Fusion;
+namespace api.Features.FusionIntegration.OrgChart;
 
 public interface IOrgChartMemberService
 {
