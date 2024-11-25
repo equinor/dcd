@@ -2,9 +2,9 @@ using System.Diagnostics;
 
 using api.Context;
 using api.Dtos;
-using api.Dtos.Project.Revision;
 using api.Exceptions;
 using api.Features.FusionIntegration.ProjectMaster;
+using api.Features.Revision.Get;
 using api.Models;
 using api.Repositories;
 
