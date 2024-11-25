@@ -1,6 +1,7 @@
 using api.Context;
 using api.Dtos;
 using api.Models;
+using api.Repositories;
 
 using AutoMapper;
 
@@ -10,7 +11,7 @@ namespace api.Services;
 
 public class TechnicalInputService(
     DcdDbContext context,
-    IProjectService projectService,
+    IProjectWithAssetsRepository projectWithAssetsRepository,
     IExplorationOperationalWellCostsService explorationOperationalWellCostsService,
     IDevelopmentOperationalWellCostsService developmentOperationalWellCostsService,
     ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
@@ -20,7 +21,7 @@ public class TechnicalInputService(
 {
     public async Task<TechnicalInputDto> UpdateTehnicalInput(Guid projectId, UpdateTechnicalInputDto technicalInputDto)
     {
-        var project = await projectService.GetProjectWithCasesAndAssets(projectId);
+        var project = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectId);
 
         await UpdateProject(project, technicalInputDto.ProjectDto);
 
@@ -46,7 +47,7 @@ public class TechnicalInputService(
 
         await context.SaveChangesAsync();
 
-        var returnProject = await projectService.GetProjectWithCasesAndAssets(projectId);
+        var returnProject = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectId);
         var returnProjectDto = mapper.Map<ProjectWithAssetsDto>(returnProject, opts => opts.Items["ConversionUnit"] = returnProject.PhysicalUnit.ToString());
 
         if (returnProjectDto == null)

@@ -1,11 +1,11 @@
-
 using api.Dtos;
 using api.Models;
+using api.Repositories;
 
 namespace api.Services.GenerateCostProfiles;
 
 public class Co2IntensityTotalService(
-    IProjectService projectService,
+    IProjectWithAssetsRepository projectWithAssetsRepository,
     ILogger<Co2IntensityTotalService> logger,
     ICaseService caseService,
     IDrainageStrategyService drainageStrategyService)
@@ -14,7 +14,7 @@ public class Co2IntensityTotalService(
     public async Task<double> Calculate(Guid caseId)
     {
         var caseItem = await caseService.GetCase(caseId);
-        var project = await projectService.GetProjectWithCasesAndAssets(caseItem.ProjectId);
+        var project = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(caseItem.ProjectId);
         var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
             caseItem.DrainageStrategyLink,
             d => d.Co2Emissions!,

@@ -1,5 +1,6 @@
 using api.Dtos;
 using api.Models;
+using api.Repositories;
 
 using AutoMapper;
 
@@ -8,14 +9,14 @@ namespace api.Services.GenerateCostProfiles;
 public class Co2IntensityProfileService(
     ICaseService caseService,
     IDrainageStrategyService drainageStrategyService,
-    IProjectService projectService,
+    IProjectWithAssetsRepository projectWithAssetsRepository,
     IMapper mapper)
     : ICo2IntensityProfileService
 {
     public async Task<Co2IntensityDto> Generate(Guid caseId)
     {
         var caseItem = await caseService.GetCase(caseId);
-        var project = await projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var project = await projectWithAssetsRepository.GetProjectWithCases(caseItem.ProjectId);
         var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
             caseItem.DrainageStrategyLink,
             d => d.Co2Emissions!,

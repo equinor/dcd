@@ -1,10 +1,11 @@
 using api.Models;
+using api.Repositories;
 
 namespace api.Services;
 
 public class OpexCostProfileService(
     ICaseService caseService,
-    IProjectService projectService,
+    IProjectWithAssetsRepository projectWithAssetsRepository,
     IDrainageStrategyService drainageStrategyService,
     IWellProjectWellService wellProjectWellService,
     ITopsideService topsideService)
@@ -13,7 +14,7 @@ public class OpexCostProfileService(
     public async Task Generate(Guid caseId)
     {
         var caseItem = await caseService.GetCase(caseId);
-        var project = await projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var project = await projectWithAssetsRepository.GetProjectWithCases(caseItem.ProjectId);
 
         var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
             caseItem.DrainageStrategyLink,

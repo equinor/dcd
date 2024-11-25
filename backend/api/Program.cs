@@ -3,6 +3,7 @@ using System.Globalization;
 using api.AppInfrastructure;
 using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.Middleware;
+using api.Features.BackgroundJobs;
 using api.Mappings;
 using api.Services;
 
