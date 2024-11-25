@@ -18,7 +18,6 @@ namespace api.Features.Prosp;
     ApplicationRole.User
 )]
 [ActionType(ActionType.Edit)]
-[ApiExplorerSettings(IgnoreApi = true)]
 public class ProspController(
     ProspSharepointImportService prospSharepointImportImportService,
     IProjectService projectService,
@@ -26,7 +25,7 @@ public class ProspController(
     : ControllerBase
 {
     [HttpPost("sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
-    public async Task<ActionResult<List<DriveItem>>> GetSharePointFileNamesAndId([FromBody] UrlDto urlDto)
+    public async Task<ActionResult<List<DriveItemDto>>> GetSharePointFileNamesAndId([FromBody] UrlDto urlDto)
     {
         if (string.IsNullOrWhiteSpace(urlDto.Url))
         {
