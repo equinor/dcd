@@ -19,6 +19,8 @@ public static class DcdEnvironments
 
     public static bool EnableVerboseEntityFrameworkLogging => false; // IsLocal() || IsCi();
 
+    public static bool ReturnExceptionDetails => IsLocal() || IsCi() || IsQa();
+
     public static bool IsLocal() => CurrentEnvironment is LocalDev;
     public static bool IsCi() => CurrentEnvironment is Ci or Dev or RadixDev;
     public static bool IsQa() => CurrentEnvironment is Qa or RadixQa;
