@@ -8,10 +8,7 @@ public interface IProjectService
     Task<ProjectWithCasesDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto);
     Task<ProjectWithAssetsDto> CreateProject(Guid contextId);
     Task<Project> GetProject(Guid projectId);
-    Task<Project> GetProjectWithoutAssets(Guid projectId);
-    Task<Project> GetProjectWithCasesAndAssets(Guid projectId);
     Task<ProjectWithAssetsDto> GetProjectDto(Guid projectId);
-    Task<Project> AddAssetsToProject(Project project);
     Task<ExplorationOperationalWellCostsDto> UpdateExplorationOperationalWellCosts(
         Guid projectId,
         Guid explorationOperationalWellCostsId,

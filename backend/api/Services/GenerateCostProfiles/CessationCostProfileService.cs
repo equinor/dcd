@@ -1,4 +1,5 @@
 using api.Models;
+using api.Repositories;
 
 namespace api.Services;
 
@@ -7,7 +8,7 @@ public class CessationCostProfileService(
     IDrainageStrategyService drainageStrategyService,
     IWellProjectWellService wellProjectWellService,
     ISurfService surfService,
-    IProjectService projectService)
+    IProjectWithAssetsRepository projectWithAssetsRepository)
     : ICessationCostProfileService
 {
     public async Task Generate(Guid caseId)
@@ -30,7 +31,7 @@ public class CessationCostProfileService(
 
         var lastYearOfProduction = CalculationHelper.GetRelativeLastYearOfProduction(drainageStrategy);
 
-        var project = await projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var project = await projectWithAssetsRepository.GetProjectWithCases(caseItem.ProjectId);
 
         await CalculateCessationWellsCost(caseItem, project, lastYearOfProduction);
         await GetCessationOffshoreFacilitiesCost(caseItem, lastYearOfProduction);

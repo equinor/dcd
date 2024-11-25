@@ -1,12 +1,13 @@
 using api.Dtos;
 using api.Helpers;
 using api.Models;
+using api.Repositories;
 
 namespace api.Services.GenerateCostProfiles;
 
 public class Co2DrillingFlaringFuelTotalsService(
     ICaseService caseService,
-    IProjectService projectService,
+    IProjectWithAssetsRepository projectWithAssetsRepository,
     ITopsideService topsideService,
     IDrainageStrategyService drainageStrategyService,
     IWellProjectWellService wellProjectWellService)
@@ -16,7 +17,7 @@ public class Co2DrillingFlaringFuelTotalsService(
     {
         var caseItem = await caseService.GetCaseWithIncludes(caseId);
         var topside = await topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
-        var project = await projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var project = await projectWithAssetsRepository.GetProjectWithCases(caseItem.ProjectId);
         var drainageStrategy = await drainageStrategyService.GetDrainageStrategyWithIncludes(
             caseItem.DrainageStrategyLink,
             d => d.ProductionProfileOil!,

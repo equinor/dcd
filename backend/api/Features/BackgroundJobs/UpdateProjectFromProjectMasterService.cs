@@ -5,7 +5,7 @@ using api.Dtos;
 using api.Features.FusionIntegration.ProjectMaster;
 using api.Helpers;
 using api.Models;
-using api.Services;
+using api.Repositories;
 
 using AutoMapper;
 
@@ -18,7 +18,7 @@ namespace api.Features.BackgroundJobs;
 public class UpdateProjectFromProjectMasterService(IMapper mapper,
     DcdDbContext context,
     IFusionService fusionService,
-    IProjectService projectService,
+    IProjectWithAssetsRepository projectWithAssetsRepository,
 ILogger<UpdateProjectFromProjectMasterService> logger)
 {
     public async Task UpdateProjectFromProjectMaster()
@@ -45,24 +45,21 @@ ILogger<UpdateProjectFromProjectMasterService> logger)
             }
             else
             {
-                logger.LogInformation("Project {projectName} ({projectId}) is identical to ProjectMaster",
-                    project.Name, project.Id);
+                logger.LogInformation("Project {projectName} ({projectId}) is identical to ProjectMaster", project.Name, project.Id);
             }
         }
 
-        logger.LogInformation("Number of projects which differs from ProjectMaster: {count} / {total}",
-            numberOfDeviations, totalNumberOfProjects);
+        logger.LogInformation("Number of projects which differs from ProjectMaster: {count} / {total}", numberOfDeviations, totalNumberOfProjects);
     }
 
     private async Task UpdateProjectFromProjectMaster(ProjectWithAssetsDto projectDto)
     {
-        var existingProject = await projectService.GetProjectWithCasesAndAssets(projectDto.Id);
+        var existingProject = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectDto.Id);
 
         mapper.Map(projectDto, existingProject);
 
         context.Projects.Update(existingProject);
         await context.SaveChangesAsync();
-        await projectService.GetProjectDto(existingProject.Id);
     }
 
     private async Task<List<ProjectWithAssetsDto>> GetAllDtos()
@@ -102,7 +99,7 @@ ILogger<UpdateProjectFromProjectMasterService> logger)
 
         foreach (var project in projects)
         {
-            await projectService.AddAssetsToProject(project);
+            await projectWithAssetsRepository.LoadProjectAssets(project);
         }
 
         return projects;

@@ -52,7 +52,7 @@ public class RefreshProjectService(
         var end = new TimeSpan(hour + 1, minute, second);
         var now = DateTime.Now.TimeOfDay;
 
-        if ((now > start) && (now < end))
+        if (now > start && now < end)
         {
             logger.LogInformation("HostingService: Running Update Project from Project Master");
             return true;
