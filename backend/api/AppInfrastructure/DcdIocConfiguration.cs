@@ -1,10 +1,8 @@
 using api.AppInfrastructure.Authorization;
-using api.Features;
+using api.Features.BackgroundJobs;
 using api.Features.Cases.CaseComparison;
-using api.Features.FusionIntegration;
 using api.Features.FusionIntegration.OrgChart;
 using api.Features.FusionIntegration.ProjectMaster;
-using api.Features.Images;
 using api.Features.Images.Service;
 using api.Features.Prosp.Services;
 using api.Repositories;
@@ -107,6 +105,8 @@ public static class DcdIocConfiguration
         services.AddScoped<ProspExcelImportService>();
         services.AddScoped<ProspSharepointImportService>();
         services.AddScoped<CurrentUser>();
+        services.AddScoped<UpdateProjectFromProjectMasterService>();
+        services.AddScoped<IProjectWithAssetsRepository, ProjectWithCasesRepository>();
 
         services.AddScoped<IAuthorizationHandler, ApplicationRoleAuthorizationHandler>();
         services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();

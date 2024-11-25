@@ -1,11 +1,12 @@
 using api.Helpers;
 using api.Models;
+using api.Repositories;
 
 namespace api.Services.GenerateCostProfiles;
 
 public class FuelFlaringLossesProfileService(
     ICaseService caseService,
-    IProjectService projectService,
+    IProjectWithAssetsRepository projectWithAssetsRepository,
     ITopsideService topsideService,
     IDrainageStrategyService drainageStrategyService)
     : IFuelFlaringLossesProfileService
@@ -30,7 +31,7 @@ public class FuelFlaringLossesProfileService(
         }
 
         var topside = await topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
-        var project = await projectService.GetProjectWithoutAssets(caseItem.ProjectId);
+        var project = await projectWithAssetsRepository.GetProjectWithCases(caseItem.ProjectId);
 
         var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
         var flaring = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);

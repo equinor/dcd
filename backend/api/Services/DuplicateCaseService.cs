@@ -2,6 +2,7 @@ using api.Context;
 using api.Dtos;
 using api.Exceptions;
 using api.Models;
+using api.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,7 @@ namespace api.Services;
 
 public class DuplicateCaseService(
     DcdDbContext context,
+    IProjectWithAssetsRepository projectWithAssetsRepository,
     IProjectService projectService) : IDuplicateCaseService
 {
     private async Task<Case> GetCaseNoTracking(Guid caseId)
@@ -72,7 +74,7 @@ public class DuplicateCaseService(
         SetNewGuidTimeSeries(caseItem.CalculatedTotalIncomeCostProfile);
         SetNewGuidTimeSeries(caseItem.CalculatedTotalCostCostProfile);
 
-        var project = await projectService.GetProjectWithCasesAndAssets(caseItem.ProjectId);
+        var project = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(caseItem.ProjectId);
         caseItem.Project = project;
         if (project.Cases != null)
         {
