@@ -60,18 +60,18 @@ public class ProspSharepointImportService(
         }
 
         return driveItemsDelta.Select(x => new DriveItemDto
-            {
-                Name = x.Name,
-                Id = x.Id,
-                SharepointFileUrl = null,
-                CreatedDateTime = x.CreatedDateTime,
-                Content = x.Content,
-                Size = x.Size,
-                SharepointIds = x.SharepointIds,
-                CreatedBy = x.CreatedBy,
-                LastModifiedBy = x.LastModifiedBy,
-                LastModifiedDateTime = x.LastModifiedDateTime
-            })
+        {
+            Name = x.Name,
+            Id = x.Id,
+            SharepointFileUrl = null,
+            CreatedDateTime = x.CreatedDateTime,
+            Content = x.Content,
+            Size = x.Size,
+            SharepointIds = x.SharepointIds,
+            CreatedBy = x.CreatedBy,
+            LastModifiedBy = x.LastModifiedBy,
+            LastModifiedDateTime = x.LastModifiedDateTime
+        })
             .ToList();
     }
 
