@@ -6,7 +6,6 @@ import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { ChangeEventHandler } from "react"
 
 import { getProjectPhaseName, getProjectCategoryName } from "@/Utils/common"
@@ -22,15 +21,12 @@ import CasesTable from "../Case/OverviewCasesTable/CasesTable"
 import Gallery from "../Gallery/Gallery"
 
 const ProjectOverviewTab = () => {
-    const { isRevision, accessRights, projectId } = useProjectContext()
+    const { isRevision, projectId } = useProjectContext()
     const { revisionId } = useParams()
     const { editMode } = useAppContext()
-    const { currentContext } = useModuleCurrentContext()
     const { addProjectEdit } = useEditProject()
     const { addNewCase } = useModalContext()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
-
-    const externalId = currentContext?.externalId
 
     const { data: apiData } = useQuery({
         queryKey: ["projectApiData", projectId],
@@ -39,9 +35,9 @@ const ProjectOverviewTab = () => {
     })
 
     const { data: apiRevisionData } = useQuery({
-        queryKey: ["revisionApiData", externalId],
-        queryFn: () => revisionQueryFn(externalId, revisionId),
-        enabled: !!externalId && !!revisionId && isRevision,
+        queryKey: ["revisionApiData", revisionId],
+        queryFn: () => revisionQueryFn(projectId, revisionId),
+        enabled: !!projectId && !!revisionId && isRevision,
     })
 
     const handleBlur = (e: any) => {
