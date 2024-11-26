@@ -8,15 +8,13 @@ namespace api.Features.Revision.Create;
 
 public class CreateRevisionRepository(DcdDbContext context)
 {
-    public async Task<Project> GetProjectAndAssetsNoTracking(Guid id)
+    public async Task<Project> GetProjectAndAssetsNoTracking(Guid projectId)
     {
         var project = await context.Projects
                           .Include(p => p.ExplorationOperationalWellCosts)
                           .Include(p => p.DevelopmentOperationalWellCosts)
-                          .FirstOrDefaultAsync(p => p.Id.Equals(id) && !p.IsRevision)
-                      ?? throw new NotFoundInDBException($"Project with id {id} not found.");
-
-        var projectId = project.Id;
+                          .FirstOrDefaultAsync(p => p.Id == projectId && !p.IsRevision)
+                      ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
 
         await LoadCases(projectId);
         await LoadDrainageStrategies(projectId);

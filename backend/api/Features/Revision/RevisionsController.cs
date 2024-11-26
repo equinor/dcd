@@ -23,7 +23,7 @@ public class RevisionsController(
     [ActionType(ActionType.Read)]
     public async Task<RevisionWithCasesDto?> Get(Guid projectId, Guid revisionId)
     {
-        return await getRevisionService.GetRevision(revisionId);
+        return await getRevisionService.GetRevision(projectId, revisionId);
     }
 
     [HttpPost]
@@ -35,7 +35,7 @@ public class RevisionsController(
 
         var revisionId = await createRevisionService.CreateRevision(projectId, createRevisionDto);
 
-        return await getRevisionService.GetRevision(revisionId);
+        return await getRevisionService.GetRevision(projectId, revisionId);
     }
 
     [HttpPut("{revisionId:guid}")]
@@ -45,6 +45,6 @@ public class RevisionsController(
     {
         await updateRevisionService.UpdateRevision(projectId, revisionId, updateRevisionDto);
 
-        return await getRevisionService.GetRevision(revisionId);
+        return await getRevisionService.GetRevision(projectId, revisionId);
     }
 }

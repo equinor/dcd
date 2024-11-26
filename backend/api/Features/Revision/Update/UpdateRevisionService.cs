@@ -1,9 +1,5 @@
 using api.Context;
 using api.Exceptions;
-using api.Features.Revision.Get;
-using api.Models;
-
-using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +12,7 @@ public class UpdateRevisionService(DcdDbContext context)
         var revision = context.Projects
                            .Include(p => p.Cases)
                            .Include(p => p.RevisionDetails)
-                           .FirstOrDefault(r => r.Id == revisionId)
+                           .FirstOrDefault(x => x.OriginalProjectId == projectId && (x.Id == revisionId || x.FusionProjectId == revisionId))
                        ?? throw new NotFoundInDBException($"Revision with id {revisionId} not found.");
 
         if (revision.RevisionDetails == null)

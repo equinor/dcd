@@ -10,14 +10,14 @@ namespace api.Features.Revision.Get;
 
 public class GetRevisionService(DcdDbContext context, IMapper mapper)
 {
-    public async Task<RevisionWithCasesDto> GetRevision(Guid revisionId)
+    public async Task<RevisionWithCasesDto> GetRevision(Guid projectId, Guid revisionId)
     {
         var project = await context.Projects
                           .Include(p => p.Cases)
                           .Include(p => p.Wells)
                           .Include(p => p.ExplorationOperationalWellCosts)
                           .Include(p => p.DevelopmentOperationalWellCosts)
-                          .FirstOrDefaultAsync(p => (p.Id.Equals(revisionId) || p.FusionProjectId.Equals(revisionId)) && p.IsRevision)
+                          .FirstOrDefaultAsync(x => x.OriginalProjectId == projectId && (x.Id == revisionId || x.FusionProjectId == revisionId))
                       ?? throw new NotFoundInDBException($"Project with id {revisionId} not found.");
 
         project.Cases = project.Cases.OrderBy(c => c.CreateTime).ToList();
