@@ -1,4 +1,4 @@
-namespace api.Dtos.Project.Revision;
+namespace api.Features.Revision.Update;
 
 public class UpdateRevisionDto
 {

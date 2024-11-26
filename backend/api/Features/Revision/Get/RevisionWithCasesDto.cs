@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace api.Dtos.Project.Revision;
+using api.Dtos;
+
+namespace api.Features.Revision.Get;
 
 public class RevisionWithCasesDto : ProjectDto
 {

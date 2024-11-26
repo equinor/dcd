@@ -113,7 +113,7 @@ public class DcdExceptionHandlingMiddleware(
         if (exception.InnerException != null)
         {
             errorInformation.Add("InnerExceptionMessage", exception.InnerException.Message);
-            
+
             if (exception.InnerException.StackTrace != null)
             {
                 errorInformation.Add("InnerExceptionStacktrace", exception.InnerException.StackTrace);
