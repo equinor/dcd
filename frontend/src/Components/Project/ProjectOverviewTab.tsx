@@ -41,7 +41,7 @@ const ProjectOverviewTab = () => {
     const { data: apiRevisionData } = useQuery({
         queryKey: ["revisionApiData", externalId],
         queryFn: () => revisionQueryFn(externalId, revisionId),
-        enabled: !!externalId && isRevision,
+        enabled: !!externalId && !!revisionId && isRevision,
     })
 
     const handleBlur = (e: any) => {

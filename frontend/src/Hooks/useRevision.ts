@@ -20,6 +20,7 @@ export const useRevisions = () => {
     ) => {
         setIsRevision(true)
         queryClient.invalidateQueries({ queryKey: ["projectApiData", projectId] })
+        queryClient.invalidateQueries({ queryKey: ["revisionApiData", revisionId] })
         navigate(`revision/${currentRevisionId}`)
     }
 
