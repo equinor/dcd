@@ -7,9 +7,14 @@ namespace api.Models;
 public class Exploration : IHasProjectId, IChangeTrackable
 {
     public Guid Id { get; set; }
-    public virtual Project Project { get; set; } = null!;
+
     public Guid ProjectId { get; set; }
+    public virtual Project Project { get; set; } = null!;
+
     public string Name { get; set; } = string.Empty;
+    public double RigMobDemob { get; set; }
+    public Currency Currency { get; set; }
+
     public virtual ExplorationWellCostProfile? ExplorationWellCostProfile { get; set; }
     public virtual AppraisalWellCostProfile? AppraisalWellCostProfile { get; set; }
     public virtual SidetrackCostProfile? SidetrackCostProfile { get; set; }
@@ -17,8 +22,7 @@ public class Exploration : IHasProjectId, IChangeTrackable
     public virtual CountryOfficeCost? CountryOfficeCost { get; set; }
     public virtual GAndGAdminCost? GAndGAdminCost { get; set; }
     public virtual GAndGAdminCostOverride? GAndGAdminCostOverride { get; set; }
-    public double RigMobDemob { get; set; }
-    public Currency Currency { get; set; }
+
     public virtual ICollection<ExplorationWell> ExplorationWells { get; set; } = [];
 }
 
