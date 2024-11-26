@@ -5,7 +5,6 @@ using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.Middleware;
 using api.Features.BackgroundJobs;
 using api.Mappings;
-using api.Services;
 
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.ResponseCompression;
