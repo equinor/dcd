@@ -1,6 +1,7 @@
 using api.Context;
 using api.Dtos;
 using api.Models;
+using api.Repositories;
 
 using AutoMapper;
 
@@ -10,7 +11,7 @@ namespace api.Services;
 
 public class TechnicalInputService(
     DcdDbContext context,
-    IProjectService projectService,
+    IProjectWithAssetsRepository projectWithAssetsRepository,
     IExplorationOperationalWellCostsService explorationOperationalWellCostsService,
     IDevelopmentOperationalWellCostsService developmentOperationalWellCostsService,
     ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
@@ -20,7 +21,7 @@ public class TechnicalInputService(
 {
     public async Task<TechnicalInputDto> UpdateTehnicalInput(Guid projectId, UpdateTechnicalInputDto technicalInputDto)
     {
-        var project = await projectService.GetProjectWithCasesAndAssets(projectId);
+        var project = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectId);
 
         await UpdateProject(project, technicalInputDto.ProjectDto);
 
@@ -46,7 +47,7 @@ public class TechnicalInputService(
 
         await context.SaveChangesAsync();
 
-        var returnProject = await projectService.GetProjectWithCasesAndAssets(projectId);
+        var returnProject = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectId);
         var returnProjectDto = mapper.Map<ProjectWithAssetsDto>(returnProject, opts => opts.Items["ConversionUnit"] = returnProject.PhysicalUnit.ToString());
 
         if (returnProjectDto == null)
@@ -69,19 +70,19 @@ public class TechnicalInputService(
 
         foreach (var wellDto in deleteWellDtos)
         {
-            var well = await context.Wells!.FindAsync(wellDto.Id);
+            var well = await context.Wells.FindAsync(wellDto.Id);
             if (well != null)
             {
-                var explorationWells = context.ExplorationWell!.Where(ew => ew.WellId == well.Id);
+                var explorationWells = context.ExplorationWell.Where(ew => ew.WellId == well.Id);
                 foreach (var explorationWell in explorationWells)
                 {
-                    context.ExplorationWell!.Remove(explorationWell);
+                    context.ExplorationWell.Remove(explorationWell);
                     affectedAssets[nameof(Exploration)].Add(explorationWell.ExplorationId);
                 }
-                var wellProjectWells = context.WellProjectWell!.Where(ew => ew.WellId == well.Id);
+                var wellProjectWells = context.WellProjectWell.Where(ew => ew.WellId == well.Id);
                 foreach (var wellProjectWell in wellProjectWells)
                 {
-                    context.WellProjectWell!.Remove(wellProjectWell);
+                    context.WellProjectWell.Remove(wellProjectWell);
                     affectedAssets[nameof(WellProject)].Add(wellProjectWell.WellProjectId);
                 }
                 context.Wells.Remove(well);
@@ -116,7 +117,7 @@ public class TechnicalInputService(
                     throw new ArgumentNullException(nameof(well));
                 }
                 well.ProjectId = projectId;
-                context.Wells!.Add(well);
+                context.Wells.Add(well);
             }
         }
 
@@ -130,7 +131,7 @@ public class TechnicalInputService(
                     updatedWells.Add(wellDto.Id);
                 }
                 mapper.Map(wellDto, existing);
-                context.Wells!.Update(existing);
+                context.Wells.Update(existing);
             }
         }
 
@@ -147,7 +148,7 @@ public class TechnicalInputService(
 
     private async Task<Well> GetWell(Guid wellId)
     {
-        var well = await context.Wells!
+        var well = await context.Wells
             .Include(e => e.WellProjectWells)
             .Include(e => e.ExplorationWells)
             .FirstOrDefaultAsync(w => w.Id == wellId);
@@ -183,7 +184,7 @@ public class TechnicalInputService(
         }
         var item = await explorationOperationalWellCostsService.GetOperationalWellCosts(project.ExplorationOperationalWellCosts.Id) ?? new ExplorationOperationalWellCosts();
         mapper.Map(updatedDto, item);
-        var updatedItem = context.ExplorationOperationalWellCosts!.Update(item);
+        var updatedItem = context.ExplorationOperationalWellCosts.Update(item);
         await context.SaveChangesAsync();
         var explorationOperationalWellCostsDto = mapper.Map<ExplorationOperationalWellCostsDto>(updatedItem.Entity);
         if (explorationOperationalWellCostsDto == null)
@@ -203,7 +204,7 @@ public class TechnicalInputService(
         }
         var item = await developmentOperationalWellCostsService.GetOperationalWellCosts(project.DevelopmentOperationalWellCosts.Id) ?? new DevelopmentOperationalWellCosts();
         mapper.Map(updatedDto, item);
-        var updatedItem = context.DevelopmentOperationalWellCosts!.Update(item);
+        var updatedItem = context.DevelopmentOperationalWellCosts.Update(item);
         await context.SaveChangesAsync();
         var developmentOperationalWellCostsDto = mapper.Map<DevelopmentOperationalWellCostsDto>(updatedItem.Entity);
         if (developmentOperationalWellCostsDto == null)

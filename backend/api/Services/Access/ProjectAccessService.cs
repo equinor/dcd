@@ -1,5 +1,5 @@
-using api.Authorization;
-using api.Authorization.Extensions;
+using api.AppInfrastructure.Authorization;
+using api.AppInfrastructure.Authorization.Extensions;
 using api.Dtos.Access;
 using api.Exceptions;
 using api.Models.Interfaces;

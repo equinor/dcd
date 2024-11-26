@@ -1,6 +1,7 @@
 using api.Adapters;
 using api.Dtos;
 using api.Models;
+using api.Repositories;
 
 using AutoMapper;
 
@@ -8,15 +9,15 @@ namespace api.Services;
 
 public class STEAService(
     ILogger<STEAService> logger,
-    IProjectService projectService,
+    IProjectWithAssetsRepository projectWithAssetsRepository,
     IMapper mapper) : ISTEAService
 {
     public async Task<STEAProjectDto> GetInputToSTEA(Guid projectId)
     {
-        var project = await projectService.GetProjectWithCasesAndAssets(projectId);
+        var project = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectId);
         var sTEACaseDtos = new List<STEACaseDto>();
         var projectDto = mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
-        foreach (Case c in project.Cases!)
+        foreach (Case c in project.Cases)
         {
             if (c.Archived) { continue; }
             var caseDto = mapper.Map<CaseWithProfilesDto>(c);

@@ -6,6 +6,8 @@ backend/api/app
 backend/api/.cache
 backend/api/logs
 dcd.sln
+obj/
+bin/
 
 node_modules/
 
@@ -37,3 +39,4 @@ frontend/cypress/screenshots
 
 # Rider
 backend/*.DotSettings.user
+*.DotSettings.user

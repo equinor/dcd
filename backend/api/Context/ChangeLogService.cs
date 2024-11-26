@@ -1,7 +1,7 @@
 using System.Reflection;
 using System.Text.Json;
 
-using api.Authorization;
+using api.AppInfrastructure.Authorization;
 using api.Models;
 using api.Models.Interfaces;
 
@@ -49,12 +49,12 @@ public static class ChangeLogService
     {
         if (type.GetTypeInfo().IsGenericType &&
             type.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-            type.GetGenericArguments().Any(x => x.IsValueType && x.IsPrimitive))
+            type.GetGenericArguments().Any(x => x is { IsValueType: true, IsPrimitive: true }))
         {
             return true;
         }
 
-        if (type.IsValueType && type.IsPrimitive)
+        if (type is { IsValueType: true, IsPrimitive: true })
         {
             return true;
         }

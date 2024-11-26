@@ -806,6 +806,13 @@ declare namespace Components {
             sum?: number; // double
             override: boolean;
         }
+        export interface FusionPersonV1 {
+            azureUniqueId?: string | null;
+            mail?: string | null;
+            name?: string | null;
+            accountType?: string | null;
+            accountClassification?: string | null;
+        }
         export interface GAndGAdminCostDto {
             id: string; // uuid
             startYear: number; // int32
@@ -1142,6 +1149,7 @@ declare namespace Components {
             revisionDate: string; // date-time
             arena: boolean;
             mdqc: boolean;
+            classification: ProjectClassification /* int32 */;
         }
         export interface RevisionWithCasesDto {
             classification: ProjectClassification /* int32 */;
@@ -1959,6 +1967,19 @@ declare namespace Components {
     }
 }
 declare namespace Paths {
+    namespace Context$ContextId {
+        namespace Get {
+            namespace Parameters {
+                export type ContextId = string; // uuid
+            }
+            export interface PathParameters {
+                contextId: Parameters.ContextId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.FusionPersonV1[];
+            }
+        }
+    }
     namespace Duplicate {
         namespace Parameters {
             export type CopyCaseId = string; // uuid
@@ -3045,14 +3066,14 @@ declare namespace Paths {
     namespace Projects$ProjectIdCases$CaseIdImages$ImageId {
         namespace Delete {
             namespace Parameters {
-                export type CaseId = string;
+                export type CaseId = string; // uuid
                 export type ImageId = string; // uuid
-                export type ProjectId = string;
+                export type ProjectId = string; // uuid
             }
             export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                caseId: Parameters.CaseId /* uuid */;
                 imageId: Parameters.ImageId /* uuid */;
-                projectId: Parameters.ProjectId;
-                caseId: Parameters.CaseId;
             }
             namespace Responses {
                 export interface $200 {
@@ -3764,11 +3785,11 @@ declare namespace Paths {
         namespace Delete {
             namespace Parameters {
                 export type ImageId = string; // uuid
-                export type ProjectId = string;
+                export type ProjectId = string; // uuid
             }
             export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
                 imageId: Parameters.ImageId /* uuid */;
-                projectId: Parameters.ProjectId;
             }
             namespace Responses {
                 export interface $200 {

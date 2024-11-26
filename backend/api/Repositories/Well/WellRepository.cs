@@ -16,13 +16,13 @@ public class WellRepository(DcdDbContext context) : BaseRepository(context), IWe
     public async Task<IEnumerable<Case>> GetCasesAffectedByDeleteWell(Guid wellId)
     {
         var well = await Context.Wells
-            .Include(w => w.WellProjectWells)!
+            .Include(w => w.WellProjectWells)
                 .ThenInclude(wp => wp.DrillingSchedule)
-            .Include(w => w.WellProjectWells)!
+            .Include(w => w.WellProjectWells)
                 .ThenInclude(wp => wp.WellProject)
-            .Include(w => w.ExplorationWells)!
+            .Include(w => w.ExplorationWells)
                 .ThenInclude(ew => ew.DrillingSchedule)
-            .Include(w => w.ExplorationWells)!
+            .Include(w => w.ExplorationWells)
                 .ThenInclude(ew => ew.Exploration)
             .FirstOrDefaultAsync(w => w.Id == wellId);
 

@@ -27,45 +27,45 @@ public class DrainageStrategyWithProfilesDto
     [Required]
     public GasSolution GasSolution { get; set; }
     [Required]
-    public ProductionProfileOilDto ProductionProfileOil { get; set; } = new ProductionProfileOilDto();
+    public ProductionProfileOilDto ProductionProfileOil { get; set; } = new();
     [Required]
-    public AdditionalProductionProfileOilDto AdditionalProductionProfileOil { get; set; } = new AdditionalProductionProfileOilDto();
+    public AdditionalProductionProfileOilDto AdditionalProductionProfileOil { get; set; } = new();
     [Required]
-    public ProductionProfileGasDto ProductionProfileGas { get; set; } = new ProductionProfileGasDto();
+    public ProductionProfileGasDto ProductionProfileGas { get; set; } = new();
     [Required]
-    public AdditionalProductionProfileGasDto AdditionalProductionProfileGas { get; set; } = new AdditionalProductionProfileGasDto();
+    public AdditionalProductionProfileGasDto AdditionalProductionProfileGas { get; set; } = new();
     [Required]
-    public ProductionProfileWaterDto ProductionProfileWater { get; set; } = new ProductionProfileWaterDto();
+    public ProductionProfileWaterDto ProductionProfileWater { get; set; } = new();
     [Required]
-    public ProductionProfileWaterInjectionDto ProductionProfileWaterInjection { get; set; } = new ProductionProfileWaterInjectionDto();
+    public ProductionProfileWaterInjectionDto ProductionProfileWaterInjection { get; set; } = new();
     [Required]
-    public FuelFlaringAndLossesDto FuelFlaringAndLosses { get; set; } = new FuelFlaringAndLossesDto();
+    public FuelFlaringAndLossesDto FuelFlaringAndLosses { get; set; } = new();
     [Required]
-    public FuelFlaringAndLossesOverrideDto FuelFlaringAndLossesOverride { get; set; } = new FuelFlaringAndLossesOverrideDto();
+    public FuelFlaringAndLossesOverrideDto FuelFlaringAndLossesOverride { get; set; } = new();
     [Required]
-    public NetSalesGasDto NetSalesGas { get; set; } = new NetSalesGasDto();
+    public NetSalesGasDto NetSalesGas { get; set; } = new();
     [Required]
-    public NetSalesGasOverrideDto NetSalesGasOverride { get; set; } = new NetSalesGasOverrideDto();
+    public NetSalesGasOverrideDto NetSalesGasOverride { get; set; } = new();
 
     [Required]
-    public Co2EmissionsDto Co2Emissions { get; set; } = new Co2EmissionsDto();
+    public Co2EmissionsDto Co2Emissions { get; set; } = new();
     [Required]
-    public Co2EmissionsOverrideDto Co2EmissionsOverride { get; set; } = new Co2EmissionsOverrideDto();
+    public Co2EmissionsOverrideDto Co2EmissionsOverride { get; set; } = new();
 
     [Required]
-    public ProductionProfileNGLDto ProductionProfileNGL { get; set; } = new ProductionProfileNGLDto();
+    public ProductionProfileNGLDto ProductionProfileNGL { get; set; } = new();
 
     [Required]
-    public ImportedElectricityDto ImportedElectricity { get; set; } = new ImportedElectricityDto();
+    public ImportedElectricityDto ImportedElectricity { get; set; } = new();
     [Required]
-    public ImportedElectricityOverrideDto ImportedElectricityOverride { get; set; } = new ImportedElectricityOverrideDto();
+    public ImportedElectricityOverrideDto ImportedElectricityOverride { get; set; } = new();
 
     [Required]
     public Co2IntensityDto? Co2Intensity { get; set; }
     [Required]
-    public DeferredOilProductionDto DeferredOilProduction { get; set; } = new DeferredOilProductionDto();
+    public DeferredOilProductionDto DeferredOilProduction { get; set; } = new();
     [Required]
-    public DeferredGasProductionDto DeferredGasProduction { get; set; } = new DeferredGasProductionDto();
+    public DeferredGasProductionDto DeferredGasProduction { get; set; } = new();
 }
 
 public class ProductionProfileOilDto : TimeSeriesVolumeDto;

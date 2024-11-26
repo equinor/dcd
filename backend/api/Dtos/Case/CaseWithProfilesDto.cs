@@ -80,7 +80,7 @@ public class CaseWithProfilesDto
     [Required]
     public CessationOffshoreFacilitiesCostOverrideDto CessationOffshoreFacilitiesCostOverride { get; set; } = null!;
     [Required]
-    public CessationOnshoreFacilitiesCostProfileDto? CessationOnshoreFacilitiesCostProfile { get; set; } = new CessationOnshoreFacilitiesCostProfileDto();
+    public CessationOnshoreFacilitiesCostProfileDto? CessationOnshoreFacilitiesCostProfile { get; set; } = new();
     [Required]
     public TotalFeasibilityAndConceptStudiesDto? TotalFeasibilityAndConceptStudies { get; set; }
     [Required]
@@ -90,9 +90,9 @@ public class CaseWithProfilesDto
     [Required]
     public TotalFEEDStudiesOverrideDto? TotalFEEDStudiesOverride { get; set; }
     [Required]
-    public TotalOtherStudiesCostProfileDto? TotalOtherStudiesCostProfile { get; set; } = new TotalOtherStudiesCostProfileDto();
+    public TotalOtherStudiesCostProfileDto? TotalOtherStudiesCostProfile { get; set; } = new();
     [Required]
-    public HistoricCostCostProfileDto? HistoricCostCostProfile { get; set; } = new HistoricCostCostProfileDto();
+    public HistoricCostCostProfileDto? HistoricCostCostProfile { get; set; } = new();
     [Required]
     public WellInterventionCostProfileDto? WellInterventionCostProfile { get; set; }
     [Required]
@@ -102,13 +102,13 @@ public class CaseWithProfilesDto
     [Required]
     public OffshoreFacilitiesOperationsCostProfileOverrideDto? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
     [Required]
-    public OnshoreRelatedOPEXCostProfileDto? OnshoreRelatedOPEXCostProfile { get; set; } = new OnshoreRelatedOPEXCostProfileDto();
+    public OnshoreRelatedOPEXCostProfileDto? OnshoreRelatedOPEXCostProfile { get; set; } = new();
     [Required]
-    public AdditionalOPEXCostProfileDto? AdditionalOPEXCostProfile { get; set; } = new AdditionalOPEXCostProfileDto();
+    public AdditionalOPEXCostProfileDto? AdditionalOPEXCostProfile { get; set; } = new();
     [Required]
-    public CalculatedTotalIncomeCostProfileDto? CalculatedTotalIncomeCostProfile { get; set; } = new CalculatedTotalIncomeCostProfileDto();
+    public CalculatedTotalIncomeCostProfileDto? CalculatedTotalIncomeCostProfile { get; set; } = new();
     [Required]
-    public CalculatedTotalCostCostProfileDto? CalculatedTotalCostCostProfile { get; set; } = new CalculatedTotalCostCostProfileDto();
+    public CalculatedTotalCostCostProfileDto? CalculatedTotalCostCostProfile { get; set; } = new();
 
     [Required]
     public Guid DrainageStrategyLink { get; set; }

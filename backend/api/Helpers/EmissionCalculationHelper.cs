@@ -90,8 +90,8 @@ public static class EmissionCalculationHelper
     private static TimeSeries<double> CalculateTotalUseOfPowerGas(Topside topside, DrainageStrategy drainageStrategy, double pe)
     {
         var gc = topside.GasCapacity;
-        var gr = drainageStrategy.ProductionProfileGas?.Values ?? Array.Empty<double>();
-        var additionalGr = drainageStrategy.AdditionalProductionProfileGas?.Values ?? Array.Empty<double>();
+        var gr = drainageStrategy.ProductionProfileGas?.Values ?? [];
+        var additionalGr = drainageStrategy.AdditionalProductionProfileGas?.Values ?? [];
 
         // Create TimeSeries<double> instances for both profiles
         var productionProfileGas = new TimeSeries<double>
@@ -137,8 +137,8 @@ public static class EmissionCalculationHelper
     private static TimeSeries<double> CalculateTotalUseOfPowerOil(Topside topside, DrainageStrategy drainageStrategy, double pe)
     {
         var oc = topside.OilCapacity;
-        var or = drainageStrategy.ProductionProfileOil?.Values ?? Array.Empty<double>();
-        var additionalOr = drainageStrategy.AdditionalProductionProfileOil?.Values ?? Array.Empty<double>();
+        var or = drainageStrategy.ProductionProfileOil?.Values ?? [];
+        var additionalOr = drainageStrategy.AdditionalProductionProfileOil?.Values ?? [];
 
         // Create TimeSeries<double> instances for both profiles
         var productionProfileOil = new TimeSeries<double>
@@ -177,11 +177,11 @@ public static class EmissionCalculationHelper
 
     public static TimeSeries<double> CalculateFlaring(Project project, DrainageStrategy drainageStrategy)
     {
-        var oilRate = drainageStrategy.ProductionProfileOil?.Values.Select(v => v).ToArray() ?? Array.Empty<double>();
-        var additionalOilRate = drainageStrategy.AdditionalProductionProfileOil?.Values.Select(v => v).ToArray() ?? Array.Empty<double>();
+        var oilRate = drainageStrategy.ProductionProfileOil?.Values.Select(v => v).ToArray() ?? [];
+        var additionalOilRate = drainageStrategy.AdditionalProductionProfileOil?.Values.Select(v => v).ToArray() ?? [];
 
-        var gasRate = drainageStrategy.ProductionProfileGas?.Values.Select(v => v / ConversionFactorFromMtoG).ToArray() ?? Array.Empty<double>();
-        var additionalGasRate = drainageStrategy.AdditionalProductionProfileGas?.Values.Select(v => v / ConversionFactorFromMtoG).ToArray() ?? Array.Empty<double>();
+        var gasRate = drainageStrategy.ProductionProfileGas?.Values.Select(v => v / ConversionFactorFromMtoG).ToArray() ?? [];
+        var additionalGasRate = drainageStrategy.AdditionalProductionProfileGas?.Values.Select(v => v / ConversionFactorFromMtoG).ToArray() ?? [];
 
         // Create TimeSeries<double> instances for both oil and gas profiles
         var oilRateTS = new TimeSeries<double>
@@ -212,7 +212,7 @@ public static class EmissionCalculationHelper
         var mergedGasProfile = TimeSeriesCost.MergeCostProfiles(gasRateTS, additionalGasRateTS);
         var mergedOilAndGas = TimeSeriesCost.MergeCostProfiles(mergedOilProfile, mergedGasProfile);
 
-        var flaringValues = mergedOilAndGas.Values.Select(v => v * project.FlaredGasPerProducedVolume).ToArray() ?? Array.Empty<double>();
+        var flaringValues = mergedOilAndGas.Values.Select(v => v * project.FlaredGasPerProducedVolume).ToArray();
         var flaring = new TimeSeries<double>
         {
             Values = flaringValues,
@@ -224,8 +224,8 @@ public static class EmissionCalculationHelper
 
     public static TimeSeries<double> CalculateLosses(Project project, DrainageStrategy drainageStrategy)
     {
-        var lossesValues = drainageStrategy.ProductionProfileGas?.Values.Select(v => v * project.CO2RemovedFromGas).ToArray() ?? Array.Empty<double>();
-        var additionalGasLossesValues = drainageStrategy.AdditionalProductionProfileGas?.Values.Select(v => v * project.CO2RemovedFromGas).ToArray() ?? Array.Empty<double>();
+        var lossesValues = drainageStrategy.ProductionProfileGas?.Values.Select(v => v * project.CO2RemovedFromGas).ToArray() ?? [];
+        var additionalGasLossesValues = drainageStrategy.AdditionalProductionProfileGas?.Values.Select(v => v * project.CO2RemovedFromGas).ToArray() ?? [];
 
         // Create TimeSeries<double> instances for both gas losses profiles
         var gasLossesTS = new TimeSeries<double>

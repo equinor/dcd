@@ -56,7 +56,7 @@ public class WellProjectRepository(DcdDbContext context) : BaseRepository(contex
     public async Task<WellProject?> GetWellProjectWithDrillingSchedule(Guid drillingScheduleId)
     {
         var wellProject = await Context.WellProjects
-            .Include(e => e.WellProjectWells)!
+            .Include(e => e.WellProjectWells)
             .ThenInclude(w => w.DrillingSchedule)
             .FirstOrDefaultAsync(e => e.WellProjectWells != null && e.WellProjectWells.Any(w => w.DrillingScheduleId == drillingScheduleId));
 
