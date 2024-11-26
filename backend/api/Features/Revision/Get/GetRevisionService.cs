@@ -31,8 +31,9 @@ public class GetRevisionService(DcdDbContext context, IMapper mapper)
 
     private static DateTimeOffset GetLatestModifyTime(Project project)
     {
-        return project.Cases?.Select(c => c.ModifyTime)
+        return project.Cases
+            .Select(c => c.ModifyTime)
             .Append(project.ModifyTime)
-            .Max() ?? project.ModifyTime;
+            .Max();
     }
 }
