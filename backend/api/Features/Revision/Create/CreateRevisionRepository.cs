@@ -27,7 +27,7 @@ public class CreateRevisionRepository(DcdDbContext context)
         await LoadSurfs(projectId);
         await LoadSubstructures(projectId);
 
-       DetachEntriesToEnablePrimaryKeyEdits();
+        DetachEntriesToEnablePrimaryKeyEdits();
 
         return project;
     }
