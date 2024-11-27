@@ -1,10 +1,14 @@
 using api.AppInfrastructure.Authorization;
 using api.Features.BackgroundJobs;
 using api.Features.Cases.CaseComparison;
+using api.Features.Cases.GetWithAssets;
 using api.Features.FusionIntegration.OrgChart;
 using api.Features.FusionIntegration.ProjectMaster;
 using api.Features.Images.Service;
 using api.Features.Prosp.Services;
+using api.Features.Revision.Create;
+using api.Features.Revision.Get;
+using api.Features.Revision.Update;
 using api.Repositories;
 using api.Services;
 using api.Services.EconomicsServices;
@@ -24,7 +28,6 @@ public static class DcdIocConfiguration
 
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<IProjectMemberService, ProjectMemberService>();
-        services.AddScoped<IRevisionService, RevisionService>();
         services.AddScoped<IFusionService, FusionService>();
         services.AddScoped<ICaseService, CaseService>();
         services.AddScoped<ICreateCaseService, CreateCaseService>();
@@ -53,7 +56,6 @@ public static class DcdIocConfiguration
         services.AddScoped<ITransportTimeSeriesService, TransportTimeSeriesService>();
 
         services.AddScoped<IDevelopmentOperationalWellCostsService, DevelopmentOperationalWellCostsService>();
-        services.AddScoped<ICaseWithAssetsService, CaseWithAssetsService>();
 
         services.AddScoped<ITechnicalInputService, TechnicalInputService>();
         services.AddScoped<IOpexCostProfileService, OpexCostProfileService>();
@@ -77,7 +79,12 @@ public static class DcdIocConfiguration
 
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
-        services.AddScoped<IRevisionRepository, RevisionRepository>();
+
+        services.AddScoped<GetRevisionService>();
+        services.AddScoped<CreateRevisionService>();
+        services.AddScoped<CreateRevisionRepository>();
+        services.AddScoped<UpdateRevisionService>();
+
         services.AddScoped<ICaseRepository, CaseRepository>();
         services.AddScoped<ISubstructureRepository, SubstructureRepository>();
         services.AddScoped<ITopsideRepository, TopsideRepository>();
@@ -97,7 +104,9 @@ public static class DcdIocConfiguration
         services.AddScoped<ISurfTimeSeriesRepository, SurfTimeSeriesRepository>();
 
         services.AddScoped<IWellRepository, WellRepository>();
-        services.AddScoped<ICaseWithAssetsRepository, CaseWithAssetsRepository>();
+
+        services.AddScoped<CaseWithAssetsRepository>();
+        services.AddScoped<CaseWithAssetsService>();
 
         services.AddScoped<IMapperService, MapperService>();
         services.AddScoped<IConversionMapperService, ConversionMapperService>();

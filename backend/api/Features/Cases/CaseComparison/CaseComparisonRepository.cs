@@ -15,12 +15,7 @@ public class CaseComparisonRepository(DcdDbContext context)
             .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
-            .FirstOrDefaultAsync(p => p.Id == projectId || p.FusionProjectId == projectId);
-
-        if (project == null)
-        {
-            throw new NotFoundInDBException($"Project {projectId} not found");
-        }
+            .FirstOrDefaultAsync(p => p.Id == projectId) ?? throw new NotFoundInDBException($"Project {projectId} not found");
 
         var caseIds = project.Cases.Where(x => !x.Archived).Select(c => c.Id).ToList();
         await context.Cases
@@ -41,6 +36,8 @@ public class CaseComparisonRepository(DcdDbContext context)
             .Include(c => c.HistoricCostCostProfile)
             .Include(c => c.OnshoreRelatedOPEXCostProfile)
             .Include(c => c.AdditionalOPEXCostProfile)
+            .Include(c => c.CalculatedTotalCostCostProfile)
+            .Include(c => c.CalculatedTotalIncomeCostProfile)
             .Where(x => caseIds.Contains(x.Id))
             .LoadAsync();
 
@@ -52,12 +49,24 @@ public class CaseComparisonRepository(DcdDbContext context)
             .Include(d => d.AdditionalProductionProfileGas)
             .Include(d => d.Co2EmissionsOverride)
             .Include(d => d.Co2Emissions)
+            .Include(d => d.ProductionProfileWater)
+            .Include(d => d.ProductionProfileWaterInjection)
+            .Include(d => d.FuelFlaringAndLosses)
+            .Include(d => d.FuelFlaringAndLossesOverride)
+            .Include(d => d.NetSalesGas)
+            .Include(d => d.NetSalesGasOverride)
+            .Include(d => d.ProductionProfileNGL)
+            .Include(d => d.ImportedElectricity)
+            .Include(d => d.ImportedElectricityOverride)
+            .Include(d => d.DeferredOilProduction)
+            .Include(d => d.DeferredGasProduction)
             .Where(x => drainageStrategyLinks.Contains(x.Id))
             .LoadAsync();
 
         var explorationLinks = project.Cases.Select(x => x.ExplorationLink).ToList();
         await context.Explorations
             .Include(e => e.GAndGAdminCost)
+            .Include(e => e.GAndGAdminCostOverride)
             .Include(e => e.CountryOfficeCost)
             .Include(e => e.SeismicAcquisitionAndProcessing)
             .Include(e => e.ExplorationWellCostProfile)
@@ -83,6 +92,7 @@ public class CaseComparisonRepository(DcdDbContext context)
         await context.Substructures
             .Include(x => x.CostProfileOverride)
             .Include(x => x.CostProfile)
+            .Include(x => x.CessationCostProfile)
             .Where(x => substructureLinks.Contains(x.Id))
             .LoadAsync();
 
@@ -90,6 +100,7 @@ public class CaseComparisonRepository(DcdDbContext context)
         await context.Surfs
             .Include(x => x.CostProfileOverride)
             .Include(x => x.CostProfile)
+            .Include(x => x.CessationCostProfile)
             .Where(x => surfLinkIds.Contains(x.Id))
             .LoadAsync();
 
@@ -97,6 +108,7 @@ public class CaseComparisonRepository(DcdDbContext context)
         await context.Topsides
             .Include(x => x.CostProfileOverride)
             .Include(x => x.CostProfile)
+            .Include(x => x.CessationCostProfile)
             .Where(x => topsideLinks.Contains(x.Id))
             .LoadAsync();
 
@@ -104,6 +116,7 @@ public class CaseComparisonRepository(DcdDbContext context)
         await context.Transports
             .Include(x => x.CostProfileOverride)
             .Include(x => x.CostProfile)
+            .Include(x => x.CessationCostProfile)
             .Where(x => transportLinks.Contains(x.Id))
             .LoadAsync();
 

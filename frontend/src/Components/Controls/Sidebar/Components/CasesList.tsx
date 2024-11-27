@@ -26,7 +26,7 @@ const CasesList: React.FC = () => {
     const { sidebarOpen } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
-    const { isRevision } = useProjectContext()
+    const { isRevision, projectId } = useProjectContext()
     const { revisionId } = useParams()
 
     const { data: apiData } = useQuery({
@@ -36,9 +36,9 @@ const CasesList: React.FC = () => {
     })
 
     const { data: apiRevisionData } = useQuery({
-        queryKey: ["revisionApiData", externalId],
-        queryFn: () => revisionQueryFn(externalId, revisionId),
-        enabled: !!externalId && isRevision,
+        queryKey: ["revisionApiData", revisionId],
+        queryFn: () => revisionQueryFn(projectId, revisionId),
+        enabled: !!projectId && !!revisionId && isRevision,
     })
 
     const location = useLocation()

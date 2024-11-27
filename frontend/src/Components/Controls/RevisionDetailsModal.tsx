@@ -81,7 +81,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
     const { data: revisionApiData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
-        enabled: !!revisionId,
+        enabled: !!revisionId && !!projectId,
     })
 
     const { data: projectApiData } = useQuery({

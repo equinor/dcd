@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Dtos.Project.Revision;
+using api.Features.Revision.Get;
 
 namespace api.Dtos;
 

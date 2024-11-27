@@ -733,6 +733,18 @@ declare namespace Components {
             startYear: number; // int32
             values?: number /* int32 */[] | null;
         }
+        export interface DriveItemDto {
+            name?: string | null;
+            id?: string | null;
+            sharepointFileUrl?: string | null;
+            createdDateTime?: string | null; // date-time
+            content?: string | null; // binary
+            size?: number | null; // int64
+            sharepointIds?: SharepointIds;
+            createdBy?: IdentitySet;
+            lastModifiedBy?: IdentitySet;
+            lastModifiedDateTime?: string | null; // date-time
+        }
         export interface ExplorationDto {
             id: string; // uuid
             projectId: string; // uuid
@@ -860,6 +872,19 @@ declare namespace Components {
             sum?: number; // double
             epaVersion: string;
             currency: Currency /* int32 */;
+        }
+        export interface Identity {
+            [name: string]: any;
+            displayName?: string | null;
+            id?: string | null;
+            "@odata.type"?: string | null;
+        }
+        export interface IdentitySet {
+            [name: string]: any;
+            application?: Identity;
+            device?: Identity;
+            user?: Identity;
+            "@odata.type"?: string | null;
         }
         export interface ImageDto {
             id: string; // uuid
@@ -1184,6 +1209,28 @@ declare namespace Components {
             sum?: number; // double
             epaVersion: string;
             currency: Currency /* int32 */;
+        }
+        export interface SharePointImportDto {
+            id?: string | null;
+            surf?: boolean;
+            substructure?: boolean;
+            topside?: boolean;
+            transport?: boolean;
+            sharePointFileId?: string | null;
+            sharePointFileName?: string | null;
+            sharePointFileUrl?: string | null;
+            sharePointSiteUrl?: string | null;
+        }
+        export interface SharepointIds {
+            [name: string]: any;
+            listId?: string | null;
+            listItemId?: string | null;
+            listItemUniqueId?: string | null;
+            siteId?: string | null;
+            siteUrl?: string | null;
+            tenantId?: string | null;
+            webId?: string | null;
+            "@odata.type"?: string | null;
         }
         export interface SidetrackCostProfileDto {
             id: string; // uuid
@@ -1845,6 +1892,9 @@ declare namespace Components {
             artificialLift?: ArtificialLift /* int32 */;
             currency?: Currency /* int32 */;
         }
+        export interface UrlDto {
+            url?: string | null;
+        }
         export interface WaterInjectorCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
@@ -1977,6 +2027,27 @@ declare namespace Paths {
         }
         namespace Responses {
             export type $200 = Components.Schemas.STEAProjectDto;
+        }
+    }
+    namespace GetSharePointFileNamesAndId {
+        export type RequestBody = Components.Schemas.UrlDto;
+        namespace Responses {
+            export type $200 = Components.Schemas.DriveItemDto[];
+        }
+    }
+    namespace ImportFilesFromSharepointAsync {
+        namespace Parameters {
+            export type ProjectId = string; // uuid
+        }
+        export interface PathParameters {
+            projectId: Parameters.ProjectId /* uuid */;
+        }
+        export interface QueryParameters {
+            projectId?: Parameters.ProjectId /* uuid */;
+        }
+        export type RequestBody = Components.Schemas.SharePointImportDto[];
+        namespace Responses {
+            export type $200 = Components.Schemas.ProjectWithAssetsDto;
         }
     }
     namespace Projects {

@@ -1,21 +1,33 @@
 import { useState, ChangeEventHandler, useEffect } from "react"
+import { useParams } from "react-router"
 import { Input, NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
+
 import InputSwitcher from "../Input/Components/InputSwitcher"
-import { PROJECT_CLASSIFICATION } from "../../Utils/constants"
-import { projectQueryFn } from "../../Services/QueryFunctions"
-import useEditProject from "../../Hooks/useEditProject"
+import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
+import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
+import useEditProject from "@/Hooks/useEditProject"
+import { useProjectContext } from "@/Context/ProjectContext"
 
 const ProjectSettingsTab = () => {
     const { currentContext } = useModuleCurrentContext()
     const { addProjectEdit } = useEditProject()
+    const { revisionId } = useParams()
+    const { isRevision, projectId } = useProjectContext()
     const externalId = currentContext?.externalId
+
     const { data: apiData } = useQuery({
         queryKey: ["projectApiData", externalId],
         queryFn: () => projectQueryFn(externalId),
         enabled: !!externalId,
+    })
+
+    const { data: apiRevisionData } = useQuery({
+        queryKey: ["revisionApiData", revisionId],
+        queryFn: () => revisionQueryFn(projectId, revisionId),
+        enabled: !!projectId && !!revisionId && isRevision,
     })
 
     const [dummyRole, setDummyRole] = useState(0) // TODO: Get role from user
@@ -24,12 +36,20 @@ const ProjectSettingsTab = () => {
     const [discountRate, setDiscountRate] = useState(apiData?.discountRate || 0)
 
     useEffect(() => {
-        if (apiData) {
+        if (apiData && !isRevision) {
             setOilPriceUSD(apiData.oilPriceUSD)
             setGasPriceNOK(apiData.gasPriceNOK)
             setDiscountRate(apiData.discountRate)
         }
-    }, [apiData])
+    }, [apiData, isRevision])
+
+    useEffect(() => {
+        if (apiRevisionData && isRevision) {
+            setOilPriceUSD(apiRevisionData.oilPriceUSD)
+            setGasPriceNOK(apiRevisionData.gasPriceNOK)
+            setDiscountRate(apiRevisionData.discountRate)
+        }
+    }, [isRevision, apiRevisionData, revisionId])  
 
     const handlePhysicalUnitChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1 && apiData) {

@@ -4,9 +4,11 @@ namespace api.Models;
 
 public class DevelopmentOperationalWellCosts : IHasProjectId, IChangeTrackable
 {
-    public virtual Project Project { get; set; } = null!;
-    public Guid ProjectId { get; set; }
     public Guid Id { get; set; }
+
+    public Guid ProjectId { get; set; }
+    public virtual Project Project { get; set; } = null!;
+
     public double RigUpgrading { get; set; }
     public double RigMobDemob { get; set; }
     public double AnnualWellInterventionCostPerWell { get; set; }
