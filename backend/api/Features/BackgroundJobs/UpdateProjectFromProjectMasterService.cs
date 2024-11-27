@@ -107,7 +107,6 @@ ILogger<UpdateProjectFromProjectMasterService> logger)
 
     private async Task<ProjectWithAssetsDto?> GetProjectDtoFromProjectMaster(Guid projectGuid)
     {
-
         var projectMaster = await fusionService.GetProjectMasterFromFusionContextId(projectGuid);
 
         if (projectMaster == null)
