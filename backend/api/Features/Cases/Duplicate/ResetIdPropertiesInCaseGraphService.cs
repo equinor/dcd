@@ -59,6 +59,12 @@ public static class ResetIdPropertiesInCaseGraphService
 
         foreach (var instanceProperty in instanceProperties)
         {
+            if (instanceProperty.Name == "Project")
+            {
+                instanceProperty.SetValue(obj, null);
+                continue;
+            }
+
             var childObject = instanceProperty.GetValue(obj);
             SetIdsToEmptyGuids(childObject, caseId, visited);
         }
