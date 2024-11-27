@@ -11,16 +11,20 @@ public class CaseComparisonRepository(DcdDbContext context)
     public async Task<Project> LoadProject(Guid projectId)
     {
         var project = await context.Projects
-            .Include(p => p.Cases)
-            .Include(p => p.Wells)
-            .Include(p => p.ExplorationOperationalWellCosts)
-            .Include(p => p.DevelopmentOperationalWellCosts)
-            .FirstOrDefaultAsync(p => (p.Id == projectId || p.FusionProjectId == projectId) && !p.IsRevision);
+                          .Include(p => p.Cases)
+                          .Include(p => p.Wells)
+                          .Include(p => p.ExplorationOperationalWellCosts)
+                          .Include(p => p.DevelopmentOperationalWellCosts)
+                          .FirstOrDefaultAsync(p => p.Id == projectId)
 
-        if (project == null)
-        {
-            throw new NotFoundInDBException($"Project {projectId} not found");
-        }
+                      ?? await context.Projects
+                          .Include(p => p.Cases)
+                          .Include(p => p.Wells)
+                          .Include(p => p.ExplorationOperationalWellCosts)
+                          .Include(p => p.DevelopmentOperationalWellCosts)
+                          .FirstOrDefaultAsync(p => (p.FusionProjectId == projectId || p.FusionProjectId == projectId) && !p.IsRevision)
+                      
+                      ?? throw new NotFoundInDBException($"Project {projectId} not found");
 
         var caseIds = project.Cases.Where(x => !x.Archived).Select(c => c.Id).ToList();
         await context.Cases
