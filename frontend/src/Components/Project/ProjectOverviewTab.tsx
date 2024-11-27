@@ -67,7 +67,13 @@ const ProjectOverviewTab = () => {
 
         const { projectPhase, internalProjectPhase } = apiData
 
+        const revisionProjectPhase = apiRevisionData?.projectPhase
+        const revisionInternalProjectPhase = apiRevisionData?.internalProjectPhase
+
         if ([3, 4, 5, 6, 7, 8].includes(projectPhase)) {
+            if (isRevision) {
+                return getProjectPhaseName(revisionProjectPhase)
+            }
             return getProjectPhaseName(projectPhase)
         }
 
@@ -77,7 +83,7 @@ const ProjectOverviewTab = () => {
 
         return (
             <InputSwitcher
-                value={INTERNAL_PROJECT_PHASE[internalProjectPhase].label}
+                value={isRevision && revisionInternalProjectPhase ? INTERNAL_PROJECT_PHASE[revisionInternalProjectPhase].label ?? "" : INTERNAL_PROJECT_PHASE[internalProjectPhase].label ?? ""}
             >
                 <NativeSelect
                     id="internalProjectPhase"
@@ -102,13 +108,13 @@ const ProjectOverviewTab = () => {
                 <Grid item>
                     <Typography group="input" variant="label">Project Category</Typography>
                     <Typography aria-label="Project category">
-                        {getProjectCategoryName(apiData.projectCategory)}
+                        {isRevision ? getProjectCategoryName(apiRevisionData?.projectCategory) : getProjectCategoryName(apiData.projectCategory)}
                     </Typography>
                 </Grid>
                 <Grid item>
                     <Typography group="input" variant="label">Country</Typography>
                     <Typography aria-label="Country">
-                        {apiData.country ?? "Not defined in Common Library"}
+                        {isRevision ? apiRevisionData?.country ?? "Not defined in Common Library" : apiData.country ?? "Not defined in Common Library"}
                     </Typography>
                 </Grid>
             </Grid>
@@ -123,7 +129,7 @@ const ProjectOverviewTab = () => {
                             {apiData.description ?? ""}
                         </MarkdownEditor>
                     )
-                    : <MarkdownViewer value={isRevision ? apiRevisionData?.description : apiData.description ?? ""} />}
+                    : <MarkdownViewer value={isRevision ? apiRevisionData?.description ?? "" : apiData.description ?? ""} />}
             </Grid>
             <Grid item xs={12} container spacing={1} justifyContent="space-between">
                 <Grid item>

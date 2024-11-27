@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
-import { projectQueryFn, compareCasesQueryFn } from "../Services/QueryFunctions"
-import { useProjectContext } from "../Context/ProjectContext"
+import { useParams } from "react-router"
+import { projectQueryFn, compareCasesQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
+import { useProjectContext } from "@/Context/ProjectContext"
 
 interface TableCompareCase {
     id: string,
@@ -26,7 +27,8 @@ interface TableCompareCase {
 }
 
 export const useProjectChartData = () => {
-    const { projectId } = useProjectContext()
+    const { projectId, isRevision } = useProjectContext()
+    const { revisionId } = useParams()
     const [rowData, setRowData] = useState<TableCompareCase[]>()
     const [compareCasesTotals, setCompareCasesTotals] = useState<Components.Schemas.CompareCasesDto[]>()
     const [npvChartData, setNpvChartData] = useState<object>()
@@ -42,16 +44,23 @@ export const useProjectChartData = () => {
         enabled: !!projectId,
     })
 
+    const { data: apiRevisionData } = useQuery({
+        queryKey: ["revisionApiData", revisionId],
+        queryFn: () => revisionQueryFn(projectId, revisionId),
+        enabled: !!projectId && !!revisionId && isRevision,
+    })
+
     const { data: compareCasesData } = useQuery({
         queryKey: ["compareCasesApiData", projectId],
         queryFn: () => compareCasesQueryFn(projectId),
         enabled: !!projectId,
     })
 
-    const cases = useMemo(
-        () => apiData?.cases.filter((c) => !c.archived) || [],
-        [apiData],
-    )
+    const cases = useMemo(() => {
+        if(isRevision) {
+            return apiRevisionData?.cases.filter((c) => !c.archived) || []
+        } else return apiData?.cases.filter((c) => !c.archived) || []
+    }, [apiData, isRevision, apiRevisionData])
 
     const generateAllCharts = () => {
         if (!compareCasesTotals || !apiData) { return }
@@ -160,11 +169,11 @@ export const useProjectChartData = () => {
     }, [compareCasesData])
 
     useEffect(() => {
-        if (apiData) {
+        if (apiData || apiRevisionData) {
             casesToRowData()
             generateAllCharts()
         }
-    }, [apiData, compareCasesTotals])
+    }, [apiData, apiRevisionData, compareCasesTotals])
 
     return {
         rowData,

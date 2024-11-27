@@ -8,17 +8,17 @@ import {
 import Grid from "@mui/material/Grid"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
+
+import { EMPTY_GUID } from "@/Utils/constants"
+import { isExplorationWell } from "@/Utils/common"
+import { useAppContext } from "@/Context/AppContext"
+import { GetTechnicalInputService } from "@/Services/TechnicalInputService"
+import { projectQueryFn } from "@/Services/QueryFunctions"
+import useEditProject from "@/Hooks/useEditProject"
+import useEditDisabled from "@/Hooks/useEditDisabled"
 import WellCostsTab from "./WellCostsTab"
 import PROSPTab from "./PROSPTab"
-import { EMPTY_GUID } from "../../Utils/constants"
-import { isExplorationWell } from "../../Utils/common"
 import CO2Tab from "./CO2Tab"
-import { GetTechnicalInputService } from "../../Services/TechnicalInputService"
-import { useModalContext } from "../../Context/ModalContext"
-import { useAppContext } from "../../Context/AppContext"
-import { projectQueryFn } from "../../Services/QueryFunctions"
-import useEditProject from "../../Hooks/useEditProject"
-import useEditDisabled from "@/Hooks/useEditDisabled"
 
 const {
     List, Tab, Panels, Panel,
@@ -26,8 +26,8 @@ const {
 
 const EditTechnicalInputModal = () => {
     const { editMode } = useAppContext()
-    const [isSaving, setIsSaving] = useState<boolean>(false)
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
+    const [isSaving, setIsSaving] = useState<boolean>(false)
 
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId

@@ -10,15 +10,20 @@ import { ColDef } from "@ag-grid-community/core"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
-import { useAppContext } from "../../Context/AppContext"
-import { cellStyleRightAlign } from "../../Utils/common"
-import { projectQueryFn } from "../../Services/QueryFunctions"
-import useEditProject from "../../Hooks/useEditProject"
+import { useParams } from "react-router"
+
+import { useAppContext } from "@/Context/AppContext"
+import { cellStyleRightAlign } from "@/Utils/common"
+import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
+import useEditProject from "@/Hooks/useEditProject"
 import useEditDisabled from "@/Hooks/useEditDisabled"
+import { useProjectContext } from "@/Context/ProjectContext"
 
 const CO2ListTechnicalInput = () => {
     const gridRef = useRef<any>(null)
     const styles = useStyles()
+    const { projectId, isRevision } = useProjectContext()
+    const { revisionId } = useParams()
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
@@ -29,6 +34,14 @@ const CO2ListTechnicalInput = () => {
         queryFn: () => projectQueryFn(externalId),
         enabled: !!externalId,
     })
+
+    const { data: apiRevisionData } = useQuery({
+        queryKey: ["revisionApiData", revisionId],
+        queryFn: () => revisionQueryFn(projectId, revisionId),
+        enabled: !!projectId && !!revisionId && isRevision,
+    })
+
+    console.log(apiRevisionData)
 
     const [check, setCheck] = useState(false)
     const [cO2RemovedFromGas, setCO2RemovedFromGas] = useState<number>(apiData?.cO2RemovedFromGas ?? 0)
@@ -78,43 +91,43 @@ const CO2ListTechnicalInput = () => {
             profile: "CO2 removed from the gas",
             unit: "% of design gas rate",
             set: setCO2RemovedFromGas,
-            value: Math.round(cO2RemovedFromGas * 100) / 100,
+            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.cO2RemovedFromGas * 100) / 100 : Math.round(cO2RemovedFromGas * 100) / 100,
         },
         {
             profile: "CO2-emissions from fuel gas",
             unit: "kg CO2/Sm³",
             set: setCO2EmissionsFromFuelGas,
-            value: Math.round(cO2EmissionsFromFuelGas * 100) / 100,
+            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.cO2EmissionFromFuelGas * 100) / 100 : Math.round(cO2EmissionsFromFuelGas * 100) / 100,
         },
         {
             profile: "Flared gas per produced volume",
             unit: "Sm³/Sm³",
             set: setFlaredGasPerProducedVolume,
-            value: Math.round(flaredGasPerProducedVolume * 100) / 100,
+            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.flaredGasPerProducedVolume * 100) / 100 : Math.round(flaredGasPerProducedVolume * 100) / 100,
         },
         {
             profile: "CO2-emissions from flared gas",
             unit: "kg CO2/Sm³",
             set: setCO2EmissionsFromFlaredGas,
-            value: Math.round(cO2EmissionsFromFlaredGas * 100) / 100,
+            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.cO2EmissionsFromFlaredGas * 100) / 100 : Math.round(cO2EmissionsFromFlaredGas * 100) / 100,
         },
         {
             profile: "CO2 vented",
             unit: "kg CO2/Sm³",
             set: setCO2Vented,
-            value: Math.round(cO2Vented * 100) / 100,
+            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.cO2Vented * 100) / 100 : Math.round(cO2Vented * 100) / 100,
         },
         {
             profile: "Average development well drilling days",
             unit: "days/wells",
             set: setAverageDevelopmentWellDrillingDays,
-            value: Math.round(averageDevelopmentWellDrillingDays * 100) / 100,
+            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.averageDevelopmentDrillingDays * 100) / 100 : Math.round(averageDevelopmentWellDrillingDays * 100) / 100,
         },
         {
             profile: "Daily emissions from drilling rig",
             unit: "tonnes CO2/day",
             set: setDailyEmissionsFromDrillingRig,
-            value: Math.round(dailyEmissionsFromDrillingRig * 100) / 100,
+            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.dailyEmissionFromDrillingRig * 100) / 100 : Math.round(dailyEmissionsFromDrillingRig * 100) / 100,
         },
     ]
 
@@ -196,7 +209,8 @@ const CO2ListTechnicalInput = () => {
         cO2Vented,
         averageDevelopmentWellDrillingDays,
         dailyEmissionsFromDrillingRig,
-        editMode
+        editMode,
+        isRevision
     ])
 
     if (!apiData) { return null }
