@@ -1,8 +1,8 @@
 using api.Models;
 
-namespace api.Helpers;
+namespace api.Features.BackgroundJobs.EnumConverters;
 
-public static class CommonLibraryHelper
+public static class ProjectCategoryEnumConverter
 {
     public static ProjectCategory ConvertCategory(string category)
     {
@@ -31,24 +31,6 @@ public static class CommonLibraryHelper
             "RENEWABLE_OTHER" => ProjectCategory.RenewableOther,
             "CCS" => ProjectCategory.Ccs,
             _ => throw new ArgumentException($"Category {category} does not exist in DCD."),
-        };
-    }
-
-    public static ProjectPhase ConvertPhase(string phase)
-    {
-        return phase switch
-        {
-            "" => ProjectPhase.Null,
-            "Bid preparations" => ProjectPhase.BidPreparations,
-            "Business identification" => ProjectPhase.BusinessIdentification,
-            "Business planning" => ProjectPhase.BusinessPlanning,
-            "Concept planning" => ProjectPhase.ConceptPlanning,
-            "Concession / Negotiations" => ProjectPhase.ConcessionNegotiations,
-            "Definition" => ProjectPhase.Definition,
-            "Execution" => ProjectPhase.Execution,
-            "Operation" => ProjectPhase.Operation,
-            "Screening business opportunities" => ProjectPhase.ScreeningBusinessOpportunities,
-            _ => throw new ArgumentException($"Phase {phase} does not exist in DCD."),
         };
     }
 }
