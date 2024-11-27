@@ -15,12 +15,7 @@ public class CaseComparisonRepository(DcdDbContext context)
             .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
-            .FirstOrDefaultAsync(p => p.Id == projectId || p.FusionProjectId == projectId);
-
-        if (project == null)
-        {
-            throw new NotFoundInDBException($"Project {projectId} not found");
-        }
+            .FirstOrDefaultAsync(p => p.Id == projectId) ?? throw new NotFoundInDBException($"Project {projectId} not found");
 
         var caseIds = project.Cases.Where(x => !x.Archived).Select(c => c.Id).ToList();
         await context.Cases
