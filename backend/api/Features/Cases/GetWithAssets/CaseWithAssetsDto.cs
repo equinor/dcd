@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace api.Dtos;
+using api.Dtos;
+
+namespace api.Features.Cases.GetWithAssets;
 
 public class CaseWithAssetsDto
 {

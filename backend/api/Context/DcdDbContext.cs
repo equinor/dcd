@@ -12,25 +12,14 @@ namespace api.Context;
 
 public class DcdDbContext : DbContext
 {
-    private readonly IServiceProvider _serviceProvider = null!;
+    private readonly IServiceProvider? _serviceProvider;
     private readonly CurrentUser? _currentUser;
 
     private static readonly SemaphoreSlim Semaphore = new(1, 1);
 
-    public DcdDbContext(DbContextOptions<DcdDbContext> options) : base(options)
-    {
-        _currentUser = null;
-    }
-
     public DcdDbContext(DbContextOptions<DcdDbContext> options,
-        CurrentUser? currentUser) : base(options)
-    {
-        _currentUser = currentUser;
-    }
-
-    public DcdDbContext(DbContextOptions<DcdDbContext> options,
-                        IServiceProvider serviceProvider,
-                        CurrentUser currentUser) : base(options)
+                        IServiceProvider? serviceProvider,
+                        CurrentUser? currentUser) : base(options)
     {
         _serviceProvider = serviceProvider;
         _currentUser = currentUser;
@@ -88,6 +77,11 @@ public class DcdDbContext : DbContext
 
     private async Task DetectChangesAndCalculateEntities(Guid caseId)
     {
+        if (_serviceProvider == null)
+        {
+            return;
+        }
+
         var (wells, drillingScheduleIds) = CalculateExplorationAndWellProjectCost();
         var rerunStudyCost = CalculateStudyCost();
         var rerunCessationCostProfile = CalculateCessationCostProfile();

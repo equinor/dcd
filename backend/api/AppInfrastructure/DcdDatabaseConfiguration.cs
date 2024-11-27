@@ -29,14 +29,14 @@ public static class DcdDatabaseConfiguration
                 sqliteConnection.Open();
                 dbContextOptionsBuilder.UseSqlite(sqliteConnection);
 
-                using var context = new DcdDbContext(dbContextOptionsBuilder.Options);
+                using var context = new DcdDbContext(dbContextOptionsBuilder.Options, null, null);
                 context.Database.EnsureCreated();
             }
             else
             {
                 var dbBuilder = new DbContextOptionsBuilder<DcdDbContext>();
                 dbBuilder.UseSqlServer(sqlServerConnectionString);
-                using var context = new DcdDbContext(dbBuilder.Options);
+                using var context = new DcdDbContext(dbBuilder.Options, null, null);
             }
         }
 
@@ -45,12 +45,21 @@ public static class DcdDatabaseConfiguration
             builder.Services.AddDbContext<DcdDbContext>(
                 options => options.UseLazyLoadingProxies()
                     .UseSqlite(sqliteConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+
+            builder.Services.AddDbContextFactory<DcdDbContext>(
+                options => options.UseLazyLoadingProxies()
+                    .UseSqlite(sqliteConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)),
+                lifetime: ServiceLifetime.Scoped);
         }
         else
         {
             builder.Services.AddDbContext<DcdDbContext>(
                 options => options.UseLazyLoadingProxies()
                     .UseSqlServer(sqlServerConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+
+            builder.Services.AddDbContextFactory<DcdDbContext>(options => options.UseLazyLoadingProxies()
+                .UseSqlServer(sqlServerConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)),
+                lifetime: ServiceLifetime.Scoped);
         }
     }
 }

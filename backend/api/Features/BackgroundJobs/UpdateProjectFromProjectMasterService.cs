@@ -2,8 +2,8 @@ using System.Diagnostics;
 
 using api.Context;
 using api.Dtos;
+using api.Features.BackgroundJobs.EnumConverters;
 using api.Features.FusionIntegration.ProjectMaster;
-using api.Helpers;
 using api.Models;
 using api.Repositories;
 
@@ -15,11 +15,12 @@ using Newtonsoft.Json;
 
 namespace api.Features.BackgroundJobs;
 
-public class UpdateProjectFromProjectMasterService(IMapper mapper,
+public class UpdateProjectFromProjectMasterService(
+    IMapper mapper,
     DcdDbContext context,
     IFusionService fusionService,
     IProjectWithAssetsRepository projectWithAssetsRepository,
-ILogger<UpdateProjectFromProjectMasterService> logger)
+    ILogger<UpdateProjectFromProjectMasterService> logger)
 {
     public async Task UpdateProjectFromProjectMaster()
     {
@@ -107,7 +108,6 @@ ILogger<UpdateProjectFromProjectMasterService> logger)
 
     private async Task<ProjectWithAssetsDto?> GetProjectDtoFromProjectMaster(Guid projectGuid)
     {
-
         var projectMaster = await fusionService.GetProjectMasterFromFusionContextId(projectGuid);
 
         if (projectMaster == null)
@@ -120,8 +120,8 @@ ILogger<UpdateProjectFromProjectMasterService> logger)
 
         try
         {
-            category = CommonLibraryHelper.ConvertCategory(projectMaster.ProjectCategory ?? "");
-            phase = CommonLibraryHelper.ConvertPhase(projectMaster.Phase ?? "");
+            category = ProjectCategoryEnumConverter.ConvertCategory(projectMaster.ProjectCategory ?? "");
+            phase = ProjectPhaseEnumConverter.ConvertPhase(projectMaster.Phase ?? "");
         }
         catch (ArgumentException ex)
         {
