@@ -1,28 +1,24 @@
 using api.Dtos;
-using api.Exceptions;
 using api.Models;
-using api.Repositories;
+using api.Services;
 
-namespace api.Services;
+namespace api.Features.Cases.GetWithAssets;
 
 public class CaseWithAssetsService(
-    ICaseWithAssetsRepository repository,
-    IProjectRepository projectRepository,
+    CaseWithAssetsRepository caseWithAssetsRepository,
     IMapperService mapperService,
     IConversionMapperService conversionMapperService,
     IProjectAccessService projectAccessService)
-    : ICaseWithAssetsService
 {
     public async Task<CaseWithAssetsDto> GetCaseWithAssetsNoTracking(Guid projectId, Guid caseId)
     {
         await projectAccessService.ProjectExists<Case>(projectId, caseId);
 
-        var project = await projectRepository.GetProjectByIdOrExternalId(projectId)
-            ?? throw new NotFoundInDBException($"Project with id {projectId} not found");
+        var project = await caseWithAssetsRepository.GetProjectByIdOrExternalId(projectId);
 
-        var (caseItem, drainageStrategy, topside, exploration, substructure, surf, transport, wellProject) = await repository.GetCaseWithAssetsNoTracking(caseId);
+        var (caseItem, drainageStrategy, topside, exploration, substructure, surf, transport, wellProject) = await caseWithAssetsRepository.GetCaseWithAssetsNoTracking(caseId);
 
-        var caseWithAssetsDto = new CaseWithAssetsDto
+        return new CaseWithAssetsDto
         {
             Case = mapperService.MapToDto<Case, CaseDto>(caseItem, caseItem.Id),
             CessationWellsCost = MapToDto<CessationWellsCost, CessationWellsCostDto>(caseItem.CessationWellsCost, caseItem.CessationWellsCost?.Id),
@@ -44,49 +40,42 @@ public class CaseWithAssetsService(
             AdditionalOPEXCostProfile = MapToDto<AdditionalOPEXCostProfile, AdditionalOPEXCostProfileDto>(caseItem.AdditionalOPEXCostProfile, caseItem.AdditionalOPEXCostProfile?.Id),
             CalculatedTotalIncomeCostProfile = MapToDto<CalculatedTotalIncomeCostProfile, CalculatedTotalIncomeCostProfileDto>(caseItem.CalculatedTotalIncomeCostProfile, caseItem.CalculatedTotalIncomeCostProfile?.Id),
             CalculatedTotalCostCostProfile = MapToDto<CalculatedTotalCostCostProfile, CalculatedTotalCostCostProfileDto>(caseItem.CalculatedTotalCostCostProfile, caseItem.CalculatedTotalCostCostProfile?.Id),
-
             DrainageStrategy = conversionMapperService.MapToDto<DrainageStrategy, DrainageStrategyDto>(drainageStrategy, drainageStrategy.Id, project.PhysicalUnit),
-            ProductionProfileOil = ConversionMapToDto<ProductionProfileOil, ProductionProfileOilDto>(drainageStrategy?.ProductionProfileOil, drainageStrategy?.ProductionProfileOil?.Id, project.PhysicalUnit),
-            AdditionalProductionProfileOil = ConversionMapToDto<AdditionalProductionProfileOil, AdditionalProductionProfileOilDto>(drainageStrategy?.AdditionalProductionProfileOil, drainageStrategy?.AdditionalProductionProfileOil?.Id, project.PhysicalUnit),
-            ProductionProfileGas = ConversionMapToDto<ProductionProfileGas, ProductionProfileGasDto>(drainageStrategy?.ProductionProfileGas, drainageStrategy?.ProductionProfileGas?.Id, project.PhysicalUnit),
-            AdditionalProductionProfileGas = ConversionMapToDto<AdditionalProductionProfileGas, AdditionalProductionProfileGasDto>(drainageStrategy?.AdditionalProductionProfileGas, drainageStrategy?.AdditionalProductionProfileGas?.Id, project.PhysicalUnit),
-            ProductionProfileWater = ConversionMapToDto<ProductionProfileWater, ProductionProfileWaterDto>(drainageStrategy?.ProductionProfileWater, drainageStrategy?.ProductionProfileWater?.Id, project.PhysicalUnit),
-            ProductionProfileWaterInjection = ConversionMapToDto<ProductionProfileWaterInjection, ProductionProfileWaterInjectionDto>(drainageStrategy?.ProductionProfileWaterInjection, drainageStrategy?.ProductionProfileWaterInjection?.Id, project.PhysicalUnit),
-            FuelFlaringAndLosses = ConversionMapToDto<FuelFlaringAndLosses, FuelFlaringAndLossesDto>(drainageStrategy?.FuelFlaringAndLosses, drainageStrategy?.FuelFlaringAndLosses?.Id, project.PhysicalUnit),
-            FuelFlaringAndLossesOverride = ConversionMapToDto<FuelFlaringAndLossesOverride, FuelFlaringAndLossesOverrideDto>(drainageStrategy?.FuelFlaringAndLossesOverride, drainageStrategy?.FuelFlaringAndLossesOverride?.Id, project.PhysicalUnit),
-            NetSalesGas = ConversionMapToDto<NetSalesGas, NetSalesGasDto>(drainageStrategy?.NetSalesGas, drainageStrategy?.NetSalesGas?.Id, project.PhysicalUnit),
-            NetSalesGasOverride = ConversionMapToDto<NetSalesGasOverride, NetSalesGasOverrideDto>(drainageStrategy?.NetSalesGasOverride, drainageStrategy?.NetSalesGasOverride?.Id, project.PhysicalUnit),
-            Co2Emissions = ConversionMapToDto<Co2Emissions, Co2EmissionsDto>(drainageStrategy?.Co2Emissions, drainageStrategy?.Co2Emissions?.Id, project.PhysicalUnit),
-            Co2EmissionsOverride = ConversionMapToDto<Co2EmissionsOverride, Co2EmissionsOverrideDto>(drainageStrategy?.Co2EmissionsOverride, drainageStrategy?.Co2EmissionsOverride?.Id, project.PhysicalUnit),
-            ProductionProfileNGL = ConversionMapToDto<ProductionProfileNGL, ProductionProfileNGLDto>(drainageStrategy?.ProductionProfileNGL, drainageStrategy?.ProductionProfileNGL?.Id, project.PhysicalUnit),
-            ImportedElectricity = ConversionMapToDto<ImportedElectricity, ImportedElectricityDto>(drainageStrategy?.ImportedElectricity, drainageStrategy?.ImportedElectricity?.Id, project.PhysicalUnit),
-            ImportedElectricityOverride = ConversionMapToDto<ImportedElectricityOverride, ImportedElectricityOverrideDto>(drainageStrategy?.ImportedElectricityOverride, drainageStrategy?.ImportedElectricityOverride?.Id, project.PhysicalUnit),
-            // Co2Intensity = ConversionMapToDto<Co2Intensity, Co2IntensityDto>(drainageStrategy?.Co2Intensity, drainageStrategy?.Co2Intensity?.Id, project.PhysicalUnit),
-            DeferredOilProduction = ConversionMapToDto<DeferredOilProduction, DeferredOilProductionDto>(drainageStrategy?.DeferredOilProduction, drainageStrategy?.DeferredOilProduction?.Id, project.PhysicalUnit),
-            DeferredGasProduction = ConversionMapToDto<DeferredGasProduction, DeferredGasProductionDto>(drainageStrategy?.DeferredGasProduction, drainageStrategy?.DeferredGasProduction?.Id, project.PhysicalUnit),
-
+            ProductionProfileOil = ConversionMapToDto<ProductionProfileOil, ProductionProfileOilDto>(drainageStrategy.ProductionProfileOil, drainageStrategy.ProductionProfileOil?.Id, project.PhysicalUnit),
+            AdditionalProductionProfileOil = ConversionMapToDto<AdditionalProductionProfileOil, AdditionalProductionProfileOilDto>(drainageStrategy.AdditionalProductionProfileOil, drainageStrategy.AdditionalProductionProfileOil?.Id, project.PhysicalUnit),
+            ProductionProfileGas = ConversionMapToDto<ProductionProfileGas, ProductionProfileGasDto>(drainageStrategy.ProductionProfileGas, drainageStrategy.ProductionProfileGas?.Id, project.PhysicalUnit),
+            AdditionalProductionProfileGas = ConversionMapToDto<AdditionalProductionProfileGas, AdditionalProductionProfileGasDto>(drainageStrategy.AdditionalProductionProfileGas, drainageStrategy.AdditionalProductionProfileGas?.Id, project.PhysicalUnit),
+            ProductionProfileWater = ConversionMapToDto<ProductionProfileWater, ProductionProfileWaterDto>(drainageStrategy.ProductionProfileWater, drainageStrategy.ProductionProfileWater?.Id, project.PhysicalUnit),
+            ProductionProfileWaterInjection = ConversionMapToDto<ProductionProfileWaterInjection, ProductionProfileWaterInjectionDto>(drainageStrategy.ProductionProfileWaterInjection, drainageStrategy.ProductionProfileWaterInjection?.Id, project.PhysicalUnit),
+            FuelFlaringAndLosses = ConversionMapToDto<FuelFlaringAndLosses, FuelFlaringAndLossesDto>(drainageStrategy.FuelFlaringAndLosses, drainageStrategy.FuelFlaringAndLosses?.Id, project.PhysicalUnit),
+            FuelFlaringAndLossesOverride = ConversionMapToDto<FuelFlaringAndLossesOverride, FuelFlaringAndLossesOverrideDto>(drainageStrategy.FuelFlaringAndLossesOverride, drainageStrategy.FuelFlaringAndLossesOverride?.Id, project.PhysicalUnit),
+            NetSalesGas = ConversionMapToDto<NetSalesGas, NetSalesGasDto>(drainageStrategy.NetSalesGas, drainageStrategy.NetSalesGas?.Id, project.PhysicalUnit),
+            NetSalesGasOverride = ConversionMapToDto<NetSalesGasOverride, NetSalesGasOverrideDto>(drainageStrategy.NetSalesGasOverride, drainageStrategy.NetSalesGasOverride?.Id, project.PhysicalUnit),
+            Co2Emissions = ConversionMapToDto<Co2Emissions, Co2EmissionsDto>(drainageStrategy.Co2Emissions, drainageStrategy.Co2Emissions?.Id, project.PhysicalUnit),
+            Co2EmissionsOverride = ConversionMapToDto<Co2EmissionsOverride, Co2EmissionsOverrideDto>(drainageStrategy.Co2EmissionsOverride, drainageStrategy.Co2EmissionsOverride?.Id, project.PhysicalUnit),
+            ProductionProfileNGL = ConversionMapToDto<ProductionProfileNGL, ProductionProfileNGLDto>(drainageStrategy.ProductionProfileNGL, drainageStrategy.ProductionProfileNGL?.Id, project.PhysicalUnit),
+            ImportedElectricity = ConversionMapToDto<ImportedElectricity, ImportedElectricityDto>(drainageStrategy.ImportedElectricity, drainageStrategy.ImportedElectricity?.Id, project.PhysicalUnit),
+            ImportedElectricityOverride = ConversionMapToDto<ImportedElectricityOverride, ImportedElectricityOverrideDto>(drainageStrategy.ImportedElectricityOverride, drainageStrategy.ImportedElectricityOverride?.Id, project.PhysicalUnit),
+            DeferredOilProduction = ConversionMapToDto<DeferredOilProduction, DeferredOilProductionDto>(drainageStrategy.DeferredOilProduction, drainageStrategy.DeferredOilProduction?.Id, project.PhysicalUnit),
+            DeferredGasProduction = ConversionMapToDto<DeferredGasProduction, DeferredGasProductionDto>(drainageStrategy.DeferredGasProduction, drainageStrategy.DeferredGasProduction?.Id, project.PhysicalUnit),
             Topside = mapperService.MapToDto<Topside, TopsideDto>(topside, topside.Id),
             TopsideCostProfile = MapToDto<TopsideCostProfile, TopsideCostProfileDto>(topside.CostProfile, topside.CostProfile?.Id),
             TopsideCostProfileOverride = MapToDto<TopsideCostProfileOverride, TopsideCostProfileOverrideDto>(topside.CostProfileOverride, topside.CostProfileOverride?.Id),
             TopsideCessationCostProfile = MapToDto<TopsideCessationCostProfile, TopsideCessationCostProfileDto>(topside.CessationCostProfile, topside.CessationCostProfile?.Id),
-
             Substructure = mapperService.MapToDto<Substructure, SubstructureDto>(substructure, substructure.Id),
             SubstructureCostProfile = MapToDto<SubstructureCostProfile, SubstructureCostProfileDto>(substructure.CostProfile, substructure.CostProfile?.Id),
             SubstructureCostProfileOverride = MapToDto<SubstructureCostProfileOverride, SubstructureCostProfileOverrideDto>(substructure.CostProfileOverride, substructure.CostProfileOverride?.Id),
             SubstructureCessationCostProfile = MapToDto<SubstructureCessationCostProfile, SubstructureCessationCostProfileDto>(substructure.CessationCostProfile, substructure.CessationCostProfile?.Id),
-
             Surf = mapperService.MapToDto<Surf, SurfDto>(surf, surf.Id),
             SurfCostProfile = MapToDto<SurfCostProfile, SurfCostProfileDto>(surf.CostProfile, surf.CostProfile?.Id),
             SurfCostProfileOverride = MapToDto<SurfCostProfileOverride, SurfCostProfileOverrideDto>(surf.CostProfileOverride, surf.CostProfileOverride?.Id),
             SurfCessationCostProfile = MapToDto<SurfCessationCostProfile, SurfCessationCostProfileDto>(surf.CessationCostProfile, surf.CessationCostProfile?.Id),
-
             Transport = mapperService.MapToDto<Transport, TransportDto>(transport, transport.Id),
             TransportCostProfile = MapToDto<TransportCostProfile, TransportCostProfileDto>(transport.CostProfile, transport.CostProfile?.Id),
             TransportCostProfileOverride = MapToDto<TransportCostProfileOverride, TransportCostProfileOverrideDto>(transport.CostProfileOverride, transport.CostProfileOverride?.Id),
             TransportCessationCostProfile = MapToDto<TransportCessationCostProfile, TransportCessationCostProfileDto>(transport.CessationCostProfile, transport.CessationCostProfile?.Id),
-
             Exploration = mapperService.MapToDto<Exploration, ExplorationDto>(exploration, exploration.Id),
-            ExplorationWells = exploration.ExplorationWells?.Select(w => mapperService.MapToDto<ExplorationWell, ExplorationWellDto>(w, w.ExplorationId)).ToList() ?? new List<ExplorationWellDto>(),
+            ExplorationWells = exploration.ExplorationWells.Select(w => mapperService.MapToDto<ExplorationWell, ExplorationWellDto>(w, w.ExplorationId)).ToList(),
             ExplorationWellCostProfile = MapToDto<ExplorationWellCostProfile, ExplorationWellCostProfileDto>(exploration.ExplorationWellCostProfile, exploration.ExplorationWellCostProfile?.Id),
             AppraisalWellCostProfile = MapToDto<AppraisalWellCostProfile, AppraisalWellCostProfileDto>(exploration.AppraisalWellCostProfile, exploration.AppraisalWellCostProfile?.Id),
             SidetrackCostProfile = MapToDto<SidetrackCostProfile, SidetrackCostProfileDto>(exploration.SidetrackCostProfile, exploration.SidetrackCostProfile?.Id),
@@ -94,9 +83,8 @@ public class CaseWithAssetsService(
             GAndGAdminCostOverride = MapToDto<GAndGAdminCostOverride, GAndGAdminCostOverrideDto>(exploration.GAndGAdminCostOverride, exploration.GAndGAdminCostOverride?.Id),
             SeismicAcquisitionAndProcessing = MapToDto<SeismicAcquisitionAndProcessing, SeismicAcquisitionAndProcessingDto>(exploration.SeismicAcquisitionAndProcessing, exploration.SeismicAcquisitionAndProcessing?.Id),
             CountryOfficeCost = MapToDto<CountryOfficeCost, CountryOfficeCostDto>(exploration.CountryOfficeCost, exploration.CountryOfficeCost?.Id),
-
             WellProject = mapperService.MapToDto<WellProject, WellProjectDto>(wellProject, wellProject.Id),
-            WellProjectWells = wellProject.WellProjectWells?.Select(w => mapperService.MapToDto<WellProjectWell, WellProjectWellDto>(w, w.WellProjectId)).ToList() ?? new List<WellProjectWellDto>(),
+            WellProjectWells = wellProject.WellProjectWells.Select(w => mapperService.MapToDto<WellProjectWell, WellProjectWellDto>(w, w.WellProjectId)).ToList(),
             OilProducerCostProfile = MapToDto<OilProducerCostProfile, OilProducerCostProfileDto>(wellProject.OilProducerCostProfile, wellProject.OilProducerCostProfile?.Id),
             OilProducerCostProfileOverride = MapToDto<OilProducerCostProfileOverride, OilProducerCostProfileOverrideDto>(wellProject.OilProducerCostProfileOverride, wellProject.OilProducerCostProfileOverride?.Id),
             GasProducerCostProfile = MapToDto<GasProducerCostProfile, GasProducerCostProfileDto>(wellProject.GasProducerCostProfile, wellProject.GasProducerCostProfile?.Id),
@@ -104,10 +92,8 @@ public class CaseWithAssetsService(
             WaterInjectorCostProfile = MapToDto<WaterInjectorCostProfile, WaterInjectorCostProfileDto>(wellProject.WaterInjectorCostProfile, wellProject.WaterInjectorCostProfile?.Id),
             WaterInjectorCostProfileOverride = MapToDto<WaterInjectorCostProfileOverride, WaterInjectorCostProfileOverrideDto>(wellProject.WaterInjectorCostProfileOverride, wellProject.WaterInjectorCostProfileOverride?.Id),
             GasInjectorCostProfile = MapToDto<GasInjectorCostProfile, GasInjectorCostProfileDto>(wellProject.GasInjectorCostProfile, wellProject.GasInjectorCostProfile?.Id),
-            GasInjectorCostProfileOverride = MapToDto<GasInjectorCostProfileOverride, GasInjectorCostProfileOverrideDto>(wellProject.GasInjectorCostProfileOverride, wellProject.GasInjectorCostProfileOverride?.Id),
+            GasInjectorCostProfileOverride = MapToDto<GasInjectorCostProfileOverride, GasInjectorCostProfileOverrideDto>(wellProject.GasInjectorCostProfileOverride, wellProject.GasInjectorCostProfileOverride?.Id)
         };
-
-        return caseWithAssetsDto;
     }
 
     private TDto? MapToDto<T, TDto>(T? source, Guid? id) where T : class where TDto : class
@@ -116,6 +102,7 @@ public class CaseWithAssetsService(
         {
             return null;
         }
+
         return mapperService.MapToDto<T, TDto>(source, (Guid)id);
     }
 
@@ -125,6 +112,7 @@ public class CaseWithAssetsService(
         {
             return null;
         }
+
         return conversionMapperService.MapToDto<T, TDto>(source, (Guid)id, physUnit);
     }
 }

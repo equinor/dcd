@@ -1,6 +1,7 @@
 using api.AppInfrastructure.Authorization;
 using api.Features.BackgroundJobs;
 using api.Features.Cases.CaseComparison;
+using api.Features.Cases.GetWithAssets;
 using api.Features.FusionIntegration.OrgChart;
 using api.Features.FusionIntegration.ProjectMaster;
 using api.Features.Images.Service;
@@ -55,7 +56,6 @@ public static class DcdIocConfiguration
         services.AddScoped<ITransportTimeSeriesService, TransportTimeSeriesService>();
 
         services.AddScoped<IDevelopmentOperationalWellCostsService, DevelopmentOperationalWellCostsService>();
-        services.AddScoped<ICaseWithAssetsService, CaseWithAssetsService>();
 
         services.AddScoped<ITechnicalInputService, TechnicalInputService>();
         services.AddScoped<IOpexCostProfileService, OpexCostProfileService>();
@@ -104,7 +104,9 @@ public static class DcdIocConfiguration
         services.AddScoped<ISurfTimeSeriesRepository, SurfTimeSeriesRepository>();
 
         services.AddScoped<IWellRepository, WellRepository>();
-        services.AddScoped<ICaseWithAssetsRepository, CaseWithAssetsRepository>();
+
+        services.AddScoped<CaseWithAssetsRepository>();
+        services.AddScoped<CaseWithAssetsService>();
 
         services.AddScoped<IMapperService, MapperService>();
         services.AddScoped<IConversionMapperService, ConversionMapperService>();
