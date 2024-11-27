@@ -7,8 +7,10 @@ namespace api.Models;
 public class DrainageStrategy : IHasProjectId, IChangeTrackable
 {
     public Guid Id { get; set; }
-    public virtual Project Project { get; set; } = null!;
+
     public Guid ProjectId { get; set; }
+    public virtual Project Project { get; set; } = null!;
+
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
     public double NGLYield { get; set; }
@@ -17,24 +19,20 @@ public class DrainageStrategy : IHasProjectId, IChangeTrackable
     public int WaterInjectorCount { get; set; }
     public ArtificialLift ArtificialLift { get; set; }
     public GasSolution GasSolution { get; set; }
+
     public virtual ProductionProfileOil? ProductionProfileOil { get; set; }
     public virtual AdditionalProductionProfileOil? AdditionalProductionProfileOil { get; set; }
     public virtual ProductionProfileGas? ProductionProfileGas { get; set; }
     public virtual AdditionalProductionProfileGas? AdditionalProductionProfileGas { get; set; }
     public virtual ProductionProfileWater? ProductionProfileWater { get; set; }
     public virtual ProductionProfileWaterInjection? ProductionProfileWaterInjection { get; set; }
-
     public virtual FuelFlaringAndLosses? FuelFlaringAndLosses { get; set; }
     public virtual FuelFlaringAndLossesOverride? FuelFlaringAndLossesOverride { get; set; }
-
     public virtual NetSalesGas? NetSalesGas { get; set; }
     public virtual NetSalesGasOverride? NetSalesGasOverride { get; set; }
-
     public virtual Co2Emissions? Co2Emissions { get; set; }
     public virtual Co2EmissionsOverride? Co2EmissionsOverride { get; set; }
-
     public virtual ProductionProfileNGL? ProductionProfileNGL { get; set; }
-
     public virtual ImportedElectricity? ImportedElectricity { get; set; }
     public virtual ImportedElectricityOverride? ImportedElectricityOverride { get; set; }
     public virtual DeferredOilProduction? DeferredOilProduction { get; set; }

@@ -7,12 +7,11 @@ namespace api.Models;
 public class Topside : IHasProjectId, IChangeTrackable
 {
     public Guid Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public virtual Project Project { get; set; } = null!;
+
     public Guid ProjectId { get; set; }
-    public virtual TopsideCostProfile? CostProfile { get; set; }
-    public virtual TopsideCostProfileOverride? CostProfileOverride { get; set; }
-    public virtual TopsideCessationCostProfile? CessationCostProfile { get; set; }
+    public virtual Project Project { get; set; } = null!;
+
+    public string Name { get; set; } = string.Empty;
     public double DryWeight { get; set; }
     public double OilCapacity { get; set; }
     public double GasCapacity { get; set; }
@@ -40,6 +39,10 @@ public class Topside : IHasProjectId, IChangeTrackable
     public DateTimeOffset? DG4Date { get; set; }
     public double FacilityOpex { get; set; }
     public double PeakElectricityImported { get; set; }
+
+    public virtual TopsideCostProfile? CostProfile { get; set; }
+    public virtual TopsideCostProfileOverride? CostProfileOverride { get; set; }
+    public virtual TopsideCessationCostProfile? CessationCostProfile { get; set; }
 }
 
 public class TopsideCostProfile : TimeSeriesCost, ITopsideTimeSeries

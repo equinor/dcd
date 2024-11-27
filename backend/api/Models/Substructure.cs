@@ -7,12 +7,11 @@ namespace api.Models;
 public class Substructure : IHasProjectId, IChangeTrackable
 {
     public Guid Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public virtual Project Project { get; set; } = null!;
+
     public Guid ProjectId { get; set; }
-    public virtual SubstructureCostProfile? CostProfile { get; set; }
-    public virtual SubstructureCostProfileOverride? CostProfileOverride { get; set; }
-    public virtual SubstructureCessationCostProfile? CessationCostProfile { get; set; }
+    public virtual Project Project { get; set; } = null!;
+
+    public string Name { get; set; } = string.Empty;
     public double DryWeight { get; set; }
     public Maturity Maturity { get; set; }
     public Currency Currency { get; set; }
@@ -24,6 +23,10 @@ public class Substructure : IHasProjectId, IChangeTrackable
     public Concept Concept { get; set; }
     public DateTimeOffset? DG3Date { get; set; }
     public DateTimeOffset? DG4Date { get; set; }
+
+    public virtual SubstructureCostProfile? CostProfile { get; set; }
+    public virtual SubstructureCostProfileOverride? CostProfileOverride { get; set; }
+    public virtual SubstructureCessationCostProfile? CessationCostProfile { get; set; }
 }
 
 public enum Concept

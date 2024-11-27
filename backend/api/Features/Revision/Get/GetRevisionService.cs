@@ -17,7 +17,7 @@ public class GetRevisionService(DcdDbContext context, IMapper mapper)
                           .Include(p => p.Wells)
                           .Include(p => p.ExplorationOperationalWellCosts)
                           .Include(p => p.DevelopmentOperationalWellCosts)
-                          .FirstOrDefaultAsync(x => x.OriginalProjectId == projectId && (x.Id == revisionId || x.FusionProjectId == revisionId))
+                          .FirstOrDefaultAsync(p => (p.Id == revisionId || p.FusionProjectId == revisionId) && p.IsRevision)
                       ?? throw new NotFoundInDBException($"Project with id {revisionId} not found.");
 
         project.Cases = project.Cases.OrderBy(c => c.CreateTime).ToList();
