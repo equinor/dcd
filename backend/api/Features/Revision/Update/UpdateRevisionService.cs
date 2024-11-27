@@ -12,7 +12,7 @@ public class UpdateRevisionService(DcdDbContext context)
         var revision = context.Projects
                            .Include(p => p.Cases)
                            .Include(p => p.RevisionDetails)
-                           .FirstOrDefault(x => x.OriginalProjectId == projectId && (x.Id == revisionId || x.FusionProjectId == revisionId))
+                           .FirstOrDefault(r => r.Id == revisionId)
                        ?? throw new NotFoundInDBException($"Revision with id {revisionId} not found.");
 
         if (revision.RevisionDetails == null)
