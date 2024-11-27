@@ -15,7 +15,7 @@ public class CaseComparisonRepository(DcdDbContext context)
             .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
-            .FirstOrDefaultAsync(p => p.Id == projectId || p.FusionProjectId == projectId);
+            .FirstOrDefaultAsync(p => (p.Id == projectId || p.FusionProjectId == projectId) && !p.IsRevision);
 
         if (project == null)
         {
