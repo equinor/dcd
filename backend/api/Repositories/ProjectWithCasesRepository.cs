@@ -10,7 +10,6 @@ public interface IProjectWithAssetsRepository
 {
     Task<Project> GetProjectWithCases(Guid projectId);
     Task<Project> GetProjectWithCasesAndAssets(Guid projectId);
-    Task LoadProjectAssets(Project project);
 }
 
 public class ProjectWithCasesRepository(DcdDbContext context) : IProjectWithAssetsRepository

@@ -3,7 +3,7 @@ using System.Globalization;
 using api.AppInfrastructure;
 using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.Middleware;
-using api.Features.BackgroundJobs;
+using api.Features.BackgroundServices.ProjectMaster;
 using api.Mappings;
 
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
@@ -40,7 +40,7 @@ DcdLogConfiguration.ConfigureDcdLogging(environment, config);
 builder.Services.AddDcdAppInsights(config);
 builder.AddDcdAzureAppConfiguration();
 builder.Services.AddDcdIocConfiguration();
-builder.Services.AddHostedService<RefreshProjectService>();
+builder.Services.AddHostedService<ProjectMasterBackgroundService>();
 builder.Services.AddMemoryCache();
 builder.Services.Configure<IConfiguration>(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(CaseProfile));
