@@ -125,18 +125,18 @@ const EditTechnicalInputModal = () => {
         setOriginalExplorationWells(structuredClone(apiData?.wells?.filter((w) => isExplorationWell(w)) ?? []))
     }, [apiData])
 
-    // useEffect(() => {
-    //     if (isRevision && apiRevisionData) {
-    //         setExplorationOperationalWellCosts(structuredClone(apiRevisionData?.explorationOperationalWellCosts))
-    //         setDevelopmentOperationalWellCosts(structuredClone(apiRevisionData?.developmentOperationalWellCosts))
-    //         setOriginalExplorationOperationalWellCosts(structuredClone(apiRevisionData?.explorationOperationalWellCosts))
-    //         setOriginalDevelopmentOperationalWellCosts(structuredClone(apiRevisionData?.developmentOperationalWellCosts))
-    //         setWellProjectWells(structuredClone(apiRevisionData?.wells?.filter((w) => !isExplorationWell(w)) ?? []))
-    //         setExplorationWells(structuredClone(apiRevisionData?.wells?.filter((w) => isExplorationWell(w)) ?? []))
-    //         setOriginalWellProjectWells(structuredClone(apiRevisionData?.wells?.filter((w) => !isExplorationWell(w)) ?? []))
-    //         setOriginalExplorationWells(structuredClone(apiRevisionData?.wells?.filter((w) => isExplorationWell(w)) ?? []))
-    //     }
-    // }, [isRevision, apiRevisionData])
+    useEffect(() => {
+        if (isRevision && apiRevisionData) {
+            setExplorationOperationalWellCosts(structuredClone(apiRevisionData?.explorationOperationalWellCosts))
+            setDevelopmentOperationalWellCosts(structuredClone(apiRevisionData?.developmentOperationalWellCosts))
+            setOriginalExplorationOperationalWellCosts(structuredClone(apiRevisionData?.explorationOperationalWellCosts))
+            setOriginalDevelopmentOperationalWellCosts(structuredClone(apiRevisionData?.developmentOperationalWellCosts))
+            setWellProjectWells(structuredClone(apiRevisionData?.wells?.filter((w) => !isExplorationWell(w)) ?? []))
+            setExplorationWells(structuredClone(apiRevisionData?.wells?.filter((w) => isExplorationWell(w)) ?? []))
+            setOriginalWellProjectWells(structuredClone(apiRevisionData?.wells?.filter((w) => !isExplorationWell(w)) ?? []))
+            setOriginalExplorationWells(structuredClone(apiRevisionData?.wells?.filter((w) => isExplorationWell(w)) ?? []))
+        }
+    }, [isRevision, apiRevisionData])
 
     if (!explorationOperationalWellCosts || !developmentOperationalWellCosts) {
         return (<div>Loading...</div>)
