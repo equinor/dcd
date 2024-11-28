@@ -1,8 +1,6 @@
-using api.Dtos;
 using api.Exceptions;
-using api.Features.Revision.Create;
 
-namespace api.Services;
+namespace api.Features.Revision.Create;
 
 public static class CreateRevisionDtoValidator
 {
