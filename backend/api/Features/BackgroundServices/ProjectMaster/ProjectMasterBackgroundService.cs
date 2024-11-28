@@ -43,11 +43,11 @@ public class ProjectMasterBackgroundService(IServiceScopeFactory scopeFactory, I
 
     private static bool ShouldRunAtThisTimeOfDay()
     {
-        var (timeOfDayUtcStart, timeOfDayUtcEnd) = GetWindowWhenJobShouldRun();
+        var (timeOfDayStart, timeOfDayEnd) = GetWindowWhenJobShouldRun();
 
         var utcNow = DateTime.UtcNow.TimeOfDay;
 
-        return utcNow > timeOfDayUtcStart && utcNow < timeOfDayUtcEnd;
+        return utcNow > timeOfDayStart && utcNow < timeOfDayEnd;
     }
 
     private static (TimeSpan timeOfDayUtcStart, TimeSpan timeOfDayUtcEnd) GetWindowWhenJobShouldRun()

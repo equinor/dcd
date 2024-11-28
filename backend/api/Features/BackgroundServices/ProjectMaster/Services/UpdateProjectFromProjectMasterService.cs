@@ -1,7 +1,6 @@
 using api.Context;
 using api.Features.BackgroundServices.ProjectMaster.Dtos;
 using api.Features.BackgroundServices.ProjectMaster.Services.EnumConverters;
-using api.Features.FeatureToggles;
 using api.Features.FusionIntegration.ProjectMaster;
 using api.Features.Revision.Create;
 using api.Models;
@@ -65,11 +64,6 @@ public class UpdateProjectFromProjectMasterService(IDbContextFactory<DcdDbContex
 
     private async Task CreateRevisionIfProjectPhaseHasChanged(UpdatableFieldsFromProjectMasterDto projectDto)
     {
-        if (!FeatureToggleService.AutogenerateRevisionWhenUpdatedInProjectMaster)
-        {
-            return;
-        }
-
         await using var context = await contextFactory.CreateDbContextAsync();
 
         var project = await context.Projects.SingleAsync(x => x.Id == projectDto.Id);
