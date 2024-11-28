@@ -41,8 +41,6 @@ const CO2ListTechnicalInput = () => {
         enabled: !!projectId && !!revisionId && isRevision,
     })
 
-    console.log(apiRevisionData)
-
     const [check, setCheck] = useState(false)
     const [cO2RemovedFromGas, setCO2RemovedFromGas] = useState<number>(apiData?.cO2RemovedFromGas ?? 0)
     const [cO2EmissionsFromFuelGas, setCO2EmissionsFromFuelGas] = useState<number>(apiData?.cO2EmissionFromFuelGas ?? 0)
