@@ -1,3 +1,5 @@
+using api.Features.FeatureToggles;
+
 namespace api.Features.BackgroundJobs;
 
 public class RefreshProjectService(
@@ -6,13 +8,15 @@ public class RefreshProjectService(
     IConfiguration configuration)
     : BackgroundService
 {
-    private const int GeneralDelay = 1 * 1000 * 3600; // Each hour
+    private readonly int _generalDelay = FeatureToggleService.RevisionEnabled
+        ? (int)TimeSpan.FromMinutes(4).TotalMilliseconds
+        : (int)TimeSpan.FromHours(1).TotalMilliseconds;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            await Task.Delay(GeneralDelay, stoppingToken);
+            await Task.Delay(_generalDelay, stoppingToken);
             await UpdateProjects();
         }
     }
