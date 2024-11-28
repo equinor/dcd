@@ -110,7 +110,7 @@ const ProjectSettingsTab = () => {
         <Grid container direction="column" spacing={2}>
             <Grid item>
                 <InputSwitcher
-                    value={apiData.physicalUnit === 0 ? "SI" : "Oil field"}
+                    value={isRevision ? apiRevisionData?.physicalUnit === 0 ? "SI" : "Oil field" : apiData.physicalUnit === 0 ? "SI" : "Oil field"}
                     label="Physical unit"
                 >
                     <NativeSelect
@@ -126,7 +126,7 @@ const ProjectSettingsTab = () => {
             </Grid>
             <Grid item>
                 <InputSwitcher
-                    value={apiData.currency === 1 ? "NOK" : "USD"}
+                    value={isRevision ? apiRevisionData?.currency === 1 ? "NOK" : "USD" : apiData.currency === 1 ? "NOK" : "USD"}
                     label="Currency"
                 >
                     <NativeSelect
@@ -143,7 +143,7 @@ const ProjectSettingsTab = () => {
             <Grid item>
                 {dummyRole === 0 && (
                     <InputSwitcher
-                        value={PROJECT_CLASSIFICATION[apiData.classification].label}
+                        value={isRevision && !!apiRevisionData?.classification ? PROJECT_CLASSIFICATION[apiRevisionData?.classification].label : PROJECT_CLASSIFICATION[apiData.classification].label}
                         label="Classification"
                     >
                         <NativeSelect
