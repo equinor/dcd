@@ -4,7 +4,7 @@ using api.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 
-namespace api.Features.Project.ProjectMember.Delete;
+namespace api.Features.Projects.ProjectMember.Delete;
 
 [ApiController]
 [Route("projects/{projectId:guid}/members")]
