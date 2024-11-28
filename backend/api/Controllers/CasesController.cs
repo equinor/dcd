@@ -1,7 +1,7 @@
 using api.AppInfrastructure.Authorization;
 using api.Dtos;
+using api.Features.Cases.Duplicate;
 using api.Features.FeatureToggles;
-using api.Features.Images;
 using api.Features.Images.Service;
 using api.Services;
 
@@ -22,8 +22,9 @@ public class CasesController(
     ICaseService caseService,
     ICreateCaseService createCaseService,
     ICaseTimeSeriesService caseTimeSeriesService,
-    IDuplicateCaseService duplicateCaseService,
-    IBlobStorageService blobStorageService)
+    DuplicateCaseService duplicateCaseService,
+    IBlobStorageService blobStorageService,
+    IProjectService projectService)
     : ControllerBase
 {
     [HttpPost]
@@ -38,9 +39,11 @@ public class CasesController(
     }
 
     [HttpPost("copy", Name = "Duplicate")]
-    public async Task<ProjectWithAssetsDto> DuplicateCase([FromQuery] Guid copyCaseId)
+    public async Task<ProjectWithAssetsDto> DuplicateCase([FromRoute] Guid projectId, [FromQuery] Guid copyCaseId)
     {
-        return await duplicateCaseService.DuplicateCase(copyCaseId);
+        await duplicateCaseService.DuplicateCase(copyCaseId);
+
+        return await projectService.GetProjectDto(projectId);
     }
 
     [HttpPut("{caseId}")]
