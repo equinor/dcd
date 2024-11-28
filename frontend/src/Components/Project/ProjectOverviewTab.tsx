@@ -83,7 +83,10 @@ const ProjectOverviewTab = () => {
 
         return (
             <InputSwitcher
-                value={isRevision && revisionInternalProjectPhase ? INTERNAL_PROJECT_PHASE[revisionInternalProjectPhase].label ?? "" : INTERNAL_PROJECT_PHASE[internalProjectPhase].label ?? ""}
+                value={isRevision
+                    && revisionInternalProjectPhase
+                    ? INTERNAL_PROJECT_PHASE[revisionInternalProjectPhase].label ?? ""
+                    : INTERNAL_PROJECT_PHASE[internalProjectPhase].label ?? ""}
             >
                 <NativeSelect
                     id="internalProjectPhase"

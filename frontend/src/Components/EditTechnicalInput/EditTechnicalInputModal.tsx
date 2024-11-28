@@ -8,12 +8,14 @@ import {
 import Grid from "@mui/material/Grid"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
+import { useParams } from "react-router"
 
 import { EMPTY_GUID } from "@/Utils/constants"
 import { isExplorationWell } from "@/Utils/common"
 import { useAppContext } from "@/Context/AppContext"
 import { GetTechnicalInputService } from "@/Services/TechnicalInputService"
-import { projectQueryFn } from "@/Services/QueryFunctions"
+import { useProjectContext } from "@/Context/ProjectContext"
+import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 import WellCostsTab from "./WellCostsTab"
@@ -27,6 +29,8 @@ const {
 const EditTechnicalInputModal = () => {
     const { editMode } = useAppContext()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
+    const { projectId, isRevision } = useProjectContext()
+    const { revisionId } = useParams()
     const [isSaving, setIsSaving] = useState<boolean>(false)
 
     const { currentContext } = useModuleCurrentContext()
@@ -40,6 +44,12 @@ const EditTechnicalInputModal = () => {
         queryKey: ["projectApiData", externalId],
         queryFn: () => projectQueryFn(externalId),
         enabled: !!externalId,
+    })
+
+    const { data: apiRevisionData } = useQuery({
+        queryKey: ["revisionApiData", revisionId],
+        queryFn: () => revisionQueryFn(projectId, revisionId),
+        enabled: !!projectId && !!revisionId && isRevision,
     })
 
     const [
@@ -115,6 +125,19 @@ const EditTechnicalInputModal = () => {
         setOriginalExplorationWells(structuredClone(apiData?.wells?.filter((w) => isExplorationWell(w)) ?? []))
     }, [apiData])
 
+    // useEffect(() => {
+    //     if (isRevision && apiRevisionData) {
+    //         setExplorationOperationalWellCosts(structuredClone(apiRevisionData?.explorationOperationalWellCosts))
+    //         setDevelopmentOperationalWellCosts(structuredClone(apiRevisionData?.developmentOperationalWellCosts))
+    //         setOriginalExplorationOperationalWellCosts(structuredClone(apiRevisionData?.explorationOperationalWellCosts))
+    //         setOriginalDevelopmentOperationalWellCosts(structuredClone(apiRevisionData?.developmentOperationalWellCosts))
+    //         setWellProjectWells(structuredClone(apiRevisionData?.wells?.filter((w) => !isExplorationWell(w)) ?? []))
+    //         setExplorationWells(structuredClone(apiRevisionData?.wells?.filter((w) => isExplorationWell(w)) ?? []))
+    //         setOriginalWellProjectWells(structuredClone(apiRevisionData?.wells?.filter((w) => !isExplorationWell(w)) ?? []))
+    //         setOriginalExplorationWells(structuredClone(apiRevisionData?.wells?.filter((w) => isExplorationWell(w)) ?? []))
+    //     }
+    // }, [isRevision, apiRevisionData])
+
     if (!explorationOperationalWellCosts || !developmentOperationalWellCosts) {
         return (<div>Loading...</div>)
     }
@@ -156,18 +179,16 @@ const EditTechnicalInputModal = () => {
 
             <Grid container justifyContent="flex-end">
                 {!isSaving && (
-                    <>
-                        <Grid item>
-                            <Tooltip title={getEditDisabledText()}>
-                                <Button
-                                    onClick={handleSave}
-                                    disabled={isEditDisabled || !editMode}
-                                >
-                                    Save
-                                </Button>
-                            </Tooltip>
-                        </Grid>
-                    </>
+                    <Grid item>
+                        <Tooltip title={getEditDisabledText()}>
+                            <Button
+                                onClick={handleSave}
+                                disabled={isEditDisabled || !editMode}
+                            >
+                                Save
+                            </Button>
+                        </Tooltip>
+                    </Grid>
                 )}
                 {(editMode) && isSaving && (
                     <Grid item>

@@ -49,7 +49,7 @@ const ProjectSettingsTab = () => {
             setGasPriceNOK(apiRevisionData.gasPriceNOK)
             setDiscountRate(apiRevisionData.discountRate)
         }
-    }, [isRevision, apiRevisionData, revisionId])  
+    }, [isRevision, apiRevisionData, revisionId])
 
     const handlePhysicalUnitChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1 && apiData) {
@@ -102,6 +102,20 @@ const ProjectSettingsTab = () => {
         }
     }
 
+    const getCurrency = (): string => {
+        if (isRevision) {
+            return apiRevisionData?.currency === 1 ? "NOK" : "USD"
+        }
+        return apiData?.currency === 1 ? "NOK" : "USD"
+    }
+
+    const getPhysicalUnit = (): string => {
+        if (isRevision) {
+            return apiRevisionData?.physicalUnit === 0 ? "SI" : "Oil field"
+        }
+        return apiData?.physicalUnit === 0 ? "SI" : "Oil field"
+    }
+
     if (!apiData) {
         return <div>Loading project data...</div>
     }
@@ -110,7 +124,7 @@ const ProjectSettingsTab = () => {
         <Grid container direction="column" spacing={2}>
             <Grid item>
                 <InputSwitcher
-                    value={isRevision ? apiRevisionData?.physicalUnit === 0 ? "SI" : "Oil field" : apiData.physicalUnit === 0 ? "SI" : "Oil field"}
+                    value={getPhysicalUnit()}
                     label="Physical unit"
                 >
                     <NativeSelect
@@ -126,7 +140,7 @@ const ProjectSettingsTab = () => {
             </Grid>
             <Grid item>
                 <InputSwitcher
-                    value={isRevision ? apiRevisionData?.currency === 1 ? "NOK" : "USD" : apiData.currency === 1 ? "NOK" : "USD"}
+                    value={getCurrency()}
                     label="Currency"
                 >
                     <NativeSelect
@@ -143,7 +157,10 @@ const ProjectSettingsTab = () => {
             <Grid item>
                 {dummyRole === 0 && (
                     <InputSwitcher
-                        value={isRevision && !!apiRevisionData?.classification ? PROJECT_CLASSIFICATION[apiRevisionData?.classification].label : PROJECT_CLASSIFICATION[apiData.classification].label}
+                        value={isRevision
+                        && !!apiRevisionData?.classification
+                            ? PROJECT_CLASSIFICATION[apiRevisionData?.classification].label
+                            : PROJECT_CLASSIFICATION[apiData.classification].label}
                         label="Classification"
                     >
                         <NativeSelect
