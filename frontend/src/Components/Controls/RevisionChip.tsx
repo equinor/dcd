@@ -14,6 +14,10 @@ import { useRevisions } from "@/Hooks/useRevision"
 
 const CloseRevision = styled.div`
     cursor: pointer;
+    width: 125px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 `
 
 const RevisionChip = () => {
