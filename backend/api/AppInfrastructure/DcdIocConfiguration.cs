@@ -1,6 +1,7 @@
 using api.AppInfrastructure.Authorization;
 using api.Features.BackgroundJobs;
 using api.Features.Cases.CaseComparison;
+using api.Features.Cases.Duplicate;
 using api.Features.Cases.GetWithAssets;
 using api.Features.FusionIntegration.OrgChart;
 using api.Features.FusionIntegration.ProjectMaster;
@@ -43,7 +44,6 @@ public static class DcdIocConfiguration
         services.AddScoped<IWellProjectWellService, WellProjectWellService>();
         services.AddScoped<IExplorationWellService, ExplorationWellService>();
         services.AddScoped<ICostProfileFromDrillingScheduleHelper, CostProfileFromDrillingScheduleHelper>();
-        services.AddScoped<IDuplicateCaseService, DuplicateCaseService>();
         services.AddScoped<IExplorationOperationalWellCostsService, ExplorationOperationalWellCostsService>();
 
         services.AddScoped<ICaseTimeSeriesService, CaseTimeSeriesService>();
@@ -79,6 +79,9 @@ public static class DcdIocConfiguration
 
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
+
+        services.AddScoped<DuplicateCaseService>();
+        services.AddScoped<DuplicateCaseRepository>();
 
         services.AddScoped<GetRevisionService>();
         services.AddScoped<CreateRevisionService>();

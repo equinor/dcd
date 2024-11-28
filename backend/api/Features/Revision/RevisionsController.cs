@@ -21,7 +21,7 @@ public class RevisionsController(
     [HttpGet("{revisionId:guid}")]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
     [ActionType(ActionType.Read)]
-    public async Task<RevisionWithCasesDto?> Get(Guid projectId, Guid revisionId)
+    public async Task<RevisionWithCasesDto> Get(Guid projectId, Guid revisionId)
     {
         return await getRevisionService.GetRevision(projectId, revisionId);
     }
