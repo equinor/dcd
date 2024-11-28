@@ -16,4 +16,6 @@ public class RevisionWithCasesDto : ProjectDto
     public ExplorationOperationalWellCostsDto ExplorationOperationalWellCosts { get; set; } = new();
     [Required]
     public DevelopmentOperationalWellCostsDto DevelopmentOperationalWellCosts { get; set; } = new();
+    [Required]
+    public ICollection<WellDto> Wells { get; set; } = [];
 }
