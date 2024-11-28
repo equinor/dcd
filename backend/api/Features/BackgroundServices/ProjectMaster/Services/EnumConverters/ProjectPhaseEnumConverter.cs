@@ -4,11 +4,10 @@ namespace api.Features.BackgroundServices.ProjectMaster.Services.EnumConverters;
 
 public static class ProjectPhaseEnumConverter
 {
-    public static ProjectPhase? ConvertPhase(string phase)
+    public static ProjectPhase ConvertPhase(string? phase)
     {
         return phase switch
         {
-            "" => ProjectPhase.Null,
             "Bid preparations" => ProjectPhase.BidPreparations,
             "Business identification" => ProjectPhase.BusinessIdentification,
             "Business planning" => ProjectPhase.BusinessPlanning,
@@ -18,7 +17,7 @@ public static class ProjectPhaseEnumConverter
             "Execution" => ProjectPhase.Execution,
             "Operation" => ProjectPhase.Operation,
             "Screening business opportunities" => ProjectPhase.ScreeningBusinessOpportunities,
-            _ => null
+            _ => ProjectPhase.Null
         };
     }
 }

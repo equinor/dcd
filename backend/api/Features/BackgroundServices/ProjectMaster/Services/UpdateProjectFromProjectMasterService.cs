@@ -32,12 +32,7 @@ public class UpdateProjectFromProjectMasterService(IDbContextFactory<DcdDbContex
                 continue;
             }
 
-
-            if (FeatureToggleService.AutogenerateRevisionWhenUpdatedInProjectMaster)
-            {
-                await CreateRevisionIfProjectPhaseHasChanged(projectMasterDto);
-            }
-
+            await CreateRevisionIfProjectPhaseHasChanged(projectMasterDto);
             await UpdateProject(projectMasterDto);
         }
     }
@@ -62,30 +57,17 @@ public class UpdateProjectFromProjectMasterService(IDbContextFactory<DcdDbContex
 
     private static bool ProjectHasChanged(Project project, UpdatableFieldsFromProjectMasterDto projectMasterDtoDto)
     {
-        if (project.Name != projectMasterDtoDto.Name ||
-            project.CommonLibraryName != projectMasterDtoDto.CommonLibraryName ||
-            project.FusionProjectId != projectMasterDtoDto.FusionProjectId ||
-            project.Country != projectMasterDtoDto.Country)
-        {
-            return true;
-        }
-
-        if (projectMasterDtoDto.ProjectCategory != null && project.ProjectCategory != projectMasterDtoDto.ProjectCategory)
-        {
-            return true;
-        }
-
-        if (projectMasterDtoDto.ProjectPhase != null && project.ProjectPhase != projectMasterDtoDto.ProjectPhase)
-        {
-            return true;
-        }
-
-        return false;
+        return project.Name != projectMasterDtoDto.Name ||
+               project.CommonLibraryName != projectMasterDtoDto.CommonLibraryName ||
+               project.FusionProjectId != projectMasterDtoDto.FusionProjectId ||
+               project.Country != projectMasterDtoDto.Country ||
+               project.ProjectCategory != projectMasterDtoDto.ProjectCategory ||
+               project.ProjectPhase != projectMasterDtoDto.ProjectPhase;
     }
 
     private async Task CreateRevisionIfProjectPhaseHasChanged(UpdatableFieldsFromProjectMasterDto projectDto)
     {
-        if (projectDto.ProjectPhase == null)
+        if (!FeatureToggleService.AutogenerateRevisionWhenUpdatedInProjectMaster)
         {
             return;
         }
@@ -123,8 +105,8 @@ public class UpdateProjectFromProjectMasterService(IDbContextFactory<DcdDbContex
         project.CommonLibraryName = projectMasterDtoDto.CommonLibraryName;
         project.FusionProjectId = projectMasterDtoDto.FusionProjectId;
         project.Country = projectMasterDtoDto.Country;
-        project.ProjectCategory = projectMasterDtoDto.ProjectCategory ?? project.ProjectCategory;
-        project.ProjectPhase = projectMasterDtoDto.ProjectPhase ?? project.ProjectPhase;
+        project.ProjectCategory = projectMasterDtoDto.ProjectCategory;
+        project.ProjectPhase = projectMasterDtoDto.ProjectPhase;
 
         await context.SaveChangesAsync();
     }
@@ -145,8 +127,8 @@ public class UpdateProjectFromProjectMasterService(IDbContextFactory<DcdDbContex
             Name = projectMaster.Description ?? "",
             CommonLibraryName = projectMaster.Description ?? "",
             Country = projectMaster.Country ?? "",
-            ProjectCategory = ProjectCategoryEnumConverter.ConvertCategory(projectMaster.ProjectCategory ?? ""),
-            ProjectPhase = ProjectPhaseEnumConverter.ConvertPhase(projectMaster.Phase ?? "")
+            ProjectCategory = ProjectCategoryEnumConverter.ConvertCategory(projectMaster.ProjectCategory),
+            ProjectPhase = ProjectPhaseEnumConverter.ConvertPhase(projectMaster.Phase)
         };
     }
 }

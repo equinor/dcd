@@ -9,6 +9,6 @@ public class UpdatableFieldsFromProjectMasterDto
     public required string Name { get; set; }
     public required string CommonLibraryName { get; set; }
     public required string Country { get; set; }
-    public ProjectCategory? ProjectCategory { get; set; }
-    public ProjectPhase? ProjectPhase { get; set; }
+    public required ProjectCategory ProjectCategory { get; set; }
+    public required ProjectPhase ProjectPhase { get; set; }
 }
