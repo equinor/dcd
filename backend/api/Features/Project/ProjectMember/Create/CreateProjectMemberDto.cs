@@ -1,6 +1,6 @@
 using api.Models;
 
-namespace api.Dtos;
+namespace api.Features.Project.ProjectMember.Create;
 
 public class CreateProjectMemberDto
 {
