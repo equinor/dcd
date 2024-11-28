@@ -8,7 +8,7 @@ public class RefreshProjectService(
     IConfiguration configuration)
     : BackgroundService
 {
-    private readonly int _generalDelay = FeatureToggleService.RevisionEnabled
+    private readonly int _generalDelay = FeatureToggleService.AutogenerateRevisionWhenUpdatedInProjectMaster
         ? (int)TimeSpan.FromMinutes(4).TotalMilliseconds
         : (int)TimeSpan.FromHours(1).TotalMilliseconds;
 
@@ -24,7 +24,7 @@ public class RefreshProjectService(
     private async Task UpdateProjects()
     {
         logger.LogInformation("HostingService: Running");
-        if (Showtime())
+        if (FeatureToggleService.AutogenerateRevisionWhenUpdatedInProjectMaster || Showtime())
         {
             using var scope = scopeFactory.CreateScope();
             var updateService = scope.ServiceProvider.GetRequiredService<UpdateProjectFromProjectMasterService>();
