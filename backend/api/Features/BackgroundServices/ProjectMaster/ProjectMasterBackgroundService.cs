@@ -1,13 +1,9 @@
-using System.Diagnostics;
-
+using api.AppInfrastructure;
 using api.Features.BackgroundServices.ProjectMaster.Services;
 
 namespace api.Features.BackgroundServices.ProjectMaster;
 
-public class ProjectMasterBackgroundService(
-    IServiceScopeFactory scopeFactory,
-    ILogger<ProjectMasterBackgroundService> logger,
-    IConfiguration configuration)
+public class ProjectMasterBackgroundService(IServiceScopeFactory scopeFactory, ILogger<ProjectMasterBackgroundService> logger)
     : BackgroundService
 {
     private readonly int _generalDelay = (int)TimeSpan.FromHours(1).TotalMilliseconds;
@@ -23,51 +19,41 @@ public class ProjectMasterBackgroundService(
 
     private async Task UpdateProjects()
     {
-        logger.LogInformation("HostingService: Running");
+        logger.LogInformation("ProjectMasterBackgroundService: Running");
 
-        if (Showtime())
+        if (!ShouldRunAtThisTimeOfDay())
         {
-            using var scope = scopeFactory.CreateScope();
-            var updateService = scope.ServiceProvider.GetRequiredService<UpdateProjectFromProjectMasterService>();
+            return;
+        }
 
-            try
-            {
-                var stopwatch = Stopwatch.StartNew();
+        using var scope = scopeFactory.CreateScope();
+        var updateService = scope.ServiceProvider.GetRequiredService<UpdateProjectFromProjectMasterService>();
 
-                await updateService.UpdateProjectFromProjectMaster();
+        try
+        {
+            await updateService.UpdateProjectFromProjectMaster();
 
-                logger.LogInformation($"Updated all projects from project master in {stopwatch.ElapsedMilliseconds} ms");
-            }
-            catch (Exception e)
-            {
-                logger.LogCritical("Update from Project Master failed: {}", e);
-            }
+            logger.LogInformation($"Updated all projects from project master.");
+        }
+        catch (Exception e)
+        {
+            logger.LogCritical("Update from Project Master failed: {}", e);
         }
     }
 
-    private bool Showtime()
+    private static bool ShouldRunAtThisTimeOfDay()
     {
-        var runtime = configuration.GetSection("HostedService").GetValue<string>("RunTime");
+        var (timeOfDayUtcStart, timeOfDayUtcEnd) = GetWindowWhenJobShouldRun();
 
-        if (string.IsNullOrEmpty(runtime))
-        {
-            logger.LogInformation("HostingService: No runtime specified");
-            return false;
-        }
+        var utcNow = DateTime.UtcNow.TimeOfDay;
 
-        var hour = int.Parse(runtime.Split(':')[0]);
-        var minute = int.Parse(runtime.Split(':')[1]);
-        var second = int.Parse(runtime.Split(':')[2]);
-        var start = new TimeSpan(hour, minute, second);
-        var end = new TimeSpan(hour + 1, minute, second);
-        var now = DateTime.Now.TimeOfDay;
+        return utcNow > timeOfDayUtcStart && utcNow < timeOfDayUtcEnd;
+    }
 
-        if (now > start && now < end)
-        {
-            logger.LogInformation("HostingService: Running Update Project from Project Master");
-            return true;
-        }
-
-        return false;
+    private static (TimeSpan timeOfDayUtcStart, TimeSpan timeOfDayUtcEnd) GetWindowWhenJobShouldRun()
+    {
+        return DcdEnvironments.IsProd()
+            ? (TimeSpan.FromHours(13), TimeSpan.FromHours(14))
+            : (TimeSpan.FromHours(0), TimeSpan.FromHours(23));
     }
 }
