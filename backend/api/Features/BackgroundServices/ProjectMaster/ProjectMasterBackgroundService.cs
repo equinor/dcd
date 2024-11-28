@@ -1,18 +1,22 @@
-namespace api.Features.BackgroundJobs;
+using System.Diagnostics;
 
-public class RefreshProjectService(
+using api.Features.BackgroundServices.ProjectMaster.Services;
+
+namespace api.Features.BackgroundServices.ProjectMaster;
+
+public class ProjectMasterBackgroundService(
     IServiceScopeFactory scopeFactory,
-    ILogger<RefreshProjectService> logger,
+    ILogger<ProjectMasterBackgroundService> logger,
     IConfiguration configuration)
     : BackgroundService
 {
-    private const int GeneralDelay = 1 * 1000 * 3600; // Each hour
+    private readonly int _generalDelay = (int)TimeSpan.FromHours(1).TotalMilliseconds;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            await Task.Delay(GeneralDelay, stoppingToken);
+            await Task.Delay(_generalDelay, stoppingToken);
             await UpdateProjects();
         }
     }
@@ -20,6 +24,7 @@ public class RefreshProjectService(
     private async Task UpdateProjects()
     {
         logger.LogInformation("HostingService: Running");
+
         if (Showtime())
         {
             using var scope = scopeFactory.CreateScope();
@@ -27,7 +32,11 @@ public class RefreshProjectService(
 
             try
             {
+                var stopwatch = Stopwatch.StartNew();
+
                 await updateService.UpdateProjectFromProjectMaster();
+
+                logger.LogInformation($"Updated all projects from project master in {stopwatch.ElapsedMilliseconds} ms");
             }
             catch (Exception e)
             {
@@ -39,6 +48,7 @@ public class RefreshProjectService(
     private bool Showtime()
     {
         var runtime = configuration.GetSection("HostedService").GetValue<string>("RunTime");
+
         if (string.IsNullOrEmpty(runtime))
         {
             logger.LogInformation("HostingService: No runtime specified");
