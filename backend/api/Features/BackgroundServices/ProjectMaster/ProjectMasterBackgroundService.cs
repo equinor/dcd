@@ -33,7 +33,7 @@ public class ProjectMasterBackgroundService(IServiceScopeFactory scopeFactory, I
         {
             await updateService.UpdateProjectFromProjectMaster();
 
-            logger.LogInformation($"Updated all projects from project master.");
+            logger.LogInformation("Updated all projects from project master.");
         }
         catch (Exception e)
         {

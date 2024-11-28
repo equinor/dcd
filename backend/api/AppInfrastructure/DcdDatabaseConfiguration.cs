@@ -7,7 +7,7 @@ namespace api.AppInfrastructure;
 
 public static class DcdDatabaseConfiguration
 {
-    public static void ConfigureDcdDatabase(this WebApplicationBuilder builder, string? environment, IConfigurationRoot config)
+    public static void ConfigureDcdDatabase(this WebApplicationBuilder builder, string environment, IConfigurationRoot config)
     {
         var sqlServerConnectionString = config["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
         var sqliteConnectionString = builder.Configuration.GetSection("Database").GetValue<string>("ConnectionString");

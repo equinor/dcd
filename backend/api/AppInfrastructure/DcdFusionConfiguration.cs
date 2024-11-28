@@ -2,7 +2,7 @@ namespace api.AppInfrastructure;
 
 public static class DcdFusionConfiguration
 {
-    public static void AddDcdFusionConfiguration(this IServiceCollection services, string? environment, IConfigurationRoot config)
+    public static void AddDcdFusionConfiguration(this IServiceCollection services, string environment, IConfigurationRoot config)
     {
         services.AddFusionIntegration(options =>
         {
