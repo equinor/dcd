@@ -11,9 +11,6 @@ public interface IWellProjectRepository : IBaseRepository
     Task<WellProject?> GetWellProjectWithIncludes(Guid wellProjectId, params Expression<Func<WellProject, object>>[] includes);
     Task<Well?> GetWell(Guid wellId);
     Task<bool> WellProjectHasProfile(Guid wellProjectId, WellProjectProfileNames profileType);
-    WellProject UpdateWellProject(WellProject wellProject);
-    Task<DrillingSchedule?> GetWellProjectWellDrillingSchedule(Guid drillingScheduleId);
     Task<WellProject?> GetWellProjectWithDrillingSchedule(Guid drillingScheduleId);
-    DrillingSchedule UpdateWellProjectWellDrillingSchedule(DrillingSchedule drillingScheduleId);
     WellProjectWell CreateWellProjectWellDrillingSchedule(WellProjectWell wellProjectWellWithDrillingSchedule);
 }

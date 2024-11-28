@@ -9,7 +9,7 @@ namespace api.Features.Cases.CaseComparison;
 [ApiController]
 [Route("projects")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-public class CaseComparisonController(CaseComparisonService caseComparisonService)
+public class CaseComparisonController(CaseComparisonService caseComparisonService) : ControllerBase
 {
     [RequiresApplicationRoles(
         ApplicationRole.Admin,

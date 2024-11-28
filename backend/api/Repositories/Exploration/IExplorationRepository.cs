@@ -11,9 +11,6 @@ public interface IExplorationRepository : IBaseRepository
     Task<Exploration?> GetExplorationWithIncludes(Guid caseId, params Expression<Func<Exploration, object>>[] includes);
     Task<Well?> GetWell(Guid wellId);
     Task<bool> ExplorationHasProfile(Guid explorationId, ExplorationProfileNames profileType);
-    Exploration UpdateExploration(Exploration exploration);
-    Task<DrillingSchedule?> GetExplorationWellDrillingSchedule(Guid drillingScheduleId);
     Task<Exploration?> GetExplorationWithDrillingSchedule(Guid drillingScheduleId);
-    DrillingSchedule UpdateExplorationWellDrillingSchedule(DrillingSchedule drillingSchedule);
     ExplorationWell CreateExplorationWellDrillingSchedule(ExplorationWell explorationWellWithDrillingSchedule);
 }

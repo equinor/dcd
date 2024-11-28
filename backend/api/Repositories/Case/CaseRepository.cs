@@ -54,11 +54,6 @@ public class CaseRepository(DcdDbContext context) : BaseRepository(context), ICa
         return hasProfile;
     }
 
-    public Case UpdateCase(Case updatedCase)
-    {
-        return Update(updatedCase);
-    }
-
     public async Task UpdateModifyTime(Guid caseId)
     {
         if (caseId == Guid.Empty)

@@ -45,9 +45,4 @@ public class DrainageStrategyRepository(DcdDbContext context) : BaseRepository(c
 
         return hasProfile;
     }
-
-    public DrainageStrategy UpdateDrainageStrategy(DrainageStrategy drainageStrategy)
-    {
-        return Update(drainageStrategy);
-    }
 }

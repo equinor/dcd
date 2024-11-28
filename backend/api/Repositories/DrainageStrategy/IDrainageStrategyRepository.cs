@@ -10,5 +10,4 @@ public interface IDrainageStrategyRepository : IBaseRepository
     Task<DrainageStrategy?> GetDrainageStrategy(Guid drainageStrategyId);
     Task<DrainageStrategy?> GetDrainageStrategyWithIncludes(Guid drainageStrategyId, params Expression<Func<DrainageStrategy, object>>[] includes);
     Task<bool> DrainageStrategyHasProfile(Guid drainageStrategyId, DrainageStrategyProfileNames profileType);
-    DrainageStrategy UpdateDrainageStrategy(DrainageStrategy drainageStrategy);
 }
