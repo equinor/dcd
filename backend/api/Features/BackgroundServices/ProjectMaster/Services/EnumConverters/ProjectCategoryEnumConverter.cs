@@ -1,14 +1,13 @@
 using api.Models;
 
-namespace api.Features.BackgroundJobs.EnumConverters;
+namespace api.Features.BackgroundServices.ProjectMaster.Services.EnumConverters;
 
 public static class ProjectCategoryEnumConverter
 {
-    public static ProjectCategory ConvertCategory(string category)
+    public static ProjectCategory ConvertCategory(string? category)
     {
         return category switch
         {
-            "" => ProjectCategory.Null,
             "BROWNFIELD" => ProjectCategory.Brownfield,
             "CESSATION" => ProjectCategory.Cessation,
             "DRILLING_UPGRADE" => ProjectCategory.DrillingUpgrade,
@@ -30,7 +29,7 @@ public static class ProjectCategoryEnumConverter
             "TIE-IN" => ProjectCategory.TieIn,
             "RENEWABLE_OTHER" => ProjectCategory.RenewableOther,
             "CCS" => ProjectCategory.Ccs,
-            _ => throw new ArgumentException($"Category {category} does not exist in DCD."),
+            _ => ProjectCategory.Null
         };
     }
 }

@@ -1,12 +1,11 @@
 using api.Context;
 using api.Models;
-using api.Repositories;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Revision.Create;
 
-public class CreateRevisionService(CreateRevisionRepository createRevisionRepository,
-    IProjectRepository projectRepository,
-    DcdDbContext context)
+public class CreateRevisionService(CreateRevisionRepository createRevisionRepository, DcdDbContext context)
 {
     public async Task<Guid> CreateRevision(Guid projectId, CreateRevisionDto createRevisionDto)
     {
@@ -32,7 +31,7 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
 
         context.Projects.Add(project);
 
-        var existingProject = (await projectRepository.GetProject(projectId))!;
+        var existingProject = await context.Projects.FirstAsync(p => (p.Id == projectId || p.FusionProjectId == projectId) && !p.IsRevision);
         existingProject.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
         existingProject.Classification = createRevisionDto.Classification;
 
