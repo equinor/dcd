@@ -6,13 +6,13 @@ namespace api.Features.BackgroundServices.ProjectMaster;
 public class ProjectMasterBackgroundService(IServiceScopeFactory scopeFactory, ILogger<ProjectMasterBackgroundService> logger)
     : BackgroundService
 {
-    private readonly int _generalDelay = (int)TimeSpan.FromHours(1).TotalMilliseconds;
+    private readonly TimeSpan _executionFrequency = TimeSpan.FromHours(1);
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            await Task.Delay(_generalDelay, stoppingToken);
+            await Task.Delay(_executionFrequency, stoppingToken);
             await UpdateProjects();
         }
     }
