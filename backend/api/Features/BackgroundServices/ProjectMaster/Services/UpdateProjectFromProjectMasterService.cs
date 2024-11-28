@@ -50,9 +50,7 @@ public class UpdateProjectFromProjectMasterService(IDbContextFactory<DcdDbContex
     {
         await using var context = await contextFactory.CreateDbContextAsync();
 
-        return await context.Projects
-            .Where(x => x.Id == projectId)
-            .SingleAsync();
+        return await context.Projects.SingleAsync(x => x.Id == projectId);
     }
 
     private static bool ProjectHasChanged(Project project, UpdatableFieldsFromProjectMasterDto projectMasterDtoDto)
