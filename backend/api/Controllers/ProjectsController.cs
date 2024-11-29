@@ -37,7 +37,9 @@ public class ProjectsController(
     [ActionType(ActionType.Edit)]
     public async Task<ProjectWithAssetsDto> CreateProject([FromQuery] Guid contextId)
     {
-        return await projectService.CreateProject(contextId);
+        var projectId = await projectService.CreateProject(contextId);
+
+        return await projectService.GetProjectDto(projectId);
     }
 
     [RequiresApplicationRoles(
