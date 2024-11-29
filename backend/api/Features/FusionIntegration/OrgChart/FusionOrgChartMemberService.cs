@@ -7,15 +7,9 @@ using Microsoft.Identity.Abstractions;
 
 namespace api.Features.FusionIntegration.OrgChart;
 
-public class OrgChartMemberService(
-    IDownstreamApi downstreamApi,
-    IFusionContextResolver fusionContextResolver) : IOrgChartMemberService
+public class FusionOrgChartMemberService(IDownstreamApi downstreamApi, IFusionContextResolver fusionContextResolver)
 {
-    public async Task<List<FusionPersonV1>> GetAllPersonsOnProject(
-        Guid fusionContextId,
-        int top,
-        int skip
-    )
+    public async Task<List<FusionPersonV1>> GetAllPersonsOnProject(Guid fusionContextId, int top, int skip)
     {
         var contextRelations = await fusionContextResolver.GetContextRelationsAsync(fusionContextId);
 
