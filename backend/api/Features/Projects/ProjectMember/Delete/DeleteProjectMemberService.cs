@@ -3,7 +3,7 @@ using api.Exceptions;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Project.ProjectMember.Delete;
+namespace api.Features.Projects.ProjectMember.Delete;
 
 public class DeleteProjectMemberService(DcdDbContext context)
 {
