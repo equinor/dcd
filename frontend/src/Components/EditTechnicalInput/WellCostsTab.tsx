@@ -4,11 +4,11 @@ import styled from "styled-components"
 import { add } from "@equinor/eds-icons"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
+
+import { useAppContext } from "@/Context/AppContext"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 import OperationalWellCosts from "./OperationalWellCosts"
 import WellListEditTechnicalInput from "./WellListEditTechnicalInput"
-import { useModalContext } from "../../Context/ModalContext"
-import { useAppContext } from "../../Context/AppContext"
-import { projectQueryFn } from "../../Services/QueryFunctions"
 
 const Section = styled.section`
     margin-top: 56px;
@@ -52,7 +52,7 @@ const WellCostsTab = ({
 }: Props) => {
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
-
+    console.log(explorationOperationalWellCosts)
     const { editMode } = useAppContext()
 
     const { data: apiData } = useQuery({

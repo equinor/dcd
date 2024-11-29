@@ -5,7 +5,7 @@ import styled from "styled-components"
 import ProjectOverviewTab from "../Components/Project/ProjectOverviewTab"
 import ProjectCompareCasesTab from "../Components/Project/CompareCasesTab/CompareCasesTabOverview"
 import ProjectSettingsTab from "../Components/Project/ProjectSettingsTab"
-import EditHistoryOverviewTab from "../Components/Project/EditHistoryOverviewTab"
+// import EditHistoryOverviewTab from "../Components/Project/EditHistoryOverviewTab"
 import { useProjectContext } from "../Context/ProjectContext"
 import TechnicalInput from "../Components/Project/CompareCasesTab/Tabs/TechnicalInput"
 

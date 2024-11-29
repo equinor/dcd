@@ -14,6 +14,9 @@ import { useRevisions } from "@/Hooks/useRevision"
 
 const CloseRevision = styled.div`
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 `
 
 const RevisionChip = () => {
@@ -37,7 +40,11 @@ const RevisionChip = () => {
             <Typography
                 onClick={() => setIsMenuOpen(true)}
                 variant="body2"
-                sx={{ textDecoration: "underline", cursor: "pointer", whiteSpace: "nowrap" }}
+                sx={{
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                }}
             >
                 {truncateText(revisionName ?? "", 12)}
             </Typography>

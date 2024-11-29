@@ -3,8 +3,8 @@ import {
     ChangeEventHandler,
     Dispatch, SetStateAction,
 } from "react"
-import { useModalContext } from "../../Context/ModalContext"
-import { useAppContext } from "../../Context/AppContext"
+
+import { useAppContext } from "@/Context/AppContext"
 
 interface Props {
     title: string

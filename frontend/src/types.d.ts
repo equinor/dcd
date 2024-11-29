@@ -1186,6 +1186,7 @@ declare namespace Components {
             cases: CaseDto[];
             explorationOperationalWellCosts: ExplorationOperationalWellCostsDto;
             developmentOperationalWellCosts: DevelopmentOperationalWellCostsDto;
+            wells: WellDto[];
         }
         export interface STEACaseDto {
             name?: string | null;
@@ -1983,10 +1984,10 @@ declare namespace Paths {
     namespace Duplicate {
         namespace Parameters {
             export type CopyCaseId = string; // uuid
-            export type ProjectId = string;
+            export type ProjectId = string; // uuid
         }
         export interface PathParameters {
-            projectId: Parameters.ProjectId;
+            projectId: Parameters.ProjectId /* uuid */;
         }
         export interface QueryParameters {
             copyCaseId?: Parameters.CopyCaseId /* uuid */;

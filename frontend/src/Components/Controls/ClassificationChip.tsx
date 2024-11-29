@@ -1,13 +1,13 @@
 import styled from "styled-components"
 import { Icon, Chip, Tooltip } from "@equinor/eds-core-react"
 import { useQuery } from "@tanstack/react-query"
+import { useMemo } from "react"
 
 import { useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
 import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Context/ProjectContext"
-import { useMemo } from "react"
 
 const StyledChip = styled(Chip)`
     border-width: 0;
@@ -63,9 +63,11 @@ const Classification = () => {
     const getClassification = useMemo(() => {
         if (isRevision && apiRevisionData) {
             return PROJECT_CLASSIFICATION[apiRevisionData.classification]
-        } else if (projectApiData) {
+        }
+        if (projectApiData) {
             return PROJECT_CLASSIFICATION[projectApiData?.classification]
-        } else return false
+        }
+        return false
     }, [isRevision, apiRevisionData, projectApiData])
 
     return (

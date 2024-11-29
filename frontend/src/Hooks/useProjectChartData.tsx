@@ -44,22 +44,34 @@ export const useProjectChartData = () => {
         enabled: !!projectId,
     })
 
+    console.log("api data: ", apiData)
+
     const { data: apiRevisionData } = useQuery({
         queryKey: ["revisionApiData", revisionId],
         queryFn: () => revisionQueryFn(projectId, revisionId),
         enabled: !!projectId && !!revisionId && isRevision,
     })
 
+    console.log("revision: ", apiRevisionData)
+
+    // kan vi sende inn revision id istedet?
+    // const { data: compareCasesData } = useQuery({
+    //     queryKey: ["compareCasesApiData", projectId],
+    //     queryFn: () => compareCasesQueryFn(projectId),
+    //     enabled: !!projectId,
+    // })
+
     const { data: compareCasesData } = useQuery({
-        queryKey: ["compareCasesApiData", projectId],
-        queryFn: () => compareCasesQueryFn(projectId),
-        enabled: !!projectId,
+        queryKey: ["compareCasesApiData", revisionId],
+        queryFn: () => compareCasesQueryFn(revisionId),
+        enabled: !!revisionId,
     })
 
     const cases = useMemo(() => {
-        if(isRevision) {
+        if (isRevision) {
             return apiRevisionData?.cases.filter((c) => !c.archived) || []
-        } else return apiData?.cases.filter((c) => !c.archived) || []
+        }
+        return apiData?.cases.filter((c) => !c.archived) || []
     }, [apiData, isRevision, apiRevisionData])
 
     const generateAllCharts = () => {

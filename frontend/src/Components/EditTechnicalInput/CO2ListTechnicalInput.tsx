@@ -28,7 +28,6 @@ const CO2ListTechnicalInput = () => {
     const externalId = currentContext?.externalId
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
 
-
     const { data: apiData } = useQuery({
         queryKey: ["projectApiData", externalId],
         queryFn: () => projectQueryFn(externalId),
@@ -84,48 +83,60 @@ const CO2ListTechnicalInput = () => {
         setColumnDefs(getColumnDefs(editMode))
     }, [editMode])
 
+    const getCo2DataValue = useCallback((value: number | undefined) => {
+        if (value === undefined || value === null || Number.isNaN(value)) {
+            return undefined
+        }
+        if (isRevision && apiRevisionData) {
+            return Math.round(value * 100) / 100
+        }
+
+        return Math.round(value * 100) / 100
+    }, [isRevision, apiRevisionData])
+
     const co2Data = [
         {
             profile: "CO2 removed from the gas",
             unit: "% of design gas rate",
             set: setCO2RemovedFromGas,
-            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.cO2RemovedFromGas * 100) / 100 : Math.round(cO2RemovedFromGas * 100) / 100,
+            value: isRevision ? getCo2DataValue(apiRevisionData?.cO2RemovedFromGas) : getCo2DataValue(cO2RemovedFromGas),
         },
         {
             profile: "CO2-emissions from fuel gas",
             unit: "kg CO2/Sm³",
             set: setCO2EmissionsFromFuelGas,
-            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.cO2EmissionFromFuelGas * 100) / 100 : Math.round(cO2EmissionsFromFuelGas * 100) / 100,
+            value: isRevision ? getCo2DataValue(apiRevisionData?.cO2EmissionFromFuelGas) : getCo2DataValue(cO2EmissionsFromFuelGas),
         },
         {
             profile: "Flared gas per produced volume",
             unit: "Sm³/Sm³",
             set: setFlaredGasPerProducedVolume,
-            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.flaredGasPerProducedVolume * 100) / 100 : Math.round(flaredGasPerProducedVolume * 100) / 100,
+            value: isRevision ? getCo2DataValue(apiRevisionData?.flaredGasPerProducedVolume) : getCo2DataValue(flaredGasPerProducedVolume),
         },
         {
             profile: "CO2-emissions from flared gas",
             unit: "kg CO2/Sm³",
             set: setCO2EmissionsFromFlaredGas,
-            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.cO2EmissionsFromFlaredGas * 100) / 100 : Math.round(cO2EmissionsFromFlaredGas * 100) / 100,
+            value: isRevision ? getCo2DataValue(apiRevisionData?.cO2EmissionsFromFlaredGas) : getCo2DataValue(cO2EmissionsFromFlaredGas),
         },
         {
             profile: "CO2 vented",
             unit: "kg CO2/Sm³",
             set: setCO2Vented,
-            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.cO2Vented * 100) / 100 : Math.round(cO2Vented * 100) / 100,
+            value: isRevision ? getCo2DataValue(apiRevisionData?.cO2Vented) : getCo2DataValue(cO2Vented),
         },
         {
             profile: "Average development well drilling days",
             unit: "days/wells",
             set: setAverageDevelopmentWellDrillingDays,
-            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.averageDevelopmentDrillingDays * 100) / 100 : Math.round(averageDevelopmentWellDrillingDays * 100) / 100,
+            value: isRevision ? getCo2DataValue(apiRevisionData?.averageDevelopmentDrillingDays)
+                : getCo2DataValue(averageDevelopmentWellDrillingDays),
         },
         {
             profile: "Daily emissions from drilling rig",
             unit: "tonnes CO2/day",
             set: setDailyEmissionsFromDrillingRig,
-            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.dailyEmissionFromDrillingRig * 100) / 100 : Math.round(dailyEmissionsFromDrillingRig * 100) / 100,
+            value: isRevision ? getCo2DataValue(apiRevisionData?.dailyEmissionFromDrillingRig) : getCo2DataValue(dailyEmissionsFromDrillingRig),
         },
     ]
 
@@ -147,12 +158,12 @@ const CO2ListTechnicalInput = () => {
         (node: any): boolean => {
             if (node.data) {
                 switch (cO2VentedRow) {
-                    case true:
-                        return node.data.profile === "CO2 vented"
-                    case false:
-                        return node.data.profile !== "CO2 vented"
-                    default:
-                        return true
+                case true:
+                    return node.data.profile === "CO2 vented"
+                case false:
+                    return node.data.profile !== "CO2 vented"
+                default:
+                    return true
                 }
             }
             return true
@@ -208,7 +219,8 @@ const CO2ListTechnicalInput = () => {
         averageDevelopmentWellDrillingDays,
         dailyEmissionsFromDrillingRig,
         editMode,
-        isRevision
+        isRevision,
+        apiRevisionData,
     ])
 
     if (!apiData) { return null }
@@ -216,16 +228,16 @@ const CO2ListTechnicalInput = () => {
     return (
         <Grid container spacing={1} justifyContent="flex-end">
             <Grid item>
-            <Tooltip title={getEditDisabledText()}>
-                <Switch
-                    disabled={isEditDisabled || !editMode}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                        setCheck(e.target.checked)
-                    }}
-                    onClick={switchRow}
-                    checked={check}
-                    label={switchLabel()}
-                />
+                <Tooltip title={getEditDisabledText()}>
+                    <Switch
+                        disabled={isEditDisabled || !editMode}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                            setCheck(e.target.checked)
+                        }}
+                        onClick={switchRow}
+                        checked={check}
+                        label={switchLabel()}
+                    />
                 </Tooltip>
             </Grid>
             <Grid item xs={12} className={styles.root}>
