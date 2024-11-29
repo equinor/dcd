@@ -6,7 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMediaQuery } from "@mui/material"
 // import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
-import { projectQueryFn } from "@/Services/QueryFunctions"
+import { peopleQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
 // import { useAppContext } from "@/Context/AppContext"
 import { UserRole } from "@/Models/AccessManagement"
 import { GetProjectMembersService } from "@/Services/ProjectMembersService"
@@ -30,13 +30,19 @@ const AccessManagementTab = () => {
         enabled: !!projectId,
     })
 
-    const viewers = useMemo(() => projectApiData?.projectMembers?.filter((m) => m.role === 0), [projectApiData?.projectMembers])
-    const editors = useMemo(() => projectApiData?.projectMembers?.filter((m) => m.role === 1), [projectApiData?.projectMembers])
+    const { data: peopleApiData } = useQuery({
+        queryKey: ["peopleApiData", projectId],
+        queryFn: () => peopleQueryFn(projectId),
+        enabled: !!projectId,
+    })
+
+    const viewers = useMemo(() => peopleApiData?.filter((m) => m.role === 0), [peopleApiData])
+    const editors = useMemo(() => peopleApiData?.filter((m) => m.role === 1), [peopleApiData])
 
     const handleRemovePerson = async (userId: string) => {
         await (await GetProjectMembersService()).deletePerson(projectId, userId).then(() => {
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", projectId] },
+                { queryKey: ["peopleApiData", projectId] },
             )
         })
     }
@@ -47,7 +53,7 @@ const AccessManagementTab = () => {
         const addPerson = await (await GetProjectMembersService()).addPerson(projectId, { userId: personToAdd || "", role })
         if (addPerson) {
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", projectId] },
+                { queryKey: ["peopleApiData", projectId] },
             )
         }
     }
@@ -58,7 +64,7 @@ const AccessManagementTab = () => {
         const switchRoles = await (await GetProjectMembersService()).updatePerson(projectId, { userId: personId, role })
         if (switchRoles) {
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", projectId] },
+                { queryKey: ["peopleApiData", projectId] },
             )
         }
     }
