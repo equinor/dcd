@@ -52,7 +52,7 @@ const WellCostsTab = ({
 }: Props) => {
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
-
+    console.log(explorationOperationalWellCosts)
     const { editMode } = useAppContext()
 
     const { data: apiData } = useQuery({

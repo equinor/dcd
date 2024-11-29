@@ -123,7 +123,7 @@ const EditTechnicalInputModal = () => {
         setExplorationWells(structuredClone(apiData?.wells?.filter((w) => isExplorationWell(w)) ?? []))
         setOriginalWellProjectWells(structuredClone(apiData?.wells?.filter((w) => !isExplorationWell(w)) ?? []))
         setOriginalExplorationWells(structuredClone(apiData?.wells?.filter((w) => isExplorationWell(w)) ?? []))
-    }, [apiData])
+    }, [apiData, apiRevisionData])
 
     useEffect(() => {
         if (isRevision && apiRevisionData) {
@@ -136,7 +136,7 @@ const EditTechnicalInputModal = () => {
             setOriginalWellProjectWells(structuredClone(apiRevisionData?.wells?.filter((w) => !isExplorationWell(w)) ?? []))
             setOriginalExplorationWells(structuredClone(apiRevisionData?.wells?.filter((w) => isExplorationWell(w)) ?? []))
         }
-    }, [isRevision, apiRevisionData])
+    }, [isRevision, apiRevisionData, apiData])
 
     if (!explorationOperationalWellCosts || !developmentOperationalWellCosts) {
         return (<div>Loading...</div>)
