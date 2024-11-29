@@ -4,7 +4,7 @@ using api.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 
-namespace api.Features.Projects.ProjectMember.Create;
+namespace api.Features.ProjectMembers.Create;
 
 [ApiController]
 [Route("projects/{projectId:guid}/members")]
