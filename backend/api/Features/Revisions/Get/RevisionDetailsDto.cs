@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 using api.Models;
 
-namespace api.Features.Revision.Get;
+namespace api.Features.Revisions.Get;
 
 public class RevisionDetailsDto
 {

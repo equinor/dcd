@@ -2,7 +2,7 @@ using api.Context;
 using api.Features.BackgroundServices.ProjectMaster.Dtos;
 using api.Features.BackgroundServices.ProjectMaster.Services.EnumConverters;
 using api.Features.FusionIntegration.ProjectMaster;
-using api.Features.Revision.Create;
+using api.Features.Revisions.Create;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;

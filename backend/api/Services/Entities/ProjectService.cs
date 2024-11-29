@@ -4,7 +4,7 @@ using api.Context;
 using api.Dtos;
 using api.Exceptions;
 using api.Features.FusionIntegration.ProjectMaster;
-using api.Features.Revision.Get;
+using api.Features.Revisions.Get;
 using api.Models;
 using api.Repositories;
 

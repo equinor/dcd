@@ -1,4 +1,4 @@
-using api.Features.Revision.Create;
+using api.Features.Revisions.Create;
 using api.Models;
 
 using Xunit;
