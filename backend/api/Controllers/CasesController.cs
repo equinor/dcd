@@ -35,7 +35,9 @@ public class CasesController(
             CreateCaseDtoValidator.Validate(caseDto);
         }
 
-        return await createCaseService.CreateCase(projectId, caseDto);
+        await createCaseService.CreateCase(projectId, caseDto);
+
+        return await projectService.GetProjectDto(projectId);
     }
 
     [HttpPost("copy", Name = "Duplicate")]
@@ -68,11 +70,15 @@ public class CasesController(
         )
     {
         var images = await blobStorageService.GetCaseImages(caseId);
+
         foreach (var image in images)
         {
             await blobStorageService.DeleteImage(image.Id);
         }
-        return await caseService.DeleteCase(projectId, caseId);
+
+        await caseService.DeleteCase(projectId, caseId);
+
+        return await projectService.GetProjectDto(projectId);
     }
 
     [HttpPut("{caseId}/cessation-wells-cost-override/{costProfileId}")]
