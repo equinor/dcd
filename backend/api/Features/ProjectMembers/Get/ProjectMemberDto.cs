@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 using api.Models;
 
-namespace api.Features.ProjectMembers.Create
+namespace api.Features.ProjectMembers.Get
 {
     public class ProjectMemberDto
     {

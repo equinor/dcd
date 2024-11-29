@@ -8,6 +8,8 @@ using api.Features.FusionIntegration.ProjectMaster;
 using api.Features.Images.Service;
 using api.Features.ProjectMembers.Create;
 using api.Features.ProjectMembers.Delete;
+using api.Features.ProjectMembers.Get;
+using api.Features.ProjectMembers.Update;
 using api.Features.Prosp.Services;
 using api.Features.Revisions.Create;
 using api.Features.Revisions.Get;
@@ -81,8 +83,10 @@ public static class DcdIocConfiguration
 
         services.AddScoped<IProjectRepository, ProjectRepository>();
 
+        services.AddScoped<GetProjectMemberService>();
         services.AddScoped<DeleteProjectMemberService>();
         services.AddScoped<CreateProjectMemberService>();
+        services.AddScoped<UpdateProjectMemberService>();
 
         services.AddScoped<DuplicateCaseService>();
         services.AddScoped<DuplicateCaseRepository>();

@@ -5,18 +5,18 @@ using api.Features.ProjectMembers.Get;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 
-namespace api.Features.ProjectMembers.Create;
+namespace api.Features.ProjectMembers.Update;
 
 [ApiController]
 [Route("projects/{projectId:guid}/members")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-public class CreateProjectMembersController(CreateProjectMemberService createProjectMemberService) : ControllerBase
+public class UpdateProjectMembersController(UpdateProjectMemberService updateProjectMemberService) : ControllerBase
 {
-    [HttpPost]
+    [HttpPut]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
     [ActionType(ActionType.Edit)]
-    public async Task<ProjectMemberDto> CreateProjectMember([FromRoute] Guid projectId, [FromBody] CreateProjectMemberDto createProjectMemberDto)
+    public async Task<ProjectMemberDto> UpdateProjectMember([FromRoute] Guid projectId, [FromBody] UpdateProjectMemberDto updateProjectMemberDto)
     {
-        return await createProjectMemberService.CreateProjectMember(projectId, createProjectMemberDto);
+        return await updateProjectMemberService.UpdateProjectMember(projectId, updateProjectMemberDto);
     }
 }
