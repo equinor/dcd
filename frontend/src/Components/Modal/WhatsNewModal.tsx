@@ -65,14 +65,14 @@ const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } }
 
         ],
         "UI Improvements": [
-            { description: "Added loading indicators"},
-            { description: "Removed modal for overriding time series"},
+            { description: "Added loading indicators" },
+            { description: "Removed modal for overriding time series" },
         ],
         Bugfixes: [
-            { description: "Misc. Sharepoint PROSP import fixes"},
-            { description: "Set table year ranges from from time series data"},
-            { description: "Fix calucalations always using manual input if manual input was ever used"},
-            { description: "Fix navigating to project view when changing project context"},
+            { description: "Misc. Sharepoint PROSP import fixes" },
+            { description: "Set table year ranges from from time series data" },
+            { description: "Fix calucalations always using manual input if manual input was ever used" },
+            { description: "Fix navigating to project view when changing project context" },
         ],
     },
     "2.2.0": {
@@ -88,23 +88,33 @@ const whatsNewUpdates: { [key: Version]: { [key in Category]?: UpdateEntry[] } }
 
         ],
         "UI Improvements": [
-            { description: "Rename \"Gas production\" to \"Rich gas production\""},
-            { description: "Always show a minimum number of columns in tables"},
+            { description: "Rename \"Gas production\" to \"Rich gas production\"" },
+            { description: "Always show a minimum number of columns in tables" },
             { description: "Change phase names APx, APy and APz to APbo, BOR and VPbo" },
             { description: "Added tooltips to certain buttons" },
         ],
         Bugfixes: [
-            { description: "Fixed issue with deleting case with an image"},
-            { description: "Remove archived cases from case comparison graph"},
-            { description: "Add units to facilities tab in view mode"},
-            { description: "Fix study cost calculation in cases where DG2 and DG3 were both set to Jan 1st of the same year"},
-            { description: "Fix updating case from the cases table in project view"},
-            { description: "Fix so the user can manually type dates in schedule tab"},
+            { description: "Fixed issue with deleting case with an image" },
+            { description: "Remove archived cases from case comparison graph" },
+            { description: "Add units to facilities tab in view mode" },
+            { description: "Fix study cost calculation in cases where DG2 and DG3 were both set to Jan 1st of the same year" },
+            { description: "Fix updating case from the cases table in project view" },
+            { description: "Fix so the user can manually type dates in schedule tab" },
             { description: "Fix issue with case comparison graph showing wrong data for the cases" },
             { description: "fix so that undo/redo on pasted range should update all values" },
         ],
-    }
-
+    },
+    "2.2.1": {
+        "New Functionalities": [
+            { description: "Add, limit or remove access to a project in the new Access Management tab" },
+        ],
+        "UI Improvements": [
+            { description: "Minor UI Improvements" },
+        ],
+        Bugfixes: [
+            { description: "Minor bugfixes and performance improvements" },
+        ],
+    },
 }
 
 const versions = Object.keys(whatsNewUpdates).sort((a, b) => {
