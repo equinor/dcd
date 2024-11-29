@@ -6,7 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useMediaQuery } from "@mui/material"
 // import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 
-import { projectQueryFn } from "@/Services/QueryFunctions"
+import { peopleQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
 // import { useAppContext } from "@/Context/AppContext"
 import { UserRole } from "@/Models/AccessManagement"
 import { GetProjectMembersService } from "@/Services/ProjectMembersService"
@@ -29,6 +29,14 @@ const AccessManagementTab = () => {
         queryFn: () => projectQueryFn(projectId),
         enabled: !!projectId,
     })
+
+    const { data: peopleApiData } = useQuery({
+        queryKey: ["peopleApiData", projectId],
+        queryFn: () => peopleQueryFn(projectId),
+        enabled: !!projectId,
+    })
+
+    console.log(peopleApiData)
 
     const viewers = useMemo(() => projectApiData?.projectMembers?.filter((m) => m.role === 0), [projectApiData?.projectMembers])
     const editors = useMemo(() => projectApiData?.projectMembers?.filter((m) => m.role === 1), [projectApiData?.projectMembers])
