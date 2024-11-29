@@ -58,6 +58,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
+app.UseMiddleware<DcdResponseTimerMiddleware>();
 app.UseMiddleware<DcdExceptionHandlingMiddleware>();
 app.UseRouting();
 app.UseResponseCompression();
