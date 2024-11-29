@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 using api.Models;
 
-namespace api.Features.Revision.Create;
+namespace api.Features.Revisions.Create;
 
 public class CreateRevisionDto
 {

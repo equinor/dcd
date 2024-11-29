@@ -6,7 +6,7 @@ using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Revision.Get;
+namespace api.Features.Revisions.Get;
 
 public class GetRevisionService(DcdDbContext context, IMapper mapper)
 {

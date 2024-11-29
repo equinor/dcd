@@ -1,6 +1,6 @@
 using api.Exceptions;
 
-namespace api.Features.Revision.Create;
+namespace api.Features.Revisions.Create;
 
 public static class CreateRevisionDtoValidator
 {
