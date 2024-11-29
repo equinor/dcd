@@ -74,6 +74,7 @@ export const projectTabNames = [
     "Compare cases",
     "Technical Input",
     "Case edit history",
+    "Access Management",
     "Settings",
 ]
 
