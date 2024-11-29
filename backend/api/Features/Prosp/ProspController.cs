@@ -62,9 +62,8 @@ public class ProspController(
         try
         {
             await prospSharepointImportImportService.ConvertSharepointFilesToProjectDto(projectId, dtos);
-            var projectDto = await projectService.GetProjectDto(projectId);
 
-            return Ok(projectDto);
+            return Ok(await projectService.GetProjectDto(projectId));
         }
         catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {

@@ -2,7 +2,7 @@ using api.Context;
 using api.Features.BackgroundServices.ProjectMaster.Dtos;
 using api.Features.BackgroundServices.ProjectMaster.Services.EnumConverters;
 using api.Features.FusionIntegration.ProjectMaster;
-using api.Features.Revision.Create;
+using api.Features.Revisions.Create;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -87,18 +87,18 @@ public class UpdateProjectFromProjectMasterService(IDbContextFactory<DcdDbContex
         await context.SaveChangesAsync();
     }
 
-    private async Task UpdateProject(UpdatableFieldsFromProjectMasterDto projectMasterDtoDto)
+    private async Task UpdateProject(UpdatableFieldsFromProjectMasterDto projectMasterDto)
     {
         await using var context = await contextFactory.CreateDbContextAsync();
 
-        var project = await context.Projects.SingleAsync(x => x.Id == projectMasterDtoDto.Id);
+        var project = await context.Projects.SingleAsync(x => x.Id == projectMasterDto.Id);
 
-        project.Name = projectMasterDtoDto.Name;
-        project.CommonLibraryName = projectMasterDtoDto.CommonLibraryName;
-        project.FusionProjectId = projectMasterDtoDto.FusionProjectId;
-        project.Country = projectMasterDtoDto.Country;
-        project.ProjectCategory = projectMasterDtoDto.ProjectCategory;
-        project.ProjectPhase = projectMasterDtoDto.ProjectPhase;
+        project.Name = projectMasterDto.Name;
+        project.CommonLibraryName = projectMasterDto.CommonLibraryName;
+        project.FusionProjectId = projectMasterDto.FusionProjectId;
+        project.Country = projectMasterDto.Country;
+        project.ProjectCategory = projectMasterDto.ProjectCategory;
+        project.ProjectPhase = projectMasterDto.ProjectPhase;
 
         await context.SaveChangesAsync();
     }

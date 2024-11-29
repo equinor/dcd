@@ -6,7 +6,7 @@ namespace api.AppInfrastructure;
 
 public static class DcdAzureAppConfiguration
 {
-    public static IConfigurationRoot CreateDcdConfigurationRoot(this WebApplicationBuilder builder, string? environment)
+    public static IConfigurationRoot CreateDcdConfigurationRoot(this WebApplicationBuilder builder, string environment)
     {
         var azureAppConfigConnectionString = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("ConnectionString");
 

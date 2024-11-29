@@ -45,11 +45,6 @@ public class WellRepository(DcdDbContext context) : BaseRepository(context), IWe
         return cases;
     }
 
-    public Well UpdateWell(Well well)
-    {
-        return Update(well);
-    }
-
     public Well AddWell(Well well)
     {
         Context.Add(well);

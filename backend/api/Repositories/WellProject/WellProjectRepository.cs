@@ -43,16 +43,6 @@ public class WellProjectRepository(DcdDbContext context) : BaseRepository(contex
         return hasProfile;
     }
 
-    public WellProject UpdateWellProject(WellProject wellProject)
-    {
-        return Update(wellProject);
-    }
-
-    public async Task<DrillingSchedule?> GetWellProjectWellDrillingSchedule(Guid drillingScheduleId)
-    {
-        return await Get<DrillingSchedule>(drillingScheduleId);
-    }
-
     public async Task<WellProject?> GetWellProjectWithDrillingSchedule(Guid drillingScheduleId)
     {
         var wellProject = await Context.WellProjects
@@ -61,11 +51,6 @@ public class WellProjectRepository(DcdDbContext context) : BaseRepository(contex
             .FirstOrDefaultAsync(e => e.WellProjectWells != null && e.WellProjectWells.Any(w => w.DrillingScheduleId == drillingScheduleId));
 
         return wellProject;
-    }
-
-    public DrillingSchedule UpdateWellProjectWellDrillingSchedule(DrillingSchedule drillingSchedule)
-    {
-        return Update(drillingSchedule);
     }
 
     public WellProjectWell CreateWellProjectWellDrillingSchedule(WellProjectWell wellProjectWellWithDrillingSchedule)

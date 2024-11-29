@@ -12,14 +12,13 @@ namespace api.Services;
 
 public class CaseService(
     DcdDbContext context,
-    IProjectService projectService,
     ILogger<CaseService> logger,
     ICaseRepository repository,
     IMapperService mapperService,
     IProjectAccessService projectAccessService)
     : ICaseService
 {
-    public async Task<ProjectWithAssetsDto> DeleteCase(Guid projectId, Guid caseId)
+    public async Task DeleteCase(Guid projectId, Guid caseId)
     {
         // Need to verify that the project from the URL is the same as the project of the resource
         await projectAccessService.ProjectExists<Case>(projectId, caseId);
@@ -29,8 +28,6 @@ public class CaseService(
         context.Cases.Remove(caseItem);
 
         await context.SaveChangesAsync();
-
-        return await projectService.GetProjectDto(caseItem.ProjectId);
     }
 
     public async Task<Case> GetCase(Guid caseId)

@@ -4,7 +4,7 @@ using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Revision.Create;
+namespace api.Features.Revisions.Create;
 
 public class CreateRevisionRepository(DcdDbContext context)
 {

@@ -6,7 +6,7 @@ namespace api.Services;
 public interface IProjectService
 {
     Task<ProjectWithCasesDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto);
-    Task<ProjectWithAssetsDto> CreateProject(Guid contextId);
+    Task<Guid> CreateProject(Guid contextId);
     Task<Project> GetProject(Guid projectId);
     Task<ProjectWithAssetsDto> GetProjectDto(Guid projectId);
     Task<ExplorationOperationalWellCostsDto> UpdateExplorationOperationalWellCosts(

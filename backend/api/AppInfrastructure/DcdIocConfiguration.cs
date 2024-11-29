@@ -6,10 +6,12 @@ using api.Features.Cases.GetWithAssets;
 using api.Features.FusionIntegration.OrgChart;
 using api.Features.FusionIntegration.ProjectMaster;
 using api.Features.Images.Service;
+using api.Features.ProjectMembers.Create;
+using api.Features.ProjectMembers.Delete;
 using api.Features.Prosp.Services;
-using api.Features.Revision.Create;
-using api.Features.Revision.Get;
-using api.Features.Revision.Update;
+using api.Features.Revisions.Create;
+using api.Features.Revisions.Get;
+using api.Features.Revisions.Update;
 using api.Repositories;
 using api.Services;
 using api.Services.EconomicsServices;
@@ -23,13 +25,13 @@ public static class DcdIocConfiguration
 {
     public static void AddDcdIocConfiguration(this IServiceCollection services)
     {
-        services.AddScoped<IOrgChartMemberService, OrgChartMemberService>();
-
         services.AddScoped<IProjectAccessService, ProjectAccessService>();
 
         services.AddScoped<IProjectService, ProjectService>();
-        services.AddScoped<IProjectMemberService, ProjectMemberService>();
+
         services.AddScoped<IFusionService, FusionService>();
+        services.AddScoped<FusionOrgChartMemberService>();
+
         services.AddScoped<ICaseService, CaseService>();
         services.AddScoped<ICreateCaseService, CreateCaseService>();
         services.AddScoped<IDrainageStrategyService, DrainageStrategyService>();
@@ -78,7 +80,9 @@ public static class DcdIocConfiguration
         services.AddScoped<IProjectAccessRepository, ProjectAccessRepository>();
 
         services.AddScoped<IProjectRepository, ProjectRepository>();
-        services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
+
+        services.AddScoped<DeleteProjectMemberService>();
+        services.AddScoped<CreateProjectMemberService>();
 
         services.AddScoped<DuplicateCaseService>();
         services.AddScoped<DuplicateCaseRepository>();

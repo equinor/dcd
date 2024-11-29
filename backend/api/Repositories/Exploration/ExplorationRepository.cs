@@ -42,16 +42,6 @@ public class ExplorationRepository(DcdDbContext context) : BaseRepository(contex
         return hasProfile;
     }
 
-    public Exploration UpdateExploration(Exploration exploration)
-    {
-        return Update(exploration);
-    }
-
-    public async Task<ExplorationWell?> GetExplorationWell(Guid explorationId, Guid wellId)
-    {
-        return await Context.ExplorationWell.FindAsync(explorationId, wellId);
-    }
-
     public async Task<DrillingSchedule?> GetExplorationWellDrillingSchedule(Guid drillingScheduleId)
     {
         return await Get<DrillingSchedule>(drillingScheduleId);

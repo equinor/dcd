@@ -3,7 +3,7 @@ using System.Reflection;
 
 using api.Models;
 
-namespace api.Features.Revision.Create;
+namespace api.Features.Revisions.Create;
 
 public static class ResetIdPropertiesInProjectGraphService
 {

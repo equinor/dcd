@@ -4,7 +4,7 @@ using api.Context;
 using api.Dtos;
 using api.Exceptions;
 using api.Features.FusionIntegration.ProjectMaster;
-using api.Features.Revision.Get;
+using api.Features.Revisions.Get;
 using api.Models;
 using api.Repositories;
 
@@ -101,7 +101,7 @@ public class ProjectService(
         return returnDto;
     }
 
-    public async Task<ProjectWithAssetsDto> CreateProject(Guid contextId)
+    public async Task<Guid> CreateProject(Guid contextId)
     {
         var projectMaster = await fusionService.GetProjectMasterFromFusionContextId(contextId);
 
@@ -145,7 +145,8 @@ public class ProjectService(
         context.Projects.Add(project);
 
         await context.SaveChangesAsync();
-        return await GetProjectDto(project.Id);
+
+        return project.Id;
     }
 
     public async Task<Project> GetProject(Guid projectId)

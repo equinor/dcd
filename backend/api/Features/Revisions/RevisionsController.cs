@@ -1,14 +1,13 @@
 using api.AppInfrastructure.Authorization;
 using api.Controllers;
-using api.Features.Revision.Create;
-using api.Features.Revision.Get;
-using api.Features.Revision.Update;
-using api.Services;
+using api.Features.Revisions.Create;
+using api.Features.Revisions.Get;
+using api.Features.Revisions.Update;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 
-namespace api.Features.Revision;
+namespace api.Features.Revisions;
 
 [ApiController]
 [Route("projects/{projectId:guid}/revisions")]
