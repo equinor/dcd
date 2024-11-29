@@ -3,7 +3,7 @@ using api.Exceptions;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Features.Projects.ProjectMember.Create;
+namespace api.Features.ProjectMembers.Create;
 
 public class CreateProjectMemberService(DcdDbContext context)
 {
