@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 using api.Context;
 using api.Dtos;
 using api.Exceptions;
@@ -11,8 +9,6 @@ using api.Repositories;
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-
-using Newtonsoft.Json;
 
 namespace api.Services;
 
@@ -159,30 +155,13 @@ public class ProjectService(
     {
         var project = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectId);
 
-        var projectLastUpdated = project.Cases.Count > 0
-            ? new[] { project.ModifyTime }.Concat(project.Cases.Select(c => c.ModifyTime)).Max()
-            : project.ModifyTime;
+        var projectDto = mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 
         var revisionDetails = context.RevisionDetails.Where(r => r.OriginalProjectId == project.Id).ToList();
+        projectDto.RevisionsDetailsList = mapper.Map<List<RevisionDetailsDto>>(revisionDetails);
 
-        var destination = mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
+        projectDto.ModifyTime = project.Cases.Select(c => c.ModifyTime).Append(project.ModifyTime).Max();
 
-        destination.RevisionsDetailsList = mapper.Map<List<RevisionDetailsDto>>(revisionDetails);
-
-        var projectDto = destination;
-
-        if (projectDto == null)
-        {
-            throw new NotFoundInDBException($"Project {projectId} not found");
-        }
-
-        projectDto.ModifyTime = projectLastUpdated;
-
-        Activity.Current?.AddBaggage(nameof(projectDto), JsonConvert.SerializeObject(projectDto, Formatting.None,
-            new JsonSerializerSettings
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-            }));
         return projectDto;
     }
 }

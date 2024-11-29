@@ -428,6 +428,47 @@ declare namespace Components {
             values?: number /* double */[] | null;
             sum?: number; // double
         }
+        export interface CommonProjectAndRevisionDto {
+            id: string; // uuid
+            modifyTime: string; // date-time
+            classification: ProjectClassification /* int32 */;
+            name: string;
+            commonLibraryId: string; // uuid
+            fusionProjectId: string; // uuid
+            referenceCaseId: string; // uuid
+            commonLibraryName: string;
+            description: string;
+            country: string;
+            currency: Currency /* int32 */;
+            physicalUnit: PhysUnit /* int32 */;
+            createDate: string; // date-time
+            projectPhase: ProjectPhase /* int32 */;
+            internalProjectPhase: InternalProjectPhase /* int32 */;
+            projectCategory: ProjectCategory /* int32 */;
+            sharepointSiteUrl?: string | null;
+            cO2RemovedFromGas: number; // double
+            cO2EmissionFromFuelGas: number; // double
+            flaredGasPerProducedVolume: number; // double
+            cO2EmissionsFromFlaredGas: number; // double
+            cO2Vented: number; // double
+            dailyEmissionFromDrillingRig: number; // double
+            averageDevelopmentDrillingDays: number; // double
+            oilPriceUSD: number; // double
+            gasPriceNOK: number; // double
+            discountRate: number; // double
+            exchangeRateUSDToNOK: number; // double
+            explorationOperationalWellCosts: ExplorationOperationalWellCostsDto;
+            developmentOperationalWellCosts: DevelopmentOperationalWellCostsDto;
+            cases: CaseWithProfilesDto[];
+            wells: WellDto[];
+            explorations: ExplorationWithProfilesDto[];
+            surfs: SurfWithProfilesDto[];
+            substructures: SubstructureWithProfilesDto[];
+            topsides: TopsideWithProfilesDto[];
+            transports: TransportWithProfilesDto[];
+            drainageStrategies: DrainageStrategyWithProfilesDto[];
+            wellProjects: WellProjectWithProfilesDto[];
+        }
         export interface CompareCasesDto {
             caseId: string; // uuid
             totalOilProduction: number; // double
@@ -1025,6 +1066,12 @@ declare namespace Components {
         export type ProductionStrategyOverview = 0 | 1 | 2 | 3 | 4; // int32
         export type ProjectCategory = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21; // int32
         export type ProjectClassification = 0 | 1 | 2 | 3; // int32
+        export interface ProjectDataDto {
+            projectId: string; // uuid
+            projectMembers: ProjectMemberDto[];
+            revisionDetailsList: RevisionDetailsDto[];
+            commonProjectAndRevisionData: CommonProjectAndRevisionDto;
+        }
         export interface ProjectDto {
             classification: ProjectClassification /* int32 */;
             id: string; // uuid
@@ -1141,6 +1188,10 @@ declare namespace Components {
             cases: CaseDto[];
             revisions: ProjectDto[];
         }
+        export interface RevisionDataDto {
+            revisionDetails: RevisionDetailsDto;
+            commonProjectAndRevisionData: CommonProjectAndRevisionDto;
+        }
         export interface RevisionDetailsDto {
             id: string; // uuid
             originalProjectId: string; // uuid
@@ -1186,6 +1237,7 @@ declare namespace Components {
             cases: CaseDto[];
             explorationOperationalWellCosts: ExplorationOperationalWellCostsDto;
             developmentOperationalWellCosts: DevelopmentOperationalWellCostsDto;
+            wells: WellDto[];
         }
         export interface STEACaseDto {
             name?: string | null;
@@ -1975,8 +2027,10 @@ declare namespace Paths {
         namespace Get {
             namespace Parameters {
                 export type ContextId = string; // uuid
+                export type ProjectId = string; // uuid
             }
             export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
                 contextId: Parameters.ContextId /* uuid */;
             }
             namespace Responses {
@@ -1987,10 +2041,10 @@ declare namespace Paths {
     namespace Duplicate {
         namespace Parameters {
             export type CopyCaseId = string; // uuid
-            export type ProjectId = string;
+            export type ProjectId = string; // uuid
         }
         export interface PathParameters {
-            projectId: Parameters.ProjectId;
+            projectId: Parameters.ProjectId /* uuid */;
         }
         export interface QueryParameters {
             copyCaseId?: Parameters.CopyCaseId /* uuid */;
@@ -3757,6 +3811,19 @@ declare namespace Paths {
             }
         }
     }
+    namespace Projects$ProjectIdGetFullGraph {
+        namespace Get {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.ProjectDataDto;
+            }
+        }
+    }
     namespace Projects$ProjectIdImages {
         namespace Get {
             namespace Parameters {
@@ -3883,6 +3950,21 @@ declare namespace Paths {
             export type RequestBody = Components.Schemas.UpdateRevisionDto;
             namespace Responses {
                 export type $200 = Components.Schemas.RevisionWithCasesDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdRevisions$RevisionIdGetFullGraph {
+        namespace Get {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+                export type RevisionId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                revisionId: Parameters.RevisionId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.RevisionDataDto;
             }
         }
     }

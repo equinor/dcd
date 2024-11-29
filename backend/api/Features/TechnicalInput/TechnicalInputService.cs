@@ -20,6 +20,7 @@ public class TechnicalInputService(
     IDevelopmentOperationalWellCostsService developmentOperationalWellCostsService,
     ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
     ILogger<TechnicalInputService> logger,
+    IProjectService projectService,
     IMapper mapper)
 {
     public async Task<TechnicalInputDto> UpdateTechnicalInput(Guid projectId, UpdateTechnicalInputDto technicalInputDto)
@@ -51,16 +52,7 @@ public class TechnicalInputService(
 
         await context.SaveChangesAsync();
 
-        var returnProject = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectId);
-        var returnProjectDto = mapper.Map<ProjectWithAssetsDto>(returnProject, opts => opts.Items["ConversionUnit"] = returnProject.PhysicalUnit.ToString());
-
-        if (returnProjectDto == null)
-        {
-            logger.LogError("Failed to map project to dto");
-            throw new Exception("Failed to map project to dto");
-        }
-
-        returnDto.ProjectDto = returnProjectDto;
+        returnDto.ProjectDto = await projectService.GetProjectDto(projectId);
 
         return returnDto;
     }

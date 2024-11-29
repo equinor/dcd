@@ -6,6 +6,7 @@ using api.Features.Cases.GetWithAssets;
 using api.Features.FusionIntegration.OrgChart;
 using api.Features.FusionIntegration.ProjectMaster;
 using api.Features.Images.Service;
+using api.Features.ProjectData;
 using api.Features.ProjectMembers.Create;
 using api.Features.ProjectMembers.Delete;
 using api.Features.ProjectMembers.Get;
@@ -89,6 +90,8 @@ public static class DcdIocConfiguration
         services.AddScoped<IProjectAccessRepository, ProjectAccessRepository>();
 
         services.AddScoped<IProjectRepository, ProjectRepository>();
+
+        services.AddScoped<GetProjectDataService>();
 
         services.AddScoped<GetProjectMemberService>();
         services.AddScoped<DeleteProjectMemberService>();
