@@ -6,14 +6,12 @@ using Microsoft.Identity.Web.Resource;
 
 namespace api.Features.ProjectMembers.Delete;
 
-[ApiController]
-[Route("projects/{projectId:guid}/members")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class DeleteProjectMembersController(DeleteProjectMemberService deleteProjectMemberService) : ControllerBase
 {
-    [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
-    [HttpDelete("{userId:guid}")]
+    [HttpDelete("projects/{projectId:guid}/members/{userId:guid}")]
     [ActionType(ActionType.Edit)]
+    [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
     public async Task DeleteProjectMember(Guid projectId, Guid userId)
     {
         await deleteProjectMemberService.DeleteProjectMember(projectId, userId);

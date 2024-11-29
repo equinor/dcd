@@ -6,14 +6,12 @@ using Microsoft.Identity.Web.Resource;
 
 namespace api.Features.ProjectMembers.Get;
 
-[ApiController]
-[Route("projects/{projectId:guid}/members")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class GetProjectMembersController(GetProjectMemberService getProjectMemberService) : ControllerBase
 {
-    [HttpGet]
-    [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
+    [HttpGet("projects/{projectId:guid}/members")]
     [ActionType(ActionType.Read)]
+    [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
     public async Task<List<ProjectMemberDto>> GetProjectMembers([FromRoute] Guid projectId)
     {
         return await getProjectMemberService.GetProjectMembers(projectId);

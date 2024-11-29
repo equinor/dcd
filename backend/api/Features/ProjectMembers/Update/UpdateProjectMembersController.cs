@@ -7,14 +7,12 @@ using Microsoft.Identity.Web.Resource;
 
 namespace api.Features.ProjectMembers.Update;
 
-[ApiController]
-[Route("projects/{projectId:guid}/members")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class UpdateProjectMembersController(UpdateProjectMemberService updateProjectMemberService) : ControllerBase
 {
-    [HttpPut]
-    [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
+    [HttpPut("projects/{projectId:guid}/members")]
     [ActionType(ActionType.Edit)]
+    [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
     public async Task<ProjectMemberDto> UpdateProjectMember([FromRoute] Guid projectId, [FromBody] UpdateProjectMemberDto updateProjectMemberDto)
     {
         return await updateProjectMemberService.UpdateProjectMember(projectId, updateProjectMemberDto);
