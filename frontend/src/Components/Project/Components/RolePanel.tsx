@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+// import { useMemo } from "react"
 import {
     delete_to_trash, edit, swap_horizontal, visibility,
 } from "@equinor/eds-icons"
