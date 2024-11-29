@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 using api.Features.ProjectMembers.Create;
+using api.Features.ProjectMembers.Get;
 using api.Features.Revisions.Get;
 
 namespace api.Dtos;

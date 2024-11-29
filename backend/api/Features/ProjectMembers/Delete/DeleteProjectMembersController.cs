@@ -9,7 +9,7 @@ namespace api.Features.ProjectMembers.Delete;
 [ApiController]
 [Route("projects/{projectId:guid}/members")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-public class ProjectMembersController(DeleteProjectMemberService deleteProjectMemberService) : ControllerBase
+public class DeleteProjectMembersController(DeleteProjectMemberService deleteProjectMemberService) : ControllerBase
 {
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
     [HttpDelete("{userId:guid}")]
