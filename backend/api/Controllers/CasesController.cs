@@ -22,7 +22,6 @@ public class CasesController(
     ICaseService caseService,
     ICreateCaseService createCaseService,
     ICaseTimeSeriesService caseTimeSeriesService,
-    DuplicateCaseService duplicateCaseService,
     IBlobStorageService blobStorageService,
     IProjectService projectService)
     : ControllerBase
@@ -36,14 +35,6 @@ public class CasesController(
         }
 
         await createCaseService.CreateCase(projectId, caseDto);
-
-        return await projectService.GetProjectDto(projectId);
-    }
-
-    [HttpPost("copy", Name = "Duplicate")]
-    public async Task<ProjectWithAssetsDto> DuplicateCase([FromRoute] Guid projectId, [FromQuery] Guid copyCaseId)
-    {
-        await duplicateCaseService.DuplicateCase(copyCaseId);
 
         return await projectService.GetProjectDto(projectId);
     }
