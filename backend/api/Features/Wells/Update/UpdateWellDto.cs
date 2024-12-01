@@ -2,12 +2,11 @@ using System.ComponentModel.DataAnnotations;
 
 using api.Models;
 
-namespace api.Dtos;
+namespace api.Features.Wells.Update;
 
 public class UpdateWellDto
 {
-    [Required]
-    public Guid Id { get; set; }
+    [Required] public Guid Id { get; set; }
     public string? Name { get; set; }
     public double WellInterventionCost { get; set; }
     public double PlugingAndAbandonmentCost { get; set; }

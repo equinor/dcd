@@ -1,4 +1,7 @@
 using api.Dtos;
+using api.Features.Wells.Create;
+using api.Features.Wells.Get;
+using api.Features.Wells.Update;
 using api.Models;
 
 using AutoMapper;

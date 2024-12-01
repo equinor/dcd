@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using api.Features.ProjectMembers.Create;
 using api.Features.ProjectMembers.Get;
 using api.Features.Revisions.Get;
+using api.Features.Wells.Get;
 
 namespace api.Dtos;
 

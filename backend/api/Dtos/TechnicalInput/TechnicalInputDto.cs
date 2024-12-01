@@ -1,3 +1,5 @@
+using api.Features.Wells.Get;
+
 namespace api.Dtos;
 
 public class TechnicalInputDto

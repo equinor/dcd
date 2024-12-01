@@ -14,6 +14,11 @@ using api.Features.Prosp.Services;
 using api.Features.Revisions.Create;
 using api.Features.Revisions.Get;
 using api.Features.Revisions.Update;
+using api.Features.Wells.Create;
+using api.Features.Wells.Delete;
+using api.Features.Wells.Get;
+using api.Features.Wells.GetAffectedCases;
+using api.Features.Wells.Update;
 using api.Repositories;
 using api.Services;
 using api.Services.EconomicsServices;
@@ -44,7 +49,6 @@ public static class DcdIocConfiguration
         services.AddScoped<ITopsideService, TopsideService>();
         services.AddScoped<ITransportService, TransportService>();
 
-        services.AddScoped<IWellService, WellService>();
         services.AddScoped<IWellProjectWellService, WellProjectWellService>();
         services.AddScoped<IExplorationWellService, ExplorationWellService>();
         services.AddScoped<ICostProfileFromDrillingScheduleHelper, CostProfileFromDrillingScheduleHelper>();
@@ -114,7 +118,11 @@ public static class DcdIocConfiguration
         services.AddScoped<ITransportTimeSeriesRepository, TransportTimeSeriesRepository>();
         services.AddScoped<ISurfTimeSeriesRepository, SurfTimeSeriesRepository>();
 
-        services.AddScoped<IWellRepository, WellRepository>();
+        services.AddScoped<GetWellService>();
+        services.AddScoped<CreateWellService>();
+        services.AddScoped<UpdateWellService>();
+        services.AddScoped<DeleteWellService>();
+        services.AddScoped<GetAffectedCasesService>();
 
         services.AddScoped<CaseWithAssetsRepository>();
         services.AddScoped<CaseWithAssetsService>();
