@@ -15,12 +15,12 @@ public class CreateWellService(DcdDbContext context)
         var well = new Well
         {
             ProjectId = project.Id,
-            Name = createWellDto. Name,
-            WellCategory = createWellDto. WellCategory,
-            WellInterventionCost = createWellDto. WellInterventionCost,
-            PlugingAndAbandonmentCost = createWellDto. PlugingAndAbandonmentCost,
-            WellCost = createWellDto. WellCost,
-            DrillingDays = createWellDto. DrillingDays
+            Name = createWellDto.Name,
+            WellCategory = createWellDto.WellCategory,
+            WellInterventionCost = createWellDto.WellInterventionCost,
+            PlugingAndAbandonmentCost = createWellDto.PlugingAndAbandonmentCost,
+            WellCost = createWellDto.WellCost,
+            DrillingDays = createWellDto.DrillingDays
         };
 
         context.Wells.Add(well);
