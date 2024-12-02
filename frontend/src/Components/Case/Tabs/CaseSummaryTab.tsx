@@ -298,7 +298,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="npvOverride"
-                    label="Manually inputted NPV before tax (MUSD)"
+                    label="STEA NPV after tax(MUSD)"
                     value={caseData.npvOverride ? Number(caseData.npvOverride.toFixed(2)) : undefined}
                     previousResourceObject={caseData}
                     integer={false}
@@ -327,7 +327,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     addEdit={addEdit}
                     resourceName="case"
                     resourcePropertyKey="breakEvenOverride"
-                    label="Manually inputted B/E before tax (MUSD)"
+                    label="STEA B/E after tax(MUSD)"
                     value={caseData.breakEvenOverride ? Number(caseData.breakEvenOverride.toFixed(2)) : undefined}
                     previousResourceObject={caseData}
                     integer={false}
