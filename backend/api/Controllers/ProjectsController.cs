@@ -1,7 +1,6 @@
 using api.AppInfrastructure.Authorization;
 using api.Dtos;
 using api.Dtos.Access;
-using api.Features.Projects.GetWithAssets;
 using api.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -13,24 +12,10 @@ namespace api.Controllers;
 [Route("projects")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class ProjectsController(
-    GetProjectWithAssetsService getProjectWithAssetsService,
     IProjectService projectService,
     IProjectAccessService projectAccessService)
     : ControllerBase
 {
-    [HttpPost]
-    [RequiresApplicationRoles(
-        ApplicationRole.Admin,
-        ApplicationRole.User
-    )]
-    [ActionType(ActionType.Edit)]
-    public async Task<ProjectWithAssetsDto> CreateProject([FromQuery] Guid contextId)
-    {
-        var projectId = await projectService.CreateProject(contextId);
-
-        return await getProjectWithAssetsService.GetProjectWithAssets(projectId);
-    }
-
     [RequiresApplicationRoles(
         ApplicationRole.Admin,
         ApplicationRole.User

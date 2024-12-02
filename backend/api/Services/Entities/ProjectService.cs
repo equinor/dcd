@@ -1,7 +1,5 @@
-using api.Context;
 using api.Dtos;
 using api.Exceptions;
-using api.Features.FusionIntegration.ProjectMaster;
 using api.Models;
 using api.Repositories;
 
@@ -10,11 +8,9 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Services;
 
 public class ProjectService(
-    DcdDbContext context,
     ILogger<ProjectService> logger,
     IProjectRepository projectRepository,
-    IMapperService mapperService,
-    IFusionService fusionService)
+    IMapperService mapperService)
     : IProjectService
 {
     public async Task<ProjectWithCasesDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto)
@@ -90,54 +86,6 @@ public class ProjectService(
 
         var returnDto = mapperService.MapToDto<DevelopmentOperationalWellCosts, DevelopmentOperationalWellCostsDto>(existingDevelopmentOperationalWellCosts, developmentOperationalWellCostsId);
         return returnDto;
-    }
-
-    public async Task<Guid> CreateProject(Guid contextId)
-    {
-        var projectMaster = await fusionService.GetProjectMasterFromFusionContextId(contextId);
-
-        if (projectMaster == null)
-        {
-            throw new KeyNotFoundException($"Project with context ID {contextId} not found in the external API.");
-        }
-
-        // Check if a project with the same external ID already exists
-        var existingProject = await projectRepository.GetProjectByExternalId(projectMaster.Identity);
-
-        if (existingProject != null)
-        {
-            throw new ProjectAlreadyExistsException($"Project with externalId {projectMaster.Identity} already exists");
-        }
-
-        var project = new Project();
-
-        mapperService.MapToEntity(projectMaster, project, Guid.Empty);
-
-        project.CreateDate = DateTimeOffset.UtcNow;
-        project.Cases = new List<Case>();
-        project.DrainageStrategies = new List<DrainageStrategy>();
-        project.Substructures = new List<Substructure>();
-        project.Surfs = new List<Surf>();
-        project.Topsides = new List<Topside>();
-        project.Transports = new List<Transport>();
-        project.WellProjects = new List<WellProject>();
-        project.Explorations = new List<Exploration>();
-
-        project.ExplorationOperationalWellCosts = new ExplorationOperationalWellCosts();
-        project.DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCosts();
-
-        project.CO2EmissionFromFuelGas = 2.34;
-        project.FlaredGasPerProducedVolume = 1.13;
-        project.CO2EmissionsFromFlaredGas = 3.74;
-        project.CO2Vented = 1.96;
-        project.DailyEmissionFromDrillingRig = 100;
-        project.AverageDevelopmentDrillingDays = 50;
-
-        context.Projects.Add(project);
-
-        await context.SaveChangesAsync();
-
-        return project.Id;
     }
 
     public async Task<Project> GetProject(Guid projectId)
