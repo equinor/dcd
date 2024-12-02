@@ -5,7 +5,6 @@ namespace api.Services.GenerateCostProfiles;
 
 public class NetSaleGasProfileService(
     ICaseService caseService,
-    IProjectService projectService,
     ITopsideService topsideService,
     IDrainageStrategyService drainageStrategyService)
     : INetSaleGasProfileService
@@ -30,7 +29,7 @@ public class NetSaleGasProfileService(
         }
 
         var topside = await topsideService.GetTopsideWithIncludes(caseItem.TopsideLink);
-        var project = await projectService.GetProject(caseItem.ProjectId);
+        var project = await caseService.GetProject(caseItem.ProjectId);
 
         var fuelConsumptions = EmissionCalculationHelper.CalculateTotalFuelConsumptions(caseItem, topside, drainageStrategy);
         var flarings = EmissionCalculationHelper.CalculateFlaring(project, drainageStrategy);

@@ -20,7 +20,6 @@ public class DrainageStrategyTimeSeriesServiceTests
     private readonly IDrainageStrategyRepository _drainageStrategyRepository = Substitute.For<IDrainageStrategyRepository>();
     private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
     private readonly IConversionMapperService _conversionMapperService = Substitute.For<IConversionMapperService>();
-    private readonly IProjectRepository _projectRepository = Substitute.For<IProjectRepository>();
     private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
 
     public DrainageStrategyTimeSeriesServiceTests()
@@ -31,7 +30,6 @@ public class DrainageStrategyTimeSeriesServiceTests
             _repository,
             _drainageStrategyRepository,
             _conversionMapperService,
-            _projectRepository,
             _projectAccessService
         );
     }
@@ -51,7 +49,7 @@ public class DrainageStrategyTimeSeriesServiceTests
         _drainageStrategyRepository.DrainageStrategyHasProfile(drainageStrategyId, DrainageStrategyProfileNames.DeferredGasProduction).Returns(false);
 
         var project = new Project();
-        _projectRepository.GetProject(projectId).Returns(project);
+        _caseRepository.GetProject(projectId).Returns(project);
 
         var createdProfile = new DeferredGasProduction();
         _repository.CreateDeferredGasProduction(Arg.Any<DeferredGasProduction>()).Returns(createdProfile);
@@ -81,7 +79,7 @@ public class DrainageStrategyTimeSeriesServiceTests
         _drainageStrategyRepository.DrainageStrategyHasProfile(drainageStrategyId, DrainageStrategyProfileNames.DeferredGasProduction).Returns(true);
 
         var project = new Project();
-        _projectRepository.GetProject(projectId).Returns(project);
+        _caseRepository.GetProject(projectId).Returns(project);
 
         var createdProfile = new DeferredGasProduction();
         _repository.CreateDeferredGasProduction(Arg.Any<DeferredGasProduction>()).Returns(createdProfile);

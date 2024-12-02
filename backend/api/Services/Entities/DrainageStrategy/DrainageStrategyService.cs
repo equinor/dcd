@@ -16,7 +16,6 @@ public class DrainageStrategyService(
     ICaseRepository caseRepository,
     IDrainageStrategyRepository repository,
     IConversionMapperService conversionMapperService,
-    IProjectRepository projectRepository,
     IProjectAccessService projectAccessService)
     : IDrainageStrategyService
 {
@@ -42,7 +41,7 @@ public class DrainageStrategyService(
         var existingDrainageStrategy = await repository.GetDrainageStrategy(drainageStrategyId)
             ?? throw new NotFoundInDBException($"Drainage strategy with id {drainageStrategyId} not found.");
 
-        var project = await projectRepository.GetProject(projectId)
+        var project = await caseRepository.GetProject(projectId)
             ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
 
         conversionMapperService.MapToEntity(updatedDrainageStrategyDto, existingDrainageStrategy, drainageStrategyId, project.PhysicalUnit);

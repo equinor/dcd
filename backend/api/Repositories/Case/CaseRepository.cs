@@ -10,6 +10,12 @@ namespace api.Repositories;
 
 public class CaseRepository(DcdDbContext context) : BaseRepository(context), ICaseRepository
 {
+    public async Task<Project?> GetProject(Guid id)
+    {
+        return await Context.Projects
+            .FirstOrDefaultAsync(p => (p.Id == id || p.FusionProjectId == id) && !p.IsRevision);
+    }
+
     public async Task<Case> AddCase(Case caseItem)
     {
         Context.Cases.Add(caseItem);

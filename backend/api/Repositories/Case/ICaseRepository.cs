@@ -8,6 +8,7 @@ namespace api.Repositories;
 
 public interface ICaseRepository : IBaseRepository
 {
+    Task<Project?> GetProject(Guid id);
     Task<Case> AddCase(Case caseItem);
     Task<Case?> GetCase(Guid caseId);
     Task<Case?> GetCaseWithIncludes(Guid caseId, params Expression<Func<Case, object>>[] includes);

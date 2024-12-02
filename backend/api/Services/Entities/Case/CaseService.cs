@@ -19,6 +19,11 @@ public class CaseService(
     IProjectAccessService projectAccessService)
     : ICaseService
 {
+    public async Task<Project> GetProject(Guid id)
+    {
+        return await repository.GetProject(id) ?? throw new NotFoundInDBException($"Project {id} could not be found");
+    }
+
     public async Task DeleteCase(Guid projectId, Guid caseId)
     {
         // Need to verify that the project from the URL is the same as the project of the resource

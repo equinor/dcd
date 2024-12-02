@@ -1,4 +1,4 @@
-using api.Dtos;
+using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts.Dtos;
 using api.Models;
 
 using AutoMapper;

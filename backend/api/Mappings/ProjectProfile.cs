@@ -1,5 +1,6 @@
 using api.Dtos;
-using api.Features.ProjectMembers.Create;
+using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
+using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts.Dtos;
 using api.Features.ProjectMembers.Get;
 using api.Features.Projects.GetWithAssets;
 using api.Features.Projects.GetWithCases;

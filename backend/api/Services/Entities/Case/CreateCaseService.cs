@@ -1,4 +1,5 @@
 using api.Dtos;
+using api.Exceptions;
 using api.Models;
 using api.Repositories;
 
@@ -6,7 +7,6 @@ namespace api.Services;
 
 public class CreateCaseService(
     ICaseRepository caseRepository,
-    IProjectService projectService,
     IMapperService mapperService)
     : ICreateCaseService
 {
@@ -15,7 +15,7 @@ public class CreateCaseService(
         var caseItem = new Case();
         mapperService.MapToEntity(createCaseDto, caseItem, Guid.Empty);
 
-        var project = await projectService.GetProject(projectId);
+        var project = await caseRepository.GetProject(projectId) ?? throw new NotFoundInDBException($"Project {projectId} does not exist");
         caseItem.Project = project;
         caseItem.CapexFactorFeasibilityStudies = 0.015;
         caseItem.CapexFactorFEEDStudies = 0.015;

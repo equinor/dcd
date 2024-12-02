@@ -1,4 +1,6 @@
 using api.AppInfrastructure.Authorization;
+using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts;
+using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts;
 using api.Features.BackgroundServices.ProjectMaster.Services;
 using api.Features.Cases.CaseComparison;
 using api.Features.Cases.Duplicate;
@@ -42,7 +44,6 @@ public static class DcdIocConfiguration
     {
         services.AddScoped<IProjectAccessService, ProjectAccessService>();
 
-        services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<GetProjectWithAssetsService>();
         services.AddScoped<GetProjectWithCasesService>();
         services.AddScoped<CreateProjectService>();
@@ -95,8 +96,6 @@ public static class DcdIocConfiguration
         services.AddScoped<IWellCostProfileService, WellCostProfileService>();
 
         services.AddScoped<SteaService>();
-
-        services.AddScoped<IProjectRepository, ProjectRepository>();
 
         services.AddScoped<GetProjectDataService>();
 
@@ -157,5 +156,9 @@ public static class DcdIocConfiguration
         services.AddScoped<ICalculateNPVService, CalculateNPVService>();
         services.AddScoped<ICalculateTotalCostService, CalculateTotalCostService>();
         services.AddScoped<ICalculateTotalIncomeService, CalculateTotalIncomeService>();
+
+        // Project assets
+        services.AddScoped<UpdateDevelopmentOperationalWellCostsService>();
+        services.AddScoped<UpdateExplorationOperationalWellCostsService>();
     }
 }

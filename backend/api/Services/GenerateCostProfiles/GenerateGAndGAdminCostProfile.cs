@@ -1,12 +1,12 @@
 using System.Globalization;
 
+using api.Exceptions;
 using api.Models;
 
 
 namespace api.Services;
 
 public class GenerateGAndGAdminCostProfile(
-    IProjectService projectService,
     ICaseService caseService,
     IExplorationService explorationService,
     IExplorationWellService explorationWellService)
@@ -35,7 +35,7 @@ public class GenerateGAndGAdminCostProfile(
             var dG1Date = caseItem.DG1Date;
             if (earliestYear != null && dG1Date.Year >= earliestYear)
             {
-                var project = await projectService.GetProject(caseItem.ProjectId);
+                var project = await caseService.GetProject(caseItem.ProjectId);
                 var countryCost = MapCountry(project.Country);
                 var lastYear = new DateTimeOffset(dG1Date.Year, 1, 1, 0, 0, 0, 0, new GregorianCalendar(), TimeSpan.Zero);
                 var lastYearMinutes = (dG1Date - lastYear).TotalMinutes;

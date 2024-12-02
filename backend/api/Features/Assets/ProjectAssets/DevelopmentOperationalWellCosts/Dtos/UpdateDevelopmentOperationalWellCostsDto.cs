@@ -1,4 +1,4 @@
-namespace api.Dtos;
+namespace api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
 
 public class UpdateDevelopmentOperationalWellCostsDto
 {

@@ -17,7 +17,6 @@ public class DrainageStrategyTimeSeriesService(
     IDrainageStrategyTimeSeriesRepository repository,
     IDrainageStrategyRepository drainageStrategyTimeSeriesRepository,
     IConversionMapperService conversionMapperService,
-    IProjectRepository projectRepository,
     IProjectAccessService projectAccessService)
     : IDrainageStrategyTimeSeriesService
 {
@@ -472,7 +471,7 @@ public class DrainageStrategyTimeSeriesService(
         // Need to verify that the project from the URL is the same as the project of the resource
         await projectAccessService.ProjectExists<DrainageStrategy>(projectId, existingProfile.DrainageStrategy.Id);
 
-        var project = await projectRepository.GetProject(projectId)
+        var project = await caseRepository.GetProject(projectId)
             ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
 
         conversionMapperService.MapToEntity(updatedProductionProfileDto, existingProfile, drainageStrategyId, project.PhysicalUnit);
@@ -520,7 +519,7 @@ public class DrainageStrategyTimeSeriesService(
             throw new ResourceAlreadyExistsException($"Drainage strategy with id {drainageStrategyId} already has a profile of type {typeof(TProfile).Name}.");
         }
 
-        var project = await projectRepository.GetProject(projectId)
+        var project = await caseRepository.GetProject(projectId)
             ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
 
         TProfile profile = new()
