@@ -1,6 +1,7 @@
+using api.Dtos;
 using api.Models;
 
-namespace api.Dtos;
+namespace api.Features.TechnicalInput.Dtos;
 
 public class UpdateExplorationWithProfilesDto
 {

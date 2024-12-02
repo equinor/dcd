@@ -13,8 +13,7 @@ namespace api.Controllers;
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class ProjectsController(
     IProjectService projectService,
-    IProjectAccessService projectAccessService,
-    ITechnicalInputService technicalInputService)
+    IProjectAccessService projectAccessService)
     : ControllerBase
 {
     [RequiresApplicationRoles(
@@ -85,16 +84,5 @@ public class ProjectsController(
     public async Task<AccessRightsDto> GetAccess(Guid projectId)
     {
         return await projectAccessService.GetUserProjectAccess(projectId);
-    }
-
-    [RequiresApplicationRoles(
-        ApplicationRole.Admin,
-        ApplicationRole.User
-    )]
-    [HttpPut("{projectId}/technical-input")]
-    [ActionType(ActionType.Edit)]
-    public async Task<TechnicalInputDto> UpdateTechnicalInput([FromRoute] Guid projectId, [FromBody] UpdateTechnicalInputDto dto)
-    {
-        return await technicalInputService.UpdateTehnicalInput(projectId, dto);
     }
 }

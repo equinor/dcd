@@ -15,6 +15,7 @@ using api.Features.Revisions.Create;
 using api.Features.Revisions.Get;
 using api.Features.Revisions.Update;
 using api.Features.Stea;
+using api.Features.TechnicalInput;
 using api.Features.Wells.Create;
 using api.Features.Wells.Delete;
 using api.Features.Wells.Get;
@@ -66,7 +67,8 @@ public static class DcdIocConfiguration
 
         services.AddScoped<IDevelopmentOperationalWellCostsService, DevelopmentOperationalWellCostsService>();
 
-        services.AddScoped<ITechnicalInputService, TechnicalInputService>();
+        services.AddScoped<TechnicalInputService>();
+
         services.AddScoped<IOpexCostProfileService, OpexCostProfileService>();
         services.AddScoped<IStudyCostProfileService, StudyCostProfileService>();
         services.AddScoped<ICo2EmissionsProfileService, Co2EmissionsProfileService>();
