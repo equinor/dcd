@@ -1,6 +1,7 @@
 using System.Reflection;
 
 using api.AppInfrastructure.Authorization.Extensions;
+using api.Context;
 using api.Controllers;
 using api.Exceptions;
 using api.Models;
@@ -8,11 +9,12 @@ using api.Repositories;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.AppInfrastructure.Authorization;
 
 public class ApplicationRoleAuthorizationHandler(
-    IProjectAccessRepository projectAccessRepository,
+    DcdDbContext dbContext,
     IHttpContextAccessor httpContextAccessor,
     ILogger<ApplicationRoleAuthorizationHandler> logger)
     : AuthorizationHandler<ApplicationRoleRequirement>
@@ -137,7 +139,9 @@ public class ApplicationRoleAuthorizationHandler(
             return null;
         }
 
-        var project = await projectAccessRepository.GetProjectById(projectIdGuid);
+        var project = await dbContext.Projects
+            .Include(p => p.ProjectMembers)
+            .FirstOrDefaultAsync(p => p.Id == projectIdGuid || (p.FusionProjectId == projectIdGuid && !p.IsRevision));
 
         // /*
         // Some projects have the external id set as the id.

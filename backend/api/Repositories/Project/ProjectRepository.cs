@@ -14,11 +14,10 @@ public class ProjectRepository(DcdDbContext context) : BaseRepository(context), 
             .FirstOrDefaultAsync(p => (p.Id == id || p.FusionProjectId == id) && !p.IsRevision);
     }
 
-    public async Task<Project?> GetProjectWithCases(Guid projectId)
+    public async Task<Project?> GetProjectByExternalId(Guid id)
     {
         return await Context.Projects
-            .Include(p => p.Cases)
-            .FirstOrDefaultAsync(p => p.Id == projectId);
+            .FirstOrDefaultAsync(p => p.FusionProjectId == id);
     }
 
     public async Task<ExplorationOperationalWellCosts?> GetExplorationOperationalWellCosts(Guid id)

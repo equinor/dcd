@@ -6,6 +6,7 @@ using api.Features.Cases.GetWithAssets;
 using api.Features.FusionIntegration.OrgChart;
 using api.Features.FusionIntegration.ProjectMaster;
 using api.Features.Images.Service;
+using api.Features.ProjectAccess;
 using api.Features.ProjectData;
 using api.Features.ProjectMembers.Create;
 using api.Features.ProjectMembers.Delete;
@@ -94,8 +95,6 @@ public static class DcdIocConfiguration
         services.AddScoped<IWellCostProfileService, WellCostProfileService>();
 
         services.AddScoped<SteaService>();
-
-        services.AddScoped<IProjectAccessRepository, ProjectAccessRepository>();
 
         services.AddScoped<IProjectRepository, ProjectRepository>();
 

@@ -1,6 +1,5 @@
 using api.AppInfrastructure.Authorization;
 using api.Dtos;
-using api.Dtos.Access;
 using api.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -12,8 +11,7 @@ namespace api.Controllers;
 [Route("projects")]
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class ProjectsController(
-    IProjectService projectService,
-    IProjectAccessService projectAccessService)
+    IProjectService projectService)
     : ControllerBase
 {
     [RequiresApplicationRoles(
@@ -36,17 +34,5 @@ public class ProjectsController(
     public async Task<DevelopmentOperationalWellCostsDto> UpdateDevelopmentOperationalWellCosts([FromRoute] Guid projectId, [FromRoute] Guid developmentOperationalWellCostsId, [FromBody] UpdateDevelopmentOperationalWellCostsDto dto)
     {
         return await projectService.UpdateDevelopmentOperationalWellCosts(projectId, developmentOperationalWellCostsId, dto);
-    }
-
-    [RequiresApplicationRoles(
-        ApplicationRole.Admin,
-        ApplicationRole.ReadOnly,
-        ApplicationRole.User
-    )]
-    [HttpGet("{projectId}/access")]
-    [ActionType(ActionType.Read)]
-    public async Task<AccessRightsDto> GetAccess(Guid projectId)
-    {
-        return await projectAccessService.GetUserProjectAccess(projectId);
     }
 }
