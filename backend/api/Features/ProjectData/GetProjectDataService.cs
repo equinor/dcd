@@ -3,6 +3,7 @@ using api.Dtos;
 using api.Features.ProjectData.Dtos;
 using api.Features.ProjectMembers.Get;
 using api.Features.Revisions.Get;
+using api.Features.Wells.Get;
 using api.Models;
 using api.Repositories;
 
