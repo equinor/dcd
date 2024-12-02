@@ -13,29 +13,6 @@ public class ProjectService(
     IMapperService mapperService)
     : IProjectService
 {
-    public async Task<ProjectWithCasesDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto)
-    {
-        var existingProject = await projectRepository.GetProjectWithCases(projectId)
-                              ?? throw new NotFoundInDBException($"Project {projectId} not found");
-
-        existingProject.ModifyTime = DateTimeOffset.UtcNow;
-
-        mapperService.MapToEntity(projectDto, existingProject, projectId);
-
-        try
-        {
-            await projectRepository.SaveChangesAsync();
-        }
-        catch (DbUpdateException e)
-        {
-            logger.LogError(e, "Failed to update project {projectId}", projectId);
-            throw;
-        }
-
-        var dto = mapperService.MapToDto<Project, ProjectWithCasesDto>(existingProject, projectId);
-        return dto;
-    }
-
     public async Task<ExplorationOperationalWellCostsDto> UpdateExplorationOperationalWellCosts(
         Guid projectId,
         Guid explorationOperationalWellCostsId,

@@ -20,17 +20,6 @@ public class ProjectsController(
         ApplicationRole.Admin,
         ApplicationRole.User
     )]
-    [HttpPut("{projectId}")]
-    [ActionType(ActionType.Edit)]
-    public async Task<ProjectWithCasesDto> UpdateProject([FromRoute] Guid projectId, [FromBody] UpdateProjectDto projectDto)
-    {
-        return await projectService.UpdateProject(projectId, projectDto);
-    }
-
-    [RequiresApplicationRoles(
-        ApplicationRole.Admin,
-        ApplicationRole.User
-    )]
     [HttpPut("{projectId}/exploration-operational-well-costs/{explorationOperationalWellCostsId}")]
     [ActionType(ActionType.Edit)]
     public async Task<ExplorationOperationalWellCostsDto> UpdateExplorationOperationalWellCosts([FromRoute] Guid projectId, [FromRoute] Guid explorationOperationalWellCostsId, [FromBody] UpdateExplorationOperationalWellCostsDto dto)

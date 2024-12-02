@@ -1,6 +1,7 @@
 using api.Context;
 using api.Dtos;
 using api.Features.Projects.GetWithAssets;
+using api.Features.Projects.Update;
 using api.Features.TechnicalInput.Dtos;
 using api.Features.Wells.Create;
 using api.Features.Wells.Update;

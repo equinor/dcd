@@ -13,6 +13,8 @@ using api.Features.ProjectMembers.Get;
 using api.Features.ProjectMembers.Update;
 using api.Features.Projects.Create;
 using api.Features.Projects.GetWithAssets;
+using api.Features.Projects.GetWithCases;
+using api.Features.Projects.Update;
 using api.Features.Prosp.Services;
 using api.Features.Revisions.Create;
 using api.Features.Revisions.Get;
@@ -41,7 +43,9 @@ public static class DcdIocConfiguration
 
         services.AddScoped<IProjectService, ProjectService>();
         services.AddScoped<GetProjectWithAssetsService>();
+        services.AddScoped<GetProjectWithCasesService>();
         services.AddScoped<CreateProjectService>();
+        services.AddScoped<UpdateProjectService>();
 
         services.AddScoped<IFusionService, FusionService>();
         services.AddScoped<FusionOrgChartMemberService>();
