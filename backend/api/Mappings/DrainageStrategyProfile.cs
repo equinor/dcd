@@ -375,7 +375,7 @@ public class DrainageStrategyProfile : Profile
         CreateMap<CreateDrainageStrategyDto, DrainageStrategy>();
     }
 
-    private static readonly Dictionary<string, double> ConversionFactors = new Dictionary<string, double>
+    private static readonly Dictionary<string, double> ConversionFactors = new()
     {
         { nameof(Co2Emissions), 1_000_000 },
         { nameof(Co2EmissionsOverride), 1_000_000 },

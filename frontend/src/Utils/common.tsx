@@ -1,6 +1,6 @@
+import { AxiosError } from "axios"
 import { Dispatch, SetStateAction } from "react"
 
-import { AxiosError } from "axios"
 import { ITimeSeries } from "@/Models/ITimeSeries"
 import { TABLE_VALIDATION_RULES } from "@/Utils/constants"
 import { EditEntry } from "@/Models/Interfaces"

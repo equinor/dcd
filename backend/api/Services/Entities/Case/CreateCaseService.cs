@@ -10,7 +10,7 @@ public class CreateCaseService(
     IMapperService mapperService)
     : ICreateCaseService
 {
-    public async Task<ProjectWithAssetsDto> CreateCase(Guid projectId, CreateCaseDto createCaseDto)
+    public async Task CreateCase(Guid projectId, CreateCaseDto createCaseDto)
     {
         var caseItem = new Case();
         mapperService.MapToEntity(createCaseDto, caseItem, Guid.Empty);
@@ -36,8 +36,6 @@ public class CreateCaseService(
         caseItem.WellProject = CreateWellProject(project);
 
         await caseRepository.AddCase(caseItem);
-
-        return await projectService.GetProjectDto(project.Id);
     }
 
     private static DrainageStrategy CreateDrainageStrategy(Project project)

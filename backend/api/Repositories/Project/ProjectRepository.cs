@@ -14,19 +14,6 @@ public class ProjectRepository(DcdDbContext context) : BaseRepository(context), 
             .FirstOrDefaultAsync(p => (p.Id == id || p.FusionProjectId == id) && !p.IsRevision);
     }
 
-    public async Task<Project?> GetProjectByIdOrExternalId(Guid id)
-    {
-        return await Context.Projects
-            .FirstOrDefaultAsync(p => p.Id == id || p.FusionProjectId == id);
-    }
-
-    public async Task<Project?> GetProjectWithMembersByIdOrExternalId(Guid id)
-    {
-        return await Context.Projects
-            .Include(p => p.ProjectMembers)
-            .FirstOrDefaultAsync(p => p.Id == id || p.FusionProjectId == id);
-    }
-
     public async Task<Project?> GetProjectByExternalId(Guid id)
     {
         return await Context.Projects
@@ -38,11 +25,6 @@ public class ProjectRepository(DcdDbContext context) : BaseRepository(context), 
         return await Context.Projects
             .Include(p => p.Cases)
             .FirstOrDefaultAsync(p => p.Id == projectId);
-    }
-
-    public Project UpdateProject(Project updatedProject)
-    {
-        return Update(updatedProject);
     }
 
     public async Task<ExplorationOperationalWellCosts?> GetExplorationOperationalWellCosts(Guid id)

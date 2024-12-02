@@ -6,7 +6,6 @@ import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
-import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { ChangeEventHandler } from "react"
 
 import { getProjectPhaseName, getProjectCategoryName } from "@/Utils/common"
@@ -22,15 +21,12 @@ import CasesTable from "../Case/OverviewCasesTable/CasesTable"
 import Gallery from "../Gallery/Gallery"
 
 const ProjectOverviewTab = () => {
-    const { isRevision, accessRights, projectId } = useProjectContext()
+    const { isRevision, projectId } = useProjectContext()
     const { revisionId } = useParams()
     const { editMode } = useAppContext()
-    const { currentContext } = useModuleCurrentContext()
     const { addProjectEdit } = useEditProject()
     const { addNewCase } = useModalContext()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
-
-    const externalId = currentContext?.externalId
 
     const { data: apiData } = useQuery({
         queryKey: ["projectApiData", projectId],
@@ -39,9 +35,9 @@ const ProjectOverviewTab = () => {
     })
 
     const { data: apiRevisionData } = useQuery({
-        queryKey: ["revisionApiData", externalId],
-        queryFn: () => revisionQueryFn(externalId, revisionId),
-        enabled: !!externalId && isRevision,
+        queryKey: ["revisionApiData", revisionId],
+        queryFn: () => revisionQueryFn(projectId, revisionId),
+        enabled: !!projectId && !!revisionId && isRevision,
     })
 
     const handleBlur = (e: any) => {
@@ -71,7 +67,13 @@ const ProjectOverviewTab = () => {
 
         const { projectPhase, internalProjectPhase } = apiData
 
+        const revisionProjectPhase = apiRevisionData?.projectPhase
+        const revisionInternalProjectPhase = apiRevisionData?.internalProjectPhase
+
         if ([3, 4, 5, 6, 7, 8].includes(projectPhase)) {
+            if (isRevision) {
+                return getProjectPhaseName(revisionProjectPhase)
+            }
             return getProjectPhaseName(projectPhase)
         }
 
@@ -81,7 +83,7 @@ const ProjectOverviewTab = () => {
 
         return (
             <InputSwitcher
-                value={INTERNAL_PROJECT_PHASE[internalProjectPhase].label}
+                value={isRevision && revisionInternalProjectPhase ? INTERNAL_PROJECT_PHASE[revisionInternalProjectPhase].label ?? "" : INTERNAL_PROJECT_PHASE[internalProjectPhase].label ?? ""}
             >
                 <NativeSelect
                     id="internalProjectPhase"
@@ -106,13 +108,13 @@ const ProjectOverviewTab = () => {
                 <Grid item>
                     <Typography group="input" variant="label">Project Category</Typography>
                     <Typography aria-label="Project category">
-                        {getProjectCategoryName(apiData.projectCategory)}
+                        {isRevision ? getProjectCategoryName(apiRevisionData?.projectCategory) : getProjectCategoryName(apiData.projectCategory)}
                     </Typography>
                 </Grid>
                 <Grid item>
                     <Typography group="input" variant="label">Country</Typography>
                     <Typography aria-label="Country">
-                        {apiData.country ?? "Not defined in Common Library"}
+                        {isRevision ? apiRevisionData?.country ?? "Not defined in Common Library" : apiData.country ?? "Not defined in Common Library"}
                     </Typography>
                 </Grid>
             </Grid>
@@ -127,7 +129,7 @@ const ProjectOverviewTab = () => {
                             {apiData.description ?? ""}
                         </MarkdownEditor>
                     )
-                    : <MarkdownViewer value={isRevision ? apiRevisionData?.description : apiData.description ?? ""} />}
+                    : <MarkdownViewer value={isRevision ? apiRevisionData?.description ?? "" : apiData.description ?? ""} />}
             </Grid>
             <Grid item xs={12} container spacing={1} justifyContent="space-between">
                 <Grid item>

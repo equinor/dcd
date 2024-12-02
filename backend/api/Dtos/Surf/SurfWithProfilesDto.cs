@@ -63,8 +63,3 @@ public class SurfCostProfileOverrideDto : TimeSeriesCostDto, ITimeSeriesOverride
 }
 
 public class SurfCessationCostProfileDto : TimeSeriesCostDto;
-
-public enum ProductionFlowlineDto
-{
-    Default = 999
-}

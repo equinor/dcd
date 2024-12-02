@@ -7,9 +7,14 @@ namespace api.Models;
 public class WellProject : IHasProjectId, IChangeTrackable
 {
     public Guid Id { get; set; }
-    public virtual Project Project { get; set; } = null!;
+
     public Guid ProjectId { get; set; }
+    public virtual Project Project { get; set; } = null!;
+
     public string Name { get; set; } = string.Empty;
+    public ArtificialLift ArtificialLift { get; set; }
+    public Currency Currency { get; set; }
+
     public virtual OilProducerCostProfile? OilProducerCostProfile { get; set; }
     public virtual OilProducerCostProfileOverride? OilProducerCostProfileOverride { get; set; }
     public virtual GasProducerCostProfile? GasProducerCostProfile { get; set; }
@@ -18,8 +23,6 @@ public class WellProject : IHasProjectId, IChangeTrackable
     public virtual WaterInjectorCostProfileOverride? WaterInjectorCostProfileOverride { get; set; }
     public virtual GasInjectorCostProfile? GasInjectorCostProfile { get; set; }
     public virtual GasInjectorCostProfileOverride? GasInjectorCostProfileOverride { get; set; }
-    public ArtificialLift ArtificialLift { get; set; }
-    public Currency Currency { get; set; }
     public virtual ICollection<WellProjectWell> WellProjectWells { get; set; } = [];
 }
 

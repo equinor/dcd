@@ -11,20 +11,14 @@ using Microsoft.Graph;
 
 namespace api.Features.Prosp;
 
-[Route("[controller]")]
-[ApiController]
-[RequiresApplicationRoles(
-    ApplicationRole.Admin,
-    ApplicationRole.User
-)]
-[ActionType(ActionType.Edit)]
-public class ProspController(
-    ProspSharepointImportService prospSharepointImportImportService,
+public class ProspController(ProspSharepointImportService prospSharepointImportImportService,
     IProjectService projectService,
     ILogger<ProspController> logger)
     : ControllerBase
 {
-    [HttpPost("sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
+    [HttpPost("prosp/sharepoint", Name = nameof(GetSharePointFileNamesAndId))]
+    [ActionType(ActionType.Edit)]
+    [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
     public async Task<ActionResult<List<DriveItemDto>>> GetSharePointFileNamesAndId([FromBody] UrlDto urlDto)
     {
         if (string.IsNullOrWhiteSpace(urlDto.Url))
@@ -54,17 +48,17 @@ public class ProspController(
         }
     }
 
-    [HttpPost("{projectId}/sharepoint", Name = nameof(ImportFilesFromSharepointAsync))]
+    [HttpPost("prosp/{projectId:guid}/sharepoint", Name = nameof(ImportFilesFromSharepointAsync))]
+    [ActionType(ActionType.Edit)]
+    [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
     [DisableRequestSizeLimit]
-    public async Task<ActionResult<ProjectWithAssetsDto>> ImportFilesFromSharepointAsync([FromQuery] Guid projectId,
-        [FromBody] SharePointImportDto[] dtos)
+    public async Task<ActionResult<ProjectWithAssetsDto>> ImportFilesFromSharepointAsync(Guid projectId, [FromBody] SharePointImportDto[] dtos)
     {
         try
         {
             await prospSharepointImportImportService.ConvertSharepointFilesToProjectDto(projectId, dtos);
-            var projectDto = await projectService.GetProjectDto(projectId);
 
-            return Ok(projectDto);
+            return Ok(await projectService.GetProjectDto(projectId));
         }
         catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {

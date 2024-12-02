@@ -16,7 +16,12 @@ import {
 
 import { projectPath } from "@/Utils/common"
 import { useAppContext } from "@/Context/AppContext"
-import { TimelineElement, Timeline, Header } from "../Sidebar"
+import {
+    TimelineElement,
+    Timeline,
+    Header,
+    StyledDivider,
+} from "../Sidebar"
 import { useProjectContext } from "@/Context/ProjectContext"
 
 const ProjectTitle = styled(Typography)`
@@ -46,73 +51,74 @@ const ProjectDetails: React.FC = () => {
     }
     return caseId
         ? (
-            <Grid item container justifyContent={sidebarOpen ? "start" : "center"} alignItems="center">
-                <Grid item xs={12} container>
-                    <Header>
-                        <ProjectTitle variant="overline">{sidebarOpen ? currentContext?.title : "Project"}</ProjectTitle>
-                    </Header>
-                </Grid>
+            <>
+                <Grid item container justifyContent={sidebarOpen ? "start" : "center"} alignItems="center">
+                    <Grid item xs={12} container>
+                        <Header>
+                            <ProjectTitle variant="overline">{sidebarOpen ? currentContext?.title : "Project"}</ProjectTitle>
+                        </Header>
+                    </Grid>
 
-                <Timeline data-timeline={sidebarOpen}>
-                    <Grid item>
-                        <TimelineElement
-                            variant="ghost"
-                            className="GhostButton"
-                            onClick={() => navigateToProjectTab(0)}
-                        >
-                            {sidebarOpen
-                                ? "Overview"
-                                : <CenterIcon><Tooltip title="Overview" placement="right"><Icon data={dashboard} /></Tooltip></CenterIcon>}
-                        </TimelineElement>
-                    </Grid>
-                    <Grid item>
-                        <TimelineElement
-                            variant="ghost"
-                            className="GhostButton"
-                            onClick={() => navigateToProjectTab(1)}
-                        >
-                            {sidebarOpen
-                                ? "Compare Cases"
-                                : <Tooltip title="Compare Cases" placement="right"><Icon data={compare} /></Tooltip>}
-                        </TimelineElement>
-                    </Grid>
-                    <Grid item>
-                        <TimelineElement
-                            variant="ghost"
-                            className="GhostButton"
-                            onClick={() => navigateToProjectTab(2)}
-                        >
-                            {sidebarOpen
-                                ? "Technical input"
-                                : <Tooltip title="Technical input" placement="right"><Icon data={settings} /></Tooltip>}
-                        </TimelineElement>
-                    </Grid>
-                    {/* <Grid item>
-                        <TimelineElement
-                            variant="ghost"
-                            className="GhostButton"
-                            onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 3 } })}
-                        >
-                            {sidebarOpen
-                                ? "Case edit history"
-                                : <Tooltip title="Case edit history" placement="right"><Icon data={settings} /></Tooltip>}
-                        </TimelineElement>
-                    </Grid> */}
-                    {/* {showEditHistory && ( */}
-                    <Grid item>
-                        <TimelineElement
-                            variant="ghost"
-                            className="GhostButton"
-                            onClick={() => navigateToProjectTab(3)}
-                        >
-                            {sidebarOpen
-                                ? "Settings"
-                                : <Tooltip title="Settings" placement="right"><Icon data={settings} /></Tooltip>}
-                        </TimelineElement>
-                    </Grid>
-                    {/* )} */}
-                </Timeline>
-            </Grid>
+                    <Timeline data-timeline={sidebarOpen}>
+                        <Grid item>
+                            <TimelineElement
+                                variant="ghost"
+                                className="GhostButton"
+                                onClick={() => navigateToProjectTab(0)}
+                            >
+                                {sidebarOpen
+                                    ? "Overview"
+                                    : <CenterIcon><Tooltip title="Overview" placement="right"><Icon data={dashboard} /></Tooltip></CenterIcon>}
+                            </TimelineElement>
+                        </Grid>
+                        <Grid item>
+                            <TimelineElement
+                                variant="ghost"
+                                className="GhostButton"
+                                onClick={() => navigateToProjectTab(1)}
+                            >
+                                {sidebarOpen
+                                    ? "Compare Cases"
+                                    : <Tooltip title="Compare Cases" placement="right"><Icon data={compare} /></Tooltip>}
+                            </TimelineElement>
+                        </Grid>
+                        <Grid item>
+                            <TimelineElement
+                                variant="ghost"
+                                className="GhostButton"
+                                onClick={() => navigateToProjectTab(2)}
+                            >
+                                {sidebarOpen
+                                    ? "Technical input"
+                                    : <Tooltip title="Technical input" placement="right"><Icon data={settings} /></Tooltip>}
+                            </TimelineElement>
+                        </Grid>
+                        {/* <Grid item>
+                            <TimelineElement
+                                variant="ghost"
+                                className="GhostButton"
+                                onClick={() => navigate(projectPath(currentContext?.id!), { state: { activeTabProject: 3 } })}
+                            >
+                                {sidebarOpen
+                                    ? "Case edit history"
+                                    : <Tooltip title="Case edit history" placement="right"><Icon data={settings} /></Tooltip>}
+                            </TimelineElement>
+                        </Grid> */}
+                        <Grid item>
+                            <TimelineElement
+                                variant="ghost"
+                                className="GhostButton"
+                                onClick={() => navigateToProjectTab(3)}
+                            >
+                                {sidebarOpen
+                                    ? "Settings"
+                                    : <Tooltip title="Settings" placement="right"><Icon data={settings} /></Tooltip>}
+                            </TimelineElement>
+                        </Grid>
+                    </Timeline>
+                </Grid>
+                <StyledDivider />
+            </>
         ) : null
 }
 

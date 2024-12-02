@@ -7,12 +7,17 @@ namespace api.Models;
 public class Case : IHasProjectId, IChangeTrackable
 {
     public Guid Id { get; set; }
+
     public Guid ProjectId { get; set; }
+    public virtual Project Project { get; set; } = null!;
+
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public bool ReferenceCase { get; set; }
     public bool Archived { get; set; }
-
+    public string? SharepointFileId { get; set; }
+    public string? SharepointFileName { get; set; }
+    public string? SharepointFileUrl { get; set; }
     public DateTimeOffset CreateTime { get; set; }
     public DateTimeOffset ModifyTime { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset DGADate { get; set; }
@@ -27,7 +32,6 @@ public class Case : IHasProjectId, IChangeTrackable
     public DateTimeOffset DG3Date { get; set; }
     public DateTimeOffset DG4Date { get; set; }
 
-    public virtual Project Project { get; set; } = null!;
     public ArtificialLift ArtificialLift { get; set; }
     public ProductionStrategyOverview ProductionStrategyOverview { get; set; }
     public int ProducerCount { get; set; }
@@ -42,14 +46,12 @@ public class Case : IHasProjectId, IChangeTrackable
     public double? BreakEvenOverride { get; set; }
 
     public string? Host { get; set; }
-    public virtual ICollection<Image> Images { get; set; } = [];
 
     public virtual CessationWellsCost? CessationWellsCost { get; set; }
     public virtual CessationWellsCostOverride? CessationWellsCostOverride { get; set; }
     public virtual CessationOffshoreFacilitiesCost? CessationOffshoreFacilitiesCost { get; set; }
     public virtual CessationOffshoreFacilitiesCostOverride? CessationOffshoreFacilitiesCostOverride { get; set; }
     public virtual CessationOnshoreFacilitiesCostProfile? CessationOnshoreFacilitiesCostProfile { get; set; }
-
     public virtual TotalFeasibilityAndConceptStudies? TotalFeasibilityAndConceptStudies { get; set; }
     public virtual TotalFeasibilityAndConceptStudiesOverride? TotalFeasibilityAndConceptStudiesOverride { get; set; }
     public virtual TotalFEEDStudies? TotalFEEDStudies { get; set; }
@@ -62,44 +64,39 @@ public class Case : IHasProjectId, IChangeTrackable
     public virtual OffshoreFacilitiesOperationsCostProfileOverride? OffshoreFacilitiesOperationsCostProfileOverride { get; set; }
     public virtual OnshoreRelatedOPEXCostProfile? OnshoreRelatedOPEXCostProfile { get; set; }
     public virtual AdditionalOPEXCostProfile? AdditionalOPEXCostProfile { get; set; }
-
-    public Guid DrainageStrategyLink { get; set; } = Guid.Empty;
-    [ForeignKey("DrainageStrategyLink")]
-    public virtual DrainageStrategy? DrainageStrategy { get; set; }
-
-    public Guid WellProjectLink { get; set; } = Guid.Empty;
-    [ForeignKey("WellProjectLink")]
-    public virtual WellProject? WellProject { get; set; }
-
-    public Guid SurfLink { get; set; } = Guid.Empty;
-    [ForeignKey("SurfLink")]
-    public virtual Surf? Surf { get; set; }
-
-    public Guid SubstructureLink { get; set; } = Guid.Empty;
-    [ForeignKey("SubstructureLink")]
-    public virtual Substructure? Substructure { get; set; }
-
-    public Guid TopsideLink { get; set; } = Guid.Empty;
-    [ForeignKey("TopsideLink")]
-    public virtual Topside? Topside { get; set; }
-
-    public Guid TransportLink { get; set; } = Guid.Empty;
-    [ForeignKey("TransportLink")]
-    public virtual Transport? Transport { get; set; }
-
-    public Guid ExplorationLink { get; set; } = Guid.Empty;
-    [ForeignKey("ExplorationLink")]
-    public virtual Exploration? Exploration { get; set; }
-
-
-    public string? SharepointFileId { get; set; }
-    public string? SharepointFileName { get; set; }
-    public string? SharepointFileUrl { get; set; }
-
     public virtual CalculatedTotalIncomeCostProfile? CalculatedTotalIncomeCostProfile { get; set; }
     public virtual CalculatedTotalCostCostProfile? CalculatedTotalCostCostProfile { get; set; }
 
+    public Guid DrainageStrategyLink { get; set; }
 
+    [ForeignKey("DrainageStrategyLink")]
+    public virtual DrainageStrategy? DrainageStrategy { get; set; }
+
+    public Guid WellProjectLink { get; set; }
+    [ForeignKey("WellProjectLink")]
+    public virtual WellProject? WellProject { get; set; }
+
+    public Guid SurfLink { get; set; }
+    [ForeignKey("SurfLink")]
+    public virtual Surf? Surf { get; set; }
+
+    public Guid SubstructureLink { get; set; }
+    [ForeignKey("SubstructureLink")]
+    public virtual Substructure? Substructure { get; set; }
+
+    public Guid TopsideLink { get; set; }
+    [ForeignKey("TopsideLink")]
+    public virtual Topside? Topside { get; set; }
+
+    public Guid TransportLink { get; set; }
+    [ForeignKey("TransportLink")]
+    public virtual Transport? Transport { get; set; }
+
+    public Guid ExplorationLink { get; set; }
+    [ForeignKey("ExplorationLink")]
+    public virtual Exploration? Exploration { get; set; }
+
+    public virtual ICollection<Image> Images { get; set; } = [];
 }
 
 public enum ArtificialLift
@@ -119,58 +116,61 @@ public enum ProductionStrategyOverview
     Mixed
 }
 
-public class CessationCost : TimeSeriesCost
-{
-}
+public class CessationCost : TimeSeriesCost;
+
 public class CessationWellsCost : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
 }
+
 public class CessationWellsCostOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
 {
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
     public bool Override { get; set; }
 }
+
 public class CessationOffshoreFacilitiesCost : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
 }
+
 public class CessationOffshoreFacilitiesCostOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
 {
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
     public bool Override { get; set; }
 }
+
 public class CessationOnshoreFacilitiesCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
 }
 
-// TODO: Can this be deleted?
-public class OpexCostProfile : TimeSeriesCost
-{
-}
+public class OpexCostProfile : TimeSeriesCost;
 
 public class HistoricCostCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
 }
+
 public class WellInterventionCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
 }
+
 public class WellInterventionCostProfileOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
 {
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
     public bool Override { get; set; }
 }
+
 public class OffshoreFacilitiesOperationsCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
@@ -183,44 +183,45 @@ public class OffshoreFacilitiesOperationsCostProfileOverride : TimeSeriesCost, I
     public virtual Case Case { get; set; } = null!;
     public bool Override { get; set; }
 }
+
 public class OnshoreRelatedOPEXCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
 }
+
 public class AdditionalOPEXCostProfile : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
 }
 
-public class StudyCostProfile : TimeSeriesCost
-{
-}
+public class StudyCostProfile : TimeSeriesCost;
 
 public class TotalFeasibilityAndConceptStudies : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
 }
+
 public class TotalFeasibilityAndConceptStudiesOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
 {
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
     public bool Override { get; set; }
-
 }
+
 public class TotalFEEDStudies : TimeSeriesCost, ICaseTimeSeries
 {
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
 }
+
 public class TotalFEEDStudiesOverride : TimeSeriesCost, ICaseTimeSeries, ITimeSeriesOverride
 {
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
     public bool Override { get; set; }
-
 }
 
 public class TotalOtherStudiesCostProfile : TimeSeriesCost, ICaseTimeSeries
@@ -240,6 +241,7 @@ public class CalculatedTotalCostCostProfile : TimeSeriesCost, ICaseTimeSeries
     [ForeignKey("Case.Id")]
     public virtual Case Case { get; set; } = null!;
 }
+
 public interface ICaseTimeSeries
 {
     Guid Id { get; set; }

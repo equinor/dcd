@@ -1,3 +1,6 @@
+using api.Features.Wells.Create;
+using api.Features.Wells.Update;
+
 namespace api.Dtos;
 
 public class UpdateTechnicalInputDto

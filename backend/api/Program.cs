@@ -3,9 +3,8 @@ using System.Globalization;
 using api.AppInfrastructure;
 using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.Middleware;
-using api.Features.BackgroundJobs;
+using api.Features.BackgroundServices.ProjectMaster;
 using api.Mappings;
-using api.Services;
 
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -19,11 +18,11 @@ CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 var builder = WebApplication.CreateBuilder(args);
-var environment = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("Environment");
+var environment = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("Environment")!;
 
 Console.WriteLine($"Loading config for: {environment}");
 
-DcdEnvironments.CurrentEnvironment = environment!;
+DcdEnvironments.CurrentEnvironment = environment;
 var config = builder.CreateDcdConfigurationRoot(environment);
 builder.Configuration.AddConfiguration(config);
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
@@ -41,7 +40,7 @@ DcdLogConfiguration.ConfigureDcdLogging(environment, config);
 builder.Services.AddDcdAppInsights(config);
 builder.AddDcdAzureAppConfiguration();
 builder.Services.AddDcdIocConfiguration();
-builder.Services.AddHostedService<RefreshProjectService>();
+builder.Services.AddHostedService<ProjectMasterBackgroundService>();
 builder.Services.AddMemoryCache();
 builder.Services.Configure<IConfiguration>(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(CaseProfile));
@@ -59,6 +58,7 @@ app.Use(async (context, next) =>
     await next();
 });
 
+app.UseMiddleware<DcdResponseTimerMiddleware>();
 app.UseMiddleware<DcdExceptionHandlingMiddleware>();
 app.UseRouting();
 app.UseResponseCompression();

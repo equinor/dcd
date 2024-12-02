@@ -1787,6 +1787,10 @@ declare namespace Components {
             discountRate?: number; // double
             exchangeRateUSDToNOK?: number; // double
         }
+        export interface UpdateProjectMemberDto {
+            role?: ProjectMemberRole /* int32 */;
+            userId?: string; // uuid
+        }
         export interface UpdateRevisionDto {
             name?: string | null;
             arena?: boolean;
@@ -3806,6 +3810,18 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
             }
             export type RequestBody = Components.Schemas.CreateProjectMemberDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.ProjectMemberDto;
+            }
+        }
+        namespace Put {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateProjectMemberDto;
             namespace Responses {
                 export type $200 = Components.Schemas.ProjectMemberDto;
             }

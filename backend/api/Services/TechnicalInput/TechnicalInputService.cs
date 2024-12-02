@@ -1,5 +1,7 @@
 using api.Context;
 using api.Dtos;
+using api.Features.Wells.Create;
+using api.Features.Wells.Update;
 using api.Models;
 using api.Repositories;
 

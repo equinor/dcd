@@ -20,8 +20,3 @@ public abstract class BaseUpdateSurfDto
     public DateTimeOffset? DG3Date { get; set; }
     public DateTimeOffset? DG4Date { get; set; }
 }
-
-public enum UpdateProductionFlowlineDto
-{
-    Default = 999
-}

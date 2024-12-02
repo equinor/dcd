@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react"
 import styled from "styled-components"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import {
@@ -12,11 +13,12 @@ import {
     visibility,
     check_circle_outlined,
     history,
+    settings,
+    users_circle,
 } from "@equinor/eds-icons"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
-import { useEffect, useState } from "react"
-import { useMediaQuery } from "@mui/material"
+import { useMediaQuery, Box } from "@mui/material"
 
 import { useProjectContext } from "@/Context/ProjectContext"
 import useEditDisabled from "@/Hooks/useEditDisabled"
@@ -43,6 +45,14 @@ const Header = styled.div`
     }
 `
 
+const TabContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    border-bottom: 1px solid #DCDCDC;
+`
+
 const LastUpdated = styled.div`
     flex-direction: column;
     gap: 0!important;
@@ -57,6 +67,7 @@ const Status = styled.div`
    align-items: center;
    gap: 5px;
 `
+
 interface props {
     projectLastUpdated: string
     handleEdit: () => void
@@ -65,7 +76,13 @@ interface props {
 const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
     const { currentContext } = useModuleCurrentContext()
     const { editMode, setEditMode } = useAppContext()
-    const { activeTabProject, setActiveTabProject, isRevision } = useProjectContext()
+    const {
+        activeTabProject,
+        setActiveTabProject,
+        isRevision,
+    } = useProjectContext()
+    const leftTabs = projectTabNames.filter((name) => name !== "Access Management" && name !== "Settings")
+    const rightTabs = projectTabNames.filter((name) => name === "Access Management" || name === "Settings")
     const { isSaving, showEditHistory } = useAppContext()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
     const isSmallScreen = useMediaQuery("(max-width: 968px)")
@@ -78,6 +95,12 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
         setActiveTabProject(index)
     }
 
+    const getTabIndex = (index: number, isRightTabs: boolean) => {
+        if (isRightTabs) {
+            return index + leftTabs.length
+        }
+        return index
+    }
     useEffect(() => {
         if (isRevision) {
             setEditMode(false)
@@ -166,16 +189,26 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                         )}
                 </div>
             </Header>
-            <Tabs
-                value={activeTabProject}
-                onChange={(_, index) => handleTabChange(index)}
-                variant="scrollable"
-            >
-                {projectTabNames
-                    .filter((tabName) => showEditHistory || tabName !== "Case edit history")
-                    .map((tabName) => <Tab key={tabName} label={tabName} />)}
-            </Tabs>
-
+            <TabContainer>
+                <Tabs
+                    value={typeof activeTabProject === "number" && activeTabProject < leftTabs.length ? activeTabProject : false}
+                    onChange={(_, index) => handleTabChange(getTabIndex(index, false))}
+                    variant="scrollable"
+                >
+                    {leftTabs.filter((tabName) => showEditHistory || tabName !== "Case edit history").map((tabName) => <Tab key={tabName} label={tabName} />)}
+                </Tabs>
+                <Box flexGrow={1} />
+                <Tabs
+                    sx={{ marginRight: "5px" }}
+                    value={typeof activeTabProject === "number" && activeTabProject >= leftTabs.length ? activeTabProject - leftTabs.length : false}
+                    onChange={(_, index) => handleTabChange(getTabIndex(index, true))}
+                    variant="scrollable"
+                >
+                    {rightTabs.map((tabName) => (
+                        <Tab key={tabName} sx={{ minWidth: "48px" }} icon={tabName === "Access Management" ? <Icon data={users_circle} /> : <Icon data={settings} />} />
+                    ))}
+                </Tabs>
+            </TabContainer>
         </>
     )
 }

@@ -7,12 +7,11 @@ namespace api.Models;
 public class Transport : IHasProjectId, IChangeTrackable
 {
     public Guid Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public virtual Project Project { get; set; } = null!;
+
     public Guid ProjectId { get; set; }
-    public virtual TransportCostProfile? CostProfile { get; set; }
-    public virtual TransportCostProfileOverride? CostProfileOverride { get; set; }
-    public virtual TransportCessationCostProfile? CessationCostProfile { get; set; }
+    public virtual Project Project { get; set; } = null!;
+
+    public string Name { get; set; } = string.Empty;
     public double GasExportPipelineLength { get; set; }
     public double OilExportPipelineLength { get; set; }
     public Maturity Maturity { get; set; }
@@ -23,6 +22,10 @@ public class Transport : IHasProjectId, IChangeTrackable
     public DateTimeOffset? ProspVersion { get; set; }
     public DateTimeOffset? DG3Date { get; set; }
     public DateTimeOffset? DG4Date { get; set; }
+
+    public virtual TransportCostProfile? CostProfile { get; set; }
+    public virtual TransportCostProfileOverride? CostProfileOverride { get; set; }
+    public virtual TransportCessationCostProfile? CessationCostProfile { get; set; }
 }
 
 public class TransportCostProfile : TimeSeriesCost, ITransportTimeSeries

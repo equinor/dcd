@@ -10,31 +10,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Context;
 
-public class DcdDbContext : DbContext
+public class DcdDbContext(DbContextOptions<DcdDbContext> options, IServiceProvider? serviceProvider, CurrentUser? currentUser) : DbContext(options)
 {
-    private readonly IServiceProvider _serviceProvider = null!;
-    private readonly CurrentUser? _currentUser;
-
     private static readonly SemaphoreSlim Semaphore = new(1, 1);
-
-    public DcdDbContext(DbContextOptions<DcdDbContext> options) : base(options)
-    {
-        _currentUser = null;
-    }
-
-    public DcdDbContext(DbContextOptions<DcdDbContext> options,
-        CurrentUser? currentUser) : base(options)
-    {
-        _currentUser = currentUser;
-    }
-
-    public DcdDbContext(DbContextOptions<DcdDbContext> options,
-                        IServiceProvider serviceProvider,
-                        CurrentUser currentUser) : base(options)
-    {
-        _serviceProvider = serviceProvider;
-        _currentUser = currentUser;
-    }
 
     // TODO: This is not pretty, need to move this logic out of the context
     public async Task<int> SaveChangesAndRecalculateAsync(Guid caseId, CancellationToken cancellationToken = default)
@@ -88,6 +66,11 @@ public class DcdDbContext : DbContext
 
     private async Task DetectChangesAndCalculateEntities(Guid caseId)
     {
+        if (serviceProvider == null)
+        {
+            return;
+        }
+
         var (wells, drillingScheduleIds) = CalculateExplorationAndWellProjectCost();
         var rerunStudyCost = CalculateStudyCost();
         var rerunCessationCostProfile = CalculateCessationCostProfile();
@@ -105,70 +88,70 @@ public class DcdDbContext : DbContext
         await SaveChangesAsync(); // TODO: This is a hack to find the updated values in the calculate services. Need to find a better way to do this.
         if (wells.Count != 0 || drillingScheduleIds.Count != 0)
         {
-            await _serviceProvider.GetRequiredService<IWellCostProfileService>().UpdateCostProfilesForWellsFromDrillingSchedules(drillingScheduleIds);
-            await _serviceProvider.GetRequiredService<IWellCostProfileService>().UpdateCostProfilesForWells(wells);
+            await serviceProvider.GetRequiredService<IWellCostProfileService>().UpdateCostProfilesForWellsFromDrillingSchedules(drillingScheduleIds);
+            await serviceProvider.GetRequiredService<IWellCostProfileService>().UpdateCostProfilesForWells(wells);
         }
         if (rerunStudyCost)
         {
-            await _serviceProvider.GetRequiredService<IStudyCostProfileService>().Generate(caseId);
+            await serviceProvider.GetRequiredService<IStudyCostProfileService>().Generate(caseId);
         }
 
         if (rerunCessationCostProfile)
         {
-            await _serviceProvider.GetRequiredService<ICessationCostProfileService>().Generate(caseId);
+            await serviceProvider.GetRequiredService<ICessationCostProfileService>().Generate(caseId);
         }
 
         if (rerunFuelFlaringAndLosses)
         {
-            await _serviceProvider.GetRequiredService<IFuelFlaringLossesProfileService>().Generate(caseId);
+            await serviceProvider.GetRequiredService<IFuelFlaringLossesProfileService>().Generate(caseId);
         }
 
         if (rerunGAndGAdminCost)
         {
-            await _serviceProvider.GetRequiredService<IGenerateGAndGAdminCostProfile>().Generate(caseId);
+            await serviceProvider.GetRequiredService<IGenerateGAndGAdminCostProfile>().Generate(caseId);
         }
 
         if (rerunImportedElectricity)
         {
-            await _serviceProvider.GetRequiredService<IImportedElectricityProfileService>().Generate(caseId);
+            await serviceProvider.GetRequiredService<IImportedElectricityProfileService>().Generate(caseId);
         }
 
         if (rerunNetSalesGas)
         {
-            await _serviceProvider.GetRequiredService<INetSaleGasProfileService>().Generate(caseId);
+            await serviceProvider.GetRequiredService<INetSaleGasProfileService>().Generate(caseId);
         }
 
         if (rerunOpex)
         {
-            await _serviceProvider.GetRequiredService<IOpexCostProfileService>().Generate(caseId);
+            await serviceProvider.GetRequiredService<IOpexCostProfileService>().Generate(caseId);
         }
 
         if (rerunCo2Emissions)
         {
-            await _serviceProvider.GetRequiredService<ICo2EmissionsProfileService>().Generate(caseId);
+            await serviceProvider.GetRequiredService<ICo2EmissionsProfileService>().Generate(caseId);
         }
 
         if (rerunTotalIncome)
         {
-            var calculateIncomeHelper = _serviceProvider.GetRequiredService<ICalculateTotalIncomeService>();
+            var calculateIncomeHelper = serviceProvider.GetRequiredService<ICalculateTotalIncomeService>();
             await calculateIncomeHelper.CalculateTotalIncome(caseId);
         }
 
         if (rerunTotalCost)
         {
-            var calculateCostHelper = _serviceProvider.GetRequiredService<ICalculateTotalCostService>();
+            var calculateCostHelper = serviceProvider.GetRequiredService<ICalculateTotalCostService>();
             await calculateCostHelper.CalculateTotalCost(caseId);
         }
 
         if (rerunTotalIncome || rerunTotalCost || rerunCalculateNPV)
         {
-            var calculateNPVHelper = _serviceProvider.GetRequiredService<ICalculateNPVService>();
+            var calculateNPVHelper = serviceProvider.GetRequiredService<ICalculateNPVService>();
             await calculateNPVHelper.CalculateNPV(caseId);
         }
 
         if (rerunTotalIncome || rerunTotalCost || rerunCalculateBreakEven)
         {
-            var calculateBreakEvenHelper = _serviceProvider.GetRequiredService<ICalculateBreakEvenOilPriceService>();
+            var calculateBreakEvenHelper = serviceProvider.GetRequiredService<ICalculateBreakEvenOilPriceService>();
             await calculateBreakEvenHelper.CalculateBreakEvenOilPrice(caseId);
         }
     }
@@ -1279,7 +1262,7 @@ public class DcdDbContext : DbContext
     {
         var utcNow = DateTime.UtcNow;
 
-        ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, _currentUser, utcNow));
+        ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, currentUser, utcNow));
 
         return await base.SaveChangesAsync(cancellationToken);
     }
@@ -1288,7 +1271,7 @@ public class DcdDbContext : DbContext
     {
         var utcNow = DateTime.UtcNow;
 
-        ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, _currentUser, utcNow));
+        ChangeLogs.AddRange(ChangeLogService.GenerateChangeLogs(this, currentUser, utcNow));
 
         return base.SaveChanges();
     }

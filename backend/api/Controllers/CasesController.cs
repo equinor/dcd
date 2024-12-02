@@ -1,7 +1,7 @@
 using api.AppInfrastructure.Authorization;
 using api.Dtos;
+using api.Features.Cases.Duplicate;
 using api.Features.FeatureToggles;
-using api.Features.Images;
 using api.Features.Images.Service;
 using api.Services;
 
@@ -22,8 +22,8 @@ public class CasesController(
     ICaseService caseService,
     ICreateCaseService createCaseService,
     ICaseTimeSeriesService caseTimeSeriesService,
-    IDuplicateCaseService duplicateCaseService,
-    IBlobStorageService blobStorageService)
+    IBlobStorageService blobStorageService,
+    IProjectService projectService)
     : ControllerBase
 {
     [HttpPost]
@@ -34,13 +34,9 @@ public class CasesController(
             CreateCaseDtoValidator.Validate(caseDto);
         }
 
-        return await createCaseService.CreateCase(projectId, caseDto);
-    }
+        await createCaseService.CreateCase(projectId, caseDto);
 
-    [HttpPost("copy", Name = "Duplicate")]
-    public async Task<ProjectWithAssetsDto> DuplicateCase([FromQuery] Guid copyCaseId)
-    {
-        return await duplicateCaseService.DuplicateCase(copyCaseId);
+        return await projectService.GetProjectDto(projectId);
     }
 
     [HttpPut("{caseId}")]
@@ -65,11 +61,15 @@ public class CasesController(
         )
     {
         var images = await blobStorageService.GetCaseImages(caseId);
+
         foreach (var image in images)
         {
             await blobStorageService.DeleteImage(image.Id);
         }
-        return await caseService.DeleteCase(projectId, caseId);
+
+        await caseService.DeleteCase(projectId, caseId);
+
+        return await projectService.GetProjectDto(projectId);
     }
 
     [HttpPut("{caseId}/cessation-wells-cost-override/{costProfileId}")]

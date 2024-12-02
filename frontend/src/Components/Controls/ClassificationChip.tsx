@@ -5,7 +5,9 @@ import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
-import { projectQueryFn } from "@/Services/QueryFunctions"
+import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
+import { useProjectContext } from "@/Context/ProjectContext"
+import { useMemo } from "react"
 
 const StyledChip = styled(Chip)`
     border-width: 0;
@@ -43,37 +45,38 @@ const SmallTooltip = styled(Tooltip)`
 const Classification = () => {
     const { revisionId } = useParams()
     const { currentContext } = useModuleCurrentContext()
+    const { isRevision, projectId } = useProjectContext()
     const externalId = currentContext?.externalId
+
     const { data: projectApiData } = useQuery({
         queryKey: ["projectApiData", externalId],
         queryFn: () => projectQueryFn(externalId),
         enabled: !!externalId,
     })
-    const revisionClassification = projectApiData?.revisionsDetailsList?.find(
-        (revision) => revision.revisionId === revisionId,
-    )?.classification
 
-    const revisionClassificationNumber = Object.keys(PROJECT_CLASSIFICATION).find(
-        (key) => revisionClassification !== undefined
-            && PROJECT_CLASSIFICATION[Number(key)].label === PROJECT_CLASSIFICATION[revisionClassification].label,
-    )
+    const { data: apiRevisionData } = useQuery({
+        queryKey: ["revisionApiData", revisionId],
+        queryFn: () => revisionQueryFn(projectId, revisionId),
+        enabled: !!projectId && !!revisionId && isRevision,
+    })
 
-    const selectedClassification = revisionClassificationNumber !== undefined
-        ? parseInt(revisionClassificationNumber, 10)
-        : projectApiData?.classification
+    const getClassification = useMemo(() => {
+        if (isRevision && apiRevisionData) {
+            return PROJECT_CLASSIFICATION[apiRevisionData.classification]
+        } else if (projectApiData) {
+            return PROJECT_CLASSIFICATION[projectApiData?.classification]
+        } else return false
+    }, [isRevision, apiRevisionData, projectApiData])
 
-    const classification = selectedClassification !== undefined
-        ? PROJECT_CLASSIFICATION[selectedClassification]
-        : undefined
     return (
-        classification ? (
-            <SmallTooltip placement="bottom-start" title={classification.description}>
+        getClassification ? (
+            <SmallTooltip placement="bottom-start" title={getClassification.description}>
                 <StyledChip
-                    variant={classification.color}
-                    className={`classification ${classification.color}`}
+                    variant={getClassification.color}
+                    className={`classification ${getClassification.color}`}
                 >
-                    <Icon data={classification.icon} />
-                    {classification.label}
+                    <Icon data={getClassification.icon} />
+                    {getClassification.label}
                 </StyledChip>
             </SmallTooltip>
         ) : null

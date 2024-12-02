@@ -1,5 +1,6 @@
 import { GetCaseService } from "./CaseService"
 import { GetFeatureToggleService } from "./FeatureToggleService"
+import { GetProjectMembersService } from "./ProjectMembersService"
 import { GetProjectService } from "./ProjectService"
 
 export const caseQueryFn = async (projectId: string, caseId: string | undefined) => {
@@ -18,6 +19,15 @@ export const projectQueryFn = async (projectId: string | undefined) => {
     }
     const projectService = await GetProjectService()
     return projectService.getProject(projectId!)
+}
+
+export const peopleQueryFn = async (projectId: string | undefined) => {
+    if (!projectId) {
+        console.error("projectId is undefined")
+        return null
+    }
+    const projectMemberService = await GetProjectMembersService()
+    return projectMemberService.getPeople(projectId)
 }
 
 export const revisionQueryFn = async (projectId: string | undefined, revisionId: string | undefined) => {

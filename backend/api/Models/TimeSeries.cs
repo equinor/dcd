@@ -9,7 +9,7 @@ public class TimeSeries<T> : IChangeTrackable
 {
     public TimeSeries()
     {
-        Values = Array.Empty<T>();
+        Values = [];
     }
 
     public Guid Id { get; set; }
@@ -25,12 +25,11 @@ public class TimeSeries<T> : IChangeTrackable
             {
                 return [];
             }
-            return Array.ConvertAll(InternalData.Split(';'), new Converter<string, T>(ConvertStringToGeneric));
+            return Array.ConvertAll(InternalData.Split(';'), ConvertStringToGeneric);
         }
         set
         {
-            var _data = value;
-            InternalData = string.Join(";", _data.Select(p => p!.ToString()).ToArray());
+            InternalData = string.Join(";", value.Select(p => p!.ToString()).ToArray());
         }
     }
 
