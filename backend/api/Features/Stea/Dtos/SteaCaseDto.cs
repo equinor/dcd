@@ -1,17 +1,15 @@
+using api.Dtos;
 
-namespace api.Dtos;
+namespace api.Features.Stea.Dtos;
 
-public class STEACaseDto
+public class SteaCaseDto
 {
     public string Name { get; set; } = string.Empty;
     public int StartYear { get; set; }
     public TimeSeriesCostDto Exploration { get; set; } = new();
-
     public CapexDto Capex { get; set; } = new();
-
     public ProductionAndSalesVolumesDto ProductionAndSalesVolumes { get; set; } = new();
     public OffshoreFacilitiesCostProfileDto OffshoreFacilitiesCostProfileDto { get; set; } = new();
-
     public StudyCostProfileDto StudyCostProfile { get; set; } = new();
     public OpexCostProfileDto OpexCostProfile { get; set; } = new();
 }
@@ -19,7 +17,6 @@ public class STEACaseDto
 public class CapexDto : TimeSeriesCostDto
 {
     public TimeSeriesCostDto Drilling { get; set; } = new();
-
     public OffshoreFacilitiesCostProfileDto OffshoreFacilities { get; set; } = new();
     public CessationCostDto CessationCost { get; set; } = new();
 }
@@ -33,7 +30,6 @@ public class ProductionAndSalesVolumesDto
     public ImportedElectricityDto ImportedElectricity { get; set; } = new();
     public AdditionalProductionProfileOilDto AdditionalOil { get; set; } = new();
     public AdditionalProductionProfileGasDto AdditionalGas { get; set; } = new();
-
 }
 
 public class OffshoreFacilitiesCostProfileDto : TimeSeriesCostDto;

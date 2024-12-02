@@ -1,23 +1,24 @@
-
 using api.Dtos;
+using api.Features.Stea.Dtos;
 
 using ClosedXML.Excel;
 
-namespace api.Excel;
+namespace api.Features.Stea.ExcelExport;
 
-public static class ExportToStea
+public static class ExportToExcelService
 {
-    public static List<BusinessCase> Export(STEAProjectDto project)
+    public static List<BusinessCase> CreateExcelCells(SteaProjectDto project)
     {
         var wb = new XLWorkbook();
         var ws = wb.Worksheets.Add("Input to STEA");
         ws.Cell("B2").Value = project.Name;
-        int rowCount = 3;
+        var rowCount = 3;
         var businessCases = new List<BusinessCase>();
-        foreach (STEACaseDto c in project.STEACases)
+
+        foreach (var c in project.SteaCases)
         {
             var businessCase = new BusinessCase();
-            int headerRowCount = rowCount;
+            var headerRowCount = rowCount;
             rowCount++;
             businessCase.Exploration = CreateExcelRow("Exploration Cost", project.StartYear, c.Exploration, rowCount, 1);
 
@@ -28,7 +29,7 @@ public static class ExportToStea
             businessCase.Drilling = CreateExcelRow("Drilling", project.StartYear, c.Capex.Drilling, rowCount, 1);
 
             rowCount++;
-            businessCase.OffshoreFacilites = CreateExcelRow("Offshore Facilities", project.StartYear, c.Capex.OffshoreFacilities, rowCount, 1);
+            businessCase.OffshoreFacilities = CreateExcelRow("Offshore Facilities", project.StartYear, c.Capex.OffshoreFacilities, rowCount, 1);
 
             rowCount++;
             businessCase.StudyCost = CreateExcelRow("Study cost", project.StartYear, c.StudyCostProfile, rowCount, 1);
@@ -43,28 +44,22 @@ public static class ExportToStea
             businessCase.ProductionAndSalesVolumes = new ExcelTableCell(ColumnNumber(1) + rowCount.ToString(), "Production And Sales Volumes");
 
             rowCount++;
-            businessCase.TotalAndAnnualOil = CreateExcelRow("Total And annual Oil/Condensate production [MSm3]", project.StartYear,
-                c.ProductionAndSalesVolumes.TotalAndAnnualOil, rowCount, 1);
+            businessCase.TotalAndAnnualOil = CreateExcelRow("Total And annual Oil/Condensate production [MSm3]", project.StartYear, c.ProductionAndSalesVolumes.TotalAndAnnualOil, rowCount, 1);
 
             rowCount++;
-            businessCase.AdditionalOil = CreateExcelRow("Additional Oil Production [MSm3]", project.StartYear,
-                c.ProductionAndSalesVolumes.AdditionalOil, rowCount, 1);
+            businessCase.AdditionalOil = CreateExcelRow("Additional Oil Production [MSm3]", project.StartYear, c.ProductionAndSalesVolumes.AdditionalOil, rowCount, 1);
 
             rowCount++;
-            businessCase.AdditionalGas = CreateExcelRow("Additional Rich Gas Production [GSm3]", project.StartYear,
-                c.ProductionAndSalesVolumes.AdditionalGas, rowCount, 1);
+            businessCase.AdditionalGas = CreateExcelRow("Additional Rich Gas Production [GSm3]", project.StartYear, c.ProductionAndSalesVolumes.AdditionalGas, rowCount, 1);
 
             rowCount++;
-            businessCase.NetSalesGas = CreateExcelRow("Net Sales Gas [GSm3]", project.StartYear,
-                c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas, rowCount, 1);
+            businessCase.NetSalesGas = CreateExcelRow("Net Sales Gas [GSm3]", project.StartYear, c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas, rowCount, 1);
 
             rowCount++;
-            businessCase.Co2Emissions = CreateExcelRow("Co2 Emissions [mill tonnes]", project.StartYear,
-                c.ProductionAndSalesVolumes.Co2Emissions, rowCount, 1);
+            businessCase.Co2Emissions = CreateExcelRow("Co2 Emissions [mill tonnes]", project.StartYear, c.ProductionAndSalesVolumes.Co2Emissions, rowCount, 1);
 
             rowCount++;
-            businessCase.ImportedElectricity = CreateExcelRow("Imported electricity [GWh]", project.StartYear,
-                c.ProductionAndSalesVolumes.ImportedElectricity, rowCount, 1);
+            businessCase.ImportedElectricity = CreateExcelRow("Imported electricity [GWh]", project.StartYear, c.ProductionAndSalesVolumes.ImportedElectricity, rowCount, 1);
 
             rowCount += 2;
             var allRows = new List<int>();
@@ -109,11 +104,12 @@ public static class ExportToStea
                 allRows.Add(c.ProductionAndSalesVolumes.Co2Emissions.Values.Length + c.ProductionAndSalesVolumes.Co2Emissions.StartYear);
             }
 
-            int maxYear = allRows.Count > 0 ? allRows.Max() - project.StartYear : 0;
+            var maxYear = allRows.Count > 0 ? allRows.Max() - project.StartYear : 0;
 
             businessCase.Header = CreateTableHeader(project.StartYear, project.StartYear + maxYear - 1, c.Name, headerRowCount);
             businessCases.Add(businessCase);
         }
+
         return businessCases;
     }
 
@@ -123,11 +119,13 @@ public static class ExportToStea
         {
             return;
         }
+
         columnCount += e.StartYear - projectStartYear;
         columnCount++;
-        for (int i = 0; i < e.Values.Length; i++)
+
+        for (var i = 0; i < e.Values.Length; i++)
         {
-            string cellNo = ColumnNumber(columnCount++) + rowCount.ToString();
+            var cellNo = ColumnNumber(columnCount++) + rowCount;
             tableCells.Add(new ExcelTableCell(cellNo, (factor * e.Values[i]).ToString()));
         }
     }
@@ -136,10 +134,10 @@ public static class ExportToStea
     {
         var tableCells = new List<ExcelTableCell>();
         int columnCount = 1;
-        string cellNo = ColumnNumber(columnCount++) + rowCount.ToString();
+        string cellNo = ColumnNumber(columnCount++) + rowCount;
         tableCells.Add(new ExcelTableCell(cellNo, title));
 
-        cellNo = ColumnNumber(columnCount) + rowCount.ToString();
+        cellNo = ColumnNumber(columnCount) + rowCount;
         tableCells.Add(new ExcelTableCell(cellNo, (factor * e.Sum).ToString()));
         ValueToCells(tableCells, columnCount, rowCount, e, projectStartYear, factor);
 
@@ -149,83 +147,104 @@ public static class ExportToStea
     private static List<ExcelTableCell> CreateTableHeader(int startYear, int endYear, string caseName, int rowCount)
     {
         var tableCells = new List<ExcelTableCell>();
-        int columnCount = 1;
-        string cellNo = ColumnNumber(columnCount++) + rowCount.ToString();
+        var columnCount = 1;
+        var cellNo = ColumnNumber(columnCount++) + rowCount;
         tableCells.Add(new ExcelTableCell(cellNo, caseName));
         cellNo = ColumnNumber(columnCount++) + rowCount;
         tableCells.Add(new ExcelTableCell(cellNo, "Total Cost"));
-        for (int i = startYear; i <= endYear; i++)
+
+        for (var i = startYear; i <= endYear; i++)
         {
-            cellNo = ColumnNumber(columnCount++) + rowCount.ToString();
+            cellNo = ColumnNumber(columnCount++) + rowCount;
             tableCells.Add(new ExcelTableCell(cellNo, i.ToString()));
         }
+
         return tableCells;
     }
 
     private static string ColumnNumber(int cellNumber)
     {
-        string rv = string.Empty;
+        var rv = string.Empty;
+
         while (cellNumber > 0)
         {
-            int rest = (cellNumber - 1) % 26;
-            rv = ((char)(rest + 65)).ToString() + rv;
+            var rest = (cellNumber - 1) % 26;
+            rv = ((char)(rest + 65)) + rv;
             cellNumber = (cellNumber - rest - 1) / 26;
         }
 
         return rv;
     }
-}
-public class BusinessCase
-{
-    public List<ExcelTableCell> Header { get; set; }
-    public List<ExcelTableCell> Exploration { get; set; }
-    public List<ExcelTableCell> Capex { get; set; }
 
-    public List<ExcelTableCell> OffshoreFacilites { get; set; }
-    public List<ExcelTableCell> Cessation { get; set; }
-    public List<ExcelTableCell> Drilling { get; set; }
-
-    public ExcelTableCell ProductionAndSalesVolumes { get; set; } = null!;
-
-    public List<ExcelTableCell> TotalAndAnnualOil { get; set; }
-    public List<ExcelTableCell> AdditionalOil { get; set; }
-    public List<ExcelTableCell> AdditionalGas { get; set; }
-
-    public List<ExcelTableCell> NetSalesGas { get; set; }
-
-    public List<ExcelTableCell> Co2Emissions { get; set; }
-
-    public List<ExcelTableCell> StudyCost { get; set; }
-
-    public List<ExcelTableCell> Opex { get; set; }
-
-    public List<ExcelTableCell> ImportedElectricity { get; set; }
-    public BusinessCase()
+    public static byte[] WriteExcelCellsToExcelDocument(List<BusinessCase> businessCases, string projectName)
     {
-        Header = new List<ExcelTableCell>();
-        Exploration = new List<ExcelTableCell>();
-        Capex = new List<ExcelTableCell>();
-        OffshoreFacilites = new List<ExcelTableCell>();
-        Cessation = new List<ExcelTableCell>();
-        Drilling = new List<ExcelTableCell>();
-        TotalAndAnnualOil = new List<ExcelTableCell>();
-        AdditionalOil = new List<ExcelTableCell>();
-        AdditionalGas = new List<ExcelTableCell>();
-        NetSalesGas = new List<ExcelTableCell>();
-        Co2Emissions = new List<ExcelTableCell>();
-        StudyCost = new List<ExcelTableCell>();
-        Opex = new List<ExcelTableCell>();
-        ImportedElectricity = new List<ExcelTableCell>();
-    }
-}
+        var wb = new XLWorkbook();
+        var ws = wb.Worksheets.Add("Input to STEA");
+        ws.Cell("B2").Value = projectName;
 
-public class ExcelTableCell
-{
-    public string CellNo { get; set; }
-    public string Value { get; set; }
-    public ExcelTableCell(string cellNo, string value)
-    {
-        this.CellNo = cellNo;
-        this.Value = value;
+        foreach (var businessCase in businessCases)
+        {
+            foreach (var etc in businessCase.Header)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
+            foreach (var etc in businessCase.Exploration)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
+            foreach (var etc in businessCase.Capex)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
+            foreach (var etc in businessCase.Drilling)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
+            foreach (var etc in businessCase.OffshoreFacilities)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
+            foreach (var etc in businessCase.StudyCost)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
+            foreach (var etc in businessCase.Opex)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
+            foreach (var etc in businessCase.Cessation)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
+            ws.Cell(businessCase.ProductionAndSalesVolumes.CellNo).Value = businessCase.ProductionAndSalesVolumes.Value;
+            foreach (var etc in businessCase.TotalAndAnnualOil)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
+            foreach (var etc in businessCase.AdditionalOil)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
+            foreach (var etc in businessCase.AdditionalGas)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
+            foreach (var etc in businessCase.NetSalesGas)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
+            foreach (var etc in businessCase.Co2Emissions)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
+            foreach (var etc in businessCase.ImportedElectricity)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
+        }
+
+        using var stream = new MemoryStream();
+        wb.SaveAs(stream);
+        return stream.ToArray();
     }
 }

@@ -14,6 +14,7 @@ using api.Features.Prosp.Services;
 using api.Features.Revisions.Create;
 using api.Features.Revisions.Get;
 using api.Features.Revisions.Update;
+using api.Features.Stea;
 using api.Features.Wells.Create;
 using api.Features.Wells.Delete;
 using api.Features.Wells.Get;
@@ -81,7 +82,7 @@ public static class DcdIocConfiguration
         services.AddScoped<ICo2DrillingFlaringFuelTotalsService, Co2DrillingFlaringFuelTotalsService>();
         services.AddScoped<IWellCostProfileService, WellCostProfileService>();
 
-        services.AddScoped<ISTEAService, STEAService>();
+        services.AddScoped<SteaService>();
 
         services.AddScoped<IProjectAccessRepository, ProjectAccessRepository>();
 
