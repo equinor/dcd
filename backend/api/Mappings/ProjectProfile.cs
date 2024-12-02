@@ -1,6 +1,7 @@
 using api.Dtos;
 using api.Features.ProjectMembers.Create;
 using api.Features.ProjectMembers.Get;
+using api.Features.Projects.GetWithAssets;
 using api.Features.Revisions.Get;
 
 using api.Models;

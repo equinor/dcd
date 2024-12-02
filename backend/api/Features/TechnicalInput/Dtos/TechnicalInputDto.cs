@@ -1,4 +1,5 @@
 using api.Dtos;
+using api.Features.Projects.GetWithAssets;
 using api.Features.Wells.Get;
 
 namespace api.Features.TechnicalInput.Dtos;

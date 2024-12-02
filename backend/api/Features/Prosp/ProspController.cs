@@ -1,10 +1,10 @@
 using api.AppInfrastructure.Authorization;
 using api.Controllers;
 using api.Dtos;
+using api.Features.Projects.GetWithAssets;
 using api.Features.Prosp.Exceptions;
 using api.Features.Prosp.Models;
 using api.Features.Prosp.Services;
-using api.Services;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Graph;
@@ -12,7 +12,7 @@ using Microsoft.Graph;
 namespace api.Features.Prosp;
 
 public class ProspController(ProspSharepointImportService prospSharepointImportImportService,
-    IProjectService projectService,
+    GetProjectWithAssetsService getProjectWithAssetsService,
     ILogger<ProspController> logger)
     : ControllerBase
 {
@@ -58,7 +58,7 @@ public class ProspController(ProspSharepointImportService prospSharepointImportI
         {
             await prospSharepointImportImportService.ConvertSharepointFilesToProjectDto(projectId, dtos);
 
-            return Ok(await projectService.GetProjectDto(projectId));
+            return Ok(await getProjectWithAssetsService.GetProjectWithAssets(projectId));
         }
         catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {

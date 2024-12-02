@@ -2,11 +2,8 @@ using api.Context;
 using api.Dtos;
 using api.Exceptions;
 using api.Features.FusionIntegration.ProjectMaster;
-using api.Features.Revisions.Get;
 using api.Models;
 using api.Repositories;
-
-using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -15,11 +12,9 @@ namespace api.Services;
 public class ProjectService(
     DcdDbContext context,
     ILogger<ProjectService> logger,
-    IMapper mapper,
     IProjectRepository projectRepository,
     IMapperService mapperService,
-    IFusionService fusionService,
-    IProjectWithAssetsRepository projectWithAssetsRepository)
+    IFusionService fusionService)
     : IProjectService
 {
     public async Task<ProjectWithCasesDto> UpdateProject(Guid projectId, UpdateProjectDto projectDto)
@@ -149,19 +144,5 @@ public class ProjectService(
     {
         return await projectRepository.GetProject(projectId)
                ?? throw new NotFoundInDBException($"Project {projectId} not found");
-    }
-
-    public async Task<ProjectWithAssetsDto> GetProjectDto(Guid projectId)
-    {
-        var project = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectId);
-
-        var projectDto = mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
-
-        var revisionDetails = context.RevisionDetails.Where(r => r.OriginalProjectId == project.Id).ToList();
-        projectDto.RevisionsDetailsList = mapper.Map<List<RevisionDetailsDto>>(revisionDetails);
-
-        projectDto.ModifyTime = project.Cases.Select(c => c.ModifyTime).Append(project.ModifyTime).Max();
-
-        return projectDto;
     }
 }

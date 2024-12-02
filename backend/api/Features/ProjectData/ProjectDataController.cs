@@ -14,7 +14,7 @@ public class ProjectDataController(GetProjectDataService getProjectDataService) 
     [ActionType(ActionType.Read)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User, ApplicationRole.ReadOnly)]
     [HttpGet("projects/{projectId:guid}/get-full-graph")]
-    public async Task<ProjectDataDto> CreateProjectMember([FromRoute] Guid projectId)
+    public async Task<ProjectDataDto> GetProjectData([FromRoute] Guid projectId)
     {
         return await getProjectDataService.GetProjectData(projectId);
     }
@@ -22,7 +22,7 @@ public class ProjectDataController(GetProjectDataService getProjectDataService) 
     [ActionType(ActionType.Read)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User, ApplicationRole.ReadOnly)]
     [HttpGet("projects/{projectId:guid}/revisions/{revisionId:guid}/get-full-graph")]
-    public async Task<RevisionDataDto> CreateProjectMember([FromRoute] Guid projectId, [FromRoute] Guid revisionId)
+    public async Task<RevisionDataDto> GetRevisionData([FromRoute] Guid projectId, [FromRoute] Guid revisionId)
     {
         return await getProjectDataService.GetRevisionData(projectId, revisionId);
     }

@@ -1,5 +1,6 @@
 using api.Context;
 using api.Dtos;
+using api.Features.Projects.GetWithAssets;
 using api.Features.TechnicalInput.Dtos;
 using api.Features.Wells.Create;
 using api.Features.Wells.Update;
@@ -20,7 +21,7 @@ public class TechnicalInputService(
     IDevelopmentOperationalWellCostsService developmentOperationalWellCostsService,
     ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
     ILogger<TechnicalInputService> logger,
-    IProjectService projectService,
+    GetProjectWithAssetsService getProjectWithAssetsService,
     IMapper mapper)
 {
     public async Task<TechnicalInputDto> UpdateTechnicalInput(Guid projectId, UpdateTechnicalInputDto technicalInputDto)
@@ -52,7 +53,7 @@ public class TechnicalInputService(
 
         await context.SaveChangesAsync();
 
-        returnDto.ProjectDto = await projectService.GetProjectDto(projectId);
+        returnDto.ProjectDto = await getProjectWithAssetsService.GetProjectWithAssets(projectId);
 
         return returnDto;
     }

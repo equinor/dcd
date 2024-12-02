@@ -1,8 +1,8 @@
 using api.AppInfrastructure.Authorization;
 using api.Dtos;
-using api.Features.Cases.Duplicate;
 using api.Features.FeatureToggles;
 using api.Features.Images.Service;
+using api.Features.Projects.GetWithAssets;
 using api.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +23,7 @@ public class CasesController(
     ICreateCaseService createCaseService,
     ICaseTimeSeriesService caseTimeSeriesService,
     IBlobStorageService blobStorageService,
-    IProjectService projectService)
+    GetProjectWithAssetsService getProjectWithAssetsService)
     : ControllerBase
 {
     [HttpPost]
@@ -36,7 +36,7 @@ public class CasesController(
 
         await createCaseService.CreateCase(projectId, caseDto);
 
-        return await projectService.GetProjectDto(projectId);
+        return await getProjectWithAssetsService.GetProjectWithAssets(projectId);
     }
 
     [HttpPut("{caseId}")]
@@ -69,7 +69,7 @@ public class CasesController(
 
         await caseService.DeleteCase(projectId, caseId);
 
-        return await projectService.GetProjectDto(projectId);
+        return await getProjectWithAssetsService.GetProjectWithAssets(projectId);
     }
 
     [HttpPut("{caseId}/cessation-wells-cost-override/{costProfileId}")]
