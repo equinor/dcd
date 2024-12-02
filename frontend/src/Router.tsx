@@ -1,5 +1,6 @@
 import { RouterProvider, RouteObject } from "react-router-dom"
 import { useRouter } from "@equinor/fusion-framework-react-app/navigation"
+import { AgnosticRouteObject } from "@remix-run/router"
 import Overview from "./Components/Overview"
 import ProjectView from "./Views/ProjectView"
 import CaseView from "./Views/CaseView"
@@ -28,6 +29,11 @@ const routes: RouteObject[] = [
 ]
 
 export default function AppRouter() {
-    const router = useRouter(routes)
-    return <RouterProvider router={router} fallbackElement={<ProjectSkeleton />} />
+    const router = useRouter(routes as AgnosticRouteObject[])
+    return (
+        <RouterProvider
+            router={router}
+            fallbackElement={<ProjectSkeleton />}
+        />
+    )
 }

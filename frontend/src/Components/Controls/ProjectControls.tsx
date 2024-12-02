@@ -179,12 +179,15 @@ const ProjectControls = ({ projectLastUpdated, handleEdit }: props) => {
                                         {!isSmallScreen && "Project revisions"}
                                     </Button>
                                 </Tooltip>
-                                <RevisionsDropMenu
-                                    isMenuOpen={isMenuOpen}
-                                    setIsMenuOpen={setIsMenuOpen}
-                                    menuAnchorEl={revisionMenuAnchorEl}
-                                    isCaseMenu={false}
-                                />
+                                {isMenuOpen && (
+                                    <RevisionsDropMenu
+                                        isMenuOpen={isMenuOpen}
+                                        setIsMenuOpen={setIsMenuOpen}
+                                        menuAnchorEl={revisionMenuAnchorEl}
+                                        isCaseMenu={false}
+                                    />
+                                )}
+
                             </div>
                         )}
                 </div>

@@ -1,4 +1,4 @@
-import { AgChartsReact } from "ag-charts-react"
+import { AgCharts } from "ag-charts-react"
 
 interface Props {
     data: any
@@ -40,7 +40,7 @@ export const AgChartsPie = ({
         theme: figmaTheme,
         series: [
             {
-                type: "pie",
+                type: "donut",
                 calloutLabelKey: "profile",
                 angleKey: "value",
                 calloutLabel: { enabled: false },
@@ -54,7 +54,6 @@ export const AgChartsPie = ({
                     {
                         text: "million tonnes",
                         fontSize: 14,
-                        margin: 4,
                         color: "#B4B4B4",
                     },
                 ],
@@ -77,7 +76,7 @@ export const AgChartsPie = ({
 
     return (
         <div>
-            <AgChartsReact
+            <AgCharts
                 options={defaultOptions}
             />
         </div>

@@ -7,9 +7,10 @@ import styled from "styled-components"
 import { tokens } from "@equinor/eds-tokens"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
+
 import CustomHeaderForSecondaryHeader from "../../../CustomHeaderForSecondaryHeader"
-import { cellStyleRightAlign } from "../../../Utils/common"
-import { projectQueryFn } from "../../../Services/QueryFunctions"
+import { cellStyleRightAlign } from "@/Utils/common"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
@@ -280,7 +281,6 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
     const [columnDefs] = useState(columns())
     const onGridReady = (params: any) => {
         gridRef.current = params.api
-        params.api.showLoadingOverlay()
     }
 
     const defaultColDef = useMemo(() => ({
@@ -306,8 +306,8 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                     animateRows
                     domLayout="autoHeight"
                     onGridReady={onGridReady}
-                    rowSelection="multiple"
-                    enableRangeSelection
+                    rowSelection={{ mode: "multiRow" }}
+                    cellSelection
                     enableCharts
                 />
             </div>

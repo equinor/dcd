@@ -6,9 +6,8 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import { useQuery } from "@tanstack/react-query"
 import OperationalWellCosts from "./OperationalWellCosts"
 import WellListEditTechnicalInput from "./WellListEditTechnicalInput"
-import { useModalContext } from "../../Context/ModalContext"
-import { useAppContext } from "../../Context/AppContext"
-import { projectQueryFn } from "../../Services/QueryFunctions"
+import { useAppContext } from "@/Context/AppContext"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 
 const Section = styled.section`
     margin-top: 56px;

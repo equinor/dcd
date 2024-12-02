@@ -273,9 +273,6 @@ const PROSPCaseList = ({
         {
             field: "name",
             flex: 2,
-            headerCheckboxSelection: true,
-            checkboxSelection: true,
-            showDisabledCheckboxes: true,
         },
         {
             field: "driveItem",
@@ -403,9 +400,13 @@ const PROSPCaseList = ({
                         rowData={rowData}
                         columnDefs={columnDefs}
                         defaultColDef={defaultColDef}
-                        rowSelection="multiple"
-                        isRowSelectable={rowIsChanged}
-                        suppressRowClickSelection
+                        rowSelection={{
+                            mode: "multiRow",
+                            enableClickSelection: false,
+                            headerCheckbox: true,
+                            checkboxes: true,
+                            isRowSelectable: rowIsChanged,
+                        }}
                         animateRows
                         domLayout="autoHeight"
                         onGridReady={onGridReady}

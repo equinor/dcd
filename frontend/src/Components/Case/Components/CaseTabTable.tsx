@@ -341,6 +341,7 @@ const CaseTabTable = ({
         editable: true,
         onCellValueChanged: handleCellValueChange,
         suppressHeaderMenuButton: true,
+        enableCellChangeFlash: editMode,
     }), [timeSeriesData])
 
     useEffect(() => {
@@ -422,14 +423,12 @@ const CaseTabTable = ({
                     defaultColDef={defaultColDef}
                     animateRows
                     domLayout="autoHeight"
-                    enableCellChangeFlash={editMode}
-                    rowSelection="multiple"
-                    enableRangeSelection
-                    suppressCopySingleCellRanges
+                    rowSelection={{ mode: "multiRow", copySelectedRows: false }}
+                    cellSelection
                     suppressMovableColumns
                     enableCharts
                     alignedGrids={gridRefArrayToAlignedGrid()}
-                    groupIncludeTotalFooter={includeFooter}
+                    grandTotalRow={includeFooter ? "bottom" : undefined}
                     getRowStyle={getCaseRowStyle}
                     suppressLastEmptyLineOnPaste
                     stopEditingWhenCellsLoseFocus

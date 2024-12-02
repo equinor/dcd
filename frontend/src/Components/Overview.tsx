@@ -62,12 +62,15 @@ const Overview = () => {
         setShowRevisionReminder,
         editMode,
     } = useAppContext()
-    const { setProjectId, isRevision } = useProjectContext()
+    const {
+        setProjectId,
+        isRevision,
+        setIsCreateRevisionModalOpen,
+    } = useProjectContext()
     const { featuresModalIsOpen } = useModalContext()
     const [warnedProjects, setWarnedProjects] = useState<WarnedProjectInterface | null>(null)
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
-    const [isRevisionModalOpen, setIsRevisionModalOpen] = useState(false)
     const { Features } = useFeatureContext()
 
     const { data: apiData } = useQuery({
@@ -77,7 +80,7 @@ const Overview = () => {
     })
 
     function handleCreateRevision() {
-        setIsRevisionModalOpen(true)
+        setIsCreateRevisionModalOpen(true)
         setShowRevisionReminder(false)
     }
 
@@ -174,25 +177,24 @@ const Overview = () => {
                 {snackBarMessage}
             </Snackbar>
             {Features?.revisionEnabled
-                        && (
-                            <Snackbar open={showRevisionReminder} placement="bottom-right" autoHideDuration={300000000} onClose={() => setShowRevisionReminder(false)}>
-                                <SnackbarCentering>
-                                    <Button variant="ghost_icon" onClick={() => setShowRevisionReminder(false)}>
-                                        <Icon data={clear} />
-                                    </Button>
-                                    <Typography variant="body_short" color="#FFF" style={{ marginLeft: "10px" }}>
-                                        Remember to create a new revision after completing a project phase!
-                                    </Typography>
-                                    <Snackbar.Action>
-                                        <Button variant="ghost" onClick={() => handleCreateRevision()}>Create revision</Button>
-                                    </Snackbar.Action>
-                                </SnackbarCentering>
-                            </Snackbar>
-                        )}
-            <CreateRevisionModal
-                isModalOpen={isRevisionModalOpen}
-                setIsModalOpen={setIsRevisionModalOpen}
-            />
+                && (
+                    <>
+                        <Snackbar open={showRevisionReminder} placement="bottom-right" autoHideDuration={300000000} onClose={() => setShowRevisionReminder(false)}>
+                            <SnackbarCentering>
+                                <Button variant="ghost_icon" onClick={() => setShowRevisionReminder(false)}>
+                                    <Icon data={clear} />
+                                </Button>
+                                <Typography variant="body_short" color="#FFF" style={{ marginLeft: "10px" }}>
+                                    Remember to create a new revision after completing a project phase!
+                                </Typography>
+                                <Snackbar.Action>
+                                    <Button variant="ghost" onClick={() => handleCreateRevision()}>Create revision</Button>
+                                </Snackbar.Action>
+                            </SnackbarCentering>
+                        </Snackbar>
+                        <CreateRevisionModal />
+                    </>
+                )}
             <ContentWrapper>
                 <Sidebar />
                 <MainView className="ag-theme-alpine-fusion ">

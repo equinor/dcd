@@ -282,7 +282,10 @@ const WellListEditTechnicalInput = ({
                         onGridReady={onGridReady}
                         stopEditingWhenCellsLoseFocus
                         singleClickEdit={editMode}
-                        suppressRowClickSelection
+                        rowSelection={{
+                            mode: "multiRow",
+                            enableClickSelection: false,
+                        }}
                     />
                 </div>
             </Grid>

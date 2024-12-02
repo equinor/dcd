@@ -156,18 +156,16 @@ const EditTechnicalInputModal = () => {
 
             <Grid container justifyContent="flex-end">
                 {!isSaving && (
-                    <>
-                        <Grid item>
-                            <Tooltip title={getEditDisabledText()}>
-                                <Button
-                                    onClick={handleSave}
-                                    disabled={isEditDisabled || !editMode}
-                                >
-                                    Save
-                                </Button>
-                            </Tooltip>
-                        </Grid>
-                    </>
+                    <Grid item>
+                        <Tooltip title={getEditDisabledText()}>
+                            <Button
+                                onClick={handleSave}
+                                disabled={isEditDisabled || !editMode}
+                            >
+                                Save
+                            </Button>
+                        </Tooltip>
+                    </Grid>
                 )}
                 {(editMode) && isSaving && (
                     <Grid item>

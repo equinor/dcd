@@ -17,12 +17,12 @@ import Grid from "@mui/material/Grid"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
 import Modal from "./Modal"
-import { defaultDate, isDefaultDate, toMonthDate } from "../../Utils/common"
-import { GetCaseService } from "../../Services/CaseService"
-import { useModalContext } from "../../Context/ModalContext"
-import { useAppContext } from "../../Context/AppContext"
-import { projectQueryFn } from "../../Services/QueryFunctions"
-// import useEditProject from "../../Hooks/useEditProject"
+import { defaultDate, isDefaultDate, toMonthDate } from "@/Utils/common"
+import { GetCaseService } from "@/Services/CaseService"
+import { useModalContext } from "@/Context/ModalContext"
+import { useAppContext } from "@/Context/AppContext"
+import { projectQueryFn } from "@/Services/QueryFunctions"
+// import useEditProject from "@annehfroyen/Hooks/useEditProject"
 
 const CreateCaseModal = () => {
     const { isLoading, setIsLoading } = useAppContext()

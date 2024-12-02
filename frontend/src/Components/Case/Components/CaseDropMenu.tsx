@@ -10,7 +10,6 @@ import {
     bookmark_filled,
     archive,
     unarchive,
-    history,
 } from "@equinor/eds-icons"
 import { useNavigate, useParams } from "react-router-dom"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
@@ -24,9 +23,7 @@ import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
 import useEditProject from "@/Hooks/useEditProject"
 import { useProjectContext } from "@/Context/ProjectContext"
 import Modal from "../../Modal/Modal"
-import RevisionsDropMenu from "@/Components/Controls/RevisionsDropMenu"
 import useEditDisabled from "@/Hooks/useEditDisabled"
-import { useFeatureContext } from "@/Context/FeatureContext"
 
 interface CaseDropMenuProps {
     isMenuOpen: boolean
@@ -53,10 +50,6 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     const { projectId } = useProjectContext()
     const { updateCase } = useSubmitToApi()
     const { isEditDisabled } = useEditDisabled()
-    const { Features } = useFeatureContext()
-
-    const [isRevisionMenuOpen, setIsRevisionMenuOpen] = useState<boolean>(false)
-    const [revisionMenuAnchorEl, setRevisionMenuAnchorEl] = useState<any | null>(null)
     const { isRevision } = useProjectContext()
     const { revisionId } = useParams()
 
@@ -188,27 +181,6 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                             </Typography>
                         </Menu.Item>
                     )}
-                {Features?.revisionEnabled
-                        && (
-                            <>
-                                <Menu.Item
-                                    ref={setRevisionMenuAnchorEl}
-                                    onMouseEnter={() => setIsRevisionMenuOpen(!isRevisionMenuOpen)}
-                                >
-                                    <Icon data={history} size={16} />
-                                    <Typography group="navigation" variant="menu_title" as="span">
-                                        Project revisions
-                                    </Typography>
-                                </Menu.Item>
-                                <RevisionsDropMenu
-                                    setIsMenuOpen={setIsMenuOpen}
-                                    isMenuOpen={isRevisionMenuOpen}
-                                    setIsRevisionMenuOpen={setIsRevisionMenuOpen}
-                                    menuAnchorEl={revisionMenuAnchorEl}
-                                    isCaseMenu
-                                />
-                            </>
-                        )}
             </Menu>
         </>
     )
