@@ -1,9 +1,9 @@
 using api.AppInfrastructure;
 using api.AppInfrastructure.Authorization;
+using api.Features.CaseProfiles.Services.GenerateCostProfiles;
+using api.Features.CaseProfiles.Services.GenerateCostProfiles.EconomicsServices;
 using api.Models;
 using api.Services;
-using api.Services.EconomicsServices;
-using api.Services.GenerateCostProfiles;
 
 using Microsoft.EntityFrameworkCore;
 

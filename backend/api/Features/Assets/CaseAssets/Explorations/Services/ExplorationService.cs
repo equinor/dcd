@@ -1,12 +1,13 @@
 using System.Linq.Expressions;
 
-using api.Dtos;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
 using api.Features.Assets.CaseAssets.Explorations.Repositories;
+using api.Features.CaseProfiles.Dtos;
+using api.Features.CaseProfiles.Dtos.Well;
+using api.Features.CaseProfiles.Repositories;
 using api.Features.ProjectAccess;
 using api.Models;
-using api.Repositories;
 using api.Services;
 
 using Microsoft.EntityFrameworkCore;

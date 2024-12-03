@@ -1,6 +1,6 @@
 using api.AppInfrastructure.Authorization;
-using api.Controllers;
-using api.Dtos;
+using api.AppInfrastructure.ControllerAttributes;
+using api.Features.CaseProfiles.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;

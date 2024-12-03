@@ -1,5 +1,5 @@
 using api.AppInfrastructure.Authorization;
-using api.Controllers;
+using api.AppInfrastructure.ControllerAttributes;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;

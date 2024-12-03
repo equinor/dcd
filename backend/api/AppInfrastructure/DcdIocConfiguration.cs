@@ -16,6 +16,10 @@ using api.Features.Assets.CaseAssets.WellProjects.Services;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts;
 using api.Features.BackgroundServices.ProjectMaster.Services;
+using api.Features.CaseProfiles.Repositories;
+using api.Features.CaseProfiles.Services;
+using api.Features.CaseProfiles.Services.GenerateCostProfiles;
+using api.Features.CaseProfiles.Services.GenerateCostProfiles.EconomicsServices;
 using api.Features.Cases.CaseComparison;
 using api.Features.Cases.Create;
 using api.Features.Cases.Delete;
@@ -46,10 +50,7 @@ using api.Features.Wells.Delete;
 using api.Features.Wells.Get;
 using api.Features.Wells.GetAffectedCases;
 using api.Features.Wells.Update;
-using api.Repositories;
 using api.Services;
-using api.Services.EconomicsServices;
-using api.Services.GenerateCostProfiles;
 
 using Microsoft.AspNetCore.Authorization;
 

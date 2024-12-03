@@ -1,11 +1,10 @@
 using System.Reflection;
 
 using api.AppInfrastructure.Authorization.Extensions;
+using api.AppInfrastructure.ControllerAttributes;
 using api.Context;
-using api.Controllers;
 using api.Exceptions;
 using api.Models;
-using api.Repositories;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Controllers;

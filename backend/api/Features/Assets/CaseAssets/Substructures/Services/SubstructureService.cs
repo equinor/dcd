@@ -4,9 +4,9 @@ using api.Exceptions;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
 using api.Features.Assets.CaseAssets.Substructures.Repositories;
+using api.Features.CaseProfiles.Repositories;
 using api.Features.ProjectAccess;
 using api.Models;
-using api.Repositories;
 using api.Services;
 
 using Microsoft.EntityFrameworkCore;

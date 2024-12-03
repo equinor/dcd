@@ -1,6 +1,5 @@
 using api.AppInfrastructure.Authorization;
-using api.Controllers;
-using api.Dtos;
+using api.AppInfrastructure.ControllerAttributes;
 using api.Features.Projects.GetWithAssets;
 using api.Features.Prosp.Exceptions;
 using api.Features.Prosp.Models;

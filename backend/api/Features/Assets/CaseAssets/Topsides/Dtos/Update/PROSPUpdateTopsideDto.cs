@@ -1,4 +1,4 @@
-using api.Dtos;
+using api.Features.CaseProfiles.Dtos.TimeSeries.Update;
 
 namespace api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
 

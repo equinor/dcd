@@ -1,4 +1,5 @@
-using api.Dtos;
+using api.Features.CaseProfiles.Dtos;
+using api.Features.CaseProfiles.Dtos.Well;
 using api.Features.Wells.Create;
 using api.Features.Wells.Get;
 using api.Features.Wells.Update;

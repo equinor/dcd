@@ -3,9 +3,9 @@ using System.Linq.Expressions;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
+using api.Features.CaseProfiles.Repositories;
 using api.Features.ProjectAccess;
 using api.Models;
-using api.Repositories;
 using api.Services;
 
 using Microsoft.EntityFrameworkCore;

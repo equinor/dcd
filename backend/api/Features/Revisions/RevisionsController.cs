@@ -1,5 +1,5 @@
 using api.AppInfrastructure.Authorization;
-using api.Controllers;
+using api.AppInfrastructure.ControllerAttributes;
 using api.Features.Revisions.Create;
 using api.Features.Revisions.Get;
 using api.Features.Revisions.Update;

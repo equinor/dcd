@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 
+using api.Features.CaseProfiles.Repositories;
 using api.Models;
-using api.Repositories;
 
 namespace api.Features.Assets.CaseAssets.Surfs.Repositories;
 

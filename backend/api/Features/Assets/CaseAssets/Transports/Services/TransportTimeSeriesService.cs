@@ -3,9 +3,9 @@ using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos.Create;
 using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
 using api.Features.Assets.CaseAssets.Transports.Repositories;
+using api.Features.CaseProfiles.Repositories;
 using api.Features.ProjectAccess;
 using api.Models;
-using api.Repositories;
 using api.Services;
 
 using Microsoft.EntityFrameworkCore;

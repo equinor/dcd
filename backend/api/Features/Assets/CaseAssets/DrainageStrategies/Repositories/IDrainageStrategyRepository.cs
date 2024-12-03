@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
 
-using api.Enums;
+using api.Features.CaseProfiles.Enums;
+using api.Features.CaseProfiles.Repositories;
 using api.Models;
-using api.Repositories;
 
 namespace api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
 

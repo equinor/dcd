@@ -7,9 +7,11 @@ using api.Features.Assets.CaseAssets.Surfs.Services;
 using api.Features.Assets.CaseAssets.Topsides.Services;
 using api.Features.Assets.CaseAssets.Transports.Services;
 using api.Features.Assets.CaseAssets.WellProjects.Services;
+using api.Features.CaseProfiles.Services;
+using api.Features.CaseProfiles.Services.GenerateCostProfiles;
+using api.Features.CaseProfiles.Services.GenerateCostProfiles.EconomicsServices;
 using api.Models;
 using api.Services;
-using api.Services.EconomicsServices;
 
 using NSubstitute;
 

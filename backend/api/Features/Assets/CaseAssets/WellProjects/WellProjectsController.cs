@@ -1,9 +1,10 @@
 using api.AppInfrastructure.Authorization;
-using api.Controllers;
-using api.Dtos;
+using api.AppInfrastructure.ControllerAttributes;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos.Create;
 using api.Features.Assets.CaseAssets.WellProjects.Services;
+using api.Features.CaseProfiles.Dtos;
+using api.Features.CaseProfiles.Dtos.Well;
 using api.Features.TechnicalInput.Dtos;
 
 using Microsoft.AspNetCore.Mvc;

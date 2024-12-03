@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Dtos;
+using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Models;
 
 namespace api.Features.Assets.CaseAssets.Topsides.Dtos;

@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 
-using api.Dtos;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
@@ -8,6 +7,7 @@ using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
+using api.Features.CaseProfiles.Dtos;
 
 namespace api.Features.Cases.GetWithAssets;
 

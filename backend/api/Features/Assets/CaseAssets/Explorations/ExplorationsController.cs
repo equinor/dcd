@@ -1,9 +1,10 @@
 using api.AppInfrastructure.Authorization;
-using api.Controllers;
-using api.Dtos;
+using api.AppInfrastructure.ControllerAttributes;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
 using api.Features.Assets.CaseAssets.Explorations.Dtos.Create;
 using api.Features.Assets.CaseAssets.Explorations.Services;
+using api.Features.CaseProfiles.Dtos;
+using api.Features.CaseProfiles.Dtos.Well;
 using api.Features.TechnicalInput.Dtos;
 
 using Microsoft.AspNetCore.Mvc;

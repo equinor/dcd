@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
 
 using api.Context;
+using api.Features.CaseProfiles.Repositories;
 using api.Models;
-using api.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 

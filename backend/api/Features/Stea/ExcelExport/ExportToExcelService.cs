@@ -1,4 +1,4 @@
-using api.Dtos;
+using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Features.Stea.Dtos;
 
 using ClosedXML.Excel;

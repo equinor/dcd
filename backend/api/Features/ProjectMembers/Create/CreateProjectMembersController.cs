@@ -1,5 +1,5 @@
 using api.AppInfrastructure.Authorization;
-using api.Controllers;
+using api.AppInfrastructure.ControllerAttributes;
 using api.Features.ProjectMembers.Get;
 
 using Microsoft.AspNetCore.Mvc;

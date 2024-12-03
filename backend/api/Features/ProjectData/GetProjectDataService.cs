@@ -1,5 +1,4 @@
 using api.Context;
-using api.Dtos;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
@@ -9,12 +8,13 @@ using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts.Dtos;
+using api.Features.CaseProfiles.Dtos;
+using api.Features.CaseProfiles.Repositories;
 using api.Features.ProjectData.Dtos;
 using api.Features.ProjectMembers.Get;
 using api.Features.Revisions.Get;
 using api.Features.Wells.Get;
 using api.Models;
-using api.Repositories;
 
 using AutoMapper;
 

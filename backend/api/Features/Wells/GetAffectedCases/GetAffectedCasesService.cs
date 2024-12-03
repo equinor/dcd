@@ -1,5 +1,5 @@
 using api.Context;
-using api.Dtos;
+using api.Features.CaseProfiles.Dtos;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;

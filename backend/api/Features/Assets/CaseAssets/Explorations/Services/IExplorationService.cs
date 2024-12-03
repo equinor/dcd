@@ -1,7 +1,8 @@
 using System.Linq.Expressions;
 
-using api.Dtos;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
+using api.Features.CaseProfiles.Dtos;
+using api.Features.CaseProfiles.Dtos.Well;
 using api.Models;
 
 namespace api.Features.Assets.CaseAssets.Explorations.Services;

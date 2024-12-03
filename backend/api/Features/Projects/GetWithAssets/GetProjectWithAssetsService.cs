@@ -1,7 +1,7 @@
 using api.Context;
+using api.Features.CaseProfiles.Repositories;
 using api.Features.Revisions.Get;
 using api.Models;
-using api.Repositories;
 
 using AutoMapper;
 

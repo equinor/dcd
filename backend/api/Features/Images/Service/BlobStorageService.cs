@@ -1,9 +1,9 @@
 using api.AppInfrastructure;
 using api.Context;
 using api.Exceptions;
+using api.Features.CaseProfiles.Repositories;
 using api.Features.Images.Dto;
 using api.Models;
-using api.Repositories;
 
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
