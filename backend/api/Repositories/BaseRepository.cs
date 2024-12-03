@@ -39,9 +39,4 @@ public class BaseRepository(DcdDbContext context) : IBaseRepository
     {
         await Context.SaveChangesAndRecalculateAsync(caseId);
     }
-
-    public async Task SaveChangesAsync()
-    {
-        await Context.SaveChangesAsync();
-    }
 }

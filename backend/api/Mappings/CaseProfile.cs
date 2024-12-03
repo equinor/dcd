@@ -2,6 +2,7 @@ using api.Dtos;
 using api.Features.Cases.Create;
 using api.Features.Cases.Update;
 using api.Features.Images.Dto;
+using api.Features.Prosp.Models;
 using api.Models;
 
 using AutoMapper;
@@ -37,7 +38,7 @@ public class CaseProfile : Profile
         CreateMap<Image, ImageDto>();
 
         CreateMap<UpdateCaseDto, Case>();
-        CreateMap<PROSPUpdateCaseDto, Case>();
+        CreateMap<ProspUpdateCaseDto, Case>();
         CreateMap<UpdateCessationWellsCostOverrideDto, CessationWellsCostOverride>();
         CreateMap<UpdateCessationOffshoreFacilitiesCostOverrideDto, CessationOffshoreFacilitiesCostOverride>();
         CreateMap<UpdateCessationOnshoreFacilitiesCostProfileDto, CessationOnshoreFacilitiesCostProfile>();

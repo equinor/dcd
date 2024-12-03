@@ -22,8 +22,6 @@ namespace api.Features.TechnicalInput;
 public class TechnicalInputService(
     DcdDbContext context,
     IProjectWithAssetsRepository projectWithAssetsRepository,
-    IExplorationOperationalWellCostsService explorationOperationalWellCostsService,
-    IDevelopmentOperationalWellCostsService developmentOperationalWellCostsService,
     ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
     ILogger<TechnicalInputService> logger,
     GetProjectWithAssetsService getProjectWithAssetsService,
@@ -200,7 +198,10 @@ public class TechnicalInputService(
             throw new Exception("Exploration operational well costs not found");
         }
 
-        var item = await explorationOperationalWellCostsService.GetOperationalWellCosts(project.ExplorationOperationalWellCosts.Id) ?? new ExplorationOperationalWellCosts();
+        var item = await context.ExplorationOperationalWellCosts
+                       .Include(eowc => eowc.Project)
+                       .FirstOrDefaultAsync(o => o.Id == project.ExplorationOperationalWellCosts.Id)
+                   ?? new ExplorationOperationalWellCosts();
         mapper.Map(updatedDto, item);
 
         var updatedItem = context.ExplorationOperationalWellCosts.Update(item);
@@ -223,7 +224,10 @@ public class TechnicalInputService(
             throw new Exception("Development operational well costs not found");
         }
 
-        var item = await developmentOperationalWellCostsService.GetOperationalWellCosts(project.DevelopmentOperationalWellCosts.Id) ?? new DevelopmentOperationalWellCosts();
+        var item = await context.DevelopmentOperationalWellCosts
+                       .Include(dowc => dowc.Project)
+                       .FirstOrDefaultAsync(o => o.Id == project.DevelopmentOperationalWellCosts.Id)
+                   ?? new DevelopmentOperationalWellCosts();
         mapper.Map(updatedDto, item);
 
         var updatedItem = context.DevelopmentOperationalWellCosts.Update(item);

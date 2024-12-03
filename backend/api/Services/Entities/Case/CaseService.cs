@@ -1,7 +1,6 @@
 using System.Linq.Expressions;
 
 using api.Context;
-using api.Dtos;
 using api.Exceptions;
 using api.Features.ProjectAccess;
 using api.Models;
@@ -13,9 +12,7 @@ namespace api.Services;
 
 public class CaseService(
     DcdDbContext context,
-    ILogger<CaseService> logger,
     ICaseRepository repository,
-    IMapperService mapperService,
     IProjectAccessService projectAccessService)
     : ICaseService
 {
@@ -74,37 +71,5 @@ public class CaseService(
     public async Task<IEnumerable<Case>> GetAll()
     {
         return await context.Cases.ToListAsync();
-    }
-
-    public async Task<CaseDto> UpdateCase<TDto>(
-        Guid projectId,
-        Guid caseId,
-        TDto updatedCaseDto
-    )
-        where TDto : BaseUpdateCaseDto
-    {
-        // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<Case>(projectId, caseId);
-
-        var existingCase = await repository.GetCase(caseId)
-            ?? throw new NotFoundInDBException($"Case with id {caseId} not found.");
-
-        mapperService.MapToEntity(updatedCaseDto, existingCase, caseId);
-
-        existingCase.ModifyTime = DateTimeOffset.UtcNow;
-
-        try
-        {
-            await repository.SaveChangesAndRecalculateAsync(caseId);
-        }
-        catch (DbUpdateException ex)
-        {
-            logger.LogError(ex, "Failed to update case with id {caseId}.", caseId);
-            throw;
-        }
-
-        await repository.UpdateModifyTime(caseId);
-        var dto = mapperService.MapToDto<Case, CaseDto>(existingCase, caseId);
-        return dto;
     }
 }

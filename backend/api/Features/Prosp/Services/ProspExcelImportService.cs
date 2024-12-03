@@ -1,4 +1,4 @@
-using api.Dtos;
+using api.Context;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
 using api.Features.Assets.CaseAssets.Substructures.Services;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
@@ -16,9 +16,12 @@ using AutoMapper;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Features.Prosp.Services;
 
 public class ProspExcelImportService(
+    DcdDbContext context,
     ICaseService caseService,
     ISurfService surfService,
     ISubstructureService substructureService,
@@ -392,14 +395,14 @@ public class ProspExcelImportService(
                 }
             }
 
-            var caseDto = new PROSPUpdateCaseDto
+            var caseDto = new ProspUpdateCaseDto
             {
                 SharepointFileId = sharepointFileId,
                 SharepointFileName = sharepointFileName,
                 SharepointFileUrl = sharepointFileUrl
             };
 
-            await caseService.UpdateCase(projectId, sourceCaseId, caseDto);
+            await UpdateCase(projectId, sourceCaseId, caseDto);
         }
     }
 
@@ -415,14 +418,29 @@ public class ProspExcelImportService(
         await ClearImportedSubstructure(caseItem);
         await ClearImportedTransport(caseItem);
 
-        var caseDto = mapper.Map<PROSPUpdateCaseDto>(caseItem);
+        var caseDto = mapper.Map<ProspUpdateCaseDto>(caseItem);
 
         if (caseDto == null)
         {
             throw new Exception();
         }
 
-        await caseService.UpdateCase(projectId, sourceCaseId, caseDto);
+        await UpdateCase(projectId, sourceCaseId, caseDto);
+    }
+
+    private async Task UpdateCase(Guid projectId, Guid caseId, ProspUpdateCaseDto updatedCaseDto)
+    {
+        var existingCase = await context.Cases
+            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.Id == caseId)
+            .SingleAsync();
+
+        existingCase.SharepointFileId = updatedCaseDto.SharepointFileId;
+        existingCase.SharepointFileName = updatedCaseDto.SharepointFileName;
+        existingCase.SharepointFileUrl = updatedCaseDto.SharepointFileUrl;
+        existingCase.ModifyTime = DateTimeOffset.UtcNow;
+
+        await context.SaveChangesAndRecalculateAsync(caseId);
     }
 
     private async Task ClearImportedSurf(Case caseItem)

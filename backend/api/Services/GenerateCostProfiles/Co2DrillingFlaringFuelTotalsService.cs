@@ -1,3 +1,4 @@
+using api.Context;
 using api.Dtos;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
 using api.Features.Assets.CaseAssets.Topsides.Services;
@@ -5,14 +6,16 @@ using api.Helpers;
 using api.Models;
 using api.Repositories;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Services.GenerateCostProfiles;
 
 public class Co2DrillingFlaringFuelTotalsService(
+    DcdDbContext context,
     ICaseService caseService,
     IProjectWithAssetsRepository projectWithAssetsRepository,
     ITopsideService topsideService,
-    IDrainageStrategyService drainageStrategyService,
-    IWellProjectWellService wellProjectWellService)
+    IDrainageStrategyService drainageStrategyService)
     : ICo2DrillingFlaringFuelTotalsService
 {
     public async Task<Co2DrillingFlaringFuelTotalsDto> Generate(Guid caseId)
@@ -40,7 +43,7 @@ public class Co2DrillingFlaringFuelTotalsService(
             Co2Fuel = fuelConsumptionsTotal,
         };
 
-        return co2DrillingFlaringFuelTotals ?? new Co2DrillingFlaringFuelTotalsDto();
+        return co2DrillingFlaringFuelTotals;
     }
 
     private static double GetFlaringsProfileTotal(Project project, DrainageStrategy drainageStrategy)
@@ -75,11 +78,9 @@ public class Co2DrillingFlaringFuelTotalsService(
 
     private async Task<double> CalculateDrillingEmissionsTotal(Project project, Guid wellProjectId)
     {
-        var linkedWells = await wellProjectWellService.GetWellProjectWellsForWellProject(wellProjectId);
-        if (linkedWells == null)
-        {
-            return 0.0;
-        }
+        var linkedWells = await context.WellProjectWell
+            .Include(wpw => wpw.DrillingSchedule)
+            .Where(w => w.WellProjectId == wellProjectId).ToListAsync();
 
         var wellDrillingSchedules = new TimeSeries<double>();
         foreach (var linkedWell in linkedWells)

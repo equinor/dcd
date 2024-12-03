@@ -1,17 +1,20 @@
+using api.Context;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
 using api.Features.Assets.CaseAssets.Topsides.Services;
 using api.Helpers;
 using api.Models;
 using api.Repositories;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Services.GenerateCostProfiles;
 
 public class Co2EmissionsProfileService(
+    DcdDbContext context,
     ICaseService caseService,
     IDrainageStrategyService drainageStrategyService,
     IProjectWithAssetsRepository projectWithAssetsRepository,
-    ITopsideService topsideService,
-    IWellProjectWellService wellProjectWellService)
+    ITopsideService topsideService)
     : ICo2EmissionsProfileService
 {
     public async Task Generate(Guid caseId)
@@ -114,11 +117,9 @@ public class Co2EmissionsProfileService(
 
     private async Task<TimeSeriesVolume> CalculateDrillingEmissions(Project project, Guid wellProjectId)
     {
-        var linkedWells = await wellProjectWellService.GetWellProjectWellsForWellProject(wellProjectId);
-        if (linkedWells == null)
-        {
-            return new TimeSeriesVolume();
-        }
+        var linkedWells = await context.WellProjectWell
+            .Include(wpw => wpw.DrillingSchedule)
+            .Where(w => w.WellProjectId == wellProjectId).ToListAsync();
 
         var wellDrillingSchedules = new TimeSeries<double>();
         foreach (var linkedWell in linkedWells)

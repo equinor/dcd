@@ -1,8 +1,6 @@
-using api.Dtos;
 using api.Exceptions;
-using api.Features.Cases.Update;
 
-namespace api.Services;
+namespace api.Features.Cases.Update;
 
 public static class UpdateCaseDtoValidator
 {

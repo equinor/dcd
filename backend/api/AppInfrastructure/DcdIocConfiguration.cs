@@ -82,10 +82,7 @@ public static class DcdIocConfiguration
         services.AddScoped<ITopsideService, TopsideService>();
         services.AddScoped<ITransportService, TransportService>();
 
-        services.AddScoped<IWellProjectWellService, WellProjectWellService>();
-        services.AddScoped<IExplorationWellService, ExplorationWellService>();
         services.AddScoped<ICostProfileFromDrillingScheduleHelper, CostProfileFromDrillingScheduleHelper>();
-        services.AddScoped<IExplorationOperationalWellCostsService, ExplorationOperationalWellCostsService>();
 
         services.AddScoped<ICaseTimeSeriesService, CaseTimeSeriesService>();
         services.AddScoped<IDrainageStrategyTimeSeriesService, DrainageStrategyTimeSeriesService>();
@@ -95,8 +92,6 @@ public static class DcdIocConfiguration
         services.AddScoped<ISubstructureTimeSeriesService, SubstructureTimeSeriesService>();
         services.AddScoped<ITopsideTimeSeriesService, TopsideTimeSeriesService>();
         services.AddScoped<ITransportTimeSeriesService, TransportTimeSeriesService>();
-
-        services.AddScoped<IDevelopmentOperationalWellCostsService, DevelopmentOperationalWellCostsService>();
 
         services.AddScoped<TechnicalInputService>();
 

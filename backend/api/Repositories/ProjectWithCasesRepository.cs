@@ -110,7 +110,7 @@ public class ProjectWithCasesRepository(DcdDbContext context) : IProjectWithAsse
         return project;
     }
 
-    public async Task LoadProjectAssets(Project project)
+    private async Task LoadProjectAssets(Project project)
     {
         project.WellProjects = await GetWellProjects(project.Id);
         project.DrainageStrategies = await GetDrainageStrategies(project.Id);

@@ -1,16 +1,19 @@
 using System.Globalization;
 
+using api.Context;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Explorations.Services;
 using api.Models;
+
+using Microsoft.EntityFrameworkCore;
 
 
 namespace api.Services;
 
 public class GenerateGAndGAdminCostProfile(
+    DcdDbContext context,
     ICaseService caseService,
-    IExplorationService explorationService,
-    IExplorationWellService explorationWellService)
+    IExplorationService explorationService)
     : IGenerateGAndGAdminCostProfile
 {
     public async Task Generate(Guid caseId)
@@ -28,8 +31,11 @@ public class GenerateGAndGAdminCostProfile(
             return;
         }
 
-        var linkedWells = await explorationWellService.GetExplorationWellsForExploration(exploration.Id);
-        if (linkedWells?.Count > 0)
+        var linkedWells = await context.ExplorationWell
+            .Include(wpw => wpw.DrillingSchedule)
+            .Where(w => w.ExplorationId == exploration.Id).ToListAsync();
+
+        if (linkedWells.Count > 0)
         {
             var drillingSchedules = linkedWells.Select(lw => lw.DrillingSchedule);
             var earliestYear = drillingSchedules.Select(ds => ds?.StartYear)?.Min() + caseItem.DG4Date.Year;

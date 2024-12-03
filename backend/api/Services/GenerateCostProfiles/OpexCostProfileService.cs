@@ -1,15 +1,18 @@
+using api.Context;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
 using api.Features.Assets.CaseAssets.Topsides.Services;
 using api.Models;
 using api.Repositories;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Services;
 
 public class OpexCostProfileService(
+    DcdDbContext context,
     ICaseService caseService,
     IProjectWithAssetsRepository projectWithAssetsRepository,
     IDrainageStrategyService drainageStrategyService,
-    IWellProjectWellService wellProjectWellService,
     ITopsideService topsideService)
     : IOpexCostProfileService
 {
@@ -42,7 +45,10 @@ public class OpexCostProfileService(
 
         var lastYear = lastYearofProduction ?? 0;
 
-        var linkedWells = await wellProjectWellService.GetWellProjectWellsForWellProject(caseItem.WellProjectLink);
+        var linkedWells = await context.WellProjectWell
+            .Include(wpw => wpw.DrillingSchedule)
+            .Where(w => w.WellProjectId == caseItem.WellProjectLink).ToListAsync();
+
         if (linkedWells.Count == 0)
         {
             CalculationHelper.ResetTimeSeries(caseItem.WellInterventionCostProfile);

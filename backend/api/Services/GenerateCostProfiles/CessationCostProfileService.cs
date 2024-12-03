@@ -1,14 +1,17 @@
+using api.Context;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
 using api.Features.Assets.CaseAssets.Surfs.Services;
 using api.Models;
 using api.Repositories;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Services;
 
 public class CessationCostProfileService(
+    DcdDbContext context,
     ICaseService caseService,
     IDrainageStrategyService drainageStrategyService,
-    IWellProjectWellService wellProjectWellService,
     ISurfService surfService,
     IProjectWithAssetsRepository projectWithAssetsRepository)
     : ICessationCostProfileService
@@ -83,11 +86,9 @@ public class CessationCostProfileService(
 
     private async Task<CessationWellsCost> GenerateCessationWellsCost(Guid wellProjectId, Project project, int lastYear, CessationWellsCost cessationWells)
     {
-        var linkedWells = await wellProjectWellService.GetWellProjectWellsForWellProject(wellProjectId);
-        if (linkedWells == null)
-        {
-            return cessationWells;
-        }
+        var linkedWells = await context.WellProjectWell
+            .Include(wpw => wpw.DrillingSchedule)
+            .Where(w => w.WellProjectId == wellProjectId).ToListAsync();
 
         var pluggingAndAbandonment = project.DevelopmentOperationalWellCosts?.PluggingAndAbandonment ?? 0;
 

@@ -1,6 +1,6 @@
-namespace api.Dtos;
+namespace api.Features.Prosp.Models;
 
-public class PROSPUpdateCaseDto : BaseUpdateCaseDto
+public class ProspUpdateCaseDto
 {
     public string? SharepointFileId { get; set; }
     public string? SharepointFileName { get; set; }
