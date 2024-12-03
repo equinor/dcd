@@ -1,7 +1,6 @@
-using api.Dtos;
 using api.Exceptions;
 
-namespace api.Services;
+namespace api.Features.Cases.Create;
 
 public static class CreateCaseDtoValidator
 {

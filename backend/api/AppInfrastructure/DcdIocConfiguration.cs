@@ -3,6 +3,7 @@ using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts;
 using api.Features.BackgroundServices.ProjectMaster.Services;
 using api.Features.Cases.CaseComparison;
+using api.Features.Cases.Create;
 using api.Features.Cases.Duplicate;
 using api.Features.Cases.GetWithAssets;
 using api.Features.FusionIntegration.OrgChart;
@@ -53,7 +54,7 @@ public static class DcdIocConfiguration
         services.AddScoped<FusionOrgChartMemberService>();
 
         services.AddScoped<ICaseService, CaseService>();
-        services.AddScoped<ICreateCaseService, CreateCaseService>();
+        services.AddScoped<CreateCaseService>();
         services.AddScoped<IDrainageStrategyService, DrainageStrategyService>();
         services.AddScoped<IWellProjectService, WellProjectService>();
         services.AddScoped<IExplorationService, ExplorationService>();

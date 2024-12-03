@@ -20,25 +20,11 @@ namespace api.Controllers;
 [ActionType(ActionType.Edit)]
 public class CasesController(
     ICaseService caseService,
-    ICreateCaseService createCaseService,
     ICaseTimeSeriesService caseTimeSeriesService,
     IBlobStorageService blobStorageService,
     GetProjectWithAssetsService getProjectWithAssetsService)
     : ControllerBase
 {
-    [HttpPost]
-    public async Task<ProjectWithAssetsDto> CreateCase([FromRoute] Guid projectId, [FromBody] CreateCaseDto caseDto)
-    {
-        if (FeatureToggleService.RevisionEnabled)
-        {
-            CreateCaseDtoValidator.Validate(caseDto);
-        }
-
-        await createCaseService.CreateCase(projectId, caseDto);
-
-        return await getProjectWithAssetsService.GetProjectWithAssets(projectId);
-    }
-
     [HttpPut("{caseId}")]
     public async Task<CaseDto> UpdateCase(
         [FromRoute] Guid projectId,
