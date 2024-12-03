@@ -2,12 +2,11 @@ using System.ComponentModel.DataAnnotations;
 
 using api.Models;
 
-namespace api.Dtos;
+namespace api.Features.Cases.Update;
 
-public class APIUpdateCaseDto : BaseUpdateCaseDto
+public class UpdateCaseDto
 {
-    [Required]
-    public string Name { get; set; } = null!;
+    [Required] public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
     public bool? ReferenceCase { get; set; }
     public bool Archived { get; set; }
@@ -24,7 +23,6 @@ public class APIUpdateCaseDto : BaseUpdateCaseDto
     public double BreakEven { get; set; }
     public double? BreakEvenOverride { get; set; }
     public string? Host { get; set; }
-
     public DateTimeOffset DGADate { get; set; }
     public DateTimeOffset DGBDate { get; set; }
     public DateTimeOffset DGCDate { get; set; }
@@ -36,9 +34,6 @@ public class APIUpdateCaseDto : BaseUpdateCaseDto
     public DateTimeOffset DG2Date { get; set; }
     public DateTimeOffset DG3Date { get; set; }
     public DateTimeOffset DG4Date { get; set; }
-
-    public double Capex { get; set; }
-    public CapexYear? CapexYear { get; set; }
     public string? SharepointFileId { get; set; }
     public string? SharepointFileName { get; set; }
     public string? SharepointFileUrl { get; set; }

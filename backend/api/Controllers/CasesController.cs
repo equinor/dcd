@@ -1,6 +1,5 @@
 using api.AppInfrastructure.Authorization;
 using api.Dtos;
-using api.Features.FeatureToggles;
 using api.Features.Images.Service;
 using api.Features.Projects.GetWithAssets;
 using api.Services;
@@ -25,21 +24,6 @@ public class CasesController(
     GetProjectWithAssetsService getProjectWithAssetsService)
     : ControllerBase
 {
-    [HttpPut("{caseId}")]
-    public async Task<CaseDto> UpdateCase(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId,
-        [FromBody] APIUpdateCaseDto caseDto
-        )
-    {
-        if (FeatureToggleService.RevisionEnabled)
-        {
-            UpdateCaseDtoValidator.Validate(caseDto);
-        }
-
-        return await caseService.UpdateCase(projectId, caseId, caseDto);
-    }
-
     [HttpDelete("{caseId}")]
     public async Task<ProjectWithAssetsDto> DeleteCase(
         [FromRoute] Guid projectId,

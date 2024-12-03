@@ -6,6 +6,7 @@ using api.Features.Cases.CaseComparison;
 using api.Features.Cases.Create;
 using api.Features.Cases.Duplicate;
 using api.Features.Cases.GetWithAssets;
+using api.Features.Cases.Update;
 using api.Features.FusionIntegration.OrgChart;
 using api.Features.FusionIntegration.ProjectMaster;
 using api.Features.Images.Service;
@@ -55,6 +56,8 @@ public static class DcdIocConfiguration
 
         services.AddScoped<ICaseService, CaseService>();
         services.AddScoped<CreateCaseService>();
+        services.AddScoped<UpdateCaseService>();
+
         services.AddScoped<IDrainageStrategyService, DrainageStrategyService>();
         services.AddScoped<IWellProjectService, WellProjectService>();
         services.AddScoped<IExplorationService, ExplorationService>();
