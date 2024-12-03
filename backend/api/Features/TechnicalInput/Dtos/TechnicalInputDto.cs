@@ -1,4 +1,6 @@
 using api.Dtos;
+using api.Features.Assets.CaseAssets.Explorations.Dtos;
+using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts.Dtos;
 using api.Features.Projects.GetWithAssets;

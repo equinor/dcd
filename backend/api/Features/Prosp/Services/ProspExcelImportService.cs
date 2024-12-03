@@ -1,4 +1,12 @@
 using api.Dtos;
+using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
+using api.Features.Assets.CaseAssets.Substructures.Services;
+using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
+using api.Features.Assets.CaseAssets.Surfs.Services;
+using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
+using api.Features.Assets.CaseAssets.Topsides.Services;
+using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
+using api.Features.Assets.CaseAssets.Transports.Services;
 using api.Features.Prosp.Models;
 using api.Models;
 using api.Services;

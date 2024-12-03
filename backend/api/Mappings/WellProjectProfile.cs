@@ -1,4 +1,6 @@
 using api.Dtos;
+using api.Features.Assets.CaseAssets.WellProjects.Dtos;
+using api.Features.Assets.CaseAssets.WellProjects.Dtos.Create;
 using api.Features.TechnicalInput.Dtos;
 using api.Models;
 

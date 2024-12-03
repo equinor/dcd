@@ -1,4 +1,6 @@
 using api.Dtos;
+using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
+using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos.Create;
 using api.Models;
 
 using AutoMapper;

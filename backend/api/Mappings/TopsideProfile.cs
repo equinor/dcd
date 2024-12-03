@@ -1,4 +1,7 @@
 using api.Dtos;
+using api.Features.Assets.CaseAssets.Topsides.Dtos;
+using api.Features.Assets.CaseAssets.Topsides.Dtos.Create;
+using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
 using api.Models;
 
 using AutoMapper;

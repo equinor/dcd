@@ -1,4 +1,8 @@
 using api.Dtos;
+using api.Features.Assets.CaseAssets.Substructures.Dtos;
+using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
+using api.Features.Assets.CaseAssets.Substructures.Repositories;
+using api.Features.Assets.CaseAssets.Substructures.Services;
 using api.Features.ProjectAccess;
 using api.Models;
 using api.Repositories;

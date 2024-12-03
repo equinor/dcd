@@ -1,6 +1,8 @@
 using api.Context;
 using api.Dtos;
 using api.Exceptions;
+using api.Features.Assets.CaseAssets.Explorations.Dtos;
+using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Models;
 
 using AutoMapper;
