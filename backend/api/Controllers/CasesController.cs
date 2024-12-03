@@ -1,7 +1,5 @@
 using api.AppInfrastructure.Authorization;
 using api.Dtos;
-using api.Features.Images.Service;
-using api.Features.Projects.GetWithAssets;
 using api.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -17,31 +15,8 @@ namespace api.Controllers;
     ApplicationRole.User
 )]
 [ActionType(ActionType.Edit)]
-public class CasesController(
-    ICaseService caseService,
-    ICaseTimeSeriesService caseTimeSeriesService,
-    IBlobStorageService blobStorageService,
-    GetProjectWithAssetsService getProjectWithAssetsService)
-    : ControllerBase
+public class CasesController(ICaseTimeSeriesService caseTimeSeriesService) : ControllerBase
 {
-    [HttpDelete("{caseId}")]
-    public async Task<ProjectWithAssetsDto> DeleteCase(
-        [FromRoute] Guid projectId,
-        [FromRoute] Guid caseId
-        )
-    {
-        var images = await blobStorageService.GetCaseImages(caseId);
-
-        foreach (var image in images)
-        {
-            await blobStorageService.DeleteImage(image.Id);
-        }
-
-        await caseService.DeleteCase(projectId, caseId);
-
-        return await getProjectWithAssetsService.GetProjectWithAssets(projectId);
-    }
-
     [HttpPut("{caseId}/cessation-wells-cost-override/{costProfileId}")]
     public async Task<CessationWellsCostOverrideDto> UpdateCessationWellsCostOverride(
         [FromRoute] Guid projectId,

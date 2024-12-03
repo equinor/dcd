@@ -4,6 +4,7 @@ using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts;
 using api.Features.BackgroundServices.ProjectMaster.Services;
 using api.Features.Cases.CaseComparison;
 using api.Features.Cases.Create;
+using api.Features.Cases.Delete;
 using api.Features.Cases.Duplicate;
 using api.Features.Cases.GetWithAssets;
 using api.Features.Cases.Update;
@@ -57,6 +58,7 @@ public static class DcdIocConfiguration
         services.AddScoped<ICaseService, CaseService>();
         services.AddScoped<CreateCaseService>();
         services.AddScoped<UpdateCaseService>();
+        services.AddScoped<DeleteCaseService>();
 
         services.AddScoped<IDrainageStrategyService, DrainageStrategyService>();
         services.AddScoped<IWellProjectService, WellProjectService>();
