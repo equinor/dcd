@@ -5,12 +5,11 @@ using api.Features.Projects.GetWithAssets;
 using api.Features.Projects.GetWithCases;
 using api.Features.Projects.Update;
 using api.Features.Revisions.Get;
-
 using api.Models;
 
 using AutoMapper;
 
-namespace api.Mappings;
+namespace api.ModelMapping.AutoMapperProfiles;
 
 public class ProjectProfile : Profile
 {

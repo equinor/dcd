@@ -1,4 +1,4 @@
-namespace api.Services;
+namespace api.ModelMapping;
 
 public interface IMapperService
 {

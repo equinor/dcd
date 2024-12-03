@@ -7,8 +7,8 @@ using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.ProjectAccess;
+using api.ModelMapping;
 using api.Models;
-using api.Services;
 
 using Microsoft.EntityFrameworkCore;
 

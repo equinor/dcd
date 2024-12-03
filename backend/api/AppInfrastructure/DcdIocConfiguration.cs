@@ -50,7 +50,7 @@ using api.Features.Wells.Delete;
 using api.Features.Wells.Get;
 using api.Features.Wells.GetAffectedCases;
 using api.Features.Wells.Update;
-using api.Services;
+using api.ModelMapping;
 
 using Microsoft.AspNetCore.Authorization;
 

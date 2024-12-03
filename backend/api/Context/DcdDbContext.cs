@@ -3,7 +3,6 @@ using api.AppInfrastructure.Authorization;
 using api.Features.CaseProfiles.Services.GenerateCostProfiles;
 using api.Features.CaseProfiles.Services.GenerateCostProfiles.EconomicsServices;
 using api.Models;
-using api.Services;
 
 using Microsoft.EntityFrameworkCore;
 

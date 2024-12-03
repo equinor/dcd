@@ -2,7 +2,6 @@ using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.FeatureToggles;
-using api.Services;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;

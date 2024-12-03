@@ -11,7 +11,6 @@ using api.Features.CaseProfiles.Services;
 using api.Features.CaseProfiles.Services.GenerateCostProfiles;
 using api.Features.CaseProfiles.Services.GenerateCostProfiles.EconomicsServices;
 using api.Models;
-using api.Services;
 
 using NSubstitute;
 

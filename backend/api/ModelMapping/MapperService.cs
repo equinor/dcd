@@ -1,10 +1,8 @@
-
-
 using api.Exceptions;
 
 using AutoMapper;
 
-namespace api.Services;
+namespace api.ModelMapping;
 
 public class MapperService(IMapper mapper, ILogger<MapperService> logger) : IMapperService
 {

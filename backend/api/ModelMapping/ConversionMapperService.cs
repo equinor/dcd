@@ -1,11 +1,9 @@
-
-
 using api.Exceptions;
 using api.Models;
 
 using AutoMapper;
 
-namespace api.Services;
+namespace api.ModelMapping;
 
 public class ConversionMapperService(IMapper mapper, ILogger<MapperService> logger) : IConversionMapperService
 {

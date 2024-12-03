@@ -4,7 +4,7 @@ using api.AppInfrastructure;
 using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.Middleware;
 using api.Features.BackgroundServices.ProjectMaster;
-using api.Mappings;
+using api.ModelMapping.AutoMapperProfiles;
 
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.ResponseCompression;

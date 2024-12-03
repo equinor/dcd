@@ -12,7 +12,6 @@ using api.Features.TechnicalInput.Dtos;
 using api.Features.Wells.Create;
 using api.Features.Wells.Update;
 using api.Models;
-using api.Services;
 
 using AutoMapper;
 

@@ -6,7 +6,7 @@ using api.Models;
 
 using AutoMapper;
 
-namespace api.Mappings;
+namespace api.ModelMapping.AutoMapperProfiles;
 
 public class ExplorationProfile : Profile
 {
