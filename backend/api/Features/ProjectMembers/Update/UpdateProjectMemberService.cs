@@ -25,7 +25,8 @@ public class UpdateProjectMemberService(DcdDbContext context)
         {
             ProjectId = existingProjectMember.ProjectId,
             UserId = existingProjectMember.UserId,
-            Role = existingProjectMember.Role
+            Role = existingProjectMember.Role,
+            IsPmt = existingProjectMember.FromOrgChart
         };
     }
 }
