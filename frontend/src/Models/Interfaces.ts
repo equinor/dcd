@@ -39,6 +39,7 @@ export type ResourceObject =
     Components.Schemas.DrainageStrategyDto |
     Components.Schemas.WellProjectDto |
     Components.Schemas.ExplorationDto |
+    Components.Schemas.OnshorePowerSupplyDto |
     ProfileObject
 
 export type ProfileObject =

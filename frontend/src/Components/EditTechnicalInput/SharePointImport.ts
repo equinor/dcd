@@ -8,6 +8,7 @@ implements Components.Schemas.SharePointImportDto {
     substructureState?: ImportStatusEnum | undefined
     topsideState?: ImportStatusEnum | undefined
     transportState?: ImportStatusEnum | undefined
+    onshorePowerSupplyState?: ImportStatusEnum | undefined
     sharePointFileId?: string | null
     sharePointFileName?: string | null
     sharePointFileUrl?: string | null
@@ -27,6 +28,10 @@ implements Components.Schemas.SharePointImportDto {
         )
         this.topsideState = SharePointImport.topsideStatus(projectCase, project)
         this.transportState = SharePointImport.transportStatus(
+            projectCase,
+            project,
+        )
+        this.onshorePowerSupplyState = SharePointImport.onshorePowerSupplyStatus(
             projectCase,
             project,
         )
@@ -108,6 +113,25 @@ implements Components.Schemas.SharePointImportDto {
         }
         if (
             SharePointImport.mapSource(transport.source) === "ConceptApp"
+            && projectCase.sharepointFileName !== ""
+        ) {
+            return ImportStatusEnum.NotSelected
+        }
+
+        return ImportStatusEnum.Selected
+    }
+
+    static onshorePowerSupplyStatus = (
+        projectCase: Components.Schemas.CaseDto,
+        project: Components.Schemas.ProjectWithAssetsDto,
+    ): ImportStatusEnum => {
+        const onshorePowerSupplyId = projectCase.onshorePowerSupplyLink
+        const onshorePowerSupply = project.onshorePowerSupplies?.find((s) => s.id === onshorePowerSupplyId)
+        if (!onshorePowerSupply) {
+            return ImportStatusEnum.NotSelected
+        }
+        if (
+            SharePointImport.mapSource(onshorePowerSupply.source) === "ConceptApp"
             && projectCase.sharepointFileName !== ""
         ) {
             return ImportStatusEnum.NotSelected

@@ -84,6 +84,8 @@ public class CaseDto
     [Required]
     public Guid TransportLink { get; set; }
     [Required]
+    public Guid OnshorePowerSupplyLink { get; set; }
+    [Required]
     public Guid ExplorationLink { get; set; }
 
     [Required]

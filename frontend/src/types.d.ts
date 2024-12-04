@@ -1,40 +1,5 @@
 declare namespace Components {
     namespace Schemas {
-        export interface APIUpdateCaseDto {
-            name: string;
-            description?: string | null;
-            referenceCase?: boolean | null;
-            archived?: boolean;
-            artificialLift?: ArtificialLift /* int32 */;
-            productionStrategyOverview?: ProductionStrategyOverview /* int32 */;
-            producerCount?: number; // int32
-            gasInjectorCount?: number; // int32
-            waterInjectorCount?: number; // int32
-            facilitiesAvailability?: number; // double
-            capexFactorFeasibilityStudies?: number; // double
-            capexFactorFEEDStudies?: number; // double
-            npv?: number; // double
-            npvOverride?: number | null; // double
-            breakEven?: number; // double
-            breakEvenOverride?: number | null; // double
-            host?: string | null;
-            dgaDate?: string; // date-time
-            dgbDate?: string; // date-time
-            dgcDate?: string; // date-time
-            apboDate?: string; // date-time
-            borDate?: string; // date-time
-            vpboDate?: string; // date-time
-            dG0Date?: string; // date-time
-            dG1Date?: string; // date-time
-            dG2Date?: string; // date-time
-            dG3Date?: string; // date-time
-            dG4Date?: string; // date-time
-            capex?: number; // double
-            capexYear?: CapexYear;
-            sharepointFileId?: string | null;
-            sharepointFileName?: string | null;
-            sharepointFileUrl?: string | null;
-        }
         export interface APIUpdateSubstructureDto {
             dryWeight?: number; // double
             currency?: Currency /* int32 */;
@@ -103,9 +68,9 @@ declare namespace Components {
             maturity?: Maturity /* int32 */;
         }
         export interface AccessRightsDto {
-            canEdit?: boolean;
-            canView?: boolean;
-            isAdmin?: boolean;
+            canEdit: boolean;
+            canView: boolean;
+            isAdmin: boolean;
         }
         export interface AdditionalOPEXCostProfileDto {
             id: string; // uuid
@@ -206,6 +171,7 @@ declare namespace Components {
             substructureLink: string; // uuid
             topsideLink: string; // uuid
             transportLink: string; // uuid
+            onshorePowerSupplyLink: string; // uuid
             explorationLink: string; // uuid
             capex: number; // double
             capexYear?: CapexYear;
@@ -269,6 +235,10 @@ declare namespace Components {
             transportCostProfile?: TransportCostProfileDto;
             transportCostProfileOverride?: TransportCostProfileOverrideDto;
             transportCessationCostProfile?: TransportCessationCostProfileDto;
+            onshorePowerSupply: OnshorePowerSupplyDto;
+            onshorePowerSupplyCostProfile?: OnshorePowerSupplyCostProfileDto;
+            onshorePowerSupplyCostProfileOverride?: OnshorePowerSupplyCostProfileOverrideDto;
+            onshorePowerSupplyCessationCostProfile?: OnshorePowerSupplyCessationCostProfileDto;
             exploration: ExplorationDto;
             explorationWells?: ExplorationWellDto[] | null;
             explorationWellCostProfile?: ExplorationWellCostProfileDto;
@@ -1006,6 +976,56 @@ declare namespace Components {
             currency: Currency /* int32 */;
             override: boolean;
         }
+        export interface OnshorePowerSupplyCessationCostProfileDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion: string;
+            currency: Currency /* int32 */;
+        }
+        export interface OnshorePowerSupplyCostProfileDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion: string;
+            currency: Currency /* int32 */;
+        }
+        export interface OnshorePowerSupplyCostProfileOverrideDto {
+            id: string; // uuid
+            startYear: number; // int32
+            values?: number /* double */[] | null;
+            sum?: number; // double
+            epaVersion: string;
+            currency: Currency /* int32 */;
+            override: boolean;
+        }
+        export interface OnshorePowerSupplyDto {
+            id: string; // uuid
+            name: string;
+            projectId: string; // uuid
+            lastChangedDate?: string | null; // date-time
+            costYear: number; // int32
+            source: Source /* int32 */;
+            prospVersion?: string | null; // date-time
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
+        }
+        export interface OnshorePowerSupplyWithProfilesDto {
+            id: string; // uuid
+            name: string;
+            projectId: string; // uuid
+            costProfile: OnshorePowerSupplyCostProfileDto;
+            costProfileOverride: OnshorePowerSupplyCostProfileOverrideDto;
+            cessationCostProfile: OnshorePowerSupplyCessationCostProfileDto;
+            lastChangedDate?: string | null; // date-time
+            costYear: number; // int32
+            source: Source /* int32 */;
+            prospVersion?: string | null; // date-time
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
+        }
         export interface OnshoreRelatedOPEXCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
@@ -1111,35 +1131,6 @@ declare namespace Components {
         export type ProjectMemberRole = 0 | 1; // int32
         export type ProjectPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
         export interface ProjectWithAssetsDto {
-            classification: ProjectClassification /* int32 */;
-            id: string; // uuid
-            isRevision: boolean;
-            originalProjectId: string; // uuid
-            name: string;
-            commonLibraryId: string; // uuid
-            fusionProjectId: string; // uuid
-            referenceCaseId: string; // uuid
-            commonLibraryName: string;
-            description: string;
-            country: string;
-            currency: Currency /* int32 */;
-            physicalUnit: PhysUnit /* int32 */;
-            createDate: string; // date-time
-            projectPhase: ProjectPhase /* int32 */;
-            internalProjectPhase: InternalProjectPhase /* int32 */;
-            projectCategory: ProjectCategory /* int32 */;
-            sharepointSiteUrl?: string | null;
-            cO2RemovedFromGas: number; // double
-            cO2EmissionFromFuelGas: number; // double
-            flaredGasPerProducedVolume: number; // double
-            cO2EmissionsFromFlaredGas: number; // double
-            cO2Vented: number; // double
-            dailyEmissionFromDrillingRig: number; // double
-            averageDevelopmentDrillingDays: number; // double
-            oilPriceUSD: number; // double
-            gasPriceNOK: number; // double
-            discountRate: number; // double
-            exchangeRateUSDToNOK: number; // double
             explorationOperationalWellCosts: ExplorationOperationalWellCostsDto;
             developmentOperationalWellCosts: DevelopmentOperationalWellCostsDto;
             cases: CaseWithProfilesDto[];
@@ -1149,13 +1140,12 @@ declare namespace Components {
             substructures: SubstructureWithProfilesDto[];
             topsides: TopsideWithProfilesDto[];
             transports: TransportWithProfilesDto[];
+            onshorePowerSupplies: OnshorePowerSupplyWithProfilesDto[];
             drainageStrategies: DrainageStrategyWithProfilesDto[];
             wellProjects: WellProjectWithProfilesDto[];
             projectMembers: ProjectMemberDto[];
             modifyTime: string; // date-time
             revisionsDetailsList: RevisionDetailsDto[];
-        }
-        export interface ProjectWithCasesDto {
             classification: ProjectClassification /* int32 */;
             id: string; // uuid
             isRevision: boolean;
@@ -1185,8 +1175,39 @@ declare namespace Components {
             gasPriceNOK: number; // double
             discountRate: number; // double
             exchangeRateUSDToNOK: number; // double
+        }
+        export interface ProjectWithCasesDto {
             cases: CaseDto[];
             revisions: ProjectDto[];
+            classification: ProjectClassification /* int32 */;
+            id: string; // uuid
+            isRevision: boolean;
+            originalProjectId: string; // uuid
+            name: string;
+            commonLibraryId: string; // uuid
+            fusionProjectId: string; // uuid
+            referenceCaseId: string; // uuid
+            commonLibraryName: string;
+            description: string;
+            country: string;
+            currency: Currency /* int32 */;
+            physicalUnit: PhysUnit /* int32 */;
+            createDate: string; // date-time
+            projectPhase: ProjectPhase /* int32 */;
+            internalProjectPhase: InternalProjectPhase /* int32 */;
+            projectCategory: ProjectCategory /* int32 */;
+            sharepointSiteUrl?: string | null;
+            cO2RemovedFromGas: number; // double
+            cO2EmissionFromFuelGas: number; // double
+            flaredGasPerProducedVolume: number; // double
+            cO2EmissionsFromFlaredGas: number; // double
+            cO2Vented: number; // double
+            dailyEmissionFromDrillingRig: number; // double
+            averageDevelopmentDrillingDays: number; // double
+            oilPriceUSD: number; // double
+            gasPriceNOK: number; // double
+            discountRate: number; // double
+            exchangeRateUSDToNOK: number; // double
         }
         export interface RevisionDataDto {
             revisionDetails: RevisionDetailsDto;
@@ -1203,6 +1224,12 @@ declare namespace Components {
             classification: ProjectClassification /* int32 */;
         }
         export interface RevisionWithCasesDto {
+            modifyTime: string; // date-time
+            revisionDetails: RevisionDetailsDto;
+            cases: CaseDto[];
+            explorationOperationalWellCosts: ExplorationOperationalWellCostsDto;
+            developmentOperationalWellCosts: DevelopmentOperationalWellCostsDto;
+            wells: WellDto[];
             classification: ProjectClassification /* int32 */;
             id: string; // uuid
             isRevision: boolean;
@@ -1232,27 +1259,6 @@ declare namespace Components {
             gasPriceNOK: number; // double
             discountRate: number; // double
             exchangeRateUSDToNOK: number; // double
-            modifyTime: string; // date-time
-            revisionDetails: RevisionDetailsDto;
-            cases: CaseDto[];
-            explorationOperationalWellCosts: ExplorationOperationalWellCostsDto;
-            developmentOperationalWellCosts: DevelopmentOperationalWellCostsDto;
-            wells: WellDto[];
-        }
-        export interface STEACaseDto {
-            name?: string | null;
-            startYear?: number; // int32
-            exploration?: TimeSeriesCostDto;
-            capex?: CapexDto;
-            productionAndSalesVolumes?: ProductionAndSalesVolumesDto;
-            offshoreFacilitiesCostProfileDto?: OffshoreFacilitiesCostProfileDto;
-            studyCostProfile?: StudyCostProfileDto;
-            opexCostProfile?: OpexCostProfileDto;
-        }
-        export interface STEAProjectDto {
-            name?: string | null;
-            startYear?: number; // int32
-            steaCases?: STEACaseDto[] | null;
         }
         export interface SeismicAcquisitionAndProcessingDto {
             id: string; // uuid
@@ -1268,6 +1274,7 @@ declare namespace Components {
             substructure?: boolean;
             topside?: boolean;
             transport?: boolean;
+            onshorePowerSupply?: boolean;
             sharePointFileId?: string | null;
             sharePointFileName?: string | null;
             sharePointFileUrl?: string | null;
@@ -1293,6 +1300,21 @@ declare namespace Components {
             currency: Currency /* int32 */;
         }
         export type Source = 0 | 1; // int32
+        export interface SteaCaseDto {
+            name?: string | null;
+            startYear?: number; // int32
+            exploration?: TimeSeriesCostDto;
+            capex?: CapexDto;
+            productionAndSalesVolumes?: ProductionAndSalesVolumesDto;
+            offshoreFacilitiesCostProfileDto?: OffshoreFacilitiesCostProfileDto;
+            studyCostProfile?: StudyCostProfileDto;
+            opexCostProfile?: OpexCostProfileDto;
+        }
+        export interface SteaProjectDto {
+            name: string | null;
+            startYear: number; // int32
+            steaCases: SteaCaseDto[] | null;
+        }
         export interface StudyCostProfileDto {
             id: string; // uuid
             startYear: number; // int32
@@ -1663,6 +1685,39 @@ declare namespace Components {
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
         }
+        export interface UpdateCaseDto {
+            name: string;
+            description?: string | null;
+            referenceCase?: boolean | null;
+            archived?: boolean;
+            artificialLift?: ArtificialLift /* int32 */;
+            productionStrategyOverview?: ProductionStrategyOverview /* int32 */;
+            producerCount?: number; // int32
+            gasInjectorCount?: number; // int32
+            waterInjectorCount?: number; // int32
+            facilitiesAvailability?: number; // double
+            capexFactorFeasibilityStudies?: number; // double
+            capexFactorFEEDStudies?: number; // double
+            npv?: number; // double
+            npvOverride?: number | null; // double
+            breakEven?: number; // double
+            breakEvenOverride?: number | null; // double
+            host?: string | null;
+            dgaDate?: string; // date-time
+            dgbDate?: string; // date-time
+            dgcDate?: string; // date-time
+            apboDate?: string; // date-time
+            borDate?: string; // date-time
+            vpboDate?: string; // date-time
+            dG0Date?: string; // date-time
+            dG1Date?: string; // date-time
+            dG2Date?: string; // date-time
+            dG3Date?: string; // date-time
+            dG4Date?: string; // date-time
+            sharepointFileId?: string | null;
+            sharepointFileName?: string | null;
+            sharepointFileUrl?: string | null;
+        }
         export interface UpdateCessationOffshoreFacilitiesCostOverrideDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -2023,64 +2078,11 @@ declare namespace Components {
     }
 }
 declare namespace Paths {
-    namespace Context$ContextId {
-        namespace Get {
-            namespace Parameters {
-                export type ContextId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                contextId: Parameters.ContextId /* uuid */;
-            }
-            namespace Responses {
-                export type $200 = Components.Schemas.FusionPersonV1[];
-            }
-        }
-    }
-    namespace Duplicate {
-        namespace Parameters {
-            export type CopyCaseId = string; // uuid
-            export type ProjectId = string; // uuid
-        }
-        export interface PathParameters {
-            projectId: Parameters.ProjectId /* uuid */;
-        }
-        export interface QueryParameters {
-            copyCaseId?: Parameters.CopyCaseId /* uuid */;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.ProjectWithAssetsDto;
-        }
-    }
-    namespace ExcelToSTEA {
-        namespace Parameters {
-            export type ProjectId = string; // uuid
-        }
-        export interface PathParameters {
-            projectId: Parameters.ProjectId /* uuid */;
-        }
-        namespace Responses {
-            export interface $200 {
-            }
-        }
-    }
     namespace FeatureToggles {
         namespace Get {
             namespace Responses {
                 export type $200 = Components.Schemas.FeatureToggleDto;
             }
-        }
-    }
-    namespace GetInputToSTEA {
-        namespace Parameters {
-            export type ProjectId = string; // uuid
-        }
-        export interface PathParameters {
-            projectId: Parameters.ProjectId /* uuid */;
-        }
-        namespace Responses {
-            export type $200 = Components.Schemas.STEAProjectDto;
         }
     }
     namespace GetSharePointFileNamesAndId {
@@ -2096,12 +2098,25 @@ declare namespace Paths {
         export interface PathParameters {
             projectId: Parameters.ProjectId /* uuid */;
         }
-        export interface QueryParameters {
-            projectId?: Parameters.ProjectId /* uuid */;
-        }
         export type RequestBody = Components.Schemas.SharePointImportDto[];
         namespace Responses {
             export type $200 = Components.Schemas.ProjectWithAssetsDto;
+        }
+    }
+    namespace Project$ProjectIdDevelopmentOperationalWellCosts$DevelopmentOperationalWellCostsId {
+        namespace Put {
+            namespace Parameters {
+                export type DevelopmentOperationalWellCostsId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                developmentOperationalWellCostsId: Parameters.DevelopmentOperationalWellCostsId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.UpdateDevelopmentOperationalWellCostsDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.DevelopmentOperationalWellCostsDto;
+            }
         }
     }
     namespace Projects {
@@ -2205,7 +2220,7 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
                 caseId: Parameters.CaseId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.APIUpdateCaseDto;
+            export type RequestBody = Components.Schemas.UpdateCaseDto;
             namespace Responses {
                 export type $200 = Components.Schemas.CaseDto;
             }
@@ -3779,19 +3794,20 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdDevelopmentOperationalWellCosts$DevelopmentOperationalWellCostsId {
-        namespace Put {
+    namespace Projects$ProjectIdCasesCopy {
+        namespace Post {
             namespace Parameters {
-                export type DevelopmentOperationalWellCostsId = string; // uuid
+                export type CopyCaseId = string; // uuid
                 export type ProjectId = string; // uuid
             }
             export interface PathParameters {
                 projectId: Parameters.ProjectId /* uuid */;
-                developmentOperationalWellCostsId: Parameters.DevelopmentOperationalWellCostsId /* uuid */;
             }
-            export type RequestBody = Components.Schemas.UpdateDevelopmentOperationalWellCostsDto;
+            export interface QueryParameters {
+                copyCaseId?: Parameters.CopyCaseId /* uuid */;
+            }
             namespace Responses {
-                export type $200 = Components.Schemas.DevelopmentOperationalWellCostsDto;
+                export type $200 = Components.Schemas.ProjectWithAssetsDto;
             }
         }
     }
@@ -3869,6 +3885,17 @@ declare namespace Paths {
         }
     }
     namespace Projects$ProjectIdMembers {
+        namespace Get {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.ProjectMemberDto[];
+            }
+        }
         namespace Post {
             namespace Parameters {
                 export type ProjectId = string; // uuid
@@ -3907,6 +3934,21 @@ declare namespace Paths {
             namespace Responses {
                 export interface $200 {
                 }
+            }
+        }
+    }
+    namespace Projects$ProjectIdMembersContext$ContextId {
+        namespace Get {
+            namespace Parameters {
+                export type ContextId = string; // uuid
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                contextId: Parameters.ContextId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.FusionPersonV1[];
             }
         }
     }
@@ -4038,6 +4080,31 @@ declare namespace Paths {
             }
             namespace Responses {
                 export type $200 = Components.Schemas.CaseDto[];
+            }
+        }
+    }
+    namespace Stea$ProjectId {
+        namespace Get {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.SteaProjectDto;
+            }
+        }
+        namespace Post {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            namespace Responses {
+                export interface $200 {
+                }
             }
         }
     }

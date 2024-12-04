@@ -22,6 +22,7 @@ public class CaseWithAssetsRepository(DcdDbContext context)
         Substructure Substructure,
         Surf Surf,
         Transport Transport,
+        OnshorePowerSupply OnshorePowerSupply,
         WellProject WellProject
         )> GetCaseWithAssetsNoTracking(Guid caseId)
     {
@@ -32,9 +33,10 @@ public class CaseWithAssetsRepository(DcdDbContext context)
         var substructure = await GetSubstructureNoTracking(caseItem.SubstructureLink);
         var surf = await GetSurfNoTracking(caseItem.SurfLink);
         var transport = await GetTransportNoTracking(caseItem.TransportLink);
+        var onshorePowerSupply = await GetOnshorePowerSupplyNoTracking(caseItem.OnshorePowerSupplyLink);
         var wellProject = await GetWellProjectNoTracking(caseItem.WellProjectLink);
 
-        return (caseItem, drainageStrategy, topside, exploration, substructure, surf, transport, wellProject);
+        return (caseItem, drainageStrategy, topside, exploration, substructure, surf, transport, onshorePowerSupply, wellProject);
     }
 
     private async Task<Case> GetCaseNoTracking(Guid caseId)
@@ -66,6 +68,16 @@ public class CaseWithAssetsRepository(DcdDbContext context)
     private async Task<Transport> GetTransportNoTracking(Guid caseId)
     {
         return await context.Transports
+            .Include(c => c.CostProfile)
+            .Include(c => c.CostProfileOverride)
+            .Include(c => c.CessationCostProfile)
+            .AsNoTracking()
+            .FirstAsync(o => o.Id == caseId);
+    }
+
+    private async Task<OnshorePowerSupply> GetOnshorePowerSupplyNoTracking(Guid caseId)
+    {
+        return await context.OnshorePowerSupplies
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)

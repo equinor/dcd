@@ -3,6 +3,8 @@ using api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
 using api.Features.Assets.CaseAssets.Explorations.Repositories;
 using api.Features.Assets.CaseAssets.Explorations.Services;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Repositories;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.Assets.CaseAssets.Substructures.Repositories;
 using api.Features.Assets.CaseAssets.Substructures.Services;
 using api.Features.Assets.CaseAssets.Surfs.Repositories;
@@ -82,6 +84,7 @@ public static class DcdIocConfiguration
         services.AddScoped<ISubstructureService, SubstructureService>();
         services.AddScoped<ITopsideService, TopsideService>();
         services.AddScoped<ITransportService, TransportService>();
+        services.AddScoped<IOnshorePowerSupplyService, OnshorePowerSupplyService>();
 
         services.AddScoped<ICostProfileFromDrillingScheduleHelper, CostProfileFromDrillingScheduleHelper>();
 
@@ -93,6 +96,7 @@ public static class DcdIocConfiguration
         services.AddScoped<ISubstructureTimeSeriesService, SubstructureTimeSeriesService>();
         services.AddScoped<ITopsideTimeSeriesService, TopsideTimeSeriesService>();
         services.AddScoped<ITransportTimeSeriesService, TransportTimeSeriesService>();
+        services.AddScoped<IOnshorePowerSupplyTimeSeriesService, OnshorePowerSupplyTimeSeriesService>();
 
         services.AddScoped<TechnicalInputService>();
 
@@ -136,6 +140,7 @@ public static class DcdIocConfiguration
         services.AddScoped<IExplorationRepository, ExplorationRepository>();
         services.AddScoped<ITransportRepository, TransportRepository>();
         services.AddScoped<ISurfRepository, SurfRepository>();
+        services.AddScoped<IOnshorePowerSupplyRepository, OnshorePowerSupplyRepository>();
 
         services.AddScoped<ICaseTimeSeriesRepository, CaseTimeSeriesRepository>();
         services.AddScoped<IDrainageStrategyTimeSeriesRepository, DrainageStrategyTimeSeriesRepository>();
@@ -145,6 +150,7 @@ public static class DcdIocConfiguration
         services.AddScoped<IExplorationTimeSeriesRepository, ExplorationTimeSeriesRepository>();
         services.AddScoped<ITransportTimeSeriesRepository, TransportTimeSeriesRepository>();
         services.AddScoped<ISurfTimeSeriesRepository, SurfTimeSeriesRepository>();
+        services.AddScoped<IOnshorePowerSupplyTimeSeriesRepository, OnshorePowerSupplyTimeSeriesRepository>();
 
         services.AddScoped<GetWellService>();
         services.AddScoped<CreateWellService>();

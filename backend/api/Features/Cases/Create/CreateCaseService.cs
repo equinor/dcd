@@ -14,9 +14,9 @@ public class CreateCaseService(DcdDbContext context)
                           .FirstOrDefaultAsync(p => (p.Id == projectId || p.FusionProjectId == projectId) && !p.IsRevision)
                       ?? throw new NotFoundInDBException($"Project {projectId} does not exist");
 
-        context.Cases.Add(new Case
+        project.Cases.Add(new Case
         {
-            ProjectId = projectId,
+            Project = project,
             Name = createCaseDto.Name,
             Description = createCaseDto.Description,
             ProductionStrategyOverview = createCaseDto.ProductionStrategyOverview,
@@ -33,8 +33,12 @@ public class CreateCaseService(DcdDbContext context)
             Substructure = CreateSubstructure(project),
             Transport = CreateTransport(project),
             Exploration = CreateExploration(project),
-            WellProject = CreateWellProject(project)
+            WellProject = CreateWellProject(project),
+            OnshorePowerSupply = CreateOnshorePowerSupply(project)
         });
+        var createdCase = project.Cases.Last();
+        Console.WriteLine("Case created with OnshorePowerSupply: " + createdCase?.OnshorePowerSupply?.CostProfile?.Values);
+        Console.WriteLine("Case created with OnshorePowerSupply: " + createdCase?.OnshorePowerSupply?.CostProfileOverride?.Values);
 
         await context.SaveChangesAsync();
     }
@@ -95,6 +99,19 @@ public class CreateCaseService(DcdDbContext context)
             Name = "Transport",
             Project = project,
             CostProfileOverride = new TransportCostProfileOverride
+            {
+                Override = true
+            }
+        };
+    }
+
+        private static OnshorePowerSupply CreateOnshorePowerSupply(Project project)
+    {
+        return new OnshorePowerSupply
+        {
+            Name = "OnshorePowerSupply",
+            Project = project,
+            CostProfileOverride = new OnshorePowerSupplyCostProfileOverride
             {
                 Override = true
             }

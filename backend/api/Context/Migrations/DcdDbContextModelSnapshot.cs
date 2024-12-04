@@ -322,6 +322,9 @@ namespace api.Migrations
                     b.Property<Guid>("TransportLink")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("OnshorePowerSupplyLink")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTimeOffset>("VPBODate")
                         .HasColumnType("datetimeoffset");
 
