@@ -12,7 +12,6 @@ using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts.Dtos;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.ProjectData.Dtos;
-using api.Features.ProjectMembers.Get;
 using api.Features.Wells.Get;
 using api.Models;
 
@@ -32,7 +31,6 @@ public class ProjectWithAssetsDto : IEquatable<ProjectWithAssetsDto>
     [Required] public List<OnshorePowerSupplyWithProfilesDto> OnshorePowerSupplies { get; set; } = [];
     [Required] public List<DrainageStrategyWithProfilesDto> DrainageStrategies { get; set; } = [];
     [Required] public List<WellProjectWithProfilesDto>? WellProjects { get; set; } = [];
-    [Required] public List<ProjectMemberDto> ProjectMembers { get; set; } = [];
     [Required] public DateTimeOffset ModifyTime { get; set; }
     [Required] public List<RevisionDetailsDto> RevisionsDetailsList { get; set; } = [];
 

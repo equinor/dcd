@@ -737,13 +737,6 @@ declare namespace Components {
             sum?: number; // double
             override: boolean;
         }
-        export interface FusionPersonV1 {
-            azureUniqueId?: string | null;
-            mail?: string | null;
-            name?: string | null;
-            accountType?: string | null;
-            accountClassification?: string | null;
-        }
         export interface GAndGAdminCostDto {
             id: string; // uuid
             startYear: number; // int32
@@ -998,6 +991,7 @@ declare namespace Components {
             projectId: string; // uuid
             userId: string; // uuid
             role: ProjectMemberRole /* int32 */;
+            isPmt: boolean;
         }
         export type ProjectMemberRole = 0 | 1; // int32
         export type ProjectPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
@@ -3674,7 +3668,7 @@ declare namespace Paths {
                 contextId: Parameters.ContextId /* uuid */;
             }
             namespace Responses {
-                export type $200 = Components.Schemas.FusionPersonV1[];
+                export type $200 = Components.Schemas.ProjectMemberDto[];
             }
         }
     }

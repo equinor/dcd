@@ -14,15 +14,13 @@ using Microsoft.EntityFrameworkCore;
 namespace api.AppInfrastructure.Authorization;
 
 public class ApplicationRoleAuthorizationHandler(
-    DcdDbContext dbContext,
+    IDbContextFactory<DcdDbContext> contextFactory,
     IHttpContextAccessor httpContextAccessor,
     ILogger<ApplicationRoleAuthorizationHandler> logger)
     : AuthorizationHandler<ApplicationRoleRequirement>
 {
-    protected override async Task<Task> HandleRequirementAsync(
-        AuthorizationHandlerContext context,
-        ApplicationRoleRequirement requirement
-    )
+    protected override async Task<Task> HandleRequirementAsync(AuthorizationHandlerContext context,
+        ApplicationRoleRequirement requirement)
     {
         var requestPath = httpContextAccessor.HttpContext?.Request.Path;
 
@@ -40,6 +38,7 @@ public class ApplicationRoleAuthorizationHandler(
         }
 
         var userRoles = context.User.AssignedApplicationRoles();
+
         if (!await IsAuthorized(context, requirement, userRoles))
         {
             HandleUnauthorizedRequest(context, requestPath, requirement.Roles, userRoles);
@@ -61,20 +60,19 @@ public class ApplicationRoleAuthorizationHandler(
         var fusionIdentity = context.User.Identities.FirstOrDefault(i => i is Fusion.Integration.Authentication.FusionIdentity)
             as Fusion.Integration.Authentication.FusionIdentity;
 
-        return fusionIdentity?.Profile?.AzureUniqueId ??
+        return fusionIdentity?.Profile.AzureUniqueId ??
             throw new InvalidOperationException("AzureUniqueId not found in user profile");
     }
 
     private async Task<bool> IsAuthorized(
         AuthorizationHandlerContext context,
         ApplicationRoleRequirement roleRequirement,
-        List<ApplicationRole> userRoles
-    )
+        List<ApplicationRole> userRoles)
     {
         var userHasRequiredRole = userRoles.Any(roleRequirement.Roles.Contains);
 
         // TODO: Implement check for classification and project phase
-        var project = await GetCurrentProject(context);
+        var project = await GetCurrentProject();
 
         if (project == null)
         {
@@ -125,7 +123,7 @@ public class ApplicationRoleAuthorizationHandler(
         return actionTypeAttribute?.ActionType;
     }
 
-    private async Task<Project?> GetCurrentProject(AuthorizationHandlerContext context)
+    private async Task<Project?> GetCurrentProject()
     {
         var projectId = httpContextAccessor.HttpContext?.Request.RouteValues["projectId"];
         if (projectId == null)
@@ -135,8 +133,10 @@ public class ApplicationRoleAuthorizationHandler(
 
         if (!Guid.TryParse(projectId.ToString(), out var projectIdGuid))
         {
-            return null;
+            throw new InvalidProjectIdException($"Invalid project id: {projectId}");
         }
+
+        await using var dbContext = await contextFactory.CreateDbContextAsync();
 
         var projectPk = await dbContext.GetPrimaryKeyForProjectIdOrRevisionId(projectIdGuid);
 
@@ -147,15 +147,13 @@ public class ApplicationRoleAuthorizationHandler(
         AuthorizationHandlerContext context,
         PathString? requestPath,
         List<ApplicationRole> requiredAnyOfTheseRoles,
-        List<ApplicationRole> userRoles
-    )
+        List<ApplicationRole> userRoles)
     {
         context.Fail();
-        var username = context.User.Identity!.Name;
+
         logger.LogWarning(
-            "User '{Username}' attempted to access '{RequestPath}' but was not authorized "
-                + "- one of the following roles '{RequiredRoles}' is required , while user has the roles '{UserRoles}'",
-            username,
+            "User '{Username}' attempted to access '{RequestPath}' but was not authorized - one of the following roles '{RequiredRoles}' is required , while user has the roles '{UserRoles}'",
+            context.User.Identity!.Name,
             requestPath,
             string.Join(", ", requiredAnyOfTheseRoles),
             string.Join(", ", userRoles)
