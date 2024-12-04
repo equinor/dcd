@@ -1,11 +1,10 @@
 import { config } from "./config"
-import { FusionPersonV1 } from "@/Models/AccessManagement"
 import { __BaseService } from "./__BaseService"
 import { getToken, loginAccessTokenKey } from "@/Utils/common"
 
 class __OrgChartMembersService extends __BaseService {
-    public async getOrgChartPeople(contextId: string): Promise<FusionPersonV1[]> {
-        const res: FusionPersonV1[] = await this.get<FusionPersonV1[]>(`/context/${contextId}`)
+    public async getOrgChartPeople(projectId: string, contextId: string): Promise<Components.Schemas.ProjectMemberDto[]> {
+        const res: Components.Schemas.ProjectMemberDto[] = await this.get<Components.Schemas.ProjectMemberDto[]>(`projects/${projectId}/members/context/${contextId}`)
         return res
     }
 }

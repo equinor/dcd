@@ -56,6 +56,7 @@ public class DcdExceptionHandlingMiddleware(
                 break;
             case WellChangeTypeException:
             case InvalidInputException:
+            case InvalidProjectIdException:
                 statusCode = HttpStatusCode.BadRequest;
                 errorInformation.Add("message", exception.Message);
                 break;
