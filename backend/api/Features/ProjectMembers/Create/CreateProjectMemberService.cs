@@ -18,7 +18,8 @@ public class CreateProjectMemberService(DcdDbContext context)
         {
             ProjectId = projectPk,
             UserId = dto.UserId,
-            Role = dto.Role
+            Role = dto.Role,
+            FromOrgChart = false
         };
 
         var existingProjectMember = await context.ProjectMembers.SingleOrDefaultAsync(c => c.ProjectId == projectPk && c.UserId == dto.UserId);
@@ -36,7 +37,8 @@ public class CreateProjectMemberService(DcdDbContext context)
         {
             ProjectId = projectPk,
             UserId = projectMember.UserId,
-            Role = projectMember.Role
+            Role = projectMember.Role,
+            IsPmt = projectMember.FromOrgChart
         };
     }
 }
