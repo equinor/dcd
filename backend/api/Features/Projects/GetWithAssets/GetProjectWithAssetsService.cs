@@ -16,7 +16,6 @@ public class GetProjectWithAssetsService(DcdDbContext context, IProjectWithAsset
         var project = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectId);
         var revisionDetails = await context.RevisionDetails
             .Where(r => r.OriginalProjectId == project.Id)
-            .OrderBy(x => x.RevisionDate)
             .Select(x => new RevisionDetailsDto
             {
                 Id = x.Id,
@@ -32,7 +31,7 @@ public class GetProjectWithAssetsService(DcdDbContext context, IProjectWithAsset
 
         var projectDto = mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 
-        projectDto.RevisionsDetailsList = revisionDetails;
+        projectDto.RevisionsDetailsList = revisionDetails.OrderBy(x => x.RevisionDate).ToList();
         projectDto.ModifyTime = project.Cases.Select(c => c.ModifyTime).Append(project.ModifyTime).Max();
 
         return projectDto;

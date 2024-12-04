@@ -33,6 +33,7 @@ public class CreateProjectService(DcdDbContext context, IFusionService fusionSer
             ProjectPhase = ProjectPhaseEnumConverter.ConvertPhase(projectMaster.Phase),
             Country = projectMaster.Country ?? "",
             ProjectCategory = ProjectCategoryEnumConverter.ConvertCategory(projectMaster.ProjectCategory),
+            CommonLibraryName = "",
             CreateDate = DateTimeOffset.UtcNow,
             ExplorationOperationalWellCosts = new ExplorationOperationalWellCosts(),
             DevelopmentOperationalWellCosts = new DevelopmentOperationalWellCosts(),
