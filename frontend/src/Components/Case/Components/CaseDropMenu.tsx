@@ -127,7 +127,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                 </Menu.Item>
                 <Menu.Item
                     disabled={isArchived || isEditDisabled}
-                    onClick={() => projectData && duplicateCase(caseId, projectData, addProjectEdit)}
+                    onClick={() => projectData && duplicateCase(caseId, projectData.id, addProjectEdit)}
                 >
                     <Icon data={library_add} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">

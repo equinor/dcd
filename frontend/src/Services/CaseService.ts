@@ -37,8 +37,8 @@ class CaseService extends __BaseService {
     public async duplicateCase(
         projectId: string,
         copyCaseId: string,
-    ): Promise<Components.Schemas.ProjectWithAssetsDto> {
-        const res: Components.Schemas.ProjectWithAssetsDto = await this.postWithParams(
+    ): Promise<Components.Schemas.ProjectDataDto> {
+        const res: Components.Schemas.ProjectDataDto = await this.postWithParams(
             `projects/${projectId}/cases/copy`,
             { body: {} },
             { params: { copyCaseId } },

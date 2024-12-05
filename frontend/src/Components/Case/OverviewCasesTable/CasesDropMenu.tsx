@@ -124,7 +124,7 @@ const CasesDropMenu = ({
                 </Menu.Item>
                 <Menu.Item
                     disabled={selectedCase?.archived || isEditDisabled}
-                    onClick={() => (projectData && selectedCaseId) && duplicateCase(selectedCaseId, projectData, addProjectEdit)}
+                    onClick={() => (projectData && selectedCaseId) && duplicateCase(selectedCaseId, projectData.id, addProjectEdit)}
                 >
                     <Icon data={library_add} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
