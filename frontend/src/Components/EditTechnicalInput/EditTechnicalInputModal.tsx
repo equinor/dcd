@@ -85,8 +85,8 @@ const EditTechnicalInputModal = () => {
             // refactor to use react-query?
             const result = apiData ? await (await GetTechnicalInputService()).update(apiData?.projectId, dto) : undefined
 
-            if (result?.projectDto) {
-                addProjectEdit(result?.projectDto.id, result?.projectDto)
+            if (result?.projectData) {
+                addProjectEdit(result?.projectData.projectId, result?.projectData.commonProjectAndRevisionData)
             }
 
             setOriginalExplorationOperationalWellCosts(explorationOperationalWellCosts)

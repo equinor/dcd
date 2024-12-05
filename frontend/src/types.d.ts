@@ -1044,51 +1044,6 @@ declare namespace Components {
         }
         export type ProjectMemberRole = 0 | 1; // int32
         export type ProjectPhase = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9; // int32
-        export interface ProjectWithAssetsDto {
-            explorationOperationalWellCosts: ExplorationOperationalWellCostsDto;
-            developmentOperationalWellCosts: DevelopmentOperationalWellCostsDto;
-            cases: CaseWithProfilesDto[];
-            wells: WellDto[];
-            explorations: ExplorationWithProfilesDto[];
-            surfs: SurfWithProfilesDto[];
-            substructures: SubstructureWithProfilesDto[];
-            topsides: TopsideWithProfilesDto[];
-            transports: TransportWithProfilesDto[];
-            drainageStrategies: DrainageStrategyWithProfilesDto[];
-            wellProjects: WellProjectWithProfilesDto[];
-            projectMembers: ProjectMemberDto[];
-            modifyTime: string; // date-time
-            revisionsDetailsList: RevisionDetailsDto[];
-            classification: ProjectClassification /* int32 */;
-            id: string; // uuid
-            isRevision: boolean;
-            originalProjectId: string; // uuid
-            name: string;
-            commonLibraryId: string; // uuid
-            fusionProjectId: string; // uuid
-            referenceCaseId: string; // uuid
-            commonLibraryName: string;
-            description: string;
-            country: string;
-            currency: Currency /* int32 */;
-            physicalUnit: PhysUnit /* int32 */;
-            createDate: string; // date-time
-            projectPhase: ProjectPhase /* int32 */;
-            internalProjectPhase: InternalProjectPhase /* int32 */;
-            projectCategory: ProjectCategory /* int32 */;
-            sharepointSiteUrl?: string | null;
-            cO2RemovedFromGas: number; // double
-            cO2EmissionFromFuelGas: number; // double
-            flaredGasPerProducedVolume: number; // double
-            cO2EmissionsFromFlaredGas: number; // double
-            cO2Vented: number; // double
-            dailyEmissionFromDrillingRig: number; // double
-            averageDevelopmentDrillingDays: number; // double
-            oilPriceUSD: number; // double
-            gasPriceNOK: number; // double
-            discountRate: number; // double
-            exchangeRateUSDToNOK: number; // double
-        }
         export interface RevisionDataDto {
             projectId: string; // uuid
             revisionId: string; // uuid
@@ -1307,7 +1262,7 @@ declare namespace Components {
             developmentOperationalWellCostsDto?: DevelopmentOperationalWellCostsDto;
             explorationOperationalWellCostsDto?: ExplorationOperationalWellCostsDto;
             wellDtos?: WellDto[] | null;
-            projectDto?: ProjectWithAssetsDto;
+            projectData?: ProjectDataDto;
             explorationDto?: ExplorationWithProfilesDto;
             wellProjectDto?: WellProjectWithProfilesDto;
         }

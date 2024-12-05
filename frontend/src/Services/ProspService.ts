@@ -9,8 +9,8 @@ export class __ProspService extends __BaseService {
         sourceCaseId: string,
         projectId: string,
         body: any,
-    ): Promise<Components.Schemas.ProjectWithAssetsDto> {
-        const res: Components.Schemas.ProjectWithAssetsDto = await this.postWithParams(
+    ): Promise<Components.Schemas.ProjectDataDto> {
+        const res: Components.Schemas.ProjectDataDto = await this.postWithParams(
             "",
             { body },
 

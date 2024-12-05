@@ -15,20 +15,20 @@ implements Components.Schemas.SharePointImportDto {
 
     constructor(
         projectCase: Components.Schemas.CaseDto,
-        project: Components.Schemas.ProjectWithAssetsDto,
+        project: Components.Schemas.ProjectDataDto,
         data: Components.Schemas.SharePointImportDto | undefined,
     ) {
         this.id = projectCase.id!
         this.selected = false
-        this.surfState = SharePointImport.surfStatus(projectCase, project)
+        this.surfState = SharePointImport.surfStatus(projectCase, project.commonProjectAndRevisionData)
         this.substructureState = SharePointImport.substructureStatus(
             projectCase,
-            project,
+            project.commonProjectAndRevisionData,
         )
-        this.topsideState = SharePointImport.topsideStatus(projectCase, project)
+        this.topsideState = SharePointImport.topsideStatus(projectCase, project.commonProjectAndRevisionData)
         this.transportState = SharePointImport.transportStatus(
             projectCase,
-            project,
+            project.commonProjectAndRevisionData,
         )
         this.sharePointFileName = data?.sharePointFileName ?? ""
         this.sharePointFileId = data?.sharePointFileId ?? ""
