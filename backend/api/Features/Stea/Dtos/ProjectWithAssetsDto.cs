@@ -15,7 +15,7 @@ using api.Features.Revisions.Get;
 using api.Features.Wells.Get;
 using api.Models;
 
-namespace api.Features.Projects.GetWithAssets;
+namespace api.Features.Stea.Dtos;
 
 public class ProjectWithAssetsDto : IEquatable<ProjectWithAssetsDto>
 {

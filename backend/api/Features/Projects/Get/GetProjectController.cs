@@ -6,15 +6,15 @@ using api.Features.ProjectData.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
 
-namespace api.Features.Projects.GetWithAssets;
+namespace api.Features.Projects.Get;
 
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-public class GetProjectWithAssetsController(GetProjectDataService getProjectDataService) : ControllerBase
+public class GetProjectController(GetProjectDataService getProjectDataService) : ControllerBase
 {
     [HttpGet("projects/{projectId:guid}")]
     [ActionType(ActionType.Read)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
-    public async Task<ProjectDataDto> GetProjectWithAssets(Guid projectId)
+    public async Task<ProjectDataDto> GetProjectData(Guid projectId)
     {
         return await getProjectDataService.GetProjectData(projectId);
     }
