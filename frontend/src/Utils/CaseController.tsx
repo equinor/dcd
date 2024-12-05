@@ -4,12 +4,12 @@ import { EMPTY_GUID } from "../Utils/constants"
 
 export const deleteCase = async (
     caseId: string,
-    project: Components.Schemas.ProjectWithAssetsDto,
-    addProjectEdit: (projectId: string, project: Components.Schemas.ProjectWithAssetsDto) => void,
+    projectId: string,
+    addProjectEdit: (projectId: string, project: Components.Schemas.UpdateProjectDto) => void,
 ): Promise<boolean> => {
     try {
-        const newProject = await (await GetCaseService()).deleteCase(project.id, caseId)
-        addProjectEdit(project.id, newProject)
+        const newProject = await (await GetCaseService()).deleteCase(projectId, caseId)
+        addProjectEdit(projectId, newProject.commonProjectAndRevisionData)
         return true
     } catch (error) {
         console.error("[ProjectView] Error while deleting case", error)

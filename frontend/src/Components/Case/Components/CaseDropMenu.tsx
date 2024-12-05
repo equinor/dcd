@@ -75,7 +75,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     const deleteAndGoToProject = async () => {
         if (!caseId || !projectData) { return }
 
-        if (await deleteCase(caseId, projectData, addProjectEdit)) {
+        if (await deleteCase(caseId, projectData.id, addProjectEdit)) {
             if (projectData.fusionProjectId) { navigate(`/${projectData.fusionProjectId}`) }
         }
     }

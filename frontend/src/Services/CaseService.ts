@@ -49,8 +49,8 @@ class CaseService extends __BaseService {
     public async deleteCase(
         projectId: string,
         caseId: string,
-    ): Promise<Components.Schemas.ProjectWithAssetsDto> {
-        const res: Components.Schemas.ProjectWithAssetsDto = await this.delete(
+    ): Promise<Components.Schemas.ProjectDataDto> {
+        const res: Components.Schemas.ProjectDataDto = await this.delete(
             `projects/${projectId}/cases/${caseId}`,
         )
         return res

@@ -73,7 +73,7 @@ const CasesDropMenu = ({
         setConfirmDelete(false)
 
         if (selectedCaseId) {
-            deleteCase(selectedCaseId, projectData, addProjectEdit)
+            deleteCase(selectedCaseId, projectData.id, addProjectEdit)
         }
     }
 

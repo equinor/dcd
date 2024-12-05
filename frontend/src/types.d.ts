@@ -2153,7 +2153,7 @@ declare namespace Paths {
                 caseId: Parameters.CaseId /* uuid */;
             }
             namespace Responses {
-                export type $200 = Components.Schemas.ProjectWithAssetsDto;
+                export type $200 = Components.Schemas.ProjectDataDto;
             }
         }
         namespace Put {
