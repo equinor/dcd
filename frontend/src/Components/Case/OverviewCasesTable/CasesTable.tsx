@@ -1,6 +1,6 @@
 import { useState } from "react"
 import CasesAgGridTable from "./CasesAgGridTable"
-import CasesDropMenu from "./CasesDropMenu"
+import CasesDropMenu from "./TableCasesDropMenu"
 import { useModalContext } from "../../../Context/ModalContext"
 
 const CasesTable = () => {

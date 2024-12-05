@@ -47,7 +47,7 @@ const CasesDetails: React.FC = () => {
                 )}
             </Grid>
             <GrowBox>
-                <CasesTimeline data-timeline container justifyContent="flex-start" alignItems="flex-start" direction="column">
+                <CasesTimeline id="casesList" data-timeline container justifyContent="flex-start" alignItems="flex-start" direction="column">
                     <CasesList />
                 </CasesTimeline>
             </GrowBox>

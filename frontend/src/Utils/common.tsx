@@ -294,7 +294,7 @@ export const numberValueParser = (
     }
 
     if (valueWithOnlyNumbersCommasAndDots !== newValue) {
-        setSnackBarMessage("Only numbers, commas and dots are allowed. Invalid characters have been removed.")
+        setSnackBarMessage("Only numbers, commas and dates are allowed. Invalid characters have been removed.")
     }
 
     return allCommasTurnedToDots

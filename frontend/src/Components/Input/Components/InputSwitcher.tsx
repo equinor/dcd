@@ -28,7 +28,7 @@ const InputSwitcher = ({ value, label, children }: InputSwitcherProps): JSX.Elem
                 </div>
             ) : (
                 <div key="text">
-                    <ViewValue>{value}</ViewValue>
+                    <ViewValue id={`${label}-${value}`}>{value}</ViewValue>
                 </div>
             )}
         </InputWrapper>

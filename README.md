@@ -24,8 +24,21 @@ and volume profiles for drainage stragegy and creating these as assets on busine
 The application is split between the [frontend app](#frontend) hosted in Fusion, and the [backend app](#backend) hosted in Radix. Authentication is based on [RBAC](https://learn.microsoft.com/en-us/azure/role-based-access-control/overview), where we have different app registrations for preproduction and production with are consented to access Fusion Preprod or Fusion Prod. 
 
 ### Security
-
 Snyk surveillance has been added to the project for continuous monitoring of the code and its dependency. 
+from the dcd directory, run the follwing command to perform the tests:
+
+### E2E Testing
+Playwright is used for e2e testing the various major user flows. As the application uses 2 factor authentication, 
+you need to manually log in to the application to save the session. To do so, follow these steps:
+# Generate config.json
+cd tests
+node setup.js
+
+After running the command, a browser window will open. Log in to the application and complete the 2 factor authentication. then close the browser window. The session will be saved in the config.json file. For security 
+
+# Run tests
+npx playwright test –ui
+
 
 ### Azure App Config
 
