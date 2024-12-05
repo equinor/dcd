@@ -86,6 +86,8 @@ public class GetProjectDataService(IProjectWithAssetsRepository projectWithAsset
 
         return new RevisionDataDto
         {
+            ProjectId = projectId,
+            RevisionId = revisionId,
             RevisionDetails = revisionDetails,
             CommonProjectAndRevisionData = MapToDto(project)
         };
