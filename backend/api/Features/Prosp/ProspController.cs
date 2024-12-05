@@ -1,6 +1,7 @@
 using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Projects.GetWithAssets;
+using api.Features.ProjectData;
+using api.Features.ProjectData.Dtos;
 using api.Features.Prosp.Exceptions;
 using api.Features.Prosp.Models;
 using api.Features.Prosp.Services;
@@ -11,7 +12,7 @@ using Microsoft.Graph;
 namespace api.Features.Prosp;
 
 public class ProspController(ProspSharepointImportService prospSharepointImportImportService,
-    GetProjectWithAssetsService getProjectWithAssetsService,
+    GetProjectDataService getProjectDataService,
     ILogger<ProspController> logger)
     : ControllerBase
 {
@@ -51,13 +52,13 @@ public class ProspController(ProspSharepointImportService prospSharepointImportI
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
     [DisableRequestSizeLimit]
-    public async Task<ActionResult<ProjectWithAssetsDto>> ImportFilesFromSharepointAsync(Guid projectId, [FromBody] SharePointImportDto[] dtos)
+    public async Task<ActionResult<ProjectDataDto>> ImportFilesFromSharepointAsync(Guid projectId, [FromBody] SharePointImportDto[] dtos)
     {
         try
         {
             await prospSharepointImportImportService.ConvertSharepointFilesToProjectDto(projectId, dtos);
 
-            return Ok(await getProjectWithAssetsService.GetProjectWithAssets(projectId));
+            return Ok(await getProjectDataService.GetProjectData(projectId));
         }
         catch (ServiceException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
         {

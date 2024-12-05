@@ -1944,7 +1944,7 @@ declare namespace Paths {
         }
         export type RequestBody = Components.Schemas.SharePointImportDto[];
         namespace Responses {
-            export type $200 = Components.Schemas.ProjectWithAssetsDto;
+            export type $200 = Components.Schemas.ProjectDataDto;
         }
     }
     namespace Project$ProjectIdDevelopmentOperationalWellCosts$DevelopmentOperationalWellCostsId {
