@@ -29,13 +29,13 @@ public class RevisionsController(
     [HttpPost("projects/{projectId:guid}/revisions")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
-    public async Task<RevisionWithCasesDto> CreateRevision([FromRoute] Guid projectId, [FromBody] CreateRevisionDto createRevisionDto)
+    public async Task<RevisionDataDto> CreateRevision([FromRoute] Guid projectId, [FromBody] CreateRevisionDto createRevisionDto)
     {
         CreateRevisionDtoValidator.Validate(createRevisionDto);
 
         var revisionId = await createRevisionService.CreateRevision(projectId, createRevisionDto);
 
-        return await getRevisionService.GetRevision(projectId, revisionId);
+        return await getProjectDataService.GetRevisionData(projectId, revisionId);
     }
 
     [HttpPut("projects/{projectId:guid}/revisions/{revisionId:guid}")]

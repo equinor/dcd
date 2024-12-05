@@ -3907,7 +3907,7 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.CreateRevisionDto;
             namespace Responses {
-                export type $200 = Components.Schemas.RevisionWithCasesDto;
+                export type $200 = Components.Schemas.RevisionDataDto;
             }
         }
     }
