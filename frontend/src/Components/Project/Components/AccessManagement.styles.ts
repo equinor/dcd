@@ -38,6 +38,6 @@ export const ClickableHeading = styled(Grid)`
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-top: 100px!important;
+    margin-top: 100px;
     cursor: pointer;
 `

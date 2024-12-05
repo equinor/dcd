@@ -30,7 +30,7 @@ export const AgChartsCompareCases = ({
                 axes: {
                     category: {
                         label: {
-                            rotation: -20,
+                            rotation: -30,
                             formatter(params: any) {
                                 if (params.value.length > 18) {
                                     return `${params.value.substr(0, 16)}...`
