@@ -292,6 +292,24 @@ public static class SteaCaseDtoBuilder
             }
         }
 
+        if (c.OnshorePowerSupplyLink != Guid.Empty)
+        {
+            var onshorePowerSupplyDto = p.OnshorePowerSupplies.First(l => l.Id == c.OnshorePowerSupplyLink);
+
+            if (onshorePowerSupplyDto.CostProfileOverride?.Override == true)
+            {
+                var costProfile = onshorePowerSupplyDto.CostProfileOverride;
+                costProfile.StartYear += dg4Year;
+                steaCaseDto.Capex.OffshoreFacilities.AddValues(costProfile);
+            }
+            else if (onshorePowerSupplyDto.CostProfile != null)
+            {
+                var costProfile = onshorePowerSupplyDto.CostProfile;
+                costProfile.StartYear += dg4Year;
+                steaCaseDto.Capex.OffshoreFacilities.AddValues(costProfile);
+            }
+        }
+
         steaCaseDto.Capex.AddValues(steaCaseDto.Capex.OffshoreFacilities);
     }
 

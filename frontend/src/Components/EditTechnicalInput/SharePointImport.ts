@@ -148,7 +148,7 @@ implements Components.Schemas.SharePointImportDto {
         dto.substructure = value.substructureState === ImportStatusEnum.Selected
         dto.topside = value.topsideState === ImportStatusEnum.Selected
         dto.transport = value.transportState === ImportStatusEnum.Selected
-
+        dto.onshorePowerSupply = value.onshorePowerSupplyState === ImportStatusEnum.Selected
         return dto
     }
 }

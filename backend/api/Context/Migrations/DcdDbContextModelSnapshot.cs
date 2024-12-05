@@ -350,6 +350,8 @@ namespace api.Migrations
 
                     b.HasIndex("TransportLink");
 
+                    b.HasIndex("OnshorePowerSupplyLink");
+
                     b.HasIndex("WellProjectLink");
 
                     b.ToTable("Cases");
@@ -2983,6 +2985,12 @@ namespace api.Migrations
                         .WithMany()
                         .HasForeignKey("TransportLink")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.OnshorePowerSupplies", "OnshorePowerSupplies")
+                        .WithOne("Case")
+                        .HasForeignKey("api.Models.Case", "OnshorePowerSuppliesId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("api.Models.WellProject", "WellProject")

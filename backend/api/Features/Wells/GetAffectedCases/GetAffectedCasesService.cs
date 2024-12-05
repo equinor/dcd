@@ -91,6 +91,7 @@ public class GetAffectedCasesService(DcdDbContext context)
             SubstructureLink = caseItem.SubstructureLink,
             TopsideLink = caseItem.TopsideLink,
             TransportLink = caseItem.TransportLink,
+            OnshorePowerSupplyLink = caseItem.OnshorePowerSupplyLink,
             ExplorationLink = caseItem.ExplorationLink,
             SharepointFileId = caseItem.SharepointFileId,
             SharepointFileName = caseItem.SharepointFileName,

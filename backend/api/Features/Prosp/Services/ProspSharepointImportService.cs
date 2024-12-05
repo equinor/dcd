@@ -209,9 +209,11 @@ public class ProspSharepointImportService(
             foreach (var itemInfo in dtos.Where(importDto =>
                          importDto.Id != null && new Guid(importDto.Id) == caseWithFileStream.Key))
             {
+                Console.WriteLine("onshorePowerSupply" + itemInfo.OnshorePowerSupply);
+                Console.WriteLine("itemInfo.Transport" + itemInfo.Transport);
+
                 var assets = MapAssets(itemInfo.Surf, itemInfo.Substructure, itemInfo.Topside,
                     itemInfo.Transport, itemInfo.OnshorePowerSupply);
-
                 await prospExcelImportService.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
                     projectId,
                     assets,

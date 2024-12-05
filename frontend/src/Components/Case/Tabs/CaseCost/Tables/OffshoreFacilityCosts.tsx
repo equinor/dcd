@@ -100,6 +100,18 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
                 overrideProfile: transportCostOverrideData,
                 editable: true,
             },
+            {
+                profileName: "OnshorePowerSupply",
+                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                profile: apiData.onshorePowerSupplyCostProfile,
+                resourceName: "onshorePowerSupplyCostOverride",
+                resourceId: apiData.onshorePowerSupply.id,
+                resourceProfileId: apiData.onshorePowerSupplyCostProfileOverride?.id,
+                resourcePropertyKey: "onshorePowerSupplyCostOverride",
+                overridable: true,
+                overrideProfile: apiData.onshorePowerSupplyCostProfileOverride,
+                editable: true,
+            },
         ]
 
         setCapexTimeSeriesData(newCapexTimeSeriesData)

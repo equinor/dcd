@@ -362,7 +362,7 @@ public class ProspExcelImportService(
             Values = ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year,
         };
-        Console.WriteLine("OnshorePowerSupply" + costProfile.Values);
+        Console.WriteLine("OnshorePowerSupply222" + costProfile.Values);
 
         // Prosp meta data
         // var versionDate = ReadDateValue(cellData, _prospConfig.Transport.versionDate);

@@ -317,6 +317,7 @@ declare namespace Components {
             substructureLink: string; // uuid
             topsideLink: string; // uuid
             transportLink: string; // uuid
+            onshorePowerSupplyLink: string; // uuid
             explorationLink: string; // uuid
             capex: number; // double
             capexYear?: CapexYear;
