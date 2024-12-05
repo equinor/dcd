@@ -42,8 +42,11 @@ backend/*.DotSettings.user
 
 #playwright
 *.DotSettings.user
+
+# playwright
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
 tests/auth.json
+
