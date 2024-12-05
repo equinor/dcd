@@ -20,7 +20,7 @@ export const useProjectEdits = () => {
     const mutation = useMutation({
         mutationFn,
         onSuccess: (variables) => {
-            const { fusionProjectId } = variables
+            const { fusionProjectId } = variables.commonProjectAndRevisionData
             queryClient.invalidateQueries(
                 { queryKey: ["projectApiData", fusionProjectId] },
             )

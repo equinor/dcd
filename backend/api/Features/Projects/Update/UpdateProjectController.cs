@@ -1,6 +1,7 @@
 using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.Projects.GetWithCases;
+using api.Features.ProjectData;
+using api.Features.ProjectData.Dtos;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web.Resource;
@@ -8,15 +9,15 @@ using Microsoft.Identity.Web.Resource;
 namespace api.Features.Projects.Update;
 
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-public class UpdateProjectController(UpdateProjectService updateProjectService, GetProjectWithCasesService getProjectWithCasesService) : ControllerBase
+public class UpdateProjectController(UpdateProjectService updateProjectService, GetProjectDataService getProjectDataService) : ControllerBase
 {
     [HttpPut("projects/{projectId:guid}")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
-    public async Task<ProjectWithCasesDto> UpdateProject([FromRoute] Guid projectId, [FromBody] UpdateProjectDto projectDto)
+    public async Task<ProjectDataDto> UpdateProject([FromRoute] Guid projectId, [FromBody] UpdateProjectDto projectDto)
     {
         await updateProjectService.UpdateProject(projectId, projectDto);
 
-        return await getProjectWithCasesService.GetProjectWithCases(projectId);
+        return await getProjectDataService.GetProjectData(projectId);
     }
 }

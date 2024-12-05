@@ -45,7 +45,7 @@ export const setCaseAsReference = async (
             projectDto.referenceCaseId = caseId ?? ""
         }
         const newProject = await (await GetProjectService()).updateProject(project.projectId, projectDto)
-        addProjectEdit(project.projectId, newProject)
+        addProjectEdit(project.projectId, newProject.commonProjectAndRevisionData)
     } catch (error) {
         console.error("[ProjectView] error while submitting form data", error)
     }

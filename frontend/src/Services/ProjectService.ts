@@ -41,7 +41,7 @@ export class __ProjectService extends __BaseService {
         return res
     }
 
-    public async updateProject(projectId: string, body: Components.Schemas.UpdateProjectDto): Promise<Components.Schemas.ProjectWithAssetsDto> {
+    public async updateProject(projectId: string, body: Components.Schemas.UpdateProjectDto): Promise<Components.Schemas.ProjectDataDto> {
         const res = await this.put(`${projectId}`, { body })
         return res
     }

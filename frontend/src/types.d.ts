@@ -1037,37 +1037,6 @@ declare namespace Components {
             revisionDetailsList: RevisionDetailsDto[];
             commonProjectAndRevisionData: CommonProjectAndRevisionDto;
         }
-        export interface ProjectDto {
-            classification: ProjectClassification /* int32 */;
-            id: string; // uuid
-            isRevision: boolean;
-            originalProjectId: string; // uuid
-            name: string;
-            commonLibraryId: string; // uuid
-            fusionProjectId: string; // uuid
-            referenceCaseId: string; // uuid
-            commonLibraryName: string;
-            description: string;
-            country: string;
-            currency: Currency /* int32 */;
-            physicalUnit: PhysUnit /* int32 */;
-            createDate: string; // date-time
-            projectPhase: ProjectPhase /* int32 */;
-            internalProjectPhase: InternalProjectPhase /* int32 */;
-            projectCategory: ProjectCategory /* int32 */;
-            sharepointSiteUrl?: string | null;
-            cO2RemovedFromGas: number; // double
-            cO2EmissionFromFuelGas: number; // double
-            flaredGasPerProducedVolume: number; // double
-            cO2EmissionsFromFlaredGas: number; // double
-            cO2Vented: number; // double
-            dailyEmissionFromDrillingRig: number; // double
-            averageDevelopmentDrillingDays: number; // double
-            oilPriceUSD: number; // double
-            gasPriceNOK: number; // double
-            discountRate: number; // double
-            exchangeRateUSDToNOK: number; // double
-        }
         export interface ProjectMemberDto {
             projectId: string; // uuid
             userId: string; // uuid
@@ -1090,39 +1059,6 @@ declare namespace Components {
             projectMembers: ProjectMemberDto[];
             modifyTime: string; // date-time
             revisionsDetailsList: RevisionDetailsDto[];
-            classification: ProjectClassification /* int32 */;
-            id: string; // uuid
-            isRevision: boolean;
-            originalProjectId: string; // uuid
-            name: string;
-            commonLibraryId: string; // uuid
-            fusionProjectId: string; // uuid
-            referenceCaseId: string; // uuid
-            commonLibraryName: string;
-            description: string;
-            country: string;
-            currency: Currency /* int32 */;
-            physicalUnit: PhysUnit /* int32 */;
-            createDate: string; // date-time
-            projectPhase: ProjectPhase /* int32 */;
-            internalProjectPhase: InternalProjectPhase /* int32 */;
-            projectCategory: ProjectCategory /* int32 */;
-            sharepointSiteUrl?: string | null;
-            cO2RemovedFromGas: number; // double
-            cO2EmissionFromFuelGas: number; // double
-            flaredGasPerProducedVolume: number; // double
-            cO2EmissionsFromFlaredGas: number; // double
-            cO2Vented: number; // double
-            dailyEmissionFromDrillingRig: number; // double
-            averageDevelopmentDrillingDays: number; // double
-            oilPriceUSD: number; // double
-            gasPriceNOK: number; // double
-            discountRate: number; // double
-            exchangeRateUSDToNOK: number; // double
-        }
-        export interface ProjectWithCasesDto {
-            cases: CaseDto[];
-            revisions: ProjectDto[];
             classification: ProjectClassification /* int32 */;
             id: string; // uuid
             isRevision: boolean;
@@ -2061,7 +1997,7 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.UpdateProjectDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ProjectWithCasesDto;
+                export type $200 = Components.Schemas.ProjectDataDto;
             }
         }
     }

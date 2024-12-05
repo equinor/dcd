@@ -52,8 +52,8 @@ const PROSPTab = () => {
                 const newProject: Components.Schemas.UpdateProjectDto = { ...apiData.commonProjectAndRevisionData }
                 newProject.sharepointSiteUrl = sharepointUrl
                 const projectResult = await (await GetProjectService()).updateProject(apiData.projectId, newProject)
-                addProjectEdit(apiData.projectId, projectResult)
-                setSharepointUrl(projectResult.sharepointSiteUrl ?? "")
+                addProjectEdit(apiData.projectId, projectResult.commonProjectAndRevisionData)
+                setSharepointUrl(projectResult.commonProjectAndRevisionData.sharepointSiteUrl ?? "")
             }
         } catch (error) {
             console.error("[PROSPTab] error while submitting SharePoint URL", error)
