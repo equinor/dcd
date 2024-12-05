@@ -68,16 +68,16 @@ const PROSPCaseList = ({
     })
 
     const casesToRowData = () => {
-        if (apiData && apiData.cases) {
+        if (apiData && apiData.commonProjectAndRevisionData.cases) {
             const tableCases: RowData[] = []
-            apiData.cases.forEach((c) => {
+            apiData.commonProjectAndRevisionData.cases.forEach((c) => {
                 const tableCase: RowData = {
                     id: c.id!,
                     name: c.name ?? "",
-                    surfState: SharePointImport.surfStatus(c, apiData),
-                    substructureState: SharePointImport.substructureStatus(c, apiData),
-                    topsideState: SharePointImport.topsideStatus(c, apiData),
-                    transportState: SharePointImport.transportStatus(c, apiData),
+                    surfState: SharePointImport.surfStatus(c, apiData.commonProjectAndRevisionData),
+                    substructureState: SharePointImport.substructureStatus(c, apiData.commonProjectAndRevisionData),
+                    topsideState: SharePointImport.topsideStatus(c, apiData.commonProjectAndRevisionData),
+                    transportState: SharePointImport.transportStatus(c, apiData.commonProjectAndRevisionData),
                     sharePointFileId: c.sharepointFileId,
                     sharePointFileName: c.sharepointFileName,
                     sharepointFileUrl: c.sharepointFileUrl,
@@ -125,23 +125,23 @@ const PROSPCaseList = ({
     }
 
     const handleAdvancedSettingsChange = (p: any, value: ImportStatusEnum) => {
-        if (apiData && apiData.cases) {
-            const projectCase = apiData.cases.find((el: any) => p.data.id && p.data.id === el.id)
+        if (apiData && apiData.commonProjectAndRevisionData.cases) {
+            const projectCase = apiData.commonProjectAndRevisionData.cases.find((el: any) => p.data.id && p.data.id === el.id)
             const rowNode = gridRef.current?.getRowNode(p.node?.data.id)
             if (projectCase) {
                 switch (p.column.colId) {
                 case "surfState":
-                    rowNode.data.surfStateChanged = (SharePointImport.surfStatus(projectCase, apiData) !== value)
+                    rowNode.data.surfStateChanged = (SharePointImport.surfStatus(projectCase, apiData.commonProjectAndRevisionData) !== value)
                     break
                 case "substructureState":
                     rowNode.data.substructureStateChanged = (
-                        SharePointImport.substructureStatus(projectCase, apiData) !== value)
+                        SharePointImport.substructureStatus(projectCase, apiData.commonProjectAndRevisionData) !== value)
                     break
                 case "topsideState":
-                    rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(projectCase, apiData) !== value)
+                    rowNode.data.topsideStateChanged = (SharePointImport.topsideStatus(projectCase, apiData.commonProjectAndRevisionData) !== value)
                     break
                 case "transportState":
-                    rowNode.data.transportStateChanged = (SharePointImport.transportStatus(projectCase, apiData) !== value)
+                    rowNode.data.transportStateChanged = (SharePointImport.transportStatus(projectCase, apiData.commonProjectAndRevisionData) !== value)
                     break
                 default:
                     break
@@ -331,7 +331,7 @@ const PROSPCaseList = ({
         gridRef.current = params.api
     }
 
-    const gridDataToDtos = (p: Components.Schemas.ProjectWithAssetsDto) => {
+    const gridDataToDtos = (p: Components.Schemas.CommonProjectAndRevisionDto) => {
         const dtos: any[] = []
         gridRef.current.forEachNode((node: RowNode<RowData>) => {
             const dto: any = {}
@@ -355,11 +355,11 @@ const PROSPCaseList = ({
         return dtos
     }
 
-    const save = useCallback(async (p: Components.Schemas.ProjectWithAssetsDto) => {
-        const dtos = gridDataToDtos(p)
+    const save = useCallback(async (p: Components.Schemas.ProjectDataDto) => {
+        const dtos = gridDataToDtos(p.commonProjectAndRevisionData)
         if (dtos.length > 0) {
             setIsApplying(true)
-            const newProject = await (await GetProspService()).importFromSharepoint(p.id!, dtos)
+            const newProject = await (await GetProspService()).importFromSharepoint(p.projectId, dtos)
             const noSharePointFileNewProject: any = newProject
             if (noSharePointFileNewProject.result) {
                 addProjectEdit(noSharePointFileNewProject.result.id, noSharePointFileNewProject.result)

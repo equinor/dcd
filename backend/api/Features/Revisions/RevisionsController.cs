@@ -1,5 +1,7 @@
 using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
+using api.Features.ProjectData;
+using api.Features.ProjectData.Dtos;
 using api.Features.Revisions.Create;
 using api.Features.Revisions.Get;
 using api.Features.Revisions.Update;
@@ -13,14 +15,15 @@ namespace api.Features.Revisions;
 public class RevisionsController(
     CreateRevisionService createRevisionService,
     GetRevisionService getRevisionService,
+    GetProjectDataService getProjectDataService,
     UpdateRevisionService updateRevisionService) : ControllerBase
 {
     [HttpGet("projects/{projectId:guid}/revisions/{revisionId:guid}")]
     [ActionType(ActionType.Read)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
-    public async Task<RevisionWithCasesDto> Get(Guid projectId, Guid revisionId)
+    public async Task<RevisionDataDto> Get(Guid projectId, Guid revisionId)
     {
-        return await getRevisionService.GetRevision(projectId, revisionId);
+        return await getProjectDataService.GetRevisionData(projectId, revisionId);
     }
 
     [HttpPost("projects/{projectId:guid}/revisions")]

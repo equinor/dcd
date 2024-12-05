@@ -53,7 +53,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
         const newTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Oil production",
-                unit: `${projectData?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
                 profile: oilProductionData,
                 resourceName: "productionProfileOil",
                 resourceId: drainageStrategyData?.id,
@@ -64,7 +64,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             },
             {
                 profileName: "Additional Oil production",
-                unit: `${projectData?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
                 profile: additionalOilProductionData,
                 resourceName: "additionalProductionProfileOil",
                 resourceId: drainageStrategyData?.id,
@@ -76,7 +76,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             },
             {
                 profileName: "Rich gas production",
-                unit: `${projectData?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: gasProductionData,
                 resourceName: "productionProfileGas",
                 resourceId: drainageStrategyData?.id,
@@ -87,7 +87,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             },
             {
                 profileName: "Additional rich gas production",
-                unit: `${projectData?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: additionalGasProductionData,
                 resourceName: "additionalProductionProfileGas",
                 resourceId: drainageStrategyData?.id,
@@ -99,7 +99,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             },
             {
                 profileName: "Water production",
-                unit: `${projectData?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
                 profile: waterProductionData,
                 resourceName: "productionProfileWater",
                 resourceId: drainageStrategyData?.id,
@@ -110,7 +110,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             },
             {
                 profileName: "Water injection",
-                unit: `${projectData?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
                 profile: waterInjectionData,
                 resourceName: "productionProfileWaterInjection",
                 resourceId: drainageStrategyData?.id,
@@ -121,7 +121,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             },
             {
                 profileName: "Fuel, flaring and losses",
-                unit: `${projectData?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: fuelFlaringAndLossesData,
                 resourceName: "productionProfileFuelFlaringAndLossesOverride",
                 resourceId: drainageStrategyData?.id,
@@ -133,7 +133,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             },
             {
                 profileName: "Net sales gas",
-                unit: `${projectData?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: netSalesGasData,
                 resourceName: "productionProfileNetSalesGasOverride",
                 resourceId: drainageStrategyData?.id,
@@ -157,7 +157,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             },
             {
                 profileName: "Deferred oil production",
-                unit: `${projectData?.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MSm³/yr" : "mill bbls/yr"}`,
                 profile: deferredOilData,
                 resourceName: "deferredOilProduction",
                 resourceId: drainageStrategyData?.id,
@@ -169,7 +169,7 @@ const CaseProductionProfiles: React.FC<CaseProductionProfilesProps> = ({
             },
             {
                 profileName: "Deferred gas production",
-                unit: `${projectData?.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "GSm³/yr" : "Bscf/yr"}`,
                 profile: deferredGasData,
                 resourceName: "deferredGasProduction",
                 resourceId: drainageStrategyData?.id,

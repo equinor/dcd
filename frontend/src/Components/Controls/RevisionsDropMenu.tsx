@@ -52,7 +52,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
 
     useEffect(() => {
         if (apiData) {
-            const revisionsResult = apiData.revisionsDetailsList.map((r: Components.Schemas.RevisionDetailsDto) => ({
+            const revisionsResult = apiData.revisionDetailsList.map((r: Components.Schemas.RevisionDetailsDto) => ({
                 id: r.id,
                 revisionId: r.revisionId,
                 name: r.revisionName,

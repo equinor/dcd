@@ -113,7 +113,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     label="Facility opex"
                     value={Math.round(Number(topsideData.facilityOpex) * 10) / 10}
                     integer={false}
-                    unit={`${projectData.currency === 1 ? "MNOK" : "MUSD"}`}
+                    unit={`${projectData.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`}
                 />
 
             </Grid>
@@ -127,7 +127,7 @@ const CaseFacilitiesTab = ({ addEdit }: { addEdit: any }) => {
                     label="Cessation cost"
                     value={Math.round(Number(surfData?.cessationCost) * 10) / 10}
                     integer={false}
-                    unit={`${projectData.currency === 1 ? "MNOK" : "MUSD"}`}
+                    unit={`${projectData.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`}
                 />
             </Grid>
             <Grid item xs={12}>

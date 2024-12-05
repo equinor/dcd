@@ -117,7 +117,7 @@ const OperationalWellCosts = ({
                         <CostWithCurrency>
                             Cost
                             <div>
-                                {`${apiData?.currency === 1 ? "(mill NOK)" : "(mill USD)"}`}
+                                {`${apiData?.commonProjectAndRevisionData.currency === 1 ? "(mill NOK)" : "(mill USD)"}`}
                             </div>
                         </CostWithCurrency>
                     </Cell>

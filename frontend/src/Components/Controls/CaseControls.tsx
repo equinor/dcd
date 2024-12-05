@@ -149,8 +149,8 @@ const CaseControls: React.FC<props> = ({
 
     const handleReferenceCaseChange = async (referenceCaseId: string) => {
         if (projectData) {
-            const newProject = {
-                ...projectData,
+            const newProject: Components.Schemas.UpdateProjectDto = {
+                ...projectData.commonProjectAndRevisionData,
             }
             if (newProject.referenceCaseId === referenceCaseId) {
                 newProject.referenceCaseId = EMPTY_GUID
@@ -190,7 +190,7 @@ const CaseControls: React.FC<props> = ({
                             {editMode ? (
                                 <CaseTitleEdit>
                                     <ChooseReferenceCase
-                                        projectRefCaseId={projectData?.referenceCaseId}
+                                        projectRefCaseId={projectData?.commonProjectAndRevisionData.referenceCaseId}
                                         projectCaseId={caseId}
                                         handleReferenceCaseChange={() => handleReferenceCaseChange(caseId)}
                                     />
@@ -205,7 +205,7 @@ const CaseControls: React.FC<props> = ({
                                 </CaseTitleEdit>
                             ) : (
                                 <>
-                                    {projectData?.referenceCaseId === caseId && <ReferenceCaseIcon />}
+                                    {projectData?.commonProjectAndRevisionData.referenceCaseId === caseId && <ReferenceCaseIcon />}
                                     <Typography variant="h4">{caseData.name}</Typography>
                                 </>
                             )}

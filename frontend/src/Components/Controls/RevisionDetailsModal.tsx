@@ -163,11 +163,11 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
     }
 
     if (!revisionApiData || !projectApiData) { return null }
-    const isAfterDG0 = () => [3, 4, 5, 6, 7, 8].includes(projectApiData.projectPhase)
+    const isAfterDG0 = () => [3, 4, 5, 6, 7, 8].includes(projectApiData.commonProjectAndRevisionData.projectPhase)
 
     const displayedPhase = isAfterDG0()
-        ? getProjectPhaseName(projectApiData.projectPhase)
-        : INTERNAL_PROJECT_PHASE[projectApiData.internalProjectPhase]?.label ?? "N/A"
+        ? getProjectPhaseName(projectApiData.commonProjectAndRevisionData.projectPhase)
+        : INTERNAL_PROJECT_PHASE[projectApiData.commonProjectAndRevisionData.internalProjectPhase]?.label ?? "N/A"
 
     return (
         <Dialog
@@ -228,7 +228,7 @@ const RevisionDetailsModal: React.FC<RevisionDetailsModalProps> = ({
                         <ColumnWrapper>
                             <InputWrapper labelProps={{ label: "Project classification" }}>
                                 <Typography variant="body_short">
-                                    {PROJECT_CLASSIFICATION[projectApiData?.classification]?.label ?? "N/A"}
+                                    {PROJECT_CLASSIFICATION[projectApiData?.commonProjectAndRevisionData.classification]?.label ?? "N/A"}
                                 </Typography>
                             </InputWrapper>
                         </ColumnWrapper>

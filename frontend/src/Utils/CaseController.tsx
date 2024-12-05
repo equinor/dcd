@@ -34,18 +34,18 @@ export const duplicateCase = async (
 
 export const setCaseAsReference = async (
     caseId: string | undefined,
-    project: Components.Schemas.ProjectWithAssetsDto,
-    addProjectEdit: (projectId: string, project: Components.Schemas.ProjectWithAssetsDto) => void,
+    project: Components.Schemas.ProjectDataDto,
+    addProjectEdit: (projectId: string, project: Components.Schemas.UpdateProjectDto) => void,
 ) => {
     try {
-        const projectDto = { ...project }
+        const projectDto: Components.Schemas.UpdateProjectDto = { ...project.commonProjectAndRevisionData }
         if (projectDto.referenceCaseId === caseId) {
             projectDto.referenceCaseId = EMPTY_GUID
         } else {
             projectDto.referenceCaseId = caseId ?? ""
         }
-        const newProject = await (await GetProjectService()).updateProject(project.id, projectDto)
-        addProjectEdit(project.id, newProject)
+        const newProject = await (await GetProjectService()).updateProject(project.projectId, projectDto)
+        addProjectEdit(project.projectId, newProject)
     } catch (error) {
         console.error("[ProjectView] error while submitting form data", error)
     }

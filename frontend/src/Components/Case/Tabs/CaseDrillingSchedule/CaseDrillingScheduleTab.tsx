@@ -52,7 +52,7 @@ const CaseDrillingScheduleTab = ({ addEdit }: { addEdit: any }) => {
         enabled: !!projectId,
     })
 
-    const wells = projectData?.wells
+    const wells = projectData?.commonProjectAndRevisionData.wells
 
     useEffect(() => {
         if (activeTabCase === 3 && apiData && !yearRangeSetFromProfiles) {

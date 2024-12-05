@@ -35,7 +35,7 @@ const EditHistoryOverviewTab = () => {
         return null
     }
 
-    if (apiData.cases.length === 0) {
+    if (apiData.commonProjectAndRevisionData.cases.length === 0) {
         return <Typography>The edit history for this project&apos;s cases will appear here once cases are created.</Typography>
     }
 
@@ -45,7 +45,7 @@ const EditHistoryOverviewTab = () => {
 
     return (
         <Container>
-            {apiData.cases
+            {apiData.commonProjectAndRevisionData.cases
                 .sort((a, b) => new Date(a.createTime).getTime() - new Date(b.createTime).getTime())
                 .map((projectCase, index) => {
                     const filteredEdits = caseEdits.filter((edit) => edit.caseId === projectCase.id)

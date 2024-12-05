@@ -165,7 +165,7 @@ const WellListEditTechnicalInput = ({
             disabled={!editMode || isEditDisabled}
             onClick={async () => {
                 if (!apiData) { return }
-                const wellsInUse = await (await GetWellService()).checkWellIsInUse(apiData.id, p.data.id)
+                const wellsInUse = await (await GetWellService()).checkWellIsInUse(apiData.projectId, p.data.id)
                 const wellIsInUse = wellsInUse.length > 0
                 if (wellIsInUse) {
                     setWellStagedForDeletion(p)
@@ -210,12 +210,12 @@ const WellListEditTechnicalInput = ({
         },
         {
             field: "wellCost",
-            headerName: `Cost (${apiData?.currency === 1 ? "mill NOK" : "mill USD"})`,
+            headerName: `Cost (${apiData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD"})`,
             flex: 1,
             headerComponent: CustomHeaderForSecondaryHeader,
             headerComponentParams: {
                 columnHeader: "Cost",
-                unit: apiData?.currency === 1 ? "mill NOK" : "mill USD",
+                unit: apiData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD",
             },
             cellStyle: cellStyleRightAlign,
             editable: editMode,

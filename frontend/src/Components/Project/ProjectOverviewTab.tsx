@@ -44,17 +44,17 @@ const ProjectOverviewTab = () => {
         if (apiData) {
             // eslint-disable-next-line no-underscore-dangle
             const newValue = e.target._value
-            const newProjectObject = { ...apiData, description: newValue }
-            addProjectEdit(apiData.id, newProjectObject)
+            const newProjectObject: Components.Schemas.UpdateProjectDto = { ...apiData.commonProjectAndRevisionData, description: newValue }
+            addProjectEdit(apiData.projectId, newProjectObject)
         }
     }
 
     const handleInternalProjectPhaseChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1, 2].indexOf(Number(e.currentTarget.value)) !== -1 && apiData) {
             const newInternalProjectPhase: Components.Schemas.InternalProjectPhase = Number(e.currentTarget.value) as unknown as Components.Schemas.InternalProjectPhase
-            const newProject: Components.Schemas.ProjectWithAssetsDto = { ...apiData }
+            const newProject: Components.Schemas.UpdateProjectDto = { ...apiData.commonProjectAndRevisionData }
             newProject.internalProjectPhase = newInternalProjectPhase
-            addProjectEdit(apiData.id, newProject)
+            addProjectEdit(apiData.projectId, newProject)
         }
     }
 
@@ -65,10 +65,10 @@ const ProjectOverviewTab = () => {
     const renderProjectPhase = () => {
         if (!apiData) { return null }
 
-        const { projectPhase, internalProjectPhase } = apiData
+        const { projectPhase, internalProjectPhase } = apiData.commonProjectAndRevisionData
 
-        const revisionProjectPhase = apiRevisionData?.projectPhase
-        const revisionInternalProjectPhase = apiRevisionData?.internalProjectPhase
+        const revisionProjectPhase = apiRevisionData?.commonProjectAndRevisionData.projectPhase
+        const revisionInternalProjectPhase = apiRevisionData?.commonProjectAndRevisionData.internalProjectPhase
 
         if ([3, 4, 5, 6, 7, 8].includes(projectPhase)) {
             if (isRevision) {
@@ -108,13 +108,13 @@ const ProjectOverviewTab = () => {
                 <Grid item>
                     <Typography group="input" variant="label">Project Category</Typography>
                     <Typography aria-label="Project category">
-                        {isRevision ? getProjectCategoryName(apiRevisionData?.projectCategory) : getProjectCategoryName(apiData.projectCategory)}
+                        {isRevision ? getProjectCategoryName(apiRevisionData?.commonProjectAndRevisionData.projectCategory) : getProjectCategoryName(apiData.commonProjectAndRevisionData.projectCategory)}
                     </Typography>
                 </Grid>
                 <Grid item>
                     <Typography group="input" variant="label">Country</Typography>
                     <Typography aria-label="Country">
-                        {isRevision ? apiRevisionData?.country ?? "Not defined in Common Library" : apiData.country ?? "Not defined in Common Library"}
+                        {isRevision ? apiRevisionData?.commonProjectAndRevisionData.country ?? "Not defined in Common Library" : apiData.commonProjectAndRevisionData.country ?? "Not defined in Common Library"}
                     </Typography>
                 </Grid>
             </Grid>
@@ -126,10 +126,10 @@ const ProjectOverviewTab = () => {
                             menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
                             onBlur={(e) => handleBlur(e)}
                         >
-                            {apiData.description ?? ""}
+                            {apiData.commonProjectAndRevisionData.description ?? ""}
                         </MarkdownEditor>
                     )
-                    : <MarkdownViewer value={isRevision ? apiRevisionData?.description ?? "" : apiData.description ?? ""} />}
+                    : <MarkdownViewer value={isRevision ? apiRevisionData?.commonProjectAndRevisionData.description ?? "" : apiData.commonProjectAndRevisionData.description ?? ""} />}
             </Grid>
             <Grid item xs={12} container spacing={1} justifyContent="space-between">
                 <Grid item>

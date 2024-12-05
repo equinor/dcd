@@ -2086,7 +2086,7 @@ declare namespace Paths {
                 projectId: Parameters.ProjectId /* uuid */;
             }
             namespace Responses {
-                export type $200 = Components.Schemas.ProjectWithAssetsDto;
+                export type $200 = Components.Schemas.ProjectDataDto;
             }
         }
         namespace Put {
@@ -3922,7 +3922,7 @@ declare namespace Paths {
                 revisionId: Parameters.RevisionId /* uuid */;
             }
             namespace Responses {
-                export type $200 = Components.Schemas.RevisionWithCasesDto;
+                export type $200 = Components.Schemas.RevisionDataDto;
             }
         }
         namespace Put {

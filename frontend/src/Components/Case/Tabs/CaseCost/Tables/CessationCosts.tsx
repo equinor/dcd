@@ -43,7 +43,7 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
         const newCessationTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Cessation - Development wells",
-                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: cessationWellsCostData,
                 resourceName: "cessationWellsCostOverride",
                 resourceId: caseData.id,
@@ -55,7 +55,7 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
             },
             {
                 profileName: "Cessation - Offshore facilities",
-                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: cessationOffshoreFacilitiesCostData,
                 resourceName: "cessationOffshoreFacilitiesCostOverride",
                 resourceId: caseData.id,
@@ -67,7 +67,7 @@ const CessationCosts: React.FC<CessationCostsProps> = ({
             },
             {
                 profileName: "CAPEX - Cessation - Onshore facilities",
-                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: cessationOnshoreFacilitiesCostProfileData,
                 resourceName: "cessationOnshoreFacilitiesCostProfile",
                 resourceId: caseData.id,

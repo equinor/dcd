@@ -64,7 +64,7 @@ const CreateCaseModal = () => {
 
     useEffect(() => {
         if (apiData) {
-            const selectedCase = apiData.cases?.find((c) => c.id === modalCaseId)
+            const selectedCase = apiData.commonProjectAndRevisionData.cases?.find((c) => c.id === modalCaseId)
 
             if (selectedCase) {
                 setCaseItem(selectedCase)
@@ -133,14 +133,14 @@ const CreateCaseModal = () => {
                 newCase.productionStrategyOverview = productionStrategy ?? 0
 
                 await (await GetCaseService()).updateCase(
-                    apiData.id,
+                    apiData.projectId,
                     projectCase.id,
                     newCase,
                 )
                 setIsLoading(false)
             } else {
                 await (await GetCaseService()).create(
-                    apiData.id,
+                    apiData.projectId,
                     {
                         name: caseName,
                         description,

@@ -73,7 +73,7 @@ const Sidebar = () => {
 
     useEffect(() => {
         if (!projectData) { return }
-        setArchivedCases(projectData.cases.filter((c) => c.archived))
+        setArchivedCases(projectData.commonProjectAndRevisionData.cases.filter((c) => c.archived))
     }, [projectData])
 
     if (!projectData) { return null }

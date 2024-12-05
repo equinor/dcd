@@ -75,18 +75,18 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
     const deleteAndGoToProject = async () => {
         if (!caseId || !projectData) { return }
 
-        if (await deleteCase(caseId, projectData.id, addProjectEdit)) {
-            if (projectData.fusionProjectId) { navigate(`/${projectData.fusionProjectId}`) }
+        if (await deleteCase(caseId, projectData.projectId, addProjectEdit)) {
+            if (projectData.commonProjectAndRevisionData.fusionProjectId) { navigate(`/${projectData.commonProjectAndRevisionData.fusionProjectId}`) }
         }
     }
 
     const archiveCase = async (archived: boolean) => {
-        if (!caseApiData?.case || !caseId || !projectData?.id) { return }
+        if (!caseApiData?.case || !caseId || !projectData?.projectId) { return }
         const newResourceObject = { ...caseApiData?.case, archived } as ResourceObject
-        const result = await updateCase({ projectId: projectData.id, caseId, resourceObject: newResourceObject })
+        const result = await updateCase({ projectId: projectData.projectId, caseId, resourceObject: newResourceObject })
         if (result) {
             queryClient.invalidateQueries(
-                { queryKey: ["projectApiData", projectData.id] },
+                { queryKey: ["projectApiData", projectData.projectId] },
             )
         }
     }
@@ -127,7 +127,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                 </Menu.Item>
                 <Menu.Item
                     disabled={isArchived || isEditDisabled}
-                    onClick={() => projectData && duplicateCase(caseId, projectData.id, addProjectEdit)}
+                    onClick={() => projectData && duplicateCase(caseId, projectData.projectId, addProjectEdit)}
                 >
                     <Icon data={library_add} size={16} />
                     <Typography group="navigation" variant="menu_title" as="span">
@@ -165,7 +165,7 @@ const CaseDropMenu: React.FC<CaseDropMenuProps> = ({
                         Delete
                     </Typography>
                 </Menu.Item>
-                {projectData?.referenceCaseId === caseId
+                {projectData?.commonProjectAndRevisionData.referenceCaseId === caseId
                     ? (
                         <Menu.Item
                             disabled={isArchived || isEditDisabled}

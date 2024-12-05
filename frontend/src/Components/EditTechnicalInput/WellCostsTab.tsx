@@ -65,7 +65,7 @@ const WellCostsTab = ({
         const newWell: any = {
             wellCategory: category,
             name: "New well",
-            projectId: apiData?.id,
+            projectId: apiData?.projectId,
         }
         if (wells) {
             const newWells = [...wells, newWell]

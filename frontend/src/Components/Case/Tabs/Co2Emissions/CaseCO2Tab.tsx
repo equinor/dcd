@@ -98,9 +98,9 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
         (async () => {
             try {
                 if (caseData && projectData && activeTabCase === 6 && caseData.id) {
-                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(projectData.id, caseData.id)
-                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(projectData.id, caseData.id)
-                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(projectData.id, caseData.id)
+                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(projectData.projectId, caseData.id)
+                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(projectData.projectId, caseData.id)
+                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(projectData.projectId, caseData.id)
 
                     setCo2Intensity(await co2I)
                     setCo2IntensityTotal(Number(co2ITotal))
@@ -127,7 +127,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
         const newTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Annual CO2 emissions",
-                unit: `${projectData?.physicalUnit === 0 ? "MTPA" : "MTPA"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MTPA" : "MTPA"}`,
                 profile: co2EmissionsData,
                 overridable: true,
                 editable: true,
@@ -139,7 +139,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
             },
             {
                 profileName: "Year-by-year CO2 intensity",
-                unit: `${projectData?.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
                 profile: co2Intensity,
                 total: co2IntensityTotal?.toString(),
                 overridable: false,
@@ -189,9 +189,9 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     }
 
     const datePickerValue = (() => {
-        if (projectData?.physicalUnit === 0) {
+        if (projectData?.commonProjectAndRevisionData.physicalUnit === 0) {
             return "SI"
-        } if (projectData?.physicalUnit === 1) {
+        } if (projectData?.commonProjectAndRevisionData.physicalUnit === 1) {
             return "Oil field"
         }
         return ""

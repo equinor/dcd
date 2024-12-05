@@ -5,12 +5,12 @@ import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 export class __ProjectService extends __BaseService {
     async getProject(id: string) {
-        const project: Components.Schemas.ProjectWithAssetsDto = await this.get<Components.Schemas.ProjectWithAssetsDto>(`/${id}`)
+        const project: Components.Schemas.ProjectDataDto = await this.get<Components.Schemas.ProjectDataDto>(`/${id}`)
         return project
     }
 
     async getRevision(projectId: string, revisionId: string) {
-        const revision: Components.Schemas.RevisionWithCasesDto = await this.get<Components.Schemas.RevisionWithCasesDto>(`/${projectId}/revisions/${revisionId}`)
+        const revision: Components.Schemas.RevisionDataDto = await this.get<Components.Schemas.RevisionDataDto>(`/${projectId}/revisions/${revisionId}`)
         return revision
     }
 
