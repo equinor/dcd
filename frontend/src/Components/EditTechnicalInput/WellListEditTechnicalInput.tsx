@@ -20,8 +20,8 @@ import { projectQueryFn } from "../../Services/QueryFunctions"
 import useEditDisabled from "@/Hooks/useEditDisabled"
 
 interface Props {
-    wells: Components.Schemas.WellDto[] | undefined
-    setWells: Dispatch<SetStateAction<Components.Schemas.WellDto[]>>
+    wells: Components.Schemas.WellOverviewDto[] | undefined
+    setWells: Dispatch<SetStateAction<Components.Schemas.WellOverviewDto[]>>
     explorationWells: boolean
     setDeletedWells: Dispatch<SetStateAction<string[]>>
 }
@@ -32,8 +32,8 @@ interface TableWell {
     wellCategory: Components.Schemas.WellCategory,
     drillingDays: number,
     wellCost: number,
-    well: Components.Schemas.WellDto
-    wells: Components.Schemas.WellDto[]
+    well: Components.Schemas.WellOverviewDto
+    wells: Components.Schemas.WellOverviewDto[]
 }
 
 const WellListEditTechnicalInput = ({

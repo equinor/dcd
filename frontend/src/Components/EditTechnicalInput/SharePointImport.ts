@@ -14,7 +14,7 @@ implements Components.Schemas.SharePointImportDto {
     sharePointSiteUrl?: string | undefined
 
     constructor(
-        projectCase: Components.Schemas.CaseDto,
+        projectCase: Components.Schemas.CaseOverviewDto,
         project: Components.Schemas.ProjectDataDto,
         data: Components.Schemas.SharePointImportDto | undefined,
     ) {
@@ -39,7 +39,7 @@ implements Components.Schemas.SharePointImportDto {
     static mapSource = (source: Components.Schemas.Source | undefined) => (source === 0 ? "ConceptApp" : "PROSP")
 
     static surfStatus = (
-        projectCase: Components.Schemas.CaseDto,
+        projectCase: Components.Schemas.CaseOverviewDto,
         project: Components.Schemas.CommonProjectAndRevisionDto,
     ): ImportStatusEnum => {
         const surfId = projectCase.surfLink
@@ -58,7 +58,7 @@ implements Components.Schemas.SharePointImportDto {
     }
 
     static substructureStatus = (
-        projectCase: Components.Schemas.CaseDto,
+        projectCase: Components.Schemas.CaseOverviewDto,
         project: Components.Schemas.CommonProjectAndRevisionDto,
     ): ImportStatusEnum => {
         const substructureId = projectCase.substructureLink
@@ -79,7 +79,7 @@ implements Components.Schemas.SharePointImportDto {
     }
 
     static topsideStatus = (
-        projectCase: Components.Schemas.CaseDto,
+        projectCase: Components.Schemas.CaseOverviewDto,
         project: Components.Schemas.CommonProjectAndRevisionDto,
     ): ImportStatusEnum => {
         const topsideId = projectCase.topsideLink
@@ -98,7 +98,7 @@ implements Components.Schemas.SharePointImportDto {
     }
 
     static transportStatus = (
-        projectCase: Components.Schemas.CaseDto,
+        projectCase: Components.Schemas.CaseOverviewDto,
         project: Components.Schemas.CommonProjectAndRevisionDto,
     ): ImportStatusEnum => {
         const transportId = projectCase.transportLink

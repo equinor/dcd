@@ -133,7 +133,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 setEndYear={setEndYear}
                 setTableYears={setTableYears}
                 caseData={apiData.case}
-                surfData={apiData.surf as Components.Schemas.SurfWithProfilesDto}
+                surfData={apiData.surf as Components.Schemas.SurfOverviewDto}
                 addEdit={addEdit}
             />
             <Grid item xs={12}>

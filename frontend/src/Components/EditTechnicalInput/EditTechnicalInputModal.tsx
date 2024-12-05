@@ -45,26 +45,26 @@ const EditTechnicalInputModal = () => {
     const [
         explorationOperationalWellCosts,
         setExplorationOperationalWellCosts,
-    ] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(apiData?.commonProjectAndRevisionData.explorationOperationalWellCosts)
+    ] = useState<Components.Schemas.ExplorationOperationalWellCostsOverviewDto | undefined>(apiData?.commonProjectAndRevisionData.explorationOperationalWellCosts)
     const [
         developmentOperationalWellCosts,
         setDevelopmentOperationalWellCosts,
-    ] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(apiData?.commonProjectAndRevisionData.developmentOperationalWellCosts)
+    ] = useState<Components.Schemas.DevelopmentOperationalWellCostsOverviewDto | undefined>(apiData?.commonProjectAndRevisionData.developmentOperationalWellCosts)
 
     const [
         originalExplorationOperationalWellCosts,
         setOriginalExplorationOperationalWellCosts,
-    ] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(apiData?.commonProjectAndRevisionData.explorationOperationalWellCosts)
+    ] = useState<Components.Schemas.ExplorationOperationalWellCostsOverviewDto | undefined>(apiData?.commonProjectAndRevisionData.explorationOperationalWellCosts)
     const [
         originalDevelopmentOperationalWellCosts,
         setOriginalDevelopmentOperationalWellCosts,
-    ] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(apiData?.commonProjectAndRevisionData.developmentOperationalWellCosts)
+    ] = useState<Components.Schemas.DevelopmentOperationalWellCostsOverviewDto | undefined>(apiData?.commonProjectAndRevisionData.developmentOperationalWellCosts)
 
-    const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellDto[]>(apiData?.commonProjectAndRevisionData.wells?.filter((w) => !isExplorationWell(w)) ?? [])
-    const [explorationWells, setExplorationWells] = useState<Components.Schemas.WellDto[]>(apiData?.commonProjectAndRevisionData.wells?.filter((w) => isExplorationWell(w)) ?? [])
+    const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellOverviewDto[]>(apiData?.commonProjectAndRevisionData.wells?.filter((w) => !isExplorationWell(w)) ?? [])
+    const [explorationWells, setExplorationWells] = useState<Components.Schemas.WellOverviewDto[]>(apiData?.commonProjectAndRevisionData.wells?.filter((w) => isExplorationWell(w)) ?? [])
 
-    const [originalWellProjectWells, setOriginalWellProjectWells] = useState<Components.Schemas.WellDto[]>(apiData?.commonProjectAndRevisionData.wells?.filter((w) => !isExplorationWell(w)) ?? [])
-    const [originalExplorationWells, setOriginalExplorationWells] = useState<Components.Schemas.WellDto[]>(apiData?.commonProjectAndRevisionData.wells?.filter((w) => isExplorationWell(w)) ?? [])
+    const [originalWellProjectWells, setOriginalWellProjectWells] = useState<Components.Schemas.WellOverviewDto[]>(apiData?.commonProjectAndRevisionData.wells?.filter((w) => !isExplorationWell(w)) ?? [])
+    const [originalExplorationWells, setOriginalExplorationWells] = useState<Components.Schemas.WellOverviewDto[]>(apiData?.commonProjectAndRevisionData.wells?.filter((w) => isExplorationWell(w)) ?? [])
 
     const handleSave = async () => {
         try {

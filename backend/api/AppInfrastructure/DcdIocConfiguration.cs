@@ -110,6 +110,7 @@ public static class DcdIocConfiguration
         services.AddScoped<SteaService>();
 
         services.AddScoped<GetProjectDataService>();
+        services.AddScoped<GetProjectDataRepository>();
 
         services.AddScoped<GetProjectMemberService>();
         services.AddScoped<DeleteProjectMemberService>();

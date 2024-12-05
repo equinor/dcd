@@ -67,7 +67,7 @@ const Controls = () => {
         }
     }
 
-    const caseData = apiData?.case as Components.Schemas.CaseWithProfilesDto
+    const caseData = apiData?.case as Components.Schemas.CaseOverviewDto
 
     useEffect(() => {
         cancelEdit()

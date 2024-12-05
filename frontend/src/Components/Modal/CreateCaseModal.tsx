@@ -50,7 +50,7 @@ const CreateCaseModal = () => {
     const [producerCount, setProducerWells] = useState<number>(0)
     const [gasInjectorCount, setGasInjectorWells] = useState<number>(0)
     const [waterInjectorCount, setWaterInjectorWells] = useState<number>(0)
-    const [projectCase, setCaseItem] = useState<Components.Schemas.CaseDto>()
+    const [projectCase, setCaseItem] = useState<Components.Schemas.CaseOverviewDto>()
 
     const resetForm = () => {
         setCaseName("")

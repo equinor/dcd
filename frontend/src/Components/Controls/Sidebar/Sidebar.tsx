@@ -69,7 +69,7 @@ const Sidebar = () => {
         enabled: !!externalId,
     })
 
-    const [archivedCases, setArchivedCases] = useState<Components.Schemas.CaseWithProfilesDto[]>([])
+    const [archivedCases, setArchivedCases] = useState<Components.Schemas.CaseOverviewDto[]>([])
 
     useEffect(() => {
         if (!projectData) { return }

@@ -126,7 +126,7 @@ export const productionStrategyOverviewToString = (value?: Components.Schemas.Pr
     }[value]
 }
 
-export const isExplorationWell = (well: Components.Schemas.WellDto | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
+export const isExplorationWell = (well: Components.Schemas.WellOverviewDto | undefined) => [4, 5, 6].indexOf(well?.wellCategory ?? -1) > -1
 
 const mergeTimeSeriesValues = (dataArrays: number[][], offsets: number[]): number[] => {
     if (dataArrays.length !== offsets.length) {

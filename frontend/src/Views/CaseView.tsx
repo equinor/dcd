@@ -53,7 +53,7 @@ const CaseView = () => {
     }, [tab])
 
     useEffect(() => {
-        if (apiData && !apiData?.commonProjectAndRevisionData.cases.find((c: Components.Schemas.CaseDto) => c.id === caseId)) {
+        if (apiData && !apiData?.commonProjectAndRevisionData.cases.find((c: Components.Schemas.CaseOverviewDto) => c.id === caseId)) {
             navigate(projectUrl)
         }
     }, [apiData])

@@ -24,17 +24,17 @@ const SectionHeader = styled.div`
     justify-content: space-between;
 `
 interface Props {
-    developmentOperationalWellCosts: Components.Schemas.DevelopmentOperationalWellCostsDto
-    setDevelopmentOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>>
+    developmentOperationalWellCosts: Components.Schemas.DevelopmentOperationalWellCostsOverviewDto
+    setDevelopmentOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsOverviewDto | undefined>>
 
-    explorationOperationalWellCosts: Components.Schemas.ExplorationOperationalWellCostsDto
-    setExplorationOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>>
+    explorationOperationalWellCosts: Components.Schemas.ExplorationOperationalWellCostsOverviewDto
+    setExplorationOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsOverviewDto | undefined>>
 
-    wellProjectWells: Components.Schemas.WellDto[]
-    setWellProjectWells: Dispatch<SetStateAction<Components.Schemas.WellDto[]>>
+    wellProjectWells: Components.Schemas.WellOverviewDto[]
+    setWellProjectWells: Dispatch<SetStateAction<Components.Schemas.WellOverviewDto[]>>
 
-    explorationWells: Components.Schemas.WellDto[]
-    setExplorationWells: Dispatch<SetStateAction<Components.Schemas.WellDto[]>>
+    explorationWells: Components.Schemas.WellOverviewDto[]
+    setExplorationWells: Dispatch<SetStateAction<Components.Schemas.WellOverviewDto[]>>
 
     setDeletedWells: Dispatch<SetStateAction<string[]>>
 }

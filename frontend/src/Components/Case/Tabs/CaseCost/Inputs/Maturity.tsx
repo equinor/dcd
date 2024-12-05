@@ -4,7 +4,7 @@ import { useParams } from "react-router"
 import InputSwitcher from "../../../../Input/Components/InputSwitcher"
 
 interface props {
-    surfData: Components.Schemas.SurfWithProfilesDto
+    surfData: Components.Schemas.SurfOverviewDto
     projectId: string
     addEdit: any
 }
@@ -23,7 +23,7 @@ const Maturity: React.FC<props> = ({ surfData, projectId, addEdit }) => {
         const newValue = Number(e.currentTarget.value)
 
         const previousResourceObject = structuredClone(surfData)
-        const newResourceObject: Components.Schemas.SurfWithProfilesDto = structuredClone(surfData)
+        const newResourceObject: Components.Schemas.SurfOverviewDto = structuredClone(surfData)
         newResourceObject.maturity = newValue as Components.Schemas.Maturity
 
         addEdit({
