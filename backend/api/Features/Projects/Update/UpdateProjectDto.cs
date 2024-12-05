@@ -6,7 +6,7 @@ public class UpdateProjectDto
 {
     public string Name { get; set; } = null!;
     public Guid ReferenceCaseId { get; set; }
-    public string CommonLibraryName { get; set; } = null!;
+    public string? CommonLibraryName { get; set; }
     public string Description { get; set; } = null!;
     public string Country { get; set; } = null!;
     public Currency Currency { get; set; }
