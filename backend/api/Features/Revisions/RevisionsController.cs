@@ -3,7 +3,6 @@ using api.AppInfrastructure.ControllerAttributes;
 using api.Features.ProjectData;
 using api.Features.ProjectData.Dtos;
 using api.Features.Revisions.Create;
-using api.Features.Revisions.Get;
 using api.Features.Revisions.Update;
 
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +13,6 @@ namespace api.Features.Revisions;
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
 public class RevisionsController(
     CreateRevisionService createRevisionService,
-    GetRevisionService getRevisionService,
     GetProjectDataService getProjectDataService,
     UpdateRevisionService updateRevisionService) : ControllerBase
 {
@@ -41,10 +39,10 @@ public class RevisionsController(
     [HttpPut("projects/{projectId:guid}/revisions/{revisionId:guid}")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
-    public async Task<RevisionWithCasesDto> UpdateRevision([FromRoute] Guid projectId, [FromRoute] Guid revisionId, [FromBody] UpdateRevisionDto updateRevisionDto)
+    public async Task<RevisionDataDto> UpdateRevision([FromRoute] Guid projectId, [FromRoute] Guid revisionId, [FromBody] UpdateRevisionDto updateRevisionDto)
     {
         await updateRevisionService.UpdateRevision(projectId, revisionId, updateRevisionDto);
 
-        return await getRevisionService.GetRevision(projectId, revisionId);
+        return await getProjectDataService.GetRevisionData(projectId, revisionId);
     }
 }
