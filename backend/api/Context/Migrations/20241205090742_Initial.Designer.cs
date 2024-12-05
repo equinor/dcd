@@ -12,7 +12,7 @@ using api.Context;
 namespace api.Migrations
 {
     [DbContext(typeof(DcdDbContext))]
-    [Migration("20241122061433_Initial")]
+    [Migration("20241205090742_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -1710,6 +1710,9 @@ namespace api.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("FromOrgChart")
+                        .HasColumnType("bit");
 
                     b.Property<Guid>("ProjectId")
                         .HasColumnType("uniqueidentifier");
