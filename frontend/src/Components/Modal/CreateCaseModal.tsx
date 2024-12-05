@@ -122,7 +122,6 @@ const CreateCaseModal = () => {
                 throw new Error("No project found")
             }
 
-            let projectResult: Components.Schemas.ProjectWithAssetsDto
             if (caseModalEditMode && projectCase && projectCase.id) {
                 const newCase = { ...projectCase }
                 newCase.name = caseName
@@ -133,14 +132,14 @@ const CreateCaseModal = () => {
                 newCase.waterInjectorCount = waterInjectorCount
                 newCase.productionStrategyOverview = productionStrategy ?? 0
 
-                projectResult = await (await GetCaseService()).updateCaseAndProfiles(
+                await (await GetCaseService()).updateCase(
                     apiData.id,
                     projectCase.id,
                     newCase,
                 )
                 setIsLoading(false)
             } else {
-                projectResult = await (await GetCaseService()).create(
+                await (await GetCaseService()).create(
                     apiData.id,
                     {
                         name: caseName,

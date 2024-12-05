@@ -6,8 +6,8 @@ class CaseService extends __BaseService {
     public async create(
         projectId: string,
         data: Components.Schemas.CreateCaseDto,
-    ): Promise<Components.Schemas.ProjectWithAssetsDto> {
-        const res: Components.Schemas.ProjectWithAssetsDto = await this.post(
+    ): Promise<Components.Schemas.ProjectDataDto> {
+        const res: Components.Schemas.ProjectDataDto = await this.post(
             `projects/${projectId}/cases`,
             { body: data },
         )
@@ -23,26 +23,6 @@ class CaseService extends __BaseService {
             `projects/${projectId}/cases/${caseId}`,
             { body },
         )
-        return res
-    }
-
-    public async updateCaseAndProfiles(
-        projectId: string,
-        caseId: string,
-        body: Components.Schemas.UpdateCaseDto,
-    ): Promise<Components.Schemas.ProjectWithAssetsDto> {
-        const res: Components.Schemas.ProjectWithAssetsDto = await this.put(
-            `projects/${projectId}/cases/${caseId}`,
-            { body },
-        )
-        return res
-    }
-
-    public async getCase(
-        projectId: string,
-        caseId: string,
-    ): Promise<Components.Schemas.ProjectWithAssetsDto> {
-        const res = await this.get(`projects/${projectId}/cases/${caseId}`)
         return res
     }
 

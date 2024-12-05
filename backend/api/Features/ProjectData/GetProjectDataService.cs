@@ -40,7 +40,6 @@ public class GetProjectDataService(IProjectWithAssetsRepository projectWithAsset
 
         var revisionDetailsList = await context.RevisionDetails
             .Where(r => r.OriginalProjectId == projectId)
-            .OrderBy(x => x.RevisionDate)
             .Select(x => new RevisionDetailsDto
             {
                 Id = x.Id,
@@ -58,7 +57,7 @@ public class GetProjectDataService(IProjectWithAssetsRepository projectWithAsset
         {
             ProjectId = projectId,
             ProjectMembers = projectMembers,
-            RevisionDetailsList = revisionDetailsList,
+            RevisionDetailsList = revisionDetailsList.OrderBy(x => x.RevisionDate).ToList(),
             CommonProjectAndRevisionData = MapToDto(project)
         };
     }

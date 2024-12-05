@@ -2138,7 +2138,7 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.CreateCaseDto;
             namespace Responses {
-                export type $200 = Components.Schemas.ProjectWithAssetsDto;
+                export type $200 = Components.Schemas.ProjectDataDto;
             }
         }
     }
