@@ -3,8 +3,8 @@ import { Typography } from "@equinor/eds-core-react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
 import CaseEditHistory from "../Case/Components/CaseEditHistory"
-import { useCaseContext } from "../../Context/CaseContext"
-import { projectQueryFn } from "../../Services/QueryFunctions"
+import { useCaseContext } from "@/Context/CaseContext"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 
 const Container = styled.div`
     display: flex;

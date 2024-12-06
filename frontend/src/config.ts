@@ -16,6 +16,8 @@ import { ExcelExportModule } from "@ag-grid-enterprise/excel-export"
 
 export const configure: AppModuleInitiator = (configurator, args) => {
     const { agGridLicense } = (args.env.config?.environment as { agGridLicense?: string })
+    console.log("agGridLicense", agGridLicense)
+    console.log("args", args)
     const { basename } = args.env
 
     ModuleRegistry.registerModules([
@@ -31,13 +33,14 @@ export const configure: AppModuleInitiator = (configurator, args) => {
         ExcelExportModule,
     ])
 
-    if (agGridLicense && agGridLicense.length > 0) {
-        enableAgGrid(configurator, {
-            licenseKey: agGridLicense || "",
-        })
-    } else {
-        enableAgGrid(configurator)
-    }
+    // if (agGridLicense && agGridLicense.length > 0) {
+    //     enableAgGrid(configurator, {
+    //         licenseKey: agGridLicense || "",
+    //     })
+    // } else {
+    //     enableAgGrid(configurator)
+    // }
+    enableAgGrid(configurator)
 
     configurator.useFrameworkServiceClient("portal")
     configurator.useFrameworkServiceClient("people")

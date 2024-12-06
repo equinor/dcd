@@ -247,6 +247,7 @@ const CaseDrillingScheduleTabTable = ({
         filter: true,
         resizable: true,
         editable: true,
+        enableCellChangeFlash: true,
         onCellValueChanged: handleCellValueChange,
         suppressHeaderMenuButton: true,
     }), [assetWells])
@@ -339,10 +340,8 @@ const CaseDrillingScheduleTabTable = ({
                     defaultColDef={defaultColDef}
                     animateRows
                     domLayout="autoHeight"
-                    enableCellChangeFlash
-                    rowSelection="multiple"
-                    enableRangeSelection
-                    suppressCopySingleCellRanges
+                    rowSelection={{ mode: "multiRow", copySelectedRows: true }}
+                    cellSelection
                     suppressMovableColumns
                     enableCharts
                     alignedGrids={gridRefArrayToAlignedGrid()}

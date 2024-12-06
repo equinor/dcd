@@ -3483,6 +3483,19 @@ declare namespace Paths {
             }
         }
     }
+    namespace Projects$ProjectIdGetFullGraph {
+        namespace Get {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            namespace Responses {
+                export type $200 = Components.Schemas.ProjectDataDto;
+            }
+        }
+    }
     namespace Projects$ProjectIdImages {
         namespace Get {
             namespace Parameters {
@@ -3633,6 +3646,21 @@ declare namespace Paths {
                 revisionId: Parameters.RevisionId /* uuid */;
             }
             export type RequestBody = Components.Schemas.UpdateRevisionDto;
+            namespace Responses {
+                export type $200 = Components.Schemas.RevisionDataDto;
+            }
+        }
+    }
+    namespace Projects$ProjectIdRevisions$RevisionIdGetFullGraph {
+        namespace Get {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+                export type RevisionId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+                revisionId: Parameters.RevisionId /* uuid */;
+            }
             namespace Responses {
                 export type $200 = Components.Schemas.RevisionDataDto;
             }

@@ -1,12 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react"
-import { AgChartsReact } from "ag-charts-react"
+import { AgCharts } from "ag-charts-react"
 import { Grid } from "@mui/material"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
 
 import { ProfileNames } from "@/Models/Interfaces"
 import { ITimeSeries, ITimeSeriesTableData } from "@/Models/ITimeSeries"
-import { mergeTimeseries } from "@/Utils/common"
 import { projectQueryFn } from "@/Services/QueryFunctions"
 
 interface AggregatedTotalsProps {
@@ -270,7 +269,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
         theme: figmaTheme,
         series: [
             {
-                type: "pie",
+                type: "donut",
                 calloutLabelKey: "profile",
                 angleKey: "value",
                 calloutLabel: { enabled: false },
@@ -281,13 +280,11 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                         text: `${totalValue.toFixed(2)}`,
                         fontSize: 18,
                         color: "#000000",
-                        margin: 0,
                     },
                     {
                         text: unit ?? "",
                         fontSize: 14,
                         color: "#B4B4B4",
-                        margin: 4,
                     },
                 ],
                 highlightStyle: {
@@ -314,10 +311,10 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
     return (
         <Grid container spacing={2} style={{ width: "100%" }}>
             <Grid item lg={12} xl={7}>
-                <AgChartsReact options={barChartOptions} style={{ height: "100%" }} />
+                <AgCharts options={barChartOptions} style={{ height: "100%" }} />
             </Grid>
             <Grid item lg={8} xl={5}>
-                <AgChartsReact options={pieChartOptions} style={{ height: "100%" }} />
+                <AgCharts options={pieChartOptions} style={{ height: "100%" }} />
             </Grid>
         </Grid>
     )

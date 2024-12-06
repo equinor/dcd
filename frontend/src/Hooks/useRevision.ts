@@ -7,7 +7,12 @@ import { GetProjectService } from "@/Services/ProjectService"
 import { useProjectContext } from "@/Context/ProjectContext"
 
 export const useRevisions = () => {
-    const { isRevision, setIsRevision, projectId } = useProjectContext()
+    const {
+        isRevision,
+        setIsRevision,
+        projectId,
+        setIsCreateRevisionModalOpen,
+    } = useProjectContext()
     const { currentContext } = useModuleCurrentContext()
     const queryClient = useQueryClient()
     const { revisionId } = useParams()
@@ -26,16 +31,13 @@ export const useRevisions = () => {
 
     const createRevision = async (
         revision: Components.Schemas.CreateRevisionDto,
-        setIsModalOpen?: React.Dispatch<React.SetStateAction<boolean>>,
     ) => {
         setIsRevisionsLoading(true)
         const projectService = await GetProjectService()
         const newRevision = await projectService.createRevision(projectId, revision)
         if (newRevision) {
             setIsRevisionsLoading(false)
-            if (setIsModalOpen) {
-                setIsModalOpen(false)
-            }
+            setIsCreateRevisionModalOpen(false)
             navigateToRevision(newRevision.revisionId)
         }
     }

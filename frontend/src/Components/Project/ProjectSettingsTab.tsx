@@ -49,7 +49,7 @@ const ProjectSettingsTab = () => {
             setGasPriceNOK(apiRevisionData.commonProjectAndRevisionData.gasPriceNOK)
             setDiscountRate(apiRevisionData.commonProjectAndRevisionData.discountRate)
         }
-    }, [isRevision, apiRevisionData, revisionId])  
+    }, [isRevision, apiRevisionData, revisionId])
 
     const handlePhysicalUnitChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1].indexOf(Number(e.currentTarget.value)) !== -1 && apiData) {
@@ -143,7 +143,10 @@ const ProjectSettingsTab = () => {
             <Grid item>
                 {dummyRole === 0 && (
                     <InputSwitcher
-                        value={isRevision && !!apiRevisionData?.commonProjectAndRevisionData.classification ? PROJECT_CLASSIFICATION[apiRevisionData?.commonProjectAndRevisionData.classification].label : PROJECT_CLASSIFICATION[apiData.commonProjectAndRevisionData.classification].label}
+                        value={isRevision
+                        && !!apiRevisionData?.commonProjectAndRevisionData.classification
+                            ? PROJECT_CLASSIFICATION[apiRevisionData?.commonProjectAndRevisionData.classification].label
+                            : PROJECT_CLASSIFICATION[apiData.commonProjectAndRevisionData.classification].label}
                         label="Classification"
                     >
                         <NativeSelect
