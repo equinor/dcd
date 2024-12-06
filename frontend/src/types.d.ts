@@ -3696,7 +3696,7 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdWells$WellIdAffectedCases {
+    namespace Projects$ProjectIdWells$WellIdIsInUse {
         namespace Get {
             namespace Parameters {
                 export type ProjectId = string; // uuid
@@ -3707,7 +3707,7 @@ declare namespace Paths {
                 wellId: Parameters.WellId /* uuid */;
             }
             namespace Responses {
-                export type $200 = Components.Schemas.CaseDto[];
+                export type $200 = boolean;
             }
         }
     }

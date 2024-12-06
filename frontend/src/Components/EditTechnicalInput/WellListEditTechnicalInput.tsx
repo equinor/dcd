@@ -165,9 +165,8 @@ const WellListEditTechnicalInput = ({
             disabled={!editMode || isEditDisabled}
             onClick={async () => {
                 if (!apiData) { return }
-                const wellsInUse = await (await GetWellService()).checkWellIsInUse(apiData.projectId, p.data.id)
-                const wellIsInUse = wellsInUse.length > 0
-                if (wellIsInUse) {
+                const isWellInUse = await (await GetWellService()).isWellInUse(apiData.projectId, p.data.id)
+                if (isWellInUse) {
                     setWellStagedForDeletion(p)
                 } else {
                     handleDeleteWell(p)

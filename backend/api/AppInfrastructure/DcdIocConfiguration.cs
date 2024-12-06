@@ -45,7 +45,7 @@ using api.Features.TechnicalInput;
 using api.Features.Wells.Create;
 using api.Features.Wells.Delete;
 using api.Features.Wells.Get;
-using api.Features.Wells.GetAffectedCases;
+using api.Features.Wells.GetIsInUse;
 using api.Features.Wells.Update;
 using api.ModelMapping;
 
@@ -145,7 +145,7 @@ public static class DcdIocConfiguration
         services.AddScoped<CreateWellService>();
         services.AddScoped<UpdateWellService>();
         services.AddScoped<DeleteWellService>();
-        services.AddScoped<GetAffectedCasesService>();
+        services.AddScoped<GetIsWellInUseService>();
 
         services.AddScoped<CaseWithAssetsRepository>();
         services.AddScoped<CaseWithAssetsService>();
