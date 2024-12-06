@@ -41,14 +41,9 @@ public class ProspController(ProspSharepointImportService prospSharepointImportI
             logger.LogError(ex, "Custom Access Denied when attempting to access SharePoint site: {Url}", urlDto.Url);
             return StatusCode(StatusCodes.Status403Forbidden, ex.Message);
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "An error occurred while processing your request for URL: {Url}", urlDto.Url);
-            return StatusCode(StatusCodes.Status500InternalServerError, "An internal server error occurred.");
-        }
     }
 
-    [HttpPost("prosp/{projectId:guid}/sharepoint", Name = nameof(ImportFilesFromSharepointAsync))]
+    [HttpPost("prosp/{projectId:guid}/sharepoint")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
     [DisableRequestSizeLimit]
@@ -64,14 +59,6 @@ public class ProspController(ProspSharepointImportService prospSharepointImportI
         {
             logger.LogError($"Access denied when trying to import files from SharePoint for project {projectId}: {ex.Message}");
             return StatusCode(StatusCodes.Status403Forbidden, "Access to SharePoint resource was denied.");
-        }
-        // Handle other potential ServiceException cases, if necessary
-        catch (Exception e)
-        {
-            logger.LogError($"An error occurred while importing files from SharePoint for project {projectId}: {e.Message}");
-            // Consider returning a more generic error message to avoid exposing sensitive details
-            // and ensure it's a client-friendly message
-            return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
         }
     }
 }
