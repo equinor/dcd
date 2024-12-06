@@ -1,6 +1,5 @@
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Repositories;
-using api.Features.Projects.GetWithAssets;
 using api.Features.Stea.Dtos;
 using api.Features.Stea.ExcelExport;
 using api.Models;

@@ -6,8 +6,8 @@ class CaseService extends __BaseService {
     public async create(
         projectId: string,
         data: Components.Schemas.CreateCaseDto,
-    ): Promise<Components.Schemas.ProjectWithAssetsDto> {
-        const res: Components.Schemas.ProjectWithAssetsDto = await this.post(
+    ): Promise<Components.Schemas.ProjectDataDto> {
+        const res: Components.Schemas.ProjectDataDto = await this.post(
             `projects/${projectId}/cases`,
             { body: data },
         )
@@ -17,32 +17,12 @@ class CaseService extends __BaseService {
     public async updateCase(
         projectId: string,
         caseId: string,
-        body: Components.Schemas.APIUpdateCaseDto,
+        body: Components.Schemas.UpdateCaseDto,
     ): Promise<Components.Schemas.CaseDto> {
         const res: Components.Schemas.CaseDto = await this.put(
             `projects/${projectId}/cases/${caseId}`,
             { body },
         )
-        return res
-    }
-
-    public async updateCaseAndProfiles(
-        projectId: string,
-        caseId: string,
-        body: Components.Schemas.APIUpdateCaseDto,
-    ): Promise<Components.Schemas.ProjectWithAssetsDto> {
-        const res: Components.Schemas.ProjectWithAssetsDto = await this.put(
-            `projects/${projectId}/cases/${caseId}`,
-            { body },
-        )
-        return res
-    }
-
-    public async getCase(
-        projectId: string,
-        caseId: string,
-    ): Promise<Components.Schemas.ProjectWithAssetsDto> {
-        const res = await this.get(`projects/${projectId}/cases/${caseId}`)
         return res
     }
 
@@ -57,8 +37,8 @@ class CaseService extends __BaseService {
     public async duplicateCase(
         projectId: string,
         copyCaseId: string,
-    ): Promise<Components.Schemas.ProjectWithAssetsDto> {
-        const res: Components.Schemas.ProjectWithAssetsDto = await this.postWithParams(
+    ): Promise<Components.Schemas.ProjectDataDto> {
+        const res: Components.Schemas.ProjectDataDto = await this.postWithParams(
             `projects/${projectId}/cases/copy`,
             { body: {} },
             { params: { copyCaseId } },
@@ -69,8 +49,8 @@ class CaseService extends __BaseService {
     public async deleteCase(
         projectId: string,
         caseId: string,
-    ): Promise<Components.Schemas.ProjectWithAssetsDto> {
-        const res: Components.Schemas.ProjectWithAssetsDto = await this.delete(
+    ): Promise<Components.Schemas.ProjectDataDto> {
+        const res: Components.Schemas.ProjectDataDto = await this.delete(
             `projects/${projectId}/cases/${caseId}`,
         )
         return res

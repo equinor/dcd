@@ -29,7 +29,7 @@ interface Props {
     alignedGridsRef?: any[]
     gridRef?: any
     assetWells: Components.Schemas.ExplorationWellDto[] | Components.Schemas.WellProjectWellDto[]
-    wells: Components.Schemas.WellDto[] | undefined
+    wells: Components.Schemas.WellOverviewDto[] | undefined
     resourceId: string
     isExplorationTable: boolean
     addEdit: any

@@ -17,5 +17,4 @@ public class CompareCasesDto
     [Required] public double ExplorationWellCosts { get; set; }
     [Required] public double TotalCo2Emissions { get; set; }
     [Required] public double Co2Intensity { get; set; }
-    [Required] public double NPV { get; set; }
 }

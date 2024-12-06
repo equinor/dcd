@@ -54,7 +54,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
         const newCapexTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Subsea production system",
-                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: surfCostData,
                 resourceName: "surfCostOverride",
                 resourceId: surf.id,
@@ -66,7 +66,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             },
             {
                 profileName: "Topside",
-                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: topsideCostData,
                 resourceName: "topsideCostOverride",
                 resourceId: topside.id,
@@ -78,7 +78,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             },
             {
                 profileName: "Substructure",
-                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: substructureCostData,
                 resourceName: "substructureCostOverride",
                 resourceId: substructure.id,
@@ -90,7 +90,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             },
             {
                 profileName: "Transport system",
-                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: transportCostData,
                 resourceName: "transportCostOverride",
                 resourceId: transport.id,

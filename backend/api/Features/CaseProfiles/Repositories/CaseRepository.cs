@@ -16,14 +16,6 @@ public class CaseRepository(DcdDbContext context) : BaseRepository(context), ICa
             .FirstOrDefaultAsync(p => (p.Id == id || p.FusionProjectId == id) && !p.IsRevision);
     }
 
-    public async Task<Case> AddCase(Case caseItem)
-    {
-        Context.Cases.Add(caseItem);
-        await Context.SaveChangesAsync();
-
-        return caseItem;
-    }
-
     public async Task<Case?> GetCase(Guid caseId)
     {
         return await Get<Case>(caseId);

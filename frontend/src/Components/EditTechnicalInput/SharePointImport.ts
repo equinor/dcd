@@ -14,21 +14,21 @@ implements Components.Schemas.SharePointImportDto {
     sharePointSiteUrl?: string | undefined
 
     constructor(
-        projectCase: Components.Schemas.CaseDto,
-        project: Components.Schemas.ProjectWithAssetsDto,
+        projectCase: Components.Schemas.CaseOverviewDto,
+        project: Components.Schemas.ProjectDataDto,
         data: Components.Schemas.SharePointImportDto | undefined,
     ) {
         this.id = projectCase.id!
         this.selected = false
-        this.surfState = SharePointImport.surfStatus(projectCase, project)
+        this.surfState = SharePointImport.surfStatus(projectCase, project.commonProjectAndRevisionData)
         this.substructureState = SharePointImport.substructureStatus(
             projectCase,
-            project,
+            project.commonProjectAndRevisionData,
         )
-        this.topsideState = SharePointImport.topsideStatus(projectCase, project)
+        this.topsideState = SharePointImport.topsideStatus(projectCase, project.commonProjectAndRevisionData)
         this.transportState = SharePointImport.transportStatus(
             projectCase,
-            project,
+            project.commonProjectAndRevisionData,
         )
         this.sharePointFileName = data?.sharePointFileName ?? ""
         this.sharePointFileId = data?.sharePointFileId ?? ""
@@ -39,8 +39,8 @@ implements Components.Schemas.SharePointImportDto {
     static mapSource = (source: Components.Schemas.Source | undefined) => (source === 0 ? "ConceptApp" : "PROSP")
 
     static surfStatus = (
-        projectCase: Components.Schemas.CaseDto,
-        project: Components.Schemas.ProjectWithAssetsDto,
+        projectCase: Components.Schemas.CaseOverviewDto,
+        project: Components.Schemas.CommonProjectAndRevisionDto,
     ): ImportStatusEnum => {
         const surfId = projectCase.surfLink
         const surf = project.surfs?.find((s) => s.id === surfId)
@@ -58,8 +58,8 @@ implements Components.Schemas.SharePointImportDto {
     }
 
     static substructureStatus = (
-        projectCase: Components.Schemas.CaseDto,
-        project: Components.Schemas.ProjectWithAssetsDto,
+        projectCase: Components.Schemas.CaseOverviewDto,
+        project: Components.Schemas.CommonProjectAndRevisionDto,
     ): ImportStatusEnum => {
         const substructureId = projectCase.substructureLink
         const substructure = project.substructures?.find(
@@ -79,8 +79,8 @@ implements Components.Schemas.SharePointImportDto {
     }
 
     static topsideStatus = (
-        projectCase: Components.Schemas.CaseDto,
-        project: Components.Schemas.ProjectWithAssetsDto,
+        projectCase: Components.Schemas.CaseOverviewDto,
+        project: Components.Schemas.CommonProjectAndRevisionDto,
     ): ImportStatusEnum => {
         const topsideId = projectCase.topsideLink
         const topside = project.topsides?.find((s) => s.id === topsideId)
@@ -98,8 +98,8 @@ implements Components.Schemas.SharePointImportDto {
     }
 
     static transportStatus = (
-        projectCase: Components.Schemas.CaseDto,
-        project: Components.Schemas.ProjectWithAssetsDto,
+        projectCase: Components.Schemas.CaseOverviewDto,
+        project: Components.Schemas.CommonProjectAndRevisionDto,
     ): ImportStatusEnum => {
         const transportId = projectCase.transportLink
         const transport = project.transports?.find((s) => s.id === transportId)

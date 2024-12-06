@@ -62,7 +62,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
             if (apiData && caseId) {
                 try {
                     const imageService = await getImageService()
-                    const imageDtos = await imageService.getImages(apiData.id, caseId)
+                    const imageDtos = await imageService.getImages(apiData.projectId, caseId)
                     setGallery(imageDtos)
                 } catch (error) {
                     console.error("Error loading images:", error)
@@ -107,7 +107,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
         const imageService = await getImageService()
 
         // if we could avoid project name here, we could drop the project query
-        const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(apiData.id, apiData.name, file, caseId))
+        const uploadPromises = acceptedFiles.map((file) => imageService.uploadImage(apiData.projectId, apiData.commonProjectAndRevisionData.name, file, caseId))
         try {
             const uploadedImageDtos = await Promise.all(uploadPromises)
             if (Array.isArray(uploadedImageDtos)) {

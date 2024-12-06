@@ -36,12 +36,9 @@ using api.Features.ProjectMembers.Delete;
 using api.Features.ProjectMembers.Get;
 using api.Features.ProjectMembers.Update;
 using api.Features.Projects.Create;
-using api.Features.Projects.GetWithAssets;
-using api.Features.Projects.GetWithCases;
 using api.Features.Projects.Update;
 using api.Features.Prosp.Services;
 using api.Features.Revisions.Create;
-using api.Features.Revisions.Get;
 using api.Features.Revisions.Update;
 using api.Features.Stea;
 using api.Features.TechnicalInput;
@@ -62,8 +59,6 @@ public static class DcdIocConfiguration
     {
         services.AddScoped<IProjectAccessService, ProjectAccessService>();
 
-        services.AddScoped<GetProjectWithAssetsService>();
-        services.AddScoped<GetProjectWithCasesService>();
         services.AddScoped<CreateProjectService>();
         services.AddScoped<UpdateProjectService>();
 
@@ -114,6 +109,7 @@ public static class DcdIocConfiguration
         services.AddScoped<SteaService>();
 
         services.AddScoped<GetProjectDataService>();
+        services.AddScoped<GetProjectDataRepository>();
 
         services.AddScoped<GetProjectMemberService>();
         services.AddScoped<DeleteProjectMemberService>();
@@ -123,7 +119,6 @@ public static class DcdIocConfiguration
         services.AddScoped<DuplicateCaseService>();
         services.AddScoped<DuplicateCaseRepository>();
 
-        services.AddScoped<GetRevisionService>();
         services.AddScoped<CreateRevisionService>();
         services.AddScoped<CreateRevisionRepository>();
         services.AddScoped<UpdateRevisionService>();

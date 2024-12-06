@@ -84,11 +84,11 @@ const Overview = () => {
     function checkIfNewRevisionIsRecommended() {
         if (!apiData) { return }
 
-        const lastModified = new Date(apiData.modifyTime)
+        const lastModified = new Date(apiData.commonProjectAndRevisionData.modifyTime)
         const currentTime = new Date()
 
         const timeDifferenceInDays = (currentTime.getTime() - lastModified.getTime()) / (1000 * 60 * 60 * 24)
-        const hasChangesSinceLastRevision = apiData.revisionsDetailsList.some((r) => new Date(r.revisionDate) < lastModified)
+        const hasChangesSinceLastRevision = apiData.revisionDetailsList.some((r) => new Date(r.revisionDate) < lastModified)
 
         if (timeDifferenceInDays > 30 && hasChangesSinceLastRevision && editMode && !isRevision) {
             setShowRevisionReminder(true)
@@ -99,10 +99,10 @@ const Overview = () => {
         if (apiData && currentUserId) {
             if (warnedProjects && warnedProjects[currentUserId]) {
                 const wp = { ...warnedProjects }
-                wp[currentUserId].push(apiData.id)
+                wp[currentUserId].push(apiData.projectId)
                 setWarnedProjects(wp)
             } else {
-                setWarnedProjects({ [currentUserId]: [apiData.id] })
+                setWarnedProjects({ [currentUserId]: [apiData.projectId] })
             }
         }
     }
@@ -131,7 +131,7 @@ const Overview = () => {
 
     useEffect(() => {
         if (apiData) {
-            setProjectId(apiData.id)
+            setProjectId(apiData.projectId)
         }
     }, [apiData])
 
@@ -145,9 +145,9 @@ const Overview = () => {
         if (apiData && currentUserId) {
             if (
                 !projectClassificationWarning
-                && PROJECT_CLASSIFICATION[apiData.classification].warn
+                && PROJECT_CLASSIFICATION[apiData.commonProjectAndRevisionData.classification].warn
                 && (
-                    (warnedProjects && !warnedProjects[currentUserId].some((vp: string) => vp === apiData.id))
+                    (warnedProjects && !warnedProjects[currentUserId].some((vp: string) => vp === apiData.projectId))
                     || (warnedProjects && !warnedProjects[currentUserId])
                     || !warnedProjects
                 )
@@ -156,7 +156,7 @@ const Overview = () => {
                     setProjectClassificationWarning(true)
                 }
             }
-            if (warnedProjects && warnedProjects[currentUserId].some((vp: string) => vp === apiData.id)) {
+            if (warnedProjects && warnedProjects[currentUserId].some((vp: string) => vp === apiData.projectId)) {
                 setProjectClassificationWarning(false)
             }
         }
@@ -200,10 +200,10 @@ const Overview = () => {
                         <Modal
                             isOpen={projectClassificationWarning}
                             size="sm"
-                            title={`Attention - ${PROJECT_CLASSIFICATION[apiData.classification].label} project`}
+                            title={`Attention - ${PROJECT_CLASSIFICATION[apiData.commonProjectAndRevisionData.classification].label} project`}
                             content={(
                                 <Typography key="text">
-                                    {PROJECT_CLASSIFICATION[apiData.classification].description}
+                                    {PROJECT_CLASSIFICATION[apiData.commonProjectAndRevisionData.classification].description}
                                 </Typography>
                             )}
                             actions={

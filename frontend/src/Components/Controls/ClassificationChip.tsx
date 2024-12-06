@@ -62,9 +62,9 @@ const Classification = () => {
 
     const getClassification = useMemo(() => {
         if (isRevision && apiRevisionData) {
-            return PROJECT_CLASSIFICATION[apiRevisionData.classification]
+            return PROJECT_CLASSIFICATION[apiRevisionData.commonProjectAndRevisionData.classification]
         } else if (projectApiData) {
-            return PROJECT_CLASSIFICATION[projectApiData?.classification]
+            return PROJECT_CLASSIFICATION[projectApiData?.commonProjectAndRevisionData.classification]
         } else return false
     }, [isRevision, apiRevisionData, projectApiData])
 

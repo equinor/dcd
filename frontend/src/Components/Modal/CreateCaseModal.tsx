@@ -50,7 +50,7 @@ const CreateCaseModal = () => {
     const [producerCount, setProducerWells] = useState<number>(0)
     const [gasInjectorCount, setGasInjectorWells] = useState<number>(0)
     const [waterInjectorCount, setWaterInjectorWells] = useState<number>(0)
-    const [projectCase, setCaseItem] = useState<Components.Schemas.CaseDto>()
+    const [projectCase, setCaseItem] = useState<Components.Schemas.CaseOverviewDto>()
 
     const resetForm = () => {
         setCaseName("")
@@ -64,7 +64,7 @@ const CreateCaseModal = () => {
 
     useEffect(() => {
         if (apiData) {
-            const selectedCase = apiData.cases?.find((c) => c.id === modalCaseId)
+            const selectedCase = apiData.commonProjectAndRevisionData.cases?.find((c) => c.id === modalCaseId)
 
             if (selectedCase) {
                 setCaseItem(selectedCase)
@@ -122,7 +122,6 @@ const CreateCaseModal = () => {
                 throw new Error("No project found")
             }
 
-            let projectResult: Components.Schemas.ProjectWithAssetsDto
             if (caseModalEditMode && projectCase && projectCase.id) {
                 const newCase = { ...projectCase }
                 newCase.name = caseName
@@ -133,15 +132,15 @@ const CreateCaseModal = () => {
                 newCase.waterInjectorCount = waterInjectorCount
                 newCase.productionStrategyOverview = productionStrategy ?? 0
 
-                projectResult = await (await GetCaseService()).updateCaseAndProfiles(
-                    apiData.id,
+                await (await GetCaseService()).updateCase(
+                    apiData.projectId,
                     projectCase.id,
                     newCase,
                 )
                 setIsLoading(false)
             } else {
-                projectResult = await (await GetCaseService()).create(
-                    apiData.id,
+                await (await GetCaseService()).create(
+                    apiData.projectId,
                     {
                         name: caseName,
                         description,

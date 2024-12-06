@@ -52,7 +52,7 @@ const CasesList: React.FC = () => {
 
     const cases = useMemo(
         () => {
-            const filteredCases = isRevision ? apiRevisionData?.cases : apiData?.cases
+            const filteredCases = isRevision ? apiRevisionData?.commonProjectAndRevisionData.cases : apiData?.commonProjectAndRevisionData.cases
             return filteredCases ? filteredCases.filter((c) => !c.archived) : []
         },
         [apiData, apiRevisionData, isRevision],
@@ -81,14 +81,14 @@ const CasesList: React.FC = () => {
                         placement="right"
                     >
                         <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.id)}>
-                            {apiData?.referenceCaseId !== EMPTY_GUID
+                            {apiData?.commonProjectAndRevisionData.referenceCaseId !== EMPTY_GUID
                                 ? (
                                     <SideBarRefCaseWrapper>
 
                                         {!sidebarOpen && `#${index + 1}`}
                                         {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 30)}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
-                                        {apiData?.referenceCaseId === projectCase?.id && (
+                                        {apiData?.commonProjectAndRevisionData.referenceCaseId === projectCase?.id && (
                                             <ReferenceCaseIcon iconPlacement="sideBar" />
                                         )}
                                     </SideBarRefCaseWrapper>

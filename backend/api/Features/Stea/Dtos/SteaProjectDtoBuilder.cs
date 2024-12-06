@@ -1,5 +1,4 @@
 using api.Features.CaseProfiles.Services.Helpers;
-using api.Features.Projects.GetWithAssets;
 
 namespace api.Features.Stea.Dtos;
 

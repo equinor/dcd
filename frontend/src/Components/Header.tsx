@@ -63,7 +63,7 @@ const RouteCoordinator = (): JSX.Element => {
                         setIsCreating(true)
                         setSnackBarMessage("No project found for this search. Creating new.")
                         const createdProject = await projectService.createProject(currentContext.id)
-                        access = await projectService.getAccess(createdProject.fusionProjectId)
+                        access = await projectService.getAccess(createdProject.commonProjectAndRevisionData.fusionProjectId)
                     } else {
                         handleError("Error fetching access rights", error)
                         return

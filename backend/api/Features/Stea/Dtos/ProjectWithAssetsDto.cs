@@ -10,12 +10,12 @@ using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts.Dtos;
 using api.Features.CaseProfiles.Dtos;
+using api.Features.ProjectData.Dtos;
 using api.Features.ProjectMembers.Get;
-using api.Features.Revisions.Get;
 using api.Features.Wells.Get;
 using api.Models;
 
-namespace api.Features.Projects.GetWithAssets;
+namespace api.Features.Stea.Dtos;
 
 public class ProjectWithAssetsDto : IEquatable<ProjectWithAssetsDto>
 {

@@ -58,8 +58,8 @@ export const useProjectChartData = () => {
 
     const cases = useMemo(() => {
         if(isRevision) {
-            return apiRevisionData?.cases.filter((c) => !c.archived) || []
-        } else return apiData?.cases.filter((c) => !c.archived) || []
+            return apiRevisionData?.commonProjectAndRevisionData.cases.filter((c) => !c.archived) || []
+        } else return apiData?.commonProjectAndRevisionData.cases.filter((c) => !c.archived) || []
     }, [apiData, isRevision, apiRevisionData])
 
     const generateAllCharts = () => {

@@ -13,7 +13,6 @@ public class UpdateProjectService(DcdDbContext context)
         existingProject.ModifyTime = DateTimeOffset.UtcNow;
         existingProject.Name = projectDto.Name;
         existingProject.ReferenceCaseId = projectDto.ReferenceCaseId;
-        existingProject.CommonLibraryName = projectDto.CommonLibraryName;
         existingProject.Description = projectDto.Description;
         existingProject.Country = projectDto.Country;
         existingProject.Currency = projectDto.Currency;

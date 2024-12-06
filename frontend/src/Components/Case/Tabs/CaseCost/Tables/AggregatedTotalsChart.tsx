@@ -118,7 +118,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
 
                 newTimeSeriesData.push({
                     profileName: profileName.replace(/Profiles$/, "").replace(/([A-Z])/g, " $1").trim(),
-                    unit: projectData?.currency === 1 ? "MNOK" : "MUSD",
+                    unit: projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD",
                     profile: aggregatedProfile,
                     resourceName,
                     resourceId: apiData.case.id,

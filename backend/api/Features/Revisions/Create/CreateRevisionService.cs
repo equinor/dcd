@@ -9,27 +9,27 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
 {
     public async Task<Guid> CreateRevision(Guid projectId, CreateRevisionDto createRevisionDto)
     {
-        var project = await createRevisionRepository.GetProjectAndAssetsNoTracking(projectId);
+        var revision = await createRevisionRepository.GetProjectAndAssetsNoTracking(projectId);
 
-        project.IsRevision = true;
-        project.OriginalProjectId = projectId;
-        project.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
-        project.Classification = createRevisionDto.Classification;
+        revision.IsRevision = true;
+        revision.OriginalProjectId = projectId;
+        revision.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
+        revision.Classification = createRevisionDto.Classification;
 
-        ResetIdPropertiesInProjectGraphService.ResetPrimaryKeysAndForeignKeysInGraph(project);
+        ResetIdPropertiesInProjectGraphService.ResetPrimaryKeysAndForeignKeysInGraph(revision);
 
-        project.RevisionDetails = new RevisionDetails
+        revision.RevisionDetails = new RevisionDetails
         {
             OriginalProjectId = projectId,
             RevisionName = createRevisionDto.Name,
             Mdqc = createRevisionDto.Mdqc,
             Arena = createRevisionDto.Arena,
             RevisionDate = DateTimeOffset.UtcNow,
-            Revision = project,
+            Revision = revision,
             Classification = createRevisionDto.Classification
         };
 
-        context.Projects.Add(project);
+        context.Projects.Add(revision);
 
         var existingProject = await context.Projects.FirstAsync(p => (p.Id == projectId || p.FusionProjectId == projectId) && !p.IsRevision);
         existingProject.InternalProjectPhase = createRevisionDto.InternalProjectPhase;
@@ -37,6 +37,6 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
 
         await context.SaveChangesAsync();
 
-        return project.Id;
+        return revision.Id;
     }
 }
