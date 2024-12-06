@@ -1533,7 +1533,6 @@ declare namespace Components {
         export interface UpdateProjectDto {
             name?: string | null;
             referenceCaseId?: string; // uuid
-            commonLibraryName?: string | null;
             description?: string | null;
             country?: string | null;
             currency?: Currency /* int32 */;
