@@ -1877,7 +1877,8 @@ declare namespace Paths {
             }
             export type RequestBody = Components.Schemas.UpdateCaseDto;
             namespace Responses {
-                export type $200 = Components.Schemas.CaseDto;
+                export interface $200 {
+                }
             }
         }
     }

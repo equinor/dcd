@@ -18,12 +18,8 @@ class CaseService extends __BaseService {
         projectId: string,
         caseId: string,
         body: Components.Schemas.UpdateCaseDto,
-    ): Promise<Components.Schemas.CaseDto> {
-        const res: Components.Schemas.CaseDto = await this.put(
-            `projects/${projectId}/cases/${caseId}`,
-            { body },
-        )
-        return res
+    ): Promise<void> {
+        await this.put(`projects/${projectId}/cases/${caseId}`, { body })
     }
 
     public async getCaseWithAssets(

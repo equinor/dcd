@@ -1,15 +1,12 @@
 using api.Context;
-using api.Features.CaseProfiles.Dtos;
-using api.ModelMapping;
-using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Cases.Update;
 
-public class UpdateCaseService(DcdDbContext context, IMapperService mapperService)
+public class UpdateCaseService(DcdDbContext context)
 {
-    public async Task<CaseDto> UpdateCase(Guid projectId, Guid caseId, UpdateCaseDto updateCaseDto)
+    public async Task UpdateCase(Guid projectId, Guid caseId, UpdateCaseDto updateCaseDto)
     {
         var existingCase = await context.Cases
             .Where(x => x.ProjectId == projectId)
@@ -50,7 +47,5 @@ public class UpdateCaseService(DcdDbContext context, IMapperService mapperServic
         existingCase.ModifyTime = DateTimeOffset.UtcNow;
 
         await context.SaveChangesAndRecalculateAsync(caseId);
-
-        return mapperService.MapToDto<Case, CaseDto>(existingCase, caseId);
     }
 }
