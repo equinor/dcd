@@ -40,7 +40,7 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
         var commonProjectAndRevisionData = await getProjectDataRepository.GetCommonProjectAndRevisionData(projectPk);
         commonProjectAndRevisionData.Cases = await getProjectDataRepository.GetCases(projectPk);
         commonProjectAndRevisionData.Wells = await getProjectDataRepository.GetWells(projectPk);
-        commonProjectAndRevisionData.Surfs = await getProjectDataRepository.GetSurfs(projectId);
+        commonProjectAndRevisionData.Surfs = await getProjectDataRepository.GetSurfs(projectPk);
         commonProjectAndRevisionData.Substructures = await getProjectDataRepository.GetSubstructures(projectPk);
         commonProjectAndRevisionData.Topsides = await getProjectDataRepository.GetTopsides(projectPk);
         commonProjectAndRevisionData.Transports = await getProjectDataRepository.GetTransports(projectPk);
