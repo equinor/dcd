@@ -36,7 +36,7 @@ export const useRevisions = () => {
             if (setIsModalOpen) {
                 setIsModalOpen(false)
             }
-            navigateToRevision(newRevision.projectId)
+            navigateToRevision(newRevision.revisionId)
         }
     }
 
