@@ -40,6 +40,7 @@ export const configure: AppModuleInitiator = (configurator, args) => {
     // } else {
     //     enableAgGrid(configurator)
     // }
+    enableAgGrid(configurator)
 
     configurator.useFrameworkServiceClient("portal")
     configurator.useFrameworkServiceClient("people")
