@@ -9,16 +9,6 @@ namespace api.Features.ProjectData;
 
 public class GetProjectDataRepository(DcdDbContext context)
 {
-
-    public async Task<Guid> GetProjectIdForRevision(Guid projectId, Guid revisionId)
-    {
-        return await context.Projects
-            .Where(x => x.OriginalProjectId == projectId)
-            .Where(x => x.Id == revisionId)
-            .Select(x => x.Id)
-            .SingleAsync();
-    }
-
     public async Task<Guid> GetProjectIdFromFusionId(Guid projectId)
     {
         return await context.Projects
@@ -58,12 +48,10 @@ public class GetProjectDataRepository(DcdDbContext context)
             .ToListAsync();
     }
 
-    public async Task<RevisionDetailsDto> GetRevisionDetails(Guid projectId, Guid revisionId)
+    public async Task<RevisionDetailsDto> GetRevisionDetails(Guid revisionId)
     {
         return await context.RevisionDetails
-            .Where(r => r.OriginalProjectId == projectId)
             .Where(x => x.RevisionId == revisionId)
-            .OrderBy(x => x.RevisionDate)
             .Select(x => new RevisionDetailsDto
             {
                 Id = x.Id,

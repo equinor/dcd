@@ -23,10 +23,8 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
 
     public async Task<RevisionDataDto> GetRevisionData(Guid projectId, Guid revisionId)
     {
-        var projectPk = await getProjectDataRepository.GetProjectIdForRevision(projectId, revisionId);
-
-        var revisionDetails = await getProjectDataRepository.GetRevisionDetails(projectPk, revisionId);
-        var commonProjectAndRevisionData = await LoadCommonProjectAndRevisionData(projectPk);
+        var revisionDetails = await getProjectDataRepository.GetRevisionDetails(revisionId);
+        var commonProjectAndRevisionData = await LoadCommonProjectAndRevisionData(revisionId);
 
         return new RevisionDataDto
         {
@@ -37,18 +35,17 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
         };
     }
 
-
-    private async Task<CommonProjectAndRevisionDto> LoadCommonProjectAndRevisionData(Guid projectPk)
+    private async Task<CommonProjectAndRevisionDto> LoadCommonProjectAndRevisionData(Guid projectId)
     {
-        var commonProjectAndRevisionData = await getProjectDataRepository.GetCommonProjectAndRevisionData(projectPk);
+        var commonProjectAndRevisionData = await getProjectDataRepository.GetCommonProjectAndRevisionData(projectId);
 
-        commonProjectAndRevisionData.Cases = await getProjectDataRepository.GetCases(projectPk);
-        commonProjectAndRevisionData.Wells = await getProjectDataRepository.GetWells(projectPk);
-        commonProjectAndRevisionData.Surfs = await getProjectDataRepository.GetSurfs(projectPk);
-        commonProjectAndRevisionData.Substructures = await getProjectDataRepository.GetSubstructures(projectPk);
-        commonProjectAndRevisionData.Topsides = await getProjectDataRepository.GetTopsides(projectPk);
-        commonProjectAndRevisionData.Transports = await getProjectDataRepository.GetTransports(projectPk);
-        commonProjectAndRevisionData.DrainageStrategies = await getProjectDataRepository.GetDrainageStrategies(projectPk);
+        commonProjectAndRevisionData.Cases = await getProjectDataRepository.GetCases(projectId);
+        commonProjectAndRevisionData.Wells = await getProjectDataRepository.GetWells(projectId);
+        commonProjectAndRevisionData.Surfs = await getProjectDataRepository.GetSurfs(projectId);
+        commonProjectAndRevisionData.Substructures = await getProjectDataRepository.GetSubstructures(projectId);
+        commonProjectAndRevisionData.Topsides = await getProjectDataRepository.GetTopsides(projectId);
+        commonProjectAndRevisionData.Transports = await getProjectDataRepository.GetTransports(projectId);
+        commonProjectAndRevisionData.DrainageStrategies = await getProjectDataRepository.GetDrainageStrategies(projectId);
 
         commonProjectAndRevisionData.ModifyTime = commonProjectAndRevisionData.Cases.Select(c => c.ModifyTime).Append(commonProjectAndRevisionData.ModifyTime).Max();
 

@@ -27,6 +27,8 @@ public class CreateRevisionRepository(DcdDbContext context)
 
         DetachEntriesToEnablePrimaryKeyEdits();
 
+        project.ProjectMembers = [];
+
         return project;
     }
 
