@@ -19,6 +19,14 @@ public class GetProjectDataRepository(DcdDbContext context)
             .SingleAsync();
     }
 
+    public async Task<Guid> GetProjectIdFromFusionId(Guid projectId)
+    {
+        return await context.Projects
+            .Where(p => (p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId)) && !p.IsRevision)
+            .Select(x => x.Id)
+            .FirstAsync();
+    }
+
     public async Task<List<ProjectMemberDto>> GetProjectMembers(Guid projectId)
     {
         return await context.ProjectMembers
