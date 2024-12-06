@@ -9,19 +9,13 @@ public class CommonProjectAndRevisionDto
 {
     [Required] public required DateTimeOffset ModifyTime { get; set; }
     [Required] public required ProjectClassification Classification { get; set; }
-
     [Required] public required string Name { get; set; }
-
     [Required] public required Guid FusionProjectId { get; set; }
-
     [Required] public required Guid ReferenceCaseId { get; set; }
-
     [Required] public required string Description { get; set; }
     [Required] public required string Country { get; set; }
     [Required] public required Currency Currency { get; set; }
-
     [Required] public required PhysUnit PhysicalUnit { get; set; }
-
     [Required] public required ProjectPhase ProjectPhase { get; set; }
     [Required] public required InternalProjectPhase InternalProjectPhase { get; set; }
     [Required] public required ProjectCategory ProjectCategory { get; set; }
