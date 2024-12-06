@@ -108,6 +108,9 @@
         "eslint-plugin-react-hooks": "^4.3.0",
         "typescript": "^5.4.5"
     },
+    "optionalDependencies": {
+        "@rollup/rollup-linux-x64-gnu": "^4.28.1"
+    },
     "manifest": {
         "name": "Concept App",
         "shortName": "conceptapp",
