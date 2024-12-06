@@ -1,8 +1,8 @@
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts.Dtos;
+using api.Features.ProjectData.Dtos;
 using api.Features.ProjectMembers.Get;
 using api.Features.Projects.Update;
-using api.Features.Revisions.Get;
 using api.Features.Stea.Dtos;
 using api.Models;
 
@@ -23,6 +23,5 @@ public class ProjectProfile : Profile
         CreateMap<UpdateDevelopmentOperationalWellCostsDto, DevelopmentOperationalWellCosts>();
         CreateMap<DevelopmentOperationalWellCosts, DevelopmentOperationalWellCostsDto>();
         CreateMap<RevisionDetails, RevisionDetailsDto>();
-        CreateMap<Project, RevisionWithCasesDto>();
     }
 }

@@ -39,7 +39,6 @@ using api.Features.Projects.Create;
 using api.Features.Projects.Update;
 using api.Features.Prosp.Services;
 using api.Features.Revisions.Create;
-using api.Features.Revisions.Get;
 using api.Features.Revisions.Update;
 using api.Features.Stea;
 using api.Features.TechnicalInput;
@@ -120,7 +119,6 @@ public static class DcdIocConfiguration
         services.AddScoped<DuplicateCaseService>();
         services.AddScoped<DuplicateCaseRepository>();
 
-        services.AddScoped<GetRevisionService>();
         services.AddScoped<CreateRevisionService>();
         services.AddScoped<CreateRevisionRepository>();
         services.AddScoped<UpdateRevisionService>();

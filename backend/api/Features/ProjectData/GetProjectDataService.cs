@@ -18,6 +18,8 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
         commonProjectAndRevisionData.Transports = await getProjectDataRepository.GetTransports(projectId);
         commonProjectAndRevisionData.DrainageStrategies = await getProjectDataRepository.GetDrainageStrategies(projectId);
 
+        commonProjectAndRevisionData.ModifyTime = commonProjectAndRevisionData.Cases.Select(c => c.ModifyTime).Append(commonProjectAndRevisionData.ModifyTime).Max();
+
         return new ProjectDataDto
         {
             ProjectId = projectId,
@@ -41,6 +43,8 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
         commonProjectAndRevisionData.Topsides = await getProjectDataRepository.GetTopsides(projectPk);
         commonProjectAndRevisionData.Transports = await getProjectDataRepository.GetTransports(projectPk);
         commonProjectAndRevisionData.DrainageStrategies = await getProjectDataRepository.GetDrainageStrategies(projectPk);
+        
+        commonProjectAndRevisionData.ModifyTime = commonProjectAndRevisionData.Cases.Select(c => c.ModifyTime).Append(commonProjectAndRevisionData.ModifyTime).Max();
 
         return new RevisionDataDto
         {
