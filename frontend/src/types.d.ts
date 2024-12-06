@@ -400,7 +400,6 @@ declare namespace Components {
             explorationWellCosts: number; // double
             totalCo2Emissions: number; // double
             co2Intensity: number; // double
-            npv: number; // double
         }
         export type Concept = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12; // int32
         export interface CountryOfficeCostDto {
