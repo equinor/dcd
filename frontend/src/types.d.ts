@@ -1758,18 +1758,6 @@ declare namespace Paths {
             export type $200 = Components.Schemas.DriveItemDto[];
         }
     }
-    namespace ImportFilesFromSharepointAsync {
-        namespace Parameters {
-            export type ProjectId = string; // uuid
-        }
-        export interface PathParameters {
-            projectId: Parameters.ProjectId /* uuid */;
-        }
-        export type RequestBody = Components.Schemas.SharePointImportDto[];
-        namespace Responses {
-            export type $200 = Components.Schemas.ProjectDataDto;
-        }
-    }
     namespace Project$ProjectIdDevelopmentOperationalWellCosts$DevelopmentOperationalWellCostsId {
         namespace Put {
             namespace Parameters {
@@ -3719,6 +3707,20 @@ declare namespace Paths {
             }
             namespace Responses {
                 export type $200 = Components.Schemas.CaseDto[];
+            }
+        }
+    }
+    namespace Prosp$ProjectIdSharepoint {
+        namespace Post {
+            namespace Parameters {
+                export type ProjectId = string; // uuid
+            }
+            export interface PathParameters {
+                projectId: Parameters.ProjectId /* uuid */;
+            }
+            export type RequestBody = Components.Schemas.SharePointImportDto[];
+            namespace Responses {
+                export type $200 = Components.Schemas.ProjectDataDto;
             }
         }
     }
