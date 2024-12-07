@@ -180,7 +180,7 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
         return dates
     }
 
-    const toScheduleValue = (date: string | number | boolean | Components.Schemas.CapexYear | null | undefined) => {
+    const toScheduleValue = (date: string | number | boolean | null | undefined) => {
         const paramString = String(date)
         const dateString = dateFromString(paramString)
         if (isDefaultDate(dateString)) {

@@ -128,10 +128,6 @@ declare namespace Components {
             offshoreFacilities?: OffshoreFacilitiesCostProfileDto;
             cessationCost?: CessationCostDto;
         }
-        export interface CapexYear {
-            values?: number /* double */[] | null;
-            startYear?: number | null; // int32
-        }
         export interface CaseDto {
             id: string; // uuid
             projectId: string; // uuid
@@ -173,7 +169,6 @@ declare namespace Components {
             transportLink: string; // uuid
             explorationLink: string; // uuid
             capex: number; // double
-            capexYear?: CapexYear;
             sharepointFileId?: string | null;
             sharepointFileName?: string | null;
             sharepointFileUrl?: string | null;
