@@ -144,7 +144,7 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
                 projectId: caseData.projectId,
                 resourceName: "case",
                 resourcePropertyKey: dateKey as ResourcePropertyKey,
-                caseId: caseData.id,
+                caseId: caseData.caseId,
                 newDisplayValue: formatDate(newDate.toISOString()),
                 previousDisplayValue: formatDate(caseDataCopy[dateKey]),
                 newResourceObject: dg0Object || getNewCaseObject(dateKey, newDate),

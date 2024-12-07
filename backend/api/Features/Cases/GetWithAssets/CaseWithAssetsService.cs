@@ -109,7 +109,7 @@ public class CaseWithAssetsService(
     {
         return new CaseOverviewDto
         {
-            Id = caseItem.Id,
+            CaseId = caseItem.Id,
             ProjectId = caseItem.ProjectId,
             Name = caseItem.Name,
             Description = caseItem.Description,

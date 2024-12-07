@@ -120,7 +120,7 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                     unit: projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD",
                     profile: aggregatedProfile,
                     resourceName,
-                    resourceId: apiData.case.id,
+                    resourceId: apiData.case.caseId,
                     resourceProfileId: aggregatedProfile.id,
                     resourcePropertyKey: profileName,
                     overridable: false,

@@ -72,7 +72,7 @@ const PROSPCaseList = ({
             const tableCases: RowData[] = []
             apiData.commonProjectAndRevisionData.cases.forEach((c) => {
                 const tableCase: RowData = {
-                    id: c.id!,
+                    id: c.caseId!,
                     name: c.name ?? "",
                     surfState: SharePointImport.surfStatus(c, apiData.commonProjectAndRevisionData),
                     substructureState: SharePointImport.substructureStatus(c, apiData.commonProjectAndRevisionData),

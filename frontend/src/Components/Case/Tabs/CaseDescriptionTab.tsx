@@ -68,7 +68,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
             resourceName: "case",
             resourcePropertyKey: "description",
             resourceId: "",
-            caseId: caseData.id,
+            caseId: caseData.caseId,
             tabName: tab,
         })
         setDescription(newValue)
@@ -109,7 +109,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                     integer
                     min={0}
                     max={100000}
-                    resourceId={caseData.id}
+                    resourceId={caseData.caseId}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
@@ -124,7 +124,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                     disabled={false}
                     min={0}
                     max={100000}
-                    resourceId={caseData.id}
+                    resourceId={caseData.caseId}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
@@ -138,7 +138,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                     integer
                     min={0}
                     max={100000}
-                    resourceId={caseData.id}
+                    resourceId={caseData.caseId}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
@@ -150,7 +150,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                     options={productionStrategyOptions}
                     previousResourceObject={caseData}
                     label="Production strategy overview"
-                    resourceId={caseData.id}
+                    resourceId={caseData.caseId}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
@@ -162,7 +162,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                     options={artificialLiftOptions}
                     previousResourceObject={caseData}
                     label="Artificial lift"
-                    resourceId={caseData.id}
+                    resourceId={caseData.caseId}
                 />
             </Grid>
             <Grid item xs={12} md={4}>
@@ -177,7 +177,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                     unit="%"
                     min={0}
                     max={100}
-                    resourceId={caseData.id}
+                    resourceId={caseData.caseId}
                 />
             </Grid>
         </Grid>

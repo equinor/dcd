@@ -127,7 +127,7 @@ public class GetProjectDataRepository(DcdDbContext context)
             .Where(x => x.ProjectId == projectId)
             .Select(x => new CaseOverviewDto
             {
-                Id = x.Id,
+                CaseId = x.Id,
                 ProjectId = x.ProjectId,
                 Name = x.Name,
                 Description = x.Description,

@@ -97,10 +97,10 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     useEffect(() => {
         (async () => {
             try {
-                if (caseData && projectData && activeTabCase === 6 && caseData.id) {
-                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(projectData.projectId, caseData.id)
-                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(projectData.projectId, caseData.id)
-                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(projectData.projectId, caseData.id)
+                if (caseData && projectData && activeTabCase === 6 && caseData.caseId) {
+                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(projectData.projectId, caseData.caseId)
+                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(projectData.projectId, caseData.caseId)
+                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(projectData.projectId, caseData.caseId)
 
                     setCo2Intensity(await co2I)
                     setCo2IntensityTotal(Number(co2ITotal))

@@ -305,7 +305,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     allowNegative
                     min={0}
                     max={1000000}
-                    resourceId={caseData.id}
+                    resourceId={caseData.caseId}
                 />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -334,7 +334,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     allowNegative
                     min={0}
                     max={1000000}
-                    resourceId={caseData.id}
+                    resourceId={caseData.caseId}
                 />
             </Grid>
             <Grid item xs={12}>

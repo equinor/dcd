@@ -6,7 +6,7 @@ namespace api.Features.ProjectData.Dtos.AssetDtos;
 
 public class CaseOverviewDto
 {
-    [Required] public required Guid Id { get; set; }
+    [Required] public required Guid CaseId { get; set; }
     [Required] public required Guid ProjectId { get; set; }
     [Required] public required string Name { get; set; }
     [Required] public required string Description { get; set; }

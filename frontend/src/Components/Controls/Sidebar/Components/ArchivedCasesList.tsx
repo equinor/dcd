@@ -54,7 +54,7 @@ const ArchivedCasesList: React.FC = () => {
                     container
                     justifyContent="space-between"
                     key={`menu - item - ${index + 1} `}
-                    data-timeline-active={location.pathname.includes(projectCase.id)}
+                    data-timeline-active={location.pathname.includes(projectCase.caseId)}
                 >
                     <Tooltip
                         title={`
@@ -63,7 +63,7 @@ const ArchivedCasesList: React.FC = () => {
                     : "Untitled"} - Strategy: ${productionStrategyOverviewToString(projectCase.productionStrategyOverview)}`}
                         placement="right"
                     >
-                        <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.id)}>
+                        <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.caseId)}>
                             {projectData?.commonProjectAndRevisionData.referenceCaseId !== EMPTY_GUID
                                 ? (
                                     <SideBarRefCaseWrapper>
@@ -71,7 +71,7 @@ const ArchivedCasesList: React.FC = () => {
                                         {!sidebarOpen && `#${index + 1}`}
                                         {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 30)}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
-                                        {projectData?.commonProjectAndRevisionData.referenceCaseId === projectCase?.id && (
+                                        {projectData?.commonProjectAndRevisionData.referenceCaseId === projectCase?.caseId && (
                                             <ReferenceCaseIcon iconPlacement="sideBar" />
                                         )}
                                     </SideBarRefCaseWrapper>
