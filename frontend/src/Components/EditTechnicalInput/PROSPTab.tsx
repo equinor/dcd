@@ -50,7 +50,7 @@ const PROSPTab = () => {
 
             if (apiData && sharepointUrl !== apiData.commonProjectAndRevisionData.sharepointSiteUrl) {
                 const newProject: Components.Schemas.UpdateProjectDto = { ...apiData.commonProjectAndRevisionData }
-                newProject.sharepointSiteUrl = sharepointUrl
+                newProject.sharepointSiteUrl = sharepointUrl ?? null
                 const projectResult = await (await GetProjectService()).updateProject(apiData.projectId, newProject)
                 addProjectEdit(apiData.projectId, projectResult.commonProjectAndRevisionData)
                 setSharepointUrl(projectResult.commonProjectAndRevisionData.sharepointSiteUrl ?? "")

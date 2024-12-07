@@ -94,6 +94,7 @@ public class GetProjectDataRepository(DcdDbContext context)
                 OilPriceUSD = x.OilPriceUSD,
                 GasPriceNOK = x.GasPriceNOK,
                 DiscountRate = x.DiscountRate,
+                ExchangeRateUSDToNOK = x.ExchangeRateUSDToNOK,
                 SharepointSiteUrl = x.SharepointSiteUrl,
                 ExplorationOperationalWellCosts = new ExplorationOperationalWellCostsOverviewDto
                 {
@@ -132,6 +133,7 @@ public class GetProjectDataRepository(DcdDbContext context)
                 Name = x.Name,
                 Description = x.Description,
                 Archived = x.Archived,
+                ReferenceCase = x.ReferenceCase,
                 ProductionStrategyOverview = x.ProductionStrategyOverview,
                 ArtificialLift = x.ArtificialLift,
                 ProducerCount = x.ProducerCount,
@@ -145,6 +147,12 @@ public class GetProjectDataRepository(DcdDbContext context)
                 CapexFactorFeasibilityStudies = x.CapexFactorFeasibilityStudies,
                 CapexFactorFEEDStudies = x.CapexFactorFEEDStudies,
                 Host = x.Host,
+                DGADate = x.DGADate,
+                DGBDate = x.DGBDate,
+                DGCDate = x.DGCDate,
+                APBODate = x.APBODate,
+                BORDate = x.BORDate,
+                VPBODate = x.VPBODate,
                 DG0Date = x.DG0Date,
                 DG1Date = x.DG1Date,
                 DG2Date = x.DG2Date,

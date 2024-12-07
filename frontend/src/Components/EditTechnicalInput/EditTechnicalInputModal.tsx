@@ -42,6 +42,10 @@ const EditTechnicalInputModal = () => {
         enabled: !!externalId,
     })
 
+    if (!apiData) {
+        return <div>Loading...</div>
+    }
+
     const [
         explorationOperationalWellCosts,
         setExplorationOperationalWellCosts,
@@ -70,7 +74,7 @@ const EditTechnicalInputModal = () => {
         try {
             const dto: Components.Schemas.UpdateTechnicalInputDto = {}
             setIsSaving(true)
-            dto.projectDto = { ...apiData?.commonProjectAndRevisionData }
+            dto.projectDto = { ...apiData.commonProjectAndRevisionData }
 
             dto.explorationOperationalWellCostsDto = explorationOperationalWellCosts
 

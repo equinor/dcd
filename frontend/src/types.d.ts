@@ -134,19 +134,26 @@ declare namespace Components {
             name: string;
             description: string;
             archived: boolean;
+            referenceCase: boolean;
             productionStrategyOverview: ProductionStrategyOverview /* int32 */;
             artificialLift: ArtificialLift /* int32 */;
             producerCount: number; // int32
             gasInjectorCount: number; // int32
             waterInjectorCount: number; // int32
             npv: number; // double
-            npvOverride: number; // double
+            npvOverride: number | null; // double
             breakEven: number; // double
             breakEvenOverride: number; // double
             facilitiesAvailability: number; // double
             capexFactorFeasibilityStudies: number; // double
             capexFactorFEEDStudies: number; // double
             host: string | null;
+            dgaDate: string; // date-time
+            dgbDate: string; // date-time
+            dgcDate: string; // date-time
+            apboDate: string; // date-time
+            borDate: string; // date-time
+            vpboDate: string; // date-time
             dG0Date: string; // date-time
             dG1Date: string; // date-time
             dG2Date: string; // date-time
@@ -336,6 +343,7 @@ declare namespace Components {
             oilPriceUSD: number; // double
             gasPriceNOK: number; // double
             discountRate: number; // double
+            exchangeRateUSDToNOK: number; // double
             explorationOperationalWellCosts: ExplorationOperationalWellCostsOverviewDto;
             developmentOperationalWellCosts: DevelopmentOperationalWellCostsOverviewDto;
             cases: CaseOverviewDto[];
@@ -1308,36 +1316,36 @@ declare namespace Components {
         }
         export interface UpdateCaseDto {
             name: string;
-            description?: string | null;
-            referenceCase?: boolean | null;
-            archived?: boolean;
-            artificialLift?: ArtificialLift /* int32 */;
-            productionStrategyOverview?: ProductionStrategyOverview /* int32 */;
-            producerCount?: number; // int32
-            gasInjectorCount?: number; // int32
-            waterInjectorCount?: number; // int32
-            facilitiesAvailability?: number; // double
-            capexFactorFeasibilityStudies?: number; // double
-            capexFactorFEEDStudies?: number; // double
-            npv?: number; // double
-            npvOverride?: number | null; // double
-            breakEven?: number; // double
-            breakEvenOverride?: number | null; // double
-            host?: string | null;
-            dgaDate?: string; // date-time
-            dgbDate?: string; // date-time
-            dgcDate?: string; // date-time
-            apboDate?: string; // date-time
-            borDate?: string; // date-time
-            vpboDate?: string; // date-time
-            dG0Date?: string; // date-time
-            dG1Date?: string; // date-time
-            dG2Date?: string; // date-time
-            dG3Date?: string; // date-time
-            dG4Date?: string; // date-time
-            sharepointFileId?: string | null;
-            sharepointFileName?: string | null;
-            sharepointFileUrl?: string | null;
+            description: string;
+            referenceCase: boolean;
+            archived: boolean;
+            artificialLift: ArtificialLift /* int32 */;
+            productionStrategyOverview: ProductionStrategyOverview /* int32 */;
+            producerCount: number; // int32
+            gasInjectorCount: number; // int32
+            waterInjectorCount: number; // int32
+            facilitiesAvailability: number; // double
+            capexFactorFeasibilityStudies: number; // double
+            capexFactorFEEDStudies: number; // double
+            npv: number; // double
+            npvOverride: number | null; // double
+            breakEven: number; // double
+            breakEvenOverride: number | null; // double
+            host: string | null;
+            dgaDate: string; // date-time
+            dgbDate: string; // date-time
+            dgcDate: string; // date-time
+            apboDate: string; // date-time
+            borDate: string; // date-time
+            vpboDate: string; // date-time
+            dG0Date: string; // date-time
+            dG1Date: string; // date-time
+            dG2Date: string; // date-time
+            dG3Date: string; // date-time
+            dG4Date: string; // date-time
+            sharepointFileId: string | null;
+            sharepointFileName: string | null;
+            sharepointFileUrl: string | null;
         }
         export interface UpdateCessationOffshoreFacilitiesCostOverrideDto {
             startYear?: number; // int32
@@ -1491,28 +1499,28 @@ declare namespace Components {
             values?: number /* double */[] | null;
         }
         export interface UpdateProjectDto {
-            name?: string | null;
-            referenceCaseId?: string; // uuid
-            description?: string | null;
-            country?: string | null;
-            currency?: Currency /* int32 */;
-            physicalUnit?: PhysUnit /* int32 */;
-            classification?: ProjectClassification /* int32 */;
-            projectPhase?: ProjectPhase /* int32 */;
-            internalProjectPhase?: InternalProjectPhase /* int32 */;
-            projectCategory?: ProjectCategory /* int32 */;
-            sharepointSiteUrl?: string | null;
-            cO2RemovedFromGas?: number; // double
-            cO2EmissionFromFuelGas?: number; // double
-            flaredGasPerProducedVolume?: number; // double
-            cO2EmissionsFromFlaredGas?: number; // double
-            cO2Vented?: number; // double
-            dailyEmissionFromDrillingRig?: number; // double
-            averageDevelopmentDrillingDays?: number; // double
-            oilPriceUSD?: number; // double
-            gasPriceNOK?: number; // double
-            discountRate?: number; // double
-            exchangeRateUSDToNOK?: number; // double
+            name: string;
+            referenceCaseId: string; // uuid
+            description: string;
+            country: string;
+            currency: Currency /* int32 */;
+            physicalUnit: PhysUnit /* int32 */;
+            classification: ProjectClassification /* int32 */;
+            projectPhase: ProjectPhase /* int32 */;
+            internalProjectPhase: InternalProjectPhase /* int32 */;
+            projectCategory: ProjectCategory /* int32 */;
+            sharepointSiteUrl: string | null;
+            cO2RemovedFromGas: number; // double
+            cO2EmissionFromFuelGas: number; // double
+            flaredGasPerProducedVolume: number; // double
+            cO2EmissionsFromFlaredGas: number; // double
+            cO2Vented: number; // double
+            dailyEmissionFromDrillingRig: number; // double
+            averageDevelopmentDrillingDays: number; // double
+            oilPriceUSD: number; // double
+            gasPriceNOK: number; // double
+            discountRate: number; // double
+            exchangeRateUSDToNOK: number; // double
         }
         export interface UpdateProjectMemberDto {
             role?: ProjectMemberRole /* int32 */;
