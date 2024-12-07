@@ -7,6 +7,7 @@ using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.ProjectAccess;
+using api.Features.ProjectData.Dtos.AssetDtos;
 using api.ModelMapping;
 using api.Models;
 
@@ -28,7 +29,7 @@ public class CaseWithAssetsService(
 
         return new CaseWithAssetsDto
         {
-            Case = mapperService.MapToDto<Case, CaseDto>(caseItem, caseItem.Id),
+            Case = mapperService.MapToDto<Case, CaseOverviewDto>(caseItem, caseItem.Id),
             CessationWellsCost = MapToDto<CessationWellsCost, CessationWellsCostDto>(caseItem.CessationWellsCost, caseItem.CessationWellsCost?.Id),
             CessationWellsCostOverride = MapToDto<CessationWellsCostOverride, CessationWellsCostOverrideDto>(caseItem.CessationWellsCostOverride, caseItem.CessationWellsCostOverride?.Id),
             CessationOffshoreFacilitiesCost = MapToDto<CessationOffshoreFacilitiesCost, CessationOffshoreFacilitiesCostDto>(caseItem.CessationOffshoreFacilitiesCost, caseItem.CessationOffshoreFacilitiesCost?.Id),

@@ -40,7 +40,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
         enabled: !!projectId,
     })
 
-    const caseData = apiData?.case as Components.Schemas.CaseDto
+    const caseData = apiData?.case as Components.Schemas.CaseOverviewDto
     const topsideData = apiData?.topside as Components.Schemas.TopsideOverviewDto
     const drainageStrategyData = apiData?.drainageStrategy as Components.Schemas.DrainageStrategyOverviewDto
     const co2EmissionsOverrideData = apiData?.co2EmissionsOverride as Components.Schemas.Co2EmissionsOverrideDto

@@ -35,7 +35,7 @@ export type ResourceObject =
     Components.Schemas.SurfDto |
     Components.Schemas.SubstructureDto |
     Components.Schemas.TransportDto |
-    Components.Schemas.CaseDto |
+    Components.Schemas.CaseOverviewDto |
     Components.Schemas.CaseWithAssetsDto |
     Components.Schemas.DrainageStrategyDto |
     Components.Schemas.WellProjectDto |
@@ -79,7 +79,7 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.SurfDto |
     keyof Components.Schemas.SubstructureDto |
     keyof Components.Schemas.TransportDto |
-    keyof Components.Schemas.CaseDto |
+    keyof Components.Schemas.CaseOverviewDto |
     keyof Components.Schemas.DrainageStrategyDto |
     keyof Components.Schemas.WellProjectDto |
     keyof Components.Schemas.ExplorationDto |

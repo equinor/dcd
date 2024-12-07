@@ -2,7 +2,7 @@ import React from "react"
 import SwitchableNumberInput from "../../../../Input/SwitchableNumberInput"
 
 interface props {
-    caseData: Components.Schemas.CaseDto
+    caseData: Components.Schemas.CaseOverviewDto
     addEdit: any
 }
 const CapexFactorFeasibilityStudies: React.FC<props> = ({ caseData, addEdit }) => (

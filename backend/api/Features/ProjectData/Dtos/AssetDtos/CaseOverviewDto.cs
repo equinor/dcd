@@ -7,10 +7,12 @@ namespace api.Features.ProjectData.Dtos.AssetDtos;
 public class CaseOverviewDto
 {
     [Required] public required Guid Id { get; set; }
-    [Required] public required string Name { get; set; } = null!;
-    [Required] public required string Description { get; set; } = null!;
+    [Required] public required Guid ProjectId { get; set; }
+    [Required] public required string Name { get; set; }
+    [Required] public required string Description { get; set; }
     [Required] public required bool Archived { get; set; }
     [Required] public required ProductionStrategyOverview ProductionStrategyOverview { get; set; }
+    [Required] public required ArtificialLift ArtificialLift { get; set; }
     [Required] public required int ProducerCount { get; set; }
     [Required] public required int GasInjectorCount { get; set; }
     [Required] public required int WaterInjectorCount { get; set; }
@@ -18,6 +20,14 @@ public class CaseOverviewDto
     [Required] public required double? NPVOverride { get; set; }
     [Required] public required double BreakEven { get; set; }
     [Required] public required double? BreakEvenOverride { get; set; }
+    [Required] public required double FacilitiesAvailability { get; set; }
+    [Required] public required double CapexFactorFeasibilityStudies { get; set; }
+    [Required] public required double CapexFactorFEEDStudies { get; set; }
+    public required string? Host { get; set; }
+    [Required] public required DateTimeOffset DG0Date { get; set; }
+    [Required] public required DateTimeOffset DG1Date { get; set; }
+    [Required] public required DateTimeOffset DG2Date { get; set; }
+    [Required] public required DateTimeOffset DG3Date { get; set; }
     [Required] public required DateTimeOffset DG4Date { get; set; }
     [Required] public required DateTimeOffset CreateTime { get; set; }
     [Required] public required DateTimeOffset ModifyTime { get; set; }

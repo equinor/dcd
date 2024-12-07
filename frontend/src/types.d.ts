@@ -128,51 +128,6 @@ declare namespace Components {
             offshoreFacilities?: OffshoreFacilitiesCostProfileDto;
             cessationCost?: CessationCostDto;
         }
-        export interface CaseDto {
-            id: string; // uuid
-            projectId: string; // uuid
-            name: string;
-            description: string;
-            referenceCase: boolean;
-            archived: boolean;
-            artificialLift: ArtificialLift /* int32 */;
-            productionStrategyOverview: ProductionStrategyOverview /* int32 */;
-            producerCount: number; // int32
-            gasInjectorCount: number; // int32
-            waterInjectorCount: number; // int32
-            facilitiesAvailability: number; // double
-            capexFactorFeasibilityStudies: number; // double
-            capexFactorFEEDStudies: number; // double
-            npv: number; // double
-            npvOverride: number; // double
-            breakEven: number; // double
-            breakEvenOverride: number; // double
-            host?: string | null;
-            dgaDate: string; // date-time
-            dgbDate: string; // date-time
-            dgcDate: string; // date-time
-            apboDate: string; // date-time
-            borDate: string; // date-time
-            vpboDate: string; // date-time
-            dG0Date: string; // date-time
-            dG1Date: string; // date-time
-            dG2Date: string; // date-time
-            dG3Date: string; // date-time
-            dG4Date: string; // date-time
-            createTime: string; // date-time
-            modifyTime: string; // date-time
-            drainageStrategyLink: string; // uuid
-            wellProjectLink: string; // uuid
-            surfLink: string; // uuid
-            substructureLink: string; // uuid
-            topsideLink: string; // uuid
-            transportLink: string; // uuid
-            explorationLink: string; // uuid
-            capex: number; // double
-            sharepointFileId?: string | null;
-            sharepointFileName?: string | null;
-            sharepointFileUrl?: string | null;
-        }
         export interface CaseOverviewDto {
             id: string; // uuid
             name: string;
@@ -196,9 +151,19 @@ declare namespace Components {
             sharepointFileId: string | null;
             sharepointFileName: string | null;
             sharepointFileUrl: string | null;
+            projectId: string; // uuid
+            artificialLift: ArtificialLift /* int32 */;
+            facilitiesAvailability: number; // double
+            capexFactorFeasibilityStudies: number; // double
+            capexFactorFEEDStudies: number; // double
+            host?: string | null;
+            dG0Date: string; // date-time
+            dG1Date: string; // date-time
+            dG2Date: string; // date-time
+            dG3Date: string; // date-time
         }
         export interface CaseWithAssetsDto {
-            case: CaseDto;
+            case: CaseOverviewDto;
             cessationWellsCost?: CessationWellsCostDto;
             cessationWellsCostOverride?: CessationWellsCostOverrideDto;
             cessationOffshoreFacilitiesCost?: CessationOffshoreFacilitiesCostDto;

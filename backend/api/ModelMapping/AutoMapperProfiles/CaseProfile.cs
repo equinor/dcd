@@ -4,6 +4,7 @@ using api.Features.CaseProfiles.Dtos.Update;
 using api.Features.Cases.Create;
 using api.Features.Cases.Update;
 using api.Features.Images.Dto;
+using api.Features.ProjectData.Dtos.AssetDtos;
 using api.Features.Prosp.Models;
 using api.Models;
 
@@ -15,7 +16,7 @@ public class CaseProfile : Profile
 {
     public CaseProfile()
     {
-        CreateMap<Case, CaseDto>();
+        CreateMap<Case, CaseOverviewDto>();
         CreateMap<Case, CaseWithProfilesDto>();
         CreateMap<CessationWellsCost, CessationWellsCostDto>();
         CreateMap<CessationWellsCostOverride, CessationWellsCostOverrideDto>();
