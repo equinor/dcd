@@ -29,7 +29,7 @@ public class CaseWithAssetsService(
 
         return new CaseWithAssetsDto
         {
-            Case = mapperService.MapToDto<Case, CaseOverviewDto>(caseItem, caseItem.Id),
+            Case = MapToCaseOverviewDto(caseItem),
             CessationWellsCost = MapToDto<CessationWellsCost, CessationWellsCostDto>(caseItem.CessationWellsCost, caseItem.CessationWellsCost?.Id),
             CessationWellsCostOverride = MapToDto<CessationWellsCostOverride, CessationWellsCostOverrideDto>(caseItem.CessationWellsCostOverride, caseItem.CessationWellsCostOverride?.Id),
             CessationOffshoreFacilitiesCost = MapToDto<CessationOffshoreFacilitiesCost, CessationOffshoreFacilitiesCostDto>(caseItem.CessationOffshoreFacilitiesCost, caseItem.CessationOffshoreFacilitiesCost?.Id),
@@ -102,6 +102,45 @@ public class CaseWithAssetsService(
             WaterInjectorCostProfileOverride = MapToDto<WaterInjectorCostProfileOverride, WaterInjectorCostProfileOverrideDto>(wellProject.WaterInjectorCostProfileOverride, wellProject.WaterInjectorCostProfileOverride?.Id),
             GasInjectorCostProfile = MapToDto<GasInjectorCostProfile, GasInjectorCostProfileDto>(wellProject.GasInjectorCostProfile, wellProject.GasInjectorCostProfile?.Id),
             GasInjectorCostProfileOverride = MapToDto<GasInjectorCostProfileOverride, GasInjectorCostProfileOverrideDto>(wellProject.GasInjectorCostProfileOverride, wellProject.GasInjectorCostProfileOverride?.Id)
+        };
+    }
+
+    private static CaseOverviewDto MapToCaseOverviewDto(Case caseItem)
+    {
+        return new CaseOverviewDto
+        {
+            Id = caseItem.Id,
+            ProjectId = caseItem.ProjectId,
+            Name = caseItem.Name,
+            Description = caseItem.Description,
+            Archived = caseItem.Archived,
+            ProductionStrategyOverview = caseItem.ProductionStrategyOverview,
+            ArtificialLift = caseItem.ArtificialLift,
+            ProducerCount = caseItem.ProducerCount,
+            GasInjectorCount = caseItem.GasInjectorCount,
+            WaterInjectorCount = caseItem.WaterInjectorCount,
+            NPV = caseItem.NPV,
+            NPVOverride = caseItem.NPVOverride,
+            BreakEven = caseItem.BreakEven,
+            BreakEvenOverride = caseItem.BreakEvenOverride,
+            FacilitiesAvailability = caseItem.FacilitiesAvailability,
+            CapexFactorFeasibilityStudies = caseItem.CapexFactorFeasibilityStudies,
+            CapexFactorFEEDStudies = caseItem.CapexFactorFEEDStudies,
+            Host = caseItem.Host,
+            DG0Date = caseItem.DG0Date,
+            DG1Date = caseItem.DG1Date,
+            DG2Date = caseItem.DG2Date,
+            DG3Date = caseItem.DG3Date,
+            DG4Date = caseItem.DG4Date,
+            CreateTime = caseItem.CreateTime,
+            ModifyTime = caseItem.ModifyTime,
+            SurfLink = caseItem.SurfLink,
+            SubstructureLink = caseItem.SubstructureLink,
+            TopsideLink = caseItem.TopsideLink,
+            TransportLink = caseItem.TransportLink,
+            SharepointFileId = caseItem.SharepointFileId,
+            SharepointFileName = caseItem.SharepointFileName,
+            SharepointFileUrl = caseItem.SharepointFileUrl
         };
     }
 

@@ -16,7 +16,6 @@ public class CaseProfile : Profile
 {
     public CaseProfile()
     {
-        CreateMap<Case, CaseOverviewDto>();
         CreateMap<Case, CaseWithProfilesDto>();
         CreateMap<CessationWellsCost, CessationWellsCostDto>();
         CreateMap<CessationWellsCostOverride, CessationWellsCostOverrideDto>();
