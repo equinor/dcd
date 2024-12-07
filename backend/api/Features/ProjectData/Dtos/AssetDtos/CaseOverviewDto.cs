@@ -20,7 +20,7 @@ public class CaseOverviewDto
     [Required] public required double NPV { get; set; }
     public required double? NPVOverride { get; set; }
     [Required] public required double BreakEven { get; set; }
-    [Required] public required double? BreakEvenOverride { get; set; }
+    public required double? BreakEvenOverride { get; set; }
     [Required] public required double FacilitiesAvailability { get; set; }
     [Required] public required double CapexFactorFeasibilityStudies { get; set; }
     [Required] public required double CapexFactorFEEDStudies { get; set; }

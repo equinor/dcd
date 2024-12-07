@@ -143,7 +143,7 @@ declare namespace Components {
             npv: number; // double
             npvOverride: number | null; // double
             breakEven: number; // double
-            breakEvenOverride: number; // double
+            breakEvenOverride: number | null; // double
             facilitiesAvailability: number; // double
             capexFactorFeasibilityStudies: number; // double
             capexFactorFEEDStudies: number; // double
