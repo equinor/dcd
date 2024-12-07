@@ -392,13 +392,13 @@ declare namespace Components {
             values?: number /* double */[] | null;
         }
         export interface CreateCaseDto {
-            name?: string | null;
-            description?: string | null;
-            productionStrategyOverview?: ProductionStrategyOverview /* int32 */;
-            producerCount?: number; // int32
-            gasInjectorCount?: number; // int32
-            waterInjectorCount?: number; // int32
-            dG4Date?: string; // date-time
+            name: string;
+            description: string;
+            productionStrategyOverview: ProductionStrategyOverview /* int32 */;
+            producerCount: number; // int32
+            gasInjectorCount: number; // int32
+            waterInjectorCount: number; // int32
+            dG4Date: string; // date-time
         }
         export interface CreateCessationOffshoreFacilitiesCostOverrideDto {
             startYear?: number; // int32
@@ -511,15 +511,15 @@ declare namespace Components {
             values?: number /* double */[] | null;
         }
         export interface CreateProjectMemberDto {
-            role?: ProjectMemberRole /* int32 */;
-            userId?: string; // uuid
+            role: ProjectMemberRole /* int32 */;
+            userId: string; // uuid
         }
         export interface CreateRevisionDto {
             name: string;
-            internalProjectPhase?: InternalProjectPhase /* int32 */;
-            classification?: ProjectClassification /* int32 */;
-            arena?: boolean;
-            mdqc?: boolean;
+            internalProjectPhase: InternalProjectPhase /* int32 */;
+            classification: ProjectClassification /* int32 */;
+            arena: boolean;
+            mdqc: boolean;
         }
         export interface CreateSeismicAcquisitionAndProcessingDto {
             startYear?: number; // int32
@@ -1523,13 +1523,13 @@ declare namespace Components {
             exchangeRateUSDToNOK: number; // double
         }
         export interface UpdateProjectMemberDto {
-            role?: ProjectMemberRole /* int32 */;
-            userId?: string; // uuid
+            role: ProjectMemberRole /* int32 */;
+            userId: string; // uuid
         }
         export interface UpdateRevisionDto {
-            name?: string | null;
-            arena?: boolean;
-            mdqc?: boolean;
+            name: string;
+            arena: boolean;
+            mdqc: boolean;
         }
         export interface UpdateSeismicAcquisitionAndProcessingDto {
             startYear?: number; // int32

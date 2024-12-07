@@ -1,10 +1,8 @@
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Create;
 using api.Features.CaseProfiles.Dtos.Update;
-using api.Features.Cases.Create;
 using api.Features.Cases.Update;
 using api.Features.Images.Dto;
-using api.Features.ProjectData.Dtos.AssetDtos;
 using api.Features.Prosp.Models;
 using api.Models;
 
@@ -64,8 +62,6 @@ public class CaseProfile : Profile
         CreateMap<CreateHistoricCostCostProfileDto, HistoricCostCostProfile>();
         CreateMap<CreateOnshoreRelatedOPEXCostProfileDto, OnshoreRelatedOPEXCostProfile>();
         CreateMap<CreateAdditionalOPEXCostProfileDto, AdditionalOPEXCostProfile>();
-
-        CreateMap<CreateCaseDto, Case>();
 
         CreateMap<OpexCostProfile, OpexCostProfileDto>();
         CreateMap<CessationCost, CessationCostDto>();
