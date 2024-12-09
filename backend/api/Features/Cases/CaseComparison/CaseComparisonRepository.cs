@@ -120,6 +120,14 @@ public class CaseComparisonRepository(DcdDbContext context)
             .Where(x => transportLinks.Contains(x.Id))
             .LoadAsync();
 
+        var onshorePowerSupplyLinks = project.Cases.Select(x => x.OnshorePowerSupplyLink).ToList();
+        await context.OnshorePowerSupplies
+            .Include(x => x.CostProfileOverride)
+            .Include(x => x.CostProfile)
+            .Include(x => x.CessationCostProfile)
+            .Where(x => onshorePowerSupplyLinks.Contains(x.Id))
+            .LoadAsync();
+
         return project;
     }
 }

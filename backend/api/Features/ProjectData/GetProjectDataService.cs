@@ -1,6 +1,7 @@
 using api.Context;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Dtos;
@@ -132,6 +133,7 @@ public class GetProjectDataService(IProjectWithAssetsRepository projectWithAsset
             Substructures = mapper.Map<List<SubstructureWithProfilesDto>>(project.Substructures),
             Topsides = mapper.Map<List<TopsideWithProfilesDto>>(project.Topsides),
             Transports = mapper.Map<List<TransportWithProfilesDto>>(project.Transports),
+            OnshorePowerSupplies = mapper.Map<List<OnshorePowerSupplyWithProfilesDto>>(project.OnshorePowerSupplies),
             DrainageStrategies = mapper.Map<List<DrainageStrategyWithProfilesDto>>(project.DrainageStrategies, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString()),
             WellProjects = mapper.Map<List<WellProjectWithProfilesDto>>(project.WellProjects)
         };

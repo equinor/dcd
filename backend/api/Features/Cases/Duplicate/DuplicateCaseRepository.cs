@@ -19,6 +19,7 @@ public class DuplicateCaseRepository(DcdDbContext context)
         await LoadTopsides(caseItem.TopsideLink);
         await LoadSurfs(caseItem.SurfLink);
         await LoadSubstructures(caseItem.SubstructureLink);
+        await LoadOnshorePowerSupplies(caseItem.OnshorePowerSupplyLink);
 
         DetachEntriesToEnablePrimaryKeyEdits();
 
@@ -146,6 +147,16 @@ public class DuplicateCaseRepository(DcdDbContext context)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .Where(x => x.Id == substructureLink)
+            .LoadAsync();
+    }
+
+    private async Task LoadOnshorePowerSupplies(Guid onshorePowerSupplyLink)
+    {
+        await context.OnshorePowerSupplies
+            .Include(c => c.CostProfile)
+            .Include(c => c.CostProfileOverride)
+            .Include(c => c.CessationCostProfile)
+            .Where(x => x.Id == onshorePowerSupplyLink)
             .LoadAsync();
     }
 

@@ -6,6 +6,7 @@ using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts.Dtos;
@@ -55,6 +56,7 @@ public class CommonProjectAndRevisionDto
     [Required] public required List<SubstructureWithProfilesDto> Substructures { get; set; }
     [Required] public required List<TopsideWithProfilesDto> Topsides { get; set; }
     [Required] public required List<TransportWithProfilesDto> Transports { get; set; }
+    [Required] public required List<OnshorePowerSupplyWithProfilesDto> OnshorePowerSupplies { get; set; }
     [Required] public required List<DrainageStrategyWithProfilesDto> DrainageStrategies { get; set; }
     [Required] public required List<WellProjectWithProfilesDto> WellProjects { get; set; }
 }
