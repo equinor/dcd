@@ -1,6 +1,6 @@
 using api.Models;
 
-namespace api.Features.Assets.CaseAssets.OnshorePowerSupply.Dtos.Update;
+namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
 
 public abstract class BaseUpdateOnshorePowerSupplyDto
 {

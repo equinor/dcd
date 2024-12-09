@@ -1,9 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 using api.Models.Interfaces;
-using api.Features.Assets.CaseAssets.OnshorePowerSupply.Dtos;
-using api.Features.Assets.CaseAssets.OnshorePowerSupply.Dtos.Update;
-using api.Models;
 namespace api.Models;
 
 public class Transport : IHasProjectId, IChangeTrackable

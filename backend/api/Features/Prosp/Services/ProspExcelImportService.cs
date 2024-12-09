@@ -54,7 +54,7 @@ public class ProspExcelImportService(
         prospAppConfigModel.SubStructure = config.GetSection("FileImportSettings:Prosp:SubStructure").Get<SubStructureAppConfigModel>() ?? new SubStructureAppConfigModel();
         prospAppConfigModel.TopSide = config.GetSection("FileImportSettings:Prosp:TopSide").Get<TopSideAppConfigModel>() ?? new TopSideAppConfigModel();
         prospAppConfigModel.Transport = config.GetSection("FileImportSettings:Prosp:Transport").Get<TransportAppConfigModel>() ?? new TransportAppConfigModel();
-        // prospAppConfigModel.OnshorePowerSupply = config.GetSection("FileImportSettings:Prosp:OnshorePowerSupply").Get<OnshorePowerSupplyAppConfigModel>() ?? new OnshorePowerSupplyAppConfigModel();
+        prospAppConfigModel.OnshorePowerSupply = config.GetSection("FileImportSettings:Prosp:OnshorePowerSupply").Get<OnshorePowerSupplyAppConfigModel>() ?? new OnshorePowerSupplyAppConfigModel();
 
         return prospAppConfigModel;
     }
@@ -316,7 +316,8 @@ public class ProspExcelImportService(
             Values = ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year,
         };
-
+        Console.WriteLine("ImportTransport dG4Date222 " + dG4Date);
+        Console.WriteLine("ImportTransport costProfileStartYear " + costProfileStartYear);
         // Prosp meta data
         var versionDate = ReadDateValue(cellData, _prospConfig.Transport.versionDate);
         var costYear = ReadIntValue(cellData, _prospConfig.Transport.costYear);
@@ -354,15 +355,19 @@ public class ProspExcelImportService(
             "O114",
             "P114"
         ];
-        var costProfileStartYear = ReadIntValue(cellData, _prospConfig.Transport.costProfileStartYear);
-        var dG3Date = ReadDateValue(cellData, _prospConfig.Transport.dG3Date);
-        var dG4Date = ReadDateValue(cellData, _prospConfig.Transport.dG4Date);
+        var costProfileStartYear = ReadIntValue(cellData, _prospConfig.OnshorePowerSupply.costProfileStartYear);
+        // var dG3Date = ReadDateValue(cellData, _prospConfig.OnshorePowerSupply.dG3Date);
+        var dG4Date = ReadDateValue(cellData, _prospConfig.OnshorePowerSupply.dG4Date);
+        Console.WriteLine("dG4Date222 " + dG4Date);
+        Console.WriteLine("costProfileStartYear " + costProfileStartYear);
+
         var costProfile = new UpdateOnshorePowerSupplyCostProfileDto
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year,
         };
-        Console.WriteLine("OnshorePowerSupply222" + costProfile.Values);
+        Console.WriteLine("OnshorePowerSupply222 " + costProfile.Values.ToString());
+        Console.WriteLine("OnshorePowerSupply222 " + costProfile.StartYear);
 
         // Prosp meta data
         // var versionDate = ReadDateValue(cellData, _prospConfig.Transport.versionDate);

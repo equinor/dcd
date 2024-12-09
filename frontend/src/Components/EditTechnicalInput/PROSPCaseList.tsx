@@ -35,7 +35,7 @@ interface RowData {
     substructureState: ImportStatusEnum
     topsideState: ImportStatusEnum
     transportState: ImportStatusEnum
-    onshorePowerSupplyState?: ImportStatusEnum
+    // onshorePowerSupplyState?: ImportStatusEnum
     sharePointFileName?: string | null
     sharePointFileId?: string | null
     sharepointFileUrl?: string | null
@@ -45,7 +45,7 @@ interface RowData {
     substructureStateChanged: boolean,
     topsideStateChanged: boolean,
     transportStateChanged: boolean
-    onshorePowerSupplyStateChanged: boolean
+    // onshorePowerSupplyStateChanged: boolean
     sharePointFileChanged: boolean,
 }
 const PROSPCaseList = ({
@@ -80,7 +80,7 @@ const PROSPCaseList = ({
                     substructureState: SharePointImport.substructureStatus(c, apiData),
                     topsideState: SharePointImport.topsideStatus(c, apiData),
                     transportState: SharePointImport.transportStatus(c, apiData),
-                    onshorePowerSupplyState: SharePointImport.onshorePowerSupplyStatus(c, apiData),
+                    // onshorePowerSupplyState: SharePointImport.onshorePowerSupplyStatus(c, apiData),
                     sharePointFileId: c.sharepointFileId,
                     sharePointFileName: c.sharepointFileName,
                     sharepointFileUrl: c.sharepointFileUrl,
@@ -90,7 +90,7 @@ const PROSPCaseList = ({
                     substructureStateChanged: false,
                     topsideStateChanged: false,
                     transportStateChanged: false,
-                    onshorePowerSupplyStateChanged: false,
+                    // onshorePowerSupplyStateChanged: false,
                     sharePointFileChanged: false,
                 }
                 tableCases.push(tableCase)
@@ -110,7 +110,7 @@ const PROSPCaseList = ({
         || p.data.substructureStateChanged
         || p.data.topsideStateChanged
         || p.data.transportStateChanged
-        || p.data.onshorePowerSupplyStateChanged
+        // || p.data.onshorePowerSupplyStateChanged
         || p.data.sharePointFileChanged)
 
     const caseAutoSelect = (nodeId: string) => {
@@ -148,9 +148,9 @@ const PROSPCaseList = ({
                 case "transportState":
                     rowNode.data.transportStateChanged = (SharePointImport.transportStatus(projectCase, apiData) !== value)
                     break
-                case "onshorePowerSupplyState":
-                    rowNode.data.onshorePowerSupplyStateChanged = (SharePointImport.onshorePowerSupplyStatus(projectCase, apiData) !== value)
-                    break
+                // case "onshorePowerSupplyState":
+                //     rowNode.data.onshorePowerSupplyStateChanged = (SharePointImport.onshorePowerSupplyStatus(projectCase, apiData) !== value)
+                //     break
                 default:
                     break
                 }
@@ -327,13 +327,13 @@ const PROSPCaseList = ({
             cellRenderer: advancedSettingsRenderer,
             hide: check,
         },
-        {
-            field: "onshorePowerSupplyState",
-            headerName: "Onshore Power Supply",
-            flex: 1,
-            cellRenderer: advancedSettingsRenderer,
-            hide: check,
-        },
+        // {
+        //     field: "onshorePowerSupplyState",
+        //     headerName: "Onshore Power Supply",
+        //     flex: 1,
+        //     cellRenderer: advancedSettingsRenderer,
+        //     hide: check,
+        // },
     ]
 
     const [columnDefs, setColumnDefs] = useState(GetColumnDefs())
@@ -363,7 +363,7 @@ const PROSPCaseList = ({
             dto.substructure = node.data?.substructureState === ImportStatusEnum.Selected
             dto.topside = node.data?.topsideState === ImportStatusEnum.Selected
             dto.transport = node.data?.transportState === ImportStatusEnum.Selected
-            dto.onshorePowerSupply = node.data?.onshorePowerSupplyState === ImportStatusEnum.Selected
+            // dto.onshorePowerSupply = node.data?.onshorePowerSupplyState === ImportStatusEnum.Selected
             if (node.isSelected()) {
                 dtos.push(dto)
             }
@@ -387,7 +387,7 @@ const PROSPCaseList = ({
     }, [])
 
     useEffect(() => {
-        const assetFields = ["surfState", "substructureState", "topsideState", "transportState", "onshorePowerSupplyState"]
+        const assetFields = ["surfState", "substructureState", "topsideState", "transportState"]
         const newColumnDefs = [...columnDefs]
         const columnData: any = []
         newColumnDefs.forEach((cd) => {

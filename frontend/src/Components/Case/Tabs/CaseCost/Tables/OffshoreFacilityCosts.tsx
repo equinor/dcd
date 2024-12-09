@@ -37,6 +37,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
         const topside = apiData?.topside
         const transport = apiData?.transport
         const substructure = apiData?.substructure
+        const onshorePowerSupply = apiData?.onshorePowerSupply
         const surfCostData = apiData.surfCostProfile
         const surfCostOverrideData = apiData.surfCostProfileOverride
         const topsideCostData = apiData.topsideCostProfile
@@ -45,8 +46,10 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
         const substructureCostOverrideData = apiData.substructureCostProfileOverride
         const transportCostData = apiData.transportCostProfile
         const transportCostOverrideData = apiData.transportCostProfileOverride
+        const onshorePowerSupplyCostData = apiData.onshorePowerSupplyCostProfile
+        const onshorePowerSupplyCostOverrideData = apiData.onshorePowerSupplyCostProfileOverride
 
-        if (!surf || !topside || !substructure || !transport) {
+        if (!surf || !topside || !substructure || !transport || !onshorePowerSupply) {
             console.error("Missing offshore facility data")
             return
         }
@@ -103,13 +106,13 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
             {
                 profileName: "OnshorePowerSupply",
                 unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
-                profile: apiData.onshorePowerSupplyCostProfile,
+                profile: onshorePowerSupplyCostData,
                 resourceName: "onshorePowerSupplyCostOverride",
-                resourceId: apiData.onshorePowerSupply.id,
-                resourceProfileId: apiData.onshorePowerSupplyCostProfileOverride?.id,
+                resourceId: onshorePowerSupply.id,
+                resourceProfileId: onshorePowerSupplyCostOverrideData?.id,
                 resourcePropertyKey: "onshorePowerSupplyCostOverride",
                 overridable: true,
-                overrideProfile: apiData.onshorePowerSupplyCostProfileOverride,
+                overrideProfile: onshorePowerSupplyCostOverrideData,
                 editable: true,
             },
         ]
