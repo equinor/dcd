@@ -42,10 +42,6 @@ const EditTechnicalInputModal = () => {
         enabled: !!externalId,
     })
 
-    if (!apiData) {
-        return <div>Loading...</div>
-    }
-
     const [
         explorationOperationalWellCosts,
         setExplorationOperationalWellCosts,
@@ -64,13 +60,22 @@ const EditTechnicalInputModal = () => {
         setOriginalDevelopmentOperationalWellCosts,
     ] = useState<Components.Schemas.DevelopmentOperationalWellCostsOverviewDto | undefined>(apiData?.commonProjectAndRevisionData.developmentOperationalWellCosts)
 
-    const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellOverviewDto[]>(apiData?.commonProjectAndRevisionData.wells?.filter((w) => !isExplorationWell(w)) ?? [])
-    const [explorationWells, setExplorationWells] = useState<Components.Schemas.WellOverviewDto[]>(apiData?.commonProjectAndRevisionData.wells?.filter((w) => isExplorationWell(w)) ?? [])
+    const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellOverviewDto[]>(
+        apiData?.commonProjectAndRevisionData.wells?.filter((w) => !isExplorationWell(w)) ?? [],
+    )
+    const [explorationWells, setExplorationWells] = useState<Components.Schemas.WellOverviewDto[]>(
+        apiData?.commonProjectAndRevisionData.wells?.filter((w) => isExplorationWell(w)) ?? [],
+    )
 
-    const [originalWellProjectWells, setOriginalWellProjectWells] = useState<Components.Schemas.WellOverviewDto[]>(apiData?.commonProjectAndRevisionData.wells?.filter((w) => !isExplorationWell(w)) ?? [])
-    const [originalExplorationWells, setOriginalExplorationWells] = useState<Components.Schemas.WellOverviewDto[]>(apiData?.commonProjectAndRevisionData.wells?.filter((w) => isExplorationWell(w)) ?? [])
+    const [originalWellProjectWells, setOriginalWellProjectWells] = useState<Components.Schemas.WellOverviewDto[]>(
+        apiData?.commonProjectAndRevisionData.wells?.filter((w) => !isExplorationWell(w)) ?? [],
+    )
+    const [originalExplorationWells, setOriginalExplorationWells] = useState<Components.Schemas.WellOverviewDto[]>(
+        apiData?.commonProjectAndRevisionData.wells?.filter((w) => isExplorationWell(w)) ?? [],
+    )
 
     const handleSave = async () => {
+        if (!apiData) { return }
         try {
             const dto: Components.Schemas.UpdateTechnicalInputDto = {}
             setIsSaving(true)
@@ -119,7 +124,7 @@ const EditTechnicalInputModal = () => {
         setOriginalExplorationWells(structuredClone(apiData?.commonProjectAndRevisionData.wells?.filter((w) => isExplorationWell(w)) ?? []))
     }, [apiData])
 
-    if (!explorationOperationalWellCosts || !developmentOperationalWellCosts) {
+    if (!apiData || !explorationOperationalWellCosts || !developmentOperationalWellCosts) {
         return (<div>Loading...</div>)
     }
 
