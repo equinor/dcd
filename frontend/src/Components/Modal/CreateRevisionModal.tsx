@@ -105,8 +105,8 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     const submitRevision = () => {
         const newRevision: Components.Schemas.CreateRevisionDto = {
             name: revisionName,
-            internalProjectPhase: internalProjectPhase as Components.Schemas.InternalProjectPhase,
-            classification: classification as Components.Schemas.ProjectClassification,
+            internalProjectPhase: internalProjectPhase,
+            classification: classification,
             mdqc,
             arena,
         }
