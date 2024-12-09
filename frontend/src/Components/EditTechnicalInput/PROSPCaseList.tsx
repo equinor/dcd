@@ -71,7 +71,6 @@ const PROSPCaseList = ({
         if (apiData && apiData.commonProjectAndRevisionData.cases) {
             const tableCases: RowData[] = []
             apiData.commonProjectAndRevisionData.cases.forEach((c) => {
-                console.log(c)
                 const tableCase: RowData = {
                     id: c.caseId!,
                     name: c.name ?? "",
@@ -192,13 +191,6 @@ const PROSPCaseList = ({
     }
 
     const getRowId = useMemo<GetRowIdFunc>(() => (params: GetRowIdParams) => params.data.id, [])
-    // const getRowId = useMemo<GetRowIdFunc>(
-    //     () => (params: GetRowIdParams) => {
-    //         console.log(params.data)
-    //         return params.data.id
-    //     },
-    //     [],
-    // )
 
     const getFileLink = (p: any, selectedFileId: any) => {
         const driveItemChosen = p.data?.driveItem[0]
