@@ -95,7 +95,7 @@ const ProjectCompareCasesTab = () => {
         totalCo2EmissionsChartData,
         co2IntensityChartData,
     } = useProjectChartData()
-    const isSmallScreen = useMediaQuery("(max-width: 1080px)")
+    const isSmallScreen = useMediaQuery("(max-width: 968px)")
 
     const [value, setValue] = useState(0)
 

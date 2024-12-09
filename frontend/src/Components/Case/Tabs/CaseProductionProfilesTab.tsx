@@ -7,17 +7,19 @@ import { NativeSelect } from "@equinor/eds-core-react"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
-import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
-import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../AgGrid/AgChartsTimeseries"
+
 import InputSwitcher from "../../Input/Components/InputSwitcher"
-import { useCaseContext } from "../../../Context/CaseContext"
 import DateRangePicker from "../../Input/TableDateRangePicker"
+import SwitchableNumberInput from "../../Input/SwitchableNumberInput"
 import SwitchableDropdownInput from "../../Input/SwitchableDropdownInput"
-import CaseProductionProfilesTabSkeleton from "../../LoadingSkeletons/CaseProductionProfilesTabSkeleton"
-import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
 import { SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
-import { caseQueryFn } from "../../../Services/QueryFunctions"
-import { useProjectContext } from "../../../Context/ProjectContext"
+import CaseProductionProfiles from "./CaseCost/Tables/CaseProductionProfiles"
+import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../AgGrid/AgChartsTimeseries"
+import CaseProductionProfilesTabSkeleton from "../../LoadingSkeletons/CaseProductionProfilesTabSkeleton"
+import { useCaseContext } from "@/Context/CaseContext"
+import { defaultAxesData } from "@/Utils/common"
+import { caseQueryFn } from "@/Services/QueryFunctions"
+import { useProjectContext } from "@/Context/ProjectContext"
 
 const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
     const { caseId, revisionId } = useParams()
@@ -248,6 +250,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
                 <AgChartsTimeseries
                     data={productionProfilesChartData()}
                     chartTitle="Production profiles"
+                    axesData={defaultAxesData}
                     barColors={["#243746", "#EB0037", "#A8CED1"]}
                     barProfiles={["oilProduction", "additionalOilProduction", "gasProduction", "additionalGasProduction", "waterProduction"]}
                     barNames={[

@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import Grid from "@mui/material/Grid"
+import Grid2 from "@mui/material/Grid2"
 import { useLocation } from "react-router-dom"
 import styled from "styled-components"
 
@@ -11,7 +11,7 @@ import AccessManagementTab from "@/Components/Project/AccessManagementTab"
 import ProjectCompareCasesTab from "@/Components/Project/CompareCasesTab/CompareCasesTabOverview"
 import { useProjectContext } from "@/Context/ProjectContext"
 
-const Wrapper = styled(Grid)`
+const Wrapper = styled(Grid2)`
     padding: 0 16px;
 `
 
@@ -25,7 +25,7 @@ const ProjectView = () => {
     }, [activeTabProjectParam])
 
     return (
-        <Wrapper item xs={12}>
+        <Wrapper size={{ xs: 12 }}>
             <div role="tabpanel" hidden={activeTabProject !== 0}>
                 <ProjectOverviewTab />
             </div>
