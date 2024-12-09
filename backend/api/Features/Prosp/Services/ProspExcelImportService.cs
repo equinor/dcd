@@ -1,6 +1,4 @@
 using api.Context;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
 using api.Features.Assets.CaseAssets.Substructures.Services;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
@@ -9,6 +7,8 @@ using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
 using api.Features.Assets.CaseAssets.Topsides.Services;
 using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
 using api.Features.Assets.CaseAssets.Transports.Services;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.CaseProfiles.Services;
 using api.Features.Prosp.Models;
 using api.Models;
@@ -316,8 +316,6 @@ public class ProspExcelImportService(
             Values = ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year,
         };
-        Console.WriteLine("ImportTransport dG4Date222 " + dG4Date);
-        Console.WriteLine("ImportTransport costProfileStartYear " + costProfileStartYear);
         // Prosp meta data
         var versionDate = ReadDateValue(cellData, _prospConfig.Transport.versionDate);
         var costYear = ReadIntValue(cellData, _prospConfig.Transport.costYear);
@@ -452,13 +450,10 @@ public class ProspExcelImportService(
                 }
                 if (assets["OnshorePowerSupply"])
                 {
-                    Console.WriteLine("Importing OnshorePowerSupply");
                     await ImportOnshorePowerSupply(parsedData, sourceCaseId, projectId);
-                    Console.WriteLine("Importing OnshorePowerSupply" + caseItem.OnshorePowerSupplyLink);
                 }
                 else
                 {
-                    Console.WriteLine("Clearing OnshorePowerSupply");
                     await ClearImportedOnshorePowerSupply(caseItem);
                 }
             }
@@ -485,6 +480,7 @@ public class ProspExcelImportService(
         await ClearImportedTopside(caseItem);
         await ClearImportedSubstructure(caseItem);
         await ClearImportedTransport(caseItem);
+        await ClearImportedOnshorePowerSupply(caseItem);
 
         var caseDto = mapper.Map<ProspUpdateCaseDto>(caseItem);
 
