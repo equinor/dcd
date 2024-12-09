@@ -138,7 +138,7 @@ public class ApplicationRoleAuthorizationHandler(
             return null;
         }
 
-        var projectPk = await dbContext.GetPrimaryKeyForProjectId(projectIdGuid);
+        var projectPk = await dbContext.GetPrimaryKeyForProjectIdOrRevisionId(projectIdGuid);
 
         return await dbContext.Projects.Include(p => p.ProjectMembers).SingleAsync(p => p.Id == projectPk);
     }
