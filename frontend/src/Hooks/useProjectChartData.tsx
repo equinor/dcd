@@ -79,7 +79,7 @@ export const useProjectChartData = () => {
         }))
 
         const productionProfilesObject = cases.map((caseItem) => {
-            const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.id)
+            const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.caseId)
             return {
                 cases: caseItem.name,
                 oilProduction: compareCase?.totalOilProduction,
@@ -91,7 +91,7 @@ export const useProjectChartData = () => {
         })
 
         const investmentProfilesObject = cases.map((caseItem) => {
-            const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.id)
+            const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.caseId)
             return {
                 cases: caseItem.name,
                 offshorePlusOnshoreFacilityCosts: compareCase?.offshorePlusOnshoreFacilityCosts,
@@ -101,7 +101,7 @@ export const useProjectChartData = () => {
         })
 
         const totalCo2EmissionsObject = cases.map((caseItem) => {
-            const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.id)
+            const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.caseId)
             return {
                 cases: caseItem.name,
                 totalCO2Emissions: compareCase?.totalCo2Emissions,
@@ -109,7 +109,7 @@ export const useProjectChartData = () => {
         })
 
         const co2IntensityObject = cases.map((caseItem) => {
-            const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.id)
+            const compareCase = compareCasesTotals.find((c) => c.caseId === caseItem.caseId)
             return {
                 cases: caseItem.name,
                 cO2Intensity: compareCase?.co2Intensity,
@@ -130,10 +130,10 @@ export const useProjectChartData = () => {
             const tableCompareCases: TableCompareCase[] = []
             if (compareCasesTotals) {
                 cases.forEach((c) => {
-                    const matchingCase = compareCasesTotals.find((checkMatchingCase: any) => checkMatchingCase.caseId === c.id)
+                    const matchingCase = compareCasesTotals.find((checkMatchingCase: any) => checkMatchingCase.caseId === c.caseId)
                     if (matchingCase) {
                         const tableCase: TableCompareCase = {
-                            id: c.id!,
+                            id: c.caseId,
                             cases: c.name ?? "",
                             description: c.description ?? "",
                             npv: Math.round(c.npv ?? 0 * 1) / 1,

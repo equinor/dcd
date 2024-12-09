@@ -150,7 +150,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
                     unit="%"
                     min={0}
                     max={100}
-                    resourceId={caseData.id}
+                    resourceId={caseData.caseId}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={3}>
@@ -209,7 +209,7 @@ const CaseProductionProfilesTab = ({ addEdit }: { addEdit: any }) => {
                     previousResourceObject={caseData}
                     integer
                     disabled
-                    resourceId={caseData.id}
+                    resourceId={caseData.caseId}
 
                 />
             </Grid>

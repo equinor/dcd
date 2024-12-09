@@ -30,6 +30,7 @@ public class CommonProjectAndRevisionDto
     [Required] public required double OilPriceUSD { get; set; }
     [Required] public required double GasPriceNOK { get; set; }
     [Required] public required double DiscountRate { get; set; }
+    [Required] public required double ExchangeRateUSDToNOK { get; set; }
 
     [Required] public required ExplorationOperationalWellCostsOverviewDto ExplorationOperationalWellCosts { get; set; }
     [Required] public required DevelopmentOperationalWellCostsOverviewDto DevelopmentOperationalWellCosts { get; set; }

@@ -55,7 +55,7 @@ const CasesDropMenu = ({
 
     const [confirmDelete, setConfirmDelete] = useState(false)
 
-    const selectedCase = useMemo(() => projectData?.commonProjectAndRevisionData.cases.find((c) => c.id === selectedCaseId), [projectData, selectedCaseId])
+    const selectedCase = useMemo(() => projectData?.commonProjectAndRevisionData.cases.find((c) => c.caseId === selectedCaseId), [projectData, selectedCaseId])
 
     if (!projectData) { return <p>project not found</p> }
 

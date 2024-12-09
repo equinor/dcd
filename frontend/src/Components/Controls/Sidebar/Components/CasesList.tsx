@@ -74,13 +74,13 @@ const CasesList: React.FC = () => {
                     container
                     justifyContent="space-between"
                     key={`menu - item - ${index + 1} `}
-                    data-timeline-active={location.pathname.includes(projectCase.id)}
+                    data-timeline-active={location.pathname.includes(projectCase.caseId)}
                 >
                     <Tooltip
                         title={`${projectCase.name ? truncateText(projectCase.name, 120) : "Untitled"} - Strategy: ${productionStrategyOverviewToString(projectCase.productionStrategyOverview)}`}
                         placement="right"
                     >
-                        <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.id)}>
+                        <TimelineElement variant="ghost" className="GhostButton" onClick={() => selectCase(projectCase.caseId)}>
                             {apiData?.commonProjectAndRevisionData.referenceCaseId !== EMPTY_GUID
                                 ? (
                                     <SideBarRefCaseWrapper>
@@ -88,7 +88,7 @@ const CasesList: React.FC = () => {
                                         {!sidebarOpen && `#${index + 1}`}
                                         {(sidebarOpen && projectCase.name) && truncateText(projectCase.name, 30)}
                                         {(sidebarOpen && (projectCase.name === "" || projectCase.name === undefined)) && "Untitled"}
-                                        {apiData?.commonProjectAndRevisionData.referenceCaseId === projectCase?.id && (
+                                        {apiData?.commonProjectAndRevisionData.referenceCaseId === projectCase.caseId && (
                                             <ReferenceCaseIcon iconPlacement="sideBar" />
                                         )}
                                     </SideBarRefCaseWrapper>

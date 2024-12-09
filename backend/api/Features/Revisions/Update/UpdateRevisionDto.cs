@@ -1,8 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace api.Features.Revisions.Update;
 
 public class UpdateRevisionDto
 {
-    public string Name { get; set; } = null!;
-    public bool Arena { get; set; }
-    public bool Mdqc { get; set; }
+    [Required] public required string Name { get; set; }
+    [Required] public required bool Arena { get; set; }
+    [Required] public required bool Mdqc { get; set; }
 }

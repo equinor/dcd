@@ -206,7 +206,7 @@ const CasesAgGridTable = ({
             const tableCases: TableCase[] = []
             cases.forEach((c) => {
                 const tableCase: TableCase = {
-                    id: c.id!,
+                    id: c.caseId!,
                     name: c.name ?? "",
                     description: c.description ?? "",
                     productionStrategyOverview: c.productionStrategyOverview,

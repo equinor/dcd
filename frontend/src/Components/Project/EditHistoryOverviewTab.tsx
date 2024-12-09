@@ -48,12 +48,12 @@ const EditHistoryOverviewTab = () => {
             {apiData.commonProjectAndRevisionData.cases
                 .sort((a, b) => new Date(a.createTime).getTime() - new Date(b.createTime).getTime())
                 .map((projectCase, index) => {
-                    const filteredEdits = caseEdits.filter((edit) => edit.caseId === projectCase.id)
+                    const filteredEdits = caseEdits.filter((edit) => edit.caseId === projectCase.caseId)
                     return filteredEdits.length > 0 ? (
-                        <CaseEdits key={projectCase.id}>
+                        <CaseEdits key={projectCase.caseId}>
                             <Typography>{projectCase.name}</Typography>
                             <div>
-                                <CaseEditHistory key={`menu-item-${index + 1}`} caseId={projectCase.id} />
+                                <CaseEditHistory key={`menu-item-${index + 1}`} caseId={projectCase.caseId} />
                             </div>
                         </CaseEdits>
                     ) : null

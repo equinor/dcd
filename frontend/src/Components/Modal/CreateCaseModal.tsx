@@ -64,7 +64,7 @@ const CreateCaseModal = () => {
 
     useEffect(() => {
         if (apiData) {
-            const selectedCase = apiData.commonProjectAndRevisionData.cases?.find((c) => c.id === modalCaseId)
+            const selectedCase = apiData.commonProjectAndRevisionData.cases?.find((c) => c.caseId === modalCaseId)
 
             if (selectedCase) {
                 setCaseItem(selectedCase)
@@ -122,7 +122,7 @@ const CreateCaseModal = () => {
                 throw new Error("No project found")
             }
 
-            if (caseModalEditMode && projectCase && projectCase.id) {
+            if (caseModalEditMode && projectCase && projectCase.caseId) {
                 const newCase = { ...projectCase }
                 newCase.name = caseName
                 newCase.description = description
@@ -134,7 +134,7 @@ const CreateCaseModal = () => {
 
                 await (await GetCaseService()).updateCase(
                     apiData.projectId,
-                    projectCase.id,
+                    projectCase.caseId,
                     newCase,
                 )
                 setIsLoading(false)

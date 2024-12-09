@@ -18,7 +18,7 @@ implements Components.Schemas.SharePointImportDto {
         project: Components.Schemas.ProjectDataDto,
         data: Components.Schemas.SharePointImportDto | undefined,
     ) {
-        this.id = projectCase.id!
+        this.id = projectCase.caseId!
         this.selected = false
         this.surfState = SharePointImport.surfStatus(projectCase, project.commonProjectAndRevisionData)
         this.substructureState = SharePointImport.substructureStatus(

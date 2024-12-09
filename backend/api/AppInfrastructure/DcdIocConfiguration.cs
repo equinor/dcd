@@ -36,8 +36,6 @@ using api.Features.ProjectMembers.Delete;
 using api.Features.ProjectMembers.Get;
 using api.Features.ProjectMembers.Update;
 using api.Features.Projects.Create;
-using api.Features.Projects.GetWithAssets;
-using api.Features.Projects.GetWithCases;
 using api.Features.Projects.Update;
 using api.Features.Prosp.Services;
 using api.Features.Revisions.Create;
@@ -61,7 +59,6 @@ public static class DcdIocConfiguration
     {
         services.AddScoped<IProjectAccessService, ProjectAccessService>();
         services.AddScoped<GetProjectDataRepository>();
-        services.AddScoped<GetProjectWithCasesService>();
         services.AddScoped<CreateProjectService>();
         services.AddScoped<UpdateProjectService>();
 
