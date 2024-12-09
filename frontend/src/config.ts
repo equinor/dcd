@@ -13,11 +13,10 @@ import { MultiFilterModule } from "@ag-grid-enterprise/multi-filter"
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection"
 import { SetFilterModule } from "@ag-grid-enterprise/set-filter"
 import { ExcelExportModule } from "@ag-grid-enterprise/excel-export"
+import { AgGridLisenceKey } from "./agGridLisence"
 
 export const configure: AppModuleInitiator = (configurator, args) => {
-    const { agGridLicense } = (args.env.config?.environment as { agGridLicense?: string })
-    console.log("agGridLicense", agGridLicense)
-    console.log("args", args)
+    // const { agGridLicense } = (args.env.config?.environment as { agGridLicense?: string })
     const { basename } = args.env
 
     ModuleRegistry.registerModules([
@@ -40,10 +39,16 @@ export const configure: AppModuleInitiator = (configurator, args) => {
     // } else {
     //     enableAgGrid(configurator)
     // }
-    enableAgGrid(configurator)
+
+    if (AgGridLisenceKey && AgGridLisenceKey.length > 0) {
+        enableAgGrid(configurator, {
+            licenseKey: AgGridLisenceKey || "",
+        })
+    } else {
+        enableAgGrid(configurator)
+    }
 
     configurator.useFrameworkServiceClient("portal")
-    configurator.useFrameworkServiceClient("people")
 
     enableNavigation(configurator, basename)
 

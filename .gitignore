@@ -26,6 +26,7 @@ version.ts
 
 # Environment variables
 .env
+frontend/src/agGridLisence.ts
 
 # Python
 venv
