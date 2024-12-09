@@ -15,7 +15,7 @@ public class CreateRevisionService(CreateRevisionRepository createRevisionReposi
         var revision = await createRevisionRepository.GetProjectAndAssetsNoTracking(projectPk);
 
         revision.IsRevision = true;
-        revision.OriginalProjectId = projectId;
+        revision.OriginalProjectId = projectPk;
         revision.InternalProjectPhase = createRevisionDto.InternalProjectPhase ?? revision.InternalProjectPhase;
         revision.Classification = createRevisionDto.Classification ?? revision.Classification;
 
