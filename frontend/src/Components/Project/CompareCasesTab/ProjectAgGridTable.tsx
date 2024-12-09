@@ -306,7 +306,12 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                     animateRows
                     domLayout="autoHeight"
                     onGridReady={onGridReady}
-                    rowSelection={{ mode: "multiRow" }}
+                    rowSelection={{
+                        mode: "multiRow",
+                        checkboxes: false,
+                        headerCheckbox: false,
+                        enableClickSelection: true,
+                    }}
                     cellSelection
                     enableCharts
                 />
