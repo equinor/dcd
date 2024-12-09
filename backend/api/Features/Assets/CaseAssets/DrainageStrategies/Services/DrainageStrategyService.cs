@@ -1,5 +1,7 @@
 using System.Linq.Expressions;
 
+using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
@@ -13,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Features.Assets.CaseAssets.DrainageStrategies.Services;
 
 public class DrainageStrategyService(
+    DcdDbContext context,
     ILogger<DrainageStrategyService> logger,
     ICaseRepository caseRepository,
     IDrainageStrategyRepository repository,
@@ -42,8 +45,9 @@ public class DrainageStrategyService(
         var existingDrainageStrategy = await repository.GetDrainageStrategy(drainageStrategyId)
             ?? throw new NotFoundInDBException($"Drainage strategy with id {drainageStrategyId} not found.");
 
-        var project = await caseRepository.GetProject(projectId)
-            ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var project = await context.Projects.SingleAsync(p => p.Id == projectPk);
 
         conversionMapperService.MapToEntity(updatedDrainageStrategyDto, existingDrainageStrategy, drainageStrategyId, project.PhysicalUnit);
 

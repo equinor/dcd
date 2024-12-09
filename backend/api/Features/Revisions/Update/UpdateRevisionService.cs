@@ -1,5 +1,5 @@
 using api.Context;
-using api.Exceptions;
+using api.Context.Extensions;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -9,20 +9,13 @@ public class UpdateRevisionService(DcdDbContext context)
 {
     public async Task UpdateRevision(Guid projectId, Guid revisionId, UpdateRevisionDto updateRevisionDto)
     {
-        var revision = context.Projects
-                           .Include(p => p.Cases)
-                           .Include(p => p.RevisionDetails)
-                           .FirstOrDefault(r => r.Id == revisionId)
-                       ?? throw new NotFoundInDBException($"Revision with id {revisionId} not found.");
+        var revisionPk = await context.GetPrimaryKeyForRevisionId(revisionId);
 
-        if (revision.RevisionDetails == null)
-        {
-            throw new InvalidOperationException("RevisionDetails cannot be null.");
-        }
+        var revisionDetails = await context.RevisionDetails.SingleAsync(r => r.RevisionId == revisionPk);
 
-        revision.RevisionDetails.RevisionName = updateRevisionDto.Name;
-        revision.RevisionDetails.Arena = updateRevisionDto.Arena;
-        revision.RevisionDetails.Mdqc = updateRevisionDto.Mdqc;
+        revisionDetails.RevisionName = updateRevisionDto.Name;
+        revisionDetails.Arena = updateRevisionDto.Arena;
+        revisionDetails.Mdqc = updateRevisionDto.Mdqc;
 
         await context.SaveChangesAsync();
     }

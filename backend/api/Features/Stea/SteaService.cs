@@ -1,3 +1,5 @@
+using api.Context;
+using api.Context.Extensions;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.Stea.Dtos;
@@ -8,7 +10,9 @@ using AutoMapper;
 
 namespace api.Features.Stea;
 
-public class SteaService(ILogger<SteaService> logger, IProjectWithAssetsRepository projectWithAssetsRepository, IMapper mapper)
+public class SteaService(DcdDbContext context,
+    ILogger<SteaService> logger,
+    IProjectWithAssetsRepository projectWithAssetsRepository, IMapper mapper)
 {
     public async Task<(byte[] excelFileContents, string filename)> GetExcelFile(Guid projectId)
     {
@@ -21,7 +25,9 @@ public class SteaService(ILogger<SteaService> logger, IProjectWithAssetsReposito
 
     public async Task<SteaProjectDto> GetInputToStea(Guid projectId)
     {
-        var project = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectId);
+        var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
+
+        var project = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectPk);
 
         var projectDto = mapper.Map<Project, ProjectWithAssetsDto>(project, opts => opts.Items["ConversionUnit"] = project.PhysicalUnit.ToString());
 

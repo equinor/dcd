@@ -6,7 +6,9 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
 {
     public async Task<List<CompareCasesDto>> Calculate(Guid projectId)
     {
-        var project = await caseComparisonRepository.LoadProject(projectId);
+        var projectPk = await caseComparisonRepository.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
+
+        var project = await caseComparisonRepository.LoadProject(projectPk);
 
         return CompareCases(project);
     }

@@ -16,7 +16,7 @@ public class CaseService(
 {
     public async Task<Project> GetProject(Guid id)
     {
-        return await repository.GetProject(id) ?? throw new NotFoundInDBException($"Project {id} could not be found");
+        return await repository.GetProject(id);
     }
 
     public async Task<Case> GetCase(Guid caseId)
@@ -41,7 +41,7 @@ public class CaseService(
             .Include(c => c.CessationOnshoreFacilitiesCostProfile)
             .Include(c => c.CalculatedTotalIncomeCostProfile)
             .Include(c => c.CalculatedTotalCostCostProfile)
-            .FirstOrDefaultAsync(c => c.Id == caseId)
+            .SingleOrDefaultAsync(c => c.Id == caseId)
         ?? throw new NotFoundInDBException($"Case {caseId} not found.");
 
         return caseItem;

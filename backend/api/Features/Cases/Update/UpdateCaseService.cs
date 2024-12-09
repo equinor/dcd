@@ -1,4 +1,5 @@
 using api.Context;
+using api.Context.Extensions;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -8,8 +9,10 @@ public class UpdateCaseService(DcdDbContext context)
 {
     public async Task UpdateCase(Guid projectId, Guid caseId, UpdateCaseDto updateCaseDto)
     {
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
         var existingCase = await context.Cases
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.ProjectId == projectPk)
             .Where(x => x.Id == caseId)
             .SingleAsync();
 

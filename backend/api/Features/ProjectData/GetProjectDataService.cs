@@ -6,7 +6,7 @@ public class GetProjectDataService(GetProjectDataRepository getProjectDataReposi
 {
     public async Task<ProjectDataDto> GetProjectData(Guid projectId)
     {
-        var projectPk = await getProjectDataRepository.GetProjectIdFromFusionId(projectId);
+        var projectPk = await getProjectDataRepository.GetPrimaryKeyForProjectId(projectId);
 
         var projectMembers = await getProjectDataRepository.GetProjectMembers(projectPk);
         var revisionDetailsList = await getProjectDataRepository.GetRevisionDetailsList(projectPk);

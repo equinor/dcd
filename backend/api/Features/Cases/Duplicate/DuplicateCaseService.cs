@@ -1,4 +1,5 @@
 using api.Context;
+using api.Context.Extensions;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -6,12 +7,14 @@ namespace api.Features.Cases.Duplicate;
 
 public class DuplicateCaseService(DuplicateCaseRepository duplicateCaseRepository, DcdDbContext context)
 {
-    public async Task DuplicateCase(Guid caseId)
+    public async Task DuplicateCase(Guid projectId, Guid caseId)
     {
-        var caseItem = await duplicateCaseRepository.GetCaseAndAssetsNoTracking(caseId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var caseItem = await duplicateCaseRepository.GetCaseAndAssetsNoTracking(projectPk, caseId);
 
         var existingCaseNames = await context.Cases
-            .Where(x => x.ProjectId == caseItem.ProjectId)
+            .Where(x => x.ProjectId == projectPk)
             .Select(x => x.Name)
             .Distinct()
             .ToHashSetAsync();

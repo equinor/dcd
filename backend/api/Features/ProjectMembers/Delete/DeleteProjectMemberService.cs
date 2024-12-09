@@ -1,4 +1,5 @@
 using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
 
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,9 @@ public class DeleteProjectMemberService(DcdDbContext context)
 {
     public async Task DeleteProjectMember(Guid projectId, Guid userId)
     {
-        var projectMember = await context.ProjectMembers.SingleOrDefaultAsync(c => c.ProjectId == projectId && c.UserId == userId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var projectMember = await context.ProjectMembers.SingleOrDefaultAsync(c => c.ProjectId == projectPk && c.UserId == userId);
 
         if (projectMember == null)
         {

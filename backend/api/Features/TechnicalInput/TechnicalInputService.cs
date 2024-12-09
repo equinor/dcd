@@ -1,4 +1,5 @@
 using api.Context;
+using api.Context.Extensions;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
@@ -30,7 +31,9 @@ public class TechnicalInputService(
 {
     public async Task<TechnicalInputDto> UpdateTechnicalInput(Guid projectId, UpdateTechnicalInputDto technicalInputDto)
     {
-        var project = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var project = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectPk);
 
         await UpdateProject(project, technicalInputDto.ProjectDto);
 
@@ -46,7 +49,7 @@ public class TechnicalInputService(
 
         if (technicalInputDto.UpdateWellDtos?.Length > 0 || technicalInputDto.CreateWellDtos?.Length > 0)
         {
-            var wellResult = await CreateAndUpdateWells(projectId, technicalInputDto.CreateWellDtos, technicalInputDto.UpdateWellDtos);
+            var wellResult = await CreateAndUpdateWells(projectPk, technicalInputDto.CreateWellDtos, technicalInputDto.UpdateWellDtos);
 
             if (wellResult != null)
             {
@@ -57,7 +60,7 @@ public class TechnicalInputService(
 
         await context.SaveChangesAsync();
 
-        returnDto.ProjectData = await getProjectDataService.GetProjectData(projectId);
+        returnDto.ProjectData = await getProjectDataService.GetProjectData(projectPk);
 
         return returnDto;
     }

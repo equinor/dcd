@@ -1,4 +1,5 @@
 using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.ProjectMembers.Get;
 
@@ -10,7 +11,10 @@ public class UpdateProjectMemberService(DcdDbContext context)
 {
     public async Task<ProjectMemberDto> UpdateProjectMember(Guid projectId, UpdateProjectMemberDto dto)
     {
-        var existingProjectMember = await context.ProjectMembers.SingleOrDefaultAsync(c => c.ProjectId == projectId && c.UserId == dto.UserId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var existingProjectMember = await context.ProjectMembers
+            .SingleOrDefaultAsync(c => c.ProjectId == projectPk && c.UserId == dto.UserId);
 
         if (existingProjectMember == null)
         {
