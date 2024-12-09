@@ -13,7 +13,7 @@ import { MultiFilterModule } from "@ag-grid-enterprise/multi-filter"
 import { RangeSelectionModule } from "@ag-grid-enterprise/range-selection"
 import { SetFilterModule } from "@ag-grid-enterprise/set-filter"
 import { ExcelExportModule } from "@ag-grid-enterprise/excel-export"
-import { AgGridLisenceKey } from "./agGridLisence"
+import { agGridLicenseKey } from "./agGridLicense"
 
 export const configure: AppModuleInitiator = (configurator, args) => {
     // const { agGridLicense } = (args.env.config?.environment as { agGridLicense?: string })
@@ -40,9 +40,9 @@ export const configure: AppModuleInitiator = (configurator, args) => {
     //     enableAgGrid(configurator)
     // }
 
-    if (AgGridLisenceKey && AgGridLisenceKey.length > 0) {
+    if (agGridLicenseKey && agGridLicenseKey.length > 0) {
         enableAgGrid(configurator, {
-            licenseKey: AgGridLisenceKey || "",
+            licenseKey: agGridLicenseKey || "",
         })
     } else {
         enableAgGrid(configurator)
