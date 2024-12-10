@@ -27,6 +27,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
+    const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
     const { data: projectData } = useQuery({
         queryKey: ["projectApiData", projectId],
@@ -138,9 +139,8 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
 
     useEffect(() => {
         if (activeTabCase === 7 && apiData) {
-            const caseData = apiData?.case as Components.Schemas.CaseDto
-
-            const tableYearsData = [
+            const caseData = apiData?.case
+            SetTableYearsFromProfiles([
                 handleTotalExplorationCost(),
                 handleDrilling(),
                 handleOffshoreFacilitiesCost(),
@@ -157,11 +157,8 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 apiData.onshoreRelatedOPEXCostProfile,
                 apiData.additionalOPEXCostProfile,
                 apiData.onshorePowerSupplyCostProfile,
-            ]
-
-            const yearsFromDate = apiData.case.dG4Date ? new Date(apiData.case.dG4Date).getFullYear() : 2030
-
-            SetTableYearsFromProfiles(tableYearsData, caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
+            ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
+            setYearRangeSetFromProfiles(true)
         }
     }, [activeTabCase, apiData, projectData])
 
@@ -219,7 +216,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 },
                 {
                     profileName: "Onshore - power from shore",
-                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: onshorePowerSupplyCostProfileData,
                     group: "CAPEX",
                 },

@@ -1,5 +1,13 @@
 declare namespace Components {
     namespace Schemas {
+        export interface APIUpdateOnshorePowerSupplyDto {
+            currency?: Currency /* int32 */;
+            costYear?: number; // int32
+            dG3Date?: string | null; // date-time
+            dG4Date?: string | null; // date-time
+            source?: Source /* int32 */;
+            maturity?: Maturity /* int32 */;
+        }
         export interface APIUpdateSubstructureDto {
             dryWeight?: number; // double
             currency?: Currency /* int32 */;
@@ -358,6 +366,7 @@ declare namespace Components {
             topsides: TopsideOverviewDto[];
             transports: TransportOverviewDto[];
             drainageStrategies: DrainageStrategyOverviewDto[];
+            onshorePowerSupplies: OnshorePowerSupplyOverviewDto[];
         }
         export interface CompareCasesDto {
             caseId: string; // uuid
@@ -923,19 +932,9 @@ declare namespace Components {
             dG3Date?: string | null; // date-time
             dG4Date?: string | null; // date-time
         }
-        export interface OnshorePowerSupplyWithProfilesDto {
+        export interface OnshorePowerSupplyOverviewDto {
             id: string; // uuid
-            name: string;
-            projectId: string; // uuid
-            costProfile: OnshorePowerSupplyCostProfileDto;
-            costProfileOverride: OnshorePowerSupplyCostProfileOverrideDto;
-            cessationCostProfile: OnshorePowerSupplyCessationCostProfileDto;
-            lastChangedDate?: string | null; // date-time
-            costYear: number; // int32
             source: Source /* int32 */;
-            prospVersion?: string | null; // date-time
-            dG3Date?: string | null; // date-time
-            dG4Date?: string | null; // date-time
         }
         export interface OnshoreRelatedOPEXCostProfileDto {
             id: string; // uuid
@@ -3575,19 +3574,6 @@ declare namespace Paths {
             }
         }
     }
-    namespace Projects$ProjectIdGetFullGraph {
-        namespace Get {
-            namespace Parameters {
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-            }
-            namespace Responses {
-                export type $200 = Components.Schemas.ProjectDataDto;
-            }
-        }
-    }
     namespace Projects$ProjectIdImages {
         namespace Get {
             namespace Parameters {
@@ -3738,21 +3724,6 @@ declare namespace Paths {
                 revisionId: Parameters.RevisionId /* uuid */;
             }
             export type RequestBody = Components.Schemas.UpdateRevisionDto;
-            namespace Responses {
-                export type $200 = Components.Schemas.RevisionDataDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdRevisions$RevisionIdGetFullGraph {
-        namespace Get {
-            namespace Parameters {
-                export type ProjectId = string; // uuid
-                export type RevisionId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                revisionId: Parameters.RevisionId /* uuid */;
-            }
             namespace Responses {
                 export type $200 = Components.Schemas.RevisionDataDto;
             }
