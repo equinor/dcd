@@ -13,7 +13,7 @@ import {
 import { useCaseContext } from "@/Context/CaseContext"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
 import { mergeTimeseriesList } from "@/Utils/common"
-import { SetSummaryTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
+import { SetSummaryTableYearsFromProfiles, SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 import CaseSummarySkeleton from "@/Components/LoadingSkeletons/CaseSummarySkeleton"
 import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Context/ProjectContext"
@@ -23,6 +23,8 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const { caseId } = useParams()
     const { projectId, isRevision } = useProjectContext()
     const { revisionId } = useParams()
+    const [startYear, setStartYear] = useState<number>(2020)
+    const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
 
@@ -91,7 +93,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 gasProducerCostProfile,
                 waterInjectorCostProfile,
                 gasInjectorCostProfile,
-            ].map((series) => series?.startYear).filter((startYear) => startYear !== undefined) as number[]
+            ].map((series) => series?.startYear).filter((year) => year !== undefined) as number[]
 
             const minStartYear = startYears.length > 0 ? Math.min(...startYears) : 2020
 
@@ -136,6 +138,8 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
 
     useEffect(() => {
         if (activeTabCase === 7 && apiData) {
+            const caseData = apiData?.case as Components.Schemas.CaseDto
+
             const tableYearsData = [
                 handleTotalExplorationCost(),
                 handleDrilling(),
@@ -152,11 +156,12 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 handleOffshoreOpexPlussWellIntervention(),
                 apiData.onshoreRelatedOPEXCostProfile,
                 apiData.additionalOPEXCostProfile,
+                apiData.onshorePowerSupplyCostProfile,
             ]
 
             const yearsFromDate = apiData.case.dG4Date ? new Date(apiData.case.dG4Date).getFullYear() : 2030
 
-            SetSummaryTableYearsFromProfiles(tableYearsData, yearsFromDate, setTableYears)
+            SetTableYearsFromProfiles(tableYearsData, caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
         }
     }, [activeTabCase, apiData, projectData])
 

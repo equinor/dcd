@@ -37,9 +37,6 @@ public class CreateCaseService(DcdDbContext context)
             OnshorePowerSupply = CreateOnshorePowerSupply(project)
         });
         var createdCase = project.Cases.Last();
-        Console.WriteLine("Case created with OnshorePowerSupply: " + createdCase?.OnshorePowerSupply?.CostProfile?.Values);
-        Console.WriteLine("Case created with OnshorePowerSupply: " + createdCase?.OnshorePowerSupply?.CostProfileOverride?.Values);
-
         await context.SaveChangesAsync();
     }
 

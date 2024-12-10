@@ -292,6 +292,23 @@ public static class SteaCaseDtoBuilder
             }
         }
 
+        // if (c.OnshorePowerSupplyLink != Guid.Empty)
+        // {
+        //     var onshorePowerSupplyDto = p.OnshorePowerSupplies.First(l => l.Id == c.OnshorePowerSupplyLink);
+
+        //     if (onshorePowerSupplyDto.CostProfileOverride?.Override == true)
+        //     {
+        //         var costProfile = onshorePowerSupplyDto.CostProfileOverride;
+        //         costProfile.StartYear += dg4Year;
+        //         steaCaseDto.Capex.OffshoreFacilities.AddValues(costProfile);
+        //     }
+        //     else if (onshorePowerSupplyDto.CostProfile != null)
+        //     {
+        //         var costProfile = onshorePowerSupplyDto.CostProfile;
+        //         costProfile.StartYear += dg4Year;
+        //         steaCaseDto.Capex.OffshoreFacilities.AddValues(costProfile);
+        //     }
+        // }
         if (c.OnshorePowerSupplyLink != Guid.Empty)
         {
             var onshorePowerSupplyDto = p.OnshorePowerSupplies.First(l => l.Id == c.OnshorePowerSupplyLink);
@@ -300,17 +317,18 @@ public static class SteaCaseDtoBuilder
             {
                 var costProfile = onshorePowerSupplyDto.CostProfileOverride;
                 costProfile.StartYear += dg4Year;
-                steaCaseDto.Capex.OffshoreFacilities.AddValues(costProfile);
+                steaCaseDto.Capex.OnshorePowerSupplyCost.AddValues(costProfile);
             }
             else if (onshorePowerSupplyDto.CostProfile != null)
             {
                 var costProfile = onshorePowerSupplyDto.CostProfile;
                 costProfile.StartYear += dg4Year;
-                steaCaseDto.Capex.OffshoreFacilities.AddValues(costProfile);
+                steaCaseDto.Capex.OnshorePowerSupplyCost.AddValues(costProfile);
             }
         }
-
         steaCaseDto.Capex.AddValues(steaCaseDto.Capex.OffshoreFacilities);
+        steaCaseDto.Capex.AddValues(steaCaseDto.Capex.OnshorePowerSupplyCost);
+
     }
 
     private static void AddProductionSalesAndVolumes(ProjectWithAssetsDto p, SteaCaseDto steaCaseDto, CaseWithProfilesDto c)

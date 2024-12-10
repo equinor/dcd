@@ -354,41 +354,15 @@ public class ProspExcelImportService(
             "P114"
         ];
         var costProfileStartYear = ReadIntValue(cellData, _prospConfig.OnshorePowerSupply.costProfileStartYear);
-        // var dG3Date = ReadDateValue(cellData, _prospConfig.OnshorePowerSupply.dG3Date);
         var dG4Date = ReadDateValue(cellData, _prospConfig.OnshorePowerSupply.dG4Date);
-        Console.WriteLine("dG4Date222 " + dG4Date);
-        Console.WriteLine("costProfileStartYear " + costProfileStartYear);
 
         var costProfile = new UpdateOnshorePowerSupplyCostProfileDto
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year,
         };
-        Console.WriteLine("OnshorePowerSupply222 " + costProfile.Values.ToString());
-        Console.WriteLine("OnshorePowerSupply222 " + costProfile.StartYear);
 
-        // Prosp meta data
-        // var versionDate = ReadDateValue(cellData, _prospConfig.Transport.versionDate);
-        // var costYear = ReadIntValue(cellData, _prospConfig.Transport.costYear);
-        // var importedCurrency = ReadIntValue(cellData, _prospConfig.Transport.importedCurrency);
-        // var oilExportPipelineLength = ReadDoubleValue(cellData, _prospConfig.Transport.oilExportPipelineLength);
-        // var gasExportPipelineLength = ReadDoubleValue(cellData, _prospConfig.Transport.gasExportPipelineLength);
-        // var currency = importedCurrency == 1 ? Currency.NOK :
-        //     importedCurrency == 2 ? Currency.USD : 0;
         var onshorePowerSupplyLink = (await caseService.GetCase(sourceCaseId)).OnshorePowerSupplyLink;
-        // var updateTransportDto = new PROSPUpdateTransportDto
-        // {
-        //     DG3Date = dG3Date,
-        //     DG4Date = dG4Date,
-        //     Source = Source.Prosp,
-        //     ProspVersion = versionDate,
-        //     Currency = currency,
-        //     CostYear = costYear,
-        //     OilExportPipelineLength = oilExportPipelineLength,
-        //     GasExportPipelineLength = gasExportPipelineLength
-        // };
-
-        // await transportService.UpdateTransport(projectId, sourceCaseId, transportLink, updateTransportDto);
         await onshorePowerSupplyTimeSeriesService.AddOrUpdateOnshorePowerSupplyCostProfile(projectId, sourceCaseId, onshorePowerSupplyLink, costProfile);
     }
 

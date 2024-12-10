@@ -1,4 +1,5 @@
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 
@@ -21,6 +22,7 @@ public class CapexDto : TimeSeriesCostDto
     public TimeSeriesCostDto Drilling { get; set; } = new();
     public OffshoreFacilitiesCostProfileDto OffshoreFacilities { get; set; } = new();
     public CessationCostDto CessationCost { get; set; } = new();
+    public OnshorePowerSupplyCostProfileDto OnshorePowerSupplyCost { get; set; } = new();
 }
 
 public class ProductionAndSalesVolumesDto
