@@ -21,7 +21,7 @@ stages:
               targetFiles: '**/package.json'
           - task: NodeTool@0
             inputs:
-                versionSpec: "18.x"
+                versionSpec: "20.x"
           - task: Bash@3
             displayName: 'Clean and Reinstall Dependencies'
             inputs:
