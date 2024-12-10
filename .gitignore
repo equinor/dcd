@@ -40,9 +40,9 @@ frontend/cypress/screenshots
 
 # Rider
 backend/*.DotSettings.user
-
-#playwright
 *.DotSettings.user
+
+# playwright
 /test-results/
 /playwright-report/
 /blob-report/
