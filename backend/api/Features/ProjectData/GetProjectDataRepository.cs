@@ -163,6 +163,7 @@ public class GetProjectDataRepository(DcdDbContext context)
                 SubstructureLink = x.SubstructureLink,
                 TopsideLink = x.TopsideLink,
                 TransportLink = x.TransportLink,
+                OnshorePowerSupplyLink = x.OnshorePowerSupplyLink,
                 SharepointFileId = x.SharepointFileId,
                 SharepointFileName = x.SharepointFileName,
                 SharepointFileUrl = x.SharepointFileUrl

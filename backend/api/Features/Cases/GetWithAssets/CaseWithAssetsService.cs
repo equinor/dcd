@@ -152,6 +152,7 @@ public class CaseWithAssetsService(
             SubstructureLink = caseItem.SubstructureLink,
             TopsideLink = caseItem.TopsideLink,
             TransportLink = caseItem.TransportLink,
+            OnshorePowerSupplyLink = caseItem.OnshorePowerSupplyLink,
             SharepointFileId = caseItem.SharepointFileId,
             SharepointFileName = caseItem.SharepointFileName,
             SharepointFileUrl = caseItem.SharepointFileUrl

@@ -237,7 +237,6 @@ declare namespace Components {
             onshorePowerSupply: OnshorePowerSupplyDto;
             onshorePowerSupplyCostProfile?: OnshorePowerSupplyCostProfileDto;
             onshorePowerSupplyCostProfileOverride?: OnshorePowerSupplyCostProfileOverrideDto;
-            onshorePowerSupplyCessationCostProfile?: OnshorePowerSupplyCessationCostProfileDto;
             exploration: ExplorationDto;
             explorationWells?: ExplorationWellDto[] | null;
             explorationWellCostProfile?: ExplorationWellCostProfileDto;
@@ -895,14 +894,6 @@ declare namespace Components {
             epaVersion: string;
             currency: Currency /* int32 */;
             override: boolean;
-        }
-        export interface OnshorePowerSupplyCessationCostProfileDto {
-            id: string; // uuid
-            startYear: number; // int32
-            values?: number /* double */[] | null;
-            sum?: number; // double
-            epaVersion: string;
-            currency: Currency /* int32 */;
         }
         export interface OnshorePowerSupplyCostProfileDto {
             id: string; // uuid

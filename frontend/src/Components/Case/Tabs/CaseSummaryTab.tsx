@@ -51,6 +51,9 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         (apiData?.transportCostProfileOverride?.override === true
             ? apiData?.transportCostProfileOverride
             : apiData?.transportCostProfile),
+        (apiData?.topsideCostProfileOverride?.override === true
+            ? apiData?.topsideCostProfileOverride
+            : apiData?.topsideCostProfile),
     ])
 
     const handleOffshoreOpexPlussWellIntervention = () => mergeTimeseriesList([

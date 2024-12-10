@@ -102,7 +102,7 @@ public class CreateCaseService(DcdDbContext context)
         };
     }
 
-        private static OnshorePowerSupply CreateOnshorePowerSupply(Project project)
+    private static OnshorePowerSupply CreateOnshorePowerSupply(Project project)
     {
         return new OnshorePowerSupply
         {

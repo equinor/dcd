@@ -92,6 +92,8 @@ const AggregatedTotals: React.FC<AggregatedTotalsProps> = ({
                     (apiData.topsideCostProfileOverride?.override ? apiData.topsideCostProfileOverride : apiData.topsideCostProfile),
                     (apiData.substructureCostProfileOverride?.override ? apiData.substructureCostProfileOverride : apiData.substructureCostProfile),
                     (apiData.transportCostProfileOverride?.override ? apiData.transportCostProfileOverride : apiData.transportCostProfile),
+                    (apiData.onshorePowerSupplyCostProfileOverride?.override ? apiData.onshorePowerSupplyCostProfileOverride : apiData.onshorePowerSupplyCostProfile),
+
                 ],
                 developmentWellCostProfiles: [
                     apiData.oilProducerCostProfileOverride || apiData.oilProducerCostProfile,

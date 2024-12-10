@@ -40,7 +40,7 @@ public class CommonProjectAndRevisionDto
     [Required] public required List<SubstructureOverviewDto> Substructures { get; set; }
     [Required] public required List<TopsideOverviewDto> Topsides { get; set; }
     [Required] public required List<TransportOverviewDto> Transports { get; set; }
-    [Required] public required List<DrainageStrategyOverviewDto> DrainageStrategies { get; set; }
     [Required] public required List<OnshorePowerSupplyOverviewDto> OnshorePowerSupplies { get; set; }
+    [Required] public required List<DrainageStrategyOverviewDto> DrainageStrategies { get; set; }
 
 }
