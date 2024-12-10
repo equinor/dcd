@@ -198,7 +198,7 @@ public class StudyCostProfileService(
         sumFacilityCost += SumOverrideOrProfile(topside.CostProfile, topside.CostProfileOverride);
         sumFacilityCost += SumOverrideOrProfile(transport.CostProfile, transport.CostProfileOverride);
         sumFacilityCost += SumOverrideOrProfile(onshorePowerSupply.CostProfile, onshorePowerSupply.CostProfileOverride);
-
+        
         return sumFacilityCost;
     }
 
