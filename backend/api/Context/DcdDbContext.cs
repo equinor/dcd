@@ -787,10 +787,10 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, IServiceProvid
                 e.Property(nameof(Models.OnshorePowerSupplyCostProfileOverride.Override)).IsModified
                 || e.Property(nameof(Models.OnshorePowerSupplyCostProfileOverride.InternalData)).IsModified
             ));
-        
+
         var OnshorePowerSupplyAdded = ChangeTracker.Entries<OnshorePowerSupplyCostProfileOverride>()
             .Any(e => e.State == EntityState.Added);
-        
+
         var wellProjectOilProducerChanges = ChangeTracker.Entries<OilProducerCostProfile>()
             .Any(e => e.State == EntityState.Modified &&
             (
