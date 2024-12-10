@@ -14,7 +14,6 @@ public class OnshorePowerSupplyProfile : Profile
         CreateMap<OnshorePowerSupply, OnshorePowerSupplyWithProfilesDto>();
         CreateMap<OnshorePowerSupplyCostProfile, OnshorePowerSupplyCostProfileDto>();
         CreateMap<OnshorePowerSupplyCostProfileOverride, OnshorePowerSupplyCostProfileOverrideDto>();
-        CreateMap<OnshorePowerSupplyCessationCostProfile, OnshorePowerSupplyCessationCostProfileDto>();
 
         CreateMap<APIUpdateOnshorePowerSupplyDto, OnshorePowerSupply>();
         CreateMap<APIUpdateOnshorePowerSupplyWithProfilesDto, OnshorePowerSupply>();

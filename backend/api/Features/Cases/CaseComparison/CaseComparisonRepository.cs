@@ -129,7 +129,6 @@ public class CaseComparisonRepository(DcdDbContext context)
         await context.OnshorePowerSupplies
             .Include(x => x.CostProfileOverride)
             .Include(x => x.CostProfile)
-            .Include(x => x.CessationCostProfile)
             .Where(x => onshorePowerSupplyLinks.Contains(x.Id))
             .LoadAsync();
 

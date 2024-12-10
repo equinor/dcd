@@ -32,7 +32,7 @@ public static class ExportToExcelService
             businessCase.OffshoreFacilities = CreateExcelRow("Offshore Facilities", project.StartYear, c.Capex.OffshoreFacilities, rowCount, 1);
 
             rowCount++;
-            businessCase.OnshorePowerSupply = CreateExcelRow("Onshore - power from shore", project.StartYear, c.Capex.OnshorePowerSupplyCost, rowCount, 1);
+            businessCase.OnshorePowerSupply = CreateExcelRow("Onshore (Power from shore)", project.StartYear, c.Capex.OnshorePowerSupplyCost, rowCount, 1);
 
             rowCount++;
             businessCase.StudyCost = CreateExcelRow("Study cost", project.StartYear, c.StudyCostProfile, rowCount, 1);

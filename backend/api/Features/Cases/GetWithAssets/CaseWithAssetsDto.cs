@@ -90,8 +90,6 @@ public class CaseWithAssetsDto
     public OnshorePowerSupplyDto OnshorePowerSupply { get; set; } = null!;
     public OnshorePowerSupplyCostProfileDto? OnshorePowerSupplyCostProfile { get; set; }
     public OnshorePowerSupplyCostProfileOverrideDto? OnshorePowerSupplyCostProfileOverride { get; set; }
-    public OnshorePowerSupplyCessationCostProfileDto? OnshorePowerSupplyCessationCostProfile { get; set; }
-
 
     [Required]
     public ExplorationDto Exploration { get; set; } = null!;

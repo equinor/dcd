@@ -73,7 +73,6 @@ public class CaseWithAssetsRepository(DcdDbContext context)
         return await context.OnshorePowerSupplies
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
             .AsNoTracking()
             .FirstAsync(o => o.Id == caseId);
     }

@@ -17,8 +17,6 @@ public class OnshorePowerSupplyWithProfilesDto
     public OnshorePowerSupplyCostProfileDto CostProfile { get; set; } = new();
     [Required]
     public OnshorePowerSupplyCostProfileOverrideDto CostProfileOverride { get; set; } = new();
-    [Required]
-    public OnshorePowerSupplyCessationCostProfileDto CessationCostProfile { get; set; } = new();
     public DateTimeOffset? LastChangedDate { get; set; }
     [Required]
     public int CostYear { get; set; }
@@ -36,5 +34,3 @@ public class OnshorePowerSupplyCostProfileOverrideDto : TimeSeriesCostDto, ITime
     [Required]
     public bool Override { get; set; }
 }
-
-public class OnshorePowerSupplyCessationCostProfileDto : TimeSeriesCostDto;

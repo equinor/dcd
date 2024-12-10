@@ -215,7 +215,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     group: "CAPEX",
                 },
                 {
-                    profileName: "Onshore - power from shore",
+                    profileName: "Onshore (Power from shore)",
                     unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: onshorePowerSupplyCostProfileData,
                     group: "CAPEX",

@@ -21,7 +21,6 @@ public class OnshorePowerSupply : IHasProjectId, IChangeTrackable
 
     public virtual OnshorePowerSupplyCostProfile? CostProfile { get; set; }
     public virtual OnshorePowerSupplyCostProfileOverride? CostProfileOverride { get; set; }
-    public virtual OnshorePowerSupplyCessationCostProfile? CessationCostProfile { get; set; }
 }
 
 public class OnshorePowerSupplyCostProfile : TimeSeriesCost, IOnshorePowerSupplyTimeSeries
@@ -35,12 +34,6 @@ public class OnshorePowerSupplyCostProfileOverride : TimeSeriesCost, IOnshorePow
     [ForeignKey("OnshorePowerSupply.Id")]
     public virtual OnshorePowerSupply OnshorePowerSupply { get; set; } = null!;
     public bool Override { get; set; }
-}
-
-public class OnshorePowerSupplyCessationCostProfile : TimeSeriesCost, IOnshorePowerSupplyTimeSeries
-{
-    [ForeignKey("OnshorePowerSupply.Id")]
-    public virtual OnshorePowerSupply OnshorePowerSupply { get; set; } = null!;
 }
 
 public interface IOnshorePowerSupplyTimeSeries

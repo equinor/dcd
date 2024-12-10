@@ -156,7 +156,6 @@ public class DuplicateCaseRepository(DcdDbContext context)
         await context.OnshorePowerSupplies
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
-            .Include(c => c.CessationCostProfile)
             .Where(x => x.Id == onshorePowerSupplyLink)
             .LoadAsync();
     }

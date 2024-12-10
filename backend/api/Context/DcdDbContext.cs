@@ -1202,7 +1202,6 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, IServiceProvid
     public DbSet<OnshorePowerSupply> OnshorePowerSupplies { get; set; } = null!;
     public DbSet<OnshorePowerSupplyCostProfile> OnshorePowerSupplyCostProfile { get; set; } = null!;
     public DbSet<OnshorePowerSupplyCostProfileOverride> OnshorePowerSupplyCostProfileOverride { get; set; } = null!;
-    public DbSet<OnshorePowerSupplyCessationCostProfile> OnshorePowerSupplyCessationCostProfiles { get; set; } = null!;
 
     public DbSet<DrainageStrategy> DrainageStrategies { get; set; } = null!;
     public DbSet<ProductionProfileOil> ProductionProfileOil { get; set; } = null!;

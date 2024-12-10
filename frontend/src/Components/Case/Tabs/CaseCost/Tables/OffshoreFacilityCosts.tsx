@@ -104,7 +104,7 @@ const OffshoreFacillityCosts: React.FC<OffshoreFacillityCostsProps> = ({
                 editable: true,
             },
             {
-                profileName: "Onshore - power from shore",
+                profileName: "Onshore (Power from shore)",
                 unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: onshorePowerSupplyCostData,
                 resourceName: "onshorePowerSupplyCostOverride",

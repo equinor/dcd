@@ -90,7 +90,6 @@ public class CaseWithAssetsService(
             OnshorePowerSupply = mapperService.MapToDto<OnshorePowerSupply, OnshorePowerSupplyDto>(onshorePowerSupply, onshorePowerSupply.Id),
             OnshorePowerSupplyCostProfile = MapToDto<OnshorePowerSupplyCostProfile, OnshorePowerSupplyCostProfileDto>(caseItem.OnshorePowerSupply?.CostProfile, caseItem.OnshorePowerSupply?.CostProfile?.Id),
             OnshorePowerSupplyCostProfileOverride = MapToDto<OnshorePowerSupplyCostProfileOverride, OnshorePowerSupplyCostProfileOverrideDto>(caseItem.OnshorePowerSupply?.CostProfileOverride, caseItem.OnshorePowerSupply?.CostProfileOverride?.Id),
-            OnshorePowerSupplyCessationCostProfile = MapToDto<OnshorePowerSupplyCessationCostProfile, OnshorePowerSupplyCessationCostProfileDto>(caseItem.OnshorePowerSupply?.CessationCostProfile, caseItem.OnshorePowerSupply?.CessationCostProfile?.Id),
             Exploration = mapperService.MapToDto<Exploration, ExplorationDto>(exploration, exploration.Id),
             ExplorationWells = exploration.ExplorationWells.Select(w => mapperService.MapToDto<ExplorationWell, ExplorationWellDto>(w, w.ExplorationId)).ToList(),
             ExplorationWellCostProfile = MapToDto<ExplorationWellCostProfile, ExplorationWellCostProfileDto>(exploration.ExplorationWellCostProfile, exploration.ExplorationWellCostProfile?.Id),
