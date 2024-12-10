@@ -28,7 +28,6 @@ public class OnshorePowerSupplyTimeSeriesService(
         CreateOnshorePowerSupplyCostProfileOverrideDto dto
     )
     {
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectAccessService.ProjectExists<OnshorePowerSupply>(projectId, onshorePowerSupplyId);
 
         var onshorePowerSupply = await onshorePowerSupplyRepository.GetOnshorePowerSupply(onshorePowerSupplyId)
@@ -171,7 +170,6 @@ public class OnshorePowerSupplyTimeSeriesService(
         var existingProfile = await getProfile(profileId)
             ?? throw new NotFoundInDBException($"Cost profile with id {profileId} not found.");
 
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectAccessService.ProjectExists<OnshorePowerSupply>(projectId, existingProfile.OnshorePowerSupply.Id);
 
         if (existingProfile.OnshorePowerSupply.ProspVersion == null)
