@@ -6,7 +6,6 @@ using api.Features.Assets.CaseAssets.Substructures.Services;
 using api.Features.Assets.CaseAssets.Surfs.Services;
 using api.Features.Assets.CaseAssets.Topsides.Services;
 using api.Features.Assets.CaseAssets.Transports.Services;
-using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.Assets.CaseAssets.WellProjects.Services;
 using api.Features.CaseProfiles.Services;
 using api.Features.CaseProfiles.Services.GenerateCostProfiles;
@@ -49,7 +48,7 @@ public class EconomicsCalculationServiceTests
         _onshorePowerSupplyService = Substitute.For<IOnshorePowerSupplyService>();
         _explorationService = Substitute.For<IExplorationService>();
         _wellProjectService = Substitute.For<IWellProjectService>();
-
+        _onshorePowerSupplyService = Substitute.For<IOnshorePowerSupplyService>();
         _cessationCostProfileService = Substitute.For<ICessationCostProfileService>();
         _opexCostProfileService = Substitute.For<IOpexCostProfileService>();
         _studyCostProfileService = Substitute.For<IStudyCostProfileService>();
