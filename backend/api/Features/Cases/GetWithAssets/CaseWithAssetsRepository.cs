@@ -1,5 +1,4 @@
 using api.Context;
-using api.Exceptions;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -8,12 +7,6 @@ namespace api.Features.Cases.GetWithAssets;
 
 public class CaseWithAssetsRepository(DcdDbContext context)
 {
-    public async Task<Project> GetProjectByIdOrExternalId(Guid projectId)
-    {
-        return await context.Projects.FirstOrDefaultAsync(p => p.Id == projectId || p.FusionProjectId == projectId)
-               ?? throw new NotFoundInDBException($"Project with id {projectId} not found");
-    }
-
     public async Task<(
         Case CaseItem,
         DrainageStrategy DrainageStrategy,
@@ -60,7 +53,7 @@ public class CaseWithAssetsRepository(DcdDbContext context)
             .Include(c => c.CalculatedTotalIncomeCostProfile)
             .Include(c => c.CalculatedTotalCostCostProfile)
             .AsNoTracking()
-            .FirstAsync(c => c.Id == caseId);
+            .SingleAsync(c => c.Id == caseId);
     }
 
     private async Task<Transport> GetTransportNoTracking(Guid caseId)
@@ -70,7 +63,7 @@ public class CaseWithAssetsRepository(DcdDbContext context)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .AsNoTracking()
-            .FirstAsync(o => o.Id == caseId);
+            .SingleAsync(o => o.Id == caseId);
     }
 
     private async Task<Surf> GetSurfNoTracking(Guid caseId)
@@ -80,7 +73,7 @@ public class CaseWithAssetsRepository(DcdDbContext context)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .AsNoTracking()
-            .FirstAsync(o => o.Id == caseId);
+            .SingleAsync(o => o.Id == caseId);
     }
 
     private async Task<Substructure> GetSubstructureNoTracking(Guid caseId)
@@ -90,7 +83,7 @@ public class CaseWithAssetsRepository(DcdDbContext context)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .AsNoTracking()
-            .FirstAsync(o => o.Id == caseId);
+            .SingleAsync(o => o.Id == caseId);
     }
 
     private async Task<DrainageStrategy> GetDrainageStrategyNoTracking(Guid caseId)
@@ -114,7 +107,7 @@ public class CaseWithAssetsRepository(DcdDbContext context)
             .Include(c => c.DeferredOilProduction)
             .Include(c => c.DeferredGasProduction)
             .AsNoTracking()
-            .FirstAsync(o => o.Id == caseId);
+            .SingleAsync(o => o.Id == caseId);
     }
 
     private async Task<Topside> GetTopsideNoTracking(Guid caseId)
@@ -124,7 +117,7 @@ public class CaseWithAssetsRepository(DcdDbContext context)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
             .AsNoTracking()
-            .FirstAsync(o => o.Id == caseId);
+            .SingleAsync(o => o.Id == caseId);
     }
 
     private async Task<WellProject> GetWellProjectNoTracking(Guid caseId)
@@ -140,7 +133,7 @@ public class CaseWithAssetsRepository(DcdDbContext context)
             .Include(c => c.GasInjectorCostProfile)
             .Include(c => c.GasInjectorCostProfileOverride)
             .AsNoTracking()
-            .FirstAsync(o => o.Id == caseId);
+            .SingleAsync(o => o.Id == caseId);
     }
 
     private async Task<Exploration> GetExplorationNoTracking(Guid caseId)
@@ -155,6 +148,6 @@ public class CaseWithAssetsRepository(DcdDbContext context)
             .Include(c => c.SeismicAcquisitionAndProcessing)
             .Include(c => c.CountryOfficeCost)
             .AsNoTracking()
-            .FirstAsync(o => o.Id == caseId);
+            .SingleAsync(o => o.Id == caseId);
     }
 }

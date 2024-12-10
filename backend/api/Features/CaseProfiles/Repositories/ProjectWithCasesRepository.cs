@@ -1,5 +1,4 @@
 using api.Context;
-using api.Exceptions;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -8,30 +7,23 @@ namespace api.Features.CaseProfiles.Repositories;
 
 public interface IProjectWithAssetsRepository
 {
-    Task<Project> GetProjectWithCases(Guid projectId);
-    Task<Project> GetProjectWithCasesAndAssets(Guid projectId);
+    Task<Project> GetProjectWithCases(Guid projectPk);
+    Task<Project> GetProjectWithCasesAndAssets(Guid projectPk);
 }
 
 public class ProjectWithCasesRepository(DcdDbContext context) : IProjectWithAssetsRepository
 {
-    public async Task<Project> GetProjectWithCases(Guid projectId)
+    public async Task<Project> GetProjectWithCases(Guid projectPk)
     {
-        var project = await context.Projects
+        return await context.Projects
             .Include(p => p.Cases)
             .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
-            .FirstOrDefaultAsync(p => p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId));
-
-        if (project == null)
-        {
-            throw new NotFoundInDBException($"Project {projectId} not found");
-        }
-
-        return project;
+            .SingleAsync(p => p.Id == projectPk);
     }
 
-    public async Task<Project> GetProjectWithCasesAndAssets(Guid projectId)
+    public async Task<Project> GetProjectWithCasesAndAssets(Guid projectPk)
     {
         var project = await context.Projects
             .Include(p => p.Cases).ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
@@ -56,12 +48,7 @@ public class ProjectWithCasesRepository(DcdDbContext context) : IProjectWithAsse
             .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
-            .FirstOrDefaultAsync(p => (p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId)) && !p.IsRevision);
-
-        if (project == null)
-        {
-            throw new NotFoundInDBException($"Project {projectId} not found");
-        }
+            .SingleAsync(p => p.Id == projectPk);
 
         project.Cases = project.Cases.OrderBy(c => c.CreateTime).ToList();
 

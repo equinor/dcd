@@ -1,3 +1,5 @@
+using api.Context;
+using api.Context.Extensions;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
@@ -6,24 +8,25 @@ using api.Features.Assets.CaseAssets.Topsides.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.CaseProfiles.Dtos;
-using api.Features.ProjectAccess;
 using api.Features.ProjectData.Dtos.AssetDtos;
 using api.ModelMapping;
 using api.Models;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace api.Features.Cases.GetWithAssets;
 
 public class CaseWithAssetsService(
+    DcdDbContext context,
     CaseWithAssetsRepository caseWithAssetsRepository,
     IMapperService mapperService,
-    IConversionMapperService conversionMapperService,
-    IProjectAccessService projectAccessService)
+    IConversionMapperService conversionMapperService)
 {
     public async Task<CaseWithAssetsDto> GetCaseWithAssetsNoTracking(Guid projectId, Guid caseId)
     {
-        await projectAccessService.ProjectExists<Case>(projectId, caseId);
+        var projectPk = await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
 
-        var project = await caseWithAssetsRepository.GetProjectByIdOrExternalId(projectId);
+        var project = await context.Projects.SingleAsync(p => p.Id == projectPk);
 
         var (caseItem, drainageStrategy, topside, exploration, substructure, surf, transport, wellProject) = await caseWithAssetsRepository.GetCaseWithAssetsNoTracking(caseId);
 
