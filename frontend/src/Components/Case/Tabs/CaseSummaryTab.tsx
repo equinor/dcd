@@ -104,8 +104,8 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 gasInjectorCostProfile,
             ]
 
-            const rigUpgradingCost = projectData.developmentOperationalWellCosts?.rigUpgrading
-            const rigMobDemobCost = projectData.developmentOperationalWellCosts?.rigMobDemob
+            const rigUpgradingCost = projectData.commonProjectAndRevisionData.developmentOperationalWellCosts?.rigUpgrading
+            const rigMobDemobCost = projectData.commonProjectAndRevisionData.developmentOperationalWellCosts?.rigMobDemob
             const sumOfRigAndMobDemob = rigUpgradingCost + rigMobDemobCost
 
             if (sumOfRigAndMobDemob > 0) {
@@ -186,7 +186,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const newExplorationTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Exploration cost",
-                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: totalExplorationCostData,
                     group: "Exploration",
                 },
@@ -195,25 +195,25 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const newCapexTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Drilling",
-                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: totalDrillingCostData,
                     group: "CAPEX",
                 },
                 {
                     profileName: "Offshore facilities",
-                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: offshoreFacilitiesCostData,
                     group: "CAPEX",
                 },
                 {
                     profileName: "Cessation - offshore facilities",
-                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: cessationOffshoreFacilitiesCostOverrideData?.override ? cessationOffshoreFacilitiesCostOverrideData : cessationOffshoreFacilitiesCostData,
                     group: "CAPEX",
                 },
                 {
                     profileName: "Cessation - onshore facilities",
-                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: cessationOnshoreFacilitiesCostProfileData,
                     group: "CAPEX",
                 },
@@ -228,19 +228,19 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const newStudycostTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Feasibility & Conceptual studies",
-                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: totalFeasibilityAndConceptStudiesOverrideData?.override ? totalFeasibilityAndConceptStudiesOverrideData : totalFeasibilityAndConceptStudiesData,
                     group: "Study cost",
                 },
                 {
                     profileName: "FEED studies (DG2-DG3)",
-                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: totalFEEDStudiesOverrideData?.override ? totalFEEDStudiesOverrideData : totalFEEDStudiesData,
                     group: "Study cost",
                 },
                 {
                     profileName: "Other studies",
-                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: totalOtherStudiesCostProfileData,
                     group: "Study cost",
                 },
@@ -249,25 +249,25 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const newOpexTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Historic cost",
-                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: historicCostCostProfileData,
                     group: "OPEX",
                 },
                 {
                     profileName: "Offshore related OPEX, incl. well intervention",
-                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: offshoreOpexPlussWellInterventionData,
                     group: "OPEX",
                 },
                 {
                     profileName: "Onshore related OPEX",
-                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: onshoreRelatedOPEXCostProfileData,
                     group: "OPEX",
                 },
                 {
                     profileName: "Additional OPEX",
-                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: additionalOPEXCostProfileData,
                     group: "OPEX",
                 },
@@ -316,7 +316,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     allowNegative
                     min={0}
                     max={1000000}
-                    resourceId={caseData.id}
+                    resourceId={caseData.caseId}
                 />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -345,7 +345,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     allowNegative
                     min={0}
                     max={1000000}
-                    resourceId={caseData.id}
+                    resourceId={caseData.caseId}
                 />
             </Grid>
             <Grid item xs={12}>

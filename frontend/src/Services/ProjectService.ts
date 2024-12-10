@@ -5,12 +5,12 @@ import { getToken, loginAccessTokenKey } from "../Utils/common"
 
 export class __ProjectService extends __BaseService {
     async getProject(id: string) {
-        const project: Components.Schemas.ProjectWithAssetsDto = await this.get<Components.Schemas.ProjectWithAssetsDto>(`/${id}`)
+        const project: Components.Schemas.ProjectDataDto = await this.get<Components.Schemas.ProjectDataDto>(`/${id}`)
         return project
     }
 
     async getRevision(projectId: string, revisionId: string) {
-        const revision: Components.Schemas.RevisionWithCasesDto = await this.get<Components.Schemas.RevisionWithCasesDto>(`/${projectId}/revisions/${revisionId}`)
+        const revision: Components.Schemas.RevisionDataDto = await this.get<Components.Schemas.RevisionDataDto>(`/${projectId}/revisions/${revisionId}`)
         return revision
     }
 
@@ -19,8 +19,8 @@ export class __ProjectService extends __BaseService {
         return access
     }
 
-    public async createProject(contextId: string): Promise<Components.Schemas.ProjectWithAssetsDto> {
-        const res: Components.Schemas.ProjectWithAssetsDto = await this.postWithParams(
+    public async createProject(contextId: string): Promise<Components.Schemas.ProjectDataDto> {
+        const res: Components.Schemas.ProjectDataDto = await this.postWithParams(
             "",
             {},
             { params: { contextId } },
@@ -28,20 +28,20 @@ export class __ProjectService extends __BaseService {
         return res
     }
 
-    public async createRevision(projectId: string, body: Components.Schemas.CreateRevisionDto): Promise<Components.Schemas.RevisionWithCasesDto> {
-        const res: Components.Schemas.RevisionWithCasesDto = await this.post(
+    public async createRevision(projectId: string, body: Components.Schemas.CreateRevisionDto): Promise<Components.Schemas.RevisionDataDto> {
+        const res: Components.Schemas.RevisionDataDto = await this.post(
             `${projectId}/revisions`,
             { body },
         )
         return res
     }
 
-    public async updateRevision(projectId: string, revisionId: string, body: Components.Schemas.UpdateProjectDto): Promise<Components.Schemas.RevisionWithCasesDto> {
+    public async updateRevision(projectId: string, revisionId: string, body: Components.Schemas.UpdateRevisionDto): Promise<Components.Schemas.RevisionDataDto> {
         const res = await this.put(`${projectId}/revisions/${revisionId}`, { body })
         return res
     }
 
-    public async updateProject(projectId: string, body: Components.Schemas.UpdateProjectDto): Promise<Components.Schemas.ProjectWithAssetsDto> {
+    public async updateProject(projectId: string, body: Components.Schemas.UpdateProjectDto): Promise<Components.Schemas.ProjectDataDto> {
         const res = await this.put(`${projectId}`, { body })
         return res
     }

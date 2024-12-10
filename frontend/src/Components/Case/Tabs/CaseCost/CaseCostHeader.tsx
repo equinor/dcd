@@ -13,8 +13,8 @@ interface HeaderProps {
     endYear: number;
     setEndYear: (endYear: number) => void;
     setTableYears: (years: [number, number]) => void;
-    caseData: Components.Schemas.CaseDto;
-    surfData: Components.Schemas.SurfWithProfilesDto
+    caseData: Components.Schemas.CaseOverviewDto;
+    surfData: Components.Schemas.SurfOverviewDto
     addEdit: any
 }
 
@@ -42,9 +42,9 @@ const Header: React.FC<HeaderProps> = ({
     }
 
     const datePickerValue = (() => {
-        if (apiData?.currency === 1) {
+        if (apiData?.commonProjectAndRevisionData.currency === 1) {
             return "MNOK"
-        } if (apiData?.currency === 2) {
+        } if (apiData?.commonProjectAndRevisionData.currency === 2) {
             return "MUSD"
         }
         return ""
@@ -71,7 +71,7 @@ const Header: React.FC<HeaderProps> = ({
             <Grid item xs={12} md={4}>
                 <Maturity
                     surfData={surfData}
-                    projectId={apiData.id}
+                    projectId={apiData.projectId}
                     addEdit={addEdit}
                 />
             </Grid>

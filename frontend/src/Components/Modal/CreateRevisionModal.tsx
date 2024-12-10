@@ -23,6 +23,7 @@ import { INTERNAL_PROJECT_PHASE, PROJECT_CLASSIFICATION } from "@/Utils/constant
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import { useRevisions } from "@/Hooks/useRevision"
 import { getProjectPhaseName } from "@/Utils/common"
+import { useProjectContext } from "@/Context/ProjectContext"
 
 const Wrapper = styled.div`
     flex-direction: row;
@@ -41,16 +42,13 @@ const ColumnWrapper = styled.div`
 `
 
 type Props = {
-    isModalOpen: boolean;
-    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     size?: false | "xs" | "sm" | "md" | "lg" | "xl" | undefined;
 }
 
 const CreateRevisionModal: FunctionComponent<Props> = ({
-    isModalOpen,
-    setIsModalOpen,
     size,
 }) => {
+    const { isCreateRevisionModalOpen, setIsCreateRevisionModalOpen } = useProjectContext()
     const { currentContext } = useModuleCurrentContext()
     const {
         isRevisionsLoading,
@@ -89,13 +87,13 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
         }
     }
 
-    if (!apiData || !isModalOpen) { return null }
+    if (!apiData || !isCreateRevisionModalOpen) { return null }
 
-    const disableAfterDG0 = () => [3, 4, 5, 6, 7, 8].includes(apiData.projectPhase)
+    const disableAfterDG0 = () => [3, 4, 5, 6, 7, 8].includes(apiData.commonProjectAndRevisionData.projectPhase)
 
     const internalProjectPhaseOptions = Object.entries(INTERNAL_PROJECT_PHASE).map(([key, value]) => {
         if (disableAfterDG0()) {
-            return <option>{getProjectPhaseName(apiData.projectPhase)}</option>
+            return <option key={key}>{getProjectPhaseName(apiData.commonProjectAndRevisionData.projectPhase)}</option>
         }
         return <option key={key} value={key}>{value.label}</option>
     })
@@ -107,23 +105,23 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
     const submitRevision = () => {
         const newRevision: Components.Schemas.CreateRevisionDto = {
             name: revisionName,
-            internalProjectPhase: internalProjectPhase as Components.Schemas.InternalProjectPhase,
-            classification: classification as Components.Schemas.ProjectClassification,
+            internalProjectPhase: internalProjectPhase,
+            classification: classification,
             mdqc,
             arena,
         }
-        createRevision(newRevision, setIsModalOpen)
+        createRevision(newRevision)
         setRevisionName("")
     }
 
     const closeModal = () => {
-        setIsModalOpen(false)
+        setIsCreateRevisionModalOpen(false)
         setRevisionName("")
     }
 
     return (
         <Dialog
-            open={isModalOpen}
+            open={isCreateRevisionModalOpen}
             fullWidth
             maxWidth={size || "sm"}
             className="ConceptApp ag-theme-alpine-fusion"
@@ -172,7 +170,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                                     onChange={handleInternalProjectPhaseChange}
                                     value={internalProjectPhase}
                                     disabled={disableAfterDG0()}
-                                    defaultValue={apiData.internalProjectPhase}
+                                    defaultValue={apiData.commonProjectAndRevisionData.internalProjectPhase}
                                 >
                                     {internalProjectPhaseOptions}
                                 </NativeSelect>
@@ -184,7 +182,7 @@ const CreateRevisionModal: FunctionComponent<Props> = ({
                                 label="Project classification"
                                 onChange={handleClassificationChange}
                                 value={classification}
-                                defaultValue={apiData.classification}
+                                defaultValue={apiData.commonProjectAndRevisionData.classification}
                             >
                                 {classificationOptions}
                             </NativeSelect>

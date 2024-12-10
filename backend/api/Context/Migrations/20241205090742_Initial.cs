@@ -49,6 +49,7 @@ namespace api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OriginalProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsRevision = table.Column<bool>(type: "bit", nullable: false),
                     CommonLibraryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -64,7 +65,6 @@ namespace api.Migrations
                     InternalProjectPhase = table.Column<int>(type: "int", nullable: false),
                     Classification = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
                     ProjectCategory = table.Column<int>(type: "int", nullable: false),
-                    OriginalProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     SharepointSiteUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CO2RemovedFromGas = table.Column<double>(type: "float", nullable: false),
                     CO2EmissionFromFuelGas = table.Column<double>(type: "float", nullable: false),
@@ -187,9 +187,10 @@ namespace api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Role = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    FromOrgChart = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -231,8 +232,8 @@ namespace api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DryWeight = table.Column<double>(type: "float", nullable: false),
                     Maturity = table.Column<int>(type: "int", nullable: false),
                     Currency = table.Column<int>(type: "int", nullable: false),
@@ -261,8 +262,8 @@ namespace api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CessationCost = table.Column<double>(type: "float", nullable: false),
                     Maturity = table.Column<int>(type: "int", nullable: false),
                     InfieldPipelineSystemLength = table.Column<double>(type: "float", nullable: false),
@@ -299,8 +300,8 @@ namespace api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DryWeight = table.Column<double>(type: "float", nullable: false),
                     OilCapacity = table.Column<double>(type: "float", nullable: false),
                     GasCapacity = table.Column<double>(type: "float", nullable: false),
@@ -345,8 +346,8 @@ namespace api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     GasExportPipelineLength = table.Column<double>(type: "float", nullable: false),
                     OilExportPipelineLength = table.Column<double>(type: "float", nullable: false),
                     Maturity = table.Column<int>(type: "int", nullable: false),
@@ -1194,6 +1195,9 @@ namespace api.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ReferenceCase = table.Column<bool>(type: "bit", nullable: false),
                     Archived = table.Column<bool>(type: "bit", nullable: false),
+                    SharepointFileId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SharepointFileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SharepointFileUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreateTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     ModifyTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     DGADate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
@@ -1226,10 +1230,7 @@ namespace api.Migrations
                     SubstructureLink = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TopsideLink = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TransportLink = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ExplorationLink = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SharepointFileId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SharepointFileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SharepointFileUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ExplorationLink = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1461,8 +1462,8 @@ namespace api.Migrations
                 name: "ExplorationWell",
                 columns: table => new
                 {
-                    ExplorationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     WellId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ExplorationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DrillingScheduleId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
@@ -1720,12 +1721,12 @@ namespace api.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreateTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CaseId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ProjectName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreateTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

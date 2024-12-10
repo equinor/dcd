@@ -1,5 +1,5 @@
 using api.Context;
-using api.Exceptions;
+using api.Context.Extensions;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -8,14 +8,19 @@ namespace api.Features.Cases.CaseComparison;
 
 public class CaseComparisonRepository(DcdDbContext context)
 {
-    public async Task<Project> LoadProject(Guid projectId)
+    public async Task<Guid> GetPrimaryKeyForProjectIdOrRevisionId(Guid projectId)
+    {
+        return await context.GetPrimaryKeyForProjectIdOrRevisionId(projectId);
+    }
+
+    public async Task<Project> LoadProject(Guid projectPk)
     {
         var project = await context.Projects
             .Include(p => p.Cases)
             .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
-            .FirstOrDefaultAsync(p => p.Id == projectId) ?? throw new NotFoundInDBException($"Project {projectId} not found");
+            .SingleAsync(p => p.Id == projectPk);
 
         var caseIds = project.Cases.Where(x => !x.Archived).Select(c => c.Id).ToList();
         await context.Cases

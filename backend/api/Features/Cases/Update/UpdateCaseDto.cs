@@ -6,35 +6,35 @@ namespace api.Features.Cases.Update;
 
 public class UpdateCaseDto
 {
-    [Required] public string Name { get; set; } = null!;
-    public string Description { get; set; } = null!;
-    public bool? ReferenceCase { get; set; }
-    public bool Archived { get; set; }
-    public ArtificialLift? ArtificialLift { get; set; }
-    public ProductionStrategyOverview? ProductionStrategyOverview { get; set; }
-    public int ProducerCount { get; set; }
-    public int GasInjectorCount { get; set; }
-    public int WaterInjectorCount { get; set; }
-    public double FacilitiesAvailability { get; set; }
-    public double CapexFactorFeasibilityStudies { get; set; }
-    public double CapexFactorFEEDStudies { get; set; }
-    public double NPV { get; set; }
-    public double? NPVOverride { get; set; }
-    public double BreakEven { get; set; }
-    public double? BreakEvenOverride { get; set; }
-    public string? Host { get; set; }
-    public DateTimeOffset DGADate { get; set; }
-    public DateTimeOffset DGBDate { get; set; }
-    public DateTimeOffset DGCDate { get; set; }
-    public DateTimeOffset APBODate { get; set; }
-    public DateTimeOffset BORDate { get; set; }
-    public DateTimeOffset VPBODate { get; set; }
-    public DateTimeOffset DG0Date { get; set; }
-    public DateTimeOffset DG1Date { get; set; }
-    public DateTimeOffset DG2Date { get; set; }
-    public DateTimeOffset DG3Date { get; set; }
-    public DateTimeOffset DG4Date { get; set; }
-    public string? SharepointFileId { get; set; }
-    public string? SharepointFileName { get; set; }
-    public string? SharepointFileUrl { get; set; }
+    [Required] public required string Name { get; set; }
+    [Required] public required string Description { get; set; }
+    [Required] public required bool ReferenceCase { get; set; }
+    [Required] public required bool Archived { get; set; }
+    [Required] public required ArtificialLift ArtificialLift { get; set; }
+    [Required] public required ProductionStrategyOverview ProductionStrategyOverview { get; set; }
+    [Required] public required int ProducerCount { get; set; }
+    [Required] public required int GasInjectorCount { get; set; }
+    [Required] public required int WaterInjectorCount { get; set; }
+    [Required] public required double FacilitiesAvailability { get; set; }
+    [Required] public required double CapexFactorFeasibilityStudies { get; set; }
+    [Required] public required double CapexFactorFEEDStudies { get; set; }
+    [Required] public required double NPV { get; set; }
+    public required double? NPVOverride { get; set; }
+    [Required] public required double BreakEven { get; set; }
+    public required double? BreakEvenOverride { get; set; }
+    public required string? Host { get; set; }
+    [Required] public required DateTimeOffset DGADate { get; set; }
+    [Required] public required DateTimeOffset DGBDate { get; set; }
+    [Required] public required DateTimeOffset DGCDate { get; set; }
+    [Required] public required DateTimeOffset APBODate { get; set; }
+    [Required] public required DateTimeOffset BORDate { get; set; }
+    [Required] public required DateTimeOffset VPBODate { get; set; }
+    [Required] public required DateTimeOffset DG0Date { get; set; }
+    [Required] public required DateTimeOffset DG1Date { get; set; }
+    [Required] public required DateTimeOffset DG2Date { get; set; }
+    [Required] public required DateTimeOffset DG3Date { get; set; }
+    [Required] public required DateTimeOffset DG4Date { get; set; }
+    public required string? SharepointFileId { get; set; }
+    public required string? SharepointFileName { get; set; }
+    public required string? SharepointFileUrl { get; set; }
 }

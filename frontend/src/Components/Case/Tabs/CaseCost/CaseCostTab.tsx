@@ -7,19 +7,20 @@ import {
 import Grid from "@mui/material/Grid"
 import { useParams } from "react-router"
 import { useQuery } from "@tanstack/react-query"
-import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
-import { useCaseContext } from "../../../../Context/CaseContext"
+
+import { useProjectContext } from "@/Context/ProjectContext"
+import { useCaseContext } from "@/Context/CaseContext"
+import { caseQueryFn } from "@/Services/QueryFunctions"
 import CaseCostHeader from "./CaseCostHeader"
+import OpexCosts from "./Tables/OpexCosts"
 import CessationCosts from "./Tables/CessationCosts"
 import DevelopmentWellCosts from "./Tables/DevelopmentWellCosts"
 import ExplorationWellCosts from "./Tables/ExplorationWellCosts"
 import OffshoreFacillityCosts from "./Tables/OffshoreFacilityCosts"
-import OpexCosts from "./Tables/OpexCosts"
 import TotalStudyCosts from "./Tables/TotalStudyCosts"
 import AggregatedTotals from "./Tables/AggregatedTotalsChart"
+import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
 import CaseCostSkeleton from "../../../LoadingSkeletons/CaseCostTabSkeleton"
-import { caseQueryFn, projectQueryFn } from "../../../../Services/QueryFunctions"
-import { useProjectContext } from "../../../../Context/ProjectContext"
 
 const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
     const { activeTabCase } = useCaseContext()
@@ -63,15 +64,9 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
         enabled: !!projectId && !!caseId,
     })
 
-    const { data: projectData } = useQuery({
-        queryKey: ["projectApiData", projectId],
-        queryFn: () => projectQueryFn(projectId),
-        enabled: !!projectId,
-    })
-
     useEffect(() => {
         if (activeTabCase === 5 && apiData && !yearRangeSetFromProfiles) {
-            const caseData = apiData?.case as Components.Schemas.CaseDto
+            const caseData = apiData?.case
             SetTableYearsFromProfiles([
                 apiData.totalFeasibilityAndConceptStudies,
                 apiData.totalFEEDStudies,
@@ -135,7 +130,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 setEndYear={setEndYear}
                 setTableYears={setTableYears}
                 caseData={apiData.case}
-                surfData={apiData.surf as Components.Schemas.SurfWithProfilesDto}
+                surfData={apiData.surf}
                 addEdit={addEdit}
             />
             <Grid item xs={12}>

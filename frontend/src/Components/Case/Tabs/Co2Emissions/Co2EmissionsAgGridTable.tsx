@@ -7,7 +7,7 @@ import { Icon } from "@equinor/eds-core-react"
 import { ColDef } from "@ag-grid-community/core"
 
 interface Props {
-    topside: Components.Schemas.TopsideWithProfilesDto,
+    topside: Components.Schemas.TopsideOverviewDto,
 }
 
 const CaseCO2DistributionTable = ({
@@ -75,6 +75,7 @@ const CaseCO2DistributionTable = ({
         resizable: true,
         editable: false,
         suppressHeaderMenuButton: true,
+        enableCellChangeFlash: true,
     }), [])
 
     const onGridReady = (params: any) => {
@@ -94,10 +95,8 @@ const CaseCO2DistributionTable = ({
                 defaultColDef={defaultColDef}
                 animateRows
                 domLayout="autoHeight"
-                enableCellChangeFlash
-                rowSelection="multiple"
-                enableRangeSelection
-                suppressCopySingleCellRanges
+                rowSelection={{ mode: "multiRow", copySelectedRows: true }}
+                cellSelection
                 suppressMovableColumns
                 enableCharts
                 onGridReady={onGridReady}

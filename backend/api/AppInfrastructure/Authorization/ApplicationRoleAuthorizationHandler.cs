@@ -3,6 +3,7 @@ using System.Reflection;
 using api.AppInfrastructure.Authorization.Extensions;
 using api.AppInfrastructure.ControllerAttributes;
 using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
 using api.Models;
 
@@ -134,29 +135,12 @@ public class ApplicationRoleAuthorizationHandler(
 
         if (!Guid.TryParse(projectId.ToString(), out var projectIdGuid))
         {
-            // TODO: Should this throw an error?
             return null;
         }
 
-        var project = await dbContext.Projects
-            .Include(p => p.ProjectMembers)
-            .FirstOrDefaultAsync(p => p.Id == projectIdGuid || (p.FusionProjectId == projectIdGuid && !p.IsRevision));
+        var projectPk = await dbContext.GetPrimaryKeyForProjectIdOrRevisionId(projectIdGuid);
 
-        // /*
-        // Some projects have the external id set as the id.
-        // This may cause updates to projects where the external id is the same as the project id
-        // to return a revision with the same external id instead.
-        // Updates to revsions are not allowed and an error is thrown.
-        // Therefore, we split the database call into two separate calls, first looking for the project by project id.
-        // */
-        // if (project == null)
-        // {
-        //     project = await _projectAccessRepository.GetProjectByExternalId(projectIdGuid);
-        // }
-
-        // TODO: If no project is found, should this throw an error?
-
-        return project;
+        return await dbContext.Projects.Include(p => p.ProjectMembers).SingleAsync(p => p.Id == projectPk);
     }
 
     private void HandleUnauthorizedRequest(

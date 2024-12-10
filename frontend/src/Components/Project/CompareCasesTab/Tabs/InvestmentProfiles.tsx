@@ -2,7 +2,7 @@ import React from "react"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
 import { AgChartsCompareCases } from "../../../AgGrid/AgChartsCompareCases"
-import { projectQueryFn } from "../../../../Services/QueryFunctions"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 
 interface InvestmentProfilesProps {
     investmentProfilesChartData?: object
@@ -32,7 +32,7 @@ const InvestmentProfiles: React.FC<InvestmentProfilesProps> = ({ investmentProfi
                 "Development well costs",
                 "Exploration well costs",
             ]}
-            unit={`${apiData?.currency === 1 ? "mill NOK" : "mill USD"}`}
+            unit={`${apiData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD"}`}
         />
     )
 }

@@ -4,12 +4,12 @@ import { EMPTY_GUID } from "../Utils/constants"
 
 export const deleteCase = async (
     caseId: string,
-    project: Components.Schemas.ProjectWithAssetsDto,
-    addProjectEdit: (projectId: string, project: Components.Schemas.ProjectWithAssetsDto) => void,
+    projectId: string,
+    addProjectEdit: (projectId: string, project: Components.Schemas.UpdateProjectDto) => void,
 ): Promise<boolean> => {
     try {
-        const newProject = await (await GetCaseService()).deleteCase(project.id, caseId)
-        addProjectEdit(project.id, newProject)
+        const newProject = await (await GetCaseService()).deleteCase(projectId, caseId)
+        addProjectEdit(projectId, newProject.commonProjectAndRevisionData)
         return true
     } catch (error) {
         console.error("[ProjectView] Error while deleting case", error)
@@ -19,12 +19,12 @@ export const deleteCase = async (
 
 export const duplicateCase = async (
     caseId: string,
-    project: Components.Schemas.ProjectWithAssetsDto,
-    addProjectEdit: (projectId: string, project: Components.Schemas.ProjectWithAssetsDto) => void,
+    projectId: string,
+    addProjectEdit: (projectId: string, project: Components.Schemas.UpdateProjectDto) => void,
 ): Promise<boolean> => {
     try {
-        const newProject = await (await GetCaseService()).duplicateCase(project.id, caseId)
-        addProjectEdit(project.id, newProject)
+        const newProject = await (await GetCaseService()).duplicateCase(projectId, caseId)
+        addProjectEdit(projectId, newProject.commonProjectAndRevisionData)
         return true
     } catch (error) {
         console.error("[ProjectView] error while submitting form data", error)
@@ -34,18 +34,18 @@ export const duplicateCase = async (
 
 export const setCaseAsReference = async (
     caseId: string | undefined,
-    project: Components.Schemas.ProjectWithAssetsDto,
-    addProjectEdit: (projectId: string, project: Components.Schemas.ProjectWithAssetsDto) => void,
+    project: Components.Schemas.ProjectDataDto,
+    addProjectEdit: (projectId: string, project: Components.Schemas.UpdateProjectDto) => void,
 ) => {
     try {
-        const projectDto = { ...project }
+        const projectDto: Components.Schemas.UpdateProjectDto = { ...project.commonProjectAndRevisionData }
         if (projectDto.referenceCaseId === caseId) {
             projectDto.referenceCaseId = EMPTY_GUID
         } else {
             projectDto.referenceCaseId = caseId ?? ""
         }
-        const newProject = await (await GetProjectService()).updateProject(project.id, projectDto)
-        addProjectEdit(project.id, newProject)
+        const newProject = await (await GetProjectService()).updateProject(project.projectId, projectDto)
+        addProjectEdit(project.projectId, newProject.commonProjectAndRevisionData)
     } catch (error) {
         console.error("[ProjectView] error while submitting form data", error)
     }

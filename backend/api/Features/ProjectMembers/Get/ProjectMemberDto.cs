@@ -6,8 +6,8 @@ namespace api.Features.ProjectMembers.Get
 {
     public class ProjectMemberDto
     {
-        [Required] public Guid ProjectId { get; set; }
-        [Required] public Guid UserId { get; set; }
-        [Required] public ProjectMemberRole Role { get; set; }
+        [Required] public required Guid ProjectId { get; set; }
+        [Required] public required Guid UserId { get; set; }
+        [Required] public required ProjectMemberRole Role { get; set; }
     }
 }

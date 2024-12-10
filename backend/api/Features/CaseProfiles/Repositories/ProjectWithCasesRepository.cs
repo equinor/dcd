@@ -1,5 +1,4 @@
 using api.Context;
-using api.Exceptions;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -8,31 +7,23 @@ namespace api.Features.CaseProfiles.Repositories;
 
 public interface IProjectWithAssetsRepository
 {
-    Task<Project> GetProjectWithCases(Guid projectId);
-    Task<Project> GetProjectWithCasesAndAssets(Guid projectId);
-    Task<Project> GetRevisionWithCasesAndAssets(Guid revisionId, Guid projectId);
+    Task<Project> GetProjectWithCases(Guid projectPk);
+    Task<Project> GetProjectWithCasesAndAssets(Guid projectPk);
 }
 
 public class ProjectWithCasesRepository(DcdDbContext context) : IProjectWithAssetsRepository
 {
-    public async Task<Project> GetProjectWithCases(Guid projectId)
+    public async Task<Project> GetProjectWithCases(Guid projectPk)
     {
-        var project = await context.Projects
+        return await context.Projects
             .Include(p => p.Cases)
             .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
-            .FirstOrDefaultAsync(p => p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId));
-
-        if (project == null)
-        {
-            throw new NotFoundInDBException($"Project {projectId} not found");
-        }
-
-        return project;
+            .SingleAsync(p => p.Id == projectPk);
     }
 
-    public async Task<Project> GetRevisionWithCasesAndAssets(Guid projectId, Guid revisionId)
+    public async Task<Project> GetProjectWithCasesAndAssets(Guid projectPk)
     {
         var project = await context.Projects
             .Include(p => p.Cases).ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
@@ -57,51 +48,7 @@ public class ProjectWithCasesRepository(DcdDbContext context) : IProjectWithAsse
             .Include(p => p.Wells)
             .Include(p => p.ExplorationOperationalWellCosts)
             .Include(p => p.DevelopmentOperationalWellCosts)
-            .FirstOrDefaultAsync(p => p.OriginalProjectId == projectId && p.Id == revisionId);
-
-        if (project == null)
-        {
-            throw new NotFoundInDBException($"Revision {revisionId} not found");
-        }
-
-        project.Cases = project.Cases.OrderBy(c => c.CreateTime).ToList();
-
-        await LoadProjectAssets(project);
-
-        return project;
-    }
-
-    public async Task<Project> GetProjectWithCasesAndAssets(Guid projectId)
-    {
-        var project = await context.Projects
-            .Include(p => p.Cases).ThenInclude(c => c.TotalFeasibilityAndConceptStudies)
-            .Include(p => p.Cases).ThenInclude(c => c.TotalFeasibilityAndConceptStudiesOverride)
-            .Include(p => p.Cases).ThenInclude(c => c.TotalFEEDStudies)
-            .Include(p => p.Cases).ThenInclude(c => c.TotalFEEDStudiesOverride)
-            .Include(p => p.Cases).ThenInclude(c => c.TotalOtherStudiesCostProfile)
-            .Include(p => p.Cases).ThenInclude(c => c.WellInterventionCostProfile)
-            .Include(p => p.Cases).ThenInclude(c => c.WellInterventionCostProfileOverride)
-            .Include(p => p.Cases).ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfile)
-            .Include(p => p.Cases).ThenInclude(c => c.OffshoreFacilitiesOperationsCostProfileOverride)
-            .Include(p => p.Cases).ThenInclude(c => c.HistoricCostCostProfile)
-            .Include(p => p.Cases).ThenInclude(c => c.OnshoreRelatedOPEXCostProfile)
-            .Include(p => p.Cases).ThenInclude(c => c.AdditionalOPEXCostProfile)
-            .Include(p => p.Cases).ThenInclude(c => c.CessationWellsCost)
-            .Include(p => p.Cases).ThenInclude(c => c.CessationWellsCostOverride)
-            .Include(p => p.Cases).ThenInclude(c => c.CessationOffshoreFacilitiesCost)
-            .Include(p => p.Cases).ThenInclude(c => c.CessationOffshoreFacilitiesCostOverride)
-            .Include(p => p.Cases).ThenInclude(c => c.CessationOnshoreFacilitiesCostProfile)
-            .Include(p => p.Cases).ThenInclude(c => c.CalculatedTotalIncomeCostProfile)
-            .Include(p => p.Cases).ThenInclude(c => c.CalculatedTotalCostCostProfile)
-            .Include(p => p.Wells)
-            .Include(p => p.ExplorationOperationalWellCosts)
-            .Include(p => p.DevelopmentOperationalWellCosts)
-            .FirstOrDefaultAsync(p => (p.Id.Equals(projectId) || p.FusionProjectId.Equals(projectId)) && !p.IsRevision);
-
-        if (project == null)
-        {
-            throw new NotFoundInDBException($"Project {projectId} not found");
-        }
+            .SingleAsync(p => p.Id == projectPk);
 
         project.Cases = project.Cases.OrderBy(c => c.CreateTime).ToList();
 

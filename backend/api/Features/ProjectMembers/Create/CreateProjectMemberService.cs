@@ -1,6 +1,8 @@
 using api.Context;
+using api.Context.Extensions;
 using api.Exceptions;
 using api.Features.ProjectMembers.Get;
+using api.Models;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -10,26 +12,29 @@ public class CreateProjectMemberService(DcdDbContext context)
 {
     public async Task<ProjectMemberDto> CreateProjectMember(Guid projectId, CreateProjectMemberDto dto)
     {
-        var projectMember = new Models.ProjectMember
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var projectMember = new ProjectMember
         {
-            ProjectId = projectId,
+            ProjectId = projectPk,
             UserId = dto.UserId,
             Role = dto.Role
         };
 
-        var existingProjectMember = await context.ProjectMembers.SingleOrDefaultAsync(c => c.ProjectId == projectId && c.UserId == dto.UserId);
+        var existingProjectMember = await context.ProjectMembers.SingleOrDefaultAsync(c => c.ProjectId == projectPk && c.UserId == dto.UserId);
 
         if (existingProjectMember != null)
         {
             throw new ResourceAlreadyExistsException("Project member already exists");
         }
 
-        await context.ProjectMembers.AddAsync(projectMember);
+        context.ProjectMembers.Add(projectMember);
+
         await context.SaveChangesAsync();
 
         return new ProjectMemberDto
         {
-            ProjectId = projectMember.ProjectId,
+            ProjectId = projectPk,
             UserId = projectMember.UserId,
             Role = projectMember.Role
         };

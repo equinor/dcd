@@ -167,6 +167,7 @@ const CaseTabTableWithGrouping = ({
         resizable: true,
         editable: true,
         suppressHeaderMenuButton: true,
+        enableCellChangeFlash: true,
     }), [])
 
     const gridRefArrayToAlignedGrid = () => {
@@ -225,15 +226,13 @@ const CaseTabTableWithGrouping = ({
                     defaultColDef={defaultColDef}
                     animateRows
                     domLayout="autoHeight"
-                    enableCellChangeFlash
-                    rowSelection="multiple"
-                    enableRangeSelection
-                    suppressCopySingleCellRanges
+                    rowSelection={{ mode: "multiRow", copySelectedRows: true }}
+                    cellSelection
                     suppressMovableColumns
                     suppressAggFuncInHeader
                     enableCharts
                     alignedGrids={gridRefArrayToAlignedGrid()}
-                    groupIncludeTotalFooter={includeFooter}
+                    grandTotalRow={includeFooter ? "bottom" : undefined}
                     getRowStyle={getRowStyle}
                     suppressLastEmptyLineOnPaste
                     groupDefaultExpanded={groupDefaultExpanded}

@@ -1,6 +1,6 @@
 export const separateProfileObjects = (barProfiles: string[], barNames: string[], xKey: string) => {
     const barProfileObjects = barProfiles.map((bp, i) => ({
-        type: "column",
+        type: "bar",
         xKey,
         yKey: bp,
         yName: barNames[i],

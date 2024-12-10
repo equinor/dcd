@@ -1,4 +1,4 @@
-import { AgChartsReact } from "ag-charts-react"
+import { AgCharts } from "ag-charts-react"
 import { insertIf, separateProfileObjects } from "./AgChartHelperFunctions"
 
 interface Props {
@@ -26,7 +26,7 @@ export const AgChartsCompareCases = ({
                     fontSize: 24,
                 },
             },
-            column: {
+            bar: {
                 axes: {
                     category: {
                         label: {
@@ -49,11 +49,23 @@ export const AgChartsCompareCases = ({
         title: { text: chartTitle ?? "" },
         subtitle: { text: unit ?? "" },
         padding: {
-            top: 10,
+            top: 0,
             right: 10,
-            bottom: 10,
+            bottom: 0,
             left: 10,
         },
+        axes: [
+            {
+                type: "category",
+                position: "bottom",
+                nice: true,
+            },
+            {
+                type: "number",
+                position: "left",
+                nice: true,
+            },
+        ],
         theme: figmaTheme,
         series: [
             ...separateProfileObjects(barProfiles, barNames, "cases"),
@@ -64,7 +76,7 @@ export const AgChartsCompareCases = ({
 
     return (
         <div>
-            <AgChartsReact
+            <AgCharts
                 options={defaultOptions}
             />
         </div>

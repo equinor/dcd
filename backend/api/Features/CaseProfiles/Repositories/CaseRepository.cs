@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 
 using api.Context;
+using api.Context.Extensions;
 using api.Features.CaseProfiles.Enums;
 using api.Models;
 
@@ -10,18 +11,9 @@ namespace api.Features.CaseProfiles.Repositories;
 
 public class CaseRepository(DcdDbContext context) : BaseRepository(context), ICaseRepository
 {
-    public async Task<Project?> GetProject(Guid id)
+    public async Task<Project> GetProject(Guid projectPk)
     {
-        return await Context.Projects
-            .FirstOrDefaultAsync(p => (p.Id == id || p.FusionProjectId == id) && !p.IsRevision);
-    }
-
-    public async Task<Case> AddCase(Case caseItem)
-    {
-        Context.Cases.Add(caseItem);
-        await Context.SaveChangesAsync();
-
-        return caseItem;
+        return await Context.Projects.SingleAsync(p => p.Id == projectPk);
     }
 
     public async Task<Case?> GetCase(Guid caseId)
@@ -73,4 +65,8 @@ public class CaseRepository(DcdDbContext context) : BaseRepository(context), ICa
         caseItem.ModifyTime = DateTimeOffset.UtcNow;
     }
 
+    public async Task<Guid> GetPrimaryKeyForProjectId(Guid projectId)
+    {
+        return await Context.GetPrimaryKeyForProjectId(projectId);
+    }
 }

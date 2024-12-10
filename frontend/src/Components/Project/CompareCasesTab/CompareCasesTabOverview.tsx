@@ -2,15 +2,18 @@ import { useState } from "react"
 import Tabs from "@mui/material/Tabs"
 import Tab from "@mui/material/Tab"
 import Grid from "@mui/material/Grid"
+import { useMediaQuery } from "@mui/material"
 import styled from "styled-components"
+
 import Kpis from "./Tabs/Kpis"
+import { useProjectChartData } from "@/Hooks/useProjectChartData"
 import ProductionProfiles from "./Tabs/ProductionProfiles"
 import InvestmentProfiles from "./Tabs/InvestmentProfiles"
 import Co2Emissions from "./Tabs/Co2Emissions"
-import { useProjectChartData } from "../../../Hooks/useProjectChartData"
 import ProjectAgGridTable from "./ProjectAgGridTable"
 
-const MuiTabs = styled(Tabs)`
+const MuiTabs = styled(Tabs)<{ $isSmallScreen?: boolean }>`
+    margin-bottom: ${({ $isSmallScreen }) => ($isSmallScreen ? "30px" : "10px")};
     &.MuiTabs-vertical {
         border: none;
         flex-wrap: wrap;
@@ -39,6 +42,7 @@ const MuiTab = styled(Tab)`
         text-transform: none;
         font-size: 16px;
         letter-spacing: 0;
+        border-right: 1px solid rgba(222, 237, 238, 1);
         color: var(--eds_navigation__menu_tabs_color,rgba(61,61,61,1));
         &:hover,
         &.Mui-selected {
@@ -91,6 +95,7 @@ const ProjectCompareCasesTab = () => {
         totalCo2EmissionsChartData,
         co2IntensityChartData,
     } = useProjectChartData()
+    const isSmallScreen = useMediaQuery("(max-width: 1080px)")
 
     const [value, setValue] = useState(0)
 
@@ -100,13 +105,13 @@ const ProjectCompareCasesTab = () => {
 
     return (
         <Grid container spacing={6}>
-            <Grid item xs={12} container display="grid" gridTemplateColumns="auto auto">
-                <Grid item container>
+            <Grid item xs={12} container display="flex" flexDirection="row">
+                <Grid item container sx={{ width: "fit-content", marginRight: "10px" }}>
                     <MuiTabs
-                        orientation="vertical"
+                        $isSmallScreen={isSmallScreen}
+                        orientation={isSmallScreen ? "horizontal" : "vertical"}
                         value={value}
                         onChange={handleChange}
-                        sx={{ borderRight: 1, borderColor: "divider" }}
                         TabIndicatorProps={{
                             style: {
                                 backgroundColor: "rgba(0,112,121,1)",
@@ -119,7 +124,7 @@ const ProjectCompareCasesTab = () => {
                         <MuiTab label="CO2 emissions" {...a11yProps(3)} />
                     </MuiTabs>
                 </Grid>
-                <Grid item>
+                <Grid item sx={{ flexGrow: 1 }}>
                     <TabPanel index={0} value={value}>
                         <Kpis
                             npvChartData={npvChartData}

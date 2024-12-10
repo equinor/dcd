@@ -67,7 +67,7 @@ const Controls = () => {
         }
     }
 
-    const caseData = apiData?.case as Components.Schemas.CaseWithProfilesDto
+    const caseData = apiData?.case
 
     useEffect(() => {
         cancelEdit()
@@ -75,14 +75,14 @@ const Controls = () => {
 
     useEffect(() => {
         if (isRevision && revisionData) {
-            setProjectLastUpdated(revisionData.modifyTime)
+            setProjectLastUpdated(revisionData.commonProjectAndRevisionData.modifyTime)
         } else if (projectData) {
-            setProjectLastUpdated(projectData.modifyTime)
+            setProjectLastUpdated(projectData.commonProjectAndRevisionData.modifyTime)
         }
     }, [projectData, isRevision, revisionData])
 
     useEffect(() => {
-        if (apiData) {
+        if (apiData && caseData) {
             setCaseLastUpdated(caseData.modifyTime)
         }
     }, [caseData])
@@ -116,7 +116,7 @@ const Controls = () => {
             {projectData && caseId ? (
                 <CaseControls
                     backToProject={backToProject}
-                    projectId={projectData.id}
+                    projectId={projectData.projectId}
                     caseId={caseId}
                     caseLastUpdated={caseLastUpdated}
                     handleEdit={handleEdit}

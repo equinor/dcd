@@ -32,6 +32,7 @@ stages:
             inputs:
                 command: "custom"
                 workingDir: "frontend"
+                verbose: true
                 customCommand: "run-script build"
           - task: Bash@3
             displayName: 'Extract manifest data from package.json'

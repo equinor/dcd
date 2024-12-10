@@ -1,4 +1,5 @@
 using api.Context;
+using api.Context.Extensions;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
@@ -6,8 +7,9 @@ using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts.Dtos;
 using api.Features.CaseProfiles.Dtos.Well;
 using api.Features.CaseProfiles.Repositories;
 using api.Features.CaseProfiles.Services;
-using api.Features.Projects.GetWithAssets;
+using api.Features.ProjectData;
 using api.Features.Projects.Update;
+using api.Features.Stea.Dtos;
 using api.Features.TechnicalInput.Dtos;
 using api.Features.Wells.Create;
 using api.Features.Wells.Update;
@@ -24,12 +26,14 @@ public class TechnicalInputService(
     IProjectWithAssetsRepository projectWithAssetsRepository,
     ICostProfileFromDrillingScheduleHelper costProfileFromDrillingScheduleHelper,
     ILogger<TechnicalInputService> logger,
-    GetProjectWithAssetsService getProjectWithAssetsService,
+    GetProjectDataService getProjectDataService,
     IMapper mapper)
 {
     public async Task<TechnicalInputDto> UpdateTechnicalInput(Guid projectId, UpdateTechnicalInputDto technicalInputDto)
     {
-        var project = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var project = await projectWithAssetsRepository.GetProjectWithCasesAndAssets(projectPk);
 
         await UpdateProject(project, technicalInputDto.ProjectDto);
 
@@ -45,7 +49,7 @@ public class TechnicalInputService(
 
         if (technicalInputDto.UpdateWellDtos?.Length > 0 || technicalInputDto.CreateWellDtos?.Length > 0)
         {
-            var wellResult = await CreateAndUpdateWells(projectId, technicalInputDto.CreateWellDtos, technicalInputDto.UpdateWellDtos);
+            var wellResult = await CreateAndUpdateWells(projectPk, technicalInputDto.CreateWellDtos, technicalInputDto.UpdateWellDtos);
 
             if (wellResult != null)
             {
@@ -56,7 +60,7 @@ public class TechnicalInputService(
 
         await context.SaveChangesAsync();
 
-        returnDto.ProjectDto = await getProjectWithAssetsService.GetProjectWithAssets(projectId);
+        returnDto.ProjectData = await getProjectDataService.GetProjectData(projectPk);
 
         return returnDto;
     }

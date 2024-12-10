@@ -1,5 +1,5 @@
 using api.Context;
-using api.Exceptions;
+using api.Context.Extensions;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -10,13 +10,13 @@ public class CreateCaseService(DcdDbContext context)
 {
     public async Task CreateCase(Guid projectId, CreateCaseDto createCaseDto)
     {
-        var project = await context.Projects
-                          .FirstOrDefaultAsync(p => (p.Id == projectId || p.FusionProjectId == projectId) && !p.IsRevision)
-                      ?? throw new NotFoundInDBException($"Project {projectId} does not exist");
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var project = await context.Projects.SingleAsync(p => p.Id == projectPk);
 
         project.Cases.Add(new Case
         {
-            Project = project,
+            ProjectId = projectPk,
             Name = createCaseDto.Name,
             Description = createCaseDto.Description,
             ProductionStrategyOverview = createCaseDto.ProductionStrategyOverview,

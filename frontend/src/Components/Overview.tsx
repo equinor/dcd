@@ -62,12 +62,15 @@ const Overview = () => {
         setShowRevisionReminder,
         editMode,
     } = useAppContext()
-    const { setProjectId, isRevision } = useProjectContext()
+    const {
+        setProjectId,
+        isRevision,
+        setIsCreateRevisionModalOpen,
+    } = useProjectContext()
     const { featuresModalIsOpen } = useModalContext()
     const [warnedProjects, setWarnedProjects] = useState<WarnedProjectInterface | null>(null)
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
-    const [isRevisionModalOpen, setIsRevisionModalOpen] = useState(false)
     const { Features } = useFeatureContext()
 
     const { data: apiData } = useQuery({
@@ -77,18 +80,18 @@ const Overview = () => {
     })
 
     function handleCreateRevision() {
-        setIsRevisionModalOpen(true)
+        setIsCreateRevisionModalOpen(true)
         setShowRevisionReminder(false)
     }
 
     function checkIfNewRevisionIsRecommended() {
         if (!apiData) { return }
 
-        const lastModified = new Date(apiData.modifyTime)
+        const lastModified = new Date(apiData.commonProjectAndRevisionData.modifyTime)
         const currentTime = new Date()
 
         const timeDifferenceInDays = (currentTime.getTime() - lastModified.getTime()) / (1000 * 60 * 60 * 24)
-        const hasChangesSinceLastRevision = apiData.revisionsDetailsList.some((r) => new Date(r.revisionDate) < lastModified)
+        const hasChangesSinceLastRevision = apiData.revisionDetailsList.some((r) => new Date(r.revisionDate) < lastModified)
 
         if (timeDifferenceInDays > 30 && hasChangesSinceLastRevision && editMode && !isRevision) {
             setShowRevisionReminder(true)
@@ -99,10 +102,10 @@ const Overview = () => {
         if (apiData && currentUserId) {
             if (warnedProjects && warnedProjects[currentUserId]) {
                 const wp = { ...warnedProjects }
-                wp[currentUserId].push(apiData.id)
+                wp[currentUserId].push(apiData.projectId)
                 setWarnedProjects(wp)
             } else {
-                setWarnedProjects({ [currentUserId]: [apiData.id] })
+                setWarnedProjects({ [currentUserId]: [apiData.projectId] })
             }
         }
     }
@@ -131,7 +134,7 @@ const Overview = () => {
 
     useEffect(() => {
         if (apiData) {
-            setProjectId(apiData.id)
+            setProjectId(apiData.projectId)
         }
     }, [apiData])
 
@@ -145,9 +148,9 @@ const Overview = () => {
         if (apiData && currentUserId) {
             if (
                 !projectClassificationWarning
-                && PROJECT_CLASSIFICATION[apiData.classification].warn
+                && PROJECT_CLASSIFICATION[apiData.commonProjectAndRevisionData.classification].warn
                 && (
-                    (warnedProjects && !warnedProjects[currentUserId].some((vp: string) => vp === apiData.id))
+                    (warnedProjects && !warnedProjects[currentUserId].some((vp: string) => vp === apiData.projectId))
                     || (warnedProjects && !warnedProjects[currentUserId])
                     || !warnedProjects
                 )
@@ -156,7 +159,7 @@ const Overview = () => {
                     setProjectClassificationWarning(true)
                 }
             }
-            if (warnedProjects && warnedProjects[currentUserId].some((vp: string) => vp === apiData.id)) {
+            if (warnedProjects && warnedProjects[currentUserId].some((vp: string) => vp === apiData.projectId)) {
                 setProjectClassificationWarning(false)
             }
         }
@@ -174,25 +177,24 @@ const Overview = () => {
                 {snackBarMessage}
             </Snackbar>
             {Features?.revisionEnabled
-                        && (
-                            <Snackbar open={showRevisionReminder} placement="bottom-right" autoHideDuration={300000000} onClose={() => setShowRevisionReminder(false)}>
-                                <SnackbarCentering>
-                                    <Button variant="ghost_icon" onClick={() => setShowRevisionReminder(false)}>
-                                        <Icon data={clear} />
-                                    </Button>
-                                    <Typography variant="body_short" color="#FFF" style={{ marginLeft: "10px" }}>
-                                        Remember to create a new revision after completing a project phase!
-                                    </Typography>
-                                    <Snackbar.Action>
-                                        <Button variant="ghost" onClick={() => handleCreateRevision()}>Create revision</Button>
-                                    </Snackbar.Action>
-                                </SnackbarCentering>
-                            </Snackbar>
-                        )}
-            <CreateRevisionModal
-                isModalOpen={isRevisionModalOpen}
-                setIsModalOpen={setIsRevisionModalOpen}
-            />
+                && (
+                    <>
+                        <Snackbar open={showRevisionReminder} placement="bottom-right" autoHideDuration={300000000} onClose={() => setShowRevisionReminder(false)}>
+                            <SnackbarCentering>
+                                <Button variant="ghost_icon" onClick={() => setShowRevisionReminder(false)}>
+                                    <Icon data={clear} />
+                                </Button>
+                                <Typography variant="body_short" color="#FFF" style={{ marginLeft: "10px" }}>
+                                    Remember to create a new revision after completing a project phase!
+                                </Typography>
+                                <Snackbar.Action>
+                                    <Button variant="ghost" onClick={() => handleCreateRevision()}>Create revision</Button>
+                                </Snackbar.Action>
+                            </SnackbarCentering>
+                        </Snackbar>
+                        <CreateRevisionModal />
+                    </>
+                )}
             <ContentWrapper>
                 <Sidebar />
                 <MainView className="ag-theme-alpine-fusion ">
@@ -200,10 +202,10 @@ const Overview = () => {
                         <Modal
                             isOpen={projectClassificationWarning}
                             size="sm"
-                            title={`Attention - ${PROJECT_CLASSIFICATION[apiData.classification].label} project`}
+                            title={`Attention - ${PROJECT_CLASSIFICATION[apiData.commonProjectAndRevisionData.classification].label} project`}
                             content={(
                                 <Typography key="text">
-                                    {PROJECT_CLASSIFICATION[apiData.classification].description}
+                                    {PROJECT_CLASSIFICATION[apiData.commonProjectAndRevisionData.classification].description}
                                 </Typography>
                             )}
                             actions={

@@ -51,7 +51,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
         const newExplorationTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "G&G and admin",
-                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: gAndGAdminCostData,
                 resourceName: "gAndGAdminCost",
                 resourceId: exploration.id,
@@ -63,7 +63,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             },
             {
                 profileName: "Seismic acquisition and processing",
-                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: seismicAcquisitionAndProcessingData,
                 resourceName: "seismicAcquisitionAndProcessing",
                 resourceId: exploration.id,
@@ -74,7 +74,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             },
             {
                 profileName: "Country office",
-                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: countryOfficeCostData,
                 resourceName: "countryOfficeCost",
                 resourceId: exploration.id,
@@ -85,7 +85,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             },
             {
                 profileName: "Exploration well",
-                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: explorationWellCostProfileData,
                 resourceName: "explorationWellCostProfile",
                 resourceId: exploration.id,
@@ -96,7 +96,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             },
             {
                 profileName: "Appraisal well",
-                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: appraisalWellCostProfileData,
                 resourceName: "appraisalWellCostProfile",
                 resourceId: exploration.id,
@@ -107,7 +107,7 @@ const ExplorationWellCosts: React.FC<ExplorationWellCostsProps> = ({
             },
             {
                 profileName: "Sidetrack well",
-                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: sidetrackCostProfileData,
                 resourceName: "sidetrackCostProfile",
                 resourceId: exploration.id,

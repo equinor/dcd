@@ -7,9 +7,10 @@ import styled from "styled-components"
 import { tokens } from "@equinor/eds-tokens"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
+
 import CustomHeaderForSecondaryHeader from "../../../CustomHeaderForSecondaryHeader"
-import { cellStyleRightAlign } from "../../../Utils/common"
-import { projectQueryFn } from "../../../Services/QueryFunctions"
+import { cellStyleRightAlign } from "@/Utils/common"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 
 const MenuIcon = styled(Icon)`
     color: ${tokens.colors.text.static_icons__secondary.rgba};
@@ -35,7 +36,7 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
 
     const nameWithReferenceCase = (p: any) => (
         <span>
-            {apiData && apiData.referenceCaseId === p.node.data.id
+            {apiData && apiData.commonProjectAndRevisionData.referenceCaseId === p.node.data.id
                 && (
                     <Tooltip title="Reference case">
                         <MenuIcon data={bookmark_filled} size={16} />
@@ -114,61 +115,61 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                 children: [
                     {
                         field: "oilProduction",
-                        headerName: `Oil production (${apiData?.physicalUnit === 0 ? "MSm3" : "mill bbl"})`,
+                        headerName: `Oil production (${apiData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MSm3" : "mill bbl"})`,
                         width: 175,
                         editable: false,
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Oil production",
-                            unit: apiData?.physicalUnit === 0 ? "MSm3" : "mill bbl",
+                            unit: apiData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MSm3" : "mill bbl",
                         },
                         cellStyle: cellStyleRightAlign,
                     },
                     {
                         field: "additionalOilProduction",
-                        headerName: `Additional Oil production (${apiData?.physicalUnit === 0 ? "MSm3" : "mill bbl"})`,
+                        headerName: `Additional Oil production (${apiData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MSm3" : "mill bbl"})`,
                         width: 175,
                         editable: false,
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Additional Oil production",
-                            unit: apiData?.physicalUnit === 0 ? "MSm3" : "mill bbl",
+                            unit: apiData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MSm3" : "mill bbl",
                         },
                         cellStyle: cellStyleRightAlign,
                     },
                     {
                         field: "gasProduction",
-                        headerName: `Rich gas production (${apiData?.physicalUnit === 0 ? "GSm3" : "Bscf"})`,
+                        headerName: `Rich gas production (${apiData?.commonProjectAndRevisionData.physicalUnit === 0 ? "GSm3" : "Bscf"})`,
                         width: 175,
                         editable: false,
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Rich gas production",
-                            unit: apiData?.physicalUnit === 0 ? "GSm3" : "Bscf",
+                            unit: apiData?.commonProjectAndRevisionData.physicalUnit === 0 ? "GSm3" : "Bscf",
                         },
                         cellStyle: cellStyleRightAlign,
                     },
                     {
                         field: "additionalGasProduction",
-                        headerName: `Additional rich gas production (${apiData?.physicalUnit === 0 ? "GSm3" : "Bscf"})`,
+                        headerName: `Additional rich gas production (${apiData?.commonProjectAndRevisionData.physicalUnit === 0 ? "GSm3" : "Bscf"})`,
                         width: 175,
                         editable: false,
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Additional rich gas production",
-                            unit: apiData?.physicalUnit === 0 ? "GSm3" : "Bscf",
+                            unit: apiData?.commonProjectAndRevisionData.physicalUnit === 0 ? "GSm3" : "Bscf",
                         },
                         cellStyle: cellStyleRightAlign,
                     },
                     {
                         field: "totalExportedVolumes",
-                        headerName: `Total exported volumes (${apiData?.physicalUnit === 0 ? "mill Sm3" : "mill boe"})`,
+                        headerName: `Total exported volumes (${apiData?.commonProjectAndRevisionData.physicalUnit === 0 ? "mill Sm3" : "mill boe"})`,
                         width: 175,
                         editable: false,
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Total exported volumes",
-                            unit: apiData?.physicalUnit === 0 ? "mill Sm3" : "mill boe",
+                            unit: apiData?.commonProjectAndRevisionData.physicalUnit === 0 ? "mill Sm3" : "mill boe",
                         },
                         cellStyle: cellStyleRightAlign,
                     },
@@ -179,25 +180,25 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                 children: [
                     {
                         field: "studyCostsPlusOpex",
-                        headerName: `Study costs + OPEX (${apiData?.currency === 1 ? "mill NOK" : "mill USD"})`,
+                        headerName: `Study costs + OPEX (${apiData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD"})`,
                         width: 175,
                         editable: false,
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Study costs + OPEX",
-                            unit: apiData?.currency === 1 ? "mill NOK" : "mill USD",
+                            unit: apiData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD",
                         },
                         cellStyle: cellStyleRightAlign,
                     },
                     {
                         field: "cessationCosts",
-                        headerName: `Cessation costs (${apiData?.currency === 1 ? "mill NOK" : "mill USD"})`,
+                        headerName: `Cessation costs (${apiData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD"})`,
                         width: 175,
                         editable: false,
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Cessation costs",
-                            unit: apiData?.currency === 1 ? "mill NOK" : "mill USD",
+                            unit: apiData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD",
                         },
                         cellStyle: cellStyleRightAlign,
                     },
@@ -208,37 +209,37 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                 children: [
                     {
                         field: "offshorePlusOnshoreFacilityCosts",
-                        headerName: `Offshore + Onshore facility costs (${apiData?.currency === 1 ? "mill NOK" : "mill USD"})`,
+                        headerName: `Offshore + Onshore facility costs (${apiData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD"})`,
                         width: 225,
                         editable: false,
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Offshore + Onshore facility costs",
-                            unit: apiData?.currency === 1 ? "mill NOK" : "mill USD",
+                            unit: apiData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD",
                         },
                         cellStyle: cellStyleRightAlign,
                     },
                     {
                         field: "developmentCosts",
-                        headerName: `Development well costs (${apiData?.currency === 1 ? "mill NOK" : "mill USD"})`,
+                        headerName: `Development well costs (${apiData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD"})`,
                         width: 175,
                         editable: false,
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Development well costs",
-                            unit: apiData?.currency === 1 ? "mill NOK" : "mill USD",
+                            unit: apiData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD",
                         },
                         cellStyle: cellStyleRightAlign,
                     },
                     {
                         field: "explorationWellCosts",
-                        headerName: `Exploration well costs (${apiData?.currency === 1 ? "mill NOK" : "mill USD"})`,
+                        headerName: `Exploration well costs (${apiData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD"})`,
                         width: 175,
                         editable: false,
                         headerComponent: CustomHeaderForSecondaryHeader,
                         headerComponentParams: {
                             columnHeader: "Exploration well costs",
-                            unit: apiData?.currency === 1 ? "mill NOK" : "mill USD",
+                            unit: apiData?.commonProjectAndRevisionData.currency === 1 ? "mill NOK" : "mill USD",
                         },
                         cellStyle: cellStyleRightAlign,
                     },
@@ -280,7 +281,6 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
     const [columnDefs] = useState(columns())
     const onGridReady = (params: any) => {
         gridRef.current = params.api
-        params.api.showLoadingOverlay()
     }
 
     const defaultColDef = useMemo(() => ({
@@ -306,8 +306,8 @@ const ProjectAgGridTable: React.FC<props> = ({ rowData }) => {
                     animateRows
                     domLayout="autoHeight"
                     onGridReady={onGridReady}
-                    rowSelection="multiple"
-                    enableRangeSelection
+                    rowSelection={{ mode: "multiRow" }}
+                    cellSelection
                     enableCharts
                 />
             </div>

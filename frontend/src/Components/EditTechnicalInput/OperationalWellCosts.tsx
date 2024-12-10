@@ -35,11 +35,11 @@ const CostWithCurrency = styled.div`
 
 interface Props {
     title: string
-    developmentOperationalWellCosts?: Components.Schemas.DevelopmentOperationalWellCostsDto
-    setDevelopmentOperationalWellCosts?: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>>
+    developmentOperationalWellCosts?: Components.Schemas.DevelopmentOperationalWellCostsOverviewDto
+    setDevelopmentOperationalWellCosts?: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsOverviewDto | undefined>>
 
-    explorationOperationalWellCosts?: Components.Schemas.ExplorationOperationalWellCostsDto
-    setExplorationOperationalWellCosts?: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>>
+    explorationOperationalWellCosts?: Components.Schemas.ExplorationOperationalWellCostsOverviewDto
+    setExplorationOperationalWellCosts?: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsOverviewDto | undefined>>
 }
 
 const OperationalWellCosts = ({
@@ -76,7 +76,7 @@ const OperationalWellCosts = ({
             return
         }
         if (developmentOperationalWellCosts && setDevelopmentOperationalWellCosts) {
-            const newDevelopmentOperationalWellCosts: Components.Schemas.DevelopmentOperationalWellCostsDto = { ...developmentOperationalWellCosts }
+            const newDevelopmentOperationalWellCosts: Components.Schemas.DevelopmentOperationalWellCostsOverviewDto = { ...developmentOperationalWellCosts }
             newDevelopmentOperationalWellCosts.rigUpgrading = developmentRigUpgrading
             newDevelopmentOperationalWellCosts.rigMobDemob = developmentRigMobDemob
             newDevelopmentOperationalWellCosts.annualWellInterventionCostPerWell = developmentAnnualWellInterventionCost
@@ -95,7 +95,7 @@ const OperationalWellCosts = ({
             return
         }
         if (explorationOperationalWellCosts && setExplorationOperationalWellCosts) {
-            const newExplorationOperationalWellCosts: Components.Schemas.ExplorationOperationalWellCostsDto = { ...explorationOperationalWellCosts }
+            const newExplorationOperationalWellCosts: Components.Schemas.ExplorationOperationalWellCostsOverviewDto = { ...explorationOperationalWellCosts }
             newExplorationOperationalWellCosts.explorationRigUpgrading = explorationRigUpgrading
             newExplorationOperationalWellCosts.explorationRigMobDemob = explorationRigMobDemob
             newExplorationOperationalWellCosts.explorationProjectDrillingCosts = explorationProjectDrillingCosts
@@ -117,7 +117,7 @@ const OperationalWellCosts = ({
                         <CostWithCurrency>
                             Cost
                             <div>
-                                {`${apiData?.currency === 1 ? "(mill NOK)" : "(mill USD)"}`}
+                                {`${apiData?.commonProjectAndRevisionData.currency === 1 ? "(mill NOK)" : "(mill USD)"}`}
                             </div>
                         </CostWithCurrency>
                     </Cell>

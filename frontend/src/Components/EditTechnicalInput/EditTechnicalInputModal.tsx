@@ -45,32 +45,41 @@ const EditTechnicalInputModal = () => {
     const [
         explorationOperationalWellCosts,
         setExplorationOperationalWellCosts,
-    ] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(apiData?.explorationOperationalWellCosts)
+    ] = useState<Components.Schemas.ExplorationOperationalWellCostsOverviewDto | undefined>(apiData?.commonProjectAndRevisionData.explorationOperationalWellCosts)
     const [
         developmentOperationalWellCosts,
         setDevelopmentOperationalWellCosts,
-    ] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(apiData?.developmentOperationalWellCosts)
+    ] = useState<Components.Schemas.DevelopmentOperationalWellCostsOverviewDto | undefined>(apiData?.commonProjectAndRevisionData.developmentOperationalWellCosts)
 
     const [
         originalExplorationOperationalWellCosts,
         setOriginalExplorationOperationalWellCosts,
-    ] = useState<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>(apiData?.explorationOperationalWellCosts)
+    ] = useState<Components.Schemas.ExplorationOperationalWellCostsOverviewDto | undefined>(apiData?.commonProjectAndRevisionData.explorationOperationalWellCosts)
     const [
         originalDevelopmentOperationalWellCosts,
         setOriginalDevelopmentOperationalWellCosts,
-    ] = useState<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>(apiData?.developmentOperationalWellCosts)
+    ] = useState<Components.Schemas.DevelopmentOperationalWellCostsOverviewDto | undefined>(apiData?.commonProjectAndRevisionData.developmentOperationalWellCosts)
 
-    const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellDto[]>(apiData?.wells?.filter((w) => !isExplorationWell(w)) ?? [])
-    const [explorationWells, setExplorationWells] = useState<Components.Schemas.WellDto[]>(apiData?.wells?.filter((w) => isExplorationWell(w)) ?? [])
+    const [wellProjectWells, setWellProjectWells] = useState<Components.Schemas.WellOverviewDto[]>(
+        apiData?.commonProjectAndRevisionData.wells?.filter((w) => !isExplorationWell(w)) ?? [],
+    )
+    const [explorationWells, setExplorationWells] = useState<Components.Schemas.WellOverviewDto[]>(
+        apiData?.commonProjectAndRevisionData.wells?.filter((w) => isExplorationWell(w)) ?? [],
+    )
 
-    const [originalWellProjectWells, setOriginalWellProjectWells] = useState<Components.Schemas.WellDto[]>(apiData?.wells?.filter((w) => !isExplorationWell(w)) ?? [])
-    const [originalExplorationWells, setOriginalExplorationWells] = useState<Components.Schemas.WellDto[]>(apiData?.wells?.filter((w) => isExplorationWell(w)) ?? [])
+    const [originalWellProjectWells, setOriginalWellProjectWells] = useState<Components.Schemas.WellOverviewDto[]>(
+        apiData?.commonProjectAndRevisionData.wells?.filter((w) => !isExplorationWell(w)) ?? [],
+    )
+    const [originalExplorationWells, setOriginalExplorationWells] = useState<Components.Schemas.WellOverviewDto[]>(
+        apiData?.commonProjectAndRevisionData.wells?.filter((w) => isExplorationWell(w)) ?? [],
+    )
 
     const handleSave = async () => {
+        if (!apiData) { return }
         try {
             const dto: Components.Schemas.UpdateTechnicalInputDto = {}
             setIsSaving(true)
-            dto.projectDto = { ...apiData }
+            dto.projectDto = { ...apiData.commonProjectAndRevisionData }
 
             dto.explorationOperationalWellCostsDto = explorationOperationalWellCosts
 
@@ -83,10 +92,10 @@ const EditTechnicalInputModal = () => {
             dto.deleteWellDtos = deletedWells.map((id) => ({ id }))
 
             // refactor to use react-query?
-            const result = apiData ? await (await GetTechnicalInputService()).update(apiData?.id, dto) : undefined
+            const result = apiData ? await (await GetTechnicalInputService()).update(apiData?.projectId, dto) : undefined
 
-            if (result?.projectDto) {
-                addProjectEdit(result?.projectDto.id, result?.projectDto)
+            if (result?.projectData) {
+                addProjectEdit(result?.projectData.projectId, result?.projectData.commonProjectAndRevisionData)
             }
 
             setOriginalExplorationOperationalWellCosts(explorationOperationalWellCosts)
@@ -105,17 +114,17 @@ const EditTechnicalInputModal = () => {
     }
 
     useEffect(() => {
-        setExplorationOperationalWellCosts(structuredClone(apiData?.explorationOperationalWellCosts))
-        setDevelopmentOperationalWellCosts(structuredClone(apiData?.developmentOperationalWellCosts))
-        setOriginalExplorationOperationalWellCosts(structuredClone(apiData?.explorationOperationalWellCosts))
-        setOriginalDevelopmentOperationalWellCosts(structuredClone(apiData?.developmentOperationalWellCosts))
-        setWellProjectWells(structuredClone(apiData?.wells?.filter((w) => !isExplorationWell(w)) ?? []))
-        setExplorationWells(structuredClone(apiData?.wells?.filter((w) => isExplorationWell(w)) ?? []))
-        setOriginalWellProjectWells(structuredClone(apiData?.wells?.filter((w) => !isExplorationWell(w)) ?? []))
-        setOriginalExplorationWells(structuredClone(apiData?.wells?.filter((w) => isExplorationWell(w)) ?? []))
+        setExplorationOperationalWellCosts(structuredClone(apiData?.commonProjectAndRevisionData.explorationOperationalWellCosts))
+        setDevelopmentOperationalWellCosts(structuredClone(apiData?.commonProjectAndRevisionData.developmentOperationalWellCosts))
+        setOriginalExplorationOperationalWellCosts(structuredClone(apiData?.commonProjectAndRevisionData.explorationOperationalWellCosts))
+        setOriginalDevelopmentOperationalWellCosts(structuredClone(apiData?.commonProjectAndRevisionData.developmentOperationalWellCosts))
+        setWellProjectWells(structuredClone(apiData?.commonProjectAndRevisionData.wells?.filter((w) => !isExplorationWell(w)) ?? []))
+        setExplorationWells(structuredClone(apiData?.commonProjectAndRevisionData.wells?.filter((w) => isExplorationWell(w)) ?? []))
+        setOriginalWellProjectWells(structuredClone(apiData?.commonProjectAndRevisionData.wells?.filter((w) => !isExplorationWell(w)) ?? []))
+        setOriginalExplorationWells(structuredClone(apiData?.commonProjectAndRevisionData.wells?.filter((w) => isExplorationWell(w)) ?? []))
     }, [apiData])
 
-    if (!explorationOperationalWellCosts || !developmentOperationalWellCosts) {
+    if (!apiData || !explorationOperationalWellCosts || !developmentOperationalWellCosts) {
         return (<div>Loading...</div>)
     }
 
@@ -156,18 +165,16 @@ const EditTechnicalInputModal = () => {
 
             <Grid container justifyContent="flex-end">
                 {!isSaving && (
-                    <>
-                        <Grid item>
-                            <Tooltip title={getEditDisabledText()}>
-                                <Button
-                                    onClick={handleSave}
-                                    disabled={isEditDisabled || !editMode}
-                                >
-                                    Save
-                                </Button>
-                            </Tooltip>
-                        </Grid>
-                    </>
+                    <Grid item>
+                        <Tooltip title={getEditDisabledText()}>
+                            <Button
+                                onClick={handleSave}
+                                disabled={isEditDisabled || !editMode}
+                            >
+                                Save
+                            </Button>
+                        </Tooltip>
+                    </Grid>
                 )}
                 {(editMode) && isSaving && (
                     <Grid item>

@@ -6,10 +6,9 @@ namespace api.Features.Revisions.Create;
 
 public class CreateRevisionDto
 {
-    [Required]
-    public string Name { get; set; } = null!;
-    public InternalProjectPhase InternalProjectPhase { get; set; }
-    public ProjectClassification Classification { get; set; }
-    public bool Arena { get; set; }
-    public bool Mdqc { get; set; }
+    [Required] public required string Name { get; set; }
+    public InternalProjectPhase? InternalProjectPhase { get; set; }
+    public ProjectClassification? Classification { get; set; }
+    [Required] public required bool Arena { get; set; }
+    [Required] public required bool Mdqc { get; set; }
 }

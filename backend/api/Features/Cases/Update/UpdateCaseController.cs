@@ -1,6 +1,5 @@
 using api.AppInfrastructure.Authorization;
 using api.AppInfrastructure.ControllerAttributes;
-using api.Features.CaseProfiles.Dtos;
 using api.Features.FeatureToggles;
 
 using Microsoft.AspNetCore.Mvc;
@@ -14,13 +13,13 @@ public class UpdateCaseController(UpdateCaseService updateCaseService) : Control
     [HttpPut("projects/{projectId:guid}/cases/{caseId:guid}")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
-    public async Task<CaseDto> UpdateCase([FromRoute] Guid projectId, [FromRoute] Guid caseId, [FromBody] UpdateCaseDto caseDto)
+    public async Task UpdateCase([FromRoute] Guid projectId, [FromRoute] Guid caseId, [FromBody] UpdateCaseDto caseDto)
     {
         if (FeatureToggleService.RevisionEnabled)
         {
             UpdateCaseDtoValidator.Validate(caseDto);
         }
 
-        return await updateCaseService.UpdateCase(projectId, caseId, caseDto);
+        await updateCaseService.UpdateCase(projectId, caseId, caseDto);
     }
 }

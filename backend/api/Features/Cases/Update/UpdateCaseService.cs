@@ -1,27 +1,27 @@
 using api.Context;
-using api.Features.CaseProfiles.Dtos;
-using api.ModelMapping;
-using api.Models;
+using api.Context.Extensions;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Cases.Update;
 
-public class UpdateCaseService(DcdDbContext context, IMapperService mapperService)
+public class UpdateCaseService(DcdDbContext context)
 {
-    public async Task<CaseDto> UpdateCase(Guid projectId, Guid caseId, UpdateCaseDto updateCaseDto)
+    public async Task UpdateCase(Guid projectId, Guid caseId, UpdateCaseDto updateCaseDto)
     {
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
         var existingCase = await context.Cases
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.ProjectId == projectPk)
             .Where(x => x.Id == caseId)
             .SingleAsync();
 
         existingCase.Name = updateCaseDto.Name;
         existingCase.Description = updateCaseDto.Description;
-        existingCase.ReferenceCase = updateCaseDto.ReferenceCase ?? existingCase.ReferenceCase;
+        existingCase.ReferenceCase = updateCaseDto.ReferenceCase;
         existingCase.Archived = updateCaseDto.Archived;
-        existingCase.ArtificialLift = updateCaseDto.ArtificialLift ?? existingCase.ArtificialLift;
-        existingCase.ProductionStrategyOverview = updateCaseDto.ProductionStrategyOverview ?? existingCase.ProductionStrategyOverview;
+        existingCase.ArtificialLift = updateCaseDto.ArtificialLift;
+        existingCase.ProductionStrategyOverview = updateCaseDto.ProductionStrategyOverview;
         existingCase.ProducerCount = updateCaseDto.ProducerCount;
         existingCase.GasInjectorCount = updateCaseDto.GasInjectorCount;
         existingCase.WaterInjectorCount = updateCaseDto.WaterInjectorCount;
@@ -50,7 +50,5 @@ public class UpdateCaseService(DcdDbContext context, IMapperService mapperServic
         existingCase.ModifyTime = DateTimeOffset.UtcNow;
 
         await context.SaveChangesAndRecalculateAsync(caseId);
-
-        return mapperService.MapToDto<Case, CaseDto>(existingCase, caseId);
     }
 }

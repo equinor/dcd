@@ -18,6 +18,8 @@ interface ProjectContextType {
     setProjectId: Dispatch<SetStateAction<string>>
     isRevision: boolean
     setIsRevision: Dispatch<SetStateAction<boolean>>
+    isCreateRevisionModalOpen: boolean
+    setIsCreateRevisionModalOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined)
@@ -25,6 +27,7 @@ const ProjectContext = createContext<ProjectContextType | undefined>(undefined)
 const ProjectContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     const [activeTabProject, setActiveTabProject] = useState<number | boolean>(0)
     const [accessRights, setAccessRights] = useState<Components.Schemas.AccessRightsDto>()
+    const [isCreateRevisionModalOpen, setIsCreateRevisionModalOpen] = useState<boolean>(false)
     const [projectId, setProjectId] = useState<string>("")
     const [isRevision, setIsRevision] = useState<boolean>(false)
 
@@ -37,6 +40,8 @@ const ProjectContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setProjectId,
         isRevision,
         setIsRevision,
+        isCreateRevisionModalOpen,
+        setIsCreateRevisionModalOpen,
     }), [
         accessRights,
         setAccessRights,
@@ -46,6 +51,8 @@ const ProjectContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setProjectId,
         isRevision,
         setIsRevision,
+        isCreateRevisionModalOpen,
+        setIsCreateRevisionModalOpen,
     ])
 
     return (

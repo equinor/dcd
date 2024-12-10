@@ -1,4 +1,5 @@
 using api.Context;
+using api.Context.Extensions;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
 using api.Features.Assets.CaseAssets.Substructures.Services;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
@@ -445,6 +446,8 @@ public class ProspExcelImportService(
 
     public async Task ClearImportedProspData(Guid sourceCaseId, Guid projectId)
     {
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
         var caseItem = await caseService.GetCase(sourceCaseId);
         caseItem.SharepointFileId = null;
         caseItem.SharepointFileName = null;
@@ -463,13 +466,13 @@ public class ProspExcelImportService(
             throw new Exception();
         }
 
-        await UpdateCase(projectId, sourceCaseId, caseDto);
+        await UpdateCase(projectPk, sourceCaseId, caseDto);
     }
 
-    private async Task UpdateCase(Guid projectId, Guid caseId, ProspUpdateCaseDto updatedCaseDto)
+    private async Task UpdateCase(Guid projectPk, Guid caseId, ProspUpdateCaseDto updatedCaseDto)
     {
         var existingCase = await context.Cases
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.ProjectId == projectPk)
             .Where(x => x.Id == caseId)
             .SingleAsync();
 

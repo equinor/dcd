@@ -17,12 +17,12 @@ import Grid from "@mui/material/Grid"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
 import Modal from "./Modal"
-import { defaultDate, isDefaultDate, toMonthDate } from "../../Utils/common"
-import { GetCaseService } from "../../Services/CaseService"
-import { useModalContext } from "../../Context/ModalContext"
-import { useAppContext } from "../../Context/AppContext"
-import { projectQueryFn } from "../../Services/QueryFunctions"
-// import useEditProject from "../../Hooks/useEditProject"
+import { defaultDate, isDefaultDate, toMonthDate } from "@/Utils/common"
+import { GetCaseService } from "@/Services/CaseService"
+import { useModalContext } from "@/Context/ModalContext"
+import { useAppContext } from "@/Context/AppContext"
+import { projectQueryFn } from "@/Services/QueryFunctions"
+// import useEditProject from "@annehfroyen/Hooks/useEditProject"
 
 const CreateCaseModal = () => {
     const { isLoading, setIsLoading } = useAppContext()
@@ -50,7 +50,7 @@ const CreateCaseModal = () => {
     const [producerCount, setProducerWells] = useState<number>(0)
     const [gasInjectorCount, setGasInjectorWells] = useState<number>(0)
     const [waterInjectorCount, setWaterInjectorWells] = useState<number>(0)
-    const [projectCase, setCaseItem] = useState<Components.Schemas.CaseDto>()
+    const [projectCase, setCaseItem] = useState<Components.Schemas.CaseOverviewDto>()
 
     const resetForm = () => {
         setCaseName("")
@@ -64,7 +64,7 @@ const CreateCaseModal = () => {
 
     useEffect(() => {
         if (apiData) {
-            const selectedCase = apiData.cases?.find((c) => c.id === modalCaseId)
+            const selectedCase = apiData.commonProjectAndRevisionData.cases?.find((c) => c.caseId === modalCaseId)
 
             if (selectedCase) {
                 setCaseItem(selectedCase)
@@ -122,8 +122,7 @@ const CreateCaseModal = () => {
                 throw new Error("No project found")
             }
 
-            let projectResult: Components.Schemas.ProjectWithAssetsDto
-            if (caseModalEditMode && projectCase && projectCase.id) {
+            if (caseModalEditMode && projectCase && projectCase.caseId) {
                 const newCase = { ...projectCase }
                 newCase.name = caseName
                 newCase.description = description
@@ -133,15 +132,15 @@ const CreateCaseModal = () => {
                 newCase.waterInjectorCount = waterInjectorCount
                 newCase.productionStrategyOverview = productionStrategy ?? 0
 
-                projectResult = await (await GetCaseService()).updateCaseAndProfiles(
-                    apiData.id,
-                    projectCase.id,
+                await (await GetCaseService()).updateCase(
+                    apiData.projectId,
+                    projectCase.caseId,
                     newCase,
                 )
                 setIsLoading(false)
             } else {
-                projectResult = await (await GetCaseService()).create(
-                    apiData.id,
+                await (await GetCaseService()).create(
+                    apiData.projectId,
                     {
                         name: caseName,
                         description,

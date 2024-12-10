@@ -9,13 +9,14 @@ using api.Features.Assets.CaseAssets.Topsides.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.CaseProfiles.Dtos;
+using api.Features.ProjectData.Dtos.AssetDtos;
 
 namespace api.Features.Cases.GetWithAssets;
 
 public class CaseWithAssetsDto
 {
     [Required]
-    public CaseDto Case { get; set; } = null!;
+    public CaseOverviewDto Case { get; set; } = null!;
     public CessationWellsCostDto? CessationWellsCost { get; set; }
     public CessationWellsCostOverrideDto? CessationWellsCostOverride { get; set; }
     public CessationOffshoreFacilitiesCostDto? CessationOffshoreFacilitiesCost { get; set; }

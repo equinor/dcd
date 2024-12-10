@@ -5,19 +5,18 @@ import {
 import { add, exit_to_app } from "@equinor/eds-icons"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
+import styled from "styled-components"
 
 import { useProjectContext } from "@/Context/ProjectContext"
 import { projectQueryFn } from "@/Services/QueryFunctions"
 import { formatFullDate, truncateText } from "@/Utils/common"
 import useEditDisabled from "@/Hooks/useEditDisabled"
-import CreateRevisionModal from "../Modal/CreateRevisionModal"
 import { useRevisions } from "@/Hooks/useRevision"
 
 type RevisionsDropMenuProps = {
     isMenuOpen: boolean
     setIsMenuOpen: (isMenuOpen: boolean) => void
     menuAnchorEl: HTMLElement | null
-    setIsRevisionMenuOpen?: React.Dispatch<React.SetStateAction<boolean>>
     isCaseMenu: boolean
 }
 
@@ -27,10 +26,25 @@ interface Revision {
     date: string
 }
 
+const StyledInnerModal = styled.div`
+    flex-direction: column;
+    max-height: 500px;
+    overflow-y: scroll;
+    display: flex;
+`
+
+const ModalControls = styled.div`
+    margin-top: 10px;
+    border-top: 1px solid #dfd0d0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+`
+
 const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
-    isMenuOpen, setIsMenuOpen, menuAnchorEl, isCaseMenu, setIsRevisionMenuOpen,
+    isMenuOpen, setIsMenuOpen, menuAnchorEl, isCaseMenu,
 }) => {
-    const { isRevision } = useProjectContext()
+    const { isRevision, setIsCreateRevisionModalOpen } = useProjectContext()
     const {
         navigateToRevision,
         exitRevisionView,
@@ -41,7 +55,6 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
 
-    const [isRevisionModalOpen, setIsRevisionModalOpen] = useState(false)
     const [revisions, setRevisions] = useState<Revision[]>([])
 
     const { data: apiData } = useQuery({
@@ -52,7 +65,7 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
 
     useEffect(() => {
         if (apiData) {
-            const revisionsResult = apiData.revisionsDetailsList.map((r: Components.Schemas.RevisionDetailsDto) => ({
+            const revisionsResult = apiData.revisionDetailsList.map((r: Components.Schemas.RevisionDetailsDto) => ({
                 id: r.id,
                 revisionId: r.revisionId,
                 name: r.revisionName,
@@ -73,18 +86,14 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
     }
 
     return (
-        <>
-            <CreateRevisionModal
-                isModalOpen={isRevisionModalOpen}
-                setIsModalOpen={setIsRevisionModalOpen}
-            />
-            <Menu
-                id="menu-complex"
-                open={isMenuOpen}
-                anchorEl={menuAnchorEl}
-                onClose={() => (isCaseMenu && setIsRevisionMenuOpen ? setIsRevisionMenuOpen(false) : setIsMenuOpen(false))}
-                placement={isCaseMenu ? "left" : "bottom"}
-            >
+        <Menu
+            id="menu-complex"
+            open={isMenuOpen}
+            anchorEl={menuAnchorEl}
+            onClose={() => (setIsMenuOpen(false))}
+            placement={isCaseMenu ? "left" : "bottom"}
+        >
+            <StyledInnerModal>
                 {
                     revisions.map((revision) => (
                         <Menu.Item
@@ -102,8 +111,10 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
                         </Menu.Item>
                     ))
                 }
+            </StyledInnerModal>
+            <ModalControls>
                 <Menu.Item
-                    onClick={() => setIsRevisionModalOpen(true)}
+                    onClick={() => setIsCreateRevisionModalOpen(true)}
                     disabled={isEditDisabled}
                 >
                     <Icon data={add} size={16} />
@@ -120,8 +131,9 @@ const RevisionsDropMenu: React.FC<RevisionsDropMenuProps> = ({
                         Exit revision view
                     </Typography>
                 </Menu.Item>
-            </Menu>
-        </>
+            </ModalControls>
+
+        </Menu>
     )
 }
 

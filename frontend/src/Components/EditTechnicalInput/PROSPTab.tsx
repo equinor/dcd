@@ -48,12 +48,12 @@ const PROSPTab = () => {
             setDriveItems(result)
             setErrorMessage("")
 
-            if (apiData && sharepointUrl !== apiData.sharepointSiteUrl) {
-                const newProject: Components.Schemas.ProjectWithAssetsDto = { ...apiData }
-                newProject.sharepointSiteUrl = sharepointUrl
-                const projectResult = await (await GetProjectService()).updateProject(apiData.id, newProject)
-                addProjectEdit(apiData.id, projectResult)
-                setSharepointUrl(projectResult.sharepointSiteUrl ?? "")
+            if (apiData && sharepointUrl !== apiData.commonProjectAndRevisionData.sharepointSiteUrl) {
+                const newProject: Components.Schemas.UpdateProjectDto = { ...apiData.commonProjectAndRevisionData }
+                newProject.sharepointSiteUrl = sharepointUrl ?? null
+                const projectResult = await (await GetProjectService()).updateProject(apiData.projectId, newProject)
+                addProjectEdit(apiData.projectId, projectResult.commonProjectAndRevisionData)
+                setSharepointUrl(projectResult.commonProjectAndRevisionData.sharepointSiteUrl ?? "")
             }
         } catch (error) {
             console.error("[PROSPTab] error while submitting SharePoint URL", error)
@@ -67,13 +67,13 @@ const PROSPTab = () => {
     }
 
     useEffect(() => {
-        if (apiData && apiData.sharepointSiteUrl) {
+        if (apiData && apiData.commonProjectAndRevisionData.sharepointSiteUrl) {
             (async () => {
-                setSharepointUrl(apiData.sharepointSiteUrl ?? "")
-                if (apiData.sharepointSiteUrl && apiData.sharepointSiteUrl !== "") {
+                setSharepointUrl(apiData.commonProjectAndRevisionData.sharepointSiteUrl ?? "")
+                if (apiData.commonProjectAndRevisionData.sharepointSiteUrl && apiData.commonProjectAndRevisionData.sharepointSiteUrl !== "") {
                     try {
                         const result = await (await GetProspService())
-                            .getSharePointFileNamesAndId({ url: apiData.sharepointSiteUrl })
+                            .getSharePointFileNamesAndId({ url: apiData.commonProjectAndRevisionData.sharepointSiteUrl })
                         setDriveItems(result)
                         setErrorMessage("")
                     } catch (error) {
@@ -83,7 +83,7 @@ const PROSPTab = () => {
                 }
             })()
         }
-    }, [apiData?.sharepointSiteUrl])
+    }, [apiData?.commonProjectAndRevisionData.sharepointSiteUrl])
 
     return (
         <Grid container rowSpacing={3} columnSpacing={2}>

@@ -51,7 +51,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
         const newDevelopmentTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Oil producer",
-                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: wellProjectOilProducerCostData,
                 resourceName: "wellProjectOilProducerCostOverride",
                 resourceId: wellProject.id,
@@ -63,7 +63,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             },
             {
                 profileName: "Gas producer",
-                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: wellProjectGasProducerCostData,
                 resourceName: "wellProjectGasProducerCostOverride",
                 resourceId: wellProject.id,
@@ -75,7 +75,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             },
             {
                 profileName: "Water injector",
-                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: wellProjectWaterInjectorCostData,
                 resourceName: "wellProjectWaterInjectorCostOverride",
                 resourceId: wellProject.id,
@@ -87,7 +87,7 @@ const DevelopmentWellCosts: React.FC<DevelopmentWellCostsProps> = ({
             },
             {
                 profileName: "Gas injector",
-                unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                 profile: wellProjectGasInjectorCostData,
                 resourceName: "wellProjectGasInjectorCostOverride",
                 resourceId: wellProject.id,

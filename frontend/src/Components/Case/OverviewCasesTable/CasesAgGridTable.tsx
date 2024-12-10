@@ -197,16 +197,16 @@ const CasesAgGridTable = ({
     }, [isRevision])
 
     const casesToRowData = (isArchived: boolean) => {
-        let data: Components.Schemas.RevisionWithCasesDto | Components.Schemas.ProjectWithAssetsDto | null | undefined = apiData
+        let data: Components.Schemas.RevisionDataDto | Components.Schemas.ProjectDataDto | null | undefined = apiData
         if (isRevision && apiRevisionData) {
             data = apiRevisionData
         }
-        if (data && data.cases) {
-            const cases = isArchived ? data.cases.filter((c) => !c.archived) : data.cases.filter((c) => c.archived)
+        if (data && data.commonProjectAndRevisionData.cases) {
+            const cases = isArchived ? data.commonProjectAndRevisionData.cases.filter((c) => !c.archived) : data.commonProjectAndRevisionData.cases.filter((c) => c.archived)
             const tableCases: TableCase[] = []
             cases.forEach((c) => {
                 const tableCase: TableCase = {
-                    id: c.id!,
+                    id: c.caseId!,
                     name: c.name ?? "",
                     description: c.description ?? "",
                     productionStrategyOverview: c.productionStrategyOverview,
@@ -214,7 +214,7 @@ const CasesAgGridTable = ({
                     waterInjectorCount: c.waterInjectorCount ?? 0,
                     gasInjectorCount: c.gasInjectorCount ?? 0,
                     createdAt: c.createTime?.substring(0, 10),
-                    referenceCaseId: data.referenceCaseId,
+                    referenceCaseId: data.commonProjectAndRevisionData.referenceCaseId,
                 }
                 tableCases.push(tableCase)
             })
@@ -244,7 +244,7 @@ const CasesAgGridTable = ({
         if (apiData) {
             try {
                 setShowRevisionReminder(true)
-                const unwrappedProjectId = unwrapProjectId(apiData.id)
+                const unwrappedProjectId = unwrapProjectId(apiData.projectId)
                 const projectResult = await (await GetProjectService()).getProject(unwrappedProjectId)
                 await (await GetSTEAService()).excelToSTEA(projectResult)
             } catch (error) {

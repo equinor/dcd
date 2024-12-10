@@ -40,11 +40,11 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
         enabled: !!projectId,
     })
 
-    const caseData = apiData?.case as Components.Schemas.CaseDto
-    const topsideData = apiData?.topside as Components.Schemas.TopsideWithProfilesDto
-    const drainageStrategyData = apiData?.drainageStrategy as Components.Schemas.DrainageStrategyWithProfilesDto
-    const co2EmissionsOverrideData = apiData?.co2EmissionsOverride as Components.Schemas.Co2EmissionsOverrideDto
-    const co2EmissionsData = apiData?.co2Emissions as Components.Schemas.Co2EmissionsDto
+    const caseData = apiData?.case
+    const topsideData = apiData?.topside
+    const drainageStrategyData = apiData?.drainageStrategy 
+    const co2EmissionsOverrideData = apiData?.co2EmissionsOverride
+    const co2EmissionsData = apiData?.co2Emissions
 
     // todo: get co2Intensity, co2IntensityTotal and co2DrillingFlaringFuelTotals stored in backend
     const [co2Intensity, setCo2Intensity] = useState<Components.Schemas.Co2IntensityDto>()
@@ -97,10 +97,10 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     useEffect(() => {
         (async () => {
             try {
-                if (caseData && projectData && activeTabCase === 6 && caseData.id) {
-                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(projectData.id, caseData.id)
-                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(projectData.id, caseData.id)
-                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(projectData.id, caseData.id)
+                if (caseData && projectData && activeTabCase === 6 && caseData.caseId) {
+                    const co2I = (await GetGenerateProfileService()).generateCo2IntensityProfile(projectData.projectId, caseData.caseId)
+                    const co2ITotal = await (await GetGenerateProfileService()).generateCo2IntensityTotal(projectData.projectId, caseData.caseId)
+                    const co2DFFTotal = await (await GetGenerateProfileService()).generateCo2DrillingFlaringFuelTotals(projectData.projectId, caseData.caseId)
 
                     setCo2Intensity(await co2I)
                     setCo2IntensityTotal(Number(co2ITotal))
@@ -127,7 +127,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
         const newTimeSeriesData: ITimeSeriesTableData[] = [
             {
                 profileName: "Annual CO2 emissions",
-                unit: `${projectData?.physicalUnit === 0 ? "MTPA" : "MTPA"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "MTPA" : "MTPA"}`,
                 profile: co2EmissionsData,
                 overridable: true,
                 editable: true,
@@ -139,7 +139,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
             },
             {
                 profileName: "Year-by-year CO2 intensity",
-                unit: `${projectData?.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
+                unit: `${projectData?.commonProjectAndRevisionData.physicalUnit === 0 ? "kg CO2/boe" : "kg CO2/boe"}`,
                 profile: co2Intensity,
                 total: co2IntensityTotal?.toString(),
                 overridable: false,
@@ -189,9 +189,9 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     }
 
     const datePickerValue = (() => {
-        if (projectData?.physicalUnit === 0) {
+        if (projectData?.commonProjectAndRevisionData.physicalUnit === 0) {
             return "SI"
-        } if (projectData?.physicalUnit === 1) {
+        } if (projectData?.commonProjectAndRevisionData.physicalUnit === 1) {
             return "Oil field"
         }
         return ""

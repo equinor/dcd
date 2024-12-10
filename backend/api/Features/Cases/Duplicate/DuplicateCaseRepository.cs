@@ -8,9 +8,9 @@ namespace api.Features.Cases.Duplicate;
 
 public class DuplicateCaseRepository(DcdDbContext context)
 {
-    public async Task<Case> GetCaseAndAssetsNoTracking(Guid caseId)
+    public async Task<Case> GetCaseAndAssetsNoTracking(Guid projectId, Guid caseId)
     {
-        var caseItem = await LoadCase(caseId);
+        var caseItem = await LoadCase(projectId, caseId);
 
         await LoadDrainageStrategies(caseItem.DrainageStrategyLink);
         await LoadExplorations(caseItem.ExplorationLink);
@@ -26,7 +26,7 @@ public class DuplicateCaseRepository(DcdDbContext context)
         return caseItem;
     }
 
-    private async Task<Case> LoadCase(Guid caseId)
+    private async Task<Case> LoadCase(Guid projectId, Guid caseId)
     {
         return await context.Cases
             .Include(c => c.TotalFeasibilityAndConceptStudies)
@@ -49,8 +49,9 @@ public class DuplicateCaseRepository(DcdDbContext context)
             .Include(c => c.CalculatedTotalCostCostProfile)
             .Include(c => c.CalculatedTotalIncomeCostProfile)
             .Include(c => c.CalculatedTotalCostCostProfile)
+            .Where(x => x.ProjectId == projectId)
             .Where(x => x.Id == caseId)
-            .FirstOrDefaultAsync() ?? throw new NotFoundInDBException($"Case {caseId} not found.");
+            .SingleOrDefaultAsync() ?? throw new NotFoundInDBException($"Case {caseId} not found.");
     }
 
     private async Task LoadDrainageStrategies(Guid drainageStrategyLink)

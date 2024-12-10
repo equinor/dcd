@@ -6,9 +6,8 @@ import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-
 import { useQuery } from "@tanstack/react-query"
 import OperationalWellCosts from "./OperationalWellCosts"
 import WellListEditTechnicalInput from "./WellListEditTechnicalInput"
-import { useModalContext } from "../../Context/ModalContext"
-import { useAppContext } from "../../Context/AppContext"
-import { projectQueryFn } from "../../Services/QueryFunctions"
+import { useAppContext } from "@/Context/AppContext"
+import { projectQueryFn } from "@/Services/QueryFunctions"
 
 const Section = styled.section`
     margin-top: 56px;
@@ -24,17 +23,17 @@ const SectionHeader = styled.div`
     justify-content: space-between;
 `
 interface Props {
-    developmentOperationalWellCosts: Components.Schemas.DevelopmentOperationalWellCostsDto
-    setDevelopmentOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsDto | undefined>>
+    developmentOperationalWellCosts: Components.Schemas.DevelopmentOperationalWellCostsOverviewDto
+    setDevelopmentOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.DevelopmentOperationalWellCostsOverviewDto | undefined>>
 
-    explorationOperationalWellCosts: Components.Schemas.ExplorationOperationalWellCostsDto
-    setExplorationOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsDto | undefined>>
+    explorationOperationalWellCosts: Components.Schemas.ExplorationOperationalWellCostsOverviewDto
+    setExplorationOperationalWellCosts: Dispatch<SetStateAction<Components.Schemas.ExplorationOperationalWellCostsOverviewDto | undefined>>
 
-    wellProjectWells: Components.Schemas.WellDto[]
-    setWellProjectWells: Dispatch<SetStateAction<Components.Schemas.WellDto[]>>
+    wellProjectWells: Components.Schemas.WellOverviewDto[]
+    setWellProjectWells: Dispatch<SetStateAction<Components.Schemas.WellOverviewDto[]>>
 
-    explorationWells: Components.Schemas.WellDto[]
-    setExplorationWells: Dispatch<SetStateAction<Components.Schemas.WellDto[]>>
+    explorationWells: Components.Schemas.WellOverviewDto[]
+    setExplorationWells: Dispatch<SetStateAction<Components.Schemas.WellOverviewDto[]>>
 
     setDeletedWells: Dispatch<SetStateAction<string[]>>
 }
@@ -65,7 +64,7 @@ const WellCostsTab = ({
         const newWell: any = {
             wellCategory: category,
             name: "New well",
-            projectId: apiData?.id,
+            projectId: apiData?.projectId,
         }
         if (wells) {
             const newWells = [...wells, newWell]
