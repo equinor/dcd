@@ -409,3 +409,26 @@ export function truncateText(text: string, maxLength: number): string {
 export function isAxiosError(error: unknown): error is AxiosError {
     return (error as AxiosError).isAxiosError !== undefined
 }
+
+export const defaultAxesData = [
+    {
+        type: "category",
+        position: "bottom",
+        gridLine: {
+            style: [
+                {
+                    stroke: "rgba(0, 0, 0, 0.2)",
+                    lineDash: [3, 2],
+                },
+                {
+                    stroke: "rgba(0, 0, 0, 0.2)",
+                    lineDash: [3, 2],
+                },
+            ],
+        },
+    },
+    {
+        type: "number",
+        position: "left",
+    },
+]

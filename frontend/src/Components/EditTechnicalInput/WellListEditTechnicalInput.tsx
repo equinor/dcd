@@ -285,6 +285,8 @@ const WellListEditTechnicalInput = ({
                         rowSelection={{
                             mode: "multiRow",
                             enableClickSelection: false,
+                            checkboxes: false,
+                            headerCheckbox: false,
                         }}
                     />
                 </div>

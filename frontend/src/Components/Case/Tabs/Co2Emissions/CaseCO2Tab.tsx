@@ -22,6 +22,11 @@ import CaseCo2TabSkeleton from "../../../LoadingSkeletons/CaseCo2TabSkeleton"
 import { SetTableYearsFromProfiles } from "../../Components/CaseTabTableHelper"
 import { AgChartsTimeseries, setValueToCorrespondingYear } from "../../../AgGrid/AgChartsTimeseries"
 
+interface ICo2DistributionChartData {
+    profile: string
+    value: number | undefined
+}
+
 const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const { caseId } = useParams()
     const { activeTabCase } = useCaseContext()
@@ -47,6 +52,11 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
     const co2EmissionsData = apiData?.co2Emissions
 
     // todo: get co2Intensity, co2IntensityTotal and co2DrillingFlaringFuelTotals stored in backend
+    const [co2DistributionChartData, setCo2DistributionChartData] = useState<ICo2DistributionChartData[]>([
+        { profile: "Drilling", value: 0 },
+        { profile: "Flaring", value: 0 },
+        { profile: "Fuel", value: 0 },
+    ])
     const [co2Intensity, setCo2Intensity] = useState<Components.Schemas.Co2IntensityDto>()
     const [co2IntensityTotal, setCo2IntensityTotal] = useState<number>(0)
     const [co2DrillingFlaringFuelTotals, setCo2DrillingFlaringFuelTotals] = useState<Components.Schemas.Co2DrillingFlaringFuelTotalsDto>()
@@ -69,6 +79,18 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
         {
             type: "category",
             position: "bottom",
+            gridLine: {
+                style: [
+                    {
+                        stroke: "rgba(0, 0, 0, 0.2)",
+                        lineDash: [3, 2],
+                    },
+                    {
+                        stroke: "rgba(0, 0, 0, 0.2)",
+                        lineDash: [3, 2],
+                    },
+                ],
+            },
         },
         {
             type: "number",
@@ -121,7 +143,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
                 console.error("[CaseView] Error while generating cost profile", error)
             }
         })()
-    }, [activeTabCase])
+    }, [activeTabCase, caseData])
 
     useEffect(() => {
         const newTimeSeriesData: ITimeSeriesTableData[] = [
@@ -188,15 +210,6 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
         return dataArray
     }
 
-    const datePickerValue = (() => {
-        if (projectData?.commonProjectAndRevisionData.physicalUnit === 0) {
-            return "SI"
-        } if (projectData?.commonProjectAndRevisionData.physicalUnit === 1) {
-            return "Oil field"
-        }
-        return ""
-    })()
-
     const co2EmissionsTotalString = () => {
         if (co2EmissionsData) {
             return (Math.round(co2EmissionsData.sum! * 10) / 10).toString()
@@ -204,11 +217,13 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
         return "0"
     }
 
-    const co2DistributionChartData = [
-        { profile: "Drilling", value: co2DrillingFlaringFuelTotals?.co2Drilling },
-        { profile: "Flaring", value: co2DrillingFlaringFuelTotals?.co2Flaring },
-        { profile: "Fuel", value: co2DrillingFlaringFuelTotals?.co2Fuel },
-    ]
+    useEffect(() => {
+        setCo2DistributionChartData([
+            { profile: "Drilling", value: co2DrillingFlaringFuelTotals?.co2Drilling ?? 0 },
+            { profile: "Flaring", value: co2DrillingFlaringFuelTotals?.co2Flaring ?? 0 },
+            { profile: "Fuel", value: co2DrillingFlaringFuelTotals?.co2Fuel ?? 0 },
+        ])
+    }, [co2DrillingFlaringFuelTotals?.co2Flaring])
 
     if (!topsideData) {
         return <CaseCo2TabSkeleton />
