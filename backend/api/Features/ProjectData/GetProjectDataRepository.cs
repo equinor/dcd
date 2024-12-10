@@ -115,6 +115,7 @@ public class GetProjectDataRepository(DcdDbContext context)
                 Substructures = new List<SubstructureOverviewDto>(),
                 Topsides = new List<TopsideOverviewDto>(),
                 Transports = new List<TransportOverviewDto>(),
+                OnshorePowerSupplies = new List<OnshorePowerSupplyOverviewDto>(),
                 DrainageStrategies = new List<DrainageStrategyOverviewDto>()
             })
             .SingleAsync();
@@ -233,6 +234,18 @@ public class GetProjectDataRepository(DcdDbContext context)
         return await context.Transports
             .Where(x => x.ProjectId == projectId)
             .Select(x => new TransportOverviewDto
+            {
+                Id = x.Id,
+                Source = x.Source
+            })
+            .ToListAsync();
+    }
+
+    public async Task<List<OnshorePowerSupplyOverviewDto>> GetOnshorePowerSupplies(Guid projectId)
+    {
+        return await context.OnshorePowerSupplies
+            .Where(x => x.ProjectId == projectId)
+            .Select(x => new OnshorePowerSupplyOverviewDto
             {
                 Id = x.Id,
                 Source = x.Source
