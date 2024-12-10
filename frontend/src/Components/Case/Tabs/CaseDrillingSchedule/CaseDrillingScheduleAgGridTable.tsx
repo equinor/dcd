@@ -340,7 +340,13 @@ const CaseDrillingScheduleTabTable = ({
                     defaultColDef={defaultColDef}
                     animateRows
                     domLayout="autoHeight"
-                    rowSelection={{ mode: "multiRow", copySelectedRows: true }}
+                    rowSelection={{
+                        mode: "multiRow",
+                        copySelectedRows: true,
+                        checkboxes: false,
+                        headerCheckbox: false,
+                        enableClickSelection: true,
+                    }}
                     cellSelection
                     suppressMovableColumns
                     enableCharts

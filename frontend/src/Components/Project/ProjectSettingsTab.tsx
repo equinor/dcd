@@ -30,7 +30,7 @@ const ProjectSettingsTab = () => {
         enabled: !!projectId && !!revisionId && isRevision,
     })
 
-    const [dummyRole, setDummyRole] = useState(0) // TODO: Get role from user
+    const [dummyRole] = useState(0) // TODO: Get role from user
     const [oilPriceUSD, setOilPriceUSD] = useState(apiData?.commonProjectAndRevisionData.oilPriceUSD || 0)
     const [gasPriceNOK, setGasPriceNOK] = useState(apiData?.commonProjectAndRevisionData.gasPriceNOK || 0)
     const [discountRate, setDiscountRate] = useState(apiData?.commonProjectAndRevisionData.discountRate || 0)
@@ -102,6 +102,16 @@ const ProjectSettingsTab = () => {
         }
     }
 
+    const getPhysicalUnit = () => {
+        const data = isRevision ? apiRevisionData : apiData
+        return data?.commonProjectAndRevisionData.physicalUnit === 0 ? "SI" : "Oil field"
+    }
+
+    const getCurrency = () => {
+        const data = isRevision ? apiRevisionData : apiData
+        return data?.commonProjectAndRevisionData.currency === 1 ? "NOK" : "USD"
+    }
+
     if (!apiData) {
         return <div>Loading project data...</div>
     }
@@ -110,7 +120,7 @@ const ProjectSettingsTab = () => {
         <Grid container direction="column" spacing={2}>
             <Grid item>
                 <InputSwitcher
-                    value={isRevision ? apiRevisionData?.commonProjectAndRevisionData.physicalUnit === 0 ? "SI" : "Oil field" : apiData.commonProjectAndRevisionData.physicalUnit === 0 ? "SI" : "Oil field"}
+                    value={getPhysicalUnit()}
                     label="Physical unit"
                 >
                     <NativeSelect
@@ -126,7 +136,7 @@ const ProjectSettingsTab = () => {
             </Grid>
             <Grid item>
                 <InputSwitcher
-                    value={isRevision ? apiRevisionData?.commonProjectAndRevisionData.currency === 1 ? "NOK" : "USD" : apiData.commonProjectAndRevisionData.currency === 1 ? "NOK" : "USD"}
+                    value={getCurrency()}
                     label="Currency"
                 >
                     <NativeSelect
