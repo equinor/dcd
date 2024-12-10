@@ -1,4 +1,5 @@
 using api.Context;
+using api.Context.Extensions;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -8,11 +9,14 @@ public class DeleteWellService(DcdDbContext context)
 {
     public async Task DeleteWell(Guid projectId, Guid wellId)
     {
-        var project = await context.Projects.SingleAsync(c => c.Id == projectId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
+        var project = await context.Projects.SingleAsync(c => c.Id == projectPk);
+
         project.ModifyTime = DateTimeOffset.UtcNow;
 
         var well = await context.Wells
-            .Where(x => x.ProjectId == projectId)
+            .Where(x => x.ProjectId == projectPk)
             .Where(x => x.Id == wellId)
             .SingleAsync();
 
