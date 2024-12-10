@@ -174,6 +174,7 @@ declare namespace Components {
             substructureLink: string; // uuid
             topsideLink: string; // uuid
             transportLink: string; // uuid
+            onshorePowerSupplyLink: string; // uuid
             sharepointFileId: string | null;
             sharepointFileName: string | null;
             sharepointFileUrl: string | null;
@@ -364,8 +365,8 @@ declare namespace Components {
             substructures: SubstructureOverviewDto[];
             topsides: TopsideOverviewDto[];
             transports: TransportOverviewDto[];
-            drainageStrategies: DrainageStrategyOverviewDto[];
             onshorePowerSupplies: OnshorePowerSupplyOverviewDto[];
+            drainageStrategies: DrainageStrategyOverviewDto[];
         }
         export interface CompareCasesDto {
             caseId: string; // uuid
