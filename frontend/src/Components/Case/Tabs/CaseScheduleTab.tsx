@@ -95,7 +95,7 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
     const caseData = apiData.case
 
     const getDGOChangesObject = (newDate: Date): ResourceObject | undefined => {
-        const newCaseObject = caseData as Components.Schemas.CaseOverviewDto
+        const newCaseObject = caseData
         newCaseObject.dG0Date = new Date(newDate).toISOString()
 
         if (newCaseObject.dG1Date && isDefaultDateString(newCaseObject.dG1Date)) {
@@ -123,7 +123,7 @@ const CaseScheduleTab = ({ addEdit }: { addEdit: any }) => {
     }
 
     const getNewCaseObject = (dateKey: string, newDate: Date): ResourceObject => {
-        const newCaseObject = caseData as Components.Schemas.CaseOverviewDto
+        const newCaseObject = caseData
         newCaseObject[dateKey as keyof typeof newCaseObject] = newDate.toISOString() as never // workaround for TS error
 
         return newCaseObject

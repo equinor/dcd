@@ -40,11 +40,11 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
         enabled: !!projectId,
     })
 
-    const caseData = apiData?.case as Components.Schemas.CaseOverviewDto
-    const topsideData = apiData?.topside as Components.Schemas.TopsideOverviewDto
-    const drainageStrategyData = apiData?.drainageStrategy as Components.Schemas.DrainageStrategyOverviewDto
-    const co2EmissionsOverrideData = apiData?.co2EmissionsOverride as Components.Schemas.Co2EmissionsOverrideDto
-    const co2EmissionsData = apiData?.co2Emissions as Components.Schemas.Co2EmissionsDto
+    const caseData = apiData?.case
+    const topsideData = apiData?.topside
+    const drainageStrategyData = apiData?.drainageStrategy 
+    const co2EmissionsOverrideData = apiData?.co2EmissionsOverride
+    const co2EmissionsData = apiData?.co2Emissions
 
     // todo: get co2Intensity, co2IntensityTotal and co2DrillingFlaringFuelTotals stored in backend
     const [co2Intensity, setCo2Intensity] = useState<Components.Schemas.Co2IntensityDto>()
