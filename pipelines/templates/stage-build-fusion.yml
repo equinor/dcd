@@ -49,9 +49,9 @@ stages:
                   type: .manifest.type,
                   entry: .main,
                   version: {
-                      major: "2",
-                      minor: "2",
-                      patch: "1"
+                      major: "1",
+                      minor: "0",
+                      patch: "0"
                   }
                   }' package.json)" > ./dist/app-manifest.json
           - task: Bash@3

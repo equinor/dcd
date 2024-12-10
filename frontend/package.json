@@ -1,6 +1,6 @@
 {
     "name": "conceptapp",
-    "version": "2.2.1",
+    "version": "1.0.0",
     "description": "",
     "type": "module",
     "license": "ISC",
@@ -113,7 +113,7 @@
     },
     "manifest": {
         "name": "Concept App",
-        "version": "2.2.1",
+        "version": "1.0.0",
         "shortName": "conceptapp",
         "description": "Concept App",
         "type": "standalone",
