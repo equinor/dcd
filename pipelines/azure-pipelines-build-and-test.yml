@@ -60,6 +60,15 @@ jobs:
       - task: NodeTool@0
         inputs:
           versionSpec: "16.x"
+      - task: Bash@3
+        displayName: 'Clean and Reinstall Dependencies'
+        inputs:
+          workingDir: "frontend"
+          targetType: 'inline'
+          script: |
+            echo "Deleting node_modules and package-lock.json..."
+            rm -rf node_modules package-lock.json
+            echo "Reinstalling dependencies..."
       - task: Npm@1
         displayName: "Npm Install"
         inputs:
