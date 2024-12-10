@@ -1,9 +1,9 @@
 import {
     useState, useEffect,
 } from "react"
-import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
+import { Grid } from "@mui/material"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import {
     ITimeSeries,
@@ -177,7 +177,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const offshoreOpexPlussWellInterventionData = handleOffshoreOpexPlussWellIntervention()
             const onshoreRelatedOPEXCostProfileData = apiData?.onshoreRelatedOPEXCostProfile
             const additionalOPEXCostProfileData = apiData?.additionalOPEXCostProfile
-
+            const onshorePowerSupplyCostProfileData = apiData?.onshorePowerSupplyCostProfile
             const newExplorationTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Exploration cost",
@@ -210,6 +210,12 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     profileName: "Cessation - onshore facilities",
                     unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: cessationOnshoreFacilitiesCostProfileData,
+                    group: "CAPEX",
+                },
+                {
+                    profileName: "Onshore - power from shore",
+                    unit: `${projectData?.currency === 1 ? "MNOK" : "MUSD"}`,
+                    profile: onshorePowerSupplyCostProfileData,
                     group: "CAPEX",
                 },
             ]
