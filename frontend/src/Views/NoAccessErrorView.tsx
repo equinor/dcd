@@ -22,7 +22,6 @@ interface Props {
   projectClassification: number
 }
 
-// Main Component
 const ForbiddenAccess: React.FC<Props> = ({ projectClassification }) => {
     const restrictionExplanations = [
         "This project is classified as 'internal', and you can access it two ways: Either by joining an AccessIT group or by joining the project as a project member.",
