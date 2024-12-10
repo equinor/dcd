@@ -12,10 +12,6 @@ public class OnshorePowerSupply : IHasProjectId, IChangeTrackable
     public virtual Project Project { get; set; } = null!;
 
     public string Name { get; set; } = string.Empty;
-    // public double GasExportPipelineLength { get; set; }
-    // public double OilExportPipelineLength { get; set; }
-    // public Maturity Maturity { get; set; }
-    // public Currency Currency { get; set; }
     public DateTimeOffset? LastChangedDate { get; set; }
     public int CostYear { get; set; }
     public Source Source { get; set; }

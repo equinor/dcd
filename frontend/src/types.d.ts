@@ -135,6 +135,7 @@ declare namespace Components {
             drilling?: TimeSeriesCostDto;
             offshoreFacilities?: OffshoreFacilitiesCostProfileDto;
             cessationCost?: CessationCostDto;
+            onshorePowerSupplyCost?: OnshorePowerSupplyCostProfileDto;
         }
         export interface CapexYear {
             values?: number /* double */[] | null;
@@ -445,6 +446,7 @@ declare namespace Components {
             substructures: SubstructureWithProfilesDto[];
             topsides: TopsideWithProfilesDto[];
             transports: TransportWithProfilesDto[];
+            onshorePowerSupplies: OnshorePowerSupplyWithProfilesDto[];
             drainageStrategies: DrainageStrategyWithProfilesDto[];
             wellProjects: WellProjectWithProfilesDto[];
         }

@@ -19,14 +19,6 @@ public class OnshorePowerSupplyWithProfilesDto
     public OnshorePowerSupplyCostProfileOverrideDto CostProfileOverride { get; set; } = new();
     [Required]
     public OnshorePowerSupplyCessationCostProfileDto CessationCostProfile { get; set; } = new();
-    // [Required]
-    // public Maturity Maturity { get; set; }
-    // [Required]
-    // public double GasExportPipelineLength { get; set; }
-    // [Required]
-    // public double OilExportPipelineLength { get; set; }
-    // [Required]
-    // public Currency Currency { get; set; }
     public DateTimeOffset? LastChangedDate { get; set; }
     [Required]
     public int CostYear { get; set; }

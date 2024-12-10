@@ -28,7 +28,6 @@ public class OnshorePowerSupplyService(
     public async Task<OnshorePowerSupplyDto> UpdateOnshorePowerSupply<TDto>(Guid projectId, Guid caseId, Guid onshorePowerSupplyId, TDto updatedOnshorePowerSupplyDto)
         where TDto : BaseUpdateOnshorePowerSupplyDto
     {
-        // Need to verify that the project from the URL is the same as the project of the resource
         await projectAccessService.ProjectExists<OnshorePowerSupply>(projectId, onshorePowerSupplyId);
 
         var existing = await onshorePowerSupplyRepository.GetOnshorePowerSupply(onshorePowerSupplyId)
@@ -37,10 +36,8 @@ public class OnshorePowerSupplyService(
         mapperService.MapToEntity(updatedOnshorePowerSupplyDto, existing, onshorePowerSupplyId);
         existing.LastChangedDate = DateTimeOffset.UtcNow;
 
-        // OnshorePowerSupply updatedOnshorePowerSupply;
         try
         {
-            // updatedOnshorePowerSupply = _repository.UpdateOnshorePowerSupply(existing);
             await caseRepository.UpdateModifyTime(caseId);
             await onshorePowerSupplyRepository.SaveChangesAndRecalculateAsync(caseId);
         }

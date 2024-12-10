@@ -12,14 +12,6 @@ public class OnshorePowerSupplyDto
     public string Name { get; set; } = string.Empty;
     [Required]
     public Guid ProjectId { get; set; }
-    // [Required]
-    // public Maturity Maturity { get; set; }
-    // [Required]
-    // public double GasExportPipelineLength { get; set; }
-    // [Required]
-    // public double OilExportPipelineLength { get; set; }
-    // [Required]
-    // public Currency Currency { get; set; }
     public DateTimeOffset? LastChangedDate { get; set; }
     [Required]
     public int CostYear { get; set; }
