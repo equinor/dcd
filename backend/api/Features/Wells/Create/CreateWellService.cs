@@ -1,4 +1,5 @@
 using api.Context;
+using api.Context.Extensions;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +10,14 @@ public class CreateWellService(DcdDbContext context)
 {
     public async Task<Guid> CreateWell(Guid projectId, CreateWellDto createWellDto)
     {
-        var project = await context.Projects.SingleAsync(c => c.Id == projectId);
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+        var project = await context.Projects.SingleAsync(c => c.Id == projectPk);
+
         project.ModifyTime = DateTimeOffset.UtcNow;
 
         var well = new Well
         {
-            ProjectId = project.Id,
+            ProjectId = projectPk,
             Name = createWellDto.Name,
             WellCategory = createWellDto.WellCategory,
             WellInterventionCost = createWellDto.WellInterventionCost,

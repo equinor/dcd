@@ -1,4 +1,5 @@
 using api.Context;
+using api.Context.Extensions;
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
 
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,8 @@ public class UpdateDevelopmentOperationalWellCostsService(DcdDbContext context)
         Guid developmentOperationalWellCostsId,
         UpdateDevelopmentOperationalWellCostsDto dto)
     {
+        var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
+
         var existingDevelopmentOperationalWellCosts = await context.DevelopmentOperationalWellCosts.SingleAsync(x => x.Id == developmentOperationalWellCostsId);
 
         existingDevelopmentOperationalWellCosts.RigUpgrading = dto.RigUpgrading;
@@ -19,7 +22,7 @@ public class UpdateDevelopmentOperationalWellCostsService(DcdDbContext context)
         existingDevelopmentOperationalWellCosts.AnnualWellInterventionCostPerWell = dto.AnnualWellInterventionCostPerWell;
         existingDevelopmentOperationalWellCosts.PluggingAndAbandonment = dto.PluggingAndAbandonment;
 
-        var project = await context.Projects.SingleAsync(c => c.Id == projectId);
+        var project = await context.Projects.SingleAsync(c => c.Id == projectPk);
         project.ModifyTime = DateTimeOffset.UtcNow;
 
         await context.SaveChangesAsync();

@@ -11,7 +11,7 @@ public class GetIsWellInUseService(DcdDbContext context)
         var well = await context.Wells
             .Include(w => w.WellProjectWells).ThenInclude(wp => wp.DrillingSchedule)
             .Include(w => w.ExplorationWells).ThenInclude(ew => ew.DrillingSchedule)
-            .FirstOrDefaultAsync(w => w.Id == wellId);
+            .SingleOrDefaultAsync(w => w.Id == wellId);
 
         if (well == null)
         {

@@ -516,8 +516,8 @@ declare namespace Components {
         }
         export interface CreateRevisionDto {
             name: string;
-            internalProjectPhase: InternalProjectPhase /* int32 */;
-            classification: ProjectClassification /* int32 */;
+            internalProjectPhase?: InternalProjectPhase /* int32 */;
+            classification?: ProjectClassification /* int32 */;
             arena: boolean;
             mdqc: boolean;
         }

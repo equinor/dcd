@@ -67,7 +67,7 @@ const Controls = () => {
         }
     }
 
-    const caseData = apiData?.case as Components.Schemas.CaseOverviewDto
+    const caseData = apiData?.case
 
     useEffect(() => {
         cancelEdit()
@@ -82,7 +82,7 @@ const Controls = () => {
     }, [projectData, isRevision, revisionData])
 
     useEffect(() => {
-        if (apiData) {
+        if (apiData && caseData) {
             setCaseLastUpdated(caseData.modifyTime)
         }
     }, [caseData])

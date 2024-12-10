@@ -469,11 +469,12 @@ public class DrainageStrategyTimeSeriesService(
         var existingProfile = await getProfile(productionProfileId)
             ?? throw new NotFoundInDBException($"Production profile with id {productionProfileId} not found.");
 
-        // Need to verify that the project from the URL is the same as the project of the resource
-        await projectAccessService.ProjectExists<DrainageStrategy>(projectId, existingProfile.DrainageStrategy.Id);
+        var projectPk = await caseRepository.GetPrimaryKeyForProjectId(projectId);
 
-        var project = await caseRepository.GetProject(projectId)
-            ?? throw new NotFoundInDBException($"Project with id {projectId} not found.");
+        // Need to verify that the project from the URL is the same as the project of the resource
+        await projectAccessService.ProjectExists<DrainageStrategy>(projectPk, existingProfile.DrainageStrategy.Id);
+
+        var project = await caseRepository.GetProject(projectPk);
 
         conversionMapperService.MapToEntity(updatedProductionProfileDto, existingProfile, drainageStrategyId, project.PhysicalUnit);
 

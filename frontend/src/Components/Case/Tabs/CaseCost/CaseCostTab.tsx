@@ -66,7 +66,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
 
     useEffect(() => {
         if (activeTabCase === 5 && apiData && !yearRangeSetFromProfiles) {
-            const caseData = apiData?.case as Components.Schemas.CaseOverviewDto
+            const caseData = apiData?.case
             SetTableYearsFromProfiles([
                 apiData.totalFeasibilityAndConceptStudies,
                 apiData.totalFEEDStudies,
@@ -128,7 +128,7 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 setEndYear={setEndYear}
                 setTableYears={setTableYears}
                 caseData={apiData.case}
-                surfData={apiData.surf as Components.Schemas.SurfOverviewDto}
+                surfData={apiData.surf}
                 addEdit={addEdit}
             />
             <Grid item xs={12}>

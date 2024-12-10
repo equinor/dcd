@@ -17,7 +17,7 @@ public class DuplicateCaseController(DuplicateCaseService duplicateCaseService, 
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
     public async Task<ProjectDataDto> DuplicateCase([FromRoute] Guid projectId, [FromQuery] Guid copyCaseId)
     {
-        await duplicateCaseService.DuplicateCase(copyCaseId);
+        await duplicateCaseService.DuplicateCase(projectId, copyCaseId);
 
         return await getProjectDataService.GetProjectData(projectId);
     }
