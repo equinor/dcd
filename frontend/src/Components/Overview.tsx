@@ -180,12 +180,12 @@ const Overview = () => {
     }
 
     const userIsPartOfProject = peopleApiData.find((p) => p.userId === currentUser.localAccountId)
-    const projectIsNotOpen = apiData.classification !== 0
+    const projectIsNotOpen = apiData.commonProjectAndRevisionData.classification !== 0
 
     if (projectIsNotOpen && !userIsPartOfProject) {
         return (
             <NoAccessErrorView
-                projectClassification={apiData.classification}
+                projectClassification={apiData.commonProjectAndRevisionData.classification}
             />
         )
     }
