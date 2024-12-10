@@ -11,7 +11,7 @@ import { useCurrentUser } from "@equinor/fusion-framework-react/hooks"
 import styled from "styled-components"
 import { useModuleCurrentContext } from "@equinor/fusion-framework-react-module-context"
 import { useQuery } from "@tanstack/react-query"
-
+import { GetProjectService } from "../Services/ProjectService"
 import { useAppContext } from "@/Context/AppContext"
 import { PROJECT_CLASSIFICATION } from "@/Utils/constants"
 import { useModalContext } from "@/Context/ModalContext"
@@ -71,6 +71,7 @@ const Overview = () => {
     const [warnedProjects, setWarnedProjects] = useState<WarnedProjectInterface | null>(null)
     const [projectClassificationWarning, setProjectClassificationWarning] = useState<boolean>(false)
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
+    const [canCreateRevision, setCanCreateRevision] = useState<boolean>(false)
     const { Features } = useFeatureContext()
 
     const { data: apiData } = useQuery({
@@ -78,6 +79,16 @@ const Overview = () => {
         queryFn: () => projectQueryFn(externalId),
         enabled: !!externalId,
     })
+
+    async function userCanCreateRevision() {
+        if (!externalId) { return }
+        const projectService = await GetProjectService()
+        const access = await projectService.getAccess(externalId)
+        console.log("access", access)
+        if (access?.canEdit || access?.isAdmin) {
+            setCanCreateRevision(true)
+        }
+    }
 
     function handleCreateRevision() {
         setIsCreateRevisionModalOpen(true)
@@ -114,6 +125,10 @@ const Overview = () => {
         setWarnedProjects(JSON.parse(String(localStorage.getItem("pv"))))
         // NOTE: pv stands for "projects visited". It's been abbreviated to avoid disclosing the classification of the project's ID
     }
+
+    useEffect(() => {
+        userCanCreateRevision()
+    }, [externalId])
 
     useEffect(() => {
         fetchPV()
@@ -188,7 +203,13 @@ const Overview = () => {
                                     Remember to create a new revision after completing a project phase!
                                 </Typography>
                                 <Snackbar.Action>
-                                    <Button variant="ghost" onClick={() => handleCreateRevision()}>Create revision</Button>
+                                    <Button
+                                        variant="ghost"
+                                        onClick={() => handleCreateRevision()}
+                                        disabled={!canCreateRevision}
+                                    >
+                                        Create revision
+                                    </Button>
                                 </Snackbar.Action>
                             </SnackbarCentering>
                         </Snackbar>
