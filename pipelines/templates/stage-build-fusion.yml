@@ -21,7 +21,7 @@ stages:
               targetFiles: '**/package.json'
           - task: NodeTool@0
             inputs:
-                versionSpec: "20.x"
+                versionSpec: "18.x"
           - task: Npm@1
             displayName: "NPM Install"
             inputs:
