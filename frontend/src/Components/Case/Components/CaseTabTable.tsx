@@ -423,7 +423,13 @@ const CaseTabTable = ({
                     defaultColDef={defaultColDef}
                     animateRows
                     domLayout="autoHeight"
-                    rowSelection={{ mode: "multiRow", copySelectedRows: false }}
+                    rowSelection={{
+                        mode: "multiRow",
+                        copySelectedRows: false,
+                        checkboxes: false,
+                        headerCheckbox: false,
+                        enableClickSelection: true,
+                    }}
                     cellSelection
                     suppressMovableColumns
                     enableCharts

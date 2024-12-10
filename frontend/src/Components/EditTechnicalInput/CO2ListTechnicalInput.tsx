@@ -28,7 +28,6 @@ const CO2ListTechnicalInput = () => {
     const externalId = currentContext?.externalId
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
 
-
     const { data: apiData } = useQuery({
         queryKey: ["projectApiData", externalId],
         queryFn: () => projectQueryFn(externalId),
@@ -42,7 +41,9 @@ const CO2ListTechnicalInput = () => {
     })
 
     const [check, setCheck] = useState(false)
-    const [cO2RemovedFromGas, setCO2RemovedFromGas] = useState<number>(apiData?.commonProjectAndRevisionData.cO2RemovedFromGas ?? 0)
+    const [cO2RemovedFromGas, setCO2RemovedFromGas] = useState<number>(
+        apiData?.commonProjectAndRevisionData?.cO2RemovedFromGas ?? 0,
+    )
     const [cO2EmissionsFromFuelGas, setCO2EmissionsFromFuelGas] = useState<number>(apiData?.commonProjectAndRevisionData.cO2EmissionFromFuelGas ?? 0)
     const [flaredGasPerProducedVolume, setFlaredGasPerProducedVolume] = useState<number>(apiData?.commonProjectAndRevisionData.flaredGasPerProducedVolume ?? 0)
     const [cO2EmissionsFromFlaredGas, setCO2EmissionsFromFlaredGas] = useState<number>(apiData?.commonProjectAndRevisionData.cO2EmissionsFromFlaredGas ?? 0)
@@ -89,43 +90,57 @@ const CO2ListTechnicalInput = () => {
             profile: "CO2 removed from the gas",
             unit: "% of design gas rate",
             set: setCO2RemovedFromGas,
-            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.commonProjectAndRevisionData.cO2RemovedFromGas * 100) / 100 : Math.round(cO2RemovedFromGas * 100) / 100,
+            value: isRevision && apiRevisionData
+                ? Math.round((apiRevisionData?.commonProjectAndRevisionData.cO2RemovedFromGas ?? 0) * 100) / 100
+                : Math.round(cO2RemovedFromGas * 100) / 100,
         },
         {
             profile: "CO2-emissions from fuel gas",
             unit: "kg CO2/Sm³",
             set: setCO2EmissionsFromFuelGas,
-            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.commonProjectAndRevisionData.cO2EmissionFromFuelGas * 100) / 100 : Math.round(cO2EmissionsFromFuelGas * 100) / 100,
+            value: isRevision && apiRevisionData
+                ? Math.round((apiRevisionData.commonProjectAndRevisionData.cO2EmissionFromFuelGas ?? 0) * 100) / 100
+                : Math.round(cO2EmissionsFromFuelGas * 100) / 100,
         },
         {
             profile: "Flared gas per produced volume",
             unit: "Sm³/Sm³",
             set: setFlaredGasPerProducedVolume,
-            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.commonProjectAndRevisionData.flaredGasPerProducedVolume * 100) / 100 : Math.round(flaredGasPerProducedVolume * 100) / 100,
+            value: isRevision && apiRevisionData
+                ? Math.round((apiRevisionData?.commonProjectAndRevisionData.flaredGasPerProducedVolume ?? 0) * 100) / 100
+                : Math.round(flaredGasPerProducedVolume * 100) / 100,
         },
         {
             profile: "CO2-emissions from flared gas",
             unit: "kg CO2/Sm³",
             set: setCO2EmissionsFromFlaredGas,
-            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.commonProjectAndRevisionData.cO2EmissionsFromFlaredGas * 100) / 100 : Math.round(cO2EmissionsFromFlaredGas * 100) / 100,
+            value: isRevision && apiRevisionData
+                ? Math.round((apiRevisionData.commonProjectAndRevisionData.cO2EmissionsFromFlaredGas ?? 0) * 100) / 100
+                : Math.round(cO2EmissionsFromFlaredGas * 100) / 100,
         },
         {
             profile: "CO2 vented",
             unit: "kg CO2/Sm³",
             set: setCO2Vented,
-            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.commonProjectAndRevisionData.cO2Vented * 100) / 100 : Math.round(cO2Vented * 100) / 100,
+            value: isRevision && apiRevisionData
+                ? Math.round((apiRevisionData?.commonProjectAndRevisionData.cO2Vented ?? 0) * 100) / 100
+                : Math.round((cO2Vented ?? 0) * 100) / 100,
         },
         {
             profile: "Average development well drilling days",
             unit: "days/wells",
             set: setAverageDevelopmentWellDrillingDays,
-            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.commonProjectAndRevisionData.averageDevelopmentDrillingDays * 100) / 100 : Math.round(averageDevelopmentWellDrillingDays * 100) / 100,
+            value: isRevision && apiRevisionData
+                ? Math.round((apiRevisionData?.commonProjectAndRevisionData.averageDevelopmentDrillingDays ?? 0) * 100) / 100
+                : Math.round(averageDevelopmentWellDrillingDays * 100) / 100,
         },
         {
             profile: "Daily emissions from drilling rig",
             unit: "tonnes CO2/day",
             set: setDailyEmissionsFromDrillingRig,
-            value: isRevision && apiRevisionData ? Math.round(apiRevisionData?.commonProjectAndRevisionData.dailyEmissionFromDrillingRig * 100) / 100 : Math.round(dailyEmissionsFromDrillingRig * 100) / 100,
+            value: isRevision && apiRevisionData
+                ? Math.round((apiRevisionData?.commonProjectAndRevisionData.dailyEmissionFromDrillingRig ?? 0) * 100) / 100
+                : Math.round(dailyEmissionsFromDrillingRig * 100) / 100,
         },
     ]
 
@@ -147,12 +162,12 @@ const CO2ListTechnicalInput = () => {
         (node: any): boolean => {
             if (node.data) {
                 switch (cO2VentedRow) {
-                    case true:
-                        return node.data.profile === "CO2 vented"
-                    case false:
-                        return node.data.profile !== "CO2 vented"
-                    default:
-                        return true
+                case true:
+                    return node.data.profile === "CO2 vented"
+                case false:
+                    return node.data.profile !== "CO2 vented"
+                default:
+                    return true
                 }
             }
             return true
@@ -208,7 +223,7 @@ const CO2ListTechnicalInput = () => {
         averageDevelopmentWellDrillingDays,
         dailyEmissionsFromDrillingRig,
         editMode,
-        isRevision
+        isRevision,
     ])
 
     if (!apiData) { return null }
@@ -216,16 +231,16 @@ const CO2ListTechnicalInput = () => {
     return (
         <Grid container spacing={1} justifyContent="flex-end">
             <Grid item>
-            <Tooltip title={getEditDisabledText()}>
-                <Switch
-                    disabled={isEditDisabled || !editMode}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                        setCheck(e.target.checked)
-                    }}
-                    onClick={switchRow}
-                    checked={check}
-                    label={switchLabel()}
-                />
+                <Tooltip title={getEditDisabledText()}>
+                    <Switch
+                        disabled={isEditDisabled || !editMode}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                            setCheck(e.target.checked)
+                        }}
+                        onClick={switchRow}
+                        checked={check}
+                        label={switchLabel()}
+                    />
                 </Tooltip>
             </Grid>
             <Grid item xs={12} className={styles.root}>
