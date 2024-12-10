@@ -1,6 +1,6 @@
 import { useState } from "react"
 import {
-    chevron_down, chevron_up, edit, external_link, info_circle, visibility,
+    chevron_down, chevron_up, edit, external_link, visibility,
 } from "@equinor/eds-icons"
 import { Icon, Typography } from "@equinor/eds-core-react"
 import { Grid } from "@mui/material"
@@ -12,7 +12,6 @@ const ExternalAccessInfo = () => {
     return (
         <>
             <ClickableHeading item onClick={() => setExpandAllAccess(!expandAllAccess)}>
-                <Icon data={info_circle} />
                 <Typography variant="h4">Would you like to access all internal Concept App projects?</Typography>
                 <Icon data={expandAllAccess ? chevron_up : chevron_down} />
             </ClickableHeading>
