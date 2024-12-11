@@ -33,6 +33,24 @@ stages:
               script: |
                 cat frontend/package.json
 
+          - task: NodeTool@0
+            inputs:
+                versionSpec: "18.x"
+
+          - task: Npm@1
+            displayName: "NPM Install"
+            inputs:
+                command: "install"
+                workingDir: "frontend"
+
+          - task: Npm@1
+            displayName: "Bundle frontend"
+            inputs:
+                command: "custom"
+                workingDir: "frontend"
+                verbose: true
+                customCommand: "run-script build"
+
           - task: Bash@3
             displayName: 'Extract manifest data from package.json'
             inputs:
@@ -61,24 +79,6 @@ stages:
               targetType: 'inline'
               script: |
                 cat frontend/dist/app-manifest.json
-
-          - task: NodeTool@0
-            inputs:
-                versionSpec: "18.x"
-
-          - task: Npm@1
-            displayName: "NPM Install"
-            inputs:
-                command: "install"
-                workingDir: "frontend"
-
-          - task: Npm@1
-            displayName: "Bundle frontend"
-            inputs:
-                command: "custom"
-                workingDir: "frontend"
-                verbose: true
-                customCommand: "run-script build"
 
           - task: ArchiveFiles@2
             displayName: "Archive files"
