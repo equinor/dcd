@@ -32,7 +32,11 @@ public class UpdateProjectService(DcdDbContext context)
         existingProject.OilPriceUSD = projectDto.OilPriceUSD;
         existingProject.GasPriceNOK = projectDto.GasPriceNOK;
         existingProject.DiscountRate = projectDto.DiscountRate;
-        existingProject.ExchangeRateUSDToNOK = projectDto.ExchangeRateUSDToNOK;
+
+        if (projectDto.ExchangeRateUSDToNOK != 0)
+        {
+            existingProject.ExchangeRateUSDToNOK = projectDto.ExchangeRateUSDToNOK;
+        }
 
         await context.SaveChangesAsync();
     }
