@@ -7,7 +7,7 @@ namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
 public class CreateOnshorePowerSupplyDto
 {
     [Required]
-    public string Name { get; set; } = string.Empty;
+    public required string Name { get; set; }
     [Required]
     public Source Source { get; set; }
 }

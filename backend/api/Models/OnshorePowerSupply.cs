@@ -11,7 +11,7 @@ public class OnshorePowerSupply : IHasProjectId, IChangeTrackable
     public Guid ProjectId { get; set; }
     public virtual Project Project { get; set; } = null!;
 
-    public string Name { get; set; } = string.Empty;
+    public required string Name { get; set; }
     public DateTimeOffset? LastChangedDate { get; set; }
     public int CostYear { get; set; }
     public Source Source { get; set; }
