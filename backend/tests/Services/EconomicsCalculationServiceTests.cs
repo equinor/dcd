@@ -326,6 +326,7 @@ public class EconomicsCalculationServiceTests
 
         var onshorePowerSupply = new OnshorePowerSupply
         {
+            Name = "TestName",
             CostProfileOverride = new OnshorePowerSupplyCostProfileOverride
             {
                 Override = true,
