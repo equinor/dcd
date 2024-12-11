@@ -14,7 +14,7 @@ public class CreateCaseService(DcdDbContext context)
 
         var project = await context.Projects.SingleAsync(p => p.Id == projectPk);
 
-        project.Cases.Add(new Case
+        var createdCase = new Case
         {
             ProjectId = projectPk,
             Name = createCaseDto.Name,
@@ -35,8 +35,10 @@ public class CreateCaseService(DcdDbContext context)
             Exploration = CreateExploration(project),
             WellProject = CreateWellProject(project),
             OnshorePowerSupply = CreateOnshorePowerSupply(project)
-        });
-        var createdCase = project.Cases.Last();
+        };
+
+        project.Cases.Add(createdCase);
+
         await context.SaveChangesAsync();
     }
 
