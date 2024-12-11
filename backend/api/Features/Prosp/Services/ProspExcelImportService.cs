@@ -1,5 +1,7 @@
 using api.Context;
 using api.Context.Extensions;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
 using api.Features.Assets.CaseAssets.Substructures.Services;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
@@ -28,10 +30,12 @@ public class ProspExcelImportService(
     ISubstructureService substructureService,
     ITopsideService topsideService,
     ITransportService transportService,
+    IOnshorePowerSupplyService onshorePowerSupplyService,
     ISubstructureTimeSeriesService substructureTimeSeriesService,
     ISurfTimeSeriesService surfTimeSeriesService,
     ITopsideTimeSeriesService topsideTimeSeriesService,
     ITransportTimeSeriesService transportTimeSeriesService,
+    IOnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService,
     IConfiguration config,
     IMapper mapper)
 {
@@ -51,6 +55,7 @@ public class ProspExcelImportService(
         prospAppConfigModel.SubStructure = config.GetSection("FileImportSettings:Prosp:SubStructure").Get<SubStructureAppConfigModel>() ?? new SubStructureAppConfigModel();
         prospAppConfigModel.TopSide = config.GetSection("FileImportSettings:Prosp:TopSide").Get<TopSideAppConfigModel>() ?? new TopSideAppConfigModel();
         prospAppConfigModel.Transport = config.GetSection("FileImportSettings:Prosp:Transport").Get<TransportAppConfigModel>() ?? new TransportAppConfigModel();
+        prospAppConfigModel.OnshorePowerSupply = config.GetSection("FileImportSettings:Prosp:OnshorePowerSupply").Get<OnshorePowerSupplyAppConfigModel>() ?? new OnshorePowerSupplyAppConfigModel();
 
         return prospAppConfigModel;
     }
@@ -312,7 +317,6 @@ public class ProspExcelImportService(
             Values = ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year,
         };
-
         // Prosp meta data
         var versionDate = ReadDateValue(cellData, _prospConfig.Transport.versionDate);
         var costYear = ReadIntValue(cellData, _prospConfig.Transport.costYear);
@@ -336,6 +340,31 @@ public class ProspExcelImportService(
 
         await transportService.UpdateTransport(projectId, sourceCaseId, transportLink, updateTransportDto);
         await transportTimeSeriesService.AddOrUpdateTransportCostProfile(projectId, sourceCaseId, transportLink, costProfile);
+    }
+
+    private async Task ImportOnshorePowerSupply(List<Cell> cellData, Guid sourceCaseId, Guid projectId)
+    {
+        List<string> costProfileCoords =
+        [
+            "J114",
+            "K114",
+            "L114",
+            "M114",
+            "N114",
+            "O114",
+            "P114"
+        ];
+        var costProfileStartYear = ReadIntValue(cellData, _prospConfig.OnshorePowerSupply.costProfileStartYear);
+        var dG4Date = ReadDateValue(cellData, _prospConfig.OnshorePowerSupply.dG4Date);
+
+        var costProfile = new UpdateOnshorePowerSupplyCostProfileDto
+        {
+            Values = ReadDoubleValues(cellData, costProfileCoords),
+            StartYear = costProfileStartYear - dG4Date.Year,
+        };
+
+        var onshorePowerSupplyLink = (await caseService.GetCase(sourceCaseId)).OnshorePowerSupplyLink;
+        await onshorePowerSupplyTimeSeriesService.AddOrUpdateOnshorePowerSupplyCostProfile(projectId, sourceCaseId, onshorePowerSupplyLink, costProfile);
     }
 
     public async Task ImportProsp(Stream stream, Guid sourceCaseId, Guid projectId, Dictionary<string, bool> assets,
@@ -394,6 +423,14 @@ public class ProspExcelImportService(
                 {
                     await ClearImportedTransport(caseItem);
                 }
+                if (assets["OnshorePowerSupply"])
+                {
+                    await ImportOnshorePowerSupply(parsedData, sourceCaseId, projectId);
+                }
+                else
+                {
+                    await ClearImportedOnshorePowerSupply(caseItem);
+                }
             }
 
             var caseDto = new ProspUpdateCaseDto
@@ -420,6 +457,7 @@ public class ProspExcelImportService(
         await ClearImportedTopside(caseItem);
         await ClearImportedSubstructure(caseItem);
         await ClearImportedTransport(caseItem);
+        await ClearImportedOnshorePowerSupply(caseItem);
 
         var caseDto = mapper.Map<ProspUpdateCaseDto>(caseItem);
 
@@ -501,6 +539,20 @@ public class ProspExcelImportService(
 
         await transportService.UpdateTransport(caseItem.ProjectId, caseItem.Id, transportLink, dto);
         await transportTimeSeriesService.AddOrUpdateTransportCostProfile(caseItem.ProjectId, caseItem.Id, transportLink, costProfileDto);
+    }
+
+    private async Task ClearImportedOnshorePowerSupply(Case caseItem)
+    {
+        var onshorePowerSupplyLink = caseItem.OnshorePowerSupplyLink;
+        var dto = new PROSPUpdateOnshorePowerSupplyDto
+        {
+            Source = Source.ConceptApp
+        };
+
+        var costProfileDto = new UpdateOnshorePowerSupplyCostProfileDto();
+
+        await onshorePowerSupplyService.UpdateOnshorePowerSupply(caseItem.ProjectId, caseItem.Id, onshorePowerSupplyLink, dto);
+        await onshorePowerSupplyTimeSeriesService.AddOrUpdateOnshorePowerSupplyCostProfile(caseItem.ProjectId, caseItem.Id, onshorePowerSupplyLink, costProfileDto);
     }
 
     private static Concept MapSubstructureConcept(int importValue)

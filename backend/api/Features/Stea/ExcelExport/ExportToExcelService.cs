@@ -32,6 +32,9 @@ public static class ExportToExcelService
             businessCase.OffshoreFacilities = CreateExcelRow("Offshore Facilities", project.StartYear, c.Capex.OffshoreFacilities, rowCount, 1);
 
             rowCount++;
+            businessCase.OnshorePowerSupply = CreateExcelRow("Onshore (Power from shore)", project.StartYear, c.Capex.OnshorePowerSupplyCost, rowCount, 1);
+
+            rowCount++;
             businessCase.StudyCost = CreateExcelRow("Study cost", project.StartYear, c.StudyCostProfile, rowCount, 1);
 
             rowCount++;
@@ -45,12 +48,6 @@ public static class ExportToExcelService
 
             rowCount++;
             businessCase.TotalAndAnnualOil = CreateExcelRow("Total And annual Oil/Condensate production [MSm3]", project.StartYear, c.ProductionAndSalesVolumes.TotalAndAnnualOil, rowCount, 1);
-
-            rowCount++;
-            businessCase.AdditionalOil = CreateExcelRow("Additional Oil Production [MSm3]", project.StartYear, c.ProductionAndSalesVolumes.AdditionalOil, rowCount, 1);
-
-            rowCount++;
-            businessCase.AdditionalGas = CreateExcelRow("Additional Rich Gas Production [GSm3]", project.StartYear, c.ProductionAndSalesVolumes.AdditionalGas, rowCount, 1);
 
             rowCount++;
             businessCase.NetSalesGas = CreateExcelRow("Net Sales Gas [GSm3]", project.StartYear, c.ProductionAndSalesVolumes.TotalAndAnnualSalesGas, rowCount, 1);
@@ -86,10 +83,6 @@ public static class ExportToExcelService
             if (c.ProductionAndSalesVolumes.TotalAndAnnualOil.Values != null)
             {
                 allRows.Add(c.ProductionAndSalesVolumes.TotalAndAnnualOil.Values.Length + c.ProductionAndSalesVolumes.TotalAndAnnualOil.StartYear);
-            }
-            if (c.ProductionAndSalesVolumes.AdditionalOil.Values != null)
-            {
-                allRows.Add(c.ProductionAndSalesVolumes.AdditionalOil.Values.Length + c.ProductionAndSalesVolumes.AdditionalOil.StartYear);
             }
             if (c.ProductionAndSalesVolumes.AdditionalGas.Values != null)
             {
@@ -212,20 +205,16 @@ public static class ExportToExcelService
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
+            foreach (var etc in businessCase.OnshorePowerSupply)
+            {
+                ws.Cell(etc.CellNo).Value = etc.Value;
+            }
             foreach (var etc in businessCase.Cessation)
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }
             ws.Cell(businessCase.ProductionAndSalesVolumes.CellNo).Value = businessCase.ProductionAndSalesVolumes.Value;
             foreach (var etc in businessCase.TotalAndAnnualOil)
-            {
-                ws.Cell(etc.CellNo).Value = etc.Value;
-            }
-            foreach (var etc in businessCase.AdditionalOil)
-            {
-                ws.Cell(etc.CellNo).Value = etc.Value;
-            }
-            foreach (var etc in businessCase.AdditionalGas)
             {
                 ws.Cell(etc.CellNo).Value = etc.Value;
             }

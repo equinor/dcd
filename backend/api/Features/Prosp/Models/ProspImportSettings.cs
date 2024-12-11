@@ -6,6 +6,7 @@ public class ProspAppConfigModel
     public SurfAppConfigModel Surf = new();
     public TopSideAppConfigModel TopSide = new();
     public TransportAppConfigModel Transport = new();
+    public OnshorePowerSupplyAppConfigModel OnshorePowerSupply = new();
 }
 
 public class SurfAppConfigModel
@@ -81,4 +82,11 @@ public class TransportAppConfigModel
     public string importedCurrency { get; set; } = null!;
     public string oilExportPipelineLength { get; set; } = null!;
     public string gasExportPipelineLength { get; set; } = null!;
+}
+
+public class OnshorePowerSupplyAppConfigModel
+{
+    public string costProfileStartYear { get; set; } = null!;
+    public string dG4Date { get; set; } = null!;
+
 }

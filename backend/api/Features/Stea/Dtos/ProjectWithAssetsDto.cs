@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Dtos;
@@ -28,6 +29,7 @@ public class ProjectWithAssetsDto : IEquatable<ProjectWithAssetsDto>
     [Required] public List<SubstructureWithProfilesDto> Substructures { get; set; } = [];
     [Required] public List<TopsideWithProfilesDto> Topsides { get; set; } = [];
     [Required] public List<TransportWithProfilesDto> Transports { get; set; } = [];
+    [Required] public List<OnshorePowerSupplyWithProfilesDto> OnshorePowerSupplies { get; set; } = [];
     [Required] public List<DrainageStrategyWithProfilesDto> DrainageStrategies { get; set; } = [];
     [Required] public List<WellProjectWithProfilesDto>? WellProjects { get; set; } = [];
     [Required] public List<ProjectMemberDto> ProjectMembers { get; set; } = [];

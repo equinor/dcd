@@ -289,6 +289,9 @@ namespace api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("OnshorePowerSupplyLink")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("ProducerCount")
                         .HasColumnType("int");
 
@@ -336,6 +339,8 @@ namespace api.Migrations
                     b.HasIndex("DrainageStrategyLink");
 
                     b.HasIndex("ExplorationLink");
+
+                    b.HasIndex("OnshorePowerSupplyLink");
 
                     b.HasIndex("ProjectId");
 
@@ -1432,6 +1437,109 @@ namespace api.Migrations
                         .IsUnique();
 
                     b.ToTable("OilProducerCostProfileOverride");
+                });
+
+            modelBuilder.Entity("api.Models.OnshorePowerSupply", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("CostYear")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("DG3Date")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("DG4Date")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTimeOffset?>("LastChangedDate")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset?>("ProspVersion")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("Source")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("OnshorePowerSupplies");
+                });
+
+            modelBuilder.Entity("api.Models.OnshorePowerSupplyCostProfile", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EPAVersion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InternalData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OnshorePowerSupply.Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("StartYear")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OnshorePowerSupply.Id")
+                        .IsUnique();
+
+                    b.ToTable("OnshorePowerSupplyCostProfile");
+                });
+
+            modelBuilder.Entity("api.Models.OnshorePowerSupplyCostProfileOverride", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Currency")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EPAVersion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InternalData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OnshorePowerSupply.Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Override")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("StartYear")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OnshorePowerSupply.Id")
+                        .IsUnique();
+
+                    b.ToTable("OnshorePowerSupplyCostProfileOverride");
                 });
 
             modelBuilder.Entity("api.Models.OnshoreRelatedOPEXCostProfile", b =>
@@ -2952,6 +3060,12 @@ namespace api.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("api.Models.OnshorePowerSupply", "OnshorePowerSupply")
+                        .WithMany()
+                        .HasForeignKey("OnshorePowerSupplyLink")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("api.Models.Project", "Project")
                         .WithMany("Cases")
                         .HasForeignKey("ProjectId")
@@ -2991,6 +3105,8 @@ namespace api.Migrations
                     b.Navigation("DrainageStrategy");
 
                     b.Navigation("Exploration");
+
+                    b.Navigation("OnshorePowerSupply");
 
                     b.Navigation("Project");
 
@@ -3387,6 +3503,39 @@ namespace api.Migrations
                         .IsRequired();
 
                     b.Navigation("WellProject");
+                });
+
+            modelBuilder.Entity("api.Models.OnshorePowerSupply", b =>
+                {
+                    b.HasOne("api.Models.Project", "Project")
+                        .WithMany("OnshorePowerSupplies")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("api.Models.OnshorePowerSupplyCostProfile", b =>
+                {
+                    b.HasOne("api.Models.OnshorePowerSupply", "OnshorePowerSupply")
+                        .WithOne("CostProfile")
+                        .HasForeignKey("api.Models.OnshorePowerSupplyCostProfile", "OnshorePowerSupply.Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OnshorePowerSupply");
+                });
+
+            modelBuilder.Entity("api.Models.OnshorePowerSupplyCostProfileOverride", b =>
+                {
+                    b.HasOne("api.Models.OnshorePowerSupply", "OnshorePowerSupply")
+                        .WithOne("CostProfileOverride")
+                        .HasForeignKey("api.Models.OnshorePowerSupplyCostProfileOverride", "OnshorePowerSupply.Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OnshorePowerSupply");
                 });
 
             modelBuilder.Entity("api.Models.OnshoreRelatedOPEXCostProfile", b =>
@@ -3930,6 +4079,13 @@ namespace api.Migrations
                     b.Navigation("SidetrackCostProfile");
                 });
 
+            modelBuilder.Entity("api.Models.OnshorePowerSupply", b =>
+                {
+                    b.Navigation("CostProfile");
+
+                    b.Navigation("CostProfileOverride");
+                });
+
             modelBuilder.Entity("api.Models.Project", b =>
                 {
                     b.Navigation("Cases");
@@ -3941,6 +4097,8 @@ namespace api.Migrations
                     b.Navigation("ExplorationOperationalWellCosts");
 
                     b.Navigation("Explorations");
+
+                    b.Navigation("OnshorePowerSupplies");
 
                     b.Navigation("ProjectMembers");
 

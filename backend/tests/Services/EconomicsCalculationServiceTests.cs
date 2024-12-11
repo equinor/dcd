@@ -25,6 +25,7 @@ public class EconomicsCalculationServiceTests
     private readonly ISurfService _surfService;
     private readonly ITopsideService _topsideService;
     private readonly ITransportService _transportService;
+    private readonly IOnshorePowerSupplyService _onshorePowerSupplyService;
     private readonly IWellProjectService _wellProjectService;
     private readonly IDrainageStrategyService _drainageStrategyService;
     private readonly IStudyCostProfileService _studyCostProfileService;
@@ -44,9 +45,10 @@ public class EconomicsCalculationServiceTests
         _surfService = Substitute.For<ISurfService>();
         _topsideService = Substitute.For<ITopsideService>();
         _transportService = Substitute.For<ITransportService>();
+        _onshorePowerSupplyService = Substitute.For<IOnshorePowerSupplyService>();
         _explorationService = Substitute.For<IExplorationService>();
         _wellProjectService = Substitute.For<IWellProjectService>();
-
+        _onshorePowerSupplyService = Substitute.For<IOnshorePowerSupplyService>();
         _cessationCostProfileService = Substitute.For<ICessationCostProfileService>();
         _opexCostProfileService = Substitute.For<IOpexCostProfileService>();
         _studyCostProfileService = Substitute.For<IStudyCostProfileService>();
@@ -66,6 +68,7 @@ public class EconomicsCalculationServiceTests
             _surfService,
             _topsideService,
             _transportService,
+            _onshorePowerSupplyService,
             _wellProjectService,
             _explorationService
         );
@@ -258,6 +261,7 @@ public class EconomicsCalculationServiceTests
             SurfLink = Guid.NewGuid(),
             TopsideLink = Guid.NewGuid(),
             TransportLink = Guid.NewGuid(),
+            OnshorePowerSupplyLink = Guid.NewGuid(),
             ExplorationLink = Guid.NewGuid(),
             TotalOtherStudiesCostProfile = new TotalOtherStudiesCostProfile
             {
@@ -313,6 +317,17 @@ public class EconomicsCalculationServiceTests
         var transport = new Transport
         {
             CostProfileOverride = new TransportCostProfileOverride
+            {
+                Override = true,
+                StartYear = 2020,
+                Values = new[] { 50.0, 70.0, 100.0 }
+            }
+        };
+
+        var onshorePowerSupply = new OnshorePowerSupply
+        {
+            Name = "TestName",
+            CostProfileOverride = new OnshorePowerSupplyCostProfileOverride
             {
                 Override = true,
                 StartYear = 2020,
@@ -396,6 +411,9 @@ public class EconomicsCalculationServiceTests
         _transportService.GetTransportWithIncludes(caseItem.TransportLink, Arg.Any<Expression<Func<Transport, object>>[]>())
             .Returns(Task.FromResult(transport));
 
+        _onshorePowerSupplyService.GetOnshorePowerSupplyWithIncludes(caseItem.OnshorePowerSupplyLink, Arg.Any<Expression<Func<OnshorePowerSupply, object>>[]>())
+            .Returns(Task.FromResult(onshorePowerSupply));
+
         _wellProjectService.GetWellProjectWithIncludes(caseItem.WellProjectLink, Arg.Any<Expression<Func<WellProject, object>>[]>())
             .Returns(Task.FromResult(wellProject));
 
@@ -412,7 +430,7 @@ public class EconomicsCalculationServiceTests
         Assert.Equal(2020, caseItem.CalculatedTotalCostCostProfile!.StartYear);
         Assert.Equal(3, caseItem.CalculatedTotalCostCostProfile.Values.Length);
 
-        var expectedValues = new[] { 2900.0, 4080.0, 4880.0 };
+        var expectedValues = new[] { 2950.0, 4150.0, 4980.0 };
         for (int i = 0; i < expectedValues.Length; i++)
         {
             Assert.Equal(expectedValues[i], caseItem.CalculatedTotalCostCostProfile.Values[i]);
