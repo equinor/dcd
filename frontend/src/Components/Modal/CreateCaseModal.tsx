@@ -85,10 +85,6 @@ const CreateCaseModal = () => {
         setCaseName(e.currentTarget.value.trimStart())
     }
 
-    function handleDescriptionChange(value: string) {
-        setDescription(value)
-    }
-
     const handleProductionStrategyChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
         if ([0, 1, 2, 3, 4].indexOf(Number(e.currentTarget.value)) !== -1) {
             const newProductionStrategy: Components.Schemas.ProductionStrategyOverview = Number(e.currentTarget.value) as Components.Schemas.ProductionStrategyOverview
@@ -198,10 +194,9 @@ const CreateCaseModal = () => {
                                 minHeight="100px"
                                 value={description}
                                 menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
-                                onInput={(markdown) => {
+                                onInput={(e: any) => {
                                     // eslint-disable-next-line no-underscore-dangle
-                                    const value = (markdown as any).target._value
-                                    handleDescriptionChange(value)
+                                    setDescription(e.target._value)
                                 }}
                             />
                         </InputWrapper>

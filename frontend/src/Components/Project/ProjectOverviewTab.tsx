@@ -6,7 +6,7 @@ import { MarkdownEditor, MarkdownViewer } from "@equinor/fusion-react-markdown"
 import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
-import { ChangeEventHandler } from "react"
+import { ChangeEventHandler, useState } from "react"
 
 import { getProjectPhaseName, getProjectCategoryName } from "@/Utils/common"
 import { useModalContext } from "@/Context/ModalContext"
@@ -28,6 +28,8 @@ const ProjectOverviewTab = () => {
     const { addNewCase } = useModalContext()
     const { isEditDisabled, getEditDisabledText } = useEditDisabled()
 
+    const [descriptionTimeout, setDescriptionTimeout] = useState<NodeJS.Timeout | null>(null)
+
     const { data: apiData } = useQuery({
         queryKey: ["projectApiData", projectId],
         queryFn: () => projectQueryFn(projectId),
@@ -40,13 +42,24 @@ const ProjectOverviewTab = () => {
         enabled: !!projectId && !!revisionId && isRevision,
     })
 
-    const handleBlur = (e: any) => {
-        if (apiData) {
-            // eslint-disable-next-line no-underscore-dangle
-            const newValue = e.target._value
-            const newProjectObject: Components.Schemas.UpdateProjectDto = { ...apiData.commonProjectAndRevisionData, description: newValue }
-            addProjectEdit(apiData.projectId, newProjectObject)
+    const handleDescriptionInput = (e: any) => {
+        if (descriptionTimeout) {
+            clearTimeout(descriptionTimeout)
         }
+        // eslint-disable-next-line no-underscore-dangle
+        const newValue = e.target._value
+
+        const timeout = setTimeout(() => {
+            if (apiData) {
+                const newProjectObject: Components.Schemas.UpdateProjectDto = {
+                    ...apiData.commonProjectAndRevisionData,
+                    description: newValue,
+                }
+                addProjectEdit(apiData.projectId, newProjectObject)
+            }
+        }, 3000)
+
+        setDescriptionTimeout(timeout)
     }
 
     const handleInternalProjectPhaseChange: ChangeEventHandler<HTMLSelectElement> = async (e) => {
@@ -83,7 +96,9 @@ const ProjectOverviewTab = () => {
 
         return (
             <InputSwitcher
-                value={isRevision && revisionInternalProjectPhase ? INTERNAL_PROJECT_PHASE[revisionInternalProjectPhase].label ?? "" : INTERNAL_PROJECT_PHASE[internalProjectPhase].label ?? ""}
+                value={isRevision && revisionInternalProjectPhase
+                    ? INTERNAL_PROJECT_PHASE[revisionInternalProjectPhase].label ?? ""
+                    : INTERNAL_PROJECT_PHASE[internalProjectPhase].label ?? ""}
             >
                 <NativeSelect
                     id="internalProjectPhase"
@@ -108,13 +123,17 @@ const ProjectOverviewTab = () => {
                 <Grid item>
                     <Typography group="input" variant="label">Project Category</Typography>
                     <Typography aria-label="Project category">
-                        {isRevision ? getProjectCategoryName(apiRevisionData?.commonProjectAndRevisionData.projectCategory) : getProjectCategoryName(apiData.commonProjectAndRevisionData.projectCategory)}
+                        {isRevision
+                            ? getProjectCategoryName(apiRevisionData?.commonProjectAndRevisionData.projectCategory)
+                            : getProjectCategoryName(apiData.commonProjectAndRevisionData.projectCategory)}
                     </Typography>
                 </Grid>
                 <Grid item>
                     <Typography group="input" variant="label">Country</Typography>
                     <Typography aria-label="Country">
-                        {isRevision ? apiRevisionData?.commonProjectAndRevisionData.country ?? "Not defined in Common Library" : apiData.commonProjectAndRevisionData.country ?? "Not defined in Common Library"}
+                        {isRevision
+                            ? apiRevisionData?.commonProjectAndRevisionData.country ?? "Not defined in Common Library"
+                            : apiData.commonProjectAndRevisionData.country ?? "Not defined in Common Library"}
                     </Typography>
                 </Grid>
             </Grid>
@@ -124,12 +143,18 @@ const ProjectOverviewTab = () => {
                     ? (
                         <MarkdownEditor
                             menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
-                            onBlur={(e) => handleBlur(e)}
+                            onInput={(e) => handleDescriptionInput(e)}
                         >
                             {apiData.commonProjectAndRevisionData.description ?? ""}
                         </MarkdownEditor>
                     )
-                    : <MarkdownViewer value={isRevision ? apiRevisionData?.commonProjectAndRevisionData.description ?? "" : apiData.commonProjectAndRevisionData.description ?? ""} />}
+                    : (
+                        <MarkdownViewer
+                            value={isRevision
+                                ? apiRevisionData?.commonProjectAndRevisionData.description ?? ""
+                                : apiData.commonProjectAndRevisionData.description ?? ""}
+                        />
+                    )}
             </Grid>
             <Grid item xs={12} container spacing={1} justifyContent="space-between">
                 <Grid item>
