@@ -47,7 +47,7 @@ const CaseCO2Tab = ({ addEdit }: { addEdit: any }) => {
 
     const caseData = apiData?.case
     const topsideData = apiData?.topside
-    const drainageStrategyData = apiData?.drainageStrategy 
+    const drainageStrategyData = apiData?.drainageStrategy
     const co2EmissionsOverrideData = apiData?.co2EmissionsOverride
     const co2EmissionsData = apiData?.co2Emissions
 
