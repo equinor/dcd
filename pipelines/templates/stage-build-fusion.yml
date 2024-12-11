@@ -24,11 +24,6 @@ stages:
               script: |
                 cat frontend/package.json
 
-          - task: FileTransform@1
-            inputs:
-              folderPath: '$(Build.SourcesDirectory)/frontend'
-              fileType: 'json'
-              targetFiles: '**/package.json'
 
           - task: Bash@3
             displayName: 'Print app-manifest.json after transform'
