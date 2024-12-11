@@ -1,3 +1,5 @@
+using api.Context;
+using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Topsides.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Dtos.Create;
@@ -18,7 +20,8 @@ public class TopsideTimeSeriesService(
     ITopsideRepository topsideRepository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : ITopsideTimeSeriesService
 {
     public async Task<TopsideCostProfileOverrideDto> CreateTopsideCostProfileOverride(
@@ -53,7 +56,7 @@ public class TopsideTimeSeriesService(
         {
             createdProfile = repository.CreateTopsideCostProfileOverride(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -145,7 +148,7 @@ public class TopsideTimeSeriesService(
         {
             repository.CreateTopsideCostProfile(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (Exception ex)
         {
@@ -189,7 +192,7 @@ public class TopsideTimeSeriesService(
         try
         {
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

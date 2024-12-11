@@ -1,3 +1,5 @@
+using api.Context;
+using api.Context.Recalculation;
 using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
 using api.Features.Assets.CaseAssets.Surfs.Repositories;
@@ -23,6 +25,7 @@ public class SurfServiceTests
     private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
     private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
     private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
+    private readonly IRecalculationService _recalculationService = Substitute.For<IRecalculationService>();
 
     public SurfServiceTests()
     {
@@ -31,7 +34,8 @@ public class SurfServiceTests
             _repository,
             _caseRepository,
             _mapperService,
-            _projectAccessService
+            _projectAccessService,
+            _recalculationService
         );
     }
 
@@ -58,7 +62,7 @@ public class SurfServiceTests
 
         // Assert
         Assert.Equal(updatedSurfDtoResult, result);
-        await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+        await _recalculationService.Received(1).SaveChangesAndRecalculateAsync(caseId);
     }
 
     [Fact]
@@ -73,7 +77,7 @@ public class SurfServiceTests
         var existingSurf = new Surf { Id = surfId };
         _repository.GetSurf(surfId).Returns(existingSurf);
 
-        _repository.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(_ => throw new DbUpdateException());
+        _recalculationService.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(_ => throw new DbUpdateException());
 
         // Act & Assert
         await Assert.ThrowsAsync<DbUpdateException>(() => _surfService.UpdateSurf<BaseUpdateSurfDto>(projectId, caseId, surfId, updatedSurfDto));

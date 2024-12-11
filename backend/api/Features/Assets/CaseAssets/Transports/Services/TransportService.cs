@@ -1,5 +1,7 @@
 using System.Linq.Expressions;
 
+using api.Context;
+using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
@@ -18,7 +20,8 @@ public class TransportService(
     ICaseRepository caseRepository,
     ITransportRepository transportRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : ITransportService
 {
     public async Task<Transport> GetTransportWithIncludes(Guid transportId, params Expression<Func<Transport, object>>[] includes)
@@ -44,7 +47,7 @@ public class TransportService(
         {
             // updatedTransport = _repository.UpdateTransport(existing);
             await caseRepository.UpdateModifyTime(caseId);
-            await transportRepository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateConcurrencyException ex)
         {

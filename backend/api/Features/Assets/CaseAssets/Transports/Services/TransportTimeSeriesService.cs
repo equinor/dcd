@@ -1,3 +1,5 @@
+using api.Context;
+using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos.Create;
@@ -18,7 +20,8 @@ public class TransportTimeSeriesService(
     ITransportRepository transportRepository,
     ITransportTimeSeriesRepository repository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : ITransportTimeSeriesService
 {
     public async Task<TransportCostProfileOverrideDto> CreateTransportCostProfileOverride(
@@ -53,7 +56,7 @@ public class TransportTimeSeriesService(
         {
             createdProfile = repository.CreateTransportCostProfileOverride(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -143,7 +146,7 @@ public class TransportTimeSeriesService(
         {
             repository.CreateTransportCostProfile(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (Exception ex)
         {
@@ -187,7 +190,7 @@ public class TransportTimeSeriesService(
         try
         {
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

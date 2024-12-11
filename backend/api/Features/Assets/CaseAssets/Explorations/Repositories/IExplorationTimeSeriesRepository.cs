@@ -3,7 +3,7 @@ using api.Models;
 
 namespace api.Features.Assets.CaseAssets.Explorations.Repositories;
 
-public interface IExplorationTimeSeriesRepository : IBaseRepository
+public interface IExplorationTimeSeriesRepository
 {
     GAndGAdminCostOverride CreateGAndGAdminCostOverride(GAndGAdminCostOverride profile);
     Task<GAndGAdminCostOverride?> GetGAndGAdminCostOverride(Guid profileId);

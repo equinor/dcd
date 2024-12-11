@@ -1,3 +1,5 @@
+using api.Context;
+using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Create;
@@ -18,7 +20,8 @@ public class SubstructureTimeSeriesService(
     ISubstructureTimeSeriesRepository repository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : ISubstructureTimeSeriesService
 {
     public async Task<SubstructureCostProfileDto> AddOrUpdateSubstructureCostProfile(
@@ -82,7 +85,7 @@ public class SubstructureTimeSeriesService(
         {
             repository.CreateSubstructureCostProfile(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (Exception ex)
         {
@@ -126,7 +129,7 @@ public class SubstructureTimeSeriesService(
         {
             createdProfile = repository.CreateSubstructureCostProfileOverride(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -188,7 +191,7 @@ public class SubstructureTimeSeriesService(
         try
         {
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

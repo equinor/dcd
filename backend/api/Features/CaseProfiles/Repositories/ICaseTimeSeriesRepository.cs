@@ -3,7 +3,7 @@ using api.Models;
 namespace api.Features.CaseProfiles.Repositories;
 
 
-public interface ICaseTimeSeriesRepository : IBaseRepository
+public interface ICaseTimeSeriesRepository
 {
     CessationWellsCostOverride CreateCessationWellsCostOverride(CessationWellsCostOverride profile);
     CessationOffshoreFacilitiesCostOverride CreateCessationOffshoreFacilitiesCostOverride(CessationOffshoreFacilitiesCostOverride profile);

@@ -1,4 +1,6 @@
 using api.AppInfrastructure.Authorization;
+using api.Context;
+using api.Context.Recalculation;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
 using api.Features.Assets.CaseAssets.Explorations.Repositories;
@@ -59,6 +61,8 @@ public static class DcdIocConfiguration
 {
     public static void AddDcdIocConfiguration(this IServiceCollection services)
     {
+        services.AddScoped<IRecalculationService, RecalculationService>();
+
         services.AddScoped<IProjectAccessService, ProjectAccessService>();
         services.AddScoped<GetProjectDataRepository>();
         services.AddScoped<CreateProjectService>();

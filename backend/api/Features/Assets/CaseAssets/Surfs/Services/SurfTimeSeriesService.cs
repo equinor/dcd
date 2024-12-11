@@ -1,3 +1,5 @@
+using api.Context;
+using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Create;
@@ -18,7 +20,8 @@ public class SurfTimeSeriesService(
     ISurfRepository surfRepository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : ISurfTimeSeriesService
 {
     public async Task<SurfCostProfileOverrideDto> CreateSurfCostProfileOverride(
@@ -53,7 +56,7 @@ public class SurfTimeSeriesService(
         {
             createdProfile = repository.CreateSurfCostProfileOverride(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -128,7 +131,7 @@ public class SurfTimeSeriesService(
         {
             repository.CreateSurfCostProfile(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (Exception ex)
         {
@@ -193,7 +196,7 @@ public class SurfTimeSeriesService(
         {
             // updatedProfile = updateProfile(existingProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

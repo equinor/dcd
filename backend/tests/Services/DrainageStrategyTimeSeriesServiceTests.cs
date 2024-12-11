@@ -1,3 +1,5 @@
+using api.Context;
+using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos.Create;
@@ -24,6 +26,7 @@ public class DrainageStrategyTimeSeriesServiceTests
     private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
     private readonly IConversionMapperService _conversionMapperService = Substitute.For<IConversionMapperService>();
     private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
+    private readonly IRecalculationService _recalculationService = Substitute.For<IRecalculationService>();
 
     public DrainageStrategyTimeSeriesServiceTests()
     {
@@ -33,7 +36,8 @@ public class DrainageStrategyTimeSeriesServiceTests
             _repository,
             _drainageStrategyRepository,
             _conversionMapperService,
-            _projectAccessService
+            _projectAccessService,
+            _recalculationService
         );
     }
 

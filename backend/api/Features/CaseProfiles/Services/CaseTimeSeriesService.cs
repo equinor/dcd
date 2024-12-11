@@ -1,3 +1,5 @@
+using api.Context;
+using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.CaseProfiles.Dtos;
 using api.Features.CaseProfiles.Dtos.Create;
@@ -17,7 +19,8 @@ public class CaseTimeSeriesService(
     ICaseTimeSeriesRepository repository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : ICaseTimeSeriesService
 {
     public async Task<CessationWellsCostOverrideDto> UpdateCessationWellsCostOverride(
@@ -395,7 +398,7 @@ public class CaseTimeSeriesService(
         try
         {
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -445,7 +448,7 @@ public class CaseTimeSeriesService(
         {
             createdProfile = createProfile(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

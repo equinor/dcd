@@ -1,3 +1,5 @@
+using api.Context;
+using api.Context.Recalculation;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
 using api.Features.Assets.CaseAssets.Substructures.Repositories;
@@ -23,6 +25,7 @@ public class SubstructureServiceTests
     private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
     private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
     private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
+    private readonly IRecalculationService _recalculationService = Substitute.For<IRecalculationService>();
 
     public SubstructureServiceTests()
     {
@@ -30,7 +33,8 @@ public class SubstructureServiceTests
             _repository,
             _caseRepository,
             _mapperService,
-            _projectAccessService
+            _projectAccessService,
+            _recalculationService
         );
     }
 
@@ -57,7 +61,7 @@ public class SubstructureServiceTests
 
         // Assert
         Assert.Equal(updatedSubstructureDtoResult, result);
-        await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+        await _recalculationService.Received(1).SaveChangesAndRecalculateAsync(caseId);
     }
 
     [Fact]
@@ -72,7 +76,7 @@ public class SubstructureServiceTests
         var existingSubstructure = new Substructure { Id = substructureId };
         _repository.GetSubstructure(substructureId).Returns(existingSubstructure);
 
-        _repository.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(_ => throw new DbUpdateException());
+        _recalculationService.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(_ => throw new DbUpdateException());
 
         // Act & Assert
         await Assert.ThrowsAsync<DbUpdateException>(() => _substructureService.UpdateSubstructure<BaseUpdateSubstructureDto>(projectId, caseId, substructureId, updatedSubstructureDto));

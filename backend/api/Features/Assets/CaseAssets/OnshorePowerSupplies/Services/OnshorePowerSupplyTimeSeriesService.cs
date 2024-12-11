@@ -1,3 +1,5 @@
+using api.Context;
+using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Create;
@@ -18,7 +20,8 @@ public class OnshorePowerSupplyTimeSeriesService(
     IOnshorePowerSupplyRepository onshorePowerSupplyRepository,
     IOnshorePowerSupplyTimeSeriesRepository repository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : IOnshorePowerSupplyTimeSeriesService
 {
     public async Task<OnshorePowerSupplyCostProfileOverrideDto> CreateOnshorePowerSupplyCostProfileOverride(
@@ -52,7 +55,7 @@ public class OnshorePowerSupplyTimeSeriesService(
         {
             createdProfile = repository.CreateOnshorePowerSupplyCostProfileOverride(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -142,7 +145,7 @@ public class OnshorePowerSupplyTimeSeriesService(
         {
             repository.CreateOnshorePowerSupplyCostProfile(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (Exception ex)
         {
@@ -185,7 +188,7 @@ public class OnshorePowerSupplyTimeSeriesService(
         try
         {
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

@@ -1,5 +1,7 @@
 using System.Linq.Expressions;
 
+using api.Context;
+using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
@@ -16,7 +18,8 @@ public class OnshorePowerSupplyService(
     ICaseRepository caseRepository,
     IOnshorePowerSupplyRepository onshorePowerSupplyRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : IOnshorePowerSupplyService
 {
     public async Task<OnshorePowerSupply> GetOnshorePowerSupplyWithIncludes(Guid onshorePowerSupplyId, params Expression<Func<OnshorePowerSupply, object>>[] includes)
@@ -39,7 +42,7 @@ public class OnshorePowerSupplyService(
         try
         {
             await caseRepository.UpdateModifyTime(caseId);
-            await onshorePowerSupplyRepository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateConcurrencyException ex)
         {

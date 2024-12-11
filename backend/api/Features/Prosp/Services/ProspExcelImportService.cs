@@ -1,5 +1,6 @@
 using api.Context;
 using api.Context.Extensions;
+using api.Context.Recalculation;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos.Update;
 using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
@@ -37,7 +38,8 @@ public class ProspExcelImportService(
     ITransportTimeSeriesService transportTimeSeriesService,
     IOnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService,
     IConfiguration config,
-    IMapper mapper)
+    IMapper mapper,
+    IRecalculationService recalculationService)
 {
     private const string SheetName = "main";
     private readonly ProspAppConfigModel _prospConfig = CreateConfig(config);
@@ -481,7 +483,7 @@ public class ProspExcelImportService(
         existingCase.SharepointFileUrl = updatedCaseDto.SharepointFileUrl;
         existingCase.ModifyTime = DateTimeOffset.UtcNow;
 
-        await context.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 
     private async Task ClearImportedSurf(Case caseItem)

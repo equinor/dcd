@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.CaseProfiles.Repositories;
 
-public class BaseRepository(DcdDbContext context) : IBaseRepository
+public class BaseRepository(DcdDbContext context)
 {
     protected readonly DcdDbContext Context = context;
 
@@ -32,10 +32,5 @@ public class BaseRepository(DcdDbContext context) : IBaseRepository
     {
         Context.Set<T>().Update(updated);
         return updated;
-    }
-
-    public async Task SaveChangesAndRecalculateAsync(Guid caseId)
-    {
-        await Context.SaveChangesAndRecalculateAsync(caseId);
     }
 }

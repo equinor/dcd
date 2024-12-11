@@ -6,7 +6,7 @@ using api.Models;
 
 namespace api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
 
-public interface IDrainageStrategyRepository : IBaseRepository
+public interface IDrainageStrategyRepository
 {
     Task<DrainageStrategy?> GetDrainageStrategy(Guid drainageStrategyId);
     Task<DrainageStrategy?> GetDrainageStrategyWithIncludes(Guid drainageStrategyId, params Expression<Func<DrainageStrategy, object>>[] includes);
