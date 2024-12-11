@@ -69,32 +69,20 @@ const AccessManagementTab = () => {
         }
     }
 
-    //The code below is a WIP related to PMT and OrgChart integration
+    // This is used to synchronize PMT members to projects
     useEffect(() => {
-        const fetchOrgChartPeople = async () => {
-            if (!currentContext?.id || !projectId) { return }
+        (async () => {
+            if (!projectId || !currentContext) { return }
+            console.log("useEffect inside")
             const projectMembersService = await GetOrgChartMembersService()
-            try {
-                const peopleToAdd = await projectMembersService.getOrgChartPeople(projectId, currentContext.id)
-                console.log(peopleToAdd)
-
-                // await Promise.all(
-                //     peopleToAdd.map(async (person) => {
-                //         try {
-                //             return await (await GetProjectMembersService()).addPerson(projectId, { userId: person.azureUniqueId || "", role: UserRole.Viewer })
-                //         } catch (error) {
-                //             console.error("Failed to add person from orgchart, with error: ", error)
-                //             return null // bedre error handling?
-                //         }
-                //     }),
-                // )
-            } catch (error) {
-                setSnackBarMessage("A problem occurred while fetching OrgChart people")
+            const syncPmt = await projectMembersService.getOrgChartPeople(projectId, currentContext?.id)
+            if (syncPmt) {
+                queryClient.invalidateQueries(
+                    { queryKey: ["peopleApiData", projectId] },
+                )
             }
-        }
-
-        fetchOrgChartPeople()
-    }, [currentContext?.id, projectId])
+        })()
+    }, [])
 
     if (!projectApiData) {
         return <AccessManagementSkeleton />
