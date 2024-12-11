@@ -1,5 +1,4 @@
 using api.AppInfrastructure.Authorization;
-using api.Context;
 using api.Context.Recalculation;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
@@ -61,8 +60,6 @@ public static class DcdIocConfiguration
 {
     public static void AddDcdIocConfiguration(this IServiceCollection services)
     {
-        services.AddScoped<IRecalculationService, RecalculationService>();
-
         services.AddScoped<IProjectAccessService, ProjectAccessService>();
         services.AddScoped<GetProjectDataRepository>();
         services.AddScoped<CreateProjectService>();
@@ -99,20 +96,11 @@ public static class DcdIocConfiguration
 
         services.AddScoped<TechnicalInputService>();
 
-        services.AddScoped<IOpexCostProfileService, OpexCostProfileService>();
-        services.AddScoped<IStudyCostProfileService, StudyCostProfileService>();
-        services.AddScoped<ICo2EmissionsProfileService, Co2EmissionsProfileService>();
-        services.AddScoped<IGenerateGAndGAdminCostProfile, GenerateGAndGAdminCostProfile>();
-        services.AddScoped<ICessationCostProfileService, CessationCostProfileService>();
-        services.AddScoped<IImportedElectricityProfileService, ImportedElectricityProfileService>();
-        services.AddScoped<IFuelFlaringLossesProfileService, FuelFlaringLossesProfileService>();
-        services.AddScoped<INetSaleGasProfileService, NetSaleGasProfileService>();
         services.AddScoped<ICo2IntensityProfileService, Co2IntensityProfileService>();
         services.AddScoped<ICo2IntensityTotalService, Co2IntensityTotalService>();
         services.AddScoped<CaseComparisonService>();
         services.AddScoped<CaseComparisonRepository>();
         services.AddScoped<ICo2DrillingFlaringFuelTotalsService, Co2DrillingFlaringFuelTotalsService>();
-        services.AddScoped<IWellCostProfileService, WellCostProfileService>();
 
         services.AddScoped<SteaService>();
 
@@ -172,13 +160,26 @@ public static class DcdIocConfiguration
         services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
 
         services.AddScoped<IBlobStorageService, BlobStorageService>();
-        services.AddScoped<ICalculateBreakEvenOilPriceService, CalculateBreakEvenOilPriceService>();
-        services.AddScoped<ICalculateNPVService, CalculateNPVService>();
-        services.AddScoped<ICalculateTotalCostService, CalculateTotalCostService>();
-        services.AddScoped<ICalculateTotalIncomeService, CalculateTotalIncomeService>();
 
         // Project assets
         services.AddScoped<UpdateDevelopmentOperationalWellCostsService>();
         services.AddScoped<UpdateExplorationOperationalWellCostsService>();
+
+        /* Recalculation services */
+        services.AddScoped<IRecalculationService, RecalculationService>();
+        services.AddScoped<IWellCostProfileService, WellCostProfileService>();
+        services.AddScoped<IStudyCostProfileService, StudyCostProfileService>();
+        services.AddScoped<ICessationCostProfileService, CessationCostProfileService>();
+        services.AddScoped<IFuelFlaringLossesProfileService, FuelFlaringLossesProfileService>();
+        services.AddScoped<IGenerateGAndGAdminCostProfile, GenerateGAndGAdminCostProfile>();
+        services.AddScoped<IImportedElectricityProfileService, ImportedElectricityProfileService>();
+        services.AddScoped<INetSaleGasProfileService, NetSaleGasProfileService>();
+        services.AddScoped<IOpexCostProfileService, OpexCostProfileService>();
+        services.AddScoped<ICo2EmissionsProfileService, Co2EmissionsProfileService>();
+        services.AddScoped<ICalculateTotalIncomeService, CalculateTotalIncomeService>();
+        services.AddScoped<ICalculateTotalCostService, CalculateTotalCostService>();
+        services.AddScoped<ICalculateNPVService, CalculateNPVService>();
+        services.AddScoped<ICalculateBreakEvenOilPriceService, CalculateBreakEvenOilPriceService>();
+        /* End recalculation services */
     }
 }

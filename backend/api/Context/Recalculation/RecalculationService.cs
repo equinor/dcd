@@ -6,11 +6,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Context.Recalculation;
 
-public interface IRecalculationService
-{
-    Task<int> SaveChangesAndRecalculateAsync(Guid caseId, CancellationToken cancellationToken = default);
-}
-
 public class RecalculationService(
     DcdDbContext context,
     IWellCostProfileService wellCostProfileService,
