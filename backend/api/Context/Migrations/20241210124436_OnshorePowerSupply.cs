@@ -11,79 +11,37 @@ namespace api.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Cases_OnshorePowerSupplies_OnshorePowerSuppliesId",
-                table: "Cases");
-
-            migrationBuilder.DropUniqueConstraint(
-                name: "AK_OnshorePowerSupplies_TempId",
-                table: "OnshorePowerSupplies");
-
-            migrationBuilder.DropColumn(
-                name: "OnshorePowerSuppliesId",
-                table: "Cases");
-
-            migrationBuilder.RenameColumn(
-                name: "TempId",
-                table: "OnshorePowerSupplies",
-                newName: "Source");
-
             migrationBuilder.AddColumn<Guid>(
-                name: "Id",
-                table: "OnshorePowerSupplies",
+                name: "OnshorePowerSupplyLink",
+                table: "Cases",
                 type: "uniqueidentifier",
                 nullable: false,
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
 
-            migrationBuilder.AddColumn<int>(
-                name: "CostYear",
-                table: "OnshorePowerSupplies",
-                type: "int",
-                nullable: false,
-                defaultValue: 0);
-
-            migrationBuilder.AddColumn<DateTimeOffset>(
-                name: "DG3Date",
-                table: "OnshorePowerSupplies",
-                type: "datetimeoffset",
-                nullable: true);
-
-            migrationBuilder.AddColumn<DateTimeOffset>(
-                name: "DG4Date",
-                table: "OnshorePowerSupplies",
-                type: "datetimeoffset",
-                nullable: true);
-
-            migrationBuilder.AddColumn<DateTimeOffset>(
-                name: "LastChangedDate",
-                table: "OnshorePowerSupplies",
-                type: "datetimeoffset",
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "Name",
-                table: "OnshorePowerSupplies",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
-
-            migrationBuilder.AddColumn<Guid>(
-                name: "ProjectId",
-                table: "OnshorePowerSupplies",
-                type: "uniqueidentifier",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
-
-            migrationBuilder.AddColumn<DateTimeOffset>(
-                name: "ProspVersion",
-                table: "OnshorePowerSupplies",
-                type: "datetimeoffset",
-                nullable: true);
-
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_OnshorePowerSupplies",
-                table: "OnshorePowerSupplies",
-                column: "Id");
+            migrationBuilder.CreateTable(
+                name: "OnshorePowerSupplies",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastChangedDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    CostYear = table.Column<int>(type: "int", nullable: false),
+                    Source = table.Column<int>(type: "int", nullable: false),
+                    ProspVersion = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    DG3Date = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    DG4Date = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OnshorePowerSupplies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OnshorePowerSupplies_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateTable(
                 name: "OnshorePowerSupplyCostProfile",
@@ -131,6 +89,11 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Cases_OnshorePowerSupplyLink",
+                table: "Cases",
+                column: "OnshorePowerSupplyLink");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OnshorePowerSupplies_ProjectId",
                 table: "OnshorePowerSupplies",
                 column: "ProjectId");
@@ -153,14 +116,6 @@ namespace api.Migrations
                 column: "OnshorePowerSupplyLink",
                 principalTable: "OnshorePowerSupplies",
                 principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_OnshorePowerSupplies_Projects_ProjectId",
-                table: "OnshorePowerSupplies",
-                column: "ProjectId",
-                principalTable: "Projects",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
@@ -170,79 +125,22 @@ namespace api.Migrations
                 name: "FK_Cases_OnshorePowerSupplies_OnshorePowerSupplyLink",
                 table: "Cases");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_OnshorePowerSupplies_Projects_ProjectId",
-                table: "OnshorePowerSupplies");
-
             migrationBuilder.DropTable(
                 name: "OnshorePowerSupplyCostProfile");
 
             migrationBuilder.DropTable(
                 name: "OnshorePowerSupplyCostProfileOverride");
 
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_OnshorePowerSupplies",
-                table: "OnshorePowerSupplies");
+            migrationBuilder.DropTable(
+                name: "OnshorePowerSupplies");
 
             migrationBuilder.DropIndex(
-                name: "IX_OnshorePowerSupplies_ProjectId",
-                table: "OnshorePowerSupplies");
+                name: "IX_Cases_OnshorePowerSupplyLink",
+                table: "Cases");
 
             migrationBuilder.DropColumn(
-                name: "Id",
-                table: "OnshorePowerSupplies");
-
-            migrationBuilder.DropColumn(
-                name: "CostYear",
-                table: "OnshorePowerSupplies");
-
-            migrationBuilder.DropColumn(
-                name: "DG3Date",
-                table: "OnshorePowerSupplies");
-
-            migrationBuilder.DropColumn(
-                name: "DG4Date",
-                table: "OnshorePowerSupplies");
-
-            migrationBuilder.DropColumn(
-                name: "LastChangedDate",
-                table: "OnshorePowerSupplies");
-
-            migrationBuilder.DropColumn(
-                name: "Name",
-                table: "OnshorePowerSupplies");
-
-            migrationBuilder.DropColumn(
-                name: "ProjectId",
-                table: "OnshorePowerSupplies");
-
-            migrationBuilder.DropColumn(
-                name: "ProspVersion",
-                table: "OnshorePowerSupplies");
-
-            migrationBuilder.RenameColumn(
-                name: "Source",
-                table: "OnshorePowerSupplies",
-                newName: "TempId");
-
-            migrationBuilder.AddColumn<int>(
-                name: "OnshorePowerSuppliesId",
-                table: "Cases",
-                type: "int",
-                nullable: true);
-
-            migrationBuilder.AddUniqueConstraint(
-                name: "AK_OnshorePowerSupplies_TempId",
-                table: "OnshorePowerSupplies",
-                column: "TempId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Cases_OnshorePowerSupplies_OnshorePowerSuppliesId",
-                table: "Cases",
-                column: "OnshorePowerSuppliesId",
-                principalTable: "OnshorePowerSupplies",
-                principalColumn: "TempId",
-                onDelete: ReferentialAction.Cascade);
+                name: "OnshorePowerSupplyLink",
+                table: "Cases");
         }
     }
 }
