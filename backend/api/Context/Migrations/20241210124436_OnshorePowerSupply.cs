@@ -88,6 +88,10 @@ namespace api.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.Sql(@"
+insert into OnshorePowerSupplies (Id, ProjectId, Name, LastChangedDate, CostYear, Source, ProspVersion, DG3Date, DG4Date)
+select c.Id, c.ProjectId, 'Power from shore', getutcdate(), 2030, 0, null, null, null from Cases c;");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Cases_OnshorePowerSupplyLink",
                 table: "Cases",
