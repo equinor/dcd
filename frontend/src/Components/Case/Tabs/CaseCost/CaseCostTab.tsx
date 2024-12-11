@@ -90,6 +90,8 @@ const CaseCostTab = ({ addEdit }: { addEdit: any }) => {
                 apiData.substructureCostProfileOverride?.values?.length ? apiData.substructureCostProfileOverride : undefined,
                 apiData.transportCostProfile,
                 apiData.transportCostProfileOverride?.values?.length ? apiData.transportCostProfileOverride : undefined,
+                apiData.onshorePowerSupplyCostProfile,
+                apiData.onshorePowerSupplyCostProfileOverride?.values?.length ? apiData.onshorePowerSupplyCostProfileOverride : undefined,
                 apiData.oilProducerCostProfile,
                 apiData.gasProducerCostProfile,
                 apiData.waterInjectorCostProfile,

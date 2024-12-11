@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Dtos;
@@ -85,6 +86,10 @@ public class CaseWithAssetsDto
     public TransportCostProfileOverrideDto? TransportCostProfileOverride { get; set; }
     public TransportCessationCostProfileDto? TransportCessationCostProfile { get; set; }
 
+    [Required]
+    public OnshorePowerSupplyDto OnshorePowerSupply { get; set; } = null!;
+    public OnshorePowerSupplyCostProfileDto? OnshorePowerSupplyCostProfile { get; set; }
+    public OnshorePowerSupplyCostProfileOverrideDto? OnshorePowerSupplyCostProfileOverride { get; set; }
 
     [Required]
     public ExplorationDto Exploration { get; set; } = null!;

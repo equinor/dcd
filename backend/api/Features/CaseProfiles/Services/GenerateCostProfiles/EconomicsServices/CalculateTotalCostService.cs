@@ -1,4 +1,5 @@
 using api.Features.Assets.CaseAssets.Explorations.Services;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.Assets.CaseAssets.Substructures.Services;
 using api.Features.Assets.CaseAssets.Surfs.Services;
 using api.Features.Assets.CaseAssets.Topsides.Services;
@@ -14,6 +15,7 @@ public class CalculateTotalCostService(
     ISurfService surfService,
     ITopsideService topsideService,
     ITransportService transportService,
+    IOnshorePowerSupplyService onshorePowerSupplyService,
     IWellProjectService wellProjectService,
     IExplorationService explorationService)
     : ICalculateTotalCostService
@@ -87,7 +89,13 @@ public class CalculateTotalCostService(
             t => t.CostProfile!
         );
 
-        var totalOffshoreFacilityCost = CalculateTotalOffshoreFacilityCost(substructure, surf, topside, transport);
+        var onshorePowerSupply = await onshorePowerSupplyService.GetOnshorePowerSupplyWithIncludes(
+            caseItem.OnshorePowerSupplyLink,
+            o => o.CostProfileOverride!,
+            o => o.CostProfile!
+        );
+
+        var totalOffshoreFacilityCost = CalculateTotalOffshoreFacilityCost(substructure, surf, topside, transport, onshorePowerSupply);
         var totalOffshoreFacilityProfile = new TimeSeries<double>
         {
             StartYear = totalOffshoreFacilityCost.StartYear,
@@ -234,7 +242,8 @@ public class CalculateTotalCostService(
         Substructure? substructure,
         Surf? surf,
         Topside? topside,
-        Transport? transport)
+        Transport? transport,
+        OnshorePowerSupply? onshorePowerSupply)
     {
         TimeSeries<double> substructureProfile = UseOverrideOrProfile(
             substructure?.CostProfile,
@@ -252,13 +261,18 @@ public class CalculateTotalCostService(
             transport?.CostProfile,
             transport?.CostProfileOverride
         );
+        TimeSeries<double> onshorePowerSupplyProfile = UseOverrideOrProfile(
+            onshorePowerSupply?.CostProfile,
+            onshorePowerSupply?.CostProfileOverride
+        );
 
         var totalOffshoreFacilityCost = TimeSeriesCost.MergeCostProfilesList(
         [
             substructureProfile,
             surfProfile,
             topsideProfile,
-            transportProfile
+            transportProfile,
+            onshorePowerSupplyProfile
         ]);
 
         return totalOffshoreFacilityCost;

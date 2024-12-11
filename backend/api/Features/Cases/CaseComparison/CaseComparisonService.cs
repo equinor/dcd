@@ -249,11 +249,13 @@ public class CaseComparisonService(CaseComparisonRepository caseComparisonReposi
         var surf = caseItem.Surf!;
         var topside = caseItem.Topside!;
         var transport = caseItem.Transport!;
+        var onshorePowerSupply = caseItem.OnshorePowerSupply!;
 
         sumFacilityCost += SumOverrideOrProfile(substructure.CostProfile, substructure.CostProfileOverride);
         sumFacilityCost += SumOverrideOrProfile(surf.CostProfile, surf.CostProfileOverride);
         sumFacilityCost += SumOverrideOrProfile(topside.CostProfile, topside.CostProfileOverride);
         sumFacilityCost += SumOverrideOrProfile(transport.CostProfile, transport.CostProfileOverride);
+        sumFacilityCost += SumOverrideOrProfile(onshorePowerSupply.CostProfile, onshorePowerSupply.CostProfileOverride);
 
         return sumFacilityCost;
     }

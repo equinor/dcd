@@ -3,6 +3,7 @@ export type ResourceName =
     "topside" |
     "surf" |
     "transport" |
+    "onshorePowerSupply" |
     "substructure" |
     "drainageStrategy" |
     "fuelFlaringAndLossesOverride" |
@@ -27,7 +28,7 @@ export type ProfileNames = "cessationWellsCostOverride" | "cessationOffshoreFaci
     "oilProducerCostProfileOverride" | "gasProducerCostProfileOverride" | "waterInjectorCostProfileOverride" | "gasInjectorCostProfileOverride" |
     "seismicAcquisitionAndProcessing" | "countryOfficeCost" | "explorationWellCostProfile" | "appraisalWellCostProfile" |
     "sidetrackCostProfile" | "surfCostOverride" | "topsideCostOverride" | "substructureCostOverride" | "transportCostOverride" |
-    "co2EmissionsOverride" | "co2Intensity"
+    "co2EmissionsOverride" | "co2Intensity" | "onshorePowerSupplyCostProfile" | "onshorePowerSupplyCostOverride"
 
 export type ResourceObject =
     Components.Schemas.TopsideDto |
@@ -40,6 +41,7 @@ export type ResourceObject =
     Components.Schemas.DrainageStrategyDto |
     Components.Schemas.WellProjectDto |
     Components.Schemas.ExplorationDto |
+    Components.Schemas.OnshorePowerSupplyDto |
     ProfileObject
 
 export type ProfileObject =
@@ -55,6 +57,7 @@ export type ProfileObject =
     Components.Schemas.TopsideCostProfileOverrideDto |
     Components.Schemas.SurfCostProfileOverrideDto |
     Components.Schemas.TransportCostProfileOverrideDto |
+    Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto |
     Components.Schemas.SubstructureCostProfileOverrideDto |
     Components.Schemas.AdditionalProductionProfileOilDto |
     Components.Schemas.ProductionProfileGasDto |
@@ -79,6 +82,7 @@ export type ResourcePropertyKey =
     keyof Components.Schemas.SurfDto |
     keyof Components.Schemas.SubstructureDto |
     keyof Components.Schemas.TransportDto |
+    keyof Components.Schemas.OnshorePowerSupplyDto |
     keyof Components.Schemas.CaseOverviewDto |
     keyof Components.Schemas.DrainageStrategyDto |
     keyof Components.Schemas.WellProjectDto |
@@ -101,6 +105,7 @@ export type ProfilePropertyKey =
     keyof Components.Schemas.TopsideCostProfileOverrideDto |
     keyof Components.Schemas.SurfCostProfileOverrideDto |
     keyof Components.Schemas.TransportCostProfileOverrideDto |
+    keyof Components.Schemas.OnshorePowerSupplyCostProfileOverrideDto |
     keyof Components.Schemas.SubstructureCostProfileOverrideDto |
     keyof Components.Schemas.ProductionProfileOilDto |
     keyof Components.Schemas.AdditionalProductionProfileOilDto |

@@ -44,6 +44,7 @@ public class CaseOverviewDto
     [Required] public required Guid SubstructureLink { get; set; }
     [Required] public required Guid TopsideLink { get; set; }
     [Required] public required Guid TransportLink { get; set; }
+    [Required] public required Guid OnshorePowerSupplyLink { get; set; }
     public required string? SharepointFileId { get; set; }
     public required string? SharepointFileName { get; set; }
     public required string? SharepointFileUrl { get; set; }

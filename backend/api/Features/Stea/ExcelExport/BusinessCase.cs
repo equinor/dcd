@@ -6,6 +6,7 @@ public class BusinessCase
     public List<ExcelTableCell> Exploration { get; set; } = [];
     public List<ExcelTableCell> Capex { get; set; } = [];
     public List<ExcelTableCell> OffshoreFacilities { get; set; } = [];
+    public List<ExcelTableCell> OnshorePowerSupply { get; set; } = [];
     public List<ExcelTableCell> Cessation { get; set; } = [];
     public List<ExcelTableCell> Drilling { get; set; } = [];
     public ExcelTableCell ProductionAndSalesVolumes { get; set; } = null!;

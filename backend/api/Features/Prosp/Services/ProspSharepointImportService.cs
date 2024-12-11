@@ -210,8 +210,7 @@ public class ProspSharepointImportService(
                          importDto.Id != null && new Guid(importDto.Id) == caseWithFileStream.Key))
             {
                 var assets = MapAssets(itemInfo.Surf, itemInfo.Substructure, itemInfo.Topside,
-                    itemInfo.Transport);
-
+                    itemInfo.Transport, itemInfo.OnshorePowerSupply);
                 await prospExcelImportService.ImportProsp(caseWithFileStream.Value, caseWithFileStream.Key,
                     projectId,
                     assets,
@@ -230,14 +229,15 @@ public class ProspSharepointImportService(
         return await GetDocumentLibraryDriveId(siteId, documentLibraryName);
     }
 
-    private static Dictionary<string, bool> MapAssets(bool surf, bool substructure, bool topside, bool transport)
+    private static Dictionary<string, bool> MapAssets(bool surf, bool substructure, bool topside, bool transport, bool onshorePowerSupply)
     {
         return new Dictionary<string, bool>
         {
             { nameof(Surf), surf },
             { nameof(Topside), topside },
             { nameof(Substructure), substructure },
-            { nameof(Transport), transport }
+            { nameof(Transport), transport },
+            { nameof(OnshorePowerSupply), true}
         };
     }
 }

@@ -781,6 +781,16 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, IServiceProvid
         var transportCostProfileAdded = ChangeTracker.Entries<TransportCostProfileOverride>()
             .Any(e => e.State == EntityState.Added);
 
+        var OnshorePowerSupplyChanges = ChangeTracker.Entries<OnshorePowerSupplyCostProfileOverride>()
+            .Any(e => e.State == EntityState.Modified &&
+            (
+                e.Property(nameof(Models.OnshorePowerSupplyCostProfileOverride.Override)).IsModified
+                || e.Property(nameof(Models.OnshorePowerSupplyCostProfileOverride.InternalData)).IsModified
+            ));
+
+        var OnshorePowerSupplyAdded = ChangeTracker.Entries<OnshorePowerSupplyCostProfileOverride>()
+            .Any(e => e.State == EntityState.Added);
+
         var wellProjectOilProducerChanges = ChangeTracker.Entries<OilProducerCostProfile>()
             .Any(e => e.State == EntityState.Modified &&
             (
@@ -1016,6 +1026,12 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, IServiceProvid
         var transportOverrideChanges = ChangeTracker.Entries<TransportCostProfileOverride>()
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
+        var OnshorePowerSupplyChanges = ChangeTracker.Entries<OnshorePowerSupplyCostProfile>()
+            .Any(e => e.State is EntityState.Modified or EntityState.Added);
+
+        var OnshorePowerSupplyOverrideChanges = ChangeTracker.Entries<OnshorePowerSupplyCostProfileOverride>()
+            .Any(e => e.State is EntityState.Modified or EntityState.Added);
+
         var oilProducerChanges = ChangeTracker.Entries<OilProducerCostProfile>()
             .Any(e => e.State is EntityState.Modified or EntityState.Added);
 
@@ -1182,6 +1198,10 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, IServiceProvid
     public DbSet<TransportCostProfile> TransportCostProfile { get; set; } = null!;
     public DbSet<TransportCostProfileOverride> TransportCostProfileOverride { get; set; } = null!;
     public DbSet<TransportCessationCostProfile> TransportCessationCostProfiles { get; set; } = null!;
+
+    public DbSet<OnshorePowerSupply> OnshorePowerSupplies { get; set; } = null!;
+    public DbSet<OnshorePowerSupplyCostProfile> OnshorePowerSupplyCostProfile { get; set; } = null!;
+    public DbSet<OnshorePowerSupplyCostProfileOverride> OnshorePowerSupplyCostProfileOverride { get; set; } = null!;
 
     public DbSet<DrainageStrategy> DrainageStrategies { get; set; } = null!;
     public DbSet<ProductionProfileOil> ProductionProfileOil { get; set; } = null!;

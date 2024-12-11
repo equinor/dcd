@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 using api.Models.Interfaces;
-
 namespace api.Models;
 
 public class Transport : IHasProjectId, IChangeTrackable

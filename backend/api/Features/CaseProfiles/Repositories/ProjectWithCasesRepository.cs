@@ -65,6 +65,7 @@ public class ProjectWithCasesRepository(DcdDbContext context) : IProjectWithAsse
         project.Substructures = await GetSubstructures(project.Id);
         project.Topsides = await GetTopsides(project.Id);
         project.Transports = await GetTransports(project.Id);
+        project.OnshorePowerSupplies = await GetOnshorePowerSupplies(project.Id);
         project.Explorations = await GetExplorations(project.Id);
         project.Wells = await GetWells(project.Id);
     }
@@ -117,6 +118,15 @@ public class ProjectWithCasesRepository(DcdDbContext context) : IProjectWithAsse
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
+            .Where(c => c.Project.Id.Equals(projectId))
+            .ToListAsync();
+    }
+
+    private async Task<List<OnshorePowerSupply>> GetOnshorePowerSupplies(Guid projectId)
+    {
+        return await context.OnshorePowerSupplies
+            .Include(c => c.CostProfile)
+            .Include(c => c.CostProfileOverride)
             .Where(c => c.Project.Id.Equals(projectId))
             .ToListAsync();
     }

@@ -8,6 +8,7 @@ implements Components.Schemas.SharePointImportDto {
     substructureState?: ImportStatusEnum | undefined
     topsideState?: ImportStatusEnum | undefined
     transportState?: ImportStatusEnum | undefined
+    onshorePowerSupplyState?: ImportStatusEnum | undefined
     sharePointFileId?: string | null
     sharePointFileName?: string | null
     sharePointFileUrl?: string | null
@@ -124,7 +125,6 @@ implements Components.Schemas.SharePointImportDto {
         dto.substructure = value.substructureState === ImportStatusEnum.Selected
         dto.topside = value.topsideState === ImportStatusEnum.Selected
         dto.transport = value.transportState === ImportStatusEnum.Selected
-
         return dto
     }
 }
