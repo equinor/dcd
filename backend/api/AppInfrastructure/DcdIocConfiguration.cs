@@ -28,7 +28,6 @@ using api.Features.Cases.Delete;
 using api.Features.Cases.Duplicate;
 using api.Features.Cases.GetWithAssets;
 using api.Features.Cases.Update;
-using api.Features.FusionIntegration.OrgChart;
 using api.Features.FusionIntegration.ProjectMaster;
 using api.Features.Images.Service;
 using api.Features.ProjectAccess;
@@ -36,6 +35,7 @@ using api.Features.ProjectData;
 using api.Features.ProjectMembers.Create;
 using api.Features.ProjectMembers.Delete;
 using api.Features.ProjectMembers.Get;
+using api.Features.ProjectMembers.Get.Sync;
 using api.Features.ProjectMembers.Update;
 using api.Features.Projects.Create;
 using api.Features.Projects.Update;
@@ -65,7 +65,7 @@ public static class DcdIocConfiguration
         services.AddScoped<UpdateProjectService>();
 
         services.AddScoped<IFusionService, FusionService>();
-        services.AddScoped<FusionOrgChartMemberService>();
+        services.AddScoped<FusionOrgChartProjectMemberService>();
 
         services.AddScoped<ICaseService, CaseService>();
         services.AddScoped<CreateCaseService>();

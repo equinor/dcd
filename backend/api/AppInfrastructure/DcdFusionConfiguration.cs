@@ -23,6 +23,7 @@ public static class DcdFusionConfiguration
             Console.WriteLine("Fusion environment: " + fusionEnvironment);
             options.UseServiceInformation("ConceptApp", fusionEnvironment);
 
+            options.UseMsalTokenProvider();
             options.UseDefaultEndpointResolver(fusionEnvironment);
             options.UseDefaultTokenProvider(opts =>
             {

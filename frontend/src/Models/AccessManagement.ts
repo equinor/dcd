@@ -7,11 +7,3 @@ export interface User {
     UserId: string
     Role: UserRole
 }
-
-export interface FusionPersonV1 {
-    azureUniqueId: string
-    mail: string
-    name: string
-    accountType: string
-    accountClassification: string
-}
