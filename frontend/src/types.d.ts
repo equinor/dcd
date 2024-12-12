@@ -1002,7 +1002,6 @@ declare namespace Components {
             commonProjectAndRevisionData: CommonProjectAndRevisionDto;
         }
         export interface RevisionDetailsDto {
-            id: string; // uuid
             revisionId: string; // uuid
             revisionName: string;
             revisionDate: string; // date-time

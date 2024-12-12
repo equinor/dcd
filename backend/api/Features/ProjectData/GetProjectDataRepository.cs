@@ -35,7 +35,6 @@ public class GetProjectDataRepository(DcdDbContext context)
             .Where(r => r.Revision.OriginalProjectId == projectId)
             .Select(x => new RevisionDetailsDto
             {
-                Id = x.Id,
                 RevisionId = x.RevisionId,
                 RevisionName = x.RevisionName,
                 RevisionDate = x.RevisionDate,
@@ -51,7 +50,6 @@ public class GetProjectDataRepository(DcdDbContext context)
             .Where(x => x.RevisionId == revisionId)
             .Select(x => new RevisionDetailsDto
             {
-                Id = x.Id,
                 RevisionId = x.RevisionId,
                 RevisionName = x.RevisionName,
                 RevisionDate = x.RevisionDate,
