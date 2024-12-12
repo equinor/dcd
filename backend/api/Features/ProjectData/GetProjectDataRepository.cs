@@ -73,7 +73,7 @@ public class GetProjectDataRepository(DcdDbContext context)
             {
                 ModifyTime = x.ModifyTime,
                 Classification = x.Classification,
-                Name = x.Name,
+                Name = string.IsNullOrWhiteSpace(x.Name) ? x.Description : x.Name,
                 FusionProjectId = x.FusionProjectId,
                 ReferenceCaseId = x.ReferenceCaseId,
                 Description = x.Description,
