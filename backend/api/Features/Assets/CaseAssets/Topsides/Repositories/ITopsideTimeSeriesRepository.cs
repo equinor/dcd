@@ -3,7 +3,7 @@ using api.Models;
 
 namespace api.Features.Assets.CaseAssets.Topsides.Repositories;
 
-public interface ITopsideTimeSeriesRepository : IBaseRepository
+public interface ITopsideTimeSeriesRepository
 {
     TopsideCostProfile CreateTopsideCostProfile(TopsideCostProfile topsideCostProfile);
     Task<TopsideCostProfile?> GetTopsideCostProfile(Guid topsideCostProfileId);

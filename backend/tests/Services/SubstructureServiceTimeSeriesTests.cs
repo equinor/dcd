@@ -1,3 +1,4 @@
+using api.Context.Recalculation;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
 using api.Features.Assets.CaseAssets.Substructures.Repositories;
@@ -23,6 +24,7 @@ public class SubstructureServiceTimeSeriesTests
     private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
     private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
     private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
+    private readonly IRecalculationService _recalculationService = Substitute.For<IRecalculationService>();
 
     public SubstructureServiceTimeSeriesTests()
     {
@@ -32,7 +34,8 @@ public class SubstructureServiceTimeSeriesTests
             _repository,
             _caseRepository,
             _mapperService,
-            _projectAccessService
+            _projectAccessService,
+            _recalculationService
         );
     }
 
@@ -69,7 +72,7 @@ public class SubstructureServiceTimeSeriesTests
 
         // Assert
         Assert.Equal(updatedSubstructureCostProfileOverrideDtoResult, result);
-        await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+        await _recalculationService.Received(1).SaveChangesAndRecalculateAsync(caseId);
     }
 
     [Fact]
@@ -101,7 +104,7 @@ public class SubstructureServiceTimeSeriesTests
 
         // Assert
         Assert.Equal(updatedSubstructureCostProfileDtoResult, result);
-        await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+        await _recalculationService.Received(1).SaveChangesAndRecalculateAsync(caseId);
     }
 
     [Fact]
@@ -131,6 +134,6 @@ public class SubstructureServiceTimeSeriesTests
 
         // Assert
         Assert.Equal(updatedSubstructureCostProfileDtoResult, result);
-        await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+        await _recalculationService.Received(1).SaveChangesAndRecalculateAsync(caseId);
     }
 }

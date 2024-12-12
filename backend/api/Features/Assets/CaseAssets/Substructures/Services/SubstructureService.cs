@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 
+using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Substructures.Dtos;
 using api.Features.Assets.CaseAssets.Substructures.Dtos.Update;
@@ -18,7 +19,8 @@ public class SubstructureService(
     ISubstructureRepository substructureRepository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : ISubstructureService
 {
     public async Task<Substructure> GetSubstructureWithIncludes(Guid substructureId, params Expression<Func<Substructure, object>>[] includes)
@@ -49,7 +51,7 @@ public class SubstructureService(
         {
             // updatedSubstructure = _repository.UpdateSubstructure(existingSubstructure);
             await caseRepository.UpdateModifyTime(caseId);
-            await substructureRepository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

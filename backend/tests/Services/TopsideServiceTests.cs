@@ -1,3 +1,4 @@
+using api.Context.Recalculation;
 using api.Features.Assets.CaseAssets.Topsides.Dtos;
 using api.Features.Assets.CaseAssets.Topsides.Dtos.Update;
 using api.Features.Assets.CaseAssets.Topsides.Repositories;
@@ -23,6 +24,7 @@ public class TopsideServiceTests
     private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
     private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
     private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
+    private readonly IRecalculationService _recalculationService = Substitute.For<IRecalculationService>();
 
     public TopsideServiceTests()
     {
@@ -31,7 +33,8 @@ public class TopsideServiceTests
             _repository,
             _caseRepository,
             _mapperService,
-            _projectAccessService
+            _projectAccessService,
+            _recalculationService
         );
     }
 
@@ -58,7 +61,7 @@ public class TopsideServiceTests
 
         // Assert
         Assert.Equal(updatedTopsideDtoResult, result);
-        await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+        await _recalculationService.Received(1).SaveChangesAndRecalculateAsync(caseId);
     }
 
     [Fact]
@@ -73,7 +76,7 @@ public class TopsideServiceTests
         var existingTopside = new Topside { Id = topsideId };
         _repository.GetTopside(topsideId).Returns(existingTopside);
 
-        _repository.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(_ => throw new DbUpdateException());
+        _recalculationService.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(_ => throw new DbUpdateException());
 
         // Act & Assert
         await Assert.ThrowsAsync<DbUpdateException>(() => _topsideService.UpdateTopside<BaseUpdateTopsideDto>(projectId, caseId, topsideId, updatedTopsideDto));

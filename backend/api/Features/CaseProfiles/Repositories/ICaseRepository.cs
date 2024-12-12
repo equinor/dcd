@@ -6,7 +6,7 @@ using api.Models;
 namespace api.Features.CaseProfiles.Repositories;
 
 
-public interface ICaseRepository : IBaseRepository
+public interface ICaseRepository
 {
     Task<Project> GetProject(Guid projectPk);
     Task<Case?> GetCase(Guid caseId);

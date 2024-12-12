@@ -108,7 +108,7 @@ const ProjectDetails: React.FC = () => {
                             <TimelineElement
                                 variant="ghost"
                                 className="GhostButton"
-                                onClick={() => navigateToProjectTab(3)}
+                                onClick={() => navigateToProjectTab(5)}
                             >
                                 {sidebarOpen
                                     ? "Settings"
