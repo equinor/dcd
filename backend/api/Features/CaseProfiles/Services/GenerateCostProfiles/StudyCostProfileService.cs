@@ -15,7 +15,8 @@ public class StudyCostProfileService(
     ITopsideService topsideService,
     ISubstructureService substructureService,
     ISurfService surfService,
-    ITransportService transportService)
+    ITransportService transportService,
+    IOnshorePowerSupplyService onshorePowerSupplyService)
     : IStudyCostProfileService
 {
     public async Task Generate(Guid caseId)
@@ -186,10 +187,17 @@ public class StudyCostProfileService(
             t => t.CostProfile!
         );
 
+        var onshorePowerSupply = await onshorePowerSupplyService.GetOnshorePowerSupplyWithIncludes(
+            caseItem.OnshorePowerSupplyLink,
+            o => o.CostProfileOverride!,
+            o => o.CostProfile!
+        );
+
         sumFacilityCost += SumOverrideOrProfile(substructure.CostProfile, substructure.CostProfileOverride);
         sumFacilityCost += SumOverrideOrProfile(surf.CostProfile, surf.CostProfileOverride);
         sumFacilityCost += SumOverrideOrProfile(topside.CostProfile, topside.CostProfileOverride);
         sumFacilityCost += SumOverrideOrProfile(transport.CostProfile, transport.CostProfileOverride);
+        sumFacilityCost += SumOverrideOrProfile(onshorePowerSupply.CostProfile, onshorePowerSupply.CostProfileOverride);
 
         return sumFacilityCost;
     }

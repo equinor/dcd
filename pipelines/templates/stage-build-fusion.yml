@@ -14,35 +14,25 @@ stages:
     jobs:
       - job: "Build_Fusion_App"
         steps:
-          - task: FileTransform@1
-            inputs:
-              folderPath: '$(Build.SourcesDirectory)/frontend'
-              fileType: 'json'
-              targetFiles: '**/package.json'
+
           - task: NodeTool@0
             inputs:
                 versionSpec: "18.x"
-          - task: Bash@3
-            displayName: 'Clean and Reinstall Dependencies'
-            inputs:
-              workingDir: "frontend"
-              targetType: 'inline'
-              script: | 
-                echo "Deleting node_modules and package-lock.json..." 
-                rm -rf node_modules package-lock.json 
-                echo "Reinstalling dependencies..."
+
           - task: Npm@1
             displayName: "NPM Install"
             inputs:
                 command: "install"
                 workingDir: "frontend"
+
           - task: Npm@1
-            displayName: "Bundle frontend"
+            displayName: "Build frontend"
             inputs:
                 command: "custom"
                 workingDir: "frontend"
                 verbose: true
                 customCommand: "run-script build"
+
           - task: Bash@3
             displayName: 'Extract manifest data from package.json'
             inputs:
@@ -63,6 +53,7 @@ stages:
                       patch: "0"
                   }
                   }' package.json)" > ./dist/app-manifest.json
+
           - task: Bash@3
             displayName: 'Print app-manifest.json'
             inputs:
@@ -70,6 +61,7 @@ stages:
               targetType: 'inline'
               script: |
                 cat frontend/dist/app-manifest.json
+
           - task: ArchiveFiles@2
             displayName: "Archive files"
             inputs:
@@ -78,6 +70,7 @@ stages:
               archiveType: "zip"
               archiveFile: "${{ parameters.workSpace }}/s/frontend/out/conceptapp.zip"
               replaceExistingArchive: true
+
           - task: PublishPipelineArtifact@1
             inputs:
                 targetPath: "${{ parameters.workSpace }}/s/frontend/out/conceptapp.zip"

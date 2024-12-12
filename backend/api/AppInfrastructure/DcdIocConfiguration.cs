@@ -1,8 +1,11 @@
 using api.AppInfrastructure.Authorization;
+using api.Context.Recalculation;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Services;
 using api.Features.Assets.CaseAssets.Explorations.Repositories;
 using api.Features.Assets.CaseAssets.Explorations.Services;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Repositories;
+using api.Features.Assets.CaseAssets.OnshorePowerSupplies.Services;
 using api.Features.Assets.CaseAssets.Substructures.Repositories;
 using api.Features.Assets.CaseAssets.Substructures.Services;
 using api.Features.Assets.CaseAssets.Surfs.Repositories;
@@ -26,7 +29,6 @@ using api.Features.Cases.Delete;
 using api.Features.Cases.Duplicate;
 using api.Features.Cases.GetWithAssets;
 using api.Features.Cases.Update;
-using api.Features.FusionIntegration.OrgChart;
 using api.Features.FusionIntegration.ProjectMaster;
 using api.Features.Images.Service;
 using api.Features.ProjectAccess;
@@ -34,6 +36,7 @@ using api.Features.ProjectData;
 using api.Features.ProjectMembers.Create;
 using api.Features.ProjectMembers.Delete;
 using api.Features.ProjectMembers.Get;
+using api.Features.ProjectMembers.Get.Sync;
 using api.Features.ProjectMembers.Update;
 using api.Features.Projects.Create;
 using api.Features.Projects.Update;
@@ -63,7 +66,7 @@ public static class DcdIocConfiguration
         services.AddScoped<UpdateProjectService>();
 
         services.AddScoped<IFusionService, FusionService>();
-        services.AddScoped<FusionOrgChartMemberService>();
+        services.AddScoped<FusionOrgChartProjectMemberService>();
 
         services.AddScoped<ICaseService, CaseService>();
         services.AddScoped<CreateCaseService>();
@@ -77,6 +80,7 @@ public static class DcdIocConfiguration
         services.AddScoped<ISubstructureService, SubstructureService>();
         services.AddScoped<ITopsideService, TopsideService>();
         services.AddScoped<ITransportService, TransportService>();
+        services.AddScoped<IOnshorePowerSupplyService, OnshorePowerSupplyService>();
 
         services.AddScoped<ICostProfileFromDrillingScheduleHelper, CostProfileFromDrillingScheduleHelper>();
 
@@ -88,23 +92,15 @@ public static class DcdIocConfiguration
         services.AddScoped<ISubstructureTimeSeriesService, SubstructureTimeSeriesService>();
         services.AddScoped<ITopsideTimeSeriesService, TopsideTimeSeriesService>();
         services.AddScoped<ITransportTimeSeriesService, TransportTimeSeriesService>();
+        services.AddScoped<IOnshorePowerSupplyTimeSeriesService, OnshorePowerSupplyTimeSeriesService>();
 
         services.AddScoped<TechnicalInputService>();
 
-        services.AddScoped<IOpexCostProfileService, OpexCostProfileService>();
-        services.AddScoped<IStudyCostProfileService, StudyCostProfileService>();
-        services.AddScoped<ICo2EmissionsProfileService, Co2EmissionsProfileService>();
-        services.AddScoped<IGenerateGAndGAdminCostProfile, GenerateGAndGAdminCostProfile>();
-        services.AddScoped<ICessationCostProfileService, CessationCostProfileService>();
-        services.AddScoped<IImportedElectricityProfileService, ImportedElectricityProfileService>();
-        services.AddScoped<IFuelFlaringLossesProfileService, FuelFlaringLossesProfileService>();
-        services.AddScoped<INetSaleGasProfileService, NetSaleGasProfileService>();
         services.AddScoped<ICo2IntensityProfileService, Co2IntensityProfileService>();
         services.AddScoped<ICo2IntensityTotalService, Co2IntensityTotalService>();
         services.AddScoped<CaseComparisonService>();
         services.AddScoped<CaseComparisonRepository>();
         services.AddScoped<ICo2DrillingFlaringFuelTotalsService, Co2DrillingFlaringFuelTotalsService>();
-        services.AddScoped<IWellCostProfileService, WellCostProfileService>();
 
         services.AddScoped<SteaService>();
 
@@ -130,6 +126,7 @@ public static class DcdIocConfiguration
         services.AddScoped<IExplorationRepository, ExplorationRepository>();
         services.AddScoped<ITransportRepository, TransportRepository>();
         services.AddScoped<ISurfRepository, SurfRepository>();
+        services.AddScoped<IOnshorePowerSupplyRepository, OnshorePowerSupplyRepository>();
 
         services.AddScoped<ICaseTimeSeriesRepository, CaseTimeSeriesRepository>();
         services.AddScoped<IDrainageStrategyTimeSeriesRepository, DrainageStrategyTimeSeriesRepository>();
@@ -139,6 +136,7 @@ public static class DcdIocConfiguration
         services.AddScoped<IExplorationTimeSeriesRepository, ExplorationTimeSeriesRepository>();
         services.AddScoped<ITransportTimeSeriesRepository, TransportTimeSeriesRepository>();
         services.AddScoped<ISurfTimeSeriesRepository, SurfTimeSeriesRepository>();
+        services.AddScoped<IOnshorePowerSupplyTimeSeriesRepository, OnshorePowerSupplyTimeSeriesRepository>();
 
         services.AddScoped<GetWellService>();
         services.AddScoped<CreateWellService>();
@@ -162,13 +160,25 @@ public static class DcdIocConfiguration
         services.AddSingleton<IAuthorizationPolicyProvider, ApplicationRolePolicyProvider>();
 
         services.AddScoped<IBlobStorageService, BlobStorageService>();
-        services.AddScoped<ICalculateBreakEvenOilPriceService, CalculateBreakEvenOilPriceService>();
-        services.AddScoped<ICalculateNPVService, CalculateNPVService>();
-        services.AddScoped<ICalculateTotalCostService, CalculateTotalCostService>();
-        services.AddScoped<ICalculateTotalIncomeService, CalculateTotalIncomeService>();
 
         // Project assets
         services.AddScoped<UpdateDevelopmentOperationalWellCostsService>();
         services.AddScoped<UpdateExplorationOperationalWellCostsService>();
+
+        /* Recalculation services */
+        services.AddScoped<IRecalculationService, RecalculationService>();
+        services.AddScoped<IWellCostProfileService, WellCostProfileService>();
+        services.AddScoped<IStudyCostProfileService, StudyCostProfileService>();
+        services.AddScoped<ICessationCostProfileService, CessationCostProfileService>();
+        services.AddScoped<IFuelFlaringLossesProfileService, FuelFlaringLossesProfileService>();
+        services.AddScoped<IGenerateGAndGAdminCostProfile, GenerateGAndGAdminCostProfile>();
+        services.AddScoped<IImportedElectricityProfileService, ImportedElectricityProfileService>();
+        services.AddScoped<INetSaleGasProfileService, NetSaleGasProfileService>();
+        services.AddScoped<IOpexCostProfileService, OpexCostProfileService>();
+        services.AddScoped<ICo2EmissionsProfileService, Co2EmissionsProfileService>();
+        services.AddScoped<ICalculateTotalIncomeService, CalculateTotalIncomeService>();
+        services.AddScoped<ICalculateTotalCostService, CalculateTotalCostService>();
+        services.AddScoped<ICalculateNPVService, CalculateNPVService>();
+        services.AddScoped<ICalculateBreakEvenOilPriceService, CalculateBreakEvenOilPriceService>();
     }
 }

@@ -23,7 +23,8 @@ public class GetProjectDataRepository(DcdDbContext context)
             {
                 ProjectId = x.ProjectId,
                 UserId = x.UserId,
-                Role = x.Role
+                Role = x.Role,
+                IsPmt = x.FromOrgChart
             })
             .ToListAsync();
     }
@@ -115,6 +116,7 @@ public class GetProjectDataRepository(DcdDbContext context)
                 Substructures = new List<SubstructureOverviewDto>(),
                 Topsides = new List<TopsideOverviewDto>(),
                 Transports = new List<TransportOverviewDto>(),
+                OnshorePowerSupplies = new List<OnshorePowerSupplyOverviewDto>(),
                 DrainageStrategies = new List<DrainageStrategyOverviewDto>()
             })
             .SingleAsync();
@@ -162,6 +164,7 @@ public class GetProjectDataRepository(DcdDbContext context)
                 SubstructureLink = x.SubstructureLink,
                 TopsideLink = x.TopsideLink,
                 TransportLink = x.TransportLink,
+                OnshorePowerSupplyLink = x.OnshorePowerSupplyLink,
                 SharepointFileId = x.SharepointFileId,
                 SharepointFileName = x.SharepointFileName,
                 SharepointFileUrl = x.SharepointFileUrl
@@ -233,6 +236,18 @@ public class GetProjectDataRepository(DcdDbContext context)
         return await context.Transports
             .Where(x => x.ProjectId == projectId)
             .Select(x => new TransportOverviewDto
+            {
+                Id = x.Id,
+                Source = x.Source
+            })
+            .ToListAsync();
+    }
+
+    public async Task<List<OnshorePowerSupplyOverviewDto>> GetOnshorePowerSupplies(Guid projectId)
+    {
+        return await context.OnshorePowerSupplies
+            .Where(x => x.ProjectId == projectId)
+            .Select(x => new OnshorePowerSupplyOverviewDto
             {
                 Id = x.Id,
                 Source = x.Source

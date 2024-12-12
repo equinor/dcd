@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 
+using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
 using api.Features.Assets.CaseAssets.Explorations.Repositories;
@@ -19,7 +20,8 @@ public class ExplorationService(
     ICaseRepository caseRepository,
     IExplorationRepository repository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : IExplorationService
 {
     public async Task<Exploration> GetExplorationWithIncludes(Guid explorationId, params Expression<Func<Exploration, object>>[] includes)
@@ -46,7 +48,7 @@ public class ExplorationService(
         try
         {
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -81,7 +83,7 @@ public class ExplorationService(
         try
         {
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -125,7 +127,7 @@ public class ExplorationService(
         {
             createdExplorationWell = repository.CreateExplorationWellDrillingSchedule(newExplorationWell);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

@@ -74,6 +74,11 @@ public class CaseConfiguration : IEntityTypeConfiguration<Case>
             .HasForeignKey(c => c.TransportLink)
             .OnDelete(DeleteBehavior.NoAction);
 
+        builder.HasOne(c => c.OnshorePowerSupply)
+            .WithMany()
+            .HasForeignKey(c => c.OnshorePowerSupplyLink)
+            .OnDelete(DeleteBehavior.NoAction);
+
         builder.HasOne(c => c.Topside)
             .WithMany()
             .HasForeignKey(c => c.TopsideLink)

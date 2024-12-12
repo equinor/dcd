@@ -51,7 +51,7 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
     }
     const caseData = apiData.case
 
-    const handleBlur = (e: any) => {
+    const handleChange = (e: any) => {
         // eslint-disable-next-line no-underscore-dangle
         const newValue = e.target._value
         const previousResourceObject = structuredClone(caseData)
@@ -85,16 +85,20 @@ const CaseDescriptionTab = ({ addEdit }: { addEdit: any }) => {
                         id="Description"
                     >
                         <MarkdownEditor
+                            id="case-description-editor"
                             menuItems={["strong", "em", "bullet_list", "ordered_list", "blockquote", "h1", "h2", "h3", "paragraph"]}
                             value={description}
-                            onBlur={(e) => handleBlur(e)}
+                            onInput={handleChange}
                         />
                     </div>
                 ) : (
                     <div
                         key="input"
                     >
-                        <MarkdownViewer value={caseData.description ?? ""} />
+                        <MarkdownViewer
+                            value={caseData.description ?? ""}
+                            id="case-description-viewer"
+                        />
                     </div>
                 )}
             </Grid>

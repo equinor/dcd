@@ -17,7 +17,8 @@ public class GetProjectMemberService(DcdDbContext context)
             {
                 ProjectId = x.ProjectId,
                 UserId = x.UserId,
-                Role = x.Role
+                Role = x.Role,
+                IsPmt = x.FromOrgChart
             })
             .ToListAsync();
     }

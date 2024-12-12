@@ -14,9 +14,11 @@ public class UpdateProjectController(UpdateProjectService updateProjectService, 
     [HttpPut("projects/{projectId:guid}")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
-    public async Task<ProjectDataDto> UpdateProject([FromRoute] Guid projectId, [FromBody] UpdateProjectDto projectDto)
+    public async Task<ProjectDataDto> UpdateProject([FromRoute] Guid projectId, [FromBody] UpdateProjectDto updateProjectDto)
     {
-        await updateProjectService.UpdateProject(projectId, projectDto);
+        UpdateProjectDtoValidator.Validate(updateProjectDto);
+
+        await updateProjectService.UpdateProject(projectId, updateProjectDto);
 
         return await getProjectDataService.GetProjectData(projectId);
     }

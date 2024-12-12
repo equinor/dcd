@@ -1,9 +1,9 @@
 import {
     useState, useEffect,
 } from "react"
-import Grid from "@mui/material/Grid"
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router"
+import { Grid } from "@mui/material"
 import SwitchableNumberInput from "@/Components/Input/SwitchableNumberInput"
 import {
     ITimeSeries,
@@ -13,7 +13,7 @@ import {
 import { useCaseContext } from "@/Context/CaseContext"
 import CaseTabTableWithGrouping from "../Components/CaseTabTableWithGrouping"
 import { mergeTimeseriesList } from "@/Utils/common"
-import { SetSummaryTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
+import { SetSummaryTableYearsFromProfiles, SetTableYearsFromProfiles } from "../Components/CaseTabTableHelper"
 import CaseSummarySkeleton from "@/Components/LoadingSkeletons/CaseSummarySkeleton"
 import { caseQueryFn, projectQueryFn } from "@/Services/QueryFunctions"
 import { useProjectContext } from "@/Context/ProjectContext"
@@ -23,8 +23,11 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
     const { caseId } = useParams()
     const { projectId, isRevision } = useProjectContext()
     const { revisionId } = useParams()
+    const [startYear, setStartYear] = useState<number>(2020)
+    const [endYear, setEndYear] = useState<number>(2030)
     const [tableYears, setTableYears] = useState<[number, number]>([2020, 2030])
     const [allTimeSeriesData, setAllTimeSeriesData] = useState<ITimeSeriesData[][]>([])
+    const [yearRangeSetFromProfiles, setYearRangeSetFromProfiles] = useState<boolean>(false)
 
     const { data: projectData } = useQuery({
         queryKey: ["projectApiData", projectId],
@@ -48,6 +51,9 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
         (apiData?.transportCostProfileOverride?.override === true
             ? apiData?.transportCostProfileOverride
             : apiData?.transportCostProfile),
+        (apiData?.topsideCostProfileOverride?.override === true
+            ? apiData?.topsideCostProfileOverride
+            : apiData?.topsideCostProfile),
     ])
 
     const handleOffshoreOpexPlussWellIntervention = () => mergeTimeseriesList([
@@ -91,7 +97,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 gasProducerCostProfile,
                 waterInjectorCostProfile,
                 gasInjectorCostProfile,
-            ].map((series) => series?.startYear).filter((startYear) => startYear !== undefined) as number[]
+            ].map((series) => series?.startYear).filter((year) => year !== undefined) as number[]
 
             const minStartYear = startYears.length > 0 ? Math.min(...startYears) : 2020
 
@@ -136,7 +142,8 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
 
     useEffect(() => {
         if (activeTabCase === 7 && apiData) {
-            const tableYearsData = [
+            const caseData = apiData?.case
+            SetTableYearsFromProfiles([
                 handleTotalExplorationCost(),
                 handleDrilling(),
                 handleOffshoreFacilitiesCost(),
@@ -152,11 +159,9 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                 handleOffshoreOpexPlussWellIntervention(),
                 apiData.onshoreRelatedOPEXCostProfile,
                 apiData.additionalOPEXCostProfile,
-            ]
-
-            const yearsFromDate = apiData.case.dG4Date ? new Date(apiData.case.dG4Date).getFullYear() : 2030
-
-            SetSummaryTableYearsFromProfiles(tableYearsData, yearsFromDate, setTableYears)
+                apiData.onshorePowerSupplyCostProfile,
+            ], caseData.dG4Date ? new Date(caseData.dG4Date).getFullYear() : 2030, setStartYear, setEndYear, setTableYears)
+            setYearRangeSetFromProfiles(true)
         }
     }, [activeTabCase, apiData, projectData])
 
@@ -177,7 +182,7 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
             const offshoreOpexPlussWellInterventionData = handleOffshoreOpexPlussWellIntervention()
             const onshoreRelatedOPEXCostProfileData = apiData?.onshoreRelatedOPEXCostProfile
             const additionalOPEXCostProfileData = apiData?.additionalOPEXCostProfile
-
+            const onshorePowerSupplyCostProfileData = apiData?.onshorePowerSupplyCostProfile
             const newExplorationTimeSeriesData: ITimeSeriesDataWithGroup[] = [
                 {
                     profileName: "Exploration cost",
@@ -210,6 +215,12 @@ const CaseSummaryTab = ({ addEdit }: { addEdit: any }) => {
                     profileName: "Cessation - onshore facilities",
                     unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
                     profile: cessationOnshoreFacilitiesCostProfileData,
+                    group: "CAPEX",
+                },
+                {
+                    profileName: "Onshore (Power from shore)",
+                    unit: `${projectData?.commonProjectAndRevisionData.currency === 1 ? "MNOK" : "MUSD"}`,
+                    profile: onshorePowerSupplyCostProfileData,
                     group: "CAPEX",
                 },
             ]

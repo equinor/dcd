@@ -1,4 +1,4 @@
-namespace api.Features.FusionIntegration.OrgChart.Models;
+namespace api.Features.ProjectMembers.Get.Sync.Models;
 
 public class FusionSearchObject
 {

@@ -50,6 +50,7 @@ public class Project : IChangeTrackable
     public virtual ICollection<Substructure> Substructures { get; set; } = [];
     public virtual ICollection<Topside> Topsides { get; set; } = [];
     public virtual ICollection<Transport> Transports { get; set; } = [];
+    public virtual ICollection<OnshorePowerSupply> OnshorePowerSupplies { get; set; } = [];
     public virtual ICollection<DrainageStrategy> DrainageStrategies { get; set; } = [];
     public virtual ICollection<WellProject> WellProjects { get; set; } = [];
     public virtual ICollection<Exploration> Explorations { get; set; } = [];
