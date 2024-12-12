@@ -45,7 +45,6 @@ stages:
                             action: 'Publish'
                             appKey: 'conceptapp'
                             environment: ${{ parameters.FusionEnvId }}
-
           - deployment: "Update_${{ parameters.envshortname }}_Tags"
             environment: ${{ parameters.envfullname }}
             strategy:
@@ -63,7 +62,6 @@ stages:
                                   registry: "crdcd.azurecr.io"
                                   repository: "backend"
                                   tag: ${{ parameters.ContainerTag }}
-                                  
           - job: Trigger_Radix_Deploy_${{ parameters.envshortname }}
             dependsOn:
                 - Deploy_${{ parameters.envshortname }}_Frontend
@@ -140,5 +138,40 @@ stages:
                               Write-Host "Build-deploy Non-success"
                               Write-Host $result
                               [Environment]::Exit(1)
-                          }
-                          
+
+                          }         
+          - job: AddDbMigrations_${{ parameters.envshortname }}
+            dependsOn: Trigger_Radix_Deploy_${{ parameters.envshortname }}
+            steps:
+              - task: UseDotNet@2
+                displayName: 'Use .NET Core sdk'
+                inputs:
+                  packageType: sdk
+                  version: 9.0.x
+                  installationPath: $(Agent.ToolsDirectory)/dotnet
+              - task: PowerShell@2
+                displayName: Update env variabel in Azure Devops to ${{ parameters.envshortname }}
+                inputs:
+                    targetType: "inline"
+                    script: |
+                        Write-Host "##vso[task.setvariable variable=AppConfiguration.Environment;]${{ parameters.envshortname }}"
+              - task: FileTransform@1
+                inputs:
+                  folderPath: '$(Build.SourcesDirectory)/backend/api' 
+                  fileType: 'json'
+                  targetFiles: '**/appsettings.json'
+              - task: DotNetCoreCLI@2
+                displayName: Install dotnet-ef
+                inputs:
+                  command: "custom"
+                  custom: "tool"
+                  arguments: "install --global dotnet-ef"
+              - task: AzureCLI@2
+                displayName: Azure CLI
+                inputs:
+                    azureSubscription: 'dcd-pipeline-sp'
+                    scriptType: pscore
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      cd "$(Build.SourcesDirectory)/backend/api"
+                      dotnet ef database update --verbose

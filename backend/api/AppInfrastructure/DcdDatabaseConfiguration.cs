@@ -26,8 +26,6 @@ public static class DcdDatabaseConfiguration
         dbContextOptionsBuilder.UseSqlServer(sqlServerConnectionString);
         using var context = new DcdDbContext(dbContextOptionsBuilder.Options, null);
 
-        context.Database.Migrate();
-
         builder.Services.AddDbContext<DcdDbContext>(
             options => options.UseLazyLoadingProxies()
                 .UseSqlServer(sqlServerConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
