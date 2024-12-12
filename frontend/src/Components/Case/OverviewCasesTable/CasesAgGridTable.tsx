@@ -31,6 +31,7 @@ import { projectQueryFn, revisionQueryFn } from "@/Services/QueryFunctions"
 import { ReferenceCaseIcon } from "../Components/ReferenceCaseIcon"
 import { useProjectContext } from "@/Context/ProjectContext"
 import { useAppContext } from "@/Context/AppContext"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 const AgTableContainer = styled.div`
     overflow: auto;
@@ -85,6 +86,7 @@ const CasesAgGridTable = ({
     const { currentContext } = useModuleCurrentContext()
     const { setShowRevisionReminder } = useAppContext()
     const navigate = useNavigate()
+    const RevisionAndProjectData = useDataFetch()
     const externalId = currentContext?.externalId
 
     const defaultColDef = useMemo(() => ({

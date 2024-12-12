@@ -16,6 +16,7 @@ import AccessManagementSkeleton from "./Components/AccessManagementSkeleton"
 import { EditorViewerContainer } from "./Components/AccessManagement.styles"
 import ExternalAccessInfo from "./Components/ExternalAccessInfo"
 import RolePanel from "./Components/RolePanel"
+import { useDataFetch } from "@/Hooks/useDataFetch"
 
 const AccessManagementTab = () => {
     const { projectId } = useProjectContext()
@@ -23,6 +24,9 @@ const AccessManagementTab = () => {
     const isSmallScreen = useMediaQuery("(max-width:960px)", { noSsr: true })
     const { setSnackBarMessage } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
+    const data = useDataFetch()
+
+    console.log(data)
 
     const { data: projectApiData } = useQuery({
         queryKey: ["projectApiData", projectId],
@@ -73,7 +77,6 @@ const AccessManagementTab = () => {
     useEffect(() => {
         (async () => {
             if (!projectId || !currentContext) { return }
-            
             const projectMembersService = await GetOrgChartMembersService()
             const syncPmt = await projectMembersService.getOrgChartPeople(projectId, currentContext?.id)
             if (syncPmt) {
