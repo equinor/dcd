@@ -56,7 +56,7 @@ const GalleryLabel = styled(Typography) <{ $warning: boolean }>`
 `
 
 const Gallery = () => {
-    const { editMode } = useAppContext()
+    const { editMode, setSnackBarMessage } = useAppContext()
     const [gallery, setGallery] = useState<Components.Schemas.ImageDto[]>([])
     const [modalOpen, setModalOpen] = useState(false)
     const [expandedImage, setExpandedImage] = useState("")
@@ -69,37 +69,32 @@ const Gallery = () => {
             if (projectId) {
                 try {
                     const imageService = await getImageService()
-                    if (caseId) {
-                        const imageDtos = await imageService.getImages(projectId, caseId)
-                        setGallery(imageDtos)
-                    } else {
-                        const imageDtos = await imageService.getProjectImages(projectId)
-                        setGallery(imageDtos)
-                    }
+                    const imageDtos = caseId ?
+                     await imageService.getCaseImages(projectId, caseId) :
+                     await imageService.getProjectImages(projectId)
+
+                    setGallery(imageDtos)
                 } catch (error) {
                     console.error("Error loading images:", error)
+                    setSnackBarMessage("Error loading images")
                 }
             }
         }
 
         loadImages()
-    }, [projectId, caseId])
+    }, [projectId, caseId, setSnackBarMessage])
 
-    const handleDelete = async (imageUrl: string) => {
+    const handleDelete = async (imageId: string) => {
         try {
             if (projectId) {
                 const imageService = await getImageService()
-                const image = gallery.find((img) => img.url === imageUrl)
+                const image = gallery.find((img) => img.imageId === imageId)
                 if (image) {
-                    if (caseId) {
-                        await imageService.deleteImage(projectId, image.id, caseId)
-                    } else {
-                        await imageService.deleteImage(projectId, image.id)
-                    }
-                    setGallery(gallery.filter((img) => img.url !== imageUrl))
+                    await imageService.deleteImage(projectId, image.imageId)
+                    setGallery(gallery.filter((img) => img.imageId !== imageId))
                     setExeededLimit(false)
                 } else {
-                    console.error("Image not found for the provided URL:", imageUrl)
+                    console.error("Image not found for the provided URL:", imageId)
                 }
             }
         } catch (error) {
@@ -125,14 +120,14 @@ const Gallery = () => {
                         key={`menu-item-${index + 1}`}
                     >
                         <ImageWithHover>
-                            <img src={image.url} alt={`upload #${index + 1}`} />
+                            <img src={"data:image/jpeg;base64, " + image.imageData} alt={`upload #${index + 1}`} />
                             <GalleryControls>
                                 {editMode && (
-                                    <Button variant="contained_icon" color="danger" onClick={() => handleDelete(image.url)}>
+                                    <Button variant="contained_icon" color="danger" onClick={() => handleDelete(image.imageId)}>
                                         <Icon size={18} data={delete_to_trash} />
                                     </Button>
                                 )}
-                                <Button variant="contained_icon" color="secondary" onClick={() => handleExpand(image.url)}>
+                                <Button variant="contained_icon" color="secondary" onClick={() => handleExpand(image.imageId)}>
                                     <Icon size={18} data={expand_screen} />
                                 </Button>
                             </GalleryControls>

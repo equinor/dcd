@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query"
 import { getImageService } from "../../Services/ImageService"
 import { useAppContext } from "../../Context/AppContext"
 import { projectQueryFn } from "../../Services/QueryFunctions"
+import { useProjectContext } from "@/Context/ProjectContext"
 
 const UploadBox = styled(Box)`
     display: flex;
@@ -50,6 +51,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
     const { setSnackBarMessage } = useAppContext()
     const { currentContext } = useModuleCurrentContext()
     const externalId = currentContext?.externalId
+    const { projectId } = useProjectContext()
 
     const { data: apiData } = useQuery({
         queryKey: ["projectApiData", externalId],
@@ -62,7 +64,10 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
             if (apiData && caseId) {
                 try {
                     const imageService = await getImageService()
-                    const imageDtos = await imageService.getImages(apiData.projectId, caseId)
+                    const imageDtos = caseId ?
+                        await imageService.getCaseImages(projectId, caseId) :
+                        await imageService.getProjectImages(projectId)
+                    
                     setGallery(imageDtos)
                 } catch (error) {
                     console.error("Error loading images:", error)
@@ -71,7 +76,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ setGallery, gallery, setExeed
             }
         }
         loadImages()
-    }, [setGallery, apiData, caseId])
+    }, [setGallery, apiData, projectId, caseId])
 
     const MAX_FILE_SIZE = 5 * 1024 * 1024
     const MAX_FILES = 4

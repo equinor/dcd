@@ -4,14 +4,14 @@ using Azure.Storage.Blobs;
 
 namespace api.AppInfrastructure;
 
-public static class DcdBlogStorageConfiguration
+public static class DcdBlobStorageConfiguration
 {
-    public static void AddDcdBlogStorage(this WebApplicationBuilder builder, IConfiguration configuration)
+    public static void AddDcdBlobStorage(this WebApplicationBuilder builder, IConfiguration configuration)
     {
         BlobStorageService.ContainerName = GetContainerName(configuration);
 
-        var azureBlobStorageConnectionString = builder.Configuration["AzureBlobStorageConnectionStringForImageUpload"];
-        builder.Services.AddScoped(_ => new BlobServiceClient(azureBlobStorageConnectionString));
+        var blobStorageConnectionString = configuration["BlobStorageConnectionString"];
+        builder.Services.AddScoped(_ => new BlobServiceClient(new Uri(blobStorageConnectionString!)));
     }
 
     private static string GetContainerName(IConfiguration configuration)

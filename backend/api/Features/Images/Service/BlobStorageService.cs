@@ -18,14 +18,8 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
 {
     public static string ContainerName { get; set; } = null!;
 
-    private static string SanitizeBlobName(string name)
+    public async Task<ImageDto> SaveImage(Guid projectId, IFormFile image, Guid? caseId = null)
     {
-        return name.Replace(" ", "-").Replace("/", "-").Replace("\\", "-");
-    }
-
-    public async Task<ImageDto> SaveImage(Guid projectId, string projectName, IFormFile image, Guid? caseId = null)
-    {
-        var sanitizedProjectName = SanitizeBlobName(projectName);
         var containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
 
         var imageId = Guid.NewGuid();
@@ -35,16 +29,14 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
             throw new ArgumentException("ProjectId and/or CaseId cannot be empty.");
         }
 
-        var blobName = caseId.HasValue
-            ? $"{sanitizedProjectName}/cases/{caseId}/{imageId}"
-            : $"{sanitizedProjectName}/projects/{projectId}/{imageId}";
+        var blobName = GetBlobName(caseId, projectId, imageId);
 
         var blobClient = containerClient.GetBlobClient(blobName);
 
         await using var stream = image.OpenReadStream();
         await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = image.ContentType });
 
-        var imageUrl = blobClient.Uri.ToString();
+        var imageUrl = blobClient.Uri.ToString().Split('?')[0];
         var createTime = DateTimeOffset.UtcNow;
 
         var imageEntity = new Image
@@ -53,8 +45,7 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
             Url = imageUrl,
             CreateTime = createTime,
             CaseId = caseId,
-            ProjectId = projectId,
-            ProjectName = sanitizedProjectName
+            ProjectId = projectId
         };
 
         context.Images.Add(imageEntity);
@@ -66,7 +57,11 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
 
         await context.SaveChangesAsync();
 
-        return MapToDto(imageEntity);
+        var imageContent = await GetImageContent(imageEntity);
+
+        var dto = MapToDto(imageEntity, imageContent);
+
+        return dto;
     }
 
     public async Task<List<ImageDto>> GetCaseImages(Guid caseId)
@@ -75,7 +70,15 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
             .Where(img => img.CaseId == caseId)
             .ToListAsync();
 
-        return images.Select(MapToDto).ToList();
+        var dtos = new List<ImageDto>();
+
+        foreach (var image in images)
+        {
+            var imageContent = await GetImageContent(image);
+            dtos.Add(MapToDto(image, imageContent));
+        }
+
+        return dtos;
     }
 
     public async Task<List<ImageDto>> GetProjectImages(Guid projectId)
@@ -84,7 +87,15 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
             .Where(img => img.ProjectId == projectId && img.CaseId == null)
             .ToListAsync();
 
-        return images.Select(MapToDto).ToList();
+        var dtos = new List<ImageDto>();
+
+        foreach (var image in images)
+        {
+            var imageContent = await GetImageContent(image);
+            dtos.Add(MapToDto(image, imageContent));
+        }
+
+        return dtos;
     }
 
     public async Task DeleteImage(Guid imageId)
@@ -97,10 +108,7 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
 
         var containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
 
-        var sanitizedProjectName = SanitizeBlobName(image.ProjectName);
-        var blobName = image.CaseId.HasValue
-            ? $"{sanitizedProjectName}/cases/{image.CaseId}/{image.Id}"
-            : $"{sanitizedProjectName}/projects/{image.ProjectId}/{image.Id}";
+        var blobName = GetBlobName(image.CaseId, image.ProjectId, image.Id);
 
         var blobClient = containerClient.GetBlobClient(blobName);
 
@@ -110,17 +118,41 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
         await context.SaveChangesAsync();
     }
 
-    private static ImageDto MapToDto(Image imageEntity)
+    private async Task<string> GetImageContent(Image image)
+    {
+        var containerClient = blobServiceClient.GetBlobContainerClient(ContainerName);
+
+        var blobName = GetBlobName(image.CaseId, image.ProjectId, image.Id);
+
+        var blobClient = containerClient.GetBlobClient(blobName);
+
+        var response = await blobClient.DownloadAsync();
+        var stream = response.Value.Content;
+
+        using var memoryStream = new MemoryStream();
+        await stream.CopyToAsync(memoryStream);
+        var bytes = memoryStream.ToArray();
+
+        return Convert.ToBase64String(bytes);
+    }
+
+    private static string GetBlobName(Guid? caseId, Guid projectId, Guid imageId)
+    {
+        return caseId.HasValue
+            ? $"cases/{caseId}/{imageId}"
+            : $"projects/{projectId}/{imageId}";
+    }
+
+    private static ImageDto MapToDto(Image imageEntity, string base64EncodedImage)
     {
         return new ImageDto
         {
-            Id = imageEntity.Id,
-            Url = imageEntity.Url,
+            ImageId = imageEntity.Id,
             CreateTime = imageEntity.CreateTime,
             Description = imageEntity.Description,
             CaseId = imageEntity.CaseId,
-            ProjectName = imageEntity.ProjectName,
-            ProjectId = imageEntity.ProjectId
+            ProjectId = imageEntity.ProjectId,
+            ImageData = base64EncodedImage
         };
     }
 }
