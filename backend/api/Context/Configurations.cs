@@ -9,7 +9,7 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
 {
     public void Configure(EntityTypeBuilder<Project> builder)
     {
-        builder.HasIndex(p => p.FusionProjectId).HasDatabaseName("IX_Project_FusionProjectId");
+        builder.HasIndex(p => p.FusionProjectId);
 
         // Configure self-referencing relationship for Project for revisions
         builder.HasOne(p => p.OriginalProject)
@@ -38,7 +38,7 @@ public class RevisionDetailsConfiguration : IEntityTypeConfiguration<RevisionDet
 {
     public void Configure(EntityTypeBuilder<RevisionDetails> builder)
     {
-        builder.HasIndex(rd => rd.OriginalProjectId).HasDatabaseName("IX_RevisionDetails_OriginalProjectId");
+        builder.HasIndex(rd => rd.OriginalProjectId);
     }
 }
 
