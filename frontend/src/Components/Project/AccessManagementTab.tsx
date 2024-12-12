@@ -73,7 +73,7 @@ const AccessManagementTab = () => {
     useEffect(() => {
         (async () => {
             if (!projectId || !currentContext) { return }
-            console.log("useEffect inside")
+            
             const projectMembersService = await GetOrgChartMembersService()
             const syncPmt = await projectMembersService.getOrgChartPeople(projectId, currentContext?.id)
             if (syncPmt) {
