@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 
 using api.Context;
 using api.Context.Extensions;
+using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Repositories;
@@ -20,7 +21,8 @@ public class DrainageStrategyService(
     ICaseRepository caseRepository,
     IDrainageStrategyRepository repository,
     IConversionMapperService conversionMapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : IDrainageStrategyService
 {
     public async Task<DrainageStrategy> GetDrainageStrategyWithIncludes(
@@ -54,7 +56,7 @@ public class DrainageStrategyService(
         try
         {
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

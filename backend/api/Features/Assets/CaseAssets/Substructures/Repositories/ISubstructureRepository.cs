@@ -5,7 +5,7 @@ using api.Models;
 
 namespace api.Features.Assets.CaseAssets.Substructures.Repositories;
 
-public interface ISubstructureRepository : IBaseRepository
+public interface ISubstructureRepository
 {
     Task<Substructure?> GetSubstructure(Guid substructureId);
     Task<Substructure?> GetSubstructureWithIncludes(Guid substructureId, params Expression<Func<Substructure, object>>[] includes);

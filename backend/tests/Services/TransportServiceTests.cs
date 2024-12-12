@@ -1,3 +1,4 @@
+using api.Context.Recalculation;
 using api.Features.Assets.CaseAssets.Transports.Dtos;
 using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
 using api.Features.Assets.CaseAssets.Transports.Repositories;
@@ -23,6 +24,7 @@ public class TransportServiceTests
     private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
     private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
     private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
+    private readonly IRecalculationService _recalculationService = Substitute.For<IRecalculationService>();
 
     public TransportServiceTests()
     {
@@ -31,7 +33,8 @@ public class TransportServiceTests
             _caseRepository,
             _repository,
             _mapperService,
-            _projectAccessService
+            _projectAccessService,
+            _recalculationService
         );
     }
 
@@ -58,7 +61,7 @@ public class TransportServiceTests
 
         // Assert
         Assert.Equal(updatedTransportDtoResult, result);
-        await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+        await _recalculationService.Received(1).SaveChangesAndRecalculateAsync(caseId);
     }
 
     [Fact]
@@ -73,7 +76,7 @@ public class TransportServiceTests
         var existingTransport = new Transport { Id = transportId };
         _repository.GetTransport(transportId).Returns(existingTransport);
 
-        _repository.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(_ => throw new DbUpdateException());
+        _recalculationService.When(r => r.SaveChangesAndRecalculateAsync(caseId)).Do(_ => throw new DbUpdateException());
 
         // Act & Assert
         await Assert.ThrowsAsync<DbUpdateException>(() => _transportService.UpdateTransport<BaseUpdateTransportDto>(projectId, caseId, transportId, updatedTransportDto));

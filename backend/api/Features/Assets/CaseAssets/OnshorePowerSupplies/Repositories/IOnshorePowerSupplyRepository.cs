@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using api.Features.CaseProfiles.Repositories;
 using api.Models;
 
-public interface IOnshorePowerSupplyRepository : IBaseRepository
+public interface IOnshorePowerSupplyRepository
 {
     Task<OnshorePowerSupply?> GetOnshorePowerSupply(Guid onshorePowerSupplyId);
     Task<OnshorePowerSupply?> GetOnshorePowerSupplyWithIncludes(Guid onshorePowerSupplyId, params Expression<Func<OnshorePowerSupply, object>>[] includes);

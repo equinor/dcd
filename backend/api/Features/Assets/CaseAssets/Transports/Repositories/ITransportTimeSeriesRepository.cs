@@ -3,7 +3,7 @@ using api.Models;
 
 namespace api.Features.Assets.CaseAssets.Transports.Repositories;
 
-public interface ITransportTimeSeriesRepository : IBaseRepository
+public interface ITransportTimeSeriesRepository
 {
     TransportCostProfile CreateTransportCostProfile(TransportCostProfile transportCostProfile);
     Task<TransportCostProfile?> GetTransportCostProfile(Guid transportCostProfileId);

@@ -1,3 +1,4 @@
+using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos;
 using api.Features.Assets.CaseAssets.DrainageStrategies.Dtos.Create;
@@ -18,7 +19,8 @@ public class DrainageStrategyTimeSeriesService(
     IDrainageStrategyTimeSeriesRepository repository,
     IDrainageStrategyRepository drainageStrategyTimeSeriesRepository,
     IConversionMapperService conversionMapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : IDrainageStrategyTimeSeriesService
 {
     public async Task<ProductionProfileOilDto> CreateProductionProfileOil(
@@ -483,7 +485,7 @@ public class DrainageStrategyTimeSeriesService(
         {
             // updatedProfile = updateProfile(existingProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -536,7 +538,7 @@ public class DrainageStrategyTimeSeriesService(
         {
             createdProfile = createProfile(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
