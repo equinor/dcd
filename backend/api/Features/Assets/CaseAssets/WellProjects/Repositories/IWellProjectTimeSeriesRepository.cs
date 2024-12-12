@@ -3,7 +3,7 @@ using api.Models;
 
 namespace api.Features.Assets.CaseAssets.WellProjects.Repositories;
 
-public interface IWellProjectTimeSeriesRepository : IBaseRepository
+public interface IWellProjectTimeSeriesRepository
 {
     OilProducerCostProfileOverride CreateOilProducerCostProfileOverride(OilProducerCostProfileOverride profile);
     GasProducerCostProfileOverride CreateGasProducerCostProfileOverride(GasProducerCostProfileOverride profile);

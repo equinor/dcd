@@ -1,3 +1,4 @@
+using api.Context.Recalculation;
 using api.Features.Assets.CaseAssets.Surfs.Dtos;
 using api.Features.Assets.CaseAssets.Surfs.Dtos.Update;
 using api.Features.Assets.CaseAssets.Surfs.Repositories;
@@ -22,6 +23,7 @@ public class SurfServiceTimeSeriesTests
     private readonly ICaseRepository _caseRepository = Substitute.For<ICaseRepository>();
     private readonly IMapperService _mapperService = Substitute.For<IMapperService>();
     private readonly IProjectAccessService _projectAccessService = Substitute.For<IProjectAccessService>();
+    private readonly IRecalculationService _recalculationService = Substitute.For<IRecalculationService>();
 
     public SurfServiceTimeSeriesTests()
     {
@@ -31,7 +33,8 @@ public class SurfServiceTimeSeriesTests
             _surfRepository,
             _caseRepository,
             _mapperService,
-            _projectAccessService
+            _projectAccessService,
+            _recalculationService
         );
     }
 
@@ -67,7 +70,7 @@ public class SurfServiceTimeSeriesTests
 
         // Assert
         Assert.Equal(updatedSurfCostProfileOverrideDtoResult, result);
-        await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+        await _recalculationService.Received(1).SaveChangesAndRecalculateAsync(caseId);
     }
 
     [Fact]
@@ -99,7 +102,7 @@ public class SurfServiceTimeSeriesTests
 
         // Assert
         Assert.Equal(updatedSurfCostProfileDtoResult, result);
-        await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+        await _recalculationService.Received(1).SaveChangesAndRecalculateAsync(caseId);
     }
 
     [Fact]
@@ -129,6 +132,6 @@ public class SurfServiceTimeSeriesTests
 
         // Assert
         Assert.Equal(updatedSurfCostProfileDtoResult, result);
-        await _repository.Received(1).SaveChangesAndRecalculateAsync(caseId);
+        await _recalculationService.Received(1).SaveChangesAndRecalculateAsync(caseId);
     }
 }

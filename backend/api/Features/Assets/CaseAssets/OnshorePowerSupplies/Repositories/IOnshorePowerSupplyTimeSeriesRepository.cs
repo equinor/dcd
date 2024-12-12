@@ -1,9 +1,8 @@
-using api.Features.CaseProfiles.Repositories;
 using api.Models;
 
 namespace api.Features.Assets.CaseAssets.OnshorePowerSupplies.Repositories;
 
-public interface IOnshorePowerSupplyTimeSeriesRepository : IBaseRepository
+public interface IOnshorePowerSupplyTimeSeriesRepository
 {
     OnshorePowerSupplyCostProfile CreateOnshorePowerSupplyCostProfile(OnshorePowerSupplyCostProfile onshorePowerSupplyCostProfile);
     Task<OnshorePowerSupplyCostProfile?> GetOnshorePowerSupplyCostProfile(Guid onshorePowerSupplyostProfileId);

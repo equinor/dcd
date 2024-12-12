@@ -13,6 +13,7 @@ namespace api.Context;
 public static class ChangeLogService
 {
     private static readonly IReadOnlyList<string> PropertyNamesToIgnore = new List<string> { "ModifyTime" };
+
     public static List<ChangeLog> GenerateChangeLogs(DcdDbContext dbContext, CurrentUser? currentUser, DateTime utcNow)
     {
         var changes = dbContext.ChangeTracker
