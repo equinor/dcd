@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 
+using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Repositories;
@@ -19,7 +20,8 @@ public class WellProjectService(
     IWellProjectRepository repository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : IWellProjectService
 {
     public async Task<WellProject> GetWellProjectWithIncludes(Guid wellProjectId, params Expression<Func<WellProject, object>>[] includes)
@@ -46,7 +48,7 @@ public class WellProjectService(
         try
         {
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -83,7 +85,7 @@ public class WellProjectService(
         {
             // updatedDrillingSchedule = _repository.UpdateWellProjectWellDrillingSchedule(existingDrillingSchedule);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -127,7 +129,7 @@ public class WellProjectService(
         {
             createdWellProjectWell = repository.CreateWellProjectWellDrillingSchedule(newWellProjectWell);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

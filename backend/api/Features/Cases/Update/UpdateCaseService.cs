@@ -1,11 +1,12 @@
 using api.Context;
 using api.Context.Extensions;
+using api.Context.Recalculation;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Features.Cases.Update;
 
-public class UpdateCaseService(DcdDbContext context)
+public class UpdateCaseService(DcdDbContext context, IRecalculationService recalculationService)
 {
     public async Task UpdateCase(Guid projectId, Guid caseId, UpdateCaseDto updateCaseDto)
     {
@@ -49,6 +50,6 @@ public class UpdateCaseService(DcdDbContext context)
         existingCase.SharepointFileUrl = updateCaseDto.SharepointFileUrl;
         existingCase.ModifyTime = DateTimeOffset.UtcNow;
 
-        await context.SaveChangesAndRecalculateAsync(caseId);
+        await recalculationService.SaveChangesAndRecalculateAsync(caseId);
     }
 }

@@ -5,7 +5,7 @@ using api.Models;
 
 namespace api.Features.Assets.CaseAssets.Surfs.Repositories;
 
-public interface ISurfRepository : IBaseRepository
+public interface ISurfRepository
 {
     Task<Surf?> GetSurfWithIncludes(Guid surfId, params Expression<Func<Surf, object>>[] includes);
     Task<Surf?> GetSurf(Guid surfId);

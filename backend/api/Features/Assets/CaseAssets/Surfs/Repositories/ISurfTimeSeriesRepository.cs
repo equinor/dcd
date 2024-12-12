@@ -3,7 +3,7 @@ using api.Models;
 
 namespace api.Features.Assets.CaseAssets.Surfs.Repositories;
 
-public interface ISurfTimeSeriesRepository : IBaseRepository
+public interface ISurfTimeSeriesRepository
 {
     SurfCostProfile CreateSurfCostProfile(SurfCostProfile surfCostProfile);
     Task<SurfCostProfile?> GetSurfCostProfile(Guid surfCostProfileId);

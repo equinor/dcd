@@ -1,3 +1,4 @@
+using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos;
 using api.Features.Assets.CaseAssets.WellProjects.Dtos.Create;
@@ -19,7 +20,8 @@ public class WellProjectTimeSeriesService(
     IWellProjectRepository wellProjectRepository,
     ICaseRepository caseRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : IWellProjectTimeSeriesService
 {
     public async Task<OilProducerCostProfileOverrideDto> UpdateOilProducerCostProfileOverride(
@@ -190,7 +192,7 @@ public class WellProjectTimeSeriesService(
         try
         {
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -240,7 +242,7 @@ public class WellProjectTimeSeriesService(
         {
             createdProfile = createProfile(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {

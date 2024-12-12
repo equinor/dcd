@@ -1,3 +1,4 @@
+using api.Context.Recalculation;
 using api.Exceptions;
 using api.Features.Assets.CaseAssets.Explorations.Dtos;
 using api.Features.Assets.CaseAssets.Explorations.Dtos.Create;
@@ -19,7 +20,8 @@ public class ExplorationTimeSeriesService(
     IExplorationTimeSeriesRepository repository,
     IExplorationRepository explorationRepository,
     IMapperService mapperService,
-    IProjectAccessService projectAccessService)
+    IProjectAccessService projectAccessService,
+    IRecalculationService recalculationService)
     : IExplorationTimeSeriesService
 {
     public async Task<GAndGAdminCostOverrideDto> CreateGAndGAdminCostOverride(
@@ -154,7 +156,7 @@ public class ExplorationTimeSeriesService(
         {
             updatedProfile = updateProfile(existingProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
@@ -204,7 +206,7 @@ public class ExplorationTimeSeriesService(
         {
             createdProfile = createProfile(newProfile);
             await caseRepository.UpdateModifyTime(caseId);
-            await repository.SaveChangesAndRecalculateAsync(caseId);
+            await recalculationService.SaveChangesAndRecalculateAsync(caseId);
         }
         catch (DbUpdateException ex)
         {
