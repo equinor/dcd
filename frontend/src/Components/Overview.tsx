@@ -84,7 +84,6 @@ const Overview = () => {
         if (!externalId) { return }
         const projectService = await GetProjectService()
         const access = await projectService.getAccess(externalId)
-        console.log("access", access)
         if (access?.canEdit || access?.isAdmin) {
             setCanCreateRevision(true)
         }
