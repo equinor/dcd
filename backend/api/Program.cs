@@ -33,7 +33,7 @@ builder.Services.AddResponseCompression(options =>
     options.Providers.Add<GzipCompressionProvider>();
 });
 builder.AddDcdAuthentication();
-builder.ConfigureDcdDatabase(config);
+builder.ConfigureDcdDatabase(environment, config);
 builder.Services.AddDcdCorsPolicy();
 builder.Services.AddDcdFusionConfiguration(environment, config);
 DcdLogConfiguration.ConfigureDcdLogging(environment, config);
