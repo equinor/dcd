@@ -22,6 +22,7 @@ public class CreateRevisionRepository(DcdDbContext context)
         await LoadTopsides(projectPk);
         await LoadSurfs(projectPk);
         await LoadSubstructures(projectPk);
+        await LoadOnshorePowerSupplies(projectPk);
 
         DetachEntriesToEnablePrimaryKeyEdits();
 
@@ -151,6 +152,15 @@ public class CreateRevisionRepository(DcdDbContext context)
             .Include(c => c.CostProfile)
             .Include(c => c.CostProfileOverride)
             .Include(c => c.CessationCostProfile)
+            .Where(x => x.ProjectId == projectPk)
+            .LoadAsync();
+    }
+
+    private async Task LoadOnshorePowerSupplies(Guid projectPk)
+    {
+        await context.OnshorePowerSupplies
+            .Include(c => c.CostProfile)
+            .Include(c => c.CostProfileOverride)
             .Where(x => x.ProjectId == projectPk)
             .LoadAsync();
     }
