@@ -237,7 +237,7 @@ public class ProspSharepointImportService(
             { nameof(Topside), topside },
             { nameof(Substructure), substructure },
             { nameof(Transport), transport },
-            { nameof(OnshorePowerSupply), true}
+            { nameof(OnshorePowerSupply), onshorePowerSupply }
         };
     }
 }
