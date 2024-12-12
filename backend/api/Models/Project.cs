@@ -61,7 +61,6 @@ public class Project : IChangeTrackable
 public class RevisionDetails : IChangeTrackable
 {
     public Guid Id { get; set; }
-    public Guid OriginalProjectId { get; set; }
 
     public virtual Project Revision { get; set; } = null!;
     public Guid RevisionId { get; set; }

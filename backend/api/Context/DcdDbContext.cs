@@ -90,7 +90,6 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
 
         modelBuilder.ApplyConfiguration(new ProjectConfiguration());
         modelBuilder.ApplyConfiguration(new ProjectMemberConfiguration());
-        modelBuilder.ApplyConfiguration(new RevisionDetailsConfiguration());
         modelBuilder.ApplyConfiguration(new CaseConfiguration());
         modelBuilder.ApplyConfiguration(new WellProjectWellConfiguration());
         modelBuilder.ApplyConfiguration(new ExplorationWellConfiguration());

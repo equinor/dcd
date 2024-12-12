@@ -34,14 +34,6 @@ public class ProjectConfiguration : IEntityTypeConfiguration<Project>
     }
 }
 
-public class RevisionDetailsConfiguration : IEntityTypeConfiguration<RevisionDetails>
-{
-    public void Configure(EntityTypeBuilder<RevisionDetails> builder)
-    {
-        builder.HasIndex(rd => rd.OriginalProjectId);
-    }
-}
-
 public class ProjectMemberConfiguration : IEntityTypeConfiguration<ProjectMember>
 {
     public void Configure(EntityTypeBuilder<ProjectMember> builder)
