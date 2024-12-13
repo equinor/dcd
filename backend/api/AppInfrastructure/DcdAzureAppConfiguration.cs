@@ -6,7 +6,7 @@ namespace api.AppInfrastructure;
 
 public static class DcdAzureAppConfiguration
 {
-    public static IConfigurationRoot CreateDcdConfigurationRoot(this WebApplicationBuilder builder, string environment)
+    public static IConfigurationRoot CreateDcdConfigurationRoot(this WebApplicationBuilder builder)
     {
         var azureAppConfigConnectionString = builder.Configuration["AppConfiguration:ConnectionString"];
 
@@ -14,7 +14,7 @@ public static class DcdAzureAppConfiguration
             options.Connect(azureAppConfigConnectionString)
                 .ConfigureKeyVault(x => x.SetCredential(new DefaultAzureCredential()))
                 .Select(KeyFilter.Any)
-                .Select(KeyFilter.Any, environment)
+                .Select(KeyFilter.Any, DcdEnvironments.CurrentEnvironment)
         ).Build();
     }
 }
