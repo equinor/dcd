@@ -9,7 +9,14 @@ using api.Features.Assets.CaseAssets.Transports.Services;
 using api.Features.Assets.CaseAssets.WellProjects.Services;
 using api.Features.CaseProfiles.Services;
 using api.Features.CaseProfiles.Services.GenerateCostProfiles;
-using api.Features.CaseProfiles.Services.GenerateCostProfiles.EconomicsServices;
+using api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
+using api.Features.Cases.Recalculation.Calculators.CalculateNpv;
+using api.Features.Cases.Recalculation.Calculators.CalculateTotalCost;
+using api.Features.Cases.Recalculation.Calculators.CalculateTotalIncome;
+using api.Features.Cases.Recalculation.Calculators.Helpers;
+using api.Features.Cases.Recalculation.Types.CessationCostProfile;
+using api.Features.Cases.Recalculation.Types.OpexCostProfile;
+using api.Features.Cases.Recalculation.Types.StudyCostProfile;
 using api.Models;
 
 using NSubstitute;
