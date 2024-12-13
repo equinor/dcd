@@ -12,6 +12,7 @@ using api.Features.Assets.CaseAssets.Topsides.Services;
 using api.Features.Assets.CaseAssets.Transports.Dtos.Update;
 using api.Features.Assets.CaseAssets.Transports.Services;
 using api.Features.CaseProfiles.Services;
+using api.Features.Prosp.Constants;
 using api.Features.Prosp.Models;
 using api.Models;
 
@@ -37,30 +38,10 @@ public class ProspExcelImportService(
     ITopsideTimeSeriesService topsideTimeSeriesService,
     ITransportTimeSeriesService transportTimeSeriesService,
     IOnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService,
-    IConfiguration config,
     IMapper mapper,
     IRecalculationService recalculationService)
 {
     private const string SheetName = "main";
-    private readonly ProspAppConfigModel _prospConfig = CreateConfig(config);
-
-    private static ProspAppConfigModel CreateConfig(IConfiguration config)
-    {
-        var prospAppConfigModel = config.GetSection("FileImportSettings:Prosp").Get<ProspAppConfigModel>();
-
-        if (prospAppConfigModel == null)
-        {
-            throw new Exception("Prosp import settings not found in appsettings.json");
-        }
-
-        prospAppConfigModel.Surf = config.GetSection("FileImportSettings:Prosp:Surf").Get<SurfAppConfigModel>() ?? new SurfAppConfigModel();
-        prospAppConfigModel.SubStructure = config.GetSection("FileImportSettings:Prosp:SubStructure").Get<SubStructureAppConfigModel>() ?? new SubStructureAppConfigModel();
-        prospAppConfigModel.TopSide = config.GetSection("FileImportSettings:Prosp:TopSide").Get<TopSideAppConfigModel>() ?? new TopSideAppConfigModel();
-        prospAppConfigModel.Transport = config.GetSection("FileImportSettings:Prosp:Transport").Get<TransportAppConfigModel>() ?? new TransportAppConfigModel();
-        prospAppConfigModel.OnshorePowerSupply = config.GetSection("FileImportSettings:Prosp:OnshorePowerSupply").Get<OnshorePowerSupplyAppConfigModel>() ?? new OnshorePowerSupplyAppConfigModel();
-
-        return prospAppConfigModel;
-    }
 
     private static double ReadDoubleValue(IEnumerable<Cell> cellData, string coordinate)
     {
@@ -119,21 +100,21 @@ public class ProspExcelImportService(
             "O112",
             "P112"
         ];
-        var costProfileStartYear = ReadIntValue(cellData, _prospConfig.Surf.costProfileStartYear);
-        var dG3Date = ReadDateValue(cellData, _prospConfig.Surf.dG3Date);
-        var dG4Date = ReadDateValue(cellData, _prospConfig.Surf.dG4Date);
-        var lengthProductionLine = ReadDoubleValue(cellData, _prospConfig.Surf.lengthProductionLine);
-        var lengthUmbilicalSystem = ReadDoubleValue(cellData, _prospConfig.Surf.lengthUmbilicalSystem);
-        var productionFlowLineInt = ReadIntValue(cellData, _prospConfig.Surf.productionFlowLineInt);
+        var costProfileStartYear = ReadIntValue(cellData, ProspCellReferences.Surf.CostProfileStartYear);
+        var dG3Date = ReadDateValue(cellData, ProspCellReferences.Surf.Dg3Date);
+        var dG4Date = ReadDateValue(cellData, ProspCellReferences.Surf.Dg4Date);
+        var lengthProductionLine = ReadDoubleValue(cellData, ProspCellReferences.Surf.LengthProductionLine);
+        var lengthUmbilicalSystem = ReadDoubleValue(cellData, ProspCellReferences.Surf.LengthUmbilicalSystem);
+        var productionFlowLineInt = ReadIntValue(cellData, ProspCellReferences.Surf.ProductionFlowLineInt);
         var productionFlowLine = MapProductionFlowLine(productionFlowLineInt);
-        var artificialLiftInt = ReadIntValue(cellData, _prospConfig.Surf.artificialLiftInt);
+        var artificialLiftInt = ReadIntValue(cellData, ProspCellReferences.Surf.ArtificialLiftInt);
         var artificialLift = MapArtificialLift(artificialLiftInt);
-        var riserCount = ReadIntValue(cellData, _prospConfig.Surf.riserCount);
-        var templateCount = ReadIntValue(cellData, _prospConfig.Surf.templateCount);
-        var producerCount = ReadIntValue(cellData, _prospConfig.Surf.producerCount);
-        var waterInjectorCount = ReadIntValue(cellData, _prospConfig.Surf.waterInjectorCount);
-        var gasInjectorCount = ReadIntValue(cellData, _prospConfig.Surf.gasInjectorCount);
-        var cessationCost = ReadDoubleValue(cellData, _prospConfig.Surf.cessationCost);
+        var riserCount = ReadIntValue(cellData, ProspCellReferences.Surf.RiserCount);
+        var templateCount = ReadIntValue(cellData, ProspCellReferences.Surf.TemplateCount);
+        var producerCount = ReadIntValue(cellData, ProspCellReferences.Surf.ProducerCount);
+        var waterInjectorCount = ReadIntValue(cellData, ProspCellReferences.Surf.WaterInjectorCount);
+        var gasInjectorCount = ReadIntValue(cellData, ProspCellReferences.Surf.GasInjectorCount);
+        var cessationCost = ReadDoubleValue(cellData, ProspCellReferences.Surf.CessationCost);
         var costProfile = new UpdateSurfCostProfileDto
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
@@ -141,9 +122,9 @@ public class ProspExcelImportService(
         };
 
         // Prosp meta data
-        var versionDate = ReadDateValue(cellData, _prospConfig.Surf.versionDate);
-        var costYear = ReadIntValue(cellData, _prospConfig.Surf.costYear);
-        var importedCurrency = ReadIntValue(cellData, _prospConfig.Surf.importedCurrency);
+        var versionDate = ReadDateValue(cellData, ProspCellReferences.Surf.VersionDate);
+        var costYear = ReadIntValue(cellData, ProspCellReferences.Surf.CostYear);
+        var importedCurrency = ReadIntValue(cellData, ProspCellReferences.Surf.ImportedCurrency);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
         var surfLink = (await caseService.GetCase(sourceCaseId)).SurfLink;
@@ -184,39 +165,39 @@ public class ProspExcelImportService(
             "O104",
             "P104"
         ];
-        var costProfileStartYear = ReadIntValue(cellData, _prospConfig.TopSide.costProfileStartYear);
-        var dG3Date = ReadDateValue(cellData, _prospConfig.TopSide.dG3Date);
-        var dG4Date = ReadDateValue(cellData, _prospConfig.TopSide.dG4Date);
-        var artificialLiftInt = ReadIntValue(cellData, _prospConfig.TopSide.artificialLiftInt);
+        var costProfileStartYear = ReadIntValue(cellData, ProspCellReferences.TopSide.CostProfileStartYear);
+        var dG3Date = ReadDateValue(cellData, ProspCellReferences.TopSide.Dg3Date);
+        var dG4Date = ReadDateValue(cellData, ProspCellReferences.TopSide.Dg4Date);
+        var artificialLiftInt = ReadIntValue(cellData, ProspCellReferences.TopSide.ArtificialLiftInt);
         var artificialLift = MapArtificialLift(artificialLiftInt);
-        var dryWeight = ReadDoubleValue(cellData, _prospConfig.TopSide.dryWeight);
-        var fuelConsumption = ReadDoubleValue(cellData, _prospConfig.TopSide.fuelConsumption);
-        var flaredGas = ReadDoubleValue(cellData, _prospConfig.TopSide.flaredGas);
-        var oilCapacity = ReadDoubleValue(cellData, _prospConfig.TopSide.oilCapacity);
-        var gasCapacity = ReadDoubleValue(cellData, _prospConfig.TopSide.gasCapacity);
-        var waterInjectorCapacity = ReadDoubleValue(cellData, _prospConfig.TopSide.waterInjectionCapacity);
-        var producerCount = ReadIntValue(cellData, _prospConfig.TopSide.producerCount);
-        var gasInjectorCount = ReadIntValue(cellData, _prospConfig.TopSide.gasInjectorCount);
-        var waterInjectorCount = ReadIntValue(cellData, _prospConfig.TopSide.waterInjectorCount);
-        var cO2ShareOilProfile = ReadDoubleValue(cellData, _prospConfig.TopSide.cO2ShareOilProfile);
-        var cO2ShareGasProfile = ReadDoubleValue(cellData, _prospConfig.TopSide.cO2ShareGasProfile);
+        var dryWeight = ReadDoubleValue(cellData, ProspCellReferences.TopSide.DryWeight);
+        var fuelConsumption = ReadDoubleValue(cellData, ProspCellReferences.TopSide.FuelConsumption);
+        var flaredGas = ReadDoubleValue(cellData, ProspCellReferences.TopSide.FlaredGas);
+        var oilCapacity = ReadDoubleValue(cellData, ProspCellReferences.TopSide.OilCapacity);
+        var gasCapacity = ReadDoubleValue(cellData, ProspCellReferences.TopSide.GasCapacity);
+        var waterInjectorCapacity = ReadDoubleValue(cellData, ProspCellReferences.TopSide.WaterInjectionCapacity);
+        var producerCount = ReadIntValue(cellData, ProspCellReferences.TopSide.ProducerCount);
+        var gasInjectorCount = ReadIntValue(cellData, ProspCellReferences.TopSide.GasInjectorCount);
+        var waterInjectorCount = ReadIntValue(cellData, ProspCellReferences.TopSide.WaterInjectorCount);
+        var cO2ShareOilProfile = ReadDoubleValue(cellData, ProspCellReferences.TopSide.Co2ShareOilProfile);
+        var cO2ShareGasProfile = ReadDoubleValue(cellData, ProspCellReferences.TopSide.Co2ShareGasProfile);
         var cO2ShareWaterInjectionProfile =
-            ReadDoubleValue(cellData, _prospConfig.TopSide.cO2ShareWaterInjectionProfile);
-        var cO2OnMaxOilProfile = ReadDoubleValue(cellData, _prospConfig.TopSide.cO2OnMaxOilProfile);
-        var cO2OnMaxGasProfile = ReadDoubleValue(cellData, _prospConfig.TopSide.cO2OnMaxGasProfile);
+            ReadDoubleValue(cellData, ProspCellReferences.TopSide.Co2ShareWaterInjectionProfile);
+        var cO2OnMaxOilProfile = ReadDoubleValue(cellData, ProspCellReferences.TopSide.Co2OnMaxOilProfile);
+        var cO2OnMaxGasProfile = ReadDoubleValue(cellData, ProspCellReferences.TopSide.Co2OnMaxGasProfile);
         var cO2OnMaxWaterInjectionProfile =
-            ReadDoubleValue(cellData, _prospConfig.TopSide.cO2OnMaxWaterInjectionProfile);
-        var facilityOpex = ReadDoubleValue(cellData, _prospConfig.TopSide.facilityOpex);
+            ReadDoubleValue(cellData, ProspCellReferences.TopSide.Co2OnMaxWaterInjectionProfile);
+        var facilityOpex = ReadDoubleValue(cellData, ProspCellReferences.TopSide.FacilityOpex);
         var costProfile = new UpdateTopsideCostProfileDto
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year,
         };
-        var peakElectricityImported = ReadDoubleValue(cellData, _prospConfig.TopSide.peakElectricityImported);
+        var peakElectricityImported = ReadDoubleValue(cellData, ProspCellReferences.TopSide.PeakElectricityImported);
         // Prosp meta data
-        var versionDate = ReadDateValue(cellData, _prospConfig.TopSide.versionDate);
-        var costYear = ReadIntValue(cellData, _prospConfig.TopSide.costYear);
-        var importedCurrency = ReadIntValue(cellData, _prospConfig.TopSide.importedCurrency);
+        var versionDate = ReadDateValue(cellData, ProspCellReferences.TopSide.VersionDate);
+        var costYear = ReadIntValue(cellData, ProspCellReferences.TopSide.CostYear);
+        var importedCurrency = ReadIntValue(cellData, ProspCellReferences.TopSide.ImportedCurrency);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
         var topsideLink = (await caseService.GetCase(sourceCaseId)).TopsideLink;
@@ -264,11 +245,11 @@ public class ProspExcelImportService(
             "O105",
             "P105"
         ];
-        var costProfileStartYear = ReadIntValue(cellData, _prospConfig.SubStructure.costProfileStartYear);
-        var dG3Date = ReadDateValue(cellData, _prospConfig.SubStructure.dG3Date);
-        var dG4Date = ReadDateValue(cellData, _prospConfig.SubStructure.dG4Date);
-        var dryWeight = ReadDoubleValue(cellData, _prospConfig.SubStructure.dryWeight);
-        var conceptInt = ReadIntValue(cellData, _prospConfig.SubStructure.conceptInt);
+        var costProfileStartYear = ReadIntValue(cellData, ProspCellReferences.SubStructure.CostProfileStartYear);
+        var dG3Date = ReadDateValue(cellData, ProspCellReferences.SubStructure.Dg3Date);
+        var dG4Date = ReadDateValue(cellData, ProspCellReferences.SubStructure.Dg4Date);
+        var dryWeight = ReadDoubleValue(cellData, ProspCellReferences.SubStructure.DryWeight);
+        var conceptInt = ReadIntValue(cellData, ProspCellReferences.SubStructure.ConceptInt);
         var concept = MapSubstructureConcept(conceptInt);
         var costProfile = new UpdateSubstructureCostProfileDto
         {
@@ -277,9 +258,9 @@ public class ProspExcelImportService(
         };
 
         // Prosp meta data
-        var versionDate = ReadDateValue(cellData, _prospConfig.SubStructure.versionDate);
-        var costYear = ReadIntValue(cellData, _prospConfig.SubStructure.costYear);
-        var importedCurrency = ReadIntValue(cellData, _prospConfig.SubStructure.importedCurrency);
+        var versionDate = ReadDateValue(cellData, ProspCellReferences.SubStructure.VersionDate);
+        var costYear = ReadIntValue(cellData, ProspCellReferences.SubStructure.CostYear);
+        var importedCurrency = ReadIntValue(cellData, ProspCellReferences.SubStructure.ImportedCurrency);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
         var substructureLink = (await caseService.GetCase(sourceCaseId)).SubstructureLink;
@@ -311,20 +292,20 @@ public class ProspExcelImportService(
             "O113",
             "P113"
         ];
-        var costProfileStartYear = ReadIntValue(cellData, _prospConfig.Transport.costProfileStartYear);
-        var dG3Date = ReadDateValue(cellData, _prospConfig.Transport.dG3Date);
-        var dG4Date = ReadDateValue(cellData, _prospConfig.Transport.dG4Date);
+        var costProfileStartYear = ReadIntValue(cellData, ProspCellReferences.Transport.CostProfileStartYear);
+        var dG3Date = ReadDateValue(cellData, ProspCellReferences.Transport.Dg3Date);
+        var dG4Date = ReadDateValue(cellData, ProspCellReferences.Transport.Dg4Date);
         var costProfile = new UpdateTransportCostProfileDto
         {
             Values = ReadDoubleValues(cellData, costProfileCoords),
             StartYear = costProfileStartYear - dG4Date.Year,
         };
         // Prosp meta data
-        var versionDate = ReadDateValue(cellData, _prospConfig.Transport.versionDate);
-        var costYear = ReadIntValue(cellData, _prospConfig.Transport.costYear);
-        var importedCurrency = ReadIntValue(cellData, _prospConfig.Transport.importedCurrency);
-        var oilExportPipelineLength = ReadDoubleValue(cellData, _prospConfig.Transport.oilExportPipelineLength);
-        var gasExportPipelineLength = ReadDoubleValue(cellData, _prospConfig.Transport.gasExportPipelineLength);
+        var versionDate = ReadDateValue(cellData, ProspCellReferences.Transport.VersionDate);
+        var costYear = ReadIntValue(cellData, ProspCellReferences.Transport.CostYear);
+        var importedCurrency = ReadIntValue(cellData, ProspCellReferences.Transport.ImportedCurrency);
+        var oilExportPipelineLength = ReadDoubleValue(cellData, ProspCellReferences.Transport.OilExportPipelineLength);
+        var gasExportPipelineLength = ReadDoubleValue(cellData, ProspCellReferences.Transport.GasExportPipelineLength);
         var currency = importedCurrency == 1 ? Currency.NOK :
             importedCurrency == 2 ? Currency.USD : 0;
         var transportLink = (await caseService.GetCase(sourceCaseId)).TransportLink;
@@ -356,8 +337,8 @@ public class ProspExcelImportService(
             "O114",
             "P114"
         ];
-        var costProfileStartYear = ReadIntValue(cellData, _prospConfig.OnshorePowerSupply.costProfileStartYear);
-        var dG4Date = ReadDateValue(cellData, _prospConfig.OnshorePowerSupply.dG4Date);
+        var costProfileStartYear = ReadIntValue(cellData, ProspCellReferences.OnshorePowerSupply.CostProfileStartYear);
+        var dG4Date = ReadDateValue(cellData, ProspCellReferences.OnshorePowerSupply.Dg4Date);
 
         var costProfile = new UpdateOnshorePowerSupplyCostProfileDto
         {
