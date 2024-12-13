@@ -35,14 +35,11 @@ public class GetProjectDataRepository(DcdDbContext context)
             .Where(r => r.Revision.OriginalProjectId == projectId)
             .Select(x => new RevisionDetailsDto
             {
-                Id = x.Id,
-                OriginalProjectId = x.Revision.OriginalProjectId!.Value,
                 RevisionId = x.RevisionId,
                 RevisionName = x.RevisionName,
                 RevisionDate = x.RevisionDate,
                 Arena = x.Arena,
-                Mdqc = x.Mdqc,
-                Classification = x.Classification
+                Mdqc = x.Mdqc
             })
             .ToListAsync();
     }
@@ -53,14 +50,11 @@ public class GetProjectDataRepository(DcdDbContext context)
             .Where(x => x.RevisionId == revisionId)
             .Select(x => new RevisionDetailsDto
             {
-                Id = x.Id,
-                OriginalProjectId = x.Revision.OriginalProjectId!.Value,
                 RevisionId = x.RevisionId,
                 RevisionName = x.RevisionName,
                 RevisionDate = x.RevisionDate,
                 Arena = x.Arena,
-                Mdqc = x.Mdqc,
-                Classification = x.Classification
+                Mdqc = x.Mdqc
             })
             .SingleAsync();
     }

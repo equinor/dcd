@@ -1002,14 +1002,11 @@ declare namespace Components {
             commonProjectAndRevisionData: CommonProjectAndRevisionDto;
         }
         export interface RevisionDetailsDto {
-            id: string; // uuid
-            originalProjectId: string; // uuid
             revisionId: string; // uuid
             revisionName: string;
             revisionDate: string; // date-time
             arena: boolean;
             mdqc: boolean;
-            classification: ProjectClassification /* int32 */;
         }
         export interface SeismicAcquisitionAndProcessingDto {
             id: string; // uuid
