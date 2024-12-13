@@ -18,7 +18,7 @@ CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 var builder = WebApplication.CreateBuilder(args);
-var environment = builder.Configuration.GetSection("AppConfiguration").GetValue<string>("Environment")!;
+var environment = builder.Configuration["AppConfiguration:Environment"]!;
 
 Console.WriteLine($"Loading config for: {environment}");
 
@@ -38,7 +38,6 @@ builder.Services.AddDcdCorsPolicy();
 builder.Services.AddDcdFusionConfiguration(environment, config);
 DcdLogConfiguration.ConfigureDcdLogging(environment, config);
 builder.Services.AddDcdAppInsights(config);
-builder.AddDcdAzureAppConfiguration();
 builder.Services.AddDcdIocConfiguration();
 builder.Services.AddHostedService<ProjectMasterBackgroundService>();
 builder.Services.AddMemoryCache();
