@@ -1022,7 +1022,6 @@ declare namespace Components {
             substructure?: boolean;
             topside?: boolean;
             transport?: boolean;
-            onshorePowerSupply?: boolean;
             sharePointFileId?: string | null;
             sharePointFileName?: string | null;
             sharePointFileUrl?: string | null;
