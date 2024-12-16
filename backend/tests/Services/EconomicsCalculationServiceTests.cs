@@ -8,7 +8,6 @@ using api.Features.Assets.CaseAssets.Topsides.Services;
 using api.Features.Assets.CaseAssets.Transports.Services;
 using api.Features.Assets.CaseAssets.WellProjects.Services;
 using api.Features.CaseProfiles.Services;
-using api.Features.CaseProfiles.Services.GenerateCostProfiles;
 using api.Features.Cases.Recalculation.Calculators.CalculateBreakEvenOilPrice;
 using api.Features.Cases.Recalculation.Calculators.CalculateNpv;
 using api.Features.Cases.Recalculation.Calculators.CalculateTotalCost;

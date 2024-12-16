@@ -1,7 +1,6 @@
 using System.Linq.Expressions;
 
 using api.Features.CaseProfiles.Enums;
-using api.Features.CaseProfiles.Repositories;
 using api.Models;
 
 namespace api.Features.Assets.CaseAssets.WellProjects.Repositories;

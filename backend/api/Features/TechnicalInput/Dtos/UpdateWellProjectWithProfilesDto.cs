@@ -1,6 +1,5 @@
 using api.Features.CaseProfiles.Dtos.TimeSeries;
 using api.Features.CaseProfiles.Dtos.TimeSeries.Update;
-using api.Models;
 
 namespace api.Features.TechnicalInput.Dtos;
 
