@@ -7,7 +7,7 @@ using Microsoft.Identity.Web.Resource;
 namespace api.Features.ProjectMembers.Delete;
 
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-public class DeleteProjectMembersController(DeleteProjectMemberService deleteProjectMemberService) : ControllerBase
+public class DeleteProjectMemberController(DeleteProjectMemberService deleteProjectMemberService) : ControllerBase
 {
     [HttpDelete("projects/{projectId:guid}/members/{userId:guid}")]
     [ActionType(ActionType.Edit)]

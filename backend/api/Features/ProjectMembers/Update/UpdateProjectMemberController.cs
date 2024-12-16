@@ -8,7 +8,7 @@ using Microsoft.Identity.Web.Resource;
 namespace api.Features.ProjectMembers.Update;
 
 [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
-public class UpdateProjectMembersController(UpdateProjectMemberService updateProjectMemberService) : ControllerBase
+public class UpdateProjectMemberController(UpdateProjectMemberService updateProjectMemberService) : ControllerBase
 {
     [HttpPut("projects/{projectId:guid}/members")]
     [ActionType(ActionType.Edit)]
