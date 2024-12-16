@@ -56,6 +56,9 @@ public static class DcdDatabaseConfiguration
         dbBuilder.UseSqlServer(sqlServerConnectionString);
         using var context = new DcdDbContext(dbBuilder.Options, null);
 
+        // If it's causing issues that migrations can be applied from dev machines, guard it with config somehow.
+        context.Database.Migrate();
+
         builder.Services.AddDbContext<DcdDbContext>(
             options => options.UseLazyLoadingProxies()
                 .UseSqlServer(sqlServerConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
