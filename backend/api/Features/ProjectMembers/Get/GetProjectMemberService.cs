@@ -22,4 +22,18 @@ public class GetProjectMemberService(DcdDbContext context)
             })
             .ToListAsync();
     }
+
+    public async Task<ProjectMemberDto> GetProjectMember(Guid projectMemberId)
+    {
+        return await context.ProjectMembers
+            .Where(c => c.Id == projectMemberId)
+            .Select(x => new ProjectMemberDto
+            {
+                ProjectId = x.ProjectId,
+                UserId = x.UserId,
+                Role = x.Role,
+                IsPmt = x.FromOrgChart
+            })
+            .SingleAsync();
+    }
 }

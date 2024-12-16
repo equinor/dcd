@@ -1,7 +1,6 @@
 using api.Context;
 using api.Context.Extensions;
 using api.Exceptions;
-using api.Features.ProjectMembers.Get;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +9,7 @@ namespace api.Features.ProjectMembers.Create;
 
 public class CreateProjectMemberService(DcdDbContext context)
 {
-    public async Task<ProjectMemberDto> CreateProjectMember(Guid projectId, CreateProjectMemberDto dto)
+    public async Task<Guid> CreateProjectMember(Guid projectId, CreateProjectMemberDto dto)
     {
         var projectPk = await context.GetPrimaryKeyForProjectId(projectId);
 
@@ -33,12 +32,6 @@ public class CreateProjectMemberService(DcdDbContext context)
 
         await context.SaveChangesAsync();
 
-        return new ProjectMemberDto
-        {
-            ProjectId = projectPk,
-            UserId = projectMember.UserId,
-            Role = projectMember.Role,
-            IsPmt = projectMember.FromOrgChart
-        };
+        return projectMember.Id;
     }
 }
