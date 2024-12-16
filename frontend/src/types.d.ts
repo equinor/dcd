@@ -1170,9 +1170,6 @@ declare namespace Components {
             source: Source /* int32 */;
         }
         export interface TechnicalInputDto {
-            developmentOperationalWellCostsDto?: DevelopmentOperationalWellCostsDto;
-            explorationOperationalWellCostsDto?: ExplorationOperationalWellCostsDto;
-            wellDtos?: WellDto[] | null;
             projectData?: ProjectDataDto;
             explorationDto?: ExplorationWithProfilesDto;
             wellProjectDto?: WellProjectWithProfilesDto;
