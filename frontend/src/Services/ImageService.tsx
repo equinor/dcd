@@ -60,17 +60,12 @@ export class ImageService extends __BaseService {
 
         throw new Error("Upload project image response data is undefined")
     }
-    // http://localhost:3000/api/projects/e43b2b9a-79bc-4d70-8f0b-5b6d4b8855c2/projects/e43b2b9a-79bc-4d70-8f0b-5b6d4b8855c2/images/863b88ae-b9f2-4005-9298-f7e39e99785b
-    // "https://dcdstorageaccount.blob.core.windows.net/ci-image-storage/Johan-Castberg/projects/e43b2b9a-79bc-4d70-8f0b-5b6d4b8855c2/863b88ae-b9f2-4005-9298-f7e39e99785b?sp=r&st=2024-12-16T07:18:21Z&se=2025-03-16T15:18:21Z&spr=https&sv=2022-11-02&sr=c&sig=p4BvYw3TzHuucpRhVilXP0%2BFEQ3IrXiRkMB1DjQJGgc%3D"
-    // https://dcdstorageaccount.blob.core.windows.net/ci-image-storage/Johan-Castberg/projects/e43b2b9a-79bc-4d70-8f0b-5b6d4b8855c2/863b88ae-b9f2-4005-9298-f7e39e99785b
 
-    // http://localhost:3000/api/projects/e43b2b9a-79bc-4d70-8f0b-5b6d4b8855c2/cases/b0d06ed4-3ba7-46a2-8731-a6ea0f21c5a0/images/83f3adde-3e9c-4761-9c67-f48b35585154
-    // https://dcdstorageaccount.blob.core.windows.net/ci-image-storage/Johan-Castberg/cases/b0d06ed4-3ba7-46a2-8731-a6ea0f21c5a0/83f3adde-3e9c-4761-9c67-f48b35585154?sp=r&st=2024-12-16T07:18:21Z&se=2025-03-16T15:18:21Z&spr=https&sv=2022-11-02&sr=c&sig=p4BvYw3TzHuucpRhVilXP0%2BFEQ3IrXiRkMB1DjQJGgc%3D
     // eslint-disable-next-line class-methods-use-this
-    public async fetchImage(projectId: string, caseId: string, imageId: string): Promise<string> {
+    public async fetchImage(projectId: string, caseId: string | null, imageId: string): Promise<string> {
         let response: Response
         if (caseId) {
-            response = await fetch(`/api/projects/${projectId}/cases/${caseId}/images/${imageId}`)
+            response = await fetch(`/api/projects/${projectId}/cases/${caseId}/images/${imageId}/raw`)
         } else {
             response = await fetch(`/api/projects/${projectId}/images/${imageId}`)
         }

@@ -51,7 +51,7 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
 
     public async Task<ImageDto> SaveImage(Guid projectId, string projectName, IFormFile image, Guid? caseId = null)
     {
-        var sasToken = configuration["CI-blob-storage-sas-token"] ?? string.Empty;
+        // var sasToken = configuration["CI-blob-storage-sas-token"] ?? string.Empty;
         var sanitizedProjectName = SanitizeBlobName(projectName);
         var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
 
@@ -93,7 +93,7 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
 
         await context.SaveChangesAsync();
 
-        return MapToDto(imageEntity, sasToken);
+        return MapToDto(imageEntity);
     }
 
     public async Task<List<ImageDto>> GetCaseImages(Guid caseId)
@@ -107,7 +107,7 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
                 .ToListAsync();
             Console.WriteLine("images.Count: " + images.Count);
 
-            return images.Select(img => MapToDto(img, sasToken)).ToList();
+            return images.Select(img => MapToDto(img)).ToList();
         }
         else
         {
@@ -125,7 +125,7 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
                 .Where(img => img.ProjectId == projectId && img.CaseId == null)
                 .ToListAsync();
             Console.WriteLine("images.Count: " + images.Count);
-            return images.Select(img => MapToDto(img, sasToken)).ToList();
+            return images.Select(img => MapToDto(img)).ToList();
         }
         else
         {
@@ -157,26 +157,42 @@ public class BlobStorageService(BlobServiceClient blobServiceClient,
         await context.SaveChangesAsync();
     }
 
-    private static ImageDto MapToDto(Image imageEntity, string sasToken)
+    public async Task<byte[]> GetImageRaw(Guid projectId, Guid imageId)
+    {
+        var image = await context.Images.FindAsync(imageId);
+        if (image == null)
+        {
+            throw new NotFoundInDBException("Image not found.");
+        }
+
+        var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
+
+        var sanitizedProjectName = SanitizeBlobName(image.ProjectName);
+        var blobName = image.CaseId.HasValue
+            ? $"{sanitizedProjectName}/cases/{image.CaseId}/{image.Id}"
+            : $"{sanitizedProjectName}/projects/{projectId}/{image.Id}";
+
+        var blobClient = containerClient.GetBlobClient(blobName);
+
+        var response = await blobClient.DownloadAsync();
+        var stream = response.Value.Content;
+
+        using var memoryStream = new MemoryStream();
+        await stream.CopyToAsync(memoryStream);
+        return memoryStream.ToArray();
+    }
+
+    private static ImageDto MapToDto(Image imageEntity)
     {
         return new ImageDto
         {
             Id = imageEntity.Id,
-            Url = AppendSasTokenToUrl(imageEntity.Url, sasToken),
+            Url = imageEntity.Url,
             CreateTime = imageEntity.CreateTime,
             Description = imageEntity.Description,
             CaseId = imageEntity.CaseId,
             ProjectName = imageEntity.ProjectName,
             ProjectId = imageEntity.ProjectId
         };
-    }
-
-    private static string AppendSasTokenToUrl(string url, string sasToken)
-    {
-        if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(sasToken))
-        {
-            return url;
-        }
-        return url + "?" + sasToken;
     }
 }

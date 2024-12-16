@@ -47,7 +47,7 @@ builder.Services.AddAutoMapper(typeof(CaseProfile));
 builder.Services.AddControllers(options => options.Conventions.Add(new RouteTokenTransformerConvention(new DcdApiEndpointTransformer())));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureDcdSwagger();
-builder.AddDcdBloBStorage();
+builder.AddDcdBloBStorage(config);
 builder.Host.UseSerilog();
 
 var app = builder.Build();

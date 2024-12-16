@@ -12,18 +12,27 @@ public class ImageController(IBlobStorageService blobStorageService) : Controlle
     [HttpPost("projects/{projectId:guid}/cases/{caseId:guid}/images")]
     [ActionType(ActionType.Edit)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.User)]
-    public Task<ActionResult<ImageDto>> UploadCaseImage(Guid projectId, [FromForm] string projectName, Guid caseId, IFormFile image)
+    public async Task<ActionResult<ImageDto>> UploadCaseImage(Guid projectId, [FromForm] string projectName, Guid caseId, IFormFile image)
     {
-        return UploadImage(projectId, projectName, caseId, image);
+        return await UploadImage(projectId, projectName, caseId, image);
     }
 
-    [HttpGet("projects/{projectId:guid}/cases/{caseId:guid}/images")]
+    // [HttpGet("projects/{projectId:guid}/cases/{caseId:guid}/images")]
+    // [ActionType(ActionType.Read)]
+    // [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
+    // public async Task<ActionResult<List<ImageDto>>> GetImages(Guid projectId, Guid caseId)
+    // {
+    //     var imageDtos = await blobStorageService.GetCaseImages(caseId);
+    //     return Ok(imageDtos);
+    // }
+
+    [HttpGet("projects/{projectId:guid}/cases/{caseId:guid}/images/{imageId:guid}/raw")]
     [ActionType(ActionType.Read)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
-    public async Task<ActionResult<List<ImageDto>>> GetImages(Guid projectId, Guid caseId)
+    public async Task<FileContentResult> DownloadCaseImage(Guid caseId, Guid imageId)
     {
-        var imageDtos = await blobStorageService.GetCaseImages(caseId);
-        return Ok(imageDtos);
+        byte[] byteArray = await blobStorageService.GetImageRaw(caseId, imageId);
+        return new FileContentResult(byteArray, "image/jpeg");
     }
 
     [HttpDelete("projects/{projectId:guid}/cases/{caseId:guid}/images/{imageId:guid}")]
@@ -43,14 +52,23 @@ public class ImageController(IBlobStorageService blobStorageService) : Controlle
         return UploadImage(projectId, projectName, null, image);
     }
 
-    [HttpGet("projects/{projectId:guid}/images")]
+    [HttpGet("projects/{projectId:guid}/images/{imageId:guid}/raw")]
     [ActionType(ActionType.Read)]
     [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
-    public async Task<ActionResult<List<ImageDto>>> GetProjectImages(Guid projectId)
+    public async Task<FileContentResult> DownloadProjectImage(Guid projectId, Guid imageId)
     {
-        var imageDtos = await blobStorageService.GetProjectImages(projectId);
-        return Ok(imageDtos);
+        byte[] byteArray = await blobStorageService.GetImageRaw(projectId, imageId);
+        return new FileContentResult(byteArray, "image/jpeg");
     }
+
+    // [HttpGet("projects/{projectId:guid}/images")]
+    // [ActionType(ActionType.Read)]
+    // [RequiresApplicationRoles(ApplicationRole.Admin, ApplicationRole.ReadOnly, ApplicationRole.User)]
+    // public async Task<ActionResult<List<ImageDto>>> GetProjectImages(Guid projectId)
+    // {
+    //     var imageDtos = await blobStorageService.GetProjectImages(projectId);
+    //     return Ok(imageDtos);
+    // }
 
     [HttpDelete("projects/{projectId:guid}/images/{imageId:guid}")]
     [ActionType(ActionType.Edit)]
