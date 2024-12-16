@@ -1352,11 +1352,6 @@ declare namespace Components {
             startYear?: number; // int32
             values?: number /* double */[] | null;
         }
-        export interface UpdateAppraisalWellCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
         export interface UpdateCaseDto {
             name: string;
             description: string;
@@ -1453,22 +1448,6 @@ declare namespace Components {
             explorationProjectDrillingCosts?: number; // double
             appraisalRigMobDemob?: number; // double
             appraisalProjectDrillingCosts?: number; // double
-        }
-        export interface UpdateExplorationWellCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
-        export interface UpdateExplorationWithProfilesDto {
-            name?: string | null;
-            rigMobDemob?: number; // double
-            currency?: Currency /* int32 */;
-            gAndGAdminCostOverride?: UpdateGAndGAdminCostOverrideDto;
-            seismicAcquisitionAndProcessing?: UpdateSeismicAcquisitionAndProcessingDto;
-            countryOfficeCost?: UpdateCountryOfficeCostDto;
-            explorationWellCostProfile?: UpdateExplorationWellCostProfileDto;
-            appraisalWellCostProfile?: UpdateAppraisalWellCostProfileDto;
-            sidetrackCostProfile?: UpdateSidetrackCostProfileDto;
         }
         export interface UpdateFuelFlaringAndLossesOverrideDto {
             startYear?: number; // int32
@@ -1585,11 +1564,6 @@ declare namespace Components {
             values?: number /* double */[] | null;
             currency?: Currency /* int32 */;
         }
-        export interface UpdateSidetrackCostProfileDto {
-            startYear?: number; // int32
-            values?: number /* double */[] | null;
-            currency?: Currency /* int32 */;
-        }
         export interface UpdateSubstructureCostProfileOverrideDto {
             startYear?: number; // int32
             values?: number /* double */[] | null;
@@ -1609,8 +1583,6 @@ declare namespace Components {
             createWellDtos?: CreateWellDto[] | null;
             deleteWellDtos?: DeleteWellDto[] | null;
             projectDto?: UpdateProjectDto;
-            explorationDto?: UpdateExplorationWithProfilesDto;
-            wellProjectDto?: UpdateWellProjectWithProfilesDto;
         }
         export interface UpdateTopsideCostProfileOverrideDto {
             startYear?: number; // int32
@@ -1664,15 +1636,6 @@ declare namespace Components {
         }
         export interface UpdateWellProjectDto {
             name?: string | null;
-            artificialLift?: ArtificialLift /* int32 */;
-            currency?: Currency /* int32 */;
-        }
-        export interface UpdateWellProjectWithProfilesDto {
-            name?: string | null;
-            oilProducerCostProfileOverride?: UpdateOilProducerCostProfileOverrideDto;
-            gasProducerCostProfileOverride?: UpdateGasProducerCostProfileOverrideDto;
-            waterInjectorCostProfileOverride?: UpdateWaterInjectorCostProfileOverrideDto;
-            gasInjectorCostProfileOverride?: UpdateGasInjectorCostProfileOverrideDto;
             artificialLift?: ArtificialLift /* int32 */;
             currency?: Currency /* int32 */;
         }
