@@ -31,4 +31,14 @@ public static class DcdAzureAppConfiguration
                 .ConfigureKeyVault(kv => kv.SetCredential(new DefaultAzureCredential()));
         });
     }
+
+        public static string GetCiBlobStorageSasToken(this IConfiguration configuration)
+    {
+        var sasToken = configuration["CI-blob-storage-sas-token"];
+        if (string.IsNullOrEmpty(sasToken))
+        {
+            throw new InvalidOperationException("SAS token for CI environment is not configured.");
+        }
+        return sasToken;
+    }
 }

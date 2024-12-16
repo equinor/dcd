@@ -69,13 +69,24 @@ const Gallery = () => {
             if (projectId) {
                 try {
                     const imageService = await getImageService()
+                    let imageDtos
+                    console.log("caseId:", caseId)
+                    console.log("projectId:", projectId)
                     if (caseId) {
-                        const imageDtos = await imageService.getImages(projectId, caseId)
-                        setGallery(imageDtos)
+                        imageDtos = await imageService.getCaseImages(projectId, caseId)
                     } else {
-                        const imageDtos = await imageService.getProjectImages(projectId)
-                        setGallery(imageDtos)
+                        console.log("project fetch")
+                        imageDtos = await imageService.getProjectImages(projectId)
                     }
+
+                    const imageUrls = await Promise.all(
+                        imageDtos.map(async (image) => {
+                            const imageUrl = await imageService.fetchImage(projectId, caseId ?? "", image.id)
+                            return { ...image, url: imageUrl }
+                        }),
+                    )
+
+                    setGallery(imageUrls)
                 } catch (error) {
                     console.error("Error loading images:", error)
                 }
