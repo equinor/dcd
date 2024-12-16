@@ -22,7 +22,7 @@ Console.WriteLine($"Loading config for: {DcdEnvironments.CurrentEnvironment}");
 var azureConfig = builder.CreateDcdConfigurationRoot();
 
 builder.Configuration.AddConfiguration(azureConfig);
-builder.ConfigureDcdDatabase(azureConfig);
+builder.ConfigureDcdDatabase(azureConfig, builder.Configuration);
 builder.Services.AddDcdFusionConfiguration(azureConfig, builder.Configuration);
 builder.Services.AddDcdAppInsights(azureConfig);
 builder.ConfigureDcdLogging(azureConfig);

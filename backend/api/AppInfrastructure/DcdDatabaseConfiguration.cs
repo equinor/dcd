@@ -7,7 +7,7 @@ namespace api.AppInfrastructure;
 
 public static class DcdDatabaseConfiguration
 {
-    public static void ConfigureDcdDatabase(this WebApplicationBuilder builder, IConfigurationRoot config)
+    public static void ConfigureDcdDatabase(this WebApplicationBuilder builder, IConfigurationRoot azureConfig, IConfigurationRoot localConfig)
     {
         if (DcdEnvironments.IsLocal())
         {
@@ -16,7 +16,7 @@ public static class DcdDatabaseConfiguration
             return;
         }
 
-        SetupAzureDatabase(builder, config);
+        SetupAzureDatabase(builder, azureConfig, localConfig);
     }
 
     private static void SetupSqliteDatabase(WebApplicationBuilder builder)
@@ -48,16 +48,9 @@ public static class DcdDatabaseConfiguration
             lifetime: ServiceLifetime.Scoped);
     }
 
-    private static void SetupAzureDatabase(WebApplicationBuilder builder, IConfigurationRoot config)
+    private static void SetupAzureDatabase(WebApplicationBuilder builder, IConfigurationRoot azureConfig, IConfigurationRoot localConfig)
     {
-        var sqlServerConnectionString = config["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
-
-        var dbBuilder = new DbContextOptionsBuilder<DcdDbContext>();
-        dbBuilder.UseSqlServer(sqlServerConnectionString);
-        using var context = new DcdDbContext(dbBuilder.Options, null);
-
-        // If it's causing issues that migrations can be applied from dev machines, guard it with config somehow.
-        context.Database.Migrate();
+        var sqlServerConnectionString = azureConfig["Db:ConnectionString"] + "MultipleActiveResultSets=True;";
 
         builder.Services.AddDbContext<DcdDbContext>(
             options => options.UseLazyLoadingProxies()
@@ -66,5 +59,36 @@ public static class DcdDatabaseConfiguration
         builder.Services.AddDbContextFactory<DcdDbContext>(options => options.UseLazyLoadingProxies()
                 .UseSqlServer(sqlServerConnectionString, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)),
             lifetime: ServiceLifetime.Scoped);
+
+        if (!ShouldMigrateDatabase(localConfig))
+        {
+            return;
+        }
+
+        var dbBuilder = new DbContextOptionsBuilder<DcdDbContext>();
+        dbBuilder.UseSqlServer(sqlServerConnectionString);
+        using var context = new DcdDbContext(dbBuilder.Options, null);
+
+        context.Database.Migrate();
+    }
+
+    private static bool ShouldMigrateDatabase(IConfigurationRoot localConfig)
+    {
+        if (DcdEnvironments.IsQa() || DcdEnvironments.IsProd())
+        {
+            return true;
+        }
+
+        if (DcdEnvironments.IsLocal())
+        {
+            return false;
+        }
+
+        if (localConfig["AllowMigrationsToBeApplied"] == "false")
+        {
+            return false;
+        }
+
+        return true;
     }
 }

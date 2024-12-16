@@ -3,6 +3,7 @@ using api.AppInfrastructure.Authorization;
 using api.Models;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace api.Context;
 
@@ -103,8 +104,11 @@ public class DcdDbContext(DbContextOptions<DcdDbContext> options, CurrentUser? c
             optionsBuilder.LogTo(Console.WriteLine);
         }
 
-        base.OnConfiguring(optionsBuilder);
+        optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+
         optionsBuilder.EnableSensitiveDataLogging();
+
+        base.OnConfiguring(optionsBuilder);
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
