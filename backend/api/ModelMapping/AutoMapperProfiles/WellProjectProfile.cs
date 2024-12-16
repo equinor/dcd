@@ -34,7 +34,5 @@ public class WellProjectProfile : Profile
         CreateMap<CreateGasProducerCostProfileOverrideDto, GasProducerCostProfileOverride>();
         CreateMap<CreateWaterInjectorCostProfileOverrideDto, WaterInjectorCostProfileOverride>();
         CreateMap<CreateGasInjectorCostProfileOverrideDto, GasInjectorCostProfileOverride>();
-
-        CreateMap<CreateWellProjectDto, WellProject>();
     }
 }

@@ -16,8 +16,6 @@ using api.Features.Prosp.Constants;
 using api.Features.Prosp.Models;
 using api.Models;
 
-using AutoMapper;
-
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
@@ -38,7 +36,6 @@ public class ProspExcelImportService(
     ITopsideTimeSeriesService topsideTimeSeriesService,
     ITransportTimeSeriesService transportTimeSeriesService,
     IOnshorePowerSupplyTimeSeriesService onshorePowerSupplyTimeSeriesService,
-    IMapper mapper,
     IRecalculationService recalculationService)
 {
     private const string SheetName = "main";
@@ -442,12 +439,12 @@ public class ProspExcelImportService(
         await ClearImportedTransport(caseItem);
         await ClearImportedOnshorePowerSupply(caseItem);
 
-        var caseDto = mapper.Map<ProspUpdateCaseDto>(caseItem);
-
-        if (caseDto == null)
+        var caseDto = new ProspUpdateCaseDto
         {
-            throw new Exception();
-        }
+            SharepointFileId = caseItem.SharepointFileId,
+            SharepointFileName = caseItem.SharepointFileName,
+            SharepointFileUrl = caseItem.SharepointFileUrl
+        };
 
         await UpdateCase(projectPk, sourceCaseId, caseDto);
     }

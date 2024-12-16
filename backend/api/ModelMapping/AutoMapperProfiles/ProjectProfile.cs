@@ -1,7 +1,6 @@
 using api.Features.Assets.ProjectAssets.DevelopmentOperationalWellCosts.Dtos;
 using api.Features.Assets.ProjectAssets.ExplorationOperationalWellCosts.Dtos;
 using api.Features.ProjectData.Dtos;
-using api.Features.ProjectMembers.Get;
 using api.Features.Projects.Update;
 using api.Features.Stea.Dtos;
 using api.Models;
@@ -16,12 +15,10 @@ public class ProjectProfile : Profile
     {
         CreateMap<Project, ProjectWithAssetsDto>();
         CreateMap<UpdateProjectDto, Project>();
-        CreateMap<ProjectMember, ProjectMemberDto>();
 
         CreateMap<UpdateExplorationOperationalWellCostsDto, ExplorationOperationalWellCosts>();
         CreateMap<ExplorationOperationalWellCosts, ExplorationOperationalWellCostsDto>();
         CreateMap<UpdateDevelopmentOperationalWellCostsDto, DevelopmentOperationalWellCosts>();
         CreateMap<DevelopmentOperationalWellCosts, DevelopmentOperationalWellCostsDto>();
-        CreateMap<RevisionDetails, RevisionDetailsDto>();
     }
 }
