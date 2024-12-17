@@ -26,7 +26,7 @@ builder.ConfigureDcdDatabase(azureConfig);
 builder.Services.AddDcdFusionConfiguration(azureConfig, builder.Configuration);
 builder.Services.AddDcdAppInsights(azureConfig);
 builder.ConfigureDcdLogging(azureConfig);
-builder.AddDcdBlogStorage(azureConfig);
+builder.AddDcdBlobStorage(azureConfig);
 
 builder.Services.AddDcdCorsPolicy();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);

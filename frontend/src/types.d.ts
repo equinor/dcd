@@ -811,13 +811,12 @@ declare namespace Components {
             "@odata.type"?: string | null;
         }
         export interface ImageDto {
-            id: string; // uuid
-            url: string; // uri
+            imageId: string; // uuid
             createTime: string; // date-time
-            description?: string | null;
+            description: string | null;
             caseId: string; // uuid
-            projectName: string;
             projectId: string; // uuid
+            imageData: string;
         }
         export interface ImportedElectricityDto {
             id: string; // uuid
@@ -2766,24 +2765,6 @@ declare namespace Paths {
             }
             namespace Responses {
                 export type $200 = Components.Schemas.ImageDto;
-            }
-        }
-    }
-    namespace Projects$ProjectIdCases$CaseIdImages$ImageId {
-        namespace Delete {
-            namespace Parameters {
-                export type CaseId = string; // uuid
-                export type ImageId = string; // uuid
-                export type ProjectId = string; // uuid
-            }
-            export interface PathParameters {
-                projectId: Parameters.ProjectId /* uuid */;
-                caseId: Parameters.CaseId /* uuid */;
-                imageId: Parameters.ImageId /* uuid */;
-            }
-            namespace Responses {
-                export interface $200 {
-                }
             }
         }
     }
