@@ -12,7 +12,7 @@ public static class DcdEnvironments
 
     public static bool EnableVerboseEntityFrameworkLogging => false; // CurrentEnvironment is LocalDev or Ci;
     public static bool UseSqlite => CurrentEnvironment is LocalDev;
-    public static bool DisplaySwagger => CurrentEnvironment is LocalDev or Ci;
+    public static bool DisplaySwagger => CurrentEnvironment is LocalDev or Ci or RadixDev;
     public static bool ReturnExceptionDetails => CurrentEnvironment is LocalDev or Ci or RadixDev or RadixQa;
     public static bool AllowMigrationsToBeApplied => CurrentEnvironment is RadixDev or RadixQa or RadixProd;
     public static bool RunProjectMasterBackgroundServiceHourly => CurrentEnvironment is LocalDev or Ci or RadixDev;
